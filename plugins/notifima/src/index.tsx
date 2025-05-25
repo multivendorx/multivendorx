@@ -6,7 +6,6 @@ import App from "./app";
  */
 import "./style/common.scss";
 
-console.log("render index....");
 // Render the App component into the DOM
 render(
     <BrowserRouter>
