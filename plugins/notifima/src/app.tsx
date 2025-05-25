@@ -27,6 +27,7 @@ import Export from "./components/Managestock/ImportExport/Export";
 
 const Route = () => {
     const currentTab = new URLSearchParams(useLocation().hash);
+    console.log("current tab : ",currentTab.get('tab'));
     return (
         <>
             {currentTab.get("tab") === "settings" && (
@@ -44,6 +45,8 @@ const Route = () => {
 
 const App = () => {
     const currentTabParams = new URLSearchParams(useLocation().hash);
+    const location = useLocation();
+    console.log("render app...");
     document
         .querySelectorAll("#toplevel_page_notifima>ul>li>a")
         .forEach((menuItem) => {
@@ -78,7 +81,7 @@ const App = () => {
                 >
                     <Tour />
                 </TourProvider> */}
-                <Route />
+                <Route key={location.key} />
             </ModuleProvider>
         </>
     );
