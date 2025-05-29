@@ -7,7 +7,7 @@ class Admin {
 	public function __construct() {
 		// Register submenu for admin menu
 		add_action( 'admin_menu', [ &$this, 'add_submenu' ] );
-		// enqueue scripts in admin panel
+		// enqueue scripts in admin
 		add_action( 'admin_enqueue_scripts', [ &$this, 'enqueue_admin_script' ] );
 	}
 
