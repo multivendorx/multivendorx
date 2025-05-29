@@ -35,12 +35,6 @@ class RestAPI {
             'permission_callback' =>[ $this, 'moowoodle_permission' ],
         ]);
 
-        register_rest_route( MooWoodle()->rest_namespace, '/test-connection', [
-            'methods'             => \WP_REST_Server::ALLMETHODS,
-            'callback'            =>[ $this, 'test_connection' ],
-            'permission_callback' =>[ $this, 'moowoodle_permission' ],
-        ]);
-
         register_rest_route( MooWoodle()->rest_namespace, '/sync', [
             [
                 'methods'             => 'POST',
@@ -136,7 +130,39 @@ class RestAPI {
             return rest_ensure_response( __( 'Unabled to Saved', 'moowoodle' ) );
         }
     }
-
+    /**
+     * Handles synchronization requests based on the 'parameter' value.
+     *
+     * Supported parameters:
+     * - 'test'     : Tests the connection to the remote system.
+     * - 'course'   : Synchronizes all courses.
+     * - 'user'     : Triggers synchronization of all users.
+     * - 'cohort'   : (Pro feature) Triggers synchronization of all cohorts.
+     * - Default    : Triggers general synchronization.
+     *
+     * @param WP_REST_Request $request The REST API request object.
+     *
+     * @return mixed Response from the specific sync handler or null.
+     */
+    public function synchronize( $request ) {
+        $parameter = $request->get_param( 'parameter' );
+    
+        if ( 'test' === $parameter ) {
+            return $this->test_connection( $request );
+        } elseif ( 'course' === $parameter ) {
+            $this->synchronize_course( $request );
+        } elseif ( 'user' === $parameter ) {
+            do_action( 'moowoodle_sync_all_users', $request );
+        } elseif ( 'cohort' === $parameter ) {
+            // Pro feature: Sync all cohorts in MooWoodle.
+            do_action( 'moowoodle_sync_all_cohorts', $request );
+        } else {
+            do_action( 'moowoodle_sync' );
+        }
+    
+        return null;
+    }
+    
     /**
      * Test Connection with Moodle server
      * @param mixed $request rest request object
@@ -185,21 +211,6 @@ class RestAPI {
         }
 
         return rest_ensure_response( $response );
-    }
-
-    public function synchronize( $request ) {
-        $parameter = $request->get_param('parameter');
-
-        if ($parameter == 'course') {
-            $this->synchronize_course($request);
-        } elseif ($parameter == 'user') {
-            do_action( 'moowoodle_sync_all_users', $request );
-        } elseif ($parameter == 'cohort') {
-            // Pro feature: Sync all cohorts in MooWoodle
-            do_action( 'moowoodle_sync_all_cohorts', $request );
-        } else {
-            do_action( 'moowoodle_sync' );
-        }
     }
 
     /**
@@ -552,84 +563,83 @@ class RestAPI {
      */
     public function get_user_courses( $request ) {
         $current_user = wp_get_current_user();
-
+    
         if ( empty( $current_user->ID ) ) {
             Util::log( "[MooWoodle] get_user_courses(): No logged-in user found." );
             return rest_ensure_response([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'User not logged in.',
             ]);
         }
-
-        $row_limit = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
-        $current_page = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
-        $offset = ( $current_page - 1 ) * $row_limit;
-
+    
+        $items_per_page = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
+        $page_number = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
+        $query_offset = ( $page_number - 1 ) * $items_per_page;
+    
         // Handle count-only request
         if ( $request->get_param( 'count' ) ) {
-            $enrollments = MooWoodle()->enrollment->get_enrollments([
+            $user_enrollments = MooWoodle()->enrollment->get_enrollments([
                 'user_id' => $current_user->ID,
                 'status'  => 'enrolled',
             ]);
-            return rest_ensure_response( count( $enrollments ) );
+            return rest_ensure_response( count( $user_enrollments ) );
         }
-
+    
         // Allow pre-filtering by custom filters
-        $pre_filtered_data = apply_filters( 'moowoodle_user_courses_data', null, $request );
-        if ( ! empty( $pre_filtered_data ) ) {
-            return $pre_filtered_data;
+        $user_courses_data = apply_filters( 'moowoodle_user_courses_cohorts_groups_data', null, $request );
+        if ( ! empty( $user_courses_data ) ) {
+            return $user_courses_data;
         }
-
+    
         // Fetch paginated enrollments
-        $enrollments = MooWoodle()->enrollment->get_enrollments([
+        $user_enrollments = MooWoodle()->enrollment->get_enrollments([
             'user_id'       => $current_user->ID,
             'status'        => 'enrolled',
             'course_id_not' => 0,
-            'limit'         => $row_limit,
-            'offset'        => $offset,
+            'limit'         => $items_per_page,
+            'offset'        => $query_offset,
         ]);
-
-        if ( empty( $enrollments ) ) {
+    
+        if ( empty( $user_enrollments ) ) {
             return rest_ensure_response([
                 'data'   => [],
                 'status' => 'success',
             ]);
         }
-
-        $user_password = get_user_meta( $current_user->ID, 'moowoodle_moodle_user_pwd', true );
-        $base_moodle_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
-
-        $formatted_courses = array_map( function( $enrollment ) use ( $current_user, $user_password, $base_moodle_url ) {
-            $course_info = MooWoodle()->course->get_course([
+    
+        $moodle_password = get_user_meta( $current_user->ID, 'moowoodle_moodle_user_pwd', true );
+        $moodle_base_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) );
+    
+        $formatted_courses = array_map( function( $enrollment ) use ( $current_user, $moodle_password, $moodle_base_url ) {
+            $course_data = MooWoodle()->course->get_course([
                 'id' => $enrollment['course_id'],
             ]);
-            $course = is_array( $course_info ) ? reset( $course_info ) : $course_info;
-
-            $formatted_date = '';
+            $course = is_array( $course_data ) ? reset( $course_data ) : $course_data;
+    
+            $formatted_enrolled_date = '';
             if ( ! empty( $enrollment['enrolled_date'] ) && strtotime( $enrollment['enrolled_date'] ) ) {
-                $formatted_date = date( 'M j, Y - H:i', strtotime( $enrollment['enrolled_date'] ) );
+                $formatted_enrolled_date = date( 'M j, Y - H:i', strtotime( $enrollment['enrolled_date'] ) );
             }
-
+    
             return [
                 'user_name'     => $current_user->user_login,
                 'course_name'   => $course['fullname'] ?? '',
-                'enrolled_date' => $formatted_date,
-                'password'      => $user_password,
+                'enrolled_date' => $formatted_enrolled_date,
+                'password'      => $moodle_password,
                 'moodle_url'    => ! empty( $course['moodle_course_id'] )
                     ? apply_filters(
                         'moodle_course_view_url',
-                        "{$base_moodle_url}course/view.php?id={$course['moodle_course_id']}",
+                        "{$moodle_base_url}course/view.php?id={$course['moodle_course_id']}",
                         $course['moodle_course_id']
                     )
                     : null,
             ];
-        }, $enrollments );
-
+        }, $user_enrollments );
+    
         return rest_ensure_response([
             'data'   => $formatted_courses,
             'status' => 'success',
         ]);
-    }
-    
+    }    
 
 }

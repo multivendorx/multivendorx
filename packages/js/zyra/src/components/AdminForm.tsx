@@ -1123,6 +1123,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case "checkbox":
                     input = (
                         <MultiCheckBox
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
                             wrapperClass="checkbox-list-side-by-side"
                             descClass="settings-metabox-description"
                             description={inputField.desc}
@@ -1185,6 +1186,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case "stock-alert-checkbox":
                     input = (
                         <MultiCheckBox
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
                             wrapperClass="checkbox-list-side-by-side"
                             descClass="settings-metabox-description"
                             description={inputField.desc}

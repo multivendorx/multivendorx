@@ -95,9 +95,9 @@ class Installer {
         $previous_version = get_option( 'moowoodle_version', '' );
 
         if ( version_compare( $previous_version, '3.2.12', '<' ) ) {
-            // self::migrate_categories();
-            // self::migrate_courses();
-            // self::migrate_enrollments();
+            self::migrate_categories();
+            self::migrate_courses();
+            self::migrate_enrollments();
         }
     }
 

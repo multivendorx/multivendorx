@@ -22,9 +22,12 @@ export default {
         },
         {
             key: "test_connection",
-            type: "testconnection",
+            type: "syncbutton",
+            apilink: 'sync',
+            parameter: 'test',
+            value: 'Start Test',
+            interval: 2500,
             label: __("MooWoodle test connection", 'moowoodle'),
-            apiLink: 'test-connection',
             tasks: [
                 {
                     'action': 'get_site_info',
@@ -66,5 +69,51 @@ export default {
                 }
             ],
         },
+        // {
+        //     key: "test_connection",
+        //     type: "testconnection",
+        //     label: __("MooWoodle test connection", 'moowoodle'),
+        //     apiLink: 'test-connection',
+        //     tasks: [
+        //         {
+        //             'action': 'get_site_info',
+        //             'message': __('Connecting to Moodle', 'moowoodle'),
+        //         },
+        //         {
+        //             'action': 'get_course',
+        //             'message': __('Courses Fetch', 'moowoodle'),
+        //             'cache': 'course_id',
+        //         },
+        //         {
+        //             'action': 'get_catagory',
+        //             'message': __('Catagory Fetch', 'moowoodle'),
+        //         },
+        //         {
+        //             'action': 'create_user',
+        //             'message': __('User Creation', 'moowoodle'),
+        //         },
+        //         {
+        //             'action': 'get_user',
+        //             'message': __('User Fetch', 'moowoodle'),
+        //             'cache': 'user_id',
+        //         },
+        //         {
+        //             'action': 'update_user',
+        //             'message': __('User Update', 'moowoodle'),
+        //         },
+        //         {
+        //             'action': 'enroll_user',
+        //             'message': __('User Enroll', 'moowoodle'),
+        //         },
+        //         {
+        //             'action': 'unenroll_user',
+        //             'message': __('User Unenroll', 'moowoodle'),
+        //         },
+        //         {
+        //             'action': 'delete_user',
+        //             'message': __('User Remove', 'moowoodle'),
+        //         }
+        //     ],
+        // },
     ]
 };

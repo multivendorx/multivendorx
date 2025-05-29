@@ -1426,12 +1426,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e3874aa4afb83cb6afa3689f22a300a9d7882e0f"
+                "reference": "8e0fbdd9d5427cee29cd1de16583bac1ec51d160"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e3874aa4afb83cb6afa3689f22a300a9d7882e0f",
-                "reference": "e3874aa4afb83cb6afa3689f22a300a9d7882e0f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8e0fbdd9d5427cee29cd1de16583bac1ec51d160",
+                "reference": "8e0fbdd9d5427cee29cd1de16583bac1ec51d160",
                 "shasum": ""
             },
             "require": {
@@ -1529,7 +1529,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-14T13:32:26+00:00"
+            "time": "2025-05-25T05:43:41+00:00"
         },
         {
             "name": "psr/container",
@@ -2549,12 +2549,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "038b4a1e2d86d247e435aafeea9c550e99c7cbb4"
+                "reference": "c9858b64d6daf45c14dea7c69944226baa27b118"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/038b4a1e2d86d247e435aafeea9c550e99c7cbb4",
-                "reference": "038b4a1e2d86d247e435aafeea9c550e99c7cbb4",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/c9858b64d6daf45c14dea7c69944226baa27b118",
+                "reference": "c9858b64d6daf45c14dea7c69944226baa27b118",
                 "shasum": ""
             },
             "require": {
@@ -2626,7 +2626,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-05-19T16:07:24+00:00"
+            "time": "2025-05-28T22:53:06+00:00"
         },
         {
             "name": "symfony/console",
