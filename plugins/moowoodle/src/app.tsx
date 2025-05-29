@@ -4,8 +4,8 @@ import Settings from "./components/Settings/Settings";
 import { ModuleProvider } from "./contexts/ModuleContext";
 import Synchronization from "./components/Synchronization/Synchronization";
 import Courses from "./components/Courses/Courses";
-// import Cohorts from "./components/Cohorts/Cohorts";
-// import Enrollment from "./components/Enrollment/Enrollment";
+import Cohort from "./components/Cohort/Cohort";
+import Enrollment from "./components/Enrollment/Enrollment";
 
 // for react tour
 // import { TourProvider } from '@reactour/tour';
@@ -37,8 +37,8 @@ const Route = () => {
                 <Synchronization id={"synchronization"} />
             ) }
             { currentTab.get('tab') === 'courses' && <Courses /> }
-            {/* { currentTab.get('tab') === 'cohorts' && <Cohorts /> }
-            { currentTab.get('tab') === 'enrolments' && <Enrollment /> } */}
+            { currentTab.get('tab') === 'enrolments' && <Enrollment /> }
+            { currentTab.get('tab') === 'cohorts' && <Cohort /> }
            
         </>
     );

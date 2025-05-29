@@ -130,14 +130,14 @@ class MooWoodle {
 		$this->container[ 'util' ]             = new Util();
         $this->container[ 'setting' ]          = new Setting();
 		$this->container[ 'restAPI' ]          = new RestAPI();
-		// $this->container[ 'emails' ]           = new Emails\Emails();
+		$this->container[ 'emails' ]           = new Emails\Emails();
 		$this->container[ 'course' ]           = new Core\Course();
 		$this->container[ 'category' ]         = new Core\Category();
 		$this->container[ 'product' ]          = new Core\Product();
         $this->container[ 'external_service' ] = new ExternalService();
 		$this->container[ 'enrollment' ]       = new Enrollment();
-		// $this->container[ 'frontend' ]         = new Frontend();
-        // $this->container[ 'block' ] 		   = new Block();
+		$this->container[ 'frontend' ]         = new Frontend();
+        $this->container[ 'block' ] 		   = new Block();
         $this->container[ 'frontendscripts' ]  = new FrontendScripts();
 
         // new EndPoint();
