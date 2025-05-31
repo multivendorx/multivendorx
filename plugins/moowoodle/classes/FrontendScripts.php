@@ -70,14 +70,15 @@ class FrontendScripts {
 
     public static function register_scripts() {
 		$version = MooWoodle()->version;
+        $index_asset = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
 
 		$register_scripts = apply_filters('moowoodle_register_scripts', array(
-			// 'moowoodle-my-courses-script' => [
-			// 	'src'     => MooWoodle()->plugin_url . 'build/blocks/my-courses/index.js',
-			// 	'deps'    => [ 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n' ],
-			// 	'version' => $version,
-            //     'text_domain' => 'moowoodle'
-            // ],
+			'moowoodle-my-courses-script' => [
+				'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/block/my-courses/index.js',
+				'deps'    => $index_asset['dependencies'],
+				'version' => $version,
+                'text_domain' => 'moowoodle'
+            ],
 		) );
 		foreach ( $register_scripts as $name => $props ) {
 			self::register_script( $name, $props['src'], $props['deps'], $props['version'], $props['text_domain'] );
@@ -113,12 +114,12 @@ class FrontendScripts {
 				'version' => $version,
                 'text_domain' => 'moowoodle'
             ],
-			// 'moowoodle-product-tab-js' => [
-			// 	'src'     => MooWoodle()->plugin_url . 'assets/js/product-tab.js',
-			// 	'deps'    => [ 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ],
-			// 	'version' => $version,
-            //     'text_domain' => 'moowoodle'
-            // ],
+			'moowoodle-product-tab-js' => [
+				'src'     => MooWoodle()->plugin_url . 'assets/js/' . self::get_script_name('product-tab') . '.js',
+				'deps'    => [ 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ],
+				'version' => $version,
+                'text_domain' => 'moowoodle'
+            ],
 		) );
 		foreach ( $register_scripts as $name => $props ) {
 			self::register_script( $name, $props['src'], $props['deps'], $props['version'], $props['text_domain'] );
@@ -141,11 +142,11 @@ class FrontendScripts {
 				'version' => $version,
             ],
 			
-			// 'moowoodle-product-tab-css'   => [
-			// 	'src'     => MooWoodle()->plugin_url . 'assets/css/product-tab.css',
-			// 	'deps'    => array(),
-			// 	'version' => $version,
-            // ],	
+			'moowoodle-product-tab-css'   => [
+				'src'     => MooWoodle()->plugin_url . 'assets/styles/' . self::get_script_name('product-tab') . '.css',
+				'deps'    => array(),
+				'version' => $version,
+            ],	
         ] );
 
 		foreach ( $register_styles as $name => $props ) {
@@ -199,15 +200,15 @@ class FrontendScripts {
 		'<span class="mw-pro-tag" style="font-size: 0.5rem; background: #e35047; padding: 0.125rem 0.5rem; color: #F9F8FB; font-weight: 700; line-height: 1.1; position: absolute; border-radius: 2rem 0; right: -0.75rem; top: 50%; transform: translateY(-50%)">Pro</span>' : '';
 
         $localize_scripts = apply_filters('moowoodle_localize_scripts', array(
-			// 'moowoodle-my-courses-script' => [
-			// 	'object_name' => 'appLocalizer',
-            //     'data' =>             [
-            //         'apiUrl'          => untrailingslashit(get_rest_url()),
-            //         'restUrl'         => 'moowoodle/v1',
-            //         'nonce'           => wp_create_nonce('wp_rest'),
-            //         'moodle_site_url' => MooWoodle()->setting->get_setting('moodle_url'),
-            //     ]
-            // ],
+			'moowoodle-my-courses-script' => [
+				'object_name' => 'courseMyAcc',
+                'data' =>             [
+                    'apiUrl'          => untrailingslashit(get_rest_url()),
+                    'restUrl'         => 'moowoodle/v1',
+                    'nonce'           => wp_create_nonce('wp_rest'),
+                    'moodle_site_url' => MooWoodle()->setting->get_setting('moodle_url'),
+                ]
+            ],
 			'moowoodle-admin-script' => [
 				'object_name' => 'appLocalizer',
                 'data' =>             				[
@@ -236,14 +237,14 @@ class FrontendScripts {
 					]
 				],
             ],
-			// 'moowoodle-product-tab-js' => [
-			// 	'object_name' => 'moowoodle',
-            //     'data' =>           [
-			// 		'ajaxurl'     => admin_url('admin-ajax.php'),
-			// 		'select_text' => __('Select an item...', 'moowoodle'),
-			// 		'khali_dabba' => MooWoodle()->util->is_khali_dabba(),
-			// 	],
-            // ],
+			'moowoodle-product-tab-js' => [
+				'object_name' => 'moowoodle',
+                'data' =>           [
+					'ajaxurl'     => admin_url('admin-ajax.php'),
+					'select_text' => __('Select an item...', 'moowoodle'),
+					'khali_dabba' => MooWoodle()->util->is_khali_dabba(),
+				],
+            ],
 		));
        
         if ( isset( $localize_scripts[ $handle ] ) ) {

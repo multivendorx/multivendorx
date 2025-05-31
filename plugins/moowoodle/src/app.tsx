@@ -6,6 +6,8 @@ import Synchronization from "./components/Synchronization/Synchronization";
 import Courses from "./components/Courses/Courses";
 import Cohort from "./components/Cohort/Cohort";
 import Enrollment from "./components/Enrollment/Enrollment";
+// import axios from "axios";
+// console.log('Axios version:', axios);
 
 // for react tour
 // import { TourProvider } from '@reactour/tour';

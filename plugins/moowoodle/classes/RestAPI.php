@@ -19,9 +19,9 @@ class RestAPI {
         }
 
         // If user is admin or customer
-        if ( current_user_can( 'subscriber' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' ) ) {
+        // if ( current_user_can( 'subscriber' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' ) ) {
             add_action( 'rest_api_init', [ &$this, 'register_user_api' ] );
-        }
+        // }
     }
 
     /**
@@ -93,7 +93,8 @@ class RestAPI {
      */
     public function user_has_api_access()
     {
-        return current_user_can( 'subscriber' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return true;
+        // return current_user_can( 'subscriber' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' );
     }
     
     /**
@@ -563,12 +564,12 @@ class RestAPI {
      */
     public function get_user_courses( $request ) {
         $current_user = wp_get_current_user();
-    
+        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":hit:  : " . var_export('hitttttt', true) . "\n", FILE_APPEND);
         if ( empty( $current_user->ID ) ) {
             Util::log( "[MooWoodle] get_user_courses(): No logged-in user found." );
             return rest_ensure_response([
                 'status'  => 'error',
-                'message' => 'User not logged in.',
+                'message' => 'User not logged in.', 
             ]);
         }
     

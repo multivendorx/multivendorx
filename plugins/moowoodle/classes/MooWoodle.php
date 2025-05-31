@@ -140,7 +140,7 @@ class MooWoodle {
         $this->container[ 'block' ] 		   = new Block();
         $this->container[ 'frontendscripts' ]  = new FrontendScripts();
 
-        // new EndPoint();
+        new EndPoint();
 
         $this->initialize_moowoodle_log_file();
     }

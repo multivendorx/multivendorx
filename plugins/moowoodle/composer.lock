@@ -540,16 +540,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.4.0",
+            "version": "v5.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "447a020a1f875a434d62f2a401f53b82a396e494"
+                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/447a020a1f875a434d62f2a401f53b82a396e494",
-                "reference": "447a020a1f875a434d62f2a401f53b82a396e494",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/ae59794362fe85e051a58ad36b289443f57be7a9",
+                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9",
                 "shasum": ""
             },
             "require": {
@@ -592,9 +592,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.4.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.5.0"
             },
-            "time": "2024-12-30T11:07:19+00:00"
+            "time": "2025-05-31T08:24:38+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -1014,12 +1014,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHPCSUtils.git",
-                "reference": "76fb7328eb76df97d535cb7c52f6169b78c9f1a6"
+                "reference": "81beac8d5b500862e0e22cbea173ca512d52d536"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSUtils/zipball/76fb7328eb76df97d535cb7c52f6169b78c9f1a6",
-                "reference": "76fb7328eb76df97d535cb7c52f6169b78c9f1a6",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSUtils/zipball/81beac8d5b500862e0e22cbea173ca512d52d536",
+                "reference": "81beac8d5b500862e0e22cbea173ca512d52d536",
                 "shasum": ""
             },
             "require": {
@@ -1099,7 +1099,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-05-19T13:48:13+00:00"
+            "time": "2025-05-30T17:25:35+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -2549,12 +2549,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "c9858b64d6daf45c14dea7c69944226baa27b118"
+                "reference": "3c4f4be076aa8e6c3ae27b527e054e81d2a2e652"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/c9858b64d6daf45c14dea7c69944226baa27b118",
-                "reference": "c9858b64d6daf45c14dea7c69944226baa27b118",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/3c4f4be076aa8e6c3ae27b527e054e81d2a2e652",
+                "reference": "3c4f4be076aa8e6c3ae27b527e054e81d2a2e652",
                 "shasum": ""
             },
             "require": {
@@ -2626,7 +2626,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-05-28T22:53:06+00:00"
+            "time": "2025-05-29T20:03:19+00:00"
         },
         {
             "name": "symfony/console",

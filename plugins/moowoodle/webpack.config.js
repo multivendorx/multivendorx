@@ -3,12 +3,55 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const DependencyExtractionWebpackPlugin = require("@wordpress/dependency-extraction-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const fs = require('fs');
+
+// Dynamically get block folders inside src/block/
+// 1. Static copy pattern for fonts
+const staticPatterns = [
+  {
+    from: path.resolve(__dirname, 'node_modules/zyra/build/assets/fonts'),
+    to: path.resolve(__dirname, 'dist/fonts'),
+  },
+];
+
+// 2. Dynamic block.json + render.php copy patterns
+const blockBasePath = path.resolve(__dirname, 'src/block');
+const blockDirs = fs
+  .readdirSync(blockBasePath, { withFileTypes: true })
+  .filter((dirent) => dirent.isDirectory())
+  .map((dirent) => dirent.name);
+
+const dynamicPatterns = blockDirs.flatMap((blockName) => {
+  const blockPath = path.join(blockBasePath, blockName);
+  const outPath = path.resolve(__dirname, 'release/assets/js/block', blockName);
+
+  const patterns = [];
+
+  if (fs.existsSync(path.join(blockPath, 'block.json'))) {
+    patterns.push({
+      from: path.join(blockPath, 'block.json'),
+      to: path.join(outPath, 'block.json'),
+    });
+  }
+
+  if (fs.existsSync(path.join(blockPath, 'render.php'))) {
+    patterns.push({
+      from: path.join(blockPath, 'render.php'),
+      to: path.join(outPath, 'render.php'),
+    });
+  }
+
+  return patterns;
+});
+
 
 module.exports = {
     ...defaultConfig,
 
     entry: {
         index: "./src/index.tsx",
+        "block/my-courses/index":
+            "./src/block/my-courses/index.js",
     },
 
     output: {
@@ -121,15 +164,7 @@ module.exports = {
             injectPolyfill: true,
         }),
         new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.resolve(
-                        __dirname,
-                        "node_modules/zyra/build/assets/fonts"
-                    ),
-                    to: path.resolve(__dirname, "dist/fonts"),
-                },
-            ],
+            patterns: [...staticPatterns, ...dynamicPatterns],
         }),
     ],
 

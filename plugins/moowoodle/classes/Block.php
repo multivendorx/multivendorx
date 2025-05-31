@@ -1,6 +1,7 @@
 <?php
 
 namespace MooWoodle;
+use MooWoodle\FrontendScripts;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,16 +25,15 @@ class Block {
     }
     
     public function initialize_blocks() {
-
-
+        
         $blocks[] = [
-            'name' => 'moowoodle/my-courses',
+            'name' => 'my-courses',
             'textdomain' => 'moowoodle',
-            'block_path' => MooWoodle()->plugin_url  . 'build/blocks/',
+            'block_path' => MooWoodle()->plugin_url . FrontendScripts::get_build_path_name() . 'block/',
         ];
         //this path is set for load the translation   
         MooWoodle()->block_paths  += [
-            'moowoodle/my-courses' => 'build/blocks/my-courses/index.js',
+            'my-courses' =>  FrontendScripts::get_build_path_name() . 'block/my-courses/index.js',
         ];
 
 
