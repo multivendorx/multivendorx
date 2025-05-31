@@ -14,7 +14,6 @@ import ShortCodeTable from "./ShortCodeTable";
 import SyncNow from "./SyncNow";
 import SyncMap from "./SyncMap";
 import ToggleSetting from "./ToggleSetting";
-import ConnectButton from "./ConnectButton";
 import { Dialog } from "@mui/material";
 import { getApiLink, sendApiResponse } from "./apiService";
 import BasicInput from "./BasicInput";
@@ -1557,6 +1556,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                 )
                             }
                             interval={Number(inputField.interval)}
+                            tasks={inputField.tasks ?? []}
                             parameter={String(inputField.parameter)} // api for each status of synchronization
                         />
                     );
@@ -1617,16 +1617,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                     );
                     break;
 
-                // Test connection button
-                case "testconnection":
-                    input = (
-                        <ConnectButton
-                            appLocalizer={appLocalizer}
-                            apiLink={String(inputField.apiLink)} // apilink
-                            tasks={inputField.tasks ?? []}
-                        />
-                    ); // all tasks for test connection
-                    break;
                 case "log":
                     input = (
                         <Log
