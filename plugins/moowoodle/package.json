@@ -37,7 +37,7 @@
         "readme": "wp-readme-to-md",
         "composer": "composer dump-autoload && composer update",
         "preinstall": "npx only-allow pnpm",
-        "postinstall": "rimraf -g vendor release .wireit languages",
+        "postinstall": "rimraf -g vendor release .wireit languages && composer install",
         "clean": "node bin/clean-files.mjs",
         "minify": "node bin/minify.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
