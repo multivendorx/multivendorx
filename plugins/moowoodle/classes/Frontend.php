@@ -4,16 +4,16 @@ namespace MooWoodle;
 class Frontend {
 	public function __construct() {
 		// Reset cart quantities after update
-		add_action( 'woocommerce_cart_updated', [ $this, 'update_cart_quantity' ] );
+		add_action( 'woocommerce_cart_updated', array( $this, 'update_cart_quantity' ) );
 		// Add messages when cart/checkout is viewed
-		add_action( 'template_redirect', [ $this, 'show_cart_limit_notice' ] );
+		add_action( 'template_redirect', array( $this, 'show_cart_limit_notice' ) );
 	}
 
 	/**
 	 * Enforce quantity restriction based on plugin version and settings
 	 */
 	public function update_cart_quantity() {
-		$group_purchase_enabled = MooWoodle()->setting->get_setting( 'group_purchase_enable', [] );
+		$group_purchase_enabled = MooWoodle()->setting->get_setting( 'group_purchase_enable', array() );
 
 		if ( in_array( 'group_purchase_enable', $group_purchase_enabled ) && MooWoodle()->util->is_khali_dabba() ) {
 			return;
@@ -34,7 +34,7 @@ class Frontend {
 			return;
 		}
 
-		$group_purchase_enabled = MooWoodle()->setting->get_setting( 'group_purchase_enable', [] );
+		$group_purchase_enabled = MooWoodle()->setting->get_setting( 'group_purchase_enable', array() );
 
 		if ( ! MooWoodle()->util->is_khali_dabba() ) {
 			wc_add_notice(

@@ -3,55 +3,57 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const DependencyExtractionWebpackPlugin = require("@wordpress/dependency-extraction-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const fs = require('fs');
+const fs = require("fs");
 
 // Dynamically get block folders inside src/block/
 // 1. Static copy pattern for fonts
 const staticPatterns = [
-  {
-    from: path.resolve(__dirname, 'node_modules/zyra/build/assets/fonts'),
-    to: path.resolve(__dirname, 'dist/fonts'),
-  },
+    {
+        from: path.resolve(__dirname, "node_modules/zyra/build/assets/fonts"),
+        to: path.resolve(__dirname, "dist/fonts"),
+    },
 ];
 
 // 2. Dynamic block.json + render.php copy patterns
-const blockBasePath = path.resolve(__dirname, 'src/block');
+const blockBasePath = path.resolve(__dirname, "src/block");
 const blockDirs = fs
-  .readdirSync(blockBasePath, { withFileTypes: true })
-  .filter((dirent) => dirent.isDirectory())
-  .map((dirent) => dirent.name);
+    .readdirSync(blockBasePath, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
 
 const dynamicPatterns = blockDirs.flatMap((blockName) => {
-  const blockPath = path.join(blockBasePath, blockName);
-  const outPath = path.resolve(__dirname, 'release/assets/js/block', blockName);
+    const blockPath = path.join(blockBasePath, blockName);
+    const outPath = path.resolve(
+        __dirname,
+        "release/assets/js/block",
+        blockName
+    );
 
-  const patterns = [];
+    const patterns = [];
 
-  if (fs.existsSync(path.join(blockPath, 'block.json'))) {
-    patterns.push({
-      from: path.join(blockPath, 'block.json'),
-      to: path.join(outPath, 'block.json'),
-    });
-  }
+    if (fs.existsSync(path.join(blockPath, "block.json"))) {
+        patterns.push({
+            from: path.join(blockPath, "block.json"),
+            to: path.join(outPath, "block.json"),
+        });
+    }
 
-  if (fs.existsSync(path.join(blockPath, 'render.php'))) {
-    patterns.push({
-      from: path.join(blockPath, 'render.php'),
-      to: path.join(outPath, 'render.php'),
-    });
-  }
+    if (fs.existsSync(path.join(blockPath, "render.php"))) {
+        patterns.push({
+            from: path.join(blockPath, "render.php"),
+            to: path.join(outPath, "render.php"),
+        });
+    }
 
-  return patterns;
+    return patterns;
 });
-
 
 module.exports = {
     ...defaultConfig,
 
     entry: {
         index: "./src/index.tsx",
-        "block/my-courses/index":
-            "./src/block/my-courses/index.js",
+        "block/my-courses/index": "./src/block/my-courses/index.js",
     },
 
     output: {
@@ -77,7 +79,10 @@ module.exports = {
                         );
                         if (!match) return "externals/vendor-unknown";
                         const raw = match[2] || match[3];
-                        return `externals/vendor-${raw.replace(/[\\/@]/g, "-")}`;
+                        return `externals/vendor-${raw.replace(
+                            /[\\/@]/g,
+                            "-"
+                        )}`;
                     },
                     chunks: "all",
                     priority: -10,
@@ -105,12 +110,12 @@ module.exports = {
                 test: /\.(t|j)sx?$/,
                 exclude: /[\\/]node_modules[\\/]/,
                 use: {
-                loader: 'babel-loader',
-                options: {
-                    presets: ['@wordpress/babel-preset-default'],
-                    cacheDirectory: path.resolve(__dirname, '.cache/babel'),
-                    cacheCompression: false,
-                },
+                    loader: "babel-loader",
+                    options: {
+                        presets: ["@wordpress/babel-preset-default"],
+                        cacheDirectory: path.resolve(__dirname, ".cache/babel"),
+                        cacheCompression: false,
+                    },
                 },
             },
             {

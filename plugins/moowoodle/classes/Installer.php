@@ -1,6 +1,7 @@
 <?php
 namespace MooWoodle;
-defined('ABSPATH') || exit;
+
+defined( 'ABSPATH' ) || exit;
 /**
  * plugin Install
  *
@@ -11,11 +12,11 @@ defined('ABSPATH') || exit;
 class Installer {
     /**
      * Construct installation.
+     *
      * @return void
      */
     public function __construct() {
         if ( get_option( 'moowoodle_version' ) != MOOWOODLE_PLUGIN_VERSION ) {
-
             $this->set_default_settings();
 
             $this->create_databases();
@@ -23,13 +24,14 @@ class Installer {
             $this->run_default_migration();
 
             update_option( 'moowoodle_version', MOOWOODLE_PLUGIN_VERSION );
-            
+
             do_action( 'moowoodle_updated' );
         }
     }
 
     /**
      * Database creation functions
+     *
      * @return void
      */
     public static function create_databases() {
@@ -37,12 +39,12 @@ class Installer {
 
         $collate = '';
 
-        if ($wpdb->has_cap('collation')) {
+        if ( $wpdb->has_cap( 'collation' ) ) {
             $collate = $wpdb->get_charset_collate();
         }
 
         $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES[ 'enrollment' ] . "` (
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES['enrollment'] . "` (
                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `user_id` bigint(20) NOT NULL DEFAULT 0,
                 `user_email` varchar(100) NOT NULL,
@@ -59,16 +61,16 @@ class Installer {
                 PRIMARY KEY (`id`)
             ) $collate;"
         );
-               
+
         $wpdb->query(
-             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES[ 'category' ] . "` (
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES['category'] . "` (
                 `moodle_category_id` bigint(20) NOT NULL,
                 `name` varchar(255) NOT NULL,
                 `parent_id` bigint(20) NOT NULL DEFAULT 0,
                 PRIMARY KEY (`moodle_category_id`)
             ) $collate;"
         );
-        
+
         $wpdb->query(
             "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES['course'] . "` (
                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -84,11 +86,11 @@ class Installer {
                 UNIQUE KEY `moodle_course_id` (`moodle_course_id`)
             ) $collate;"
         );
-        
     }
 
     /**
      * Migrate database
+     *
      * @return void
      */
     public static function run_default_migration() {
@@ -141,11 +143,11 @@ class Installer {
         }
 
         foreach ( $terms as $term ) {
-            $args = [
+            $args = array(
                 'moodle_category_id' => (int) $term['moodle_category_id'],
                 'name'               => sanitize_text_field( $term['name'] ),
                 'parent_id'          => (int) $term['parent_id'],
-            ];
+            );
 
             \MooWoodle\Core\Category::save_course_category( $args );
         }
@@ -164,12 +166,12 @@ class Installer {
      */
     public static function migrate_courses() {
         $courses = get_posts(
-            [
+            array(
                 'post_type'      => 'course',
                 'post_status'    => 'any',
                 'posts_per_page' => -1,
                 'meta_key'       => 'moodle_course_id',
-            ]
+            )
         );
 
         if ( empty( $courses ) ) {
@@ -183,15 +185,15 @@ class Installer {
                 continue;
             }
 
-            $course_data = [
-                'moodle_course_id' => $all_meta['moodle_course_id'][0]      ?? 0,
-                'shortname'        => $all_meta['_course_short_name'][0]    ?? '',
-                'category_id'      => $all_meta['_category_id'][0]          ?? 0,
+            $course_data = array(
+                'moodle_course_id' => $all_meta['moodle_course_id'][0] ?? 0,
+                'shortname'        => $all_meta['_course_short_name'][0] ?? '',
+                'category_id'      => $all_meta['_category_id'][0] ?? 0,
                 'fullname'         => sanitize_text_field( $course->post_title ),
-                'product_id'       => $all_meta['linked_product_id'][0]     ?? 0,
-                'startdate'        => $all_meta['_course_startdate'][0]     ?? 0,
-                'enddate'          => $all_meta['_course_enddate'][0]       ?? 0,
-            ];
+                'product_id'       => $all_meta['linked_product_id'][0] ?? 0,
+                'startdate'        => $all_meta['_course_startdate'][0] ?? 0,
+                'enddate'          => $all_meta['_course_enddate'][0] ?? 0,
+            );
 
             $new_course_id = \MooWoodle\Core\Course::save_course( $course_data );
 
@@ -211,17 +213,17 @@ class Installer {
     public static function migrate_enrollments() {
         // Get all enrollment data.
         $order_ids = wc_get_orders(
-            [
+            array(
                 'status'     => 'completed',
-                'meta_query' => [
-                    [
+                'meta_query' => array(
+                    array(
                         'key'     => 'moodle_user_enrolled',
                         'value'   => 1,
                         'compare' => '=',
-                    ],
-                ],
-                'return' => 'ids',
-            ]
+                    ),
+                ),
+                'return'     => 'ids',
+            )
         );
 
         // Migrate all orders.
@@ -242,7 +244,7 @@ class Installer {
      */
     public static function migrate_enrollment( $order ) {
         $unenrolled_courses = $order->get_meta( '_course_unenroled', true );
-        $unenrolled_courses = $unenrolled_courses ? explode( ',', $unenrolled_courses ) : [];
+        $unenrolled_courses = $unenrolled_courses ? explode( ',', $unenrolled_courses ) : array();
 
         $customer = $order->get_user();
         if ( ! $customer ) {
@@ -260,11 +262,11 @@ class Installer {
                 continue;
             }
 
-            $moodle_course_id  = $product->get_meta( 'moodle_course_id', true );
-            $linked_course_id  = $product->get_meta( 'linked_course_id', true );
+            $moodle_course_id = $product->get_meta( 'moodle_course_id', true );
+            $linked_course_id = $product->get_meta( 'linked_course_id', true );
 
             $course = \MooWoodle\Core\Course::get_course(
-                [ 'moodle_course_id' => $moodle_course_id ]
+                array( 'moodle_course_id' => $moodle_course_id )
             );
 
             $course = reset( $course );
@@ -272,7 +274,7 @@ class Installer {
                 continue;
             }
 
-            $enrollment_data = [
+            $enrollment_data = array(
                 'user_id'    => $customer->ID,
                 'user_email' => $customer->user_email,
                 'course_id'  => (int) $course['id'],
@@ -280,60 +282,67 @@ class Installer {
                 'item_id'    => $item->get_id(),
                 'status'     => in_array( $linked_course_id, $unenrolled_courses, true ) ? 'unenrolled' : 'enrolled',
                 'date'       => $enrollment_date,
-            ];
+            );
 
             \MooWoodle\Enrollment::save_enrollment( $enrollment_data );        }
     }
 
     /**
      * Set default moowoodle admin settings.
+     *
      * @return void
      */
     private function set_default_settings() {
-        $general_settings = [
+        $general_settings = array(
             'moodle_url'          => '',
             'moodle_access_token' => '',
-        ];
+        );
         // Default value for sso setting
-        $sso_settings = [
-            'moowoodle_sso_enable'     => [],
+        $sso_settings = array(
+            'moowoodle_sso_enable'     => array(),
             'moowoodle_sso_secret_key' => '',
-        ];
+        );
         // Default value for display setting
-        $display_settings = [
-            'start_end_date'                    => ['start_end_date'],
+        $display_settings = array(
+            'start_end_date'                    => array( 'start_end_date' ),
             'my_courses_priority'               => 0,
-            'my_groups_priority'               => 1,
-            'moowoodle_create_user_custom_mail' => [],
-        ];
+            'my_groups_priority'                => 1,
+            'moowoodle_create_user_custom_mail' => array(),
+        );
         // Default value for log setting
-        $tool_settings = [
-            'moowoodle_adv_log' => [],
+        $tool_settings = array(
+            'moowoodle_adv_log' => array(),
             'moodle_timeout'    => 5,
-            'schedule_interval' => 1
-        ];
+            'schedule_interval' => 1,
+        );
         // Default value sync course setting
-        $course_settings = [
-            'sync-course-options'      => [ 'sync_courses_category', 'sync_courses_sku' ],
-            'product_sync_option'      => [ 'create', 'update' ],
-        ];
+        $course_settings = array(
+            'sync-course-options' => array( 'sync_courses_category', 'sync_courses_sku' ),
+            'product_sync_option' => array( 'create', 'update' ),
+        );
         // Default value for sync user setting
-        $user_settings = [
-            'wordpress_user_role'  => ['customer'],
-            'moodle_user_role'     => ['5'],
-        ];
+        $user_settings = array(
+            'wordpress_user_role' => array( 'customer' ),
+            'moodle_user_role'    => array( '5' ),
+        );
         // Update default settings
-        update_option( 'moowoodle_general_settings', array_merge(
-            $general_settings,
-            get_option( 'moowoodle_general_settings', [] )
-        ));
-        update_option( 'moowoodle_sso_settings', array_merge(
-            $sso_settings,
-            get_option( 'moowoodle_sso_settings', [] )
-        ));
+        update_option(
+            'moowoodle_general_settings',
+            array_merge(
+                $general_settings,
+                get_option( 'moowoodle_general_settings', array() )
+            )
+        );
+        update_option(
+            'moowoodle_sso_settings',
+            array_merge(
+                $sso_settings,
+                get_option( 'moowoodle_sso_settings', array() )
+            )
+        );
         update_option( 'moowoodle_display_settings', $display_settings );
         update_option( 'moowoodle_tool_settings', $tool_settings );
         update_option( 'moowoodle_synchronize_course_settings', $course_settings );
-        update_option( 'moowoodle_synchronize_user_settings',$user_settings );
+        update_option( 'moowoodle_synchronize_user_settings', $user_settings );
     }
 }

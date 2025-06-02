@@ -1,8 +1,9 @@
-import { createRoot } from '@wordpress/element';
-import Courses from './course';
-import axios from "axios";
-// console.log("Axios test:", axios);
+import { render } from "@wordpress/element";
+import MyCourse from "./MyCourse";
 
-const node = document.getElementById( 'moowoodle-my-course' );
-
-createRoot( node ).render( <Courses /> );
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("moowoodle-my-course");
+    if (container) {
+        render(<MyCourse />, container);
+    }
+});

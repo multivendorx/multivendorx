@@ -4,27 +4,29 @@ namespace MooWoodle\Emails;
 
 class Emails {
 	public function __construct() {
-		add_action( 'moowoodle_after_enrol_moodle_user', [ &$this, 'send_enrollment_confirmation' ], 10, 2 );
-		add_filter( 'woocommerce_email_classes', [ &$this, 'moowoodle_emails' ] );
+		add_action( 'moowoodle_after_enrol_moodle_user', array( &$this, 'send_enrollment_confirmation' ), 10, 2 );
+		add_filter( 'woocommerce_email_classes', array( &$this, 'moowoodle_emails' ) );
 	}
 
 	/**
 	 * MooWoodle emails
+     *
 	 * @param array $emails
 	 * @return array
 	 */
 	public function moowoodle_emails( $emails ) {
-		$emails[ 'EnrollmentEmail' ] = new EnrollmentEmail();
+		$emails['EnrollmentEmail'] = new EnrollmentEmail();
 		return $emails;
 	}
 
 	/**
 	 * Send email
+     *
 	 * @param string $email_key (default: null)
-	 * @param array $email_data (default: array)
+	 * @param array  $email_data (default: array)
 	 * @return bool | string
 	 */
-	public function send_email( $email_key = '', $user_email = '', $email_data = [] ) {
+	public function send_email( $email_key = '', $user_email = '', $email_data = array() ) {
 		$emails = WC()->mailer()->get_emails();
 
 		if ( empty( $email_key ) || ! array_key_exists( $email_key, $emails ) ) {
@@ -49,7 +51,7 @@ class Emails {
 			return;
 		}
 
-		$email_content = [];
+		$email_content = array();
 
 		// Optional fields
 		if ( ! empty( $enrollments['teacher_email'] ) ) {
@@ -68,22 +70,22 @@ class Emails {
 
 		// Course data
 		if ( ! empty( $enrollments['course'] ) && is_array( $enrollments['course'] ) ) {
-
 			$enrolled_course_ids = array_map( 'intval', $enrollments['course'] );
-			$enrolled_courses    = MooWoodle()->course->get_course( [ 'ids' => $enrolled_course_ids ] );
+			$enrolled_courses    = MooWoodle()->course->get_course( array( 'ids' => $enrolled_course_ids ) );
 
 			if ( ! empty( $enrolled_courses ) && is_array( $enrolled_courses ) ) {
-				$email_content['course_details'] = array_map( function( $course ) {
-					return [
-						'id'   => intval( $course['id'] ?? 0 ),
-						'name' => $course['fullname'] ?? '',
-					];
-				}, $enrolled_courses );
+				$email_content['course_details'] = array_map(
+                    function ( $course ) {
+                        return array(
+							'id'   => intval( $course['id'] ?? 0 ),
+							'name' => $course['fullname'] ?? '',
+                        );
+                    },
+                    $enrolled_courses
+                );
 			}
 		}
 
 		$this->send_email( 'EnrollmentEmail', $user->user_email, $email_content );
 	}
-
-
 }

@@ -15,7 +15,7 @@
  * Domain Path: /languages/
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 // autoload classes.
 require_once __DIR__ . '/vendor/autoload.php';

@@ -1,6 +1,6 @@
 @import '../config';
 div.cohort-img {
-  background-image: url("../../assets/images/Enrollment-pc.png") !important; // force to set image for ungrade with pro for desktop-screen
+  background-image: url(../../assets/images/Enrollment-pc.png) !important; // force to set image for ungrade with pro for desktop-screen
   background-repeat: no-repeat;
   background-position: top left;
   background-size: contain;
@@ -14,7 +14,7 @@ div.cohort-img {
     gap: 0.75rem;
 
     button {
-      box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.025);
+      box-shadow: 0 0 1rem rgba($color: #000, $alpha: 0.025);
 
       &:first-child {
         background-color: $color-active;
@@ -35,7 +35,7 @@ div.cohort-img {
 
   .rdt_Table {
     a {
-      color: rgba($color: #000000, $alpha: 0.87);
+      color: rgba($color: #000, $alpha: 0.87);
     }
 
     .rdt_TableHead {

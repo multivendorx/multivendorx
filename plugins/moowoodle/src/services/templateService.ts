@@ -3,7 +3,11 @@
 // Predefined contexts
 const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
     settings: require.context("../components/Settings", true, /\.ts$/),
-    synchronizations: require.context("../components/Synchronization", true, /\.ts$/),
+    synchronizations: require.context(
+        "../components/Synchronization",
+        true,
+        /\.ts$/
+    ),
 };
 
 type SettingNode = {
@@ -47,7 +51,9 @@ const importAll = (
 };
 
 // Accept 'settings' or 'synchronizations' (defaults to 'settings')
-const getTemplateData = (type: "settings" | "synchronizations" = "settings"): SettingNode[] => {
+const getTemplateData = (
+    type: "settings" | "synchronizations" = "settings"
+): SettingNode[] => {
     const ctx = contexts[type];
     return importAll(ctx);
 };

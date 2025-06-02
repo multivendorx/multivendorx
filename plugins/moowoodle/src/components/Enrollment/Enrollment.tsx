@@ -1,14 +1,13 @@
 import ProPopup from "../Popup/Popup";
 import { useState } from "react";
-import './Enrollment.scss';
+import "./Enrollment.scss";
 
 import { Dialog } from "@mui/material";
 import { __ } from "@wordpress/i18n";
 
-
 const Enrollment: React.FC = () => {
     const [openDialog, setOpenDialog] = useState(false);
-   
+
     return (
         <>
             {!appLocalizer.khali_dabba ? (
@@ -32,13 +31,11 @@ const Enrollment: React.FC = () => {
                         }}
                     ></div>
                 </div>
-                    
             ) : (
                 <div id="enrollment-list-table"></div>
             )}
         </>
     );
-
-}
+};
 
 export default Enrollment;

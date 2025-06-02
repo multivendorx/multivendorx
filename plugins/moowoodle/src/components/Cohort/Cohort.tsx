@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { __ } from "@wordpress/i18n";
 import ProPopup from "../Popup/Popup";
 import { Dialog } from "@mui/material";
-import './cohorts.scss';
+import "./cohorts.scss";
 
 const Cohort: React.FC = () => {
     const [openDialog, setOpenDialog] = useState(false);
@@ -30,7 +30,6 @@ const Cohort: React.FC = () => {
                         }}
                     ></div>
                 </div>
-                    
             ) : (
                 <div id="cohort-list-table"></div>
             )}

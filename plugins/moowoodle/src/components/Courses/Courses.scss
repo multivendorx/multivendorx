@@ -8,7 +8,7 @@
     gap: 0.75rem;
 
     button {
-      box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.025);
+      box-shadow: 0 0 1rem rgba($color: #000, $alpha: 0.025);
 
       &:first-child {
         background-color: $color-active;
@@ -29,7 +29,7 @@
 
   .rdt_Table {
     a {
-      color: rgba($color: #000000, $alpha: 0.87);
+      color: rgba($color: #000, $alpha: 0.87);
     }
 
     .rdt_TableHead {

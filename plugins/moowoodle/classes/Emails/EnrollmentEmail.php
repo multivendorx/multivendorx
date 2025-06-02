@@ -40,11 +40,10 @@ class EnrollmentEmail extends \WC_Email {
 			delete_user_meta( $user->ID, 'moowoodle_wordpress_new_user_created' );
 			delete_user_meta( $user->ID, 'moowoodle_moodle_new_user_created' );
 		}
-		
 	}
 
 	public function get_default_subject() {
-		$site_name = get_bloginfo('name');
+		$site_name = get_bloginfo( 'name' );
 		return apply_filters(
 			'moowoodle_enrollment_email_subject',
 			sprintf( __( 'Welcome to %s! Your Account and Course Access Details', 'moowoodle' ), $site_name )
@@ -52,7 +51,7 @@ class EnrollmentEmail extends \WC_Email {
 	}
 
 	public function get_default_heading() {
-		$site_name = get_bloginfo('name');
+		$site_name = get_bloginfo( 'name' );
 		return apply_filters(
 			'moowoodle_enrollment_email_heading',
 			sprintf( __( 'Welcome to %s!', 'moowoodle' ), $site_name )
@@ -61,28 +60,32 @@ class EnrollmentEmail extends \WC_Email {
 
 	function get_content_html() {
 		ob_start();
-		MooWoodle()->util->get_template($this->template_html,
-		[
-			'enrollments'   => $this->email_data,
-			'user_email'    => $this->recipient,
-			'email_heading' => $this->get_heading(),
-			'sent_to_admin' => false,
-			'plain_text'    => false,
-		]);
+		MooWoodle()->util->get_template(
+            $this->template_html,
+            array(
+				'enrollments'   => $this->email_data,
+				'user_email'    => $this->recipient,
+				'email_heading' => $this->get_heading(),
+				'sent_to_admin' => false,
+				'plain_text'    => false,
+            )
+        );
 
 		return ob_get_clean();
 	}
 
 	function get_content_plain() {
 		ob_start();
-		MooWoodle()->util->get_template($this->template_plain,
-		[
-			'enrollments'   => $this->email_data,
-			'user_email'    => $this->recipient,
-			'email_heading' => $this->get_heading(),
-			'sent_to_admin' => false,
-			'plain_text'    => true,
-		]);
+		MooWoodle()->util->get_template(
+            $this->template_plain,
+            array(
+				'enrollments'   => $this->email_data,
+				'user_email'    => $this->recipient,
+				'email_heading' => $this->get_heading(),
+				'sent_to_admin' => false,
+				'plain_text'    => true,
+            )
+        );
 		return ob_get_clean();
 	}
 }

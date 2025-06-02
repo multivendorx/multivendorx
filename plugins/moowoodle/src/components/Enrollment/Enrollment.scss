@@ -1,7 +1,7 @@
-@import '/src/components/config.scss';
+@import '/src/components/config';
 
 div.enrollment-img {
-    background-image: url("../../assets/images/Enrollment-pc.png") !important; // force to set image for ungrade with pro for desktop-screen
+    background-image: url(../../assets/images/Enrollment-pc.png) !important; // force to set image for ungrade with pro for desktop-screen
     background-repeat: no-repeat;
     background-position: top left;
     background-size: contain;
@@ -10,7 +10,7 @@ div.enrollment-img {
   
   @media only screen and (max-width: 69.3rem) {
     div.enrollment-img {
-      background-image: url("../../assets/images/Enrollment-tab.png") !important; // force to set image for ungrade with pro for laptop-screen
+      background-image: url(../../assets/images/Enrollment-tab.png) !important; // force to set image for ungrade with pro for laptop-screen
       background-repeat: no-repeat;
       background-position: top;
       background-size: contain;
@@ -19,7 +19,7 @@ div.enrollment-img {
   
   @media only screen and (max-width: 34.65rem) {
     div.enrollment-img {
-      background-image: url("../../assets/images/Enrollment-phone.png") !important; // force to set image for ungrade with pro for mobile-screen
+      background-image: url(../../assets/images/Enrollment-phone.png) !important; // force to set image for ungrade with pro for mobile-screen
       background-repeat: no-repeat;
       background-position: top;
       background-size: contain;

@@ -25,12 +25,13 @@ $user = get_user_by( 'email', $args['user_email'] );
 	<strong>Username:</strong> <?php echo esc_html( $user->user_login ?? '' ); ?><br>
 
 	<?php
-	$wp_pwd = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_user_pwd', true );
-	$moodle_pwd = get_user_meta( $user->ID ?? 0, 'moowoodle_moodle_user_pwd', true );
-	$wp_created = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_new_user_created', true );
+	$wp_pwd         = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_user_pwd', true );
+	$moodle_pwd     = get_user_meta( $user->ID ?? 0, 'moowoodle_moodle_user_pwd', true );
+	$wp_created     = get_user_meta( $user->ID ?? 0, 'moowoodle_wordpress_new_user_created', true );
 	$moodle_created = get_user_meta( $user->ID ?? 0, 'moowoodle_moodle_new_user_created', true );
 
-	if ( $wp_created && $moodle_created && $wp_pwd === $moodle_pwd ) : ?>
+	if ( $wp_created && $moodle_created && $wp_pwd === $moodle_pwd ) :
+		?>
 		<strong>Password:</strong> <?php echo esc_html( $wp_pwd ); ?><br>
 		<em>This password will work for both your WordPress and Moodle accounts. You will be required to change your Moodle password after your first login.</em><br>
 	<?php else : ?>

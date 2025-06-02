@@ -1,11 +1,11 @@
-import { __ } from '@wordpress/i18n';
+import { __ } from "@wordpress/i18n";
 
 export default {
-    id: 'log',
+    id: "log",
     priority: 60,
     name: __("Log", "moowoodle"),
     desc: __("Review all system logs and errors", "moowoodle"),
-    icon: 'adminLib-credit_card',
+    icon: "adminLib-credit_card",
     submitUrl: "settings",
     modal: [
         {
@@ -13,7 +13,7 @@ export default {
             type: "log",
             classes: "log-section",
             apiLink: "logs",
-            fileName: "error.txt"
+            fileName: "error.txt",
         },
-    ]
+    ],
 };

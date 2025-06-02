@@ -89,7 +89,7 @@
         "@emotion/styled": "^11.14.0",
         "@mui/material": "^7.1.0",
         "@tanstack/react-table": "^8.21.3",
-        "@tinymce/tinymce-react": "^6.1.0",
+        "@tinymce/tinymce-react": "^5.1.0",
         "@wordpress/data": "wp-6.6",
         "@wordpress/element": "wp-6.6",
         "@wordpress/i18n": "wp-6.6",

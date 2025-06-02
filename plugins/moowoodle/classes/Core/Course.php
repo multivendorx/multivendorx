@@ -7,38 +7,38 @@ use MooWoodle\Util;
 class Course {
 	public function __construct() {
 		// Add Link Moodle Course in WooCommerce edit product tab.
-		add_filter( 'woocommerce_product_data_tabs', [ &$this, 'add_additional_product_tab' ], 99, 1 );
-		add_action( 'woocommerce_product_data_panels', [ &$this, 'add_additional_product_data_panel' ] );
-		add_action( 'wp_ajax_get_linkable_courses_or_cohorts', [ $this, 'get_linkable_courses' ] );
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
-
+		add_filter( 'woocommerce_product_data_tabs', array( &$this, 'add_additional_product_tab' ), 99, 1 );
+		add_action( 'woocommerce_product_data_panels', array( &$this, 'add_additional_product_data_panel' ) );
+		add_action( 'wp_ajax_get_linkable_courses_or_cohorts', array( $this, 'get_linkable_courses' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 	}
-	
+
 	public function enqueue_admin_assets() {
 
 		\MooWoodle\FrontendScripts::admin_load_scripts();
 		\MooWoodle\FrontendScripts::enqueue_script( 'moowoodle-product-tab-js' );
 		\MooWoodle\FrontendScripts::enqueue_style( 'moowoodle-product-tab-css' );
 		\MooWoodle\FrontendScripts::localize_scripts( 'moowoodle-product-tab-js' );
-
 	}
-	
+
 
 	/**
 	 * Creates custom tab for product types.
+     *
 	 * @param array $product_data_tabs
 	 * @return array
 	 */
 	public function add_additional_product_tab( $product_data_tabs ) {
-		$product_data_tabs[ 'moowoodle' ] = [
-			'label'  => __('Moodle Linked Course or Cohort', 'moowoodle'),
+		$product_data_tabs['moowoodle'] = array(
+			'label'  => __( 'Moodle Linked Course or Cohort', 'moowoodle' ),
 			'target' => 'moowoodle_course_link_tab',
-		];
+		);
 		return $product_data_tabs;
 	}
 
 	/**
 	 * Add meta box panel.
+     *
 	 * @return void
 	 */
 	public function add_additional_product_data_panel() {
@@ -87,7 +87,7 @@ class Course {
 		</div>
 		<?php
 	}
-	
+
 	/**
 	 * Handle AJAX request to fetch courses available for linking to a product.
 	 *
@@ -101,36 +101,42 @@ class Course {
 		}
 
 		// Retrieve and sanitize input
-		$type = sanitize_text_field( filter_input( INPUT_POST, 'type' ) ?: '' );
-		$post_id = absint( filter_input( INPUT_POST, 'post_id' ) ?: 0 );
-		$linkable_courses = [];
+		$type             = sanitize_text_field( filter_input( INPUT_POST, 'type' ) ?: '' );
+		$post_id          = absint( filter_input( INPUT_POST, 'post_id' ) ?: 0 );
+		$linkable_courses = array();
 		$linked_course_id = null;
 
 		if ( $type === 'course' ) {
 			$linked_course_id = get_post_meta( $post_id, 'linked_course_id', true );
 
 			if ( $linked_course_id ) {
-				$courses = MooWoodle()->course->get_course([
-					'id' => $linked_course_id
-				]);
+				$courses = MooWoodle()->course->get_course(
+                    array(
+						'id' => $linked_course_id,
+                    )
+                );
 
 				if ( ! empty( $courses ) ) {
 					$linkable_courses[] = $courses[0];
 				}
 			} else {
-				$linkable_courses = MooWoodle()->course->get_course([
-					'product_id' => 0
-				]);
+				$linkable_courses = MooWoodle()->course->get_course(
+                    array(
+						'product_id' => 0,
+                    )
+                );
 			}
 
-			wp_send_json_success( [
-				'items'       => $linkable_courses,
-				'selected_id' => $linked_course_id,
-			] );
-		}else if( $type === 'cohort' ){
+			wp_send_json_success(
+                array(
+					'items'       => $linkable_courses,
+					'selected_id' => $linked_course_id,
+                )
+            );
+		} elseif ( $type === 'cohort' ) {
 			return apply_filters( 'get_linkable_cohorts', $post_id );
 		}
-		
+
 		wp_send_json_error( __( 'Invalid type', 'moowoodle' ) );
 	}
 
@@ -147,22 +153,22 @@ class Course {
 			if ( $course['format'] === 'site' ) {
 				continue;
 			}
-		
-			$args = [
+
+			$args = array(
 				'moodle_course_id' => (int) $course['id'],
 				'shortname'        => sanitize_text_field( $course['shortname'] ?? '' ),
 				'category_id'      => (int) ( $course['categoryid'] ?? 0 ),
 				'fullname'         => sanitize_text_field( $course['fullname'] ?? '' ),
 				'startdate'        => (int) ( $course['startdate'] ?? 0 ),
 				'enddate'          => (int) ( $course['enddate'] ?? 0 ),
-			];
+			);
 
 			self::save_course( $args );
 
 			\MooWoodle\Util::increment_sync_count( 'course' );
 		}
 	}
-	
+
 	/**
 	 * Insert or update a course record by Moodle course ID.
 	 *
@@ -178,14 +184,14 @@ class Course {
 
 		$table = $wpdb->prefix . Util::TABLES['course'];
 
-		if ( self::get_course( [ 'moodle_course_id' => $args['moodle_course_id'] ] ) ) {
+		if ( self::get_course( array( 'moodle_course_id' => $args['moodle_course_id'] ) ) ) {
 			return $wpdb->update(
 				$table,
 				$args,
-				[ 'moodle_course_id' => $args['moodle_course_id'] ]
+				array( 'moodle_course_id' => $args['moodle_course_id'] )
 			);
 		}
-		
+
 		$args['created'] = current_time( 'mysql' );
 
 		$wpdb->insert( $table, $args );
@@ -200,62 +206,61 @@ class Course {
 	 */
 	public static function get_course( $where ) {
 		global $wpdb;
-	
-		$query_segments = [];
-	
+
+		$query_segments = array();
+
 		if ( isset( $where['id'] ) ) {
-			$query_segments[] = " ( id = " . esc_sql( intval( $where['id'] ) ) . " ) ";
+			$query_segments[] = ' ( id = ' . esc_sql( intval( $where['id'] ) ) . ' ) ';
 		}
-	
+
 		if ( isset( $where['moodle_course_id'] ) ) {
-			$query_segments[] = " ( moodle_course_id = " . esc_sql( intval( $where['moodle_course_id'] ) ) . " ) ";
+			$query_segments[] = ' ( moodle_course_id = ' . esc_sql( intval( $where['moodle_course_id'] ) ) . ' ) ';
 		}
-	
+
 		if ( isset( $where['shortname'] ) ) {
 			$query_segments[] = " ( shortname = '" . esc_sql( $where['shortname'] ) . "' ) ";
 		}
-	
+
 		if ( isset( $where['category_id'] ) ) {
-			$query_segments[] = " ( category_id = " . esc_sql( intval( $where['category_id'] ) ) . " ) ";
+			$query_segments[] = ' ( category_id = ' . esc_sql( intval( $where['category_id'] ) ) . ' ) ';
 		}
-	
+
 		if ( isset( $where['product_id'] ) ) {
-			$query_segments[] = " ( product_id = " . esc_sql( intval( $where['product_id'] ) ) . " ) ";
+			$query_segments[] = ' ( product_id = ' . esc_sql( intval( $where['product_id'] ) ) . ' ) ';
 		}
-	
+
 		if ( isset( $where['fullname'] ) ) {
 			$query_segments[] = " ( fullname = '" . esc_sql( $where['fullname'] ) . "' ) ";
 		}
-	
+
 		if ( isset( $where['startdate'] ) ) {
-			$query_segments[] = " ( startdate = " . esc_sql( intval( $where['startdate'] ) ) . " ) ";
+			$query_segments[] = ' ( startdate = ' . esc_sql( intval( $where['startdate'] ) ) . ' ) ';
 		}
-	
+
 		if ( isset( $where['enddate'] ) ) {
-			$query_segments[] = " ( enddate = " . esc_sql( intval( $where['enddate'] ) ) . " ) ";
+			$query_segments[] = ' ( enddate = ' . esc_sql( intval( $where['enddate'] ) ) . ' ) ';
 		}
 
 		if ( isset( $where['ids'] ) && is_array( $where['ids'] ) ) {
-			$ids = implode( ',', array_map( 'intval', $where['ids'] ) );
+			$ids              = implode( ',', array_map( 'intval', $where['ids'] ) );
 			$query_segments[] = "id IN ($ids)";
 		}
-		
+
 		$table = $wpdb->prefix . Util::TABLES['course'];
 		$query = "SELECT * FROM $table";
-	
+
 		if ( ! empty( $query_segments ) ) {
-			$query .= " WHERE " . implode( ' AND ', $query_segments );
+			$query .= ' WHERE ' . implode( ' AND ', $query_segments );
 		}
-	
+
 		if ( isset( $where['limit'] ) && isset( $where['offset'] ) ) {
-			$limit = esc_sql( intval( $where['limit'] ) );
+			$limit  = esc_sql( intval( $where['limit'] ) );
 			$offset = esc_sql( intval( $where['offset'] ) );
 			$query .= " LIMIT $limit OFFSET $offset";
 		}
-	
+
 		$results = $wpdb->get_results( $query, ARRAY_A );
-	
+
 		return $results;
 	}
-	
 }

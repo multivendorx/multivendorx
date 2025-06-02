@@ -59,7 +59,10 @@ const supportLink = [
 
 const products: Products[] = [
     {
-        title: __("Automated user and course synchronization with scheduler", "moowoodle"),
+        title: __(
+            "Automated user and course synchronization with scheduler",
+            "moowoodle"
+        ),
         description: __(
             "Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle.",
             "moowoodle"
@@ -87,7 +90,10 @@ const products: Products[] = [
         ),
     },
     {
-        title: __("Automatic User Synchronization for Moodle™ and WordPress", "moowoodle"),
+        title: __(
+            "Automatic User Synchronization for Moodle™ and WordPress",
+            "moowoodle"
+        ),
         description: __(
             "Synchronizes user accounts between Moodle™ and WordPress, ensuring consistent user management across both platforms without manual intervention.",
             "moowoodle"
@@ -108,9 +114,12 @@ const faqs = [
         open: true,
     },
     {
-        question: __("How can I troubleshoot connection errors during Test connection?", "moowoodle"),
+        question: __(
+            "How can I troubleshoot connection errors during Test connection?",
+            "moowoodle"
+        ),
         answer: __(
-            "Navigate to the \"Log\" menu, where you can use the \"Log\" feature to troubleshoot connectivity issues between your store and Moodle. This tool helps identify necessary changes for resolution.",
+            'Navigate to the "Log" menu, where you can use the "Log" feature to troubleshoot connectivity issues between your store and Moodle. This tool helps identify necessary changes for resolution.',
             "moowoodle"
         ),
         open: false,
@@ -132,7 +141,7 @@ const faqs = [
             "moowoodle"
         ),
         answer: __(
-            'Course-related functionalities, including setting expiration dates, are managed within Moodle itself; MooWoodle does not control these aspects.',
+            "Course-related functionalities, including setting expiration dates, are managed within Moodle itself; MooWoodle does not control these aspects.",
             "moowoodle"
         ),
         open: false,
