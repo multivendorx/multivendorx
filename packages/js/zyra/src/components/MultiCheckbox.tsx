@@ -32,6 +32,7 @@ export interface MultiCheckBoxProps {
     description?: string;
     descClass?: string;
     hintInnerClass?: string;
+    khali_dabba: boolean;
 }
 
 const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
@@ -78,7 +79,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                     value={option.value}
                                     checked={checked}
                                     onChange={(e) => {
-                                        if (option.proSetting) {
+                                        if (option.proSetting && !props.khali_dabba) {
                                             props.proChanged?.();
                                         } else {
                                             props.onChange?.(e);
@@ -100,7 +101,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                     }}
                                 ></p>
                             )}
-                            {option.proSetting && (
+                            {option.proSetting && !props.khali_dabba && (
                                 <span className="admin-pro-tag">pro</span>
                             )}
                             {option.hints && (

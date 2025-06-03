@@ -14,7 +14,6 @@ import ShortCodeTable from "./ShortCodeTable";
 import SyncNow from "./SyncNow";
 import SyncMap from "./SyncMap";
 import ToggleSetting from "./ToggleSetting";
-import ConnectButton from "./ConnectButton";
 import { Dialog } from "@mui/material";
 import { getApiLink, sendApiResponse } from "./apiService";
 import BasicInput from "./BasicInput";
@@ -987,10 +986,10 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         <SelectInput
                             wrapperClass="form-select-field-wrapper"
                             descClass="settings-metabox-description"
-                            name={inputField.name}
+                            name={inputField.key}
                             description={inputField.desc}
                             inputClass={inputField.key}
-                            options={Array.isArray(value) ? value : []}
+                            options={Array.isArray(inputField.options) ? inputField.options : []}
                             value={
                                 typeof value === "number"
                                     ? value.toString()
@@ -1008,7 +1007,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case "multi-select":
                     input = (
                         <SelectInput
-                            name={inputField.name}
+                            name={inputField.key}
                             wrapperClass="settings-from-multi-select"
                             descClass="settings-metabox-description"
                             selectDeselectClass="btn-purple select-deselect-trigger"
@@ -1016,7 +1015,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             selectDeselectValue="Select / Deselect All"
                             description={inputField.desc}
                             inputClass={inputField.key}
-                            options={Array.isArray(value) ? value : []}
+                            options={Array.isArray(inputField.options) ? inputField.options : []}
                             type="multi-select"
                             value={
                                 typeof value === "number"
@@ -1123,6 +1122,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case "checkbox":
                     input = (
                         <MultiCheckBox
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
                             wrapperClass="checkbox-list-side-by-side"
                             descClass="settings-metabox-description"
                             description={inputField.desc}
@@ -1185,6 +1185,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case "stock-alert-checkbox":
                     input = (
                         <MultiCheckBox
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
                             wrapperClass="checkbox-list-side-by-side"
                             descClass="settings-metabox-description"
                             description={inputField.desc}
@@ -1555,6 +1556,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                 )
                             }
                             interval={Number(inputField.interval)}
+                            tasks={inputField.tasks ?? []}
                             parameter={String(inputField.parameter)} // api for each status of synchronization
                         />
                     );
@@ -1615,16 +1617,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                     );
                     break;
 
-                // Test connection button
-                case "testconnection":
-                    input = (
-                        <ConnectButton
-                            appLocalizer={appLocalizer}
-                            apiLink={String(inputField.apiLink)} // apilink
-                            tasks={inputField.tasks ?? []}
-                        />
-                    ); // all tasks for test connection
-                    break;
                 case "log":
                     input = (
                         <Log

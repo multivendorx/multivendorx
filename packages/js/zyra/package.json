@@ -62,7 +62,7 @@
         "@mapbox/mapbox-gl-geocoder": "^5.0.3",
         "@mui/material": "^7.0.2",
         "@reactour/tour": "^3.7.0",
-        "@tinymce/tinymce-react": "^6.1.0",
+        "@tinymce/tinymce-react": "^5.1.0",
         "google-map-react": "^2.2.1",
         "mapbox-gl": "^3.11.0",
         "react": "18.3.x",
