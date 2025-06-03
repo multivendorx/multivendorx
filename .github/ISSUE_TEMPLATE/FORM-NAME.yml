@@ -1,0 +1,61 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+projects: ["octo-org/1", "octo-org/44"]
+assignees:
+  - octocat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible to help us address the issue.
+  
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug Description
+      description: In a few sentences or paragraphs, describe the bug in detail. Include what the bug does, what was expected, steps to reproduce the bug, any error messages, and the impact of the bug on the application.
+      placeholder: Describe the bug here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: List step-by-step instructions to reproduce the bug.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected Behaviour
+      description: Describe what you expected to happen when performing the steps listed above.
+      placeholder: Describe the expected result...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behaviour
+    attributes:
+      label: Actual Behaviour
+      description: Describe what actually happened when performing the steps, highlighting the bug's behavior.
+      placeholder: Describe the actual result...
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Include any other relevant information, such as related issues, links to documentation, workarounds, screenshots, or videos.
+      placeholder: Add any other context about the problem here...
+    validations:
+      required: false
