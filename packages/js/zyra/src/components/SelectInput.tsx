@@ -57,7 +57,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
     // Find default selected value
     const defaultValue = Array.isArray(value)
         ? optionsData.filter((opt) => new Set(value).has(opt.value)) // If it's an array (multi-select), return null or handle differently
-        : optionsData.find((opt) => opt.value === value) || null;
+        : optionsData.find((opt) => opt.value == value) || null;
 
     return (
         <div className={wrapperClass}>
@@ -77,8 +77,11 @@ const SelectInput: React.FC<SelectInputProps> = ({
                 className={inputClass}
                 value={defaultValue}
                 options={optionsData}
-                onChange={(newValue, actionMeta) =>
+                onChange={(newValue, actionMeta) =>{
+                    console.log('actionMeta', actionMeta)
+                    console.log('newValue', newValue)
                     onChange?.(newValue, actionMeta)
+                }
                 }
                 isMulti={type === "multi-select"}
             />
