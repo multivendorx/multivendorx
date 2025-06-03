@@ -986,10 +986,10 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         <SelectInput
                             wrapperClass="form-select-field-wrapper"
                             descClass="settings-metabox-description"
-                            name={inputField.name}
+                            name={inputField.key}
                             description={inputField.desc}
                             inputClass={inputField.key}
-                            options={Array.isArray(value) ? value : []}
+                            options={Array.isArray(inputField.options) ? inputField.options : []}
                             value={
                                 typeof value === "number"
                                     ? value.toString()
@@ -1007,7 +1007,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case "multi-select":
                     input = (
                         <SelectInput
-                            name={inputField.name}
+                            name={inputField.key}
                             wrapperClass="settings-from-multi-select"
                             descClass="settings-metabox-description"
                             selectDeselectClass="btn-purple select-deselect-trigger"
@@ -1015,7 +1015,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             selectDeselectValue="Select / Deselect All"
                             description={inputField.desc}
                             inputClass={inputField.key}
-                            options={Array.isArray(value) ? value : []}
+                            options={Array.isArray(inputField.options) ? inputField.options : []}
                             type="multi-select"
                             value={
                                 typeof value === "number"
