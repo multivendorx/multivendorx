@@ -12,19 +12,20 @@ export const TestSyncNow = () => {
         proSetting: true,
         proSettingChanged: () => true,
         value: "sync_triggered",
-        description: "Click the button to manually trigger data synchronization.",
+        description:
+            "Click the button to manually trigger data synchronization.",
         apilink: "https://api.example.com/sync",
         parameter: "force=true",
         tasks: [
             {
-            action: "sync_courses",
-            message: "Syncing courses from the server...",
-            cache: "course_id" as "course_id",
+                action: "sync_courses",
+                message: "Syncing courses from the server...",
+                cache: "course_id" as "course_id",
             },
             {
-            action: "sync_users",
-            message: "Syncing user data...",
-            cache: "user_id" as "user_id",
+                action: "sync_users",
+                message: "Syncing user data...",
+                cache: "user_id" as "user_id",
             },
         ],
         appLocalizer: {
@@ -33,7 +34,5 @@ export const TestSyncNow = () => {
         },
     };
 
-
-
-    return <SyncNow {...demoSyncNowProps} />;
+    return <SyncNow { ...demoSyncNowProps } />;
 };

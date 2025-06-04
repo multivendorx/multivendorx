@@ -1,3 +1,8 @@
+(globalThis as any).appLocalizer = {
+    khali_dabba: false,
+};
+
+
 import MapsInput from "../src/components/MapsInput";
 
 export default {
@@ -17,5 +22,5 @@ export const TestMapsInput = () => {
         Lng: -122.4194, // Example longitude
     };
 
-    return <MapsInput {...demoMapsInput} />;
+    return <MapsInput { ...demoMapsInput } />;
 };

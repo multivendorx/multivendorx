@@ -12,5 +12,5 @@ export const TestGoogleMap = () => {
         placeholder: "Loading map...",
     };
 
-    return <GoogleMap {...demoGoogleMapProps} />;
+    return <GoogleMap { ...demoGoogleMapProps } />;
 };

@@ -14,7 +14,9 @@ export interface MultiCheckBoxProps {
     selectDeselect?: boolean;
     selectDeselectClass?: string;
     selectDeselectValue?: string;
-    onMultiSelectDeselectChange?: (e: MouseEvent<HTMLButtonElement>) => void;
+    onMultiSelectDeselectChange?: (
+        e: MouseEvent< HTMLButtonElement >
+    ) => void;
     options: Option[];
     value?: string[];
     inputWrapperClass?: string;
@@ -25,7 +27,7 @@ export interface MultiCheckBoxProps {
     inputClass?: string;
     idPrefix?: string;
     type?: "checkbox" | "radio";
-    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    onChange?: ( e: ChangeEvent< HTMLInputElement > ) => void;
     proChanged?: () => void;
     proSetting?: boolean;
     hintOuterClass?: string;
@@ -35,93 +37,96 @@ export interface MultiCheckBoxProps {
     khali_dabba: boolean;
 }
 
-const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
+const MultiCheckBox: React.FC< MultiCheckBoxProps > = ( props ) => {
     return (
-        <div className={props.wrapperClass}>
-            {props.selectDeselect && (
+        <div className={ props.wrapperClass }>
+            { props.selectDeselect && (
                 <button
-                    className={props.selectDeselectClass}
-                    onClick={(e) => {
+                    className={ props.selectDeselectClass }
+                    onClick={ ( e ) => {
                         e.preventDefault();
-                        props.onMultiSelectDeselectChange?.(e);
-                    }}
+                        props.onMultiSelectDeselectChange?.( e );
+                    } }
                 >
-                    {props.selectDeselectValue}
+                    { props.selectDeselectValue }
                 </button>
-            )}
+            ) }
             <div className="wrapper">
-                {props.options.map((option) => {
+                { props.options.map( ( option ) => {
                     const checked =
-                        props.value?.includes(option.value) ?? false;
+                        props.value?.includes( option.value ) ?? false;
 
                     return (
                         <div
-                            key={option.key}
-                            className={props.inputWrapperClass}
+                            key={ option.key }
+                            className={ props.inputWrapperClass }
                         >
-                            {props.rightContent && (
+                            { props.rightContent && (
                                 <p
-                                    className={props.rightContentClass}
-                                    dangerouslySetInnerHTML={{
+                                    className={ props.rightContentClass }
+                                    dangerouslySetInnerHTML={ {
                                         __html: option.label,
-                                    }}
+                                    } }
                                 ></p>
-                            )}
+                            ) }
                             <div
-                                className={props.inputInnerWrapperClass}
-                                data-tour={props.tour}
+                                className={ props.inputInnerWrapperClass }
+                                data-tour={ props.tour }
                             >
                                 <input
-                                    className={props.inputClass}
-                                    id={`${props.idPrefix}-${option.key}`}
-                                    type={props.type || "checkbox"}
-                                    name={option.name || "basic-input"}
-                                    value={option.value}
-                                    checked={checked}
-                                    onChange={(e) => {
-                                        if (option.proSetting && !props.khali_dabba) {
+                                    className={ props.inputClass }
+                                    id={ `${ props.idPrefix }-${ option.key }` }
+                                    type={ props.type || "checkbox" }
+                                    name={ option.name || "basic-input" }
+                                    value={ option.value }
+                                    checked={ checked }
+                                    onChange={ ( e ) => {
+                                        if (
+                                            option.proSetting &&
+                                            ! props.khali_dabba
+                                        ) {
                                             props.proChanged?.();
                                         } else {
-                                            props.onChange?.(e);
+                                            props.onChange?.( e );
                                         }
-                                    }}
+                                    } }
                                 />
                                 <label
-                                    htmlFor={`${props.idPrefix}-${option.key}`}
+                                    htmlFor={ `${ props.idPrefix }-${ option.key }` }
                                 ></label>
                             </div>
-                            {props.proSetting && (
+                            { props.proSetting && (
                                 <span className="admin-pro-tag">pro</span>
-                            )}
-                            {!props.rightContent && (
+                            ) }
+                            { ! props.rightContent && (
                                 <p
-                                    className={props.rightContentClass}
-                                    dangerouslySetInnerHTML={{
+                                    className={ props.rightContentClass }
+                                    dangerouslySetInnerHTML={ {
                                         __html: option.label,
-                                    }}
+                                    } }
                                 ></p>
-                            )}
-                            {option.proSetting && !props.khali_dabba && (
+                            ) }
+                            { option.proSetting && ! props.khali_dabba && (
                                 <span className="admin-pro-tag">pro</span>
-                            )}
-                            {option.hints && (
+                            ) }
+                            { option.hints && (
                                 <span
-                                    className={props.hintOuterClass}
-                                    dangerouslySetInnerHTML={{
+                                    className={ props.hintOuterClass }
+                                    dangerouslySetInnerHTML={ {
                                         __html: option.hints,
-                                    }}
+                                    } }
                                 ></span>
-                            )}
+                            ) }
                         </div>
                     );
-                })}
+                } ) }
             </div>
-            {props.description && (
+            { props.description && (
                 <p
-                    className={props.descClass}
-                    dangerouslySetInnerHTML={{ __html: props.description }}
+                    className={ props.descClass }
+                    dangerouslySetInnerHTML={ { __html: props.description } }
                 ></p>
-            )}
+            ) }
         </div>
     );
 };

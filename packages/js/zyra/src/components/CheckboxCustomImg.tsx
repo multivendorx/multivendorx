@@ -10,44 +10,44 @@ interface SyncDirection {
 
 interface CheckboxCustomImgProps {
     value?: string[];
-    onChange: (updatedValue: string[]) => void;
+    onChange: ( updatedValue: string[] ) => void;
     syncDirections: SyncDirection[];
     description?: string;
     proSetting?: boolean;
 }
 
-const CheckboxCustomImg: React.FC<CheckboxCustomImgProps> = ({
+const CheckboxCustomImg: React.FC< CheckboxCustomImgProps > = ( {
     value = [],
     onChange,
     syncDirections,
     description,
     proSetting,
-}) => {
+} ) => {
     const handleCheckboxChange = (
         directionValue: string,
         isChecked: boolean
     ) => {
-        let updatedValue = [...value];
+        let updatedValue = [ ...value ];
         updatedValue = updatedValue.filter(
-            (element) => element !== directionValue
+            ( element ) => element !== directionValue
         );
 
-        if (isChecked) {
-            updatedValue.push(directionValue);
+        if ( isChecked ) {
+            updatedValue.push( directionValue );
         }
 
-        onChange(updatedValue);
+        onChange( updatedValue );
     };
 
     return (
         <>
             <div className="custom-sync-section">
-                {syncDirections.map((direction, index) => (
-                    <div className="sync-direction-items" key={index}>
+                { syncDirections.map( ( direction, index ) => (
+                    <div className="sync-direction-items" key={ index }>
                         <input
                             type="checkbox"
-                            checked={value.includes(direction.value)}
-                            onChange={(e) =>
+                            checked={ value.includes( direction.value ) }
+                            onChange={ ( e ) =>
                                 handleCheckboxChange(
                                     direction.value,
                                     e.target.checked
@@ -55,25 +55,25 @@ const CheckboxCustomImg: React.FC<CheckboxCustomImgProps> = ({
                             }
                         />
                         <div className="sync-meta-wrapper">
-                            <img src={direction.img1} alt="" />
+                            <img src={ direction.img1 } alt="" />
                             <i className="admin-font adminLib-arrow-right"></i>
-                            <img src={direction.img2} alt="" />
+                            <img src={ direction.img2 } alt="" />
                         </div>
-                        <p className="sync-label">{direction.label}</p>
+                        <p className="sync-label">{ direction.label }</p>
                     </div>
-                ))}
+                ) ) }
 
-                {/* Render the pro tag if needed */}
-                {proSetting && <span className="admin-pro-tag">pro</span>}
+                { /* Render the pro tag if needed */ }
+                { proSetting && <span className="admin-pro-tag">pro</span> }
             </div>
 
-            {/* Render the description if provided */}
-            {description && (
+            { /* Render the description if provided */ }
+            { description && (
                 <p
                     className="settings-metabox-description"
-                    dangerouslySetInnerHTML={{ __html: description }}
+                    dangerouslySetInnerHTML={ { __html: description } }
                 ></p>
-            )}
+            ) }
         </>
     );
 };

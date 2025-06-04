@@ -20,14 +20,12 @@ export const TestTextArea = () => {
         proSetting: false,
         description: "Please enter your detailed comments.",
         descClass: "textarea-description",
-        onChange: (e) => console.log("Changed:", e.target.value),
-        onClick: (e) => console.log("Clicked"),
-        onMouseOver: (e) => console.log("Mouse Over"),
-        onMouseOut: (e) => console.log("Mouse Out"),
-        onFocus: (e) => console.log("Focused"),
+        onChange: ( e ) => console.log( "Changed:", e.target.value ),
+        onClick: ( e ) => console.log( "Clicked" ),
+        onMouseOver: ( e ) => console.log( "Mouse Over" ),
+        onMouseOut: ( e ) => console.log( "Mouse Out" ),
+        onFocus: ( e ) => console.log( "Focused" ),
     };
 
-
-    return <TextArea {...demoTextAreaProps} />;
+    return <TextArea { ...demoTextAreaProps } />;
 };
-

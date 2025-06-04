@@ -7,7 +7,7 @@ export default {
 
 export const TestBannerInput = () => {
     const props = {
-        is_pro:false,
+        is_pro: false,
         products: [
             {
                 title: "Pro Feature 1",
@@ -20,10 +20,10 @@ export const TestBannerInput = () => {
             {
                 title: "Pro Feature 3",
                 description: "Description for Pro Feature 3",
-            }
+            },
         ],
         pro_url: "#",
     };
 
-    return <Banner {...props} />;
+    return <Banner { ...props } />;
 };

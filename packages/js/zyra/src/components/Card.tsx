@@ -8,16 +8,19 @@ export interface CardProps {
     elevation?: "low" | "medium" | "high";
 }
 
-const Card: React.FC<CardProps> = ({
+const Card: React.FC< CardProps > = ( {
     title,
     children,
     width = "300px",
     elevation = "medium",
-}) => {
+} ) => {
     return (
-        <div className={`card card-elevation-${elevation}`} style={{ width }}>
-            {title && <div className="card-title">{title}</div>}
-            <div className="card-content">{children}</div>
+        <div
+            className={ `card card-elevation-${ elevation }` }
+            style={ { width } }
+        >
+            { title && <div className="card-title">{ title }</div> }
+            <div className="card-content">{ children }</div>
         </div>
     );
 };

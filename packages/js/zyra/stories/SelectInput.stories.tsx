@@ -15,7 +15,7 @@ export const TestSelectInput = () => {
         options: [
             {
                 label: "test1",
-                value: "1", 
+                value: "1",
             },
             {
                 label: "test2",
@@ -24,8 +24,8 @@ export const TestSelectInput = () => {
         ],
         value: "2",
         proSetting: false,
-        onChange: (value) => console.log("Selected:", value),
+        onChange: ( value ) => console.log( "Selected:", value ),
     };
 
-    return <SelectInput {...props} />;
+    return <SelectInput { ...props } />;
 };

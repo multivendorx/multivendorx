@@ -24,15 +24,14 @@ export const TestSettingMetaBox = () => {
             { value: "number", label: "Number" },
             { value: "email", label: "Email" },
         ],
-        onChange: (field, value) => {
-            console.log(`Changed ${field} to`, value);
+        onChange: ( field, value ) => {
+            console.log( `Changed ${ field } to`, value );
         },
-        onTypeChange: (value) => {
-            console.log("Type changed to:", value);
+        onTypeChange: ( value ) => {
+            console.log( "Type changed to:", value );
         },
         opened: { click: true },
     };
 
-
-    return <SettingMetaBox {...demoSettingMetaBoxProps} />;
+    return <SettingMetaBox { ...demoSettingMetaBoxProps } />;
 };

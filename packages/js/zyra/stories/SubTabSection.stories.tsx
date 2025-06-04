@@ -8,12 +8,27 @@ export default {
 export const TestSubTabSection = () => {
     const demoSubTabSectionProps = {
         menuitem: [
-            { id: "general", name: "General", icon: "icon-general", link: "/general" },
-            { id: "advanced", name: "Advanced", icon: "icon-advanced", link: "/advanced" },
+            {
+                id: "general",
+                name: "General",
+                icon: "icon-general",
+                link: "/general",
+            },
+            {
+                id: "advanced",
+                name: "Advanced",
+                icon: "icon-advanced",
+                link: "/advanced",
+            },
         ],
-        currentTab: { id: "general", name: "General", icon: "icon-general", link: "/general" },
-        setCurrentTab: (tab) => {
-            console.log("Current tab set to:", tab);
+        currentTab: {
+            id: "general",
+            name: "General",
+            icon: "icon-general",
+            link: "/general",
+        },
+        setCurrentTab: ( tab ) => {
+            console.log( "Current tab set to:", tab );
         },
         setting: {
             general: { optionA: true },
@@ -21,6 +36,5 @@ export const TestSubTabSection = () => {
         },
     };
 
-
-    return <SubTabSection {...demoSubTabSectionProps} />;
+    return <SubTabSection { ...demoSubTabSectionProps } />;
 };

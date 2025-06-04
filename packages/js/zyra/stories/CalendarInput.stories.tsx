@@ -13,14 +13,11 @@ export const TestCalendarInput = () => {
         multiple: false,
         range: true,
         value: "2025-06-04",
-        onChange: (date) => {
-            console.log("Date selected:", date);
+        onChange: ( date ) => {
+            console.log( "Date selected:", date );
         },
         proSetting: true,
     };
 
-    return <CalendarInput {...demoCalendarInputProps} />;
+    return <CalendarInput { ...demoCalendarInputProps } />;
 };
-
-
-

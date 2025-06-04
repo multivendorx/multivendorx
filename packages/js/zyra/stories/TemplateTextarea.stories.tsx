@@ -11,10 +11,10 @@ export const TestTemplateTextArea = () => {
             label: "Description",
             placeholder: "Enter your description here...",
         },
-        onChange: (field, value) => {
-            console.log(`Field: ${field}, Value: ${value}`);
+        onChange: ( field, value ) => {
+            console.log( `Field: ${ field }, Value: ${ value }` );
         },
     };
 
-    return <TemplateTextArea {...demoTextareaProps} />;
+    return <TemplateTextArea { ...demoTextareaProps } />;
 };

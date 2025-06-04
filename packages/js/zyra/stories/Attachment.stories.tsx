@@ -11,10 +11,10 @@ export const TestAttachmentInput = () => {
             label: "Upload Document",
             placeholder: "Choose a file...",
         },
-        onChange: (field, value) => {
-            console.log(`Field changed: ${field} = ${value}`);
+        onChange: ( field, value ) => {
+            console.log( `Field changed: ${ field } = ${ value }` );
         },
     };
 
-    return <Attachment {...demoAttachmentProps} />;
+    return <Attachment { ...demoAttachmentProps } />;
 };

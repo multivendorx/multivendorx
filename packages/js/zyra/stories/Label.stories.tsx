@@ -13,6 +13,5 @@ export const TestLabel = () => {
         value: "Label Text",
     };
 
-    return <Label {...demoLabelProps} />;
+    return <Label { ...demoLabelProps } />;
 };
-

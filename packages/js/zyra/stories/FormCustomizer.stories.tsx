@@ -17,11 +17,15 @@ export const TestFormCustomizer = () => {
             enabled: true,
             tier: "pro",
         },
-        onChange: (key, value, isRestoreDefaults) => {
-            console.log(`Changed ${key} to`, value, "Restore defaults:", isRestoreDefaults);
+        onChange: ( key, value, isRestoreDefaults ) => {
+            console.log(
+                `Changed ${ key } to`,
+                value,
+                "Restore defaults:",
+                isRestoreDefaults
+            );
         },
     };
 
-    return <FormCustomizer {...demoFormCustomizerProps} />;
+    return <FormCustomizer { ...demoFormCustomizerProps } />;
 };
-

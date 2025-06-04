@@ -23,12 +23,10 @@ export const TestDisplayButton = () => {
             button_text: "Click Me",
         },
         children: <span>Button Content</span>,
-        onClick: (e) => {
-            console.log("Button clicked", e);
+        onClick: ( e ) => {
+            console.log( "Button clicked", e );
         },
     };
 
-
-    return <DisplayButton {...demoDisplayButtonProp} />;
+    return <DisplayButton { ...demoDisplayButtonProp } />;
 };
-

@@ -1,4 +1,3 @@
-/* global appLocalizer */
 import React from "react";
 import { DialogContent, DialogContentText } from "@mui/material";
 import "../styles/web/popupContent.scss";
@@ -9,7 +8,7 @@ export interface ProPopupProps {
     messages?: string[];
 }
 
-const ProPopup: React.FC<ProPopupProps> = (props) => {
+const ProPopup: React.FC< ProPopupProps > = ( props ) => {
     const safeProUrl = props.proUrl || "#";
 
     return (
@@ -19,23 +18,23 @@ const ProPopup: React.FC<ProPopupProps> = (props) => {
                     <div className="admin-image-overlay">
                         <div className="admin-overlay-content">
                             <h1 className="banner-header">
-                                Unlock{" "}
+                                Unlock{ " " }
                                 <span className="banner-pro-tag">Pro</span>
                             </h1>
                             <div className="admin-banner-content">
-                                <strong>{props.title}</strong>
+                                <strong>{ props.title }</strong>
                                 <p>&nbsp;</p>
-                                {props.messages?.map((message, index) => (
-                                    <p
-                                        key={index}
-                                    >{`${index + 1}. ${message}`}</p>
-                                ))}
+                                { props.messages?.map( ( message, index ) => (
+                                    <p key={ index }>{ `${
+                                        index + 1
+                                    }. ${ message }` }</p>
+                                ) ) }
                             </div>
                             <a
                                 className="admin-go-pro-btn"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href={safeProUrl}
+                                href={ safeProUrl }
                             >
                                 Upgrade to Pro
                             </a>

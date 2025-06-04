@@ -12,6 +12,5 @@ export const TestBlockText = () => {
         value: "This is a demo block of text.",
     };
 
-    return <BlockText {...demoBlockTextProps} />;
+    return <BlockText { ...demoBlockTextProps } />;
 };
-

@@ -10,9 +10,9 @@ export const TestTimePicker = () => {
         formField: {
             label: "Select Time",
         },
-        onChange: (field, value) => {
-            console.log(`Field: ${field}, Value: ${value}`);
+        onChange: ( field, value ) => {
+            console.log( `Field: ${ field }, Value: ${ value }` );
         },
     };
-    return <TimePicker {...demoTimePickerProps} />;
+    return <TimePicker { ...demoTimePickerProps } />;
 };

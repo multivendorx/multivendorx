@@ -18,20 +18,20 @@ export const TestBasicInputInput = () => {
         placeholder: "Enter your username",
         min: 3,
         max: 15,
-        onChange: (e: ChangeEvent<HTMLInputElement>) => {
-            console.log("Changed:", e.target.value);
+        onChange: ( e: ChangeEvent< HTMLInputElement > ) => {
+            console.log( "Changed:", e.target.value );
         },
-        onClick: (e: MouseEvent<HTMLInputElement>) => {
-            console.log("Clicked:", e.target);
+        onClick: ( e: MouseEvent< HTMLInputElement > ) => {
+            console.log( "Clicked:", e.target );
         },
-        onMouseOver: (e: MouseEvent<HTMLInputElement>) => {
-            console.log("Mouse over:", e.target);
+        onMouseOver: ( e: MouseEvent< HTMLInputElement > ) => {
+            console.log( "Mouse over:", e.target );
         },
-        onMouseOut: (e: MouseEvent<HTMLInputElement>) => {
-            console.log("Mouse out:", e.target);
+        onMouseOut: ( e: MouseEvent< HTMLInputElement > ) => {
+            console.log( "Mouse out:", e.target );
         },
-        onFocus: (e: FocusEvent<HTMLInputElement>) => {
-            console.log("Focused:", e.target);
+        onFocus: ( e: FocusEvent< HTMLInputElement > ) => {
+            console.log( "Focused:", e.target );
         },
         parameter: "user_input",
         proSetting: false,
@@ -41,5 +41,5 @@ export const TestBasicInputInput = () => {
         disabled: false,
     };
 
-    return <BasicInput {...basicInputProps} />;
+    return <BasicInput { ...basicInputProps } />;
 };

@@ -17,42 +17,47 @@ interface FreeProFormCustomizerProps {
     proSetting: any;
     proSettingChange: () => boolean;
     moduleEnabledChange: () => boolean;
-    onChange: (key: string, value: any) => void;
+    onChange: ( key: string, value: any ) => void;
 }
 
 // FormCustomizer Component
-const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
+const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
     setting,
     proSettingChange,
     moduleEnabledChange,
     onChange,
-}) => {
-    const settingChange = useRef<boolean>(false);
+} ) => {
+    const settingChange = useRef< boolean >( false );
 
     // Initialize state
-    const [formFieldsData, setFormFieldsData] = useState<FormField[]>(
+    const [ formFieldsData, setFormFieldsData ] = useState< FormField[] >(
         setting?.freefromsetting || []
     );
 
-    useEffect(() => {
-        if (settingChange.current) {
-            onChange("freefromsetting", formFieldsData);
+    useEffect( () => {
+        if ( settingChange.current ) {
+            onChange( "freefromsetting", formFieldsData );
             settingChange.current = false;
         }
-    }, [formFieldsData, onChange]);
+    }, [ formFieldsData, onChange ] );
 
-    const getFields = (fieldKey: string): FormField | undefined => {
-        return formFieldsData.find(({ key }) => key === fieldKey);
+    const getFields = ( fieldKey: string ): FormField | undefined => {
+        return formFieldsData.find( ( { key } ) => key === fieldKey );
     };
 
-    const activeDeactiveFields = (fieldKey: string, activeStatus: boolean) => {
-        if (moduleEnabledChange()) return;
+    const activeDeactiveFields = (
+        fieldKey: string,
+        activeStatus: boolean
+    ) => {
+        if ( moduleEnabledChange() ) return;
         settingChange.current = true;
 
-        setFormFieldsData((prevData) => {
-            const existingField = prevData.find(({ key }) => key === fieldKey);
-            if (existingField) {
-                return prevData.map((data) =>
+        setFormFieldsData( ( prevData ) => {
+            const existingField = prevData.find(
+                ( { key } ) => key === fieldKey
+            );
+            if ( existingField ) {
+                return prevData.map( ( data ) =>
                     data.key === fieldKey
                         ? { ...data, active: activeStatus }
                         : data
@@ -63,17 +68,19 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                     { key: fieldKey, label: "", active: activeStatus },
                 ];
             }
-        });
+        } );
     };
 
-    const updateFieldLabel = (fieldKey: string, labelValue: string) => {
-        if (moduleEnabledChange()) return;
+    const updateFieldLabel = ( fieldKey: string, labelValue: string ) => {
+        if ( moduleEnabledChange() ) return;
         settingChange.current = true;
 
-        setFormFieldsData((prevData) => {
-            const existingField = prevData.find(({ key }) => key === fieldKey);
-            if (existingField) {
-                return prevData.map((data) =>
+        setFormFieldsData( ( prevData ) => {
+            const existingField = prevData.find(
+                ( { key } ) => key === fieldKey
+            );
+            if ( existingField ) {
+                return prevData.map( ( data ) =>
                     data.key === fieldKey
                         ? { ...data, label: labelValue }
                         : data
@@ -84,7 +91,7 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                     { key: fieldKey, label: labelValue, active: false },
                 ];
             }
-        });
+        } );
     };
 
     const formFields: FormField[] = [
@@ -99,104 +106,108 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
         { key: "captcha", desc: "Captcha" },
     ];
 
-    const [menu, setMenu] = useState<MenuItem[]>([
+    const [ menu, setMenu ] = useState< MenuItem[] >( [
         { name: "Free", link: "hi", id: "2", icon: "adminLib-info" },
         { name: "Pro", link: "hi", id: "1", icon: "adminLib-cart" },
-    ]);
+    ] );
 
-    const [currentTab, setCurrentTab] = useState<MenuItem>(menu[0]);
+    const [ currentTab, setCurrentTab ] = useState< MenuItem >( menu[ 0 ] );
 
     // Read-only field state
-    const [readonlyFields, setReadonlyFields] = useState<boolean[]>(
-        formFields.map((_, index) =>
-            formFieldsData[index]?.active === true ? false : true
+    const [ readonlyFields, setReadonlyFields ] = useState< boolean[] >(
+        formFields.map( ( _, index ) =>
+            formFieldsData[ index ]?.active === true ? false : true
         )
     );
 
     return (
         <>
             <SubTabSection
-                menuitem={menu}
-                currentTab={currentTab}
-                setCurrentTab={setCurrentTab}
+                menuitem={ menu }
+                currentTab={ currentTab }
+                setCurrentTab={ setCurrentTab }
             />
-            {currentTab.id === "1" ? (
+            { currentTab.id === "1" ? (
                 <ProForm
-                    setting={setting}
+                    setting={ setting }
                     name="formsettings"
-                    proSettingChange={proSettingChange}
-                    onChange={(value) => onChange("formsettings", value)}
+                    proSettingChange={ proSettingChange }
+                    onChange={ ( value ) => onChange( "formsettings", value ) }
                 />
             ) : (
                 <div>
                     <div className="fields-header">
-                        <h3 className="name">{"Field Name"}</h3>
-                        <h3 className="set-name">{"Set new field name"}</h3>
+                        <h3 className="name">{ "Field Name" }</h3>
+                        <h3 className="set-name">{ "Set new field name" }</h3>
                     </div>
                     <div className="registrationFrom-main-wrapper-section">
                         <div className="form-field">
-                            {formFields.map((fields, index) => (
+                            { formFields.map( ( fields, index ) => (
                                 <div
                                     className="edit-form-wrapper free-form"
-                                    key={index}
+                                    key={ index }
                                 >
                                     <div
                                         className="form-label"
-                                        style={{
-                                            opacity: readonlyFields[index]
+                                        style={ {
+                                            opacity: readonlyFields[ index ]
                                                 ? "0.3"
                                                 : "1",
-                                        }}
+                                        } }
                                     >
-                                        {fields.desc}
+                                        { fields.desc }
                                     </div>
                                     <div className="settings-form-group-radio">
                                         <input
                                             type="text"
-                                            onChange={(e) =>
+                                            onChange={ ( e ) =>
                                                 updateFieldLabel(
                                                     fields.key,
                                                     e.target.value
                                                 )
                                             }
                                             value={
-                                                getFields(fields.key)?.label ||
-                                                ""
+                                                getFields( fields.key )
+                                                    ?.label || ""
                                             }
-                                            readOnly={readonlyFields[index]}
-                                            style={{
-                                                opacity: readonlyFields[index]
+                                            readOnly={ readonlyFields[ index ] }
+                                            style={ {
+                                                opacity: readonlyFields[ index ]
                                                     ? "0.3"
                                                     : "1",
-                                            }}
+                                            } }
                                         />
                                     </div>
                                     <div
                                         className="button-visibility"
-                                        onClick={() => {
-                                            setReadonlyFields((prev) =>
-                                                prev.map((readonly, i) =>
+                                        onClick={ () => {
+                                            setReadonlyFields( ( prev ) =>
+                                                prev.map( ( readonly, i ) =>
                                                     i === index
-                                                        ? !readonly
+                                                        ? ! readonly
                                                         : readonly
                                                 )
                                             );
                                             activeDeactiveFields(
                                                 fields.key,
-                                                readonlyFields[index]
+                                                readonlyFields[ index ]
                                             );
-                                        }}
+                                        } }
                                     >
                                         <i
-                                            className={`admin-font ${readonlyFields[index] ? "adminLib-eye-blocked enable-visibility" : "adminLib-eye"}`}
+                                            className={ `admin-font ${
+                                                readonlyFields[ index ]
+                                                    ? "adminLib-eye-blocked enable-visibility"
+                                                    : "adminLib-eye"
+                                            }` }
                                         />
                                     </div>
                                 </div>
-                            ))}
+                            ) ) }
                         </div>
                     </div>
                 </div>
-            )}
+            ) }
         </>
     );
 };

@@ -13,9 +13,5 @@ export const TestCard = () => {
         elevation: "medium" as const,
     };
 
-    return <Card {...demoCardProps} />;
+    return <Card { ...demoCardProps } />;
 };
-
-
-
-

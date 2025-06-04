@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { __ } from "@wordpress/i18n";
 import ProPopup from "../Popup/Popup";
-import { CustomTable, getApiLink, TableCell } from "zyra";
+import { Table, getApiLink, TableCell } from "zyra";
 import './Courses.scss';
 import Dialog from "@mui/material/Dialog";
 import defaultImage from '../../assets/images/moowoodle-product-default.png';
@@ -490,7 +490,7 @@ const Course: React.FC = () => {
                     </div>
                 )}
                 <div className="admin-table-wrapper">
-                    <CustomTable
+                    <Table
                         data={data}
                         columns={
                             columns as ColumnDef<Record<string, any>, any>[]

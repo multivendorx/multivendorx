@@ -12,9 +12,9 @@ export const TestElements = () => {
             { value: "option2", label: "Option 2", icon: "icon-2" },
             { value: "option3", label: "Option 3" },
         ],
-        onClick: (value) => {
-            console.log("Selected:", value);
+        onClick: ( value ) => {
+            console.log( "Selected:", value );
         },
     };
-    return <Elements {...demoElementsProps} />;
+    return <Elements { ...demoElementsProps } />;
 };

@@ -14,23 +14,23 @@ export interface SelectInputProps {
     selectDeselectValue?: string;
     name?: string;
     onMultiSelectDeselectChange?: (
-        e: React.MouseEvent<HTMLButtonElement>
+        e: React.MouseEvent< HTMLButtonElement >
     ) => void;
     options: SelectOptions[];
     value?: string | string[];
     inputClass?: string;
     type?: "single-select" | "multi-select";
     onChange?: (
-        newValue: SingleValue<SelectOptions> | MultiValue<SelectOptions>,
-        actionMeta: ActionMeta<SelectOptions>
+        newValue: SingleValue< SelectOptions > | MultiValue< SelectOptions >,
+        actionMeta: ActionMeta< SelectOptions >
     ) => void;
-    onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+    onClick?: ( e: React.MouseEvent< HTMLInputElement > ) => void;
     proSetting?: boolean;
     description?: string;
     descClass?: string;
 }
 
-const SelectInput: React.FC<SelectInputProps> = ({
+const SelectInput: React.FC< SelectInputProps > = ( {
     wrapperClass,
     selectDeselect,
     selectDeselectClass,
@@ -42,56 +42,54 @@ const SelectInput: React.FC<SelectInputProps> = ({
     inputClass,
     type = "single-select",
     onChange,
-    onClick,
     proSetting,
     description,
     descClass,
-}) => {
+} ) => {
     // Convert options to react-select format
-    const optionsData: SelectOptions[] = options.map((option, index) => ({
+    const optionsData: SelectOptions[] = options.map( ( option, index ) => ( {
         value: option.value,
         label: option.label,
         index,
-    }));
+    } ) );
 
     // Find default selected value
-    const defaultValue = Array.isArray(value)
-        ? optionsData.filter((opt) => new Set(value).has(opt.value)) // If it's an array (multi-select), return null or handle differently
-        : optionsData.find((opt) => opt.value == value) || null;
+    const defaultValue = Array.isArray( value )
+        ? optionsData.filter( ( opt ) => new Set( value ).has( opt.value ) ) // If it's an array (multi-select), return null or handle differently
+        : optionsData.find( ( opt ) => opt.value == value ) || null;
 
     return (
-        <div className={wrapperClass}>
-            {selectDeselect && (
+        <div className={ wrapperClass }>
+            { selectDeselect && (
                 <button
-                    className={selectDeselectClass}
-                    onClick={(e) => {
+                    className={ selectDeselectClass }
+                    onClick={ ( e ) => {
                         e.preventDefault();
-                        onMultiSelectDeselectChange?.(e);
-                    }}
+                        onMultiSelectDeselectChange?.( e );
+                    } }
                 >
-                    {selectDeselectValue}
+                    { selectDeselectValue }
                 </button>
-            )}
+            ) }
             <Select
-                name={name}
-                className={inputClass}
-                value={defaultValue}
-                options={optionsData}
-                onChange={(newValue, actionMeta) =>{
-                    console.log('actionMeta', actionMeta)
-                    console.log('newValue', newValue)
-                    onChange?.(newValue, actionMeta)
-                }
-                }
-                isMulti={type === "multi-select"}
+                name={ name }
+                className={ inputClass }
+                value={ defaultValue }
+                options={ optionsData }
+                onChange={ ( newValue, actionMeta ) => {
+                    console.log( "actionMeta", actionMeta );
+                    console.log( "newValue", newValue );
+                    onChange?.( newValue, actionMeta );
+                } }
+                isMulti={ type === "multi-select" }
             />
-            {proSetting && <span className="admin-pro-tag">pro</span>}
-            {description && (
+            { proSetting && <span className="admin-pro-tag">pro</span> }
+            { description && (
                 <p
-                    className={descClass}
-                    dangerouslySetInnerHTML={{ __html: description }}
+                    className={ descClass }
+                    dangerouslySetInnerHTML={ { __html: description } }
                 ></p>
-            )}
+            ) }
         </div>
     );
 };

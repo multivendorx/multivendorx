@@ -14,8 +14,8 @@ export const TestShortCodeTable = () => {
             { label: "Shortcode 1", desc: "[shortcode_1]" },
             { label: "Shortcode 2", desc: "[shortcode_2]" },
         ],
-        optionLabel: ["Shortcode 1", "Shortcode 2"],
+        optionLabel: [ "Shortcode 1", "Shortcode 2" ],
     };
 
-    return <ShortCodeTable {...demoShortCodeTableProps} />;
+    return <ShortCodeTable { ...demoShortCodeTableProps } />;
 };

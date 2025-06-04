@@ -12,19 +12,28 @@ export const TestInputMailchimpList = () => {
         settingChanged: { current: false },
         apiLink: "https://api.mailchimp.com/3.0/lists",
         proSettingChanged: () => {
-            console.log("Checked pro setting change");
+            console.log( "Checked pro setting change" );
             return true;
         },
-        onChange: (event, key) => {
-            console.log(`Changed key ${key} to`, event.target.value);
+        onChange: ( event, key ) => {
+            console.log( `Changed key ${ key } to`, event.target.value );
         },
         selectKey: "newsletterList",
         value: "list_001",
         setting: {
-            mailchimp_list: "list_001",
+            mailchimp_list: [
+                {
+                    label: "Newsletter List",
+                    value: "list_001",
+                },
+                {
+                    label: "Promotions List",
+                    value: "list_002",
+                }
+            ],
         },
-        updateSetting: (key: string, value: any) => {
-            console.log(`Updated setting ${key} to`, value);
+        updateSetting: ( key: string, value: any ) => {
+            console.log( `Updated setting ${ key } to`, value );
         },
         appLocalizer: {
             someFlag: true,
@@ -32,5 +41,5 @@ export const TestInputMailchimpList = () => {
         },
     };
 
-    return <InputMailchimpList {...demoInputMailchimpListProps} />;
+    return <InputMailchimpList { ...demoInputMailchimpListProps } />;
 };

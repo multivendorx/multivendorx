@@ -7,8 +7,8 @@ export default {
 
 export const TestButtonCustomizer = () => {
     const demoButtonCustomizerProps = {
-        onChange: (key, value, isRestoreDefaults) => {
-            console.log("Changed:", key, value, isRestoreDefaults);
+        onChange: ( key, value, isRestoreDefaults ) => {
+            console.log( "Changed:", key, value, isRestoreDefaults );
         },
         setting: {
             color: "blue",
@@ -19,7 +19,5 @@ export const TestButtonCustomizer = () => {
         proSetting: true,
     };
 
-    return <ButtonCustomizer {...demoButtonCustomizerProps} />;
+    return <ButtonCustomizer { ...demoButtonCustomizerProps } />;
 };
-
-

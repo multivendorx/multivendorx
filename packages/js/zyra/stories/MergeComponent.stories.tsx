@@ -10,8 +10,8 @@ export const TestMergeComponent = () => {
         wrapperClass: "merge-wrapper",
         descClass: "merge-description",
         description: "Merge multiple fields into one value.",
-        onChange: (data) => {
-            console.log("Merge data changed:", data);
+        onChange: ( data ) => {
+            console.log( "Merge data changed:", data );
         },
         value: {
             field1: "option1",
@@ -42,6 +42,5 @@ export const TestMergeComponent = () => {
         ],
     };
 
-
-    return <MergeComponent {...demoMergeComponentProps} />;
+    return <MergeComponent { ...demoMergeComponentProps } />;
 };

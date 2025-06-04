@@ -1,5 +1,5 @@
-const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const path = require( "path" );
+const MiniCssExtractPlugin = require( "mini-css-extract-plugin" );
 
 module.exports = {
     entry: {
@@ -7,7 +7,7 @@ module.exports = {
     },
 
     output: {
-        path: path.resolve(__dirname, "assets"),
+        path: path.resolve( __dirname, "assets" ),
         filename: "js/[name].js",
     },
 
@@ -20,11 +20,11 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: "ts-loader",
-                include: path.resolve(__dirname, "./src"),
+                include: path.resolve( __dirname, "./src" ),
             },
             {
                 test: /\.css$/,
-                use: ["style-loader", "css-loader"],
+                use: [ "style-loader", "css-loader" ],
             },
             {
                 test: /\.(png|jpe?g|gif|svg)$/i,
@@ -48,7 +48,7 @@ module.exports = {
                         loader: "postcss-loader",
                         options: {
                             postcssOptions: {
-                                plugins: [require("autoprefixer")],
+                                plugins: [ require( "autoprefixer" ) ],
                             },
                         },
                     },
@@ -65,16 +65,16 @@ module.exports = {
         ],
     },
     plugins: [
-        new MiniCssExtractPlugin({
+        new MiniCssExtractPlugin( {
             filename: "[name].css",
-        }),
+        } ),
     ],
 
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx"],
-        modules: ["node_modules"],
+        extensions: [ ".ts", ".tsx", ".js", ".jsx" ],
+        modules: [ "node_modules" ],
         alias: {
-            "@": path.resolve(__dirname, "./src"), // So you can use "@/assets/..." in SCSS or imports
+            "@": path.resolve( __dirname, "./src" ), // So you can use "@/assets/..." in SCSS or imports
         },
     },
 

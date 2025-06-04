@@ -6,39 +6,38 @@ export default {
 };
 
 export const TestSyncMap = () => {
-    const demoSyncMapProps: React.ComponentProps<typeof SyncMap> = {
-        value: [
-            ["email", "user_email"],
-            ["name", "full_name"],
-        ] as [string, string][],
-        onChange: (newValue) => {
-            console.log("Sync map changed:", newValue);
-        },
+    const demoSyncMapProps: React.ComponentProps< typeof SyncMap > = {
+        description: "Map fields between systems to keep data in sync.",
         proSetting: true,
         proSettingChanged: () => true,
-        description: "Map fields between systems to keep data in sync.",
+        value: [
+            [ "email", "user_email" ],
+            [ "name", "full_name" ],
+        ] as [ string, string ][],
+        onChange: ( newValue ) => {
+            console.log( "Sync map changed:", newValue );
+        },
         syncFieldsMap: {
-            sourceSystem: {
-            heading: "Source Fields",
-            fields: {
-                email: "Email Address",
-                name: "Full Name",
-                phone: "Phone Number",
+            wordpress: {
+                heading: 'WordPress',
+                fields: {
+                firstname: 'First name',
+                lastname: 'Last name',
+                username: 'User name',
+                password: 'Password'
+                }
             },
-            },
-            targetSystem: {
-            heading: "Target Fields",
-            fields: {
-                user_email: "User Email",
-                full_name: "User Full Name",
-                contact_number: "Contact Number",
-            },
-            },
+            moodle: {
+                heading: 'Moodle',
+                fields: {
+                firstname: 'First name',
+                lastname: 'Last name',
+                username: 'User name',
+                password: 'Password'
+                }
+            }
         },
     };
 
-
-    return <SyncMap {...demoSyncMapProps} />;
+    return <SyncMap { ...demoSyncMapProps } />;
 };
-
-

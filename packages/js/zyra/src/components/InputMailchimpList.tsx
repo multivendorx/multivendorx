@@ -13,18 +13,18 @@ interface SelectOption {
 interface InputMailchimpListProps {
     mailchimpKey: string;
     optionKey: string;
-    settingChanged: React.MutableRefObject<boolean>;
+    settingChanged: React.MutableRefObject< boolean >;
     apiLink: string;
     proSettingChanged: () => boolean;
-    onChange: (event: { target: { value: string } }, key: string) => void;
+    onChange: ( event: { target: { value: string } }, key: string ) => void;
     selectKey: string;
     value?: string;
-    setting: Record<string, any>;
+    setting: Record< string, any >;
     updateSetting: any;
-    appLocalizer: Record<string, any>; // Allows any structure
+    appLocalizer: Record< string, any >; // Allows any structure
 }
 
-const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
+const InputMailchimpList: React.FC< InputMailchimpListProps > = ( {
     appLocalizer,
     setting,
     updateSetting,
@@ -36,38 +36,39 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
     onChange,
     selectKey,
     value,
-}) => {
+} ) => {
     // State variables
     // const { setting, updateSetting } = useSetting();
 
-    const [selectOption, setSelectOption] = useState<SelectOption[]>(
-        setting[optionKey] || []
+    const [ selectOption, setSelectOption ] = useState< SelectOption[] >(
+        setting[ optionKey ] || []
     );
-    const [loading, setLoading] = useState<boolean>(false);
-    const [showOption, setShowOption] = useState<boolean>(false);
-    const [mailchimpErrorMessage, setMailchimpErrorMessage] =
-        useState<string>("");
+    const [ loading, setLoading ] = useState< boolean >( false );
+    const [ showOption, setShowOption ] = useState< boolean >( false );
+    const [ mailchimpErrorMessage, setMailchimpErrorMessage ] =
+        useState< string >( "" );
 
     const updateSelectOption = async () => {
-        if (!setting[mailchimpKey]) {
-            setMailchimpErrorMessage("Kindly use a proper MailChimp key.");
+        if ( ! setting[ mailchimpKey ] ) {
+            setMailchimpErrorMessage( "Kindly use a proper MailChimp key." );
         } else {
-            setLoading(true);
-            setMailchimpErrorMessage("");
+            setLoading( true );
+            setMailchimpErrorMessage( "" );
 
             try {
                 const options: SelectOption[] =
-                    (await getApiResponse(getApiLink(appLocalizer, apiLink))) ??
-                    []; // ✅ Ensure it's always an array
+                    ( await getApiResponse(
+                        getApiLink( appLocalizer, apiLink )
+                    ) ) ?? []; // ✅ Ensure it's always an array
                 settingChanged.current = true;
-                updateSetting(optionKey, options);
-                setSelectOption(options);
-                setShowOption(true);
-            } catch (error) {
-                console.error("Error fetching Mailchimp list:", error);
-                setMailchimpErrorMessage("Failed to fetch MailChimp list.");
+                updateSetting( optionKey, options );
+                setSelectOption( options );
+                setShowOption( true );
+            } catch ( error ) {
+                console.error( "Error fetching Mailchimp list:", error );
+                setMailchimpErrorMessage( "Failed to fetch MailChimp list." );
             } finally {
-                setLoading(false);
+                setLoading( false );
             }
         }
     };
@@ -78,48 +79,51 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
                 wrapperClass="setting-form-input"
                 descClass="settings-metabox-description"
                 type="text"
-                value={setting[mailchimpKey]}
-                proSetting={false}
-                onChange={(e) => {
-                    if (!proSettingChanged()) {
-                        onChange(e, mailchimpKey);
+                value={ setting[ mailchimpKey ] }
+                proSetting={ false }
+                onChange={ ( e ) => {
+                    if ( ! proSettingChanged() ) {
+                        onChange( e, mailchimpKey );
                     }
-                }}
+                } }
             />
 
             <div className="loader-wrapper">
                 <button
                     className="btn-purple btn-effect"
-                    onClick={(e) => {
+                    onClick={ ( e ) => {
                         e.preventDefault();
-                        if (!proSettingChanged()) {
+                        if ( ! proSettingChanged() ) {
                             updateSelectOption();
                         }
-                    }}
+                    } }
                 >
                     Fetch List
                 </button>
 
-                {loading && (
+                { loading && (
                     <div className="loader">
                         <div className="three-body__dot"></div>
                         <div className="three-body__dot"></div>
                         <div className="three-body__dot"></div>
                     </div>
-                )}
+                ) }
             </div>
 
-            {(selectOption.length > 0 || showOption) && (
+            { ( selectOption.length > 0 || showOption ) && (
                 <SelectInput
-                    onChange={(e) => {
-                        if (!proSettingChanged() && e && "value" in e) {
-                            onChange({ target: { value: e.value } }, selectKey);
+                    onChange={ ( e ) => {
+                        if ( ! proSettingChanged() && e && "value" in e ) {
+                            onChange(
+                                { target: { value: e.value } },
+                                selectKey
+                            );
                         }
-                    }}
-                    options={selectOption}
-                    value={value}
+                    } }
+                    options={ selectOption }
+                    value={ value }
                 />
-            )}
+            ) }
         </div>
     );
 };

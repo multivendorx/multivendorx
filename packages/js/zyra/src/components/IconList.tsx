@@ -20,7 +20,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-supervised-user-circle"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-supervised-user-circle
                         </span>
                         <span>(e702)</span>
@@ -128,7 +128,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-centralized-connections"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-centralized-connections
                         </span>
                         <span>(e900)</span>
@@ -136,7 +136,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-desktop-pc-valuation"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-desktop-pc-valuation
                         </span>
                         <span>(e901)</span>
@@ -154,7 +154,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-social-media-content"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-social-media-content
                         </span>
                         <span>(e906)</span>
@@ -227,7 +227,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-submission-message"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-submission-message
                         </span>
                         <span>(e914)</span>
@@ -315,7 +315,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-keyboard-arrow-down"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-keyboard-arrow-down
                         </span>
                         <span>(e925)</span>
@@ -368,7 +368,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-success-notification"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-success-notification
                         </span>
                         <span>(e92f)</span>
@@ -381,7 +381,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-vendor-form-delete"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-vendor-form-delete
                         </span>
                         <span>(e931)</span>
@@ -399,7 +399,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-select-question-type"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-select-question-type
                         </span>
                         <span>(e934)</span>
@@ -512,7 +512,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-form-store-description"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-form-store-description
                         </span>
                         <span>(e94a)</span>
@@ -530,7 +530,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-dropdown-checklist"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-dropdown-checklist
                         </span>
                         <span>(e94d)</span>
@@ -543,7 +543,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-captcha-automatic-code"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-captcha-automatic-code
                         </span>
                         <span>(e94f)</span>
@@ -606,7 +606,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-experiment-results"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-experiment-results
                         </span>
                         <span>(e95b)</span>
@@ -674,7 +674,7 @@ const IconList: React.FC = () => {
                     <div className="icon-box">
                         <span className="adminLib-dots-three-horizontal"></span>
                         <span className="mls">
-                            {" "}
+                            { " " }
                             adminLib-dots-three-horizontal
                         </span>
                         <span>(e8eee)</span>

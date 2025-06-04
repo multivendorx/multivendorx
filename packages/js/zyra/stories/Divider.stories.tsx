@@ -8,5 +8,3 @@ export default {
 export const TestDivider = () => {
     return <Divider />;
 };
-
-

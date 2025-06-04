@@ -11,10 +11,10 @@ export const TestSimpleInput = () => {
             label: "Email",
             placeholder: "Enter your email",
         },
-        onChange: (field, value) => {
-            console.log(`Field ${field} changed to`, value);
+        onChange: ( field, value ) => {
+            console.log( `Field ${ field } changed to`, value );
         },
     };
 
-    return <SimpleInput {...demoSimpleInputProps} />;
+    return <SimpleInput { ...demoSimpleInputProps } />;
 };

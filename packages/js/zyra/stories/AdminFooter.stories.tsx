@@ -26,5 +26,5 @@ export const TestAdminFooter = () => {
             link: "#",
         },
     ];
-    return <AdminFooter supportLink={supportLink} />;
+    return <AdminFooter supportLink={ supportLink } />;
 };

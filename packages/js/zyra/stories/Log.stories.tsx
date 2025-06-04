@@ -15,7 +15,5 @@ export const TestLog = () => {
         },
     };
 
-    return <Log {...demoLogProps} />;
+    return <Log { ...demoLogProps } />;
 };
-
-

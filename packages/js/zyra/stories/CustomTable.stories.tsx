@@ -1,12 +1,12 @@
-import CustomTable from "../src/components/CustomTable";
+import Table from "../src/components/Table";
 
 export default {
-    title: "Zyra/Components/CustomTable",
-    component: CustomTable,
+    title: "Zyra/Components/Table",
+    component: Table,
 };
 
-export const TestCustomTable = () => {
-    const demoCustomTableProps = {
+export const TestTable = () => {
+    const demoTableProps = {
         data: [
             {
                 date: "2025-06-04",
@@ -24,22 +24,24 @@ export const TestCustomTable = () => {
         rowSelection: {
             "1": true,
         },
-        onRowSelectionChange: (updater) => {
-            console.log("Row selection changed:", updater);
+        onRowSelectionChange: ( updater ) => {
+            console.log( "Row selection changed:", updater );
         },
         defaultRowsPerPage: 10,
         realtimeFilter: [
             {
-            name: "Status Filter",
-            render: (updateFilter, filterValue) => (
-                <select
-                value={filterValue}
-                onChange={(e) => updateFilter("status", e.target.value)}
-                >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                </select>
-            ),
+                name: "Status Filter",
+                render: ( updateFilter, filterValue ) => (
+                    <select
+                        value={ filterValue }
+                        onChange={ ( e ) =>
+                            updateFilter( "status", e.target.value )
+                        }
+                    >
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                ),
             },
         ],
         bulkActionComp: () => <button>Bulk Action</button>,
@@ -48,8 +50,8 @@ export const TestCustomTable = () => {
             pageIndex: 0,
             pageSize: 10,
         },
-        onPaginationChange: (updater) => {
-            console.log("Pagination updated:", updater);
+        onPaginationChange: ( updater ) => {
+            console.log( "Pagination updated:", updater );
         },
         typeCounts: [
             {
@@ -64,13 +66,17 @@ export const TestCustomTable = () => {
             },
         ],
         autoLoading: true,
-        handlePagination: (rowsPerPage, pageIndex, filterData) => {
-            console.log("Handle pagination:", rowsPerPage, pageIndex, filterData);
+        handlePagination: ( rowsPerPage, pageIndex, filterData ) => {
+            console.log(
+                "Handle pagination:",
+                rowsPerPage,
+                pageIndex,
+                filterData
+            );
         },
-        perPageOption: [10, 20, 50],
+        perPageOption: [ 10, 20, 50 ],
         successMsg: "Subscribers loaded successfully.",
     };
 
-    return <CustomTable {...demoCustomTableProps} />;
+    return <Table { ...demoTableProps } />;
 };
-

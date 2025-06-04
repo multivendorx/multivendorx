@@ -10,12 +10,10 @@ export const TestDatepicker = () => {
         formField: {
             label: "Select Date",
         },
-        onChange: (field, value) => {
-            console.log(`Changed ${field} to ${value}`);
+        onChange: ( field, value ) => {
+            console.log( `Changed ${ field } to ${ value }` );
         },
     };
 
-    return <Datepicker {...demoDatepickerProps} />;
+    return <Datepicker { ...demoDatepickerProps } />;
 };
-
-

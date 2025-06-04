@@ -7,8 +7,8 @@ export default {
 
 export const TestCatalogCustomizer = () => {
     const demoCatalogCustomizerProps = {
-        onChange: (key, value) => {
-            console.log("Catalog change:", key, value);
+        onChange: ( key, value ) => {
+            console.log( "Catalog change:", key, value );
         },
         proSetting: true,
         setting: {
@@ -19,5 +19,5 @@ export const TestCatalogCustomizer = () => {
         pro_url: "https://example.com/upgrade",
     };
 
-    return <CatalogCustomizer {...demoCatalogCustomizerProps} />;
+    return <CatalogCustomizer { ...demoCatalogCustomizerProps } />;
 };

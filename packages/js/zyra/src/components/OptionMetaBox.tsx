@@ -9,52 +9,52 @@ interface Option {
 
 interface OptionMetaBoxProps {
     option: Option;
-    onChange: (key: keyof Option, value: string) => void;
+    onChange: ( key: keyof Option, value: string ) => void;
     setDefaultValue: () => void;
     hasOpen: boolean;
 }
 
-const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
+const OptionMetaBox: React.FC< OptionMetaBoxProps > = ( {
     option,
     onChange,
     setDefaultValue,
     hasOpen,
-}) => {
-    const [hasOpened, setHasOpened] = useState(hasOpen);
-    const modalRef = useRef<HTMLDivElement>(null); // Use HTMLDivElement instead of HTMLElement
+} ) => {
+    const [ hasOpened, setHasOpened ] = useState( hasOpen );
+    const modalRef = useRef< HTMLDivElement >( null ); // Use HTMLDivElement instead of HTMLElement
 
-    useEffect(() => {
-        setHasOpened(hasOpen);
-    }, [hasOpen]);
+    useEffect( () => {
+        setHasOpened( hasOpen );
+    }, [ hasOpen ] );
 
     return (
         <div
-            onClick={(event) => {
-                setHasOpened(true);
+            onClick={ ( event ) => {
+                setHasOpened( true );
                 event.stopPropagation();
-            }}
+            } }
         >
             <i className="admin-font adminLib-menu"></i>
-            {hasOpened && (
+            { hasOpened && (
                 <Draggable
                     nodeRef={
-                        modalRef as unknown as React.RefObject<HTMLElement>
+                        modalRef as unknown as React.RefObject< HTMLElement >
                     }
                 >
-                    <div ref={modalRef} className="meta-setting-modal">
-                        {" "}
-                        {/* Change from <section> to <div> */}
-                        {/* Close button */}
+                    <div ref={ modalRef } className="meta-setting-modal">
+                        { " " }
+                        { /* Change from <section> to <div> */ }
+                        { /* Close button */ }
                         <button
                             className="meta-setting-modal-button"
-                            onClick={(event) => {
+                            onClick={ ( event ) => {
                                 event.stopPropagation();
-                                setHasOpened(false);
-                            }}
+                                setHasOpened( false );
+                            } }
                         >
                             <i className="admin-font adminLib-cross"></i>
                         </button>
-                        {/* Main content */}
+                        { /* Main content */ }
                         <main className="meta-setting-modal-content">
                             <h3>Input Field Settings</h3>
 
@@ -63,9 +63,9 @@ const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
                                     <p>Value</p>
                                     <input
                                         type="text"
-                                        value={option.value}
-                                        onChange={(e) =>
-                                            onChange("value", e.target.value)
+                                        value={ option.value }
+                                        onChange={ ( e ) =>
+                                            onChange( "value", e.target.value )
                                         }
                                     />
                                 </article>
@@ -74,9 +74,9 @@ const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
                                     <p>Label</p>
                                     <input
                                         type="text"
-                                        value={option.label}
-                                        onChange={(e) =>
-                                            onChange("label", e.target.value)
+                                        value={ option.label }
+                                        onChange={ ( e ) =>
+                                            onChange( "label", e.target.value )
                                         }
                                     />
                                 </article>
@@ -86,15 +86,15 @@ const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
                                     <p>Set default</p>
                                     <input
                                         type="checkbox"
-                                        checked={option.isdefault || false}
-                                        onChange={() => setDefaultValue()}
+                                        checked={ option.isdefault || false }
+                                        onChange={ () => setDefaultValue() }
                                     />
                                 </article>
                             </div>
                         </main>
                     </div>
                 </Draggable>
-            )}
+            ) }
         </div>
     );
 };

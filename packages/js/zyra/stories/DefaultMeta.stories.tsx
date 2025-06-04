@@ -10,13 +10,13 @@ export const TestDefaultMeta = () => {
         defaultvalue: "Default Text",
         name: "meta_name",
         deactive: false,
-        onChange: (field, value) => {
-            console.log(`Field changed: ${field} = ${value}`);
+        onChange: ( field, value ) => {
+            console.log( `Field changed: ${ field } = ${ value }` );
         },
         hideDefaultValue: false,
         hideName: false,
         hideDeactive: false,
     };
 
-    return <DefaultMeta {...demoDefaultMetaProps} />;
+    return <DefaultMeta { ...demoDefaultMetaProps } />;
 };

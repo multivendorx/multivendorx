@@ -27,12 +27,13 @@ export default [
             "jsx-a11y/click-events-have-key-events": "off",
             "jsx-a11y/no-static-element-interactions": "off",
             curly: "off",
+            "no-undef": "off",
         },
     },
 
     // 3. Environment config
     {
-        files: ["**/*.{js,jsx,ts,tsx}"],
+        files: [ "**/*.{js,jsx,ts,tsx}" ],
         languageOptions: {
             globals: {
                 ...globals.browser,
@@ -50,6 +51,6 @@ export default [
 
     // 4. Ignore patterns
     {
-        ignores: ["**/node_modules/**", "**/.wireit/**", "**/build/**"],
+        ignores: [ "**/node_modules/**", "**/.wireit/**", "**/build/**" ],
     },
 ];

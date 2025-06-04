@@ -15,11 +15,11 @@ export const TestToggleSetting = () => {
         wrapperClass: "toggle-wrapper",
         descClass: "toggle-description",
         value: "yes",
-        onChange: (value) => {
-            console.log("Selected value:", value);
+        onChange: ( value ) => {
+            console.log( "Selected value:", value );
         },
         proSetting: false,
     };
 
-    return <ToggleSetting {...demoToggleSettingProps} />;
+    return <ToggleSetting { ...demoToggleSettingProps } />;
 };

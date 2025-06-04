@@ -6,17 +6,17 @@ export interface BlockTextProps {
     value: string;
 }
 
-const BlockText: React.FC<BlockTextProps> = ({
+const BlockText: React.FC< BlockTextProps > = ( {
     wrapperClass,
     blockTextClass,
     value,
-}) => {
+} ) => {
     return (
         <>
-            <div className={wrapperClass}>
+            <div className={ wrapperClass }>
                 <p
-                    className={blockTextClass}
-                    dangerouslySetInnerHTML={{ __html: value }}
+                    className={ blockTextClass }
+                    dangerouslySetInnerHTML={ { __html: value } }
                 ></p>
             </div>
         </>
