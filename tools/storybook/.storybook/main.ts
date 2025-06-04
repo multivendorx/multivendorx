@@ -12,7 +12,7 @@ const config: StorybookConfig = {
     "@storybook/experimental-addon-test"
   ],
   "framework": {
-    "name": "@storybook/react-vite",
+    "name": "@storybook/react-webpack5",
     "options": {}
   }
 };

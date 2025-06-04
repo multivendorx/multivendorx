@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
 import Button from "./DisplayButton";
-import "../styles/web/FromViewer.scss";
+import "../styles/web/FormViewer.scss";
 
 declare global {
     interface Window {
@@ -41,7 +41,7 @@ interface FormFields {
     butttonsetting?: any;
 }
 
-export interface FromViewerProps {
+export interface FormViewerProps {
     formFields: FormFields;
     onSubmit: (data: FormData) => void;
 }
@@ -126,7 +126,7 @@ const Multiselect: React.FC<{
     );
 };
 
-const FromViewer: React.FC<FromViewerProps> = ({ formFields, onSubmit }) => {
+const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
     const [inputs, setInputs] = useState<Record<string, any>>({});
     const formList = formFields.formfieldlist || [];
     const buttonSetting = formFields.butttonsetting || {};
@@ -226,4 +226,4 @@ const FromViewer: React.FC<FromViewerProps> = ({ formFields, onSubmit }) => {
     );
 };
 
-export default FromViewer;
+export default FormViewer;

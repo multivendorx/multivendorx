@@ -6,7 +6,7 @@ interface TextareaProps {
     onChange: (field: string, value: string) => void;
 }
 
-const TemplateTextarea: React.FC<TextareaProps> = ({ formField, onChange }) => {
+const TemplateTextArea: React.FC<TextareaProps> = ({ formField, onChange }) => {
     return (
         <HoverInputRender
             label={formField.label}
@@ -46,4 +46,4 @@ const TemplateTextarea: React.FC<TextareaProps> = ({ formField, onChange }) => {
     );
 };
 
-export default TemplateTextarea;
+export default TemplateTextArea;

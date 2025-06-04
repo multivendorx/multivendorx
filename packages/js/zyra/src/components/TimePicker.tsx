@@ -1,12 +1,12 @@
 import React from "react";
 import HoverInputRender from "./HoverInputRender";
 
-interface TimepickerProps {
+interface TimePickerProps {
     formField: { label: string };
     onChange: (field: string, value: string) => void;
 }
 
-const Timepicker: React.FC<TimepickerProps> = ({ formField, onChange }) => {
+const TimePicker: React.FC<TimePickerProps> = ({ formField, onChange }) => {
     return (
         <HoverInputRender
             label={formField.label}
@@ -35,4 +35,4 @@ const Timepicker: React.FC<TimepickerProps> = ({ formField, onChange }) => {
     );
 };
 
-export default Timepicker;
+export default TimePicker;

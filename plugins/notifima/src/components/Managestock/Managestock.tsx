@@ -3,7 +3,6 @@ import { Dialog } from "@mui/material";
 import Popup from "../Popup/Popup";
 import "./ManagestockTable.scss";
 import { __ } from "@wordpress/i18n";
-import "./ManagestockTable.scss";
 
 const Managestock: React.FC = () => {
    const [openDialog, setOpenDialog] = useState(false);

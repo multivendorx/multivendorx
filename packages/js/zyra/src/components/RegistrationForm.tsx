@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { ReactSortable } from "react-sortablejs";
 import ButtonCustomizer from "./ButtonCustomiser";
 import Elements from "./Elements";
-import SettingMetaBox from "./MetaBox";
+import SettingMetaBox from "./SettingMetaBox";
 import SimpleInput from "./SimpleInput";
 import MultipleOptions from "./MultipleOption";
-import TemplateTextarea from "./TemplateTextArea";
+import TemplateTextArea from "./TemplateTextArea";
 import Attachment from "./Attachment";
 import Recaptcha from "./Recaptcha";
 import Datepicker from "./DatePicker";
-import Timepicker from "./TimePicker";
+import TimePicker from "./TimePicker";
 import Divider from "./Divider";
 import TemplateSection from "./TemplateSection";
 
@@ -103,7 +103,7 @@ export const selectOptions: SelectOption[] = [
     },
     {
         icon: "adminLib-alarm icon-form-address01",
-        value: "timepicker",
+        value: "TimePicker",
         label: "Time Picker",
     },
     {
@@ -549,7 +549,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                 />
                                             )}
                                             {formField.type == "textarea" && (
-                                                <TemplateTextarea
+                                                <TemplateTextArea
                                                     formField={formField}
                                                     onChange={(key, value) =>
                                                         handleFormFieldChange(
@@ -596,8 +596,8 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "timepicker" && (
-                                                <Timepicker
+                                            {formField.type == "TimePicker" && (
+                                                <TimePicker
                                                     formField={formField}
                                                     onChange={(key, value) =>
                                                         handleFormFieldChange(

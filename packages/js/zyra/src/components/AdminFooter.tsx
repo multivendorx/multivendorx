@@ -23,13 +23,7 @@ const AdminFooter: React.FC<FooterProps> = ({ supportLink }) => {
                     className="card-item"
                 >
                     <i className={`admin-font adminLib-${item.icon}`}></i>
-                    <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        {item.title}
-                    </a>
+                    <span className="card-title">{item.title}</span>
                     <p>{item.description}</p>
                 </a>
             ))}
