@@ -77,12 +77,11 @@ const SelectInput: React.FC<SelectInputProps> = ({
                 className={inputClass}
                 value={defaultValue}
                 options={optionsData}
-                onChange={(newValue, actionMeta) =>{
-                    console.log('actionMeta', actionMeta)
-                    console.log('newValue', newValue)
-                    onChange?.(newValue, actionMeta)
-                }
-                }
+                onChange={(newValue, actionMeta) => {
+                    console.log("actionMeta", actionMeta);
+                    console.log("newValue", newValue);
+                    onChange?.(newValue, actionMeta);
+                }}
                 isMulti={type === "multi-select"}
             />
             {proSetting && <span className="admin-pro-tag">pro</span>}

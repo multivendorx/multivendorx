@@ -79,7 +79,10 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                     value={option.value}
                                     checked={checked}
                                     onChange={(e) => {
-                                        if (option.proSetting && !props.khali_dabba) {
+                                        if (
+                                            option.proSetting &&
+                                            !props.khali_dabba
+                                        ) {
                                             props.proChanged?.();
                                         } else {
                                             props.onChange?.(e);

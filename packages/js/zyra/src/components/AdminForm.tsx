@@ -989,7 +989,11 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             name={inputField.key}
                             description={inputField.desc}
                             inputClass={inputField.key}
-                            options={Array.isArray(inputField.options) ? inputField.options : []}
+                            options={
+                                Array.isArray(inputField.options)
+                                    ? inputField.options
+                                    : []
+                            }
                             value={
                                 typeof value === "number"
                                     ? value.toString()
@@ -1015,7 +1019,11 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             selectDeselectValue="Select / Deselect All"
                             description={inputField.desc}
                             inputClass={inputField.key}
-                            options={Array.isArray(inputField.options) ? inputField.options : []}
+                            options={
+                                Array.isArray(inputField.options)
+                                    ? inputField.options
+                                    : []
+                            }
                             type="multi-select"
                             value={
                                 typeof value === "number"

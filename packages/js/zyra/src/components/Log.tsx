@@ -23,10 +23,9 @@ const Log: React.FC<LogProps> = ({
             method: "GET",
             headers: { "X-WP-Nonce": appLocalizer.nonce },
             params: {
-                logcount: 100
+                logcount: 100,
             },
-        })
-        .then((response) => {
+        }).then((response) => {
             setLogData(response.data);
         });
     }, []);
@@ -39,8 +38,8 @@ const Log: React.FC<LogProps> = ({
             method: "GET",
             headers: { "X-WP-Nonce": appLocalizer.nonce },
             params: {
-                action: 'download',
-                file: fileName 
+                action: "download",
+                file: fileName,
             },
             responseType: "blob",
         })
@@ -67,10 +66,9 @@ const Log: React.FC<LogProps> = ({
             headers: { "X-WP-Nonce": appLocalizer.nonce },
             params: {
                 logcount: 100,
-                clear: true 
+                clear: true,
             },
-        })
-        .then(() => {
+        }).then(() => {
             setLogData([]);
         });
     };

@@ -346,13 +346,14 @@ const CustomTable: React.FC<CustomTableProps> = ({
             <div className="filter-wrapper">
                 <div className="wrap-bulk-all-date">
                     {realtimeFilter &&
-                        realtimeFilter.map((filter: RealtimeFilter) =>
-                            filter.render(
-                                handleFilterChange,
-                                filterData[
-                                    filter.name as keyof Record<string, any>
-                                ]
-                            ) //
+                        realtimeFilter.map(
+                            (filter: RealtimeFilter) =>
+                                filter.render(
+                                    handleFilterChange,
+                                    filterData[
+                                        filter.name as keyof Record<string, any>
+                                    ]
+                                ) //
                         )}
                 </div>
                 {bulkActionComp && bulkActionComp()}
