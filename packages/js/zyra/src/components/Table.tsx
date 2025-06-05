@@ -77,7 +77,7 @@ export const TableCell: React.FC< TableCellProps > = ( {
         case "text":
         case "number":
             content = (
-                <td className={ `table-row ${ header.class }` }>
+                <div className={ `table-row ${ header.class }` }>
                     { type === "product" && children }
                     <div className="table-data-container">
                         <BasicInput
@@ -111,7 +111,7 @@ export const TableCell: React.FC< TableCellProps > = ( {
                             } }
                         />
                     </div>
-                </td>
+                </div>
             );
             break;
         case "checkbox":
