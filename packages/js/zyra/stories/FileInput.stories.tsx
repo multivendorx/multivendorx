@@ -7,13 +7,20 @@ export default {
 
 export const TestFileInput = () => {
     const demoFileInputProps = {
-        wrapperClass: "file-input-wrapper",
-        inputClass: "file-input",
-        id: "upload-file",
-        type: "file",
+        wrapperClass: "setting-file-uploader-class",
+        descClass: "settings-metabox-description",
+        description: "This is a simple file input",
+        inputClass: "sample_file form-input",
+        imageSrc: "https://example.com/preview.jpg",
+        imageWidth: 100,
+        imageHeight: 100,
+        buttonClass: "btn btn-purple",
+        openUploader: "Upload Image",
+        type: "hidden",
         name: "userFile",
         value: "",
         placeholder: "Choose a file",
+        proSetting: true,
         onChange: ( e ) => {
             console.log( "File changed:", e.target.files );
         },
@@ -29,18 +36,10 @@ export const TestFileInput = () => {
         onFocus: ( e ) => {
             console.log( "Input focused", e );
         },
-        proSetting: true,
-        imageSrc: "https://example.com/preview.jpg",
-        imageWidth: 100,
-        imageHeight: 100,
-        buttonClass: "upload-btn",
         onButtonClick: ( e ) => {
             console.log( "Upload button clicked", e );
         },
-        openUploader: "cloudUploader",
-        descClass: "file-desc",
-        description: "Upload your profile picture",
     };
 
-    return <FileInput { ...demoFileInputProps } />;
+    return <FileInput key={"sample_file"} { ...demoFileInputProps } />;
 };

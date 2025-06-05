@@ -16,9 +16,7 @@ const inputField = {
 }
 
 const modules = ["enabled", "disabled"];
-
-export const TestMultiCheckbox = () => {
-    const moduleOpen = ()=>{
+const moduleOpen = ()=>{
         console.log("Module Opened");
     }
 
@@ -87,56 +85,44 @@ export const TestMultiCheckbox = () => {
             );
         }
     }
+
+const commonProps = {
+    wrapperClass: "checkbox-list-side-by-side",
+    descClass: "settings-metabox-description",
+    selectDeselectClass: "btn-purple select-deselect-trigger",
+    inputWrapperClass: "toggle-checkbox-header",
+    hintOuterClass: "checkbox-description",
+    hintInnerClass: "hover-tooltip",
+    idPrefix: "toggle-switch",
+    selectDeselectValue: "Select / Deselect All",
+    rightContentClass: "settings-checkbox-description",
+    onChange: change,
+    onMultiSelectDeselectChange: (e) => {
+        console.log("Select/Deselect clicked:", e);
+    },
+    proChanged: () => {
+        console.log("Pro setting toggled");
+    },
+};
+
+export const TestMultiCheckboxSingle = () => {
     const multiCheckBoxPropsDummy = {
-        khali_dabba: false,
-        wrapperClass: "checkbox-list-side-by-side",
-        descClass: "settings-metabox-description",
-        description: "Select the options you want to enable.",
-        selectDeselectClass: "btn-purple select-deselect-trigger",
-        inputWrapperClass: "toggle-checkbox-header",
+        khali_dabba: appLocalizer?.khali_dabba,
+        description: `Redirect users to the homepage when they click on the cart or checkout page. To customize the redirection to a different page, an upgrade to Pro <a href="https://multivendorx.com/woocommerce-request-a-quote-product-catalog/" target="_blank">WooCommerce Catalog Enquiry Pro</a>.`,
         inputInnerWrapperClass: "toggle-checkbox",
-        inputClass: "checkbox-input",
-        hintOuterClass:"dashicons dashicons-info",
-        hintInnerClass:"hover-tooltip",
-        idPrefix: "toggle-switch",
-        selectDeselect: false,
-        selectDeselectValue: "Select All",
-        rightContentClass: "settings-metabox-description",
+        inputClass: "",
+        selectDeselect:false,
         rightContent: false,
-        options: [
+        options:
+        [
             {
-                key: "option1",
-                value: "option1",
-                label: "Option 1",
-                name: "option-group",
-                proSetting: true,
-                hints: "This is option 1"
+                key: "sample_checkbox",
+                label: "If enabled, non-logged-in users can't access the enquiry flow.",
+                value: 'sample_checkbox'
             },
-            // {
-            //     key: "option2",
-            //     value: "option2",
-            //     label: "Option 2",
-            //     name: "option-group",
-            //     proSetting: true,
-            //     hints: "Pro feature"
-            // },
-            // {
-            //     key: "option3",
-            //     value: "option3",
-            //     label: "Option 3",
-            //     name: "option-group"
-            // }
         ],
-        value: ["option1", "option3"],
-        proSetting: false,
-        onChange: change,
-        onMultiSelectDeselectChange: (e) => {
-            console.log("Select/Deselect clicked:", e);
-        },
-        type: "checkbox" as "checkbox",
-        proChanged: () => {
-            console.log("Pro setting toggled");
-        },
+        value:[],
+        ...commonProps,
     };
 
     return <MultiCheckbox { ...multiCheckBoxPropsDummy } />;

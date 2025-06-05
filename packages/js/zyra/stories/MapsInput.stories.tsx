@@ -12,12 +12,12 @@ export default {
 
 export const TestMapsInput = () => {
     const demoMapsInput = {
-        wrapperClass: "maps-input-wrapper",
-        containerId: "demo-maps-container",
-        containerClass: "demo-maps-container",
-        proSetting: true,
-        description: "This is a demo MapsInput component.",
-        descClass: "maps-input-description",
+        wrapperClass: "settings-basic-input-class",
+        descClass: "settings-metabox-description",
+        description: "This is a simple map",
+        containerId: "store-maps",
+        containerClass: "store-maps gmap",
+        proSetting: false,
         Lat: 37.7749, // Example latitude
         Lng: -122.4194, // Example longitude
     };
