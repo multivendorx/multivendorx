@@ -1,4 +1,9 @@
 <?php
+/**
+ * MooWoodle RestAPI file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle;
 
@@ -10,16 +15,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class RestAPI {
     /**
-     * RestAPI construct function
+     * RestAPI construct function.
      */
-    function __construct() {
-        // If user is admin
+    public function __construct() {
+        // If user is admin.
         if ( current_user_can( 'manage_options' ) ) {
             add_action( 'rest_api_init', array( &$this, 'register' ) );
         }
 
-        // If user is admin or customer
-        if ( current_user_can( 'subscriber' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' ) ) {
+        // If user is admin or customer.
+        if ( current_user_can( 'read' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' ) ) {
             add_action( 'rest_api_init', array( &$this, 'register_user_api' ) );
         }
     }
@@ -88,6 +93,11 @@ class RestAPI {
         );
     }
 
+    /**
+     * Rest api register function for users.
+     *
+     * @return void
+     */
     public function register_user_api() {
 
         register_rest_route(
@@ -116,13 +126,13 @@ class RestAPI {
      * @return bool True if the user is an administrator or customer, otherwise false.
      */
     public function user_has_api_access() {
-        return current_user_can( 'subscriber' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' );
+        return current_user_can( 'read' ) || current_user_can( 'customer' ) || current_user_can( 'manage_options' );
     }
 
     /**
      * Seve the setting set in react's admin setting page.
      *
-     * @param mixed $request rest api request object
+     * @param mixed $request rest api request object.
      * @return \WP_Error | \WP_REST_Response
      */
     public function set_settings( $request ) {
@@ -136,14 +146,14 @@ class RestAPI {
             $settingsname  = $request->get_param( 'settingName' );
             $settingsname  = str_replace( '-', '_', 'moowoodle_' . $settingsname . '_settings' );
 
-            // save the settings in database
+            // save the settings in database.
             MooWoodle()->setting->update_option( $settingsname, $settings_data );
 
             /**
              * Moodle after setting save.
              *
-             * @var $settingsname settingname
-             * @var $settingdata settingdata
+             * @var $settingsname settingname.
+             * @var $settingdata settingdata.
              */
             do_action( 'moowoodle_after_setting_save', $settingsname, $settings_data );
 
@@ -188,9 +198,9 @@ class RestAPI {
     }
 
     /**
-     * Test Connection with Moodle server
+     * Test Connection with Moodle server.
      *
-     * @param mixed $request rest request object
+     * @param mixed $request rest request object.
      * @return \WP_Error| \WP_REST_Response
      */
     public function test_connection( $request ) {
@@ -239,9 +249,9 @@ class RestAPI {
     }
 
     /**
-     * Seve the setting set in react's admin setting page
+     * Seve the setting set in react's admin setting page.
      *
-     * @param mixed $request rest api request object
+     * @param mixed $request rest api request object.
      * @return \WP_Error | \WP_REST_Response
      */
     public function synchronize_course( $request ) {
@@ -258,7 +268,7 @@ class RestAPI {
         $sync_setting = is_array( $sync_setting ) ? $sync_setting : array();
 
         // update course and product categories.
-        if ( in_array( 'sync_courses_category', $sync_setting ) ) {
+        if ( in_array( 'sync_courses_category', $sync_setting, true ) ) {
 
             // get all category from moodle.
             $response   = MooWoodle()->external_service->do_request( 'get_categories' );
@@ -291,7 +301,7 @@ class RestAPI {
 		$response = MooWoodle()->external_service->do_request( 'get_courses' );
         $courses  = $response['data'];
 
-        // Update all course
+        // Update all course.
         Util::set_sync_status(
             array(
 				'action'  => __( 'Update Course', 'moowoodle' ),
@@ -316,9 +326,9 @@ class RestAPI {
     }
 
     /**
-     * Get sync status
+     * Get sync status.
      *
-     * @param mixed $request
+     * @param mixed $request all requests params from api.
      * @return \WP_Error|\WP_REST_Response
      */
     public function get_sync_status( $request ) {
@@ -334,7 +344,7 @@ class RestAPI {
 
         $status = $request->get_param( 'parameter' );
 
-        if ( $status == 'course' ) {
+        if ( $status === 'course' ) {
             $response = array(
                 'status'  => Util::get_sync_status( 'course' ),
                 'running' => get_transient( 'course_sync_running' ),
@@ -347,9 +357,9 @@ class RestAPI {
     }
 
     /**
-     * Fetch all courses
+     * Fetch all courses.
      *
-     * @param mixed $request
+     * @param mixed $request all requests params from api.
      * @return \WP_Error|\WP_REST_Response
      */
     public function get_courses( $request ) {
@@ -367,13 +377,13 @@ class RestAPI {
         $search_action  = $request->get_param( 'searchaction' );
         $search_field   = $request->get_param( 'search' );
 
-        // If count_courses is requested, get the course count
+        // If count_courses is requested, get the course count.
         if ( $count_courses ) {
             $courses = MooWoodle()->course->get_course( array() );
             return rest_ensure_response( count( $courses ) );
         }
 
-        // Base filter array
+        // Base filter array.
         $filters = array(
             'limit'  => $limit,
             'offset' => $offset,
@@ -383,14 +393,14 @@ class RestAPI {
             $filters['category_id'] = $category_field;
         }
 
-        // Add search filter
+        // Add search filter.
         if ( $search_action === 'course' ) {
             $filters['fullname'] = $search_field;
         } elseif ( $search_action === 'shortname' ) {
             $filters['shortname'] = $search_field;
         }
 
-        // Get paginated courses
+        // Get paginated courses.
         $courses = MooWoodle()->course->get_course( $filters );
 
         if ( empty( $courses ) ) {
@@ -426,7 +436,7 @@ class RestAPI {
             $moodle_url    = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . "course/edit.php?id={$course['moodle_course_id']}";
             $view_user_url = trailingslashit( MooWoodle()->setting->get_setting( 'moodle_url' ) ) . "user/index.php?id={$course['moodle_course_id']}";
 
-            // Get categories
+            // Get categories.
             $categories    = MooWoodle()->category->get_course_category(
                 array(
 					'moodle_category_id' => $course['category_id'],
@@ -434,7 +444,7 @@ class RestAPI {
             );
             $category_name = ! empty( $categories ) ? $categories[0]['name'] : __( 'Uncategorized', 'moowoodle' );
 
-            // Get enrolled users count
+            // Get enrolled users count.
             $enroled_user = MooWoodle()->enrollment->get_enrollments(
                 array(
 					'course_id' => $course['id'],
@@ -471,13 +481,13 @@ class RestAPI {
      */
     public function get_all_filters( $request ) {
 
-        // Verify nonce
+        // Verify nonce.
         $nonce = $request->get_header( 'X-WP-Nonce' );
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'moowoodle' ), array( 'status' => 403 ) );
         }
 
-        // Fetch all courses
+        // Fetch all courses.
         $courses = MooWoodle()->course->get_course( array() );
         if ( empty( $courses ) ) {
             return rest_ensure_response(
@@ -488,26 +498,26 @@ class RestAPI {
             );
         }
 
-        // Extract unique category IDs
+        // Extract unique category IDs.
         $category_ids = array_unique( wp_list_pluck( $courses, 'category_id' ) );
 
-        // Fetch categories
+        // Fetch categories.
         $category = MooWoodle()->category->get_course_category(
             array(
 				'category_ids' => $category_ids,
             )
         );
 
-        // Prepare formatted course list
+        // Prepare formatted course list.
         $all_courses = array();
         foreach ( $courses as $course ) {
-            $all_courses[ $course['id'] ] = $course['fullname'] ?: "Course {$course['id']}";
+            $all_courses[ $course['id'] ] = $course['fullname'] ? $course['fullname'] : "Course {$course['id']}";
         }
 
-        // Prepare formatted category list
+        // Prepare formatted category list.
         $all_category = array();
         foreach ( $category as $cat ) {
-            $all_category[ $cat['moodle_category_id'] ] = $cat['name'] ?: "Category {$cat['moodle_category_id']}";
+            $all_category[ $cat['moodle_category_id'] ] = $cat['name'] ? $cat['name'] : "Category {$cat['moodle_category_id']}";
         }
 
         return rest_ensure_response(
@@ -525,14 +535,14 @@ class RestAPI {
     /**
      * Save the setting set in react's admin setting page.
      *
-     * @param mixed $request
+     * @param mixed $request all requests params from api.
      * @return \WP_Error|\WP_REST_Response
      */
     public function get_log( $request ) {
         global $wp_filesystem;
         $action = $request->get_param( 'action' );
 
-        if ( $action == 'download' ) {
+        if ( $action === 'download' ) {
             $this->download_log( $request );
         }
 
@@ -553,7 +563,7 @@ class RestAPI {
 
         if ( $clear ) {
             $wp_filesystem->delete( MooWoodle()->log_file );
-            // delete the logfile name from options table
+            // delete the logfile name from options table.
             delete_option( 'moowoodle_log_file' );
 
             return rest_ensure_response( true );
@@ -562,7 +572,7 @@ class RestAPI {
         $logs = array();
 
         if ( file_exists( MooWoodle()->log_file ) ) {
-            // Get the contents of the log file using the filesystem API
+            // Get the contents of the log file using the filesystem API.
             $log_content = $wp_filesystem->get_contents( MooWoodle()->log_file );
             if ( ! empty( $log_content ) ) {
                 $logs = explode( "\n", $log_content );
@@ -575,34 +585,35 @@ class RestAPI {
     /**
      * Download the log.
      *
-     * @param mixed $request
+     * @param mixed $request all requests params from api.
      * @return \WP_Error|\WP_REST_Response
      */
-    function download_log( $request ) {
+    public function download_log( $request ) {
         $nonce = $request->get_header( 'X-WP-Nonce' );
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
             return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'moowoodle' ), array( 'status' => 403 ) );
         }
-        // Get the file parameter from the request
+        // Get the file parameter from the request.
         $file     = $request->get_param( 'file' );
         $file     = basename( $file );
-        $filePath = MooWoodle()->moowoodle_logs_dir . '/' . $file;
+        $file_path = MooWoodle()->moowoodle_logs_dir . '/' . $file;
 
-        // Check if the file exists and has the right extension
-        if ( file_exists( $filePath ) && preg_match( '/\.(txt|log)$/', $file ) ) {
-            // Set headers to force download
+        // Check if the file exists and has the right extension.
+        if ( file_exists( $file_path ) && preg_match( '/\.(txt|log)$/', $file ) ) {
+            // Set headers to force download.
             header( 'Content-Description: File Transfer' );
             header( 'Content-Type: application/octet-stream' );
             header( 'Content-Disposition: attachment; filename="' . $file . '"' );
             header( 'Expires: 0' );
             header( 'Cache-Control: must-revalidate' );
             header( 'Pragma: public' );
-            header( 'Content-Length: ' . filesize( $filePath ) );
+            header( 'Content-Length: ' . filesize( $file_path ) );
 
-            // Clear output buffer and read the file
+            // Clear output buffer and read the file.
             ob_clean();
             flush();
-            readfile( $filePath );
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+            readfile( $file_path );
             exit;
         } else {
             return new \WP_Error( 'file_not_found', 'File not found', array( 'status' => 404 ) );
@@ -628,11 +639,11 @@ class RestAPI {
             );
         }
 
-        $items_per_page = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
-        $page_number    = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
+        $items_per_page = max( 1, (int) $request->get_param( 'row' ) ? $request->get_param( 'row' ) : 10 );
+        $page_number    = max( 1, (int) $request->get_param( 'page' ) ? $request->get_param( 'page' ) : 1 );
         $query_offset   = ( $page_number - 1 ) * $items_per_page;
 
-        // Handle count-only request
+        // Handle count-only request.
         if ( $request->get_param( 'count' ) ) {
             $user_enrollments = MooWoodle()->enrollment->get_enrollments(
                 array(
@@ -643,13 +654,13 @@ class RestAPI {
             return rest_ensure_response( count( $user_enrollments ) );
         }
 
-        // Allow pre-filtering by custom filters
+        // Allow pre-filtering by custom filters.
         $user_courses_data = apply_filters( 'moowoodle_user_courses_cohorts_groups_data', null, $request );
         if ( ! empty( $user_courses_data ) ) {
             return $user_courses_data;
         }
 
-        // Fetch paginated enrollments
+        // Fetch paginated enrollments.
         $user_enrollments = MooWoodle()->enrollment->get_enrollments(
             array(
 				'user_id'       => $current_user->ID,
@@ -683,7 +694,7 @@ class RestAPI {
 
                 $formatted_enrolled_date = '';
                 if ( ! empty( $enrollment['enrolled_date'] ) && strtotime( $enrollment['enrolled_date'] ) ) {
-                    $formatted_enrolled_date = date( 'M j, Y - H:i', strtotime( $enrollment['enrolled_date'] ) );
+                    $formatted_enrolled_date = gmdate( 'M j, Y - H:i', strtotime( $enrollment['enrolled_date'] ) );
                 }
 
                 return array(

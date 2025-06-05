@@ -1,10 +1,30 @@
 <?php
+/**
+ * Endpoint class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle;
 
+/**
+ * MooWoodle Endpoint class
+ *
+ * @class       Emails class
+ * @version     6.0.0
+ * @author      Dualcube
+ */
 class EndPoint {
+	/**
+     * Holds the endpoint name.
+     *
+     * @var string
+     */
 	private $endpoint = 'my-courses';
 
+	/**
+     * EndPoint constructor.
+     */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_endpoint' ) );
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'register_my_courses_tab' ) );
@@ -12,6 +32,9 @@ class EndPoint {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
+	/**
+     * Register the endpoint.
+     */
 	public function register_endpoint() {
 		add_rewrite_endpoint( $this->endpoint, EP_ROOT | EP_PAGES );
 		flush_rewrite_rules();
@@ -24,7 +47,7 @@ class EndPoint {
 	 * @return array Modified menu items with My Courses.
 	 */
 	public function register_my_courses_tab( $menu ) {
-		$position = (int) MooWoodle()->setting->get_setting( 'my_courses_priority' ) ?: 0;
+		$position = (int) MooWoodle()->setting->get_setting( 'my_courses_priority' ) ? MooWoodle()->setting->get_setting( 'my_courses_priority' ) : 0;
 
 		return array_merge(
 			array_slice( $menu, 0, $position + 1, true ),
@@ -36,7 +59,7 @@ class EndPoint {
 	/**
 	 * Render the MooWoodle course section on the customer's My Account page.
 	 *
-	 * This outputs a container div which can be used by JavaScript (e.g., React)
+	 * This outputs a container div which can be used by JavaScript (e.g., React).
 	 * to dynamically load and display the user's enrolled courses.
 	 *
 	 * @return void
@@ -47,7 +70,11 @@ class EndPoint {
 		}
 	}
 
-
+	/**
+     * Enqueues all frontend assets for this endpoint.
+     *
+     * @return void
+     */
 	public function enqueue_assets() {
 		if ( is_account_page() ) {
 			FrontendScripts::load_scripts();

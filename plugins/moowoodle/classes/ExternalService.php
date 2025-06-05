@@ -1,11 +1,16 @@
 <?php
+/**
+ * ExternalService class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * plugin ExternalService class
+ * MooWoodle ExternalService class
  *
  * @version 3.1.7
  * @package MooWoodle
@@ -44,17 +49,17 @@ class ExternalService {
 	}
 
 	/**
-     * Call to moodle core functions.
-     *
-     * @param string $function_name (default: null)
-     * @param array  $request_param (default: null)
-     * @return mixed
-     */
+	 * Call to moodle core functions.
+	 *
+	 * @param string $key           Key name for the Moodle function to call. Default: ''.
+	 * @param array  $request_param Parameters to send with the request. Default: empty array.
+	 * @return mixed
+	 */
 	public function do_request( $key = '', $request_param = array() ) {
-		// Get register core functions
+		// Get register core functions.
 		$moodle_core_functions = $this->get_core_functions();
 
-		// Get the function name
+		// Get the function name.
 		$function_name = '';
 		if ( array_key_exists( $key, $moodle_core_functions ) ) {
 			$function_name = $moodle_core_functions[ $key ];
@@ -83,9 +88,9 @@ class ExternalService {
 
 			$show_adv_log = MooWoodle()->setting->get_setting( 'moowoodle_adv_log' );
 			$show_adv_log = is_array( $show_adv_log ) ? $show_adv_log : array();
-			$show_adv_log = in_array( 'moowoodle_adv_log', $show_adv_log );
+			$show_adv_log = in_array( 'moowoodle_adv_log', $show_adv_log, true );
 
-            // Log the response relult.
+            // Log the response result.
             if ( $show_adv_log ) {
 				MooWoodle()->util->log( 'moowoodle moodle_url:' . $request_url . '&' . $request_query . "\n\t\tmoowoodle response:" . wp_json_encode( $response ) . "\n\n" );
 			}
@@ -99,19 +104,19 @@ class ExternalService {
 	}
 
 	/**
-	 * check server resposne result .
+	 * Check server resposne result .
      *
-	 * @param object | null $response
+	 * @param object | null $response response.
 	 * @return array $response
 	 */
 	private function check_connection( $response ) {
-		if ( $response == null ) {
+		if ( $response === null ) {
 			return array( 'error' => 'Response is not avialable' );
 		}
 
-		// if server response containe error
-		if ( is_wp_error( $response ) || $response['response']['code'] != 200 ) {
-			// if response is object and multiple error codes
+		// if server response containe error.
+		if ( is_wp_error( $response ) || $response['response']['code'] !== 200 ) {
+			// if response is object and multiple error codes.
 			if ( is_object( $response ) && is_array( $response->get_error_code() ) ) {
 				return array( 'error' => implode( ' | ', $response->get_error_code() ) . $response->get_error_message() );
 			}
@@ -127,7 +132,7 @@ class ExternalService {
 		// convert moodle response to array.
 		$response = json_decode( $response['body'], true );
 
-		// if array convertion failed
+		// if array convertion failed.
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
 			return array( 'error' => __( 'Response is not JSON decodeable', 'moowoodle' ) );
 		}
@@ -135,15 +140,15 @@ class ExternalService {
 		// if moodle response containe error.
 		if ( $response && array_key_exists( 'exception', $response ) ) {
 			if ( str_contains( $response['message'], 'Access control exception' ) ) {
-				return array( 'error' => $response['message'] . ' ' . '<a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/settings.php?section=externalservices">Link</a>' );
+				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/settings.php?section=externalservices">Link</a>' );
 			}
 			if ( str_contains( $response['message'], 'Invalid moodle_access_token' ) ) {
-				return array( 'error' => $response['message'] . ' ' . '<a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );
+				return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );
 			}
-			return array( 'error' => $response['message'] . ' ' . '<a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );
+			return array( 'error' => $response['message'] . ' <a href="' . MooWoodle()->setting->get_setting( 'moodle_url' ) . '/admin/webservice/tokens.php">Link</a>' );
 		}
 
-		// success
+		// success.
 		return array(
 			'data'    => $response,
 			'success' => true,

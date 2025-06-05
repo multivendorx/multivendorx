@@ -102,4 +102,28 @@
 	<rule ref="WordPress.Files.FileName">
         <severity>0</severity>
     </rule>
+	<rule ref="WordPress.PHP.YodaConditions.NotYoda">
+        <severity>0</severity>
+    </rule>
+	<rule ref="Generic.Formatting.MultipleStatementAlignment.NotSameWarning">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_query">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_key">
+        <severity>0</severity>
+    </rule>
+	<rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames.classFound">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress.DB.DirectDatabaseQuery.DirectQuery">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress.DB.DirectDatabaseQuery.NoCaching">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress">
+		<exclude-pattern>*/moowoodle.php</exclude-pattern>
+	</rule>
 </ruleset>

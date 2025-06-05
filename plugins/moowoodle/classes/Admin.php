@@ -1,13 +1,27 @@
 <?php
+/**
+ * Admin class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle;
 
+/**
+ * MooWoodle Admin class
+ *
+ * @class       Admin class
+ * @version     6.0.0
+ * @author      Dualcube
+ */
 class Admin {
-
+	/**
+     * Admin constructor.
+     */
 	public function __construct() {
-		// Register submenu for admin menu
+		// Register submenu for admin menu.
 		add_action( 'admin_menu', array( &$this, 'add_submenu' ) );
-		// enqueue scripts in admin panel
+		// enqueue scripts in admin panel.
 		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_admin_script' ) );
 	}
 
@@ -31,14 +45,14 @@ class Admin {
     }
 
 	/**
-	 * Add Option page
+	 * Add Option page.
 	 */
 	public function add_submenu() {
 		$pro_sticker = apply_filters( 'is_moowoodle_pro_inactive', true ) ?
 
 		'<span class="mw-pro-tag" style="font-size: 0.5rem; background: #e35047; padding: 0.125rem 0.5rem; color: #F9F8FB; font-weight: 700; line-height: 1.1; position: absolute; border-radius: 2rem 0; right: -0.75rem; top: 50%; transform: translateY(-50%)">Pro</span>' : '';
 
-		// Array contain moowoodle submenu
+		// Array contain moowoodle submenu.
 		$submenus = array(
 			'courses'         => array(
 				'name'   => __( 'Courses', 'moowoodle' ),
@@ -62,9 +76,9 @@ class Admin {
 			),
 		);
 
-		// Register all submenu
+		// Register all submenu.
 		foreach ( $submenus as $slug => $submenu ) {
-			// prepare subtab if subtab is exist
+			// prepare subtab if subtab is exist.
 			$subtab = '';
 
 			if ( $submenu['subtab'] ) {
@@ -109,7 +123,7 @@ class Admin {
      */
 	public function enqueue_admin_script() {
 
-		if ( get_current_screen()->id == 'toplevel_page_moowoodle' ) {
+		if ( get_current_screen()->id === 'toplevel_page_moowoodle' ) {
 			FrontendScripts::admin_load_scripts();
 			FrontendScripts::enqueue_script( 'moowoodle-components-script' );
 			FrontendScripts::enqueue_style( 'moowoodle-components-style' );
@@ -135,7 +149,7 @@ class Admin {
 	 * @return never
 	 */
 	public function handle_external_redirects() {
-		wp_redirect( esc_url( MOOWOODLE_PRO_SHOP_URL ) );
-		die;
+		wp_safe_redirect( esc_url_raw( MOOWOODLE_PRO_SHOP_URL ) );
+		exit;
 	}
 }

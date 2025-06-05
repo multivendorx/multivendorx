@@ -1,9 +1,14 @@
 <?php
+/**
+ * MooWoodle TestConnection file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle;
 
 /**
- * plugin TestConnection class
+ * Plugin TestConnection class
  *
  * @version 3.1.7
  * @package MooWoodle
@@ -17,42 +22,42 @@ class TestConnection {
 	 * @return mixed
 	 */
 	public static function get_site_info() {
-		// Get the site info
+		// Get the site info.
 		$response = MooWoodle()->external_service->do_request( 'get_site_info' );
 
 		if ( $response && ! isset( $response['error'] ) ) {
 			$response = $response['data'];
 
-			// Get all webservice functions
+			// Get all webservice functions.
 			$webservice_functions = MooWoodle()->external_service->get_core_functions();
 			$webservice_functions = array_values( $webservice_functions );
 
-			// Get register webservice functions
+			// Get register webservice functions.
 			$register_functions = array_map(
-                function ( $function ) {
-					return $function['name'];
+                function ( $all_function ) {
+					return $all_function['name'];
 				},
                 $response['functions']
             );
 
-			// Get missing functions
+			// Get missing functions.
 			$missing_functions = array_diff( $webservice_functions, $register_functions );
 
 			if ( $missing_functions ) {
 				MooWoodle()->util->log( 'It seems that Moodle external web service functions [' . implode( ', ', $missing_functions ) . '] not configured correctly.' );
 			}
 
-			// Check missing setting on pro active
+			// Check missing setting on pro active.
 			if ( MooWoodle()->util->is_khali_dabba() ) {
-				if ( ! in_array( 'auth_moowoodle_user_sync_get_all_users_data', $missing_functions ) ) {
+				if ( ! in_array( 'auth_moowoodle_user_sync_get_all_users_data', $missing_functions, true ) ) {
 					MooWoodle()->util->log( "It seems that you are using MooWoodle Pro but Moodle external web service functions 'auth_moowoodle_user_sync_get_all_users_data' is not configured correctly.\n\n" );
                 }
 
-				if ( ! in_array( 'auth_moowoodle_user_sync', $missing_functions ) ) {
+				if ( ! in_array( 'auth_moowoodle_user_sync', $missing_functions, true ) ) {
 					MooWoodle()->util->log( "It seems that you are using MooWoodle Pro but Moodle external web service functions 'auth_moowoodle_user_sync' is not configured correctly.\n\n" );
                 }
 
-				if ( $response['downloadfiles'] != 1 ) {
+				if ( $response['downloadfiles'] !== 1 ) {
 					MooWoodle()->util->log( "It seems that you are using MooWoodle Pro but Moodle external web service is not configured correctly. Please edit your Moodle External service and enable 'Can download files' (you can find it from 'Show more...' options)\n\n" );
                 }
 			}
@@ -65,7 +70,7 @@ class TestConnection {
 	}
 
 	/**
-	 * Get all Moodle Course
+	 * Get all Moodle Course.
      *
 	 * @return array
 	 */
@@ -83,7 +88,7 @@ class TestConnection {
 	}
 
 	/**
-	 * Get all Moodle Catagory
+	 * Get all Moodle Catagory.
      *
 	 * @return array
 	 */
@@ -183,7 +188,7 @@ class TestConnection {
 	/**
 	 * Update Moodle dummy user.
      *
-	 * @param $user_id dummy user id.
+	 * @param int $user_id dummy user id.
 	 * @return mixed
 	 */
 	public static function update_user( $user_id ) {
@@ -222,8 +227,8 @@ class TestConnection {
 	/**
 	 * Enrol a user to a particular course.
      *
-	 * @param mixed $user_id
-	 * @param mixed $course_id
+	 * @param mixed $user_id user id.
+	 * @param mixed $course_id course id.
 	 * @return mixed response
 	 */
 	public static function enrol_users( $user_id, $course_id ) {
@@ -250,8 +255,8 @@ class TestConnection {
 	/**
 	 * Unnrol a user to a particular course.
      *
-	 * @param mixed $user_id
-	 * @param mixed $course_id
+	 * @param mixed $user_id user id.
+	 * @param mixed $course_id course id.
 	 * @return mixed response
 	 */
 	public static function unenrol_users( $user_id, $course_id ) {
@@ -275,9 +280,9 @@ class TestConnection {
 	}
 
 	/**
-	 * Summary of delete_users
+	 * Summary of delete_users.
      *
-	 * @param mixed $response_data
+	 * @param mixed $user_id user id.
 	 * @return mixed
 	 */
 	public static function delete_users( $user_id ) {

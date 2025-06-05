@@ -1,9 +1,16 @@
 <?php
+/**
+ * Installer class file.
+ *
+ * @package MooWoodle
+ */
+
 namespace MooWoodle;
 
 defined( 'ABSPATH' ) || exit;
+
 /**
- * plugin Install
+ * MooWoodle Installer class
  *
  * @version     3.1.7
  * @package     MooWoodle
@@ -11,12 +18,10 @@ defined( 'ABSPATH' ) || exit;
  */
 class Installer {
     /**
-     * Construct installation.
-     *
-     * @return void
+     * Installer Constructor.
      */
     public function __construct() {
-        if ( get_option( 'moowoodle_version' ) != MOOWOODLE_PLUGIN_VERSION ) {
+        if ( get_option( 'moowoodle_version' ) !== MOOWOODLE_PLUGIN_VERSION ) {
             $this->set_default_settings();
 
             $this->create_databases();
@@ -30,66 +35,71 @@ class Installer {
     }
 
     /**
-     * Database creation functions
+     * Database creation functions.
      *
      * @return void
      */
     public static function create_databases() {
         global $wpdb;
 
-        $collate = '';
+        // Get the charset collate for the tables.
+        $collate = $wpdb->get_charset_collate();
 
-        if ( $wpdb->has_cap( 'collation' ) ) {
-            $collate = $wpdb->get_charset_collate();
+        // SQL for enrollment table.
+        $sql_enrollment = "CREATE TABLE `{$wpdb->prefix}" . Util::TABLES['enrollment'] . "` (
+            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+            `user_id` bigint(20) NOT NULL DEFAULT 0,
+            `user_email` varchar(100) NOT NULL,
+            `course_id` bigint(20) NOT NULL,
+            `cohort_id` bigint(20) NOT NULL,
+            `group_id` bigint(20) NOT NULL,
+            `order_id` bigint(20) NOT NULL,
+            `item_id` bigint(20) NOT NULL,
+            `status` varchar(20) NOT NULL,
+            `enrolled_date` timestamp NULL DEFAULT NULL,
+            `unenrolled_date` timestamp NULL DEFAULT NULL,
+            `reason` text DEFAULT NULL,
+            `group_item_id` bigint(20) NOT NULL,
+            PRIMARY KEY (`id`)
+        ) $collate;";
+
+        // SQL for category table.
+        $sql_category = "CREATE TABLE `{$wpdb->prefix}" . Util::TABLES['category'] . "` (
+            `moodle_category_id` bigint(20) NOT NULL,
+            `name` varchar(255) NOT NULL,
+            `parent_id` bigint(20) NOT NULL DEFAULT 0,
+            PRIMARY KEY (`moodle_category_id`)
+        ) $collate;";
+
+        // SQL for course table.
+        $sql_course = "CREATE TABLE `{$wpdb->prefix}" . Util::TABLES['course'] . "` (
+            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+            `moodle_course_id` bigint(20) NOT NULL,
+            `shortname` varchar(255) NOT NULL,
+            `category_id` bigint(20) NOT NULL,
+            `fullname` text NOT NULL,
+            `product_id` bigint(20) NOT NULL,
+            `startdate` bigint(20) DEFAULT NULL,
+            `enddate` bigint(20) DEFAULT NULL,
+            `created` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `moodle_course_id` (`moodle_course_id`)
+        ) $collate;";
+
+        // Include upgrade functions if not loaded.
+        if ( ! function_exists( 'dbDelta' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         }
 
-        $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES['enrollment'] . "` (
-                `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                `user_id` bigint(20) NOT NULL DEFAULT 0,
-                `user_email` varchar(100) NOT NULL,
-                `course_id` bigint(20) NOT NULL,
-                `cohort_id` bigint(20) NOT NULL,
-                `group_id` bigint(20) NOT NULL,
-                `order_id` bigint(20) NOT NULL,
-                `item_id` bigint(20) NOT NULL,
-                `status` varchar(20) NOT NULL,
-                `enrolled_date` timestamp NULL DEFAULT NULL,
-                `unenrolled_date` timestamp NULL DEFAULT NULL,
-                `reason` text DEFAULT NULL,
-                `group_item_id` bigint(20) NOT NULL,
-                PRIMARY KEY (`id`)
-            ) $collate;"
-        );
-
-        $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES['category'] . "` (
-                `moodle_category_id` bigint(20) NOT NULL,
-                `name` varchar(255) NOT NULL,
-                `parent_id` bigint(20) NOT NULL DEFAULT 0,
-                PRIMARY KEY (`moodle_category_id`)
-            ) $collate;"
-        );
-
-        $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Util::TABLES['course'] . "` (
-                `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                `moodle_course_id` bigint(20) NOT NULL,
-                `shortname` varchar(255) NOT NULL,
-                `category_id` bigint(20) NOT NULL,
-                `fullname` text NOT NULL,
-                `product_id` bigint(20) NOT NULL,
-                `startdate` bigint(20) DEFAULT NULL,
-                `enddate` bigint(20) DEFAULT NULL,
-                `created` datetime DEFAULT NULL,
-                PRIMARY KEY (`id`),
-                UNIQUE KEY `moodle_course_id` (`moodle_course_id`)
-            ) $collate;"
-        );
+        // Run dbDelta on each table creation SQL.
+        dbDelta( $sql_enrollment );
+        dbDelta( $sql_category );
+        dbDelta( $sql_course );
     }
 
+
     /**
-     * Migrate database
+     * Migrate database.
      *
      * @return void
      */
@@ -114,29 +124,30 @@ class Installer {
     public static function migrate_categories() {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . Util::TABLES['category'];
-
         // Get terms with '_category_id' meta and optional '_parent' meta for 'course_cat' taxonomy.
-        $query = $wpdb->prepare(
-            "
-            SELECT 
-                t.term_id,
-                t.name,
-                CAST(tm.meta_value AS UNSIGNED) AS moodle_category_id,
-                COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) AS parent_id
-            FROM {$wpdb->terms} t
-            INNER JOIN {$wpdb->term_taxonomy} tt 
-                ON t.term_id = tt.term_id
-            INNER JOIN {$wpdb->termmeta} tm 
-                ON t.term_id = tm.term_id AND tm.meta_key = '_category_id' AND tm.meta_value > 0
-            LEFT JOIN {$wpdb->termmeta} pm 
-                ON t.term_id = pm.term_id AND pm.meta_key = '_parent'
-            WHERE tt.taxonomy = %s
-            ",
-            'course_cat'
+        $terms = $wpdb->get_results(
+            $wpdb->prepare(
+                "
+                SELECT 
+                    t.term_id,
+                    t.name,
+                    CAST(tm.meta_value AS UNSIGNED) AS moodle_category_id,
+                    COALESCE(CAST(pm.meta_value AS UNSIGNED), 0) AS parent_id
+                FROM {$wpdb->terms} t
+                INNER JOIN {$wpdb->term_taxonomy} tt 
+                    ON t.term_id = tt.term_id
+                INNER JOIN {$wpdb->termmeta} tm 
+                    ON t.term_id = tm.term_id AND tm.meta_key = %s AND tm.meta_value > 0
+                LEFT JOIN {$wpdb->termmeta} pm 
+                    ON t.term_id = pm.term_id AND pm.meta_key = %s
+                WHERE tt.taxonomy = %s
+                ",
+                '_category_id',
+                '_parent',
+                'course_cat'
+            ),
+            ARRAY_A
         );
-
-        $terms = $wpdb->get_results( $query, ARRAY_A );
 
         if ( empty( $terms ) ) {
             return;
@@ -253,7 +264,7 @@ class Installer {
 
         $enrollment_date = $order->get_meta( 'moodle_user_enrolment_date', true );
         if ( is_numeric( $enrollment_date ) ) {
-            $enrollment_date = date( 'Y-m-d H:i:s', $enrollment_date );
+            $enrollment_date = gmdate( 'Y-m-d H:i:s', $enrollment_date );
         }
 
         foreach ( $order->get_items() as $item ) {
@@ -297,35 +308,35 @@ class Installer {
             'moodle_url'          => '',
             'moodle_access_token' => '',
         );
-        // Default value for sso setting
+        // Default value for sso setting.
         $sso_settings = array(
             'moowoodle_sso_enable'     => array(),
             'moowoodle_sso_secret_key' => '',
         );
-        // Default value for display setting
+        // Default value for display setting.
         $display_settings = array(
             'start_end_date'                    => array( 'start_end_date' ),
             'my_courses_priority'               => 0,
             'my_groups_priority'                => 1,
             'moowoodle_create_user_custom_mail' => array(),
         );
-        // Default value for log setting
+        // Default value for log setting.
         $tool_settings = array(
             'moowoodle_adv_log' => array(),
             'moodle_timeout'    => 5,
             'schedule_interval' => 1,
         );
-        // Default value sync course setting
+        // Default value sync course setting.
         $course_settings = array(
             'sync-course-options' => array( 'sync_courses_category', 'sync_courses_sku' ),
             'product_sync_option' => array( 'create', 'update' ),
         );
-        // Default value for sync user setting
+        // Default value for sync user setting.
         $user_settings = array(
             'wordpress_user_role' => array( 'customer' ),
             'moodle_user_role'    => array( '5' ),
         );
-        // Update default settings
+        // Update default settings.
         update_option(
             'moowoodle_general_settings',
             array_merge(

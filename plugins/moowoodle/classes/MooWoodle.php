@@ -1,4 +1,9 @@
 <?php
+/**
+ * MooWoodle class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle;
 
@@ -43,16 +48,16 @@ class MooWoodle {
     public $file = null;
 
     /**
-     * MooWoodle class constructor function
+     * MooWoodle class constructor function.
      *
-     * @param string $file File path of moowoodle plugin
+     * @param string $file File path of moowoodle plugin.
      */
 	public function __construct( $file ) {
 
-        // load config file
+        // load config file.
         require_once trailingslashit( dirname( $file ) ) . 'config.php';
 
-        // store plugin info
+        // store plugin info.
         $this->file                            = $file;
         $this->container['plugin_url']         = trailingslashit( plugins_url( '', $file ) );
         $this->container['plugin_path']        = trailingslashit( dirname( $file ) );
@@ -62,11 +67,11 @@ class MooWoodle {
         $this->container['moowoodle_logs_dir'] = ( trailingslashit( wp_upload_dir( null, false )['basedir'] ) . 'mw-logs' );
         $this->container['is_dev']             = defined( 'WP_ENV' ) && WP_ENV === 'development';
 
-        // activation and deactivation hook
+        // activation and deactivation hook.
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
-        // initialise plugin
+        // initialise plugin.
         add_action( 'admin_menu', array( Admin::class, 'add_menu' ) );
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'load_plugin' ) );
@@ -93,7 +98,7 @@ class MooWoodle {
     }
 
     /**
-     * Add High Performance Order Storage Support
+     * Add High Performance Order Storage Support.
      *
      * @return void
      */
@@ -102,13 +107,13 @@ class MooWoodle {
     }
 
     /**
-     * Init plugin on woocommerce_loaded hook
+     * Init plugin on woocommerce_loaded hook.
      *
      * @return void
      */
     public function load_plugin() {
 
-        // add link on pugin 'active' button
+        // add link on pugin 'active' button.
         if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
             add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'plugin_links' ) );
         }
@@ -116,7 +121,7 @@ class MooWoodle {
         // Init required classes.
         $this->initialize_classes();
 
-		// Init Text Domain
+		// Init Text Domain.
 		$this->load_plugin_textdomain();
 
         /**
@@ -155,7 +160,7 @@ class MooWoodle {
     }
 
     /**
-     * Take action based on if woocommerce is not loaded
+     * Take action based on if woocommerce is not loaded.
      *
      * @return void
      */
@@ -165,6 +170,9 @@ class MooWoodle {
         }
     }
 
+    /**
+     * Migrate data from previous version.
+     */
     public function migrate_from_previous_version() {
         $previous_version = get_option( 'moowoodle_version', '' );
 
@@ -174,14 +182,30 @@ class MooWoodle {
     }
 
     /**
-     * Admin notice for woocommerce deactive
+     * Admin notice for woocommerce deactive.
      *
      * @return void
      */
     public function woocommerce_admin_notice() {
 		?>
 		<div id="message" class="error">
-		<p><?php printf( __( '%1$sMooWoodle is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the MooWoodle to work. Please %5$sinstall & activate WooCommerce%6$s', 'moowoodle' ), '<strong>', '</strong>', '<a target="_blank" href="http://wordpress.org/extend/plugins/woocommerce/">', '</a>', '<a href="' . admin_url( 'plugins.php' ) . '">', '&nbsp;&raquo;</a>' ); ?></p>
+            <p>
+            <?php
+            printf(
+                // translators: 1: <strong>, 2: </strong>, 3: <a>, 4: </a>, 5: <a>, 6: </a>.
+                esc_html__(
+                    '%1$sMooWoodle is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the MooWoodle to work. Please %5$sinstall & activate WooCommerce%6$s',
+                    'moowoodle'
+                ),
+                '<strong>',
+                '</strong>',
+                '<a target="_blank" href="https://wordpress.org/plugins/woocommerce/">',
+                '</a>',
+                '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">',
+                '&nbsp;&raquo;</a>'
+            );
+            ?>
+            </p>
 		</div>
     	<?php
 	}
@@ -189,18 +213,18 @@ class MooWoodle {
     /**
      * Render plugin page links.
      *
-     * @param array $link
+     * @param array $links all links.
      * @return array
      */
     public static function plugin_links( $links ) {
 
-        // Create moowoodle plugin page link
+        // Create moowoodle plugin page link.
         $plugin_links = array(
             '<a href="' . admin_url( 'admin.php?page=moowoodle#&tab=settings&sub-tab=general' ) . '">' . __( 'Settings', 'moowoodle' ) . '</a>',
             '<a href="' . MOOWOODLE_SUPPORT_URL . '">' . __( 'Support', 'moowoodle' ) . '</a>',
         );
 
-        // Append the link
+        // Append the link.
         $links = array_merge( $plugin_links, $links );
 
         if ( ! Util::is_khali_dabba() ) {
@@ -212,7 +236,7 @@ class MooWoodle {
 
 	/**
 	 * Load Localisation files.
-	 * Note: the first-loaded translation file overrides any following ones if the same translation is present
+	 * Note: the first-loaded translation file overrides any following ones if the same translation is present.
      *
 	 * @return void
 	 */
@@ -225,11 +249,9 @@ class MooWoodle {
 	}
 
     /**
-     * get moowoodle log file name
-     *
-     * @return string
+     * Get moowoodle log file name.
      */
-    function initialize_moowoodle_log_file() {
+    public function initialize_moowoodle_log_file() {
         // The log file name is stored in the options table because it is generated with an arbitrary name.
         $log_file_name = get_option( 'moowoodle_log_file' );
 
@@ -245,7 +267,7 @@ class MooWoodle {
      * Magic getter function to get the reference of class.
      * Accept class name, If valid return reference, else Wp_Error.
      *
-     * @param   mixed $class
+     * @param   mixed $class class.
      * @return  object | \WP_Error
      */
     public function __get( $class ) {
@@ -267,10 +289,10 @@ class MooWoodle {
     }
 	/**
      * Initializes the MooWoodle class.
-     * Checks for an existing instance
+     * Checks for an existing instance.
      * And if it doesn't find one, create it.
      *
-     * @param mixed $file
+     * @param mixed $file file name.
      * @return object | null
      */
 	public static function init( $file ) {

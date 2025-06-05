@@ -1,7 +1,19 @@
 <?php
+/**
+ * Enrollment class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle;
 
+/**
+ * MooWoodle Enrollment class
+ *
+ * @class       Emails class
+ * @version     6.0.0
+ * @author      Dualcube
+ */
 class Enrollment {
 	/**
 	 * Variable store woocommerce order object
@@ -10,6 +22,9 @@ class Enrollment {
 	 */
 	public $order = null;
 
+	/**
+     * Enrollment constructor.
+     */
 	public function __construct() {
 		add_action( 'woocommerce_order_status_completed', array( &$this, 'process_order' ), 10, 1 );
 		add_action( 'woocommerce_thankyou', array( &$this, 'enrollment_modified_details' ) );
@@ -20,7 +35,7 @@ class Enrollment {
 	/**
 	 * Process WooCommerce order for Moodle enrollment.
 	 *
-	 * Creates user if gifted, then enrolls user in courses, groups, or cohorts
+	 * Creates user if gifted, then enrolls user in courses, groups, or cohorts.
 	 * based on the products in the order.
 	 *
 	 * @param int $order_id The ID of the WooCommerce order.
@@ -81,7 +96,7 @@ class Enrollment {
                 $enroll_data_base,
                 array(
 					'item_id'       => $item_id,
-					'enrolled_date' => current_time( 'timestamp' ),
+					'enrolled_date' => time(),
 				)
             );
 
@@ -116,24 +131,24 @@ class Enrollment {
 	/**
 	 * Create a WordPress user if not exists.
 	 *
-	 * @param string $first_name
-	 * @param string $last_name
-	 * @param string $user_email
-	 * @return int|false User ID or false on failure
+	 * @param string $first_name first name.
+	 * @param string $last_name last name.
+	 * @param string $user_email email of user.
+	 * @return int|false User ID or false on failure.
 	 */
 	public function create_wordpress_user( $first_name, $last_name, $user_email ) {
 
-		// Check if the user already exists by email
+		// Check if the user already exists by email.
 		$user = get_user_by( 'email', $user_email );
 
 		if ( ! $user ) {
-			// Generate a secure password
+			// Generate a secure password.
 			$password = $this->generate_password();
 
-			// Use the part before @ as username
+			// Use the part before @ as username.
 			$username = sanitize_user( strtolower( strstr( $user_email, '@', true ) ) );
 
-			// Create the user
+			// Create the user.
 			$user_id = wp_create_user( $username, $password, $user_email );
 
 			if ( is_wp_error( $user_id ) ) {
@@ -141,7 +156,7 @@ class Enrollment {
 				return false;
 			}
 
-			// Assign role and update user meta
+			// Assign role and update user meta.
 			wp_update_user(
                 array(
 					'ID'         => $user_id,
@@ -163,7 +178,7 @@ class Enrollment {
 	/**
 	 * Process the enrollment when the order status is complete or a user is added to a group.
 	 *
-	 * @param array $enroll_data
+	 * @param array $enroll_data all enroll data.
 	 * @return bool
 	 */
 	public function process_enrollment( $enroll_data ) {
@@ -174,7 +189,7 @@ class Enrollment {
 		$group_item_id = $enroll_data['group_item_id'] ?? false;
 
 		if ( $group_item_id ) {
-			// Apply the filter and check result
+			// Apply the filter and check result.
 			if ( ! apply_filters( 'moowoodle_check_item', $enroll_data['group_item_id'] ) ) {
 				return false;
 			}
@@ -230,7 +245,7 @@ class Enrollment {
 		$existing_enrollment = reset( $existing_enrollment );
 
 		if ( $existing_enrollment ) {
-			// Add 'id' key to trigger update
+			// Add 'id' key to trigger update.
 			$enrollment_data['id'] = $existing_enrollment['id'];
 		}
 
@@ -313,6 +328,7 @@ class Enrollment {
 	 *
 	 * @param array $enroll_data Enrollment data including purchaser ID, email, first and last names.
 	 * @return int Moodle user ID on success, 0 on failure.
+	 * @throws \Exception If there is an error during user creation or API call.
 	 */
 	public function create_user( $enroll_data ) {
 		$user_id = absint( $enroll_data['purchaser_id'] ?? 0 );
@@ -343,7 +359,7 @@ class Enrollment {
 				return 0;
 			}
 
-			// Generate username from email
+			// Generate username from email.
 			$username = sanitize_user( explode( '@', $email )[0] );
 
 			$user_data = array(
@@ -397,23 +413,25 @@ class Enrollment {
 
 		$password = '';
 
-		// Append a character from each set - gets first 4 characters
+		// Append a character from each set - gets first 4 characters.
 		foreach ( $sets as $set ) {
 			$password .= $set[ array_rand( str_split( $set ) ) ];
 		}
 
-		// use all characters to fill up to $length
-		while ( strlen( $password ) < $length ) {
-			// get a random set
-			$randomSet = $sets[ array_rand( $sets ) ];
+		$password_length = strlen( $password );
+		// use all characters to fill up to $length.
+		while ( $password_length < $length ) {
+			// get a random set.
+			$random_set = $sets[ array_rand( $sets ) ];
 
-			// add a random char from the random set
-			$password .= $randomSet[ array_rand( str_split( $randomSet ) ) ];
+			// add a random char from the random set.
+			$password .= $random_set[ array_rand( str_split( $random_set ) ) ];
 		}
 
 		// shuffle the password string before returning!
 		return str_shuffle( $password );
 	}
+
 	/**
 	 * Update Moodle user details with data from the WordPress purchaser.
 	 *
@@ -437,11 +455,13 @@ class Enrollment {
 
 		return $moodle_user_id;
 	}
+
     /**
-	 * Info about an user to be created/updated in moodle.
-     *
-	 * @param int $moodle_user_id
-	 * @return array
+	 * Info about a user to be created/updated in Moodle.
+	 *
+	 * @param int $purchaser_id    WordPress user ID of the purchaser.
+	 * @param int $moodle_user_id  Optional. Moodle user ID. Default 0.
+	 * @return array Returns an array of user data formatted for Moodle API.
 	 */
 	private function get_user_data( $purchaser_id, $moodle_user_id = 0 ) {
 		// Prepare user data.
@@ -458,7 +478,7 @@ class Enrollment {
 
 		$user_data = array();
 
-		// Moodle user
+		// Moodle user.
 		if ( $moodle_user_id ) {
 			$user_data['id'] = $moodle_user_id;
 		} else {
@@ -485,16 +505,16 @@ class Enrollment {
     /**
 	 * Display WC order thankyou page containt.
      *
-	 * @param int $order_id
+	 * @param int $order_id order id.
 	 * @return void
 	 */
 	public function enrollment_modified_details( $order_id ) {
 		$order = wc_get_order( $order_id );
 
-		if ( $order->get_status() == 'completed' ) {
-			_e( 'Please check your mail or go to My Courses page to access your courses.', 'moowoodle' );
+		if ( $order->get_status() === 'completed' ) {
+			esc_html_e( 'Please check your mail or go to My Courses page to access your courses.', 'moowoodle' );
 		} else {
-			_e( 'Order status is :- ', 'moowoodle' ) . $order->get_status() . '<br>';
+			esc_html_e( 'Order status is :- ', 'moowoodle' ) . $order->get_status() . '<br>';
 		}
 	}
 
@@ -509,21 +529,26 @@ class Enrollment {
 		$startdate = get_post_meta( $product->get_id(), '_course_startdate', true );
 		$enddate   = get_post_meta( $product->get_id(), '_course_enddate', true );
 
-		// Get start end date setting
+		// Get start end date setting.
 		$start_end_date = MooWoodle()->setting->get_setting( 'start_end_date', array() );
-		$start_end_date = in_array(
-			'start_end_date',
-			$start_end_date
-		);
+		$start_end_date = in_array( 'start_end_date', $start_end_date, true );
 
 		if ( $start_end_date ) {
 			if ( $startdate ) {
-				echo esc_html_e( 'Start Date : ', 'moowoodle' ) . esc_html_e( gmdate( 'Y-m-d', $startdate ), 'moowoodle' );
-				print_r( '<br>' );
+				printf(
+					// translators: %s: Start date in Y-m-d format.
+					esc_html__( 'Start Date: %s', 'moowoodle' ),
+					esc_html( gmdate( 'Y-m-d', $startdate ) )
+				);
+				echo '<br>';
 			}
 
 			if ( $enddate ) {
-				echo esc_html_e( 'End Date : ', 'moowoodle' ) . esc_html_e( gmdate( 'Y-m-d', $enddate ), 'moowoodle' );
+				printf(
+					// translators: %s: End date in Y-m-d format.
+					esc_html__( 'End Date: %s', 'moowoodle' ),
+					esc_html( gmdate( 'Y-m-d', $enddate ) )
+				);
 			}
 		}
 	}
@@ -551,6 +576,12 @@ class Enrollment {
 		return $inserted ? $wpdb->insert_id : false;
 	}
 
+	/**
+	 * Retrieves enrollment records based on the given conditions.
+	 *
+	 * @param string $where SQL WHERE clause to filter enrollment records.
+	 * @return array List of enrollment records.
+	 */
 	public static function get_enrollments( $where ) {
 		global $wpdb;
 
@@ -651,7 +682,7 @@ class Enrollment {
 			$query .= $wpdb->prepare( ' LIMIT %d OFFSET %d', intval( $where['limit'] ), intval( $where['offset'] ) );
 		}
 
-		$results = $wpdb->get_results( $query, ARRAY_A );
+		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		// Decode JSON enrollments for grouped results.
 		if ( ! empty( $where['group_by_email'] ) ) {

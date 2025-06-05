@@ -1,20 +1,32 @@
 <?php
+/**
+ * Product class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle\Core;
 
+/**
+ * MooWoodle Product class
+ *
+ * @class       Product class
+ * @version     6.0.0
+ * @author      Dualcube
+ */
 class Product {
     /**
      * Product class constructor function.
      */
     public function __construct() {
         // Add subcription product notice.
-		add_filter( 'woocommerce_product_class', array( &$this, 'product_type_warning' ), 10, 2 );
+		add_filter( 'woocommerce_product_class', array( &$this, 'product_type_warning' ), 10 );
 
 		// Course meta save with WooCommerce product save.
 		add_action( 'woocommerce_process_product_meta', array( &$this, 'save_product_meta_data' ) );
 
-		// Support for woocommerce product custom metadata query
-		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( &$this, 'handling_custom_meta_query_keys' ), 10, 3 );
+		// Support for woocommerce product custom metadata query.
+		add_filter( 'woocommerce_product_data_store_cpt_get_products_query', array( &$this, 'handling_custom_meta_query_keys' ), 10, 2 );
 
 		add_action( 'wp_trash_post', array( $this, 'handle_woocommerce_product_trash' ), 10, 1 );
 
@@ -22,14 +34,13 @@ class Product {
     }
 
 	/**
-	 * Custom metadata query support for woocommerce product.
-     *
-	 * @param mixed $wp_query_args
-	 * @param mixed $query_vars
-	 * @param mixed $data_store_cpt
-	 * @return mixed
+	 * Custom metadata query support for WooCommerce product.
+	 *
+	 * @param mixed $wp_query_args   The arguments passed to WP_Query.
+	 * @param mixed $query_vars      Query variables including meta_query.
+	 * @return mixed Modified WP_Query arguments.
 	 */
-	public function handling_custom_meta_query_keys( $wp_query_args, $query_vars, $data_store_cpt ) {
+	public function handling_custom_meta_query_keys( $wp_query_args, $query_vars ) {
 		if ( ! empty( $query_vars['meta_query'] ) ) {
 			$wp_query_args['meta_query'][] = $query_vars['meta_query'];
 		}
@@ -40,12 +51,12 @@ class Product {
 	/**
 	 * Retrieves a WooCommerce product associated with a Moodle course ID.
 	 *
-	 * @param int|string $course_id The Moodle course ID.
+	 * @param int|string $moodle_course_id The Moodle course ID.
 	 * @return \WC_Product|null The associated product, or null if no product is found.
 	 */
 	public static function get_product_from_moodle_course( $moodle_course_id ) {
 
-		// Query products with matching moodle_course_id
+		// Query products with matching moodle_course_id.
 		$products = wc_get_products(
             array(
 				'meta_query' => array(
@@ -59,14 +70,14 @@ class Product {
             )
         );
 
-		// Return the first product or null
-		return reset( $products ) ?: null;
+		// Return the first product or null.
+		return reset( $products ) ? reset( $products ) : null;
 	}
 
     /**
      * Update All product
      *
-     * @param mixed $courses
+     * @param mixed $courses all courses.
      * @return void
      */
 	public static function update_products( $courses ) {
@@ -75,15 +86,15 @@ class Product {
 		// Manage setting of product sync option.
 		$product_sync_setting = MooWoodle()->setting->get_setting( 'product_sync_option', array() );
 
-		$create_product = in_array( 'create', $product_sync_setting );
-		$update_product = in_array( 'update', $product_sync_setting );
+		$create_product = in_array( 'create', $product_sync_setting, true );
+		$update_product = in_array( 'update', $product_sync_setting, true );
 
 		// None of the options are chosen.
 		if ( ! $create_product && ! $update_product ) {
 			return;
 		}
 
-		// Update all products
+		// Update all products.
 		\MooWoodle\Util::set_sync_status(
             array(
 				'action'  => __( 'Update Product', 'moowoodle' ),
@@ -96,7 +107,7 @@ class Product {
 		foreach ( $courses as $course ) {
 
 			// Do nothing when the course is a site course.
-			if ( $course['format'] == 'site' ) {
+			if ( $course['format'] === 'site' ) {
 				continue;
 			}
 
@@ -115,14 +126,14 @@ class Product {
 
     /**
 	 * Update moodle product data in WordPress WooCommerce.
-	 * If product not exist create new product
+	 * If product not exist create new product.
      *
-	 * @param array $course (moodle course data)
-	 * @param bool  $force_create
+	 * @param array $course moodle course data.
+	 * @param bool  $force_create create or not.
 	 * @return int course id
 	 */
 	public static function update_product( $course, $force_create = true ) {
-		if ( empty( $course ) || $course['format'] == 'site' ) {
+		if ( empty( $course ) || $course['format'] === 'site' ) {
 			return 0;
         }
 
@@ -133,15 +144,15 @@ class Product {
             $product = new \WC_Product_Simple();
         }
 
-		// Product is not exist
+		// Product is not exist.
 		if ( ! $product ) {
 			return 0;
 		}
 
-        // get category term
+        // get category term.
         $term = MooWoodle()->category->get_product_category( $course['categoryid'], 'product_cat' );
 
-        // Set product properties
+        // Set product properties.
         $product->set_name( $course['fullname'] );
         $product->set_slug( $course['shortname'] );
         $product->set_description( $course['summary'] );
@@ -150,7 +161,7 @@ class Product {
         $product->set_virtual( true );
         $product->set_catalog_visibility( $course['visible'] ? 'visible' : 'hidden' );
 
-		// Set product's squ
+		// Set product's sku.
 		try {
 			$product->set_sku( $course['idnumber'] );
 		} catch ( \Exception $error ) {
@@ -188,11 +199,11 @@ class Product {
 	/**
 	 * Delete all the product which id is not prasent in $exclude_ids array.
      *
-	 * @param array $exclude_ids (product ids)
+	 * @param array $exclude_ids product ids.
 	 * @return void
 	 */
 	public static function remove_exclude_ids( $exclude_ids ) {
-        // get all product except $exclude_ids array
+        // get all product except $exclude_ids array.
 		$product_ids = \wc_get_products(
             array(
 				'exclude'    => $exclude_ids,
@@ -216,31 +227,36 @@ class Product {
 	}
 
     /**
-	 * Add meta box panal.
-     *
-	 * @return void
+	 * Adds an admin notice if certain WooCommerce extensions are active without MooWoodle Pro.
+	 *
+	 * @param array $classnames The product type classnames.
+	 * @return array Modified classnames.
 	 */
-	public function product_type_warning( $classnames, $product_type ) {
-		// Get all active plugins
+	public function product_type_warning( $classnames ) {
+		// Get all active plugins.
 		$active_plugins = get_option( 'active_plugins', array() );
 		if ( is_multisite() ) {
 			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
 		}
 
 		if (
-			in_array( 'woocommerce-subscriptions/woocommerce-subscriptions.php', $active_plugins )
+			in_array( 'woocommerce-subscriptions/woocommerce-subscriptions.php', $active_plugins, true )
 			|| array_key_exists( 'woocommerce-product/woocommerce-subscriptions.php', $active_plugins )
-			|| in_array( 'woocommerce-product-bundles/woocommerce-product-bundles.php', $active_plugins )
+			|| in_array( 'woocommerce-product-bundles/woocommerce-product-bundles.php', $active_plugins, true )
 			|| array_key_exists( 'woocommerce-product-bundles/woocommerce-product-bundles.php', $active_plugins )
 		) {
 			add_action(
-                'admin_notices',
-                function () {
+				'admin_notices',
+				function () {
 					if ( MooWoodle()->util->is_khali_dabba() ) {
-						echo '<div class="notice notice-warning is-dismissible"><p>' . __( 'WooComerce Subbcription and WooComerce Product Bundles is supported only with ', 'moowoodle' ) . '<a href="' . MOOWOODLE_PRO_SHOP_URL . '">' . __( 'MooWoodle Pro', 'moowoodle' ) . '</a></p></div>';
+						echo '<div class="notice notice-warning is-dismissible"><p>' .
+							esc_html__( 'WooCommerce Subscription and WooCommerce Product Bundles is supported only with ', 'moowoodle' ) .
+							'<a href="' . esc_url( MOOWOODLE_PRO_SHOP_URL ) . '">' .
+							esc_html__( 'MooWoodle Pro', 'moowoodle' ) .
+							'</a></p></div>';
 					}
 				}
-            );
+			);
 		}
 
 		return $classnames;
@@ -249,25 +265,25 @@ class Product {
 	/**
 	 * Link course to a WooCommerce product (Free version).
 	 *
-	 * @param int $product_id
+	 * @param int $product_id id of product.
 	 * @return int
 	 */
 	public function save_product_meta_data( $product_id ) {
-		// Verify nonce
+		// Verify nonce.
 		$nonce = filter_input( INPUT_POST, 'product_meta_nonce' );
 		if ( ! $nonce || ! wp_verify_nonce( $nonce ) ) {
 			return $product_id;
 		}
 
-		$link_type = sanitize_text_field( filter_input( INPUT_POST, 'link_type' ) ?: '' );
-		$link_item = absint( filter_input( INPUT_POST, 'linked_item' ) ?: 0 );
+		$link_type = sanitize_text_field( filter_input( INPUT_POST, 'link_type' ) ? filter_input( INPUT_POST, 'link_type' ) : '' );
+		$link_item = absint( filter_input( INPUT_POST, 'linked_item' ) ? filter_input( INPUT_POST, 'linked_item' ) : 0 );
 
-		// Only process if it's a course link
+		// Only process if it's a course link.
 		if ( $link_type !== 'course' ) {
 			return $product_id;
 		}
 
-		// Unlink previous course if exists
+		// Unlink previous course if exists.
 		$prev_course_id = absint( get_post_meta( $product_id, 'linked_course_id', true ) );
 		if ( $prev_course_id ) {
 			delete_post_meta( $product_id, 'linked_course_id' );
@@ -286,7 +302,7 @@ class Product {
 			}
 		}
 
-		// Link new course if provided
+		// Link new course if provided.
 		if ( $link_item ) {
 			update_post_meta( $product_id, 'linked_course_id', $link_item );
 

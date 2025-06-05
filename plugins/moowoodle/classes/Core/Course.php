@@ -1,10 +1,25 @@
 <?php
+/**
+ * Course class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle\Core;
 
 use MooWoodle\Util;
 
+/**
+ * MooWoodle Course class
+ *
+ * @class       Course class
+ * @version     6.0.0
+ * @author      Dualcube
+ */
 class Course {
+	/**
+     * Course constructor.
+     */
 	public function __construct() {
 		// Add Link Moodle Course in WooCommerce edit product tab.
 		add_filter( 'woocommerce_product_data_tabs', array( &$this, 'add_additional_product_tab' ), 99, 1 );
@@ -13,6 +28,11 @@ class Course {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 	}
 
+	/**
+     * Enqueues all assets for admin.
+     *
+     * @return void
+     */
 	public function enqueue_admin_assets() {
 
 		\MooWoodle\FrontendScripts::admin_load_scripts();
@@ -25,7 +45,7 @@ class Course {
 	/**
 	 * Creates custom tab for product types.
      *
-	 * @param array $product_data_tabs
+	 * @param array $product_data_tabs all product tabs in admin.
 	 * @return array
 	 */
 	public function add_additional_product_tab( $product_data_tabs ) {
@@ -94,15 +114,15 @@ class Course {
 	 * @return void
 	 */
 	public function get_linkable_courses() {
-		// Verify nonce
+		// Verify nonce.
 		if ( ! check_ajax_referer( 'moowoodle_meta_nonce', 'nonce', false ) ) {
 			wp_send_json_error( __( 'Invalid nonce', 'moowoodle' ) );
 			return;
 		}
 
-		// Retrieve and sanitize input
-		$type             = sanitize_text_field( filter_input( INPUT_POST, 'type' ) ?: '' );
-		$post_id          = absint( filter_input( INPUT_POST, 'post_id' ) ?: 0 );
+		// Retrieve and sanitize input.
+		$type    = sanitize_text_field( filter_input( INPUT_POST, 'type' ) ? filter_input( INPUT_POST, 'type' ) : '' );
+		$post_id = absint( filter_input( INPUT_POST, 'post_id' ) ? filter_input( INPUT_POST, 'post_id' ) : 0 );
 		$linkable_courses = array();
 		$linked_course_id = null;
 
@@ -149,7 +169,7 @@ class Course {
 	 */
 	public function save_courses( $courses ) {
 		foreach ( $courses as $course ) {
-			// Skip site format courses
+			// Skip site format courses.
 			if ( $course['format'] === 'site' ) {
 				continue;
 			}
@@ -259,7 +279,7 @@ class Course {
 			$query .= " LIMIT $limit OFFSET $offset";
 		}
 
-		$results = $wpdb->get_results( $query, ARRAY_A );
+		$results = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		return $results;
 	}

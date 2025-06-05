@@ -1,12 +1,37 @@
 <?php
+/**
+ * Enrollment Email class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle\Emails;
 
+/**
+ * MooWoodle EnrollmentEmail class
+ *
+ * @class       Emails class
+ * @version     6.0.0
+ * @author      Dualcube
+ */
 class EnrollmentEmail extends \WC_Email {
+	/**
+	 * Holds the recipient for email.
+	 *
+	 * @var string
+	 */
 	public $recipient = '';
+	/**
+     * Holds the all email data.
+     *
+     * @var array
+     */
 	public $email_data;
 
-	function __construct() {
+	/**
+     * EnrollmentEmail constructor.
+     */
+	public function __construct() {
 		$this->id             = 'new_moodle_enrollment';
 		$this->title          = __( 'New Moodle Enrollment', 'moowoodle' );
 		$this->description    = __( 'This is a notification email sent to the enrollees for new enrollment.', 'moowoodle' );
@@ -18,6 +43,14 @@ class EnrollmentEmail extends \WC_Email {
 		parent::__construct();
 	}
 
+	/**
+	 * Trigger the email sending process.
+	 *
+	 * @param string $recipient  Email address of the recipient.
+	 * @param array  $email_data Data to be used in the email template.
+	 *
+	 * @return void
+	 */
 	public function trigger( $recipient, $email_data ) {
 		$this->customer_email = $recipient;
 		$this->recipient      = $recipient;
@@ -42,23 +75,34 @@ class EnrollmentEmail extends \WC_Email {
 		}
 	}
 
+	/**
+     * Get default subject.
+     */
 	public function get_default_subject() {
 		$site_name = get_bloginfo( 'name' );
 		return apply_filters(
-			'moowoodle_enrollment_email_subject',
-			sprintf( __( 'Welcome to %s! Your Account and Course Access Details', 'moowoodle' ), $site_name )
-		);
-	}
-
-	public function get_default_heading() {
-		$site_name = get_bloginfo( 'name' );
-		return apply_filters(
 			'moowoodle_enrollment_email_heading',
+			// translators: %s: Site name.
 			sprintf( __( 'Welcome to %s!', 'moowoodle' ), $site_name )
 		);
 	}
 
-	function get_content_html() {
+	/**
+     * Get default heading.
+     */
+	public function get_default_heading() {
+		$site_name = get_bloginfo( 'name' );
+		return apply_filters(
+			'moowoodle_enrollment_email_subject',
+			// translators: %s: Site name.
+			sprintf( __( 'Welcome to %s! Your Account and Course Access Details', 'moowoodle' ), $site_name )
+		);
+	}
+
+	/**
+     * Get content for template.
+     */
+	public function get_content_html() {
 		ob_start();
 		MooWoodle()->util->get_template(
             $this->template_html,
@@ -74,7 +118,10 @@ class EnrollmentEmail extends \WC_Email {
 		return ob_get_clean();
 	}
 
-	function get_content_plain() {
+	/**
+     * Get content for plain template.
+     */
+	public function get_content_plain() {
 		ob_start();
 		MooWoodle()->util->get_template(
             $this->template_plain,

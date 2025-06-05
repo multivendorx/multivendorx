@@ -1,8 +1,23 @@
 <?php
+/**
+ * Email class file.
+ *
+ * @package MooWoodle
+ */
 
 namespace MooWoodle\Emails;
 
+/**
+ * MooWoodle Emails class
+ *
+ * @class       Emails class
+ * @version     6.0.0
+ * @author      Dualcube
+ */
 class Emails {
+	/**
+     * Emails constructor.
+     */
 	public function __construct() {
 		add_action( 'moowoodle_after_enrol_moodle_user', array( &$this, 'send_enrollment_confirmation' ), 10, 2 );
 		add_filter( 'woocommerce_email_classes', array( &$this, 'moowoodle_emails' ) );
@@ -11,7 +26,7 @@ class Emails {
 	/**
 	 * MooWoodle emails
      *
-	 * @param array $emails
+	 * @param array $emails all email class array.
 	 * @return array
 	 */
 	public function moowoodle_emails( $emails ) {
@@ -22,8 +37,9 @@ class Emails {
 	/**
 	 * Send email
      *
-	 * @param string $email_key (default: null)
-	 * @param array  $email_data (default: array)
+	 * @param string $email_key default: null.
+	 * @param string $user_email default: null.
+	 * @param array  $email_data default: array.
 	 * @return bool | string
 	 */
 	public function send_email( $email_key = '', $user_email = '', $email_data = array() ) {
@@ -53,7 +69,7 @@ class Emails {
 
 		$email_content = array();
 
-		// Optional fields
+		// Optional fields.
 		if ( ! empty( $enrollments['teacher_email'] ) ) {
 			$email_content['teacher_email'] = sanitize_email( $enrollments['teacher_email'] );
 		}
@@ -65,10 +81,10 @@ class Emails {
 			}
 		}
 
-		// Hook for additional enrollment data (classroom, cohort, etc.)
+		// Hook for additional enrollment data (classroom, cohort, etc.).
 		$email_content = apply_filters( 'moowoodle_enrollment_email_data', $email_content, $enrollments );
 
-		// Course data
+		// Course data.
 		if ( ! empty( $enrollments['course'] ) && is_array( $enrollments['course'] ) ) {
 			$enrolled_course_ids = array_map( 'intval', $enrollments['course'] );
 			$enrolled_courses    = MooWoodle()->course->get_course( array( 'ids' => $enrolled_course_ids ) );

@@ -1,6 +1,8 @@
 <?php
 /**
  * New enrollment email (HTML)
+ *
+ * @package MooWoodle
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -95,7 +97,7 @@ $user = get_user_by( 'email', $args['user_email'] );
 
 <p>
 	If you have any questions or face any issues logging in, feel free to reach out to our support team at 
-	<a href="mailto:<?php echo esc_attr( 'support@' . parse_url( home_url(), PHP_URL_HOST ) ); ?>"><?php echo esc_html( 'support@' . parse_url( home_url(), PHP_URL_HOST ) ); ?></a>.
+	<a href="mailto:<?php echo esc_attr( 'support@' . wp_parse_url( home_url(), PHP_URL_HOST ) ); ?>"><?php echo esc_html( 'support@' . wp_parse_url( home_url(), PHP_URL_HOST ) ); ?></a>.
 </p>
 
 <p>Wishing you a great learning experience!</p>

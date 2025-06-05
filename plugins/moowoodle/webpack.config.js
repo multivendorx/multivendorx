@@ -186,11 +186,5 @@ module.exports = {
         "react-dom": "ReactDOM",
         "@wordpress/element": ["wp", "element"],
         "@wordpress/i18n": ["wp", "i18n"],
-        "@wordpress/components": ["wp", "components"],
-        "@wordpress/data": ["wp", "data"],
-        "@wordpress/hooks": ["wp", "hooks"],
-        "@wordpress/plugins": ["wp", "plugins"],
-        "@wordpress/blocks": ["wp", "blocks"],
-        "@wordpress/block-editor": ["wp", "blockEditor"],
     },
 };
