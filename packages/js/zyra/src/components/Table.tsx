@@ -168,7 +168,7 @@ export const TableCell: React.FC< TableCellProps > = ( {
 
     return (
         <>
-            <td title={ title }>{ content }</td>
+            <div title={ title }>{ content }</div>
         </>
     );
 };
