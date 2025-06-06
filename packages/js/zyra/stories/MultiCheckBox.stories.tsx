@@ -113,6 +113,7 @@ export const TestMultiCheckboxSingle = () => {
         inputClass: "",
         selectDeselect:false,
         rightContent: false,
+        label: "Single Checkbox",
         options:
         [
             {
@@ -125,5 +126,45 @@ export const TestMultiCheckboxSingle = () => {
         ...commonProps,
     };
 
-    return <MultiCheckbox { ...multiCheckBoxPropsDummy } />;
+    return <MultiCheckbox key={"sample_checkbox"} { ...multiCheckBoxPropsDummy } />;
+};
+
+
+export const TestMultiCheckboxMulti = () => {
+    const multiCheckBoxPropsDummy = {
+        khali_dabba: appLocalizer?.khali_dabba,
+        description: ``,
+        inputInnerWrapperClass: "toggle-checkbox",
+        inputClass: "",
+        lable: "Multi Checkbox",
+        selectDeselect:true,
+        rightContent: true,
+        options:
+        [
+            {
+                    key: "sync_courses_category",
+                    label: 'Course categories', 
+                    hints: "Scan the entire Moodle course category structure and synchronize it with the WordPress category listings.", 
+                    value: "sync_courses_category",
+                },
+                {
+                    key: "sync_courses_sku",
+                    label: 'Course ID number - Product SKU', 
+                    hints: "Retrieves the course ID number and assigns it as the product SKU.", 
+                    value: "sync_courses_sku",
+                    proSetting: true,
+                },
+                {
+                    key: "sync_image",
+                    label: 'Course image', 
+                    hints: "Copies course images and sets them as WooCommerce product images.", 
+                    value: "sync_image",
+                    proSetting: true,
+                },
+        ],
+        value:[],
+        ...commonProps,
+    };
+
+    return <MultiCheckbox key={"sync-course-options"} { ...multiCheckBoxPropsDummy } />;
 };

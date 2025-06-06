@@ -1,6 +1,6 @@
 import BasicInput from "../src/components/BasicInput";
 import { ChangeEvent, FocusEvent, MouseEvent } from "react";
-import "../src/styles/web/AdminForm.scss"
+import "./global.scss";
 
 export default {
     title: "Zyra/Components/BasicInput",
@@ -9,7 +9,7 @@ export default {
 
 const commonArgs = {
     wrapperClass: "setting-form-input",
-    descClass: "input-description",
+    descClass: "settings-metabox-description",
     onChange: ( e: ChangeEvent< HTMLInputElement > ) => {
         console.log( "Changed:", e.target.value );
     },
@@ -30,7 +30,6 @@ const commonArgs = {
 export const TestBasicInputTextFree = () => {
     const basicInputProps = {
         type: "text" as "text",
-        label: 'Sample Text Box', 
         description: "This is a simple text box (text, url, email, password, number)",
         placeholder: "write something",
         ...commonArgs,
@@ -42,7 +41,6 @@ export const TestBasicInputTextFree = () => {
 export const TestBasicInputTextPro = () => {
     const basicInputProps = {
         type: "text" as const,
-        label: 'Sample Text Box with parameter', 
         description: "This is a simple text box with parameter",
         parameter: 'days',
         proSetting: true,
@@ -55,7 +53,7 @@ export const TestBasicInputTextPro = () => {
 export const TestBasicInputNormalFile = () => {
     const basicInputProps = {
         type: "file" as const,
-        label: "Sample normal file",
+        inputClass: "setting-form-input",
         description: "This is a simple file input",
         ...commonArgs,
     };
@@ -69,7 +67,6 @@ export const TestBasicInputColor = () => {
         inputClass: "setting-color-picker",
         descClass: "settings-metabox-description",
         type: "color" as "color",
-        label: 'Sample Color', 
         description: "This is a simple color",
         onChange: ( e: ChangeEvent< HTMLInputElement > ) => {
         console.log( "Changed:", e.target.value );
@@ -95,7 +92,6 @@ export const TestBasicInputColor = () => {
 export const TestBasicInputRange = () => {
     const basicInputProps = {
         type: "range" as "range",
-        label: 'Sample Range',
         inputLabel: "Range Input",
         rangeUnit: 'px',
         ...commonArgs,
@@ -111,8 +107,7 @@ export const TestBasicInputButton = () => {
         inputClass: "btn default-btn",
         descClass: "settings-metabox-description",
         type: "button" as "button",
-        label: 'Sample button', 
-        desc: "This is a simple button",
+        description: "This is a simple button",
         placeholder: "write something",
         onClick: ( e: MouseEvent< HTMLInputElement > ) => {
             console.log( "Button clicked:", e.target );

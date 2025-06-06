@@ -1,0 +1,294 @@
+$theme-color:       #522c81;
+$accent-color:      #e35047;
+$light-accent-color:#e26f76;
+
+$color-white:   	#fff;
+$color-black: 		#181819;
+$color-light-black: #2d2d2d;
+$color-active: 		#65438f;
+
+$menu-color: 		#f9f8fb;
+
+$background-color: 	#f9f9f9;
+
+$border-light-small   : 0.063rem solid #e0e4e9;
+$border-light-medium  : 0.120rem solid #e0e4e9;
+
+$border-black-small   : 0.063rem solid #111418;
+$border-black-medius  : 0.115rem solid #111418;
+
+$border-theme-small   : 0.063rem solid #65438f;
+$border-theme-medius  : 0.115rem solid #65438f;
+$border-theme-large   : 0.125rem solid #65438f;
+
+$border-radius-small    : 0.25rem;
+$border-radius-medium   : 0.438rem;
+$border-radius-large    : 0.5rem;
+$border-radius-button   : 8rem;
+
+
+.settings-metabox-description-code {
+    padding: .5rem 1rem;
+    margin: .5rem 0;
+    background: #fdf9fb;
+    color: $theme-color;
+    border-left: 0.2rem solid $color-active;
+}
+
+.attachment-section {
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+
+.attachment-label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5rem;
+    border-width: 0.125rem;
+    border-color: #D1D5DB;
+    border-style: dashed;
+    width: 100%;
+    height: 9rem;
+    cursor: pointer;
+
+    .wrapper {
+    display: flex;
+    padding-top: 1.25rem;
+    padding-bottom: 1.5rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    i {
+        font-size: 1.5rem;
+        color: #6B7280;
+    }
+
+    .heading {
+        margin-bottom: 0.5rem;
+        line-height: 1.25rem;
+        color: #6B7280;
+        text-align: center;
+
+        span {
+        font-weight: 600;
+        }
+    }
+    }
+    }
+}
+
+.setting-form-input {
+    position: relative;
+
+    .parameter {
+    position: absolute;
+    top: .41rem;
+    right: 0.313rem;
+    border-left: $border-light-small;
+    padding: 0 0.75rem;
+
+    }
+}
+
+.settings-metabox-description {
+    margin-top: 0.625rem !important; // Overwrite common.scss
+    font-style: italic;
+    color: #72727599;
+    font-size: 0.813rem !important; // Overwrite common.scss
+    width: 100%;
+
+    b{
+    color: #000000b7;
+    }
+
+    p {
+    margin-bottom: 0.5rem;
+    }
+}
+
+.setting-form-input {
+    position: relative;
+
+    .parameter {
+    position: absolute;
+    top: .41rem;
+    right: 0.313rem;
+    border-left: $border-light-small;
+    padding: 0 0.75rem;
+
+    }
+}
+
+.setting-section-divider {
+    margin: 2rem 0;
+    padding: 0;
+    border-top: 0.05rem solid rgba(82, 44, 129, 0.09);
+    position: relative;
+
+    .section-hint {
+    text-align: center;
+    margin-top: 0.813rem;
+    }
+
+    span {
+    position: absolute;
+    top: -0.063rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0 1rem;
+    background: $color-white;
+    }
+}
+
+.settings-calender {
+
+    .rmdp-wrapper {
+    margin-bottom: 0.5rem;
+    }
+}
+
+.settings-color-picker-parent-class {
+    width: 50%;
+}
+
+.setting-color-picker {
+    padding: 0;
+}
+
+.setting-form-input {
+    position: relative;
+
+    .parameter {
+    position: absolute;
+    top: .41rem;
+    right: 0.313rem;
+    border-left: $border-light-small;
+    padding: 0 0.75rem;
+
+    }
+}
+
+.settings-basic-input-class {
+
+    #store-maps {
+    position: relative;
+    overflow: hidden;
+
+    .mapboxgl-canvas-container {
+        touch-action: pinch-zoom;
+
+        .mapboxgl-marker {
+        position: absolute;
+        top: 0;
+        left: 0;
+        will-change: transform;
+        opacity: 1;
+        transition: opacity .2s;
+        }
+    }
+
+    .mapboxgl-control-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+
+        .mapboxgl-ctrl-top-right {
+        background: $color-white;
+        width: 50%;
+        margin: 3% auto;
+
+        .mapboxgl-ctrl {
+            display: flex;
+            align-items: center;
+            position: relative;
+            flex-direction: column;
+
+            .mapboxgl-ctrl-geocoder--icon-search {
+            position: absolute;
+            left: 0.2rem;
+            top: 0.475rem;
+            width: 2rem;
+            }
+
+            input {
+            padding-left: 2rem;
+            }
+
+            .suggestions-wrapper {
+            .suggestions {
+                background-color: #fff;
+                border-radius: $border-black-small;
+                left: 0;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                position: absolute;
+                width: 100%;
+                top: 110%;
+                top: calc(100% + 0.375rem);
+                z-index: 1000;
+                overflow: hidden;
+
+                li {
+                padding: 0.2rem 0.5rem;
+
+                a {
+                    color: #181718;
+
+                    .mapboxgl-ctrl-geocoder--suggestion {
+                    padding: 0.5rem;
+                    }
+
+                    .mapboxgl-ctrl-geocoder--suggestion-address {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    }
+                }
+                }
+
+                .active {
+                background-color: #f3f3f3;
+                }
+            }
+            }
+
+            .mapboxgl-ctrl-geocoder--pin-right {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+
+            .mapboxgl-ctrl-geocoder--button {
+                position: absolute;
+                background: transparent;
+                right: 0;
+                top: -0.45rem; // For center position
+            }
+
+            .mapboxgl-ctrl-geocoder--icon-loading {
+                opacity: 0;
+
+            }
+            }
+        }
+        }
+
+        .mapboxgl-ctrl-bottom-right {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+
+        a {
+            color: $color-active;
+            font-size: 0.75rem;
+            text-decoration: underline;
+        }
+        }
+    }
+    }
+}

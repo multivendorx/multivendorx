@@ -1,4 +1,5 @@
 import Section from "../src/components/Section";
+import "./global.scss";
 
 export default {
     title: "Zyra/Components/Section",

@@ -1,4 +1,5 @@
 import CalendarInput from "../src/components/CalendarInput";
+import "./global.scss";
 
 export default {
     title: "Zyra/Components/CalendarInput",
@@ -9,7 +10,6 @@ export const TestMultipleCalendarRange = () => {
     const demoCalendarInputProps = {
         wrapperClass:"settings-calender",
         inputClass:"teal",
-        label: 'Sample multiple calender with range', 
         format: "YYYY-MM-DD",
         description: "This is a simple calender",
         multiple: true,
@@ -27,7 +27,6 @@ export const TestMultipleCalendar = () => {
     const demoCalendarInputProps = {
         wrapperClass:"settings-calender",
         inputClass:"teal",
-        label: 'Sample multiple calender',
         description: "This is a simple calender",
         format: "YYYY-MM-DD",
         multiple: true,
@@ -44,7 +43,6 @@ export const TestSingleCalendar = () => {
     const demoCalendarInputProps = {
         wrapperClass:"settings-calender",
         inputClass:"teal",
-        label: 'Sample single calender',
         description: "This is a simple calender",
         format: "YYYY-MM-DD",
         value: "",
