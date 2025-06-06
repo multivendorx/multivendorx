@@ -1,7 +1,7 @@
 import Elements from "../src/components/Elements";
 
 export default {
-    title: "Zyra/Components/Elements",
+    title: "Zyra/Components/Form/Elements",
     component: Elements,
 };
 

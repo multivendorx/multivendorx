@@ -5,7 +5,7 @@ import Label from "./Label";
 import Section from "./Section";
 import BlockText from "./BlockText";
 import ButtonCustomizer from "./ButtonCustomiser";
-import FormCustomizer from "./FormCustomizer";
+import FormCustomizer from "./NotifimaFormCustomizer";
 import FreeProFormCustomizer from "./FreeProFormCustomizer";
 import CatalogCustomizer from "./CatalogCustomizer";
 import MultiCheckboxTable from "./MultiCheckboxTable";
@@ -86,7 +86,6 @@ interface InputField {
         | "state"
         | "radio-color"
         | "radio-select"
-        | "stock-alert-checkbox"
         | "radio"
         | "multi-number"
         | "button"
@@ -106,7 +105,7 @@ interface InputField {
         | "section"
         | "blocktext"
         | "button-customizer"
-        | "stock-alert-form-customizer"
+        | "notifima-form-customizer"
         | "form-customizer"
         | "catalog-customizer"
         | "multi-checkbox-table"
@@ -115,7 +114,6 @@ interface InputField {
         | "syncbutton"
         | "sync-map"
         | "sso-key"
-        | "testconnection"
         | "log"
         | "checkbox-custom-img"
         | "api-connect"
@@ -302,9 +300,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
     };
 
     const moduleEnabledChanged = (
-        moduleEnabled: string,
+        moduleEnabled: string | undefined,
         dependentSetting: string = "",
-        dependentPlugin: boolean = false
+        dependentPlugin: boolean = false,
+        dependentPluginName: string | undefined = ""
     ): boolean => {
         let popupData: ModulePopupProps = {
             moduleName: "",
@@ -324,8 +323,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             popupData.settings = dependentSetting;
         }
 
-        if ( dependentPlugin ) {
-            popupData.plugin = "notifima";
+        if ( ! dependentPlugin ) {
+            popupData.plugin = dependentPluginName;
         }
 
         if ( popupData.moduleName || popupData.settings || popupData.plugin ) {
@@ -720,6 +719,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
+                // Check in MVX
                 case "color":
                     input = (
                         <BasicInput
@@ -794,6 +794,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
+                // Check in MVX
                 case "map":
                     input = (
                         <Suspense fallback={ <div>Loading map...</div> }>
@@ -812,7 +813,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         </Suspense>
                     );
                     break;
-
+                // Check in MVX
                 case "google-map":
                     input = (
                         <GoogleMap
@@ -822,7 +823,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-
+                // Check in MVX
                 case "button":
                     input = (
                         <div className="form-button-group">
@@ -847,7 +848,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         </div>
                     );
                     break;
-
+                // Check in MVX
                 case "multi-number":
                     input = (
                         <MultiNumInput
@@ -953,6 +954,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     );
                     break;
 
+                // Check in MVX
                 // for radio color input
                 case "radio-color":
                     input = (
@@ -1058,6 +1060,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
+                // Check in MVX
                 case "country":
                     input = (
                         <SelectInput
@@ -1098,6 +1101,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
+                // Check in MVX
                 case "state":
                     input = (
                         <SelectInput
@@ -1206,79 +1210,79 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     );
                     break;
                 // For particular plugin required checkbox ( like if stock-alert plugin not active the checkbox not open)
-                case "stock-alert-checkbox":
-                    input = (
-                        <MultiCheckBox
-                            khali_dabba={ appLocalizer?.khali_dabba ?? false }
-                            wrapperClass="checkbox-list-side-by-side"
-                            descClass="settings-metabox-description"
-                            description={ inputField.desc }
-                            selectDeselectClass="btn-purple select-deselect-trigger"
-                            inputWrapperClass="toggle-checkbox-header"
-                            inputInnerWrapperClass="toggle-checkbox"
-                            inputClass={ inputField.class }
-                            hintOuterClass="dashicons dashicons-info"
-                            hintInnerClass="hover-tooltip"
-                            idPrefix="toggle-switch"
-                            selectDeselect={ inputField.select_deselect }
-                            selectDeselectValue="Select / Deselect All"
-                            rightContentClass="settings-metabox-description"
-                            rightContent={ inputField.right_content }
-                            options={
-                                Array.isArray( inputField.options )
-                                    ? inputField.options
-                                    : []
-                            }
-                            value={
-                                Array.isArray( value )
-                                    ? value
-                                    : typeof value === "string"
-                                    ? [ value ]
-                                    : []
-                            }
-                            proSetting={ isProSetting(
-                                inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e ) => {
-                                const dependentPlugin =
-                                    inputField.dependentPlugin;
-                                if (
-                                    ! proSettingChanged(
-                                        inputField.proSetting ?? false
-                                    ) &&
-                                    ! moduleEnabledChanged(
-                                        String(
-                                            inputField.moduleEnabled ?? ""
-                                        ),
-                                        inputField.dependentSetting,
-                                        dependentPlugin
-                                    )
-                                ) {
-                                    if ( inputField.dependentPlugin ) {
-                                        handleChange(
-                                            e,
-                                            inputField.key,
-                                            "multiple"
-                                        );
-                                    }
-                                }
-                            } }
-                            onMultiSelectDeselectChange={ ( ) =>
-                                handlMultiSelectDeselectChange(
-                                    inputField.key,
-                                    Array.isArray( inputField.options )
-                                        ? inputField.options.map(
-                                              ( { value, proSetting } ) => ( {
-                                                  value: String( value ), // Convert to string
-                                                  proSetting,
-                                              } )
-                                          )
-                                        : [] // Default to an empty array if it's not an array
-                                )
-                            }
-                        />
-                    );
-                    break;
+                // case "stock-alert-checkbox":
+                //     input = (
+                //         <MultiCheckBox
+                //             khali_dabba={ appLocalizer?.khali_dabba ?? false }
+                //             wrapperClass="checkbox-list-side-by-side"
+                //             descClass="settings-metabox-description"
+                //             description={ inputField.desc }
+                //             selectDeselectClass="btn-purple select-deselect-trigger"
+                //             inputWrapperClass="toggle-checkbox-header"
+                //             inputInnerWrapperClass="toggle-checkbox"
+                //             inputClass={ inputField.class }
+                //             hintOuterClass="dashicons dashicons-info"
+                //             hintInnerClass="hover-tooltip"
+                //             idPrefix="toggle-switch"
+                //             selectDeselect={ inputField.select_deselect }
+                //             selectDeselectValue="Select / Deselect All"
+                //             rightContentClass="settings-metabox-description"
+                //             rightContent={ inputField.right_content }
+                //             options={
+                //                 Array.isArray( inputField.options )
+                //                     ? inputField.options
+                //                     : []
+                //             }
+                //             value={
+                //                 Array.isArray( value )
+                //                     ? value
+                //                     : typeof value === "string"
+                //                     ? [ value ]
+                //                     : []
+                //             }
+                //             proSetting={ isProSetting(
+                //                 inputField.proSetting ?? false
+                //             ) }
+                //             onChange={ ( e ) => {
+                //                 const dependentPlugin =
+                //                     inputField.dependentPlugin;
+                //                 if (
+                //                     ! proSettingChanged(
+                //                         inputField.proSetting ?? false
+                //                     ) &&
+                //                     ! moduleEnabledChanged(
+                //                         String(
+                //                             inputField.moduleEnabled ?? ""
+                //                         ),
+                //                         inputField.dependentSetting,
+                //                         dependentPlugin
+                //                     )
+                //                 ) {
+                //                     // if ( inputField.dependentPlugin ) {
+                //                         handleChange(
+                //                             e,
+                //                             inputField.key,
+                //                             "multiple"
+                //                         );
+                //                     // }
+                //                 }
+                //             } }
+                //             onMultiSelectDeselectChange={ ( ) =>
+                //                 handlMultiSelectDeselectChange(
+                //                     inputField.key,
+                //                     Array.isArray( inputField.options )
+                //                         ? inputField.options.map(
+                //                               ( { value, proSetting } ) => ( {
+                //                                   value: String( value ), // Convert to string
+                //                                   proSetting,
+                //                               } )
+                //                           )
+                //                         : [] // Default to an empty array if it's not an array
+                //                 )
+                //             }
+                //         />
+                //     );
+                //     break;
                 // Rectangle radio toggle button
                 case "settingToggle":
                     input = (
@@ -1314,6 +1318,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
+                // Check in MVX
                 case "wpeditor":
                     input = (
                         <WpEditor
@@ -1411,7 +1416,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-                case "stock-alert-form-customizer":
+                case "notifima-form-customizer":
                     input = (
                         <FormCustomizer
                             value={ String( value ) }
@@ -1514,6 +1519,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
+                // Check in MVX
                 case "mergeComponent":
                     input = (
                         <MergeComponent
@@ -1566,7 +1572,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-                // Synchronize button (Changes later)
+                // Synchronize button 
                 case "syncbutton":
                     input = (
                         <SyncNow

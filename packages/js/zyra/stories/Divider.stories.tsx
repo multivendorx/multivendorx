@@ -1,7 +1,7 @@
 import Divider from "../src/components/Divider";
 
 export default {
-    title: "Zyra/Components/Divider",
+    title: "Zyra/Components/Form/Divider",
     component: Divider,
 };
 

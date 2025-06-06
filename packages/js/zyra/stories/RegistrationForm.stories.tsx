@@ -1,7 +1,7 @@
 import CustomFrom from "../src/components/RegistrationForm";
 
 export default {
-    title: "Zyra/Components/RegistrationForm",
+    title: "Zyra/Components/Form/RegistrationForm",
     component: CustomFrom,
 };
 

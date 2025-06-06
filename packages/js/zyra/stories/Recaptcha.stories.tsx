@@ -1,7 +1,7 @@
 import Recaptcha from "../src/components/Recaptcha";
 
 export default {
-    title: "Zyra/Components/Recaptcha",
+    title: "Zyra/Components/Form/Recaptcha",
     component: Recaptcha,
 };
 

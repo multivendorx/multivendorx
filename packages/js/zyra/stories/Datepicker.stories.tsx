@@ -1,7 +1,7 @@
 import Datepicker from "../src/components/DatePicker";
 
 export default {
-    title: "Zyra/Components/DatePicker",
+    title: "Zyra/Components/Form/DatePicker",
     component: Datepicker,
 };
 

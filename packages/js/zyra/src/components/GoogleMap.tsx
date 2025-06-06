@@ -17,6 +17,8 @@ interface AutoCompleteProps {
     placeholder?: string;
 }
 
+declare const appLocalizer: { google_api: string };
+
 const AutoComplete: React.FC< AutoCompleteProps > = ( {
     map,
     mapApi,
@@ -197,7 +199,7 @@ const GoogleMap: React.FC< GoogleMapProps > = ( props ) => {
                     onChildMouseDown={ onMarkerInteraction }
                     onChildMouseUp={ onMarkerInteractionMouseUp }
                     bootstrapURLKeys={ {
-                        key: "appLocalizer.google_api", // Ensure `appLocalizer` is properly typed
+                        key: appLocalizer.google_api, // Ensure `appLocalizer` is properly typed
                         libraries: [ "places", "geometry" ],
                     } }
                     yesIWantToUseGoogleMapApiInternals

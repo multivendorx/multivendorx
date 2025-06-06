@@ -9,13 +9,26 @@ const appLocalizer = {
     khali_dabba: false,
 }
 
-const inputField = {
-    key: "test-multi-checkbox",
-    proSetting:false,
-    moduleEnabled: "enabled",
+const setting = {"dependentSetting":["asdf","asdf2"]};
+
+type inputFieldType = {
+    key: string;
+    moduleEnabled?: string,
+    proSetting?:boolean,
+    dependentPlugin?: boolean,
+    dependentPluginName?: string,
+    dependentSetting?: string,
 }
 
-const modules = ["enabled", "disabled"];
+const inputField: inputFieldType = {
+    key: "test-multi-checkbox",
+    // proSetting:false,
+    // dependentPlugin: true,
+    // dependentPluginName: "demo-plugin",
+    // dependentSetting: "dependentSetting123",
+}
+
+const modules = ["demo1", "demo2"];
 const moduleOpen = ()=>{
         console.log("Module Opened");
     }
@@ -25,11 +38,12 @@ const moduleOpen = ()=>{
     }
 
     const moduleEnabledChanged = (
-        moduleEnabled: string,
-        dependentSetting: string = "",
-        dependentPlugin: boolean = false
+        moduleEnabled: string | undefined,
+        dependentSetting: string | undefined = "",
+        dependentPlugin: boolean | undefined = false,
+        dependentPluginName: string | undefined = ""
     ): boolean => {
-        console.log("Module Enabled Changed:", moduleEnabled, dependentSetting, dependentPlugin);
+        console.log("Module Enabled Changed:", {moduleEnabled, dependentSetting, dependentPlugin, dependentPluginName});
         let popupData = {
             moduleName: "",
             settings: "",
@@ -37,20 +51,23 @@ const moduleOpen = ()=>{
         };
 
         if ( moduleEnabled && ! modules.includes( moduleEnabled ) ) {
+            console.log("Module not found:", moduleEnabled);
             popupData.moduleName = moduleEnabled;
         }
 
         if (
-            dependentSetting 
-            // &&
-            // Array.isArray( setting[ dependentSetting ] ) &&
-            // setting[ dependentSetting ].length === 0
+            dependentSetting
+            &&
+            Array.isArray( setting[ dependentSetting ] ) &&
+            setting[ dependentSetting ].length === 0
         ) {
+            console.log("Dependent setting not found:", dependentSetting);
             popupData.settings = dependentSetting;
         }
 
-        if ( dependentPlugin ) {
-            popupData.plugin = "notifima";
+        if ( ! dependentPlugin ) {
+            console.log("Dependent plugin not found:", dependentPluginName);
+            popupData.plugin = dependentPluginName;
         }
 
         if ( popupData.moduleName || popupData.settings || popupData.plugin ) {
@@ -64,6 +81,7 @@ const moduleOpen = ()=>{
 
     const proSettingChanged = ( isProSetting: boolean ): boolean => {
         if ( isProSetting && !appLocalizer?.khali_dabba ) {
+            console.log("Pro setting");
             moduleOpen();
             return true;
         }
@@ -75,7 +93,10 @@ const moduleOpen = ()=>{
                 inputField.proSetting ?? false
             ) &&
             ! moduleEnabledChanged(
-                String( inputField.moduleEnabled ?? "" )
+                inputField.moduleEnabled ?? "",
+                inputField.dependentSetting ?? "",
+                inputField.dependentPlugin ?? true,
+                inputField.dependentPluginName ?? ""
             )
         ) {
             handleChange(

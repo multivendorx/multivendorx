@@ -1,7 +1,7 @@
 import HoverInputRender from "../src/components/HoverInputRender";
 
 export default {
-    title: "Zyra/Components/HoverInputRender",
+    title: "Zyra/Components/Form/HoverInputRender",
     component: HoverInputRender,
 };
 

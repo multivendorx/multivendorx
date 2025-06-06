@@ -1,7 +1,7 @@
 import TimePicker from "../src/components/TimePicker";
 
 export default {
-    title: "Zyra/Components/TimePicker",
+    title: "Zyra/Components/Form/TimePicker",
     component: TimePicker,
 };
 

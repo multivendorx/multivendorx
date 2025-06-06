@@ -1,7 +1,7 @@
 import TemplateTextArea from "../src/components/TemplateTextArea";
 
 export default {
-    title: "Zyra/Components/TemplateTextArea",
+    title: "Zyra/Components/Form/TemplateTextArea",
     component: TemplateTextArea,
 };
 

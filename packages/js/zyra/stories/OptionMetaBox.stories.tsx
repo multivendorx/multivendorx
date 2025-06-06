@@ -1,7 +1,7 @@
 import OptionMetaBox from "../src/components/OptionMetaBox";
 
 export default {
-    title: "Zyra/Components/OptionMetaBox",
+    title: "Zyra/Components/Form/OptionMetaBox",
     component: OptionMetaBox,
 };
 

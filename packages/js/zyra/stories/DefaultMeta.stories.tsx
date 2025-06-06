@@ -1,7 +1,7 @@
 import DefaultMeta from "../src/components/DefaultMeta";
 
 export default {
-    title: "Zyra/Components/DefaultMeta",
+    title: "Zyra/Components/Form/DefaultMeta",
     component: DefaultMeta,
 };
 

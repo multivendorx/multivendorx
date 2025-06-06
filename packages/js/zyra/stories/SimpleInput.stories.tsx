@@ -1,7 +1,7 @@
 import SimpleInput from "../src/components/SimpleInput";
 
 export default {
-    title: "Zyra/Components/SimpleInput",
+    title: "Zyra/Components/Form/SimpleInput",
     component: SimpleInput,
 };
 

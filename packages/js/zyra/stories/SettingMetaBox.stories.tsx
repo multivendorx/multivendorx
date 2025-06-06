@@ -1,7 +1,7 @@
 import SettingMetaBox from "../src/components/SettingMetaBox";
 
 export default {
-    title: "Zyra/Components/SettingMetaBox",
+    title: "Zyra/Components/Form/SettingMetaBox",
     component: SettingMetaBox,
 };
 

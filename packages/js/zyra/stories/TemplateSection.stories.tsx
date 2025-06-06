@@ -1,7 +1,7 @@
 import TemplateSection from "../src/components/TemplateSection";
 
 export default {
-    title: "Zyra/Components/TemplateSection",
+    title: "Zyra/Components/Form/TemplateSection",
     component: TemplateSection,
 };
 

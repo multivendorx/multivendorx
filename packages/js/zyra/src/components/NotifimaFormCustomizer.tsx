@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import ButtonCustomizer from "./ButtonCustomiser";
-import "../styles/web/FormCustomizer.scss";
+import "../styles/web/NotifimaFormCustomizer.scss";
 
 interface FormCustomizerProps {
     value?: string;
@@ -10,7 +10,7 @@ interface FormCustomizerProps {
     onChange: ( key: string, value: any, isRestoreDefaults?: boolean ) => void;
 }
 
-const FormCustomizer: React.FC< FormCustomizerProps > = ( {
+const NotifimaFormCustomizer: React.FC< FormCustomizerProps > = ( {
     buttonText = "Submit",
     setting,
     proSetting,
@@ -155,4 +155,4 @@ const FormCustomizer: React.FC< FormCustomizerProps > = ( {
     );
 };
 
-export default FormCustomizer;
+export default NotifimaFormCustomizer;

@@ -1,7 +1,7 @@
-import FormCustomizer from "../src/components/FormCustomizer";
+import FormCustomizer from "../src/components/NotifimaFormCustomizer";
 
 export default {
-    title: "Zyra/Components/FormCustomizer",
+    title: "Zyra/Components/Notifima/FormCustomizer",
     component: FormCustomizer,
 };
 

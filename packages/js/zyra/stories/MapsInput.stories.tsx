@@ -1,5 +1,6 @@
 (globalThis as any).appLocalizer = {
     khali_dabba: false,
+    mapbox_api: 'pk.eyJ1Ijoic2FuZ2l0YTIwMiIsImEiOiJjbTJ2amp3aGkwYmZhMmpxeDlmNDZqM2x0In0.8ZyMg2mfyq3ex81-n_MQ8w',
 };
 
 

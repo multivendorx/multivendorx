@@ -20,7 +20,7 @@ export { default as DisplayButton } from "./components/DisplayButton";
 export { default as Divider } from "./components/Divider";
 export { default as Elements } from "./components/Elements";
 export { default as FileInput } from "./components/FileInput";
-export { default as FormCustomizer } from "./components/FormCustomizer";
+export { default as FormCustomizer } from "./components/NotifimaFormCustomizer";
 export { default as FormViewer } from "./components/FormViewer";
 export { default as FreeProFormCustomizer } from "./components/FreeProFormCustomizer";
 export { default as GoogleMap } from "./components/GoogleMap";

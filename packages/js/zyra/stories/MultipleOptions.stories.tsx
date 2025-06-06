@@ -1,7 +1,7 @@
 import MultipleOptions from "../src/components/MultipleOption";
 
 export default {
-    title: "Zyra/Components/MultipleOptions",
+    title: "Zyra/Components/Form/MultipleOptions",
     component: MultipleOptions,
 };
 
