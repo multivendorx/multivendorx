@@ -27,9 +27,17 @@ declare global {
         pro_settings_list: any;
     }
 
+    interface CourseMyAcc {
+        apiUrl: string;
+        restUrl: string;
+        nonce: string;
+        moodle_site_url: string;
+    }
+
     declare module "*.png";
     declare module "*.jpg";
     declare module "*.jpeg";
 
     var appLocalizer: AppLocalizer;
+    var courseMyAcc: CourseMyAcc;
 }

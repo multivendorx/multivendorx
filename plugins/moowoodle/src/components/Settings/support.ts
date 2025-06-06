@@ -1,12 +1,10 @@
-import { __ } from '@wordpress/i18n';
+import { __ } from "@wordpress/i18n";
 
 export default {
-    id: 'support',
+    id: "support",
     priority: 70,
     name: __("Support", "moowoodle"),
     desc: __("More about MooWoodle.", "moowoodle"),
-    icon: 'adminLib-support',
-    modal: [
-        
-    ]
+    icon: "adminLib-support",
+    modal: [],
 };

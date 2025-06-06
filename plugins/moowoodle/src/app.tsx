@@ -4,8 +4,8 @@ import Settings from "./components/Settings/Settings";
 import { ModuleProvider } from "./contexts/ModuleContext";
 import Synchronization from "./components/Synchronization/Synchronization";
 import Courses from "./components/Courses/Courses";
-// import Cohorts from "./components/Cohorts/Cohorts";
-// import Enrollment from "./components/Enrollment/Enrollment";
+import Cohort from "./components/Cohort/Cohort";
+import Enrollment from "./components/Enrollment/Enrollment";
 
 // for react tour
 // import { TourProvider } from '@reactour/tour';
@@ -29,17 +29,16 @@ const Route = () => {
     const currentTab = new URLSearchParams(useLocation().hash);
     return (
         <>
-            { currentTab.get('tab') === 'settings' && (
+            {currentTab.get("tab") === "settings" && (
                 <Settings id={"settings"} />
-            ) }
+            )}
 
-            { currentTab.get('tab') === 'synchronization' && (
+            {currentTab.get("tab") === "synchronization" && (
                 <Synchronization id={"synchronization"} />
-            ) }
-            { currentTab.get('tab') === 'courses' && <Courses /> }
-            {/* { currentTab.get('tab') === 'cohorts' && <Cohorts /> }
-            { currentTab.get('tab') === 'enrolments' && <Enrollment /> } */}
-           
+            )}
+            {currentTab.get("tab") === "courses" && <Courses />}
+            {currentTab.get("tab") === "enrolments" && <Enrollment />}
+            {currentTab.get("tab") === "cohorts" && <Cohort />}
         </>
     );
 };

@@ -3,15 +3,22 @@ import axios from "axios";
 import { __ } from "@wordpress/i18n";
 import ProPopup from "../Popup/Popup";
 import { CustomTable, getApiLink, TableCell } from "zyra";
-import './Courses.scss';
+import "./Courses.scss";
 import Dialog from "@mui/material/Dialog";
-import defaultImage from '../../assets/images/moowoodle-product-default.png';
-import { ColumnDef, RowSelectionState, PaginationState } from "@tanstack/react-table";
+import defaultImage from "../../assets/images/moowoodle-product-default.png";
+import {
+    ColumnDef,
+    RowSelectionState,
+    PaginationState,
+} from "@tanstack/react-table";
 
 // Define RealtimeFilter interface with explicit types
 interface RealtimeFilter {
     name: string;
-    render: (updateFilter: (key: string, value: string) => void, filterValue: string | undefined) => React.ReactNode;
+    render: (
+        updateFilter: (key: string, value: string) => void,
+        filterValue: string | undefined
+    ) => React.ReactNode;
 }
 
 type FilterData = {
@@ -46,7 +53,10 @@ const Course: React.FC = () => {
     const [category, setCategory] = useState<Category>({});
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     const [totalRows, setTotalRows] = useState<number>(0);
-    const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10,
+    });
     const [pageCount, setPageCount] = useState(0);
     const [error, setError] = useState<string | null>(null);
     const bulkSelectRef = useRef<HTMLSelectElement>(null);
@@ -56,15 +66,15 @@ const Course: React.FC = () => {
     useEffect(() => {
         axios({
             method: "get",
-            url: getApiLink(appLocalizer, 'all-filters'),
+            url: getApiLink(appLocalizer, "all-filters"),
             headers: { "X-WP-Nonce": appLocalizer.nonce },
         })
             .then((response) => {
                 setCategory(response.data.category || {});
             })
             .catch((error) => {
-                console.error('Error fetching categories:', error);
-                setError(__('Failed to load categories', 'moowoodle'));
+                console.error("Error fetching categories:", error);
+                setError(__("Failed to load categories", "moowoodle"));
             });
     }, []);
 
@@ -72,7 +82,7 @@ const Course: React.FC = () => {
     useEffect(() => {
         axios({
             method: "GET",
-            url: getApiLink(appLocalizer, 'courses'),
+            url: getApiLink(appLocalizer, "courses"),
             headers: { "X-WP-Nonce": appLocalizer.nonce },
             params: { count: true },
         })
@@ -81,8 +91,8 @@ const Course: React.FC = () => {
                 setPageCount(Math.ceil(response.data / pagination.pageSize));
             })
             .catch((error) => {
-                console.error('Error fetching total rows:', error);
-                setError(__('Failed to load total rows', 'moowoodle'));
+                console.error("Error fetching total rows:", error);
+                setError(__("Failed to load total rows", "moowoodle"));
             });
     }, []);
 
@@ -104,16 +114,16 @@ const Course: React.FC = () => {
     function requestData(
         rowsPerPage = 10,
         currentPage = 1,
-        courseField = '',
-        productField = '',
-        catagoryField = '',
-        searchAction = '',
-        searchCourseField = ''
+        courseField = "",
+        productField = "",
+        catagoryField = "",
+        searchAction = "",
+        searchCourseField = ""
     ) {
         setError(null);
         axios({
             method: "GET",
-            url: getApiLink(appLocalizer, 'courses'),
+            url: getApiLink(appLocalizer, "courses"),
             headers: { "X-WP-Nonce": appLocalizer.nonce },
             params: {
                 page: currentPage,
@@ -129,8 +139,8 @@ const Course: React.FC = () => {
                 setData(response.data || []);
             })
             .catch((error) => {
-                console.error('Error fetching data:', error);
-                setError(__('Failed to load courses', 'moowoodle'));
+                console.error("Error fetching data:", error);
+                setError(__("Failed to load courses", "moowoodle"));
                 setData([]);
             });
     }
@@ -143,7 +153,7 @@ const Course: React.FC = () => {
         currentPage: number,
         filterData: FilterData
     ) => {
-         if (
+        if (
             Boolean(
                 (
                     filterData as {
@@ -179,27 +189,33 @@ const Course: React.FC = () => {
     /**
      * Handle single row action
      */
-    const handleSingleAction = (actionName: string, courseId: number, moodleCourseId: number) => {
+    const handleSingleAction = (
+        actionName: string,
+        courseId: number,
+        moodleCourseId: number
+    ) => {
         if (appLocalizer.khali_dabba) {
             setData(null);
             axios({
-                method: 'post',
+                method: "post",
                 url: getApiLink(appLocalizer, `course-bulk-action`),
-                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+                headers: { "X-WP-Nonce": appLocalizer.nonce },
                 data: {
                     selected_action: actionName,
-                    course_ids: [{
-                        course_id: courseId,
-                        moodle_course_id: moodleCourseId,
-                    }],
+                    course_ids: [
+                        {
+                            course_id: courseId,
+                            moodle_course_id: moodleCourseId,
+                        },
+                    ],
                 },
             })
                 .then((response) => {
                     requestData();
                 })
                 .catch((error) => {
-                    console.error('Error:', error);
-                    setError(__('Failed to perform action', 'moowoodle'));
+                    console.error("Error:", error);
+                    setError(__("Failed to perform action", "moowoodle"));
                     setData([]);
                 });
         } else {
@@ -213,21 +229,24 @@ const Course: React.FC = () => {
     const handleBulkAction = () => {
         if (appLocalizer.khali_dabba) {
             if (!Object.keys(rowSelection).length) {
-                return window.alert(__('Select rows', 'moowoodle'));
+                return window.alert(__("Select rows", "moowoodle"));
             }
             if (!bulkSelectRef.current?.value) {
-                return window.alert(__('Select bulk action', 'moowoodle'));
+                return window.alert(__("Select bulk action", "moowoodle"));
             }
             setData(null);
             axios({
-                method: 'post',
+                method: "post",
                 url: getApiLink(appLocalizer, `course-bulk-action`),
-                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+                headers: { "X-WP-Nonce": appLocalizer.nonce },
                 data: {
                     selected_action: bulkSelectRef.current?.value,
                     course_ids: Object.keys(rowSelection).map((index) => {
                         const row = data?.[parseInt(index)];
-                        return { course_id: row?.id, moodle_course_id: row?.moodle_course_id };
+                        return {
+                            course_id: row?.id,
+                            moodle_course_id: row?.moodle_course_id,
+                        };
                     }),
                 },
             })
@@ -236,8 +255,8 @@ const Course: React.FC = () => {
                     setRowSelection({});
                 })
                 .catch((error) => {
-                    console.error('Error:', error);
-                    setError(__('Failed to perform bulk action', 'moowoodle'));
+                    console.error("Error:", error);
+                    setError(__("Failed to perform bulk action", "moowoodle"));
                     setData([]);
                 });
         } else {
@@ -248,7 +267,7 @@ const Course: React.FC = () => {
     // Column definitions
     const columns: ColumnDef<CourseRow>[] = [
         {
-            id: 'select',
+            id: "select",
             header: ({ table }) => (
                 <input
                     type="checkbox"
@@ -265,10 +284,13 @@ const Course: React.FC = () => {
             ),
         },
         {
-            header: __('Course', 'moowoodle'),
+            header: __("Course", "moowoodle"),
             cell: ({ row }) => (
-                <TableCell title={row.original.course_name || ''}>
-                    <img src={row.original.productimage || defaultImage} alt={row.original.course_name || 'Course Image'} />
+                <TableCell title={row.original.course_name || ""}>
+                    <img
+                        src={row.original.productimage || defaultImage}
+                        alt={row.original.course_name || "Course Image"}
+                    />
                     <div className="action-section">
                         <p>{row.original.course_name}</p>
                     </div>
@@ -276,61 +298,73 @@ const Course: React.FC = () => {
             ),
         },
         {
-            header: __('Short name', 'moowoodle'),
+            header: __("Short name", "moowoodle"),
             cell: ({ row }) => (
-                <TableCell title={row.original.course_short_name || ''}>
-                    {row.original.course_short_name || '-'}
+                <TableCell title={row.original.course_short_name || ""}>
+                    {row.original.course_short_name || "-"}
                 </TableCell>
             ),
         },
         {
-            header: __('Category', 'moowoodle'),
+            header: __("Category", "moowoodle"),
             cell: ({ row }) => (
-                <TableCell title={__('Category Name')}>
-                    <a href={row.original.category_url} title={row.original.category_name}>
-                        {row.original.category_name || '-'}
+                <TableCell title={__("Category Name")}>
+                    <a
+                        href={row.original.category_url}
+                        title={row.original.category_name}
+                    >
+                        {row.original.category_name || "-"}
                     </a>
                 </TableCell>
             ),
         },
         {
-            header: __('Course duration', 'moowoodle'),
+            header: __("Course duration", "moowoodle"),
             cell: ({ row }) => (
-                <TableCell title={__('Date')}>
-                    {row.original.date || '-'}
+                <TableCell title={__("Date")}>
+                    {row.original.date || "-"}
                 </TableCell>
             ),
         },
         {
-            header: __('Product', 'moowoodle'),
+            header: __("Product", "moowoodle"),
             cell: ({ row }) => (
-                <TableCell title={__('Product Name')}>
-                    {row.original.products && Object.keys(row.original.products).length ? (
-                        Object.entries(row.original.products).map(([name, url], index) => (
-                            <div key={index} className="action-section">
-                                <p>{name}</p>
-                                <div className="action-btn">
-                                    <a target="_blank" href={url} className="">
-                                        {__('Edit product', 'moowoodle')}
-                                    </a>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        '-'
-                    )}
+                <TableCell title={__("Product Name")}>
+                    {row.original.products &&
+                    Object.keys(row.original.products).length
+                        ? Object.entries(row.original.products).map(
+                              ([name, url], index) => (
+                                  <div key={index} className="action-section">
+                                      <p>{name}</p>
+                                      <div className="action-btn">
+                                          <a
+                                              target="_blank"
+                                              href={url}
+                                              className=""
+                                          >
+                                              {__("Edit product", "moowoodle")}
+                                          </a>
+                                      </div>
+                                  </div>
+                              )
+                          )
+                        : "-"}
                 </TableCell>
             ),
         },
         {
-            header: __('Enrolled users', 'moowoodle'),
+            header: __("Enrolled users", "moowoodle"),
             cell: ({ row }) => (
-                <TableCell title={__('Enrolled users')}>
+                <TableCell title={__("Enrolled users")}>
                     <div className="action-section">
                         <p>{row.original.enroled_user || 0}</p>
                         <div className="action-btn">
-                            <a target="_blank" href={row.original.view_users_url} className="">
-                                {__('View users', 'moowoodle')}
+                            <a
+                                target="_blank"
+                                href={row.original.view_users_url}
+                                className=""
+                            >
+                                {__("View users", "moowoodle")}
                             </a>
                         </div>
                     </div>
@@ -338,21 +372,23 @@ const Course: React.FC = () => {
             ),
         },
         {
-            id: 'actions',
+            id: "actions",
             header: () => (
                 <div className="table-action-column">
-                    {__('Action', 'moowoodle')}
-                    {!appLocalizer.khali_dabba && <span className="admin-pro-tag">pro</span>}
+                    {__("Action", "moowoodle")}
+                    {!appLocalizer.khali_dabba && (
+                        <span className="admin-pro-tag">pro</span>
+                    )}
                 </div>
             ),
             cell: ({ row }) => (
                 <div className="moowoodle-course-actions">
                     <button
                         className="sync-single-course button-primary"
-                        title={__('Sync course data', 'moowoodle')}
+                        title={__("Sync course data", "moowoodle")}
                         onClick={() => {
                             handleSingleAction(
-                                'sync_courses',
+                                "sync_courses",
                                 row.original.id!,
                                 row.original.moodle_course_id!
                             );
@@ -360,13 +396,17 @@ const Course: React.FC = () => {
                     >
                         <i className="dashicons dashicons-update"></i>
                     </button>
-                    {row.original.products && Object.keys(row.original.products).length ? (
+                    {row.original.products &&
+                    Object.keys(row.original.products).length ? (
                         <button
                             className="update-existed-single-product button-secondary"
-                            title={__('Sync Course Data & Update Product', 'moowoodle')}
+                            title={__(
+                                "Sync Course Data & Update Product",
+                                "moowoodle"
+                            )}
                             onClick={() => {
                                 handleSingleAction(
-                                    'update_product',
+                                    "update_product",
                                     row.original.id!,
                                     row.original.moodle_course_id!
                                 );
@@ -377,10 +417,10 @@ const Course: React.FC = () => {
                     ) : (
                         <button
                             className="create-single-product button-secondary"
-                            title={__('Create Product', 'moowoodle')}
+                            title={__("Create Product", "moowoodle")}
                             onClick={() => {
                                 handleSingleAction(
-                                    'create_product',
+                                    "create_product",
                                     row.original.id!,
                                     row.original.moodle_course_id!
                                 );
@@ -396,67 +436,98 @@ const Course: React.FC = () => {
 
     const realtimeFilter: RealtimeFilter[] = [
         {
-            name: 'bulk-action',
+            name: "bulk-action",
             render: () => (
                 <div className="course-bulk-action bulk-action">
                     <select name="action" ref={bulkSelectRef}>
-                        <option value="">{__('Bulk actions', 'moowoodle')}</option>
-                        <option value="sync_courses">{__('Sync course', 'moowoodle')}</option>
-                        <option value="create_product">{__('Create product', 'moowoodle')}</option>
-                        <option value="update_product">{__('Update product', 'moowoodle')}</option>
+                        <option value="">
+                            {__("Bulk actions", "moowoodle")}
+                        </option>
+                        <option value="sync_courses">
+                            {__("Sync course", "moowoodle")}
+                        </option>
+                        <option value="create_product">
+                            {__("Create product", "moowoodle")}
+                        </option>
+                        <option value="update_product">
+                            {__("Update product", "moowoodle")}
+                        </option>
                     </select>
-                    {!appLocalizer.khali_dabba && <span className="admin-pro-tag">pro</span>}
+                    {!appLocalizer.khali_dabba && (
+                        <span className="admin-pro-tag">pro</span>
+                    )}
                     <button name="bulk-action-apply" onClick={handleBulkAction}>
-                        {__('Apply', 'moowoodle')}
+                        {__("Apply", "moowoodle")}
                     </button>
                 </div>
             ),
         },
         {
-            name: 'catagoryField',
-            render: (updateFilter: (key: string, value: string) => void, filterValue: string | undefined) => (
+            name: "catagoryField",
+            render: (
+                updateFilter: (key: string, value: string) => void,
+                filterValue: string | undefined
+            ) => (
                 <div className="admin-header-search-section catagoryField">
                     <select
                         name="catagoryField"
-                        onChange={(e) => updateFilter(e.target.name, e.target.value)}
-                        value={filterValue || ''}
+                        onChange={(e) =>
+                            updateFilter(e.target.name, e.target.value)
+                        }
+                        value={filterValue || ""}
                     >
-                        <option value="">{__('Category', 'moowoodle')}</option>
-                        {Object.entries(category).map(([categoryId, categoryName]) => (
-                            <option key={categoryId} value={categoryId}>
-                                {categoryName}
-                            </option>
-                        ))}
+                        <option value="">{__("Category", "moowoodle")}</option>
+                        {Object.entries(category).map(
+                            ([categoryId, categoryName]) => (
+                                <option key={categoryId} value={categoryId}>
+                                    {categoryName}
+                                </option>
+                            )
+                        )}
                     </select>
                 </div>
             ),
         },
         {
-            name: 'searchCourseField',
-            render: (updateFilter: (key: string, value: string) => void, filterValue: string | undefined) => (
+            name: "searchCourseField",
+            render: (
+                updateFilter: (key: string, value: string) => void,
+                filterValue: string | undefined
+            ) => (
                 <div className="admin-header-search-section searchCourseField">
                     <input
                         name="searchCourseField"
                         type="text"
-                        placeholder={__('Search...', 'moowoodle')}
-                        onChange={(e) => updateFilter(e.target.name, e.target.value)}
-                        value={filterValue || ''}
+                        placeholder={__("Search...", "moowoodle")}
+                        onChange={(e) =>
+                            updateFilter(e.target.name, e.target.value)
+                        }
+                        value={filterValue || ""}
                     />
                 </div>
             ),
         },
         {
-            name: 'searchAction',
-            render: (updateFilter: (key: string, value: string) => void, filterValue: string | undefined) => (
+            name: "searchAction",
+            render: (
+                updateFilter: (key: string, value: string) => void,
+                filterValue: string | undefined
+            ) => (
                 <div className="admin-header-search-section searchAction">
                     <select
                         name="searchAction"
-                        onChange={(e) => updateFilter(e.target.name, e.target.value)}
-                        value={filterValue || ''}
+                        onChange={(e) =>
+                            updateFilter(e.target.name, e.target.value)
+                        }
+                        value={filterValue || ""}
                     >
-                        <option value="">{__('Select', 'moowoodle')}</option>
-                        <option value="course">{__('Course', 'moowoodle')}</option>
-                        <option value="shortname">{__('Short name', 'moowoodle')}</option>
+                        <option value="">{__("Select", "moowoodle")}</option>
+                        <option value="course">
+                            {__("Course", "moowoodle")}
+                        </option>
+                        <option value="shortname">
+                            {__("Short name", "moowoodle")}
+                        </option>
                     </select>
                 </div>
             ),
@@ -481,7 +552,7 @@ const Course: React.FC = () => {
             )}
             <div className="course-container-wrapper">
                 <div className="admin-page-title">
-                    <p>{__('Courses', 'moowoodle')}</p>
+                    <p>{__("Courses", "moowoodle")}</p>
                 </div>
                 {error && (
                     <div className="admin-notice-display-title error">

@@ -9,14 +9,26 @@ const proPopupContent = {
         "moowoodle"
     ),
     messages: [
-        __("Convenient Single Sign-On for Moodle™ and WordPress Login.", "moowoodle"),
+        __(
+            "Convenient Single Sign-On for Moodle™ and WordPress Login.",
+            "moowoodle"
+        ),
         __("Create steady income through course subscriptions.", "moowoodle"),
-        __("Increase earnings by offering courses in groups, variations, or individually.", "moowoodle"),
+        __(
+            "Increase earnings by offering courses in groups, variations, or individually.",
+            "moowoodle"
+        ),
         __("Select and sync courses with flexibility.", "moowoodle"),
         __("Easily synchronize courses in bulk.", "moowoodle"),
-        __("Seamless, One-Password Access to Moodle™ and WordPress.", "moowoodle"),
+        __(
+            "Seamless, One-Password Access to Moodle™ and WordPress.",
+            "moowoodle"
+        ),
         __("Choose which user information to synchronize.", "moowoodle"),
-        __("Automatic User Synchronization for Moodle™ and WordPress.", "moowoodle"),
+        __(
+            "Automatic User Synchronization for Moodle™ and WordPress.",
+            "moowoodle"
+        ),
     ],
 };
 

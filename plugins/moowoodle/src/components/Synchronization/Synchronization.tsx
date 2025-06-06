@@ -58,7 +58,10 @@ interface Products {
 
 const products: Products[] = [
     {
-        title: __("Automated user and course synchronization with scheduler", "moowoodle"),
+        title: __(
+            "Automated user and course synchronization with scheduler",
+            "moowoodle"
+        ),
         description: __(
             "Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle.",
             "moowoodle"
@@ -86,7 +89,10 @@ const products: Products[] = [
         ),
     },
     {
-        title: __("Automatic User Synchronization for Moodle™ and WordPress", "moowoodle"),
+        title: __(
+            "Automatic User Synchronization for Moodle™ and WordPress",
+            "moowoodle"
+        ),
         description: __(
             "Synchronizes user accounts between Moodle™ and WordPress, ensuring consistent user management across both platforms without manual intervention.",
             "moowoodle"
@@ -96,12 +102,12 @@ const products: Products[] = [
 
 const Synchronization: React.FC<SettingsProps> = () => {
     const settingsArray: SettingItem[] = getAvailableSettings(
-        getTemplateData('synchronizations'),
+        getTemplateData("synchronizations"),
         []
     );
 
     // get current browser location
-    const location = new URLSearchParams( useLocation().hash );
+    const location = new URLSearchParams(useLocation().hash);
 
     const getBanner = () => {
         return (
@@ -118,13 +124,17 @@ const Synchronization: React.FC<SettingsProps> = () => {
         if (!currentTab) return null;
 
         // get the setting context
-        const { setting, settingName, setSetting, updateSetting } = useSetting();
-        
-        const settingModal = getSettingById( settingsArray as any, currentTab );
+        const { setting, settingName, setSetting, updateSetting } =
+            useSetting();
+
+        const settingModal = getSettingById(settingsArray as any, currentTab);
         const { modules } = useModules();
 
-        if ( settingName != currentTab ) {
-            setSetting( currentTab, appLocalizer.settings_databases_value[currentTab] || {} );
+        if (settingName != currentTab) {
+            setSetting(
+                currentTab,
+                appLocalizer.settings_databases_value[currentTab] || {}
+            );
         }
 
         useEffect(() => {
@@ -148,7 +158,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
                 )}
             </>
         );
-    }
+    };
 
     return (
         <>
@@ -170,6 +180,6 @@ const Synchronization: React.FC<SettingsProps> = () => {
             </SettingProvider>
         </>
     );
-}
+};
 
 export default Synchronization;
