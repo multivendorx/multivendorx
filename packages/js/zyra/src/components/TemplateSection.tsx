@@ -1,5 +1,9 @@
-import { FC } from "react";
+/**
+ * External dependencies
+ */
+import React from "react";
 
+// Types
 interface FormField {
     label: string;
 }
@@ -9,7 +13,7 @@ interface TemplateSectionProps {
     onChange: ( key: string, value: string ) => void;
 }
 
-const TemplateSection: FC< TemplateSectionProps > = ( {
+const TemplateSection: React.FC< TemplateSectionProps > = ( {
     formField,
     onChange,
 } ) => {

@@ -1,7 +1,11 @@
+/**
+ * External dependencies
+ */
 import React, { useEffect, useState, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
+// Types
 interface MapsInputProps {
     wrapperClass?: string;
     containerId?: string;

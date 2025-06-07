@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 
+// Types
 interface DefaultMetaProps {
     defaultvalue: string;
     name: string;

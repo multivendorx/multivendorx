@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect, useRef } from "react";
+
+/**
+ * Internal dependencies
+ */
 import "../styles/web/ButtonCustomizer.scss";
 
+// Types
 interface ButtonCustomizerProps {
     onChange: ( key: string, value: any, isRestoreDefaults?: boolean ) => void;
     setting?: Record< string, any >;

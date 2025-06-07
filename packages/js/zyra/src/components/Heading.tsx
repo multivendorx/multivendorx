@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 
+// Types
 export interface HeadingProps {
     wrapperClass?: string;
     blocktext?: string;

@@ -1,8 +1,16 @@
 // Check in MVX
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Internal dependencies
+ */
 import BasicInput from "./BasicInput";
 import { SelectOptions } from "./SelectInput";
 
+// Types
 interface ParentOption {
     label: string;
     key: string;

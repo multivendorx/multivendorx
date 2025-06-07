@@ -1,5 +1,4 @@
 import Attachment from "../src/components/Attachment";
-import "./global.scss";
 
 export default {
     title: "Zyra/Components/Form/Attachment",

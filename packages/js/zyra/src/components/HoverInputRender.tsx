@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React, { JSX, useState, useEffect, useRef } from "react";
 
+// Types
 interface HoverInputRenderProps {
     label: string;
     placeholder?: string;

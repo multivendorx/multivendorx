@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Internal dependencies
+ */
 import HoverInputRender from "./HoverInputRender";
 
+// Types
 interface TimePickerProps {
     formField: { label: string };
     onChange: ( field: string, value: string ) => void;

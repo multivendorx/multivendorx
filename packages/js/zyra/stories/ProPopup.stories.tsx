@@ -12,8 +12,8 @@ export const TestProPopup = () => {
         messages: [
             "Unlock all advanced features.",
             "Get priority support.",
-            "Access to premium modules and integrations.",
-        ],
+            "Access to premium modules and integrations."
+        ]
     };
 
     return <ProPopup { ...demoProPopupProps } />;

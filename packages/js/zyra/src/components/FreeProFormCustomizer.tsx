@@ -1,10 +1,17 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect, useRef } from "react";
+
+/**
+ * Internal dependencies
+ */
 import SubTabSection, { MenuItem } from "./SubTabSection";
 import ProForm from "./RegistrationForm";
 import "../styles/web/FreeProFormCustomizer.scss";
 import "../styles/web/RegistrationForm.scss";
 
-// Define types
+//Types
 interface FormField {
     key: string;
     label?: string;

@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Intarnal dependencies
+ */
 import "../styles/web/ToggleSetting.scss";
 
+// Types
 interface Option {
     key: string;
     value: string;

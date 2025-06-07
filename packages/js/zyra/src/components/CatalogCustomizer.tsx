@@ -1,9 +1,17 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect, ReactNode } from "react";
 import ReactDragListView from "react-drag-listview";
+
+/**
+ * Internal dependencies
+ */
 import SubTabSection from "./SubTabSection";
 import ButtonCustomizer from "./ButtonCustomiser";
 import "../styles/web/CatalogCustomizer.scss";
 
+// Types
 export interface CatalogCustomizerProps {
     onChange: ( key: string, value: any ) => void;
     proSetting?: boolean;

@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+ */
 import { useState } from "react";
+
+/**
+ * Internal dependencies
+ */
 import "../styles/web/Support.scss";
 
+// Types
 type FAQ = {
     question: string;
     answer: string;

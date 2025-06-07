@@ -1,7 +1,15 @@
+/**
+ * External dependencies
+ */
 import React, { useEffect, useRef, useState } from "react";
+
+/**
+ * Internal dependencies
+ */
 import ButtonCustomizer from "./ButtonCustomiser";
 import "../styles/web/NotifimaFormCustomizer.scss";
 
+// Types
 interface FormCustomizerProps {
     value?: string;
     buttonText?: string;

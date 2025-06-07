@@ -1,5 +1,4 @@
 import Section from "../src/components/Section";
-import "./global.scss";
 
 export default {
     title: "Zyra/Components/Section",
@@ -10,7 +9,7 @@ export const TestSection = () => {
     const demoSectionProps = {
         wrapperClass: "setting-section-divider",
         hint: "Fill in all required fields carefully.",
-        value: "User Registration",
+        value: "User Registration"
     };
 
     return <Section { ...demoSectionProps } />;

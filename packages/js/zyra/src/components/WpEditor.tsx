@@ -1,6 +1,10 @@
+/**
+ * External dependencies
+ */
 import { Editor } from "@tinymce/tinymce-react";
 import React from "react";
 
+// Types
 export interface WpEditorProps {
     apiKey: string;
     value: string;

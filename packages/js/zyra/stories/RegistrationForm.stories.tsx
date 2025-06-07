@@ -13,7 +13,7 @@ export const TestRegistrationForm = () => {
             label: "Full Name",
             required: true,
             name: "fullName",
-            placeholder: "Enter your full name",
+            placeholder: "Enter your full name"
         },
         {
             id: 2,
@@ -21,7 +21,7 @@ export const TestRegistrationForm = () => {
             label: "Email Address",
             required: true,
             name: "email",
-            placeholder: "Enter your email",
+            placeholder: "Enter your email"
         },
         {
             id: 3,
@@ -30,10 +30,10 @@ export const TestRegistrationForm = () => {
             required: false,
             name: "plan",
             options: [
-                { label: "Basic", value: "basic", isdefault: true },
-                { label: "Pro", value: "pro" },
-                { label: "Enterprise", value: "enterprise" },
-            ],
+            { label: "Basic", value: "basic", isdefault: true },
+            { label: "Pro", value: "pro" },
+            { label: "Enterprise", value: "enterprise" }
+            ]
         },
         {
             id: 4,
@@ -41,17 +41,17 @@ export const TestRegistrationForm = () => {
             label: "Security Check",
             required: true,
             name: "recaptcha",
-            sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", // Google test sitekey
-        },
+            sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Google test sitekey
+        }
     ];
 
     const demoCustomFormProps = {
-        onChange: ( { formfieldlist, butttonsetting } ) => {
-            console.log( "Form updated:", formfieldlist, butttonsetting );
+        onChange: ({ formfieldlist, butttonsetting }) => {
+            console.log("Form updated:", formfieldlist, butttonsetting);
         },
         name: "registrationForm",
         proSettingChange: () => {
-            console.log( "Pro setting checked." );
+            console.log("Pro setting checked.");
             return true;
         },
         formTitlePlaceholder: "Enter your form title here",
@@ -59,8 +59,8 @@ export const TestRegistrationForm = () => {
             fullName: "",
             email: "",
             plan: "basic",
-            recaptcha: "",
-        },
+            recaptcha: ""
+        }
     };
 
     return <CustomFrom { ...demoCustomFormProps } />;

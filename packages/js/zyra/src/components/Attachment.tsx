@@ -1,5 +1,14 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 
+/**
+ * Internal dependencies
+ */
+import "../styles/web/Attachment.scss";
+
+// Types
 interface FormField {
     label: string;
     placeholder?: string;

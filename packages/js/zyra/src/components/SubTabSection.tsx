@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Internal dependencies
+ */
 import "../styles/web/SubTabSection.scss";
 
+// Types
 export interface MenuItem {
     id: string;
     name: string;

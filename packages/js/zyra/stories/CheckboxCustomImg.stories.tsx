@@ -14,14 +14,14 @@ export const TestCheckboxCustomImg = () => {
         syncDirections: [
             {
                 value: "sync-1",
-                img1: "https://example.com/img1.png",
-                img2: "https://example.com/img2.png",
+                img1: "http://localhost/wordpress/wp-content/plugins/plugin-elements/src/assets/images/WordPress.png",
+                img2: "http://localhost/wordpress/wp-content/plugins/plugin-elements/src/assets/images/WordPress.png",
                 label: "Sync Option 1",
             },
             {
                 value: "sync-2",
-                img1: "https://example.com/img3.png",
-                img2: "https://example.com/img4.png",
+                img1: "http://localhost/wordpress/wp-content/plugins/plugin-elements/src/assets/images/WordPress.png",
+                img2: "http://localhost/wordpress/wp-content/plugins/plugin-elements/src/assets/images/WordPress.png",
                 label: "Sync Option 2",
             },
         ],

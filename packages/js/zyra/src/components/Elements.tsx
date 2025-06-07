@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 
+// Types
 interface Option {
     value: string;
     label: string;

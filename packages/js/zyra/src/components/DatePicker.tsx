@@ -1,5 +1,14 @@
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Internal dependencies
+ */
 import HoverInputRender from "./HoverInputRender";
+
+// Types
 interface FormField {
     label: string; // The text label for the input field
 }

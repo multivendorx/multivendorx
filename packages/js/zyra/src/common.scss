@@ -32,6 +32,10 @@ $border-radius-button   : 8rem;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+}
+.sb-show-main{
+  background: #f0f0f1;
 }
 
 #admin-main-wrapper {
@@ -72,6 +76,9 @@ button,
   border-radius: $border-radius-small;
   font-size: 0.875rem;
   transition: all 0.3s linear;
+  background: $theme-color;
+  color: $color-white;
+  width: fit-content;
 
   &.btn-preview {
     padding: 0;
@@ -391,6 +398,111 @@ span.admin-pro-tag {
   }
 }
 
+// select style
+
+.main-select,
+.main-input{
+  background-color: #fff;
+  border: .12rem solid #e0e4e9;
+  outline: none;
+  width: 100%;
+  padding: .5rem;
+}
+
+.main-checkbox{
+  border: 1px solid #8c8f94;
+  border-radius: 4px;
+  background: #fff;
+  color: #50575e;
+  clear: none;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 0;
+  height: 1rem;
+}
+// toggle checkbox style start
+.toggle-checkbox-header{
+  display: inline-flex;
+  .toggle-checkbox {
+    position: relative;
+    margin-right: 0.5rem;
+
+    .admin-pro-tag {
+      left: 4.25rem;
+      width: fit-content;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: 0.45rem;
+      width: 0.25rem;
+      height: 0.25rem;
+      border: $border-theme-small;
+      border-radius: $border-radius-button;
+      transition: 0.3s;
+      z-index: 0;
+      transform: translateY(-50%);
+    }
+
+    input {
+      display: none; // Hide for toggle button
+    }
+
+    label {
+      cursor: pointer;
+      width: 3rem;
+      height: 1.4rem;
+      background: 0 0;
+      display: block;
+      border-radius: $border-radius-button;
+      position: relative;
+      border: $border-light-medium;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0.5rem;
+        width: 0.1rem;
+        height: 0.563rem;
+        background: $color-white;
+        -webkit-transition: 0.3s;
+        transition: 0.3s;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0.313rem;
+        width: 0.6rem;
+        height: 0.6rem;
+        background: $color-active;
+        border-radius: 90rem;
+        transition: 0.3s;
+        z-index: 1;
+      }
+    }
+
+    input:checked+label {
+      background: $color-active;
+      border: $border-theme-medius;
+    }
+
+    input:checked+label::after {
+      left: calc(100% - 1rem);
+      transform: translateY(-50%);
+      background: $background-color;
+    }
+  }
+}
+// toggle checkbox style end
+
+
 .details-status-row {
   padding: 0.5rem 0.5rem 0.75rem;
   position: relative;
@@ -434,3 +546,332 @@ span.admin-pro-tag {
     width: 1.3125rem;
   }
 }
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: $border-light-small;
+  border-radius: $border-radius-small;
+  padding: 0.313rem 0.5rem;
+  background: transparent;
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+
+.settings-metabox-description {
+  margin-top: 0.625rem !important; // Overwrite common.scss
+  font-style: italic;
+  color: #72727599;
+  font-size: 0.813rem !important; // Overwrite common.scss
+  width: 100%;
+
+  b{
+    color: #000000b7;
+  }
+
+  p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.setting-form-input {
+  position: relative;
+
+  .parameter {
+    position: absolute;
+    top: .41rem;
+    right: 0.313rem;
+    border-left: $border-light-small;
+    padding: 0 0.75rem;
+
+  }
+}
+
+// }
+.blocktext-class{
+  .settings-metabox-description-code {
+    padding: .5rem 1rem;
+    margin: .5rem 0;
+    background: #fdf9fb;
+    color: $theme-color;
+    border-left: 0.2rem solid $color-active;
+  }
+}
+
+// Button Customizer start
+.btn-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: end;
+
+  .btn-customizer {
+    position: absolute;
+    margin-top: 0.5rem;
+    padding-bottom: 3rem;
+    top: 100%;
+    right: 0;
+    z-index: 1;
+    cursor: auto;
+
+    .btn-customizer-menu {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      background: rgb(13, 0, 23);
+      border-radius: 0.15rem;
+      padding: 0.5rem 0;
+
+      .btn-customizer-menu-items {
+        padding: 0 0.5rem;
+        border-right: 0.063rem solid #cccccc4e;
+        color: $color-white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        &:last-child {
+          border: none;
+        }
+
+        .color-img {
+          width: 1.2rem;
+          height: 1.2rem;
+          border-radius: $border-radius-small;
+          background: #90EE90;
+          background: linear-gradient(to top left, #90EE90 0%, #FFFFFF 50%, #FF47D0 100%), linear-gradient(to bottom left, #FFFF00 0%, #FFFFFF 50%, #0000FF 100%);
+        }
+
+        i {
+          color: $color-white;
+          font-size: 1.2rem;
+        }
+        .adminLib-link{
+          font-size: 1.7rem;
+        }
+      }
+    }
+
+    .customizer-setting-wrapper {
+      position: relative;
+      top: 0.315rem;
+      background: #f8f8f8;
+      width: 17.64rem;
+      padding: 1rem;
+      border: 0.125rem solid rgba($color: #000000, $alpha: 0.125);
+      box-shadow: 0 0.25rem 0.5rem rgba($color: #000000, $alpha: 0.125);
+      border-radius: $border-radius-small;
+
+
+      .wrapper-close {
+        color: $color-active;
+        padding: 0;
+        position: absolute;
+        right: -0.756rem;
+        top: -0.945rem;
+        background: $color-white;
+        box-shadow: 0 0.25rem 0.5rem rgba($color: #000000, $alpha: 0.125);
+        border-radius: 50%;
+        width: 1.688rem;
+        height: 1.688rem;
+        font-size: 1.25rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      input[type=color] {
+        cursor: pointer;
+      }
+      
+      .section-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .simple {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          .section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            &.section-row{
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+
+              .property-section{
+                width: 30%;
+                align-items: center;
+                justify-content: center;
+
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                  opacity: 1;
+                  -webkit-appearance: none;
+                }
+                
+                input[type=number] {
+                  -moz-appearance: textfield;
+                }   
+              }
+            }
+
+            .lable {
+              color: #000;
+              font-weight: 400;
+            }
+
+            .property-section {
+              display: flex;
+              gap: 0.5rem;
+              width: 100%;
+
+              input{
+                width: 100%;
+              }
+
+              input[type="text"] {
+                background: transparent;
+              }
+
+              input[type="color"] {
+                background: transparent;
+                border: none;
+                outline: none;
+                width: 2.646rem;
+                height: 2.016rem;
+                padding: 0;
+              }
+            }
+          }
+
+          .link-box {
+            width: 100%;
+            display: flex;
+            border: 0.063rem solid #d4d1d9;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem;
+            border-radius: $border-radius-small;
+
+            .link-input {
+              border: none;
+              outline: none;
+              background: transparent;
+            }
+
+            button {
+              background: transparent;
+            }
+          }
+        }
+
+        .hover {
+          background-color: #f2eff5;
+          padding: 0.5rem;
+          border-radius: $border-radius-small;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          .section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            .lable {
+              color: #000;
+              font-weight: 400;
+            }
+
+            .property-section {
+              display: flex;
+              gap: 0.5rem;
+
+              input[type="text"] {
+                background: transparent;
+              }
+
+              input[type="color"] {
+                background: transparent;
+                border: none;
+                outline: none;
+                width: 2.646rem;
+                height: 2.016rem;
+                padding: 0;
+              }
+            }
+          }
+        }
+      }
+
+      .link {
+        p {
+          font-size: 0.73rem;
+
+          span {
+            color: red;
+            font-weight: 800;
+            padding-right: 0.126rem;
+          }
+        }
+      }
+    }
+  }
+
+  .btn-preview {
+    &.active,
+    &:hover {
+      box-shadow:
+        0.0rem 0.0rem 0.0rem 0.126rem rgb(255, 255, 255), 0.0rem 0.0rem 0.0rem 0.189rem rgba(33, 33, 33, 0.5) !important; // // To make as a selectable and overwrite for prevent all button
+    }
+  }
+}
+
+// Button Customizer end
+
+// calender style start
+
+.settings-calender {
+
+  .rmdp-wrapper {
+    margin-bottom: 0.5rem;
+  }
+}
+// calender style end
+
+
+// Section style start
+.setting-section-divider {
+    margin: 2rem 0;
+    padding: 0;
+    border-top: 0.05rem solid rgba(82, 44, 129, 0.09);
+    position: relative;
+
+    .section-hint {
+    text-align: center;
+    margin-top: 0.813rem;
+    }
+
+    span {
+    position: absolute;
+    top: -0.063rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0 1rem;
+    background: $color-white;
+    }
+}
+
+// end

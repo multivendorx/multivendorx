@@ -1,9 +1,17 @@
+/**
+ * External dependencies
+ */
 import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
+
+/**
+ * Internal dependencies
+ */
 import Popoup from "./ProPopup";
 import { getApiLink, sendApiResponse } from "./apiService";
 import "../styles/web/Modules.scss";
 
+// Types
 interface Module {
     id: string;
     name: string;

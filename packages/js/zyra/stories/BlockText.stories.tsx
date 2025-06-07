@@ -1,5 +1,4 @@
 import BlockText from "../src/components/BlockText";
-import "./global.scss";
 export default {
     title: "Zyra/Components/BlockText",
     component: BlockText,

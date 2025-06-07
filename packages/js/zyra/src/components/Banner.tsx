@@ -1,8 +1,16 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
+
+/**
+ * Internal dependencies
+ */
 import ProPopup from "./ProPopup";
 import "../styles/web/Banner.scss";
 
+// Types
 interface Products {
     title: string;
     description: string;

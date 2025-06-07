@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React, { ChangeEvent } from "react";
 
+// Types
 export interface MultiNumOption {
     key: string;
     value: string | number;

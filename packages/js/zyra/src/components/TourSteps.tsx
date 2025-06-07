@@ -1,7 +1,11 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect, JSX } from "react";
 import axios from "axios";
 import { useTour } from "@reactour/tour";
 
+// Types
 interface AppLocalizer {
     enquiry_form_settings_url: string;
     module_page_url: string;

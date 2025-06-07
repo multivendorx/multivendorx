@@ -1,8 +1,16 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useRef } from "react";
 import { ReactSortable } from "react-sortablejs";
+
+/**
+ * Internal dependencies
+ */
 import HoverInputRender from "./HoverInputRender";
 import OptionMetaBox from "./OptionMetaBox";
 
+// Types
 interface Option {
     id: string;
     label: string;

@@ -1,10 +1,17 @@
+/**
+ * External dependencies
+ */
 import React, { useState } from "react";
+
+/**
+ * Internal dependencies
+ */
 import { getApiLink, getApiResponse } from "./apiService";
 import BasicInput from "./BasicInput";
 import SelectInput from "./SelectInput";
 import "../styles/web/InputMailchimpList.scss";
 
-// Define types for API response and component props
+// Types
 interface SelectOption {
     value: string;
     label: string;

@@ -1,7 +1,15 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 import { DialogContent, DialogContentText } from "@mui/material";
+
+/**
+ * Internal dependencies
+ */
 import "../styles/web/popupContent.scss";
 
+// Types
 export interface ProPopupProps {
     proUrl?: string;
     title?: string;

@@ -1,6 +1,10 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
 
+// Types
 export interface SelectOptions {
     value: string;
     label: string;

@@ -1,6 +1,10 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect, useRef } from "react";
 import Draggable from "react-draggable";
 
+// Types
 interface Option {
     label: string;
     value: string;

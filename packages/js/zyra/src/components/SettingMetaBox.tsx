@@ -1,6 +1,10 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect } from "react";
 import Draggable from "react-draggable";
 
+// Types
 interface FormField {
     type: string;
     name: string;

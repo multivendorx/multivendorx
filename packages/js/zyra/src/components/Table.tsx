@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect, useRef, ReactNode } from "react";
 import {
     useReactTable,
@@ -12,6 +15,10 @@ import {
     RowSelectionState,
     PaginationState,
 } from "@tanstack/react-table";
+
+/**
+ * Internal dependencies
+ */
 import BasicInput from "./BasicInput";
 import SelectInput from "./SelectInput";
 import "../styles/web/Table.scss";
@@ -19,6 +26,7 @@ import "../styles/web/Table.scss";
 const PENALTY = 28;
 const COOLDOWN = 1;
 
+// Types
 export interface Subscriber {
     date: string;
     email: string;
@@ -81,7 +89,7 @@ export const TableCell: React.FC< TableCellProps > = ( {
                     { type === "product" && children }
                     <div className="table-data-container">
                         <BasicInput
-                            inputClass="table-input"
+                            inputClass="main-input"
                             type="text"
                             value={
                                 type === "number"
@@ -116,10 +124,13 @@ export const TableCell: React.FC< TableCellProps > = ( {
             break;
         case "checkbox":
             content = (
+                <div className="toggle-checkbox-header">
+                <div className="toggle-checkbox">
                 <input
                     type="checkbox"
                     className="toggle-checkbox"
                     name={ title }
+                    id="checkbox1"
                     checked={ cellData as boolean }
                     onChange={ ( e ) => {
                         setCellData( e.target.checked ? "true" : "false" );
@@ -129,6 +140,9 @@ export const TableCell: React.FC< TableCellProps > = ( {
                             );
                     } }
                 />
+                <label htmlFor="checkbox1"></label>
+                </div>
+                </div>
             );
             break;
         case "dropdown":
@@ -141,7 +155,8 @@ export const TableCell: React.FC< TableCellProps > = ( {
             );
             content = (
                 <SelectInput
-                    inputClass={ header.class }
+                    wrapperClass="select-wrapper"
+                    inputClass={`${header.class} dropdown-select`}
                     options={ optionsVal }
                     value={ fieldValue as string }
                     proSetting={ false }
@@ -168,7 +183,7 @@ export const TableCell: React.FC< TableCellProps > = ( {
 
     return (
         <>
-            <div title={ title }>{ content }</div>
+            { content }
         </>
     );
 };
@@ -326,13 +341,13 @@ const Table: React.FC< TableProps > = ( {
     } );
     const typeCountActive = filterData.typeCount || "all";
     return (
-        <div>
+        <>
             <div className="admin-table-wrapper-filter">
                 { typeCounts &&
                     typeCounts.map( ( countInfo, index ) => (
                         <div
                             key={ index } // Add a key for better React performance
-                            onClick={ () => {
+                            onClick={ ( ) => {
                                 setFilterData( { typeCount: countInfo.key } );
                             } }
                             className={
@@ -377,15 +392,15 @@ const Table: React.FC< TableProps > = ( {
                         </div>
                     ) }
                     { ( data?.length as number ) > 0 && (
-                        <div>
-                            <table className="react-table">
-                                <thead className="rdt_TableHead">
+                        <div className="table-wrapper">
+                            <table className="admin-table">
+                                <thead className="admin-table-header">
                                     { table
                                         .getHeaderGroups()
                                         .map( ( headerGroup ) => (
                                             <tr
                                                 key={ headerGroup.id }
-                                                className="rdt_TableHeadRow"
+                                                className="header-row"
                                             >
                                                 { headerGroup.headers
                                                     .filter( ( header ) =>
@@ -404,7 +419,7 @@ const Table: React.FC< TableProps > = ( {
                                                     .map( ( header ) => (
                                                         <th
                                                             key={ header.id }
-                                                            className="rdt_TableCol"
+                                                            className="header-col"
                                                         >
                                                             {
                                                                 flexRender(
@@ -421,11 +436,11 @@ const Table: React.FC< TableProps > = ( {
                                             </tr>
                                         ) ) }
                                 </thead>
-                                <tbody className="rdt_TableBody">
+                                <tbody className="admin-table-body">
                                     { table.getRowModel().rows.map( ( row ) => (
                                         <tr
                                             key={ row.id }
-                                            className="rdt_TableRow"
+                                            className="admin-row"
                                         >
                                             { row
                                                 .getVisibleCells()
@@ -442,7 +457,7 @@ const Table: React.FC< TableProps > = ( {
                                                 .map( ( cell ) => (
                                                     <td
                                                         key={ cell.id }
-                                                        className="rdt_TableCell"
+                                                        className="admin-column"
                                                     >
                                                         {
                                                             flexRender(
@@ -455,9 +470,10 @@ const Table: React.FC< TableProps > = ( {
                                                     </td>
                                                 ) ) }
                                             { isSmallScreen && (
-                                                <td>
+                                                <td className="responsive-cell">
+                                                    
                                                     <details>
-                                                        <summary>More</summary>
+                                                        <summary></summary>
                                                         <ul className="text-sm">
                                                             { getHiddenColumns(
                                                                 row
@@ -489,14 +505,15 @@ const Table: React.FC< TableProps > = ( {
                                 </tbody>
                             </table>
                             { /* Pagination Controls */ }
-                            <div className="rdt_Pagination">
+                            <div className="table-pagination">
                                 { /* Page size dropdown */ }
-                                <div>
+                                <div className="Pagination-number-wrapper">
                                     Rows per page:
                                     <select
                                         value={
                                             table.getState().pagination.pageSize
                                         }
+
                                         onChange={ ( e ) =>
                                             table.setPageSize(
                                                 Number( e.target.value )
@@ -519,8 +536,8 @@ const Table: React.FC< TableProps > = ( {
                                             ! table.getCanPreviousPage()
                                         }
                                     >
-                                        { /* <i className="adminLib-arrow-previous"></i> */ }
-                                        { "<<" }
+                                         {/* <i className="adminLib-plus-circle-o"></i>  */}
+                                         { "<<" }
                                     </button>
                                     <button
                                         onClick={ () => table.previousPage() }
@@ -565,7 +582,7 @@ const Table: React.FC< TableProps > = ( {
                     ) }
                 </>
             ) }
-        </div>
+        </>
     );
 };
 

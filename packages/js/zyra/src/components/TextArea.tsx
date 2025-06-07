@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React, { ChangeEvent, MouseEvent, FocusEvent } from "react";
 
+// Types
 export interface TextAreaProps {
     id?: string;
     key: string;

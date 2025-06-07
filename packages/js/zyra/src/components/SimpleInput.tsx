@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Internal dependencies
+ */
 import HoverInputRender from "./HoverInputRender";
 
+// Types
 interface SimpleInputProps {
     formField: { label: string; placeholder?: string };
     onChange: ( field: string, value: string ) => void;

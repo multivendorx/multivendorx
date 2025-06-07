@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 
+// Types
 export interface BlockTextProps {
     wrapperClass: string;
     blockTextClass: string;

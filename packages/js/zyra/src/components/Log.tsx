@@ -1,8 +1,16 @@
+/**
+ * External dependencies
+ */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
+/**
+ * Internal dependencies
+ */
 import { getApiLink } from "./apiService";
 import "../styles/web/Log.scss";
 
+// Types
 export interface LogProps {
     apiLink: string;
     downloadFileName: string;

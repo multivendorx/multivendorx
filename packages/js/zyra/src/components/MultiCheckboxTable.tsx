@@ -1,7 +1,15 @@
+/**
+ * External dependencies
+ */
 import React, { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
+
+/**
+ * Internal dependencies
+ */
 import "../styles/web/MultiCheckboxTable.scss";
 
+// Types
 interface Option {
     value: string | number;
     label: string;
@@ -253,7 +261,7 @@ const Select: React.FC< SelectProps > = ( {
         getFilteredOptionValue().then( setOptions );
     }, [ filter, option, selectedValues ] );
 
-    Modal.setAppElement( "#admin-main-wrapper" );
+    // Modal.setAppElement( "#admin-main-wrapper" );
 
     return (
         <main className="grid-table-main-container" id="modal-support">

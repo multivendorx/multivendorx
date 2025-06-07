@@ -1,5 +1,12 @@
+/**
+ * External dependencies
+ */
 import React, { useEffect, useRef, useState } from "react";
 import { ReactSortable } from "react-sortablejs";
+
+/**
+ * Internal dependencies
+ */
 import ButtonCustomizer from "./ButtonCustomiser";
 import Elements from "./Elements";
 import SettingMetaBox from "./SettingMetaBox";
@@ -13,6 +20,7 @@ import TimePicker from "./TimePicker";
 import Divider from "./Divider";
 import TemplateSection from "./TemplateSection";
 
+// Types
 export interface Option {
     id: string;
     label: string;

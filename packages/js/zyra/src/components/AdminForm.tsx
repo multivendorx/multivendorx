@@ -1,5 +1,13 @@
+/**
+ * External dependencies
+ */
 import React, { JSX, useEffect, useRef, useState, lazy, Suspense } from "react";
 import { ActionMeta, MultiValue, SingleValue } from "react-select";
+import { Dialog } from "@mui/material";
+
+/**
+ * Internal dependencies
+ */
 import SelectInput, { SelectOptions } from "./SelectInput";
 import Label from "./Label";
 import Section from "./Section";
@@ -14,7 +22,6 @@ import ShortCodeTable from "./ShortCodeTable";
 import SyncNow from "./SyncNow";
 import SyncMap from "./SyncMap";
 import ToggleSetting from "./ToggleSetting";
-import { Dialog } from "@mui/material";
 import { getApiLink, sendApiResponse } from "./apiService";
 import BasicInput from "./BasicInput";
 import TextArea from "./TextArea";
@@ -31,9 +38,9 @@ import InputMailchimpList from "./InputMailchimpList";
 import ModulePopup, { ModulePopupProps } from "./ModulePopup";
 const LazyMapsInput = lazy( () => import( "./MapsInput" ) );
 import GoogleMap from "./GoogleMap";
-
 import "../styles/web/AdminForm.scss";
 
+// Types
 declare const wp: any;
 
 const PENALTY = 10;
@@ -713,7 +720,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     handleChange( e, inputField.key );
                                 }
                             } }
-                            onButtonClick={ () => {
+                            onButtonClick={ ( ) => {
                                 runUploader( inputField.key );
                             } }
                         />
@@ -1048,7 +1055,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 inputField.proSetting ?? false
                             ) }
                             onChange={ onSelectChange }
-                            onMultiSelectDeselectChange={ () =>
+                            onMultiSelectDeselectChange={ ( ) =>
                                 handlMultiSelectDeselectChange(
                                     inputField.key,
                                     Array.isArray( inputField.options )
@@ -1197,7 +1204,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     );
                                 }
                             } }
-                            onMultiSelectDeselectChange={ () =>
+                            onMultiSelectDeselectChange={ ( ) =>
                                 handlMultiSelectDeselectChange(
                                     inputField.key,
                                     Array.isArray( inputField.options )
@@ -1572,7 +1579,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-                // Synchronize button
+                // Synchronize button 
                 case "syncbutton":
                     input = (
                         <SyncNow

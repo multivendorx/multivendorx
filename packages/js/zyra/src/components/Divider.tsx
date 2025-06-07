@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import React from "react";
 
 const Divider: React.FC = () => {

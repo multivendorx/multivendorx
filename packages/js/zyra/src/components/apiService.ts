@@ -1,6 +1,7 @@
+/**
+ * External dependencies
+ */
 import axios, { AxiosRequestConfig } from "axios";
-
-// declare const appLocalizer: { apiUrl: string; restUrl: string; nonce: string };
 
 /**
  * Get response from REST API.

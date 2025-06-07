@@ -1,8 +1,16 @@
+/**
+ * External dependencies
+ */
 import React, { useState, useEffect } from "react";
 import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
+
+/**
+ * Internal dependencies
+ */
 import Button from "./DisplayButton";
 import "../styles/web/FormViewer.scss";
 
+// Types
 declare global {
     interface Window {
         grecaptcha?: {
@@ -180,7 +188,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
     };
 
     return (
-        <main className="catalogx-enquiry-pro-form">
+        <main className="enquiry-pro-form">
             { formList.map( ( field ) => {
                 if ( field.disabled ) return null;
                 switch ( field.type ) {

@@ -1,4 +1,11 @@
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Internal dependencies
+ */
 import "../styles/fonts.scss";
 import "../styles/web/IconList.scss";
 

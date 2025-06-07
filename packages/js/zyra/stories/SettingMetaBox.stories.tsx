@@ -14,28 +14,29 @@ export const TestSettingMetaBox = () => {
         row: 1,
         column: 1,
         required: true,
-        disabled: false,
+        disabled: false
     };
 
-    const inputTypeList = [
+    const inputTypeList= [
         { value: "text", label: "Text" },
         { value: "email", label: "Email" },
         { value: "number", label: "Number" },
         { value: "textarea", label: "Textarea" },
         { value: "file", label: "File Upload" },
-        { value: "recaptcha", label: "Google reCAPTCHA" },
+        { value: "recaptcha", label: "Google reCAPTCHA" }
     ];
+
 
     const demoSettingMetaBoxProps = {
         formField: formField,
         inputTypeList: inputTypeList,
-        onChange: ( field, value ) => {
-            console.log( `Field changed: ${ field } = ${ value }` );
+        onChange: (field, value) => {
+            console.log(`Field changed: ${field} = ${value}`);
         },
-        onTypeChange: ( value ) => {
-            console.log( `Input type changed to: ${ value }` );
+        onTypeChange: (value) => {
+            console.log(`Input type changed to: ${value}`);
         },
-        opened: { click: true },
+        opened: { click: true }
     };
 
     return <SettingMetaBox { ...demoSettingMetaBoxProps } />;

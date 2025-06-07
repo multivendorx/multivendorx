@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React, { useState } from "react";
 
+// Types
 export interface DisplayButtonProp {
     customStyle: {
         button_border_size?: number;

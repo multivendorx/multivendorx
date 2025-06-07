@@ -1,5 +1,4 @@
 import Label from "../src/components/Label";
-import "./global.scss";
 
 export default {
     title: "Zyra/Components/Label",

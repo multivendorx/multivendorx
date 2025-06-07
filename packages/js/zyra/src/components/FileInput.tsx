@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React, { ChangeEvent, MouseEvent } from "react";
 
+// Types
 interface FileInputProps {
     wrapperClass?: string;
     inputClass?: string;

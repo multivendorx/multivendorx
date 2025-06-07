@@ -1,6 +1,5 @@
 @use '../../common.scss' as *;
 
-.settings-input-content {
   .registrationFrom-main-wrapper-section {
     display: flex;
     align-items: flex-start;
@@ -199,7 +198,6 @@
 
 
     .form-field {
-      background-color: $color-white;
       position: relative;
       margin-bottom: 0.5rem;
       transition: all 0.8s ease;      
@@ -642,7 +640,7 @@
   .border-5 {
     border: 0.31rem solid $color-black;
   }
-}
+
 
 .tabs {
   display: flex;

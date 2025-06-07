@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React, { ChangeEvent } from "react";
 
+// Types
 export interface RadioOption {
     key: string;
     keyName?: string;

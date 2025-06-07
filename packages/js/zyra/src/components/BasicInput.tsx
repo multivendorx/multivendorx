@@ -1,5 +1,14 @@
+/**
+ * External dependencies
+ */
 import React, { ChangeEvent, MouseEvent, FocusEvent } from "react";
 
+/**
+ * Internal dependencies
+ */
+import "../styles/web/BasicInput.scss";
+
+// Types
 export interface BasicInputProps {
     wrapperClass?: string;
     inputLabel?: string;

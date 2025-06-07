@@ -1,6 +1,6 @@
 import BasicInput from "../src/components/BasicInput";
 import { ChangeEvent, FocusEvent, MouseEvent } from "react";
-import "./global.scss";
+
 
 export default {
     title: "Zyra/Components/BasicInput",
@@ -30,27 +30,24 @@ const commonArgs = {
 export const TestBasicInputTextFree = () => {
     const basicInputProps = {
         type: "text" as "text",
-        description:
-            "This is a simple text box (text, url, email, password, number)",
+        description: "This is a simple text box (text, url, email, password, number)",
         placeholder: "write something",
         ...commonArgs,
     };
 
-    return <BasicInput key={ "sample_text" } { ...basicInputProps } />;
+    return <BasicInput key={"sample_text"} { ...basicInputProps } />;
 };
 
 export const TestBasicInputTextPro = () => {
     const basicInputProps = {
         type: "text" as const,
         description: "This is a simple text box with parameter",
-        parameter: "days",
+        parameter: 'days',
         proSetting: true,
         ...commonArgs,
     };
 
-    return (
-        <BasicInput key={ "sample_parameter_text" } { ...basicInputProps } />
-    );
+    return <BasicInput key={"sample_parameter_text"} { ...basicInputProps } />;
 };
 
 export const TestBasicInputNormalFile = () => {
@@ -61,7 +58,7 @@ export const TestBasicInputNormalFile = () => {
         ...commonArgs,
     };
 
-    return <BasicInput key={ "sample_normal_file" } { ...basicInputProps } />;
+    return <BasicInput key={"sample_normal_file"} { ...basicInputProps } />;
 };
 
 export const TestBasicInputColor = () => {
@@ -72,7 +69,7 @@ export const TestBasicInputColor = () => {
         type: "color" as "color",
         description: "This is a simple color",
         onChange: ( e: ChangeEvent< HTMLInputElement > ) => {
-            console.log( "Changed:", e.target.value );
+        console.log( "Changed:", e.target.value );
         },
         onClick: ( e: MouseEvent< HTMLInputElement > ) => {
             console.log( "Clicked:", e.target );
@@ -88,19 +85,21 @@ export const TestBasicInputColor = () => {
         },
     };
 
-    return <BasicInput key={ "sample_color" } { ...basicInputProps } />;
+    return <BasicInput key={"sample_color"} { ...basicInputProps } />;
 };
+
 
 export const TestBasicInputRange = () => {
     const basicInputProps = {
         type: "range" as "range",
         inputLabel: "Range Input",
-        rangeUnit: "px",
+        rangeUnit: 'px',
         ...commonArgs,
     };
 
-    return <BasicInput key={ "sample_range" } { ...basicInputProps } />;
+    return <BasicInput key={"sample_range"} { ...basicInputProps } />;
 };
+
 
 export const TestBasicInputButton = () => {
     const basicInputProps = {
@@ -115,5 +114,5 @@ export const TestBasicInputButton = () => {
         },
     };
 
-    return <BasicInput key={ "sample_button" } { ...basicInputProps } />;
+    return <BasicInput key={"sample_button"} { ...basicInputProps } />;
 };

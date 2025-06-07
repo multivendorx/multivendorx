@@ -1,32 +1,32 @@
 @use '../../common.scss' as *;
 
-.gridTable {
-    gap: 1rem;
+// .gridTable {
+//     gap: 1rem;
 
-    &.no-label {
-        flex-direction: column;
+//     &.no-label {
+//         flex-direction: column;
 
-        .settings-form-label {
-            width: 100% !important; // To overwrite dynamic.scss
-        }
+//         .settings-form-label {
+//             width: 100% !important; // To overwrite dynamic.scss
+//         }
 
-        .settings-input-content {
-            width: 100% !important; // To overwrite dynamic.scss
-        }
-    }
+//         .settings-input-content {
+//             width: 100% !important; // To overwrite dynamic.scss
+//         }
+//     }
 
-    .settings-input-content {
+//     .settings-input-content {
 
-        .admin-pro-tag {
-            top: 10%;
-            right: 0.613rem;
-        }
+//         .admin-pro-tag {
+//             top: 10%;
+//             right: 0.613rem;
+//         }
 
-        .settings-metabox-description {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 0.75rem;
-        }
+//         .settings-metabox-description {
+//             text-align: center;
+//             margin-top: 0;
+//             margin-bottom: 0.75rem;
+//         }
 
         .grid-table {
             width: 100%;
@@ -297,5 +297,5 @@
                 }
             }
         }
-    }
-}
+//     }
+// }

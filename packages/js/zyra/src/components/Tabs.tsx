@@ -1,8 +1,16 @@
+/**
+ * External dependencies
+ */
 import { LinkProps } from "react-router-dom";
 import { useState, ReactNode } from "react";
+
+/**
+ * Internal dependencies
+ */
 import AdminFooter, { SupportLink } from "./AdminFooter";
 import "../styles/web/Tabs.scss";
 
+// Types
 type TabContent = {
     id: string;
     name: string;

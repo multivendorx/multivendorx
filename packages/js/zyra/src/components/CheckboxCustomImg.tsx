@@ -1,6 +1,14 @@
+/**
+ * External dependencies
+ */
 import React from "react";
+
+/**
+ * Internal dependencies
+ */
 import "../styles/web/CheckboxCustomImg.scss";
 
+// Types
 interface SyncDirection {
     value: string;
     img1: string;

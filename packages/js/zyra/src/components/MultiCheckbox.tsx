@@ -1,5 +1,9 @@
+/**
+ * External dependencies
+ */
 import React, { ChangeEvent, MouseEvent } from "react";
 
+// Types
 export interface Option {
     key: string;
     value: string;

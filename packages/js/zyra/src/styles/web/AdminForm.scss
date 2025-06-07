@@ -1,5 +1,11 @@
 @use '../../common.scss' as *;
 
+
+
+
+
+
+
 .dynamic-fields-wrapper {
   padding: 2rem;
 
@@ -102,34 +108,20 @@
           }
         }
 
-        .setting-form-input {
-          position: relative;
+        // .setting-form-input {
+        //   position: relative;
 
-          .parameter {
-            position: absolute;
-            top: .41rem;
-            right: 0.313rem;
-            border-left: $border-light-small;
-            padding: 0 0.75rem;
+        //   .parameter {
+        //     position: absolute;
+        //     top: .41rem;
+        //     right: 0.313rem;
+        //     border-left: $border-light-small;
+        //     padding: 0 0.75rem;
 
-          }
-        }
+        //   }
+        // }
 
-        .settings-metabox-description {
-          margin-top: 0.625rem !important; // Overwrite common.scss
-          font-style: italic;
-          color: #72727599;
-          font-size: 0.813rem !important; // Overwrite common.scss
-          width: 100%;
-
-          b{
-            color: #000000b7;
-          }
-
-          p {
-            margin-bottom: 0.5rem;
-          }
-        }
+        
 
         .checkbox-description {
           width: 100%;
@@ -471,26 +463,26 @@
       }
     }
 
-    .setting-section-divider {
-      margin: 2rem 0;
-      padding: 0;
-      border-top: 0.05rem solid rgba(82, 44, 129, 0.09);
-      position: relative;
+    // .setting-section-divider {
+    //   margin: 2rem 0;
+    //   padding: 0;
+    //   border-top: 0.05rem solid rgba(82, 44, 129, 0.09);
+    //   position: relative;
 
-      .section-hint {
-        text-align: center;
-        margin-top: 0.813rem;
-      }
+    //   .section-hint {
+    //     text-align: center;
+    //     margin-top: 0.813rem;
+    //   }
 
-      span {
-        position: absolute;
-        top: -0.063rem;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 0 1rem;
-        background: $color-white;
-      }
-    }
+    //   span {
+    //     position: absolute;
+    //     top: -0.063rem;
+    //     left: 50%;
+    //     transform: translate(-50%, -50%);
+    //     padding: 0 1rem;
+    //     background: $color-white;
+    //   }
+    // }
 
     .conditional-section {
       padding-top: 2.5rem;
@@ -498,13 +490,13 @@
       border-top: 0.05rem solid rgba(82, 44, 129, 0.09);
     }
 
-    .settings-metabox-description-code {
-      padding: .5rem 1rem;
-      margin: .5rem 0;
-      background: #fdf9fb;
-      color: $theme-color;
-      border-left: 0.2rem solid $color-active;
-    }
+    // .settings-metabox-description-code {
+    //   padding: .5rem 1rem;
+    //   margin: .5rem 0;
+    //   background: #fdf9fb;
+    //   color: $theme-color;
+    //   border-left: 0.2rem solid $color-active;
+    // }
 
     .fromcustomizer-wrapper {
       border: $border-light-medium;

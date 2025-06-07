@@ -11,14 +11,14 @@ const commonProps = {
     inputClass: "setting-form-input",
     descClass: "settings-metabox-description",
     activeClass: "radio-select-active",
-    onChange: ( e ) => {
-        console.log( "Radio changed:", e.target.value );
-    },
-};
+    onChange: (e) => {
+        console.log("Radio changed:", e.target.value);
+    }
+}
 
 export const TestRadioInput = () => {
     const demoRadioInputProps = {
-        label: "Set Theme",
+        label: 'Set Theme',
         description: "Choose your preferred theme color.",
         value: "dark",
         name: "themeColor",
@@ -42,18 +42,19 @@ export const TestRadioInput = () => {
                 name: "themeColor",
                 value: "custom",
                 label: "Custom Theme",
-            },
+            }
         ],
         proSetting: false,
         ...commonProps,
     };
+
 
     return <RadioInput { ...demoRadioInputProps } />;
 };
 
 export const TestRadioSelectInput = () => {
     const demoRadioInputProps = {
-        label: "Store Header",
+        label:"Store Header",
         description: "Select store banner style",
         name: "Banaer",
         type: "radio-select" as "radio-select",
@@ -63,13 +64,13 @@ export const TestRadioSelectInput = () => {
                 key: "option1",
                 name: "Banaer",
                 label: "Outer Space",
-                value: "template1",
+                value: 'template1',
                 color: "#",
             },
             {
                 key: "option2",
                 name: "Banner",
-                label: "Green Lagoon",
+                label: 'Green Lagoon',
                 value: "template2",
                 color: "#",
             },
@@ -78,14 +79,13 @@ export const TestRadioSelectInput = () => {
         ...commonProps,
     };
 
-    return (
-        <RadioInput key={ "sample_radio_select" } { ...demoRadioInputProps } />
-    );
+
+    return <RadioInput key={"sample_radio_select"} { ...demoRadioInputProps } />;
 };
 
 export const TestRadioColorInput = () => {
     const demoRadioInputProps = {
-        label: "Sample Radio color(radio with color)",
+        label:"Sample Radio color(radio with color)",
         description: "This is a simple radio color input",
         name: "Radio Color",
         type: "radio-color" as "radio-color",
@@ -95,22 +95,21 @@ export const TestRadioColorInput = () => {
                 key: "option1",
                 name: "Radio Color",
                 label: "Blue Shades",
-                value: "option1",
-                color: [ "#202528", "#333b3d", "#3f85b9", "#316fa8" ],
+                value: 'option1',
+                color: ['#202528', '#333b3d','#3f85b9', '#316fa8'],
             },
             {
                 key: "option2",
                 name: "Radio Color",
-                label: "Green Shades",
-                value: "option2",
-                color: [ "#171717", "#212121", "#009788", "#00796a" ],
+                label: 'Green Shades',
+                value: 'option2',
+                color: ['#171717', '#212121', '#009788','#00796a'],
             },
         ],
         proSetting: false,
         ...commonProps,
     };
 
-    return (
-        <RadioInput key={ "sample_radio_color" } { ...demoRadioInputProps } />
-    );
+
+    return <RadioInput key={"sample_radio_color"} { ...demoRadioInputProps } />;
 };

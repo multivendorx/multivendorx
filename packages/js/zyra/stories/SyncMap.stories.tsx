@@ -19,23 +19,23 @@ export const TestSyncMap = () => {
         },
         syncFieldsMap: {
             wordpress: {
-                heading: "WordPress",
+                heading: 'WordPress',
                 fields: {
-                    firstname: "First name",
-                    lastname: "Last name",
-                    username: "User name",
-                    password: "Password",
-                },
+                firstname: 'First name',
+                lastname: 'Last name',
+                username: 'User name',
+                password: 'Password'
+                }
             },
             moodle: {
-                heading: "Moodle",
+                heading: 'Moodle',
                 fields: {
-                    firstname: "First name",
-                    lastname: "Last name",
-                    username: "User name",
-                    password: "Password",
-                },
-            },
+                firstname: 'First name',
+                lastname: 'Last name',
+                username: 'User name',
+                password: 'Password'
+                }
+            }
         },
     };
 

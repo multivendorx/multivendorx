@@ -1,8 +1,11 @@
 /// <reference types="google.maps" />
-
+/**
+ * External dependencies
+ */
 import React, { useEffect, useState, useRef } from "react";
 import GoogleMapReact from "google-map-react";
 
+// Types
 interface AnyReactComponentProps {
     text: string;
 }
