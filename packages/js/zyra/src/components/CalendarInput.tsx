@@ -8,48 +8,50 @@ export interface CalendarInputProps {
     multiple?: boolean;
     range?: boolean;
     value: string;
-    onChange?: (date: any) => void;
+    onChange?: ( date: any ) => void;
     proSetting?: boolean;
 }
 
-const CalendarInput: React.FC<CalendarInputProps> = (props) => {
+const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
     let formattedDate: any;
-    const dates = props.value.split(",");
+    const dates = props.value.split( "," );
 
-    if (dates.length === 1 && !dates[0].includes(" - ")) {
-        formattedDate = new Date(dates[0].trim());
+    if ( dates.length === 1 && ! dates[ 0 ].includes( " - " ) ) {
+        formattedDate = new Date( dates[ 0 ].trim() );
     } else {
-        formattedDate = dates.map((date) => {
-            if (date.includes(" - ")) {
-                const rangeDates = date.split(" - ");
-                const startDate = new Date(rangeDates[0].trim());
-                const endDate = new Date(rangeDates[1].trim());
-                return [startDate, endDate];
+        formattedDate = dates.map( ( date ) => {
+            if ( date.includes( " - " ) ) {
+                const rangeDates = date.split( " - " );
+                const startDate = new Date( rangeDates[ 0 ].trim() );
+                const endDate = new Date( rangeDates[ 1 ].trim() );
+                return [ startDate, endDate ];
             } else {
-                return new Date(date.trim());
+                return new Date( date.trim() );
             }
-        });
+        } );
     }
 
-    const [selectedDate, setSelectedDate] = useState<any>(formattedDate || "");
+    const [ selectedDate, setSelectedDate ] = useState< any >(
+        formattedDate || ""
+    );
 
-    const handleDateChange = (e: any) => {
-        setSelectedDate(e);
-        props.onChange?.(e);
+    const handleDateChange = ( e: any ) => {
+        setSelectedDate( e );
+        props.onChange?.( e );
     };
 
     return (
-        <div className={props.wrapperClass}>
+        <div className={ props.wrapperClass }>
             <DatePicker
-                className={props.inputClass}
-                format={props.format || "YYYY-MM-DD"}
-                multiple={props.multiple}
-                range={props.range}
-                value={selectedDate}
-                placeholder={"YYYY-MM-DD"}
-                onChange={handleDateChange}
+                className={ props.inputClass }
+                format={ props.format || "YYYY-MM-DD" }
+                multiple={ props.multiple }
+                range={ props.range }
+                value={ selectedDate }
+                placeholder={ "YYYY-MM-DD" }
+                onChange={ handleDateChange }
             />
-            {props.proSetting && <span className="admin-pro-tag">pro</span>}
+            { props.proSetting && <span className="admin-pro-tag">pro</span> }
         </div>
     );
 };

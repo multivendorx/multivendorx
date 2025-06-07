@@ -6,37 +6,43 @@ interface FormField {
 
 interface DatepickerProps {
     formField: FormField; // The form field object
-    onChange: (field: "label", value: string) => void; // Function to handle label change
+    onChange: ( field: "label", value: string ) => void; // Function to handle label change
 }
 
-const Datepicker: React.FC<DatepickerProps> = ({ formField, onChange }) => {
+const Datepicker: React.FC< DatepickerProps > = ( { formField, onChange } ) => {
     return (
         <HoverInputRender
-            label={formField.label}
+            label={ formField.label }
             placeholder="Select date"
-            onLabelChange={(newLabel) => onChange("label", newLabel)}
-            renderStaticContent={({ label }) => (
+            onLabelChange={ ( newLabel ) => onChange( "label", newLabel ) }
+            renderStaticContent={ ( { label } ) => (
                 <div className="edit-form-wrapper">
-                    <p>{label}</p>
+                    <p>{ label }</p>
                     <div className="settings-form-group-radio">
                         <input type="date" readOnly />
                     </div>
                 </div>
-            )}
-            renderEditableContent={({ label, onLabelChange, placeholder }) => (
+            ) }
+            renderEditableContent={ ( {
+                label,
+                onLabelChange,
+                placeholder,
+            } ) => (
                 <>
-                    {/* Editable label input */}
+                    { /* Editable label input */ }
                     <input
                         className="input-label textArea-label"
                         type="text"
-                        value={label}
-                        placeholder={placeholder}
-                        onChange={(event) => onLabelChange(event.target.value)}
+                        value={ label }
+                        placeholder={ placeholder }
+                        onChange={ ( event ) =>
+                            onLabelChange( event.target.value )
+                        }
                     />
 
                     <input type="date" readOnly />
                 </>
-            )}
+            ) }
         />
     );
 };

@@ -13,11 +13,12 @@
         "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
         "build:project:bundle": "wireit",
         "watch:build": "pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^watch:build:project:.*$/\"",
-        "watch:build:project": "pnpm --if-present run '/^watch:build:project:.*$/'",
-		"watch:build:project:bundle": "wireit",
+        "watch:build:project": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
+        "watch:build:project:bundle": "wireit",
         "lint": "pnpm --if-present \"/^lint:lang:.*$/\"",
         "lint:fix": "pnpm --if-present \"/^lint:fix:.*$/\"",
         "lint:lang:js": "eslint . --ext=js,ts,tsx",
+        "lint:lang:js:report": "eslint . --ext=js,ts,tsx --format=json --no-color > eslint-report.json",
         "lint:fix:js": "wp-scripts format",
         "preinstall": "npx only-allow pnpm"
     },
@@ -33,13 +34,13 @@
             ]
         },
         "watch:build:project:bundle": {
-			"command": "rollup -c rollup.config.js --watch --sourcemap",
+            "command": "rollup -c rollup.config.js --watch --sourcemap",
             "files": [
                 "src/**",
                 "rollup.config.js"
             ],
-			"service": true
-		}
+            "service": true
+        }
     },
     "keywords": [
         "wordpress",
@@ -62,7 +63,7 @@
         "@mapbox/mapbox-gl-geocoder": "^5.0.3",
         "@mui/material": "^7.0.2",
         "@reactour/tour": "^3.7.0",
-        "@tinymce/tinymce-react": "^6.1.0",
+        "@tinymce/tinymce-react": "^5.1.0",
         "google-map-react": "^2.2.1",
         "mapbox-gl": "^3.11.0",
         "react": "18.3.x",
@@ -78,7 +79,6 @@
     "devDependencies": {
         "@babel/core": "^7.27.1",
         "@babel/preset-env": "^7.27.2",
-        "@eslint/js": "^9.27.0",
         "@rollup/plugin-commonjs": "^28.0.3",
         "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^16.0.1",
@@ -99,12 +99,11 @@
         "@types/react-router-dom": "^5.3.3",
         "@types/react-select": "^5.0.0",
         "@types/reactour": "^1.18.5",
-        "@typescript-eslint/parser": "^8.32.1",
         "@wordpress/scripts": "^30.16.0",
         "babel-loader": "^10.0.0",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^13.0.0",
-        "eslint": "^9.27.0",
+        "eslint": "8.56.0",
         "globals": "^16.1.0",
         "mini-css-extract-plugin": "2.9.2",
         "rollup": "^4.40.0",

@@ -14,14 +14,14 @@ export interface TextAreaProps {
     proSetting?: boolean;
     description?: string;
     descClass?: string;
-    onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-    onClick?: (e: MouseEvent<HTMLTextAreaElement>) => void;
-    onMouseOver?: (e: MouseEvent<HTMLTextAreaElement>) => void;
-    onMouseOut?: (e: MouseEvent<HTMLTextAreaElement>) => void;
-    onFocus?: (e: FocusEvent<HTMLTextAreaElement>) => void;
+    onChange?: ( e: ChangeEvent< HTMLTextAreaElement > ) => void;
+    onClick?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
+    onMouseOver?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
+    onMouseOut?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
+    onFocus?: ( e: FocusEvent< HTMLTextAreaElement > ) => void;
 }
 
-export const TextArea: React.FC<TextAreaProps> = ({
+export const TextArea: React.FC< TextAreaProps > = ( {
     wrapperClass,
     inputClass,
     id,
@@ -40,32 +40,32 @@ export const TextArea: React.FC<TextAreaProps> = ({
     onMouseOver,
     onMouseOut,
     onFocus,
-}) => {
+} ) => {
     return (
-        <div className={wrapperClass}>
+        <div className={ wrapperClass }>
             <textarea
-                className={inputClass}
-                id={id}
-                key={key}
-                name={name}
-                value={value}
-                maxLength={maxLength}
-                placeholder={placeholder}
-                rows={rowNumber}
-                cols={colNumber}
-                onChange={onChange}
-                onClick={onClick}
-                onMouseOver={onMouseOver}
-                onMouseOut={onMouseOut}
-                onFocus={onFocus}
+                className={ inputClass }
+                id={ id }
+                key={ key }
+                name={ name }
+                value={ value }
+                maxLength={ maxLength }
+                placeholder={ placeholder }
+                rows={ rowNumber }
+                cols={ colNumber }
+                onChange={ onChange }
+                onClick={ onClick }
+                onMouseOver={ onMouseOver }
+                onMouseOut={ onMouseOut }
+                onFocus={ onFocus }
             />
-            {proSetting && <span className="admin-pro-tag">pro</span>}
-            {description && (
+            { proSetting && <span className="admin-pro-tag">pro</span> }
+            { description && (
                 <p
-                    className={descClass}
-                    dangerouslySetInnerHTML={{ __html: description }}
+                    className={ descClass }
+                    dangerouslySetInnerHTML={ { __html: description } }
                 ></p>
-            )}
+            ) }
         </div>
     );
 };

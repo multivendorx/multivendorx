@@ -2,15 +2,17 @@ import React from "react";
 
 interface RecaptchaProps {
     formField: { sitekey?: string };
-    onChange?: (field: string, value: any) => void;
+    onChange?: ( field: string, value: any ) => void;
 }
 
-const Recaptcha: React.FC<RecaptchaProps> = ({ formField }) => {
+const Recaptcha: React.FC< RecaptchaProps > = ( { formField } ) => {
     return (
         <div
-            className={`main-input-wrapper ${!formField.sitekey ? "recaptcha" : ""}`}
+            className={ `main-input-wrapper ${
+                ! formField.sitekey ? "recaptcha" : ""
+            }` }
         >
-            <p>{"reCAPTCHA has been successfully added to the form."}</p>
+            <p>{ "reCAPTCHA has been successfully added to the form." }</p>
         </div>
     );
 };

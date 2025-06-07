@@ -1,3 +1,4 @@
+// Check in MVX
 import React from "react";
 import BasicInput from "./BasicInput";
 import { SelectOptions } from "./SelectInput";
@@ -10,7 +11,7 @@ interface ParentOption {
 }
 
 interface Option {
-    [key: string]: any; // Allows dynamic keys for nested data
+    [ key: string ]: any; // Allows dynamic keys for nested data
 }
 
 interface NestedInputProps {
@@ -22,33 +23,35 @@ interface NestedInputProps {
     value: Option[];
     parentOptions: ParentOption[];
     parentOnchage: (
-        e: React.ChangeEvent<HTMLInputElement>,
+        e: React.ChangeEvent< HTMLInputElement >,
         option?: any
     ) => void;
 }
 
-const NestedInput: React.FC<NestedInputProps> = (props) => {
+const NestedInput: React.FC< NestedInputProps > = ( props ) => {
     return (
-        <div className={props.wrapperClass}>
-            {props.value &&
-                props.value.map((option, index) => (
-                    <div key={index} className={props.ParentWrapperClass}>
-                        {props.parentOptions.map((parentOption, i) => (
+        <div className={ props.wrapperClass }>
+            { props.value &&
+                props.value.map( ( option, index ) => (
+                    <div key={ index } className={ props.ParentWrapperClass }>
+                        { props.parentOptions.map( ( parentOption, i ) => (
                             <div
-                                key={i}
-                                className={props.innerParentWrapperClass}
+                                key={ i }
+                                className={ props.innerParentWrapperClass }
                             >
-                                <label className={props.parentLabelClass}>
-                                    <p>{parentOption.label}</p>
+                                <label className={ props.parentLabelClass }>
+                                    <p>{ parentOption.label }</p>
                                 </label>
 
-                                {parentOption.type === "text" ||
+                                { parentOption.type === "text" ||
                                 parentOption.type === "number" ? (
                                     <BasicInput
-                                        inputClass={props.parentInputClass}
-                                        type={parentOption.type}
-                                        value={option[parentOption.key]}
-                                        onChange={(e) => props.parentOnchage(e)}
+                                        inputClass={ props.parentInputClass }
+                                        type={ parentOption.type }
+                                        value={ option[ parentOption.key ] }
+                                        onChange={ ( e ) =>
+                                            props.parentOnchage( e )
+                                        }
                                     />
                                 ) : // : parentOption.type === "checkbox" ? (
                                 //     <CheckBox
@@ -69,11 +72,11 @@ const NestedInput: React.FC<NestedInputProps> = (props) => {
                                 //         onChange={(e, opt) => props.parentOnchage(e, opt)}
                                 //     />
                                 // )
-                                null}
+                                null }
                             </div>
-                        ))}
+                        ) ) }
                     </div>
-                ))}
+                ) ) }
         </div>
     );
 };

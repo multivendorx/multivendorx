@@ -5,9 +5,9 @@ import ButtonCustomizer from "./ButtonCustomiser";
 import "../styles/web/CatalogCustomizer.scss";
 
 export interface CatalogCustomizerProps {
-    onChange: (key: string, value: any) => void;
+    onChange: ( key: string, value: any ) => void;
     proSetting?: boolean;
-    setting: Record<string, any>;
+    setting: Record< string, any >;
     Sample_Product: string;
     pro_url: string;
 }
@@ -22,7 +22,7 @@ type MenuItem = {
 // Define the type for a draggable item
 type DraggableItem = {
     id: string;
-    content?: (() => ReactNode) | string;
+    content?: ( () => ReactNode ) | string;
     defaultPosition: number;
     dragable: boolean;
 };
@@ -32,57 +32,59 @@ type ButtonItem = {
     id: string;
 };
 
-const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
+const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
     onChange,
     proSetting,
     setting,
     Sample_Product,
     pro_url,
-}) => {
-    const [localSetting, _setLocalSetting] = useState(setting);
+} ) => {
+    const [ localSetting, _setLocalSetting ] = useState( setting );
 
-    const setSetting = (key: string, value: any) => {
-        _setLocalSetting({ ...localSetting, [key]: value });
-        onChange(key, value);
+    const setSetting = ( key: string, value: any ) => {
+        _setLocalSetting( { ...localSetting, [ key ]: value } );
+        onChange( key, value );
     };
 
     const shopPagePossitionSetting =
-        localSetting["shop_page_possition_setting"] || [];
+        localSetting[ "shop_page_possition_setting" ] || [];
     const buttonPossitionSetting =
-        localSetting["shop_page_button_position_setting"] || [];
+        localSetting[ "shop_page_button_position_setting" ] || [];
 
-    const [menu, setMenu] = useState<MenuItem[]>([
+    const [ menu, setMenu ] = useState< MenuItem[] >( [
         { name: "Enquiry", id: "enquiry", icon: "adminLib-inquiry" },
         { name: "Quote", id: "quote", icon: "adminLib-price-quote-icon" },
         { name: "Catalog", id: "catalog", icon: "adminLib-catalog" },
-    ]);
+    ] );
 
-    const [currentTab, setCurrentTab] = useState<MenuItem>(menu[0]);
+    const [ currentTab, setCurrentTab ] = useState< MenuItem >( menu[ 0 ] );
 
     // Create draggable items state with type annotations
-    const [dragableItems, setDragableItems] = useState<DraggableItem[]>([
+    const [ dragableItems, setDragableItems ] = useState< DraggableItem[] >( [
         {
             id: "price_section",
             content: () => {
-                const [hideProductPrice, setHideProductPrice] =
-                    useState<boolean>(setting["hide_product_price"]);
+                const [ hideProductPrice, setHideProductPrice ] =
+                    useState< boolean >( setting[ "hide_product_price" ] );
                 return (
                     <div className="price-section toggle-visibility">
                         <div
-                            onClick={() => {
-                                setHideProductPrice(!hideProductPrice);
+                            onClick={ () => {
+                                setHideProductPrice( ! hideProductPrice );
                                 setSetting(
                                     "hide_product_price",
-                                    !hideProductPrice
+                                    ! hideProductPrice
                                 );
-                            }}
+                            } }
                             className="button-visibility"
                         >
                             <i className="admin-font adminLib-support"></i>
                         </div>
                         <p
                             className="product-price"
-                            style={{ opacity: hideProductPrice ? "0.3" : "1" }}
+                            style={ {
+                                opacity: hideProductPrice ? "0.3" : "1",
+                            } }
                         >
                             <span className="strikethrough">$20.00</span> $18.00
                         </p>
@@ -95,26 +97,25 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
         {
             id: "product_description",
             content: () => {
-                const [hideProductDesc, setHideProductDesc] = useState<boolean>(
-                    setting["hide_product_desc"]
-                );
+                const [ hideProductDesc, setHideProductDesc ] =
+                    useState< boolean >( setting[ "hide_product_desc" ] );
                 return (
                     <div className="description-section toggle-visibility">
                         <div
-                            onClick={() => {
-                                setHideProductDesc(!hideProductDesc);
+                            onClick={ () => {
+                                setHideProductDesc( ! hideProductDesc );
                                 setSetting(
                                     "hide_product_desc",
-                                    !hideProductDesc
+                                    ! hideProductDesc
                                 );
-                            }}
+                            } }
                             className="button-visibility"
                         >
                             <i className="admin-font adminLib-support"></i>
                         </div>
                         <p
                             className="product-description"
-                            style={{ opacity: hideProductDesc ? "0.3" : "1" }}
+                            style={ { opacity: hideProductDesc ? "0.3" : "1" } }
                         >
                             Pellentesque habitant morbi tristique senectus et
                             netus et malesuada fames ac turpis egestas.
@@ -128,7 +129,7 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
         {
             id: "additional_input",
             defaultPosition: 2,
-            dragable: !!proSetting, // Converts truthy/falsy to boolean
+            dragable: !! proSetting, // Converts truthy/falsy to boolean
         },
         {
             id: "add_to_cart",
@@ -162,16 +163,16 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
             id: "custom_button",
             content: "buttonDND",
             defaultPosition: 5,
-            dragable: !!proSetting,
+            dragable: !! proSetting,
         },
-    ]);
+    ] );
 
     // Create button items state with type annotations
-    const [buttonItems, setButtonItems] = useState<ButtonItem[]>([
+    const [ buttonItems, setButtonItems ] = useState< ButtonItem[] >( [
         { id: "enquiry_button" },
         { id: "quote_button" },
         { id: "enquery_cart_button" },
-    ]);
+    ] );
 
     /**
      * Get the index of a list item by its id.
@@ -179,17 +180,17 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
      * @param id - The id to search for.
      * @returns The index of the found item, or -1 if not found.
      */
-    const getIndex = <T extends { id: string }>(
+    const getIndex = < T extends { id: string } >(
         list: T[],
         id: string
     ): number => {
         let foundItemIndex = -1;
 
-        list.forEach((item, index) => {
-            if (item.id === id) {
+        list.forEach( ( item, index ) => {
+            if ( item.id === id ) {
                 foundItemIndex = index;
             }
-        });
+        } );
 
         return foundItemIndex;
     };
@@ -201,18 +202,18 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
      * @param endIndex - The index where the item should be moved.
      * @returns A new array with the reordered elements.
      */
-    const reorder = <T extends unknown>(
+    const reorder = < T extends unknown >(
         list: T[],
         startIndex: number,
         endIndex: number
     ): T[] => {
-        if (startIndex === endIndex) return list; // No need to reorder if indices are the same
+        if ( startIndex === endIndex ) return list; // No need to reorder if indices are the same
 
-        const result = [...list]; // Creates a shallow copy of the array
-        const [removed] = result.splice(startIndex, 1);
+        const result = [ ...list ]; // Creates a shallow copy of the array
+        const [ removed ] = result.splice( startIndex, 1 );
 
-        if (removed !== undefined) {
-            result.splice(endIndex, 0, removed);
+        if ( removed !== undefined ) {
+            result.splice( endIndex, 0, removed );
         }
 
         return result;
@@ -221,96 +222,96 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
     /**
      * Updates draggable items based on the previously set sequence.
      */
-    useEffect(() => {
-        if (!shopPagePossitionSetting) return;
+    useEffect( () => {
+        if ( ! shopPagePossitionSetting ) return;
 
-        let positionSetting: Record<string, string> =
+        let positionSetting: Record< string, string > =
             shopPagePossitionSetting || {};
-        let items = [...dragableItems];
+        let items = [ ...dragableItems ];
 
         // Convert position settings into an array of tuples
-        const positionEntries = Object.entries(positionSetting);
+        const positionEntries = Object.entries( positionSetting );
 
         // Check if all items are being moved to the same position
         let samePosition = true;
         let positionToMove: string | null = null;
 
-        positionEntries.forEach(([willMove, moveAfter]) => {
-            if (positionToMove !== null && positionToMove !== moveAfter) {
+        positionEntries.forEach( ( [ willMove, moveAfter ] ) => {
+            if ( positionToMove !== null && positionToMove !== moveAfter ) {
                 samePosition = false;
             }
             positionToMove = moveAfter;
-        });
+        } );
 
         // Reorder items based on position settings
-        positionEntries.forEach(([willMove, moveAfter]) => {
-            const startIndex = getIndex(items, willMove);
-            let endIndex = getIndex(items, moveAfter) + 1;
+        positionEntries.forEach( ( [ willMove, moveAfter ] ) => {
+            const startIndex = getIndex( items, willMove );
+            let endIndex = getIndex( items, moveAfter ) + 1;
 
-            if (samePosition && positionToMove !== null) {
+            if ( samePosition && positionToMove !== null ) {
                 endIndex = items.length; // Move to last position if all are at the same position
             }
 
-            items = reorder(items, startIndex, endIndex);
-        });
+            items = reorder( items, startIndex, endIndex );
+        } );
 
         // Handle elements that were moved to the same position
-        if (samePosition && positionToMove !== null) {
-            const movedElements = items.splice(items.length - 2, 2);
+        if ( samePosition && positionToMove !== null ) {
+            const movedElements = items.splice( items.length - 2, 2 );
 
             // Find the correct index where the moved elements should be inserted
-            const movedIndex = getIndex(items, positionEntries[0][1]) + 1;
+            const movedIndex = getIndex( items, positionEntries[ 0 ][ 1 ] ) + 1;
 
             // Create a new sequence of items
             items = [
-                ...items.slice(0, movedIndex),
+                ...items.slice( 0, movedIndex ),
                 ...movedElements,
-                ...items.slice(movedIndex),
+                ...items.slice( movedIndex ),
             ];
         }
 
-        setDragableItems(items);
-    }, []);
+        setDragableItems( items );
+    }, [] );
 
     /**
      * Sets button draggable items to their previously saved sequence.
      */
-    useEffect(() => {
-        setButtonItems((prevButtonItems) => {
-            return [...prevButtonItems].sort(
-                (a, b) =>
-                    buttonPossitionSetting.indexOf(a.id) -
-                    buttonPossitionSetting.indexOf(b.id)
+    useEffect( () => {
+        setButtonItems( ( prevButtonItems ) => {
+            return [ ...prevButtonItems ].sort(
+                ( a, b ) =>
+                    buttonPossitionSetting.indexOf( a.id ) -
+                    buttonPossitionSetting.indexOf( b.id )
             );
-        });
-    }, []);
+        } );
+    }, [] );
 
     /**
      * Function after drag end. Updates settings and reorders items.
      * @param startIndex - The starting index of the dragged item.
      * @param endIndex - The ending index where the item is dropped.
      */
-    const onDragEnd = (startIndex: number, endIndex: number): void => {
-        if (endIndex === undefined || endIndex === null || endIndex === 0) {
+    const onDragEnd = ( startIndex: number, endIndex: number ): void => {
+        if ( endIndex === undefined || endIndex === null || endIndex === 0 ) {
             return;
         }
 
-        const newItems = reorder(dragableItems, startIndex, endIndex);
+        const newItems = reorder( dragableItems, startIndex, endIndex );
 
         // Define the type for shopPageBuildersPosition
-        const shopPageBuildersPosition: Record<string, string> = {};
+        const shopPageBuildersPosition: Record< string, string > = {};
         let positionAfter = "";
 
-        newItems.forEach((item) => {
-            if (item.dragable) {
-                shopPageBuildersPosition[item.id] = positionAfter;
+        newItems.forEach( ( item ) => {
+            if ( item.dragable ) {
+                shopPageBuildersPosition[ item.id ] = positionAfter;
             } else {
                 positionAfter = item.id;
             }
-        });
+        } );
 
-        setSetting("shop_page_possition_setting", shopPageBuildersPosition);
-        setDragableItems(newItems);
+        setSetting( "shop_page_possition_setting", shopPageBuildersPosition );
+        setDragableItems( newItems );
     };
 
     /**
@@ -318,88 +319,90 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
      * @param startIndex - The starting index of the dragged button.
      * @param endIndex - The ending index where the button is dropped.
      */
-    const onButtonDragEnd = (startIndex: number, endIndex: number): void => {
-        if (endIndex === undefined || endIndex === null || endIndex === 0) {
+    const onButtonDragEnd = ( startIndex: number, endIndex: number ): void => {
+        if ( endIndex === undefined || endIndex === null || endIndex === 0 ) {
             return;
         }
 
-        const newItems = reorder(buttonItems, startIndex, endIndex);
+        const newItems = reorder( buttonItems, startIndex, endIndex );
 
         // Calculate position for draggable items.
-        const position: string[] = newItems.map((item) => item.id);
+        const position: string[] = newItems.map( ( item ) => item.id );
 
-        setSetting("shop_page_button_position_setting", position);
-        setButtonItems(newItems);
+        setSetting( "shop_page_button_position_setting", position );
+        setButtonItems( newItems );
     };
 
     /**
      * Handles submenu change when a new tab is selected.
      * @param newTab - The new tab object.
      */
-    const handleSubMenuChange = (newTab: {
+    const handleSubMenuChange = ( newTab: {
         id: string;
         name: string;
         icon: string;
-    }): void => {
-        if (currentTab.id === newTab.id) return;
+    } ): void => {
+        if ( currentTab.id === newTab.id ) return;
 
-        setCurrentTab({ ...newTab });
+        setCurrentTab( { ...newTab } );
 
         const mainWrapper = document.getElementById(
             "catelog-customizer-main-wrapper"
         );
-        if (!mainWrapper) return;
+        if ( ! mainWrapper ) return;
 
-        window.scrollTo(0, 0);
+        window.scrollTo( 0, 0 );
 
-        mainWrapper.classList.add(newTab.id);
-        mainWrapper.classList.add("change-tab");
+        mainWrapper.classList.add( newTab.id );
+        mainWrapper.classList.add( "change-tab" );
 
-        setTimeout(() => {
-            mainWrapper.classList.remove("change-tab");
+        setTimeout( () => {
+            mainWrapper.classList.remove( "change-tab" );
 
-            setTimeout(() => {
-                mainWrapper.classList.remove(newTab.id);
-            }, 300);
-        }, 500);
+            setTimeout( () => {
+                mainWrapper.classList.remove( newTab.id );
+            }, 300 );
+        }, 500 );
     };
 
     return (
         <>
-            {/* Render upper tab sections */}
+            { /* Render upper tab sections */ }
             <SubTabSection
-                menuitem={menu}
-                currentTab={currentTab}
-                setCurrentTab={setCurrentTab}
-                setting={localSetting}
+                menuitem={ menu }
+                currentTab={ currentTab }
+                setCurrentTab={ setCurrentTab }
+                setting={ localSetting }
             />
 
-            {/* Render shop page sections */}
+            { /* Render shop page sections */ }
             <main
                 className="catelog-customizer-main-wrapper"
                 id="catelog-customizer-main-wrapper"
             >
                 <section className="catelog-customizer">
                     <div className="product-img">
-                        <img src={Sample_Product} alt="Sample Product" />
+                        <img src={ Sample_Product } alt="Sample Product" />
                     </div>
                     <div className="product-data">
                         <h1 className="product-name">Sample Product</h1>
                         <div className="drag-drop-component">
-                            {/* Render default shop pages drag and drop */}
+                            { /* Render default shop pages drag and drop */ }
                             <ReactDragListView
                                 nodeSelector=".shop-page-draggable"
                                 handleSelector=".should-move"
                                 lineClassName="dragLine"
                                 ignoreSelector=".ignore-drag"
-                                onDragEnd={onDragEnd}
+                                onDragEnd={ onDragEnd }
                             >
-                                {dragableItems.map((item, index) => (
+                                { dragableItems.map( ( item, index ) => (
                                     <div
-                                        key={index}
-                                        className={`${item.dragable ? "should-move" : ""} shop-page-draggable`}
+                                        key={ index }
+                                        className={ `${
+                                            item.dragable ? "should-move" : ""
+                                        } shop-page-draggable` }
                                     >
-                                        {item.content === "buttonDND" ? (
+                                        { item.content === "buttonDND" ? (
                                             <div className="button-wrapper">
                                                 <ReactDragListView
                                                     nodeSelector=".shop-page-button-draggable"
@@ -415,122 +418,143 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
                                                             : () => {}
                                                     }
                                                 >
-                                                    {buttonItems.map((btn) => (
-                                                        <div
-                                                            key={btn.id}
-                                                            className="shop-page-button-draggable"
-                                                        >
-                                                            {btn.id ===
-                                                                "enquiry_button" && (
-                                                                <div
-                                                                    onClick={() =>
-                                                                        handleSubMenuChange(
-                                                                            menu[0]
-                                                                        )
-                                                                    }
-                                                                    className={`button-main-container toggle-visibility ${currentTab.id === "enquiry" ? "" : "disable"} enquiry-btn`}
-                                                                >
+                                                    { buttonItems.map(
+                                                        ( btn ) => (
+                                                            <div
+                                                                key={ btn.id }
+                                                                className="shop-page-button-draggable"
+                                                            >
+                                                                { btn.id ===
+                                                                    "enquiry_button" && (
+                                                                    <div
+                                                                        onClick={ () =>
+                                                                            handleSubMenuChange(
+                                                                                menu[ 0 ]
+                                                                            )
+                                                                        }
+                                                                        className={ `button-main-container toggle-visibility ${
+                                                                            currentTab.id ===
+                                                                            "enquiry"
+                                                                                ? ""
+                                                                                : "disable"
+                                                                        } enquiry-btn` }
+                                                                    >
+                                                                        <ButtonCustomizer
+                                                                            className="ignore-drag"
+                                                                            text={
+                                                                                localSetting
+                                                                                    ?.enquiry_button
+                                                                                    ?.button_text ||
+                                                                                "Enquiry"
+                                                                            }
+                                                                            setting={
+                                                                                localSetting?.enquiry_button
+                                                                            }
+                                                                            onChange={ (
+                                                                                key,
+                                                                                value,
+                                                                                isRestoreDefaults = false
+                                                                            ) => {
+                                                                                setSetting(
+                                                                                    "enquiry_button",
+                                                                                    isRestoreDefaults
+                                                                                        ? value
+                                                                                        : {
+                                                                                              ...localSetting.enquiry_button,
+                                                                                              [ key ]:
+                                                                                                  value,
+                                                                                          }
+                                                                                );
+                                                                            } }
+                                                                        />
+                                                                    </div>
+                                                                ) }
+                                                                { btn.id ===
+                                                                    "cart_button" && (
                                                                     <ButtonCustomizer
-                                                                        className="ignore-drag"
-                                                                        text={
-                                                                            localSetting
-                                                                                ?.enquiry_button
-                                                                                ?.button_text ||
-                                                                            "Enquiry"
-                                                                        }
+                                                                        text="Add to cart"
                                                                         setting={
-                                                                            localSetting?.enquiry_button
+                                                                            localSetting?.cart_button
                                                                         }
-                                                                        onChange={(
+                                                                        onChange={ (
                                                                             key,
                                                                             value,
                                                                             isRestoreDefaults = false
                                                                         ) => {
                                                                             setSetting(
-                                                                                "enquiry_button",
+                                                                                "cart_button",
                                                                                 isRestoreDefaults
                                                                                     ? value
                                                                                     : {
-                                                                                          ...localSetting.enquiry_button,
-                                                                                          [key]: value,
+                                                                                          ...localSetting.cart_button,
+                                                                                          [ key ]:
+                                                                                              value,
                                                                                       }
                                                                             );
-                                                                        }}
+                                                                        } }
                                                                     />
-                                                                </div>
-                                                            )}
-                                                            {btn.id ===
-                                                                "cart_button" && (
-                                                                <ButtonCustomizer
-                                                                    text="Add to cart"
-                                                                    setting={
-                                                                        localSetting?.cart_button
-                                                                    }
-                                                                    onChange={(
-                                                                        key,
-                                                                        value,
-                                                                        isRestoreDefaults = false
-                                                                    ) => {
-                                                                        setSetting(
-                                                                            "cart_button",
-                                                                            isRestoreDefaults
-                                                                                ? value
-                                                                                : {
-                                                                                      ...localSetting.cart_button,
-                                                                                      [key]: value,
-                                                                                  }
-                                                                        );
-                                                                    }}
-                                                                />
-                                                            )}
-                                                            {btn.id ===
-                                                                "quote_button" && (
-                                                                <div
-                                                                    onClick={() =>
-                                                                        handleSubMenuChange(
-                                                                            menu[1]
-                                                                        )
-                                                                    }
-                                                                    className={`button-main-container toggle-visibility ${currentTab.id === "quote" ? "" : "disable"}`}
-                                                                >
-                                                                    <ButtonCustomizer
-                                                                        text={
-                                                                            localSetting
-                                                                                ?.quote_button
-                                                                                ?.button_text ||
-                                                                            "Add to quote"
+                                                                ) }
+                                                                { btn.id ===
+                                                                    "quote_button" && (
+                                                                    <div
+                                                                        onClick={ () =>
+                                                                            handleSubMenuChange(
+                                                                                menu[ 1 ]
+                                                                            )
                                                                         }
-                                                                        setting={
-                                                                            localSetting?.quote_button
-                                                                        }
-                                                                        onChange={(
-                                                                            key,
-                                                                            value,
-                                                                            isRestoreDefaults = false
-                                                                        ) => {
-                                                                            setSetting(
-                                                                                "quote_button",
-                                                                                isRestoreDefaults
-                                                                                    ? value
-                                                                                    : {
-                                                                                          ...localSetting.quote_button,
-                                                                                          [key]: value,
-                                                                                      }
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    ))}
+                                                                        className={ `button-main-container toggle-visibility ${
+                                                                            currentTab.id ===
+                                                                            "quote"
+                                                                                ? ""
+                                                                                : "disable"
+                                                                        }` }
+                                                                    >
+                                                                        <ButtonCustomizer
+                                                                            text={
+                                                                                localSetting
+                                                                                    ?.quote_button
+                                                                                    ?.button_text ||
+                                                                                "Add to quote"
+                                                                            }
+                                                                            setting={
+                                                                                localSetting?.quote_button
+                                                                            }
+                                                                            onChange={ (
+                                                                                key,
+                                                                                value,
+                                                                                isRestoreDefaults = false
+                                                                            ) => {
+                                                                                setSetting(
+                                                                                    "quote_button",
+                                                                                    isRestoreDefaults
+                                                                                        ? value
+                                                                                        : {
+                                                                                              ...localSetting.quote_button,
+                                                                                              [ key ]:
+                                                                                                  value,
+                                                                                          }
+                                                                                );
+                                                                            } }
+                                                                        />
+                                                                    </div>
+                                                                ) }
+                                                            </div>
+                                                        )
+                                                    ) }
                                                 </ReactDragListView>
                                             </div>
                                         ) : item.id === "additional_input" ? (
                                             <div
-                                                onClick={() =>
-                                                    handleSubMenuChange(menu[2])
+                                                onClick={ () =>
+                                                    handleSubMenuChange(
+                                                        menu[ 2 ]
+                                                    )
                                                 }
-                                                className={`additional-input toggle-visibility ${currentTab.id === "catalog" ? "" : "disable"}`}
+                                                className={ `additional-input toggle-visibility ${
+                                                    currentTab.id === "catalog"
+                                                        ? ""
+                                                        : "disable"
+                                                }` }
                                             >
                                                 <input
                                                     placeholder="Additional input (optional)"
@@ -539,7 +563,7 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
                                                         localSetting?.additional_input ||
                                                         ""
                                                     }
-                                                    onChange={(e) =>
+                                                    onChange={ ( e ) =>
                                                         setSetting(
                                                             "additional_input",
                                                             e.target.value
@@ -550,20 +574,20 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
                                         ) : (
                                             typeof item.content ===
                                                 "function" &&
-                                            React.createElement(item.content, {
+                                            React.createElement( item.content, {
                                                 currentTab,
                                                 setCurrentTab,
-                                            })
-                                        )}
+                                            } )
+                                        ) }
                                     </div>
-                                ))}
+                                ) ) }
                             </ReactDragListView>
                         </div>
-                        {!proSetting && (
+                        { ! proSetting && (
                             <article className="pro-banner">
                                 <p>Upgrade to pro for endless customization</p>
                                 <a
-                                    href={pro_url}
+                                    href={ pro_url }
                                     className="main-btn btn-purple"
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -571,14 +595,14 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
                                     Upgrade now
                                 </a>
                             </article>
-                        )}
+                        ) }
                     </div>
                 </section>
                 <section className="single-product-page-description">
                     <div className="option">
                         <ul>
                             <li className="active">
-                                Description{" "}
+                                Description{ " " }
                                 <span>
                                     <i className="admin-font adminLib-keyboard-arrow-down"></i>
                                 </span>

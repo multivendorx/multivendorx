@@ -11,13 +11,13 @@ interface MergeComponentProps {
     wrapperClass?: string;
     descClass?: string;
     description?: string;
-    onChange: (data: Record<string, string | number>) => void;
-    value: Record<string, string | number>;
+    onChange: ( data: Record< string, string | number > ) => void;
+    value: Record< string, string | number >;
     proSetting?: boolean;
     fields: Field[];
 }
 
-const MergeComponent: React.FC<MergeComponentProps> = ({
+const MergeComponent: React.FC< MergeComponentProps > = ( {
     wrapperClass = "",
     descClass = "",
     description,
@@ -25,36 +25,36 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
     value,
     proSetting = false,
     fields = [],
-}) => {
-    const firstRender = useRef(true);
+} ) => {
+    const firstRender = useRef( true );
 
     // Initialize state dynamically based on field names
-    const initialState = fields.reduce<Record<string, string | number>>(
-        (acc, field) => {
-            acc[field.name] = value[field.name] || "";
+    const initialState = fields.reduce< Record< string, string | number > >(
+        ( acc, field ) => {
+            acc[ field.name ] = value[ field.name ] || "";
             return acc;
         },
-        {} as Record<string, string | number>
+        {} as Record< string, string | number >
     );
 
-    const [data, setData] = useState(initialState);
+    const [ data, setData ] = useState( initialState );
 
-    const handleOnChange = (key: string, value: string | number) => {
-        setData((prev) => ({ ...prev, [key]: value }));
+    const handleOnChange = ( key: string, value: string | number ) => {
+        setData( ( prev ) => ( { ...prev, [ key ]: value } ) );
     };
 
-    useEffect(() => {
-        if (firstRender.current) {
+    useEffect( () => {
+        if ( firstRender.current ) {
             firstRender.current = false;
             return; // Skip the initial render
         }
-        onChange(data);
-    }, [data]);
+        onChange( data );
+    }, [ data ] );
 
     return (
-        <main className={wrapperClass}>
+        <main className={ wrapperClass }>
             <section className="select-input-section merge-components">
-                {fields.map((field, index) => {
+                { fields.map( ( field ) => {
                     const {
                         name,
                         type,
@@ -62,54 +62,57 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
                         placeholder = "Enter a value",
                     } = field;
 
-                    if (type === "select") {
+                    if ( type === "select" ) {
                         return (
                             <select
-                                key={name}
-                                id={name}
-                                value={data[name]}
-                                onChange={(e) =>
-                                    handleOnChange(name, e.target.value)
+                                key={ name }
+                                id={ name }
+                                value={ data[ name ] }
+                                onChange={ ( e ) =>
+                                    handleOnChange( name, e.target.value )
                                 }
                             >
                                 <option value="">Select</option>
-                                {options.map((option) => (
+                                { options.map( ( option ) => (
                                     <option
-                                        key={option.value}
-                                        value={option.value}
+                                        key={ option.value }
+                                        value={ option.value }
                                     >
-                                        {option.label}
+                                        { option.label }
                                     </option>
-                                ))}
+                                ) ) }
                             </select>
                         );
-                    } else if (type === "number") {
+                    } else if ( type === "number" ) {
                         return (
                             <input
-                                key={name}
-                                type={type}
-                                id={name}
-                                placeholder={placeholder}
-                                value={data[name]}
-                                min={1}
-                                onChange={(e) =>
-                                    handleOnChange(name, Number(e.target.value))
+                                key={ name }
+                                type={ type }
+                                id={ name }
+                                placeholder={ placeholder }
+                                value={ data[ name ] }
+                                min={ 1 }
+                                onChange={ ( e ) =>
+                                    handleOnChange(
+                                        name,
+                                        Number( e.target.value )
+                                    )
                                 }
                             />
                         );
                     }
 
                     return null; // Return null for unsupported types
-                })}
+                } ) }
             </section>
 
-            {description && (
+            { description && (
                 <p
-                    className={descClass}
-                    dangerouslySetInnerHTML={{ __html: description }}
+                    className={ descClass }
+                    dangerouslySetInnerHTML={ { __html: description } }
                 />
-            )}
-            {proSetting && <span className="admin-pro-tag">pro</span>}
+            ) }
+            { proSetting && <span className="admin-pro-tag">pro</span> }
         </main>
     );
 };

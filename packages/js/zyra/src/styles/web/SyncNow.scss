@@ -1,12 +1,12 @@
-@use '../../global.scss' as *;
+@use '../../common.scss' as *;
 
 .section-synchronize-now {
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 100%;
 
   .details-status-row {  
-    &.sync-now {
+   
       max-width: 18.75rem;
 
       .status-meta {
@@ -14,7 +14,7 @@
         align-items: center;
         gap: 0.5rem;
       }
-    }
+    
 
     .progress-bar {
       position: absolute;

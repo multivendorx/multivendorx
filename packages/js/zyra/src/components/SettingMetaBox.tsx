@@ -22,18 +22,18 @@ interface InputType {
 interface SettingMetaBoxProps {
     formField: FormField;
     inputTypeList: InputType[];
-    onChange: (field: keyof FormField, value: any) => void;
-    onTypeChange: (value: string) => void;
+    onChange: ( field: keyof FormField, value: any ) => void;
+    onTypeChange: ( value: string ) => void;
     opened: { click: boolean };
 }
 
 interface FormFieldSelectProps {
     inputTypeList: InputType[];
     formField: FormField;
-    onTypeChange: (value: string) => void;
+    onTypeChange: ( value: string ) => void;
 }
 
-interface FieldWrapper {
+interface FieldWrapperProps {
     label: string;
     className?: string;
     children: React.ReactNode;
@@ -43,82 +43,83 @@ interface InputFieldProps {
     label: string;
     type?: string;
     value: any;
-    onChange: (value: string) => void;
+    onChange: ( value: string ) => void;
     className?: string;
 }
 
-const FormFieldSelect: React.FC<FormFieldSelectProps> = ({
+const FormFieldSelect: React.FC< FormFieldSelectProps > = ( {
     inputTypeList,
     formField,
     onTypeChange,
-}) => (
+} ) => (
     <FieldWrapper label="Type">
         <select
-            onChange={(event) => onTypeChange?.(event.target.value)}
-            value={formField.type}
+            onChange={ ( event ) => onTypeChange?.( event.target.value ) }
+            value={ formField.type }
         >
-            {inputTypeList.map((inputType) => (
-                <option key={inputType.value} value={inputType.value}>
-                    {inputType.label}
+            { inputTypeList.map( ( inputType ) => (
+                <option key={ inputType.value } value={ inputType.value }>
+                    { inputType.label }
                 </option>
-            ))}
+            ) ) }
         </select>
     </FieldWrapper>
 );
 
-const FieldWrapper: React.FC<FieldWrapper> = ({
+const FieldWrapper: React.FC< FieldWrapperProps > = ( {
     label,
     children,
     className,
-}) => (
+} ) => (
     <article
-        className={`modal-content-section-field ${className || ""}`}
-        onClick={(e) => e.stopPropagation()}
+        className={ `modal-content-section-field ${ className || "" }` }
+        onClick={ ( e ) => e.stopPropagation() }
     >
-        <p>{label}</p>
-        {children}
+        <p>{ label }</p>
+        { children }
     </article>
 );
 
-const InputField: React.FC<InputFieldProps> = ({
+const InputField: React.FC< InputFieldProps > = ( {
     label,
     type = "text",
     value,
     onChange,
     className,
-}) => (
-    <FieldWrapper label={label} className={className}>
+} ) => (
+    <FieldWrapper label={ label } className={ className }>
         <input
-            type={type}
-            value={value || ""}
-            onChange={(e) => onChange(e.target.value)}
+            type={ type }
+            value={ value || "" }
+            onChange={ ( e ) => onChange( e.target.value ) }
         />
     </FieldWrapper>
 );
 
-const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
+const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
     formField,
     inputTypeList,
     onChange,
     onTypeChange,
     opened,
-}) => {
-    const [hasOpened, setHasOpened] = useState(opened.click);
-    const isValidSiteKey = (key: string) => /^6[0-9A-Za-z_-]{39}$/.test(key);
-    const [isSiteKeyEmpty, setIsSiteKeyEmpty] = useState(
+} ) => {
+    const [ hasOpened, setHasOpened ] = useState( opened.click );
+    const isValidSiteKey = ( key: string ) =>
+        /^6[0-9A-Za-z_-]{39}$/.test( key );
+    const [ isSiteKeyEmpty, setIsSiteKeyEmpty ] = useState(
         formField.type === "recaptcha" &&
-            !isValidSiteKey(formField.sitekey || "")
+            ! isValidSiteKey( formField.sitekey || "" )
     );
 
-    useEffect(() => {
-        if (formField.type === "recaptcha") {
-            onChange("disabled", isSiteKeyEmpty);
+    useEffect( () => {
+        if ( formField.type === "recaptcha" ) {
+            onChange( "disabled", isSiteKeyEmpty );
         }
-    }, [isSiteKeyEmpty]);
+    }, [ isSiteKeyEmpty ] );
 
-    useEffect(() => {
-        setHasOpened(opened.click);
-    }, [opened]);
+    useEffect( () => {
+        setHasOpened( opened.click );
+    }, [ opened ] );
 
     // Renders conditional fields based on `formField.type`.
     const renderConditionalFields = () => {
@@ -126,66 +127,68 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
             <>
                 <InputField
                     label="Placeholder"
-                    value={formField.placeholder}
-                    onChange={(value) => onChange("placeholder", value)}
+                    value={ formField.placeholder }
+                    onChange={ ( value ) => onChange( "placeholder", value ) }
                 />
                 <InputField
                     label="Character Limit"
                     type="number"
-                    value={formField.charlimit}
-                    onChange={(value) => onChange("charlimit", value)}
+                    value={ formField.charlimit }
+                    onChange={ ( value ) => onChange( "charlimit", value ) }
                 />
             </>
         );
 
-        switch (formField.type) {
+        switch ( formField.type ) {
             case "text":
             case "email":
             case "url":
             case "textarea":
                 return (
                     <>
-                        {commonFields}
-                        {formField.type === "textarea" && (
+                        { commonFields }
+                        { formField.type === "textarea" && (
                             <>
                                 <InputField
                                     label="Row"
                                     type="number"
-                                    value={formField.row}
-                                    onChange={(value) => onChange("row", value)}
+                                    value={ formField.row }
+                                    onChange={ ( value ) =>
+                                        onChange( "row", value )
+                                    }
                                 />
                                 <InputField
                                     label="Column"
                                     type="number"
-                                    value={formField.column}
-                                    onChange={(value) =>
-                                        onChange("column", value)
+                                    value={ formField.column }
+                                    onChange={ ( value ) =>
+                                        onChange( "column", value )
                                     }
                                 />
                             </>
-                        )}
+                        ) }
                     </>
                 );
             case "recaptcha":
                 return (
                     <>
-                        {/* <InputField
+                        { /* <InputField
 				label="API Key"
 				value={formField.apikey}
 				onChange={(value) => onChange("apikey", value)}
-				/> */}
+				/> */ }
                         <InputField
                             label="Site Key"
-                            value={formField.sitekey}
-                            className={isSiteKeyEmpty ? "highlight" : ""}
-                            onChange={(value) => {
-                                onChange("sitekey", value);
-                                setIsSiteKeyEmpty(!isValidSiteKey(value));
-                            }}
+                            value={ formField.sitekey }
+                            className={ isSiteKeyEmpty ? "highlight" : "" }
+                            onChange={ ( value ) => {
+                                onChange( "sitekey", value );
+                                setIsSiteKeyEmpty( ! isValidSiteKey( value ) );
+                            } }
                         />
                         <p>
                             Register your site with your Google account to
-                            obtain the{" "}
+                            obtain the{ " " }
                             <a
                                 href="https://www.google.com/recaptcha"
                                 target="_blank"
@@ -202,8 +205,8 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                     <InputField
                         label="Maximum File Size"
                         type="number"
-                        value={formField.filesize}
-                        onChange={(value) => onChange("filesize", value)}
+                        value={ formField.filesize }
+                        onChange={ ( value ) => onChange( "filesize", value ) }
                     />
                 );
             default:
@@ -212,17 +215,17 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
     };
 
     return (
-        <div onClick={() => setHasOpened((prevState) => !prevState)}>
+        <div onClick={ () => setHasOpened( ( prevState ) => ! prevState ) }>
             <i className="admin-font adminLib-menu"></i>
-            {hasOpened && (
+            { hasOpened && (
                 <Draggable>
                     <section className="meta-setting-modal">
                         <button
                             className="meta-setting-modal-button"
-                            onClick={(event) => {
+                            onClick={ ( event ) => {
                                 event.stopPropagation();
-                                setHasOpened(false);
-                            }}
+                                setHasOpened( false );
+                            } }
                         >
                             <i className="admin-font adminLib-cross"></i>
                         </button>
@@ -230,18 +233,18 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                             <h3>Input Field Settings</h3>
                             <div className="setting-modal-content-section">
                                 <FormFieldSelect
-                                    inputTypeList={inputTypeList}
-                                    formField={formField}
-                                    onTypeChange={onTypeChange}
+                                    inputTypeList={ inputTypeList }
+                                    formField={ formField }
+                                    onTypeChange={ onTypeChange }
                                 />
                                 <InputField
                                     label="Name"
-                                    value={formField.name}
-                                    onChange={(value) =>
-                                        onChange("name", value)
+                                    value={ formField.name }
+                                    onChange={ ( value ) =>
+                                        onChange( "name", value )
                                     }
                                 />
-                                {renderConditionalFields()}
+                                { renderConditionalFields() }
                             </div>
                             <div className="setting-modal-content-section">
                                 <FieldWrapper label="Visibility">
@@ -251,13 +254,13 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                                                 checked={
                                                     formField.type ===
                                                     "recaptcha"
-                                                        ? !isSiteKeyEmpty
-                                                        : !formField.disabled
+                                                        ? ! isSiteKeyEmpty
+                                                        : ! formField.disabled
                                                 }
-                                                onChange={(e) =>
+                                                onChange={ ( e ) =>
                                                     onChange(
                                                         "disabled",
-                                                        !e.target.checked
+                                                        ! e.target.checked
                                                     )
                                                 }
                                                 type="radio"
@@ -278,7 +281,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                                                         ? isSiteKeyEmpty
                                                         : formField.disabled
                                                 }
-                                                onChange={(e) =>
+                                                onChange={ ( e ) =>
                                                     onChange(
                                                         "disabled",
                                                         e.target.checked
@@ -303,8 +306,8 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                                 <FieldWrapper label="Required">
                                     <input
                                         type="checkbox"
-                                        checked={formField.required}
-                                        onChange={(e) =>
+                                        checked={ formField.required }
+                                        onChange={ ( e ) =>
                                             onChange(
                                                 "required",
                                                 e.target.checked
@@ -316,7 +319,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                         </main>
                     </section>
                 </Draggable>
-            )}
+            ) }
         </div>
     );
 };

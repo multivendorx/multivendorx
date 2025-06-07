@@ -1,4 +1,3 @@
-/* global appLocalizer */
 import React from "react";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -19,7 +18,7 @@ export interface ModulePopupProps {
     modulePageUrl?: string;
 }
 
-const ModulePopup: React.FC<ModulePopupProps> = ({
+const ModulePopup: React.FC< ModulePopupProps > = ( {
     moduleName,
     settings,
     plugin,
@@ -32,7 +31,7 @@ const ModulePopup: React.FC<ModulePopupProps> = ({
     SettingDescription,
     pluginUrl,
     modulePageUrl,
-}) => {
+} ) => {
     return (
         <DialogContent>
             <DialogContentText>
@@ -40,39 +39,43 @@ const ModulePopup: React.FC<ModulePopupProps> = ({
                     <div className="admin-image-overlay">
                         <div className="admin-overlay-content">
                             <div className="admin-banner-content">
-                                {moduleName && (
+                                { moduleName && (
                                     <>
-                                        <h2>{moduleMessage}</h2>
+                                        <h2>{ moduleMessage }</h2>
                                         <a
                                             className="admin-go-pro-btn"
-                                            href={modulePageUrl}
+                                            href={ modulePageUrl }
                                         >
-                                            {moduleButton}
+                                            { moduleButton }
                                         </a>
                                     </>
-                                )}
+                                ) }
                             </div>
 
-                            {settings && (
+                            { settings && (
                                 <>
-                                    <h2>{SettingMessage}</h2>
-                                    <p id="description">{SettingDescription}</p>
+                                    <h2>{ SettingMessage }</h2>
+                                    <p id="description">
+                                        { SettingDescription }
+                                    </p>
                                 </>
-                            )}
+                            ) }
 
-                            {plugin && (
+                            { plugin && (
                                 <div>
-                                    <h2>{pluginMessage}</h2>
-                                    <p id="description">{pluginDescription}</p>
+                                    <h2>{ pluginMessage }</h2>
+                                    <p id="description">
+                                        { pluginDescription }
+                                    </p>
                                     <a
                                         className="admin-go-pro-btn"
                                         target="_blank"
-                                        href={pluginUrl}
+                                        href={ pluginUrl }
                                     >
-                                        {pluginButton}
+                                        { pluginButton }
                                     </a>
                                 </div>
-                            )}
+                            ) }
                         </div>
                     </div>
                 </div>

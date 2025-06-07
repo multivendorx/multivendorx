@@ -13,11 +13,11 @@ interface ToggleSettingProps {
     wrapperClass?: string;
     descClass?: string;
     value: string;
-    onChange: (value: string) => void;
+    onChange: ( value: string ) => void;
     proSetting?: boolean;
 }
 
-const ToggleSetting: React.FC<ToggleSettingProps> = ({
+const ToggleSetting: React.FC< ToggleSettingProps > = ( {
     description,
     options,
     wrapperClass = "",
@@ -25,37 +25,39 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
     value,
     onChange,
     proSetting = false,
-}) => {
+} ) => {
     return (
-        <section className={wrapperClass}>
+        <section className={ wrapperClass }>
             <div className="toggle-setting-container">
                 <ul>
-                    {options.map((option) => (
+                    { options.map( ( option ) => (
                         <li
-                            key={option.key}
-                            onClick={() => onChange(option.value)}
+                            key={ option.key }
+                            onClick={ () => onChange( option.value ) }
                         >
                             <input
                                 className="toggle-setting-form-input"
                                 type="radio"
-                                id={option.key}
+                                id={ option.key }
                                 name="approve_vendor"
-                                value={option.value}
-                                checked={value === option.value}
+                                value={ option.value }
+                                checked={ value === option.value }
                                 readOnly // Prevents React warning for controlled components
                             />
-                            <label htmlFor={option.key}>{option.label}</label>
+                            <label htmlFor={ option.key }>
+                                { option.label }
+                            </label>
                         </li>
-                    ))}
+                    ) ) }
                 </ul>
             </div>
-            {proSetting && <span className="admin-pro-tag">pro</span>}
-            {description && (
+            { proSetting && <span className="admin-pro-tag">pro</span> }
+            { description && (
                 <p
-                    className={descClass}
-                    dangerouslySetInnerHTML={{ __html: description }}
+                    className={ descClass }
+                    dangerouslySetInnerHTML={ { __html: description } }
                 ></p>
-            )}
+            ) }
         </section>
     );
 };

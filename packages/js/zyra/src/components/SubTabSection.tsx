@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../styles/web/SubTabSection.scss";
 
 export interface MenuItem {
@@ -11,30 +11,31 @@ export interface MenuItem {
 interface SubTabSectionProps {
     menuitem: MenuItem[];
     currentTab: MenuItem;
-    setCurrentTab: (tab: MenuItem) => void;
+    setCurrentTab: ( tab: MenuItem ) => void;
     setting?: any;
 }
 
-const SubTabSection: React.FC<SubTabSectionProps> = ({
+const SubTabSection: React.FC< SubTabSectionProps > = ( {
     menuitem,
     currentTab,
     setCurrentTab,
-    setting,
-}) => {
+} ) => {
     return (
         <div className="tab-section">
-            {menuitem.map((menu) => (
+            { menuitem.map( ( menu ) => (
                 <div
-                    key={menu.id}
-                    className={`tab-section-menu ${menu.id === currentTab.id ? "active" : ""} ${menu.id}-tab`}
-                    onClick={() => setCurrentTab(menu)}
+                    key={ menu.id }
+                    className={ `tab-section-menu ${
+                        menu.id === currentTab.id ? "active" : ""
+                    } ${ menu.id }-tab` }
+                    onClick={ () => setCurrentTab( menu ) }
                 >
                     <span>
-                        <i className={`admin-font ${menu.icon}`}></i>
+                        <i className={ `admin-font ${ menu.icon }` }></i>
                     </span>
-                    {menu.name}
+                    { menu.name }
                 </div>
-            ))}
+            ) ) }
         </div>
     );
 };

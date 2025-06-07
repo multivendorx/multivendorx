@@ -12,7 +12,7 @@ interface DefaultMetaProps {
     hideName?: boolean;
     hideDeactive?: boolean;
 }
-const DefaultMeta: React.FC<DefaultMetaProps> = ({
+const DefaultMeta: React.FC< DefaultMetaProps > = ( {
     defaultvalue,
     name,
     deactive,
@@ -20,45 +20,45 @@ const DefaultMeta: React.FC<DefaultMetaProps> = ({
     hideDefaultValue,
     hideName,
     hideDeactive,
-}) => {
+} ) => {
     return (
         <>
-            {!hideDeactive && (
+            { ! hideDeactive && (
                 <div className="deactive">
                     <span>Deactive</span>
                     <input
                         type="checkbox"
-                        checked={deactive}
-                        onChange={(event) => {
-                            onChange("deactive", !event.target.checked);
-                        }}
+                        checked={ deactive }
+                        onChange={ ( event ) => {
+                            onChange( "deactive", ! event.target.checked );
+                        } }
                     />
                 </div>
-            )}
-            {!hideName && (
+            ) }
+            { ! hideName && (
                 <div className="name">
                     <span>Set name</span>
                     <input
                         type="text"
-                        value={name}
-                        onChange={(event) => {
-                            onChange("name", !event.target.name);
-                        }}
+                        value={ name }
+                        onChange={ ( event ) => {
+                            onChange( "name", ! event.target.name );
+                        } }
                     />
                 </div>
-            )}
-            {!hideDefaultValue && (
+            ) }
+            { ! hideDefaultValue && (
                 <div className="default-value">
                     <span>Set Defaut Value</span>
                     <input
                         type="text"
-                        value={defaultvalue}
-                        onChange={(event) => {
-                            onChange("defaultvalue", !event.target.name);
-                        }}
+                        value={ defaultvalue }
+                        onChange={ ( event ) => {
+                            onChange( "defaultvalue", ! event.target.name );
+                        } }
                     />
                 </div>
-            )}
+            ) }
         </>
     );
 };

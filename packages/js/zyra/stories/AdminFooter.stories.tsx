@@ -8,11 +8,23 @@ export default {
 export const TestAdminFooter = () => {
     const supportLink = [
         {
-            title: "This is admin footer",
+            title: "This is admin footer 1",
+            icon: "adminLib-person",
+            description: "This is admin footer description 1",
+            link: "#",
+        },
+        {
+            title: "This is admin footer 2",
             icon: "lock",
-            description: "This is admin footer description",
+            description: "This is admin footer description 2",
+            link: "#",
+        },
+        {
+            title: "This is admin footer 3",
+            icon: "lock",
+            description: "This is admin footer description 3",
             link: "#",
         },
     ];
-    return <AdminFooter supportLink={supportLink} />;
+    return <AdminFooter supportLink={ supportLink } />;
 };

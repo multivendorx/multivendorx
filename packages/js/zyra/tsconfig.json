@@ -36,6 +36,6 @@
         /* Completeness */
         "skipLibCheck": true
     },
-    "include": ["src", "build"],
-    "exclude": ["node_modules", "build"]
+    "include": [ "src", "build" ],
+    "exclude": [ "node_modules", "build" ]
 }

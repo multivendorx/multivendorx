@@ -23,14 +23,14 @@ export interface MultiNumInputProps {
     description?: string;
     descClass?: string;
     onChange?: (
-        e: ChangeEvent<HTMLInputElement>,
+        e: ChangeEvent< HTMLInputElement >,
         keyName?: string,
         optionKey?: string,
         index?: number
     ) => void;
 }
 
-const MultiNumInput: React.FC<MultiNumInputProps> = ({
+const MultiNumInput: React.FC< MultiNumInputProps > = ( {
     parentWrapperClass,
     childWrapperClass,
     options,
@@ -45,28 +45,28 @@ const MultiNumInput: React.FC<MultiNumInputProps> = ({
     description,
     descClass,
     onChange,
-}) => {
+} ) => {
     return (
-        <div className={parentWrapperClass}>
-            <div className={childWrapperClass}>
-                {options.map((option, index) => {
+        <div className={ parentWrapperClass }>
+            <div className={ childWrapperClass }>
+                { options.map( ( option, index ) => {
                     const selectedValue =
-                        value.find((val) => val.key === option.key)?.value ??
-                        "";
+                        value.find( ( val ) => val.key === option.key )
+                            ?.value ?? "";
 
                     return (
-                        <div key={option.key} className={inputWrapperClass}>
-                            <div className={innerInputWrapperClass}>
-                                <div className={inputLabelClass}>
-                                    {option.label}
+                        <div key={ option.key } className={ inputWrapperClass }>
+                            <div className={ innerInputWrapperClass }>
+                                <div className={ inputLabelClass }>
+                                    { option.label }
                                 </div>
                                 <input
-                                    id={`${idPrefix}-${option.key}`}
-                                    className={inputClass}
-                                    type={option.type}
-                                    name={option.name}
-                                    value={selectedValue}
-                                    onChange={(e) =>
+                                    id={ `${ idPrefix }-${ option.key }` }
+                                    className={ inputClass }
+                                    type={ option.type }
+                                    name={ option.name }
+                                    value={ selectedValue }
+                                    onChange={ ( e ) =>
                                         onChange?.(
                                             e,
                                             keyName,
@@ -75,20 +75,20 @@ const MultiNumInput: React.FC<MultiNumInputProps> = ({
                                         )
                                     }
                                 />
-                                {proSetting && (
+                                { proSetting && (
                                     <span className="admin-pro-tag">pro</span>
-                                )}
+                                ) }
                             </div>
                         </div>
                     );
-                })}
+                } ) }
             </div>
-            {description && (
+            { description && (
                 <p
-                    className={descClass}
-                    dangerouslySetInnerHTML={{ __html: description }}
+                    className={ descClass }
+                    dangerouslySetInnerHTML={ { __html: description } }
                 ></p>
-            )}
+            ) }
         </div>
     );
 };
