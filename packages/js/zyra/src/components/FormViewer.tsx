@@ -2,7 +2,8 @@
  * External dependencies
  */
 import React, { useState, useEffect } from "react";
-import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
+import Select from "react-select";
+import type { MultiValue, SingleValue, ActionMeta } from "react-select";
 
 /**
  * Internal dependencies

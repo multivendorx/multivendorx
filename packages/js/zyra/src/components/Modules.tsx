@@ -40,7 +40,7 @@ const Modules: React.FC< ModuleProps > = ( {
 
     const isModuleAvailable = ( moduleId: string ): boolean => {
         const module = modulesArray.find(
-            ( module ) => module.id === moduleId
+            ( moduleData ) => moduleData.id === moduleId
         );
         return module?.pro_module ? appLocalizer.khali_dabba ?? false : true;
     };
@@ -79,6 +79,8 @@ const Modules: React.FC< ModuleProps > = ( {
             >
                 <span
                     className="admin-font adminLib-cross"
+                    role="button"
+                    tabIndex={ 0 }
                     onClick={ () => setModelOpen( false ) }
                 ></span>
                 <Popoup />

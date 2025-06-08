@@ -48,8 +48,8 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
             : [];
     } );
 
-    const renderInputFields = ( type: string ) => {
-        switch ( type ) {
+    const renderInputFields = ( fieldType: string ) => {
+        switch ( fieldType ) {
             case "radio":
                 return options.map( ( option, idx ) => (
                     <div className="radio-input-label-wrap" key={ idx }>
@@ -184,6 +184,8 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
                                 </div>
                                 <div className="option-control-section">
                                     <div
+                                        role="button"
+                                        tabIndex={ 0 }
                                         onClick={ () => {
                                             settingHasChanged.current = true;
                                             handleDeleteOption( index );
@@ -207,8 +209,8 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
                                                 | number
                                                 | null = null;
                                             options.forEach(
-                                                ( option, idx ) => {
-                                                    if ( option.isdefault )
+                                                ( eachOption, idx ) => {
+                                                    if ( eachOption.isdefault )
                                                         defaultValueIndex = idx;
                                                 }
                                             );
@@ -234,6 +236,8 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
 
                         <div
                             className="add-more-option-section"
+                            role="button"
+                            tabIndex={ 0 }
                             onClick={ handleInsertOption }
                         >
                             Add new options{ " " }

@@ -51,22 +51,23 @@ export const TestMultiSelectInput = () => {
         selectDeselect: true,
         name: "Sample Multi Select",
         type: "multi-select" as "multi-select",
-        description: "This is a multi-select input example. You can select multiple options.",
+        description:
+            "This is a multi-select input example. You can select multiple options.",
         options: [
             {
                 key: "option1",
-                label: 'Cart',
-                value: 'option1'
+                label: "Cart",
+                value: "option1",
             },
             {
                 key: "option2",
-                label: 'Checkout',
-                value: 'option2'
+                label: "Checkout",
+                value: "option2",
             },
             {
                 key: "option3",
-                label: 'Shop',
-                value: 'option3'
+                label: "Shop",
+                value: "option3",
             },
         ],
         proSetting: false,

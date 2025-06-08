@@ -9,19 +9,18 @@ export const TestOptionMetaBox = () => {
     const option = {
         label: "Enable Notifications",
         value: "true",
-        isdefault: true
+        isdefault: true,
     };
     const demoOptionMetaBoxProps = {
         option: option,
-        onChange: (key, value) => {
-            console.log(`Changed ${key} to ${value}`);
+        onChange: ( key, value ) => {
+            console.log( `Changed ${ key } to ${ value }` );
         },
         setDefaultValue: () => {
-            console.log("Default value has been set.");
+            console.log( "Default value has been set." );
         },
-        hasOpen: true
+        hasOpen: true,
     };
-
 
     return <OptionMetaBox { ...demoOptionMetaBoxProps } />;
 };

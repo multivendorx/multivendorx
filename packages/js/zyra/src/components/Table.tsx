@@ -3,17 +3,19 @@
  */
 import React, { useState, useEffect, useRef, ReactNode } from "react";
 import {
-    useReactTable,
-    getCoreRowModel,
-    getPaginationRowModel,
-    ColumnDef,
-    flexRender,
-    getSortedRowModel,
-    getFilteredRowModel,
-    RowData,
-    OnChangeFn,
-    RowSelectionState,
-    PaginationState,
+  useReactTable,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+} from "@tanstack/react-table";
+
+import type {
+  ColumnDef,
+  OnChangeFn,
+  RowSelectionState,
+  PaginationState,
 } from "@tanstack/react-table";
 
 /**
@@ -125,30 +127,31 @@ export const TableCell: React.FC< TableCellProps > = ( {
         case "checkbox":
             content = (
                 <div className="toggle-checkbox-header">
-                <div className="toggle-checkbox">
-                <input
-                    type="checkbox"
-                    className="toggle-checkbox"
-                    name={ title }
-                    id="checkbox1"
-                    checked={ cellData as boolean }
-                    onChange={ ( e ) => {
-                        setCellData( e.target.checked ? "true" : "false" );
-                        onChange &&
-                            onChange(
-                                e as unknown as React.ChangeEvent< HTMLInputElement >
-                            );
-                    } }
-                />
-                <label htmlFor="checkbox1"></label>
-                </div>
+                    <div className="toggle-checkbox">
+                        <input
+                            type="checkbox"
+                            className="toggle-checkbox"
+                            name={ title }
+                            id="checkbox1"
+                            checked={ cellData as boolean }
+                            onChange={ ( e ) => {
+                                setCellData(
+                                    e.target.checked ? "true" : "false"
+                                );
+                                if (onChange) {
+                                    onChange(e as unknown as React.ChangeEvent<HTMLInputElement>);
+                                }
+                            } }
+                        />
+                        <label htmlFor="checkbox1"></label>
+                    </div>
                 </div>
             );
             break;
         case "dropdown":
             const optionsVal = Object.entries( header.options ).map(
                 ( [ key, val ] ) => ( {
-                    key: key,
+                    key,
                     value: key,
                     label: String( val ),
                 } )
@@ -156,15 +159,16 @@ export const TableCell: React.FC< TableCellProps > = ( {
             content = (
                 <SelectInput
                     wrapperClass="select-wrapper"
-                    inputClass={`${header.class} dropdown-select`}
+                    inputClass={ `${ header.class } dropdown-select` }
                     options={ optionsVal }
                     value={ fieldValue as string }
                     proSetting={ false }
                     onChange={ ( e ) => {
-                        onChange &&
+                        if( onChange ){
                             onChange(
                                 e as unknown as React.ChangeEvent< HTMLInputElement >
-                            );
+                            )
+                        }
                     } }
                 />
             );
@@ -181,11 +185,7 @@ export const TableCell: React.FC< TableCellProps > = ( {
             );
     }
 
-    return (
-        <>
-            { content }
-        </>
-    );
+    return <>{ content }</>;
 };
 
 // Loading table component
@@ -194,7 +194,7 @@ const LoadingTable: React.FC = () => (
         <tbody>
             { Array.from( { length: 10 } ).map( ( _, rowIndex ) => (
                 <tr key={ rowIndex }>
-                    { Array.from( { length: 5 } ).map( ( _, cellIndex ) => (
+                    { Array.from( { length: 5 } ).map( ( __, cellIndex ) => (
                         <td key={ cellIndex } className="load-table-td">
                             <div className="line" />
                         </td>
@@ -319,7 +319,7 @@ const Table: React.FC< TableProps > = ( {
         }, 50 );
         // Store the interval id.
         counterId.current = intervalId as NodeJS.Timeout;
-    }, [ filterData ] );
+    }, [ filterData, autoLoading, defaultRowsPerPage, handlePagination ] );
 
     useEffect( () => {
         setLoading( data === null );
@@ -347,7 +347,9 @@ const Table: React.FC< TableProps > = ( {
                     typeCounts.map( ( countInfo, index ) => (
                         <div
                             key={ index } // Add a key for better React performance
-                            onClick={ ( ) => {
+                            role="button"
+                            tabIndex={ 0 }
+                            onClick={ () => {
                                 setFilterData( { typeCount: countInfo.key } );
                             } }
                             className={
@@ -471,7 +473,6 @@ const Table: React.FC< TableProps > = ( {
                                                 ) ) }
                                             { isSmallScreen && (
                                                 <td className="responsive-cell">
-                                                    
                                                     <details>
                                                         <summary></summary>
                                                         <ul className="text-sm">
@@ -513,7 +514,6 @@ const Table: React.FC< TableProps > = ( {
                                         value={
                                             table.getState().pagination.pageSize
                                         }
-
                                         onChange={ ( e ) =>
                                             table.setPageSize(
                                                 Number( e.target.value )
@@ -536,8 +536,8 @@ const Table: React.FC< TableProps > = ( {
                                             ! table.getCanPreviousPage()
                                         }
                                     >
-                                         {/* <i className="adminLib-plus-circle-o"></i>  */}
-                                         { "<<" }
+                                        <i className="adminLib-previous"></i>
+                                        <i className="adminLib-previous"></i>
                                     </button>
                                     <button
                                         onClick={ () => table.previousPage() }
@@ -545,8 +545,7 @@ const Table: React.FC< TableProps > = ( {
                                             ! table.getCanPreviousPage()
                                         }
                                     >
-                                        { /* <i className="adminLib-left-arrow"></i> */ }
-                                        { "<" }
+                                        <i className="adminLib-arrow-left"></i>
                                     </button>
                                     <span style={ { margin: "0 1rem" } }>
                                         Page{ " " }
@@ -558,8 +557,7 @@ const Table: React.FC< TableProps > = ( {
                                         onClick={ () => table.nextPage() }
                                         disabled={ ! table.getCanNextPage() }
                                     >
-                                        { /* <i className="adminLib-right-arrow"></i> */ }
-                                        { ">" }
+                                        <i className="adminLib-arrow-right"></i>
                                     </button>
                                     <button
                                         onClick={ () =>
@@ -567,8 +565,8 @@ const Table: React.FC< TableProps > = ( {
                                         }
                                         disabled={ ! table.getCanNextPage() }
                                     >
-                                        { /* <i className="admin-font adminLib-arrow-next"></i> */ }
-                                        { ">>" }
+                                        <i className="admin-font adminLib-next"></i>
+                                        <i className="admin-font adminLib-next"></i>
                                     </button>
                                 </div>
                             </div>

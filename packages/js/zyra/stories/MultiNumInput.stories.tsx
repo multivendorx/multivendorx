@@ -17,30 +17,34 @@ export const TestMultiNumInput = () => {
         keyName: "maxUsers",
         value: [
             { key: "basic", value: 100 },
-            { key: "pro", value: 500 }
+            { key: "pro", value: 500 },
         ],
         options: [
             {
-            key: "basic",
-            value: 100,
-            label: "Basic Plan",
-            type: "number"
+                key: "basic",
+                value: 100,
+                label: "Basic Plan",
+                type: "number",
             },
             {
-            key: "pro",
-            value: 500,
-            label: "Pro Plan",
-            type: "number"
-            }
+                key: "pro",
+                value: 500,
+                label: "Pro Plan",
+                type: "number",
+            },
         ],
         description: "Set the maximum number of users allowed for each plan.",
         descClass: "input-description",
         proSetting: true,
-        onChange: (e, keyName, optionKey, index) => {
-            console.log("Changed:", { keyName, optionKey, index, value: e.target.value });
-        }
+        onChange: ( e, keyName, optionKey, index ) => {
+            console.log( "Changed:", {
+                keyName,
+                optionKey,
+                index,
+                value: e.target.value,
+            } );
+        },
     };
-
 
     return <MultiNumInput { ...demoMultiNumInputProps } />;
 };

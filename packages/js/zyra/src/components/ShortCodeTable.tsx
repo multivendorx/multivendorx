@@ -10,8 +10,8 @@ import "../styles/web/ShortCodeTable.scss";
 
 // Types
 interface Option {
-    label: string;
-    desc: string;
+    label?: string;
+    desc?: string;
 }
 
 interface ShortCodeTableProps {

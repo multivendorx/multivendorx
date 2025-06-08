@@ -31,24 +31,25 @@ export const TestModules = () => {
             desc: "Improve your search engine visibility.",
             icon: "https://example.com/icons/seo.svg",
             doc_link: "https://docs.example.com/modules/seo",
-            settings_link: "/settings/seo"
-        }
+            settings_link: "/settings/seo",
+        },
     ];
 
     const demoModuleProps = {
-        insertModule: (moduleId: string) => console.log(`Insert module: ${moduleId}`),
-        removeModule: (moduleId: string) => console.log(`Remove module: ${moduleId}`),
+        insertModule: ( moduleId: string ) =>
+            console.log( `Insert module: ${ moduleId }` ),
+        removeModule: ( moduleId: string ) =>
+            console.log( `Remove module: ${ moduleId }` ),
         modulesArray: modulesArray,
         appLocalizer: {
             siteUrl: "https://mywordpresssite.com",
             user: {
-            id: 1,
-            name: "Admin"
+                id: 1,
+                name: "Admin",
             },
-            isProUser: true
-        }
+            isProUser: true,
+        },
     };
-
 
     return <Modules { ...demoModuleProps } />;
 };

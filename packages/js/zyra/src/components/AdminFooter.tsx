@@ -31,7 +31,7 @@ const AdminFooter: React.FC< FooterProps > = ( { supportLink } ) => {
                     rel="noopener noreferrer"
                     className="card-item"
                 >
-                    <i className={ `admin-font adminLib-${ item.icon }` }></i>
+                    <i className={ `admin-font ${ item.icon }` }></i>
                     <span className="card-title">{ item.title }</span>
                     <p>{ item.description }</p>
                 </a>

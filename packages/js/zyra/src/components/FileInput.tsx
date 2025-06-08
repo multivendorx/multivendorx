@@ -17,6 +17,7 @@ interface FileInputProps {
     onMouseOver?: ( event: MouseEvent< HTMLInputElement > ) => void;
     onMouseOut?: ( event: MouseEvent< HTMLInputElement > ) => void;
     onFocus?: ( event: ChangeEvent< HTMLInputElement > ) => void;
+    onBlur?: ( event: ChangeEvent< HTMLInputElement > ) => void;
     proSetting?: boolean;
     imageSrc?: string;
     imageWidth?: number;
@@ -45,6 +46,7 @@ const FileInput: React.FC< FileInputProps > = ( props ) => {
                         onMouseOver={ ( e ) => props.onMouseOver?.( e ) }
                         onMouseOut={ ( e ) => props.onMouseOut?.( e ) }
                         onFocus={ ( e ) => props.onFocus?.( e ) }
+                        onBlur={ props.onBlur }
                     />
                     { props.proSetting && (
                         <span className="admin-pro-tag">pro</span>

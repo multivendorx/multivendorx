@@ -41,5 +41,5 @@ export const TestFileInput = () => {
         },
     };
 
-    return <FileInput key={"sample_file"} { ...demoFileInputProps } />;
+    return <FileInput key={ "sample_file" } { ...demoFileInputProps } />;
 };

@@ -1,13 +1,16 @@
 /**
  * External dependencies
  */
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
 
 /**
  * Get response from REST API.
+ * 
  * @param url - API URL
  * @param headers - Request headers
- * @returns API response data or null in case of an error
+ * 
+ * @return API response data or null in case of an error
  */
 export const getApiResponse = async < T >(
     url: string,
@@ -24,10 +27,13 @@ export const getApiResponse = async < T >(
 
 /**
  * Send response to REST API.
+ * 
+ * @param appLocalizer - Global variable
  * @param url - API URL
  * @param data - Data to send
  * @param headers - Request headers
- * @returns API response data or null in case of an error
+ * 
+ * @return API response data or null in case of an error
  */
 export const sendApiResponse = async < T >(
     appLocalizer: Record< string, any >,
@@ -53,10 +59,13 @@ export const sendApiResponse = async < T >(
 
 /**
  * Generate API endpoint URL.
+ * 
+ * @param appLocalizer - Global variable
  * @param endpoint - API endpoint
  * @param namespace - API namespace (optional)
  * @param rootUrl - API root URL (optional)
- * @returns Complete API URL
+ * 
+ * @return Complete API URL
  */
 export const getApiLink = (
     appLocalizer: Record< string, any >,

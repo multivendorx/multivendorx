@@ -34,6 +34,7 @@ export interface BasicInputProps {
     onMouseOver?: ( e: MouseEvent< HTMLInputElement > ) => void;
     onMouseOut?: ( e: MouseEvent< HTMLInputElement > ) => void;
     onFocus?: ( e: FocusEvent< HTMLInputElement > ) => void;
+    onBlur?: (e: FocusEvent< HTMLInputElement >) => void;
     parameter?: string;
     proSetting?: boolean;
     description?: string;
@@ -58,6 +59,7 @@ const BasicInput: React.FC< BasicInputProps > = ( {
     onMouseOver,
     onMouseOut,
     onFocus,
+    onBlur,
     parameter,
     proSetting,
     description,
@@ -83,6 +85,7 @@ const BasicInput: React.FC< BasicInputProps > = ( {
                 onMouseOver={ onMouseOver }
                 onMouseOut={ onMouseOut }
                 onFocus={ onFocus }
+                onBlur={ onBlur }
                 disabled={ disabled }
             />
             { parameter && (

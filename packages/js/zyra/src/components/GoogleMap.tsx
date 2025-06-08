@@ -32,6 +32,20 @@ const AutoComplete: React.FC< AutoCompleteProps > = ( {
         useState< google.maps.places.Autocomplete | null >( null );
     const inputRef = useRef< HTMLInputElement | null >( null );
 
+    const handleOnPlaceChanged = () => {
+        if ( ! autoComplete ) return;
+        const place = autoComplete.getPlace();
+        if ( ! place.geometry ) return;
+        if ( place.geometry.viewport ) {
+            map.fitBounds( place.geometry.viewport );
+        } else {
+            map.setCenter( place.geometry.location! );
+            map.setZoom( 17 );
+        }
+        addPlace( place );
+        inputRef.current!.blur();
+    };
+    
     useEffect( () => {
         if ( mapApi?.places && inputRef.current ) {
             const options = { types: [ "address" ] };
@@ -46,21 +60,7 @@ const AutoComplete: React.FC< AutoCompleteProps > = ( {
             autoCompleteInstance.bindTo( "bounds", map );
             setAutoComplete( autoCompleteInstance );
         }
-    }, [ mapApi, map ] );
-
-    const handleOnPlaceChanged = () => {
-        if ( ! autoComplete ) return;
-        const place = autoComplete.getPlace();
-        if ( ! place.geometry ) return;
-        if ( place.geometry.viewport ) {
-            map.fitBounds( place.geometry.viewport );
-        } else {
-            map.setCenter( place.geometry.location! );
-            map.setZoom( 17 );
-        }
-        addPlace( place );
-        inputRef.current!.blur();
-    };
+    }, [ mapApi, map, handleOnPlaceChanged ] );
 
     const clearSearchBox = () => {
         if ( inputRef.current ) inputRef.current.value = "";
@@ -84,12 +84,12 @@ interface GoogleMapProps {
 }
 
 const GoogleMap: React.FC< GoogleMapProps > = ( props ) => {
-    const [ zoom, setZoom ] = useState< number >( 12 );
-    const [ center, setCenter ] = useState< { lat: number; lng: number } >(
+    const [ zoomLoc, setZoomLoc ] = useState< number >( 12 );
+    const [ centerLoc, setCenterLoc ] = useState< { lat: number; lng: number } >(
         props.center
     );
     const [ draggable, setDraggable ] = useState< boolean >( true );
-    const [ address, setAddress ] = useState< string | undefined >();
+    // const [ address, setAddress ] = useState< string | undefined >();
     const [ position, setPosition ] = useState< {
         lat: number | string;
         lng: number | string;
@@ -107,7 +107,7 @@ const GoogleMap: React.FC< GoogleMapProps > = ( props ) => {
     useEffect( () => {
         if ( "geolocation" in navigator ) {
             navigator.geolocation.getCurrentPosition( ( pos ) => {
-                setCenter( {
+                setCenterLoc( {
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
                 } );
@@ -126,8 +126,8 @@ const GoogleMap: React.FC< GoogleMapProps > = ( props ) => {
         center: { lat: number; lng: number };
         zoom: number;
     } ) => {
-        setZoom( zoom );
-        setCenter( center );
+        setZoomLoc( zoom );
+        setCenterLoc( center );
     };
 
     const handleOnClick = ( value: { lat: number; lng: number } ) => {
@@ -172,8 +172,8 @@ const GoogleMap: React.FC< GoogleMapProps > = ( props ) => {
             { location: { lat: +position.lat, lng: +position.lng } },
             ( results, status ) => {
                 if ( status === "OK" && results?.[ 0 ] ) {
-                    setZoom( 12 );
-                    setAddress( results[ 0 ].formatted_address );
+                    setZoomLoc( 12 );
+                    // setAddress( results[ 0 ].formatted_address );
                 } else {
                     window.alert( "Geocoder failed due to: " + status );
                 }
@@ -193,8 +193,8 @@ const GoogleMap: React.FC< GoogleMapProps > = ( props ) => {
             ) }
             <div style={ { height: "50vh", width: "50%" } }>
                 <GoogleMapReact
-                    zoom={ zoom }
-                    center={ center }
+                    zoom={ zoomLoc }
+                    center={ centerLoc }
                     draggable={ draggable }
                     onClick={ handleOnClick }
                     onChange={ handleOnChange }

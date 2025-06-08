@@ -87,6 +87,8 @@ const NotifimaFormCustomizer: React.FC< FormCustomizerProps > = ( {
                         { currentHoverOn === "email_input" && (
                             <div
                                 className="input-editor"
+                                role="button"
+                                tabIndex={ 0 }
                                 onClick={ () =>
                                     setCurrentEditSection( "text" )
                                 }

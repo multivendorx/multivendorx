@@ -94,12 +94,19 @@ const Tabs: React.FC< TabsProps > = ( {
     };
 
     const showHideMenu: React.FC< TabContent > = ( tab ) => {
+        let dropdownClass = "tab-menu-dropdown-icon";
+
+        if ( menuCol ) {
+            dropdownClass = "";
+        } else if ( openedSubtab === tab.id ) {
+            dropdownClass += " active";
+        }
         return (
             <Link
                 className={ currentTab === tab.id ? "active-current-tab" : "" }
                 onClick={ ( e ) => {
                     e.preventDefault();
-                    if ( openedSubtab == tab.id ) {
+                    if ( openedSubtab === tab.id ) {
                         setOpenedSubtab( "" );
                     } else {
                         setOpenedSubtab( tab.id );
@@ -121,23 +128,19 @@ const Tabs: React.FC< TabsProps > = ( {
                             { menuCol ? null : tab.desc }
                         </p>
                     </div>
-                    { menuCol ? null : openedSubtab == tab.id ? (
-                        <p className="tab-menu-dropdown-icon active">
+                    {menuCol ? null : (
+                        <p className={ dropdownClass }>
                             <i className="admin-font adminLib-keyboard-arrow-down"></i>
                         </p>
-                    ) : (
-                        <p className="tab-menu-dropdown-icon">
-                            <i className="admin-font adminLib-keyboard-arrow-down"></i>
-                        </p>
-                    ) }
+                    )}
                 </div>
             </Link>
         );
     };
 
     // Get the description of the current tab.
-    const getTabDescription: React.FC< TabData[] > = ( tabData ) => {
-        return tabData?.map( ( { content, type } ) => {
+    const getTabDescription: React.FC< TabData[] > = ( tabDataVal ) => {
+        return tabDataVal?.map( ( { content, type } ) => {
             if ( type === "file" ) {
                 return (
                     ( content as TabContent ).id === currentTab &&
@@ -167,6 +170,7 @@ const Tabs: React.FC< TabsProps > = ( {
                 // Get tab description from child by recursion
                 return getTabDescription( content as TabData[] );
             }
+            return null;
         } );
     };
 
@@ -216,7 +220,7 @@ const Tabs: React.FC< TabsProps > = ( {
 
                                     // Tab has child tabs
                                     return (
-                                        <div className="tab-wrapper">
+                                        <div className="tab-wrapper" key={`${type}-${content}`}>
                                             { showHideMenu(
                                                 ( content as TabData[] )[ 0 ]
                                                     .content as TabContent
@@ -251,6 +255,8 @@ const Tabs: React.FC< TabsProps > = ( {
                                     );
                                 } ) }
                                 <div
+                                    role="button"
+                                    tabIndex={0}
                                     className="main-btn menu-coll-btn"
                                     onClick={ handleMenuShow }
                                 >

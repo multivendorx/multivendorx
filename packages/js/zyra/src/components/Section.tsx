@@ -3,8 +3,6 @@
  */
 import React from "react";
 
-import "../common.scss";
-
 // Types
 export interface SectionProps {
     wrapperClass: string;

@@ -29,90 +29,97 @@ const SyncMap: React.FC< SyncMapProps > = ( {
     description,
     syncFieldsMap,
 } ) => {
-    const systems = useMemo(() => Object.keys(syncFieldsMap), [syncFieldsMap]);
+    const systems = useMemo(
+        () => Object.keys( syncFieldsMap ),
+        [ syncFieldsMap ]
+    );
 
     const formattedValue =
-        Array.isArray(value) && value.every(Array.isArray) ? value : [];
+        Array.isArray( value ) && value.every( Array.isArray ) ? value : [];
 
-    const [selectedFields, setSelectedFields] = useState<[string, string][]>(
-        formattedValue
-    );
-    const [availableFields, setAvailableFields] = useState<
-        Record<string, string[]>
-    >({});
-    const [btnAllow, setBtnAllow] = useState(false);
-    const settingChanged = useRef(false);
+    const [ selectedFields, setSelectedFields ] =
+        useState< [ string, string ][] >( formattedValue );
+    const [ availableFields, setAvailableFields ] = useState<
+        Record< string, string[] >
+    >( {} );
+    const [ btnAllow, setBtnAllow ] = useState( false );
+    const settingChanged = useRef( false );
 
     // ✅ Fix infinite loop by memoizing and ensuring stable dependencies
-    useEffect(() => {
-        const updatedAvailableFields: Record<string, string[]> = {};
-        systems.forEach((system) => {
-            updatedAvailableFields[system] = Object.keys(
-                syncFieldsMap[system].fields
+    useEffect( () => {
+        const updatedAvailableFields: Record< string, string[] > = {};
+        systems.forEach( ( system ) => {
+            updatedAvailableFields[ system ] = Object.keys(
+                syncFieldsMap[ system ].fields
             ).filter(
-                (field) =>
-                    !selectedFields.some(
-                        ([selectedFieldA, selectedFieldB]) =>
+                ( field ) =>
+                    ! selectedFields.some(
+                        ( [ selectedFieldA, selectedFieldB ] ) =>
                             selectedFieldA === field || selectedFieldB === field
                     )
             );
-        });
-        setAvailableFields(updatedAvailableFields);
-    }, [selectedFields, systems.join(","), JSON.stringify(syncFieldsMap)]);
+        } );
+        setAvailableFields( updatedAvailableFields );
+    }, 
+    [
+        selectedFields,
+        systems,
+        syncFieldsMap
+    ] );
 
     const changeSelectedFields = (
         fieldIndex: number,
-        value: string,
+        data: string,
         systemIndex: number
     ) => {
-        setSelectedFields((prevFields) =>
-            prevFields.map((fieldPair, index) => {
-                if (index === fieldIndex) {
-                    const newPair = [...fieldPair] as [string, string];
-                    newPair[systemIndex] = value;
+        setSelectedFields( ( prevFields ) =>
+            prevFields.map( ( fieldPair, index ) => {
+                if ( index === fieldIndex ) {
+                    const newPair = [ ...fieldPair ] as [ string, string ];
+                    newPair[ systemIndex ] = data;
                     return newPair;
                 }
                 return fieldPair;
-            })
+            } )
         );
         settingChanged.current = true;
     };
 
-    const removeSelectedFields = (fieldIndex: number) => {
-        setSelectedFields((prevFields) =>
-            prevFields.filter((_, index) => index !== fieldIndex)
+    const removeSelectedFields = ( fieldIndex: number ) => {
+        setSelectedFields( ( prevFields ) =>
+            prevFields.filter( ( _, index ) => index !== fieldIndex )
         );
-        setBtnAllow(false);
+        setBtnAllow( false );
         settingChanged.current = true;
     };
 
     const insertSelectedFields = () => {
         if (
-            availableFields[systems[0]]?.length &&
-            availableFields[systems[1]]?.length
+            availableFields[ systems[ 0 ] ]?.length &&
+            availableFields[ systems[ 1 ] ]?.length
         ) {
-            const systemAField = availableFields[systems[0]].shift()!;
-            const systemBField = availableFields[systems[1]].shift()!;
-            setSelectedFields((prevFields) => [
+            const systemAField = availableFields[ systems[ 0 ] ].shift()!;
+            const systemBField = availableFields[ systems[ 1 ] ].shift()!;
+            setSelectedFields( ( prevFields ) => [
                 ...prevFields,
-                [systemAField, systemBField],
-            ]);
+                [ systemAField, systemBField ],
+            ] );
             setBtnAllow(
-                availableFields[systems[0]].length === 0 &&
-                    availableFields[systems[1]].length === 0
+                availableFields[ systems[ 0 ] ].length === 0 &&
+                    availableFields[ systems[ 1 ] ].length === 0
             );
             settingChanged.current = true;
         } else {
-            alert("Unable to add sync fields");
+            alert( "Unable to add sync fields" );
         }
     };
 
-    useEffect(() => {
-        if (settingChanged.current) {
+    useEffect( () => {
+        if ( settingChanged.current ) {
             settingChanged.current = false;
-            onChange(selectedFields);
+            onChange( selectedFields );
         }
-    }, [selectedFields, onChange]);
+    }, [ selectedFields, onChange ] );
 
     return (
         <div className="sync-map-container">

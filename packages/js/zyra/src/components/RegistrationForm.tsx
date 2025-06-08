@@ -132,7 +132,11 @@ export const AddNewBtn: React.FC< AddNewBtnProps > = ( {
         <>
             { large ? (
                 <div className="addnew">
-                    <div onClick={ () => onAddNew?.() }>
+                    <div 
+                        role="button"
+                        tabIndex={ 0 }
+                        onClick={ () => onAddNew?.() }
+                    >
                         <i className="admin-font adminLib-move"></i>
                     </div>
                     <p>{ "Click to add next text field" }</p>
@@ -140,6 +144,8 @@ export const AddNewBtn: React.FC< AddNewBtnProps > = ( {
             ) : (
                 <div
                     className="add-new-sections"
+                    role="button"
+                    tabIndex={ 0 }
                     onClick={ () => onAddNew?.() }
                 >
                     <div>
@@ -163,6 +169,8 @@ export const DeleteBtn: React.FC< DeleteBtnProps > = ( {
     return (
         <div
             className={ `delete ${ hideDelete ? "disable" : "" }` }
+            role="button"
+            tabIndex={ 0 }
             onClick={ () => onDelete?.() }
         >
             <i className="admin-font adminLib-close"></i>
@@ -214,7 +222,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
         // Form field list can't be empty it should contain atlest form title.
         // This action prevent any backend action for empty form field list.
 
-        let inputList = formSetting[ "formfieldlist" ] || [];
+        let inputList = formSetting.formfieldlist || [];
 
         if ( ! Array.isArray( inputList ) || inputList.length <= 0 ) {
             return [
@@ -231,7 +239,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
     } );
 
     const [ buttonSetting, setButtonSetting ] = useState(
-        formSetting[ "butttonsetting" ] || {}
+        formSetting.butttonsetting || {}
     );
 
     // State for hold id of opend input section.
@@ -270,7 +278,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                 0
             ) + 1
         );
-    }, [] );
+    }, [formFieldList] );
 
     // Save button setting and formfieldlist setting
     useEffect( () => {
@@ -281,7 +289,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                 butttonsetting: buttonSetting,
             } );
         }
-    }, [ buttonSetting, formFieldList ] );
+    }, [ buttonSetting, formFieldList, onChange ] );
 
     ////////////// Define functionality here /////////////////
 
@@ -395,7 +403,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
         const selectedFormField = formFieldList[ index ];
 
         // Check if selected type is previously selected type
-        if ( selectedFormField.type == newType ) {
+        if ( selectedFormField.type === newType ) {
             return;
         }
 
@@ -471,6 +479,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                 if ( index === 0 ) {
                                     return (
                                         <div
+                                            key={ index }
                                             style={ { display: "none" } }
                                         ></div>
                                     );
@@ -478,21 +487,22 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
 
                                 return (
                                     <main
+                                        key={ index }
                                         className={ `form-field ${
-                                            opendInput?.id == formField.id
+                                            opendInput?.id === formField.id
                                                 ? "active"
                                                 : ""
                                         }` }
                                     >
                                         { /* Render dragable button */ }
-                                        { opendInput?.id == formField.id && (
+                                        { opendInput?.id === formField.id && (
                                             <div className="bth-move drag-handle">
                                                 <i className="admin-font adminLib-move"></i>
                                             </div>
                                         ) }
 
                                         { /* Render setting section */ }
-                                        { opendInput?.id == formField.id && (
+                                        { opendInput?.id === formField.id && (
                                             <section className="meta-menu">
                                                 <div className="btn-delete">
                                                     <DeleteBtn
@@ -534,17 +544,19 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                         { /* Render main content */ }
                                         <section
                                             className={ `${
-                                                opendInput?.id != formField.id
+                                                opendInput?.id !== formField.id
                                                     ? "hidden-list"
                                                     : ""
                                             } form-field-container-wrapper` }
+                                            role="button"
+                                            tabIndex={ 0 }
                                             onClick={ ( event ) => {
                                                 event.stopPropagation();
                                                 SetIsInputBoxClick( {
                                                     click: true,
                                                 } );
                                                 if (
-                                                    opendInput?.id !=
+                                                    opendInput?.id !==
                                                     formField.id
                                                 ) {
                                                     setOpendInput( formField );
@@ -552,9 +564,9 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                             } }
                                         >
                                             { /* Render question name here */ }
-                                            { ( formField.type == "text" ||
-                                                formField.type == "email" ||
-                                                formField.type ==
+                                            { ( formField.type === "text" ||
+                                                formField.type === "email" ||
+                                                formField.type ===
                                                     "number" ) && (
                                                 <SimpleInput
                                                     formField={ formField }
@@ -567,12 +579,12 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { ( formField.type ==
+                                            { ( formField.type ===
                                                 "checkboxes" ||
-                                                formField.type ==
+                                                formField.type ===
                                                     "multiselect" ||
-                                                formField.type == "radio" ||
-                                                formField.type ==
+                                                formField.type === "radio" ||
+                                                formField.type ===
                                                     "dropdown" ) && (
                                                 <MultipleOptions
                                                     formField={ formField }
@@ -590,7 +602,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { formField.type == "textarea" && (
+                                            { formField.type === "textarea" && (
                                                 <TemplateTextArea
                                                     formField={ formField }
                                                     onChange={ ( key, value ) =>
@@ -602,7 +614,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { formField.type ==
+                                            { formField.type ===
                                                 "attachment" && (
                                                 <Attachment
                                                     formField={ formField }
@@ -615,7 +627,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { formField.type == "recaptcha" && (
+                                            { formField.type === "recaptcha" && (
                                                 <Recaptcha
                                                     formField={ formField }
                                                     onChange={ ( key, value ) =>
@@ -627,7 +639,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { formField.type ==
+                                            { formField.type ===
                                                 "datepicker" && (
                                                 <Datepicker
                                                     formField={ formField }
@@ -640,7 +652,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { formField.type ==
+                                            { formField.type ===
                                                 "TimePicker" && (
                                                 <TimePicker
                                                     formField={ formField }
@@ -653,7 +665,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { formField.type == "section" && (
+                                            { formField.type === "section" && (
                                                 <TemplateSection
                                                     formField={ formField }
                                                     onChange={ ( key, value ) =>
@@ -665,7 +677,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                                     }
                                                 />
                                             ) }
-                                            { formField.type == "divider" && (
+                                            { formField.type === "divider" && (
                                                 <Divider />
                                             ) }
                                         </section>

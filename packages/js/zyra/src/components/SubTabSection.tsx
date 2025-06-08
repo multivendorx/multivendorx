@@ -36,6 +36,8 @@ const SubTabSection: React.FC< SubTabSectionProps > = ( {
                     className={ `tab-section-menu ${
                         menu.id === currentTab.id ? "active" : ""
                     } ${ menu.id }-tab` }
+                    role="button"
+                    tabIndex={ 0 }
                     onClick={ () => setCurrentTab( menu ) }
                 >
                     <span>

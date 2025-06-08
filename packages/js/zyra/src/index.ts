@@ -1,4 +1,6 @@
-// import "./common.scss";
+import "./styles/fonts.scss";
+
+import "./styles/common.scss";
 
 export { default as AdminFooter } from "./components/AdminFooter";
 export { default as AdminForm } from "./components/AdminForm";

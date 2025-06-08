@@ -10,9 +10,9 @@ import "../styles/web/ToggleSetting.scss";
 
 // Types
 interface Option {
-    key: string;
+    key?: string;
     value: string;
-    label: string;
+    label?: string;
 }
 
 interface ToggleSettingProps {
@@ -40,6 +40,8 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
                 <ul>
                     { options.map( ( option ) => (
                         <li
+                            role="button"
+                            tabIndex={0}
                             key={ option.key }
                             onClick={ () => onChange( option.value ) }
                         >

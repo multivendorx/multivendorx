@@ -8,11 +8,11 @@ export default {
 export const TestRecaptcha = () => {
     const demoRecaptchaProps = {
         formField: {
-            sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Google test sitekey
+            sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", // Google test sitekey
         },
-        onChange: (field, value) => {
-            console.log(`Recaptcha response for field "${field}":`, value);
-        }
+        onChange: ( field, value ) => {
+            console.log( `Recaptcha response for field "${ field }":`, value );
+        },
     };
 
     return <Recaptcha { ...demoRecaptchaProps } />;

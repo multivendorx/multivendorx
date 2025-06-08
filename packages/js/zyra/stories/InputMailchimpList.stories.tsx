@@ -29,7 +29,7 @@ export const TestInputMailchimpList = () => {
                 {
                     label: "Promotions List",
                     value: "list_002",
-                }
+                },
             ],
         },
         updateSetting: ( key: string, value: any ) => {

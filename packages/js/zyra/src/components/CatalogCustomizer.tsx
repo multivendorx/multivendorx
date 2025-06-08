@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { useState, useEffect, ReactNode, useMemo } from "react";
 import ReactDragListView from "react-drag-listview";
 
 /**
@@ -16,8 +16,8 @@ export interface CatalogCustomizerProps {
     onChange: ( key: string, value: any ) => void;
     proSetting?: boolean;
     setting: Record< string, any >;
-    Sample_Product: string;
-    pro_url: string;
+    SampleProduct: string;
+    proUrl: string;
 }
 
 // Define the type for a menu item
@@ -44,8 +44,8 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
     onChange,
     proSetting,
     setting,
-    Sample_Product,
-    pro_url,
+    SampleProduct,
+    proUrl,
 } ) => {
     const [ localSetting, _setLocalSetting ] = useState( setting );
 
@@ -54,83 +54,92 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
         onChange( key, value );
     };
 
-    const shopPagePossitionSetting =
-        localSetting[ "shop_page_possition_setting" ] || [];
-    const buttonPossitionSetting =
-        localSetting[ "shop_page_button_position_setting" ] || [];
-
-    const [ menu, setMenu ] = useState< MenuItem[] >( [
+    const shopPagePossitionSetting = useMemo(() => {
+        return localSetting.shop_page_possition_setting || [];
+    }, [localSetting]);
+    const buttonPossitionSetting = useMemo(() => {
+        return localSetting.shop_page_button_position_setting || [];
+    }, [localSetting]);
+        
+    const menu: MenuItem[] = [
         { name: "Enquiry", id: "enquiry", icon: "adminLib-inquiry" },
         { name: "Quote", id: "quote", icon: "adminLib-price-quote-icon" },
         { name: "Catalog", id: "catalog", icon: "adminLib-catalog" },
-    ] );
+    ]
 
     const [ currentTab, setCurrentTab ] = useState< MenuItem >( menu[ 0 ] );
+
+    const PriceSectionContent = () => {
+        const [hideProductPrice, setHideProductPrice] = useState<boolean>(
+            setting.hide_product_price
+        );
+
+        return (
+            <div className="price-section toggle-visibility">
+                <div
+                    role="button"
+                    tabIndex={ 0 }
+                    onClick={() => {
+                        setHideProductPrice( ! hideProductPrice );
+                        setSetting( "hide_product_price", ! hideProductPrice );
+                    }}
+                    className="button-visibility"
+                >
+                    <i className="admin-font adminLib-support"></i>
+                </div>
+                <p
+                    className="product-price"
+                    style={{
+                        opacity: hideProductPrice ? "0.3" : "1",
+                    }}
+                >
+                    <span className="strikethrough">$20.00</span> $18.00
+                </p>
+            </div>
+        );
+    };
+
+    const ProductDescriptionContent = ()=>{
+        const [ hideProductDesc, setHideProductDesc ] =
+            useState< boolean >( setting.hide_product_desc );
+        return (
+            <div className="description-section toggle-visibility">
+                <div
+                    role="button"
+                    tabIndex={ 0 }
+                    onClick={ () => {
+                        setHideProductDesc( ! hideProductDesc );
+                        setSetting(
+                            "hide_product_desc",
+                            ! hideProductDesc
+                        );
+                    } }
+                    className="button-visibility"
+                >
+                    <i className="admin-font adminLib-support"></i>
+                </div>
+                <p
+                    className="product-description"
+                    style={ { opacity: hideProductDesc ? "0.3" : "1" } }
+                >
+                    Pellentesque habitant morbi tristique senectus et
+                    netus et malesuada fames ac turpis egestas.
+                </p>
+            </div>
+        );
+    }
 
     // Create draggable items state with type annotations
     const [ dragableItems, setDragableItems ] = useState< DraggableItem[] >( [
         {
             id: "price_section",
-            content: () => {
-                const [ hideProductPrice, setHideProductPrice ] =
-                    useState< boolean >( setting[ "hide_product_price" ] );
-                return (
-                    <div className="price-section toggle-visibility">
-                        <div
-                            onClick={ () => {
-                                setHideProductPrice( ! hideProductPrice );
-                                setSetting(
-                                    "hide_product_price",
-                                    ! hideProductPrice
-                                );
-                            } }
-                            className="button-visibility"
-                        >
-                            <i className="admin-font adminLib-support"></i>
-                        </div>
-                        <p
-                            className="product-price"
-                            style={ {
-                                opacity: hideProductPrice ? "0.3" : "1",
-                            } }
-                        >
-                            <span className="strikethrough">$20.00</span> $18.00
-                        </p>
-                    </div>
-                );
-            },
+            content: PriceSectionContent,
             defaultPosition: 0,
             dragable: false,
         },
         {
             id: "product_description",
-            content: () => {
-                const [ hideProductDesc, setHideProductDesc ] =
-                    useState< boolean >( setting[ "hide_product_desc" ] );
-                return (
-                    <div className="description-section toggle-visibility">
-                        <div
-                            onClick={ () => {
-                                setHideProductDesc( ! hideProductDesc );
-                                setSetting(
-                                    "hide_product_desc",
-                                    ! hideProductDesc
-                                );
-                            } }
-                            className="button-visibility"
-                        >
-                            <i className="admin-font adminLib-support"></i>
-                        </div>
-                        <p
-                            className="product-description"
-                            style={ { opacity: hideProductDesc ? "0.3" : "1" } }
-                        >
-                            Pellentesque habitant morbi tristique senectus et
-                            netus et malesuada fames ac turpis egestas.
-                        </p>
-                    </div>
-                );
-            },
+            content: ProductDescriptionContent,
             defaultPosition: 1,
             dragable: false,
         },
@@ -184,9 +193,11 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
 
     /**
      * Get the index of a list item by its id.
-     * @param list - An array of objects that must have an 'id' property.
-     * @param id - The id to search for.
-     * @returns The index of the found item, or -1 if not found.
+     *
+     * @template T - The type of items in the list.
+     * @param {T[]} list - An array of objects that must have an 'id' property.
+     * @param {string} id - The id to search for.
+     * @return {number} The index of the found item, or -1 if not found.
      */
     const getIndex = < T extends { id: string } >(
         list: T[],
@@ -205,10 +216,12 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
 
     /**
      * Reorders elements in an array.
+     * 
      * @param list - The array to reorder.
      * @param startIndex - The index of the item to move.
      * @param endIndex - The index where the item should be moved.
-     * @returns A new array with the reordered elements.
+     * 
+     * @return A new array with the reordered elements.
      */
     const reorder = < T extends unknown >(
         list: T[],
@@ -227,15 +240,18 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
         return result;
     };
 
+    const initialItems = useMemo(() => {
+        return [...dragableItems]; // replace with real source
+    }, []);
     /**
      * Updates draggable items based on the previously set sequence.
      */
     useEffect( () => {
         if ( ! shopPagePossitionSetting ) return;
 
-        let positionSetting: Record< string, string > =
+        const positionSetting: Record< string, string > =
             shopPagePossitionSetting || {};
-        let items = [ ...dragableItems ];
+        let items = [ ...initialItems ];
 
         // Convert position settings into an array of tuples
         const positionEntries = Object.entries( positionSetting );
@@ -244,7 +260,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
         let samePosition = true;
         let positionToMove: string | null = null;
 
-        positionEntries.forEach( ( [ willMove, moveAfter ] ) => {
+        positionEntries.forEach( ( [ /* unused */, moveAfter ] ) => {
             if ( positionToMove !== null && positionToMove !== moveAfter ) {
                 samePosition = false;
             }
@@ -279,7 +295,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
         }
 
         setDragableItems( items );
-    }, [] );
+    }, [ shopPagePossitionSetting, initialItems ] );
 
     /**
      * Sets button draggable items to their previously saved sequence.
@@ -292,10 +308,11 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
                     buttonPossitionSetting.indexOf( b.id )
             );
         } );
-    }, [] );
+    }, [ buttonPossitionSetting ] );
 
     /**
      * Function after drag end. Updates settings and reorders items.
+     * 
      * @param startIndex - The starting index of the dragged item.
      * @param endIndex - The ending index where the item is dropped.
      */
@@ -343,7 +360,11 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
 
     /**
      * Handles submenu change when a new tab is selected.
-     * @param newTab - The new tab object.
+     *
+     * @param {{ id: string, name: string, icon: string }} newTab - The new tab object.
+     * @param {string} newTab.id - The ID of the new tab.
+     * @param {string} newTab.name - The name of the new tab.
+     * @param {string} newTab.icon - The icon class name of the new tab.
      */
     const handleSubMenuChange = ( newTab: {
         id: string;
@@ -390,7 +411,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
             >
                 <section className="catelog-customizer">
                     <div className="product-img">
-                        <img src={ Sample_Product } alt="Sample Product" />
+                        <img src={ SampleProduct } alt="Sample Product" />
                     </div>
                     <div className="product-data">
                         <h1 className="product-name">Sample Product</h1>
@@ -595,7 +616,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
                             <article className="pro-banner">
                                 <p>Upgrade to pro for endless customization</p>
                                 <a
-                                    href={ pro_url }
+                                    href={ proUrl }
                                     className="main-btn btn-purple"
                                     target="_blank"
                                     rel="noopener noreferrer"

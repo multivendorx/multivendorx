@@ -29,9 +29,8 @@ const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
                 const startDate = new Date( rangeDates[ 0 ].trim() );
                 const endDate = new Date( rangeDates[ 1 ].trim() );
                 return [ startDate, endDate ];
-            } else {
-                return new Date( date.trim() );
-            }
+            } 
+            return new Date( date.trim() );
         } );
     }
 

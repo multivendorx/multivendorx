@@ -25,6 +25,8 @@ const Elements: React.FC< ElementsProps > = ( { selectOptions, onClick } ) => {
                 { selectOptions.map( ( option ) => (
                     <article
                         key={ option.value } // ✅ Added key for React's rendering optimization
+                        role="button"
+                        tabIndex={ 0 }
                         className="elements-items"
                         onClick={ () => onClick( option.value ) }
                     >

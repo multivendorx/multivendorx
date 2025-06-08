@@ -76,6 +76,8 @@ const Customizer: React.FC< CustomizerProps > = ( {
                     <div
                         key={ type }
                         title={ title }
+                        role="button"
+                        tabIndex={ 0 }
                         className="btn-customizer-menu-items"
                         onClick={ () => setSelect( type ) }
                     >

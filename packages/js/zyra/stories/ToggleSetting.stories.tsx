@@ -13,7 +13,7 @@ export const TestToggleSetting = () => {
             { key: "opt2", value: "no", label: "No" },
         ],
         wrapperClass: "toggle-wrapper",
-        descClass: "toggle-description",
+        descClass: "settings-metabox-description",
         value: "yes",
         onChange: ( value ) => {
             console.log( "Selected value:", value );

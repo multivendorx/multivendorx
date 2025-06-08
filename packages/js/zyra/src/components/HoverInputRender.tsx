@@ -71,6 +71,8 @@ const HoverInputRender: React.FC< HoverInputRenderProps > = ( {
             { showTextBox && (
                 <div
                     className="main-input-wrapper"
+                    role="button"
+                    tabIndex={ 0 }
                     onClick={ () => setIsClicked( true ) }
                     onMouseLeave={ handleMouseLeave }
                 >

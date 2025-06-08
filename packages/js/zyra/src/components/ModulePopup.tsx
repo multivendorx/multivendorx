@@ -78,6 +78,7 @@ const ModulePopup: React.FC< ModulePopupProps > = ( {
                                     <a
                                         className="admin-go-pro-btn"
                                         target="_blank"
+                                        rel="noreferrer"
                                         href={ pluginUrl }
                                     >
                                         { pluginButton }

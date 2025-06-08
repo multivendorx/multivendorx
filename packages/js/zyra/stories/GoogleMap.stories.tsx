@@ -1,5 +1,5 @@
-(globalThis as any).appLocalizer = {
-    google_api: 'AIzaSyBNIfvjxTlKFU6ERNIYtFdI70hfwPpev-Q',
+( globalThis as any ).appLocalizer = {
+    google_api: "AIzaSyBNIfvjxTlKFU6ERNIYtFdI70hfwPpev-Q",
 };
 
 import GoogleMap from "../src/components/GoogleMap";

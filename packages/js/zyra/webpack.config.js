@@ -3,12 +3,21 @@ const MiniCssExtractPlugin = require( "mini-css-extract-plugin" );
 
 module.exports = {
     entry: {
-        index: "./src/index.tsx",
+        index: "./src/index.ts",
+    },
+    mode: "production",
+    output: {
+        filename: "[name].js",
+        chunkFilename: "[name].[contenthash].js", // ✅ important
+        path: path.resolve( __dirname, "build" ),
+        publicPath: "/", // or the URL where your assets are served from
+        clean: true,
     },
 
-    output: {
-        path: path.resolve( __dirname, "assets" ),
-        filename: "js/[name].js",
+    optimization: {
+        splitChunks: {
+            chunks: "async", // ✅ splits dynamic imports
+        },
     },
 
     watchOptions: {
@@ -18,9 +27,19 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                use: "ts-loader",
-                include: path.resolve( __dirname, "./src" ),
+                test: /\.(t|j)sx?$/,
+                exclude: /[\\/]node_modules[\\/]/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: [ "@wordpress/babel-preset-default" ],
+                        cacheDirectory: path.resolve(
+                            __dirname,
+                            ".cache/babel"
+                        ),
+                        cacheCompression: false,
+                    },
+                },
             },
             {
                 test: /\.css$/,
@@ -81,5 +100,6 @@ module.exports = {
     externals: {
         react: "React",
         "react-dom": "ReactDOM",
+        "mapbox-gl": "mapbox-gl",
     },
 };

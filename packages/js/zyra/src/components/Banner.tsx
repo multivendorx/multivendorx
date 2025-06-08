@@ -16,12 +16,12 @@ interface Products {
     description: string;
 }
 interface BannerProps {
-    is_pro?: boolean;
+    isPro?: boolean;
     products?: Products[];
-    pro_url: string;
+    proUrl: string;
 }
 
-const Banner: React.FC< BannerProps > = ( { is_pro, products, pro_url } ) => {
+const Banner: React.FC< BannerProps > = ( { isPro, products, proUrl } ) => {
     // Ensure localStorage is initialized correctly
     if ( localStorage.getItem( "banner" ) !== "false" ) {
         localStorage.setItem( "banner", "true" );
@@ -106,8 +106,7 @@ const Banner: React.FC< BannerProps > = ( { is_pro, products, pro_url } ) => {
 
     return (
         <>
-            { ! is_pro ? (
-                banner ? (
+            { ! isPro && banner && (
                     <div className="custom-banner">
                         <Dialog
                             className="admin-module-popup"
@@ -117,6 +116,8 @@ const Banner: React.FC< BannerProps > = ( { is_pro, products, pro_url } ) => {
                         >
                             <span
                                 className="admin-font adminLib-cross stock-manager-popup-cross"
+                                role="button"
+                                tabIndex={0}
                                 onClick={ handleClose }
                             ></span>
                             <ProPopup />
@@ -125,10 +126,14 @@ const Banner: React.FC< BannerProps > = ( { is_pro, products, pro_url } ) => {
                             <div className="carousel-container">
                                 <div
                                     className="admin-font adminLib-cross pro-slider-cross"
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={ handleCloseBanner }
                                 ></div>
                                 <div
                                     className="why-go-pro-tag"
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={ handleOpen }
                                 >
                                     Why Premium
@@ -139,7 +144,7 @@ const Banner: React.FC< BannerProps > = ( { is_pro, products, pro_url } ) => {
                                             <li
                                                 key={ i }
                                                 className={ `carousel-item ${
-                                                    i == 0 ? "active" : ""
+                                                    i === 0 ? "active" : ""
                                                 }` }
                                             >
                                                 <div className="admin-pro-txt-items">
@@ -148,8 +153,9 @@ const Banner: React.FC< BannerProps > = ( { is_pro, products, pro_url } ) => {
                                                         { product.description }
                                                     </p>
                                                     <a
-                                                        href={ pro_url }
+                                                        href={ proUrl }
                                                         target="_blank"
+                                                        rel="noreferrer"
                                                         className="admin-btn btn-red"
                                                     >
                                                         View Pricing
@@ -170,8 +176,8 @@ const Banner: React.FC< BannerProps > = ( { is_pro, products, pro_url } ) => {
                             </div>
                         </div>
                     </div>
-                ) : null
-            ) : null }
+                ) 
+            }
         </>
     );
 };

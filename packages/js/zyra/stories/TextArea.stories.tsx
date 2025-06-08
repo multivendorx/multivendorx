@@ -19,7 +19,7 @@ export const TestTextArea = () => {
         colNumber: 50,
         proSetting: false,
         description: "Please enter your detailed comments.",
-        descClass: "textarea-description",
+        descClass: "settings-metabox-description",
         onChange: ( e ) => console.log( "Changed:", e.target.value ),
         onClick: ( e ) => console.log( "Clicked" ),
         onMouseOver: ( e ) => console.log( "Mouse Over" ),

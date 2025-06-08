@@ -47,8 +47,8 @@ const MergeComponent: React.FC< MergeComponentProps > = ( {
 
     const [ data, setData ] = useState( initialState );
 
-    const handleOnChange = ( key: string, value: string | number ) => {
-        setData( ( prev ) => ( { ...prev, [ key ]: value } ) );
+    const handleOnChange = ( key: string, data: string | number ) => {
+        setData( ( prev ) => ( { ...prev, [ key ]: data } ) );
     };
 
     useEffect( () => {
@@ -57,7 +57,7 @@ const MergeComponent: React.FC< MergeComponentProps > = ( {
             return; // Skip the initial render
         }
         onChange( data );
-    }, [ data ] );
+    }, [ data, onChange ] );
 
     return (
         <main className={ wrapperClass }>

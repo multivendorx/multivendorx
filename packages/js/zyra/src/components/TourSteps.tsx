@@ -78,7 +78,7 @@ const Tour: React.FC = () => {
             await axios.post( `${ appLocalizer.apiUrl }/catalogx/v1/tour`, {
                 active: false,
             } );
-            console.log( "Tour marked as complete." );
+            // console.log( "Tour marked as complete." );
         } catch ( error ) {
             console.error( "Error updating tour flag:", error );
         }
@@ -93,7 +93,7 @@ const Tour: React.FC = () => {
                     <h3>Enable Catalog Mode</h3>
                     <h4>
                         Activate Catalog mode to display your site as a product
-                        catalog, removing the "Add to Cart" button and
+                        catalog, removing the &quot;Add to Cart&quot; button and
                         optionally hiding prices.
                     </h4>
                     <div className="tour-footer">
@@ -119,7 +119,7 @@ const Tour: React.FC = () => {
                 <div className="tour-box">
                     <h3>Enable Enquiry Mode</h3>
                     <h4>
-                        Turn on Enquiry mode to add an "Enquiry" button for
+                        Turn on Enquiry mode to add an &quot;Enquiry&quot; button for
                         customers, allowing direct communication via submitted
                         forms, viewable in the admin dashboard or via email.
                     </h4>

@@ -1,4 +1,4 @@
-@use '../../common.scss' as *;
+@use '../../global.scss' as *;
 .catelog-customizer-main-wrapper {
   transition: transform 0.3s linear;
   
@@ -19,7 +19,7 @@
     transform: scale(0);
   }
 }
-.catalog-customizer-wrapper {
+.catelog-customizer-main-wrapper {
   .settings-input-content {
     width: 100% !important; // overwrite dynamicForm.scss
   }

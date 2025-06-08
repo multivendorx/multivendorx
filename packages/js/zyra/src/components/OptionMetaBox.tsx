@@ -33,6 +33,8 @@ const OptionMetaBox: React.FC< OptionMetaBoxProps > = ( {
 
     return (
         <div
+            role="button"
+            tabIndex={ 0 }
             onClick={ ( event ) => {
                 setHasOpened( true );
                 event.stopPropagation();

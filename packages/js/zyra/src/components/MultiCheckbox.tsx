@@ -5,9 +5,9 @@ import React, { ChangeEvent, MouseEvent } from "react";
 
 // Types
 export interface Option {
-    key: string;
+    key?: string;
     value: string;
-    label: string;
+    label?: string;
     name?: string;
     proSetting?: boolean;
     hints?: string;
@@ -69,7 +69,7 @@ const MultiCheckBox: React.FC< MultiCheckBoxProps > = ( props ) => {
                                 <p
                                     className={ props.rightContentClass }
                                     dangerouslySetInnerHTML={ {
-                                        __html: option.label,
+                                        __html: option.label ?? "",
                                     } }
                                 ></p>
                             ) }
@@ -106,7 +106,7 @@ const MultiCheckBox: React.FC< MultiCheckBoxProps > = ( props ) => {
                                 <p
                                     className={ props.rightContentClass }
                                     dangerouslySetInnerHTML={ {
-                                        __html: option.label,
+                                        __html: option.label ?? "",
                                     } }
                                 ></p>
                             ) }

@@ -5,11 +5,11 @@ import React, { ChangeEvent } from "react";
 
 // Types
 export interface MultiNumOption {
-    key: string;
+    key?: string;
     value: string | number;
-    label: string;
+    label?: string;
     name?: string;
-    type: string;
+    type?: string;
 }
 
 export interface MultiNumInputProps {

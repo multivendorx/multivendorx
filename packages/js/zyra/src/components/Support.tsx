@@ -65,6 +65,8 @@ const Support: React.FC< SupprotProps > = ( {
                                         faq.open ? "open" : ""
                                     }` }
                                     key={ index }
+                                    role="button"
+                                    tabIndex={ 0 }
                                     onClick={ () => toggleFAQ( index ) }
                                 >
                                     <div className="faq-question">

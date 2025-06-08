@@ -2,7 +2,7 @@
  * External dependencies
  */
 import React, { JSX, useEffect, useRef, useState, lazy, Suspense } from "react";
-import { ActionMeta, MultiValue, SingleValue } from "react-select";
+import type { ActionMeta, MultiValue, SingleValue } from "react-select";
 import { Dialog } from "@mui/material";
 
 /**
@@ -57,12 +57,12 @@ interface DependentCondition {
     value?: string | number | boolean;
 }
 interface MultiNumOption {
-    key: string;
+    key?: string;
     value: string | number;
-    label: string;
+    label?: string;
     name?: string;
-    type: string;
-    desc: string;
+    type?: string;
+    desc?: string;
 }
 interface Field {
     name: string;
@@ -77,11 +77,11 @@ interface Task {
     cache?: "course_id" | "user_id";
 }
 
-interface InputField {
+export interface InputField {
     key: string;
-    id: string;
-    class: string;
-    name: string;
+    id?: string;
+    class?: string;
+    name?: string;
     type?:
         | "text"
         | "select"
@@ -131,7 +131,7 @@ interface InputField {
     rangeUnit?: string;
     min?: number;
     max?: number;
-    proSetting: boolean;
+    proSetting?: boolean;
     moduleEnabled?: boolean;
     parameter?: string;
     dependent?: DependentCondition | DependentCondition[];
@@ -152,14 +152,14 @@ interface InputField {
     valuename?: string;
     hint?: string;
     blocktext?: string;
-    rows: {
+    rows?: {
         key: string;
         label: string;
         options?: { value: string | number; label: string }[];
     }[];
-    columns: { key: string; label: string; moduleEnabled?: string }[];
-    fields: Field[];
-    options?: MultiNumOption;
+    columns?: { key: string; label: string; moduleEnabled?: string }[];
+    fields?: Field[];
+    options?: MultiNumOption[];
     optionLabel?: string[];
     apilink?: string;
     interval?: number;
@@ -169,11 +169,11 @@ interface InputField {
         { heading: string; fields: Record< string, string > }
     >;
     apiLink?: string;
-    tasks: Task[];
+    tasks?: Task[];
     fetchApiLink?: string;
     downloadApiLink?: string;
     fileName?: string;
-    syncDirections: {
+    syncDirections?: {
         value: string;
         img1: string;
         img2: string;
@@ -185,7 +185,7 @@ interface InputField {
     classes?: string;
     Lat?: number;
     Lng?: number;
-    center: Center;
+    center?: Center;
 }
 
 type Center = {
@@ -293,13 +293,21 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             // Store the interval ID
             counterId.current = intervalId;
         }
-    }, [ setting ] );
+    }, [ 
+        setting,
+        appLocalizer,
+        submitUrl,
+        id,
+        vendorId,
+        announcementId,
+        knowladgebaseId
+     ] );
 
     const isProSetting = ( proDependent: boolean ): boolean => {
         return proDependent && ! appLocalizer?.khali_dabba;
     };
-    const proSettingChanged = ( isProSetting: boolean ): boolean => {
-        if ( isProSetting && ! appLocalizer?.khali_dabba ) {
+    const proSettingChanged = ( isProSettingVal: boolean ): boolean => {
+        if ( isProSettingVal && ! appLocalizer?.khali_dabba ) {
             setModelOpen( true );
             return true;
         }
@@ -312,7 +320,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         dependentPlugin: boolean = false,
         dependentPluginName: string | undefined = ""
     ): boolean => {
-        let popupData: ModulePopupProps = {
+        const popupData: ModulePopupProps = {
             moduleName: "",
             settings: "",
             plugin: "",
@@ -404,9 +412,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 )[ event.value ];
 
                 const countryListArray = Object.keys( countryData ).map(
-                    ( key_country ) => ( {
-                        label: key_country,
-                        value: countryData[ key_country ],
+                    ( keyCountry ) => ( {
+                        label: keyCountry,
+                        value: countryData[ keyCountry ],
                     } )
                 );
 
@@ -435,9 +443,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         index?: number
     ) => {
         if ( ! key || ! optionKey || index === undefined ) {
-            console.error(
-                "Missing required parameters in handleMultiNumberChange"
-            );
+            // console.error(
+            //     "Missing required parameters in handleMultiNumberChange"
+            // );
             return;
         }
 
@@ -516,9 +524,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         } else if ( newValue !== null && "value" in newValue ) {
             // Single-select case (ensures 'newValue' is an object with 'value')
             updateSetting( actionMeta.name as string, newValue.value );
-        } else {
-            console.log( "Selection cleared." );
-        }
+        } 
+        // else {
+        //     console.log( "Selection cleared." );
+        // }
     };
 
     const isContain = (
@@ -567,12 +576,12 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 
     const renderForm = () => {
         return modal.map( ( inputField: InputField ) => {
-            let value: any = setting[ inputField.key ] ?? "";
+            const value: any = setting[ inputField.key ] ?? "";
             let input: JSX.Element | null = null;
 
             // Filter dependent conditions
             if ( Array.isArray( inputField.dependent ) ) {
-                for ( let dependent of inputField.dependent ) {
+                for ( const dependent of inputField.dependent ) {
                     if ( ! shouldRender( dependent ) ) {
                         return null;
                     }
@@ -720,7 +729,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     handleChange( e, inputField.key );
                                 }
                             } }
-                            onButtonClick={ ( ) => {
+                            onButtonClick={ () => {
                                 runUploader( inputField.key );
                             } }
                         />
@@ -812,7 +821,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 containerId="store-maps"
                                 containerClass="store-maps gmap"
                                 proSetting={ isProSetting(
-                                    inputField.proSetting
+                                    inputField.proSetting ?? false
                                 ) }
                                 Lat={ inputField.Lat } //for latitude
                                 Lng={ inputField.Lng } // for longitude
@@ -826,7 +835,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         <GoogleMap
                             wrapperClass="settings-basic-input-class"
                             placeholder="Enter location"
-                            center={ inputField.center } // for default location
+                            center={
+                                inputField.center ?? { lat: -22.0, lng: 22.5 }
+                            } // for default location
                         />
                     );
                     break;
@@ -869,10 +880,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             inputClass={ inputField.class }
                             value={ setting[ inputField.key ] }
                             options={
-                                Array.isArray( inputField.options )
+                                Array.isArray(inputField.options)
                                     ? inputField.options
-                                    : inputField.options
-                                    ? []
                                     : []
                             }
                             onChange={ handleMultiNumberChange }
@@ -1012,7 +1021,11 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             inputClass={ inputField.key }
                             options={
                                 Array.isArray( inputField.options )
-                                    ? inputField.options
+                                    ? inputField.options.map( ( opt ) => ( {
+                                          value: String( opt.value ),
+                                          label:
+                                              opt.label ?? String( opt.value ),
+                                      } ) )
                                     : []
                             }
                             value={
@@ -1042,7 +1055,11 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             inputClass={ inputField.key }
                             options={
                                 Array.isArray( inputField.options )
-                                    ? inputField.options
+                                    ? inputField.options.map( ( opt ) => ( {
+                                          value: String( opt.value ),
+                                          label:
+                                              opt.label ?? String( opt.value ),
+                                      } ) )
                                     : []
                             }
                             type="multi-select"
@@ -1055,11 +1072,16 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 inputField.proSetting ?? false
                             ) }
                             onChange={ onSelectChange }
-                            onMultiSelectDeselectChange={ ( ) =>
+                            onMultiSelectDeselectChange={ () =>
                                 handlMultiSelectDeselectChange(
                                     inputField.key,
                                     Array.isArray( inputField.options )
-                                        ? inputField.options
+                                        ? inputField.options.map( ( opt ) => ( {
+                                              value: String( opt.value ),
+                                              label:
+                                                  opt.label ??
+                                                  String( opt.value ),
+                                          } ) )
                                         : [], // Ensure options is always an array
                                     "multi-select"
                                 )
@@ -1151,6 +1173,15 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     break;
                 // For single or multiple checkbox (free / pro or some free some pro)
                 case "checkbox":
+                    let normalizedValue: string[] = [];
+
+                    if (Array.isArray(value)) {
+                        normalizedValue = value;
+                    } else if (typeof value === "string") {
+                        normalizedValue = [value];
+                    } else {
+                        normalizedValue = [];
+                    }
                     input = (
                         <MultiCheckBox
                             khali_dabba={ appLocalizer?.khali_dabba ?? false }
@@ -1160,7 +1191,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             selectDeselectClass="btn-purple select-deselect-trigger"
                             inputWrapperClass="toggle-checkbox-header"
                             inputInnerWrapperClass={
-                                inputField.look == "toggle"
+                                inputField.look === "toggle"
                                     ? "toggle-checkbox"
                                     : "default-checkbox"
                             } // this props for change classes default/ Toggle
@@ -1174,17 +1205,14 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             rightContentClass="settings-checkbox-description"
                             rightContent={ inputField.right_content } // for place checkbox right
                             options={
-                                Array.isArray( inputField.options )
-                                    ? inputField.options
+                                Array.isArray(inputField.options)
+                                    ? inputField.options.map((opt) => ({
+                                        ...opt,
+                                        value: String(opt.value),
+                                    }))
                                     : []
                             }
-                            value={
-                                Array.isArray( value )
-                                    ? value
-                                    : typeof value === "string"
-                                    ? [ value ]
-                                    : []
-                            }
+                            value={ normalizedValue }
                             proSetting={ isProSetting(
                                 inputField.proSetting ?? false
                             ) }
@@ -1204,11 +1232,14 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     );
                                 }
                             } }
-                            onMultiSelectDeselectChange={ ( ) =>
+                            onMultiSelectDeselectChange={ () =>
                                 handlMultiSelectDeselectChange(
                                     inputField.key,
                                     Array.isArray( inputField.options )
-                                        ? inputField.options
+                                        ? inputField.options.map( ( opt ) => ( {
+                                              ...opt,
+                                              value: String( opt.value ),
+                                          } ) )
                                         : []
                                 )
                             }
@@ -1300,7 +1331,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             key={ inputField.key }
                             options={
                                 Array.isArray( inputField.options )
-                                    ? inputField.options
+                                    ? inputField.options.map( ( opt ) => ( {
+                                          ...opt,
+                                          value: String( opt.value ),
+                                      } ) )
                                     : []
                             }
                             value={ String(
@@ -1367,6 +1401,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case "section":
                     input = (
                         <Section
+                            key={ `${ inputField.key }` }
                             wrapperClass="setting-section-divider"
                             value={ inputField.label }
                             hint={ inputField.hint }
@@ -1377,6 +1412,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case "blocktext":
                     input = (
                         <BlockText
+                            key={ inputField.blocktext }
                             wrapperClass="blocktext-class"
                             blockTextClass="settings-metabox-description-code"
                             value={ String( inputField.blocktext ) }
@@ -1398,7 +1434,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             setting={ setting[ inputField.key ] }
                             onChange={ (
                                 key,
-                                value,
+                                data,
                                 isRestoreDefaults = false
                             ) => {
                                 if (
@@ -1411,11 +1447,11 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 ) {
                                     settingChanged.current = true;
                                     if ( isRestoreDefaults ) {
-                                        updateSetting( inputField.key, value );
+                                        updateSetting( inputField.key, data );
                                     } else {
                                         updateSetting( inputField.key, {
                                             ...setting[ inputField.key ],
-                                            [ key ]: value,
+                                            [ key ]: data,
                                         } );
                                     }
                                 }
@@ -1468,9 +1504,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     String( inputField.moduleEnabled ?? "" )
                                 )
                             }
-                            onChange={ ( key, value ) => {
+                            onChange={ ( key, data ) => {
                                 settingChanged.current = true;
-                                updateSetting( key, value );
+                                updateSetting( key, data );
                             } }
                         />
                     );
@@ -1481,12 +1517,12 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         <CatalogCustomizer
                             setting={ setting }
                             proSetting={ appLocalizer?.khali_dabba ?? false }
-                            onChange={ ( key, value ) => {
+                            onChange={ ( key, data ) => {
                                 settingChanged.current = true;
-                                updateSetting( key, value );
+                                updateSetting( key, data );
                             } }
-                            Sample_Product="#"
-                            pro_url="#"
+                            SampleProduct="#"
+                            proUrl="#"
                         />
                     );
                     break;
@@ -1494,15 +1530,15 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case "multi-checkbox-table":
                     input = (
                         <MultiCheckboxTable
-                            rows={ inputField.rows } // row array
-                            columns={ inputField.columns } // columns array
+                            rows={ inputField.rows ?? [] } // row array
+                            columns={ inputField.columns ?? [] } // columns array
                             description={ String( inputField.desc ) }
                             setting={ setting }
                             proSetting={ isProSetting(
                                 inputField.proSetting ?? false
                             ) }
                             modules={ modules }
-                            onChange={ ( key, value ) => {
+                            onChange={ ( key, data ) => {
                                 if (
                                     ! proSettingChanged(
                                         inputField.proSetting ?? false
@@ -1512,7 +1548,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( key, value );
+                                    updateSetting( key, data );
                                 }
                             } }
                             moduleChange={ ( moduleEnabled ) => {
@@ -1579,7 +1615,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-                // Synchronize button 
+                // Synchronize button
                 case "syncbutton":
                     input = (
                         <SyncNow
@@ -1621,7 +1657,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     : [ [ "key", String( value ) ] ]
                             }
                             syncFieldsMap={ inputField.syncFieldsMap ?? {} }
-                            onChange={ ( value ) => {
+                            onChange={ ( data ) => {
                                 if (
                                     ! proSettingChanged(
                                         inputField.proSetting ?? false
@@ -1629,7 +1665,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     true
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, value );
+                                    updateSetting( inputField.key, data );
                                 }
                             } }
                         />
@@ -1643,7 +1679,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             proSetting={ isProSetting(
                                 inputField.proSetting ?? false
                             ) }
-                            onChange={ ( value ) => {
+                            onChange={ ( data ) => {
                                 if (
                                     ! proSettingChanged(
                                         inputField.proSetting ?? false
@@ -1651,7 +1687,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     true
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, value );
+                                    updateSetting( inputField.key, data );
                                 }
                             } }
                         />
@@ -1680,7 +1716,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     ? value
                                     : [ String( value ) ]
                             }
-                            syncDirections={ inputField.syncDirections } // array includes label, value, img1, img2
+                            syncDirections={ inputField.syncDirections ?? [] } // array includes label, value, img1, img2
                             onChange={ ( data ) => {
                                 if (
                                     ! proSettingChanged(
@@ -1768,6 +1804,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 >
                     <span
                         className="admin-font adminLib-cross"
+                        role="button"
+                        tabIndex={0}
                         onClick={ handleModelClose }
                     ></span>
                     { <ProPopup /> }
@@ -1780,6 +1818,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 >
                     <span
                         className="admin-font adminLib-cross"
+                        role="button"
+                        tabIndex={0}
                         onClick={ handleModulePopupClose }
                     ></span>
                     <ModulePopup

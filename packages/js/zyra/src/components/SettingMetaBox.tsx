@@ -4,6 +4,8 @@
 import React, { useState, useEffect } from "react";
 import Draggable from "react-draggable";
 
+import "../styles/web/SettingMetaBox.scss";
+
 // Types
 interface FormField {
     type: string;
@@ -77,6 +79,8 @@ const FieldWrapper: React.FC< FieldWrapperProps > = ( {
 } ) => (
     <article
         className={ `modal-content-section-field ${ className || "" }` }
+        role="button"
+        tabIndex={ 0 }
         onClick={ ( e ) => e.stopPropagation() }
     >
         <p>{ label }</p>
@@ -119,7 +123,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
         if ( formField.type === "recaptcha" ) {
             onChange( "disabled", isSiteKeyEmpty );
         }
-    }, [ isSiteKeyEmpty ] );
+    }, [ isSiteKeyEmpty, formField.type, onChange ] );
 
     useEffect( () => {
         setHasOpened( opened.click );
@@ -219,7 +223,11 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
     };
 
     return (
-        <div onClick={ () => setHasOpened( ( prevState ) => ! prevState ) }>
+        <div 
+            role="button"
+            tabIndex={ 0 }
+            onClick={ () => setHasOpened( ( prevState ) => ! prevState ) }
+        >
             <i className="admin-font adminLib-menu"></i>
             { hasOpened && (
                 <Draggable>

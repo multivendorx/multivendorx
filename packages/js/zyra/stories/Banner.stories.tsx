@@ -1,5 +1,5 @@
 import Banner from "../src/components/Banner";
-
+import "../src/styles/fonts.scss";
 export default {
     title: "Zyra/Components/Banner",
     component: Banner,

@@ -2,12 +2,13 @@
  * External dependencies
  */
 import React from "react";
-import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
+import Select from "react-select";
+import type { MultiValue, SingleValue, ActionMeta } from "react-select";
 
 // Types
 export interface SelectOptions {
     value: string;
-    label: string;
+    label?: string;
     index?: number;
 }
 
@@ -60,7 +61,7 @@ const SelectInput: React.FC< SelectInputProps > = ( {
     // Find default selected value
     const defaultValue = Array.isArray( value )
         ? optionsData.filter( ( opt ) => new Set( value ).has( opt.value ) ) // If it's an array (multi-select), return null or handle differently
-        : optionsData.find( ( opt ) => opt.value == value ) || null;
+        : optionsData.find( ( opt ) => opt.value === value ) || null;
 
     return (
         <div className={ wrapperClass }>
@@ -81,8 +82,6 @@ const SelectInput: React.FC< SelectInputProps > = ( {
                 value={ defaultValue }
                 options={ optionsData }
                 onChange={ ( newValue, actionMeta ) => {
-                    console.log( "actionMeta", actionMeta );
-                    console.log( "newValue", newValue );
                     onChange?.( newValue, actionMeta );
                 } }
                 isMulti={ type === "multi-select" }

@@ -20,7 +20,7 @@ const Label: React.FC< LabelProps > = ( {
     return (
         <>
             <div className={ wrapperClass }>
-                <label>{ value }</label>
+                <label htmlFor={ descClass } >{ value }</label>
                 <p className={ descClass }>{ description }</p>
             </div>
         </>

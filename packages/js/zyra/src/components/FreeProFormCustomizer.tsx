@@ -69,12 +69,11 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
                         ? { ...data, active: activeStatus }
                         : data
                 );
-            } else {
-                return [
-                    ...prevData,
-                    { key: fieldKey, label: "", active: activeStatus },
-                ];
-            }
+            } 
+            return [
+                ...prevData,
+                { key: fieldKey, label: "", active: activeStatus },
+            ];
         } );
     };
 
@@ -92,12 +91,11 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
                         ? { ...data, label: labelValue }
                         : data
                 );
-            } else {
-                return [
-                    ...prevData,
-                    { key: fieldKey, label: labelValue, active: false },
-                ];
-            }
+            } 
+            return [
+                ...prevData,
+                { key: fieldKey, label: labelValue, active: false },
+            ];
         } );
     };
 
@@ -187,6 +185,8 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
                                     </div>
                                     <div
                                         className="button-visibility"
+                                        role="button"
+                                        tabIndex={ 0 }
                                         onClick={ () => {
                                             setReadonlyFields( ( prev ) =>
                                                 prev.map( ( readonly, i ) =>

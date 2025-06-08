@@ -44,6 +44,8 @@ const SelectedOptionDisplay: React.FC< SelectedOptionDisplayProps > = ( {
                         <span>{ value.label }</span>
                         <div
                             className=""
+                            role="button"
+                            tabIndex={ 0 }
                             onClick={ () => removeSelectedValues( value ) }
                         >
                             <i className="admin-font adminLib-close"></i>
@@ -57,6 +59,8 @@ const SelectedOptionDisplay: React.FC< SelectedOptionDisplayProps > = ( {
                 { ! popupOpend && selectedValues.length > 1 && (
                     <div
                         className="open-modal items-controls"
+                        role="button"
+                        tabIndex={ 0 }
                         onClick={ () => setPopupOpend( true ) }
                     >
                         +{ selectedValues.length - 1 }
@@ -66,6 +70,8 @@ const SelectedOptionDisplay: React.FC< SelectedOptionDisplayProps > = ( {
                 { /* Clear all selected values */ }
                 <div
                     className="clear-all-data items-controls"
+                    role="button"
+                    tabIndex={ 0 }
                     onClick={ clearSelectedValues }
                 >
                     <i className="admin-font adminLib-close"></i>
@@ -134,6 +140,8 @@ const SearchOptionDisplay: React.FC< SearchOptionDisplayProps > = ( {
                             <div
                                 key={ option.value } // Added a unique key for React list rendering
                                 className="options-item"
+                                role="button"
+                                tabIndex={ 0 }
                                 onClick={ () => {
                                     insertSelectedValues( option );
                                     setModalOpen( false );

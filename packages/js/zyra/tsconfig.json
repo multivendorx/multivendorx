@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         /* Language and Environment */
-        "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+        "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
         "jsx": "react-jsx" /* Specify what JSX code is generated. */,
 
         /* Modules */

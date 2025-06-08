@@ -24,17 +24,17 @@
     },
     "wireit": {
         "build:project:bundle": {
-            "command": "rollup -c rollup.config.js",
+            "command": "wp-scripts build --progress",
             "files": [
                 "src/**",
-                "rollup.config.js"
+                "webpack.config.js"
             ],
             "output": [
                 "build"
             ]
         },
         "watch:build:project:bundle": {
-            "command": "rollup -c rollup.config.js --watch --sourcemap",
+            "command": "wp-scripts start",
             "files": [
                 "src/**",
                 "rollup.config.js"
@@ -50,12 +50,10 @@
     "author": "MultiVendorX",
     "license": "GPL-2.0-or-later",
     "dependencies": {
-        "@rollup/plugin-replace": "^6.0.2",
         "@tanstack/react-table": "^8.21.3",
         "axios": "^1.8.4",
         "react-csv": "^2.2.2",
-        "react-modal": "^3.16.3",
-        "rollup-plugin-url": "^3.0.1"
+        "react-modal": "^3.16.3"
     },
     "peerDependencies": {
         "@emotion/react": "^11.14.0",
@@ -79,12 +77,7 @@
     "devDependencies": {
         "@babel/core": "^7.27.1",
         "@babel/preset-env": "^7.27.2",
-        "@rollup/plugin-commonjs": "^28.0.3",
-        "@rollup/plugin-json": "^6.1.0",
-        "@rollup/plugin-node-resolve": "^16.0.1",
-        "@rollup/plugin-terser": "^0.4.4",
-        "@rollup/plugin-typescript": "^12.1.2",
-        "@rollup/plugin-url": "^8.0.2",
+        "@storybook/react": "^8.6.14",
         "@types/axios": "^0.9.36",
         "@types/google-map-react": "^2.1.10",
         "@types/google.maps": "^3.58.1",
@@ -106,10 +99,6 @@
         "eslint": "8.56.0",
         "globals": "^16.1.0",
         "mini-css-extract-plugin": "2.9.2",
-        "rollup": "^4.40.0",
-        "rollup-plugin-copy": "^3.5.0",
-        "rollup-plugin-peer-deps-external": "^2.2.4",
-        "rollup-plugin-postcss": "^4.0.2",
         "sass": "^1.87.0",
         "style-loader": "^4.0.0",
         "ts-loader": "9.5.2",

@@ -1,12 +1,18 @@
 import Attachment from "../src/components/Attachment";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/Attachment",
-    component: Attachment,
+const meta: Meta<typeof Attachment> = {
+  title: "Zyra/Components/Form/Attachment",
+  component: Attachment,
+  tags: ['autodocs'],
 };
 
-export const TestAttachmentInput = () => {
-    const demoAttachmentProps = {
+export default meta;
+
+type Story = StoryObj<typeof Attachment>;
+
+export const TestAttachmentInput: Story = {
+    args: {
         formField: {
             label: "Upload Document",
             placeholder: "Choose a file...",
@@ -14,7 +20,10 @@ export const TestAttachmentInput = () => {
         onChange: ( field, value ) => {
             console.log( `Field changed: ${ field } = ${ value }` );
         },
-    };
-
-    return <Attachment { ...demoAttachmentProps } />;
+    },
+    render: (args)=>{
+        return(
+            <Attachment { ...args } />
+        )
+    }
 };

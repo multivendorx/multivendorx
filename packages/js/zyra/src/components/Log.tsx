@@ -36,7 +36,7 @@ const Log: React.FC< LogProps > = ( {
         } ).then( ( response ) => {
             setLogData( response.data );
         } );
-    }, [] );
+    }, [apiLink, appLocalizer] );
 
     const handleDownloadLog = (
         event: React.MouseEvent< HTMLButtonElement >
