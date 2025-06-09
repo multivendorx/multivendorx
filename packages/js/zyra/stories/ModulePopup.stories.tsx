@@ -1,40 +1,49 @@
 import ModulePopup from "../src/components/ModulePopup";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/ModulePopup",
+const meta: Meta<typeof ModulePopup> = {
+  title: "Zyra/Components/ModulePopup",
     component: ModulePopup,
+  tags: ['autodocs'],
 };
 
-export const TestModulePopup = () => {
-    const demoData = {
+export default meta;
+
+type Story = StoryObj<typeof ModulePopup>;
+
+export const TestModulePopup : Story = {
+    args : {
         moduleName: "SEO Optimizer",
         moduleMessage: "This module helps optimize your site's SEO.",
         moduleButton: "Enable Module",
         modulePageUrl: "/modules/seo-optimizer",
-    };
-
-    return <ModulePopup { ...demoData } />;
+    },
+    render:(args)=>{
+        return <ModulePopup { ...args } />;
+    }
 };
 
-export const TestSettingPopup = () => {
-    const demoData = {
+export const TestSettingPopup : Story = {
+    args : {
         settings: "Advanced Settings",
         SettingDescription:
             "Configure title tags, meta descriptions, and more.",
         SettingMessage: "Customize how your site appears in search results.",
-    };
-
-    return <ModulePopup { ...demoData } />;
+    },
+    render:(args)=>{
+        return <ModulePopup { ...args } />;
+    }
 };
-export const TestPluginPopup = () => {
-    const demoData = {
+export const TestPluginPopup : Story = {
+    args : {
         plugin: "Yoast SEO",
         pluginDescription:
             "Yoast SEO is a comprehensive tool for search engine optimization.",
         pluginMessage: "Activate the plugin to unlock all SEO features.",
         pluginButton: "Install Plugin",
         pluginUrl: "https://wordpress.org/plugins/yoast-seo/",
-    };
-
-    return <ModulePopup { ...demoData } />;
+    },
+    render:(args)=>{
+        return <ModulePopup { ...args } />;
+    }
 };

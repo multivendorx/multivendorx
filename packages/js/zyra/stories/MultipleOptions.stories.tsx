@@ -1,12 +1,16 @@
 import MultipleOptions from "../src/components/MultipleOption";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/MultipleOptions",
-    component: MultipleOptions,
+const meta: Meta<typeof MultipleOptions> = {
+  title: "Zyra/Components/Form/MultipleOptions",
+  component: MultipleOptions,
+  tags: ['autodocs'],
 };
 
-export const TestLog = () => {
-    const options = [
+export default meta;
+
+type Story = StoryObj<typeof MultipleOptions>;
+const options = [
         { id: "opt1", label: "Option A", value: "A", isdefault: true },
         { id: "opt2", label: "Option B", value: "B" },
         { id: "opt3", label: "Option C", value: "C" },
@@ -22,14 +26,17 @@ export const TestLog = () => {
         options: options,
     };
 
-    const demoMultipleOptionsProps = {
+export const TestLog : Story = {
+    
+    args : {
         formField: formField,
         onChange: ( key, value ) => {
             console.log( `Field ${ key } changed to`, value );
         },
         type: "dropdown" as "dropdown",
         selected: true,
-    };
-
-    return <MultipleOptions { ...demoMultipleOptionsProps } />;
+    },
+    render:(args)=>{
+        return <MultipleOptions { ...args } />;
+    }
 };

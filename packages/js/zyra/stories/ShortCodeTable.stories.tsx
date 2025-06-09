@@ -1,12 +1,18 @@
 import ShortCodeTable from "../src/components/ShortCodeTable";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/ShortCodeTable",
+const meta: Meta<typeof ShortCodeTable> = {
+  title: "Zyra/Components/ShortCodeTable",
     component: ShortCodeTable,
+  tags: ['autodocs'],
 };
 
-export const TestShortCodeTable = () => {
-    const demoShortCodeTableProps = {
+export default meta;
+
+type Story = StoryObj<typeof ShortCodeTable>;
+
+export const TestShortCodeTable : Story= {
+    args : {
         wrapperClass: "shortcode-table-wrapper",
         descClass: "shortcode-description",
         description: "Here are the available shortcode options:",
@@ -15,7 +21,8 @@ export const TestShortCodeTable = () => {
             { label: "Shortcode 2", desc: "[shortcode_2]" },
         ],
         optionLabel: [ "Shortcode 1", "Shortcode 2" ],
-    };
-
-    return <ShortCodeTable { ...demoShortCodeTableProps } />;
+    },
+    render:(args)=>{
+        return <ShortCodeTable { ...args } />;
+    }
 };

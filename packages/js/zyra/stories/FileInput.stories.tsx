@@ -1,12 +1,18 @@
 import FileInput from "../src/components/FileInput";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/FileInput",
-    component: FileInput,
+const meta: Meta<typeof FileInput> = {
+  title: "Zyra/Components/FileInput",
+  component: FileInput,
+  tags: ['autodocs'],
 };
 
-export const TestFileInput = () => {
-    const demoFileInputProps = {
+export default meta;
+
+type Story = StoryObj<typeof FileInput>;
+
+export const TestFileInput : Story = {
+    args : {
         wrapperClass: "setting-file-uploader-class",
         descClass: "settings-metabox-description",
         description: "This is a simple file input",
@@ -39,7 +45,8 @@ export const TestFileInput = () => {
         onButtonClick: ( e ) => {
             console.log( "Upload button clicked", e );
         },
-    };
-
-    return <FileInput key={ "sample_file" } { ...demoFileInputProps } />;
+    },
+    render:(args)=>{
+        return <FileInput key={ "sample_file" } { ...args } />;
+    }
 };

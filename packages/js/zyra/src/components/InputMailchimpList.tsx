@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 /**
  * Internal dependencies
@@ -71,14 +71,20 @@ const InputMailchimpList: React.FC< InputMailchimpListProps > = ( {
                 updateSetting( optionKey, options );
                 setSelectOption( options );
                 setShowOption( true );
-            } catch ( error ) {
-                console.error( "Error fetching Mailchimp list:", error );
+            } catch ( _ ) {
                 setMailchimpErrorMessage( "Failed to fetch MailChimp list." );
             } finally {
                 setLoading( false );
             }
         }
     };
+
+    useEffect(() => {
+      setTimeout(() => {
+        setMailchimpErrorMessage("");
+      }, 1000);
+    }, [mailchimpErrorMessage])
+    
 
     return (
         <div className="connect-main-wrapper">
@@ -94,7 +100,9 @@ const InputMailchimpList: React.FC< InputMailchimpListProps > = ( {
                     }
                 } }
             />
-
+            <div>
+                { mailchimpErrorMessage }
+            </div>
             <div className="loader-wrapper">
                 <button
                     className="btn-purple btn-effect"

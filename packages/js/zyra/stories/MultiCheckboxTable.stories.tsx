@@ -1,12 +1,16 @@
 import MultiCheckboxTable from "../src/components/MultiCheckboxTable";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/MultiCheckboxTable",
+const meta: Meta<typeof MultiCheckboxTable> = {
+  title: "Zyra/Components/MultiCheckboxTable",
     component: MultiCheckboxTable,
+  tags: ['autodocs'],
 };
 
-export const TestMultiCheckboxTable = () => {
-    const rows = [
+export default meta;
+
+type Story = StoryObj<typeof MultiCheckboxTable>;
+const rows = [
         {
             key: "trackUsers",
             label: "Track Logged-in Users",
@@ -41,7 +45,9 @@ export const TestMultiCheckboxTable = () => {
         },
     ];
 
-    const demoTableProps = {
+export const TestMultiCheckboxTable : Story = {
+    
+    args : {
         rows: rows,
         columns: columns,
         description: "Configure analytics and tracking settings below.",
@@ -58,6 +64,8 @@ export const TestMultiCheckboxTable = () => {
         moduleChange: ( module: string ) => {
             console.log( `Module toggled: ${ module }` );
         },
-    };
-    return <MultiCheckboxTable { ...demoTableProps } />;
+    },
+    render:(args)=>{
+        return <MultiCheckboxTable { ...args } />;
+    }
 };

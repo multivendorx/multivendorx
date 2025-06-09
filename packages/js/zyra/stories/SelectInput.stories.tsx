@@ -1,17 +1,23 @@
 import SelectInput from "../src/components/SelectInput";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/SelectInput",
+const meta: Meta<typeof SelectInput> = {
+  title: "Zyra/Components/SelectInput",
     component: SelectInput,
+  tags: ['autodocs'],
 };
+
+export default meta;
+
+type Story = StoryObj<typeof SelectInput>;
 
 const commonProps = {
     descClass: "settings-metabox-description",
     onChange: ( value ) => console.log( "Selected:", value ),
 };
 
-export const TestSingleSelectInput = () => {
-    const props = {
+export const TestSingleSelectInput : Story = {
+    args : {
         wrapperClass: "form-select-field-wrapper",
         name: "test_select",
         type: "single-select" as "single-select",
@@ -19,12 +25,10 @@ export const TestSingleSelectInput = () => {
         inputClass: "test_select",
         options: [
             {
-                key: "test1",
                 label: "Test 1",
                 value: "1",
             },
             {
-                key: "test2",
                 label: "Test 2",
                 value: "2",
             },
@@ -32,19 +36,15 @@ export const TestSingleSelectInput = () => {
         value: "2",
         proSetting: false,
         ...commonProps,
-    };
-
-    return <SelectInput { ...props } />;
+    },
+    render:(args)=>{
+        return <SelectInput { ...args } />;
+    }
 };
 
-export const TestMultiSelectInput = () => {
-    // const handlMultiSelectDeselectChange = (key, options, type='') => {
-    //     const newValue = options
-    //       .filter((option) => type === 'multi-select')
-    //       .map(({ value }) => value);
-    //     }
-    // };
-    const props = {
+export const TestMultiSelectInput : Story = {
+    
+    args : {
         wrapperClass: "settings-from-multi-select",
         selectDeselectClass: "btn-purple select-deselect-trigger",
         selectDeselectValue: "Select / Deselect All",
@@ -55,24 +55,22 @@ export const TestMultiSelectInput = () => {
             "This is a multi-select input example. You can select multiple options.",
         options: [
             {
-                key: "option1",
                 label: "Cart",
                 value: "option1",
             },
             {
-                key: "option2",
                 label: "Checkout",
                 value: "option2",
             },
             {
-                key: "option3",
                 label: "Shop",
                 value: "option3",
             },
         ],
         proSetting: false,
         ...commonProps,
-    };
-
-    return <SelectInput { ...props } />;
+    },
+    render:(args)=>{
+        return <SelectInput { ...args } />;
+    }
 };

@@ -1,9 +1,15 @@
 import MultiCheckbox from "../src/components/MultiCheckbox";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/MultiCheckbox",
+const meta: Meta<typeof MultiCheckbox> = {
+  title: "Zyra/Components/MultiCheckbox",
     component: MultiCheckbox,
+  tags: ['autodocs'],
 };
+
+export default meta;
+
+type Story = StoryObj<typeof MultiCheckbox>;
 
 const appLocalizer = {
     khali_dabba: false,
@@ -124,15 +130,14 @@ const commonProps = {
     },
 };
 
-export const TestMultiCheckboxSingle = () => {
-    const multiCheckBoxPropsDummy = {
+export const TestMultiCheckboxSingle : Story = {
+    args : {
         khali_dabba: appLocalizer?.khali_dabba,
         description: `Redirect users to the homepage when they click on the cart or checkout page. To customize the redirection to a different page, an upgrade to Pro <a href="https://multivendorx.com/woocommerce-request-a-quote-product-catalog/" target="_blank">WooCommerce Catalog Enquiry Pro</a>.`,
         inputInnerWrapperClass: "toggle-checkbox",
         inputClass: "",
         selectDeselect: false,
         rightContent: false,
-        label: "Single Checkbox",
         options: [
             {
                 key: "sample_checkbox",
@@ -142,23 +147,23 @@ export const TestMultiCheckboxSingle = () => {
         ],
         value: [],
         ...commonProps,
-    };
-
-    return (
-        <MultiCheckbox
-            key={ "sample_checkbox" }
-            { ...multiCheckBoxPropsDummy }
-        />
-    );
+    },
+    render:(args)=>{
+        return (
+            <MultiCheckbox
+                key={ "sample_checkbox" }
+                { ...args }
+            />
+        );
+    }
 };
 
-export const TestMultiCheckboxMulti = () => {
-    const multiCheckBoxPropsDummy = {
+export const TestMultiCheckboxMulti : Story = {
+    args : {
         khali_dabba: appLocalizer?.khali_dabba,
         description: ``,
         inputInnerWrapperClass: "toggle-checkbox",
         inputClass: "",
-        lable: "Multi Checkbox",
         selectDeselect: true,
         rightContent: true,
         options: [
@@ -185,18 +190,20 @@ export const TestMultiCheckboxMulti = () => {
         ],
         value: [],
         ...commonProps,
-    };
+    },
+    render:(args)=>{
+        return (
+            <MultiCheckbox
+                key={ "sync-course-options" }
+                { ...args }
+            />
+        );
+    }
 
-    return (
-        <MultiCheckbox
-            key={ "sync-course-options" }
-            { ...multiCheckBoxPropsDummy }
-        />
-    );
 };
 
-export const TestMultiCheckboxMultiDefault = () => {
-    const multiCheckBoxPropsDummy = {
+export const TestMultiCheckboxMultiDefault : Story = {
+    args : {
         khali_dabba: appLocalizer?.khali_dabba,
         description: ``,
         inputInnerWrapperClass: "default-checkbox",
@@ -215,12 +222,14 @@ export const TestMultiCheckboxMultiDefault = () => {
         ],
         value: [],
         ...commonProps,
-    };
+    },
+    render:(args)=>{
+        return (
+            <MultiCheckbox
+                key={ "sync-course-options" }
+                { ...args }
+            />
+        );
+    }
 
-    return (
-        <MultiCheckbox
-            key={ "sync-course-options" }
-            { ...multiCheckBoxPropsDummy }
-        />
-    );
 };

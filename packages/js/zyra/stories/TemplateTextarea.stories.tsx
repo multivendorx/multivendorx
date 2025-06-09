@@ -1,12 +1,18 @@
 import TemplateTextArea from "../src/components/TemplateTextArea";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/TemplateTextArea",
+const meta: Meta<typeof TemplateTextArea> = {
+  title: "Zyra/Components/Form/TemplateTextArea",
     component: TemplateTextArea,
+  tags: ['autodocs'],
 };
 
-export const TestTemplateTextArea = () => {
-    const demoTextareaProps = {
+export default meta;
+
+type Story = StoryObj<typeof TemplateTextArea>;
+
+export const TestTemplateTextArea : Story = {
+    args : {
         formField: {
             label: "Description",
             placeholder: "Enter your description here...",
@@ -14,7 +20,8 @@ export const TestTemplateTextArea = () => {
         onChange: ( field, value ) => {
             console.log( `Field: ${ field }, Value: ${ value }` );
         },
-    };
-
-    return <TemplateTextArea { ...demoTextareaProps } />;
+    },
+    render:(args)=>{
+        return <TemplateTextArea { ...args } />;
+    }
 };

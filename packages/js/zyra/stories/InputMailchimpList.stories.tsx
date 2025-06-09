@@ -1,12 +1,18 @@
 import InputMailchimpList from "../src/components/InputMailchimpList";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/InputMailchimpList",
-    component: InputMailchimpList,
+const meta: Meta<typeof InputMailchimpList> = {
+  title: "Zyra/Components/InputMailchimpList",
+  component: InputMailchimpList,
+  tags: ['autodocs'],
 };
 
-export const TestInputMailchimpList = () => {
-    const demoInputMailchimpListProps = {
+export default meta;
+
+type Story = StoryObj<typeof InputMailchimpList>;
+
+export const TestInputMailchimpList: Story = {
+    args : {
         mailchimpKey: "abc123-us6",
         optionKey: "mailchimp_list",
         settingChanged: { current: false },
@@ -39,7 +45,8 @@ export const TestInputMailchimpList = () => {
             someFlag: true,
             someText: "Localized string",
         },
-    };
-
-    return <InputMailchimpList { ...demoInputMailchimpListProps } />;
+    },
+    render:(args)=>{
+        return <InputMailchimpList { ...args } />;
+    }
 };

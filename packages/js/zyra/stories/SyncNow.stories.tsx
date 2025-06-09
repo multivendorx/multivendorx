@@ -1,12 +1,18 @@
 import SyncNow from "../src/components/SyncNow";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/SyncNow",
+const meta: Meta<typeof SyncNow> = {
+  title: "Zyra/Components/SyncNow",
     component: SyncNow,
+  tags: ['autodocs'],
 };
 
-export const TestSyncNow = () => {
-    const demoSyncNowProps = {
+export default meta;
+
+type Story = StoryObj<typeof SyncNow>;
+
+export const TestSyncNow : Story = {
+    args : {
         buttonKey: "sync_now_button",
         interval: 15,
         proSetting: true,
@@ -32,7 +38,8 @@ export const TestSyncNow = () => {
             nonce: "abc123",
             ajax_url: "https://example.com/wp-admin/admin-ajax.php",
         },
-    };
-
-    return <SyncNow { ...demoSyncNowProps } />;
+    },
+    render:(args)=>{
+        return <SyncNow { ...args } />;
+    }
 };

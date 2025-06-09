@@ -1,12 +1,16 @@
 import SettingMetaBox from "../src/components/SettingMetaBox";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/SettingMetaBox",
-    component: SettingMetaBox,
+const meta: Meta<typeof SettingMetaBox> = {
+  title: "Zyra/Components/Form/SettingMetaBox",
+component: SettingMetaBox,
+  tags: ['autodocs'],
 };
 
-export const TestSettingMetaBox = () => {
-    const formField = {
+export default meta;
+
+type Story = StoryObj<typeof SettingMetaBox>;
+const formField = {
         type: "text",
         name: "username",
         placeholder: "Enter your username",
@@ -26,7 +30,9 @@ export const TestSettingMetaBox = () => {
         { value: "recaptcha", label: "Google reCAPTCHA" },
     ];
 
-    const demoSettingMetaBoxProps = {
+export const TestSettingMetaBox : Story = {
+    
+    args : {
         formField: formField,
         inputTypeList: inputTypeList,
         onChange: ( field, value ) => {
@@ -36,7 +42,8 @@ export const TestSettingMetaBox = () => {
             console.log( `Input type changed to: ${ value }` );
         },
         opened: { click: true },
-    };
-
-    return <SettingMetaBox { ...demoSettingMetaBoxProps } />;
+    },
+    render:(args)=>{
+        return <SettingMetaBox { ...args } />;
+    }
 };

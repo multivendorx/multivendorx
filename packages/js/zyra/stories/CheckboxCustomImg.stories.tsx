@@ -1,12 +1,18 @@
 import CheckboxCustomImg from "../src/components/CheckboxCustomImg";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/CheckboxCustomImg",
-    component: CheckboxCustomImg,
+const meta: Meta<typeof CheckboxCustomImg> = {
+  title: "Zyra/Components/CheckboxCustomImg",
+  component: CheckboxCustomImg,
+  tags: ['autodocs'],
 };
 
-export const TestCheckboxCustomImg = () => {
-    const demoCheckboxCustomImgProps = {
+export default meta;
+
+type Story = StoryObj<typeof CheckboxCustomImg>;
+
+export const TestCheckboxCustomImg : Story = {
+    args : {
         value: [ "sync-1" ],
         onChange: ( updatedValue ) => {
             console.log( "Updated sync directions:", updatedValue );
@@ -27,7 +33,8 @@ export const TestCheckboxCustomImg = () => {
         ],
         description: "Choose how you want to sync",
         proSetting: true,
-    };
-
-    return <CheckboxCustomImg { ...demoCheckboxCustomImgProps } />;
+    },
+    render:(args)=>{
+        return <CheckboxCustomImg { ...args } />;
+    }
 };

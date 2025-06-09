@@ -1,13 +1,19 @@
 import Banner from "../src/components/Banner";
-import "../src/styles/fonts.scss";
-export default {
-    title: "Zyra/Components/Banner",
-    component: Banner,
+import type { Meta, StoryObj } from '@storybook/react';
+
+const meta: Meta<typeof Banner> = {
+  title: "Zyra/Components/Banner",
+  component: Banner,
+  tags: ['autodocs'],
 };
 
-export const TestBannerInput = () => {
-    const props = {
-        is_pro: false,
+export default meta;
+
+type Story = StoryObj<typeof Banner>;
+
+export const TestBannerInput: Story = {
+    args : {
+        isPro: false,
         products: [
             {
                 title: "Pro Feature 1",
@@ -22,8 +28,11 @@ export const TestBannerInput = () => {
                 description: "Description for Pro Feature 3",
             },
         ],
-        pro_url: "#",
-    };
-
-    return <Banner { ...props } />;
+        proUrl: "#",
+    },
+    render:(args)=>{
+        return (
+            <Banner { ...args } />
+        );
+    }
 };

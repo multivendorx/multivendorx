@@ -133,7 +133,7 @@ const SyncNow: React.FC< SyncNowProps > = ( props ) => {
             }
             taskNumber.current++;
             await doSequentialTask();
-        } catch ( error ) {
+        } catch ( _ ) {
             setTaskSequence( ( seq ) => {
                 const updated = [ ...seq ];
                 updated[ updated.length - 1 ] = {

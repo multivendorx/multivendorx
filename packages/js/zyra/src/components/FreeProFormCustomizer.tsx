@@ -111,10 +111,10 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
         { key: "captcha", desc: "Captcha" },
     ];
 
-    const [ menu, setMenu ] = useState< MenuItem[] >( [
+    const menu: MenuItem[] = [
         { name: "Free", link: "hi", id: "2", icon: "adminLib-info" },
         { name: "Pro", link: "hi", id: "1", icon: "adminLib-cart" },
-    ] );
+    ];
 
     const [ currentTab, setCurrentTab ] = useState< MenuItem >( menu[ 0 ] );
 

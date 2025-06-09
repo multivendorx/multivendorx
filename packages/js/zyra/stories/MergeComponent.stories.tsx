@@ -1,12 +1,18 @@
 import MergeComponent from "../src/components/MergeComponent";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/MergeComponent",
+const meta: Meta<typeof MergeComponent> = {
+  title: "Zyra/Components/MergeComponent",
     component: MergeComponent,
+  tags: ['autodocs'],
 };
 
-export const TestMergeComponent = () => {
-    const demoMergeComponentProps = {
+export default meta;
+
+type Story = StoryObj<typeof MergeComponent>;
+
+export const TestMergeComponent: Story = {
+    args : {
         wrapperClass: "merge-wrapper",
         descClass: "merge-description",
         description: "Merge multiple fields into one value.",
@@ -40,7 +46,8 @@ export const TestMergeComponent = () => {
                 placeholder: "Enter text",
             },
         ],
-    };
-
-    return <MergeComponent { ...demoMergeComponentProps } />;
+    },
+    render:(args)=>{
+        return <MergeComponent { ...args } />;
+    }
 };

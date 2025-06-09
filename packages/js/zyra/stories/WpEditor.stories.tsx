@@ -1,18 +1,25 @@
 import WpEditor from "../src/components/WpEditor";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/WpEditor",
+const meta: Meta<typeof WpEditor> = {
+  title: "Zyra/Components/WpEditor",
     component: WpEditor,
+  tags: ['autodocs'],
 };
 
-export const TestWpEditor = () => {
-    const demoWpEditorProps = {
+export default meta;
+
+type Story = StoryObj<typeof WpEditor>;
+
+export const TestWpEditor : Story = {
+    args : {
         apiKey: "your-api-key",
         value: "<p>Initial content</p>",
         onEditorChange: ( content ) => {
             console.log( "Editor content changed:", content );
         },
-    };
-
-    return <WpEditor { ...demoWpEditorProps } />;
+    },
+    render:(args)=>{
+        return <WpEditor { ...args } />;
+    }
 };

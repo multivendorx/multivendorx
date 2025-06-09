@@ -1,12 +1,16 @@
 import CustomFrom from "../src/components/RegistrationForm";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/RegistrationForm",
+const meta: Meta<typeof CustomFrom> = {
+  title: "Zyra/Components/Form/RegistrationForm",
     component: CustomFrom,
+  tags: ['autodocs'],
 };
 
-export const TestRegistrationForm = () => {
-    const formfieldlist = [
+export default meta;
+
+type Story = StoryObj<typeof CustomFrom>;
+const formfieldlist = [
         {
             id: 1,
             type: "text",
@@ -44,8 +48,8 @@ export const TestRegistrationForm = () => {
             sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", // Google test sitekey
         },
     ];
-
-    const demoCustomFormProps = {
+export const TestRegistrationForm : Story = {
+    args: {
         onChange: ( { formfieldlist, butttonsetting } ) => {
             console.log( "Form updated:", formfieldlist, butttonsetting );
         },
@@ -61,7 +65,8 @@ export const TestRegistrationForm = () => {
             plan: "basic",
             recaptcha: "",
         },
-    };
-
-    return <CustomFrom { ...demoCustomFormProps } />;
+    },
+    render:(args)=>{
+        return <CustomFrom { ...args } />;
+    }
 };

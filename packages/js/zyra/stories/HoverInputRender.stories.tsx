@@ -1,12 +1,19 @@
 import HoverInputRender from "../src/components/HoverInputRender";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/HoverInputRender",
-    component: HoverInputRender,
+const meta: Meta<typeof HoverInputRender> = {
+  title: "Zyra/Components/Form/HoverInputRender",
+  component: HoverInputRender,
+  tags: ['autodocs'],
 };
 
-export const TestHoverInputRender = () => {
-    const demoHoverInputRenderProps = {
+export default meta;
+
+type Story = StoryObj<typeof HoverInputRender>;
+
+
+export const TestHoverInputRender : Story = {
+    args : {
         label: "Username",
         placeholder: "Enter your username",
         onLabelChange: ( newLabel ) => {
@@ -35,7 +42,8 @@ export const TestHoverInputRender = () => {
                 onChange={ ( e ) => onLabelChange( e.target.value ) }
             />
         ),
-    };
-
-    return <HoverInputRender { ...demoHoverInputRenderProps } />;
+    },
+    render:(args)=>{
+        return <HoverInputRender { ...args } />;
+    }
 };

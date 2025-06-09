@@ -570,10 +570,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         return true;
     };
 
-    const handleSubmit = ( e: any ) => {
-        console.log( "hiii" );
-    };
-
     const renderForm = () => {
         return modal.map( ( inputField: InputField ) => {
             const value: any = setting[ inputField.key ] ?? "";
@@ -1849,9 +1845,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 ) }
                 <form
                     className="dynamic-form"
-                    onSubmit={ ( e ) => {
-                        handleSubmit( e );
-                    } }
                 >
                     { renderForm() }
                 </form>

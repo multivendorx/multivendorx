@@ -1,10 +1,16 @@
 import BasicInput from "../src/components/BasicInput";
 import { ChangeEvent, FocusEvent, MouseEvent } from "react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/BasicInput",
-    component: BasicInput,
+const meta: Meta<typeof BasicInput> = {
+  title: "Zyra/Components/BasicInput",
+  component: BasicInput,
+  tags: ['autodocs'],
 };
+
+export default meta;
+
+type Story = StoryObj<typeof BasicInput>;
 
 const commonArgs = {
     wrapperClass: "setting-form-input",
@@ -26,45 +32,50 @@ const commonArgs = {
     },
 };
 
-export const TestBasicInputTextFree = () => {
-    const basicInputProps = {
+export const TestBasicInputTextFree: Story = {
+    args: {
         type: "text" as "text",
         description:
             "This is a simple text box (text, url, email, password, number)",
         placeholder: "write something",
         ...commonArgs,
-    };
-
-    return <BasicInput key={ "sample_text" } { ...basicInputProps } />;
+    },
+    render:(args)=>{
+        return (
+            <BasicInput key={ "sample_text" } { ...args } />
+        );
+    }
 };
 
-export const TestBasicInputTextPro = () => {
-    const basicInputProps = {
+export const TestBasicInputTextPro: Story = {
+    args: {
         type: "text" as const,
         description: "This is a simple text box with parameter",
         parameter: "days",
         proSetting: true,
         ...commonArgs,
-    };
-
-    return (
-        <BasicInput key={ "sample_parameter_text" } { ...basicInputProps } />
-    );
+    },
+    render:(args)=>{
+        return(
+            <BasicInput key={ "sample_parameter_text" } { ...args } />
+        );
+    }
 };
 
-export const TestBasicInputNormalFile = () => {
-    const basicInputProps = {
+export const TestBasicInputNormalFile: Story = {
+    args : {
         type: "file" as const,
         inputClass: "setting-form-input",
         description: "This is a simple file input",
         ...commonArgs,
-    };
-
-    return <BasicInput key={ "sample_normal_file" } { ...basicInputProps } />;
+    },
+    render:(args)=>{
+        return <BasicInput key={ "sample_normal_file" } { ...args } />
+    }
 };
 
-export const TestBasicInputColor = () => {
-    const basicInputProps = {
+export const TestBasicInputColor : Story = {
+    args: {
         wrapperClass: "settings-color-picker-parent-class",
         inputClass: "setting-color-picker",
         descClass: "settings-metabox-description",
@@ -85,24 +96,26 @@ export const TestBasicInputColor = () => {
         onFocus: ( e: FocusEvent< HTMLInputElement > ) => {
             console.log( "Focused:", e.target );
         },
-    };
-
-    return <BasicInput key={ "sample_color" } { ...basicInputProps } />;
+    },
+    render:(args)=>{
+        return <BasicInput key={ "sample_color" } { ...args } />
+    }
 };
 
-export const TestBasicInputRange = () => {
-    const basicInputProps = {
+export const TestBasicInputRange : Story = {
+    args: {
         type: "range" as "range",
         inputLabel: "Range Input",
         rangeUnit: "px",
         ...commonArgs,
-    };
-
-    return <BasicInput key={ "sample_range" } { ...basicInputProps } />;
+    },
+    render:(args)=>{
+        return <BasicInput key={ "sample_range" } { ...args } />;
+    }
 };
 
-export const TestBasicInputButton = () => {
-    const basicInputProps = {
+export const TestBasicInputButton : Story = {
+    args : {
         wrapperClass: "settings-basic-input-class",
         inputClass: "btn default-btn",
         descClass: "settings-metabox-description",
@@ -112,7 +125,8 @@ export const TestBasicInputButton = () => {
         onClick: ( e: MouseEvent< HTMLInputElement > ) => {
             console.log( "Button clicked:", e.target );
         },
-    };
-
-    return <BasicInput key={ "sample_button" } { ...basicInputProps } />;
+    },
+    render:(args)=>{
+        return <BasicInput key={ "sample_button" } { ...args } />
+    }
 };

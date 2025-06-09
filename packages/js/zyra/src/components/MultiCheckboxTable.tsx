@@ -217,7 +217,9 @@ const Select: React.FC< SelectProps > = ( {
     };
 
     /**
-     * Insert a new selected value.
+     * Inserts a selected value into the list of selected values.
+     *
+     * @param {Option} value - The value to insert.
      */
     const insertSelectedValues = ( value: Option ) => {
         settingChanged.current = true;
@@ -226,6 +228,8 @@ const Select: React.FC< SelectProps > = ( {
 
     /**
      * Remove a selected value.
+     *
+     * @param {Option} value - The value to remove from the selected values list.
      */
     const removeSelectedValues = ( value: Option ) => {
         settingChanged.current = true;
@@ -243,10 +247,12 @@ const Select: React.FC< SelectProps > = ( {
     };
 
     /**
-     * Get filtered options.
+     * Get filtered options based on the current filter.
+     *
+     * @return {Promise<Option[]>} A promise that resolves to the filtered options list.
      */
     const getFilteredOptionValue = async (): Promise< Option[] > => {
-        let allOptions = await getOptions();
+        const allOptions = await getOptions();
         return asyncFetch || ! filter
             ? allOptions
             : allOptions.filter(
@@ -438,8 +444,8 @@ const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
                                                               row.key,
                                                           ] // Add key
                                                         : selectedKeys.filter(
-                                                              ( key: any ) =>
-                                                                  key !==
+                                                              ( keyVal: any ) =>
+                                                                  keyVal !==
                                                                   row.key
                                                           ); // Remove key
 

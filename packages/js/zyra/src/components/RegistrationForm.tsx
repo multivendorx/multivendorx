@@ -123,6 +123,9 @@ export const selectOptions: SelectOption[] = [
 
 /**
  * Component that renders an action section for adding new items.
+ *
+ * @param {() => void} onAddNew - Callback function invoked when the add button is clicked.
+ * @param {boolean} large - If true, renders the large version of the button.
  */
 export const AddNewBtn: React.FC< AddNewBtnProps > = ( {
     onAddNew,
@@ -161,6 +164,9 @@ export const AddNewBtn: React.FC< AddNewBtnProps > = ( {
 
 /**
  * Component that renders a delete button section.
+ *
+ * @param {() => void} onDelete - Callback function invoked when the delete button is clicked.
+ * @param {boolean} hideDelete - If true, hides or disables the delete button.
  */
 export const DeleteBtn: React.FC< DeleteBtnProps > = ( {
     onDelete,
@@ -222,7 +228,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
         // Form field list can't be empty it should contain atlest form title.
         // This action prevent any backend action for empty form field list.
 
-        let inputList = formSetting.formfieldlist || [];
+        const inputList = formSetting.formfieldlist || [];
 
         if ( ! Array.isArray( inputList ) || inputList.length <= 0 ) {
             return [
@@ -330,8 +336,12 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
     };
 
     /**
-     * Function that append a new form field after a perticular index.
-     * If form field list is empty it append at begining of form field list.
+     * Appends a new form field after a particular index.
+     * If the form field list is empty, it appends at the beginning of the list.
+     *
+     * @param {number} index - The index after which to insert the new form field.
+     * @param {string} [type="text"] - The type of the new form field to create.
+     * @return {FormField} The newly created form field object.
      */
     const appendNewFormField = ( index: number, type = "text" ) => {
         if ( proSettingChange() ) return;
@@ -369,7 +379,11 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
     };
 
     /**
-     * Function handle indivisual form field changes
+     * Handles individual form field changes by updating the form field list.
+     *
+     * @param {number} index - The index of the form field to update.
+     * @param {string} key - The key/property of the form field to update.
+     * @param {*} value - The new value to assign to the specified key.
      */
     const handleFormFieldChange = (
         index: number,

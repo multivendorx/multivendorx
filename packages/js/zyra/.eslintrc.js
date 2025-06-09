@@ -19,6 +19,9 @@ module.exports = {
         "jsx-a11y/click-events-have-key-events": "off",
         "jsx-a11y/no-noninteractive-element-interaction": "off",
         "jsx-a11y/label-has-associated-control": "off",
+        "jsdoc/check-line-alignment": "off",
+        "jsx-a11y/no-static-element-interactions": "off",
+        "jsx-a11y/no-noninteractive-element-to-interactive-role": "off"
         // indent: "off",
         // quotes: "off",
         // "@typescript-eslint/indent": "off",

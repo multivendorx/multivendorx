@@ -1,12 +1,18 @@
 import DisplayButton from "../src/components/DisplayButton";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/DisplayButton",
-    component: DisplayButton,
+const meta: Meta<typeof DisplayButton> = {
+  title: "Zyra/Components/DisplayButton",
+  component: DisplayButton,
+  tags: ['autodocs'],
 };
 
-export const TestDisplayButton = () => {
-    const demoDisplayButtonProp = {
+export default meta;
+
+type Story = StoryObj<typeof DisplayButton>;
+
+export const TestDisplayButton : Story = {
+    args : {
         customStyle: {
             button_border_size: 2,
             button_border_color: "#000000",
@@ -26,7 +32,8 @@ export const TestDisplayButton = () => {
         onClick: ( e ) => {
             console.log( "Button clicked", e );
         },
-    };
-
-    return <DisplayButton { ...demoDisplayButtonProp } />;
+    },
+    render:(args)=>{
+        return <DisplayButton { ...args } />;
+    }
 };

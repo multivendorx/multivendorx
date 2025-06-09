@@ -1,12 +1,18 @@
 import ToggleSetting from "../src/components/ToggleSetting";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/ToggleSetting",
+const meta: Meta<typeof ToggleSetting> = {
+  title: "Zyra/Components/ToggleSetting",
     component: ToggleSetting,
+  tags: ['autodocs'],
 };
 
-export const TestToggleSetting = () => {
-    const demoToggleSettingProps = {
+export default meta;
+
+type Story = StoryObj<typeof ToggleSetting>;
+
+export const TestToggleSetting : Story = {
+    args : {
         description: "Choose your preferred option",
         options: [
             { key: "opt1", value: "yes", label: "Yes" },
@@ -19,7 +25,8 @@ export const TestToggleSetting = () => {
             console.log( "Selected value:", value );
         },
         proSetting: false,
-    };
-
-    return <ToggleSetting { ...demoToggleSettingProps } />;
+    },
+    render:(args)=>{
+        return <ToggleSetting { ...args } />;
+    }
 };

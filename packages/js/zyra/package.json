@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Component library for WordPress plugins",
     "main": "build/index.js",
-    "types": "build/index.d.ts",
+    "types": "build/types/index.d.ts",
     "module": "build/index.js",
     "files": [
         "build"
@@ -24,7 +24,7 @@
     },
     "wireit": {
         "build:project:bundle": {
-            "command": "wp-scripts build --progress",
+            "command": "wp-scripts build --progress && pnpm exec tsc --project tsconfig.json",
             "files": [
                 "src/**",
                 "webpack.config.js"

@@ -1,18 +1,26 @@
 import TimePicker from "../src/components/TimePicker";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/TimePicker",
+const meta: Meta<typeof TimePicker> = {
+  title: "Zyra/Components/Form/TimePicker",
     component: TimePicker,
+  tags: ['autodocs'],
 };
 
-export const TestTimePicker = () => {
-    const demoTimePickerProps = {
+export default meta;
+
+type Story = StoryObj<typeof TimePicker>;
+
+export const TestTimePicker : Story = {
+    args : {
         formField: {
             label: "Select Time",
         },
         onChange: ( field, value ) => {
             console.log( `Field: ${ field }, Value: ${ value }` );
         },
-    };
-    return <TimePicker { ...demoTimePickerProps } />;
+    },
+    render:(args)=>{
+        return <TimePicker { ...args } />;
+    }
 };

@@ -1,12 +1,18 @@
 import Support from "../src/components/Support";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Support",
+const meta: Meta<typeof Support> = {
+  title: "Zyra/Components/Support",
     component: Support,
+  tags: ['autodocs'],
 };
 
-export const TestSupport = () => {
-    const demoSupprotProps = {
+export default meta;
+
+type Story = StoryObj<typeof Support>;
+
+export const TestSupport : Story = {
+    args : {
         url: "https://support.example.com",
         title: "Need Help?",
         subTitle: "Find answers to common questions below.",
@@ -22,7 +28,8 @@ export const TestSupport = () => {
                 open: false,
             },
         ],
-    };
-
-    return <Support { ...demoSupprotProps } />;
+    },
+    render:(args)=>{
+        return <Support { ...args } />;
+    }
 };

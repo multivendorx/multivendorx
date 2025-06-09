@@ -27,7 +27,7 @@ declare global {
 interface Option {
     value: string;
     label: string;
-    isdefault?: boolean;
+    isDefault?: boolean;
 }
 
 interface Field {
@@ -55,17 +55,18 @@ export interface FormViewerProps {
     onSubmit: ( data: FormData ) => void;
 }
 
+
 const Checkboxes: React.FC< {
     options: Option[];
     onChange: ( data: string[] ) => void;
 } > = ( { options, onChange } ) => {
     const [ checkedItems, setCheckedItems ] = useState< Option[] >(
-        options.filter( ( { isdefault } ) => isdefault )
+        options.filter( ( { isDefault } ) => isDefault )
     );
 
     useEffect( () => {
         onChange( checkedItems.map( ( item ) => item.value ) );
-    }, [ checkedItems ] );
+    }, [ checkedItems, onChange ] );
 
     const handleChange = ( option: Option, checked: boolean ) => {
         const newCheckedItems = checkedItems.filter(
@@ -107,13 +108,12 @@ const Multiselect: React.FC< {
         MultiValue< Option > | SingleValue< Option >
     >(
         isMulti
-            ? options.filter( ( { isdefault } ) => isdefault )
-            : options.find( ( { isdefault } ) => isdefault ) || null
+            ? options.filter( ( { isDefault } ) => isDefault )
+            : options.find( ( { isDefault } ) => isDefault ) || null
     );
 
     const handleChange = (
         newValue: MultiValue< Option > | SingleValue< Option >,
-        actionMeta: ActionMeta< Option >
     ) => {
         setSelectedOptions( newValue );
         if ( isMulti ) {
@@ -137,6 +137,62 @@ const Multiselect: React.FC< {
     );
 };
 
+type RadioProps = {
+    options : Option[],
+    onChange: (value:string | undefined)=>void;
+}
+
+/**
+ * Render radio
+ * @param {*} props 
+ */
+const Radio: React.FC<RadioProps>=({
+    options,
+    onChange
+})=>{
+    const [selectdedItem, setSelectdedItem] = useState<string | undefined>(options.find(({ isDefault }) => isDefault)?.value);
+
+    useEffect(() => {
+        onChange(selectdedItem);
+    }, [selectdedItem, onChange])
+
+    const handleChange = ( e:React.ChangeEvent<HTMLInputElement> ) => {
+        setSelectdedItem(e.target.value);
+    }
+    return (
+        <div className='multiselect-container items-wrapper'>
+            {
+                options.map((option, index) => {
+                    return (
+                        <div key={index} className='select-items'>
+                            <input
+                                type="radio"
+                                id={option.value}
+                                value={option.value}
+                                checked={selectdedItem === option.value}
+                                onChange={ handleChange }
+                            />
+                            <label htmlFor={option.value}>
+                                {option.label}
+                            </label>
+                        </div>
+                    );
+                })
+            }
+        </div>
+    );
+}
+type FormDataType = {
+    default_placeholder:{
+        name: string,
+        email: string,
+    }
+}
+
+const enquiryFormData: FormDataType = { default_placeholder: { name: "", email: "" } };
+const wholesaleFormData: FormDataType = { default_placeholder: { name: "", email: "" } };
+const enquiryCartTable: FormDataType = { default_placeholder: { name: "", email: "" } };
+
 const FormViewer: React.FC< FormViewerProps > = ( {
     formFields,
     onSubmit,
@@ -146,6 +202,9 @@ const FormViewer: React.FC< FormViewerProps > = ( {
     const buttonSetting = formFields.butttonsetting || {};
     const [ captchaToken, setCaptchaToken ] = useState< string | null >( null );
     const [ captchaError, setCaptchaError ] = useState< boolean >( false );
+    const [errors, setErrors] = useState<Record<string,string>>({});
+    const [fileName, setFileName] = useState<string>("");
+    // const [file, setFile] = useState<File | null>(null);
     const recaptchaField = formList.find(
         ( field ) => field.type === "recaptcha"
     );
@@ -179,38 +238,152 @@ const FormViewer: React.FC< FormViewerProps > = ( {
         setInputs( ( prevData ) => ( { ...prevData, [ name ]: value } ) );
     };
 
-    const handleSubmit = () => {
-        // e.preventDefault();
+    const handleFileChange = (name:string, event:React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        const selectedFile = files && files[0];
+        if (selectedFile) {
+            setFileName(selectedFile.name);
+            // setFile(selectedFile);
+            setInputs((prevData) => ({
+                ...prevData,
+                [name]: selectedFile,
+            }));
+        }
+    }
+
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        const newErrors: Record<string, string> = {};
+
+        formList.forEach(field => {
+            if (!field.required || field.disabled) return;
+            // Skip validation for 'name' and 'email'
+            if (!field.name || field.name === 'name' || field.name === 'email') return;
+
+            const value = field.name ? inputs[field.name] : undefined;
+
+            switch (field.type) {
+                case 'text':
+                case 'email':
+                case 'textarea':
+                case 'datepicker':
+                case 'timepicker':
+                    if (!value || value.trim() === '') {
+                        newErrors[field.name] = `${field.label} is required.`;
+                    }
+                    break;
+
+                case 'checkboxes':
+                case 'multiselect':
+                    if (!Array.isArray(value) || value.length === 0) {
+                        newErrors[field.name] = `${field.label} is required.`;
+                    }
+                    break;
+
+                case 'dropdown':
+                case 'radio':
+                    if (!value) {
+                        newErrors[field.name] = `${field.label} is required.`;
+                    }
+                    break;
+
+                case 'attachment':
+                    if (!value) {
+                        newErrors[field.name] = `${field.label} is required.`;
+                    }
+                    break;
+            }
+        });
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        setErrors({});
+
         const data = new FormData();
-        Object.keys( inputs ).forEach( ( key ) =>
-            data.append( key, inputs[ key ] )
-        );
-        onSubmit( data );
-    };
+
+        for (const key in inputs) {
+            if (inputs.hasOwnProperty(key)) {
+                data.append(key, inputs[key]);
+            }
+        }
+
+        onSubmit(data);
+    }
+
+    const defaultDate: string = new Date().getFullYear()+'-01-01';
 
     return (
         <main className="enquiry-pro-form">
             { formList.map( ( field ) => {
                 if ( field.disabled ) return null;
                 switch ( field.type ) {
+                    case "title":
+                            return (
+                                <section className="form-title"> {field.label} </section>
+                            );
                     case "text":
                         return (
-                            <section
-                                className="form-text form-pro-sections"
-                                key={ field.name }
-                            >
-                                <label>{ field.label }</label>
+                            <section className='form-text form-pro-sections'>
+                                <label>{field.label}</label>
                                 <input
                                     type="text"
-                                    name={ field.name }
-                                    placeholder={ field.placeholder }
-                                    onChange={ ( e ) =>
-                                        handleChange(
-                                            field.name!,
-                                            e.target.value
-                                        )
+                                    name={field.name}
+                                    value={
+                                        field.name === 'name' 
+                                            ? ((typeof enquiryFormData !== 'undefined' && enquiryFormData?.default_placeholder?.name) ||
+                                            (typeof wholesaleFormData !== 'undefined' && wholesaleFormData?.default_placeholder?.name) ||
+                                            (typeof enquiryCartTable !== 'undefined' && enquiryCartTable?.default_placeholder?.name) ||
+                                            inputs[field.name])
+                                        : inputs[field.name??""]
                                     }
+                                    placeholder={field.placeholder}
+                                    onChange={(e) => handleChange(field.name??"", e.target.value)}
+                                    required={field.required}
+                                    maxLength={field.charlimit}
                                 />
+                                {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
+                            </section>
+                        );
+                    case "email":
+                        return (
+                            <section className='form-email form-pro-sections'>
+                                <label>{field.label}</label>
+                                <input
+                                    type="email"
+                                    name={field.name}
+                                    value={
+                                        (typeof enquiryFormData !== 'undefined' && enquiryFormData?.default_placeholder?.email) ||
+                                        (typeof wholesaleFormData !== 'undefined' && wholesaleFormData?.default_placeholder?.email) ||
+                                        (typeof enquiryCartTable !== 'undefined' && enquiryCartTable?.default_placeholder?.email) ||
+                                        inputs[field.name??""]
+                                    }
+
+                                    placeholder={field.placeholder}
+                                    onChange={(e) => handleChange(field.name??"", e.target.value)}
+                                    required={field.required}
+                                    maxLength={field.charlimit}
+                                />
+                            </section>
+                        );
+                    case "textarea":
+                        return (
+                            <section className=' form-pro-sections'>
+                                <label>{field.label}</label>
+                                <textarea
+                                    name={field.name}
+                                    value={inputs[field.name??""]}
+                                    placeholder={field.placeholder}
+                                    onChange={(e) => handleChange(field.name??"", e.target.value)}
+                                    required={field.required}
+                                    maxLength={field.charlimit}
+                                    rows={field.row}
+                                    cols={field.col}
+                                />
+                                {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
                             </section>
                         );
                     case "checkboxes":
@@ -228,17 +401,137 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                                 />
                             </section>
                         );
+                        case "multiselect":
+                            return (
+                                <section className=' form-pro-sections'>
+                                    <label>{field.label}</label>
+                                    <div className='multiselect-container'>
+                                        <Multiselect
+                                            options={field.options??[]}
+                                            onChange={(data) => handleChange(field.name??"", data)}
+                                            isMulti
+                                        />
+                                    </div>
+                                    {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
+                                </section>
+                            );
+                        case "dropdown":
+                            return (
+                                <section className=' form-pro-sections'>
+                                    <label>{field.label}</label>
+                                    <div className='multiselect-container'>
+                                        <Multiselect
+                                            options={field.options??[]}
+                                            onChange={(data) => handleChange(field.name??"", data)}
+                                        />
+                                    </div>
+                                    {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
+                                </section>
+                            );
+                        case "radio":
+                            return (
+                                <section className=' form-pro-sections'>
+                                    <label>{field.label}</label>
+                                    <Radio
+                                        options={field.options??[]}
+                                        onChange={(data) => handleChange(field.name??"", data)}
+                                    />
+                                    {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
+                                </section>
+                            );
+                        case "recaptcha":
+                            return (
+                                <section className=' form-pro-sections'>
+                                    <div className='recaptcha-wrapper'>
+                                        <input type="hidden" name="g-recaptcha-response" value={captchaToken as string} />
+                                    </div>
+                                </section>
+                            );
+                        case "attachment":
+                            return (
+                                <section className='form-pro-sections'>
+                                    <label>{field.label}</label>
+                                    <div className="attachment-section">
+                                        <label
+                                            htmlFor="dropzone-file"
+                                            className="attachment-label"
+                                        >
+                                            <div className="wrapper">
+                                                <i className="adminLib-cloud-upload"></i>
+                                                <p className="heading">
+                                                    {fileName === '' ? (
+                                                        <>
+                                                            <span>{ 'Click to upload' }</span> { 'or drag and drop' }
+                                                        </>
+                                                    ) : fileName}
+                                                </p>
+                                            </div>
+                                            <input readOnly id="dropzone-file" type="file" className="hidden" 
+                                             onChange={(e) => handleFileChange(field.name??"", e)} // Handle file input change
+                                             />
+                                        </label>
+                                    </div>
+                                    {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
+                                </section>
+                            );
+                        case "datepicker":
+                            return (
+                                <section className=' form-pro-sections'>
+                                    <label>{field.label}</label>
+                                    <div className='date-picker-wrapper'>
+                                        <input
+                                            type='date'
+                                            value={inputs[field.name??""] || defaultDate}
+                                            onChange={(e) => { handleChange(field.name??"", e.target.value) }}
+                                        />
+                                    </div>
+                                    {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
+                                </section>
+                            );
+                        case "timepicker":
+                            return (
+                                <section className=' form-pro-sections'>
+                                    <label>{field.label}</label>
+                                    <input
+                                        type='time'
+                                        value={inputs[field.name??""]}
+                                        onChange={(e) => { handleChange(field.name??"", e.target.value) }}
+                                    />
+                                    {errors[field.name??""] && <span className="error-text">{errors[field.name??""]}</span>}
+                                </section>
+                            );
+                        case "section":
+                            return (
+                                <section className=' form-pro-sections'>
+                                    {field.label}
+                                </section>
+                            );
+                        case "divider":
+                            return(
+                                <section className='section-divider-container'></section>
+                            )
                     default:
                         return null;
                 }
             } ) }
-            <section className="popup-footer-section">
+            <section className='popup-footer-section'>
                 <Button
-                    customStyle={ buttonSetting }
-                    onClick={ () => handleSubmit() }
-                >
-                    Submit
-                </Button>
+                    customStyle={buttonSetting}
+                    onClick={(e) => {
+                        const captcha = formList.find((field) => field.type === "recaptcha");
+                        if (captcha?.disabled === false) {
+                            if (captchaError) {
+                                return;
+                            }
+                            if (!captchaToken) {
+                                return;
+                            }
+                        } 
+                        handleSubmit(e)
+                    }}
+                    children={'Submit'}
+                />
+                <button id='catalogx-close-enquiry-popup' className='catalogx-close-enquiry-popup'>{'Close'}</button>
             </section>
         </main>
     );

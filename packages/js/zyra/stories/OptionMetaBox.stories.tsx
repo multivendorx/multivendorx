@@ -1,17 +1,22 @@
 import OptionMetaBox from "../src/components/OptionMetaBox";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/OptionMetaBox",
+const meta: Meta<typeof OptionMetaBox> = {
+  title: "Zyra/Components/Form/OptionMetaBox",
     component: OptionMetaBox,
+  tags: ['autodocs'],
 };
 
-export const TestOptionMetaBox = () => {
-    const option = {
+export default meta;
+
+type Story = StoryObj<typeof OptionMetaBox>;
+ const option = {
         label: "Enable Notifications",
         value: "true",
         isdefault: true,
     };
-    const demoOptionMetaBoxProps = {
+export const TestOptionMetaBox : Story = {
+    args : {
         option: option,
         onChange: ( key, value ) => {
             console.log( `Changed ${ key } to ${ value }` );
@@ -20,7 +25,8 @@ export const TestOptionMetaBox = () => {
             console.log( "Default value has been set." );
         },
         hasOpen: true,
-    };
-
-    return <OptionMetaBox { ...demoOptionMetaBoxProps } />;
+    },
+    render:(args)=>{
+        return <OptionMetaBox { ...args } />;
+    }
 };

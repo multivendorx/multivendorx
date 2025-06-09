@@ -1,15 +1,23 @@
 import BlockText from "../src/components/BlockText";
-export default {
-    title: "Zyra/Components/BlockText",
-    component: BlockText,
+import type { Meta, StoryObj } from '@storybook/react';
+
+const meta: Meta<typeof BlockText> = {
+  title: "Zyra/Components/BlockText",
+  component: BlockText,
+  tags: ['autodocs'],
 };
 
-export const TestBlockText = () => {
-    const demoBlockTextProps = {
+export default meta;
+
+type Story = StoryObj<typeof BlockText>;
+
+export const TestBlockText : Story = {
+    args : {
         wrapperClass: "blocktext-class",
         blockTextClass: "settings-metabox-description-code",
         value: "This is a demo block of text.",
-    };
-
-    return <BlockText { ...demoBlockTextProps } />;
+    },
+    render:(args)=>{
+        return <BlockText { ...args } />;
+    }
 };

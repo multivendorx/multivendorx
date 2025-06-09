@@ -1,18 +1,26 @@
 import TemplateSection from "../src/components/TemplateSection";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/TemplateSection",
+const meta: Meta<typeof TemplateSection> = {
+  title: "Zyra/Components/Form/TemplateSection",
     component: TemplateSection,
+  tags: ['autodocs'],
 };
 
-export const TestTemplateSection = () => {
-    const demoTemplateSectionProps = {
+export default meta;
+
+type Story = StoryObj<typeof TemplateSection>;
+
+export const TestTemplateSection : Story = {
+    args : {
         formField: {
             label: "Email Template",
         },
         onChange: ( key, value ) => {
             console.log( `Field: ${ key }, New Value: ${ value }` );
         },
-    };
-    return <TemplateSection { ...demoTemplateSectionProps } />;
+    },
+    render: (args)=>{
+        return <TemplateSection { ...args } />;
+    }
 };

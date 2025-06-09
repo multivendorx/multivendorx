@@ -1,15 +1,22 @@
 import Heading from "../src/components/Heading";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Heading",
-    component: Heading,
+const meta: Meta<typeof Heading> = {
+  title: "Zyra/Components/Heading",
+  component: Heading,
+  tags: ['autodocs'],
 };
 
-export const TestHeading = () => {
-    const headingProps = {
+export default meta;
+
+type Story = StoryObj<typeof Heading>;
+
+export const TestHeading : Story = {
+    args : {
         wrapperClass: "heading-container",
         blocktext: "Welcome to the Heading Component",
-    };
-
-    return <Heading { ...headingProps } />;
+    },
+    render:(args)=>{
+        return <Heading { ...args } />;
+    }
 };

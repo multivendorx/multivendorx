@@ -1,9 +1,15 @@
 import RadioInput from "../src/components/RadioInput";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/RadioInput",
+const meta: Meta<typeof RadioInput> = {
+  title: "Zyra/Components/RadioInput",
     component: RadioInput,
+  tags: ['autodocs'],
 };
+
+export default meta;
+
+type Story = StoryObj<typeof RadioInput>;
 
 const commonProps = {
     wrapperClass: "settings-form-group-radio",
@@ -16,9 +22,8 @@ const commonProps = {
     },
 };
 
-export const TestRadioInput = () => {
-    const demoRadioInputProps = {
-        label: "Set Theme",
+export const TestRadioInput : Story = {
+    args : {
         description: "Choose your preferred theme color.",
         value: "dark",
         name: "themeColor",
@@ -46,14 +51,14 @@ export const TestRadioInput = () => {
         ],
         proSetting: false,
         ...commonProps,
-    };
-
-    return <RadioInput { ...demoRadioInputProps } />;
+    },
+    render:(args)=>{
+        return <RadioInput { ...args } />;
+    }
 };
 
-export const TestRadioSelectInput = () => {
-    const demoRadioInputProps = {
-        label: "Store Header",
+export const TestRadioSelectInput : Story = {
+    args : {
         description: "Select store banner style",
         name: "Banaer",
         type: "radio-select" as "radio-select",
@@ -76,16 +81,16 @@ export const TestRadioSelectInput = () => {
         ],
         proSetting: false,
         ...commonProps,
-    };
-
-    return (
-        <RadioInput key={ "sample_radio_select" } { ...demoRadioInputProps } />
-    );
+    },
+    render:(args)=>{
+        return (
+            <RadioInput key={ "sample_radio_select" } { ...args } />
+        );
+    }
 };
 
-export const TestRadioColorInput = () => {
-    const demoRadioInputProps = {
-        label: "Sample Radio color(radio with color)",
+export const TestRadioColorInput : Story = {
+    args : {
         description: "This is a simple radio color input",
         name: "Radio Color",
         type: "radio-color" as "radio-color",
@@ -108,9 +113,10 @@ export const TestRadioColorInput = () => {
         ],
         proSetting: false,
         ...commonProps,
-    };
-
-    return (
-        <RadioInput key={ "sample_radio_color" } { ...demoRadioInputProps } />
-    );
+    },
+    render:(args)=>{
+        return (
+            <RadioInput key={ "sample_radio_color" } { ...args } />
+        );
+    }
 };

@@ -1,12 +1,18 @@
 import ProPopup from "../src/components/ProPopup";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/ProPopup",
+const meta: Meta<typeof ProPopup> = {
+  title: "Zyra/Components/ProPopup",
     component: ProPopup,
+  tags: ['autodocs'],
 };
 
-export const TestProPopup = () => {
-    const demoProPopupProps = {
+export default meta;
+
+type Story = StoryObj<typeof ProPopup>;
+
+export const TestProPopup : Story = {
+    args : {
         proUrl: "https://example.com/upgrade-to-pro",
         title: "Upgrade to Pro",
         messages: [
@@ -14,7 +20,8 @@ export const TestProPopup = () => {
             "Get priority support.",
             "Access to premium modules and integrations.",
         ],
-    };
-
-    return <ProPopup { ...demoProPopupProps } />;
+    },
+    render:(args)=>{
+        return <ProPopup { ...args } />;
+    }
 };

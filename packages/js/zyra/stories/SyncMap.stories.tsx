@@ -1,12 +1,18 @@
 import SyncMap from "../src/components/SyncMap";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/SyncMap",
+const meta: Meta<typeof SyncMap> = {
+  title: "Zyra/Components/SyncMap",
     component: SyncMap,
+  tags: ['autodocs'],
 };
 
-export const TestSyncMap = () => {
-    const demoSyncMapProps: React.ComponentProps< typeof SyncMap > = {
+export default meta;
+
+type Story = StoryObj<typeof SyncMap>;
+
+export const TestSyncMap:Story = {
+    args : {
         description: "Map fields between systems to keep data in sync.",
         proSetting: true,
         proSettingChanged: () => true,
@@ -37,7 +43,8 @@ export const TestSyncMap = () => {
                 },
             },
         },
-    };
-
-    return <SyncMap { ...demoSyncMapProps } />;
+    },
+    render:(args)=>{
+        return <SyncMap { ...args } />;
+    }
 };

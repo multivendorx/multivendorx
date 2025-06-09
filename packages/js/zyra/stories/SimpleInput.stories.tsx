@@ -1,12 +1,18 @@
 import SimpleInput from "../src/components/SimpleInput";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/SimpleInput",
+const meta: Meta<typeof SimpleInput> = {
+  title: "Zyra/Components/Form/SimpleInput",
     component: SimpleInput,
+  tags: ['autodocs'],
 };
 
-export const TestSimpleInput = () => {
-    const demoSimpleInputProps = {
+export default meta;
+
+type Story = StoryObj<typeof SimpleInput>;
+
+export const TestSimpleInput : Story = {
+    args : {
         formField: {
             label: "Email",
             placeholder: "Enter your email",
@@ -14,7 +20,8 @@ export const TestSimpleInput = () => {
         onChange: ( field, value ) => {
             console.log( `Field ${ field } changed to`, value );
         },
-    };
-
-    return <SimpleInput { ...demoSimpleInputProps } />;
+    },
+    render:(args)=>{
+        return <SimpleInput { ...args } />;
+    }
 };

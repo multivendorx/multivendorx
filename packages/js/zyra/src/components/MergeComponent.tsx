@@ -47,8 +47,8 @@ const MergeComponent: React.FC< MergeComponentProps > = ( {
 
     const [ data, setData ] = useState( initialState );
 
-    const handleOnChange = ( key: string, data: string | number ) => {
-        setData( ( prev ) => ( { ...prev, [ key ]: data } ) );
+    const handleOnChange = ( key: string, dataVal: string | number ) => {
+        setData( ( prev ) => ( { ...prev, [ key ]: dataVal } ) );
     };
 
     useEffect( () => {

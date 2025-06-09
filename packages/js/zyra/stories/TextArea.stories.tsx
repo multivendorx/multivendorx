@@ -1,13 +1,18 @@
 import TextArea from "../src/components/TextArea";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/TextArea",
+const meta: Meta<typeof TextArea> = {
+  title: "Zyra/Components/TextArea",
     component: TextArea,
+  tags: ['autodocs'],
 };
 
-export const TestTextArea = () => {
-    const demoTextAreaProps = {
-        key: "comments",
+export default meta;
+
+type Story = StoryObj<typeof TextArea>;
+
+export const TestTextArea : Story = {
+    args : {
         id: "comments-textarea",
         name: "comments",
         value: "Initial comment text",
@@ -25,7 +30,8 @@ export const TestTextArea = () => {
         onMouseOver: ( e ) => console.log( "Mouse Over" ),
         onMouseOut: ( e ) => console.log( "Mouse Out" ),
         onFocus: ( e ) => console.log( "Focused" ),
-    };
-
-    return <TextArea { ...demoTextAreaProps } />;
+    },
+    render:(args)=>{
+        return <TextArea { ...args } />;
+    }
 };

@@ -1,12 +1,18 @@
 import MultiNumInput from "../src/components/MultiNumInput";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/MultiNumInput",
+const meta: Meta<typeof MultiNumInput> = {
+  title: "Zyra/Components/MultiNumInput",
     component: MultiNumInput,
+  tags: ['autodocs'],
 };
 
-export const TestMultiNumInput = () => {
-    const demoMultiNumInputProps = {
+export default meta;
+
+type Story = StoryObj<typeof MultiNumInput>;
+
+export const TestMultiNumInput : Story = {
+    args : {
         parentWrapperClass: "settings-basic-input-class",
         childWrapperClass: "settings-basic-child-wrap",
         inputWrapperClass: "settings-basic-input-child-class",
@@ -44,7 +50,8 @@ export const TestMultiNumInput = () => {
                 value: e.target.value,
             } );
         },
-    };
-
-    return <MultiNumInput { ...demoMultiNumInputProps } />;
+    },
+    render:(args)=>{
+        return <MultiNumInput { ...args } />;
+    }
 };

@@ -1,19 +1,26 @@
 import Recaptcha from "../src/components/Recaptcha";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Form/Recaptcha",
+const meta: Meta<typeof Recaptcha> = {
+  title: "Zyra/Components/Form/Recaptcha",
     component: Recaptcha,
+  tags: ['autodocs'],
 };
 
-export const TestRecaptcha = () => {
-    const demoRecaptchaProps = {
+export default meta;
+
+type Story = StoryObj<typeof Recaptcha>;
+
+export const TestRecaptcha : Story = {
+    args : {
         formField: {
             sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", // Google test sitekey
         },
         onChange: ( field, value ) => {
             console.log( `Recaptcha response for field "${ field }":`, value );
         },
-    };
-
-    return <Recaptcha { ...demoRecaptchaProps } />;
+    },
+    render:(args)=>{
+        return <Recaptcha { ...args } />;
+    }
 };

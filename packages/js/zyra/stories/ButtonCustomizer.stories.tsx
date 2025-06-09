@@ -1,12 +1,18 @@
 import ButtonCustomizer from "../src/components/ButtonCustomiser";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/ButtonCustomizer",
-    component: ButtonCustomizer,
+const meta: Meta<typeof ButtonCustomizer> = {
+  title: "Zyra/Components/ButtonCustomizer",
+  component: ButtonCustomizer,
+  tags: ['autodocs'],
 };
 
-export const TestButtonCustomizer = () => {
-    const demoButtonCustomizerProps = {
+export default meta;
+
+type Story = StoryObj<typeof ButtonCustomizer>;
+
+export const TestButtonCustomizer : Story = {
+    args : {
         onChange: ( key, value, isRestoreDefaults ) => {
             console.log( "Changed:", key, value, isRestoreDefaults );
         },
@@ -17,7 +23,8 @@ export const TestButtonCustomizer = () => {
         className: "custom-button",
         text: "Customize",
         proSetting: true,
-    };
-
-    return <ButtonCustomizer { ...demoButtonCustomizerProps } />;
+    },
+    render:(args)=>{
+        return <ButtonCustomizer { ...args } />;
+    }
 };

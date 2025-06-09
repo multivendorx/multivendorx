@@ -1,12 +1,18 @@
 import SubTabSection from "../src/components/SubTabSection";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/SubTabSection",
+const meta: Meta<typeof SubTabSection> = {
+  title: "Zyra/Components/SubTabSection",
     component: SubTabSection,
+  tags: ['autodocs'],
 };
 
-export const TestSubTabSection = () => {
-    const demoSubTabSectionProps = {
+export default meta;
+
+type Story = StoryObj<typeof SubTabSection>;
+
+export const TestSubTabSection: Story = {
+    args : {
         menuitem: [
             {
                 id: "general",
@@ -34,7 +40,8 @@ export const TestSubTabSection = () => {
             general: { optionA: true },
             advanced: { optionB: false },
         },
-    };
-
-    return <SubTabSection { ...demoSubTabSectionProps } />;
+    },
+    render:(args)=>{
+        return <SubTabSection { ...args } />;
+    }
 };

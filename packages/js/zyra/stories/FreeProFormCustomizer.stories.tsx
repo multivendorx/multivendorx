@@ -1,12 +1,18 @@
 import FreeProFormCustomizer from "../src/components/FreeProFormCustomizer";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/FreeProFormCustomizer",
-    component: FreeProFormCustomizer,
+const meta: Meta<typeof FreeProFormCustomizer> = {
+  title: "Zyra/Components/FreeProFormCustomizer",
+  component: FreeProFormCustomizer,
+  tags: ['autodocs'],
 };
 
-export const TestFreeProFormCustomizer = () => {
-    const demoFreeProFormCustomizerProps = {
+export default meta;
+
+type Story = StoryObj<typeof FreeProFormCustomizer>;
+
+export const TestFreeProFormCustomizer : Story = {
+    args : {
         setting: {
             freefromsetting: [
                 {
@@ -38,7 +44,8 @@ export const TestFreeProFormCustomizer = () => {
         onChange: ( key, value ) => {
             console.log( `Changed ${ key } to`, value );
         },
-    };
-
-    return <FreeProFormCustomizer { ...demoFreeProFormCustomizerProps } />;
+    },
+    render:(args)=>{
+        return <FreeProFormCustomizer { ...args } />;
+    }
 };

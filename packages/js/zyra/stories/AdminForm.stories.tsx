@@ -1,9 +1,15 @@
 import AdminForm, { InputField } from "../src/components/AdminForm";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/AdminForm",
+const meta: Meta<typeof AdminForm> = {
+  title: "Zyra/Components/AdminForm",
     component: AdminForm,
+  tags: ['autodocs'],
 };
+
+export default meta;
+
+type Story = StoryObj<typeof AdminForm>;
 
 type settingsDataType = {
     modal: InputField[];
@@ -247,8 +253,8 @@ const settingsData: settingsDataType = {
     id: "pro_settings_form_001",
 };
 
-export const TestAdminForm = () => {
-    const adminFormProps = {
+export const TestAdminForm : Story = {
+    args : {
         settings: settingsData,
         proSetting: settingsData,
         setting: {
@@ -273,6 +279,8 @@ export const TestAdminForm = () => {
         modulePopupFields: {
             // Optional: only if you have ModulePopupProps defined
         },
-    };
-    return <AdminForm { ...adminFormProps } />;
+    },
+    render:(args)=>{
+        return <AdminForm { ...args } />;
+    }
 };

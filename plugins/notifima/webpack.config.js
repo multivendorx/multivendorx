@@ -2,7 +2,6 @@ const defaultConfig = require("@wordpress/scripts/config/webpack.config");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const DependencyExtractionWebpackPlugin = require("@wordpress/dependency-extraction-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     ...defaultConfig,
@@ -121,17 +120,6 @@ module.exports = {
         new DependencyExtractionWebpackPlugin({
             outputFormat: "php",
             injectPolyfill: true,
-        }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.resolve(
-                        __dirname,
-                        "node_modules/zyra/build/assets/fonts"
-                    ),
-                    to: path.resolve(__dirname, "dist/fonts"),
-                },
-            ],
         }),
     ],
 

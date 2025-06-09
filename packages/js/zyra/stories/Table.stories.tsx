@@ -2,7 +2,17 @@ import { ReactNode, useEffect, useState } from "react";
 import Table from "../src/components/Table";
 import { ColumnDef } from "@tanstack/react-table";
 import { TableCell } from "../src/components/Table"; // Remove incorrect import
+import type { Meta, StoryObj } from '@storybook/react';
 
+const meta: Meta<typeof Table> = {
+  title: "Zyra/Components/Table",
+    component: Table,
+  tags: ['autodocs'],
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Table>;
 interface RealtimeFilter {
     name: string;
     render: (
@@ -10,11 +20,6 @@ interface RealtimeFilter {
         filterValue: any
     ) => ReactNode;
 }
-
-export default {
-    title: "Zyra/Components/Table",
-    component: Table,
-};
 
 /**
  * Static Data for the table
@@ -132,7 +137,10 @@ const dataData = [
     },
 ];
 
-export const TestTable = () => {
+    
+
+
+const TableFree = ()=>{
     const [ data, setData ] = useState( dataData );
     /**
      * This is needed for row selection.
@@ -393,10 +401,11 @@ export const TestTable = () => {
         },
     ];
 
-    /**
-     * Props for the Table component.
-     */
-    const demoTableProps = {
+    const handlePaginationSupport = ( rowsPerPage, pageIndex, filterData ) => {
+            handleFilterSearch( filterData );
+        };
+
+    const args = {
         data: data,
         columns: columnsData,
         rowSelection: rowSelection,
@@ -425,11 +434,18 @@ export const TestTable = () => {
             },
         ],
         autoLoading: false,
-        handlePagination: ( rowsPerPage, pageIndex, filterData ) => {
-            handleFilterSearch( filterData );
-        },
+        handlePagination: handlePaginationSupport,
         perPageOption: [ 10, 20, 50 ],
-    };
+    }
 
-    return <Table { ...demoTableProps } />;
+    return <Table { ...args } />;
+}
+export const TestTable : Story = {
+
+    /**
+     * Props for the Table component.
+     */
+    render: ()=>{
+        return <TableFree/>;
+    }
 };

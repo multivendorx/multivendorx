@@ -1,12 +1,18 @@
 import CatalogCustomizer from "../src/components/CatalogCustomizer";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/CatalogCustomizer",
-    component: CatalogCustomizer,
+const meta: Meta<typeof CatalogCustomizer> = {
+  title: "Zyra/Components/CatalogCustomizer",
+  component: CatalogCustomizer,
+  tags: ['autodocs'],
 };
 
-export const TestCatalogCustomizer = () => {
-    const demoCatalogCustomizerProps = {
+export default meta;
+
+type Story = StoryObj<typeof CatalogCustomizer>;
+
+export const TestCatalogCustomizer: Story = {
+    args : {
         onChange: ( key, value ) => {
             console.log( "Catalog change:", key, value );
         },
@@ -15,10 +21,12 @@ export const TestCatalogCustomizer = () => {
             layout: "grid",
             showImages: true,
         },
-        Sample_Product:
+        SampleProduct:
             "https://greendroprecycling.com/wp-content/uploads/2017/04/GreenDrop_Station_Aluminum_Can_Coke.jpg",
-        pro_url: "https://example.com/upgrade",
-    };
+        proUrl: "https://example.com/upgrade",
+    },
+    render:(args)=>{
+        return <CatalogCustomizer { ...args } />;
+    }
 
-    return <CatalogCustomizer { ...demoCatalogCustomizerProps } />;
 };

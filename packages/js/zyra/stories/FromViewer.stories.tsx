@@ -1,12 +1,18 @@
 import FormViewer from "../src/components/FormViewer";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
+const meta: Meta<typeof FormViewer> = {
     title: "Zyra/Components/FormViewer",
     component: FormViewer,
+    tags: ['autodocs'],
 };
 
-export const TestFormViewer = () => {
-    const demoFormViewerProps = {
+export default meta;
+
+type Story = StoryObj<typeof FormViewer>;
+
+export const TestFormViewer : Story = {
+    args : {
         formFields: {
             formfieldlist: [
                 {
@@ -32,7 +38,7 @@ export const TestFormViewer = () => {
                         {
                             value: "us",
                             label: "United States",
-                            isdefault: true,
+                            isDefault: true,
                         },
                         { value: "ca", label: "Canada" },
                         { value: "uk", label: "United Kingdom" },
@@ -50,7 +56,8 @@ export const TestFormViewer = () => {
                 Object.fromEntries( data.entries() )
             );
         },
-    };
-
-    return <FormViewer { ...demoFormViewerProps } />;
+    },
+    render:(args)=>{
+        return <FormViewer { ...args } />;
+    }
 };

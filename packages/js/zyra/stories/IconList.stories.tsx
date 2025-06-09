@@ -1,10 +1,18 @@
 import IconList from "../src/components/IconList";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/IconList",
-    component: IconList,
+const meta: Meta<typeof IconList> = {
+  title: "Zyra/Components/IconList",
+  component: IconList,
+  tags: ['autodocs'],
 };
 
-export const TestIconList = () => {
-    return <IconList />;
+export default meta;
+
+type Story = StoryObj<typeof IconList>;
+
+export const TestIconList : Story = {
+    render:()=>{
+        return <IconList />;
+    }
 };

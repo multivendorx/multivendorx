@@ -1,16 +1,23 @@
 import Section from "../src/components/Section";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Section",
+const meta: Meta<typeof Section> = {
+  title: "Zyra/Components/Section",
     component: Section,
+  tags: ['autodocs'],
 };
 
-export const TestSection = () => {
-    const demoSectionProps = {
+export default meta;
+
+type Story = StoryObj<typeof Section>;
+
+export const TestSection : Story = {
+    args : {
         wrapperClass: "setting-section-divider",
         hint: "Fill in all required fields carefully.",
         value: "User Registration",
-    };
-
-    return <Section { ...demoSectionProps } />;
+    },
+    render:(args)=>{
+        return <Section { ...args } />;
+    }
 };

@@ -110,7 +110,7 @@ const SyncMap: React.FC< SyncMapProps > = ( {
             );
             settingChanged.current = true;
         } else {
-            alert( "Unable to add sync fields" );
+            console.log( "Unable to add sync fields" );
         }
     };
 

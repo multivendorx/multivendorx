@@ -1,12 +1,18 @@
 import Tabs from "../src/components/Tabs";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
-    title: "Zyra/Components/Tabs",
+const meta: Meta<typeof Tabs> = {
+  title: "Zyra/Components/Tabs",
     component: Tabs,
+  tags: ['autodocs'],
 };
 
-export const TestTabs = () => {
-    const demoTabsProps = {
+export default meta;
+
+type Story = StoryObj<typeof Tabs>;
+
+export const TestTabs : Story = {
+    args : {
         tabData: [
             {
                 type: "folder" as const,
@@ -61,21 +67,20 @@ export const TestTabs = () => {
         supprot: [
             {
                 title: "Support",
-                url: "https://support.example.com",
                 icon: "icon-support",
                 description: "Get support",
                 link: "https://support.example.com",
             },
             {
                 title: "Docs",
-                url: "https://docs.example.com",
                 icon: "icon-docs",
                 description: "Read documentation",
                 link: "https://docs.example.com",
             },
         ],
         Link: ( props ) => <a { ...props } />,
-    };
-
-    return <Tabs { ...demoTabsProps } />;
+    },
+    render:(args)=>{
+        return <Tabs { ...args } />;
+    }
 };
