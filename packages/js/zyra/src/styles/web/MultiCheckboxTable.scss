@@ -49,9 +49,7 @@
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        flex-grow: 1;
-                        flex-shrink: 0;
-                        flex-basis: 0;
+                        flex: 1 0 0;
                         font-weight: 500;
 
                         &:first-child {
@@ -77,16 +75,14 @@
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        flex-grow: 1;
-                        flex-shrink: 0;
-                        flex-basis: 0;
+                        flex: 1 0 0;
                         padding: 0 1rem;
 
                         &:first-child {
                             max-width: 9.5rem;
                         }
 
-                        input[type=checkbox] {
+                        input[type="checkbox"] {
                             width: fit-content;
                         }
 
@@ -103,7 +99,7 @@
                             cursor: pointer;
                             width: 0.938rem;
                             height: 0.938rem;
-                            border: 0.188rem solid rgba(255, 255, 255, 0);
+                            border: 0.188rem solid rgb(255 255 255 / 0%);
                             border-radius: 0.25rem;
                             position: relative;
                             overflow: hidden;
@@ -121,12 +117,12 @@
                             z-index: 100;
                         }
 
-                        .checkBox input[type=checkbox]:checked+div {
+                        .checkBox input[type="checkbox"]:checked+div {
                             left: -0.625rem;
                             top: -0.625rem;
                         }
 
-                        .checkBox input[type=checkbox] {
+                        .checkBox input[type="checkbox"] {
                             position: absolute;
                             left: 0;
                             visibility: hidden;
@@ -148,10 +144,10 @@
                                 gap: 0.5rem;
 
                                 .selected-container {
-                                    border: 0.115rem solid rgba(0, 0, 0, 0.125);
+                                    border: 0.115rem solid rgb(0 0 0 / 12.5%);
                                     border-radius: 0;
                                     height: 2.5rem;
-                                    padding: 0.5rem 0.5rem;
+                                    padding: 0.5rem;
                                     display: flex;
                                     align-items: center;
                                     justify-content: flex-start;
@@ -194,8 +190,6 @@
                                             width: 100%;
 
                                             span {
-                                                text-overflow: ellipsis;
-                                                overflow: hidden;
                                                 max-height: 1.25rem;
                                                 height: 100%;
                                                 text-overflow: ellipsis;
@@ -283,7 +277,7 @@
                                 background: #fff;
                                 display: flex;
                                 padding: 0.5rem;
-                                border: 0.115rem solid rgba(0, 0, 0, 0.125);
+                                border: 0.115rem solid rgb(0 0 0 / 12.5%);
                                 flex-direction: column;
                                 gap: 0.25rem;
 
@@ -297,5 +291,6 @@
                 }
             }
         }
+
 //     }
 // }

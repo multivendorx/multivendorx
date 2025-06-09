@@ -20,7 +20,7 @@
         align-items: center;
         justify-content: flex-start;
         position: relative;
-        background: rgb(13, 0, 23);
+        background: rgb(13 0 23);
         border-radius: 0.15rem;
         padding: 0.5rem 0;
 
@@ -42,13 +42,14 @@
             height: 1.2rem;
             border-radius: $border-radius-small;
             background: #90EE90;
-            background: linear-gradient(to top left, #90EE90 0%, #FFFFFF 50%, #FF47D0 100%), linear-gradient(to bottom left, #FFFF00 0%, #FFFFFF 50%, #0000FF 100%);
+            background: linear-gradient(to top left, #90EE90 0%, #FFF 50%, #FF47D0 100%), linear-gradient(to bottom left, #FF0 0%, #FFF 50%, #00F 100%);
           }
 
           i {
             color: $color-white;
             font-size: 1.2rem;
           }
+
           .adminLib-link{
             font-size: 1.7rem;
           }
@@ -61,8 +62,8 @@
         background: #f8f8f8;
         width: 17.64rem;
         padding: 1rem;
-        border: 0.125rem solid rgba($color: #000000, $alpha: 0.125);
-        box-shadow: 0 0.25rem 0.5rem rgba($color: #000000, $alpha: 0.125);
+        border: 0.125rem solid rgba($color: #000, $alpha: 12.5%);
+        box-shadow: 0 0.25rem 0.5rem rgba($color: #000, $alpha: 12.5%);
         border-radius: $border-radius-small;
 
 
@@ -73,7 +74,7 @@
           right: -0.756rem;
           top: -0.945rem;
           background: $color-white;
-          box-shadow: 0 0.25rem 0.5rem rgba($color: #000000, $alpha: 0.125);
+          box-shadow: 0 0.25rem 0.5rem rgba($color: #000, $alpha: 12.5%);
           border-radius: 50%;
           width: 1.688rem;
           height: 1.688rem;
@@ -82,7 +83,8 @@
           justify-content: center;
           align-items: center;
         }
-        input[type=color] {
+
+        input[type="color"] {
           cursor: pointer;
         }
         
@@ -114,13 +116,12 @@
                   input::-webkit-outer-spin-button,
                   input::-webkit-inner-spin-button {
                     opacity: 1;
-                    -webkit-appearance: none;
+                    appearance: none;
                   }
                   
-                  input[type="number"] {
-                    appearance: textfield;       /* Standard property */
-                    -moz-appearance: textfield;  /* Firefox-specific */
-                    -webkit-appearance: none;    /* Removes spinner controls in WebKit browsers (Chrome, Safari) */
+                  input[type="number"] {       /* Standard property */
+                    appearance: textfield;  /* Firefox-specific */
+                    appearance: none;    /* Removes spinner controls in WebKit browsers (Chrome, Safari) */
                 }
                 
                 }
@@ -233,7 +234,7 @@
       &.active,
       &:hover {
         box-shadow:
-          0.0rem 0.0rem 0.0rem 0.126rem rgb(255, 255, 255), 0.0rem 0.0rem 0.0rem 0.189rem rgba(33, 33, 33, 0.5) !important; // // To make as a selectable and overwrite for prevent all button
+          0.0 0.0 0.0 0.126rem rgb(255 255 255), 0.0 0.0 0.0 0.189rem rgb(33 33 33 / 50%) !important; // // To make as a selectable and overwrite for prevent all button
       }
     }
   }

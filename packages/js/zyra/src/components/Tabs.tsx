@@ -145,7 +145,7 @@ const Tabs: React.FC< TabsProps > = ( {
                 return (
                     ( content as TabContent ).id === currentTab &&
                     ( content as TabContent ).id !== "support" && (
-                        <div className="tab-description-start">
+                        <div className="tab-description-header">
                             <div className="child">
                                 <p>
                                     <i

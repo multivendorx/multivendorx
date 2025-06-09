@@ -17,7 +17,7 @@ const Section: React.FC< SectionProps > = ( { wrapperClass, hint, value } ) => {
                 { value && <span>{ value }</span> }
                 { hint && (
                     <p
-                        className="section-hint"
+                        className="settings-metabox-description"
                         dangerouslySetInnerHTML={ { __html: hint } }
                     ></p>
                 ) }

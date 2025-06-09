@@ -23,9 +23,11 @@
         span {
             font-size: 1rem;
         }
+
         &:hover {
             color: $theme-color;
         }
+
         &.active {
             color: $theme-color;
 

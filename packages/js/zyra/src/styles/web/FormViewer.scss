@@ -1,14 +1,16 @@
 .popup_enable{
     .enquiry-pro-form{
         background: transparent;
-        padding: 0rem;
+        padding: 0;
         border-radius: 0;
         margin-top: 1rem;
     }
+
     .popup-footer-section .catalogx-close-enquiry-popup{
         display: none;
     }
 }
+
 .enquiry-pro-form {
     display: flex;
     align-items: flex-start;
@@ -150,7 +152,7 @@
         .date-picker-wrapper{
             input[type='date']{
                 outline: none;
-                border: 0.125rem solid rgba(0, 0, 0, 0.125);
+                border: 0.125rem solid rgb(0 0 0 / 12.5%);
                 padding: 0.25rem 0.5rem;
                 border-radius: 0.25rem;
                 width: 100%;
@@ -159,7 +161,7 @@
     }
 
     .section-divider-container{
-        border-bottom: 0.125rem solid rgba($color: #000000, $alpha: 0.125);
+        border-bottom: 0.125rem solid rgba($color: #000, $alpha: 12.5%);
         margin: 1.5rem 0;
         width: 100%;
     }

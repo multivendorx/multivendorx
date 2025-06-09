@@ -1,6 +1,5 @@
 @use '../../global.scss' as *;
 
-.setting-form-input{
     .shortcode-table{
         width: 100%;
         border: 0.063rem solid #e0e4e9;
@@ -10,6 +9,7 @@
         thead{
             tr{
                 padding: 0.5rem;
+
                 th{
                     text-align: left;
                     font-weight: 500;
@@ -25,10 +25,10 @@
                 td{
                     padding: 1rem;
                 }
+
                 &:nth-child(odd){
                     background: #f8f9fa;
                 }
             }            
         }
     }
-}

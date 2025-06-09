@@ -6,6 +6,7 @@
   box-sizing: border-box;
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
 }
+
 .sb-show-main{
   background: #f0f0f1;
 }
@@ -66,24 +67,30 @@ button,
     color: $color-white;
   }
 }
+
 .btn-yellow{
   background: #d3a93a;
   color: $color-white;
 }
+
 .btn-red{
   background: #e34f4a;
   color: $color-white;
 }
+
 .btn-light-blue{
   background: #bfdeed;
   color: #003d66;
 }
+
 .btn-light-green{
   background: #b7b03c91;
 }
+
 .btn-reject{
   background-color: #e5e5e5;
 }
+
 // Button hover effect style
 .btn-effect {
   position: relative;
@@ -96,7 +103,7 @@ button,
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgb(255 255 255 / 10%);
     transform: perspective(0.315rem) rotateX(2deg) rotateY(2deg);
     transition: transform 0.3s;
     pointer-events: none;
@@ -104,7 +111,7 @@ button,
 
   &.disable {
     cursor: not-allowed;
-    background-color: rgba($color: $color-active, $alpha: 0.5);
+    background-color: rgba($color: $color-active, $alpha: 50%);
   }
 
   &:hover {
@@ -124,7 +131,7 @@ html {
   font-size: 0.813rem;
   background-color: $color-active;
   border-radius: $border-radius-small;
-  font-family: "AdminLibrary" !important;
+  font-family: AdminLibrary !important;
   width: 1rem;
   height: 1rem;
   margin: 0;
@@ -149,7 +156,7 @@ input[type="radio"] {
   align-items: center;
   justify-content: flex-start;
   gap: 0.5rem;
-  background-color: rgba(12, 216, 12, 1);
+  background-color: rgb(12 216 12 / 100%);
   color: $color-white;
   max-width: 15rem;
   width: fit-content;
@@ -161,7 +168,7 @@ input[type="radio"] {
   right: 1.512rem;
   z-index: 99999;
 
-  &:after {
+  &::after {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -243,11 +250,13 @@ span.admin-pro-tag {
   h3 {
     margin-top: 0;
   }
+
   .tour-footer{
     display:flex;
     justify-content: end;
     gap: 0.5rem;
     flex-direction: row-reverse;
+
     .end-tour-btn{
       background: #522c81a6;
     }
@@ -269,6 +278,7 @@ span.admin-pro-tag {
     --uib-size: 2.205rem;
     --uib-speed: 0.8s;
     --uib-color: $color-active;
+
     position: relative;
     display: inline-block;
     height: var(--uib-size);
@@ -280,7 +290,7 @@ span.admin-pro-tag {
       height: 100%;
       width: 30%;
 
-      &:after {
+      &::after {
         content: "";
         position: absolute;
         height: 0%;
@@ -341,7 +351,6 @@ span.admin-pro-tag {
     }
 
     @keyframes wobble1 {
-
       0%,
       100% {
         transform: translateY(0%) scale(1);
@@ -355,7 +364,6 @@ span.admin-pro-tag {
     }
 
     @keyframes wobble2 {
-
       0%,
       100% {
         transform: translateY(0%) scale(1);
@@ -392,6 +400,11 @@ span.admin-pro-tag {
   line-height: 0;
   height: 1rem;
 }
+
+.select-deselect-trigger {
+  margin-bottom: 1rem;
+}
+
 // toggle checkbox style start
 // .toggle-checkbox-header{
 //   display: inline-flex;
@@ -485,7 +498,7 @@ span.admin-pro-tag {
 .checkbox-list-side-by-side {
   .wrapper {
     .toggle-checkbox-header {
-      min-width: 32%;
+      min-width: 100%;
       display: inline-flex;
       margin-right: 0.945rem;
       position: relative;
@@ -539,7 +552,6 @@ span.admin-pro-tag {
             width: 0.1rem;
             height: 0.563rem;
             background: $color-white;
-            -webkit-transition: 0.3s;
             transition: 0.3s;
           }
 
@@ -569,15 +581,27 @@ span.admin-pro-tag {
           background: $background-color;
         }
       }
+
       .settings-checkbox-description {
         margin-right: 0.5rem;
-        padding-top: 0.1rem;
+        padding-top: 0.1rem;        
+      }
+
+      .checkbox-description{
+        width: 100%;
+        font-style: italic;
+        color: rgb(114 114 117 / 60%);
+        font-size: 0.813rem;
       }
 
       .default-checkbox {
         margin-right: 0.5rem;
 
+        input{
+          min-height: 1.2rem;
+        }
       }
+
       .admin-pro-tag{
         position: relative; 
         height: fit-content;
@@ -585,12 +609,12 @@ span.admin-pro-tag {
     }
   }
 }
+
 // toggle checkbox style end
 
 
 .details-status-row {
   padding: 0.5rem 0.5rem 0.75rem;
-  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -600,7 +624,7 @@ span.admin-pro-tag {
 
 .fetch-display-output {
   margin: 0.5rem 0;
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem;
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -608,7 +632,7 @@ span.admin-pro-tag {
 
   &.failed {
     color: red;
-    background: rgba(227, 79, 71, 0.1254901961);
+    background: rgb(227 79 71 / 12.5%);
   }
 
   &.success {
@@ -617,15 +641,14 @@ span.admin-pro-tag {
   }
 }
 
-@media screen and (max-width: 49.266rem) {
-
-  input[type=checkbox],
-  input[type=radio] {
+@media screen and (width <= 49.266rem) {
+  input[type="checkbox"],
+  input[type="radio"] {
     height: 1rem;
     width: 1rem;
   }
 
-  input[type=checkbox]:checked::before {
+  input[type="checkbox"]:checked::before {
     margin: -0.1875rem 0 0 -0.25rem;
     height: 1.3125rem;
     width: 1.3125rem;
@@ -638,13 +661,16 @@ select {
   width: 100%;
   border: $border-light-small;
   border-radius: $border-radius-small;
-  padding: 0.313rem 0.5rem;
   background: transparent;
   font-size: 0.875rem;
-  line-height: 1.5;
+  padding: 0 8px;
+  line-height: 2;
+  min-height: 30px;
+  
 
   &:focus {
     box-shadow: none;
+    outline: none ;
   }
 }
 
@@ -668,17 +694,21 @@ select {
 .setting-form-input {
   position: relative;
 
+  label{
+    font-size: 0.813rem;
+  }
+
   .parameter {
     position: absolute;
     top: .41rem;
     right: 0.313rem;
     border-left: $border-light-small;
     padding: 0 0.75rem;
-
+    font-size: 0.813rem;
   }
+
 }
 
-// }
 .blocktext-class{
   .settings-metabox-description-code {
     padding: .5rem 1rem;
@@ -686,6 +716,7 @@ select {
     background: #fdf9fb;
     color: $theme-color;
     border-left: 0.2rem solid $color-active;
+    line-height: 1.5;
   }
 }
 
@@ -709,7 +740,7 @@ select {
       align-items: center;
       justify-content: flex-start;
       position: relative;
-      background: rgb(13, 0, 23);
+      background: rgb(13 0 23);
       border-radius: 0.15rem;
       padding: 0.5rem 0;
 
@@ -731,13 +762,14 @@ select {
           height: 1.2rem;
           border-radius: $border-radius-small;
           background: #90EE90;
-          background: linear-gradient(to top left, #90EE90 0%, #FFFFFF 50%, #FF47D0 100%), linear-gradient(to bottom left, #FFFF00 0%, #FFFFFF 50%, #0000FF 100%);
+          background: linear-gradient(to top left, #90EE90 0%, #FFF 50%, #FF47D0 100%), linear-gradient(to bottom left, #FF0 0%, #FFF 50%, #00F 100%);
         }
 
         i {
           color: $color-white;
           font-size: 1.2rem;
         }
+
         .adminLib-link{
           font-size: 1.7rem;
         }
@@ -750,8 +782,8 @@ select {
       background: #f8f8f8;
       width: 17.64rem;
       padding: 1rem;
-      border: 0.125rem solid rgba($color: #000000, $alpha: 0.125);
-      box-shadow: 0 0.25rem 0.5rem rgba($color: #000000, $alpha: 0.125);
+      border: 0.125rem solid rgba($color: #000, $alpha: 12.5%);
+      box-shadow: 0 0.25rem 0.5rem rgba($color: #000, $alpha: 12.5%);
       border-radius: $border-radius-small;
 
 
@@ -762,7 +794,7 @@ select {
         right: -0.756rem;
         top: -0.945rem;
         background: $color-white;
-        box-shadow: 0 0.25rem 0.5rem rgba($color: #000000, $alpha: 0.125);
+        box-shadow: 0 0.25rem 0.5rem rgba($color: #000, $alpha: 12.5%);
         border-radius: 50%;
         width: 1.688rem;
         height: 1.688rem;
@@ -771,7 +803,8 @@ select {
         justify-content: center;
         align-items: center;
       }
-      input[type=color] {
+
+      input[type="color"] {
         cursor: pointer;
       }
       
@@ -803,11 +836,11 @@ select {
                 input::-webkit-outer-spin-button,
                 input::-webkit-inner-spin-button {
                   opacity: 1;
-                  -webkit-appearance: none;
+                  appearance: none;
                 }
                 
-                input[type=number] {
-                  -moz-appearance: textfield;
+                input[type="number"] {
+                  appearance: textfield;
                 }   
               }
             }
@@ -919,7 +952,7 @@ select {
     &.active,
     &:hover {
       box-shadow:
-        0.0rem 0.0rem 0.0rem 0.126rem rgb(255, 255, 255), 0.0rem 0.0rem 0.0rem 0.189rem rgba(33, 33, 33, 0.5) !important; // // To make as a selectable and overwrite for prevent all button
+        0.0 0.0 0.0 0.126rem rgb(255 255 255), 0.0 0.0 0.0 0.189rem rgb(33 33 33 / 50%) !important; // // To make as a selectable and overwrite for prevent all button
     }
   }
 }
@@ -929,34 +962,49 @@ select {
 // calender style start
 
 .settings-calender {
-
   .rmdp-wrapper {
     margin-bottom: 0.5rem;
   }
 }
+
 // calender style end
 
+// copy btn start
+.copy-btn{
+  position: relative;
 
-// Section style start
-.setting-section-divider {
-    margin: 2rem 0;
-    padding: 0;
-    border-top: 0.05rem solid rgba(82, 44, 129, 0.09);
-    position: relative;
+  .tool-clip{
+    width: fit-content;
+  }
 
-    .section-hint {
-    text-align: center;
-    margin-top: 0.813rem;
-    }
-
-    span {
+  .tooltip{
+    font-size: 0.625rem;
     position: absolute;
-    top: -0.063rem;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 0 1rem;
-    background: $color-white;
+    background: #65438f;
+    padding: 0.5rem 0.75rem;
+    top: -2rem;
+    border-radius: 0.25rem;
+    color: #fff;
+    display: none;
+    width: 7rem;
+    left: -50%;
+    transform: translateX(-50%);
+  }
+
+  &:hover{
+    .tooltip{
+      display: block;
     }
+  }
 }
 
-// end
+// copy btn end
+
+.settings-basic-input-child-class{
+  margin-bottom: 1rem;
+  
+.setting-form-input-label{
+  font-size: 0.813rem;
+  margin-bottom: 0.5rem;
+}
+}

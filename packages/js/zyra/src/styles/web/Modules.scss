@@ -1,4 +1,5 @@
 @use '../../global.scss' as *;
+
 .module-container {
   .tab-name {
     margin-bottom: 1rem;
@@ -20,9 +21,10 @@
 
     .module-list-item {
       border-radius: $border-radius-small;
-      box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.125);
+      box-shadow: 0 0 1rem rgba($color: #000, $alpha: 12.5%);
       padding-top: 1.5rem;
       max-width: 20rem;
+      min-width: 20rem;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -32,7 +34,7 @@
       min-height: 24.25rem;
       position: relative;
 
-      @media screen and (max-width: 48rem) {
+      @media screen and (width <= 48rem) {
         max-width: 100%;
       }
 
@@ -41,6 +43,7 @@
         margin-top:0.313rem;
         padding: 0.5rem;
         padding-top: 0;
+
         legend {
           background-color: #7598c66e;
           color: $color-black;
@@ -50,6 +53,7 @@
           text-align: left;
         }
       }
+
       .admin-pro-tag {
         right: 1.25rem;
         width: fit-content;
@@ -83,6 +87,7 @@
         .meta-description {
           font-size: 0.875rem;
           min-height: 5.25rem;
+
           .highlight{
             font-weight: 600;
             background-color: transparent;
@@ -145,7 +150,6 @@
               width: 0.188rem;
               height: 0.563rem;
               background: $color-white;
-              -webkit-transition: 0.3s;
               transition: 0.3s;
             }
 
@@ -183,7 +187,7 @@
           gap: 0.5rem;
 
           .card-support-btn {
-            box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 1.25rem rgb(0 0 0 / 20%);
             overflow: hidden;
 
             &::before {
@@ -192,9 +196,9 @@
               width: 6.25rem;
               height: 100%;
               background-image: linear-gradient(120deg,
-                  rgba(255, 255, 255, 0) 30%,
-                  rgba(255, 255, 255, 0.8),
-                  rgba(255, 255, 255, 0) 70%);
+                  rgb(255 255 255 / 0%) 30%,
+                  rgb(255 255 255 / 80%),
+                  rgb(255 255 255 / 0%) 70%);
               top: 0;
               left: -6.25rem;
               opacity: 0.6;
@@ -218,7 +222,7 @@
                 left: 100%;
               }
 
-              to {
+              100% {
                 left: 100%;
               }
             }

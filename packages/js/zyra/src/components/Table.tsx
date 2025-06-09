@@ -528,7 +528,7 @@ const Table: React.FC< TableProps > = ( {
                                     </select>
                                 </div>
                                 <div className="Pagination-arrow">
-                                    <button
+                                    <div
                                         onClick={ () =>
                                             table.setPageIndex( 0 )
                                         }
@@ -538,36 +538,35 @@ const Table: React.FC< TableProps > = ( {
                                     >
                                         <i className="adminLib-previous"></i>
                                         <i className="adminLib-previous"></i>
-                                    </button>
-                                    <button
+                                    </div>
+                                    <div
                                         onClick={ () => table.previousPage() }
                                         disabled={
                                             ! table.getCanPreviousPage()
                                         }
                                     >
                                         <i className="adminLib-arrow-left"></i>
-                                    </button>
+                                    </div>
                                     <span style={ { margin: "0 1rem" } }>
                                         Page{ " " }
                                         { table.getState().pagination
                                             .pageIndex + 1 }{ " " }
                                         of { pageCount }
                                     </span>
-                                    <button
+                                    <div
                                         onClick={ () => table.nextPage() }
                                         disabled={ ! table.getCanNextPage() }
                                     >
                                         <i className="adminLib-arrow-right"></i>
-                                    </button>
-                                    <button
+                                    </div>
+                                    <div
                                         onClick={ () =>
                                             table.setPageIndex( pageCount - 1 )
                                         }
                                         disabled={ ! table.getCanNextPage() }
+                                        className="adminLib-next"
                                     >
-                                        <i className="admin-font adminLib-next"></i>
-                                        <i className="admin-font adminLib-next"></i>
-                                    </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

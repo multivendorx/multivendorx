@@ -1,7 +1,6 @@
 @use '../../global.scss' as *;
 
 .general-wrapper {
-
   .middle-container-wrapper {
     .middle-child-container {
       position: relative;
@@ -62,6 +61,7 @@
           a,
           .menu-coll-btn {
             position: relative;
+            width: 100%;
             padding: 1rem 0.63rem 1.125rem 1.25rem;
             border-top: 0.063rem solid #e0e4e9;
             border-left: 0.125rem solid transparent;
@@ -90,7 +90,6 @@
               color: #72777c;
               line-height: 1.2307692308;
               transition: all 150ms ease-out;
-              -webkit-transition: all 150ms ease-out;
             }
 
             .drop-down-section {
@@ -115,7 +114,6 @@
             }
 
             i {
-              font-size: 1.75rem;
               color: #72777c;
               font-size: 1.4375rem;
               line-height: 1;
@@ -200,7 +198,11 @@
         background: $color-white;
         width: 100%;
 
-        .tab-description-start {
+        .tab-description-body{
+          padding: 1.8rem 1.8rem 0;
+        }
+
+        .tab-description-header {
           padding: 1.8rem 1.8rem 0;
 
           .child {
@@ -214,7 +216,6 @@
             padding: 0 0 1.875rem;
 
             .tab-name {
-              line-height: normal;
               font-size: 1.625rem;
               line-height: 1;
               font-weight: 500;
@@ -258,7 +259,7 @@
   }
 }
 
-@media screen and (max-width: 50.211rem) {
+@media screen and (width <= 50.211rem) {
   .general-wrapper {
     .middle-container-wrapper {
       .middle-child-container {

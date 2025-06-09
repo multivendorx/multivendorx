@@ -4,12 +4,6 @@
   display: flex;
   align-items: center;
 
-  .copy-btn{
-    .tooltip{
-      right:-1.2rem; // For tooltip position
-    }
-  }
-
   .input-section{
     width: 100%;
     position: relative;
@@ -28,7 +22,7 @@
                 
         i{
             font-size: 1.25rem;
-            color:rgba(255, 0, 0, 0.522);
+            color:rgb(255 0 0 / 52.2%);
         }
     }
 
@@ -37,7 +31,7 @@
       border-top-right-radius: 0!important; // To overwrite common input style
       border-bottom-right-radius: 0!important; // To overwrite common input style
 
-      @media screen and (max-width: 49.266rem) {
+      @media screen and (width <= 49.266rem) {
         min-height: 1.26rem;
       }
     }
@@ -48,6 +42,7 @@
     border-top-left-radius: 0 !important; // To overwrite common button style
     border-bottom-left-radius: 0 !important; // To overwrite common button style
   }
+
   .generate-btn {
     gap: 0.3rem;
     padding: 0.5rem 0.7rem;

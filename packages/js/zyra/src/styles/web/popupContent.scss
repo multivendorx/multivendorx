@@ -1,5 +1,9 @@
 @use '../../global.scss' as *;
+
 .MuiDialogContent-root:has(.admin-image-overlay) {
+    width: fit-content;
+    margin: auto;
+
     &::-webkit-scrollbar {
       width: 0;
     }
@@ -8,7 +12,7 @@
   .admin-image-overlay {
     .admin-overlay-content {
       background: $color-white;
-      padding: 0rem 1rem;
+      padding: 1.875rem;
       text-align: center;
       border-radius: $border-radius-small;
       max-width: 26rem;
@@ -63,11 +67,13 @@
       line-height: 1.6;
       letter-spacing: 0.02rem;
       font-weight: 500;
+
       &.list-popup{
         p{
           text-align: left;
         }
       }
+
       p {
         font-style: italic;
         text-align: center;
@@ -82,7 +88,7 @@
       line-height: 1.6;
       border-radius: $border-radius-small;
       font-size: 1.25rem;
-      margin: 2rem auto 0rem;
+      margin: 2rem auto 0;
       display: block;
       width: fit-content;
       box-shadow: 0.25rem 0.25rem 1.5rem rgb(227 80 71 / 50%);

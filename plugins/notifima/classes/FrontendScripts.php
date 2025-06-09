@@ -89,27 +89,44 @@ class FrontendScripts {
 		self::admin_register_styles();
     }
 
-    public static function enqueue_external_scripts(){
-        $chunks_dir = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/externals/';
-        $chunks_url = Notifima()->plugin_url . self::get_build_path_name() . 'js/externals/';
-        $js_files   = glob( $chunks_dir . '*.js' );
-
+    public static function enqueue_external_scripts() {
+        $base_dir = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/';
+        $base_url = MooWoodle()->plugin_url . self::get_build_path_name() . 'js/';
+        self::enqueue_scripts_from_dir( $base_dir . 'externals/', $base_url . 'externals/' );
+        if ( MooWoodle()->is_dev ) {
+            self::enqueue_scripts_from_dir(
+                $base_dir,
+                $base_url,
+                [ 'index.js', 'components.js' ],
+                '/min\.js$/i'
+            );
+        }
+    }
+    private static function enqueue_scripts_from_dir( $dir, $url, $exclude_files = [], $exclude_pattern = '' ) {
+        if ( ! is_dir( $dir ) ) {
+            return;
+        }
+        $js_files = glob( $dir . '*.js' );
         foreach ( $js_files as $chunk_path ) {
-            $chunk_file   = basename( $chunk_path );
-            $chunk_handle = 'notifima-script-' . sanitize_title( $chunk_file );
+            $chunk_file = basename( $chunk_path );
+            // Exclude based on filename or regex
+            if ( in_array( $chunk_file, $exclude_files, true ) ||
+                ( $exclude_pattern && preg_match( $exclude_pattern, $chunk_file ) )
+            ) {
+                continue;
+            }
+            $chunk_handle = 'moowoodle-script-' . sanitize_title( $chunk_file );
             $asset_file   = str_replace( '.js', '.asset.php', $chunk_path );
-            $deps         = array();
+            $deps         = [];
             $version      = filemtime( $chunk_path );
-
             if ( file_exists( $asset_file ) ) {
                 $asset   = include $asset_file;
-                $deps    = $asset['dependencies'] ?? array();
+                $deps    = $asset['dependencies'] ?? [];
                 $version = $asset['version'] ?? $version;
             }
-
             wp_enqueue_script(
                 $chunk_handle,
-                $chunks_url . $chunk_file,
+                $url . $chunk_file,
                 $deps,
                 $version,
                 true
