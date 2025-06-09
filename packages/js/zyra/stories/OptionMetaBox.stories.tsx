@@ -17,7 +17,7 @@ type Story = StoryObj<typeof OptionMetaBox>;
     };
 export const TestOptionMetaBox : Story = {
     args : {
-        option: option,
+        option,
         onChange: ( key, value ) => {
             console.log( `Changed ${ key } to ${ value }` );
         },

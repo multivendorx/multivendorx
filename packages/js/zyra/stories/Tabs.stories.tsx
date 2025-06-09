@@ -78,7 +78,7 @@ export const TestTabs : Story = {
                 link: "https://docs.example.com",
             },
         ],
-        Link: ( props ) => <a { ...props } />,
+        Link: ( props ) => <a { ...props } >Link</a>,
     },
     render:(args)=>{
         return <Tabs { ...args } />;

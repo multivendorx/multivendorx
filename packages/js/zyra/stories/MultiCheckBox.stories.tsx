@@ -55,7 +55,7 @@ const moduleEnabledChanged = (
         dependentPlugin,
         dependentPluginName,
     } );
-    let popupData = {
+    const popupData = {
         moduleName: "",
         settings: "",
         plugin: "",

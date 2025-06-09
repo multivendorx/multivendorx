@@ -45,7 +45,7 @@ export const TestModules : Story = {
             console.log( `Insert module: ${ moduleId }` ),
         removeModule: ( moduleId: string ) =>
             console.log( `Remove module: ${ moduleId }` ),
-        modulesArray: modulesArray,
+        modulesArray,
         appLocalizer: {
             siteUrl: "https://mywordpresssite.com",
             user: {

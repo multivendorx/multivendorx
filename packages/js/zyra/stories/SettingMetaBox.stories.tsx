@@ -33,8 +33,8 @@ const formField = {
 export const TestSettingMetaBox : Story = {
     
     args : {
-        formField: formField,
-        inputTypeList: inputTypeList,
+        formField,
+        inputTypeList,
         onChange: ( field, value ) => {
             console.log( `Field changed: ${ field } = ${ value }` );
         },

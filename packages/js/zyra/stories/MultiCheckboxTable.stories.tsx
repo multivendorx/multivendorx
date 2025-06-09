@@ -48,8 +48,8 @@ const rows = [
 export const TestMultiCheckboxTable : Story = {
     
     args : {
-        rows: rows,
-        columns: columns,
+        rows,
+        columns,
         description: "Configure analytics and tracking settings below.",
         onChange: ( key: string, value: any ) => {
             console.log( `Setting changed: ${ key } = ${ value }` );

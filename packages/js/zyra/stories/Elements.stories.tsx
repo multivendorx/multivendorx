@@ -73,7 +73,7 @@ const selectOptions = [
 
 export const TestElements : Story = {
     args : {
-        selectOptions: selectOptions,
+        selectOptions,
         onClick: ( value ) => {
             console.log( "Selected:", value );
         },

@@ -23,13 +23,13 @@ const options = [
         required: true,
         name: "selection",
         placeholder: "Choose one",
-        options: options,
+        options,
     };
 
 export const TestLog : Story = {
     
     args : {
-        formField: formField,
+        formField,
         onChange: ( key, value ) => {
             console.log( `Field ${ key } changed to`, value );
         },

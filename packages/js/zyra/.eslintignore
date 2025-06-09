@@ -18,4 +18,5 @@ node_modules/
 webpack.config.js
 
 # stories
-stories/
+<!-- stories/ -->
+src/

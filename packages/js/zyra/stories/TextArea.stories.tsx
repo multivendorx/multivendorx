@@ -26,10 +26,10 @@ export const TestTextArea : Story = {
         description: "Please enter your detailed comments.",
         descClass: "settings-metabox-description",
         onChange: ( e ) => console.log( "Changed:", e.target.value ),
-        onClick: ( e ) => console.log( "Clicked" ),
-        onMouseOver: ( e ) => console.log( "Mouse Over" ),
-        onMouseOut: ( e ) => console.log( "Mouse Out" ),
-        onFocus: ( e ) => console.log( "Focused" ),
+        onClick: ( e ) => console.log( "Clicked", e.target ),
+        onMouseOver: ( e ) => console.log( "Mouse Over",e.target ),
+        onMouseOut: ( e ) => console.log( "Mouse Out",e.target ),
+        onFocus: ( e ) => console.log( "Focused",e.target ),
     },
     render:(args)=>{
         return <TextArea { ...args } />;

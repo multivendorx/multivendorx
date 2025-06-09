@@ -1,7 +1,6 @@
-import { ReactNode, useEffect, useState } from "react";
-import Table from "../src/components/Table";
-import { ColumnDef } from "@tanstack/react-table";
-import { TableCell } from "../src/components/Table"; // Remove incorrect import
+import { ReactNode, useState } from "react";
+import Table, { TableCell } from "../src/components/Table";
+import type { ColumnDef } from "@tanstack/react-table";
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Table> = {
@@ -406,12 +405,12 @@ const TableFree = ()=>{
         };
 
     const args = {
-        data: data,
+        data,
         columns: columnsData,
-        rowSelection: rowSelection,
+        rowSelection,
         onRowSelectionChange: setRowSelection,
         defaultRowsPerPage: 10,
-        realtimeFilter: realtimeFilter,
+        realtimeFilter,
         bulkActionComp: () => <button>Bulk Action</button>,
         pageCount: 1,
         pagination: {

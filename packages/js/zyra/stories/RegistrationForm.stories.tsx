@@ -10,44 +10,7 @@ const meta: Meta<typeof CustomFrom> = {
 export default meta;
 
 type Story = StoryObj<typeof CustomFrom>;
-const formfieldlist = [
-        {
-            id: 1,
-            type: "text",
-            label: "Full Name",
-            required: true,
-            name: "fullName",
-            placeholder: "Enter your full name",
-        },
-        {
-            id: 2,
-            type: "email",
-            label: "Email Address",
-            required: true,
-            name: "email",
-            placeholder: "Enter your email",
-        },
-        {
-            id: 3,
-            type: "select",
-            label: "Choose a Plan",
-            required: false,
-            name: "plan",
-            options: [
-                { label: "Basic", value: "basic", isdefault: true },
-                { label: "Pro", value: "pro" },
-                { label: "Enterprise", value: "enterprise" },
-            ],
-        },
-        {
-            id: 4,
-            type: "recaptcha",
-            label: "Security Check",
-            required: true,
-            name: "recaptcha",
-            sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", // Google test sitekey
-        },
-    ];
+
 export const TestRegistrationForm : Story = {
     args: {
         onChange: ( { formfieldlist, butttonsetting } ) => {

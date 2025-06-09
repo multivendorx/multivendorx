@@ -22,13 +22,6 @@ module.exports = {
         "jsdoc/check-line-alignment": "off",
         "jsx-a11y/no-static-element-interactions": "off",
         "jsx-a11y/no-noninteractive-element-to-interactive-role": "off"
-        // indent: "off",
-        // quotes: "off",
-        // "@typescript-eslint/indent": "off",
-        // "react/jsx-indent": "off",
-        // "react/jsx-indent-props": "off",
-        // "no-alert": "off",
-        // "jsx-a11y/no-static-element-interactions": "off",
     },
     parserOptions: {
         ecmaVersion: 8,
@@ -38,4 +31,15 @@ module.exports = {
             jsx: true,
         },
     },
+    overrides: [
+		{
+			files: [
+				'**/stories/*.ts',
+				'**/stories/*.tsx',
+			],
+			rules: {
+				'no-console': "off",
+			},
+		},
+	],
 };
