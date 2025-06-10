@@ -77,7 +77,7 @@ const FieldWrapper: React.FC<FieldWrapperProps> = ({
 	children,
 	className,
 }) => (
-	<article
+	<div
 		className={`modal-content-section-field ${className || ''}`}
 		role="button"
 		tabIndex={0}
@@ -85,7 +85,7 @@ const FieldWrapper: React.FC<FieldWrapperProps> = ({
 	>
 		<p>{label}</p>
 		{children}
-	</article>
+	</div>
 );
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -225,7 +225,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 			tabIndex={0}
 			onClick={() => setHasOpened((prevState) => !prevState)}
 		>
-			<i className="admin-font adminLib-menu"></i>
+			<i className="admin-font adminlib-menu"></i>
 			{hasOpened && (
 				<Draggable>
 					<section className="meta-setting-modal">
@@ -236,7 +236,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 								setHasOpened(false);
 							}}
 						>
-							<i className="admin-font adminLib-cross"></i>
+							<i className="admin-font adminlib-cross"></i>
 						</button>
 						<main className="meta-setting-modal-content">
 							<h3>Input Field Settings</h3>

@@ -120,7 +120,7 @@ const Tabs: React.FC<TabsProps> = ({
 					</div>
 					{menuCol ? null : (
 						<p className={dropdownClass}>
-							<i className="admin-font adminLib-keyboard-arrow-down"></i>
+							<i className="admin-font adminlib-keyboard-arrow-down"></i>
 						</p>
 					)}
 				</div>
@@ -247,7 +247,7 @@ const Tabs: React.FC<TabsProps> = ({
 									onClick={handleMenuShow}
 								>
 									<span>
-										<i className="admin-font adminLib-arrow-left"></i>
+										<i className="admin-font adminlib-arrow-left"></i>
 									</span>
 									{menuCol ? null : 'Collapse'}
 								</div>

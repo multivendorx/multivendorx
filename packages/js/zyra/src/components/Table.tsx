@@ -132,7 +132,7 @@ export const TableCell: React.FC<TableCellProps> = ({
 							type="checkbox"
 							className="toggle-checkbox"
 							name={title}
-							id="checkbox1"
+							id={title}
 							checked={cellData as boolean}
 							onChange={(e) => {
 								setCellData(
@@ -145,7 +145,8 @@ export const TableCell: React.FC<TableCellProps> = ({
 								}
 							}}
 						/>
-						<label htmlFor="checkbox1"></label>
+						{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+						<label htmlFor={title}>&nbsp;</label>
 					</div>
 				</div>
 			);
@@ -530,8 +531,8 @@ const Table: React.FC<TableProps> = ({
 											table.setPageIndex(0);
 										}}
 									>
-										<i className="adminLib-previous"></i>
-										<i className="adminLib-previous"></i>
+										<i className="adminlib-previous"></i>
+										<i className="adminlib-previous"></i>
 									</div>
 									<div
 										role="button"
@@ -543,7 +544,7 @@ const Table: React.FC<TableProps> = ({
 											table.previousPage();
 										}}
 									>
-										<i className="adminLib-arrow-left"></i>
+										<i className="adminlib-arrow-left"></i>
 									</div>
 									<span style={{ margin: '0 1rem' }}>
 										Page{' '}
@@ -560,7 +561,7 @@ const Table: React.FC<TableProps> = ({
 											table.nextPage();
 										}}
 									>
-										<i className="adminLib-arrow-right"></i>
+										<i className="adminlib-arrow-right"></i>
 									</div>
 									<div
 										role="button"
@@ -571,8 +572,8 @@ const Table: React.FC<TableProps> = ({
 											table.setPageIndex(pageCount - 1);
 										}}
 									>
-										<i className="admin-font adminLib-next"></i>
-										<i className="admin-font adminLib-next"></i>
+										<i className="admin-font adminlib-next"></i>
+										<i className="admin-font adminlib-next"></i>
 									</div>
 								</div>
 							</div>
@@ -580,7 +581,7 @@ const Table: React.FC<TableProps> = ({
 					)}
 					{successMsg && (
 						<div className="admin-notice-display-title">
-							<i className="admin-font adminLib-icon-yes"></i>
+							<i className="admin-font adminlib-icon-yes"></i>
 							{successMsg}
 						</div>
 					)}

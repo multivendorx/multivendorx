@@ -133,7 +133,7 @@ const SyncNow: React.FC<SyncNowProps> = (props) => {
 			}
 			taskNumber.current++;
 			await doSequentialTask();
-		} catch (_) {
+		} catch (error) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			setTaskSequence((seq) => {
 				const updated = [...seq];
@@ -209,9 +209,9 @@ const SyncNow: React.FC<SyncNowProps> = (props) => {
 				</button>
 				{(loading || syncStarted) && (
 					<div className="loader">
-						<div className="three-body__dot"></div>
-						<div className="three-body__dot"></div>
-						<div className="three-body__dot"></div>
+						<div className="three-body-dot"></div>
+						<div className="three-body-dot"></div>
+						<div className="three-body-dot"></div>
 					</div>
 				)}
 			</div>
@@ -238,8 +238,8 @@ const SyncNow: React.FC<SyncNowProps> = (props) => {
 									<i
 										className={`admin-font ${
 											task.status === 'failed'
-												? 'adminLib-cross'
-												: 'adminLib-icon-yes'
+												? 'adminlib-cross'
+												: 'adminlib-icon-yes'
 										}`}
 									></i>
 								</span>
@@ -280,7 +280,7 @@ const SyncNow: React.FC<SyncNowProps> = (props) => {
 						{status.action}
 						<div className="status-meta">
 							<span className="status-icons">
-								<i className="admin-font adminLib-icon-yes"></i>
+								<i className="admin-font adminlib-icon-yes"></i>
 							</span>
 							<span>
 								{status.current} / {status.total}

@@ -113,7 +113,7 @@ const Banner: React.FC<BannerProps> = ({ isPro, products, proUrl }) => {
 						aria-labelledby="form-dialog-title"
 					>
 						<span
-							className="admin-font adminLib-cross stock-manager-popup-cross"
+							className="admin-font adminlib-cross stock-manager-popup-cross"
 							role="button"
 							tabIndex={0}
 							onClick={handleClose}
@@ -123,7 +123,7 @@ const Banner: React.FC<BannerProps> = ({ isPro, products, proUrl }) => {
 					<div className="admin-carousel-container">
 						<div className="carousel-container">
 							<div
-								className="admin-font adminLib-cross pro-slider-cross"
+								className="admin-font adminlib-cross pro-slider-cross"
 								role="button"
 								tabIndex={0}
 								onClick={handleCloseBanner}
@@ -162,10 +162,10 @@ const Banner: React.FC<BannerProps> = ({ isPro, products, proUrl }) => {
 						</div>
 						<div className="carousel-controls">
 							<button id="prevBtn">
-								<i className="admin-font adminLib-arrow-left"></i>
+								<i className="admin-font adminlib-arrow-left"></i>
 							</button>
 							<button id="nextBtn">
-								<i className="admin-font adminLib-arrow-right"></i>
+								<i className="admin-font adminlib-arrow-right"></i>
 							</button>
 						</div>
 					</div>

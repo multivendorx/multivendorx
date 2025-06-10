@@ -122,7 +122,7 @@ const Log: React.FC<LogProps> = ({
 					onClick={handleClearLog}
 				>
 					<span className="text">Clear</span>
-					<i className="adminLib-close"></i>
+					<i className="adminlib-close"></i>
 				</button>
 			</div>
 			<div className="log-container-wrapper">
@@ -135,7 +135,7 @@ const Log: React.FC<LogProps> = ({
 							className="copy-btn"
 							onClick={handleCopyToClipboard}
 						>
-							<i className="adminLib-vendor-form-copy"></i>
+							<i className="adminlib-vendor-form-copy"></i>
 							<span
 								className={
 									!copied ? 'tooltip tool-clip' : 'tooltip'
@@ -144,7 +144,7 @@ const Log: React.FC<LogProps> = ({
 								{!copied ? (
 									'Copy to clipboard'
 								) : (
-									<i className="adminLib-success-notification"></i>
+									<i className="adminlib-success-notification"></i>
 								)}
 								{!copied ? '' : 'Copied'}
 							</span>

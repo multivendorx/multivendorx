@@ -73,7 +73,7 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
 				updateSetting(optionKey, options);
 				setSelectOption(options);
 				setShowOption(true);
-			} catch (_) {
+			} catch (error) {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				setMailchimpErrorMessage('Failed to fetch MailChimp list.');
 				setTimeout(() => {

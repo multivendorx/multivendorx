@@ -328,7 +328,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'text':
 						return (
 							<section className="form-text form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<input
 									type="text"
 									name={field.name}
@@ -372,7 +374,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'email':
 						return (
 							<section className="form-email form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<input
 									type="email"
 									name={field.name}
@@ -406,7 +410,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'textarea':
 						return (
 							<section className=" form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<textarea
 									name={field.name}
 									value={inputs[field.name ?? '']}
@@ -435,7 +441,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 								className="form-pro-sections"
 								key={field.name}
 							>
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<Checkboxes
 									options={field.options || []}
 									onChange={(data) =>
@@ -447,7 +455,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'multiselect':
 						return (
 							<section className=" form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<div className="multiselect-container">
 									<Multiselect
 										options={field.options ?? []}
@@ -467,7 +477,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'dropdown':
 						return (
 							<section className=" form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<div className="multiselect-container">
 									<Multiselect
 										options={field.options ?? []}
@@ -486,7 +498,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'radio':
 						return (
 							<section className=" form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<Radio
 									options={field.options ?? []}
 									onChange={(data) =>
@@ -515,14 +529,18 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'attachment':
 						return (
 							<section className="form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<div className="attachment-section">
+									{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 									<label
 										htmlFor="dropzone-file"
 										className="attachment-label"
 									>
+										&nbsp;
 										<div className="wrapper">
-											<i className="adminLib-cloud-upload"></i>
+											<i className="adminlib-cloud-upload"></i>
 											<p className="heading">
 												{fileName === '' ? (
 													<>
@@ -560,7 +578,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'datepicker':
 						return (
 							<section className=" form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<div className="date-picker-wrapper">
 									<input
 										type="date"
@@ -586,7 +606,9 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'timepicker':
 						return (
 							<section className=" form-pro-sections">
-								<label>{field.label}</label>
+								<label htmlFor={field.name}>
+									{field.label}
+								</label>
 								<input
 									type="time"
 									value={inputs[field.name ?? '']}

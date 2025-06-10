@@ -49,27 +49,27 @@ const Customizer: React.FC<CustomizerProps> = ({
 					},
 					{
 						title: 'Border Style',
-						iconClass: 'adminLib-crop-free',
+						iconClass: 'adminlib-crop-free',
 						type: 'border',
 					},
 					{
 						title: 'Text Style',
-						iconClass: 'adminLib-text-fields',
+						iconClass: 'adminlib-text-fields',
 						type: 'font',
 					},
 					{
 						title: 'Change Size',
-						iconClass: 'adminLib-resize',
+						iconClass: 'adminlib-resize',
 						type: 'size',
 					},
 					{
 						title: 'Add Url',
-						iconClass: 'adminLib-link',
+						iconClass: 'adminlib-link',
 						type: 'link',
 					},
 					{
 						title: 'Settings',
-						iconClass: 'adminLib-setting',
+						iconClass: 'adminlib-setting',
 						type: 'setting',
 					},
 				].map(({ title, iconClass, type }) => (
@@ -93,7 +93,7 @@ const Customizer: React.FC<CustomizerProps> = ({
 						onClick={() => setSelect('')}
 						className="wrapper-close"
 					>
-						<i className="admin-font adminLib-cross"></i>
+						<i className="admin-font adminlib-cross"></i>
 					</button>
 
 					{/* Render selected setting */}
@@ -210,7 +210,7 @@ const Customizer: React.FC<CustomizerProps> = ({
 											onChange('button_link', buttonLink);
 										}}
 									>
-										<i className="admin-font adminLib-send"></i>
+										<i className="admin-font adminlib-send"></i>
 									</button>
 								</div>
 							</div>

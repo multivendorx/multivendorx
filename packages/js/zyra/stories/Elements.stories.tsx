@@ -13,59 +13,59 @@ type Story = StoryObj<typeof Elements>;
 
 const selectOptions = [
 	{
-		icon: 'adminLib-t-letter-bold icon-form-textbox',
+		icon: 'adminlib-t-letter-bold icon-form-textbox',
 		value: 'text',
 		label: 'Textbox',
 	},
-	{ icon: 'adminLib-unread icon-form-email', value: 'email', label: 'Email' },
+	{ icon: 'adminlib-unread icon-form-email', value: 'email', label: 'Email' },
 	{
-		icon: 'adminLib-text icon-form-textarea',
+		icon: 'adminlib-text icon-form-textarea',
 		value: 'textarea',
 		label: 'Textarea',
 	},
 	{
-		icon: 'adminLib-checkbox icon-form-checkboxes',
+		icon: 'adminlib-checkbox icon-form-checkboxes',
 		value: 'checkboxes',
 		label: 'Checkboxes',
 	},
 	{
-		icon: 'adminLib-multi-select icon-form-multi-select',
+		icon: 'adminlib-multi-select icon-form-multi-select',
 		value: 'multiselect',
 		label: 'Multi Select',
 	},
-	{ icon: 'adminLib-radio icon-form-radio', value: 'radio', label: 'Radio' },
+	{ icon: 'adminlib-radio icon-form-radio', value: 'radio', label: 'Radio' },
 	{
-		icon: 'adminLib-dropdown-checklist icon-form-dropdown',
+		icon: 'adminlib-dropdown-checklist icon-form-dropdown',
 		value: 'dropdown',
 		label: 'Dropdown',
 	},
 	{
-		icon: 'adminLib-captcha-automatic-code icon-form-recaptcha',
+		icon: 'adminlib-captcha-automatic-code icon-form-recaptcha',
 		value: 'recaptcha',
 		label: 'reCaptcha v3',
 	},
 	{
-		icon: 'adminLib-submission-message icon-form-attachment',
+		icon: 'adminlib-submission-message icon-form-attachment',
 		value: 'attachment',
 		label: 'Attachment',
 	},
 	{
-		icon: 'adminLib-form-section icon-form-section',
+		icon: 'adminlib-form-section icon-form-section',
 		value: 'section',
 		label: 'Section',
 	},
 	{
-		icon: 'adminLib-calendar icon-form-store-description',
+		icon: 'adminlib-calendar icon-form-store-description',
 		value: 'datepicker',
 		label: 'Date Picker',
 	},
 	{
-		icon: 'adminLib-alarm icon-form-address01',
+		icon: 'adminlib-alarm icon-form-address01',
 		value: 'TimePicker',
 		label: 'Time Picker',
 	},
 	{
-		icon: 'adminLib-divider icon-form-address01',
+		icon: 'adminlib-divider icon-form-address01',
 		value: 'divider',
 		label: 'Divider',
 	},

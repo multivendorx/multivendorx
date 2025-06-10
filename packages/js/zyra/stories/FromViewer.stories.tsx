@@ -24,6 +24,14 @@ export const TestFormViewer: Story = {
 					charlimit: 50,
 				},
 				{
+					type: 'attachment',
+					name: 'username',
+					label: 'Username',
+					placeholder: 'Enter your username',
+					required: true,
+					charlimit: 50,
+				},
+				{
 					type: 'textarea',
 					name: 'bio',
 					label: 'Bio',

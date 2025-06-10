@@ -78,7 +78,7 @@ const Modules: React.FC<ModuleProps> = ({
 				onClose={() => setModelOpen(false)}
 			>
 				<span
-					className="admin-font adminLib-cross"
+					className="admin-font adminlib-cross"
 					role="button"
 					tabIndex={0}
 					onClick={() => setModelOpen(false)}
@@ -88,7 +88,7 @@ const Modules: React.FC<ModuleProps> = ({
 
 			{successMsg && (
 				<div className="admin-notice-display-title">
-					<i className="admin-font adminLib-icon-yes"></i>
+					<i className="admin-font adminlib-icon-yes"></i>
 					{successMsg}
 				</div>
 			)}
@@ -141,6 +141,7 @@ const Modules: React.FC<ModuleProps> = ({
 										handleOnChange(e, module.id)
 									}
 								/>
+								{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 								<label
 									htmlFor={`toggle-switch-${module.id}`}
 									className="toggle-switch-is_hide_cart_checkout"

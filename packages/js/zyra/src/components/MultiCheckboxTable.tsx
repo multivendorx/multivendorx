@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 
 /**
@@ -48,7 +48,7 @@ const SelectedOptionDisplay: React.FC<SelectedOptionDisplayProps> = ({
 							tabIndex={0}
 							onClick={() => removeSelectedValues(value)}
 						>
-							<i className="admin-font adminLib-close"></i>
+							<i className="admin-font adminlib-close"></i>
 						</div>
 					</div>
 				))}
@@ -74,7 +74,7 @@ const SelectedOptionDisplay: React.FC<SelectedOptionDisplayProps> = ({
 					tabIndex={0}
 					onClick={clearSelectedValues}
 				>
-					<i className="admin-font adminLib-close"></i>
+					<i className="admin-font adminlib-close"></i>
 				</div>
 			</div>
 		</div>
@@ -129,7 +129,7 @@ const SearchOptionDisplay: React.FC<SearchOptionDisplayProps> = ({
 				/>
 
 				<span>
-					<i className="admin-font adminLib-keyboard-arrow-down"></i>
+					<i className="admin-font adminlib-keyboard-arrow-down"></i>
 				</span>
 			</div>
 
@@ -179,8 +179,6 @@ const Select: React.FC<SelectProps> = ({
 	option = [],
 	asyncGetOptions,
 	asyncFetch = false,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	isMulti = true,
 }) => {
 	// State to store selected values
 	const [selectedValues, setSelectedValues] = useState<Option[]>(values);
@@ -201,7 +199,7 @@ const Select: React.FC<SelectProps> = ({
 	const settingChanged = useRef<boolean>(false);
 
 	// Fetch options (sync or async)
-	const getOptions = async (): Promise<Option[]> => {
+	const getOptions = useCallback(async (): Promise<Option[]> => {
 		let allOptions = option;
 
 		if (asyncFetch && asyncGetOptions) {
@@ -213,7 +211,14 @@ const Select: React.FC<SelectProps> = ({
 		return allOptions.filter(
 			(opt) => !selectedValues.some((sel) => sel.value === opt.value)
 		);
-	};
+	}, [
+		asyncFetch,
+		asyncGetOptions,
+		filter,
+		option,
+		selectedValues,
+		setSearchStarted,
+	]);
 
 	/**
 	 * Inserts a selected value into the list of selected values.
@@ -250,7 +255,7 @@ const Select: React.FC<SelectProps> = ({
 	 *
 	 * @return {Promise<Option[]>} A promise that resolves to the filtered options list.
 	 */
-	const getFilteredOptionValue = async (): Promise<Option[]> => {
+	const getFilteredOptionValue = useCallback(async (): Promise<Option[]> => {
 		const allOptions = await getOptions();
 		return asyncFetch || !filter
 			? allOptions
@@ -259,7 +264,7 @@ const Select: React.FC<SelectProps> = ({
 						opt.value.toString().includes(filter) ||
 						opt.label.includes(filter)
 				);
-	};
+	}, [asyncFetch, filter, getOptions]);
 
 	// Trigger onChange event when selected values change
 	useEffect(() => {
@@ -270,13 +275,9 @@ const Select: React.FC<SelectProps> = ({
 	}, [selectedValues, onChange]);
 
 	// Update options when dependencies change
-	useEffect(
-		() => {
-			getFilteredOptionValue().then(setOptions);
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[filter, option, selectedValues]
-	);
+	useEffect(() => {
+		getFilteredOptionValue().then(setOptions);
+	}, [filter, option, selectedValues, getFilteredOptionValue]);
 
 	// Modal.setAppElement( "#admin-main-wrapper" );
 
@@ -315,7 +316,7 @@ const Select: React.FC<SelectProps> = ({
 							className="modal-close-btn"
 							onClick={() => setPopupOpened(false)}
 						>
-							<i className="admin-font adminLib-cross"></i>
+							<i className="admin-font adminlib-cross"></i>
 						</div>
 						<SelectedOptionDisplay
 							popupOpend={popupOpened}

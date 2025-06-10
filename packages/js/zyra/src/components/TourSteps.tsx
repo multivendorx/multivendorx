@@ -1,3 +1,5 @@
+// Check in catalogx
+
 /**
  * External dependencies
  */
@@ -158,7 +160,7 @@ const Tour: React.FC = () => {
 			),
 		},
 		{
-			selector: '.button-visibility .adminLib-eye-blocked',
+			selector: '.button-visibility .adminlib-eye-blocked',
 			content: () => (
 				<div className="tour-box">
 					<h3>Customize Enquiry Form</h3>

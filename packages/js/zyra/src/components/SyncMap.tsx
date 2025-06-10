@@ -208,7 +208,7 @@ const SyncMap: React.FC<SyncMapProps> = ({
 									}}
 								>
 									<span className="text">Clear</span>
-									<span className="icon adminLib-close"></span>
+									<span className="icon adminlib-close"></span>
 								</button>
 							</div>
 						)
@@ -227,7 +227,7 @@ const SyncMap: React.FC<SyncMapProps> = ({
 							}}
 						>
 							<span className="text">Add</span>
-							<i className="adminLib-vendor-form-add"></i>
+							<i className="adminlib-vendor-form-add"></i>
 						</button>
 						{proSetting && (
 							<span className="admin-pro-tag">pro</span>

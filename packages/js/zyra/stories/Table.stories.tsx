@@ -321,6 +321,7 @@ const TableFree = () => {
 			cell: ({ row }) => (
 				<TableCell
 					title="User Link"
+					type="checkbox"
 					fieldValue={row.original.user_link}
 					header="User Link Header"
 				>

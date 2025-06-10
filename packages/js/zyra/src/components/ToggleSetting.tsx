@@ -37,9 +37,9 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
 	return (
 		<section className={wrapperClass}>
 			<div className="toggle-setting-container">
-				<ul>
+				<div className="toggle-setting-wrapper">
 					{options.map((option) => (
-						<li
+						<div
 							role="button"
 							tabIndex={0}
 							key={option.key}
@@ -55,9 +55,9 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
 								readOnly // Prevents React warning for controlled components
 							/>
 							<label htmlFor={option.key}>{option.label}</label>
-						</li>
+						</div>
 					))}
-				</ul>
+				</div>
 			</div>
 			{proSetting && <span className="admin-pro-tag">pro</span>}
 			{description && (

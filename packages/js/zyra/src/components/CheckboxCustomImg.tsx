@@ -64,7 +64,7 @@ const CheckboxCustomImg: React.FC<CheckboxCustomImgProps> = ({
 						/>
 						<div className="sync-meta-wrapper">
 							<img src={direction.img1} alt="" />
-							<i className="admin-font adminLib-arrow-right"></i>
+							<i className="admin-font adminlib-arrow-right"></i>
 							<img src={direction.img2} alt="" />
 						</div>
 						<p className="sync-label">{direction.label}</p>

@@ -105,8 +105,8 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
 	];
 
 	const menu: MenuItem[] = [
-		{ name: 'Free', link: 'hi', id: '2', icon: 'adminLib-info' },
-		{ name: 'Pro', link: 'hi', id: '1', icon: 'adminLib-cart' },
+		{ name: 'Free', link: 'hi', id: '2', icon: 'adminlib-info' },
+		{ name: 'Pro', link: 'hi', id: '1', icon: 'adminlib-cart' },
 	];
 
 	const [currentTab, setCurrentTab] = useState<MenuItem>(menu[0]);
@@ -197,8 +197,8 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
 										<i
 											className={`admin-font ${
 												readonlyFields[index]
-													? 'adminLib-eye-blocked enable-visibility'
-													: 'adminLib-eye'
+													? 'adminlib-eye-blocked enable-visibility'
+													: 'adminlib-eye'
 											}`}
 										/>
 									</div>

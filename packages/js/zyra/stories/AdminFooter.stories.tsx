@@ -15,19 +15,19 @@ type Story = StoryObj<typeof AdminFooter>;
 const supportLintData = [
 	{
 		title: 'This is admin footer 1',
-		icon: 'adminLib-person',
+		icon: 'adminlib-person',
 		description: 'This is admin footer description 1',
 		link: '#',
 	},
 	{
 		title: 'This is admin footer 2',
-		icon: 'adminLib-vpn-key',
+		icon: 'adminlib-vpn-key',
 		description: 'This is admin footer description 2',
 		link: '#',
 	},
 	{
 		title: 'This is admin footer 3',
-		icon: 'adminLib-mail',
+		icon: 'adminlib-mail',
 		description: 'This is admin footer description 3',
 		link: '#',
 	},

@@ -32,10 +32,12 @@ const Attachment: React.FC<AttachmentProps> = ({ formField, onChange }) => {
 			/>
 
 			{/* Render attachments */}
+			{/* Check in catalogx (label frontend)*/}
 			<div className="attachment-section">
+				{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 				<label htmlFor="dropzone-file" className="attachment-label">
 					<div className="wrapper">
-						<i className="adminLib-cloud-upload"></i>
+						<i className="adminlib-cloud-upload"></i>
 						<p className="heading">
 							<span>{'Click to upload'}</span>{' '}
 							{'or drag and drop'}

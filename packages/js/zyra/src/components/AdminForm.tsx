@@ -827,10 +827,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
 				case 'button':
 					input = (
 						<div className="form-button-group">
-							<div className="setting-section-divider">
-								&nbsp;
-							</div>
-							<label className="settings-form-label"></label>
 							<div className="settings-input-content">
 								<BasicInput
 									wrapperClass="settings-basic-input-class"
@@ -1775,7 +1771,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
 					aria-labelledby="form-dialog-title"
 				>
 					<span
-						className="admin-font adminLib-cross"
+						className="admin-font adminlib-cross"
 						role="button"
 						tabIndex={0}
 						onClick={handleModelClose}
@@ -1789,7 +1785,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
 					aria-labelledby="form-dialog-title"
 				>
 					<span
-						className="admin-font adminLib-cross"
+						className="admin-font adminlib-cross"
 						role="button"
 						tabIndex={0}
 						onClick={handleModulePopupClose}
@@ -1813,7 +1809,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
 				</Dialog>
 				{successMsg && (
 					<div className="admin-notice-display-title">
-						<i className="admin-font adminLib-icon-yes"></i>
+						<i className="admin-font adminlib-icon-yes"></i>
 						{successMsg}
 					</div>
 				)}

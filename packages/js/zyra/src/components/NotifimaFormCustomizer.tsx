@@ -86,7 +86,7 @@ const NotifimaFormCustomizer: React.FC<FormCustomizerProps> = ({
 							>
 								<p>Edit</p>
 								<span>
-									<i className="admin-font adminLib-edit"></i>
+									<i className="admin-font adminlib-edit"></i>
 								</span>
 							</div>
 						)}
@@ -102,7 +102,7 @@ const NotifimaFormCustomizer: React.FC<FormCustomizerProps> = ({
 										}}
 										className="wrapper-close"
 									>
-										<i className="admin-font adminLib-cross"></i>
+										<i className="admin-font adminlib-cross"></i>
 									</button>
 									<div className="setting-section-dev">
 										<span className="label">

@@ -23,7 +23,7 @@ const Elements: React.FC<ElementsProps> = ({ selectOptions, onClick }) => {
 			</div>
 			<main className="section-container">
 				{selectOptions.map((option) => (
-					<article
+					<div
 						key={option.value} // ✅ Added key for React's rendering optimization
 						role="button"
 						tabIndex={0}
@@ -32,7 +32,7 @@ const Elements: React.FC<ElementsProps> = ({ selectOptions, onClick }) => {
 					>
 						{option.icon && <i className={option.icon}></i>}
 						<p className="list-title">{option.label}</p>
-					</article>
+					</div>
 				))}
 			</main>
 		</aside>

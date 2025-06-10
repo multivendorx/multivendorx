@@ -62,9 +62,9 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
 	}, [localSetting]);
 
 	const menu: MenuItem[] = [
-		{ name: 'Enquiry', id: 'enquiry', icon: 'adminLib-inquiry' },
-		{ name: 'Quote', id: 'quote', icon: 'adminLib-price-quote-icon' },
-		{ name: 'Catalog', id: 'catalog', icon: 'adminLib-catalog' },
+		{ name: 'Enquiry', id: 'enquiry', icon: 'adminlib-inquiry' },
+		{ name: 'Quote', id: 'quote', icon: 'adminlib-price-quote-icon' },
+		{ name: 'Catalog', id: 'catalog', icon: 'adminlib-catalog' },
 	];
 
 	const [currentTab, setCurrentTab] = useState<MenuItem>(menu[0]);
@@ -85,7 +85,7 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
 					}}
 					className="button-visibility"
 				>
-					<i className="admin-font adminLib-support"></i>
+					<i className="admin-font adminlib-support"></i>
 				</div>
 				<p
 					className="product-price"
@@ -114,7 +114,7 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
 					}}
 					className="button-visibility"
 				>
-					<i className="admin-font adminLib-support"></i>
+					<i className="admin-font adminlib-support"></i>
 				</div>
 				<p
 					className="product-description"
@@ -238,6 +238,7 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
 		return result;
 	};
 
+	// Check in catalogx for infinite loop
 	const initialItems = useMemo(
 		() => {
 			return [...dragableItems]; // replace with real source
@@ -606,7 +607,7 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
 							<li className="active">
 								Description{' '}
 								<span>
-									<i className="admin-font adminLib-keyboard-arrow-down"></i>
+									<i className="admin-font adminlib-keyboard-arrow-down"></i>
 								</span>
 							</li>
 							<li>Additional Information</li>

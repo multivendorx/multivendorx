@@ -93,6 +93,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
 										}
 									}}
 								/>
+								{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 								<label
 									htmlFor={`${props.idPrefix}-${option.key}`}
 								></label>

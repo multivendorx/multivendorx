@@ -40,7 +40,7 @@ const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
 				event.stopPropagation();
 			}}
 		>
-			<i className="admin-font adminLib-menu"></i>
+			<i className="admin-font adminlib-menu"></i>
 			{hasOpened && (
 				<Draggable
 					nodeRef={
@@ -58,7 +58,7 @@ const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
 								setHasOpened(false);
 							}}
 						>
-							<i className="admin-font adminLib-cross"></i>
+							<i className="admin-font adminlib-cross"></i>
 						</button>
 						{/* Main content */}
 						<main className="meta-setting-modal-content">

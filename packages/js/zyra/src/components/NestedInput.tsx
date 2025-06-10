@@ -47,9 +47,9 @@ const NestedInput: React.FC<NestedInputProps> = (props) => {
 								key={i}
 								className={props.innerParentWrapperClass}
 							>
-								<label className={props.parentLabelClass}>
+								<div className={props.parentLabelClass}>
 									<p>{parentOption.label}</p>
-								</label>
+								</div>
 
 								{parentOption.type === 'text' ||
 								parentOption.type === 'number' ? (
