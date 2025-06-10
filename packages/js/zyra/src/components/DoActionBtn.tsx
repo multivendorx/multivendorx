@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
  * Internal dependencies
  */
 import { getApiLink, sendApiResponse } from './apiService';
-import '../styles/web/SyncNow.scss';
+import '../styles/web/DoActionBtn.scss';
 
 // Types
 interface Task {
@@ -29,7 +29,7 @@ interface ApiResponse {
 		users?: { id: number }[];
 	};
 }
-export interface SyncNowProps {
+export interface DoActionBtnProps {
 	buttonKey: string;
 	interval: number;
 	proSetting: boolean;
@@ -42,7 +42,7 @@ export interface SyncNowProps {
 	appLocalizer: Record<string, any>;
 }
 type TaskStatus = 'running' | 'success' | 'failed';
-const SyncNow: React.FC<SyncNowProps> = (props) => {
+const DoActionBtn: React.FC<DoActionBtnProps> = (props) => {
 	const {
 		interval,
 		proSetting,
@@ -297,4 +297,4 @@ const SyncNow: React.FC<SyncNowProps> = (props) => {
 		</div>
 	);
 };
-export default SyncNow;
+export default DoActionBtn;

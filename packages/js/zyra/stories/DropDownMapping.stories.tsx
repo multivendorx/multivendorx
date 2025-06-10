@@ -1,15 +1,15 @@
-import SyncMap from '../src/components/SyncMap';
+import DropDownMapping from '../src/components/DropDownMapping';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof SyncMap> = {
-	title: 'Zyra/Components/SyncMap',
-	component: SyncMap,
+const meta: Meta<typeof DropDownMapping> = {
+	title: 'Zyra/Components/DropDownMapping',
+	component: DropDownMapping,
 	tags: ['autodocs'],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof SyncMap>;
+type Story = StoryObj<typeof DropDownMapping>;
 
 export const TestSyncMap: Story = {
 	args: {
@@ -45,6 +45,6 @@ export const TestSyncMap: Story = {
 		},
 	},
 	render: (args) => {
-		return <SyncMap {...args} />;
+		return <DropDownMapping {...args} />;
 	},
 };

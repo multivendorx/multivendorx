@@ -22,7 +22,7 @@
 		"lint:lang:js:report": "eslint . --ext=js,ts,tsx --format=json --no-color > eslint-report.json",
 		"lint:lang:css": "stylelint '**/*.{css,scss}'",
 		"lint:fix:css": "stylelint '**/*.{css,scss}' --fix",
-		"lint:fix:js": "wp-scripts format",
+		"lint:fix:js": "wp-scripts format && eslint . --ext=js,ts,tsx --fix",
 		"preinstall": "npx only-allow pnpm"
 	},
 	"wireit": {

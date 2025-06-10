@@ -19,9 +19,17 @@ interface BannerProps {
 	isPro?: boolean;
 	products?: Products[];
 	proUrl: string;
+	tag: string;
+	buttonText: string;
 }
 
-const Banner: React.FC<BannerProps> = ({ isPro, products, proUrl }) => {
+const Banner: React.FC<BannerProps> = ({
+	isPro,
+	products,
+	proUrl,
+	tag,
+	buttonText,
+}) => {
 	// Ensure localStorage is initialized correctly
 	if (localStorage.getItem('banner') !== 'false') {
 		localStorage.setItem('banner', 'true');
@@ -128,14 +136,16 @@ const Banner: React.FC<BannerProps> = ({ isPro, products, proUrl }) => {
 								tabIndex={0}
 								onClick={handleCloseBanner}
 							></div>
-							<div
-								className="why-go-pro-tag"
-								role="button"
-								tabIndex={0}
-								onClick={handleOpen}
-							>
-								Why Premium
-							</div>
+							{tag && (
+								<div
+									className="why-go-pro-tag"
+									role="button"
+									tabIndex={0}
+									onClick={handleOpen}
+								>
+									{tag}
+								</div>
+							)}
 							<ul className="carousel-list">
 								{products?.map((product, i) => {
 									return (
@@ -146,14 +156,16 @@ const Banner: React.FC<BannerProps> = ({ isPro, products, proUrl }) => {
 											<div className="admin-pro-txt-items">
 												<h3>{product.title}</h3>
 												<p>{product.description}</p>
-												<a
-													href={proUrl}
-													target="_blank"
-													rel="noreferrer"
-													className="admin-btn btn-red"
-												>
-													View Pricing
-												</a>
+												{buttonText && (
+													<a
+														href={proUrl}
+														target="_blank"
+														rel="noreferrer"
+														className="admin-btn btn-red"
+													>
+														{buttonText}
+													</a>
+												)}
 											</div>
 										</li>
 									);

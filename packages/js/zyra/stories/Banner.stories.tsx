@@ -34,3 +34,79 @@ export const TestBannerInput: Story = {
 		return <Banner {...args} />;
 	},
 };
+
+export const TestBannerInputWithTag: Story = {
+	args: {
+		isPro: false,
+		products: [
+			{
+				title: 'Pro Feature 1',
+				description: 'Description for Pro Feature 1',
+			},
+			{
+				title: 'Pro Feature 2',
+				description: 'Description for Pro Feature 2',
+			},
+			{
+				title: 'Pro Feature 3',
+				description: 'Description for Pro Feature 3',
+			},
+		],
+		proUrl: '#',
+		tag: 'Why Premium',
+	},
+	render: (args) => {
+		return <Banner {...args} />;
+	},
+};
+
+export const TestBannerInputWithButton: Story = {
+	args: {
+		isPro: false,
+		products: [
+			{
+				title: 'Pro Feature 1',
+				description: 'Description for Pro Feature 1',
+			},
+			{
+				title: 'Pro Feature 2',
+				description: 'Description for Pro Feature 2',
+			},
+			{
+				title: 'Pro Feature 3',
+				description: 'Description for Pro Feature 3',
+			},
+		],
+		proUrl: '#',
+		buttonText: 'View Pricing',
+	},
+	render: (args) => {
+		return <Banner {...args} />;
+	},
+};
+
+export const TestBannerInputWithButtonAndTag: Story = {
+	args: {
+		isPro: false,
+		products: [
+			{
+				title: 'Pro Feature 1',
+				description: 'Description for Pro Feature 1',
+			},
+			{
+				title: 'Pro Feature 2',
+				description: 'Description for Pro Feature 2',
+			},
+			{
+				title: 'Pro Feature 3',
+				description: 'Description for Pro Feature 3',
+			},
+		],
+		proUrl: '#',
+		tag: 'Why Premium',
+		buttonText: 'View Pricing',
+	},
+	render: (args) => {
+		return <Banner {...args} />;
+	},
+};

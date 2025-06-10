@@ -97,7 +97,7 @@ const proSettingChanged = (isProSetting: boolean): boolean => {
 	}
 	return false;
 };
-const change = (e: React.ChangeEvent<HTMLInputElement>) => {
+const change = (e: React.ChangeEvent<HTMLInputElement> | string[]) => {
 	if (
 		!proSettingChanged(inputField.proSetting ?? false) &&
 		!moduleEnabledChanged(
@@ -107,6 +107,10 @@ const change = (e: React.ChangeEvent<HTMLInputElement>) => {
 			inputField.dependentPluginName ?? ''
 		)
 	) {
+		if (Array.isArray(e as string[])) {
+			console.log('value changed : ', e);
+			return;
+		}
 		handleChange(e, inputField.key, 'multiple');
 	}
 };
@@ -211,6 +215,41 @@ export const TestMultiCheckboxMultiDefault: Story = {
 		],
 		value: [],
 		...commonProps,
+	},
+	render: (args) => {
+		return <MultiCheckbox key={'sync-course-options'} {...args} />;
+	},
+};
+
+export const TestSyncCheckboxMulti: Story = {
+	args: {
+		khali_dabba: false,
+		description: `Choose how you want to sync`,
+		inputInnerWrapperClass: 'custom-sync-section',
+		inputClass: '',
+		type: 'checkbox-custom-img',
+		options: [
+			{
+				key: 'sync1',
+				value: 'sync-1',
+				img1: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiQqvP9mSAN_KNxZlbvD9VT-yl4Vf_PuT6Cw&s',
+				img2: 'https://yt3.googleusercontent.com/ytc/AIdro_kR_OL7VBS0aarqPDBdteER4K2ANhWx18OKIDw7qDhVWiQ=s900-c-k-c0x00ffffff-no-rj',
+				label: 'Sync Option 1',
+			},
+			{
+				key: 'sync2',
+				value: 'sync-2',
+				img1: 'https://yt3.googleusercontent.com/ytc/AIdro_kR_OL7VBS0aarqPDBdteER4K2ANhWx18OKIDw7qDhVWiQ=s900-c-k-c0x00ffffff-no-rj',
+				img2: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiQqvP9mSAN_KNxZlbvD9VT-yl4Vf_PuT6Cw&s',
+				label: 'Sync Option 2',
+			},
+		],
+		value: ['sync-2'],
+		...commonProps,
+		wrapperClass: 'custom-sync-section',
+		inputWrapperClass: 'sync-direction-items',
+		proSetting: true,
+		onChange: () => change([''] as string[]),
 	},
 	render: (args) => {
 		return <MultiCheckbox key={'sync-course-options'} {...args} />;

@@ -6,10 +6,10 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 /**
  * Internal dependencies
  */
-import '../styles/web/SyncMap.scss';
+import '../styles/web/DropDownMapping.scss';
 
 // Types
-export interface SyncMapProps {
+export interface DropDownMappingProps {
 	value?: [string, string][];
 	onChange: (value: [string, string][]) => void;
 	proSetting?: boolean;
@@ -21,7 +21,7 @@ export interface SyncMapProps {
 	>;
 }
 
-const SyncMap: React.FC<SyncMapProps> = ({
+const DropDownMapping: React.FC<DropDownMappingProps> = ({
 	value = [],
 	onChange,
 	proSetting,
@@ -245,4 +245,4 @@ const SyncMap: React.FC<SyncMapProps> = ({
 	);
 };
 
-export default SyncMap;
+export default DropDownMapping;

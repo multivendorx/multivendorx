@@ -1,17 +1,17 @@
-import SyncNow from '../src/components/SyncNow';
+import DoActionBtn from '../src/components/DoActionBtn';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof SyncNow> = {
-	title: 'Zyra/Components/SyncNow',
-	component: SyncNow,
+const meta: Meta<typeof DoActionBtn> = {
+	title: 'Zyra/Components/DoActionBtn',
+	component: DoActionBtn,
 	tags: ['autodocs'],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof SyncNow>;
+type Story = StoryObj<typeof DoActionBtn>;
 
-export const TestSyncNow: Story = {
+export const TestDoActionBtn: Story = {
 	args: {
 		buttonKey: 'sync_now_button',
 		interval: 15,
@@ -40,6 +40,6 @@ export const TestSyncNow: Story = {
 		},
 	},
 	render: (args) => {
-		return <SyncNow {...args} />;
+		return <DoActionBtn {...args} />;
 	},
 };

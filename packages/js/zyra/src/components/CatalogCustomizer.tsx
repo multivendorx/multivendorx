@@ -186,7 +186,6 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
 	const [buttonItems, setButtonItems] = useState<ButtonItem[]>([
 		{ id: 'enquiry_button' },
 		{ id: 'quote_button' },
-		{ id: 'enquery_cart_button' },
 	]);
 
 	/**
