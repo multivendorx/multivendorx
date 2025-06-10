@@ -5,6 +5,7 @@ import App from "./app";
  * Import the stylesheet for the plugin.
  */
 import "./style/common.scss";
+import "zyra/build/index.css";
 
 // Render the App component into the DOM
 render(

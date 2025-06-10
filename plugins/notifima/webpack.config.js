@@ -7,12 +7,12 @@ const fs = require("fs");
 
 // Dynamically get block folders inside src/block/
 // 1. Static copy pattern for fonts
-const staticPatterns = [
-    {
-        from: path.resolve(__dirname, "node_modules/zyra/build/assets/fonts"),
-        to: path.resolve(__dirname, "dist/fonts"),
-    },
-];
+// const staticPatterns = [
+//     {
+//         from: path.resolve(__dirname, "node_modules/zyra/build/assets/fonts"),
+//         to: path.resolve(__dirname, "dist/fonts"),
+//     },
+// ];
 
 // 2. Dynamic block.json + render.php copy patterns
 const blockBasePath = path.resolve(__dirname, "src/block");
@@ -167,7 +167,7 @@ module.exports = {
             injectPolyfill: true,
         }),
         new CopyWebpackPlugin({
-            patterns: [...staticPatterns, ...dynamicPatterns],
+            patterns: [...dynamicPatterns],
         }),
     ],
 

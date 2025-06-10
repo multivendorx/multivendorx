@@ -226,6 +226,12 @@
   animation: shine-lines 2s infinite ease-out;
 }
 
+.pagination-button-disabled{
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 @keyframes shine-lines {
   0% {
     background-position: -1rem;

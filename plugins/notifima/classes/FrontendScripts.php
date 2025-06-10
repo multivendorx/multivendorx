@@ -91,9 +91,9 @@ class FrontendScripts {
 
     public static function enqueue_external_scripts() {
         $base_dir = plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/';
-        $base_url = MooWoodle()->plugin_url . self::get_build_path_name() . 'js/';
+        $base_url = Notifima()->plugin_url . self::get_build_path_name() . 'js/';
         self::enqueue_scripts_from_dir( $base_dir . 'externals/', $base_url . 'externals/' );
-        if ( MooWoodle()->is_dev ) {
+        if ( Notifima()->is_dev ) {
             self::enqueue_scripts_from_dir(
                 $base_dir,
                 $base_url,

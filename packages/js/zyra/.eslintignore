@@ -16,6 +16,3 @@ node_modules/
 # Configs
 *.config.js
 webpack.config.js
-
-# stories
-stories/
