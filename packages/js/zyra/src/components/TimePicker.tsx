@@ -24,19 +24,19 @@ const TimePicker: React.FC<TimePickerProps> = ({ formField, onChange }) => {
 				<div className="edit-form-wrapper">
 					<p>{label}</p>
 					<div className="settings-form-group-radio">
-						<input type="time" readOnly />
+						<input className="basic-input" type="time" readOnly />
 					</div>
 				</div>
 			)}
 			renderEditableContent={({ label, onLabelChange }) => (
 				<>
 					<input
-						className="input-label textArea-label"
+						className="basic-input textArea-label"
 						type="text"
 						value={label}
 						onChange={(event) => onLabelChange(event.target.value)}
 					/>
-					<input type="time" readOnly />
+					<input className="basic-input" type="time" readOnly />
 				</>
 			)}
 		/>

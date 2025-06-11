@@ -28,7 +28,7 @@ const Datepicker: React.FC<DatepickerProps> = ({ formField, onChange }) => {
 				<div className="edit-form-wrapper">
 					<p>{label}</p>
 					<div className="settings-form-group-radio">
-						<input type="date" readOnly />
+						<input className="basic-input" type="date" readOnly />
 					</div>
 				</div>
 			)}
@@ -36,14 +36,14 @@ const Datepicker: React.FC<DatepickerProps> = ({ formField, onChange }) => {
 				<>
 					{/* Editable label input */}
 					<input
-						className="input-label textArea-label"
+						className="basic-input textArea-label"
 						type="text"
 						value={label}
 						placeholder={placeholder}
 						onChange={(event) => onLabelChange(event.target.value)}
 					/>
 
-					<input type="date" readOnly />
+					<input className="basic-input" type="date" readOnly />
 				</>
 			)}
 		/>

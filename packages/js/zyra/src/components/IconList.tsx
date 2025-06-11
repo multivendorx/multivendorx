@@ -512,8 +512,8 @@ const IconList: React.FC = () => {
 						<span>(e948)</span>
 					</div>
 					<div className="icon-box">
-						<span className="adminlib-star_icon"></span>
-						<span className="mls"> adminlib-star_icon</span>
+						<span className="adminlib-star-icon"></span>
+						<span className="mls"> adminlib-star-icon</span>
 						<span>(e949)</span>
 					</div>
 					<div className="icon-box">

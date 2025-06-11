@@ -14,7 +14,7 @@ type Story = StoryObj<typeof ShortCodeTable>;
 export const TestShortCodeTable: Story = {
 	args: {
 		wrapperClass: 'shortcode-table-wrapper',
-		descClass: 'shortcode-description',
+		descClass: 'settings-metabox-description',
 		description: 'Here are the available shortcode options:',
 		options: [
 			{ label: 'Shortcode 1', desc: '[shortcode_1]' },

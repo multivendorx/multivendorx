@@ -3,6 +3,7 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+import '../styles/web/RegistrationForm.scss';
 
 /**
  * Internal dependencies
@@ -426,7 +427,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 
 	return (
 		// Render Registration form here
-		<div className="registrationFrom-main-wrapper-section">
+		<div className="registration-from-main-wrapper-section">
 			{/* Render element type section */}
 			<Elements
 				selectOptions={selectOptions}
@@ -445,6 +446,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 					<div className="form-heading">
 						<input
 							type="text"
+							className="basic-input"
 							placeholder={formTitlePlaceholder}
 							value={formFieldList[0]?.label}
 							onChange={(event) => {

@@ -72,8 +72,8 @@ export const TestBasicInputNormalFile: Story = {
 
 export const TestBasicInputColor: Story = {
 	args: {
-		wrapperClass: 'settings-color-picker-parent-class',
-		inputClass: 'setting-color-picker',
+		wrapperClass: 'setting-form-input',
+		inputClass: 'basic-input',
 		descClass: 'settings-metabox-description',
 		type: 'color' as 'color',
 		description: 'This is a simple color',
@@ -112,7 +112,7 @@ export const TestBasicInputRange: Story = {
 
 export const TestBasicInputButton: Story = {
 	args: {
-		wrapperClass: 'settings-basic-input-class',
+		wrapperClass: 'setting-form-input',
 		inputClass: 'btn default-btn',
 		descClass: 'settings-metabox-description',
 		type: 'button' as 'button',

@@ -52,7 +52,7 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
 		switch (fieldType) {
 			case 'radio':
 				return options.map((option, idx) => (
-					<div className="radio-input-label-wrap" key={idx}>
+					<div className="radio-basic-input-wrap" key={idx}>
 						<input
 							type="radio"
 							id={`radio-${idx}`}
@@ -63,7 +63,7 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
 				));
 			case 'checkboxes':
 				return options.map((option, idx) => (
-					<div className="radio-input-label-wrap" key={idx}>
+					<div className="radio-basic-input-wrap" key={idx}>
 						<input
 							type="checkbox"
 							id={`checkbox-${idx}`}
@@ -78,7 +78,7 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
 			case 'multiselect':
 				return (
 					<section className="select-input-section merge-components">
-						<select>
+						<select className='basic-select'>
 							<option>Select...</option>
 							{options.map((option, idx) => (
 								<option key={idx} value={option.value}>
@@ -135,14 +135,14 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
 			renderEditableContent={({ label, onLabelChange }) => (
 				<>
 					<input
-						className="input-label multipleOption-label"
+						className="basic-input multipleOption-label"
 						type="text"
 						value={label}
 						onChange={(event) => onLabelChange(event.target.value)}
 					/>
 
 					<ReactSortable
-						className="multiOption-wrapper"
+						className="multioption-wrapper"
 						list={options}
 						setList={(newList: Option[]) => {
 							if (firstTimeRender.current) {

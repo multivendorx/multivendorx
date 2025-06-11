@@ -69,7 +69,7 @@ const Support: React.FC<SupprotProps> = ({
 									<div className="faq-question">
 										{faq.question}
 									</div>
-									<div
+									<p
 										className="faq-answer"
 										dangerouslySetInnerHTML={{
 											__html: faq.answer,

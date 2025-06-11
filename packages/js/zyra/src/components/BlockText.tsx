@@ -17,12 +17,10 @@ const BlockText: React.FC<BlockTextProps> = ({
 }) => {
 	return (
 		<>
-			<div className={wrapperClass}>
-				<p
-					className={blockTextClass}
-					dangerouslySetInnerHTML={{ __html: value }}
-				></p>
-			</div>
+			<p
+				className={blockTextClass}
+				dangerouslySetInnerHTML={{ __html: value }}
+			></p>
 		</>
 	);
 };

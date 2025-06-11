@@ -21,7 +21,7 @@ const TemplateSection: React.FC<TemplateSectionProps> = ({
 		<div className="main-input-wrapper">
 			{/* Render label */}
 			<input
-				className="input-label textArea-label"
+				className="basic-input textArea-label"
 				type="text"
 				value={formField.label}
 				placeholder="I am label"

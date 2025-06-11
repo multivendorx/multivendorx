@@ -38,9 +38,7 @@ const SubTabSection: React.FC<SubTabSectionProps> = ({
 					tabIndex={0}
 					onClick={() => setCurrentTab(menu)}
 				>
-					<span>
-						<i className={`admin-font ${menu.icon}`}></i>
-					</span>
+					<span className={`admin-font ${menu.icon}`}></span>
 					{menu.name}
 				</div>
 			))}

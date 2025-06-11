@@ -17,7 +17,7 @@ export const TestSubTabSection: Story = {
 			{
 				id: 'general',
 				name: 'General',
-				icon: 'icon-general',
+				icon: 'adminlib-star-icon',
 				link: '/general',
 			},
 			{
@@ -30,7 +30,7 @@ export const TestSubTabSection: Story = {
 		currentTab: {
 			id: 'general',
 			name: 'General',
-			icon: 'icon-general',
+			icon: 'adminlib-star-icon',
 			link: '/general',
 		},
 		setCurrentTab: (tab) => {

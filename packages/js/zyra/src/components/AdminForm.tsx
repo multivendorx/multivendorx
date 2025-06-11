@@ -824,7 +824,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
 							childWrapperClass="settings-basic-child-wrap"
 							inputWrapperClass="settings-basic-input-child-class"
 							innerInputWrapperClass="setting-form-input"
-							inputLabelClass="setting-form-input-label"
+							inputLabelClass="setting-form-basic-input"
 							idPrefix="setting-integer-input"
 							keyName={inputField.key}
 							inputClass={inputField.class}
@@ -846,7 +846,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
 					input = (
 						<RadioInput
 							wrapperClass="settings-form-group-radio"
-							inputWrapperClass="radio-input-label-wrap"
+							inputWrapperClass="radio-basic-input-wrap"
 							inputClass="setting-form-input"
 							descClass="settings-metabox-description"
 							activeClass="radio-select-active"
@@ -1314,7 +1314,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
 					input = (
 						<BlockText
 							key={inputField.blocktext}
-							wrapperClass="blocktext-class"
 							blockTextClass="settings-metabox-description-code"
 							value={String(inputField.blocktext)}
 						/>

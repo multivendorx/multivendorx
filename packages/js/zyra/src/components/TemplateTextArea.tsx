@@ -36,7 +36,7 @@ const TemplateTextArea: React.FC<TextareaProps> = ({ formField, onChange }) => {
 			renderEditableContent={({ label, onLabelChange, placeholder }) => (
 				<>
 					<input
-						className="input-label textArea-label"
+						className="basic-input textArea-label"
 						type="text"
 						value={label}
 						onChange={(event) => onLabelChange(event.target.value)}

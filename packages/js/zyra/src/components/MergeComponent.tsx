@@ -75,6 +75,7 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
 							<select
 								key={name}
 								id={name}
+								className= 'basic-select'
 								value={data[name]}
 								onChange={(e) =>
 									handleOnChange(name, e.target.value)

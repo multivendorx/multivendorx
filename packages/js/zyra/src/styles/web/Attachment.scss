@@ -1,28 +1,26 @@
 @use '../../global.scss' as *;
 
 .attachment-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // width: 100%;
+    margin-top: 0.5rem;
     
     .attachment-label {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        border-radius: 0.5rem;
-        border-width: 0.125rem;
-        border-color: #D1D5DB;
-        border-style: dashed;
+        border-radius: $border-radius-medium;
+        border: 0.125rem dashed #D1D5DB;
         width: 100%;
         height: 9rem;
         cursor: pointer;
     
         .wrapper {
         display: flex;
-        padding-top: 1.25rem;
-        padding-bottom: 1.5rem;
+        padding: 1.25rem 0;
         flex-direction: column;
         justify-content: center;
         align-items: center;

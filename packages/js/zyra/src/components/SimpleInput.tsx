@@ -25,7 +25,7 @@ const SimpleInput: React.FC<SimpleInputProps> = ({ formField, onChange }) => {
 					<p>{label}</p>
 					<div className="settings-form-group-radio">
 						<input
-							className="input-text-section simpleInput-text-input"
+							className="basic-input"
 							type="text"
 							placeholder={placeholder}
 						/>
@@ -35,13 +35,13 @@ const SimpleInput: React.FC<SimpleInputProps> = ({ formField, onChange }) => {
 			renderEditableContent={({ label, onLabelChange, placeholder }) => (
 				<>
 					<input
-						className="input-label simpleInput-label"
+						className="basic-label"
 						type="text"
 						value={label}
 						onChange={(event) => onLabelChange(event.target.value)}
 					/>
 					<input
-						className="input-text-section simpleInput-text-input"
+						className="basic-input"
 						type="text"
 						readOnly
 						placeholder={placeholder}

@@ -489,6 +489,7 @@ const CatalogCustomizer: React.FC<CatalogCustomizerProps> = ({
 				>
 					<input
 						placeholder="Additional input (optional)"
+						className="basic-input"
 						type="text"
 						value={localSetting?.additional_input || ''}
 						onChange={(e) =>

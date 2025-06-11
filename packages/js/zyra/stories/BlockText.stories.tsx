@@ -13,7 +13,6 @@ type Story = StoryObj<typeof BlockText>;
 
 export const TestBlockText: Story = {
 	args: {
-		wrapperClass: 'blocktext-class',
 		blockTextClass: 'settings-metabox-description-code',
 		value: 'This is a demo block of text.',
 	},

@@ -13,7 +13,7 @@ type Story = StoryObj<typeof RadioInput>;
 
 const commonProps = {
 	wrapperClass: 'settings-form-group-radio',
-	inputWrapperClass: 'radio-input-label-wrap',
+	inputWrapperClass: 'radio-basic-input-wrap',
 	inputClass: 'setting-form-input',
 	descClass: 'settings-metabox-description',
 	activeClass: 'radio-select-active',

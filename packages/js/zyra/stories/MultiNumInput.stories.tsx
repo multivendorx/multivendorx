@@ -17,7 +17,7 @@ export const TestMultiNumInput: Story = {
 		childWrapperClass: 'settings-basic-child-wrap',
 		inputWrapperClass: 'settings-basic-input-child-class',
 		innerInputWrapperClass: 'setting-form-input',
-		inputLabelClass: 'setting-form-input-label',
+		inputLabelClass: 'setting-form-basic-input',
 		inputClass: 'form-control',
 		idPrefix: 'setting-integer-input',
 		keyName: 'maxUsers',

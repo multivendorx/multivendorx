@@ -65,18 +65,19 @@ const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
 							<h3>Input Field Settings</h3>
 
 							<div className="setting-modal-content-section">
-								<article className="modal-content-section-field">
+								<div className="modal-content-section-field">
 									<p>Value</p>
 									<input
 										type="text"
+										className="basic-input"
 										value={option.value}
 										onChange={(e) =>
 											onChange('value', e.target.value)
 										}
 									/>
-								</article>
+								</div>
 
-								<article className="modal-content-section-field">
+								<div className="modal-content-section-field">
 									<p>Label</p>
 									<input
 										type="text"
@@ -85,17 +86,17 @@ const OptionMetaBox: React.FC<OptionMetaBoxProps> = ({
 											onChange('label', e.target.value)
 										}
 									/>
-								</article>
+								</div>
 							</div>
 							<div className="setting-modal-content-section">
-								<article className="modal-content-section-field">
+								<div className="modal-content-section-field">
 									<p>Set default</p>
 									<input
 										type="checkbox"
 										checked={option.isdefault || false}
 										onChange={() => setDefaultValue()}
 									/>
-								</article>
+								</div>
 							</div>
 						</main>
 					</div>
