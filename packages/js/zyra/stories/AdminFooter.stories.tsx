@@ -2,15 +2,15 @@ import AdminFooter from '../src/components/AdminFooter';
 import type { Meta, StoryObj } from '@storybook/react';
 import '../src/styles/common.scss';
 
-const meta: Meta<typeof AdminFooter> = {
+const meta: Meta< typeof AdminFooter > = {
 	title: 'Zyra/Components/AdminFooter',
 	component: AdminFooter,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof AdminFooter>;
+type Story = StoryObj< typeof AdminFooter >;
 
 const supportLintData = [
 	{
@@ -37,5 +37,5 @@ export const TestAdminFooter: Story = {
 	args: {
 		supportLink: supportLintData,
 	},
-	render: (args) => <AdminFooter {...args} />,
+	render: ( args ) => <AdminFooter { ...args } />,
 };

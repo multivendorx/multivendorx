@@ -1,15 +1,15 @@
 import Tabs from '../src/components/Tabs';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Tabs> = {
+const meta: Meta< typeof Tabs > = {
 	title: 'Zyra/Components/Tabs',
 	component: Tabs,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Tabs>;
+type Story = StoryObj< typeof Tabs >;
 
 export const TestTabs: Story = {
 	args: {
@@ -52,10 +52,10 @@ export const TestTabs: Story = {
 			},
 		],
 		currentTab: 'general',
-		getForm: (currentTab) => {
-			return <div>Form content for {currentTab}</div>;
+		getForm: ( currentTab ) => {
+			return <div>Form content for { currentTab }</div>;
 		},
-		prepareUrl: (tabId) => `/settings/${tabId}`,
+		prepareUrl: ( tabId ) => `/settings/${ tabId }`,
 		HeaderSection: () => <header>Header</header>,
 		BannerSection: () => <div>Banner</div>,
 		horizontally: true,
@@ -78,9 +78,9 @@ export const TestTabs: Story = {
 				link: 'https://docs.example.com',
 			},
 		],
-		Link: (props) => <a {...props}>Link</a>,
+		Link: ( props ) => <a { ...props }>Link</a>,
 	},
-	render: (args) => {
-		return <Tabs {...args} />;
+	render: ( args ) => {
+		return <Tabs { ...args } />;
 	},
 };

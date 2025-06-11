@@ -1,15 +1,15 @@
 import FormViewer from '../src/components/FormViewer';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof FormViewer> = {
+const meta: Meta< typeof FormViewer > = {
 	title: 'Zyra/Components/FormViewer',
 	component: FormViewer,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof FormViewer>;
+type Story = StoryObj< typeof FormViewer >;
 
 export const TestFormViewer: Story = {
 	args: {
@@ -58,11 +58,14 @@ export const TestFormViewer: Story = {
 				style: 'primary',
 			},
 		},
-		onSubmit: (data: FormData) => {
-			console.log('Form submitted:', Object.fromEntries(data.entries()));
+		onSubmit: ( data: FormData ) => {
+			console.log(
+				'Form submitted:',
+				Object.fromEntries( data.entries() )
+			);
 		},
 	},
-	render: (args) => {
-		return <FormViewer {...args} />;
+	render: ( args ) => {
+		return <FormViewer { ...args } />;
 	},
 };

@@ -1,15 +1,15 @@
 import MultiNumInput from '../src/components/MultiNumInput';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof MultiNumInput> = {
+const meta: Meta< typeof MultiNumInput > = {
 	title: 'Zyra/Components/MultiNumInput',
 	component: MultiNumInput,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof MultiNumInput>;
+type Story = StoryObj< typeof MultiNumInput >;
 
 export const TestMultiNumInput: Story = {
 	args: {
@@ -42,16 +42,16 @@ export const TestMultiNumInput: Story = {
 		description: 'Set the maximum number of users allowed for each plan.',
 		descClass: 'input-description',
 		proSetting: true,
-		onChange: (e, keyName, optionKey, index) => {
-			console.log('Changed:', {
+		onChange: ( e, keyName, optionKey, index ) => {
+			console.log( 'Changed:', {
 				keyName,
 				optionKey,
 				index,
 				value: e.target.value,
-			});
+			} );
 		},
 	},
-	render: (args) => {
-		return <MultiNumInput {...args} />;
+	render: ( args ) => {
+		return <MultiNumInput { ...args } />;
 	},
 };

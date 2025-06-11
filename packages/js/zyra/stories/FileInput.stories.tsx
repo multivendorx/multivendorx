@@ -1,15 +1,15 @@
 import FileInput from '../src/components/FileInput';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof FileInput> = {
+const meta: Meta< typeof FileInput > = {
 	title: 'Zyra/Components/FileInput',
 	component: FileInput,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof FileInput>;
+type Story = StoryObj< typeof FileInput >;
 
 export const TestFileInput: Story = {
 	args: {
@@ -27,26 +27,26 @@ export const TestFileInput: Story = {
 		value: '',
 		placeholder: 'Choose a file',
 		proSetting: true,
-		onChange: (e) => {
-			console.log('File changed:', e.target.files);
+		onChange: ( e ) => {
+			console.log( 'File changed:', e.target.files );
 		},
-		onClick: (e) => {
-			console.log('Input clicked', e);
+		onClick: ( e ) => {
+			console.log( 'Input clicked', e );
 		},
-		onMouseOver: (e) => {
-			console.log('Mouse over input', e);
+		onMouseOver: ( e ) => {
+			console.log( 'Mouse over input', e );
 		},
-		onMouseOut: (e) => {
-			console.log('Mouse out of input', e);
+		onMouseOut: ( e ) => {
+			console.log( 'Mouse out of input', e );
 		},
-		onFocus: (e) => {
-			console.log('Input focused', e);
+		onFocus: ( e ) => {
+			console.log( 'Input focused', e );
 		},
-		onButtonClick: (e) => {
-			console.log('Upload button clicked', e);
+		onButtonClick: ( e ) => {
+			console.log( 'Upload button clicked', e );
 		},
 	},
-	render: (args) => {
-		return <FileInput key={'sample_file'} {...args} />;
+	render: ( args ) => {
+		return <FileInput key={ 'sample_file' } { ...args } />;
 	},
 };

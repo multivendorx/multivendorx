@@ -1,45 +1,48 @@
-// @use '../../global.scss' as *;
+@use '../../global.scss' as *;
 
-// .toggle-setting-container{
-//     .toggle-setting-wrapper{
-//         position: relative;
-//         padding: 0.5rem;
-//         border: .063rem solid #d4d1d9;
-//         border-radius: 0.25rem;
-//         display: flex;
-//         gap: 0.5rem;
-//         align-items: center;
-//         overflow: hidden;
-//         width: max-content;
-//         margin: 0;
+.toggle-setting-container{
+    position: relative;
+    width: fit-content;
 
-//         div{
-//             list-style-type: none;
-//             margin: 0;
+    .toggle-setting-wrapper{
+        position: relative;
+        padding: 0.5rem;
+        border: .063rem solid #d4d1d9;
+        border-radius: 0.25rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        overflow: hidden;
+        width: max-content;
+        margin: 0;
 
-//             input[type="radio"]{
-//                 display: none; // for radio button hide
-//             }
+        div{
+            list-style-type: none;
+            margin: 0;
 
-//             input:checked + label{
-//                 background: #65438f;
-//                 color: #f9f8fb;
-//                 border-color: #65438f;
-//             }
+            input[type="radio"]{
+                display: none; // for radio button hide
+            }
 
-//             label{
-//                 color: #181718;
-//                 font-size: 0.9rem;
-//                 line-height: 2.2;
-//                 text-align: center;
-//                 padding: 0.4rem 0.7rem;
-//                 border-radius: 0.25rem;
-//                 border: .063rem solid #d4d1d9;
-//                 transition: .1s ease-in-out;
-//             }
-//         }
-//     }
-// }
+            input:checked + label{
+                background: #65438f;
+                color: #f9f8fb;
+                border-color: #65438f;
+            }
+
+            label{
+                color: #181718;
+                font-size: 0.9rem;
+                line-height: 2.2;
+                text-align: center;
+                padding: 0.4rem 0.7rem;
+                border-radius: 0.25rem;
+                border: .063rem solid #d4d1d9;
+                transition: .1s ease-in-out;
+            }
+        }
+    }
+}
 
 // div:has(.exclusion-modal) {
 //     display: flex;

@@ -27,8 +27,8 @@ type TabData = {
 type TabsProps = {
 	tabData: TabData[];
 	currentTab: string;
-	getForm: (currentTab: string) => ReactNode;
-	prepareUrl: (tabId: string) => string;
+	getForm: ( currentTab: string ) => ReactNode;
+	prepareUrl: ( tabId: string ) => string;
 	HeaderSection?: () => JSX.Element;
 	BannerSection?: () => JSX.Element;
 	horizontally?: boolean;
@@ -36,10 +36,10 @@ type TabsProps = {
 	brandImg: string;
 	smallbrandImg: string;
 	supprot: SupportLink[];
-	Link: React.ElementType<LinkProps>;
+	Link: React.ElementType< LinkProps >;
 };
 
-const Tabs: React.FC<TabsProps> = ({
+const Tabs: React.FC< TabsProps > = ( {
 	tabData,
 	currentTab,
 	getForm,
@@ -52,131 +52,147 @@ const Tabs: React.FC<TabsProps> = ({
 	smallbrandImg,
 	supprot,
 	Link,
-}) => {
-	const [menuCol, setMenuCol] = useState(false);
-	const [openedSubtab, setOpenedSubtab] = useState('');
+} ) => {
+	const [ menuCol, setMenuCol ] = useState( false );
+	const [ openedSubtab, setOpenedSubtab ] = useState( '' );
 
-	const showTabSection: React.FC<TabContent> = (tab) => {
+	const showTabSection: React.FC< TabContent > = ( tab ) => {
 		return tab.link ? (
-			<a href={tab.link}>
+			<a href={ tab.link }>
 				<div>
-					{tab.icon && <i className={`admin-font ${tab.icon}`}></i>}
+					{ tab.icon && (
+						<i className={ `admin-font ${ tab.icon }` }></i>
+					) }
 				</div>
 				<div>
-					<p className="menu-name">{menuCol ? null : tab.name}</p>
-					<p className="menu-desc">{menuCol ? null : tab.desc}</p>
+					<p className="menu-name">{ menuCol ? null : tab.name }</p>
+					<p className="menu-desc">{ menuCol ? null : tab.desc }</p>
 				</div>
 			</a>
 		) : (
 			<Link
-				className={currentTab === tab.id ? 'active-current-tab' : ''}
-				to={prepareUrl(tab.id)}
+				className={ currentTab === tab.id ? 'active-current-tab' : '' }
+				to={ prepareUrl( tab.id ) }
 			>
 				<div>
-					{tab.icon && <i className={` admin-font ${tab.icon} `}></i>}
-					{menuCol
+					{ tab.icon && (
+						<i className={ ` admin-font ${ tab.icon } ` }></i>
+					) }
+					{ menuCol
 						? null
-						: !appLocalizer.khali_dabba &&
-							tab.proDependent && (
+						: ! appLocalizer.khali_dabba &&
+						  tab.proDependent && (
 								<span className="admin-pro-tag">Pro</span>
-							)}
+						  ) }
 				</div>
 				<div>
-					<p className="menu-name">{menuCol ? null : tab.name}</p>
-					<p className="menu-desc">{menuCol ? null : tab.desc}</p>
+					<p className="menu-name">{ menuCol ? null : tab.name }</p>
+					<p className="menu-desc">{ menuCol ? null : tab.desc }</p>
 				</div>
 			</Link>
 		);
 	};
 
-	const showHideMenu: React.FC<TabContent> = (tab) => {
+	const showHideMenu: React.FC< TabContent > = ( tab ) => {
 		let dropdownClass = 'tab-menu-dropdown-icon';
 
-		if (menuCol) {
+		if ( menuCol ) {
 			dropdownClass = '';
-		} else if (openedSubtab === tab.id) {
+		} else if ( openedSubtab === tab.id ) {
 			dropdownClass += ' active';
 		}
 		return (
 			<Link
-				className={currentTab === tab.id ? 'active-current-tab' : ''}
-				onClick={(e) => {
+				className={ currentTab === tab.id ? 'active-current-tab' : '' }
+				onClick={ ( e ) => {
 					e.preventDefault();
-					if (openedSubtab === tab.id) {
-						setOpenedSubtab('');
+					if ( openedSubtab === tab.id ) {
+						setOpenedSubtab( '' );
 					} else {
-						setOpenedSubtab(tab.id);
+						setOpenedSubtab( tab.id );
 					}
-				}}
-				to={'#'}
+				} }
+				to={ '#' }
 			>
 				<div>
-					{tab.icon && <i className={` admin-font ${tab.icon} `}></i>}
+					{ tab.icon && (
+						<i className={ ` admin-font ${ tab.icon } ` }></i>
+					) }
 				</div>
 				<div className="drop-down-section">
 					<div>
-						<p className="menu-name">{menuCol ? null : tab.name}</p>
-						<p className="menu-desc">{menuCol ? null : tab.desc}</p>
+						<p className="menu-name">
+							{ menuCol ? null : tab.name }
+						</p>
+						<p className="menu-desc">
+							{ menuCol ? null : tab.desc }
+						</p>
 					</div>
-					{menuCol ? null : (
-						<p className={dropdownClass}>
+					{ menuCol ? null : (
+						<p className={ dropdownClass }>
 							<i className="admin-font adminlib-keyboard-arrow-down"></i>
 						</p>
-					)}
+					) }
 				</div>
 			</Link>
 		);
 	};
 
 	// Get the description of the current tab.
-	const getTabDescription: React.FC<TabData[]> = (tabDataVal) => {
-		return tabDataVal?.map(({ content, type }) => {
-			if (type === 'file') {
+	const getTabDescription: React.FC< TabData[] > = ( tabDataVal ) => {
+		return tabDataVal?.map( ( { content, type } ) => {
+			if ( type === 'file' ) {
 				return (
-					(content as TabContent).id === currentTab &&
-					(content as TabContent).id !== 'support' && (
+					( content as TabContent ).id === currentTab &&
+					( content as TabContent ).id !== 'support' && (
 						<div className="tab-description-start">
 							<div className="child">
 								<p>
 									<i
-										className={`admin-font ${(content as TabContent).icon}`}
+										className={ `admin-font ${
+											( content as TabContent ).icon
+										}` }
 									></i>
 								</p>
 								<div>
 									<div className="tab-name">
-										{(content as TabContent).name}
+										{ ( content as TabContent ).name }
 									</div>
 									<div className="tab-desc">
-										{(content as TabContent).desc}
+										{ ( content as TabContent ).desc }
 									</div>
 								</div>
 							</div>
 						</div>
 					)
 				);
-			} else if (type === 'folder') {
+			} else if ( type === 'folder' ) {
 				// Get tab description from child by recursion
-				return getTabDescription(content as TabData[]);
+				return getTabDescription( content as TabData[] );
 			}
 			return null;
-		});
+		} );
 	};
 
 	const handleMenuShow = () => {
-		setMenuCol(!menuCol);
+		setMenuCol( ! menuCol );
 	};
 
 	return (
 		<>
-			<div className={` general-wrapper `}>
-				{HeaderSection && <HeaderSection />}
+			<div className={ ` general-wrapper ` }>
+				{ HeaderSection && <HeaderSection /> }
 
-				{BannerSection && <BannerSection />}
+				{ BannerSection && <BannerSection /> }
 				<div
-					className={`middle-container-wrapper ${horizontally ? 'horizontal-tabs' : 'vertical-tabs'}`}
+					className={ `middle-container-wrapper ${
+						horizontally ? 'horizontal-tabs' : 'vertical-tabs'
+					}` }
 				>
 					<div
-						className={`${menuCol ? 'showMenu' : ''} middle-child-container`}
+						className={ `${
+							menuCol ? 'show-menu' : ''
+						} middle-child-container` }
 					>
 						<div
 							id="current-tab-lists"
@@ -185,18 +201,18 @@ const Tabs: React.FC<TabsProps> = ({
 							<div className="brand">
 								<img
 									className="logo"
-									src={menuCol ? smallbrandImg : brandImg}
+									src={ menuCol ? smallbrandImg : brandImg }
 									alt="Logo"
 								/>
 								<img
 									className="logo-small"
-									src={smallbrandImg}
+									src={ smallbrandImg }
 									alt="Logo"
 								/>
 							</div>
 							<div className="current-tab-lists-container">
-								{tabData?.map(({ type, content }) => {
-									if (type !== 'folder') {
+								{ tabData?.map( ( { type, content } ) => {
+									if ( type !== 'folder' ) {
 										return showTabSection(
 											content as TabContent
 										);
@@ -206,63 +222,65 @@ const Tabs: React.FC<TabsProps> = ({
 									return (
 										<div
 											className="tab-wrapper"
-											key={`${type}-${content}`}
+											key={ `${ type }-${ content }` }
 										>
-											{showHideMenu(
-												(content as TabData[])[0]
+											{ showHideMenu(
+												( content as TabData[] )[ 0 ]
 													.content as TabContent
-											)}
+											) }
 											{
 												<div
-													className={`subtab-wrapper ${menuCol ? 'show' : ''} ${
+													className={ `subtab-wrapper ${
+														menuCol ? 'show' : ''
+													} ${
 														openedSubtab ===
 														(
 															(
 																content as TabData[]
-															)[0]
+															 )[ 0 ]
 																.content as TabContent
-														).id
+														 ).id
 															? 'active'
 															: ''
-													}`}
+													}` }
 												>
-													{(content as TabData[])
-														.slice(1)
+													{ ( content as TabData[] )
+														.slice( 1 )
 														?.map(
 															// eslint-disable-next-line @typescript-eslint/no-shadow
-															({ content }) =>
+															( { content } ) =>
 																showTabSection(
 																	content as TabContent
 																)
-														)}
+														) }
 												</div>
 											}
 										</div>
 									);
-								})}
+								} ) }
 								<div
 									role="button"
-									tabIndex={0}
-									className="main-btn menu-coll-btn"
-									onClick={handleMenuShow}
+									tabIndex={ 0 }
+									className="admin-btn menu-coll-btn"
+									onClick={ handleMenuShow }
 								>
 									<span>
 										<i className="admin-font adminlib-arrow-left"></i>
 									</span>
-									{menuCol ? null : 'Collapse'}
+									{ menuCol ? null : 'Collapse' }
 								</div>
 							</div>
 						</div>
 						<div className="tab-content">
-							{/* Render name and description of the current tab */}
-							{getTabDescription(tabData)}
-							{/* Render the form from parent component for better control */}
-							{getForm(currentTab)}
+							{ /* Render name and description of the current tab */ }
+							{ getTabDescription( tabData ) }
+							{ /* Render the form from parent component for better control */ }
+							{ getForm( currentTab ) }
 						</div>
 					</div>
 				</div>
 
-				<AdminFooter supportLink={supprot} />
+				<AdminFooter supportLink={ supprot } />
 			</div>
 		</>
 	);

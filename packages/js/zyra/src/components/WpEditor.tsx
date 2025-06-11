@@ -10,24 +10,26 @@ import React from 'react';
 export interface WpEditorProps {
 	apiKey: string;
 	value: string;
-	onEditorChange: (content: string) => void;
+	onEditorChange: ( content: string ) => void;
 }
 
-const WpEditor: React.FC<WpEditorProps> = ({
+const WpEditor: React.FC< WpEditorProps > = ( {
 	apiKey,
 	value,
 	onEditorChange,
-}) => {
+} ) => {
 	return (
 		<>
 			<Editor
-				apiKey={apiKey}
-				value={value}
-				init={{
+				apiKey={ apiKey }
+				value={ value }
+				init={ {
 					height: 200,
 					plugins: 'media',
-				}}
-				onEditorChange={(content: string) => onEditorChange(content)}
+				} }
+				onEditorChange={ ( content: string ) =>
+					onEditorChange( content )
+				}
 			/>
 		</>
 	);

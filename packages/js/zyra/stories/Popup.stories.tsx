@@ -1,15 +1,15 @@
 import Popup from '../src/components/Popup';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Popup> = {
+const meta: Meta< typeof Popup > = {
 	title: 'Zyra/Components/Popup',
 	component: Popup,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Popup>;
+type Story = StoryObj< typeof Popup >;
 
 export const TestProPopup: Story = {
 	args: {
@@ -21,8 +21,8 @@ export const TestProPopup: Story = {
 			'Access to premium modules and integrations.',
 		],
 	},
-	render: (args) => {
-		return <Popup {...args} />;
+	render: ( args ) => {
+		return <Popup { ...args } />;
 	},
 };
 
@@ -33,8 +33,8 @@ export const TestModulePopup: Story = {
 		moduleButton: 'Enable Module',
 		modulePageUrl: '/modules/seo-optimizer',
 	},
-	render: (args) => {
-		return <Popup {...args} />;
+	render: ( args ) => {
+		return <Popup { ...args } />;
 	},
 };
 
@@ -45,8 +45,8 @@ export const TestSettingPopup: Story = {
 			'Configure title tags, meta descriptions, and more.',
 		SettingMessage: 'Customize how your site appears in search results.',
 	},
-	render: (args) => {
-		return <Popup {...args} />;
+	render: ( args ) => {
+		return <Popup { ...args } />;
 	},
 };
 export const TestPluginPopup: Story = {
@@ -58,8 +58,7 @@ export const TestPluginPopup: Story = {
 		pluginButton: 'Install Plugin',
 		pluginUrl: 'https://wordpress.org/plugins/yoast-seo/',
 	},
-	render: (args) => {
-		return <Popup {...args} />;
+	render: ( args ) => {
+		return <Popup { ...args } />;
 	},
 };
-

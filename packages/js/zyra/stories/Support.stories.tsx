@@ -1,15 +1,15 @@
 import Support from '../src/components/Support';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Support> = {
+const meta: Meta< typeof Support > = {
 	title: 'Zyra/Components/Support',
 	component: Support,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Support>;
+type Story = StoryObj< typeof Support >;
 
 export const TestSupport: Story = {
 	args: {
@@ -29,7 +29,7 @@ export const TestSupport: Story = {
 			},
 		],
 	},
-	render: (args) => {
-		return <Support {...args} />;
+	render: ( args ) => {
+		return <Support { ...args } />;
 	},
 };

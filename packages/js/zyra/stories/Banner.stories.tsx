@@ -1,15 +1,15 @@
 import Banner from '../src/components/Banner';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Banner> = {
+const meta: Meta< typeof Banner > = {
 	title: 'Zyra/Components/Banner',
 	component: Banner,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Banner>;
+type Story = StoryObj< typeof Banner >;
 
 export const TestBannerInput: Story = {
 	args: {
@@ -30,8 +30,8 @@ export const TestBannerInput: Story = {
 		],
 		proUrl: '#',
 	},
-	render: (args) => {
-		return <Banner {...args} />;
+	render: ( args ) => {
+		return <Banner { ...args } />;
 	},
 };
 
@@ -55,8 +55,8 @@ export const TestBannerInputWithTag: Story = {
 		proUrl: '#',
 		tag: 'Why Premium',
 	},
-	render: (args) => {
-		return <Banner {...args} />;
+	render: ( args ) => {
+		return <Banner { ...args } />;
 	},
 };
 
@@ -80,8 +80,8 @@ export const TestBannerInputWithButton: Story = {
 		proUrl: '#',
 		buttonText: 'View Pricing',
 	},
-	render: (args) => {
-		return <Banner {...args} />;
+	render: ( args ) => {
+		return <Banner { ...args } />;
 	},
 };
 
@@ -106,7 +106,7 @@ export const TestBannerInputWithButtonAndTag: Story = {
 		tag: 'Why Premium',
 		buttonText: 'View Pricing',
 	},
-	render: (args) => {
-		return <Banner {...args} />;
+	render: ( args ) => {
+		return <Banner { ...args } />;
 	},
 };

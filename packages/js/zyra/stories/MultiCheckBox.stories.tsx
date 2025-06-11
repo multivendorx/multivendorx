@@ -1,21 +1,21 @@
 import MultiCheckbox from '../src/components/MultiCheckbox';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof MultiCheckbox> = {
+const meta: Meta< typeof MultiCheckbox > = {
 	title: 'Zyra/Components/MultiCheckbox',
 	component: MultiCheckbox,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof MultiCheckbox>;
+type Story = StoryObj< typeof MultiCheckbox >;
 
 const appLocalizer = {
 	khali_dabba: false,
 };
 
-const setting = { dependentSetting: ['asdf', 'asdf2'] };
+const setting = { dependentSetting: [ 'asdf', 'asdf2' ] };
 
 type inputFieldType = {
 	key: string;
@@ -34,13 +34,13 @@ const inputField: inputFieldType = {
 	// dependentSetting: "dependentSetting123",
 };
 
-const modules = ['demo1', 'demo2'];
+const modules = [ 'demo1', 'demo2' ];
 const moduleOpen = () => {
-	console.log('Module Opened');
+	console.log( 'Module Opened' );
 };
 
-const handleChange = (e, key, val) => {
-	console.log(`Changed: ${key} to ${val}`, e.target.value);
+const handleChange = ( e, key, val ) => {
+	console.log( `Changed: ${ key } to ${ val }`, e.target.value );
 };
 
 const moduleEnabledChanged = (
@@ -49,38 +49,38 @@ const moduleEnabledChanged = (
 	dependentPlugin: boolean | undefined = false,
 	dependentPluginName: string | undefined = ''
 ): boolean => {
-	console.log('Module Enabled Changed:', {
+	console.log( 'Module Enabled Changed:', {
 		moduleEnabled,
 		dependentSetting,
 		dependentPlugin,
 		dependentPluginName,
-	});
+	} );
 	const popupData = {
 		moduleName: '',
 		settings: '',
 		plugin: '',
 	};
 
-	if (moduleEnabled && !modules.includes(moduleEnabled)) {
-		console.log('Module not found:', moduleEnabled);
+	if ( moduleEnabled && ! modules.includes( moduleEnabled ) ) {
+		console.log( 'Module not found:', moduleEnabled );
 		popupData.moduleName = moduleEnabled;
 	}
 
 	if (
 		dependentSetting &&
-		Array.isArray(setting[dependentSetting]) &&
-		setting[dependentSetting].length === 0
+		Array.isArray( setting[ dependentSetting ] ) &&
+		setting[ dependentSetting ].length === 0
 	) {
-		console.log('Dependent setting not found:', dependentSetting);
+		console.log( 'Dependent setting not found:', dependentSetting );
 		popupData.settings = dependentSetting;
 	}
 
-	if (!dependentPlugin) {
-		console.log('Dependent plugin not found:', dependentPluginName);
+	if ( ! dependentPlugin ) {
+		console.log( 'Dependent plugin not found:', dependentPluginName );
 		popupData.plugin = dependentPluginName;
 	}
 
-	if (popupData.moduleName || popupData.settings || popupData.plugin) {
+	if ( popupData.moduleName || popupData.settings || popupData.plugin ) {
 		moduleOpen();
 		moduleOpen();
 		return true;
@@ -89,29 +89,29 @@ const moduleEnabledChanged = (
 	return false;
 };
 
-const proSettingChanged = (isProSetting: boolean): boolean => {
-	if (isProSetting && !appLocalizer?.khali_dabba) {
-		console.log('Pro setting');
+const proSettingChanged = ( isProSetting: boolean ): boolean => {
+	if ( isProSetting && ! appLocalizer?.khali_dabba ) {
+		console.log( 'Pro setting' );
 		moduleOpen();
 		return true;
 	}
 	return false;
 };
-const change = (e: React.ChangeEvent<HTMLInputElement> | string[]) => {
+const change = ( e: React.ChangeEvent< HTMLInputElement > | string[] ) => {
 	if (
-		!proSettingChanged(inputField.proSetting ?? false) &&
-		!moduleEnabledChanged(
+		! proSettingChanged( inputField.proSetting ?? false ) &&
+		! moduleEnabledChanged(
 			inputField.moduleEnabled ?? '',
 			inputField.dependentSetting ?? '',
 			inputField.dependentPlugin ?? true,
 			inputField.dependentPluginName ?? ''
 		)
 	) {
-		if (Array.isArray(e as string[])) {
-			console.log('value changed : ', e);
+		if ( Array.isArray( e as string[] ) ) {
+			console.log( 'value changed : ', e );
 			return;
 		}
-		handleChange(e, inputField.key, 'multiple');
+		handleChange( e, inputField.key, 'multiple' );
 	}
 };
 
@@ -126,11 +126,11 @@ const commonProps = {
 	selectDeselectValue: 'Select / Deselect All',
 	rightContentClass: 'settings-checkbox-description',
 	onChange: change,
-	onMultiSelectDeselectChange: (e) => {
-		console.log('Select/Deselect clicked:', e);
+	onMultiSelectDeselectChange: ( e ) => {
+		console.log( 'Select/Deselect clicked:', e );
 	},
 	proChanged: () => {
-		console.log('Pro setting toggled');
+		console.log( 'Pro setting toggled' );
 	},
 };
 
@@ -152,8 +152,8 @@ export const TestMultiCheckboxSingle: Story = {
 		value: [],
 		...commonProps,
 	},
-	render: (args) => {
-		return <MultiCheckbox key={'sample_checkbox'} {...args} />;
+	render: ( args ) => {
+		return <MultiCheckbox key={ 'sample_checkbox' } { ...args } />;
 	},
 };
 
@@ -190,8 +190,8 @@ export const TestMultiCheckboxMulti: Story = {
 		value: [],
 		...commonProps,
 	},
-	render: (args) => {
-		return <MultiCheckbox key={'sync-course-options'} {...args} />;
+	render: ( args ) => {
+		return <MultiCheckbox key={ 'sync-course-options' } { ...args } />;
 	},
 };
 
@@ -216,8 +216,8 @@ export const TestMultiCheckboxMultiDefault: Story = {
 		value: [],
 		...commonProps,
 	},
-	render: (args) => {
-		return <MultiCheckbox key={'sync-course-options'} {...args} />;
+	render: ( args ) => {
+		return <MultiCheckbox key={ 'sync-course-options' } { ...args } />;
 	},
 };
 
@@ -244,14 +244,14 @@ export const TestSyncCheckboxMulti: Story = {
 				label: 'Sync Option 2',
 			},
 		],
-		value: ['sync-2'],
+		value: [ 'sync-2' ],
 		...commonProps,
 		wrapperClass: 'custom-sync-section',
 		inputWrapperClass: 'sync-direction-items',
 		proSetting: true,
-		onChange: () => change([''] as string[]),
+		onChange: () => change( [ '' ] as string[] ),
 	},
-	render: (args) => {
-		return <MultiCheckbox key={'sync-course-options'} {...args} />;
+	render: ( args ) => {
+		return <MultiCheckbox key={ 'sync-course-options' } { ...args } />;
 	},
 };

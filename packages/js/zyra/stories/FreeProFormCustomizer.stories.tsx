@@ -1,15 +1,15 @@
 import FreeProFormCustomizer from '../src/components/FreeProFormCustomizer';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof FreeProFormCustomizer> = {
+const meta: Meta< typeof FreeProFormCustomizer > = {
 	title: 'Zyra/Components/FreeProFormCustomizer',
 	component: FreeProFormCustomizer,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof FreeProFormCustomizer>;
+type Story = StoryObj< typeof FreeProFormCustomizer >;
 
 export const TestFreeProFormCustomizer: Story = {
 	args: {
@@ -31,21 +31,21 @@ export const TestFreeProFormCustomizer: Story = {
 		},
 		proSetting: {
 			isPro: true,
-			features: ['advancedReports', 'prioritySupport'],
+			features: [ 'advancedReports', 'prioritySupport' ],
 		},
 		proSettingChange: () => {
-			console.log('Toggled Pro setting');
+			console.log( 'Toggled Pro setting' );
 			return true;
 		},
 		moduleEnabledChange: () => {
-			console.log('Toggled Module');
+			console.log( 'Toggled Module' );
 			return false;
 		},
-		onChange: (key, value) => {
-			console.log(`Changed ${key} to`, value);
+		onChange: ( key, value ) => {
+			console.log( `Changed ${ key } to`, value );
 		},
 	},
-	render: (args) => {
-		return <FreeProFormCustomizer {...args} />;
+	render: ( args ) => {
+		return <FreeProFormCustomizer { ...args } />;
 	},
 };

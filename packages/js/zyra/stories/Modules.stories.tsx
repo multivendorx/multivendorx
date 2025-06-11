@@ -1,15 +1,15 @@
 import Modules from '../src/components/Modules';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Modules> = {
+const meta: Meta< typeof Modules > = {
 	title: 'Zyra/Components/Modules',
 	component: Modules,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Modules>;
+type Story = StoryObj< typeof Modules >;
 const modulesArray = [
 	{
 		id: 'analytics',
@@ -41,10 +41,10 @@ const modulesArray = [
 
 export const TestModules: Story = {
 	args: {
-		insertModule: (moduleId: string) =>
-			console.log(`Insert module: ${moduleId}`),
-		removeModule: (moduleId: string) =>
-			console.log(`Remove module: ${moduleId}`),
+		insertModule: ( moduleId: string ) =>
+			console.log( `Insert module: ${ moduleId }` ),
+		removeModule: ( moduleId: string ) =>
+			console.log( `Remove module: ${ moduleId }` ),
 		modulesArray,
 		appLocalizer: {
 			siteUrl: 'https://mywordpresssite.com',
@@ -55,7 +55,7 @@ export const TestModules: Story = {
 			isProUser: true,
 		},
 	},
-	render: (args) => {
-		return <Modules {...args} />;
+	render: ( args ) => {
+		return <Modules { ...args } />;
 	},
 };

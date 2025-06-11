@@ -1,19 +1,19 @@
-(globalThis as any).appLocalizer = {
+( globalThis as any ).appLocalizer = {
 	google_api: 'AIzaSyBNIfvjxTlKFU6ERNIYtFdI70hfwPpev-Q',
 };
 
 import GoogleMap from '../src/components/GoogleMap';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof GoogleMap> = {
+const meta: Meta< typeof GoogleMap > = {
 	title: 'Zyra/Components/GoogleMap',
 	component: GoogleMap,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof GoogleMap>;
+type Story = StoryObj< typeof GoogleMap >;
 
 export const TestGoogleMap: Story = {
 	args: {
@@ -21,7 +21,7 @@ export const TestGoogleMap: Story = {
 		wrapperClass: 'map-container',
 		placeholder: 'Loading map...',
 	},
-	render: (args) => {
-		return <GoogleMap {...args} />;
+	render: ( args ) => {
+		return <GoogleMap { ...args } />;
 	},
 };

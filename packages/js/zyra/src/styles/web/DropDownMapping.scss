@@ -1,90 +1,77 @@
 @use '../../global.scss' as *;
 
-.sync-map-container{
-    .container-wrapper{
+.dropdown-mapping-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-end;
+
+    .main-wrapper {
         display: flex;
-        flex-wrap: wrap;
+        align-items: flex-start;
+        flex-flow: column wrap;
         gap: 0.5rem;
-        align-items: flex-end;
+        justify-content: flex-start;
+        position: relative;
 
-        .main-wrapper{
+        .main-wrapper-heading {
             display: flex;
-            align-items: flex-start;
-            flex-flow: column wrap;
+            flex-wrap: wrap;
+            gap: 0.5rem 2.25rem;
+
+            span {
+                width: 6.93rem;
+            }
+        }
+
+        .map-content-wrapper {
+            display: flex;
+            place-content: center flex-start;
             gap: 0.5rem;
-            justify-content: flex-start;
-            position: relative;
+            flex-wrap: wrap;
 
-            .main-wrapper-heading{
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem 2.25rem;
+            select {
+                background-color: transparent;
+                border: 0.120rem solid #e0e4e9;
+                border-radius: 0.063rem solid #e0e4e9;
+                padding: 0.125rem 1.5rem 0.15rem 0.5rem;
+                appearance: auto !important;
+                width: 6.93rem;
 
-                span{
-                    width: 6.93rem;
+                &:active,
+                &:focus {
+                    box-shadow: none;
                 }
             }
-    
-            .map-content-wrapper{
-                display: flex;
-                place-content: center flex-start;
-                gap: 0.5rem;
-                flex-wrap: wrap;
-        
-                select{
-                    background-color: transparent;
-                    border: 0.120rem solid #e0e4e9;
-                    border-radius: 0.063rem solid #e0e4e9;
-                    padding: 0.125rem 1.5rem 0.15rem 0.5rem;
-                    appearance: auto !important;
-                    width: 6.93rem;
-        
-                    &:active, &:focus{
-                        box-shadow: none;
-                    }
-                }
-        
-                .connection-icon{
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.25rem;
-                }
-        
-                .remove-mapping{
-                    background: #e34f4720 !important; // To overwrite common btn style
-                    color: #e35047 !important; // To overwrite common btn style
-                    gap: 0.75rem;
 
-                    .icon{
-                        display: flex;
-                        align-items: center;
-                        margin-top: 0.126rem;
-                    }
-                }
+            .connection-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem;
+            }
+
+            .remove-mapping {
+                background: #e34f4720;
+                color: #e35047;                
             }
         }
-    
-        .btn-container{
-            .add-mapping-container{
-                min-width: 8.19rem;
-                position: relative;
-        
-                .add-mapping{
-                    gap: 0.75rem;
+    }
 
-                    &.not-allow{
-                        opacity: 0.5;
-                        cursor: not-allowed;
-                    }
-        
-                    .icon{
-                        display: flex;
-                        align-items: center;
-                        margin-top: 0.126rem;
-                    }
-                }
-            }
+    .add-mapping-container {
+        min-width: 8.19rem;
+        position: relative;
+    }
+
+    .admin-btn {
+        &.not-allow {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
-    }      
+
+        .icon {
+            display: flex;
+            align-items: center;
+        }
+    }
 }

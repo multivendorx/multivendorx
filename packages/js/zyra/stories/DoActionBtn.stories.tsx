@@ -1,15 +1,15 @@
 import DoActionBtn from '../src/components/DoActionBtn';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof DoActionBtn> = {
+const meta: Meta< typeof DoActionBtn > = {
 	title: 'Zyra/Components/DoActionBtn',
 	component: DoActionBtn,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof DoActionBtn>;
+type Story = StoryObj< typeof DoActionBtn >;
 
 export const TestDoActionBtn: Story = {
 	args: {
@@ -39,7 +39,7 @@ export const TestDoActionBtn: Story = {
 			ajax_url: 'https://example.com/wp-admin/admin-ajax.php',
 		},
 	},
-	render: (args) => {
-		return <DoActionBtn {...args} />;
+	render: ( args ) => {
+		return <DoActionBtn { ...args } />;
 	},
 };

@@ -1,15 +1,15 @@
 import MultiCheckboxTable from '../src/components/MultiCheckboxTable';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof MultiCheckboxTable> = {
+const meta: Meta< typeof MultiCheckboxTable > = {
 	title: 'Zyra/Components/MultiCheckboxTable',
 	component: MultiCheckboxTable,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof MultiCheckboxTable>;
+type Story = StoryObj< typeof MultiCheckboxTable >;
 const rows = [
 	{
 		key: 'trackUsers',
@@ -50,8 +50,8 @@ export const TestMultiCheckboxTable: Story = {
 		rows,
 		columns,
 		description: 'Configure analytics and tracking settings below.',
-		onChange: (key: string, value: any) => {
-			console.log(`Setting changed: ${key} = ${value}`);
+		onChange: ( key: string, value: any ) => {
+			console.log( `Setting changed: ${ key } = ${ value }` );
 		},
 		setting: {
 			trackUsers: 'yes',
@@ -59,12 +59,12 @@ export const TestMultiCheckboxTable: Story = {
 			anonymizeIp: true,
 		},
 		proSetting: true,
-		modules: ['analytics', 'events'],
-		moduleChange: (module: string) => {
-			console.log(`Module toggled: ${module}`);
+		modules: [ 'analytics', 'events' ],
+		moduleChange: ( module: string ) => {
+			console.log( `Module toggled: ${ module }` );
 		},
 	},
-	render: (args) => {
-		return <MultiCheckboxTable {...args} />;
+	render: ( args ) => {
+		return <MultiCheckboxTable { ...args } />;
 	},
 };

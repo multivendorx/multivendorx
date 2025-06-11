@@ -22,19 +22,20 @@ type SupprotProps = {
 	faqData: FAQ[];
 };
 
-const Support: React.FC<SupprotProps> = ({
+const Support: React.FC< SupprotProps > = ( {
 	title = 'Thank you for [plugin name]',
 	subTitle = 'Plugin support subheading',
 	url = '#',
 	faqData,
-}) => {
-	const [faqs, setFaqs] = useState(faqData);
-	const toggleFAQ = (index: number) => {
-		setFaqs((prevFaqs) =>
-			prevFaqs?.map((faq, i) => ({
-				...faq,
-				open: i === index ? !faq.open : false,
-			}))
+} ) => {
+	const [ faqs, setFaqs ] = useState( faqData );
+	const toggleFAQ = ( index: number ) => {
+		setFaqs(
+			( prevFaqs ) =>
+				prevFaqs?.map( ( faq, i ) => ( {
+					...faq,
+					open: i === index ? ! faq.open : false,
+				} ) )
 		);
 	};
 
@@ -42,13 +43,13 @@ const Support: React.FC<SupprotProps> = ({
 		<div className="dynamic-fields-wrapper">
 			<div className="support-container">
 				<div className="support-header-wrapper">
-					<h1 className="support-heading">{title}</h1>
-					<p className="support-subheading">{subTitle}</p>
+					<h1 className="support-heading">{ title }</h1>
+					<p className="support-subheading">{ subTitle }</p>
 				</div>
 				<div className="video-faq-wrapper">
 					<div className="video-section">
 						<iframe
-							src={url}
+							src={ url }
 							title="YouTube video player"
 							frameBorder="0"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -58,25 +59,27 @@ const Support: React.FC<SupprotProps> = ({
 					</div>
 					<div className="faq-section">
 						<div className="faqs">
-							{faqs?.map((faq, index) => (
+							{ faqs?.map( ( faq, index ) => (
 								<div
-									className={`faq ${faq.open ? 'open' : ''}`}
-									key={index}
+									className={ `faq ${
+										faq.open ? 'open' : ''
+									}` }
+									key={ index }
 									role="button"
-									tabIndex={0}
-									onClick={() => toggleFAQ(index)}
+									tabIndex={ 0 }
+									onClick={ () => toggleFAQ( index ) }
 								>
 									<div className="faq-question">
-										{faq.question}
+										{ faq.question }
 									</div>
 									<p
 										className="faq-answer"
-										dangerouslySetInnerHTML={{
+										dangerouslySetInnerHTML={ {
 											__html: faq.answer,
-										}}
+										} }
 									/>
 								</div>
-							))}
+							) ) }
 						</div>
 					</div>
 				</div>

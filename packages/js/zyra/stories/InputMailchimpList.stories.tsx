@@ -1,15 +1,15 @@
 import InputMailchimpList from '../src/components/InputMailchimpList';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof InputMailchimpList> = {
+const meta: Meta< typeof InputMailchimpList > = {
 	title: 'Zyra/Components/InputMailchimpList',
 	component: InputMailchimpList,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof InputMailchimpList>;
+type Story = StoryObj< typeof InputMailchimpList >;
 
 export const TestInputMailchimpList: Story = {
 	args: {
@@ -18,26 +18,24 @@ export const TestInputMailchimpList: Story = {
 		settingChanged: { current: false },
 		apiLink: 'https://api.mailchimp.com/3.0/lists',
 		proSettingChanged: () => {
-			console.log('Checked pro setting change');
+			console.log( 'Checked pro setting change' );
 			return true;
 		},
-		onChange: (event, key) => {
-			console.log(`Changed key ${key} to`, event.target.value);
+		onChange: ( event, key ) => {
+			console.log( `Changed key ${ key } to`, event.target.value );
 		},
 		selectKey: 'newsletterList',
 		value: 'list_001',
-		setting: {
-			
-		},
-		updateSetting: (key: string, value: any) => {
-			console.log(`Updated setting ${key} to`, value);
+		setting: {},
+		updateSetting: ( key: string, value: any ) => {
+			console.log( `Updated setting ${ key } to`, value );
 		},
 		appLocalizer: {
 			someFlag: true,
 			someText: 'Localized string',
 		},
 	},
-	render: (args) => {
-		return <InputMailchimpList {...args} />;
+	render: ( args ) => {
+		return <InputMailchimpList { ...args } />;
 	},
 };

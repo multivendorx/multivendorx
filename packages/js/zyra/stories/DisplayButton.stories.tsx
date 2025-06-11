@@ -1,15 +1,15 @@
 import DisplayButton from '../src/components/DisplayButton';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof DisplayButton> = {
+const meta: Meta< typeof DisplayButton > = {
 	title: 'Zyra/Components/DisplayButton',
 	component: DisplayButton,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof DisplayButton>;
+type Story = StoryObj< typeof DisplayButton >;
 
 export const TestDisplayButton: Story = {
 	args: {
@@ -29,11 +29,11 @@ export const TestDisplayButton: Story = {
 			button_text: 'Click Me',
 		},
 		children: <span>Button Content</span>,
-		onClick: (e) => {
-			console.log('Button clicked', e);
+		onClick: ( e ) => {
+			console.log( 'Button clicked', e );
 		},
 	},
-	render: (args) => {
-		return <DisplayButton {...args} />;
+	render: ( args ) => {
+		return <DisplayButton { ...args } />;
 	},
 };

@@ -1,15 +1,15 @@
 import Elements from '../src/components/Elements';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Elements> = {
+const meta: Meta< typeof Elements > = {
 	title: 'Zyra/Components/Form/Elements',
 	component: Elements,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Elements>;
+type Story = StoryObj< typeof Elements >;
 
 const selectOptions = [
 	{
@@ -74,11 +74,11 @@ const selectOptions = [
 export const TestElements: Story = {
 	args: {
 		selectOptions,
-		onClick: (value) => {
-			console.log('Selected:', value);
+		onClick: ( value ) => {
+			console.log( 'Selected:', value );
 		},
 	},
-	render: (args) => {
-		return <Elements {...args} />;
+	render: ( args ) => {
+		return <Elements { ...args } />;
 	},
 };

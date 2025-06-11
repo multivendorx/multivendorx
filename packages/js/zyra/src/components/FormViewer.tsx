@@ -15,11 +15,11 @@ import '../styles/web/FormViewer.scss';
 declare global {
 	interface Window {
 		grecaptcha?: {
-			ready: (callback: () => void) => void;
+			ready: ( callback: () => void ) => void;
 			execute: (
 				siteKey: string,
 				options: { action: string }
-			) => Promise<string>;
+			) => Promise< string >;
 		};
 	}
 }
@@ -52,125 +52,127 @@ interface FormFields {
 
 export interface FormViewerProps {
 	formFields: FormFields;
-	onSubmit: (data: FormData) => void;
+	onSubmit: ( data: FormData ) => void;
 }
 
-const Checkboxes: React.FC<{
+const Checkboxes: React.FC< {
 	options: Option[];
-	onChange: (data: string[]) => void;
-}> = ({ options, onChange }) => {
-	const [checkedItems, setCheckedItems] = useState<Option[]>(
-		options.filter(({ isDefault }) => isDefault)
+	onChange: ( data: string[] ) => void;
+} > = ( { options, onChange } ) => {
+	const [ checkedItems, setCheckedItems ] = useState< Option[] >(
+		options.filter( ( { isDefault } ) => isDefault )
 	);
 
-	useEffect(() => {
-		onChange(checkedItems.map((item) => item.value));
-	}, [checkedItems, onChange]);
+	useEffect( () => {
+		onChange( checkedItems.map( ( item ) => item.value ) );
+	}, [ checkedItems, onChange ] );
 
-	const handleChange = (option: Option, checked: boolean) => {
+	const handleChange = ( option: Option, checked: boolean ) => {
 		const newCheckedItems = checkedItems.filter(
-			(item) => item.value !== option.value
+			( item ) => item.value !== option.value
 		);
-		if (checked) newCheckedItems.push(option);
-		setCheckedItems(newCheckedItems);
+		if ( checked ) newCheckedItems.push( option );
+		setCheckedItems( newCheckedItems );
 	};
 
 	return (
 		<div className="multiselect-container items-wrapper">
-			{options.map((option) => (
-				<div key={option.value} className="select-items">
+			{ options.map( ( option ) => (
+				<div key={ option.value } className="select-items">
 					<input
 						type="checkbox"
-						id={option.value}
+						id={ option.value }
 						checked={
-							!!checkedItems.find(
-								(item) => item.value === option.value
+							!! checkedItems.find(
+								( item ) => item.value === option.value
 							)
 						}
-						onChange={(e) => handleChange(option, e.target.checked)}
+						onChange={ ( e ) =>
+							handleChange( option, e.target.checked )
+						}
 					/>
-					<label htmlFor={option.value}>{option.label}</label>
+					<label htmlFor={ option.value }>{ option.label }</label>
 				</div>
-			))}
+			) ) }
 		</div>
 	);
 };
 
-const Multiselect: React.FC<{
+const Multiselect: React.FC< {
 	options: Option[];
-	onChange: (value: string[] | string | null) => void;
+	onChange: ( value: string[] | string | null ) => void;
 	isMulti?: boolean;
-}> = ({ options = [], onChange, isMulti = false }) => {
-	const [selectedOptions, setSelectedOptions] = useState<
-		MultiValue<Option> | SingleValue<Option>
+} > = ( { options = [], onChange, isMulti = false } ) => {
+	const [ selectedOptions, setSelectedOptions ] = useState<
+		MultiValue< Option > | SingleValue< Option >
 	>(
 		isMulti
-			? options.filter(({ isDefault }) => isDefault)
-			: options.find(({ isDefault }) => isDefault) || null
+			? options.filter( ( { isDefault } ) => isDefault )
+			: options.find( ( { isDefault } ) => isDefault ) || null
 	);
 
 	const handleChange = (
-		newValue: MultiValue<Option> | SingleValue<Option>
+		newValue: MultiValue< Option > | SingleValue< Option >
 	) => {
-		setSelectedOptions(newValue);
-		if (isMulti) {
+		setSelectedOptions( newValue );
+		if ( isMulti ) {
 			onChange(
-				Array.isArray(newValue)
-					? newValue.map((option) => option.value)
+				Array.isArray( newValue )
+					? newValue.map( ( option ) => option.value )
 					: []
 			);
 		} else {
-			onChange(newValue ? (newValue as Option).value : null);
+			onChange( newValue ? ( newValue as Option ).value : null );
 		}
 	};
 
 	return (
 		<Select
-			isMulti={isMulti}
-			value={selectedOptions}
-			onChange={handleChange}
-			options={options}
+			isMulti={ isMulti }
+			value={ selectedOptions }
+			onChange={ handleChange }
+			options={ options }
 		/>
 	);
 };
 
 type RadioProps = {
 	options: Option[];
-	onChange: (value: string | undefined) => void;
+	onChange: ( value: string | undefined ) => void;
 };
 
 /**
  * Render radio
  * @param {*} props
  */
-const Radio: React.FC<RadioProps> = ({ options, onChange }) => {
-	const [selectdedItem, setSelectdedItem] = useState<string | undefined>(
-		options.find(({ isDefault }) => isDefault)?.value
+const Radio: React.FC< RadioProps > = ( { options, onChange } ) => {
+	const [ selectdedItem, setSelectdedItem ] = useState< string | undefined >(
+		options.find( ( { isDefault } ) => isDefault )?.value
 	);
 
-	useEffect(() => {
-		onChange(selectdedItem);
-	}, [selectdedItem, onChange]);
+	useEffect( () => {
+		onChange( selectdedItem );
+	}, [ selectdedItem, onChange ] );
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSelectdedItem(e.target.value);
+	const handleChange = ( e: React.ChangeEvent< HTMLInputElement > ) => {
+		setSelectdedItem( e.target.value );
 	};
 	return (
 		<div className="multiselect-container items-wrapper">
-			{options.map((option, index) => {
+			{ options.map( ( option, index ) => {
 				return (
-					<div key={index} className="select-items">
+					<div key={ index } className="select-items">
 						<input
 							type="radio"
-							id={option.value}
-							value={option.value}
-							checked={selectdedItem === option.value}
-							onChange={handleChange}
+							id={ option.value }
+							value={ option.value }
+							checked={ selectdedItem === option.value }
+							onChange={ handleChange }
 						/>
-						<label htmlFor={option.value}>{option.label}</label>
+						<label htmlFor={ option.value }>{ option.label }</label>
 					</div>
 				);
-			})}
+			} ) }
 		</div>
 	);
 };
@@ -191,261 +193,272 @@ const enquiryCartTable: FormDataType = {
 	default_placeholder: { name: '', email: '' },
 };
 
-const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
-	const [inputs, setInputs] = useState<Record<string, any>>({});
+const FormViewer: React.FC< FormViewerProps > = ( {
+	formFields,
+	onSubmit,
+} ) => {
+	const [ inputs, setInputs ] = useState< Record< string, any > >( {} );
 	const formList = formFields.formfieldlist || [];
 	const buttonSetting = formFields.butttonsetting || {};
-	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-	const [captchaError, setCaptchaError] = useState<boolean>(false);
-	const [errors, setErrors] = useState<Record<string, string>>({});
-	const [fileName, setFileName] = useState<string>('');
-	const recaptchaField = formList.find((field) => field.type === 'recaptcha');
+	const [ captchaToken, setCaptchaToken ] = useState< string | null >( null );
+	const [ captchaError, setCaptchaError ] = useState< boolean >( false );
+	const [ errors, setErrors ] = useState< Record< string, string > >( {} );
+	const [ fileName, setFileName ] = useState< string >( '' );
+	const recaptchaField = formList.find(
+		( field ) => field.type === 'recaptcha'
+	);
 	const siteKey = recaptchaField?.sitekey || null;
 
-	useEffect(() => {
-		if (!siteKey) return;
+	useEffect( () => {
+		if ( ! siteKey ) return;
 
 		const loadRecaptcha = () => {
-			window.grecaptcha?.ready(() => {
+			window.grecaptcha?.ready( () => {
 				window.grecaptcha
-					?.execute(siteKey, { action: 'form_submission' })
-					.then((token) => setCaptchaToken(token))
-					.catch(() => setCaptchaError(true));
-			});
+					?.execute( siteKey, { action: 'form_submission' } )
+					.then( ( token ) => setCaptchaToken( token ) )
+					.catch( () => setCaptchaError( true ) );
+			} );
 		};
 
-		if (!window.grecaptcha) {
-			const script = document.createElement('script');
-			script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+		if ( ! window.grecaptcha ) {
+			const script = document.createElement( 'script' );
+			script.src = `https://www.google.com/recaptcha/api.js?render=${ siteKey }`;
 			script.async = true;
 			script.onload = loadRecaptcha;
-			script.onerror = () => setCaptchaError(true);
-			document.body.appendChild(script);
+			script.onerror = () => setCaptchaError( true );
+			document.body.appendChild( script );
 		} else {
 			loadRecaptcha();
 		}
-	}, [siteKey]);
+	}, [ siteKey ] );
 
-	const handleChange = (name: string, value: any) => {
-		setInputs((prevData) => ({ ...prevData, [name]: value }));
+	const handleChange = ( name: string, value: any ) => {
+		setInputs( ( prevData ) => ( { ...prevData, [ name ]: value } ) );
 	};
 
 	const handleFileChange = (
 		name: string,
-		event: React.ChangeEvent<HTMLInputElement>
+		event: React.ChangeEvent< HTMLInputElement >
 	) => {
 		const files = event.target.files;
-		const selectedFile = files && files[0];
-		if (selectedFile) {
-			setFileName(selectedFile.name);
-			setInputs((prevData) => ({
+		const selectedFile = files && files[ 0 ];
+		if ( selectedFile ) {
+			setFileName( selectedFile.name );
+			setInputs( ( prevData ) => ( {
 				...prevData,
-				[name]: selectedFile,
-			}));
+				[ name ]: selectedFile,
+			} ) );
 		}
 	};
 
-	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleSubmit = async ( e: React.MouseEvent< HTMLButtonElement > ) => {
 		e.preventDefault();
 
-		const error: Record<string, string> = {};
+		const error: Record< string, string > = {};
 
-		formList.forEach((field) => {
-			if (!field.required || field.disabled) return;
+		formList.forEach( ( field ) => {
+			if ( ! field.required || field.disabled ) return;
 			// Skip validation for 'name' and 'email'
-			if (!field.name || field.name === 'name' || field.name === 'email')
+			if (
+				! field.name ||
+				field.name === 'name' ||
+				field.name === 'email'
+			)
 				return;
 
-			const value = field.name ? inputs[field.name] : undefined;
+			const value = field.name ? inputs[ field.name ] : undefined;
 
-			switch (field.type) {
+			switch ( field.type ) {
 				case 'text':
 				case 'email':
 				case 'textarea':
 				case 'datepicker':
 				case 'timepicker':
-					if (!value || value.trim() === '') {
-						error[field.name] = `${field.label} is required.`;
+					if ( ! value || value.trim() === '' ) {
+						error[ field.name ] = `${ field.label } is required.`;
 					}
 					break;
 
 				case 'checkboxes':
 				case 'multiselect':
-					if (!Array.isArray(value) || value.length === 0) {
-						error[field.name] = `${field.label} is required.`;
+					if ( ! Array.isArray( value ) || value.length === 0 ) {
+						error[ field.name ] = `${ field.label } is required.`;
 					}
 					break;
 
 				case 'dropdown':
 				case 'radio':
-					if (!value) {
-						error[field.name] = `${field.label} is required.`;
+					if ( ! value ) {
+						error[ field.name ] = `${ field.label } is required.`;
 					}
 					break;
 
 				case 'attachment':
-					if (!value) {
-						error[field.name] = `${field.label} is required.`;
+					if ( ! value ) {
+						error[ field.name ] = `${ field.label } is required.`;
 					}
 					break;
 			}
-		});
+		} );
 
-		if (Object.keys(error).length > 0) {
-			setErrors(error);
+		if ( Object.keys( error ).length > 0 ) {
+			setErrors( error );
 			return;
 		}
 
-		setErrors({});
+		setErrors( {} );
 
 		const data = new FormData();
 
-		for (const key in inputs) {
-			if (inputs.hasOwnProperty(key)) {
-				data.append(key, inputs[key]);
+		for ( const key in inputs ) {
+			if ( inputs.hasOwnProperty( key ) ) {
+				data.append( key, inputs[ key ] );
 			}
 		}
 
-		onSubmit(data);
+		onSubmit( data );
 	};
 
 	const defaultDate: string = new Date().getFullYear() + '-01-01';
 
 	return (
 		<main className="enquiry-pro-form">
-			{formList.map((field) => {
-				if (field.disabled) return null;
-				switch (field.type) {
+			{ formList.map( ( field ) => {
+				if ( field.disabled ) return null;
+				switch ( field.type ) {
 					case 'title':
 						return (
 							<section className="form-title">
-								{' '}
-								{field.label}{' '}
+								{ ' ' }
+								{ field.label }{ ' ' }
 							</section>
 						);
 					case 'text':
 						return (
 							<section className="form-text form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<input
 									type="text"
-									name={field.name}
+									name={ field.name }
 									value={
 										field.name === 'name'
-											? (typeof enquiryFormData !==
+											? ( typeof enquiryFormData !==
 													'undefined' &&
 													enquiryFormData
 														?.default_placeholder
-														?.name) ||
-												(typeof wholesaleFormData !==
+														?.name ) ||
+											  ( typeof wholesaleFormData !==
 													'undefined' &&
 													wholesaleFormData
 														?.default_placeholder
-														?.name) ||
-												(typeof enquiryCartTable !==
+														?.name ) ||
+											  ( typeof enquiryCartTable !==
 													'undefined' &&
 													enquiryCartTable
 														?.default_placeholder
-														?.name) ||
-												inputs[field.name]
-											: inputs[field.name ?? '']
+														?.name ) ||
+											  inputs[ field.name ]
+											: inputs[ field.name ?? '' ]
 									}
-									placeholder={field.placeholder}
-									onChange={(e) =>
+									placeholder={ field.placeholder }
+									onChange={ ( e ) =>
 										handleChange(
 											field.name ?? '',
 											e.target.value
 										)
 									}
-									required={field.required}
-									maxLength={field.charlimit}
+									required={ field.required }
+									maxLength={ field.charlimit }
 								/>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'email':
 						return (
 							<section className="form-email form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<input
 									type="email"
-									name={field.name}
+									name={ field.name }
 									value={
-										(typeof enquiryFormData !==
+										( typeof enquiryFormData !==
 											'undefined' &&
 											enquiryFormData?.default_placeholder
-												?.email) ||
-										(typeof wholesaleFormData !==
+												?.email ) ||
+										( typeof wholesaleFormData !==
 											'undefined' &&
 											wholesaleFormData
-												?.default_placeholder?.email) ||
-										(typeof enquiryCartTable !==
+												?.default_placeholder
+												?.email ) ||
+										( typeof enquiryCartTable !==
 											'undefined' &&
 											enquiryCartTable
-												?.default_placeholder?.email) ||
-										inputs[field.name ?? '']
+												?.default_placeholder
+												?.email ) ||
+										inputs[ field.name ?? '' ]
 									}
-									placeholder={field.placeholder}
-									onChange={(e) =>
+									placeholder={ field.placeholder }
+									onChange={ ( e ) =>
 										handleChange(
 											field.name ?? '',
 											e.target.value
 										)
 									}
-									required={field.required}
-									maxLength={field.charlimit}
+									required={ field.required }
+									maxLength={ field.charlimit }
 								/>
 							</section>
 						);
 					case 'textarea':
 						return (
 							<section className=" form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<textarea
-									name={field.name}
-									value={inputs[field.name ?? '']}
-									placeholder={field.placeholder}
-									onChange={(e) =>
+									name={ field.name }
+									value={ inputs[ field.name ?? '' ] }
+									placeholder={ field.placeholder }
+									onChange={ ( e ) =>
 										handleChange(
 											field.name ?? '',
 											e.target.value
 										)
 									}
-									required={field.required}
-									maxLength={field.charlimit}
-									rows={field.row}
-									cols={field.col}
+									required={ field.required }
+									maxLength={ field.charlimit }
+									rows={ field.row }
+									cols={ field.col }
 								/>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'checkboxes':
 						return (
 							<section
 								className="form-pro-sections"
-								key={field.name}
+								key={ field.name }
 							>
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<Checkboxes
-									options={field.options || []}
-									onChange={(data) =>
-										handleChange(field.name!, data)
+									options={ field.options || [] }
+									onChange={ ( data ) =>
+										handleChange( field.name!, data )
 									}
 								/>
 							</section>
@@ -453,63 +466,69 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'multiselect':
 						return (
 							<section className=" form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<div className="multiselect-container">
 									<Multiselect
-										options={field.options ?? []}
-										onChange={(data) =>
-											handleChange(field.name ?? '', data)
+										options={ field.options ?? [] }
+										onChange={ ( data ) =>
+											handleChange(
+												field.name ?? '',
+												data
+											)
 										}
 										isMulti
 									/>
 								</div>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'dropdown':
 						return (
 							<section className=" form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<div className="multiselect-container">
 									<Multiselect
-										options={field.options ?? []}
-										onChange={(data) =>
-											handleChange(field.name ?? '', data)
+										options={ field.options ?? [] }
+										onChange={ ( data ) =>
+											handleChange(
+												field.name ?? '',
+												data
+											)
 										}
 									/>
 								</div>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'radio':
 						return (
 							<section className=" form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<Radio
-									options={field.options ?? []}
-									onChange={(data) =>
-										handleChange(field.name ?? '', data)
+									options={ field.options ?? [] }
+									onChange={ ( data ) =>
+										handleChange( field.name ?? '', data )
 									}
 								/>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'recaptcha':
@@ -519,7 +538,7 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 									<input
 										type="hidden"
 										name="g-recaptcha-response"
-										value={captchaToken as string}
+										value={ captchaToken as string }
 									/>
 								</div>
 							</section>
@@ -527,11 +546,11 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					case 'attachment':
 						return (
 							<section className="form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<div className="attachment-section">
-									{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+									{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
 									<label
 										htmlFor="dropzone-file"
 										className="attachment-label"
@@ -540,16 +559,18 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 										<div className="wrapper">
 											<i className="adminlib-cloud-upload"></i>
 											<p className="heading">
-												{fileName === '' ? (
+												{ fileName === '' ? (
 													<>
 														<span>
-															{'Click to upload'}
-														</span>{' '}
-														{'or drag and drop'}
+															{
+																'Click to upload'
+															}
+														</span>{ ' ' }
+														{ 'or drag and drop' }
 													</>
 												) : (
 													fileName
-												)}
+												) }
 											</p>
 										</div>
 										<input
@@ -557,7 +578,7 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 											id="dropzone-file"
 											type="file"
 											className="hidden"
-											onChange={(e) =>
+											onChange={ ( e ) =>
 												handleFileChange(
 													field.name ?? '',
 													e
@@ -566,68 +587,68 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 										/>
 									</label>
 								</div>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'datepicker':
 						return (
 							<section className=" form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<div className="date-picker-wrapper">
 									<input
 										type="date"
 										value={
-											inputs[field.name ?? ''] ||
+											inputs[ field.name ?? '' ] ||
 											defaultDate
 										}
-										onChange={(e) => {
+										onChange={ ( e ) => {
 											handleChange(
 												field.name ?? '',
 												e.target.value
 											);
-										}}
+										} }
 									/>
 								</div>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'timepicker':
 						return (
 							<section className=" form-pro-sections">
-								<label htmlFor={field.name}>
-									{field.label}
+								<label htmlFor={ field.name }>
+									{ field.label }
 								</label>
 								<input
 									type="time"
-									value={inputs[field.name ?? '']}
-									onChange={(e) => {
+									value={ inputs[ field.name ?? '' ] }
+									onChange={ ( e ) => {
 										handleChange(
 											field.name ?? '',
 											e.target.value
 										);
-									}}
+									} }
 								/>
-								{errors[field.name ?? ''] && (
+								{ errors[ field.name ?? '' ] && (
 									<span className="error-text">
-										{errors[field.name ?? '']}
+										{ errors[ field.name ?? '' ] }
 									</span>
-								)}
+								) }
 							</section>
 						);
 					case 'section':
 						return (
 							<section className=" form-pro-sections">
-								{field.label}
+								{ field.label }
 							</section>
 						);
 					case 'divider':
@@ -637,31 +658,31 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 					default:
 						return null;
 				}
-			})}
+			} ) }
 			<section className="popup-footer-section">
 				<Button
-					customStyle={buttonSetting}
-					onClick={(e) => {
+					customStyle={ buttonSetting }
+					onClick={ ( e ) => {
 						const captcha = formList.find(
-							(field) => field.type === 'recaptcha'
+							( field ) => field.type === 'recaptcha'
 						);
-						if (captcha?.disabled === false) {
-							if (captchaError) {
+						if ( captcha?.disabled === false ) {
+							if ( captchaError ) {
 								return;
 							}
-							if (!captchaToken) {
+							if ( ! captchaToken ) {
 								return;
 							}
 						}
-						handleSubmit(e);
-					}}
-					children={'Submit'}
+						handleSubmit( e );
+					} }
+					children={ 'Submit' }
 				/>
 				<button
 					id="catalogx-close-enquiry-popup"
 					className="catalogx-close-enquiry-popup"
 				>
-					{'Close'}
+					{ 'Close' }
 				</button>
 			</section>
 		</main>

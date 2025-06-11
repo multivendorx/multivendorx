@@ -1,15 +1,15 @@
 import RadioInput from '../src/components/RadioInput';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof RadioInput> = {
+const meta: Meta< typeof RadioInput > = {
 	title: 'Zyra/Components/RadioInput',
 	component: RadioInput,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof RadioInput>;
+type Story = StoryObj< typeof RadioInput >;
 
 const commonProps = {
 	wrapperClass: 'settings-form-group-radio',
@@ -17,8 +17,8 @@ const commonProps = {
 	inputClass: 'setting-form-input',
 	descClass: 'settings-metabox-description',
 	activeClass: 'radio-select-active',
-	onChange: (e) => {
-		console.log('Radio changed:', e.target.value);
+	onChange: ( e ) => {
+		console.log( 'Radio changed:', e.target.value );
 	},
 };
 
@@ -52,8 +52,8 @@ export const TestRadioInput: Story = {
 		proSetting: false,
 		...commonProps,
 	},
-	render: (args) => {
-		return <RadioInput {...args} />;
+	render: ( args ) => {
+		return <RadioInput { ...args } />;
 	},
 };
 
@@ -82,8 +82,8 @@ export const TestRadioSelectInput: Story = {
 		proSetting: false,
 		...commonProps,
 	},
-	render: (args) => {
-		return <RadioInput key={'sample_radio_select'} {...args} />;
+	render: ( args ) => {
+		return <RadioInput key={ 'sample_radio_select' } { ...args } />;
 	},
 };
 
@@ -99,20 +99,20 @@ export const TestRadioColorInput: Story = {
 				name: 'Radio Color',
 				label: 'Blue Shades',
 				value: 'option1',
-				color: ['#202528', '#333b3d', '#3f85b9', '#316fa8'],
+				color: [ '#202528', '#333b3d', '#3f85b9', '#316fa8' ],
 			},
 			{
 				key: 'option2',
 				name: 'Radio Color',
 				label: 'Green Shades',
 				value: 'option2',
-				color: ['#171717', '#212121', '#009788', '#00796a'],
+				color: [ '#171717', '#212121', '#009788', '#00796a' ],
 			},
 		],
 		proSetting: false,
 		...commonProps,
 	},
-	render: (args) => {
-		return <RadioInput key={'sample_radio_color'} {...args} />;
+	render: ( args ) => {
+		return <RadioInput key={ 'sample_radio_color' } { ...args } />;
 	},
 };

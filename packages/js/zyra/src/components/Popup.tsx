@@ -28,7 +28,7 @@ export interface PopupProps {
 	modulePageUrl?: string;
 }
 
-const ProPopup: React.FC<PopupProps> = (props) => {
+const ProPopup: React.FC< PopupProps > = ( props ) => {
 	const safeProUrl = props.proUrl || '#';
 
 	return (
@@ -37,68 +37,74 @@ const ProPopup: React.FC<PopupProps> = (props) => {
 				<div className="admin-module-dialog-content">
 					<div className="admin-image-overlay">
 						<div className="admin-overlay-content">
-							{props.messages && 
+							{ props.messages && (
 								<h1 className="banner-header">
-									Unlock{' '}
+									Unlock{ ' ' }
 									<span className="banner-pro-tag">Pro</span>
 								</h1>
-							}
+							) }
 							<div className="admin-banner-content">
-								{props.messages && 
+								{ props.messages && (
 									<>
-										<strong>{props.title}</strong>
+										<strong>{ props.title }</strong>
 										<p>&nbsp;</p>
-										{props.messages?.map((message, index) => (
-											<p
-												key={index}
-											>{`${index + 1}. ${message}`}</p>
-										))}
+										{ props.messages?.map(
+											( message, index ) => (
+												<p key={ index }>{ `${
+													index + 1
+												}. ${ message }` }</p>
+											)
+										) }
 									</>
-								}
-								{props.moduleName && (
+								) }
+								{ props.moduleName && (
 									<>
-										<h2>{props.moduleMessage}</h2>
+										<h2>{ props.moduleMessage }</h2>
 										<a
 											className="admin-go-pro-btn"
-											href={props.modulePageUrl}
+											href={ props.modulePageUrl }
 										>
-											{props.moduleButton}
+											{ props.moduleButton }
 										</a>
 									</>
-								)}
+								) }
 							</div>
-							{props.messages && 
+							{ props.messages && (
 								<a
 									className="admin-go-pro-btn"
 									target="_blank"
 									rel="noopener noreferrer"
-									href={safeProUrl}
+									href={ safeProUrl }
 								>
 									Upgrade to Pro
 								</a>
-							}
+							) }
 
-							{props.settings && (
+							{ props.settings && (
 								<>
-									<h2>{props.SettingMessage}</h2>
-									<p id="description">{props.SettingDescription}</p>
+									<h2>{ props.SettingMessage }</h2>
+									<p id="description">
+										{ props.SettingDescription }
+									</p>
 								</>
-							)}
+							) }
 
-							{props.plugin && (
+							{ props.plugin && (
 								<div>
-									<h2>{props.pluginMessage}</h2>
-									<p id="description">{props.pluginDescription}</p>
+									<h2>{ props.pluginMessage }</h2>
+									<p id="description">
+										{ props.pluginDescription }
+									</p>
 									<a
 										className="admin-go-pro-btn"
 										target="_blank"
 										rel="noreferrer"
-										href={props.pluginUrl}
+										href={ props.pluginUrl }
 									>
-										{props.pluginButton}
+										{ props.pluginButton }
 									</a>
 								</div>
-							)}
+							) }
 						</div>
 					</div>
 				</div>

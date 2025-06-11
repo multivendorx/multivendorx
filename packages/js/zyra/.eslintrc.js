@@ -1,5 +1,5 @@
 module.exports = {
-	extends: ['plugin:@wordpress/eslint-plugin/recommended'],
+	extends: [ 'plugin:@wordpress/eslint-plugin/recommended' ],
 	env: {
 		browser: true,
 		es6: true,
@@ -38,7 +38,7 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: ['**/stories/*.ts', '**/stories/*.tsx'],
+			files: [ '**/stories/*.ts', '**/stories/*.tsx' ],
 			rules: {
 				'no-console': 'off',
 			},

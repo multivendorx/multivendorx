@@ -1,34 +1,27 @@
 @use '../../global.scss' as *;
 
-    .shortcode-table{
-        width: 100%;
-        border: 0.063rem solid #e0e4e9;
+.shortcode-table {
+    width: 100%;
+    border: 0.063rem solid #e0e4e9;
+    padding: 1rem;
+    border-radius: 0.25rem;
+
+    th,
+    td {
+        text-align: left;
+        font-size: 0.875rem;
         padding: 1rem;
-        border-radius: 0.25rem;
+    }
 
-        thead{
-            tr{
-                padding: 0.5rem;
+    code{
+        font-weight: 500;
+    }
 
-                th{
-                    text-align: left;
-                    font-weight: 500;
-                    min-width: 11.25rem;
-                    font-size: 0.875rem;
-                    padding: 1rem;
-                }
+    tbody {
+        tr {
+            &:nth-child(odd) {
+                background: #f8f9fa;
             }
         }
-
-        tbody{
-            tr{
-                td{
-                    padding: 1rem;
-                }
-
-                &:nth-child(odd){
-                    background: #f8f9fa;
-                }
-            }            
-        }
     }
+}

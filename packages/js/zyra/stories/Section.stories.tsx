@@ -1,15 +1,15 @@
 import Section from '../src/components/Section';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Section> = {
+const meta: Meta< typeof Section > = {
 	title: 'Zyra/Components/Section',
 	component: Section,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Section>;
+type Story = StoryObj< typeof Section >;
 
 export const TestSection: Story = {
 	args: {
@@ -17,7 +17,7 @@ export const TestSection: Story = {
 		hint: 'Fill in all required fields carefully.',
 		value: 'User Registration',
 	},
-	render: (args) => {
-		return <Section {...args} />;
+	render: ( args ) => {
+		return <Section { ...args } />;
 	},
 };

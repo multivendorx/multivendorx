@@ -1,5 +1,5 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require( 'path' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 module.exports = {
 	entry: {
@@ -9,7 +9,7 @@ module.exports = {
 	output: {
 		filename: '[name].js',
 		chunkFilename: '[name].[contenthash].js', // ✅ important
-		path: path.resolve(__dirname, 'build'),
+		path: path.resolve( __dirname, 'build' ),
 		publicPath: './', // or the URL where your assets are served from
 		clean: true,
 	},
@@ -32,15 +32,18 @@ module.exports = {
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['@wordpress/babel-preset-default'],
-						cacheDirectory: path.resolve(__dirname, '.cache/babel'),
+						presets: [ '@wordpress/babel-preset-default' ],
+						cacheDirectory: path.resolve(
+							__dirname,
+							'.cache/babel'
+						),
 						cacheCompression: false,
 					},
 				},
 			},
 			{
 				test: /\.css$/,
-				use: ['style-loader', 'css-loader'],
+				use: [ 'style-loader', 'css-loader' ],
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg)$/i,
@@ -64,7 +67,7 @@ module.exports = {
 						loader: 'postcss-loader',
 						options: {
 							postcssOptions: {
-								plugins: [require('autoprefixer')],
+								plugins: [ require( 'autoprefixer' ) ],
 							},
 						},
 					},
@@ -81,16 +84,16 @@ module.exports = {
 		],
 	},
 	plugins: [
-		new MiniCssExtractPlugin({
+		new MiniCssExtractPlugin( {
 			filename: '[name].css',
-		}),
+		} ),
 	],
 
 	resolve: {
-		extensions: ['.ts', '.tsx', '.js', '.jsx'],
-		modules: ['node_modules'],
+		extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
+		modules: [ 'node_modules' ],
 		alias: {
-			'@': path.resolve(__dirname, './src'), // So you can use "@/assets/..." in SCSS or imports
+			'@': path.resolve( __dirname, './src' ), // So you can use "@/assets/..." in SCSS or imports
 		},
 	},
 

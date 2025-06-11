@@ -19,29 +19,31 @@ export interface MenuItem {
 interface SubTabSectionProps {
 	menuitem: MenuItem[];
 	currentTab: MenuItem;
-	setCurrentTab: (tab: MenuItem) => void;
+	setCurrentTab: ( tab: MenuItem ) => void;
 	setting?: any;
 }
 
-const SubTabSection: React.FC<SubTabSectionProps> = ({
+const SubTabSection: React.FC< SubTabSectionProps > = ( {
 	menuitem,
 	currentTab,
 	setCurrentTab,
-}) => {
+} ) => {
 	return (
 		<div className="tab-section">
-			{menuitem.map((menu) => (
+			{ menuitem.map( ( menu ) => (
 				<div
-					key={menu.id}
-					className={`tab-section-menu ${menu.id === currentTab.id ? 'active' : ''} ${menu.id}-tab`}
+					key={ menu.id }
+					className={ `tab-section-menu ${
+						menu.id === currentTab.id ? 'active' : ''
+					} ${ menu.id }-tab` }
 					role="button"
-					tabIndex={0}
-					onClick={() => setCurrentTab(menu)}
+					tabIndex={ 0 }
+					onClick={ () => setCurrentTab( menu ) }
 				>
-					<span className={`admin-font ${menu.icon}`}></span>
-					{menu.name}
+					<span className={ `admin-font ${ menu.icon }` }></span>
+					{ menu.name }
 				</div>
-			))}
+			) ) }
 		</div>
 	);
 };

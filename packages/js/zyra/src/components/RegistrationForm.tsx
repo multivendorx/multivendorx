@@ -55,9 +55,8 @@ const DEFAULT_OPTIONS: Option[] = [
 ];
 
 // Utility functions for default placeholders and labels
-const DEFAULT_PLACEHOLDER = (type: string): string => `${type}`;
-const DEFAULT_LABEL_SIMPLE = (type: string): string =>
-	`Enter your ${type}`;
+const DEFAULT_PLACEHOLDER = ( type: string ): string => `${ type }`;
+const DEFAULT_LABEL_SIMPLE = ( type: string ): string => `Enter your ${ type }`;
 const DEFAULT_LABEL_SELECT = 'Nature of Business';
 const DEFAULT_FORM_TITLE = 'Demo Form';
 
@@ -196,41 +195,41 @@ interface FormField {
 }
 interface ButtonSetting {}
 interface CustomFormProps {
-	onChange: (data: {
+	onChange: ( data: {
 		formfieldlist: FormField[];
 		butttonsetting: ButtonSetting;
-	}) => void;
+	} ) => void;
 	name: string;
 	proSettingChange: () => boolean;
 	formTitlePlaceholder?: string;
-	setting: Record<string, any>;
+	setting: Record< string, any >;
 }
 // props value
 // 1. formTitlePlaceholder
 // 2. formTitleDescription
 // 3. formFieldTypes
 
-const CustomFrom: React.FC<CustomFormProps> = ({
+const CustomFrom: React.FC< CustomFormProps > = ( {
 	onChange,
 	name,
 	proSettingChange,
 	setting,
 	formTitlePlaceholder,
-}) => {
+} ) => {
 	////////////// Define state variable here /////////////////
-	const formSetting = setting[name] || {};
+	const formSetting = setting[ name ] || {};
 
-	const settingHasChanged = useRef(false);
-	const firstTimeRender = useRef(true);
+	const settingHasChanged = useRef( false );
+	const firstTimeRender = useRef( true );
 
 	// Contain list of selected form fields.
-	const [formFieldList, setFormFieldList] = useState<FormField[]>(() => {
+	const [ formFieldList, setFormFieldList ] = useState< FormField[] >( () => {
 		// Form field list can't be empty it should contain atlest form title.
 		// This action prevent any backend action for empty form field list.
 
 		const inputList = formSetting.formfieldlist || [];
 
-		if (!Array.isArray(inputList) || inputList.length <= 0) {
+		if ( ! Array.isArray( inputList ) || inputList.length <= 0 ) {
 			return [
 				{
 					id: 1,
@@ -242,65 +241,65 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 		}
 
 		return inputList;
-	});
+	} );
 
-	const [buttonSetting, setButtonSetting] = useState(
+	const [ buttonSetting, setButtonSetting ] = useState(
 		formSetting.butttonsetting || {}
 	);
 
 	// State for hold id of opend input section.
-	const [opendInput, setOpendInput] = useState<any>(null);
+	const [ opendInput, setOpendInput ] = useState< any >( null );
 
-	const [isInputBoxClick, SetIsInputBoxClick] = useState({
+	const [ isInputBoxClick, SetIsInputBoxClick ] = useState( {
 		click: false,
-	});
+	} );
 
 	// State variable for a random maximum id
-	const [randMaxId, setRendMaxId] = useState<number>(0);
+	const [ randMaxId, setRendMaxId ] = useState< number >( 0 );
 
-	useEffect(() => {
-		const closePopup = (event: MouseEvent) => {
+	useEffect( () => {
+		const closePopup = ( event: MouseEvent ) => {
 			if (
-				(event.target as HTMLElement).closest(
+				( event.target as HTMLElement ).closest(
 					'.meta-menu, .meta-setting-modal, .react-draggable'
 				)
 			) {
 				return;
 			}
-			SetIsInputBoxClick({ click: false });
-			setOpendInput(null);
+			SetIsInputBoxClick( { click: false } );
+			setOpendInput( null );
 		};
-		document.body.addEventListener('click', closePopup);
+		document.body.addEventListener( 'click', closePopup );
 		return () => {
-			document.body.removeEventListener('click', closePopup);
+			document.body.removeEventListener( 'click', closePopup );
 		};
-	}, []);
+	}, [] );
 
 	// Prepare random maximum id
-	useEffect(() => {
+	useEffect( () => {
 		setRendMaxId(
 			formFieldList.reduce(
-				(maxId, field) => Math.max(maxId, field.id),
+				( maxId, field ) => Math.max( maxId, field.id ),
 				0
 			) + 1
 		);
-	}, [formFieldList]);
+	}, [ formFieldList ] );
 
 	// Save button setting and formfieldlist setting
-	useEffect(() => {
-		if (settingHasChanged.current) {
+	useEffect( () => {
+		if ( settingHasChanged.current ) {
 			settingHasChanged.current = false;
-			onChange({
+			onChange( {
 				formfieldlist: formFieldList,
 				butttonsetting: buttonSetting,
-			});
+			} );
 		}
-	}, [buttonSetting, formFieldList, onChange]);
+	}, [ buttonSetting, formFieldList, onChange ] );
 
 	////////////// Define functionality here /////////////////
 
 	const getUniqueName = () => {
-		return Date.now().toString(36); // Convert timestamp to base 36
+		return Date.now().toString( 36 ); // Convert timestamp to base 36
 	};
 
 	/**
@@ -308,25 +307,29 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 	 * By default it set the type to simple text
 	 */
 
-	const getNewFormField = (type: string = 'text'): FormField => {
+	const getNewFormField = ( type: string = 'text' ): FormField => {
 		const newFormField: FormField = {
 			id: randMaxId ?? 0, // Ensure randMaxId is a number (or fallback to 0)
 			type,
 			label: '',
 			required: false,
-			name: `${type}-${getUniqueName()}`,
+			name: `${ type }-${ getUniqueName() }`,
 		};
 
-		if (['multiselect', 'radio', 'dropdown', 'checkboxes'].includes(type)) {
+		if (
+			[ 'multiselect', 'radio', 'dropdown', 'checkboxes' ].includes(
+				type
+			)
+		) {
 			newFormField.label = DEFAULT_LABEL_SELECT;
 			newFormField.options = DEFAULT_OPTIONS;
 		} else {
-			newFormField.label = DEFAULT_LABEL_SIMPLE(type);
-			newFormField.placeholder = DEFAULT_PLACEHOLDER(type);
+			newFormField.label = DEFAULT_LABEL_SIMPLE( type );
+			newFormField.placeholder = DEFAULT_PLACEHOLDER( type );
 		}
 
 		// update randMaxId by 1
-		setRendMaxId((prev) => (prev ?? 0) + 1);
+		setRendMaxId( ( prev ) => ( prev ?? 0 ) + 1 );
 
 		return newFormField;
 	};
@@ -339,20 +342,20 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 	 * @param {string} [type="text"] - The type of the new form field to create.
 	 * @return {FormField | undefined} The newly created form field object, or undefined if blocked.
 	 */
-	const appendNewFormField = (index: number, type = 'text') => {
-		if (proSettingChange()) return;
-		const newField = getNewFormField(type);
+	const appendNewFormField = ( index: number, type = 'text' ) => {
+		if ( proSettingChange() ) return;
+		const newField = getNewFormField( type );
 
 		// Create a new array with the new element inserted
 		const newFormFieldList = [
-			...formFieldList.slice(0, index + 1),
+			...formFieldList.slice( 0, index + 1 ),
 			newField,
-			...formFieldList.slice(index + 1),
+			...formFieldList.slice( index + 1 ),
 		];
 
 		// Update the state with the new array
 		settingHasChanged.current = true;
-		setFormFieldList(newFormFieldList);
+		setFormFieldList( newFormFieldList );
 
 		return newField;
 	};
@@ -361,15 +364,16 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 	 * Function that delete a particular form field
 	 * @param {*} index
 	 */
-	const deleteParticularFormField = (index: number) => {
-		if (proSettingChange()) return;
+	const deleteParticularFormField = ( index: number ) => {
+		if ( proSettingChange() ) return;
 
 		// Create a new array without the element at the specified index
-		const newFormFieldList = formFieldList.filter((_, i) => i !== index);
-		console.log("Updated Form Field after delete (D) : ",newFormFieldList);
+		const newFormFieldList = formFieldList.filter(
+			( _, i ) => i !== index
+		);
 		// Update the state with the new array
 		settingHasChanged.current = true;
-		setFormFieldList(newFormFieldList);
+		setFormFieldList( newFormFieldList );
 	};
 
 	/**
@@ -379,21 +383,24 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 	 * @param {string} key   - The key/property of the form field to update.
 	 * @param {*}      value - The new value to assign to the specified key.
 	 */
-	const handleFormFieldChange = (index: number, key: string, value: any) => {
-		if (proSettingChange()) return;
-		console.log("Running Handle : ",{index,key,value});
+	const handleFormFieldChange = (
+		index: number,
+		key: string,
+		value: any
+	) => {
+		if ( proSettingChange() ) return;
 		// copy the form field before modify
-		const newFormFieldList = [...formFieldList];
+		const newFormFieldList = [ ...formFieldList ];
 
 		// Update the new form field list
-		newFormFieldList[index] = {
-			...newFormFieldList[index],
-			[key]: value,
+		newFormFieldList[ index ] = {
+			...newFormFieldList[ index ],
+			[ key ]: value,
 		};
 
 		// Update the state variable
 		settingHasChanged.current = true;
-		setFormFieldList(newFormFieldList);
+		setFormFieldList( newFormFieldList );
 	};
 
 	/**
@@ -401,63 +408,63 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 	 * @param {*} index
 	 * @param {*} newType
 	 */
-	const handleFormFieldTypeChange = (index: number, newType: string) => {
-		if (proSettingChange()) return;
+	const handleFormFieldTypeChange = ( index: number, newType: string ) => {
+		if ( proSettingChange() ) return;
 
 		// Get the input which one is selected
-		const selectedFormField = formFieldList[index];
+		const selectedFormField = formFieldList[ index ];
 
 		// Check if selected type is previously selected type
-		if (selectedFormField.type === newType) {
+		if ( selectedFormField.type === newType ) {
 			return;
 		}
 
 		// Create a empty form field for that position
-		const newFormField = getNewFormField(newType);
+		const newFormField = getNewFormField( newType );
 		newFormField.id = selectedFormField.id;
 
 		// Replace the newly created form field with old one
-		const newFormFieldList = [...formFieldList];
-		newFormFieldList[index] = newFormField;
+		const newFormFieldList = [ ...formFieldList ];
+		newFormFieldList[ index ] = newFormField;
 
 		settingHasChanged.current = true;
-		setFormFieldList(newFormFieldList);
+		setFormFieldList( newFormFieldList );
 	};
 
 	return (
 		// Render Registration form here
 		<div className="registration-from-main-wrapper-section">
-			{/* Render element type section */}
+			{ /* Render element type section */ }
 			<Elements
-				selectOptions={selectOptions}
-				onClick={(type) => {
+				selectOptions={ selectOptions }
+				onClick={ ( type ) => {
 					const newInput = appendNewFormField(
 						formFieldList.length - 1,
 						type
 					);
-					setOpendInput(newInput);
-				}}
+					setOpendInput( newInput );
+				} }
 			/>
 
 			<div className="registration-form-main-section">
-				{/* Render form title here */}
+				{ /* Render form title here */ }
 				{
 					<div className="form-heading">
 						<input
 							type="text"
 							className="basic-input"
-							placeholder={formTitlePlaceholder}
-							value={formFieldList[0]?.label}
-							onChange={(event) => {
+							placeholder={ formTitlePlaceholder }
+							value={ formFieldList[ 0 ]?.label }
+							onChange={ ( event ) => {
 								handleFormFieldChange(
 									0,
 									'label',
 									event.target.value
 								);
-							}}
+							} }
 						/>
 						<DisplayButton
-							wraperClass={'add-new-sections'}
+							wraperClass={ 'add-new-sections' }
 							children={
 								<div>
 									<span>
@@ -465,79 +472,88 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 									</span>
 								</div>
 							}
-							onClick={()=>{
-								const newInput = appendNewFormField(0);
-								setOpendInput(newInput);
-							}}
+							onClick={ () => {
+								const newInput = appendNewFormField( 0 );
+								setOpendInput( newInput );
+							} }
 						/>
 					</div>
 				}
 
-				{/* Render form fields here */}
+				{ /* Render form fields here */ }
 				{
 					<ReactSortable
-						list={formFieldList}
-						setList={(newList) => {
-							if (firstTimeRender.current) {
+						list={ formFieldList }
+						setList={ ( newList ) => {
+							if ( firstTimeRender.current ) {
 								firstTimeRender.current = false;
 								return;
 							}
-							if (proSettingChange()) return;
+							if ( proSettingChange() ) return;
 							settingHasChanged.current = true;
-							setFormFieldList(newList);
-						}}
+							setFormFieldList( newList );
+						} }
 						handle=".drag-handle"
 					>
-						{formFieldList.length > 0 &&
-							formFieldList.map((formField, index) => {
-								if (index === 0) {
+						{ formFieldList.length > 0 &&
+							formFieldList.map( ( formField, index ) => {
+								if ( index === 0 ) {
 									return (
 										<div
-											key={index}
-											style={{ display: 'none' }}
+											key={ index }
+											style={ { display: 'none' } }
 										></div>
 									);
 								}
 
 								return (
 									<main
-										key={index}
-										className={`form-field ${opendInput?.id === formField.id ? 'active' : ''}`}
+										key={ index }
+										className={ `form-field ${
+											opendInput?.id === formField.id
+												? 'active'
+												: ''
+										}` }
 									>
-										{/* Render dragable button */}
-										{opendInput?.id === formField.id && (
+										{ /* Render dragable button */ }
+										{ opendInput?.id === formField.id && (
 											<div className="bth-move drag-handle">
 												<i className="admin-font adminlib-move"></i>
 											</div>
-										)}
+										) }
 
-										{/* Render setting section */}
-										{opendInput?.id === formField.id && (
+										{ /* Render setting section */ }
+										{ opendInput?.id === formField.id && (
 											<section className="meta-menu">
 												<div className="btn-delete">
 													<DisplayButton
-														onClick={() => {
+														onClick={ () => {
 															deleteParticularFormField(
 																index
 															);
-															console.log("Deleted Index : ",index);
-															setOpendInput(null);
-														}}
-														wraperClass={`delete`}
-														children={<i className="admin-font adminlib-close"></i>}
+															setOpendInput(
+																null
+															);
+														} }
+														wraperClass={ `delete` }
+														children={
+															<i className="admin-font adminlib-close"></i>
+														}
 													/>
 												</div>
 												<SettingMetaBox
-													formField={formField}
-													opened={isInputBoxClick}
-													onChange={(key, value) =>
+													formField={ formField }
+													opened={ isInputBoxClick }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
 															value
 														)
 													}
-													onTypeChange={(newType) =>
+													onTypeChange={ (
+														newType
+													) =>
 														handleFormFieldTypeChange(
 															index,
 															newType
@@ -548,38 +564,38 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 													}
 												/>
 											</section>
-										)}
+										) }
 
-										{/* Render main content */}
+										{ /* Render main content */ }
 										<section
-											className={`${
+											className={ `${
 												opendInput?.id !== formField.id
 													? 'hidden-list'
 													: ''
-											} form-field-container-wrapper`}
+											} form-field-container-wrapper` }
 											role="button"
-											tabIndex={0}
-											onClick={(event) => {
+											tabIndex={ 0 }
+											onClick={ ( event ) => {
 												event.stopPropagation();
-												SetIsInputBoxClick({
+												SetIsInputBoxClick( {
 													click: true,
-												});
+												} );
 												if (
 													opendInput?.id !==
 													formField.id
 												) {
-													setOpendInput(formField);
+													setOpendInput( formField );
 												}
-											}}
+											} }
 										>
-											{/* Render question name here */}
-											{(formField.type === 'text' ||
+											{ /* Render question name here */ }
+											{ ( formField.type === 'text' ||
 												formField.type === 'email' ||
 												formField.type ===
-													'number') && (
+													'number' ) && (
 												<SimpleInput
-													formField={formField}
-													onChange={(key, value) =>
+													formField={ formField }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -587,21 +603,22 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{(formField.type === 'checkboxes' ||
+											) }
+											{ ( formField.type ===
+												'checkboxes' ||
 												formField.type ===
 													'multiselect' ||
 												formField.type === 'radio' ||
 												formField.type ===
-													'dropdown') && (
+													'dropdown' ) && (
 												<MultipleOptions
-													formField={formField}
-													type={formField.type}
+													formField={ formField }
+													type={ formField.type }
 													selected={
 														opendInput?.id ===
 														formField.id
 													}
-													onChange={(key, value) =>
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -609,11 +626,11 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{formField.type === 'textarea' && (
+											) }
+											{ formField.type === 'textarea' && (
 												<TemplateTextArea
-													formField={formField}
-													onChange={(key, value) =>
+													formField={ formField }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -621,12 +638,12 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{formField.type ===
+											) }
+											{ formField.type ===
 												'attachment' && (
 												<Attachment
-													formField={formField}
-													onChange={(key, value) =>
+													formField={ formField }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -634,11 +651,12 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{formField.type === 'recaptcha' && (
+											) }
+											{ formField.type ===
+												'recaptcha' && (
 												<Recaptcha
-													formField={formField}
-													onChange={(key, value) =>
+													formField={ formField }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -646,12 +664,12 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{formField.type ===
+											) }
+											{ formField.type ===
 												'datepicker' && (
 												<Datepicker
-													formField={formField}
-													onChange={(key, value) =>
+													formField={ formField }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -659,12 +677,12 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{formField.type ===
+											) }
+											{ formField.type ===
 												'TimePicker' && (
 												<TimePicker
-													formField={formField}
-													onChange={(key, value) =>
+													formField={ formField }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -672,11 +690,11 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{formField.type === 'section' && (
+											) }
+											{ formField.type === 'section' && (
 												<TemplateSection
-													formField={formField}
-													onChange={(key, value) =>
+													formField={ formField }
+													onChange={ ( key, value ) =>
 														handleFormFieldChange(
 															index,
 															key,
@@ -684,13 +702,15 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 														)
 													}
 												/>
-											)}
-											{formField.type === 'divider' && (
-												<div className="section-divider-container">Section Divider</div>
-											)}
+											) }
+											{ formField.type === 'divider' && (
+												<div className="section-divider-container">
+													Section Divider
+												</div>
+											) }
 										</section>
 										<DisplayButton
-											wraperClass={'add-new-sections'}
+											wraperClass={ 'add-new-sections' }
 											children={
 												<div>
 													<span>
@@ -698,54 +718,59 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 													</span>
 												</div>
 											}
-											onClick={()=>{
-												const newInput = appendNewFormField(index);
-												setOpendInput(newInput);
-											}}
+											onClick={ () => {
+												const newInput =
+													appendNewFormField( index );
+												setOpendInput( newInput );
+											} }
 										/>
 									</main>
 								);
-							})}
+							} ) }
 					</ReactSortable>
 				}
 
 				<section className="settings-input-content">
 					<ButtonCustomizer
 						text={
-							(buttonSetting.button_text &&
-								buttonSetting.button_text) ||
+							( buttonSetting.button_text &&
+								buttonSetting.button_text ) ||
 							'Submit'
 						}
-						setting={buttonSetting}
-						onChange={(key, value, isRestoreDefaults = false) => {
-							if (proSettingChange()) return;
+						setting={ buttonSetting }
+						onChange={ (
+							key,
+							value,
+							isRestoreDefaults = false
+						) => {
+							if ( proSettingChange() ) return;
 							settingHasChanged.current = true;
 							const previousSetting = buttonSetting || {};
-							if (isRestoreDefaults) {
-								setButtonSetting(value);
+							if ( isRestoreDefaults ) {
+								setButtonSetting( value );
 							} else {
-								setButtonSetting({
+								setButtonSetting( {
 									...previousSetting,
-									[key]: value,
-								});
+									[ key ]: value,
+								} );
 							}
-						}}
+						} }
 					/>
 				</section>
 				<DisplayButton
-					wraperClass='addnew'
+					wraperClass="addnew"
 					children={
 						<div>
-								<i className="admin-font adminlib-move"></i>
-								<p>{'Click to add next text field'}</p>
+							<i className="admin-font adminlib-move"></i>
+							<p>{ 'Click to add next text field' }</p>
 						</div>
 					}
-					onClick={()=>{
+					onClick={ () => {
 						const newInput = appendNewFormField(
 							formFieldList.length - 1
 						);
-						setOpendInput(newInput);
-					}}
+						setOpendInput( newInput );
+					} }
 				/>
 			</div>
 		</div>

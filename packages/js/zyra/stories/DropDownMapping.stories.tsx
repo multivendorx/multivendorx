@@ -1,15 +1,15 @@
 import DropDownMapping from '../src/components/DropDownMapping';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof DropDownMapping> = {
+const meta: Meta< typeof DropDownMapping > = {
 	title: 'Zyra/Components/DropDownMapping',
 	component: DropDownMapping,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof DropDownMapping>;
+type Story = StoryObj< typeof DropDownMapping >;
 
 export const TestSyncMap: Story = {
 	args: {
@@ -17,11 +17,11 @@ export const TestSyncMap: Story = {
 		proSetting: true,
 		proSettingChanged: () => true,
 		value: [
-			['email', 'user_email'],
-			['name', 'full_name'],
-		] as [string, string][],
-		onChange: (newValue) => {
-			console.log('Sync map changed:', newValue);
+			[ 'email', 'user_email' ],
+			[ 'name', 'full_name' ],
+		] as [ string, string ][],
+		onChange: ( newValue ) => {
+			console.log( 'Sync map changed:', newValue );
 		},
 		syncFieldsMap: {
 			wordpress: {
@@ -44,7 +44,7 @@ export const TestSyncMap: Story = {
 			},
 		},
 	},
-	render: (args) => {
-		return <DropDownMapping {...args} />;
+	render: ( args ) => {
+		return <DropDownMapping { ...args } />;
 	},
 };

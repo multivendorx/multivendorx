@@ -1,15 +1,15 @@
 import Label from '../src/components/Label';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Label> = {
+const meta: Meta< typeof Label > = {
 	title: 'Zyra/Components/Label',
 	component: Label,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Label>;
+type Story = StoryObj< typeof Label >;
 
 export const TestLabel: Story = {
 	args: {
@@ -18,7 +18,7 @@ export const TestLabel: Story = {
 		description: 'This is a sample label description.',
 		value: 'Label Text',
 	},
-	render: (args) => {
-		return <Label {...args} />;
+	render: ( args ) => {
+		return <Label { ...args } />;
 	},
 };

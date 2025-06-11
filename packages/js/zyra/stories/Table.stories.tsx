@@ -3,19 +3,19 @@ import Table, { TableCell } from '../src/components/Table';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof Table> = {
+const meta: Meta< typeof Table > = {
 	title: 'Zyra/Components/Table',
 	component: Table,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof Table>;
+type Story = StoryObj< typeof Table >;
 interface RealtimeFilter {
 	name: string;
 	render: (
-		updateFilter: (key: string, value: any) => void,
+		updateFilter: ( key: string, value: any ) => void,
 		filterValue: any
 	) => ReactNode;
 }
@@ -137,87 +137,87 @@ const dataData = [
 ];
 
 const TableFree = () => {
-	const [data, setData] = useState(dataData);
+	const [ data, setData ] = useState( dataData );
 	/**
 	 * This is needed for row selection.
 	 */
-	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
-		{}
-	);
-	const handleSelectChange = (val: string) => {
-		if (val === '') {
-			setData(dataData);
+	const [ rowSelection, setRowSelection ] = useState<
+		Record< string, boolean >
+	>( {} );
+	const handleSelectChange = ( val: string ) => {
+		if ( val === '' ) {
+			setData( dataData );
 			return;
 		}
-		const filterData = dataData.filter((item) => item.status === val);
-		setData(filterData);
+		const filterData = dataData.filter( ( item ) => item.status === val );
+		setData( filterData );
 	};
 
-	const handleFilterSearch = (filterData: {
+	const handleFilterSearch = ( filterData: {
 		typeCount: string;
 		searchAction: string;
 		searchField: string;
-	}) => {
-		console.log('Filter data:', filterData);
-		if (filterData.typeCount) {
-			console.log('Filtering by type count:', filterData.typeCount);
-			handleSelectChange(filterData.typeCount);
+	} ) => {
+		console.log( 'Filter data:', filterData );
+		if ( filterData.typeCount ) {
+			console.log( 'Filtering by type count:', filterData.typeCount );
+			handleSelectChange( filterData.typeCount );
 			return;
 		}
 
-		if (!filterData.searchAction || !filterData.searchField) {
-			console.log('No search criteria provided.');
-			setData(dataData);
+		if ( ! filterData.searchAction || ! filterData.searchField ) {
+			console.log( 'No search criteria provided.' );
+			setData( dataData );
 			return;
 		}
 
-		const filteredResults = dataData.filter((item) => {
-			const itemValue = item[filterData.searchAction];
+		const filteredResults = dataData.filter( ( item ) => {
+			const itemValue = item[ filterData.searchAction ];
 
-			if (typeof itemValue === 'string') {
+			if ( typeof itemValue === 'string' ) {
 				return itemValue
 					.toLowerCase()
-					.includes(filterData.searchField.toLowerCase());
+					.includes( filterData.searchField.toLowerCase() );
 			}
 
 			return itemValue === filterData.searchField;
-		});
-		setData(filteredResults);
+		} );
+		setData( filteredResults );
 	};
 
 	/**
 	 * Define the columns for the table.
 	 * This is for Non Editable Table
 	 */
-	const columnsData: ColumnDef<Record<string, any>, any>[] = [
+	const columnsData: ColumnDef< Record< string, any >, any >[] = [
 		{
 			// Checkbox Column for Row Selection
 			id: 'select',
-			header: ({ table }) => (
+			header: ( { table } ) => (
 				<input
 					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
+					checked={ table.getIsAllRowsSelected() }
+					onChange={ table.getToggleAllRowsSelectedHandler() }
 				/>
 			),
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<input
 					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
+					checked={ row.getIsSelected() }
+					onChange={ row.getToggleSelectedHandler() }
 				/>
 			),
 		},
 		{
 			header: 'Avatar',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="Image"
-					fieldValue={row.original.image}
+					fieldValue={ row.original.image }
 					header="Image Header"
 				>
 					<img
-						src={row.original.image}
+						src={ row.original.image }
 						alt="avatar"
 						className="h-10 w-10 rounded-full object-cover"
 					/>
@@ -230,62 +230,62 @@ const TableFree = () => {
 		 */
 		{
 			header: 'Date',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="Date"
 					type="text"
-					fieldValue={row.original.date}
+					fieldValue={ row.original.date }
 					header="Date Header"
 				>
-					<p>{row.original.date}</p>
+					<p>{ row.original.date }</p>
 				</TableCell>
 			),
 		},
 		{
 			header: 'Email',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="Email"
-					fieldValue={row.original.email}
+					fieldValue={ row.original.email }
 					header="Email Header"
 				>
-					<p>{row.original.email}</p>
+					<p>{ row.original.email }</p>
 				</TableCell>
 			),
 		},
 		{
 			header: 'Product',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="Product"
-					fieldValue={row.original.product}
+					fieldValue={ row.original.product }
 					header="Product Header"
 				>
-					<p>{row.original.product}</p>
+					<p>{ row.original.product }</p>
 				</TableCell>
 			),
 		},
 		{
 			header: 'Product ID',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="Product ID"
-					fieldValue={String(row.original.product_id)}
+					fieldValue={ String( row.original.product_id ) }
 					header="Product ID Header"
 				>
-					<p>{row.original.product_id}</p>
+					<p>{ row.original.product_id }</p>
 				</TableCell>
 			),
 		},
 		{
 			header: 'Registered User',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="Registered User"
-					fieldValue={row.original.reg_user}
+					fieldValue={ row.original.reg_user }
 					header="Registered User Header"
 				>
-					<p>{row.original.reg_user}</p>
+					<p>{ row.original.reg_user }</p>
 				</TableCell>
 			),
 		},
@@ -295,38 +295,38 @@ const TableFree = () => {
 		 */
 		{
 			header: 'Status',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="Status"
-					fieldValue={row.original.status}
+					fieldValue={ row.original.status }
 					type="dropdown"
-					header={{
+					header={ {
 						options: { active: 'Active', inactive: 'Inactive' },
-					}}
+					} }
 				>
 					<span
-						className={`px-2 py-1 rounded text-white ${
+						className={ `px-2 py-1 rounded text-white ${
 							row.original.status === 'active'
 								? 'bg-green-500'
 								: 'bg-red-500'
-						}`}
+						}` }
 					>
-						{row.original.status}
+						{ row.original.status }
 					</span>
 				</TableCell>
 			),
 		},
 		{
 			header: 'User Link',
-			cell: ({ row }) => (
+			cell: ( { row } ) => (
 				<TableCell
 					title="User Link"
 					type="checkbox"
-					fieldValue={row.original.user_link}
+					fieldValue={ row.original.user_link }
 					header="User Link Header"
 				>
 					<a
-						href={row.original.user_link}
+						href={ row.original.user_link }
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-blue-600 underline"
@@ -347,12 +347,13 @@ const TableFree = () => {
 			name: 'Product Type',
 			render: () => {
 				return (
-					<div className="subscriber-bulk-action bulk-action">
+					<div className="bulk-action">
 						<select
+							className="basic-select"
 							name="productType"
-							onChange={(event) => {
-								handleSelectChange(event.target.value);
-							}}
+							onChange={ ( event ) => {
+								handleSelectChange( event.target.value );
+							} }
 						>
 							<option value="">Product Type</option>
 							<option value="active">Active</option>
@@ -364,30 +365,30 @@ const TableFree = () => {
 		},
 		{
 			name: 'searchField',
-			render: (updateFilter = () => {}, filterValue = '') => (
+			render: ( updateFilter = () => {}, filterValue = '' ) => (
 				<div className="admin-header-search-section search-section">
 					<input
 						name="searchField"
 						type="text"
 						placeholder="Search..."
-						onChange={(e) =>
-							updateFilter('searchField', e.target.value)
+						onChange={ ( e ) =>
+							updateFilter( 'searchField', e.target.value )
 						}
-						value={filterValue}
+						value={ filterValue }
 					/>
 				</div>
 			),
 		},
 		{
 			name: 'searchAction',
-			render: (updateFilter = () => {}, filterValue = '') => (
+			render: ( updateFilter = () => {}, filterValue = '' ) => (
 				<div className="admin-header-search-section searchAction">
 					<select
 						name="searchAction"
-						onChange={(e) =>
-							updateFilter('searchAction', e.target.value)
+						onChange={ ( e ) =>
+							updateFilter( 'searchAction', e.target.value )
 						}
-						value={filterValue}
+						value={ filterValue }
 					>
 						<option value="">Select</option>
 						<option value="product">Product Name</option>
@@ -398,8 +399,8 @@ const TableFree = () => {
 		},
 	];
 
-	const handlePaginationSupport = (rowsPerPage, pageIndex, filterData) => {
-		handleFilterSearch(filterData);
+	const handlePaginationSupport = ( rowsPerPage, pageIndex, filterData ) => {
+		handleFilterSearch( filterData );
 	};
 
 	const args = {
@@ -415,8 +416,8 @@ const TableFree = () => {
 			pageIndex: 0,
 			pageSize: 10,
 		},
-		onPaginationChange: (updater) => {
-			console.log('Pagination updated:', updater);
+		onPaginationChange: ( updater ) => {
+			console.log( 'Pagination updated:', updater );
 		},
 		typeCounts: [
 			{
@@ -432,10 +433,10 @@ const TableFree = () => {
 		],
 		autoLoading: false,
 		handlePagination: handlePaginationSupport,
-		perPageOption: [10, 20, 50],
+		perPageOption: [ 10, 20, 50 ],
 	};
 
-	return <Table {...args} />;
+	return <Table { ...args } />;
 };
 export const TestTable: Story = {
 	/**

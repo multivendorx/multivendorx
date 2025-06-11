@@ -1,15 +1,15 @@
 import SettingMetaBox from '../src/components/SettingMetaBox';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof SettingMetaBox> = {
+const meta: Meta< typeof SettingMetaBox > = {
 	title: 'Zyra/Components/Form/SettingMetaBox',
 	component: SettingMetaBox,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof SettingMetaBox>;
+type Story = StoryObj< typeof SettingMetaBox >;
 const formField = {
 	type: 'text',
 	name: 'username',
@@ -34,15 +34,15 @@ export const TestSettingMetaBox: Story = {
 	args: {
 		formField,
 		inputTypeList,
-		onChange: (field, value) => {
-			console.log(`Field changed: ${field} = ${value}`);
+		onChange: ( field, value ) => {
+			console.log( `Field changed: ${ field } = ${ value }` );
 		},
-		onTypeChange: (value) => {
-			console.log(`Input type changed to: ${value}`);
+		onTypeChange: ( value ) => {
+			console.log( `Input type changed to: ${ value }` );
 		},
 		opened: { click: true },
 	},
-	render: (args) => {
-		return <SettingMetaBox {...args} />;
+	render: ( args ) => {
+		return <SettingMetaBox { ...args } />;
 	},
 };

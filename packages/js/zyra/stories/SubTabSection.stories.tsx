@@ -1,15 +1,15 @@
 import SubTabSection from '../src/components/SubTabSection';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof SubTabSection> = {
+const meta: Meta< typeof SubTabSection > = {
 	title: 'Zyra/Components/SubTabSection',
 	component: SubTabSection,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof SubTabSection>;
+type Story = StoryObj< typeof SubTabSection >;
 
 export const TestSubTabSection: Story = {
 	args: {
@@ -33,15 +33,15 @@ export const TestSubTabSection: Story = {
 			icon: 'adminlib-star-icon',
 			link: '/general',
 		},
-		setCurrentTab: (tab) => {
-			console.log('Current tab set to:', tab);
+		setCurrentTab: ( tab ) => {
+			console.log( 'Current tab set to:', tab );
 		},
 		setting: {
 			general: { optionA: true },
 			advanced: { optionB: false },
 		},
 	},
-	render: (args) => {
-		return <SubTabSection {...args} />;
+	render: ( args ) => {
+		return <SubTabSection { ...args } />;
 	},
 };

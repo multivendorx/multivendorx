@@ -1,19 +1,19 @@
 import SelectInput from '../src/components/SelectInput';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof SelectInput> = {
+const meta: Meta< typeof SelectInput > = {
 	title: 'Zyra/Components/SelectInput',
 	component: SelectInput,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof SelectInput>;
+type Story = StoryObj< typeof SelectInput >;
 
 const commonProps = {
 	descClass: 'settings-metabox-description',
-	onChange: (value) => console.log('Selected:', value),
+	onChange: ( value ) => console.log( 'Selected:', value ),
 };
 
 export const TestSingleSelectInput: Story = {
@@ -37,8 +37,8 @@ export const TestSingleSelectInput: Story = {
 		proSetting: false,
 		...commonProps,
 	},
-	render: (args) => {
-		return <SelectInput {...args} />;
+	render: ( args ) => {
+		return <SelectInput { ...args } />;
 	},
 };
 
@@ -69,7 +69,7 @@ export const TestMultiSelectInput: Story = {
 		proSetting: false,
 		...commonProps,
 	},
-	render: (args) => {
-		return <SelectInput {...args} />;
+	render: ( args ) => {
+		return <SelectInput { ...args } />;
 	},
 };

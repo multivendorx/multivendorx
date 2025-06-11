@@ -21,52 +21,53 @@ interface ToggleSettingProps {
 	wrapperClass?: string;
 	descClass?: string;
 	value: string;
-	onChange: (value: string) => void;
+	onChange: ( value: string ) => void;
 	proSetting?: boolean;
 }
 
-const ToggleSetting: React.FC<ToggleSettingProps> = ({
+const ToggleSetting: React.FC< ToggleSettingProps > = ( {
 	description,
 	options,
-	wrapperClass = '',
 	descClass = '',
 	value,
 	onChange,
 	proSetting = false,
-}) => {
+} ) => {
 	return (
-		<section className={wrapperClass}>
+		<>
 			<div className="toggle-setting-container">
 				<div className="toggle-setting-wrapper">
-					{options.map((option) => (
+					{ options.map( ( option ) => (
 						<div
 							role="button"
-							tabIndex={0}
-							key={option.key}
-							onClick={() => onChange(option.value)}
+							tabIndex={ 0 }
+							key={ option.key }
+							onClick={ () => onChange( option.value ) }
 						>
 							<input
 								className="toggle-setting-form-input"
 								type="radio"
-								id={option.key}
+								id={ option.key }
 								name="approve_vendor"
-								value={option.value}
-								checked={value === option.value}
+								value={ option.value }
+								checked={ value === option.value }
 								readOnly // Prevents React warning for controlled components
 							/>
-							<label htmlFor={option.key}>{option.label}</label>
+							<label htmlFor={ option.key }>
+								{ option.label }
+							</label>
 						</div>
-					))}
+					) ) }
 				</div>
+				{ proSetting && <span className="admin-pro-tag">pro</span> }
 			</div>
-			{proSetting && <span className="admin-pro-tag">pro</span>}
-			{description && (
+			{ description && (
 				<p
-					className={descClass}
-					dangerouslySetInnerHTML={{ __html: description }}
+					className={ descClass }
+					dangerouslySetInnerHTML={ { __html: description } }
 				></p>
-			)}
-		</section>
+			) }
+		</>
 	);
 };
 

@@ -1,23 +1,23 @@
 import MergeComponent from '../src/components/MergeComponent';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof MergeComponent> = {
+const meta: Meta< typeof MergeComponent > = {
 	title: 'Zyra/Components/MergeComponent',
 	component: MergeComponent,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof MergeComponent>;
+type Story = StoryObj< typeof MergeComponent >;
 
 export const TestMergeComponent: Story = {
 	args: {
 		wrapperClass: 'merge-wrapper',
-		descClass: 'merge-description',
+		descClass: 'settings-metabox-description',
 		description: 'Merge multiple fields into one value.',
-		onChange: (data) => {
-			console.log('Merge data changed:', data);
+		onChange: ( data ) => {
+			console.log( 'Merge data changed:', data );
 		},
 		value: {
 			field1: 'option1',
@@ -47,7 +47,7 @@ export const TestMergeComponent: Story = {
 			},
 		],
 	},
-	render: (args) => {
-		return <MergeComponent {...args} />;
+	render: ( args ) => {
+		return <MergeComponent { ...args } />;
 	},
 };

@@ -1,15 +1,15 @@
 import ToggleSetting from '../src/components/ToggleSetting';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof ToggleSetting> = {
+const meta: Meta< typeof ToggleSetting > = {
 	title: 'Zyra/Components/ToggleSetting',
 	component: ToggleSetting,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ToggleSetting>;
+type Story = StoryObj< typeof ToggleSetting >;
 
 export const TestToggleSetting: Story = {
 	args: {
@@ -21,12 +21,12 @@ export const TestToggleSetting: Story = {
 		wrapperClass: 'toggle-wrapper',
 		descClass: 'settings-metabox-description',
 		value: 'yes',
-		onChange: (value) => {
-			console.log('Selected value:', value);
+		onChange: ( value ) => {
+			console.log( 'Selected value:', value );
 		},
 		proSetting: false,
 	},
-	render: (args) => {
-		return <ToggleSetting {...args} />;
+	render: ( args ) => {
+		return <ToggleSetting { ...args } />;
 	},
 };

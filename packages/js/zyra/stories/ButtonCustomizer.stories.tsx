@@ -1,20 +1,20 @@
 import ButtonCustomizer from '../src/components/ButtonCustomiser';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof ButtonCustomizer> = {
+const meta: Meta< typeof ButtonCustomizer > = {
 	title: 'Zyra/Components/ButtonCustomizer',
 	component: ButtonCustomizer,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ButtonCustomizer>;
+type Story = StoryObj< typeof ButtonCustomizer >;
 
 export const TestButtonCustomizer: Story = {
 	args: {
-		onChange: (key, value, isRestoreDefaults) => {
-			console.log('Changed:', key, value, isRestoreDefaults);
+		onChange: ( key, value, isRestoreDefaults ) => {
+			console.log( 'Changed:', key, value, isRestoreDefaults );
 		},
 		setting: {
 			color: 'blue',
@@ -24,7 +24,7 @@ export const TestButtonCustomizer: Story = {
 		text: 'Customize',
 		proSetting: true,
 	},
-	render: (args) => {
-		return <ButtonCustomizer {...args} />;
+	render: ( args ) => {
+		return <ButtonCustomizer { ...args } />;
 	},
 };

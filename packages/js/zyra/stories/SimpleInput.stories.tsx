@@ -1,15 +1,15 @@
 import SimpleInput from '../src/components/SimpleInput';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof SimpleInput> = {
+const meta: Meta< typeof SimpleInput > = {
 	title: 'Zyra/Components/Form/SimpleInput',
 	component: SimpleInput,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof SimpleInput>;
+type Story = StoryObj< typeof SimpleInput >;
 
 export const TestSimpleInput: Story = {
 	args: {
@@ -17,11 +17,11 @@ export const TestSimpleInput: Story = {
 			label: 'Email',
 			placeholder: 'Enter your email',
 		},
-		onChange: (field, value) => {
-			console.log(`Field ${field} changed to`, value);
+		onChange: ( field, value ) => {
+			console.log( `Field ${ field } changed to`, value );
 		},
 	},
-	render: (args) => {
-		return <SimpleInput {...args} />;
+	render: ( args ) => {
+		return <SimpleInput { ...args } />;
 	},
 };

@@ -1,15 +1,15 @@
 import FormCustomizer from '../src/components/NotifimaFormCustomizer';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof FormCustomizer> = {
+const meta: Meta< typeof FormCustomizer > = {
 	title: 'Zyra/Components/Notifima/FormCustomizer',
 	component: FormCustomizer,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof FormCustomizer>;
+type Story = StoryObj< typeof FormCustomizer >;
 
 export const TestFormCustomizer: Story = {
 	args: {
@@ -23,16 +23,16 @@ export const TestFormCustomizer: Story = {
 			enabled: true,
 			tier: 'pro',
 		},
-		onChange: (key, value, isRestoreDefaults) => {
+		onChange: ( key, value, isRestoreDefaults ) => {
 			console.log(
-				`Changed ${key} to`,
+				`Changed ${ key } to`,
 				value,
 				'Restore defaults:',
 				isRestoreDefaults
 			);
 		},
 	},
-	render: (args) => {
-		return <FormCustomizer {...args} />;
+	render: ( args ) => {
+		return <FormCustomizer { ...args } />;
 	},
 };

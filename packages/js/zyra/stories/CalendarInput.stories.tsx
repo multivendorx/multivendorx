@@ -1,15 +1,15 @@
 import CalendarInput from '../src/components/CalendarInput';
 import type { Meta, StoryObj } from '@storybook/react';
 
-const meta: Meta<typeof CalendarInput> = {
+const meta: Meta< typeof CalendarInput > = {
 	title: 'Zyra/Components/CalendarInput',
 	component: CalendarInput,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 };
 
 export default meta;
 
-type Story = StoryObj<typeof CalendarInput>;
+type Story = StoryObj< typeof CalendarInput >;
 
 export const TestMultipleCalendarRange: Story = {
 	args: {
@@ -19,13 +19,16 @@ export const TestMultipleCalendarRange: Story = {
 		multiple: true,
 		range: true,
 		value: '',
-		onChange: (date) => {
-			console.log('Date selected:', date);
+		onChange: ( date ) => {
+			console.log( 'Date selected:', date );
 		},
 	},
-	render: (args) => {
+	render: ( args ) => {
 		return (
-			<CalendarInput key={'sample_multiple_calender_range'} {...args} />
+			<CalendarInput
+				key={ 'sample_multiple_calender_range' }
+				{ ...args }
+			/>
 		);
 	},
 };
@@ -37,12 +40,12 @@ export const TestMultipleCalendar: Story = {
 		format: 'YYYY-MM-DD',
 		multiple: true,
 		value: '',
-		onChange: (date) => {
-			console.log('Date selected:', date);
+		onChange: ( date ) => {
+			console.log( 'Date selected:', date );
 		},
 	},
-	render: (args) => {
-		return <CalendarInput key={'sample_multiple_calender'} {...args} />;
+	render: ( args ) => {
+		return <CalendarInput key={ 'sample_multiple_calender' } { ...args } />;
 	},
 };
 
@@ -52,11 +55,11 @@ export const TestSingleCalendar: Story = {
 		inputClass: 'teal',
 		format: 'YYYY-MM-DD',
 		value: '',
-		onChange: (date) => {
-			console.log('Date selected:', date);
+		onChange: ( date ) => {
+			console.log( 'Date selected:', date );
 		},
 	},
-	render: (args) => {
-		return <CalendarInput key={'sample_single_calender'} {...args} />;
+	render: ( args ) => {
+		return <CalendarInput key={ 'sample_single_calender' } { ...args } />;
 	},
 };

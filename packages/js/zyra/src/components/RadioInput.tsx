@@ -23,7 +23,7 @@ export interface RadioInputProps {
 	type?: 'radio-select' | 'radio-color' | 'default';
 	options: RadioOption[];
 	value?: string;
-	onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+	onChange?: ( e: ChangeEvent< HTMLInputElement > ) => void;
 	radiSelectLabelClass?: string;
 	labelImgClass?: string;
 	labelOverlayClass?: string;
@@ -34,78 +34,82 @@ export interface RadioInputProps {
 	keyName?: string;
 }
 
-const RadioInput: React.FC<RadioInputProps> = (props) => {
+const RadioInput: React.FC< RadioInputProps > = ( props ) => {
 	return (
-		<div className={props.wrapperClass}>
-			{props.options.map((option) => {
+		<div className={ props.wrapperClass }>
+			{ props.options.map( ( option ) => {
 				const checked = props.value === option.value;
 				return (
 					<div
-						key={option.key}
-						className={`${props.inputWrapperClass} ${checked ? props.activeClass : ''}`}
+						key={ option.key }
+						className={ `${ props.inputWrapperClass } ${
+							checked ? props.activeClass : ''
+						}` }
 					>
 						<input
-							className={props.inputClass}
-							id={`${props.idPrefix}-${option.key}`}
+							className={ props.inputClass }
+							id={ `${ props.idPrefix }-${ option.key }` }
 							type="radio"
-							name={option.name}
-							checked={checked}
-							value={option.value}
-							onChange={(e) => props.onChange?.(e)}
+							name={ option.name }
+							checked={ checked }
+							value={ option.value }
+							onChange={ ( e ) => props.onChange?.( e ) }
 						/>
 						<label
-							htmlFor={`${props.idPrefix}-${option.key}`}
+							htmlFor={ `${ props.idPrefix }-${ option.key }` }
 							className={
 								props.type === 'radio-select'
 									? props.radiSelectLabelClass
 									: ''
 							}
 						>
-							{option.label}
-							{props.type === 'radio-color' && (
+							{ option.label }
+							{ props.type === 'radio-color' && (
 								<p className="color-palette">
-									{Array.isArray(option.color) &&
-										option.color.map((color, index) => (
+									{ Array.isArray( option.color ) &&
+										option.color.map( ( color, index ) => (
 											<div
-												key={index}
-												style={{
+												key={ index }
+												style={ {
 													backgroundColor: color,
-												}}
+												} }
 											>
-												{' '}
-												&nbsp;{' '}
+												{ ' ' }
+												&nbsp;{ ' ' }
 											</div>
-										))}
+										) ) }
 								</p>
-							)}
-							{props.type === 'radio-select' &&
+							) }
+							{ props.type === 'radio-select' &&
 								typeof option.color === 'string' && (
 									<>
 										<img
-											src={option.color}
-											alt={option.label}
-											className={props.labelImgClass}
+											src={ option.color }
+											alt={ option.label }
+											className={ props.labelImgClass }
 										/>
 										<div
-											className={props.labelOverlayClass}
+											className={
+												props.labelOverlayClass
+											}
 										>
-											{props.labelOverlayText}
+											{ props.labelOverlayText }
 										</div>
 									</>
-								)}
+								) }
 						</label>
-						{props.proSetting && (
+						{ props.proSetting && (
 							<span className="admin-pro-tag">pro</span>
-						)}
+						) }
 					</div>
 				);
-			})}
-			{props.description && (
+			} ) }
+			{ props.description && (
 				<p
-					className={props.descClass}
-					dangerouslySetInnerHTML={{ __html: props.description }}
+					className={ props.descClass }
+					dangerouslySetInnerHTML={ { __html: props.description } }
 				></p>
-			)}
+			) }
 		</div>
 	);
 };
