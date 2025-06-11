@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 /**
  * Internal dependencies
  */
-import Popoup from './ProPopup';
+import Popoup from './Popup';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import '../styles/web/Modules.scss';
 

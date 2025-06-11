@@ -8,7 +8,7 @@ import { ReactSortable } from 'react-sortablejs';
  * Internal dependencies
  */
 import HoverInputRender from './HoverInputRender';
-import OptionMetaBox from './OptionMetaBox';
+import SettingMetaBox from './SettingMetaBox';
 
 // Types
 interface Option {
@@ -189,18 +189,21 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
 									>
 										Delete
 									</div>
-									<OptionMetaBox
-										hasOpen={openOption === index}
+									<SettingMetaBox
+										opened={{click:openOption === index}}
 										option={option}
 										onChange={(key, value) => {
 											settingHasChanged.current = true;
+											console.log("option open");
 											handleOptionFieldChange(
 												index,
 												key as keyof Option,
 												value
 											);
 										}}
+										metaType=''
 										setDefaultValue={() => {
+											console.log("set default option open");
 											let defaultValueIndex:
 												| number
 												| null = null;

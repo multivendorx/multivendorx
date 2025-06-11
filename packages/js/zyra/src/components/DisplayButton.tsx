@@ -53,13 +53,13 @@ const DisplayButton: React.FC<DisplayButtonProp> = ({
 
 	return (
 		<button
-			className={wraperClass??''}
+			className={wraperClass ?? ''}
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
-			style={customStyle && ( hovered ? hoverStyle : style )}
+			style={!wraperClass ? (hovered ? hoverStyle : style) : undefined}
 			onClick={onClick}
 		>
-			{customStyle?.button_text || children}
+			{customStyle?.button_text ?? children}
 		</button>
 	);
 };

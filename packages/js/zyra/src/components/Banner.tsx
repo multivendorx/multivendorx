@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 /**
  * Internal dependencies
  */
-import ProPopup from './ProPopup';
+import ProPopup from './Popup';
 import '../styles/web/Banner.scss';
 
 // Types

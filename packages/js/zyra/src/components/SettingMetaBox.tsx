@@ -25,12 +25,24 @@ interface InputType {
 	label: string;
 }
 
+interface Option {
+	label: string;
+	value: string;
+	isdefault?: boolean;
+}
+
+
 interface SettingMetaBoxProps {
-	formField: FormField;
-	inputTypeList: InputType[];
-	onChange: (field: keyof FormField, value: any) => void;
-	onTypeChange: (value: string) => void;
+	// For setting meta
+	formField?: FormField;
+	inputTypeList?: InputType[];
+	onChange: (field: string, value: any) => void;
+	onTypeChange?: (value: string) => void;
 	opened: { click: boolean };
+	// For optino meta
+	metaType? : string;
+	option?: Option;
+	setDefaultValue?: () => void;
 }
 
 interface FormFieldSelectProps {
@@ -49,7 +61,7 @@ interface InputFieldProps {
 	label: string;
 	type?: string;
 	value: any;
-	onChange: (value: string) => void;
+	onChange: (value: string | React.ChangeEvent<HTMLInputElement>) => void;
 	className?: string;
 }
 
@@ -110,19 +122,22 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 	onChange,
 	onTypeChange,
 	opened,
+	option,
+	metaType = 'setting-meta',
+	setDefaultValue
 }) => {
 	const [hasOpened, setHasOpened] = useState(opened.click);
 	const isValidSiteKey = (key: string) => /^6[0-9A-Za-z_-]{39}$/.test(key);
 	const [isSiteKeyEmpty, setIsSiteKeyEmpty] = useState(
-		formField.type === 'recaptcha' &&
+		formField?.type === 'recaptcha' &&
 			!isValidSiteKey(formField.sitekey || '')
 	);
 
 	useEffect(() => {
-		if (formField.type === 'recaptcha') {
+		if (formField?.type === 'recaptcha') {
 			onChange('disabled', isSiteKeyEmpty);
 		}
-	}, [isSiteKeyEmpty, formField.type, onChange]);
+	}, [isSiteKeyEmpty, formField?.type, onChange]);
 
 	useEffect(() => {
 		setHasOpened(opened.click);
@@ -134,19 +149,19 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 			<>
 				<InputField
 					label="Placeholder"
-					value={formField.placeholder}
+					value={formField?.placeholder}
 					onChange={(value) => onChange('placeholder', value)}
 				/>
 				<InputField
 					label="Character Limit"
 					type="number"
-					value={formField.charlimit}
+					value={formField?.charlimit}
 					onChange={(value) => onChange('charlimit', value)}
 				/>
 			</>
 		);
 
-		switch (formField.type) {
+		switch (formField?.type) {
 			case 'text':
 			case 'email':
 			case 'url':
@@ -177,18 +192,13 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 			case 'recaptcha':
 				return (
 					<>
-						{/* <InputField
-				label="API Key"
-				value={formField.apikey}
-				onChange={(value) => onChange("apikey", value)}
-				/> */}
 						<InputField
 							label="Site Key"
 							value={formField.sitekey}
 							className={isSiteKeyEmpty ? 'highlight' : ''}
 							onChange={(value) => {
 								onChange('sitekey', value);
-								setIsSiteKeyEmpty(!isValidSiteKey(value));
+								setIsSiteKeyEmpty(!isValidSiteKey(value as string));
 							}}
 						/>
 						<p>
@@ -232,6 +242,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 						<button
 							className="meta-setting-modal-button"
 							onClick={(event) => {
+								console.log("cross clicked...");
 								event.stopPropagation();
 								setHasOpened(false);
 							}}
@@ -241,87 +252,110 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 						<main className="meta-setting-modal-content">
 							<h3>Input Field Settings</h3>
 							<div className="setting-modal-content-section">
-								<FormFieldSelect
-									inputTypeList={inputTypeList}
-									formField={formField}
-									onTypeChange={onTypeChange}
-								/>
+								{
+									metaType==='setting-meta'
+									?	<FormFieldSelect
+											inputTypeList={inputTypeList as InputFieldProps[]}
+											formField={formField as FormField}
+											onTypeChange={onTypeChange as ()=>void}
+										/>
+									:
+									<InputField
+										label='Value'
+										value={option?.value}
+										onChange={(e) =>
+											onChange('value', (e as React.ChangeEvent<HTMLInputElement>).target?.value)
+										}
+									/>
+								}
 								<InputField
-									label="Name"
-									value={formField.name}
-									onChange={(value) =>
-										onChange('name', value)
+									label={metaType==='setting-meta'?"Name":"Label"}
+									value={metaType==='setting-meta'?formField?.name : option?.label}
+									onChange={(value) =>{
+											if(metaType==='setting-meta'){
+												onChange('name', value as string)
+											}else{
+												onChange('label', (value as React.ChangeEvent<HTMLInputElement>).target.value)
+											}
+										}
 									}
 								/>
-								{renderConditionalFields()}
+								{metaType==='setting-meta' && renderConditionalFields()}
 							</div>
 							<div className="setting-modal-content-section">
-								<FieldWrapper label="Visibility">
-									<div className="visibility-control-container">
-										<div className="tabs">
-											<input
-												checked={
-													formField.type ===
-													'recaptcha'
-														? !isSiteKeyEmpty
-														: !formField.disabled
-												}
-												onChange={(e) =>
-													onChange(
-														'disabled',
-														!e.target.checked
-													)
-												}
-												type="radio"
-												id="visible"
-												name="tabs"
-											/>
-											<label
-												className="tab"
-												htmlFor="visible"
-											>
-												Visible
-											</label>
+								{
+									metaType==='setting-meta' && 
+									<FieldWrapper label="Visibility">
+										<div className="visibility-control-container">
+											<div className="tabs">
+												<input
+													checked={
+														formField?.type ===
+														'recaptcha'
+															? !isSiteKeyEmpty
+															: !formField?.disabled
+													}
+													onChange={(e) =>
+														onChange(
+															'disabled',
+															!e.target.checked 
+														)
+													}
+													type="radio"
+													id="visible"
+													name="tabs"
+												/>
+												<label
+													className="tab"
+													htmlFor="visible"
+												>
+													Visible
+												</label>
 
-											<input
-												checked={
-													formField.type ===
-													'recaptcha'
-														? isSiteKeyEmpty
-														: formField.disabled
-												}
-												onChange={(e) =>
-													onChange(
-														'disabled',
-														e.target.checked
-													)
-												}
-												type="radio"
-												id="hidden"
-												name="tabs"
-											/>
-											<label
-												className="tab"
-												htmlFor="hidden"
-											>
-												Hidden
-											</label>
+												<input
+													checked={
+														formField?.type ===
+														'recaptcha'
+															? isSiteKeyEmpty
+															: formField?.disabled
+													}
+													onChange={(e) =>
+														onChange(
+															'disabled',
+															e.target.checked
+														)
+													}
+													type="radio"
+													id="hidden"
+													name="tabs"
+												/>
+												<label
+													className="tab"
+													htmlFor="hidden"
+												>
+													Hidden
+												</label>
 
-											<span className="glider" />
+												<span className="glider" />
+											</div>
 										</div>
-									</div>
-								</FieldWrapper>
-
-								<FieldWrapper label="Required">
+									</FieldWrapper>
+								}
+								<FieldWrapper label={metaType==='setting-meta'?"Required":'Set default'}>
 									<input
 										type="checkbox"
-										checked={formField.required}
-										onChange={(e) =>
-											onChange(
+										checked={metaType==='setting-meta'?formField?.required: option?.isdefault}
+										onChange={(e) =>{
+											if(metaType==='setting-meta'){
+												onChange(
 												'required',
 												e.target.checked
-											)
+												)
+											}else{
+												setDefaultValue && setDefaultValue();
+											}
 										}
+									}
 									/>
 								</FieldWrapper>
 							</div>

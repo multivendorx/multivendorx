@@ -24,7 +24,18 @@ export const TestHoverInputRender: Story = {
 		}: {
 			label: string;
 			placeholder?: string;
-		}) => <div title={placeholder}>{label}</div>,
+		}) => {
+			return <div className="edit-form-wrapper">
+				<p>{label}</p>
+				<div className="settings-form-group-radio">
+					<input
+						className="input-text-section simpleInput-text-input"
+						type="text"
+						placeholder={placeholder}
+					/>
+				</div>
+			</div>
+		},
 		renderEditableContent: ({
 			label,
 			onLabelChange,
@@ -34,12 +45,20 @@ export const TestHoverInputRender: Story = {
 			onLabelChange: (newLabel: string) => void;
 			placeholder?: string;
 		}) => (
-			<input
-				type="text"
-				value={label}
-				placeholder={placeholder}
-				onChange={(e) => onLabelChange(e.target.value)}
-			/>
+			<>
+				<input
+					className="input-label simpleInput-label"
+					type="text"
+					value={label}
+					onChange={(event) => onLabelChange(event.target.value)}
+				/>
+				<input
+					className="input-text-section simpleInput-text-input"
+					type="text"
+					readOnly
+					placeholder={placeholder}
+				/>
+			</>
 		),
 	},
 	render: (args) => {

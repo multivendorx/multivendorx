@@ -5,13 +5,11 @@ import React from 'react';
 
 // Types
 export interface BlockTextProps {
-	wrapperClass: string;
 	blockTextClass: string;
 	value: string;
 }
 
 const BlockText: React.FC<BlockTextProps> = ({
-	wrapperClass,
 	blockTextClass,
 	value,
 }) => {

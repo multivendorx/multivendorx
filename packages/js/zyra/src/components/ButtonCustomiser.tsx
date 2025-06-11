@@ -100,240 +100,144 @@ const Customizer: React.FC<CustomizerProps> = ({
 					{select === 'color' && (
 						<div className="section-wrapper color">
 							{
-								[
-									{
-										label: 'Background Color',
-										key: 'button_background_color',
-										clssName : 'simple',
-										type: 'color'
-									},
-									{
-										label: 'Font Color',
-										key: 'button_text_color',
-										className : 'simple',
-										type : 'text'
-									},
-									{
-										label: 'Background Color On Hover',
-										key: 'button_background_color_onhover',
-										className : 'hover',
-										type : 'color'
-									},
-									{
-										label: 'Font Color On Hover',
-										key: 'button_text_color_onhover',
-										className : 'hover',
-										type : 'text',
-									},
-								].map(item=>{
+								['simple', 'hover'].map(className=>{
 									return(
 										<div
-											className={item.className}
-											onMouseEnter={item.className==='hover'?() => setHoverOn(true):()=>{}}
-											onMouseLeave={item.className==='hover'?() => setHoverOn(false):()=>{}}
+											className={className}
+											onMouseEnter={className==='hover'?() => setHoverOn(true):()=>{}}
+											onMouseLeave={className==='hover'?() => setHoverOn(false):()=>{}}
 										>
-											{[
-												{
-													label: 'Background Color On Hover',
-													key: 'button_background_color_onhover',
-												},
-												{
-													label: 'Font Color On Hover',
-													key: 'button_text_color_onhover',
-												},
-											].map(({ label, key }) => (
-												<div key={key} className="section">
-													<span className="label">{label}</span>
-													<div className="property-section">
-														<input
-															type="color"
-															value={
-																setting[key] || '#000000'
-															}
-															onChange={(e) =>
-																onChange(
-																	key,
-																	e.target.value
-																)
-															}
-														/>
-														<input
-															type="text"
-															value={
-																setting[key] || '#000000'
-															}
-															onChange={(e) =>
-																onChange(
-																	key,
-																	e.target.value
-																)
-															}
-														/>
-													</div>
-												</div>
-											))}
+											{
+												[
+													{
+														label: 'Background Color',
+														key: 'button_background_color',
+														type: 'color',
+														class : 'simple'
+													},
+													{
+														label: 'Font Color',
+														key: 'button_text_color',
+														type: 'text',
+														class : 'simple'
+													},
+													{
+														label: 'Background Color On Hover',
+														key: 'button_background_color_onhover',
+														type: 'color',
+														class : 'hover'
+													},
+													{
+														label: 'Font Color On Hover',
+														key: 'button_text_color_onhover',
+														type: 'text',
+														class : 'hover'
+													},
+												].map(item=>{
+													return(
+														className===item.class
+														? (<div key={item.key} className="section">
+																<span className="label">{item.label}</span>
+																<div className="property-section">
+																	<input
+																		type={item.type}
+																		value={
+																			setting[item.key] || '#000000'
+																		}
+																		onChange={(e) =>
+																			onChange(
+																				item.key,
+																				e.target.value
+																			)
+																		}
+																	/>
+																</div>
+															</div>
+														)
+														:null
+													);
+												})
+											}
+											
 										</div>
 									);
 								})
 							}
-							<div className="simple">
-								{[
-									{
-										label: 'Background Color',
-										key: 'button_background_color',
-									},
-									{
-										label: 'Font Color',
-										key: 'button_text_color',
-									},
-								].map(({ label, key }) => (
-									<div key={key} className="section">
-										<span className="label">{label}</span>
-										<div className="property-section">
-											{
-												['color', 'text'].map(type=>{
-													return(
-														<input
-															type={type}
-															value={
-																setting[key] || '#000000'
-															}
-															onChange={(e) =>
-																onChange(
-																	key,
-																	e.target.value
-																)
-															}
-														/>
-													);
-												})
-											}
-										</div>
-									</div>
-								))}
-							</div>
-
-							<div
-								className="hover"
-								onMouseEnter={() => setHoverOn(true)}
-								onMouseLeave={() => setHoverOn(false)}
-							>
-								{[
-									{
-										label: 'Background Color On Hover',
-										key: 'button_background_color_onhover',
-									},
-									{
-										label: 'Font Color On Hover',
-										key: 'button_text_color_onhover',
-									},
-								].map(({ label, key }) => (
-									<div key={key} className="section">
-										<span className="label">{label}</span>
-										<div className="property-section">
-											<input
-												type="color"
-												value={
-													setting[key] || '#000000'
-												}
-												onChange={(e) =>
-													onChange(
-														key,
-														e.target.value
-													)
-												}
-											/>
-											<input
-												type="text"
-												value={
-													setting[key] || '#000000'
-												}
-												onChange={(e) =>
-													onChange(
-														key,
-														e.target.value
-													)
-												}
-											/>
-										</div>
-									</div>
-								))}
-							</div>
 						</div>
 					)}
 					{select === "border" && (
 					<div className="section-wrapper border">
 						<div className="simple">
-						<div className="section">
-							<span className="lable">
-							Border Color
-							</span>
-							<div className="property-section">
-							<input
-								type="color"
-								value={setting.button_border_color ? setting.button_border_color : '#000000'}
-								onChange={(e) => onChange("button_border_color", e.target.value)}
-							/>
-							<input
-								onChange={(e) => onChange("button_border_color", e.target.value)}
-								type="text"
-								value={setting.button_border_color ? setting.button_border_color : '#000000'}
-							/>
+							<div className="section">
+								<span className="lable">
+									Border Color
+								</span>
+								<div className="property-section">
+									<input
+										type="color"
+										value={setting.button_border_color ? setting.button_border_color : '#000000'}
+										onChange={(e) => onChange("button_border_color", e.target.value)}
+									/>
+									<input
+										onChange={(e) => onChange("button_border_color", e.target.value)}
+										type="text"
+										value={setting.button_border_color ? setting.button_border_color : '#000000'}
+									/>
+								</div>
+							</div>
+							<div className="section section-row">
+								<span className="lable">
+									Border Size
+								</span>
+								<div className="property-section">
+								{/* <div class="PB-range-slider-div"> */}
+								<input
+									className="PB-range-slider"
+									type="number"
+									value={setting.button_border_size ? setting.button_border_size : 0}
+									onChange={(e) => onChange("button_border_size", e.target.value)}
+								/>
+								<p>px</p>
+								{/* <p class="PB-range-slidervalue">{setting.button_border_size ? setting.button_border_size : 0}px</p> */}
+								{/* </div> */}
 							</div>
 						</div>
 						<div className="section section-row">
 							<span className="lable">
-							Border Size
+								Border Radious
 							</span>
 							<div className="property-section">
-							{/* <div class="PB-range-slider-div"> */}
-							<input
-								className="PB-range-slider"
-								type="number"
-								value={setting.button_border_size ? setting.button_border_size : 0}
-								onChange={(e) => onChange("button_border_size", e.target.value)}
-							/>
-							<p>px</p>
-							{/* <p class="PB-range-slidervalue">{setting.button_border_size ? setting.button_border_size : 0}px</p> */}
-							{/* </div> */}
-							</div>
-						</div>
-						<div className="section section-row">
-							<span className="lable">
-							Border Radious
-							</span>
-							<div className="property-section">
-							{/* <div class="PB-range-slider-div"> */}
-							<input
-								className="PB-range-slider"
-								type="number"
-								value={setting.button_border_radious ? setting.button_border_radious : 0}
-								onChange={(e) => onChange("button_border_radious", e.target.value)}
-							/>
-							<p>px</p>
-							{/* <p class="PB-range-slidervalue">{setting.button_border_radious ? setting.button_border_radious : 0}px</p>
-							</div> */}
+								{/* <div class="PB-range-slider-div"> */}
+								<input
+									className="PB-range-slider"
+									type="number"
+									value={setting.button_border_radious ? setting.button_border_radious : 0}
+									onChange={(e) => onChange("button_border_radious", e.target.value)}
+								/>
+								<p>px</p>
+								{/* <p class="PB-range-slidervalue">{setting.button_border_radious ? setting.button_border_radious : 0}px</p>
+								</div> */}
 							</div>
 						</div>
 						</div>
 						<div className="section-wrapper hover">
-						<div className="section">
-							<span className="lable">
-							Border Color On Hover
-							</span>
-							<div className="property-section">
-							<input
-								type="color"
-								value={setting.button_border_color_onhover ? setting.button_border_color_onhover : '#000000'}
-								onChange={(e) => onChange("button_border_color_onhover", e.target.value)}
-							/>
-							<input
-								type="text"
-								value={setting.button_border_color_onhover ? setting.button_border_color_onhover : '#000000'}
-								onChange={(e) => onChange("button_border_color_onhover", e.target.value)}
-							/>
+							<div className="section">
+								<span className="lable">
+								Border Color On Hover
+								</span>
+								<div className="property-section">
+								<input
+									type="color"
+									value={setting.button_border_color_onhover ? setting.button_border_color_onhover : '#000000'}
+									onChange={(e) => onChange("button_border_color_onhover", e.target.value)}
+								/>
+								<input
+									type="text"
+									value={setting.button_border_color_onhover ? setting.button_border_color_onhover : '#000000'}
+									onChange={(e) => onChange("button_border_color_onhover", e.target.value)}
+								/>
+								</div>
 							</div>
-						</div>
 						</div>
 					</div>
 					)}

@@ -199,7 +199,6 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 	const [captchaError, setCaptchaError] = useState<boolean>(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [fileName, setFileName] = useState<string>('');
-	// const [file, setFile] = useState<File | null>(null);
 	const recaptchaField = formList.find((field) => field.type === 'recaptcha');
 	const siteKey = recaptchaField?.sitekey || null;
 
@@ -239,7 +238,6 @@ const FormViewer: React.FC<FormViewerProps> = ({ formFields, onSubmit }) => {
 		const selectedFile = files && files[0];
 		if (selectedFile) {
 			setFileName(selectedFile.name);
-			// setFile(selectedFile);
 			setInputs((prevData) => ({
 				...prevData,
 				[name]: selectedFile,

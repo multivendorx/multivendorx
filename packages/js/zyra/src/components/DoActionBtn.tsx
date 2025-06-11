@@ -78,6 +78,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = (props) => {
 				setSyncStatus(data.status || []);
 			});
 	}, [apilink, parameter, appLocalizer]);
+	
 	const doSequentialTask = useCallback(async () => {
 		if (taskNumber.current >= tasks.length) {
 			setTestStatus('Test Successful');
@@ -148,6 +149,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = (props) => {
 			connectTaskStarted.current = false;
 		}
 	}, [interval, tasks, apilink, parameter, appLocalizer]);
+	
 	const startConnectionTask = useCallback(async () => {
 		if (connectTaskStarted.current) return;
 		connectTaskStarted.current = true;
@@ -158,6 +160,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = (props) => {
 		setTestStatus('');
 		await doSequentialTask();
 	}, [doSequentialTask]);
+
 	useEffect(() => {
 		if (syncStarted) {
 			fetchStatusRef.current = setInterval(fetchSyncStatus, interval);
@@ -173,9 +176,11 @@ const DoActionBtn: React.FC<DoActionBtnProps> = (props) => {
 			}
 		};
 	}, [syncStarted, fetchSyncStatus, interval]);
+
 	useEffect(() => {
 		fetchSyncStatus();
 	}, [fetchSyncStatus]);
+
 	const handleSync = async (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		if (proSettingChanged()) return;

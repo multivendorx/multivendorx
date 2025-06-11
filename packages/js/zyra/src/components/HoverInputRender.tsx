@@ -37,6 +37,7 @@ const HoverInputRender: React.FC<HoverInputRenderProps> = ({
 					'.meta-setting-modal, .react-draggable'
 				)
 			) {
+				console.log("exit");
 				return;
 			}
 			setIsClicked(false);
@@ -53,7 +54,8 @@ const HoverInputRender: React.FC<HoverInputRenderProps> = ({
 	};
 
 	const handleMouseLeave = () => {
-		if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+		console.log("Hover time ",hoverTimeout.current);
+		clearTimeout(hoverTimeout.current);
 		if (!isClicked) setShowTextBox(false);
 	};
 

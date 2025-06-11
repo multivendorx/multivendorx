@@ -18,7 +18,6 @@ import Attachment from './Attachment';
 import Recaptcha from './Recaptcha';
 import Datepicker from './DatePicker';
 import TimePicker from './TimePicker';
-import Divider from './Divider';
 import TemplateSection from './TemplateSection';
 import DisplayButton from './DisplayButton';
 
@@ -457,12 +456,6 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 								);
 							}}
 						/>
-						{/* <AddNewBtn
-							onAddNew={() => {
-								const newInput = appendNewFormField(0);
-								setOpendInput(newInput);
-							}}
-						/> */}
 						<DisplayButton
 							wraperClass={'add-new-sections'}
 							children={
@@ -522,14 +515,6 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 										{opendInput?.id === formField.id && (
 											<section className="meta-menu">
 												<div className="btn-delete">
-													{/* <DeleteBtn
-														onDelete={() => {
-															deleteParticularFormField(
-																index
-															);
-															setOpendInput(null);
-														}}
-													/> */}
 													<DisplayButton
 														onClick={() => {
 															deleteParticularFormField(
@@ -701,17 +686,9 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 												/>
 											)}
 											{formField.type === 'divider' && (
-												<Divider />
+												<div className="section-divider-container">Section Divider</div>
 											)}
 										</section>
-
-										{/* <AddNewBtn
-											onAddNew={() => {
-												const newInput =
-													appendNewFormField(index);
-												setOpendInput(newInput);
-											}}
-										/> */}
 										<DisplayButton
 											wraperClass={'add-new-sections'}
 											children={
@@ -755,16 +732,6 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 						}}
 					/>
 				</section>
-
-				{/* <AddNewBtn
-					large={true}
-					onAddNew={() => {
-						const newInput = appendNewFormField(
-							formFieldList.length - 1
-						);
-						setOpendInput(newInput);
-					}}
-				/> */}
 				<DisplayButton
 					wraperClass='addnew'
 					children={
