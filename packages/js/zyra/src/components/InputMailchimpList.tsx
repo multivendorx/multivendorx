@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 /**
  * Internal dependencies
  */
-import { getApiLink, getApiResponse } from './apiService';
+import { getApiLink, getApiResponse } from '../utils/apiService';
 import BasicInput from './BasicInput';
 import SelectInput from './SelectInput';
 import '../styles/web/InputMailchimpList.scss';
@@ -56,11 +56,12 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
 		useState<string>('');
 
 	const updateSelectOption = async () => {
+		console.log("Kindly use a proper MailChimp key.");
 		if (!setting[mailchimpKey]) {
 			setMailchimpErrorMessage('Kindly use a proper MailChimp key.');
 			setTimeout(() => {
 				setMailchimpErrorMessage('');
-			}, 1000);
+			}, 10000);
 		} else {
 			setLoading(true);
 			setMailchimpErrorMessage('');
@@ -78,7 +79,7 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
 				setMailchimpErrorMessage('Failed to fetch MailChimp list.');
 				setTimeout(() => {
 					setMailchimpErrorMessage('');
-				}, 1000);
+				}, 10000);
 			} finally {
 				setLoading(false);
 			}
@@ -115,9 +116,9 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
 
 				{loading && (
 					<div className="loader">
-						<div className="three-body__dot"></div>
-						<div className="three-body__dot"></div>
-						<div className="three-body__dot"></div>
+						<div className="three-body-dot"></div>
+						<div className="three-body-dot"></div>
+						<div className="three-body-dot"></div>
 					</div>
 				)}
 			</div>

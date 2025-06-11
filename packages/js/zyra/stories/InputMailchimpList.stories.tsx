@@ -27,16 +27,7 @@ export const TestInputMailchimpList: Story = {
 		selectKey: 'newsletterList',
 		value: 'list_001',
 		setting: {
-			mailchimp_list: [
-				{
-					label: 'Newsletter List',
-					value: 'list_001',
-				},
-				{
-					label: 'Promotions List',
-					value: 'list_002',
-				},
-			],
+			
 		},
 		updateSetting: (key: string, value: any) => {
 			console.log(`Updated setting ${key} to`, value);

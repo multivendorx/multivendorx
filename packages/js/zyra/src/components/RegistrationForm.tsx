@@ -19,6 +19,7 @@ import Datepicker from './DatePicker';
 import TimePicker from './TimePicker';
 import Divider from './Divider';
 import TemplateSection from './TemplateSection';
+import DisplayButton from './DisplayButton';
 
 // Types
 export interface Option {
@@ -35,33 +36,33 @@ export interface SelectOption {
 }
 
 // Props interface for AddNewBtn
-interface AddNewBtnProps {
-	onAddNew?: () => void;
-	large?: boolean;
-}
+// interface AddNewBtnProps {
+// 	onAddNew?: () => void;
+// 	large?: boolean;
+// }
 
 // Props interface for DeleteBtn
-interface DeleteBtnProps {
-	onDelete?: () => void;
-	hideDelete?: boolean;
-}
+// interface DeleteBtnProps {
+// 	onDelete?: () => void;
+// 	hideDelete?: boolean;
+// }
 
 // Default values for input options
-export const DEFAULT_OPTIONS: Option[] = [
+const DEFAULT_OPTIONS: Option[] = [
 	{ id: '1', label: 'Manufacture', value: 'manufacture' },
 	{ id: '2', label: 'Trader', value: 'trader' },
 	{ id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
 ];
 
 // Utility functions for default placeholders and labels
-export const DEFAULT_PLACEHOLDER = (type: string): string => `${type}`;
-export const DEFAULT_LABEL_SIMPLE = (type: string): string =>
+const DEFAULT_PLACEHOLDER = (type: string): string => `${type}`;
+const DEFAULT_LABEL_SIMPLE = (type: string): string =>
 	`Enter your ${type}`;
-export const DEFAULT_LABEL_SELECT = 'Nature of Business';
-export const DEFAULT_FORM_TITLE = 'Demo Form';
+const DEFAULT_LABEL_SELECT = 'Nature of Business';
+const DEFAULT_FORM_TITLE = 'Demo Form';
 
 // Select options list
-export const selectOptions: SelectOption[] = [
+const selectOptions: SelectOption[] = [
 	{
 		icon: 'adminlib-t-letter-bold icon-form-textbox',
 		value: 'text',
@@ -121,67 +122,67 @@ export const selectOptions: SelectOption[] = [
 	},
 ];
 
-/**
- * Component that renders an action section for adding new items.
- *
- * @param {AddNewBtnProps} props          - The props object.
- * @param {() => void}     props.onAddNew - Callback function invoked when the add button is clicked.
- * @param {boolean}        props.large    - If true, renders the large version of the button.
- */
-export const AddNewBtn: React.FC<AddNewBtnProps> = ({ onAddNew, large }) => {
-	return (
-		<>
-			{large ? (
-				<div className="addnew">
-					<div
-						role="button"
-						tabIndex={0}
-						onClick={() => onAddNew?.()}
-					>
-						<i className="admin-font adminlib-move"></i>
-					</div>
-					<p>{'Click to add next text field'}</p>
-				</div>
-			) : (
-				<div
-					className="add-new-sections"
-					role="button"
-					tabIndex={0}
-					onClick={() => onAddNew?.()}
-				>
-					<div>
-						<span>
-							<i className="admin-font adminlib-move"></i>
-						</span>
-					</div>
-				</div>
-			)}
-		</>
-	);
-};
+// /**
+//  * Component that renders an action section for adding new items.
+//  *
+//  * @param {AddNewBtnProps} props          - The props object.
+//  * @param {() => void}     props.onAddNew - Callback function invoked when the add button is clicked.
+//  * @param {boolean}        props.large    - If true, renders the large version of the button.
+//  */
+// export const AddNewBtn: React.FC<AddNewBtnProps> = ({ onAddNew, large }) => {
+// 	return (
+// 		<>
+// 			{large ? (
+// 				<div className="addnew">
+// 					<div
+// 						role="button"
+// 						tabIndex={0}
+// 						onClick={() => onAddNew?.()}
+// 					>
+// 						<i className="admin-font adminlib-move"></i>
+// 					</div>
+// 					<p>{'Click to add next text field'}</p>
+// 				</div>
+// 			) : (
+// 				<div
+// 					className="add-new-sections"
+// 					role="button"
+// 					tabIndex={0}
+// 					onClick={() => onAddNew?.()}
+// 				>
+// 					<div>
+// 						<span>
+// 							<i className="admin-font adminlib-move"></i>
+// 						</span>
+// 					</div>
+// 				</div>
+// 			)}
+// 		</>
+// 	);
+// };
 
-/**
- * Component that renders a delete button section.
- *
- * @param {DeleteBtnProps} props            - The props object.
- * @param {() => void}     props.onDelete   - Callback function invoked when the delete button is clicked.
- * @param {boolean}        props.hideDelete - If true, hides or disables the delete button.
- */
-export const DeleteBtn: React.FC<DeleteBtnProps> = ({
-	onDelete,
-	hideDelete,
-}) => {
-	return (
-		<div
-			className={`delete ${hideDelete ? 'disable' : ''}`}
-			role="button"
-			tabIndex={0}
-			onClick={() => onDelete?.()}
-		>
-			<i className="admin-font adminlib-close"></i>
-		</div>
-	);
-};
+// /**
+//  * Component that renders a delete button section.
+//  *
+//  * @param {DeleteBtnProps} props            - The props object.
+//  * @param {() => void}     props.onDelete   - Callback function invoked when the delete button is clicked.
+//  * @param {boolean}        props.hideDelete - If true, hides or disables the delete button.
+//  */
+// export const DeleteBtn: React.FC<DeleteBtnProps> = ({
+// 	onDelete,
+// 	hideDelete,
+// }) => {
+// 	return (
+// 		<div
+// 			className={`delete ${hideDelete ? 'disable' : ''}`}
+// 			role="button"
+// 			tabIndex={0}
+// 			onClick={() => onDelete?.()}
+// 		>
+// 			<i className="admin-font adminlib-close"></i>
+// 		</div>
+// 	);
+// };
 
 interface FormField {
 	id: number;
@@ -365,7 +366,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 
 		// Create a new array without the element at the specified index
 		const newFormFieldList = formFieldList.filter((_, i) => i !== index);
-
+		console.log("Updated Form Field after delete (D) : ",newFormFieldList);
 		// Update the state with the new array
 		settingHasChanged.current = true;
 		setFormFieldList(newFormFieldList);
@@ -380,6 +381,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 	 */
 	const handleFormFieldChange = (index: number, key: string, value: any) => {
 		if (proSettingChange()) return;
+		console.log("Running Handle : ",{index,key,value});
 		// copy the form field before modify
 		const newFormFieldList = [...formFieldList];
 
@@ -453,8 +455,22 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 								);
 							}}
 						/>
-						<AddNewBtn
+						{/* <AddNewBtn
 							onAddNew={() => {
+								const newInput = appendNewFormField(0);
+								setOpendInput(newInput);
+							}}
+						/> */}
+						<DisplayButton
+							wraperClass={'add-new-sections'}
+							children={
+								<div>
+									<span>
+										<i className="admin-font adminlib-move"></i>
+									</span>
+								</div>
+							}
+							onClick={()=>{
 								const newInput = appendNewFormField(0);
 								setOpendInput(newInput);
 							}}
@@ -504,13 +520,24 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 										{opendInput?.id === formField.id && (
 											<section className="meta-menu">
 												<div className="btn-delete">
-													<DeleteBtn
+													{/* <DeleteBtn
 														onDelete={() => {
 															deleteParticularFormField(
 																index
 															);
 															setOpendInput(null);
 														}}
+													/> */}
+													<DisplayButton
+														onClick={() => {
+															deleteParticularFormField(
+																index
+															);
+															console.log("Deleted Index : ",index);
+															setOpendInput(null);
+														}}
+														wraperClass={`delete`}
+														children={<i className="admin-font adminlib-close"></i>}
 													/>
 												</div>
 												<SettingMetaBox
@@ -676,10 +703,24 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 											)}
 										</section>
 
-										<AddNewBtn
+										{/* <AddNewBtn
 											onAddNew={() => {
 												const newInput =
 													appendNewFormField(index);
+												setOpendInput(newInput);
+											}}
+										/> */}
+										<DisplayButton
+											wraperClass={'add-new-sections'}
+											children={
+												<div>
+													<span>
+														<i className="admin-font adminlib-move"></i>
+													</span>
+												</div>
+											}
+											onClick={()=>{
+												const newInput = appendNewFormField(index);
 												setOpendInput(newInput);
 											}}
 										/>
@@ -713,9 +754,24 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 					/>
 				</section>
 
-				<AddNewBtn
+				{/* <AddNewBtn
 					large={true}
 					onAddNew={() => {
+						const newInput = appendNewFormField(
+							formFieldList.length - 1
+						);
+						setOpendInput(newInput);
+					}}
+				/> */}
+				<DisplayButton
+					wraperClass='addnew'
+					children={
+						<div>
+								<i className="admin-font adminlib-move"></i>
+								<p>{'Click to add next text field'}</p>
+						</div>
+					}
+					onClick={()=>{
 						const newInput = appendNewFormField(
 							formFieldList.length - 1
 						);

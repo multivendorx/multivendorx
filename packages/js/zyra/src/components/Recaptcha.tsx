@@ -14,7 +14,7 @@ const Recaptcha: React.FC<RecaptchaProps> = ({ formField }) => {
 		<div
 			className={`main-input-wrapper ${!formField.sitekey ? 'recaptcha' : ''}`}
 		>
-			<p>{'reCAPTCHA has been successfully added to the form.'}</p>
+			<p>'reCAPTCHA has been successfully added to the form.</p>
 		</div>
 	);
 };

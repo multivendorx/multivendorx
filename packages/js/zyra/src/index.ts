@@ -64,7 +64,7 @@ export {
 	getApiResponse,
 	sendApiResponse,
 	getApiLink,
-} from './components/apiService';
+} from './utils/apiService';
 export * from './utils/settingUtil';
 
 // Types

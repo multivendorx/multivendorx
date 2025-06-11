@@ -7,7 +7,7 @@ import axios from 'axios';
 /**
  * Internal dependencies
  */
-import { getApiLink } from './apiService';
+import { getApiLink } from '../utils/apiService';
 import '../styles/web/Log.scss';
 
 // Types

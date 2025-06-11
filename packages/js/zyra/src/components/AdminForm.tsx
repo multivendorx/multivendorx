@@ -22,7 +22,7 @@ import ShortCodeTable from './ShortCodeTable';
 import DoActionBtn from './DoActionBtn';
 import DropDownMapping from './DropDownMapping';
 import ToggleSetting from './ToggleSetting';
-import { getApiLink, sendApiResponse } from './apiService';
+import { getApiLink, sendApiResponse } from '../utils/apiService';
 import BasicInput from './BasicInput';
 import TextArea from './TextArea';
 import FileInput from './FileInput';

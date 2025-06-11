@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 /**
  * Internal dependencies
  */
-import { getApiLink, sendApiResponse } from './apiService';
+import { getApiLink, sendApiResponse } from '../utils/apiService';
 import '../styles/web/DoActionBtn.scss';
 
 // Types

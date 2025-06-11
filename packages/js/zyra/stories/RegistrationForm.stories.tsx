@@ -19,7 +19,7 @@ export const TestRegistrationForm: Story = {
 		name: 'registrationForm',
 		proSettingChange: () => {
 			console.log('Pro setting checked.');
-			return true;
+			return false;
 		},
 		formTitlePlaceholder: 'Enter your form title here',
 		setting: {
