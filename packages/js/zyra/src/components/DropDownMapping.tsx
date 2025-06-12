@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import '../styles/web/DropDownMapping.scss';
 
 // Types
-export interface DropDownMappingProps {
+interface DropDownMappingProps {
 	value?: [ string, string ][];
 	onChange: ( value: [ string, string ][] ) => void;
 	proSetting?: boolean;

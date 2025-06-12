@@ -29,7 +29,7 @@ interface ApiResponse {
 		users?: { id: number }[];
 	};
 }
-export interface DoActionBtnProps {
+interface DoActionBtnProps {
 	buttonKey: string;
 	interval: number;
 	proSetting: boolean;

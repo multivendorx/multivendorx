@@ -31,7 +31,7 @@ const PENALTY = 28;
 const COOLDOWN = 1;
 
 // Types
-export interface Subscriber {
+interface Subscriber {
 	date: string;
 	email: string;
 	image: string;
@@ -49,7 +49,7 @@ type SubscriberStatus = {
 	count: number;
 };
 
-export interface TableCellProps {
+interface TableCellProps {
 	title: string;
 	fieldValue?: string | boolean;
 	children?: ReactNode;
@@ -58,7 +58,7 @@ export interface TableCellProps {
 	onChange?: ( e: React.ChangeEvent< HTMLInputElement > ) => void;
 }
 
-export interface RealtimeFilter {
+interface RealtimeFilter {
 	name: string;
 	render: (
 		updateFilter: ( key: string, value: any ) => void,

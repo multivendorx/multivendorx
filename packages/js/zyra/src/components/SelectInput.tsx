@@ -12,7 +12,7 @@ export interface SelectOptions {
 	index?: number;
 }
 
-export interface SelectInputProps {
+interface SelectInputProps {
 	wrapperClass?: string;
 	selectDeselect?: boolean;
 	selectDeselectClass?: string;

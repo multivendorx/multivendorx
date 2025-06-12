@@ -50,7 +50,7 @@ interface FormFields {
 	butttonsetting?: any;
 }
 
-export interface FormViewerProps {
+interface FormViewerProps {
 	formFields: FormFields;
 	onSubmit: ( data: FormData ) => void;
 }

@@ -4,7 +4,7 @@
 import React from 'react';
 
 // Types
-export interface SectionProps {
+interface SectionProps {
 	wrapperClass: string;
 	hint?: string;
 	value?: string;

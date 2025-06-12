@@ -1,7 +1,7 @@
 /**
  * Type definitions
  */
-export type SettingContent = {
+type SettingContent = {
 	id: string;
 	priority: number;
 	pro_dependent?: boolean;

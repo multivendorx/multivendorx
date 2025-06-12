@@ -4,7 +4,7 @@
 import React, { ChangeEvent, MouseEvent, FocusEvent } from 'react';
 
 // Types
-export interface TextAreaProps {
+interface TextAreaProps {
 	id?: string;
 	name?: string;
 	value?: string | number;

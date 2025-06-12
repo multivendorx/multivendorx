@@ -4,7 +4,7 @@
 import React, { ChangeEvent } from 'react';
 
 // Types
-export interface RadioOption {
+interface RadioOption {
 	key: string;
 	keyName?: string;
 	value: string;
@@ -13,7 +13,7 @@ export interface RadioOption {
 	color?: string[] | string; // Can be an array of colors or an image URL
 }
 
-export interface RadioInputProps {
+interface RadioInputProps {
 	name?: string;
 	wrapperClass?: string;
 	inputWrapperClass?: string;

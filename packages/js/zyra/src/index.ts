@@ -63,26 +63,3 @@ export {
 } from './utils/apiService';
 export * from './utils/settingUtil';
 
-// Types
-export type { SupportLink } from './components/AdminFooter';
-export type { SelectOption, SettingsType } from './components/AdminForm';
-export type { BasicInputProps } from './components/BasicInput';
-export type { BlockTextProps } from './components/BlockText';
-export type { CalendarInputProps } from './components/CalendarInput';
-export type { CatalogCustomizerProps } from './components/CatalogCustomizer';
-export type { TableCellProps, Subscriber } from './components/Table';
-export type { DisplayButtonProp } from './components/DisplayButton';
-export type { FormViewerProps } from './components/FormViewer';
-export type { LogProps } from './components/Log';
-export type { MultiCheckBoxProps, Option } from './components/MultiCheckbox';
-export type {
-	MultiNumInputProps,
-	MultiNumOption,
-} from './components/MultiNumInput';
-export type { PopupProps } from './components/Popup';
-export type { RadioInputProps } from './components/RadioInput';
-export type { SelectOptions, SelectInputProps } from './components/SelectInput';
-export type { DropDownMappingProps } from './components/DropDownMapping';
-export type { DoActionBtnProps } from './components/DoActionBtn';
-export type { TextAreaProps } from './components/TextArea';
-export type { WpEditorProps } from './components/WpEditor';

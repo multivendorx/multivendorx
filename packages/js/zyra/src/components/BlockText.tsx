@@ -4,7 +4,7 @@
 import React from 'react';
 
 // Types
-export interface BlockTextProps {
+interface BlockTextProps {
 	blockTextClass: string;
 	value: string;
 }

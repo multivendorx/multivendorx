@@ -12,7 +12,7 @@ import ButtonCustomizer from './ButtonCustomiser';
 import '../styles/web/CatalogCustomizer.scss';
 
 // Types
-export interface CatalogCustomizerProps {
+interface CatalogCustomizerProps {
 	onChange: ( key: string, value: any ) => void;
 	proSetting?: boolean;
 	setting: Record< string, any >;

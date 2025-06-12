@@ -6,7 +6,7 @@
 import React from 'react';
 
 // Types
-export interface LabelProps {
+interface LabelProps {
 	wrapperClass: string;
 	descClass: string;
 	description?: string;

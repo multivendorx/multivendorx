@@ -4,7 +4,7 @@
 import React, { ChangeEvent, MouseEvent } from 'react';
 
 // Types
-export interface Option {
+interface Option {
 	key?: string;
 	value: string;
 	label?: string;
@@ -15,7 +15,7 @@ export interface Option {
 	hints?: string;
 }
 
-export interface MultiCheckBoxProps {
+interface MultiCheckBoxProps {
 	wrapperClass?: string;
 	selectDeselect?: boolean;
 	selectDeselectClass?: string;

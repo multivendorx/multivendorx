@@ -76,7 +76,7 @@ interface Task {
 	cache?: 'course_id' | 'user_id';
 }
 
-export interface InputField {
+interface InputField {
 	key: string;
 	id?: string;
 	class?: string;
@@ -105,7 +105,7 @@ export interface InputField {
 		| 'url'
 		| 'textarea'
 		| 'normalfile'
-		| 'settingToggle'
+		| 'setting-toggle'
 		| 'wpeditor'
 		| 'label'
 		| 'section'
@@ -115,15 +115,14 @@ export interface InputField {
 		| 'form-customizer'
 		| 'catalog-customizer'
 		| 'multi-checkbox-table'
-		| 'mergeComponent'
-		| 'shortCode-table'
+		| 'merge-component'
+		| 'shortcode-table'
 		| 'do-action-btn'
 		| 'dropdown-mapping'
 		| 'sso-key'
 		| 'log'
 		| 'checkbox-custom-img'
-		| 'api-connect'
-		| 'from-builder';
+		| 'api-connect';
 	desc?: string;
 	placeholder?: string;
 	inputLabel?: string;
@@ -141,10 +140,10 @@ export interface InputField {
 	height?: number;
 	multiple?: boolean;
 	range?: boolean;
-	select_deselect?: boolean;
+	selectDeselect?: boolean;
 	look?: string;
 	tour?: string;
-	right_content?: boolean;
+	rightContent?: boolean;
 	dependentPlugin?: boolean;
 	dependentSetting?: string;
 	defaultValue?: string;
@@ -189,11 +188,7 @@ type Center = {
 	lng: number;
 };
 
-export interface SelectOption {
-	value: string;
-	label: string;
-}
-export interface SettingsType {
+interface SettingsType {
 	modal: InputField[];
 	submitUrl: string;
 	id: string;
@@ -205,7 +200,7 @@ interface AdminFormProps {
 	updateSetting: any;
 	modules: any;
 	appLocalizer: Record< string, any >; // Allows any structure
-	ProPopup: React.FC;
+	Popup: typeof Popup;
 	modulePopupFields?: PopupProps;
 }
 
@@ -215,7 +210,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 	modules,
 	appLocalizer,
 	settings,
-	ProPopup,
+	Popup,
 	modulePopupFields,
 } ) => {
 	const { modal, submitUrl, id } = settings;
@@ -224,10 +219,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 	const counterId = useRef< NodeJS.Timeout | number >( 0 );
 	const [ successMsg, setSuccessMsg ] = useState< string >( '' );
 	const [ modelOpen, setModelOpen ] = useState< boolean >( false );
-	const [ modelModuleOpen, setModelModuleOpen ] =
-		useState< boolean >( false );
 	const [ countryState, setCountryState ] = useState< CountryState[] >( [] );
-
 	const [ modulePopupData, setModulePopupData ] = useState< PopupProps >( {
 		moduleName: '',
 		settings: '',
@@ -321,12 +313,46 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 
 		if ( popupData.moduleName || popupData.settings || popupData.plugin ) {
 			setModulePopupData( popupData );
-			setModelModuleOpen( true );
+			setModelOpen( true );
 			return true;
 		}
 
 		return false;
 	};
+
+	const hasAccess = (isProSetting:boolean, hasDependentModule?: string, hasDependentSetting?:string, hasDependentPlugin?:string)=>{
+		const popupData: PopupProps = {
+			moduleName: '',
+			settings: '',
+			plugin: '',
+		};
+		if(isProSetting && ! appLocalizer?.khali_dabba){
+			setModelOpen( true );
+			return false;
+		}
+		if(hasDependentModule && ! modules.includes( hasDependentModule ) ){
+			popupData.moduleName = hasDependentModule;
+			setModulePopupData( popupData );
+			setModelOpen( true );
+			return false;
+		}
+		if(hasDependentSetting &&
+			Array.isArray( setting[ hasDependentSetting ] ) &&
+			setting[ hasDependentSetting ].length === 0
+		){
+			popupData.settings = hasDependentSetting;
+			setModulePopupData( popupData );
+			setModelOpen( true );
+			return false;
+		}
+		if ( hasDependentPlugin && !appLocalizer[`${hasDependentPlugin}_active`] ) {
+			popupData.plugin = hasDependentPlugin;
+			setModulePopupData( popupData );
+			setModelOpen( true );
+			return false;
+		}
+		return true;
+	}
 
 	const handleChange = (
 		event: any,
@@ -582,19 +608,11 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 							min={ inputField.min ?? 0 } // for range min value
 							max={ inputField.max ?? 50 } // for range max value
 							value={ value }
-							proSetting={ isProSetting(
-								inputField.proSetting ?? false
-							) }
+							proSetting={ hasAccess(inputField.proSetting ?? false) }
 							onChange={ (
 								e: React.ChangeEvent< HTMLInputElement >
 							) => {
-								if (
-									! proSettingChanged(
-										inputField.proSetting ?? false
-									) &&
-									! moduleEnabledChanged(
-										String( inputField.moduleEnabled ?? '' )
-									)
+								if ( hasAccess(inputField.proSetting ?? false, String( inputField.moduleEnabled ?? '' ))
 								) {
 									handleChange( e, inputField.key );
 								}
@@ -1012,7 +1030,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 							wrapperClass="settings-from-multi-select"
 							descClass="settings-metabox-description"
 							selectDeselectClass="btn-purple select-deselect-trigger"
-							selectDeselect={ inputField.select_deselect }
+							selectDeselect={ inputField.selectDeselect }
 							selectDeselectValue="Select / Deselect All"
 							description={ inputField.desc }
 							inputClass={ inputField.key }
@@ -1143,8 +1161,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 						normalizedValue = value;
 					} else if ( typeof value === 'string' ) {
 						normalizedValue = [ value ];
-					} else {
-						normalizedValue = [];
 					}
 					input = (
 						<MultiCheckBox
@@ -1164,10 +1180,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 							hintOuterClass="checkbox-description"
 							hintInnerClass="hover-tooltip"
 							idPrefix="toggle-switch"
-							selectDeselect={ inputField.select_deselect }
+							selectDeselect={ inputField.selectDeselect }
 							selectDeselectValue="Select / Deselect All"
 							rightContentClass="settings-checkbox-description"
-							rightContent={ inputField.right_content } // for place checkbox right
+							rightContent={ inputField.rightContent } // for place checkbox right
 							options={
 								Array.isArray( inputField.options )
 									? inputField.options.map( ( opt ) => ( {
@@ -1245,7 +1261,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 
 					break;
 				// Rectangle radio toggle button
-				case 'settingToggle':
+				case 'setting-toggle':
 					input = (
 						<ToggleSetting
 							wrapperClass={ `setting-form-input` }
@@ -1475,7 +1491,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 								}
 							} }
 							moduleChange={ ( moduleEnabled ) => {
-								setModelModuleOpen( true );
+								setModelOpen( true );
 								setModulePopupData( {
 									moduleName: moduleEnabled,
 									settings: '',
@@ -1486,7 +1502,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 					);
 					break;
 				// Check in MVX
-				case 'mergeComponent':
+				case 'merge-component':
 					input = (
 						<MergeComponent
 							wrapperClass={ `setting-form-input` }
@@ -1522,10 +1538,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 					);
 					break;
 				// for shortcode name and description
-				case 'shortCode-table':
+				case 'shortcode-table':
 					input = (
 						<ShortCodeTable
-							wrapperClass={ `setting-form-input` }
 							descClass="settings-metabox-description"
 							description={ inputField.desc }
 							key={ inputField.key }
@@ -1660,7 +1675,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 					}` }
 				>
 					{ inputField.type !== 'catalog-customizer' &&
-						inputField.type !== 'from-builder' &&
 						inputField.type !== 'form-customizer' && (
 							<label
 								className="settings-form-label"
@@ -1681,10 +1695,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 		setModelOpen( false );
 	};
 
-	const handleModulePopupClose = () => {
-		setModelModuleOpen( false );
-	};
-
 	return (
 		<>
 			<div className="dynamic-fields-wrapper">
@@ -1700,38 +1710,22 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 						tabIndex={ 0 }
 						onClick={ handleModelClose }
 					></span>
-					{ <ProPopup /> }
-				</Dialog>
-				<Dialog
-					className="admin-module-popup"
-					open={ modelModuleOpen }
-					onClose={ handleModulePopupClose }
-					aria-labelledby="form-dialog-title"
-				>
-					<span
-						className="admin-font adminlib-cross"
-						role="button"
-						tabIndex={ 0 }
-						onClick={ handleModulePopupClose }
-					></span>
-					<Popup
+					{ <Popup
 						moduleName={ String( modulePopupData.moduleName ) }
 						settings={ modulePopupData.settings }
 						plugin={ modulePopupData.plugin }
-						moduleMessage={ modulePopupFields?.moduleMessage }
+						message={ modulePopupFields?.message }
 						moduleButton={ modulePopupFields?.moduleButton }
 						pluginDescription={
 							modulePopupFields?.pluginDescription
 						}
-						SettingMessage={ modulePopupFields?.SettingMessage }
-						pluginMessage={ modulePopupFields?.pluginMessage }
 						pluginButton={ modulePopupFields?.pluginButton }
 						SettingDescription={
 							modulePopupFields?.SettingDescription
 						}
 						pluginUrl={ modulePopupFields?.pluginUrl }
 						modulePageUrl={ modulePopupFields?.modulePageUrl }
-					/>
+					/> }
 				</Dialog>
 				{ successMsg && (
 					<div className="admin-notice-display-title">

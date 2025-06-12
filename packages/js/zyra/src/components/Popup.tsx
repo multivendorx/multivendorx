@@ -17,20 +17,16 @@ export interface PopupProps {
 	moduleName?: string;
 	settings?: string;
 	plugin?: string;
-	moduleMessage?: string;
+	message?: string;
 	moduleButton?: string;
 	pluginDescription?: string;
-	pluginMessage?: string;
 	pluginButton?: string;
 	SettingDescription?: string;
-	SettingMessage?: string;
 	pluginUrl?: string;
 	modulePageUrl?: string;
 }
 
 const ProPopup: React.FC< PopupProps > = ( props ) => {
-	const safeProUrl = props.proUrl || '#';
-
 	return (
 		<DialogContent>
 			<DialogContentText>
@@ -59,7 +55,7 @@ const ProPopup: React.FC< PopupProps > = ( props ) => {
 								) }
 								{ props.moduleName && (
 									<>
-										<h2>{ props.moduleMessage }</h2>
+										<h2>{ props.message }</h2>
 										<a
 											className="admin-go-pro-btn"
 											href={ props.modulePageUrl }
@@ -69,29 +65,17 @@ const ProPopup: React.FC< PopupProps > = ( props ) => {
 									</>
 								) }
 							</div>
-							{ props.messages && (
-								<a
-									className="admin-go-pro-btn"
-									target="_blank"
-									rel="noopener noreferrer"
-									href={ safeProUrl }
-								>
-									Upgrade to Pro
-								</a>
-							) }
-
 							{ props.settings && (
 								<>
-									<h2>{ props.SettingMessage }</h2>
+									<h2>{ props.message }</h2>
 									<p id="description">
 										{ props.SettingDescription }
 									</p>
 								</>
 							) }
-
 							{ props.plugin && (
 								<div>
-									<h2>{ props.pluginMessage }</h2>
+									<h2>{ props.message }</h2>
 									<p id="description">
 										{ props.pluginDescription }
 									</p>

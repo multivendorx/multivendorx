@@ -22,14 +22,14 @@ import TemplateSection from './TemplateSection';
 import DisplayButton from './DisplayButton';
 
 // Types
-export interface Option {
+interface Option {
 	id: string;
 	label: string;
 	value: string;
 	isdefault?: boolean;
 }
 
-export interface SelectOption {
+interface SelectOption {
 	icon: string;
 	value: string;
 	label: string;

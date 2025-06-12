@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 
 // Types
-export interface DisplayButtonProp {
+interface DisplayButtonProp {
 	customStyle?: {
 		button_border_size?: number;
 		button_border_color?: string;
