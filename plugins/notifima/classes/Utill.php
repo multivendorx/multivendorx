@@ -89,11 +89,11 @@ class Utill {
      * @return bool
      */
     public static function is_khali_dabba() {
-        if ( defined( 'NOTIFIMA_PRO_PLUGIN_VERSION' ) ) {
-			return Notifima_Pro()->license->is_active();
-        }
-        return false;
-        // return true;
+        // if ( defined( 'NOTIFIMA_PRO_PLUGIN_VERSION' ) ) {
+		// 	return Notifima_Pro()->license->is_active();
+        // }
+        // return false;
+        return true;
     }
 
     /**

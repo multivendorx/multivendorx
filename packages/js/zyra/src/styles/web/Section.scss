@@ -1,0 +1,20 @@
+.setting-section-divider {
+    margin: 2rem 0;
+    padding: 0;
+    border-top: 0.05rem solid rgb(82 44 129 / 9%);
+    position: relative;
+
+    .settings-metabox-description{
+        text-align: center;
+    }
+
+    span {
+    position: absolute;
+    top: -0.063rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0 1rem;
+    background: #fff;
+    font-size: 0.813rem;
+    }
+}

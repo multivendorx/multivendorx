@@ -3,3 +3,4 @@ node_modules
 *.tgz
 build
 package-lock.json
+.cache

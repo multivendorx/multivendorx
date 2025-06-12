@@ -6,3 +6,4 @@ log/**
 templates/**
 vendor/**
 .wireit/**
+.cache/**
