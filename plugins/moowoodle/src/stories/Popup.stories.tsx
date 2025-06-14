@@ -1,4 +1,4 @@
-(globalThis as any).appLocalizer = {
+( globalThis as any ).appLocalizer = {
     pro_url: "https://example.com/pro-upgrade",
 };
 

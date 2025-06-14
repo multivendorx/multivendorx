@@ -1,0 +1,7 @@
+{
+    "name": "moowoodle/my-courses",
+    "title": "My Course",
+    "category": "woocommerce",
+    "apiVersion": 2,
+    "editorScript": "file:./index.js"
+}

@@ -17,7 +17,7 @@ type ThemeContextType = {
 };
 
 // theme context object with initial value typed
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const ThemeContext = createContext< ThemeContextType | undefined >( undefined );
 
 /**
  * dispatch function for theme related operation.
@@ -26,8 +26,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
  * @param action name of action for state variable.
  * @return updated state
  */
-const themeReducer = (state: ThemeState, action: ThemeAction): ThemeState => {
-    switch (action.type) {
+const themeReducer = ( state: ThemeState, action: ThemeAction ): ThemeState => {
+    switch ( action.type ) {
         case "TOGGLE_THEME":
             return {
                 ...state,
@@ -42,14 +42,14 @@ const themeReducer = (state: ThemeState, action: ThemeAction): ThemeState => {
  * @param ReactNode state variable
  * context provider component
  */
-const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [state, dispatch] = useReducer(themeReducer, { theme: "light" });
+const ThemeProvider: React.FC< { children: ReactNode } > = ( { children } ) => {
+    const [ state, dispatch ] = useReducer( themeReducer, { theme: "light" } );
 
     /**
      * toggle the theme if dark then toggle to light. vice versa.
      */
     const toggleTheme = () => {
-        dispatch({ type: "TOGGLE_THEME" });
+        dispatch( { type: "TOGGLE_THEME" } );
     };
 
     const value: ThemeContextType = {
@@ -58,7 +58,9 @@ const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     };
 
     return (
-        <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+        <ThemeContext.Provider value={ value }>
+            { children }
+        </ThemeContext.Provider>
     );
 };
 
@@ -67,9 +69,9 @@ const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
  * @return { theme, toggleTheme }
  */
 const useTheme = (): ThemeContextType => {
-    const context = useContext(ThemeContext);
-    if (!context) {
-        throw new Error("useTheme must be used within a ThemeProvider");
+    const context = useContext( ThemeContext );
+    if ( ! context ) {
+        throw new Error( "useTheme must be used within a ThemeProvider" );
     }
     return context;
 };

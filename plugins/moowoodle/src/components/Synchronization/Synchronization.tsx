@@ -21,7 +21,7 @@ import { useModules } from "../../contexts/ModuleContext";
 import ShowProPopup from "../Popup/Popup";
 
 // Types
-type SettingItem = Record<string, any>;
+type SettingItem = Record< string, any >;
 
 interface SettingsProps {
     id: string;
@@ -29,8 +29,8 @@ interface SettingsProps {
 
 const supportLink = [
     {
-        title: __("Get in touch with Support", "moowoodle"),
-        icon: "mail",
+        title: __( "Get in touch with Support", "moowoodle" ),
+        icon: "adminlib-mail",
         description: __(
             "Reach out to the support team for assistance or guidance.",
             "moowoodle"
@@ -38,15 +38,18 @@ const supportLink = [
         link: "https://dualcube.com/forums/?utm_source=wordpress.org&utm_medium=freelandingpage&utm_campaign=MooWoodleFree",
     },
     {
-        title: __("Explore Documentation", "moowoodle"),
-        icon: "submission-message",
-        description: __("Understand the plugin and its settings.", "moowoodle"),
+        title: __( "Explore Documentation", "moowoodle" ),
+        icon: "adminlib-submission-message",
+        description: __(
+            "Understand the plugin and its settings.",
+            "moowoodle"
+        ),
         link: "https://dualcube.com/knowledgebase/?utm_source=wordpress.org&utm_medium=freelandingpage&utm_campaign=MooWoodleFree",
     },
     {
-        title: __("Contribute Here", "moowoodle"),
-        icon: "support",
-        description: __("Participate in product enhancement.", "moowoodle"),
+        title: __( "Contribute Here", "moowoodle" ),
+        icon: "adminlib-pport",
+        description: __( "Participate in product enhancement.", "moowoodle" ),
         link: "https://github.com/dualcube/moowoodle/issues",
     },
 ];
@@ -58,35 +61,41 @@ interface Products {
 
 const products: Products[] = [
     {
-        title: __("Automated user and course synchronization with scheduler", "moowoodle"),
+        title: __(
+            "Automated user and course synchronization with scheduler",
+            "moowoodle"
+        ),
         description: __(
             "Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle.",
             "moowoodle"
         ),
     },
     {
-        title: __("Convenient Single Sign-On login", "moowoodle"),
+        title: __( "Convenient Single Sign-On login", "moowoodle" ),
         description: __(
             "SSO enables students to access their purchased courses without the need to log in separately to the Moodle site.",
             "moowoodle"
         ),
     },
     {
-        title: __("Steady Income through Course Subscriptions", "moowoodle"),
+        title: __( "Steady Income through Course Subscriptions", "moowoodle" ),
         description: __(
             "Generate consistent revenue by offering courses with subscription-based model.",
             "moowoodle"
         ),
     },
     {
-        title: __("Synchronize Courses in Bulk", "moowoodle"),
+        title: __( "Synchronize Courses in Bulk", "moowoodle" ),
         description: __(
-            "Effortlessly synchronize multiple courses  at once, ideal for managing large course catalogs.",
+            "Effortlessly synchronize multiple courses at once, ideal for managing large course catalogs.",
             "moowoodle"
         ),
     },
     {
-        title: __("Automatic User Synchronization for Moodle™ and WordPress", "moowoodle"),
+        title: __(
+            "Automatic User Synchronization for Moodle™ and WordPress",
+            "moowoodle"
+        ),
         description: __(
             "Synchronizes user accounts between Moodle™ and WordPress, ensuring consistent user management across both platforms without manual intervention.",
             "moowoodle"
@@ -94,9 +103,9 @@ const products: Products[] = [
     },
 ];
 
-const Synchronization: React.FC<SettingsProps> = () => {
+const Synchronization: React.FC< SettingsProps > = () => {
     const settingsArray: SettingItem[] = getAvailableSettings(
-        getTemplateData('synchronizations'),
+        getTemplateData( "synchronizations" ),
         []
     );
 
@@ -106,70 +115,76 @@ const Synchronization: React.FC<SettingsProps> = () => {
     const getBanner = () => {
         return (
             <Banner
-                products={products}
-                is_pro={false}
-                pro_url={appLocalizer.shop_url}
+                products={ products }
+                isPro={ false }
+                proUrl={ appLocalizer.shop_url }
+                tag = "Why Premium"
+                buttonText = "View Pricing"
             />
         );
     };
 
     // Render the dynamic form
-    const getForm = (currentTab: string | null): JSX.Element | null => {
-        if (!currentTab) return null;
+    const getForm = ( currentTab: string | null ): JSX.Element | null => {
+        if ( ! currentTab ) return null;
 
         // get the setting context
-        const { setting, settingName, setSetting, updateSetting } = useSetting();
-        
+        const { setting, settingName, setSetting, updateSetting } =
+            useSetting();
+
         const settingModal = getSettingById( settingsArray as any, currentTab );
         const { modules } = useModules();
 
-        if ( settingName != currentTab ) {
-            setSetting( currentTab, appLocalizer.settings_databases_value[currentTab] || {} );
+        if ( settingName !== currentTab ) {
+            setSetting(
+                currentTab,
+                appLocalizer.settings_databases_value[ currentTab ] || {}
+            );
         }
 
-        useEffect(() => {
-            appLocalizer.settings_databases_value[settingName] = setting;
-        }, [setting]);
+        useEffect( () => {
+            appLocalizer.settings_databases_value[ settingName ] = setting;
+        }, [ setting ] );
 
         return (
             <>
-                {settingName === currentTab ? (
+                { settingName === currentTab ? (
                     <AdminForm
-                        settings={settingModal as SettingContent}
-                        proSetting={appLocalizer.pro_settings_list}
-                        setting={setting}
-                        updateSetting={updateSetting}
-                        appLocalizer={appLocalizer}
-                        modules={modules}
-                        ProPopup={ShowProPopup}
+                        settings={ settingModal as SettingContent }
+                        proSetting={ appLocalizer.pro_settings_list }
+                        setting={ setting }
+                        updateSetting={ updateSetting }
+                        appLocalizer={ appLocalizer }
+                        modules={ modules }
+                        Popup={ ShowProPopup }
                     />
                 ) : (
                     <>Loading...</>
-                )}
+                ) }
             </>
         );
-    }
+    };
 
     return (
         <>
             <SettingProvider>
                 <Tabs
-                    tabData={settingsArray as any}
-                    currentTab={location.get("subtab") as string}
-                    getForm={getForm}
-                    BannerSection={getBanner}
-                    prepareUrl={(subTab: string) =>
-                        `?page=moowoodle#&tab=synchronization&subtab=${subTab}`
+                    tabData={ settingsArray as any }
+                    currentTab={ location.get( "subtab" ) as string }
+                    getForm={ getForm }
+                    BannerSection={ getBanner }
+                    prepareUrl={ ( subTab: string ) =>
+                        `?page=moowoodle#&tab=synchronization&subtab=${ subTab }`
                     }
-                    appLocalizer={appLocalizer}
-                    brandImg={Brand}
-                    smallbrandImg={BrandSmall}
-                    supprot={supportLink}
-                    Link={Link}
+                    appLocalizer={ appLocalizer }
+                    brandImg={ Brand }
+                    smallbrandImg={ BrandSmall }
+                    supprot={ supportLink }
+                    Link={ Link }
                 />
             </SettingProvider>
         </>
     );
-}
+};
 
 export default Synchronization;
