@@ -20,34 +20,34 @@ export default {
     context: "this",
     treeshake: true,
     plugins: [
-        copy({
+        copy( {
             targets: [
                 { src: "src/assets/fonts/*", dest: "build/assets/fonts" }, // Adjust paths accordingly
             ],
             verbose: true,
-        }),
-        peerDepsExternal({
+        } ),
+        peerDepsExternal( {
             includeDependencies: true,
-        }),
+        } ),
         json(),
-        resolve({
+        resolve( {
             browser: true,
             preferBuiltins: false,
-        }),
+        } ),
         commonjs(),
-        typescript({
+        typescript( {
             tsconfig: "./tsconfig.json",
-        }),
-        postcss({
+        } ),
+        postcss( {
             extract: "index.css", // Extract CSS into this file
             minimize: true,
-            use: ["sass"],
-        }),
+            use: [ "sass" ],
+        } ),
         terser(),
     ],
-    external: ["react", "react-dom"],
-    onwarn(warning, warn) {
-        if (warning.code === "MODULE_LEVEL_DIRECTIVE") return;
-        warn(warning);
+    external: [ "react", "react-dom" ],
+    onwarn( warning, warn ) {
+        if ( warning.code === "MODULE_LEVEL_DIRECTIVE" ) return;
+        warn( warning );
     },
 };
