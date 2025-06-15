@@ -11,7 +11,7 @@ const pluginFiles = [
     "src/**/*",
     "templates/**/*",
     "config.php",
-    "product_stock_alert.php",
+    "moowoodle.php",
 ];
 
 const { version } = JSON.parse( fs.readFileSync( "package.json" ) );

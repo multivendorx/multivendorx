@@ -1,4 +1,4 @@
-declare module "body-scroll-lock" {
+declare module 'body-scroll-lock' {
     export function disableBodyScroll(targetElement: Element): void;
     export function enableBodyScroll(targetElement: Element): void;
 }
@@ -27,9 +27,17 @@ declare global {
         pro_settings_list: any;
     }
 
-    declare module "*.png";
-    declare module "*.jpg";
-    declare module "*.jpeg";
+    interface CourseMyAcc {
+        apiUrl: string;
+        restUrl: string;
+        nonce: string;
+        moodle_site_url: string;
+    }
+
+    declare module '*.png';
+    declare module '*.jpg';
+    declare module '*.jpeg';
 
     var appLocalizer: AppLocalizer;
+    var courseMyAcc: CourseMyAcc;
 }

@@ -13,13 +13,20 @@
  *
  * Text Domain: moowoodle
  * Domain Path: /languages/
+ *
+ * @package MooWoodle
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 // autoload classes.
 require_once __DIR__ . '/vendor/autoload.php';
 
+/**
+ * Returns the main instance of the MooWoodle plugin.
+ *
+ * @return \MooWoodle\MooWoodle
+ */
 function MooWoodle() {
     return \MooWoodle\MooWoodle::init( __FILE__ );
 }
