@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         /* Language and Environment */
-        "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+        "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
         "jsx": "react-jsx" /* Specify what JSX code is generated. */,
 
         /* Modules */
@@ -22,7 +22,7 @@
         "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
         "emitDeclarationOnly": true /* Only output d.ts files and not JavaScript files. */,
         "outDir": "build" /* Specify an output folder for all emitted files. */,
-        // "declarationDir": "build",
+        "declarationDir": "build/types",
         // "declarationMap": false,
 
         /* Interop Constraints */
@@ -36,6 +36,6 @@
         /* Completeness */
         "skipLibCheck": true
     },
-    "include": ["src", "build"],
-    "exclude": ["node_modules", "build"]
+    "include": ["src"]
+    // "exclude": [ "node_modules", "build" ]
 }

@@ -1,13 +1,20 @@
-import React from "react";
-import "../styles/web/ShortCodeTable.scss";
+/**
+ * External dependencies
+ */
+import React from 'react';
 
+/**
+ * Internal dependencies
+ */
+import '../styles/web/ShortCodeTable.scss';
+
+// Types
 interface Option {
-    label: string;
-    desc: string;
+    label?: string;
+    desc?: string;
 }
 
 interface ShortCodeTableProps {
-    wrapperClass: string;
     descClass: string;
     description?: string;
     options: Option[]; // Expected format: array of option objects
@@ -15,11 +22,10 @@ interface ShortCodeTableProps {
 }
 
 const ShortCodeTable: React.FC<ShortCodeTableProps> = (props) => {
-    const { wrapperClass, descClass, description, options, optionLabel } =
-        props;
+    const { descClass, description, options, optionLabel } = props;
 
     return (
-        <main className={wrapperClass}>
+        <>
             <table className="shortcode-table">
                 <thead>
                     <tr>
@@ -55,7 +61,7 @@ const ShortCodeTable: React.FC<ShortCodeTableProps> = (props) => {
                     dangerouslySetInnerHTML={{ __html: description }}
                 />
             )}
-        </main>
+        </>
     );
 };
 

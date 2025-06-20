@@ -1,11 +1,20 @@
-import React from "react";
-import BasicInput from "./BasicInput";
-import { SelectOptions } from "./SelectInput";
+// Check in MVX
+/**
+ * External dependencies
+ */
+import React from 'react';
 
+/**
+ * Internal dependencies
+ */
+import BasicInput from './BasicInput';
+import { SelectOptions } from './SelectInput';
+
+// Types
 interface ParentOption {
     label: string;
     key: string;
-    type: "text" | "number" | "checkbox" | "select" | "select2nd" | "country";
+    type: 'text' | 'number' | 'checkbox' | 'select' | 'select2nd' | 'country';
     options: SelectOptions[]; // Define proper type if available
 }
 
@@ -38,12 +47,12 @@ const NestedInput: React.FC<NestedInputProps> = (props) => {
                                 key={i}
                                 className={props.innerParentWrapperClass}
                             >
-                                <label className={props.parentLabelClass}>
+                                <div className={props.parentLabelClass}>
                                     <p>{parentOption.label}</p>
-                                </label>
+                                </div>
 
-                                {parentOption.type === "text" ||
-                                parentOption.type === "number" ? (
+                                {parentOption.type === 'text' ||
+                                parentOption.type === 'number' ? (
                                     <BasicInput
                                         inputClass={props.parentInputClass}
                                         type={parentOption.type}

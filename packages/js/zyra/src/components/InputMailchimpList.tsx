@@ -1,10 +1,17 @@
-import React, { useState } from "react";
-import { getApiLink, getApiResponse } from "./apiService";
-import BasicInput from "./BasicInput";
-import SelectInput from "./SelectInput";
-import "../styles/web/InputMailchimpList.scss";
+/**
+ * External dependencies
+ */
+import React, { useState } from 'react';
 
-// Define types for API response and component props
+/**
+ * Internal dependencies
+ */
+import { getApiLink, getApiResponse } from '../utils/apiService';
+import BasicInput from './BasicInput';
+import SelectInput from './SelectInput';
+import '../styles/web/InputMailchimpList.scss';
+
+// Types
 interface SelectOption {
     value: string;
     label: string;
@@ -46,14 +53,17 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
     const [loading, setLoading] = useState<boolean>(false);
     const [showOption, setShowOption] = useState<boolean>(false);
     const [mailchimpErrorMessage, setMailchimpErrorMessage] =
-        useState<string>("");
+        useState<string>('');
 
     const updateSelectOption = async () => {
         if (!setting[mailchimpKey]) {
-            setMailchimpErrorMessage("Kindly use a proper MailChimp key.");
+            setMailchimpErrorMessage('Kindly use a proper MailChimp key.');
+            setTimeout(() => {
+                setMailchimpErrorMessage('');
+            }, 10000);
         } else {
             setLoading(true);
-            setMailchimpErrorMessage("");
+            setMailchimpErrorMessage('');
 
             try {
                 const options: SelectOption[] =
@@ -63,9 +73,12 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
                 updateSetting(optionKey, options);
                 setSelectOption(options);
                 setShowOption(true);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
-                console.error("Error fetching Mailchimp list:", error);
-                setMailchimpErrorMessage("Failed to fetch MailChimp list.");
+                setMailchimpErrorMessage('Failed to fetch MailChimp list.');
+                setTimeout(() => {
+                    setMailchimpErrorMessage('');
+                }, 10000);
             } finally {
                 setLoading(false);
             }
@@ -86,10 +99,10 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
                     }
                 }}
             />
-
+            <div>{mailchimpErrorMessage}</div>
             <div className="loader-wrapper">
                 <button
-                    className="btn-purple btn-effect"
+                    className="admin-btn btn-purple btn-effect"
                     onClick={(e) => {
                         e.preventDefault();
                         if (!proSettingChanged()) {
@@ -102,9 +115,9 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
 
                 {loading && (
                     <div className="loader">
-                        <div className="three-body__dot"></div>
-                        <div className="three-body__dot"></div>
-                        <div className="three-body__dot"></div>
+                        <div className="three-body-dot"></div>
+                        <div className="three-body-dot"></div>
+                        <div className="three-body-dot"></div>
                     </div>
                 )}
             </div>
@@ -112,7 +125,7 @@ const InputMailchimpList: React.FC<InputMailchimpListProps> = ({
             {(selectOption.length > 0 || showOption) && (
                 <SelectInput
                     onChange={(e) => {
-                        if (!proSettingChanged() && e && "value" in e) {
+                        if (!proSettingChanged() && e && 'value' in e) {
                             onChange({ target: { value: e.value } }, selectKey);
                         }
                     }}

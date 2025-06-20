@@ -1,18 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
-import { ReactSortable } from "react-sortablejs";
-import ButtonCustomizer from "./ButtonCustomiser";
-import Elements from "./Elements";
-import SettingMetaBox from "./MetaBox";
-import SimpleInput from "./SimpleInput";
-import MultipleOptions from "./MultipleOption";
-import TemplateTextarea from "./TemplateTextArea";
-import Attachment from "./Attachment";
-import Recaptcha from "./Recaptcha";
-import Datepicker from "./DatePicker";
-import Timepicker from "./TimePicker";
-import Divider from "./Divider";
-import TemplateSection from "./TemplateSection";
+/**
+ * External dependencies
+ */
+import React, { useEffect, useRef, useState } from 'react';
+import { ReactSortable } from 'react-sortablejs';
+import '../styles/web/RegistrationForm.scss';
 
+/**
+ * Internal dependencies
+ */
+import ButtonCustomizer from './ButtonCustomiser';
+import Elements from './Elements';
+import SettingMetaBox from './SettingMetaBox';
+import SimpleInput from './SimpleInput';
+import MultipleOptions from './MultipleOption';
+import TemplateTextArea from './TemplateTextArea';
+import Attachment from './Attachment';
+import Recaptcha from './Recaptcha';
+import Datepicker from './DatePicker';
+import TimePicker from './TimePicker';
+import TemplateSection from './TemplateSection';
+import DisplayButton from './DisplayButton';
+
+// Types
 export interface Option {
     id: string;
     label: string;
@@ -27,134 +36,152 @@ export interface SelectOption {
 }
 
 // Props interface for AddNewBtn
-interface AddNewBtnProps {
-    onAddNew?: () => void;
-    large?: boolean;
-}
+// interface AddNewBtnProps {
+// 	onAddNew?: () => void;
+// 	large?: boolean;
+// }
 
 // Props interface for DeleteBtn
-interface DeleteBtnProps {
-    onDelete?: () => void;
-    hideDelete?: boolean;
-}
+// interface DeleteBtnProps {
+// 	onDelete?: () => void;
+// 	hideDelete?: boolean;
+// }
 
 // Default values for input options
-export const DEFAULT_OPTIONS: Option[] = [
-    { id: "1", label: "Manufacture", value: "manufacture" },
-    { id: "2", label: "Trader", value: "trader" },
-    { id: "3", label: "Authorized Agent", value: "authorized_agent" },
+const DEFAULT_OPTIONS: Option[] = [
+    { id: '1', label: 'Manufacture', value: 'manufacture' },
+    { id: '2', label: 'Trader', value: 'trader' },
+    { id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
 ];
 
 // Utility functions for default placeholders and labels
-export const DEFAULT_PLACEHOLDER = (type: string): string => `${type}`;
-export const DEFAULT_LABEL_SIMPLE = (type: string): string =>
-    `Enter your ${type}`;
-export const DEFAULT_LABEL_SELECT = "Nature of Business";
-export const DEFAULT_FORM_TITLE = "Demo Form";
+const DEFAULT_PLACEHOLDER = (type: string): string => `${type}`;
+const DEFAULT_LABEL_SIMPLE = (type: string): string => `Enter your ${type}`;
+const DEFAULT_LABEL_SELECT = 'Nature of Business';
+const DEFAULT_FORM_TITLE = 'Demo Form';
 
 // Select options list
-export const selectOptions: SelectOption[] = [
+const selectOptions: SelectOption[] = [
     {
-        icon: "adminLib-t-letter-bold icon-form-textbox",
-        value: "text",
-        label: "Textbox",
+        icon: 'adminlib-t-letter-bold icon-form-textbox',
+        value: 'text',
+        label: 'Textbox',
     },
-    { icon: "adminLib-unread icon-form-email", value: "email", label: "Email" },
+    { icon: 'adminlib-unread icon-form-email', value: 'email', label: 'Email' },
     {
-        icon: "adminLib-text icon-form-textarea",
-        value: "textarea",
-        label: "Textarea",
-    },
-    {
-        icon: "adminLib-checkbox icon-form-checkboxes",
-        value: "checkboxes",
-        label: "Checkboxes",
+        icon: 'adminlib-text icon-form-textarea',
+        value: 'textarea',
+        label: 'Textarea',
     },
     {
-        icon: "adminLib-multi-select icon-form-multi-select",
-        value: "multiselect",
-        label: "Multi Select",
-    },
-    { icon: "adminLib-radio icon-form-radio", value: "radio", label: "Radio" },
-    {
-        icon: "adminLib-dropdown-checklist icon-form-dropdown",
-        value: "dropdown",
-        label: "Dropdown",
+        icon: 'adminlib-checkbox icon-form-checkboxes',
+        value: 'checkboxes',
+        label: 'Checkboxes',
     },
     {
-        icon: "adminLib-captcha-automatic-code icon-form-recaptcha",
-        value: "recaptcha",
-        label: "reCaptcha v3",
+        icon: 'adminlib-multi-select icon-form-multi-select',
+        value: 'multiselect',
+        label: 'Multi Select',
+    },
+    { icon: 'adminlib-radio icon-form-radio', value: 'radio', label: 'Radio' },
+    {
+        icon: 'adminlib-dropdown-checklist icon-form-dropdown',
+        value: 'dropdown',
+        label: 'Dropdown',
     },
     {
-        icon: "adminLib-submission-message icon-form-attachment",
-        value: "attachment",
-        label: "Attachment",
+        icon: 'adminlib-captcha-automatic-code icon-form-recaptcha',
+        value: 'recaptcha',
+        label: 'reCaptcha v3',
     },
     {
-        icon: "adminLib-form-section icon-form-section",
-        value: "section",
-        label: "Section",
+        icon: 'adminlib-submission-message icon-form-attachment',
+        value: 'attachment',
+        label: 'Attachment',
     },
     {
-        icon: "adminLib-calendar icon-form-store-description",
-        value: "datepicker",
-        label: "Date Picker",
+        icon: 'adminlib-form-section icon-form-section',
+        value: 'section',
+        label: 'Section',
     },
     {
-        icon: "adminLib-alarm icon-form-address01",
-        value: "timepicker",
-        label: "Time Picker",
+        icon: 'adminlib-calendar icon-form-store-description',
+        value: 'datepicker',
+        label: 'Date Picker',
     },
     {
-        icon: "adminLib-divider icon-form-address01",
-        value: "divider",
-        label: "Divider",
+        icon: 'adminlib-alarm icon-form-address01',
+        value: 'TimePicker',
+        label: 'Time Picker',
+    },
+    {
+        icon: 'adminlib-divider icon-form-address01',
+        value: 'divider',
+        label: 'Divider',
     },
 ];
 
-/**
- * Component that renders an action section for adding new items.
- */
-export const AddNewBtn: React.FC<AddNewBtnProps> = ({ onAddNew, large }) => {
-    return (
-        <>
-            {large ? (
-                <div className="addnew">
-                    <div onClick={() => onAddNew?.()}>
-                        <i className="admin-font adminLib-move"></i>
-                    </div>
-                    <p>{"Click to add next text field"}</p>
-                </div>
-            ) : (
-                <div className="add-new-sections" onClick={() => onAddNew?.()}>
-                    <div>
-                        <span>
-                            <i className="admin-font adminLib-move"></i>
-                        </span>
-                    </div>
-                </div>
-            )}
-        </>
-    );
-};
+// /**
+//  * Component that renders an action section for adding new items.
+//  *
+//  * @param {AddNewBtnProps} props          - The props object.
+//  * @param {() => void}     props.onAddNew - Callback function invoked when the add button is clicked.
+//  * @param {boolean}        props.large    - If true, renders the large version of the button.
+//  */
+// export const AddNewBtn: React.FC<AddNewBtnProps> = ({ onAddNew, large }) => {
+// 	return (
+// 		<>
+// 			{large ? (
+// 				<div className="addnew">
+// 					<div
+// 						role="button"
+// 						tabIndex={0}
+// 						onClick={() => onAddNew?.()}
+// 					>
+// 						<i className="admin-font adminlib-move"></i>
+// 					</div>
+// 					<p>{'Click to add next text field'}</p>
+// 				</div>
+// 			) : (
+// 				<div
+// 					className="add-new-sections"
+// 					role="button"
+// 					tabIndex={0}
+// 					onClick={() => onAddNew?.()}
+// 				>
+// 					<div>
+// 						<span>
+// 							<i className="admin-font adminlib-move"></i>
+// 						</span>
+// 					</div>
+// 				</div>
+// 			)}
+// 		</>
+// 	);
+// };
 
-/**
- * Component that renders a delete button section.
- */
-export const DeleteBtn: React.FC<DeleteBtnProps> = ({
-    onDelete,
-    hideDelete,
-}) => {
-    return (
-        <div
-            className={`delete ${hideDelete ? "disable" : ""}`}
-            onClick={() => onDelete?.()}
-        >
-            <i className="admin-font adminLib-close"></i>
-        </div>
-    );
-};
+// /**
+//  * Component that renders a delete button section.
+//  *
+//  * @param {DeleteBtnProps} props            - The props object.
+//  * @param {() => void}     props.onDelete   - Callback function invoked when the delete button is clicked.
+//  * @param {boolean}        props.hideDelete - If true, hides or disables the delete button.
+//  */
+// export const DeleteBtn: React.FC<DeleteBtnProps> = ({
+// 	onDelete,
+// 	hideDelete,
+// }) => {
+// 	return (
+// 		<div
+// 			className={`delete ${hideDelete ? 'disable' : ''}`}
+// 			role="button"
+// 			tabIndex={0}
+// 			onClick={() => onDelete?.()}
+// 		>
+// 			<i className="admin-font adminlib-close"></i>
+// 		</div>
+// 	);
+// };
 
 interface FormField {
     id: number;
@@ -200,13 +227,13 @@ const CustomFrom: React.FC<CustomFormProps> = ({
         // Form field list can't be empty it should contain atlest form title.
         // This action prevent any backend action for empty form field list.
 
-        let inputList = formSetting["formfieldlist"] || [];
+        const inputList = formSetting.formfieldlist || [];
 
         if (!Array.isArray(inputList) || inputList.length <= 0) {
             return [
                 {
                     id: 1,
-                    type: "title",
+                    type: 'title',
                     label: DEFAULT_FORM_TITLE,
                     required: true,
                 },
@@ -217,13 +244,15 @@ const CustomFrom: React.FC<CustomFormProps> = ({
     });
 
     const [buttonSetting, setButtonSetting] = useState(
-        formSetting["butttonsetting"] || {}
+        formSetting.butttonsetting || {}
     );
 
     // State for hold id of opend input section.
     const [opendInput, setOpendInput] = useState<any>(null);
 
-    const [isInputBoxClick, SetIsInputBoxClick] = useState({ click: false });
+    const [isInputBoxClick, SetIsInputBoxClick] = useState({
+        click: false,
+    });
 
     // State variable for a random maximum id
     const [randMaxId, setRendMaxId] = useState<number>(0);
@@ -232,7 +261,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
         const closePopup = (event: MouseEvent) => {
             if (
                 (event.target as HTMLElement).closest(
-                    ".meta-menu, .meta-setting-modal, .react-draggable"
+                    '.meta-menu, .meta-setting-modal, .react-draggable'
                 )
             ) {
                 return;
@@ -240,9 +269,9 @@ const CustomFrom: React.FC<CustomFormProps> = ({
             SetIsInputBoxClick({ click: false });
             setOpendInput(null);
         };
-        document.body.addEventListener("click", closePopup);
+        document.body.addEventListener('click', closePopup);
         return () => {
-            document.body.removeEventListener("click", closePopup);
+            document.body.removeEventListener('click', closePopup);
         };
     }, []);
 
@@ -254,7 +283,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                 0
             ) + 1
         );
-    }, []);
+    }, [formFieldList]);
 
     // Save button setting and formfieldlist setting
     useEffect(() => {
@@ -265,7 +294,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                 butttonsetting: buttonSetting,
             });
         }
-    }, [buttonSetting, formFieldList]);
+    }, [buttonSetting, formFieldList, onChange]);
 
     ////////////// Define functionality here /////////////////
 
@@ -278,16 +307,16 @@ const CustomFrom: React.FC<CustomFormProps> = ({
      * By default it set the type to simple text
      */
 
-    const getNewFormField = (type: string = "text"): FormField => {
+    const getNewFormField = (type: string = 'text'): FormField => {
         const newFormField: FormField = {
             id: randMaxId ?? 0, // Ensure randMaxId is a number (or fallback to 0)
-            type: type,
-            label: "",
+            type,
+            label: '',
             required: false,
             name: `${type}-${getUniqueName()}`,
         };
 
-        if (["multiselect", "radio", "dropdown", "checkboxes"].includes(type)) {
+        if (['multiselect', 'radio', 'dropdown', 'checkboxes'].includes(type)) {
             newFormField.label = DEFAULT_LABEL_SELECT;
             newFormField.options = DEFAULT_OPTIONS;
         } else {
@@ -302,10 +331,14 @@ const CustomFrom: React.FC<CustomFormProps> = ({
     };
 
     /**
-     * Function that append a new form field after a perticular index.
-     * If form field list is empty it append at begining of form field list.
+     * Appends a new form field after a particular index.
+     * If the form field list is empty, it appends at the beginning of the list.
+     *
+     * @param {number} index         - The index after which to insert the new form field.
+     * @param {string} [type="text"] - The type of the new form field to create.
+     * @return {FormField | undefined} The newly created form field object, or undefined if blocked.
      */
-    const appendNewFormField = (index: number, type = "text") => {
+    const appendNewFormField = (index: number, type = 'text') => {
         if (proSettingChange()) return;
         const newField = getNewFormField(type);
 
@@ -332,14 +365,17 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 
         // Create a new array without the element at the specified index
         const newFormFieldList = formFieldList.filter((_, i) => i !== index);
-
         // Update the state with the new array
         settingHasChanged.current = true;
         setFormFieldList(newFormFieldList);
     };
 
     /**
-     * Function handle indivisual form field changes
+     * Handles individual form field changes by updating the form field list.
+     *
+     * @param {number} index - The index of the form field to update.
+     * @param {string} key   - The key/property of the form field to update.
+     * @param {*}      value - The new value to assign to the specified key.
      */
     const handleFormFieldChange = (index: number, key: string, value: any) => {
         if (proSettingChange()) return;
@@ -369,7 +405,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
         const selectedFormField = formFieldList[index];
 
         // Check if selected type is previously selected type
-        if (selectedFormField.type == newType) {
+        if (selectedFormField.type === newType) {
             return;
         }
 
@@ -387,7 +423,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 
     return (
         // Render Registration form here
-        <div className="registrationFrom-main-wrapper-section">
+        <div className="registration-from-main-wrapper-section">
             {/* Render element type section */}
             <Elements
                 selectOptions={selectOptions}
@@ -406,18 +442,25 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                     <div className="form-heading">
                         <input
                             type="text"
+                            className="basic-input"
                             placeholder={formTitlePlaceholder}
                             value={formFieldList[0]?.label}
                             onChange={(event) => {
                                 handleFormFieldChange(
                                     0,
-                                    "label",
+                                    'label',
                                     event.target.value
                                 );
                             }}
                         />
-                        <AddNewBtn
-                            onAddNew={() => {
+                        <DisplayButton
+                            wraperClass={'add-new-sections'}
+                            children={
+                                <div className="icon-wrapper">
+                                    <span className="admin-font adminlib-move"></span>
+                                </div>
+                            }
+                            onClick={() => {
                                 const newInput = appendNewFormField(0);
                                 setOpendInput(newInput);
                             }}
@@ -444,32 +487,44 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                             formFieldList.map((formField, index) => {
                                 if (index === 0) {
                                     return (
-                                        <div style={{ display: "none" }}></div>
+                                        <div
+                                            key={index}
+                                            style={{ display: 'none' }}
+                                        ></div>
                                     );
                                 }
 
                                 return (
                                     <main
-                                        className={`form-field ${opendInput?.id == formField.id ? "active" : ""}`}
+                                        key={index}
+                                        className={`form-field ${
+                                            opendInput?.id === formField.id
+                                                ? 'active'
+                                                : ''
+                                        }`}
                                     >
                                         {/* Render dragable button */}
-                                        {opendInput?.id == formField.id && (
-                                            <div className="bth-move drag-handle">
-                                                <i className="admin-font adminLib-move"></i>
+                                        {opendInput?.id === formField.id && (
+                                            <div className="bth-move">
+                                                <i className="admin-font adminlib-move"></i>
                                             </div>
                                         )}
 
                                         {/* Render setting section */}
-                                        {opendInput?.id == formField.id && (
+                                        {opendInput?.id === formField.id && (
                                             <section className="meta-menu">
                                                 <div className="btn-delete">
-                                                    <DeleteBtn
-                                                        onDelete={() => {
+                                                    <DisplayButton
+                                                        onClick={() => {
                                                             deleteParticularFormField(
                                                                 index
                                                             );
                                                             setOpendInput(null);
                                                         }}
+                                                        wraperClass={`delete`}
+                                                        children={
+                                                            <i className="admin-font adminlib-close"></i>
+                                                        }
                                                     />
                                                 </div>
                                                 <SettingMetaBox
@@ -497,14 +552,20 @@ const CustomFrom: React.FC<CustomFormProps> = ({
 
                                         {/* Render main content */}
                                         <section
-                                            className={`${opendInput?.id != formField.id ? "hidden-list" : ""} form-field-container-wrapper`}
+                                            className={`${
+                                                opendInput?.id !== formField.id
+                                                    ? 'hidden-list'
+                                                    : ''
+                                            } form-field-container-wrapper`}
+                                            role="button"
+                                            tabIndex={0}
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 SetIsInputBoxClick({
                                                     click: true,
                                                 });
                                                 if (
-                                                    opendInput?.id !=
+                                                    opendInput?.id !==
                                                     formField.id
                                                 ) {
                                                     setOpendInput(formField);
@@ -512,9 +573,10 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                             }}
                                         >
                                             {/* Render question name here */}
-                                            {(formField.type == "text" ||
-                                                formField.type == "email" ||
-                                                formField.type == "number") && (
+                                            {(formField.type === 'text' ||
+                                                formField.type === 'email' ||
+                                                formField.type ===
+                                                    'number') && (
                                                 <SimpleInput
                                                     formField={formField}
                                                     onChange={(key, value) =>
@@ -526,12 +588,12 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {(formField.type == "checkboxes" ||
-                                                formField.type ==
-                                                    "multiselect" ||
-                                                formField.type == "radio" ||
-                                                formField.type ==
-                                                    "dropdown") && (
+                                            {(formField.type === 'checkboxes' ||
+                                                formField.type ===
+                                                    'multiselect' ||
+                                                formField.type === 'radio' ||
+                                                formField.type ===
+                                                    'dropdown') && (
                                                 <MultipleOptions
                                                     formField={formField}
                                                     type={formField.type}
@@ -548,8 +610,8 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "textarea" && (
-                                                <TemplateTextarea
+                                            {formField.type === 'textarea' && (
+                                                <TemplateTextArea
                                                     formField={formField}
                                                     onChange={(key, value) =>
                                                         handleFormFieldChange(
@@ -560,7 +622,8 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "attachment" && (
+                                            {formField.type ===
+                                                'attachment' && (
                                                 <Attachment
                                                     formField={formField}
                                                     onChange={(key, value) =>
@@ -572,7 +635,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "recaptcha" && (
+                                            {formField.type === 'recaptcha' && (
                                                 <Recaptcha
                                                     formField={formField}
                                                     onChange={(key, value) =>
@@ -584,7 +647,8 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "datepicker" && (
+                                            {formField.type ===
+                                                'datepicker' && (
                                                 <Datepicker
                                                     formField={formField}
                                                     onChange={(key, value) =>
@@ -596,8 +660,9 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "timepicker" && (
-                                                <Timepicker
+                                            {formField.type ===
+                                                'TimePicker' && (
+                                                <TimePicker
                                                     formField={formField}
                                                     onChange={(key, value) =>
                                                         handleFormFieldChange(
@@ -608,7 +673,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "section" && (
+                                            {formField.type === 'section' && (
                                                 <TemplateSection
                                                     formField={formField}
                                                     onChange={(key, value) =>
@@ -620,13 +685,20 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     }
                                                 />
                                             )}
-                                            {formField.type == "divider" && (
-                                                <Divider />
+                                            {formField.type === 'divider' && (
+                                                <div className="section-divider-container">
+                                                    Section Divider
+                                                </div>
                                             )}
                                         </section>
-
-                                        <AddNewBtn
-                                            onAddNew={() => {
+                                        <DisplayButton
+                                            wraperClass={'add-new-sections'}
+                                            children={
+                                                <div className="icon-wrapper">
+                                                    <span className="admin-font adminlib-move"></span>
+                                                </div>
+                                            }
+                                            onClick={() => {
                                                 const newInput =
                                                     appendNewFormField(index);
                                                 setOpendInput(newInput);
@@ -643,7 +715,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                         text={
                             (buttonSetting.button_text &&
                                 buttonSetting.button_text) ||
-                            "Submit"
+                            'Submit'
                         }
                         setting={buttonSetting}
                         onChange={(key, value, isRestoreDefaults = false) => {
@@ -661,10 +733,15 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                         }}
                     />
                 </section>
-
-                <AddNewBtn
-                    large={true}
-                    onAddNew={() => {
+                <DisplayButton
+                    wraperClass="addnew"
+                    children={
+                        <>
+                            <i className="admin-font adminlib-move"></i>
+                            <p>{'Click to add next text field'}</p>
+                        </>
+                    }
+                    onClick={() => {
                         const newInput = appendNewFormField(
                             formFieldList.length - 1
                         );

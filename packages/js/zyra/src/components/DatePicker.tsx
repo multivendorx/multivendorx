@@ -1,12 +1,21 @@
-import React from "react";
-import HoverInputRender from "./HoverInputRender";
+/**
+ * External dependencies
+ */
+import React from 'react';
+
+/**
+ * Internal dependencies
+ */
+import HoverInputRender from './HoverInputRender';
+
+// Types
 interface FormField {
     label: string; // The text label for the input field
 }
 
 interface DatepickerProps {
     formField: FormField; // The form field object
-    onChange: (field: "label", value: string) => void; // Function to handle label change
+    onChange: (field: 'label', value: string) => void; // Function to handle label change
 }
 
 const Datepicker: React.FC<DatepickerProps> = ({ formField, onChange }) => {
@@ -14,12 +23,12 @@ const Datepicker: React.FC<DatepickerProps> = ({ formField, onChange }) => {
         <HoverInputRender
             label={formField.label}
             placeholder="Select date"
-            onLabelChange={(newLabel) => onChange("label", newLabel)}
+            onLabelChange={(newLabel) => onChange('label', newLabel)}
             renderStaticContent={({ label }) => (
                 <div className="edit-form-wrapper">
                     <p>{label}</p>
                     <div className="settings-form-group-radio">
-                        <input type="date" readOnly />
+                        <input className="basic-input" type="date" readOnly />
                     </div>
                 </div>
             )}
@@ -27,14 +36,14 @@ const Datepicker: React.FC<DatepickerProps> = ({ formField, onChange }) => {
                 <>
                     {/* Editable label input */}
                     <input
-                        className="input-label textArea-label"
+                        className="basic-input textarea-label"
                         type="text"
                         value={label}
                         placeholder={placeholder}
                         onChange={(event) => onLabelChange(event.target.value)}
                     />
 
-                    <input type="date" readOnly />
+                    <input className="basic-input" type="date" readOnly />
                 </>
             )}
         />

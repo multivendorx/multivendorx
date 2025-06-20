@@ -1,14 +1,18 @@
-import React, { ChangeEvent } from "react";
+/**
+ * External dependencies
+ */
+import React, { ChangeEvent } from 'react';
 
-export interface MultiNumOption {
-    key: string;
+// Types
+interface MultiNumOption {
+    key?: string;
     value: string | number;
-    label: string;
+    label?: string;
     name?: string;
-    type: string;
+    type?: string;
 }
 
-export interface MultiNumInputProps {
+interface MultiNumInputProps {
     parentWrapperClass?: string;
     childWrapperClass?: string;
     options: MultiNumOption[];
@@ -39,7 +43,7 @@ const MultiNumInput: React.FC<MultiNumInputProps> = ({
     innerInputWrapperClass,
     inputLabelClass,
     inputClass,
-    idPrefix = "multi-num",
+    idPrefix = 'multi-num',
     keyName,
     proSetting,
     description,
@@ -52,7 +56,7 @@ const MultiNumInput: React.FC<MultiNumInputProps> = ({
                 {options.map((option, index) => {
                     const selectedValue =
                         value.find((val) => val.key === option.key)?.value ??
-                        "";
+                        '';
 
                     return (
                         <div key={option.key} className={inputWrapperClass}>

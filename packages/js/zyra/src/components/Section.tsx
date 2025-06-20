@@ -1,6 +1,10 @@
-import React from "react";
+/**
+ * External dependencies
+ */
+import React from 'react';
 
-export interface SectionProps {
+// Types
+interface SectionProps {
     wrapperClass: string;
     hint?: string;
     value?: string;

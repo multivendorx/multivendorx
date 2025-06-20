@@ -1,31 +1,47 @@
-import React, { useState, useEffect } from "react";
-import Dialog from "@mui/material/Dialog";
-import ProPopup from "./ProPopup";
-import "../styles/web/Banner.scss";
+/**
+ * External dependencies
+ */
+import React, { useState, useEffect } from 'react';
+import Dialog from '@mui/material/Dialog';
 
+/**
+ * Internal dependencies
+ */
+import ProPopup from './Popup';
+import '../styles/web/Banner.scss';
+
+// Types
 interface Products {
     title: string;
     description: string;
 }
 interface BannerProps {
-    is_pro?: boolean;
+    isPro?: boolean;
     products?: Products[];
-    pro_url: string;
+    proUrl: string;
+    tag: string;
+    buttonText: string;
 }
 
-const Banner: React.FC<BannerProps> = ({ is_pro, products, pro_url }) => {
+const Banner: React.FC<BannerProps> = ({
+    isPro,
+    products,
+    proUrl,
+    tag,
+    buttonText,
+}) => {
     // Ensure localStorage is initialized correctly
-    if (localStorage.getItem("banner") !== "false") {
-        localStorage.setItem("banner", "true");
+    if (localStorage.getItem('banner') !== 'false') {
+        localStorage.setItem('banner', 'true');
     }
 
     const [modal, setModal] = useState<boolean>(false);
     const [banner, setBanner] = useState<boolean>(
-        localStorage.getItem("banner") === "true"
+        localStorage.getItem('banner') === 'true'
     );
 
     const handleCloseBanner = (): void => {
-        localStorage.setItem("banner", "false");
+        localStorage.setItem('banner', 'false');
         setBanner(false);
     };
 
@@ -41,7 +57,7 @@ const Banner: React.FC<BannerProps> = ({ is_pro, products, pro_url }) => {
         if (!banner) return;
 
         const carouselItems: NodeListOf<Element> =
-            document.querySelectorAll(".carousel-item");
+            document.querySelectorAll('.carousel-item');
         const totalItems: number = carouselItems.length;
         if (!totalItems) return;
 
@@ -50,8 +66,8 @@ const Banner: React.FC<BannerProps> = ({ is_pro, products, pro_url }) => {
 
         // Function to show the current slide and hide others
         const showSlide = (index: number): void => {
-            carouselItems.forEach((item) => item.classList.remove("active"));
-            carouselItems[index].classList.add("active");
+            carouselItems.forEach((item) => item.classList.remove('active'));
+            carouselItems[index].classList.add('active');
         };
 
         // Function to go to the next slide
@@ -81,13 +97,13 @@ const Banner: React.FC<BannerProps> = ({ is_pro, products, pro_url }) => {
         startAutoSlide();
 
         // Handle next button click
-        document.getElementById("nextBtn")?.addEventListener("click", () => {
+        document.getElementById('next-btn')?.addEventListener('click', () => {
             nextSlide();
             stopAutoSlide();
             startAutoSlide();
         });
 
-        document.getElementById("prevBtn")?.addEventListener("click", () => {
+        document.getElementById('prev-btn')?.addEventListener('click', () => {
             prevSlide();
             stopAutoSlide();
             startAutoSlide();
@@ -96,68 +112,79 @@ const Banner: React.FC<BannerProps> = ({ is_pro, products, pro_url }) => {
 
     return (
         <>
-            {!is_pro ? (
-                banner ? (
-                    <div className="custom-banner">
-                        <Dialog
-                            className="admin-module-popup"
-                            open={modal}
-                            onClose={handleClose}
-                            aria-labelledby="form-dialog-title"
-                        >
-                            <span
-                                className="admin-font adminLib-cross stock-manager-popup-cross"
-                                onClick={handleClose}
-                            ></span>
-                            <ProPopup />
-                        </Dialog>
-                        <div className="admin-carousel-container">
-                            <div className="carousel-container">
-                                <div
-                                    className="admin-font adminLib-cross pro-slider-cross"
-                                    onClick={handleCloseBanner}
-                                ></div>
+            {!isPro && banner && (
+                <div className="custom-banner">
+                    <Dialog
+                        className="admin-module-popup"
+                        open={modal}
+                        onClose={handleClose}
+                        aria-labelledby="form-dialog-title"
+                    >
+                        <span
+                            className="admin-font adminlib-cross stock-manager-popup-cross"
+                            role="button"
+                            tabIndex={0}
+                            onClick={handleClose}
+                        ></span>
+                        <ProPopup />
+                    </Dialog>
+                    <div className="admin-carousel-container">
+                        <div className="carousel-container">
+                            <div
+                                className="admin-font adminlib-cross pro-slider-cross"
+                                role="button"
+                                tabIndex={0}
+                                onClick={handleCloseBanner}
+                            ></div>
+                            {tag && (
                                 <div
                                     className="why-go-pro-tag"
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={handleOpen}
                                 >
-                                    Why Premium
+                                    {tag}
                                 </div>
-                                <ul className="carousel-list">
-                                    {products?.map((product, i) => {
-                                        return (
-                                            <li
-                                                key={i}
-                                                className={`carousel-item ${i == 0 ? "active" : ""}`}
-                                            >
-                                                <div className="admin-pro-txt-items">
-                                                    <h3>{product.title}</h3>
-                                                    <p>{product.description}</p>
+                            )}
+                            <ul className="carousel-list">
+                                {products?.map((product, i) => {
+                                    return (
+                                        <li
+                                            key={i}
+                                            className={`carousel-item ${
+                                                i === 0 ? 'active' : ''
+                                            }`}
+                                        >
+                                            <div className="admin-pro-txt-items">
+                                                <h3>{product.title}</h3>
+                                                <p>{product.description}</p>
+                                                {buttonText && (
                                                     <a
-                                                        href={pro_url}
+                                                        href={proUrl}
                                                         target="_blank"
+                                                        rel="noreferrer"
                                                         className="admin-btn btn-red"
                                                     >
-                                                        View Pricing
+                                                        {buttonText}
                                                     </a>
-                                                </div>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </div>
-                            <div className="carousel-controls">
-                                <button id="prevBtn">
-                                    <i className="admin-font adminLib-arrow-left"></i>
-                                </button>
-                                <button id="nextBtn">
-                                    <i className="admin-font adminLib-arrow-right"></i>
-                                </button>
-                            </div>
+                                                )}
+                                            </div>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                        <div className="carousel-controls">
+                            <button id="prev-btn">
+                                <i className="admin-font adminlib-arrow-left"></i>
+                            </button>
+                            <button id="next-btn">
+                                <i className="admin-font adminlib-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
-                ) : null
-            ) : null}
+                </div>
+            )}
         </>
     );
 };

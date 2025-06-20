@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { getApiLink } from "./apiService";
-import "../styles/web/Log.scss";
+/**
+ * External dependencies
+ */
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export interface LogProps {
+/**
+ * Internal dependencies
+ */
+import { getApiLink } from '../utils/apiService';
+import '../styles/web/Log.scss';
+
+// Types
+interface LogProps {
     apiLink: string;
     downloadFileName: string;
     appLocalizer: Record<string, any>; // Allows any structure
@@ -20,57 +28,58 @@ const Log: React.FC<LogProps> = ({
     useEffect(() => {
         axios({
             url: getApiLink(appLocalizer, apiLink),
-            method: "GET",
-            headers: { "X-WP-Nonce": appLocalizer.nonce },
+            method: 'GET',
+            headers: { 'X-WP-Nonce': appLocalizer.nonce },
             params: {
-                logcount: 100
+                logcount: 100,
             },
-        })
-        .then((response) => {
+        }).then((response) => {
             setLogData(response.data);
         });
-    }, []);
+    }, [apiLink, appLocalizer]);
 
     const handleDownloadLog = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         const fileName = downloadFileName;
         axios({
             url: getApiLink(appLocalizer, apiLink),
-            method: "GET",
-            headers: { "X-WP-Nonce": appLocalizer.nonce },
+            method: 'GET',
+            headers: { 'X-WP-Nonce': appLocalizer.nonce },
             params: {
                 action: 'download',
-                file: fileName 
+                file: fileName,
             },
-            responseType: "blob",
+            responseType: 'blob',
         })
             .then((response) => {
                 const blob = new Blob([response.data], {
-                    type: response.headers["content-type"],
+                    type: response.headers['content-type'],
                 });
                 const url = window.URL.createObjectURL(blob);
-                const link = document.createElement("a");
+                const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute("download", fileName);
+                link.setAttribute('download', fileName);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             })
-            .catch((error) => console.error("Error downloading file:", error));
+            .catch((error) =>
+                // eslint-disable-next-line no-console
+                console.error('Error downloading file:', error)
+            );
     };
 
     const handleClearLog = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         axios({
             url: getApiLink(appLocalizer, apiLink),
-            method: "GET",
-            headers: { "X-WP-Nonce": appLocalizer.nonce },
+            method: 'GET',
+            headers: { 'X-WP-Nonce': appLocalizer.nonce },
             params: {
                 logcount: 100,
-                clear: true 
+                clear: true,
             },
-        })
-        .then(() => {
+        }).then(() => {
             setLogData([]);
         });
     };
@@ -85,14 +94,15 @@ const Log: React.FC<LogProps> = ({
                 const match = log.match(regex);
                 return match ? `${match[1].trim()} : ${match[2].trim()}` : log;
             })
-            .join("\n");
+            .join('\n');
 
         navigator.clipboard
             .writeText(logText)
             .then(() => setCopied(true))
             .catch((error) => {
                 setCopied(false);
-                console.error("Error copying logs to clipboard:", error);
+                // eslint-disable-next-line no-console
+                console.error('Error copying logs to clipboard:', error);
             });
 
         setTimeout(() => setCopied(false), 10000);
@@ -103,16 +113,13 @@ const Log: React.FC<LogProps> = ({
             <div className="button-section">
                 <button
                     onClick={handleDownloadLog}
-                    className="btn-purple download-btn"
+                    className="admin-btn btn-purple download-btn"
                 >
                     Download
                 </button>
-                <button
-                    className="btn-purple button-clear"
-                    onClick={handleClearLog}
-                >
+                <button className="admin-btn btn-red" onClick={handleClearLog}>
                     <span className="text">Clear</span>
-                    <i className="adminLib-close"></i>
+                    <i className="adminlib-close"></i>
                 </button>
             </div>
             <div className="log-container-wrapper">
@@ -120,26 +127,24 @@ const Log: React.FC<LogProps> = ({
                     <p className="log-viewer-text">
                         {appLocalizer.tab_name} - log viewer
                     </p>
-                    <div className="click-to-copy">
-                        <button
-                            className="copy-btn"
-                            onClick={handleCopyToClipboard}
+                    <button
+                        className="copy-btn"
+                        onClick={handleCopyToClipboard}
+                    >
+                        <i className="adminlib-vendor-form-copy"></i>
+                        <span
+                            className={
+                                !copied ? 'tooltip' : 'tooltip tool-clip'
+                            }
                         >
-                            <i className="adminLib-vendor-form-copy"></i>
-                            <span
-                                className={
-                                    !copied ? "tooltip tool-clip" : "tooltip"
-                                }
-                            >
-                                {!copied ? (
-                                    "Copy to clipboard"
-                                ) : (
-                                    <i className="adminLib-success-notification"></i>
-                                )}
-                                {!copied ? "" : "Copied"}
-                            </span>
-                        </button>
-                    </div>
+                            {!copied ? (
+                                'Copy to clipboard'
+                            ) : (
+                                <i className="adminlib-success-notification"></i>
+                            )}
+                            {!copied ? '' : 'Copied'}
+                        </span>
+                    </button>
                 </div>
                 <div className="wrapper-body">
                     {logData.map((log, index) => {

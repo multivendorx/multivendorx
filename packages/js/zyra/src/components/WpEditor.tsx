@@ -1,7 +1,13 @@
-import { Editor } from "@tinymce/tinymce-react";
-import React from "react";
+// Check in MVX
 
-export interface WpEditorProps {
+/**
+ * External dependencies
+ */
+import { Editor } from '@tinymce/tinymce-react';
+import React from 'react';
+
+// Types
+interface WpEditorProps {
     apiKey: string;
     value: string;
     onEditorChange: (content: string) => void;
@@ -19,7 +25,7 @@ const WpEditor: React.FC<WpEditorProps> = ({
                 value={value}
                 init={{
                     height: 200,
-                    plugins: "media",
+                    plugins: 'media',
                 }}
                 onEditorChange={(content: string) => onEditorChange(content)}
             />

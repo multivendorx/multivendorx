@@ -1,6 +1,12 @@
-import React from "react";
+// Check In MVX
 
-export interface LabelProps {
+/**
+ * External dependencies
+ */
+import React from 'react';
+
+// Types
+interface LabelProps {
     wrapperClass: string;
     descClass: string;
     description?: string;
@@ -16,7 +22,7 @@ const Label: React.FC<LabelProps> = ({
     return (
         <>
             <div className={wrapperClass}>
-                <label>{value}</label>
+                <label htmlFor={descClass}>{value}</label>
                 <p className={descClass}>{description}</p>
             </div>
         </>

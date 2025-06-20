@@ -1,6 +1,14 @@
-import { useState } from "react";
-import "../styles/web/Support.scss";
+/**
+ * External dependencies
+ */
+import { useState } from 'react';
 
+/**
+ * Internal dependencies
+ */
+import '../styles/web/Support.scss';
+
+// Types
 type FAQ = {
     question: string;
     answer: string;
@@ -15,9 +23,9 @@ type SupprotProps = {
 };
 
 const Support: React.FC<SupprotProps> = ({
-    title = "Thank you for [plugin name]",
-    subTitle = "Plugin support subheading",
-    url = "#",
+    title = 'Thank you for [plugin name]',
+    subTitle = 'Plugin support subheading',
+    url = '#',
     faqData,
 }) => {
     const [faqs, setFaqs] = useState(faqData);
@@ -52,14 +60,16 @@ const Support: React.FC<SupprotProps> = ({
                         <div className="faqs">
                             {faqs?.map((faq, index) => (
                                 <div
-                                    className={`faq ${faq.open ? "open" : ""}`}
+                                    className={`faq ${faq.open ? 'open' : ''}`}
                                     key={index}
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={() => toggleFAQ(index)}
                                 >
                                     <div className="faq-question">
                                         {faq.question}
                                     </div>
-                                    <div
+                                    <p
                                         className="faq-answer"
                                         dangerouslySetInnerHTML={{
                                             __html: faq.answer,

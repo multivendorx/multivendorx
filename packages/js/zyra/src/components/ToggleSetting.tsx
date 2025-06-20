@@ -1,10 +1,18 @@
-import React from "react";
-import "../styles/web/ToggleSetting.scss";
+/**
+ * External dependencies
+ */
+import React from 'react';
 
+/**
+ * Intarnal dependencies
+ */
+import '../styles/web/ToggleSetting.scss';
+
+// Types
 interface Option {
-    key: string;
+    key?: string;
     value: string;
-    label: string;
+    label?: string;
 }
 
 interface ToggleSettingProps {
@@ -20,18 +28,19 @@ interface ToggleSettingProps {
 const ToggleSetting: React.FC<ToggleSettingProps> = ({
     description,
     options,
-    wrapperClass = "",
-    descClass = "",
+    descClass = '',
     value,
     onChange,
     proSetting = false,
 }) => {
     return (
-        <section className={wrapperClass}>
+        <>
             <div className="toggle-setting-container">
-                <ul>
+                <div className="toggle-setting-wrapper">
                     {options.map((option) => (
-                        <li
+                        <div
+                            role="button"
+                            tabIndex={0}
                             key={option.key}
                             onClick={() => onChange(option.value)}
                         >
@@ -45,18 +54,18 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
                                 readOnly // Prevents React warning for controlled components
                             />
                             <label htmlFor={option.key}>{option.label}</label>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
+                {proSetting && <span className="admin-pro-tag">pro</span>}
             </div>
-            {proSetting && <span className="admin-pro-tag">pro</span>}
             {description && (
                 <p
                     className={descClass}
                     dangerouslySetInnerHTML={{ __html: description }}
                 ></p>
             )}
-        </section>
+        </>
     );
 };
 

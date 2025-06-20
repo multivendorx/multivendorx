@@ -1,5 +1,14 @@
-import React from "react";
+/**
+ * External dependencies
+ */
+import React from 'react';
 
+/**
+ * Internal dependencies
+ */
+import '../styles/web/Attachment.scss';
+
+// Types
 interface FormField {
     label: string;
     placeholder?: string;
@@ -15,21 +24,23 @@ const Attachment: React.FC<AttachmentProps> = ({ formField, onChange }) => {
         <div className="main-input-wrapper">
             {/* Render label */}
             <input
-                className="input-label textArea-label"
+                className="basic-input textarea-label"
                 type="text"
                 value={formField.label}
                 placeholder={formField.placeholder}
-                onChange={(event) => onChange("label", event.target.value)}
+                onChange={(event) => onChange('label', event.target.value)}
             />
 
             {/* Render attachments */}
+            {/* Check in catalogx (label frontend)*/}
             <div className="attachment-section">
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="dropzone-file" className="attachment-label">
                     <div className="wrapper">
-                        <i className="adminLib-cloud-upload"></i>
+                        <i className="adminlib-cloud-upload"></i>
                         <p className="heading">
-                            <span>{"Click to upload"}</span>{" "}
-                            {"or drag and drop"}
+                            <span>{'Click to upload'}</span>{' '}
+                            {'or drag and drop'}
                         </p>
                     </div>
                 </label>

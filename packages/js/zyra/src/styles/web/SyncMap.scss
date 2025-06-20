@@ -1,93 +1,90 @@
-@use '../../global.scss' as *;
+// @use '../../global.scss' as *;
 
-.sync-map-container{
-    .container-wrapper{
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        align-items: flex-end;
+// .sync-map-container{
+//     .container-wrapper{
+//         display: flex;
+//         flex-wrap: wrap;
+//         gap: 0.5rem;
+//         align-items: flex-end;
 
-        .main-wrapper{
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-            gap: 0.5rem;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            position: relative;
+//         .main-wrapper{
+//             display: flex;
+//             align-items: flex-start;
+//             flex-flow: column wrap;
+//             gap: 0.5rem;
+//             justify-content: flex-start;
+//             position: relative;
 
-            .main-wrapper-heading{
-                display: flex;
-                flex-wrap: wrap;
-                column-gap: 2.25rem;
-                row-gap: 0.5rem;
+//             .main-wrapper-heading{
+//                 display: flex;
+//                 flex-wrap: wrap;
+//                 gap: 0.5rem 2.25rem;
 
-                span{
-                    width: 6.93rem;
-                }
-            }
+//                 span{
+//                     width: 6.93rem;
+//                 }
+//             }
     
-            .map-content-wrapper{
-                display: flex;
-                align-content: center;
-                justify-content: flex-start;
-                gap: 0.5rem;
-                flex-wrap: wrap;
+//             .map-content-wrapper{
+//                 display: flex;
+//                 place-content: center flex-start;
+//                 gap: 0.5rem;
+//                 flex-wrap: wrap;
         
-                select{
-                    background-color: transparent;
-                    border: 0.120rem solid #e0e4e9;
-                    border-radius: 0.063rem solid #e0e4e9;
-                    padding: 0.125rem 1.5rem 0.15rem 0.5rem;
-                    -webkit-appearance: listbox !important;
-                    width: 6.93rem;
+//                 select{
+//                     background-color: transparent;
+//                     border: 0.120rem solid #e0e4e9;
+//                     border-radius: 0.063rem solid #e0e4e9;
+//                     padding: 0.125rem 1.5rem 0.15rem 0.5rem;
+//                     appearance: auto !important;
+//                     width: 6.93rem;
         
-                    &:active, &:focus{
-                        box-shadow: none;
-                    }
-                }
+//                     &:active, &:focus{
+//                         box-shadow: none;
+//                     }
+//                 }
         
-                .connection-icon{
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.25rem;
-                }
+//                 .connection-icon{
+//                     display: flex;
+//                     align-items: center;
+//                     justify-content: center;
+//                     font-size: 1.25rem;
+//                 }
         
-                .remove-mapping{
-                    background: #e34f4720 !important; // To overwrite common btn style
-                    color: #e35047 !important; // To overwrite common btn style
-                    gap: 0.75rem;
+//                 .remove-mapping{
+//                     background: #e34f4720 !important; // To overwrite common btn style
+//                     color: #e35047 !important; // To overwrite common btn style
+//                     gap: 0.75rem;
 
-                    .icon{
-                        display: flex;
-                        align-items: center;
-                        margin-top: 0.126rem;
-                    }
-                }
-            }
-        }
+//                     .icon{
+//                         display: flex;
+//                         align-items: center;
+//                         margin-top: 0.126rem;
+//                     }
+//                 }
+//             }
+//         }
     
-        .btn-container{
-            .add-mapping-container{
-                min-width: 8.19rem;
-                position: relative;
+//         .btn-container{
+//             .add-mapping-container{
+//                 min-width: 8.19rem;
+//                 position: relative;
         
-                .add-mapping{
-                    gap: 0.75rem;
+//                 .add-mapping{
+//                     gap: 0.75rem;
 
-                    &.not-allow{
-                        opacity: 0.5;
-                        cursor: not-allowed;
-                    }
+//                     &.not-allow{
+//                         opacity: 0.5;
+//                         cursor: not-allowed;
+//                     }
         
-                    .icon{
-                        display: flex;
-                        align-items: center;
-                        margin-top: 0.126rem;
-                    }
-                }
-            }
-        }
-    }      
-}
+//                     .icon{
+//                         display: flex;
+//                         align-items: center;
+//                         margin-top: 0.126rem;
+//                     }
+//                 }
+//             }
+//         }
+//     }      
+// }

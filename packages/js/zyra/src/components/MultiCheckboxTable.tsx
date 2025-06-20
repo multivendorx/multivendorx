@@ -1,7 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import Modal from "react-modal";
-import "../styles/web/MultiCheckboxTable.scss";
+/**
+ * External dependencies
+ */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Modal from 'react-modal';
 
+/**
+ * Internal dependencies
+ */
+import '../styles/web/MultiCheckboxTable.scss';
+
+// Types
 interface Option {
     value: string | number;
     label: string;
@@ -36,9 +44,11 @@ const SelectedOptionDisplay: React.FC<SelectedOptionDisplayProps> = ({
                         <span>{value.label}</span>
                         <div
                             className=""
+                            role="button"
+                            tabIndex={0}
                             onClick={() => removeSelectedValues(value)}
                         >
-                            <i className="admin-font adminLib-close"></i>
+                            <i className="admin-font adminlib-close"></i>
                         </div>
                     </div>
                 ))}
@@ -49,6 +59,8 @@ const SelectedOptionDisplay: React.FC<SelectedOptionDisplayProps> = ({
                 {!popupOpend && selectedValues.length > 1 && (
                     <div
                         className="open-modal items-controls"
+                        role="button"
+                        tabIndex={0}
                         onClick={() => setPopupOpend(true)}
                     >
                         +{selectedValues.length - 1}
@@ -58,19 +70,16 @@ const SelectedOptionDisplay: React.FC<SelectedOptionDisplayProps> = ({
                 {/* Clear all selected values */}
                 <div
                     className="clear-all-data items-controls"
+                    role="button"
+                    tabIndex={0}
                     onClick={clearSelectedValues}
                 >
-                    <i className="admin-font adminLib-close"></i>
+                    <i className="admin-font adminlib-close"></i>
                 </div>
             </div>
         </div>
     );
 };
-
-interface Option {
-    value: string | number;
-    label: string;
-}
 
 interface SearchOptionDisplayProps {
     options: Option[];
@@ -94,10 +103,10 @@ const SearchOptionDisplay: React.FC<SearchOptionDisplayProps> = ({
             setModalOpen(false);
         };
 
-        document.addEventListener("click", setModalClose);
+        document.addEventListener('click', setModalClose);
 
         return () => {
-            document.removeEventListener("click", setModalClose);
+            document.removeEventListener('click', setModalClose);
         };
     }, []);
 
@@ -106,7 +115,7 @@ const SearchOptionDisplay: React.FC<SearchOptionDisplayProps> = ({
             <div className="selected-input">
                 {/* Search section */}
                 <input
-                    className=""
+                    className="basic-input"
                     placeholder="Select..."
                     value={filter}
                     onChange={(event) => {
@@ -120,7 +129,7 @@ const SearchOptionDisplay: React.FC<SearchOptionDisplayProps> = ({
                 />
 
                 <span>
-                    <i className="admin-font adminLib-keyboard-arrow-down"></i>
+                    <i className="admin-font adminlib-keyboard-arrow-down"></i>
                 </span>
             </div>
 
@@ -131,6 +140,8 @@ const SearchOptionDisplay: React.FC<SearchOptionDisplayProps> = ({
                             <div
                                 key={option.value} // Added a unique key for React list rendering
                                 className="options-item"
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => {
                                     insertSelectedValues(option);
                                     setModalOpen(false);
@@ -168,7 +179,6 @@ const Select: React.FC<SelectProps> = ({
     option = [],
     asyncGetOptions,
     asyncFetch = false,
-    isMulti = true,
 }) => {
     // State to store selected values
     const [selectedValues, setSelectedValues] = useState<Option[]>(values);
@@ -183,13 +193,13 @@ const Select: React.FC<SelectProps> = ({
     const [searchStarted, setSearchStarted] = useState<boolean>(false);
 
     // State for filtering options
-    const [filter, setFilter] = useState<string>("");
+    const [filter, setFilter] = useState<string>('');
 
     // Ref to track setting changes
     const settingChanged = useRef<boolean>(false);
 
     // Fetch options (sync or async)
-    const getOptions = async (): Promise<Option[]> => {
+    const getOptions = useCallback(async (): Promise<Option[]> => {
         let allOptions = option;
 
         if (asyncFetch && asyncGetOptions) {
@@ -201,10 +211,19 @@ const Select: React.FC<SelectProps> = ({
         return allOptions.filter(
             (opt) => !selectedValues.some((sel) => sel.value === opt.value)
         );
-    };
+    }, [
+        asyncFetch,
+        asyncGetOptions,
+        filter,
+        option,
+        selectedValues,
+        setSearchStarted,
+    ]);
 
     /**
-     * Insert a new selected value.
+     * Inserts a selected value into the list of selected values.
+     *
+     * @param {Option} value - The value to insert.
      */
     const insertSelectedValues = (value: Option) => {
         settingChanged.current = true;
@@ -213,6 +232,8 @@ const Select: React.FC<SelectProps> = ({
 
     /**
      * Remove a selected value.
+     *
+     * @param {Option} value - The value to remove from the selected values list.
      */
     const removeSelectedValues = (value: Option) => {
         settingChanged.current = true;
@@ -230,10 +251,12 @@ const Select: React.FC<SelectProps> = ({
     };
 
     /**
-     * Get filtered options.
+     * Get filtered options based on the current filter.
+     *
+     * @return {Promise<Option[]>} A promise that resolves to the filtered options list.
      */
-    const getFilteredOptionValue = async (): Promise<Option[]> => {
-        let allOptions = await getOptions();
+    const getFilteredOptionValue = useCallback(async (): Promise<Option[]> => {
+        const allOptions = await getOptions();
         return asyncFetch || !filter
             ? allOptions
             : allOptions.filter(
@@ -241,7 +264,7 @@ const Select: React.FC<SelectProps> = ({
                       opt.value.toString().includes(filter) ||
                       opt.label.includes(filter)
               );
-    };
+    }, [asyncFetch, filter, getOptions]);
 
     // Trigger onChange event when selected values change
     useEffect(() => {
@@ -254,9 +277,9 @@ const Select: React.FC<SelectProps> = ({
     // Update options when dependencies change
     useEffect(() => {
         getFilteredOptionValue().then(setOptions);
-    }, [filter, option, selectedValues]);
+    }, [filter, option, selectedValues, getFilteredOptionValue]);
 
-    Modal.setAppElement("#admin-main-wrapper");
+    // Modal.setAppElement( "#admin-main-wrapper" );
 
     return (
         <main className="grid-table-main-container" id="modal-support">
@@ -293,7 +316,7 @@ const Select: React.FC<SelectProps> = ({
                             className="modal-close-btn"
                             onClick={() => setPopupOpened(false)}
                         >
-                            <i className="admin-font adminLib-cross"></i>
+                            <i className="admin-font adminlib-cross"></i>
                         </div>
                         <SelectedOptionDisplay
                             popupOpend={popupOpened}
@@ -423,8 +446,8 @@ const MultiCheckboxTable: React.FC<MultiCheckboxTableProps> = ({
                                                               row.key,
                                                           ] // Add key
                                                         : selectedKeys.filter(
-                                                              (key: any) =>
-                                                                  key !==
+                                                              (keyVal: any) =>
+                                                                  keyVal !==
                                                                   row.key
                                                           ); // Remove key
 

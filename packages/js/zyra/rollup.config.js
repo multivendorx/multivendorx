@@ -1,28 +1,28 @@
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
-import json from "@rollup/plugin-json";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import postcss from "rollup-plugin-postcss";
-import copy from "rollup-plugin-copy";
-import terser from "@rollup/plugin-terser";
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+import json from '@rollup/plugin-json';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import postcss from 'rollup-plugin-postcss';
+import copy from 'rollup-plugin-copy';
+import terser from '@rollup/plugin-terser';
 
 export default {
-    input: "src/index.ts",
+    input: 'src/index.ts',
     output: {
         globals: {
-            react: "React",
-            "react-dom": "ReactDOM",
+            react: 'React',
+            'react-dom': 'ReactDOM',
         },
-        dir: "build",
-        format: "esm",
+        dir: 'build',
+        format: 'esm',
     },
-    context: "this",
+    context: 'this',
     treeshake: true,
     plugins: [
         copy({
             targets: [
-                { src: "src/assets/fonts/*", dest: "build/assets/fonts" }, // Adjust paths accordingly
+                { src: 'src/assets/fonts/*', dest: 'build/assets/fonts' }, // Adjust paths accordingly
             ],
             verbose: true,
         }),
@@ -36,18 +36,18 @@ export default {
         }),
         commonjs(),
         typescript({
-            tsconfig: "./tsconfig.json",
+            tsconfig: './tsconfig.json',
         }),
         postcss({
-            extract: "index.css", // Extract CSS into this file
+            extract: 'index.css', // Extract CSS into this file
             minimize: true,
-            use: ["sass"],
+            use: ['sass'],
         }),
         terser(),
     ],
-    external: ["react", "react-dom"],
+    external: ['react', 'react-dom'],
     onwarn(warning, warn) {
-        if (warning.code === "MODULE_LEVEL_DIRECTIVE") return;
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
         warn(warning);
     },
 };

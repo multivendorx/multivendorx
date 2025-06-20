@@ -1,13 +1,18 @@
-import React from "react";
-import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
+/**
+ * External dependencies
+ */
+import React from 'react';
+import Select from 'react-select';
+import type { MultiValue, SingleValue, ActionMeta } from 'react-select';
 
+// Types
 export interface SelectOptions {
     value: string;
-    label: string;
+    label?: string;
     index?: number;
 }
 
-export interface SelectInputProps {
+interface SelectInputProps {
     wrapperClass?: string;
     selectDeselect?: boolean;
     selectDeselectClass?: string;
@@ -19,7 +24,7 @@ export interface SelectInputProps {
     options: SelectOptions[];
     value?: string | string[];
     inputClass?: string;
-    type?: "single-select" | "multi-select";
+    type?: 'single-select' | 'multi-select';
     onChange?: (
         newValue: SingleValue<SelectOptions> | MultiValue<SelectOptions>,
         actionMeta: ActionMeta<SelectOptions>
@@ -40,9 +45,8 @@ const SelectInput: React.FC<SelectInputProps> = ({
     options,
     value,
     inputClass,
-    type = "single-select",
+    type = 'single-select',
     onChange,
-    onClick,
     proSetting,
     description,
     descClass,
@@ -77,10 +81,10 @@ const SelectInput: React.FC<SelectInputProps> = ({
                 className={inputClass}
                 value={defaultValue}
                 options={optionsData}
-                onChange={(newValue, actionMeta) =>
-                    onChange?.(newValue, actionMeta)
-                }
-                isMulti={type === "multi-select"}
+                onChange={(newValue, actionMeta) => {
+                    onChange?.(newValue, actionMeta);
+                }}
+                isMulti={type === 'multi-select'}
             />
             {proSetting && <span className="admin-pro-tag">pro</span>}
             {description && (

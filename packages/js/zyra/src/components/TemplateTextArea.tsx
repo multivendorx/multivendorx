@@ -1,23 +1,31 @@
-import React from "react";
-import HoverInputRender from "./HoverInputRender";
+/**
+ * External dependencies
+ */
+import React from 'react';
 
+/**
+ * Internal dependencies
+ */
+import HoverInputRender from './HoverInputRender';
+
+// Types
 interface TextareaProps {
     formField: { label: string; placeholder?: string };
     onChange: (field: string, value: string) => void;
 }
 
-const TemplateTextarea: React.FC<TextareaProps> = ({ formField, onChange }) => {
+const TemplateTextArea: React.FC<TextareaProps> = ({ formField, onChange }) => {
     return (
         <HoverInputRender
             label={formField.label}
             placeholder={formField.placeholder}
-            onLabelChange={(newLabel) => onChange("label", newLabel)}
+            onLabelChange={(newLabel) => onChange('label', newLabel)}
             renderStaticContent={({ label, placeholder }) => (
                 <div className="edit-form-wrapper">
                     <p>{label}</p>
                     <div className="settings-form-group-radio">
                         <input
-                            className="input-text-section textArea-text-input"
+                            className="basic-input"
                             type="text"
                             value={placeholder}
                             readOnly
@@ -28,14 +36,14 @@ const TemplateTextarea: React.FC<TextareaProps> = ({ formField, onChange }) => {
             renderEditableContent={({ label, onLabelChange, placeholder }) => (
                 <>
                     <input
-                        className="input-label textArea-label"
+                        className="basic-input textarea-label"
                         type="text"
                         value={label}
                         onChange={(event) => onLabelChange(event.target.value)}
                     />
                     {/* Render placeholder */}
                     <input
-                        className="input-text-section textArea-text-input"
+                        className="basic-input"
                         type="text"
                         placeholder={placeholder}
                         readOnly
@@ -46,4 +54,4 @@ const TemplateTextarea: React.FC<TextareaProps> = ({ formField, onChange }) => {
     );
 };
 
-export default TemplateTextarea;
+export default TemplateTextArea;

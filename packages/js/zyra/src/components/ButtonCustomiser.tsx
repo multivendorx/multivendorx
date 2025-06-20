@@ -1,6 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import "../styles/web/ButtonCustomizer.scss";
+/**
+ * External dependencies
+ */
+import React, { useState, useEffect, useRef } from 'react';
 
+/**
+ * Internal dependencies
+ */
+import '../styles/web/ButtonCustomizer.scss';
+
+// Types
 interface ButtonCustomizerProps {
     onChange: (key: string, value: any, isRestoreDefaults?: boolean) => void;
     setting?: Record<string, any>;
@@ -20,13 +28,13 @@ const Customizer: React.FC<CustomizerProps> = ({
     setting,
     setHoverOn,
 }) => {
-    const [select, setSelect] = useState<string>("");
+    const [select, setSelect] = useState<string>('');
     const [buttonLink, setButtonLink] = useState<string>(
-        setting.button_link || ""
+        setting.button_link || ''
     );
 
     useEffect(() => {
-        setButtonLink(setting.button_link || "");
+        setButtonLink(setting.button_link || '');
     }, [setting.button_link]);
 
     return (
@@ -35,39 +43,41 @@ const Customizer: React.FC<CustomizerProps> = ({
             <div className="btn-customizer-menu">
                 {[
                     {
-                        title: "Change Colors",
-                        iconClass: "color-img",
-                        type: "color",
+                        title: 'Change Colors',
+                        iconClass: 'color-img',
+                        type: 'color',
                     },
                     {
-                        title: "Border Style",
-                        iconClass: "adminLib-crop-free",
-                        type: "border",
+                        title: 'Border Style',
+                        iconClass: 'adminlib-crop-free',
+                        type: 'border',
                     },
                     {
-                        title: "Text Style",
-                        iconClass: "adminLib-text-fields",
-                        type: "font",
+                        title: 'Text Style',
+                        iconClass: 'adminlib-text-fields',
+                        type: 'font',
                     },
                     {
-                        title: "Change Size",
-                        iconClass: "adminLib-resize",
-                        type: "size",
+                        title: 'Change Size',
+                        iconClass: 'adminlib-resize',
+                        type: 'size',
                     },
                     {
-                        title: "Add Url",
-                        iconClass: "adminLib-link",
-                        type: "link",
+                        title: 'Add Url',
+                        iconClass: 'adminlib-link',
+                        type: 'link',
                     },
                     {
-                        title: "Settings",
-                        iconClass: "adminLib-setting",
-                        type: "setting",
+                        title: 'Settings',
+                        iconClass: 'adminlib-setting',
+                        type: 'setting',
                     },
                 ].map(({ title, iconClass, type }) => (
                     <div
                         key={type}
                         title={title}
+                        role="button"
+                        tabIndex={0}
                         className="btn-customizer-menu-items"
                         onClick={() => setSelect(type)}
                     >
@@ -80,108 +90,344 @@ const Customizer: React.FC<CustomizerProps> = ({
                 <div className="customizer-setting-wrapper">
                     {/* Wrapper close button */}
                     <button
-                        onClick={() => setSelect("")}
+                        onClick={() => setSelect('')}
                         className="wrapper-close"
                     >
-                        <i className="admin-font adminLib-cross"></i>
+                        <i className="admin-font adminlib-cross"></i>
                     </button>
 
                     {/* Render selected setting */}
-                    {select === "color" && (
+                    {select === 'color' && (
                         <div className="section-wrapper color">
+                            {['simple', 'hover'].map((className, idx) => {
+                                return (
+                                    <div
+                                        key={idx}
+                                        className={className}
+                                        onMouseEnter={
+                                            className === 'hover'
+                                                ? () => setHoverOn(true)
+                                                : () => {}
+                                        }
+                                        onMouseLeave={
+                                            className === 'hover'
+                                                ? () => setHoverOn(false)
+                                                : () => {}
+                                        }
+                                    >
+                                        {[
+                                            {
+                                                label: 'Background Color',
+                                                key: 'button_background_color',
+                                                type: 'color',
+                                                class: 'simple',
+                                            },
+                                            {
+                                                label: 'Font Color',
+                                                key: 'button_text_color',
+                                                type: 'text',
+                                                class: 'simple',
+                                            },
+                                            {
+                                                label: 'Background Color On Hover',
+                                                key: 'button_background_color_onhover',
+                                                type: 'color',
+                                                class: 'hover',
+                                            },
+                                            {
+                                                label: 'Font Color On Hover',
+                                                key: 'button_text_color_onhover',
+                                                type: 'text',
+                                                class: 'hover',
+                                            },
+                                        ].map((item) => {
+                                            return className === item.class ? (
+                                                <div
+                                                    key={item.key}
+                                                    className="section"
+                                                >
+                                                    <p>{item.label}</p>
+                                                    <div className="property-section">
+                                                        <input
+                                                            className="basic-input"
+                                                            type={item.type}
+                                                            value={
+                                                                setting[
+                                                                    item.key
+                                                                ] || '#000000'
+                                                            }
+                                                            onChange={(e) =>
+                                                                onChange(
+                                                                    item.key,
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ) : null;
+                                        })}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                    {select === 'border' && (
+                        <div className="section-wrapper border">
                             <div className="simple">
-                                {[
-                                    {
-                                        label: "Background Color",
-                                        key: "button_background_color",
-                                    },
-                                    {
-                                        label: "Font Color",
-                                        key: "button_text_color",
-                                    },
-                                ].map(({ label, key }) => (
-                                    <div key={key} className="section">
-                                        <span className="label">{label}</span>
-                                        <div className="property-section">
-                                            <input
-                                                type="color"
-                                                value={
-                                                    setting[key] || "#000000"
-                                                }
-                                                onChange={(e) =>
-                                                    onChange(
-                                                        key,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                            <input
-                                                type="text"
-                                                value={
-                                                    setting[key] || "#000000"
-                                                }
-                                                onChange={(e) =>
-                                                    onChange(
-                                                        key,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                        </div>
+                                <div className="section">
+                                    <p>Border Color</p>
+                                    <div className="property-section">
+                                        <input
+                                            className="basic-input"
+                                            type="color"
+                                            value={
+                                                setting.button_border_color
+                                                    ? setting.button_border_color
+                                                    : '#000000'
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_border_color',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <input
+                                            className="basic-input"
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_border_color',
+                                                    e.target.value
+                                                )
+                                            }
+                                            type="text"
+                                            value={
+                                                setting.button_border_color
+                                                    ? setting.button_border_color
+                                                    : '#000000'
+                                            }
+                                        />
                                     </div>
-                                ))}
+                                </div>
+                                <div className="section section-row">
+                                    <p>Border Size</p>
+                                    <div className="property-section small">
+                                        {/* <div class="PB-range-slider-div"> */}
+                                        <input
+                                            className="basic-input"
+                                            type="number"
+                                            value={
+                                                setting.button_border_size
+                                                    ? setting.button_border_size
+                                                    : 0
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_border_size',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <p>px</p>
+                                        {/* <p class="PB-range-slidervalue">{setting.button_border_size ? setting.button_border_size : 0}px</p> */}
+                                        {/* </div> */}
+                                    </div>
+                                </div>
+                                <div className="section section-row">
+                                    <p>Border Radious</p>
+                                    <div className="property-section small">
+                                        {/* <div class="PB-range-slider-div"> */}
+                                        <input
+                                            className="basic-input"
+                                            type="number"
+                                            value={
+                                                setting.button_border_radious
+                                                    ? setting.button_border_radious
+                                                    : 0
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_border_radious',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <p>px</p>
+                                        {/* <p class="PB-range-slidervalue">{setting.button_border_radious ? setting.button_border_radious : 0}px</p>
+								</div> */}
+                                    </div>
+                                </div>
                             </div>
-
-                            <div
-                                className="hover"
-                                onMouseEnter={() => setHoverOn(true)}
-                                onMouseLeave={() => setHoverOn(false)}
-                            >
-                                {[
-                                    {
-                                        label: "Background Color On Hover",
-                                        key: "button_background_color_onhover",
-                                    },
-                                    {
-                                        label: "Font Color On Hover",
-                                        key: "button_text_color_onhover",
-                                    },
-                                ].map(({ label, key }) => (
-                                    <div key={key} className="section">
-                                        <span className="label">{label}</span>
-                                        <div className="property-section">
-                                            <input
-                                                type="color"
-                                                value={
-                                                    setting[key] || "#000000"
-                                                }
-                                                onChange={(e) =>
-                                                    onChange(
-                                                        key,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                            <input
-                                                type="text"
-                                                value={
-                                                    setting[key] || "#000000"
-                                                }
-                                                onChange={(e) =>
-                                                    onChange(
-                                                        key,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                        </div>
+                            <div className="section-wrapper hover">
+                                <div className="section">
+                                    <p>Border Color On Hover</p>
+                                    <div className="property-section">
+                                        <input
+                                            className="basic-input"
+                                            type="color"
+                                            value={
+                                                setting.button_border_color_onhover
+                                                    ? setting.button_border_color_onhover
+                                                    : '#000000'
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_border_color_onhover',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <input
+                                            className="basic-input"
+                                            type="text"
+                                            value={
+                                                setting.button_border_color_onhover
+                                                    ? setting.button_border_color_onhover
+                                                    : '#000000'
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_border_color_onhover',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
                                     </div>
-                                ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {select === 'font' && (
+                        <div className="section-wrapper font">
+                            <div className="simple">
+                                <div className="section">
+                                    <p>Button text</p>
+                                    <div className="property-section">
+                                        <input
+                                            className="basic-input"
+                                            type="text"
+                                            value={setting.button_text}
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_text',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="section section-row">
+                                    <p>Font Size</p>
+                                    <div className="property-section small">
+                                        {/* <div class="PB-range-slider-div"> */}
+                                        <input
+                                            className="basic-input"
+                                            type="number"
+                                            value={
+                                                setting.button_font_size
+                                                    ? setting.button_font_size
+                                                    : 12
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_font_size',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <p>px</p>
+                                        {/* <p class="PB-range-slidervalue">{setting.button_font_size ? setting.button_font_size : 12}px</p> */}
+                                        {/* </div> */}
+                                    </div>
+                                </div>
+                                <div className="section section-row">
+                                    <p>Font Width</p>
+                                    <div className="property-section small">
+                                        {/* <div class="PB-range-slider-div"> */}
+                                        <input
+                                            className="basic-input"
+                                            min={100}
+                                            max={900}
+                                            step={100}
+                                            type="number"
+                                            value={
+                                                setting.button_font_width
+                                                    ? setting.button_font_width
+                                                    : 400
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_font_width',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <p>px</p>
+                                        {/* <p class="PB-range-slidervalue">{setting.button_font_width ? setting.button_font_width : 400}</p> */}
+                                        {/* </div> */}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {select === 'size' && (
+                        <div className="section-wrapper size">
+                            <div className="simple">
+                                <div className="section section-row">
+                                    <p>Padding</p>
+                                    <div className="property-section small">
+                                        {/* <div class="PB-range-slider-div"> */}
+                                        <input
+                                            className="basic-input"
+                                            type="number"
+                                            value={
+                                                setting.button_padding
+                                                    ? setting.button_padding
+                                                    : 0
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_padding',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <p>px</p>
+                                        {/* <p class="PB-range-slidervalue">{setting.button_padding ? setting.button_padding : 0}px</p>
+							</div> */}
+                                    </div>
+                                </div>
+                                <div className="section section-row">
+                                    <p>Margin</p>
+                                    <div className="property-section small">
+                                        {/* <div class="PB-range-slider-div"> */}
+                                        <input
+                                            className="basic-input"
+                                            type="number"
+                                            value={
+                                                setting.button_margin
+                                                    ? setting.button_margin
+                                                    : 0
+                                            }
+                                            onChange={(e) =>
+                                                onChange(
+                                                    'button_margin',
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <p>px</p>
+                                        {/* <p class="PB-range-slidervalue">{setting.button_margin ? setting.button_margin : 0}px</p>
+							</div> */}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
 
-                    {select === "link" && (
+                    {select === 'link' && (
                         <div className="section-wrapper link">
                             <div className="simple">
                                 <div className="link-box">
@@ -197,10 +443,10 @@ const Customizer: React.FC<CustomizerProps> = ({
                                     <button
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            onChange("button_link", buttonLink);
+                                            onChange('button_link', buttonLink);
                                         }}
                                     >
-                                        <i className="admin-font adminLib-send"></i>
+                                        <i className="admin-font adminlib-send"></i>
                                     </button>
                                 </div>
                             </div>
@@ -211,17 +457,16 @@ const Customizer: React.FC<CustomizerProps> = ({
                         </div>
                     )}
 
-                    {select === "setting" && (
+                    {select === 'setting' && (
                         <div className="section-wrapper settings">
                             <div className="section">
-                                <span className="label">
-                                    {"System settings"}
-                                </span>
+                                <p>{'System settings'}</p>
                                 <div className="property-section">
                                     <button
+                                        className="admin-btn btn-purple"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            onChange("", {}, true);
+                                            onChange('', {}, true);
                                         }}
                                     >
                                         Restore default
@@ -248,7 +493,7 @@ const ButtonCustomizer: React.FC<ButtonCustomizerProps> = ({
 
     // Set button styles based on hover state
     const style: React.CSSProperties = {
-        border: "1px solid transparent",
+        border: '1px solid transparent',
         backgroundColor: buttonHoverOn
             ? setting.button_background_color_onhover
             : setting.button_background_color,
@@ -260,14 +505,14 @@ const ButtonCustomizer: React.FC<ButtonCustomizerProps> = ({
             : setting.button_border_color,
         borderRadius: setting.button_border_radious
             ? `${setting.button_border_radious}px`
-            : "0px",
+            : '0px',
         borderWidth: setting.button_border_size
             ? `${setting.button_border_size}px`
-            : "0px",
+            : '0px',
         fontSize: setting.button_font_size,
         fontWeight: setting.button_font_width,
-        padding: setting.button_padding ? `${setting.button_padding}px` : "0px",
-        margin: setting.button_margin ? `${setting.button_margin}px` : "0px",
+        padding: setting.button_padding ? `${setting.button_padding}px` : '0px',
+        margin: setting.button_margin ? `${setting.button_margin}px` : '0px',
     };
 
     useEffect(() => {
@@ -277,23 +522,23 @@ const ButtonCustomizer: React.FC<ButtonCustomizerProps> = ({
             }
         };
 
-        document.body.addEventListener("click", handleClickOutside);
+        document.body.addEventListener('click', handleClickOutside);
         return () => {
-            document.body.removeEventListener("click", handleClickOutside);
+            document.body.removeEventListener('click', handleClickOutside);
         };
     }, []);
 
     return (
         <div
             ref={buttonRef}
-            className={`${className ? `${className} ` : ""}btn-wrapper`}
+            className={`${className ? `${className} ` : ''}btn-wrapper`}
         >
             <button
                 onClick={(e) => {
                     e.preventDefault();
                     setHoverOn(!hoverOn);
                 }}
-                className={`btn-preview ${hoverOn ? "active" : ""}`}
+                className={`btn-preview ${hoverOn ? 'active' : ''}`}
                 style={style}
                 onMouseEnter={() => setButtonHoverOn(true)}
                 onMouseLeave={() => setButtonHoverOn(false)}

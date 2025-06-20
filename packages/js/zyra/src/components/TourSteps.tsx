@@ -1,7 +1,13 @@
-import React, { useState, useEffect, JSX } from "react";
-import axios from "axios";
-import { useTour } from "@reactour/tour";
+// Check in catalogx
 
+/**
+ * External dependencies
+ */
+import React, { useState, useEffect, JSX } from 'react';
+import axios from 'axios';
+import { useTour } from '@reactour/tour';
+
+// Types
 interface AppLocalizer {
     enquiry_form_settings_url: string;
     module_page_url: string;
@@ -11,16 +17,16 @@ interface AppLocalizer {
 }
 
 const appLocalizer: AppLocalizer = {
-    enquiry_form_settings_url: "string",
-    module_page_url: "string",
-    settings_page_url: "string",
-    customization_settings_url: "string",
-    apiUrl: "string",
+    enquiry_form_settings_url: 'string',
+    module_page_url: 'string',
+    settings_page_url: 'string',
+    customization_settings_url: 'string',
+    apiUrl: 'string',
 };
 
 interface TourStep {
     selector: string;
-    placement?: "top" | "bottom" | "left" | "right" | "auto";
+    placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
     content: () => JSX.Element;
 }
 
@@ -40,10 +46,10 @@ const Tour: React.FC = () => {
             };
 
             // Ensure the page is fully loaded before checking for the element
-            if (document.readyState === "complete") {
+            if (document.readyState === 'complete') {
                 checkElement();
             } else {
-                window.addEventListener("load", checkElement, { once: true });
+                window.addEventListener('load', checkElement, { once: true });
             }
         });
 
@@ -74,33 +80,34 @@ const Tour: React.FC = () => {
             await axios.post(`${appLocalizer.apiUrl}/catalogx/v1/tour`, {
                 active: false,
             });
-            console.log("Tour marked as complete.");
+            // console.log( "Tour marked as complete." );
         } catch (error) {
-            console.error("Error updating tour flag:", error);
+            // eslint-disable-next-line no-console
+            console.error('Error updating tour flag:', error);
         }
     };
 
     const settingsTourSteps: TourStep[] = [
         {
             selector: '[data="catalog-showcase-tour"]',
-            placement: "top",
+            placement: 'top',
             content: () => (
                 <div className="tour-box">
                     <h3>Enable Catalog Mode</h3>
                     <h4>
                         Activate Catalog mode to display your site as a product
-                        catalog, removing the "Add to Cart" button and
+                        catalog, removing the &quot;Add to Cart&quot; button and
                         optionally hiding prices.
                     </h4>
                     <div className="tour-footer">
                         <button
-                            className="btn-purple"
+                            className="admin-btn btn-purple"
                             onClick={() => setCurrentStep(1)}
                         >
                             Next
                         </button>
                         <button
-                            className="btn-purple end-tour-btn"
+                            className="admin-btn btn-purple end-tour-btn"
                             onClick={() => finishTour()}
                         >
                             End Tour
@@ -115,13 +122,14 @@ const Tour: React.FC = () => {
                 <div className="tour-box">
                     <h3>Enable Enquiry Mode</h3>
                     <h4>
-                        Turn on Enquiry mode to add an "Enquiry" button for
-                        customers, allowing direct communication via submitted
-                        forms, viewable in the admin dashboard or via email.
+                        Turn on Enquiry mode to add an &quot;Enquiry&quot;
+                        button for customers, allowing direct communication via
+                        submitted forms, viewable in the admin dashboard or via
+                        email.
                     </h4>
                     <div className="tour-footer">
                         <button
-                            className="btn-purple"
+                            className="admin-btn btn-purple"
                             onClick={() => {
                                 const checkbox =
                                     document.querySelector<HTMLInputElement>(
@@ -132,7 +140,7 @@ const Tour: React.FC = () => {
                                     navigateTo(
                                         appLocalizer.enquiry_form_settings_url,
                                         2,
-                                        ".button-visibility"
+                                        '.button-visibility'
                                     );
                                 } else {
                                     setCurrentStep(3);
@@ -142,7 +150,7 @@ const Tour: React.FC = () => {
                             Next
                         </button>
                         <button
-                            className="btn-purple end-tour-btn"
+                            className="admin-btn btn-purple end-tour-btn"
                             onClick={() => finishTour()}
                         >
                             End Tour
@@ -152,7 +160,7 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: ".button-visibility .adminLib-eye-blocked",
+            selector: '.button-visibility .adminlib-eye-blocked',
             content: () => (
                 <div className="tour-box">
                     <h3>Customize Enquiry Form</h3>
@@ -163,7 +171,7 @@ const Tour: React.FC = () => {
                     </h4>
                     <div className="tour-footer">
                         <button
-                            className="btn-purple"
+                            className="admin-btn btn-purple"
                             onClick={() =>
                                 navigateTo(
                                     appLocalizer.module_page_url,
@@ -175,7 +183,7 @@ const Tour: React.FC = () => {
                             Next
                         </button>
                         <button
-                            className="btn-purple end-tour-btn"
+                            className="admin-btn btn-purple end-tour-btn"
                             onClick={() => finishTour()}
                         >
                             End Tour
@@ -197,7 +205,7 @@ const Tour: React.FC = () => {
                     </h4>
                     <div className="tour-footer">
                         <button
-                            className="btn-purple"
+                            className="admin-btn btn-purple"
                             onClick={() => {
                                 const checkbox =
                                     document.querySelector<HTMLInputElement>(
@@ -214,7 +222,7 @@ const Tour: React.FC = () => {
                                     navigateTo(
                                         appLocalizer.customization_settings_url,
                                         5,
-                                        ".enquiry-btn"
+                                        '.enquiry-btn'
                                     );
                                 }
                             }}
@@ -222,7 +230,7 @@ const Tour: React.FC = () => {
                             Next
                         </button>
                         <button
-                            className="btn-purple end-tour-btn"
+                            className="admin-btn btn-purple end-tour-btn"
                             onClick={() => finishTour()}
                         >
                             End Tour
@@ -247,14 +255,14 @@ const Tour: React.FC = () => {
                                 navigateTo(
                                     appLocalizer.customization_settings_url,
                                     5,
-                                    ".enquiry-btn"
+                                    '.enquiry-btn'
                                 )
                             }
                         >
                             Next
                         </button>
                         <button
-                            className="btn-purple end-tour-btn"
+                            className="admin-btn btn-purple end-tour-btn"
                             onClick={() => finishTour()}
                         >
                             End Tour
@@ -264,14 +272,15 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: ".enquiry-btn",
+            selector: '.enquiry-btn',
             content: () => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const handleImageLoad = () => {
                     // Recalculate position after the image is loaded
-                    const element = document.querySelector(".enquiry-btn");
+                    const element = document.querySelector('.enquiry-btn');
                     element?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
+                        behavior: 'smooth',
+                        block: 'center',
                     });
                 };
 
@@ -290,7 +299,7 @@ const Tour: React.FC = () => {
                         </h4>
                         <div className="tour-footer">
                             <button
-                                className="btn-purple"
+                                className="admin-btn btn-purple"
                                 onClick={() => finishTour()}
                             >
                                 Finish
@@ -299,7 +308,7 @@ const Tour: React.FC = () => {
                     </div>
                 );
             },
-            placement: "auto", // Adjust dynamically based on space
+            placement: 'auto', // Adjust dynamically based on space
         },
     ];
 
@@ -311,16 +320,16 @@ const Tour: React.FC = () => {
                     const response = await axios.get<{ active: string }>(
                         `${appLocalizer.apiUrl}/catalogx/v1/tour`
                     );
-                    console.log(response);
 
-                    if (response.data.active !== "") {
+                    if (response.data.active !== '') {
                         if (setSteps) {
                             setSteps(settingsTourSteps);
                         }
                         setIsOpen(true); // Start the tour
                     }
                 } catch (error) {
-                    console.error("Error fetching tour flag:", error);
+                    // eslint-disable-next-line no-console
+                    console.error('Error fetching tour flag:', error);
                 }
             }
         };
@@ -328,6 +337,7 @@ const Tour: React.FC = () => {
         if (!isNavigating) {
             fetchTourState();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNavigating, setSteps]);
 
     return null;

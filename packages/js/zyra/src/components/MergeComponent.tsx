@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
-import "../styles/web/MergeComponent.scss";
+/**
+ * External dependencies
+ */
+import React, { useState, useEffect, useRef } from 'react';
 
+/**
+ * Internal dependencies
+ */
+import '../styles/web/MergeComponent.scss';
+
+// Types
 interface Field {
     name: string;
-    type: "select" | "number" | "text"; // Include "text" in the type property
+    type: 'select' | 'number' | 'text'; // Include "text" in the type property
     options?: { value: string; label: string }[]; // For select fields
     placeholder?: string;
 }
@@ -18,8 +26,7 @@ interface MergeComponentProps {
 }
 
 const MergeComponent: React.FC<MergeComponentProps> = ({
-    wrapperClass = "",
-    descClass = "",
+    descClass = '',
     description,
     onChange,
     value,
@@ -31,7 +38,7 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
     // Initialize state dynamically based on field names
     const initialState = fields.reduce<Record<string, string | number>>(
         (acc, field) => {
-            acc[field.name] = value[field.name] || "";
+            acc[field.name] = value[field.name] || '';
             return acc;
         },
         {} as Record<string, string | number>
@@ -39,8 +46,8 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
 
     const [data, setData] = useState(initialState);
 
-    const handleOnChange = (key: string, value: string | number) => {
-        setData((prev) => ({ ...prev, [key]: value }));
+    const handleOnChange = (key: string, dataVal: string | number) => {
+        setData((prev) => ({ ...prev, [key]: dataVal }));
     };
 
     useEffect(() => {
@@ -49,24 +56,25 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
             return; // Skip the initial render
         }
         onChange(data);
-    }, [data]);
+    }, [data, onChange]);
 
     return (
-        <main className={wrapperClass}>
-            <section className="select-input-section merge-components">
-                {fields.map((field, index) => {
+        <>
+            <section className="merge-components">
+                {fields.map((field) => {
                     const {
                         name,
                         type,
                         options = [],
-                        placeholder = "Enter a value",
+                        placeholder = 'Enter a value',
                     } = field;
 
-                    if (type === "select") {
+                    if (type === 'select') {
                         return (
                             <select
                                 key={name}
                                 id={name}
+                                className="basic-select"
                                 value={data[name]}
                                 onChange={(e) =>
                                     handleOnChange(name, e.target.value)
@@ -83,9 +91,10 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
                                 ))}
                             </select>
                         );
-                    } else if (type === "number") {
+                    } else if (type === 'number') {
                         return (
                             <input
+                                className="basic-input"
                                 key={name}
                                 type={type}
                                 id={name}
@@ -101,6 +110,7 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
 
                     return null; // Return null for unsupported types
                 })}
+                {proSetting && <span className="admin-pro-tag">pro</span>}
             </section>
 
             {description && (
@@ -109,8 +119,7 @@ const MergeComponent: React.FC<MergeComponentProps> = ({
                     dangerouslySetInnerHTML={{ __html: description }}
                 />
             )}
-            {proSetting && <span className="admin-pro-tag">pro</span>}
-        </main>
+        </>
     );
 };
 

@@ -1,5 +1,9 @@
-import { FC } from "react";
+/**
+ * External dependencies
+ */
+import React from 'react';
 
+// Types
 interface FormField {
     label: string;
 }
@@ -9,16 +13,19 @@ interface TemplateSectionProps {
     onChange: (key: string, value: string) => void;
 }
 
-const TemplateSection: FC<TemplateSectionProps> = ({ formField, onChange }) => {
+const TemplateSection: React.FC<TemplateSectionProps> = ({
+    formField,
+    onChange,
+}) => {
     return (
         <div className="main-input-wrapper">
             {/* Render label */}
             <input
-                className="input-label textArea-label"
+                className="basic-input textarea-label"
                 type="text"
                 value={formField.label}
                 placeholder="I am label"
-                onChange={(event) => onChange("label", event.target.value)}
+                onChange={(event) => onChange('label', event.target.value)}
             />
         </div>
     );

@@ -1,8 +1,16 @@
-import { LinkProps } from "react-router-dom";
-import { useState, ReactNode } from "react";
-import AdminFooter, { SupportLink } from "./AdminFooter";
-import "../styles/web/Tabs.scss";
+/**
+ * External dependencies
+ */
+import { LinkProps } from 'react-router-dom';
+import { useState, ReactNode } from 'react';
 
+/**
+ * Internal dependencies
+ */
+import AdminFooter, { SupportLink } from './AdminFooter';
+import '../styles/web/Tabs.scss';
+
+// Types
 type TabContent = {
     id: string;
     name: string;
@@ -13,7 +21,7 @@ type TabContent = {
 };
 
 type TabData = {
-    type: "file" | "folder";
+    type: 'file' | 'folder';
     content: TabContent | TabData[];
 };
 type TabsProps = {
@@ -46,7 +54,7 @@ const Tabs: React.FC<TabsProps> = ({
     Link,
 }) => {
     const [menuCol, setMenuCol] = useState(false);
-    const [openedSubtab, setOpenedSubtab] = useState("");
+    const [openedSubtab, setOpenedSubtab] = useState('');
 
     const showTabSection: React.FC<TabContent> = (tab) => {
         return tab.link ? (
@@ -61,7 +69,7 @@ const Tabs: React.FC<TabsProps> = ({
             </a>
         ) : (
             <Link
-                className={currentTab === tab.id ? "active-current-tab" : ""}
+                className={currentTab === tab.id ? 'active-current-tab' : ''}
                 to={prepareUrl(tab.id)}
             >
                 <div>
@@ -82,18 +90,25 @@ const Tabs: React.FC<TabsProps> = ({
     };
 
     const showHideMenu: React.FC<TabContent> = (tab) => {
+        let dropdownClass = 'tab-menu-dropdown-icon';
+
+        if (menuCol) {
+            dropdownClass = '';
+        } else if (openedSubtab === tab.id) {
+            dropdownClass += ' active';
+        }
         return (
             <Link
-                className={currentTab === tab.id ? "active-current-tab" : ""}
+                className={currentTab === tab.id ? 'active-current-tab' : ''}
                 onClick={(e) => {
                     e.preventDefault();
-                    if (openedSubtab == tab.id) {
-                        setOpenedSubtab("");
+                    if (openedSubtab === tab.id) {
+                        setOpenedSubtab('');
                     } else {
                         setOpenedSubtab(tab.id);
                     }
                 }}
-                to={"#"}
+                to={'#'}
             >
                 <div>
                     {tab.icon && <i className={` admin-font ${tab.icon} `}></i>}
@@ -103,13 +118,9 @@ const Tabs: React.FC<TabsProps> = ({
                         <p className="menu-name">{menuCol ? null : tab.name}</p>
                         <p className="menu-desc">{menuCol ? null : tab.desc}</p>
                     </div>
-                    {menuCol ? null : openedSubtab == tab.id ? (
-                        <p className="tab-menu-dropdown-icon active">
-                            <i className="admin-font adminLib-keyboard-arrow-down"></i>
-                        </p>
-                    ) : (
-                        <p className="tab-menu-dropdown-icon">
-                            <i className="admin-font adminLib-keyboard-arrow-down"></i>
+                    {menuCol ? null : (
+                        <p className={dropdownClass}>
+                            <i className="admin-font adminlib-keyboard-arrow-down"></i>
                         </p>
                     )}
                 </div>
@@ -118,17 +129,19 @@ const Tabs: React.FC<TabsProps> = ({
     };
 
     // Get the description of the current tab.
-    const getTabDescription: React.FC<TabData[]> = (tabData) => {
-        return tabData?.map(({ content, type }) => {
-            if (type === "file") {
+    const getTabDescription: React.FC<TabData[]> = (tabDataVal) => {
+        return tabDataVal?.map(({ content, type }) => {
+            if (type === 'file') {
                 return (
                     (content as TabContent).id === currentTab &&
-                    (content as TabContent).id !== "support" && (
-                        <div className="tab-description-start">
+                    (content as TabContent).id !== 'support' && (
+                        <div className="tab-description-header">
                             <div className="child">
                                 <p>
                                     <i
-                                        className={`admin-font ${(content as TabContent).icon}`}
+                                        className={`admin-font ${
+                                            (content as TabContent).icon
+                                        }`}
                                     ></i>
                                 </p>
                                 <div>
@@ -143,10 +156,11 @@ const Tabs: React.FC<TabsProps> = ({
                         </div>
                     )
                 );
-            } else if (type === "folder") {
+            } else if (type === 'folder') {
                 // Get tab description from child by recursion
                 return getTabDescription(content as TabData[]);
             }
+            return null;
         });
     };
 
@@ -162,11 +176,13 @@ const Tabs: React.FC<TabsProps> = ({
                 {BannerSection && <BannerSection />}
                 <div
                     className={`middle-container-wrapper ${
-                        horizontally ? "horizontal-tabs" : "vertical-tabs"
+                        horizontally ? 'horizontal-tabs' : 'vertical-tabs'
                     }`}
                 >
                     <div
-                        className={`${menuCol ? "showMenu" : ""} middle-child-container`}
+                        className={`${
+                            menuCol ? 'show-menu' : ''
+                        } middle-child-container`}
                     >
                         <div
                             id="current-tab-lists"
@@ -186,7 +202,7 @@ const Tabs: React.FC<TabsProps> = ({
                             </div>
                             <div className="current-tab-lists-container">
                                 {tabData?.map(({ type, content }) => {
-                                    if (type !== "folder") {
+                                    if (type !== 'folder') {
                                         return showTabSection(
                                             content as TabContent
                                         );
@@ -194,14 +210,19 @@ const Tabs: React.FC<TabsProps> = ({
 
                                     // Tab has child tabs
                                     return (
-                                        <div className="tab-wrapper">
+                                        <div
+                                            className="tab-wrapper"
+                                            key={`${type}-${content}`}
+                                        >
                                             {showHideMenu(
                                                 (content as TabData[])[0]
                                                     .content as TabContent
                                             )}
                                             {
                                                 <div
-                                                    className={`subtab-wrapper ${menuCol ? "show" : ""} ${
+                                                    className={`subtab-wrapper ${
+                                                        menuCol ? 'show' : ''
+                                                    } ${
                                                         openedSubtab ===
                                                         (
                                                             (
@@ -209,16 +230,18 @@ const Tabs: React.FC<TabsProps> = ({
                                                             )[0]
                                                                 .content as TabContent
                                                         ).id
-                                                            ? "active"
-                                                            : ""
+                                                            ? 'active'
+                                                            : ''
                                                     }`}
                                                 >
                                                     {(content as TabData[])
                                                         .slice(1)
-                                                        ?.map(({ content }) =>
-                                                            showTabSection(
-                                                                content as TabContent
-                                                            )
+                                                        ?.map(
+                                                            // eslint-disable-next-line @typescript-eslint/no-shadow
+                                                            ({ content }) =>
+                                                                showTabSection(
+                                                                    content as TabContent
+                                                                )
                                                         )}
                                                 </div>
                                             }
@@ -226,13 +249,15 @@ const Tabs: React.FC<TabsProps> = ({
                                     );
                                 })}
                                 <div
-                                    className="main-btn menu-coll-btn"
+                                    role="button"
+                                    tabIndex={0}
+                                    className="admin-btn menu-coll-btn"
                                     onClick={handleMenuShow}
                                 >
                                     <span>
-                                        <i className="admin-font adminLib-arrow-left"></i>
+                                        <i className="admin-font adminlib-arrow-left"></i>
                                     </span>
-                                    {menuCol ? null : "Collapse"}
+                                    {menuCol ? null : 'Collapse'}
                                 </div>
                             </div>
                         </div>

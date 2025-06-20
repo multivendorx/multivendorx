@@ -1,10 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
-import SubTabSection, { MenuItem } from "./SubTabSection";
-import ProForm from "./RegistrationForm";
-import "../styles/web/FreeProFormCustomizer.scss";
-import "../styles/web/RegistrationForm.scss";
+/**
+ * External dependencies
+ */
+import React, { useState, useEffect, useRef } from 'react';
 
-// Define types
+/**
+ * Internal dependencies
+ */
+import SubTabSection, { MenuItem } from './SubTabSection';
+import ProForm from './RegistrationForm';
+import '../styles/web/FreeProFormCustomizer.scss';
+import '../styles/web/RegistrationForm.scss';
+
+//Types
 interface FormField {
     key: string;
     label?: string;
@@ -36,7 +43,7 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
 
     useEffect(() => {
         if (settingChange.current) {
-            onChange("freefromsetting", formFieldsData);
+            onChange('freefromsetting', formFieldsData);
             settingChange.current = false;
         }
     }, [formFieldsData, onChange]);
@@ -57,12 +64,11 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                         ? { ...data, active: activeStatus }
                         : data
                 );
-            } else {
-                return [
-                    ...prevData,
-                    { key: fieldKey, label: "", active: activeStatus },
-                ];
             }
+            return [
+                ...prevData,
+                { key: fieldKey, label: '', active: activeStatus },
+            ];
         });
     };
 
@@ -78,31 +84,30 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                         ? { ...data, label: labelValue }
                         : data
                 );
-            } else {
-                return [
-                    ...prevData,
-                    { key: fieldKey, label: labelValue, active: false },
-                ];
             }
+            return [
+                ...prevData,
+                { key: fieldKey, label: labelValue, active: false },
+            ];
         });
     };
 
     const formFields: FormField[] = [
-        { key: "name", desc: "Name" },
-        { key: "email", desc: "Email" },
-        { key: "phone", desc: "Phone" },
-        { key: "address", desc: "Address" },
-        { key: "subject", desc: "Enquiry about" },
-        { key: "comment", desc: "Enquiry details" },
-        { key: "fileupload", desc: "File upload" },
-        { key: "filesize-limit", desc: "File upload size limit (in MB)" },
-        { key: "captcha", desc: "Captcha" },
+        { key: 'name', desc: 'Name' },
+        { key: 'email', desc: 'Email' },
+        { key: 'phone', desc: 'Phone' },
+        { key: 'address', desc: 'Address' },
+        { key: 'subject', desc: 'Enquiry about' },
+        { key: 'comment', desc: 'Enquiry details' },
+        { key: 'fileupload', desc: 'File upload' },
+        { key: 'filesize-limit', desc: 'File upload size limit (in MB)' },
+        { key: 'captcha', desc: 'Captcha' },
     ];
 
-    const [menu, setMenu] = useState<MenuItem[]>([
-        { name: "Free", link: "hi", id: "2", icon: "adminLib-info" },
-        { name: "Pro", link: "hi", id: "1", icon: "adminLib-cart" },
-    ]);
+    const menu: MenuItem[] = [
+        { name: 'Free', link: 'hi', id: '2', icon: 'adminlib-info' },
+        { name: 'Pro', link: 'hi', id: '1', icon: 'adminlib-cart' },
+    ];
 
     const [currentTab, setCurrentTab] = useState<MenuItem>(menu[0]);
 
@@ -120,20 +125,20 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                 currentTab={currentTab}
                 setCurrentTab={setCurrentTab}
             />
-            {currentTab.id === "1" ? (
+            {currentTab.id === '1' ? (
                 <ProForm
                     setting={setting}
                     name="formsettings"
                     proSettingChange={proSettingChange}
-                    onChange={(value) => onChange("formsettings", value)}
+                    onChange={(value) => onChange('formsettings', value)}
                 />
             ) : (
                 <div>
                     <div className="fields-header">
-                        <h3 className="name">{"Field Name"}</h3>
-                        <h3 className="set-name">{"Set new field name"}</h3>
+                        <h3 className="name">{'Field Name'}</h3>
+                        <h3 className="set-name">{'Set new field name'}</h3>
                     </div>
-                    <div className="registrationFrom-main-wrapper-section">
+                    <div className="registrationfrom-main-wrapper-section">
                         <div className="form-field">
                             {formFields.map((fields, index) => (
                                 <div
@@ -144,14 +149,15 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                                         className="form-label"
                                         style={{
                                             opacity: readonlyFields[index]
-                                                ? "0.3"
-                                                : "1",
+                                                ? '0.3'
+                                                : '1',
                                         }}
                                     >
                                         {fields.desc}
                                     </div>
                                     <div className="settings-form-group-radio">
                                         <input
+                                            className="basic-input"
                                             type="text"
                                             onChange={(e) =>
                                                 updateFieldLabel(
@@ -161,18 +167,20 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                                             }
                                             value={
                                                 getFields(fields.key)?.label ||
-                                                ""
+                                                ''
                                             }
                                             readOnly={readonlyFields[index]}
                                             style={{
                                                 opacity: readonlyFields[index]
-                                                    ? "0.3"
-                                                    : "1",
+                                                    ? '0.3'
+                                                    : '1',
                                             }}
                                         />
                                     </div>
                                     <div
                                         className="button-visibility"
+                                        role="button"
+                                        tabIndex={0}
                                         onClick={() => {
                                             setReadonlyFields((prev) =>
                                                 prev.map((readonly, i) =>
@@ -188,7 +196,11 @@ const FreeProFormCustomizer: React.FC<FreeProFormCustomizerProps> = ({
                                         }}
                                     >
                                         <i
-                                            className={`admin-font ${readonlyFields[index] ? "adminLib-eye-blocked enable-visibility" : "adminLib-eye"}`}
+                                            className={`admin-font ${
+                                                readonlyFields[index]
+                                                    ? 'adminlib-eye-blocked enable-visibility'
+                                                    : 'adminlib-eye'
+                                            }`}
                                         />
                                     </div>
                                 </div>

@@ -1,7 +1,11 @@
-import React, { useState } from "react";
-import DatePicker from "react-multi-date-picker";
+/**
+ * External dependencies
+ */
+import React, { useState } from 'react';
+import DatePicker from 'react-multi-date-picker';
 
-export interface CalendarInputProps {
+// Types
+interface CalendarInputProps {
     wrapperClass?: string;
     inputClass?: string;
     format?: string;
@@ -14,24 +18,23 @@ export interface CalendarInputProps {
 
 const CalendarInput: React.FC<CalendarInputProps> = (props) => {
     let formattedDate: any;
-    const dates = props.value.split(",");
+    const dates = props.value.split(',');
 
-    if (dates.length === 1 && !dates[0].includes(" - ")) {
+    if (dates.length === 1 && !dates[0].includes(' - ')) {
         formattedDate = new Date(dates[0].trim());
     } else {
         formattedDate = dates.map((date) => {
-            if (date.includes(" - ")) {
-                const rangeDates = date.split(" - ");
+            if (date.includes(' - ')) {
+                const rangeDates = date.split(' - ');
                 const startDate = new Date(rangeDates[0].trim());
                 const endDate = new Date(rangeDates[1].trim());
                 return [startDate, endDate];
-            } else {
-                return new Date(date.trim());
             }
+            return new Date(date.trim());
         });
     }
 
-    const [selectedDate, setSelectedDate] = useState<any>(formattedDate || "");
+    const [selectedDate, setSelectedDate] = useState<any>(formattedDate || '');
 
     const handleDateChange = (e: any) => {
         setSelectedDate(e);
@@ -42,11 +45,11 @@ const CalendarInput: React.FC<CalendarInputProps> = (props) => {
         <div className={props.wrapperClass}>
             <DatePicker
                 className={props.inputClass}
-                format={props.format || "YYYY-MM-DD"}
+                format={props.format || 'YYYY-MM-DD'}
                 multiple={props.multiple}
                 range={props.range}
                 value={selectedDate}
-                placeholder={"YYYY-MM-DD"}
+                placeholder={'YYYY-MM-DD'}
                 onChange={handleDateChange}
             />
             {props.proSetting && <span className="admin-pro-tag">pro</span>}

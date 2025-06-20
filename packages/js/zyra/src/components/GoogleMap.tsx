@@ -1,8 +1,12 @@
+// Check in MVX
 /// <reference types="google.maps" />
+/**
+ * External dependencies
+ */
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import GoogleMapReact from 'google-map-react';
 
-import React, { useEffect, useState, useRef } from "react";
-import GoogleMapReact from "google-map-react";
-
+// Types
 interface AnyReactComponentProps {
     text: string;
 }
@@ -17,6 +21,8 @@ interface AutoCompleteProps {
     placeholder?: string;
 }
 
+declare const appLocalizer: { google_api: string };
+
 const AutoComplete: React.FC<AutoCompleteProps> = ({
     map,
     mapApi,
@@ -27,23 +33,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         useState<google.maps.places.Autocomplete | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    useEffect(() => {
-        if (mapApi?.places && inputRef.current) {
-            const options = { types: ["address"] };
-            const autoCompleteInstance = new mapApi.places.Autocomplete(
-                inputRef.current,
-                options
-            );
-            autoCompleteInstance.addListener(
-                "place_changed",
-                handleOnPlaceChanged
-            );
-            autoCompleteInstance.bindTo("bounds", map);
-            setAutoComplete(autoCompleteInstance);
-        }
-    }, [mapApi, map]);
-
-    const handleOnPlaceChanged = () => {
+    const handleOnPlaceChanged = useCallback(() => {
         if (!autoComplete) return;
         const place = autoComplete.getPlace();
         if (!place.geometry) return;
@@ -55,10 +45,26 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         }
         addPlace(place);
         inputRef.current!.blur();
-    };
+    }, [autoComplete, map, addPlace]);
+
+    useEffect(() => {
+        if (mapApi?.places && inputRef.current) {
+            const options = { types: ['address'] };
+            const autoCompleteInstance = new mapApi.places.Autocomplete(
+                inputRef.current,
+                options
+            );
+            autoCompleteInstance.addListener(
+                'place_changed',
+                handleOnPlaceChanged
+            );
+            autoCompleteInstance.bindTo('bounds', map);
+            setAutoComplete(autoCompleteInstance);
+        }
+    }, [handleOnPlaceChanged, mapApi, map]);
 
     const clearSearchBox = () => {
-        if (inputRef.current) inputRef.current.value = "";
+        if (inputRef.current) inputRef.current.value = '';
     };
 
     return (
@@ -79,18 +85,19 @@ interface GoogleMapProps {
 }
 
 const GoogleMap: React.FC<GoogleMapProps> = (props) => {
-    const [zoom, setZoom] = useState<number>(12);
-    const [center, setCenter] = useState<{ lat: number; lng: number }>(
-        props.center
-    );
+    const [zoomLoc, setZoomLoc] = useState<number>(12);
+    const [centerLoc, setCenterLoc] = useState<{
+        lat: number;
+        lng: number;
+    }>(props.center);
     const [draggable, setDraggable] = useState<boolean>(true);
-    const [address, setAddress] = useState<string | undefined>();
+    // const [ address, setAddress ] = useState< string | undefined >();
     const [position, setPosition] = useState<{
         lat: number | string;
         lng: number | string;
     }>({
-        lat: "",
-        lng: "",
+        lat: '',
+        lng: '',
     });
 
     const [mapApi, setMapApi] = useState<typeof google.maps | null>(null);
@@ -100,9 +107,9 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
     );
 
     useEffect(() => {
-        if ("geolocation" in navigator) {
+        if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition((pos) => {
-                setCenter({
+                setCenterLoc({
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude,
                 });
@@ -121,8 +128,8 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
         center: { lat: number; lng: number };
         zoom: number;
     }) => {
-        setZoom(zoom);
-        setCenter(center);
+        setZoomLoc(zoom);
+        setCenterLoc(center);
     };
 
     const handleOnClick = (value: { lat: number; lng: number }) => {
@@ -166,11 +173,12 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
         geocoder.geocode(
             { location: { lat: +position.lat, lng: +position.lng } },
             (results, status) => {
-                if (status === "OK" && results?.[0]) {
-                    setZoom(12);
-                    setAddress(results[0].formatted_address);
+                if (status === 'OK' && results?.[0]) {
+                    setZoomLoc(12);
+                    // setAddress( results[ 0 ].formatted_address );
                 } else {
-                    window.alert("Geocoder failed due to: " + status);
+                    // eslint-disable-next-line no-console
+                    console.log('Geocoder failed due to: ' + status);
                 }
             }
         );
@@ -186,10 +194,10 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
                     placeholder={props.placeholder}
                 />
             )}
-            <div style={{ height: "50vh", width: "50%" }}>
+            <div style={{ height: '50vh', width: '50%' }}>
                 <GoogleMapReact
-                    zoom={zoom}
-                    center={center}
+                    zoom={zoomLoc}
+                    center={centerLoc}
                     draggable={draggable}
                     onClick={handleOnClick}
                     onChange={handleOnChange}
@@ -197,8 +205,8 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
                     onChildMouseDown={onMarkerInteraction}
                     onChildMouseUp={onMarkerInteractionMouseUp}
                     bootstrapURLKeys={{
-                        key: "appLocalizer.google_api", // Ensure `appLocalizer` is properly typed
-                        libraries: ["places", "geometry"],
+                        key: appLocalizer.google_api, // Ensure `appLocalizer` is properly typed
+                        libraries: ['places', 'geometry'],
                     }}
                     yesIWantToUseGoogleMapApiInternals
                     onGoogleApiLoaded={({ map, maps }) =>

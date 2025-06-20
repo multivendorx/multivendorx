@@ -1,5 +1,9 @@
-import React, { JSX, useState, useEffect, useRef } from "react";
+/**
+ * External dependencies
+ */
+import React, { JSX, useState, useEffect, useRef } from 'react';
 
+// Types
 interface HoverInputRenderProps {
     label: string;
     placeholder?: string;
@@ -30,7 +34,7 @@ const HoverInputRender: React.FC<HoverInputRenderProps> = ({
         const closePopup = (event: MouseEvent) => {
             if (
                 (event.target as HTMLElement).closest(
-                    ".meta-setting-modal, .react-draggable"
+                    '.meta-setting-modal, .react-draggable'
                 )
             ) {
                 return;
@@ -38,9 +42,9 @@ const HoverInputRender: React.FC<HoverInputRenderProps> = ({
             setIsClicked(false);
             setShowTextBox(false);
         };
-        document.body.addEventListener("click", closePopup);
+        document.body.addEventListener('click', closePopup);
         return () => {
-            document.body.removeEventListener("click", closePopup);
+            document.body.removeEventListener('click', closePopup);
         };
     }, []);
 
@@ -49,7 +53,9 @@ const HoverInputRender: React.FC<HoverInputRenderProps> = ({
     };
 
     const handleMouseLeave = () => {
-        if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+        if (hoverTimeout.current) {
+            clearTimeout(hoverTimeout.current);
+        }
         if (!isClicked) setShowTextBox(false);
     };
 
@@ -59,7 +65,7 @@ const HoverInputRender: React.FC<HoverInputRenderProps> = ({
                 <div
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 'pointer' }}
                 >
                     {renderStaticContent({ label, placeholder })}
                 </div>
@@ -67,6 +73,8 @@ const HoverInputRender: React.FC<HoverInputRenderProps> = ({
             {showTextBox && (
                 <div
                     className="main-input-wrapper"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setIsClicked(true)}
                     onMouseLeave={handleMouseLeave}
                 >

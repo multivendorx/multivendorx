@@ -1,5 +1,9 @@
-import React from "react";
+/**
+ * External dependencies
+ */
+import React from 'react';
 
+// Types
 interface Option {
     value: string;
     label: string;
@@ -19,14 +23,16 @@ const Elements: React.FC<ElementsProps> = ({ selectOptions, onClick }) => {
             </div>
             <main className="section-container">
                 {selectOptions.map((option) => (
-                    <article
+                    <div
                         key={option.value} // ✅ Added key for React's rendering optimization
+                        role="button"
+                        tabIndex={0}
                         className="elements-items"
                         onClick={() => onClick(option.value)}
                     >
                         {option.icon && <i className={option.icon}></i>}
                         <p className="list-title">{option.label}</p>
-                    </article>
+                    </div>
                 ))}
             </main>
         </aside>

@@ -1,8 +1,16 @@
-import React, { useState, useRef } from "react";
-import { ReactSortable } from "react-sortablejs";
-import HoverInputRender from "./HoverInputRender";
-import OptionMetaBox from "./OptionMetaBox";
+/**
+ * External dependencies
+ */
+import React, { useState, useRef } from 'react';
+import { ReactSortable } from 'react-sortablejs';
 
+/**
+ * Internal dependencies
+ */
+import HoverInputRender from './HoverInputRender';
+import SettingMetaBox from './SettingMetaBox';
+
+// Types
 interface Option {
     id: string;
     label: string;
@@ -21,7 +29,7 @@ interface FormField {
 interface MultipleOptionsProps {
     formField: FormField;
     onChange: (key: string, value: any) => void;
-    type: "radio" | "checkboxes" | "dropdown" | "multiselect";
+    type: 'radio' | 'checkboxes' | 'dropdown' | 'multiselect';
     selected: boolean;
 }
 
@@ -40,11 +48,11 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
             : [];
     });
 
-    const renderInputFields = (type: string) => {
-        switch (type) {
-            case "radio":
+    const renderInputFields = (fieldType: string) => {
+        switch (fieldType) {
+            case 'radio':
                 return options.map((option, idx) => (
-                    <div className="radio-input-label-wrap" key={idx}>
+                    <div className="radio-basic-input-wrap" key={idx}>
                         <input
                             type="radio"
                             id={`radio-${idx}`}
@@ -53,9 +61,9 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
                         <label htmlFor={`radio-${idx}`}>{option.label}</label>
                     </div>
                 ));
-            case "checkboxes":
+            case 'checkboxes':
                 return options.map((option, idx) => (
-                    <div className="radio-input-label-wrap" key={idx}>
+                    <div className="radio-basic-input-wrap" key={idx}>
                         <input
                             type="checkbox"
                             id={`checkbox-${idx}`}
@@ -66,19 +74,17 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
                         </label>
                     </div>
                 ));
-            case "dropdown":
-            case "multiselect":
+            case 'dropdown':
+            case 'multiselect':
                 return (
-                    <section className="select-input-section merge-components">
-                        <select>
-                            <option>Select...</option>
-                            {options.map((option, idx) => (
-                                <option key={idx} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </section>
+                    <select className="basic-select">
+                        <option>Select...</option>
+                        {options.map((option, idx) => (
+                            <option key={idx} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
                 );
             default:
                 return <p>Unsupported input type</p>;
@@ -93,29 +99,29 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
         const newOptions = [...options];
         newOptions[index] = { ...newOptions[index], [key]: value };
         setOptions(newOptions);
-        onChange("options", newOptions);
+        onChange('options', newOptions);
     };
 
     const handleInsertOption = () => {
         const newOptions = [
             ...options,
-            { id: crypto.randomUUID(), label: "Option value", value: "value" }, // Generate a unique ID
+            { id: crypto.randomUUID(), label: 'Option value', value: 'value' }, // Generate a unique ID
         ];
         setOptions(newOptions);
-        onChange("options", newOptions);
+        onChange('options', newOptions);
     };
 
     const handleDeleteOption = (index: number) => {
         if (options.length <= 1) return;
         const newOptions = options.filter((_, i) => i !== index);
         setOptions(newOptions);
-        onChange("options", newOptions);
+        onChange('options', newOptions);
     };
 
     return (
         <HoverInputRender
             label={formField.label}
-            onLabelChange={(newLabel) => onChange("label", newLabel)}
+            onLabelChange={(newLabel) => onChange('label', newLabel)}
             renderStaticContent={({ label }) => (
                 <div className="edit-form-wrapper">
                     <p>{label}</p>
@@ -127,14 +133,14 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
             renderEditableContent={({ label, onLabelChange }) => (
                 <>
                     <input
-                        className="input-label multipleOption-label"
+                        className="basic-input multipleoption-label"
                         type="text"
                         value={label}
                         onChange={(event) => onLabelChange(event.target.value)}
                     />
 
                     <ReactSortable
-                        className="multiOption-wrapper"
+                        className="multioption-wrapper"
                         list={options}
                         setList={(newList: Option[]) => {
                             if (firstTimeRender.current) {
@@ -142,7 +148,7 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
                                 return;
                             }
                             setOptions(newList);
-                            onChange("options", newList);
+                            onChange('options', newList);
                         }}
                         handle=".drag-handle-option"
                     >
@@ -154,12 +160,13 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
                                 <div className="option-label">
                                     <input
                                         type="text"
+                                        className="basic-input"
                                         value={option.label}
                                         onChange={(event) => {
                                             settingHasChanged.current = true;
                                             handleOptionFieldChange(
                                                 index,
-                                                "label",
+                                                'label',
                                                 event.target.value
                                             );
                                         }}
@@ -172,6 +179,9 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
                                 </div>
                                 <div className="option-control-section">
                                     <div
+                                        role="button"
+                                        className="delete-btn"
+                                        tabIndex={0}
                                         onClick={() => {
                                             settingHasChanged.current = true;
                                             handleDeleteOption(index);
@@ -179,8 +189,10 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
                                     >
                                         Delete
                                     </div>
-                                    <OptionMetaBox
-                                        hasOpen={openOption === index}
+                                    <SettingMetaBox
+                                        opened={{
+                                            click: openOption === index,
+                                        }}
                                         option={option}
                                         onChange={(key, value) => {
                                             settingHasChanged.current = true;
@@ -190,26 +202,29 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
                                                 value
                                             );
                                         }}
+                                        metaType=""
                                         setDefaultValue={() => {
                                             let defaultValueIndex:
                                                 | number
                                                 | null = null;
-                                            options.forEach((option, idx) => {
-                                                if (option.isdefault)
-                                                    defaultValueIndex = idx;
-                                            });
+                                            options.forEach(
+                                                (eachOption, idx) => {
+                                                    if (eachOption.isdefault)
+                                                        defaultValueIndex = idx;
+                                                }
+                                            );
                                             if (defaultValueIndex !== null) {
                                                 settingHasChanged.current =
                                                     true;
                                                 handleOptionFieldChange(
                                                     defaultValueIndex,
-                                                    "isdefault",
+                                                    'isdefault',
                                                     false
                                                 );
                                             }
                                             handleOptionFieldChange(
                                                 index,
-                                                "isdefault",
+                                                'isdefault',
                                                 true
                                             );
                                         }}
@@ -220,11 +235,13 @@ const MultipleOptions: React.FC<MultipleOptionsProps> = ({
 
                         <div
                             className="add-more-option-section"
+                            role="button"
+                            tabIndex={0}
                             onClick={handleInsertOption}
                         >
-                            Add new options{" "}
+                            Add new options{' '}
                             <span>
-                                <i className="admin-font adminLib-plus-circle-o"></i>
+                                <i className="admin-font adminlib-plus-circle-o"></i>
                             </span>
                         </div>
                     </ReactSortable>
