@@ -12,7 +12,7 @@ const pluginFiles = [
     "config.php",
     "composer.lock",
     "composer.json",
-    "product_stock_alert.php",
+    "moowoodle.php",
     "readme.txt",
 ];
 

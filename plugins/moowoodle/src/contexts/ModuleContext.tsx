@@ -1,9 +1,9 @@
-import React, { createContext, useReducer, useContext, ReactNode } from "react";
+import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 
 // Define action types
 type ModuleAction =
-    | { type: "INSERT_MODULE"; payload: string }
-    | { type: "DELETE_MODULE"; payload: string };
+    | { type: 'INSERT_MODULE'; payload: string }
+    | { type: 'DELETE_MODULE'; payload: string };
 
 // Define state type
 type ModuleState = string[];
@@ -30,9 +30,9 @@ const ModuleReducer = (
     action: ModuleAction
 ): ModuleState => {
     switch (action.type) {
-        case "INSERT_MODULE":
+        case 'INSERT_MODULE':
             return [...state, action.payload];
-        case "DELETE_MODULE":
+        case 'DELETE_MODULE':
             return state.filter((module) => module !== action.payload);
         default:
             return state;
@@ -47,11 +47,11 @@ const ModuleProvider: React.FC<ModuleProviderProps> = ({
     const [state, dispatch] = useReducer(ModuleReducer, modules);
 
     const insertModule = (moduleName: string) => {
-        dispatch({ type: "INSERT_MODULE", payload: moduleName });
+        dispatch({ type: 'INSERT_MODULE', payload: moduleName });
     };
 
     const removeModule = (moduleName: string) => {
-        dispatch({ type: "DELETE_MODULE", payload: moduleName });
+        dispatch({ type: 'DELETE_MODULE', payload: moduleName });
     };
 
     return (
@@ -67,7 +67,7 @@ const ModuleProvider: React.FC<ModuleProviderProps> = ({
 const useModules = (): ModuleContextType => {
     const context = useContext(ModuleContext);
     if (!context) {
-        throw new Error("useModules must be used within a ModuleProvider");
+        throw new Error('useModules must be used within a ModuleProvider');
     }
     return context;
 };
