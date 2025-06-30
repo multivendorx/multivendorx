@@ -102,4 +102,13 @@
 	<rule ref="WordPress.Files.FileName">
         <severity>0</severity>
     </rule>
+	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_query">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_key">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress">
+		<exclude-pattern>*/product_stock_alert.php</exclude-pattern>
+	</rule>
 </ruleset>

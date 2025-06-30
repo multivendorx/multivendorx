@@ -1,20 +1,49 @@
 <?php
+/**
+ * Notifima class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
+/**
+ * Notifima Main class
+ *
+ * @class       Main class
+ * @version     PRODUCT_VERSION
+ * @author      MultivendorX
+ */
 class Notifima {
 
+    /**
+     * Holds the single instance of the class (singleton pattern).
+     *
+     * @var self|null
+     */
     private static $instance = null;
-    private $file            = '';
-    private $container       = array();
 
     /**
-     * Class construct
+     * The main plugin file path.
      *
-     * @param object $file
+     * @var string
+     */
+    private $file = '';
+
+    /**
+     * Container for dependency injection or shared resources.
+     *
+     * @var array
+     */
+    private $container = array();
+
+    /**
+     * Class constructor
+     *
+     * @param object $file file.
      */
     public function __construct( $file ) {
         require_once trailingslashit( dirname( $file ) ) . '/config.php';
@@ -27,24 +56,29 @@ class Notifima {
         $this->container['version']        = NOTIFIMA_PLUGIN_VERSION;
         $this->container['rest_namespace'] = 'notifima/v1';
         $this->container['block_paths']    = array();
-        $this->container['is_dev'] = defined('WP_ENV') && WP_ENV === 'development';
+        $this->container['is_dev']         = defined( 'WP_ENV' ) && WP_ENV === 'development';
 
         add_action( 'init', array( $this, 'set_default_value' ) );
-        // Activation Hooks
+        // Activation Hooks.
         register_activation_hook( $file, array( $this, 'activate' ) );
-        // Deactivation Hooks
+        // Deactivation Hooks.
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
         add_filter( 'plugin_action_links_' . plugin_basename( $file ), array( &$this, 'notifima_settings' ) );
         add_action( 'admin_notices', array( &$this, 'database_migration_notice' ) );
-        add_filter( 'woocommerce_email_classes', array( &$this, 'setup_email_class' ) );
 
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
         add_action( 'woocommerce_loaded', array( $this, 'init_plugin' ) );
         add_action( 'plugins_loaded', array( $this, 'is_woocommerce_loaded' ) );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
+        add_action( 'init', array( $this, 'migrate_from_previous_version' ) );
     }
 
+    /**
+     * Set default values for plugin settings.
+     *
+     * @return void
+     */
     public function set_default_value() {
         $default_value = array(
             'double_opt_in_success'     => __( 'Kindly check your inbox to confirm the subscription.', 'notifima' ),
@@ -66,10 +100,10 @@ class Notifima {
                 'button_border_size'              => '',
             ),
             'alert_success'             => __( 'Thank you for expressing interest in %product_title%. We will notify you via email once it is back in stock.', 'notifima' ),
-            // Translators: This message display already registered user to display already registered message
+            // Translators: This message display already registered user to display already registered message.
             'alert_email_exist'         => __( '%customer_email% is already registered for %product_title%. Please attempt a different email address.', 'notifima' ),
             'valid_email'               => __( 'Please enter a valid email ID and try again.', 'notifima' ),
-            // Translators: This message display user sucessfully unregistered
+            // Translators: This message display user sucessfully unregistered.
             'alert_unsubscribe_message' => __( '%customer_email% is successfully unsubscribed.', 'notifima' ),
             'ban_email_domain_text'     => __( 'This email domain is ban in our site, kindly use another email domain.', 'notifima' ),
             'ban_email_address_text'    => __( 'This email address is ban in our site, kindly use another email address.', 'notifima' ),
@@ -78,11 +112,12 @@ class Notifima {
     }
 
     /**
-     * Add Metadata in plugin row.
+     * Add metadata links (e.g. documentation, support) to the plugin row on the Plugins screen.
      *
-     * @param  array  $links
-     * @param  string $file
-     * @return array
+     * @param array  $links An array of the plugin's metadata links.
+     * @param string $file  The path to the plugin file relative to the plugins directory.
+     *
+     * @return array Modified array of metadata links.
      */
     public function plugin_row_meta( $links, $file ) {
         if ( Notifima()->plugin_base === $file ) {
@@ -124,7 +159,7 @@ class Notifima {
     }
 
     /**
-     * Add High Performance Order Storage Support
+     * Add High Performance Order Storage Support.
      *
      * @return void
      */
@@ -133,19 +168,21 @@ class Notifima {
     }
 
     /**
-     * Initilizing plugin on WP init
+     * Initilizing plugin on WP init.
      *
      * @return void
      */
-    public function init_plugin( $file ) {
+    public function init_plugin() {
         $this->load_plugin_textdomain();
         $this->init_classes();
-
+        add_filter( 'woocommerce_email_classes', [ $this, 'setup_email_class' ] );
+ 
         do_action( 'notifima_loaded' );
+
     }
 
     /**
-     * Init all Stock Manageer classess.
+     * Init all Notifima classess.
      * Access this classes using magic method.
      *
      * @return void
@@ -166,20 +203,21 @@ class Notifima {
     }
 
     /**
-     * Add Stock Alert Email Class
+     * Add Notifima Email Class.
      *
-     * @return void
+     * @param array $emails  All notifima emails.
+     * @return array
      */
     public function setup_email_class( $emails ) {
-        $emails['WC_Admin_Email_Notifima']                   = new Emails\AdminEmail();
-        $emails['WC_Subscriber_Confirmation_Email_Notimifa'] = new Emails\SubscriberConfirmationEmail();
-        $emails['WC_Email_Notifima']                         = new Emails\Emails();
+        $emails['Admin_New_Subscriber_Email']    = new Emails\AdminNewSubscriberEmail();
+        $emails['Subscriber_Confirmation_Email'] = new Emails\SubscriberConfirmationEmail();
+        $emails['Product_Back_In_Stock_Email']   = new Emails\ProductBackInStockEmail();
 
         return $emails;
     }
 
     /**
-     * Take action based on if woocommerce is not loaded
+     * Take action based on if woocommerce is not loaded.
      *
      * @return void
      */
@@ -191,8 +229,19 @@ class Notifima {
     }
 
     /**
+     * Migrate data from previous version.
+     */
+    public function migrate_from_previous_version() {
+        $previous_version = get_option( 'notifima_version', '' );
+
+        if ( version_compare( $previous_version, Notifima()->version, '<' ) ) {
+            new Install();
+        }
+    }
+
+    /**
      * Load Localisation files.
-     * Note: the first-loaded translation file overrides any following ones if the same translation is present
+     * Note: the first-loaded translation file overrides any following ones if the same translation is present.
      *
      * @access public
      * @return void
@@ -209,10 +258,10 @@ class Notifima {
      * Magic getter function to get the reference of class.
      * Accept class name, If valid return reference, else Wp_Error.
      *
-     * @param  mixed $class
+     * @param  mixed $class all classes.
      * @return object | \WP_Error
      */
-    public function __get( $class ) {
+    public function __get( $class ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
         if ( array_key_exists( $class, $this->container ) ) {
             return $this->container[ $class ];
         }
@@ -221,7 +270,18 @@ class Notifima {
     }
 
     /**
-     * Admin notice for woocommerce inactiove
+     * Magic setter function to store a reference of a class.
+     * Accepts a class name as the key and stores the instance in the container.
+     *
+     * @param string $class The class name or key to store the instance.
+     * @param object $value The instance of the class to store.
+     */
+    public function __set( $class, $value ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound
+        $this->container[ $class ] = $value;
+    }
+
+    /**
+     * Admin notice for woocommerce inactive.
      *
      * @return void
      */
@@ -232,15 +292,18 @@ class Notifima {
                 <?php
                     printf(
                         // translators: 1: Opening strong tag, 2: Closing strong tag, 3: Opening WooCommerce link, 4: Closing link, 5: Opening install link, 6: Closing install link.
-                        __( '%1$sNotifima is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the Notifima to work. Please %5$sinstall & activate WooCommerce%6$s', 'notifima' ),
+                        esc_html__(
+                            '%1$sNotifima is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for the Notifima to work. Please %5$sinstall & activate WooCommerce%6$s',
+                            'notifima'
+                        ),
                         '<strong>',
                         '</strong>',
-                        '<a target="_blank" href="http://wordpress.org/extend/plugins/woocommerce/">',
+                        '<a target="_blank" href="' . esc_url( 'https://wordpress.org/plugins/woocommerce/' ) . '">',
                         '</a>',
-                        '<a href="' . admin_url( 'plugins.php' ) . '">',
+                        '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">',
                         ' &raquo;</a>'
                     );
-				?>
+                ?>
             </p>
         </div>
         <?php
@@ -252,19 +315,19 @@ class Notifima {
      * @return void
      */
     public static function database_migration_notice() {
-        // check if plugin vertion in databse is not same to current notifima version
+        // check if plugin vertion in databse is not same to current notifima version.
         $plugin_version = get_option( 'notifima_version', '' );
 
         if ( Install::is_migration_running() ) {
             ?>
             <div id="message" class="notice notice-warning">
-                <p><?php _e( 'Notifima is currently updating the database in the background. Please be patient while the process completes.', 'notifima' ); ?></p>
+                <p><?php esc_html_e( 'Notifima is currently updating the database in the background. Please be patient while the process completes.', 'notifima' ); ?></p>
             </div>
             <?php
-        } elseif ( $plugin_version != NOTIFIMA_PLUGIN_VERSION ) {
+        } elseif ( NOTIFIMA_PLUGIN_VERSION !== $plugin_version ) {
             ?>
             <div id="message" class="error">
-                <p><?php _e( 'The Notifima is experiencing configuration issues. To ensure proper functioning, kindly deactivate and then activate the plugin.', 'notifima' ); ?></p>
+                <p><?php esc_html_e( 'The Notifima is experiencing configuration issues. To ensure proper functioning, kindly deactivate and then activate the plugin.', 'notifima' ); ?></p>
             </div>
             <?php
         }
@@ -273,7 +336,7 @@ class Notifima {
     /**
      * Set the stoct Manager settings in plugin activation page.
      *
-     * @param  mixed $links
+     * @param  mixed $links all links.
      * @return array
      */
     public static function notifima_settings( $links ) {
@@ -282,7 +345,7 @@ class Notifima {
             '<a href="https://notifima.com/support/" target="_blank">' . __( 'Support', 'notifima' ) . '</a>',
             '<a href="https://notifima.com/docs/" target="_blank">' . __( 'Docs', 'notifima' ) . '</a>',
         );
-        if ( apply_filters( 'is_notifima_pro_inactive', true ) ) {
+        if ( ! Utill::is_khali_dabba() ) {
             $links['go_pro'] = '<a href="' . NOTIFIMA_PRO_SHOP_URL . '" class="notifima-pro-plugin" target="_blank">' . __( 'Get Pro', 'notifima' ) . '</a>';
         }
 
@@ -294,11 +357,11 @@ class Notifima {
      * Checks for an existing instance
      * And if it doesn't find one, create it.
      *
-     * @param  mixed $file
+     * @param  mixed $file file.
      * @return object | null
      */
     public static function init( $file ) {
-        if ( self::$instance === null ) {
+        if ( null === self::$instance ) {
             self::$instance = new self( $file );
         }
 

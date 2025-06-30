@@ -1,6 +1,6 @@
 <?php
 /**
- * SubscriberConfirmationEmail class file.
+ * AdminNewSubscriberEmail class file.
  *
  * @package Notifima
  */
@@ -9,18 +9,18 @@ namespace Notifima\Emails;
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-if ( ! class_exists( 'SubscriberConfirmationEmail' ) ) :
+if ( ! class_exists( 'AdminNewSubscriberEmail' ) ) :
 
     /**
-     * Email for Notifima
+     * Email to Admin for notifima.
      *
-     * An confirmation email will be sent to the customer when they subscribe product.
+     * An email will be sent to the admin when customer subscribe an out of stock product.
      *
      * @version     PRODUCT_VERSION
      * @author      MultivendorX
      * @extends     \WC_Email
      */
-    class SubscriberConfirmationEmail extends \WC_Email {
+    class AdminNewSubscriberEmail extends \WC_Email {
 
         /**
          * The product associated with the subscription.
@@ -30,6 +30,13 @@ if ( ! class_exists( 'SubscriberConfirmationEmail' ) ) :
         public $product;
 
         /**
+         * The customer's email address.
+         *
+         * @var string
+         */
+        public $customer_email;
+
+        /**
          * The email recipient. Can be overridden manually.
          *
          * @var string
@@ -37,17 +44,17 @@ if ( ! class_exists( 'SubscriberConfirmationEmail' ) ) :
         public $recipient = '';
 
         /**
-         * Constructor
+         * Admin email Constructor.
          *
          * @access public
          * @return void
          */
         public function __construct() {
-            $this->id             = 'notifima_subscriber_confirmation';
-            $this->title          = __( 'Confirm subscriber', 'notifima' );
-            $this->description    = __( 'Confirm customer when they subscribe a product', 'notifima' );
-            $this->template_html  = 'emails/html/SubscriberConfirmationEmail.php';
-            $this->template_plain = 'emails/plain/SubscriberConfirmationEmail.php';
+            $this->id             = 'notifima_subscriber_confimation_admin';
+            $this->title          = __( 'Alert admin', 'notifima' );
+            $this->description    = __( 'Admin will get an alert when customer subscribe any out of stock product', 'notifima' );
+            $this->template_html  = 'emails/html/AdminNewSubscriberEmail.php';
+            $this->template_plain = 'emails/plain/AdminNewSubscriberEmail.php';
             $this->template_base  = Notifima()->plugin_path . 'templates/';
 
             // Call parent constuctor.
@@ -59,12 +66,14 @@ if ( ! class_exists( 'SubscriberConfirmationEmail' ) ) :
          *
          * @param string     $recipient      The recipient's email address.
          * @param WC_Product $product        The WooCommerce product object.
+         * @param string     $customer_email The customer's email address.
          * @return void
          */
-        public function trigger( $recipient, $product ) {
+        public function trigger( $recipient, $product, $customer_email ) {
 
-            $this->recipient = $recipient;
-            $this->product   = $product;
+            $this->recipient      = $recipient;
+            $this->product        = $product;
+            $this->customer_email = $customer_email;
 
             if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
                 return;
@@ -76,21 +85,19 @@ if ( ! class_exists( 'SubscriberConfirmationEmail' ) ) :
         /**
          * Get email subject.
          *
-         * @since  1.4.7
          * @return string
          */
         public function get_default_subject() {
-            return apply_filters( 'notifima_customer_subscription_email_subject', __( 'You have subscribed to a product on {site_title} ', 'notifima' ), $this->object );
+            return apply_filters( 'notifima_customer_subscription_admin_email_subject', __( 'A Customer has subscribed to a product on {site_title} ', 'notifima' ), $this->object );
         }
 
         /**
          * Get email heading.
          *
-         * @since  1.4.7
          * @return string
          */
         public function get_default_heading() {
-            return apply_filters( 'notifima_customer_subscription_email_heading', __( 'Welcome to {site_title} ', 'notifima' ), $this->object );
+            return apply_filters( 'notifima_customer_subscription_admin_email_heading', __( 'Welcome to {site_title} ', 'notifima' ), $this->object );
         }
 
         /**
@@ -106,8 +113,8 @@ if ( ! class_exists( 'SubscriberConfirmationEmail' ) ) :
                 array(
 					'email_heading'  => $this->get_heading(),
 					'product'        => $this->product,
-					'customer_email' => $this->recipient,
-					'sent_to_admin'  => false,
+					'customer_email' => $this->customer_email,
+					'sent_to_admin'  => true,
 					'plain_text'     => false,
 					'email'          => $this,
 				)
@@ -129,8 +136,8 @@ if ( ! class_exists( 'SubscriberConfirmationEmail' ) ) :
                 array(
 					'email_heading'  => $this->get_heading(),
 					'product'        => $this->product,
-					'customer_email' => $this->recipient,
-					'sent_to_admin'  => false,
+					'customer_email' => $this->customer_email,
+					'sent_to_admin'  => true,
 					'plain_text'     => false,
 					'email'          => $this,
 				)

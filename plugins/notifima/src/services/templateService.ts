@@ -1,10 +1,10 @@
 /// <reference types="webpack-env" />
 
-const context = require.context("../components/Settings", true, /\.ts$/);
+const context = require.context('../components/Settings', true, /\.ts$/);
 
 type SettingNode = {
     name: string;
-    type: "folder" | "file";
+    type: 'folder' | 'file';
     content: SettingNode[] | any;
 };
 
@@ -15,17 +15,17 @@ const importAll = (
 
     inpContext.keys().forEach((key) => {
         const path = key.substring(2);
-        const parts = path.split("/");
+        const parts = path.split('/');
         const fileName = parts.pop();
         let currentFolder = folderStructure;
 
         parts.forEach((folder) => {
             let folderObject = currentFolder.find(
-                (item) => item.name === folder && item.type === "folder"
+                (item) => item.name === folder && item.type === 'folder'
             ) as SettingNode | undefined;
 
             if (!folderObject) {
-                folderObject = { name: folder, type: "folder", content: [] };
+                folderObject = { name: folder, type: 'folder', content: [] };
                 currentFolder.push(folderObject);
             }
 
@@ -33,8 +33,8 @@ const importAll = (
         });
 
         currentFolder.push({
-            name: fileName!.replace(".js", ""),
-            type: "file",
+            name: fileName!.replace('.js', ''),
+            type: 'file',
             content: context(key).default,
         });
     });
@@ -48,10 +48,11 @@ const getTemplateData = (): SettingNode[] => {
 
 const getModuleData = (): any | null => {
     try {
-        const module = require("../components/Modules/index.ts").default;
+        const module = require('../components/Modules/index.ts').default;
         return module;
     } catch (error) {
-        console.warn("Module not found, skipping...");
+        // eslint-disable-next-line no-console
+        console.warn('Module not found, skipping...');
         return null;
     }
 };

@@ -1,9 +1,17 @@
 <?php
+/**
+ * Deprecatedfunctions class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima\Deprecated;
 
 defined( 'ABSPATH' ) || exit;
+
 /**
+ * Retrieves the plugin settings.
+ *
  * @deprecated 4.0.0
  *   wc_deprecated_function( new, version, old )
  */

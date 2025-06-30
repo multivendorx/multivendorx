@@ -1,7 +1,7 @@
 {
     "name": "notifima",
     "displayName": "woocommerce-product-stock-manager",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "=== WooCommerce Product Stock Manager ===",
     "main": "index.js",
     "engines": {
@@ -10,14 +10,15 @@
     "scripts": {
         "build": "echo \"${npm_package_name}\" && pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^build:project:.*$/\"",
         "build:zip": "pnpm install && pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
+        "build:release": "pnpm install && pnpm run readme  && pnpm run version && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
         "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
         "build:project:bundle": "wireit",
         "build:project:translation:domains": "wireit",
         "watch:build": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
-        "watch:build:project:bandle": "wireit",
+        "watch:build:project:bundle": "wireit",
         "lint": "pnpm --if-present \"/^lint:lang:.*$/\"",
         "lint:fix": "pnpm --if-present \"/^lint:fix:.*$/\"",
-        "lint:lang:js": "eslint . --ext=js,ts",
+        "lint:lang:js": "eslint . --ext .js,.jsx,.ts,.tsx",
         "lint:lang:php": "composer run-script phpcs",
         "lint:lang:css": "wp-scripts lint-style",
         "lint:fix:css": "stylelint '**/*.{css,scss}' --fix",
@@ -39,6 +40,7 @@
         "postinstall": "rimraf -g vendor release .wireit composer.lock languages && composer install",
         "clean": "node bin/clean-files.mjs",
         "minify": "node bin/minify.mjs",
+        "version": "node bin/version-replace.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
         "makepot": "wp i18n make-pot --domain='notifima' --include='assets/js,classes,templates,config.php,product_stock_alert.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://notifima.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Notifima Inc. All Rights Reserved.\" languages/notifima.pot"
     },
@@ -74,7 +76,7 @@
             ],
             "output": []
         },
-        "watch:build:project:bandle": {
+        "watch:build:project:bundle": {
             "command": "wp-scripts start",
             "files": [
                 "src/**/*.{js,jsx,ts,tsx,scss}",
@@ -95,17 +97,19 @@
         "@wordpress/i18n": "wp-6.6",
         "@wordpress/react-i18n": "wp-6.6",
         "@wordpress/scripts": "^30.16.0",
+        "react": "^19.1.0",
         "react-csv": "^2.2.2",
         "react-data-table-component": "^7.7.0",
         "react-date-range": "^2.0.1",
+        "react-dom": "^19.1.0",
         "react-router-dom": "^7.6.0",
         "ts-loader": "9.5.x",
         "typescript": "5.8.x",
+        "wp-textdomain": "^1.0.1",
         "zyra": "workspace:*"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.27.1",
-        "@eslint/js": "^9.27.0",
         "@types/react": "18.3.x",
         "@types/react-csv": "^1.1.10",
         "@types/react-date-range": "^1.4.10",
@@ -116,17 +120,14 @@
         "@types/wordpress__blocks": "^12.5.17",
         "@types/wordpress__element": "^2.14.1",
         "@types/wordpress__i18n": "^3.11.0",
-        "@typescript-eslint/eslint-plugin": "^8.32.1",
-        "@typescript-eslint/parser": "^8.32.1",
         "@wordpress/block-editor": "wp-6.6",
         "@wordpress/blocks": "wp-6.6",
         "@wordpress/env": "10.23.x",
-        "@wordpress/eslint-plugin": "22.9.0",
         "autoprefixer": "^10.4.21",
         "axios": "^1.9.0",
         "babel-loader": "^10.0.0",
         "clean-css": "^5.3.3",
-        "eslint": "^9.27.0",
+        "eslint": "8.56.0",
         "file-loader": "^6.2.0",
         "fs-extra": "^11.3.0",
         "globals": "^16.1.0",

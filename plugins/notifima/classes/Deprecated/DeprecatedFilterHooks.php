@@ -1,4 +1,9 @@
 <?php
+/**
+ * DeprecatedFilterHooks class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima\Deprecated;
 
@@ -31,12 +36,12 @@ class DeprecatedFilterHooks extends \WC_Deprecated_Hooks {
         'woo_stock_manager_pro_settings_lists'          => 'woocommerce_stock_alert_pro_settings_lists',
         'woo_stock_manager_pro_active'                  => 'woo_stock_alert_pro_active',
         'woo_stock_manager_settings'                    => 'stockalert_settings',
-        'is_notifima_pro_inactive'                      => 'is_stock_alert_pro_inactive',
+        'is_stock_manager_pro_inactive'                 => 'is_stock_alert_pro_inactive',
         'notifima_admin_localize_scripts'               => 'stock_manager_settings',
-        'notifima_double_optin_enabled'                 => 'woo_stock_manager_do_complete_additional_task',
-        'notifima_is_accept_ban_email_address'          => 'woo_stock_manager_is_accept_email_address',
-        'notifima_new_subscriber_added'                 => 'woo_stock_manager_new_subscriber_added',
-        'notifima_accept_ban_email'                     => 'woo_stock_manager_accept_email',
+        'stock_manager_do_complete_additional_task'     => 'woo_stock_manager_do_complete_additional_task',
+        'stock_manager_is_accept_email_address'         => 'woo_stock_manager_is_accept_email_address',
+        'stock_manager_new_subscriber_added'            => 'woo_stock_manager_new_subscriber_added',
+        'stock_manager_accept_email'                    => 'woo_stock_manager_accept_email',
         'notifima_subscription_form_additional_fields'  => 'woocommerce_product_stock_alert_form_additional_fields',
         'notifima_recaptcha_enabled'                    => 'woo_stock_manager_recaptcha_enabled',
         'notifima_subscription_form_fields_separator'   => 'woo_fileds_separator',

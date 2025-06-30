@@ -8,8 +8,8 @@
 define( 'NOTIFIMA_PLUGIN_DIR', dirname( __DIR__, 2 ) );
 define( 'TEST_WC_DIR', dirname( NOTIFIMA_PLUGIN_DIR, 3 ) . '/woocommerce' );
 
-echo "Notifima plugin dir : ". NOTIFIMA_PLUGIN_DIR . "\n";
-echo "test wc dir : ". TEST_WC_DIR;
+echo 'Notifima plugin dir : ' . NOTIFIMA_PLUGIN_DIR . "\n";
+echo 'test wc dir : ' . TEST_WC_DIR;
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 

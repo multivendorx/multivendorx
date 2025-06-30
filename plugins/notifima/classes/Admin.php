@@ -1,43 +1,56 @@
 <?php
+/**
+ * Admin class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Notifima Admin class
+ *
+ * @class       Admin class
+ * @version     PRODUCT_VERSION
+ * @author      MultivendorX
+ */
 class Admin {
 
-    public $settings;
-
+    /**
+     * Admin constructor.
+     */
     public function __construct() {
-        // admin pages manu and submenu
+        // admin pages manu and submenu.
         add_action( 'admin_menu', array( $this, 'add_settings_page' ), 100 );
-        // admin script and style
+        // admin script and style.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ) );
 
-        // create custom column
-        add_action( 'manage_edit-product_columns', array( $this, 'set_custom_column_header' ) );
-        // manage notifima column
-        add_action( 'manage_product_posts_custom_column', array( $this, 'display_subscriber_count_in_custom_column' ), 10, 2 );
+        // create custom column.
+        add_action( 'manage_edit-product_columns', array( $this, 'display_subscriber_header' ) );
+        // manage notifima column.
+        add_action( 'manage_product_posts_custom_column', array( $this, 'display_subscriber_count_in_column' ), 10, 2 );
 
-        // show number of subscribers for individual product
+        // show number of subscribers for individual product.
         add_action( 'woocommerce_product_options_inventory_product_data', array( $this, 'display_product_subscriber_count_in_metabox' ), 10 );
         add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'display_product_subscriber_count_in_variation_metabox' ), 10, 3 );
 
-        // bulk action to remove subscribers
+        // bulk action to remove subscribers.
         add_filter( 'bulk_actions-edit-product', array( $this, 'register_subscribers_bulk_actions' ) );
         add_filter( 'handle_bulk_actions-edit-product', array( $this, 'subscribers_bulk_action_handler' ), 10, 3 );
         add_action( 'admin_notices', array( $this, 'subscribers_bulk_action_admin_notice' ) );
         add_action( 'admin_print_styles-plugins.php', array( $this, 'admin_plugin_page_style' ) );
 
-        // For translation
+        // For translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
     }
 
     /**
-     * Add options page
+     * Add options page.
      */
     public function add_settings_page() {
-        $pro_sticker = apply_filters( 'is_notifima_pro_inactive', true ) ?
+        $pro_sticker = ! Utill::is_khali_dabba() ?
         '<span 
             class="notifima-pro-tag"
             style="
@@ -110,7 +123,7 @@ class Admin {
     /**
      * Register bulk action in 'all product' table.
      *
-     * @param  mixed $bulk_actions
+     * @param  mixed $bulk_actions bulk actions.
      * @return mixed
      */
     public function register_subscribers_bulk_actions( $bulk_actions ) {
@@ -122,13 +135,13 @@ class Admin {
     /**
      * Bulk action handler function.
      *
-     * @param  mixed $redirect_to
-     * @param  mixed $doaction
-     * @param  mixed $post_ids
+     * @param  mixed $redirect_to redirect link.
+     * @param  mixed $doaction the action of bulk action.
+     * @param  mixed $post_ids Array of post IDs.
      * @return mixed
      */
     public function subscribers_bulk_action_handler( $redirect_to, $doaction, $post_ids ) {
-        if ( $doaction !== 'remove_subscribers' ) {
+        if ( 'remove_subscribers' !== $doaction ) {
             return $redirect_to;
         }
         foreach ( $post_ids as $post_id ) {
@@ -154,7 +167,7 @@ class Admin {
     public function subscribers_bulk_action_admin_notice() {
         if ( ! empty( filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT ) ) ) {
             $bulk_remove_count = filter_input( INPUT_POST, 'bulk_remove_subscribers', FILTER_SANITIZE_NUMBER_INT );
-            // Translators: This message is to display removed subscribers count for the product
+            // Translators: This message is to display removed subscribers count for the product.
             printf( '<div id="message" class="updated fade"><p>' . esc_html( _n( 'Removed subscribers from %s product.', 'Removed subscribers from %s products.', $bulk_remove_count, 'notifima' ) ) . '</p></div>', esc_html( $bulk_remove_count ) );
         }
     }
@@ -188,7 +201,7 @@ class Admin {
      * @return void
      */
     public function enqueue_admin_script() {
-        if ( get_current_screen()->id == 'toplevel_page_notifima' ) {
+        if ( get_current_screen()->id === 'toplevel_page_notifima' ) {
             wp_enqueue_script( 'wp-element' );
 
             FrontendScripts::admin_load_scripts();
@@ -200,34 +213,39 @@ class Admin {
         }
 
         FrontendScripts::enqueue_style( 'notifima-admin-style' );
-        error_log( 'all enque finished' );
     }
 
     /**
-     * Custom column addition
+     * Custom column addition.
+     *
+     * @param array $columns Existing column headers.
+     * @return array Modified column headers.
      */
-    public function set_custom_column_header( $columns ) {
+    public function display_subscriber_header( $columns ) {
         return array_merge( $columns, array( 'product_subscriber' => __( 'Interested Person( s )', 'notifima' ) ) );
     }
 
     /**
-     * Manage custom column for Notifima
+     * Manage custom column for Notifima.
+     *
+     * @param string $column_name The name of the column to display.
+     * @param int    $post_id     The current post ID.
      */
-    public function display_subscriber_count_in_custom_column( $column_name, $post_id ) {
-        if ( $column_name == 'product_subscriber' ) {
+    public function display_subscriber_count_in_column( $column_name, $post_id ) {
+        if ( 'product_subscriber' === $column_name ) {
             $no_of_subscriber = get_post_meta( $post_id, 'no_of_subscribers', true );
             echo '<div class="product-subscribtion-column">' . esc_html( ( isset( $no_of_subscriber ) && $no_of_subscriber > 0 ) ? $no_of_subscriber : 0 ) . '</div>';
         }
     }
 
     /**
-     * Notifima news on Product edit page ( simple )
+     * Notifima news on Product edit page ( simple ).
      */
     public function display_product_subscriber_count_in_metabox() {
         global $post;
-
-        if ( Subscriber::is_product_outofstock( wc_get_product( $post->ID ) ) ) {
-            $no_of_subscriber = get_post_meta( $post->ID, 'no_of_subscribers', true );
+        $product = wc_get_product( $post->ID );
+        if ( Subscriber::is_product_outofstock( $product ) ) {
+            $no_of_subscriber = $product->get_meta( 'no_of_subscribers', true );
             ?>
             <p class="form-field _stock_field">
                 <label class=""><?php esc_attr_e( 'Number of Interested Person( s )', 'notifima' ); ?></label>
@@ -238,11 +256,18 @@ class Admin {
     }
 
     /**
-     * Notifima news on Product edit page ( variable )
+     * Notifima news on Product edit page (variable product).
+     *
+     * Displays the subscriber count inside each variation metabox on the product edit page.
+     *
+     * @param int     $loop            The index of the current variation loop.
+     * @param array   $variation_data  The data array for the current variation.
+     * @param WP_Post $variation       The WP_Post object for the variation.
      */
     public function display_product_subscriber_count_in_variation_metabox( $loop, $variation_data, $variation ) {
-        if ( Subscriber::is_product_outofstock( wc_get_product( $variation->ID ) ) ) {
-            $product_subscriber = get_post_meta( $variation->ID, 'no_of_subscribers', true );
+        $product = wc_get_product( $variation->ID );
+        if ( Subscriber::is_product_outofstock( $product ) ) {
+            $product_subscriber = $product->get_meta( 'no_of_subscribers', true );
             ?>
             <p class="form-row form-row-full interested_person">
                 <label class="stock_label"><?php esc_attr_e( 'Number of Interested Person( s ) : ', 'notifima' ); ?></label>
@@ -252,6 +277,15 @@ class Admin {
         }
     }
 
+    /**
+     * Filters the relative path for the plugin's textdomain.
+     *
+     * This method can be used to adjust the location where translation files are loaded from.
+     *
+     * @param string $path Relative path to the .mo file.
+     * @param string $url  URL to the .mo file.
+     * @return string Modified path.
+     */
     public function textdomain_relative_path( $path, $url ) {
 
         if ( strpos( $url, 'woocommerce-product-stock-alert' ) !== false ) {

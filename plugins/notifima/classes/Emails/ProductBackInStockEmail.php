@@ -1,25 +1,46 @@
 <?php
+/**
+ * ProductBackInStockEmail class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima\Emails;
 
-defined( 'ABSPATH' ) || exit; // Exit if accessed directly
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-if ( ! class_exists( 'AdminEmail' ) ) :
+if ( ! class_exists( 'ProductBackInStockEmail' ) ) :
 
     /**
-     * Email to Admin for notifima
+     * Email for Notifima.
      *
-     * An email will be sent to the admin when customer subscribe an out of stock product.
+     * An email will be sent to the customer when their subscribed product is available.
      *
-     * @class       WC_Admin_Email_Notifima
-     * @version     1.3.0
+     * @version     PRODUCT_VERSION
      * @author      MultivendorX
      * @extends     \WC_Email
      */
-    class AdminEmail extends \WC_Email {
+    class ProductBackInStockEmail extends \WC_Email {
 
+        /**
+         * The product associated with the subscription.
+         *
+         * @var WC_Product|int|null
+         */
         public $product;
+
+        /**
+         * The customer's email address.
+         *
+         * @var string
+         */
         public $customer_email;
+
+        /**
+         * The email recipient. Can be overridden manually.
+         *
+         * @var string
+         */
         public $recipient = '';
 
         /**
@@ -29,29 +50,34 @@ if ( ! class_exists( 'AdminEmail' ) ) :
          * @return void
          */
         public function __construct() {
-            $this->id             = 'notifima_subscriber_confimation_admin';
-            $this->title          = __( 'Alert admin', 'notifima' );
-            $this->description    = __( 'Admin will get an alert when customer subscribe any out of stock product', 'notifima' );
-            $this->template_html  = 'emails/AdminEmail.php';
-            $this->template_plain = 'emails/plain/AdminEmail.php';
+
+            $this->id             = 'notifima_subscribe_product_back_stock';
+            $this->title          = __( 'Alert Subscriber', 'notifima' );
+            $this->description    = __( 'Alert customer when their subscribed product becomes in stock', 'notifima' );
+            $this->template_html  = 'emails/html/ProductBackInStockEmail.php';
+            $this->template_plain = 'emails/plain/ProductBackInStockEmail.php';
             $this->template_base  = Notifima()->plugin_path . 'templates/';
 
-            // Call parent constuctor
+            // Call parent constuctor.
             parent::__construct();
         }
 
         /**
-         * trigger function.
+         * Trigger function.
          *
-         * @access public
+         * @param string     $recipient      The recipient's email address.
+         * @param WC_Product $product        The WooCommerce product object.
          * @return void
          */
-        public function trigger( $recipient, $product, $customer_email ) {
+        public function trigger( $recipient, $product ) {
 
+            $this->customer_email = $recipient;
             $this->recipient      = $recipient;
             $this->product        = $product;
-            $this->customer_email = $customer_email;
 
+            if ( apply_filters( 'product_backin_stock_send_admin', false ) ) {
+                $this->recipient .= ', ' . get_option( 'admin_email' );
+            }
             if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
                 return;
             }
@@ -66,7 +92,7 @@ if ( ! class_exists( 'AdminEmail' ) ) :
          * @return string
          */
         public function get_default_subject() {
-            return apply_filters( 'notifima_customer_subscription_admin_email_subject', __( 'A Customer has subscribed to a product on {site_title} ', 'notifima' ), $this->object );
+            return apply_filters( 'notifima_subscribe_product_back_stock_email_subject', __( 'Your Subscribed product on {site_title} is available now', 'notifima' ), $this->object );
         }
 
         /**
@@ -76,11 +102,11 @@ if ( ! class_exists( 'AdminEmail' ) ) :
          * @return string
          */
         public function get_default_heading() {
-            return apply_filters( 'notifima_customer_subscription_admin_email_heading', __( 'Welcome to {site_title} ', 'notifima' ), $this->object );
+            return apply_filters( 'notifima_subscribe_product_back_stock_email_heading', __( 'Welcome to {site_title} ', 'notifima' ), $this->object );
         }
 
         /**
-         * get_content_html function.
+         * Get content html function.
          *
          * @access public
          * @return string
@@ -93,9 +119,8 @@ if ( ! class_exists( 'AdminEmail' ) ) :
 					'email_heading'  => $this->get_heading(),
 					'product'        => $this->product,
 					'customer_email' => $this->customer_email,
-					'sent_to_admin'  => true,
-					'plain_text'     => false,
-					'email'          => $this,
+					'sent_to_admin'  => false,
+					'plain_text'     => true,
 				)
             );
 
@@ -103,7 +128,7 @@ if ( ! class_exists( 'AdminEmail' ) ) :
         }
 
         /**
-         * get_content_plain function.
+         * Get content plain function.
          *
          * @access public
          * @return string
@@ -116,9 +141,8 @@ if ( ! class_exists( 'AdminEmail' ) ) :
 					'email_heading'  => $this->get_heading(),
 					'product'        => $this->product,
 					'customer_email' => $this->customer_email,
-					'sent_to_admin'  => true,
-					'plain_text'     => false,
-					'email'          => $this,
+					'sent_to_admin'  => false,
+					'plain_text'     => true,
 				)
             );
 

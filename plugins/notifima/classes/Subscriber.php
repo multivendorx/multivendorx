@@ -1,14 +1,26 @@
 <?php
+/**
+ * Subscriber class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Notifima Subscribe class
+ * Notifima Subscriber class
+ *
+ * @class       Subscriber class
+ * @version     PRODUCT_VERSION
+ * @author      MultivendorX
  */
 class Subscriber {
 
+    /**
+     * Subscriber constructor.
+     */
     public function __construct() {
         add_action( 'notifima_start_notification_cron_job', array( $this, 'send_instock_notification_corn' ) );
         add_action( 'woocommerce_update_product', array( $this, 'send_instock_notification' ), 10, 2 );
@@ -85,8 +97,8 @@ class Subscriber {
     /**
      * Send instock notification of a product's all subscribers on 'woocommerce_update_product' hook
      *
-     * @param  int    $product_id
-     * @param  object $product
+     * @param  int    $product_id product id.
+     * @param  object $product the product object.
      * @return void
      */
     public function send_instock_notification( $product_id, $product ) {
@@ -100,7 +112,7 @@ class Subscriber {
     /**
      * Send notification to all subscriber, subscribed to a particular product.
      *
-     * @param  \WC_Product $product
+     * @param  \WC_Product $product the product object.
      * @return void
      */
     public function notify_all_product_subscribers( $product ) {
@@ -116,7 +128,7 @@ class Subscriber {
         $product_subscribers = self::get_product_subscribers_email( $product->get_id() );
 
         if ( isset( $product_subscribers ) && ! empty( $product_subscribers ) ) {
-            $email = WC()->mailer()->emails['WC_Email_Notifima'];
+            $email = WC()->mailer()->emails['Product_Back_In_Stock_Email'];
 
             foreach ( $product_subscribers as $subscribe_id => $to ) {
                 $email->trigger( $to, $product );
@@ -130,8 +142,8 @@ class Subscriber {
     /**
      * Insert a subscriber to a product.
      *
-     * @param  mixed $subscriber_email
-     * @param  mixed $product_id
+     * @param string $subscriber_email The email address of the subscriber.
+     * @param int    $product_id       The ID of the WooCommerce product.
      * @return \WP_Error|bool|int
      */
     public static function insert_subscriber( $subscriber_email, $product_id ) {
@@ -140,7 +152,8 @@ class Subscriber {
         // Get current user id.
         $user_id = wp_get_current_user()->ID;
 
-        // Check the email is already register or not
+        // Check the email is already register or not.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $subscriber = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}notifima_subscribers 
@@ -150,9 +163,10 @@ class Subscriber {
             )
         );
 
-        // Update the status and create time of the subscriber row
+        // Update the status and create time of the subscriber row.
         if ( $subscriber ) {
-            return $response = $wpdb->update(
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            $response = $wpdb->update(
                 "{$wpdb->prefix}notifima_subscribers",
                 array(
                     'status'      => 'subscribed',
@@ -160,9 +174,11 @@ class Subscriber {
                 ),
                 array( 'id' => $subscriber->id )
             );
+            return $response;
         }
 
         // Insert new subscriber.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $response = $wpdb->query(
             $wpdb->prepare(
                 "INSERT INTO {$wpdb->prefix}notifima_subscribers
@@ -185,12 +201,12 @@ class Subscriber {
     /**
      * Function that unsubscribe a particular user if the user is already subscribed
      *
-     * @param  int    $product_id
-     * @param  string $customer_email
+     * @param int    $product_id     The product ID to unsubscribe from.
+     * @param string $customer_email The subscriber's email address.
      * @return bool
      */
     public static function remove_subscriber( $product_id, $customer_email ) {
-        // Check the user is already subscribed or not
+        // Check the user is already subscribed or not.
         $unsubscribe_post = self::is_already_subscribed( $customer_email, $product_id );
 
         if ( $unsubscribe_post ) {
@@ -210,17 +226,18 @@ class Subscriber {
     /**
      * Delete subscriber on product delete.
      *
-     * @param  int $post_id
+     * @param  int $post_id the id of product.
      * @return void
      */
     public static function delete_subscriber_all( $post_id ) {
         global $wpdb;
 
-        if ( get_post_type( $post_id ) != 'product' ) {
+        if ( get_post_type( $post_id ) !== 'product' ) {
             return;
         }
 
-        // Delete subscriber of deleted product
+        // Delete subscriber of deleted product.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->delete( $wpdb->prefix . 'notifima_subscribers', array( 'product_id' => $post_id ) );
         delete_post_meta( $post_id, 'no_of_subscribers' );
     }
@@ -228,14 +245,15 @@ class Subscriber {
     /**
      * Delete a subscriber from database.
      *
-     * @param  mixed $product_id
-     * @param  mixed $email
+     * @param int    $product_id The product ID.
+     * @param string $email      The subscriber's email address.
      * @return void
      */
     public static function delete_subscriber( $product_id, $email ) {
         global $wpdb;
 
-        // Delete subscriber of deleted product
+        // Delete subscriber of deleted product.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->delete(
             $wpdb->prefix . 'notifima_subscribers',
             array(
@@ -251,14 +269,15 @@ class Subscriber {
      * Check if a user subscribed to a product.
      * If the user subscribed to the product it return the subscription ID, Or null.
      *
-     * @param  mixed $subscriber_email
-     * @param  mixed $product_id
+     * @param  mixed $subscriber_email The subscriber's email.
+     * @param  mixed $product_id The product id.
      * @return array | string Subscription ID | null
      */
     public static function is_already_subscribed( $subscriber_email, $product_id ) {
         global $wpdb;
 
         // Get the result from custom subscribers table.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT id FROM {$wpdb->prefix}notifima_subscribers
@@ -271,19 +290,24 @@ class Subscriber {
     }
 
     /**
-     * Update the subscriber count for a product
+     * Update the subscriber count for a product.
      *
-     * @param  mixed $product_id
+     * @param  mixed $product_id The Product id.
      * @return void
      */
     public static function update_product_subscriber_count( $product_id ) {
         global $wpdb;
 
         // Get subscriber count.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $subscriber_count = $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}notifima_subscribers
-            WHERE product_id = {$product_id}
-            AND status = 'subscribed'"
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->prefix}notifima_subscribers
+                WHERE product_id = %d
+                AND status = %s",
+                $product_id,
+                'subscribed'
+            )
         );
 
         // Update subscriber count in product's meta.
@@ -293,14 +317,15 @@ class Subscriber {
     /**
      * Update the status of notifima subscriber.
      *
-     * @param  mixed $notifima_id
-     * @param  mixed $status
+     * @param int    $notifima_id The ID of the subscriber row.
+     * @param string $status      The new status to set (e.g., 'subscribed', 'unsubscribed').
      * @return \WP_Error|int
      */
     public static function update_subscriber( $notifima_id, $status ) {
         global $wpdb;
 
-        // Update subscrib status
+        // Update subscriber status.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $response = $wpdb->update(
             "{$wpdb->prefix}notifima_subscribers",
             array( 'status' => $status ),
@@ -314,14 +339,14 @@ class Subscriber {
      * Trigger the email for a indivisual customer in time of subscribe.
      * If additional_alert_email setting is set it will send to admin.
      *
-     * @param  int    $product_id
-     * @param  string $customer_email
+     * @param WC_Product $product         The WooCommerce product object.
+     * @param string     $customer_email  The customer's email address.
      * @return void
      */
     public static function insert_subscriber_email_trigger( $product, $customer_email ) {
         // Get email object.
-        $admin_mail = WC()->mailer()->emails['WC_Admin_Email_Notifima'];
-        $cust_mail  = WC()->mailer()->emails['WC_Subscriber_Confirmation_Email_Notimifa'];
+        $admin_mail = WC()->mailer()->emails['Admin_New_Subscriber_Email'];
+        $cust_mail  = WC()->mailer()->emails['Subscriber_Confirmation_Email'];
 
         // Get additional email from global setting.
         $additional_email = Notifima()->setting->get_setting( 'additional_alert_email' );
@@ -348,7 +373,7 @@ class Subscriber {
     /**
      * Get the email of all subscriber of a particular product.
      *
-     * @param  int $product_id
+     * @param  int $product_id The Product ID.
      * @return array array of email
      */
     public static function get_product_subscribers_email( $product_id ) {
@@ -360,7 +385,8 @@ class Subscriber {
 
         $emails = array();
 
-        // Migration is over use custom subscription table for information
+        // Migration is over use custom subscription table for information.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $emails_data = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT id, email from {$wpdb->prefix}notifima_subscribers
@@ -369,7 +395,7 @@ class Subscriber {
             )
         );
 
-        // Prepare email data
+        // Prepare email data.
         foreach ( $emails_data as $email ) {
             $emails[ $email->id ] = $email->email;
         }
@@ -380,7 +406,7 @@ class Subscriber {
     /**
      * Get all child ids if a prodcut is variable else get product id
      *
-     * @param  mixed $product
+     * @param  mixed $product The woocommerce product object.
      * @return array
      */
     public static function get_related_product( $product ) {
@@ -413,7 +439,7 @@ class Subscriber {
      * Bias variable is used to controll biasness of outcome in uncertain input
      * Bias = true->product outofstock | Bias = false->product instock
      *
-     * @param  \WC_Product $product
+     * @param  \WC_Product $product The Product object.
      * @return mixed
      */
     public static function is_product_outofstock( $product ) {
@@ -438,9 +464,9 @@ class Subscriber {
             } elseif ( $stock_quantity <= 0 ) {
                 return true;
             }
-        } elseif ( $stock_status == 'onbackorder' && $is_enable_backorders ) {
+        } elseif ( 'onbackorder' === $stock_status && $is_enable_backorders ) {
                 return true;
-		} elseif ( $stock_status == 'outofstock' ) {
+		} elseif ( 'outofstock' === $stock_status ) {
 			return true;
         }
 

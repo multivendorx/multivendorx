@@ -1,8 +1,8 @@
 <?php
 /**
- * Notifima Subscription Confirmation Email (Plain Text)
+ * Notifima Admin New Subscriber Email (Plain Text)
  *
- * Override this template by copying it to yourtheme/woocommerce-product-stock-alert/emails/plain/SubscriberConfirmationEmail.php
+ * Override this template by copying it to yourtheme/woocommerce-product-stock-alert/emails/plain/AdminNewSubscriberEmail.php
  *
  * @author    MultiVendorX
  * @package   notifima/templates
@@ -17,10 +17,7 @@ echo esc_html( $args['email_heading'] ) . "\n\n";
 
 $product = isset( $args['product'] ) ? $args['product'] : null;
 
-echo esc_html__(
-	'Hi there. You have successfully subscribed to a product. We will inform you when the product becomes available. Product details are shown below for your reference:',
-	'notifima'
-) . "\n\n";
+echo esc_html__( 'Hi there. A customer has subscribed to a product on your shop. Product details are shown below for your reference:', 'notifima' ) . "\n\n";
 
 echo "****************************************************\n\n";
 
@@ -38,12 +35,11 @@ echo "\n";
 if ( ! empty( $product ) ) {
     echo esc_html__( 'Product Link:', 'notifima' ) . ' ' . esc_url( $product->get_permalink() ) . "\n";
 }
-echo "\n\n";
 
-echo "****************************************************\n\n";
+echo "\n****************************************************\n\n";
 
-// Customer Email
-echo esc_html__( 'Customer Details:', 'notifima' ) . ' ';
+// Customer Details
+echo esc_html__( 'Customer Email:', 'notifima' ) . ' ';
 echo ! empty( $args['customer_email'] ) ? esc_html( $args['customer_email'] ) : esc_html__( 'test@example.com', 'notifima' );
 echo "\n\n";
 

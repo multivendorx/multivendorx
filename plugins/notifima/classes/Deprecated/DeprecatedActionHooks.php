@@ -1,4 +1,9 @@
 <?php
+/**
+ * DeprecatedActionHooks class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima\Deprecated;
 

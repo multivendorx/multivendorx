@@ -1,36 +1,43 @@
 <?php
+/**
+ * Utill class file.
+ *
+ * @package Notifima
+ */
 
 namespace Notifima;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Notifima Utill class
+ *
+ * @class       Utill class
+ * @version     PRODUCT_VERSION
+ * @author      MultivendorX
+ */
 class Utill {
 
     /**
      * Function to console and debug errors.
+     *
+     * @param mixed $data The data to log. Can be a string, array, or object.
      */
-    public static function log( $str ) {
-        $file = Notifima()->plugin_path . 'log/notifima.log';
-
-        if ( file_exists( $file ) ) {
-            // Open the file to get existing content
-            $str = var_export( $str, true );
-
-            // Wp_remote_gate replacement required
-            $current = file_get_contents( $file );
-
-            if ( $current ) {
-                // Append a new content to the file
-                $current .= "$str" . "\r\n";
-                $current .= "-------------------------------------\r\n";
-            } else {
-                $current  = "$str" . "\r\n";
-                $current .= "-------------------------------------\r\n";
-            }
-
-            // Write the contents back to the file
-            file_put_contents( $file, $current );
+    public static function log( $data ) {
+        if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
+            return;
         }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        WP_Filesystem();
+
+        global $wp_filesystem;
+
+        $log_file = Notifima()->plugin_path . 'log/notifima.log';
+        $message  = wp_json_encode( $data, JSON_PRETTY_PRINT ) . "\n---------------------------\n";
+
+        $existing = $wp_filesystem->exists( $log_file ) ? $wp_filesystem->get_contents( $log_file ) : '';
+        $wp_filesystem->put_contents( $log_file, $existing . $message, FS_CHMOD_FILE );
     }
 
     /**
@@ -39,7 +46,7 @@ class Utill {
      * @return array
      */
     public static function get_form_settings_array() {
-        // Initialize the settings keys with default values
+        // Initialize the settings keys with default values.
         $setting_keys = array(
             'double_opt_in_success'     => Notifima()->default_value['double_opt_in_success'],
             'shown_interest_text'       => Notifima()->default_value['shown_interest_text'],
@@ -59,24 +66,24 @@ class Utill {
         $form_settings = array();
 
         foreach ( $setting_keys as $setting_key => $default_value ) {
-            // Overwrite with actual settings from the database first
+            // Overwrite with actual settings from the database first.
             $setting_value = Notifima()->setting->get_setting( $setting_key, $default_value );
 
-            // Handle arrays separately
+            // Handle arrays separately.
             if ( is_array( $setting_value ) ) {
                 $form_settings[ $setting_key ] = $setting_value;
             } else {
-                // Register string using WPML's icl_register_string function if available
+                // Register string using WPML's icl_register_string function if available.
                 if ( function_exists( 'icl_register_string' ) ) {
                     icl_register_string( 'notifima', $setting_key, $setting_value );
                 }
 
-                // Translate string if WPML is active
+                // Translate string if WPML is active.
                 if ( function_exists( 'icl_t' ) ) {
                     $setting_value = icl_t( 'notifima', $setting_key, $setting_value );
                 }
 
-                // Store the processed string value
+                // Store the processed string value.
                 $form_settings[ $setting_key ] = $setting_value;
             }
         }
@@ -84,39 +91,31 @@ class Utill {
         return $form_settings;
     }
     /**
-     * Check pro plugin is acrive or not
+     * Check pro plugin is active or not.
      *
      * @return bool
      */
     public static function is_khali_dabba() {
-        if ( defined( 'NOTIFIMA_PRO_PLUGIN_VERSION' ) ) {
-			return Notifima_Pro()->license->is_active();
-        }
-        return false;
-        // return true;
+        return apply_filters( 'kothay_dabba', false );
     }
 
     /**
      * Get other templates ( e.g. product attributes ) passing attributes and including the file.
      *
      * @access public
-     * @param  mixed $template_name
-     * @param  array $args          ( default: array() )
+     * @param  mixed $template_name template name.
+     * @param  array $args          ( default: array() ).
      * @return void
      */
     public static function get_template( $template_name, $args = array() ) {
 
-        if ( $args && is_array( $args ) ) {
-            extract( $args );
-        }
-
-        // Check if the template exists in the theme
+        // Check if the template exists in the theme.
         $theme_template = get_stylesheet_directory() . '/woocommerce-product-stock-alert/' . $template_name;
 
-        // Use the theme template if it exists, otherwise use the plugin template
+        // Use the theme template if it exists, otherwise use the plugin template.
         $located = file_exists( $theme_template ) ? $theme_template : Notifima()->plugin_path . 'templates/' . $template_name;
 
-        // Load the template
+        // Load the template.
         load_template( $located, false, $args );
     }
 }
