@@ -99,78 +99,70 @@ const Customizer: React.FC<CustomizerProps> = ({
                     {/* Render selected setting */}
                     {select === 'color' && (
                         <div className="section-wrapper color">
-                            {['simple', 'hover'].map((className, idx) => {
-                                return (
-                                    <div
-                                        key={idx}
-                                        className={className}
-                                        onMouseEnter={
-                                            className === 'hover'
-                                                ? () => setHoverOn(true)
-                                                : () => {}
-                                        }
-                                        onMouseLeave={
-                                            className === 'hover'
-                                                ? () => setHoverOn(false)
-                                                : () => {}
-                                        }
-                                    >
-                                        {[
-                                            {
-                                                label: 'Background Color',
-                                                key: 'button_background_color',
-                                                type: 'color',
-                                                class: 'simple',
-                                            },
-                                            {
-                                                label: 'Font Color',
-                                                key: 'button_text_color',
-                                                type: 'text',
-                                                class: 'simple',
-                                            },
-                                            {
-                                                label: 'Background Color On Hover',
-                                                key: 'button_background_color_onhover',
-                                                type: 'color',
-                                                class: 'hover',
-                                            },
-                                            {
-                                                label: 'Font Color On Hover',
-                                                key: 'button_text_color_onhover',
-                                                type: 'text',
-                                                class: 'hover',
-                                            },
-                                        ].map((item) => {
-                                            return className === item.class ? (
-                                                <div
-                                                    key={item.key}
-                                                    className="section"
-                                                >
-                                                    <p>{item.label}</p>
-                                                    <div className="property-section">
-                                                        <input
-                                                            className="basic-input"
-                                                            type={item.type}
-                                                            value={
-                                                                setting[
-                                                                    item.key
-                                                                ] || '#000000'
-                                                            }
-                                                            onChange={(e) =>
-                                                                onChange(
-                                                                    item.key,
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            ) : null;
-                                        })}
+                            <div className="simple">
+                                <div className="section">
+                                    Background Color
+                                    <div className="property-section">
+                                        <input
+                                            type="color"
+                                            value={setting.button_background_color ? setting.button_background_color : '#000000'}
+                                            onChange={(e) => onChange("button_background_color", e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            value={setting.button_background_color ? setting.button_background_color : '#000000'}
+                                            onChange={(e) => onChange("button_background_color", e.target.value)}
+                                        />
                                     </div>
-                                );
-                            })}
+                                </div>
+                                <div className="section">
+                                    Font Color
+                                    <div className="property-section">
+                                    <input
+                                        type="color"
+                                        value={setting.button_text_color ? setting.button_text_color : '#000000'}
+                                        onChange={(e) => onChange("button_text_color", e.target.value)}
+                                    />
+                                    <input
+                                        type="text"
+                                        value={setting.button_text_color ? setting.button_text_color : '#000000'}
+                                        onChange={(e) => onChange("button_text_color", e.target.value)}
+                                    />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="hover">
+                            <div className="section">
+                                Background Color On Hover
+                                <div className="property-section">
+                                <input
+                                    type="color"
+                                    value={setting.button_background_color_onhover ? setting.button_background_color_onhover : '#000000'}
+                                    onChange={(e) => onChange("button_background_color_onhover", e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    value={setting.button_background_color_onhover ? setting.button_background_color_onhover : '#000000'}
+                                    onChange={(e) => onChange("button_background_color_onhover", e.target.value)}
+                                />
+                                </div>
+                            </div>
+                            <div className="section">
+                                Font Color On Hover
+                                <div className="property-section">
+                                <input
+                                    type="color"
+                                    value={setting.button_text_color_onhover ? setting.button_text_color_onhover : '#000000'}
+                                    onChange={(e) => onChange("button_text_color_onhover", e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    value={setting.button_text_color_onhover ? setting.button_text_color_onhover : '#000000'}
+                                    onChange={(e) => onChange("button_text_color_onhover", e.target.value)}
+                                />
+                                </div>
+                            </div>
+                            </div>
                         </div>
                     )}
                     {select === 'border' && (

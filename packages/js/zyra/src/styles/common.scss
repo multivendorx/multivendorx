@@ -26,7 +26,9 @@ a {
     outline:none
   }
 }
-
+#admin-main-wrapper{
+  padding: 1.5rem 1rem 0 0;
+}
 // button style start
 .admin-btn {
   outline: none;
@@ -879,6 +881,7 @@ input[type="radio"] {
   justify-content: center;
   align-items: center;
   border: none;
+  cursor: pointer;
 }
 
 // admin notice 
@@ -994,3 +997,4 @@ input[type="radio"] {
     min-width: 32%;
   }
 }
+

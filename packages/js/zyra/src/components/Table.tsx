@@ -77,7 +77,7 @@ export const TableCell: React.FC<TableCellProps> = ({
         case 'text':
         case 'number':
             content = (
-                <div className={`table-row ${header.class}`}>
+                <div className={`${header.class}`}>
                     {type === 'product' && children}
                     <div className="table-data-container">
                         <BasicInput

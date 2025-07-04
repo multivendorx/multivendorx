@@ -1,48 +1,113 @@
 @use '../../global.scss' as *;
 
 
-.popup-content {
-    background: $color-white;
-    padding: 1.5rem;
+// .popup-content {
+//     background: $color-white;
+//     padding: 1.5rem;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     text-align: center;
+//     border-radius: $border-radius-small;
+//     max-width: 26rem;
+//     position: relative;
+
+//     .popup-body {
+//         display: flex;
+//         flex-direction: column;
+//         align-items: center;
+//         gap: 0.5rem;
+//     }
+
+//     .heading {
+//         font-size: 2rem;
+//         font-weight: 600;
+//         color: #000;
+//     }
+
+//     .pro-text {
+//         line-height: 0;
+//         background: $theme-color;
+//         color: #f9f8fb;
+//         padding: 0 0.25rem;
+//         border-radius: 0.25rem;
+//         margin-left: 0.125rem;
+//         box-shadow: 0.25rem 0.25rem 0.875rem rgb(63 20 115 / 25%);
+//     }
+
+//     .admin-btn {
+//         margin-top: 1rem;
+//     }
+// }
+
+.MuiDialogContent-root{
+    padding: 0 !important; 
+  }
+  .popup-wrapper{
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    border-radius: $border-radius-small;
-    max-width: 26rem;
-    position: relative;
-
-    .popup-body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
+    gap: 1rem;
+    .left-section{
+      width: 45%;
+      background-size: cover;
+      background-repeat: no-repeat;
     }
-
-    .heading {
-        font-size: 2rem;
-        font-weight: 600;
-        color: #000;
-    }
-
-    .pro-text {
-        line-height: 0;
-        background: $theme-color;
-        color: #f9f8fb;
-        padding: 0 0.25rem;
-        border-radius: 0.25rem;
-        margin-left: 0.125rem;
-        box-shadow: 0.25rem 0.25rem 0.875rem rgb(63 20 115 / 25%);
-    }
-
-    .admin-btn {
+  
+    .right-section{
+      width: 55%;
+      padding: 1.5rem;
+      h4{
+        font-size: 2.5rem;
+        font-weight: 400;
+        color: #852aff;
+        margin: 0;
+        line-height: 3.5rem;
+  
+        .pro-tag{
+          color: #852aff;
+          font-weight: 600;
+        }
+      }
+  
+      .features-list{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 1.5rem;
+        line-height: 2.5rem;
         margin-top: 1rem;
+  
+        .feature-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1rem;
+  
+          i{
+            font-size: 1.4rem;
+            color: #431580;
+          }
+          p{
+            font-size: 0.875rem;
+          }
+        }
+      }
+      .more-text{
+        font-size: 1rem;
+        font-weight: 500;
+        color: #431580;
+        margin-top: 0.5rem;
+      }
+      .footer-button{
+        display: flex;
+        justify-content: end;
+        padding-top: 1rem;
+  
+        a{
+          padding: 0.5rem 1rem;
+          font-size: 1rem;
+          font-weight: 700;
+          background: #210A40;
+        }
+      }
     }
-}
-
-.MuiDialog-container .adminlib-cross{
-    text-align: right;
-    padding: 0.5rem 0.5rem 0 0;
-    cursor: pointer;
-    font-size: 1.2rem;
-}
+  }

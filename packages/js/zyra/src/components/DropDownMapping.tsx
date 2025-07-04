@@ -31,8 +31,16 @@ const DropDownMapping: React.FC<DropDownMappingProps> = ({
 }) => {
     const systems = useMemo(() => Object.keys(syncFieldsMap), [syncFieldsMap]);
 
-    const formattedValue =
-        Array.isArray(value) && value.every(Array.isArray) ? value : [];
+    // const formattedValue =
+    //     Array.isArray(value) && value.every(Array.isArray) ? value : [];
+
+    const formattedValue = (value || []).filter(
+        (pair) =>
+            Array.isArray(pair) &&
+            pair.length === 2 &&
+            pair[0] &&
+            pair[1]
+    );
 
     const [selectedFields, setSelectedFields] =
         useState<[string, string][]>(formattedValue);
@@ -131,90 +139,91 @@ const DropDownMapping: React.FC<DropDownMappingProps> = ({
                             <option value="email">Email</option>
                         </select>
                     </div>
-                    {selectedFields.map(
-                        ([systemAField, systemBField], index) => (
-                            <div className="map-content-wrapper" key={index}>
-                                <select
-                                    className="basic-select"
-                                    value={systemAField}
-                                    onChange={(e) => {
-                                        if (!proSettingChanged()) {
-                                            settingChanged.current = true;
-                                            changeSelectedFields(
-                                                index,
-                                                e.target.value,
-                                                0
-                                            );
-                                        }
-                                    }}
-                                >
-                                    <option value={systemAField}>
-                                        {
-                                            syncFieldsMap[systems[0]].fields[
-                                                systemAField
-                                            ]
-                                        }
-                                    </option>
-                                    {availableFields[systems[0]]?.map(
-                                        (option) => (
-                                            <option key={option} value={option}>
-                                                {
-                                                    syncFieldsMap[systems[0]]
-                                                        .fields[option]
-                                                }
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-                                <span className="connection-icon">&#8652;</span>
-                                <select
-                                    className="basic-select"
-                                    value={systemBField}
-                                    onChange={(e) => {
-                                        if (!proSettingChanged()) {
-                                            settingChanged.current = true;
-                                            changeSelectedFields(
-                                                index,
-                                                e.target.value,
-                                                1
-                                            );
-                                        }
-                                    }}
-                                >
-                                    <option value={systemBField}>
-                                        {
-                                            syncFieldsMap[systems[1]].fields[
-                                                systemBField
-                                            ]
-                                        }
-                                    </option>
-                                    {availableFields[systems[1]]?.map(
-                                        (option) => (
-                                            <option key={option} value={option}>
-                                                {
-                                                    syncFieldsMap[systems[1]]
-                                                        .fields[option]
-                                                }
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-                                <button
-                                    className="admin-btn btn-purple remove-mapping"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        if (!proSettingChanged()) {
-                                            settingChanged.current = true;
-                                            removeSelectedFields(index);
-                                        }
-                                    }}
-                                >
-                                    <span className="text">Clear</span>
-                                    <span className="icon adminlib-close"></span>
-                                </button>
-                            </div>
-                        )
-                    )}
+                    {selectedFields.length > 0 &&
+                        selectedFields.map(
+                            ([systemAField, systemBField], index) => (
+                                <div className="map-content-wrapper" key={index}>
+                                    <select
+                                        className="basic-select"
+                                        value={systemAField}
+                                        onChange={(e) => {
+                                            if (!proSettingChanged()) {
+                                                settingChanged.current = true;
+                                                changeSelectedFields(
+                                                    index,
+                                                    e.target.value,
+                                                    0
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        <option value={systemAField}>
+                                            {
+                                                syncFieldsMap[systems[0]].fields[
+                                                    systemAField
+                                                ]
+                                            }
+                                        </option>
+                                        {availableFields[systems[0]]?.map(
+                                            (option) => (
+                                                <option key={option} value={option}>
+                                                    {
+                                                        syncFieldsMap[systems[0]]
+                                                            .fields[option]
+                                                    }
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                    <span className="connection-icon">&#8652;</span>
+                                    <select
+                                        className="basic-select"
+                                        value={systemBField}
+                                        onChange={(e) => {
+                                            if (!proSettingChanged()) {
+                                                settingChanged.current = true;
+                                                changeSelectedFields(
+                                                    index,
+                                                    e.target.value,
+                                                    1
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        <option value={systemBField}>
+                                            {
+                                                syncFieldsMap[systems[1]].fields[
+                                                    systemBField
+                                                ]
+                                            }
+                                        </option>
+                                        {availableFields[systems[1]]?.map(
+                                            (option) => (
+                                                <option key={option} value={option}>
+                                                    {
+                                                        syncFieldsMap[systems[1]]
+                                                            .fields[option]
+                                                    }
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                    <button
+                                        className="admin-btn btn-purple remove-mapping"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (!proSettingChanged()) {
+                                                settingChanged.current = true;
+                                                removeSelectedFields(index);
+                                            }
+                                        }}
+                                    >
+                                        <span className="text">Clear</span>
+                                        <span className="icon adminlib-close"></span>
+                                    </button>
+                                </div>
+                            )
+                        )}
                 </div>
                 <div className="add-mapping-container">
                     <button

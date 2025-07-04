@@ -13,6 +13,7 @@ interface Option {
     key?: string;
     value: string;
     label?: string;
+    proSetting?: boolean;
 }
 
 interface ToggleSettingProps {
@@ -22,7 +23,9 @@ interface ToggleSettingProps {
     descClass?: string;
     value: string;
     onChange: (value: string) => void;
+    proChanged?: () => void;
     proSetting?: boolean;
+    khali_dabba?: boolean;
 }
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({
@@ -31,7 +34,9 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
     descClass = '',
     value,
     onChange,
+    proChanged,
     proSetting = false,
+    khali_dabba
 }) => {
     return (
         <>
@@ -42,7 +47,13 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
                             role="button"
                             tabIndex={0}
                             key={option.key}
-                            onClick={() => onChange(option.value)}
+                            onClick={() => {
+                                if (option.proSetting && !khali_dabba) {
+                                    proChanged?.();
+                                } else {
+                                    onChange(option.value);
+                                }
+                            }}
                         >
                             <input
                                 className="toggle-setting-form-input"
@@ -54,6 +65,9 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
                                 readOnly // Prevents React warning for controlled components
                             />
                             <label htmlFor={option.key}>{option.label}</label>
+                            {option.proSetting && !khali_dabba && (
+                                <span className="admin-pro-tag">pro</span>
+                            )}
                         </div>
                     ))}
                 </div>

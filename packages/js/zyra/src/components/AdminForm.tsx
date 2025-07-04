@@ -1300,6 +1300,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case 'setting-toggle':
                     input = (
                         <ToggleSetting
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
                             wrapperClass={`setting-form-input`}
                             descClass="settings-metabox-description"
                             description={inputField.desc}
@@ -1333,6 +1334,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     updateSetting(inputField.key, data);
                                 }
                             }}
+                            proChanged={() => setModelOpen(true)}
                         />
                     );
                     break;
