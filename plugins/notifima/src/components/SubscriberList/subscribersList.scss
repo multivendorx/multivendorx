@@ -1,181 +1,201 @@
-@import '../config';
-
 div.subscriber-img {
-  background-image: url(../../assets/images/subscriber-list.jpg) !important; // force to set image for ungrade with pro for desktop-screen
-  background-repeat: no-repeat;
-  background-position: top left;
-  background-size: contain;
-  height: 100vh;
-}
-
-@media only screen and (max-width: 69.3rem) {
-  div.subscriber-img {
-    background-image: url(../../assets/images/subcriber-list-tab.png) !important; // force to set image for ungrade with pro for laptop-screen
+    background-image: url(../../assets/images/subscriber-list.jpg);
     background-repeat: no-repeat;
-    background-position: top;
+    background-position: top left;
     background-size: contain;
+    height: 100vh;
   }
-}
-
-@media only screen and (max-width: 40.95rem) {
-  div.subscriber-img {
-    background-image: url(../../assets/images/subcriber-list-phone.png) !important; // force to set image for ungrade with pro for mobile-screen
-    background-repeat: no-repeat;
-    background-position: top;
-    background-size: contain;
-  }
-}
-
-.sc-evZas.dFsTSm {
-  overflow: visible;
-}
-
-.free-reports-download-section {
+.download-csv-wrapper{
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
   flex-direction: column;
-
-  .section-heading {
-    font-size: 1.5rem;
-    line-height: 1.5;
-    font-weight: 400;
-    text-align: center;
-  }
-
-  button {
-    display: block;
-    margin-right: 1rem;
-    padding: 0.504rem 1.26rem 0.63rem;
-    font-size: 1.008rem;
-    background-color: $color-active;
-    border-radius: 0.315rem;
-    position: relative;
-    overflow: hidden;
-
-    a {
-      color: $color-white;
-    }
-
-    &:hover {
-      &::before {
-        transform: perspective(0.315rem) rotateX(0) rotateY(0);
-      }
-    }
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.1);
-      transform: perspective(0.315rem) rotateX(2deg) rotateY(2deg);
-      transition: transform 0.3s;
-      pointer-events: none;
-    }
-  }
-
-  .description {
-    text-align: center;
-    font-size: 0.875rem;
-  }
-}
-
-
-.admin-subscriber-list {
-  .admin-page-title {
-    .download-btn-subscriber-list {
-      .admin-btn {
-        &.btn-purple {
-        gap: 0.5rem;
-
-        .dashicons-before {
-          &::before {
-            padding: 0;
-          }
-        }
-        }
-      }
-    }
-  }
-
-  .selectable-table {
-    .admin-table-wrapper-filter {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      font-size: 0.875rem;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.75rem;
-
-      &>div {
-        cursor: pointer;
-
-        &:hover {
-          color: $color-active;
-        }
-      }
-    }
-  }
-
-  .search-section {
-    margin-left: auto;
-    max-width: 12.6rem;
-
-    @media screen and (max-width: 31rem) {
-      margin-left: 0 !important; // For responsive design
-    }
-  }
-
-  .subscriber-bulk-action {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    position: relative;
-    max-width: 15rem !important; // To overwrite common table style
-
-    label {
-      font-size: 0.875rem;
-      width: 8.19rem;
-    }
-
-    button {
-      border-radius: $border-radius-small;
-      background-color: $color-active;
-      padding: 0.5rem 1.5rem;
-      color: $color-white;
-    }
-  }
-}
-
-.sent {
-  color: green;
-}
-
-.subscribed {
-  color: $color-active;
-}
-
-.unsubscribed {
-  color: red;
-}
-
-.notice-error.error-modal{
-  margin-bottom: 1rem;
-}
-.modal-wrapper{
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-}
+  gap: 0.5rem;
 
-@media screen and (max-width: 46.0625rem) {
-  .filter-wrapper .wrap-bulk-all-date > div{
-    max-width: 100% !important; // To overwrite default css
+  .section-heading{
+    font-size: 1.5rem;
+    font-weight: 500;
   }
 }
+
+
+// @import '../config';
+
+// div.subscriber-img {
+//   background-image: url(../../assets/images/subscriber-list.jpg) !important; // force to set image for ungrade with pro for desktop-screen
+//   background-repeat: no-repeat;
+//   background-position: top left;
+//   background-size: contain;
+//   height: 100vh;
+// }
+
+// @media only screen and (max-width: 69.3rem) {
+//   div.subscriber-img {
+//     background-image: url(../../assets/images/subcriber-list-tab.png) !important; // force to set image for ungrade with pro for laptop-screen
+//     background-repeat: no-repeat;
+//     background-position: top;
+//     background-size: contain;
+//   }
+// }
+
+// @media only screen and (max-width: 40.95rem) {
+//   div.subscriber-img {
+//     background-image: url(../../assets/images/subcriber-list-phone.png) !important; // force to set image for ungrade with pro for mobile-screen
+//     background-repeat: no-repeat;
+//     background-position: top;
+//     background-size: contain;
+//   }
+// }
+
+// .sc-evZas.dFsTSm {
+//   overflow: visible;
+// }
+
+// .free-reports-download-section {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 0.5rem;
+//   flex-direction: column;
+
+//   .section-heading {
+//     font-size: 1.5rem;
+//     line-height: 1.5;
+//     font-weight: 400;
+//     text-align: center;
+//   }
+
+//   button {
+//     display: block;
+//     margin-right: 1rem;
+//     padding: 0.504rem 1.26rem 0.63rem;
+//     font-size: 1.008rem;
+//     background-color: $color-active;
+//     border-radius: 0.315rem;
+//     position: relative;
+//     overflow: hidden;
+
+//     a {
+//       color: $color-white;
+//     }
+
+//     &:hover {
+//       &::before {
+//         transform: perspective(0.315rem) rotateX(0) rotateY(0);
+//       }
+//     }
+
+//     &::before {
+//       content: "";
+//       position: absolute;
+//       top: 0;
+//       left: 0;
+//       width: 100%;
+//       height: 100%;
+//       background-color: rgba(255, 255, 255, 0.1);
+//       transform: perspective(0.315rem) rotateX(2deg) rotateY(2deg);
+//       transition: transform 0.3s;
+//       pointer-events: none;
+//     }
+//   }
+
+//   .description {
+//     text-align: center;
+//     font-size: 0.875rem;
+//   }
+// }
+
+
+// .admin-subscriber-list {
+//   .admin-page-title {
+//     .download-btn-subscriber-list {
+//       .admin-btn {
+//         &.btn-purple {
+//         gap: 0.5rem;
+
+//         .dashicons-before {
+//           &::before {
+//             padding: 0;
+//           }
+//         }
+//         }
+//       }
+//     }
+//   }
+
+//   .selectable-table {
+//     .admin-table-wrapper-filter {
+//       display: flex;
+//       justify-content: flex-start;
+//       align-items: center;
+//       font-size: 0.875rem;
+//       gap: 0.5rem;
+//       flex-wrap: wrap;
+//       margin-bottom: 0.75rem;
+
+//       &>div {
+//         cursor: pointer;
+
+//         &:hover {
+//           color: $color-active;
+//         }
+//       }
+//     }
+//   }
+
+//   .search-section {
+//     margin-left: auto;
+//     max-width: 12.6rem;
+
+//     @media screen and (max-width: 31rem) {
+//       margin-left: 0 !important; // For responsive design
+//     }
+//   }
+
+//   .subscriber-bulk-action {
+//     display: flex;
+//     align-items: center;
+//     justify-content: flex-start;
+//     gap: 0.5rem;
+//     position: relative;
+//     max-width: 15rem !important; // To overwrite common table style
+
+//     label {
+//       font-size: 0.875rem;
+//       width: 8.19rem;
+//     }
+
+//     button {
+//       border-radius: $border-radius-small;
+//       background-color: $color-active;
+//       padding: 0.5rem 1.5rem;
+//       color: $color-white;
+//     }
+//   }
+// }
+
+// .sent {
+//   color: green;
+// }
+
+// .subscribed {
+//   color: $color-active;
+// }
+
+// .unsubscribed {
+//   color: red;
+// }
+
+// .notice-error.error-modal{
+//   margin-bottom: 1rem;
+// }
+// .modal-wrapper{
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+// }
+
+// @media screen and (max-width: 46.0625rem) {
+//   .filter-wrapper .wrap-bulk-all-date > div{
+//     max-width: 100% !important; // To overwrite default css
+//   }
+// }

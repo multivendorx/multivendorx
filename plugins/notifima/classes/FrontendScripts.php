@@ -170,7 +170,7 @@ class FrontendScripts {
 			)
         );
         foreach ( $register_scripts as $name => $props ) {
-            self::register_script( $name, $props['src'], $props['deps'], $props['version'], $props['text_domain'] );
+            self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
         }
     }
 

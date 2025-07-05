@@ -116,9 +116,9 @@ export default {
                     key: 'dynamic',
                     label: __( 'Dynamic', 'notifima' ),
                     value: 'dynamic',
+                    proSetting: true,
                 },
             ],
-            proSetting: true,
         },
         {
             key: 'lead_time_static_text',

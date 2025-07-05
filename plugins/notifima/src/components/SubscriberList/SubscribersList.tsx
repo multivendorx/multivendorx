@@ -8,19 +8,18 @@ const SubscribersList: React.FC = () => {
     const [ openDialog, setOpenDialog ] = useState( false );
     return (
         <>
-            <div id="subscriber-list-table">
-                <div className="free-reports-download-section">
+            <div id='subscriber-list-table'>
+                <div className="download-csv-wrapper">
                     <h2 className="section-heading">
                         { __(
                             'Download product wise subscriber data.',
                             'notifima'
                         ) }
                     </h2>
-                    <button>
-                        <a href={ appLocalizer.export_button }>
-                            { __( 'Download CSV', 'notifima' ) }
-                        </a>
-                    </button>
+                    <a className='admin-btn btn-purple' href={ appLocalizer.export_button }>
+                        { __( 'Download CSV', 'notifima' ) }
+                    </a>
+                    
                     <p
                         className="description"
                         dangerouslySetInnerHTML={ {
