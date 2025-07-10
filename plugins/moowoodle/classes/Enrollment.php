@@ -47,7 +47,9 @@ class Enrollment {
 		}
 
 		if ( isset( $args['user_id'] ) ) {
-			$where[] = $wpdb->prepare( 'user_id = %d', $args['user_id'] );
+			$ids     = is_array( $args['user_id'] ) ? $args['user_id'] : array( $args['user_id'] );
+			$ids     = implode( ',', array_map( 'intval', $ids ) );
+			$where[] = "user_id IN ($ids)";
 		}
 
 		if ( isset( $args['user_email'] ) && '' !== $args['user_email'] ) {
@@ -81,9 +83,7 @@ class Enrollment {
 			$where[] = $wpdb->prepare( 'status = %s', $args['status'] );
 		}
 
-		if ( isset( $args['date'] ) && '' !== $args['date'] ) {
-			$where[] = $wpdb->prepare( 'date = %s', $args['date'] );
-		}
+		$where = apply_filters( 'moowoodle_enrollment_query', $where, $args );
 
 		if ( isset( $args['count'] ) ) {
 			$query = "SELECT COUNT(*) FROM $table";
@@ -273,7 +273,19 @@ class Enrollment {
 			return $moodle_user_id;
 		}
 
-		$moodle_user_id = $this->search_for_moodle_user( 'email', $user_data['user_email'] );
+		$response = MooWoodle()->external_service->do_request(
+			'get_moodle_users',
+			array(
+				'criteria' => array(
+					array(
+						'key'   => 'email',
+						'value' => $user_data['user_email'],
+					),
+				),
+			)
+		);
+
+		$moodle_user_id = ! empty( $response['data']['users'] ) ? reset( $response['data']['users'] )['id'] : 0;
 
 		if ( ! $moodle_user_id ) {
 			$moodle_user_id = $this->create_user( $user_data );
@@ -288,28 +300,6 @@ class Enrollment {
 		update_user_meta( $user_data['purchaser_id'], 'moowoodle_moodle_user_id', $moodle_user_id );
 
 		return $moodle_user_id;
-	}
-	/**
-	 * Search for a Moodle user by a specific key and value.
-	 *
-	 * @param string $key   The field to search by (e.g., 'email', 'username').
-	 * @param string $value The value to search for.
-	 * @return int          Moodle user ID if found, otherwise 0.
-	 */
-	private function search_for_moodle_user( $key, $value ) {
-		$response = MooWoodle()->external_service->do_request(
-			'get_moodle_users',
-			array(
-				'criteria' => array(
-					array(
-						'key'   => $key,
-						'value' => $value,
-					),
-				),
-			)
-		);
-
-		return ! empty( $response['data']['users'] ) ? reset( $response['data']['users'] )['id'] : 0;
 	}
 
 	/**

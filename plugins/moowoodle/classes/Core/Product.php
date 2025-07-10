@@ -70,24 +70,39 @@ class Product {
 	 * @param bool  $force_create create or not.
 	 * @return int course id
 	 */
-	public static function update_product( $course, $force_create = true ) {
-		if ( empty( $course ) || 'site' === $course['format'] ) {
+	public static function update_product( $course, $force_create = true, $force_update = false ) {
+		if ( empty( $course ) || $course['format'] === 'site' ) {
 			return 0;
-        }
+		}
 
 		$product = self::get_product_from_moodle_course( $course['id'] );
 
-		// Manage setting of product sync option.
-		$product_sync_setting = MooWoodle()->setting->get_setting( 'product_sync_option', array() );
-
-		$update_product = in_array( 'update', $product_sync_setting, true );
-
-		// create a new product if not exist.
-        if ( ! $product && $force_create ) {
+		if ( ! $product && $force_create ) {
+			// Create a new product if it doesn't exist and creation is allowed
 			$product = new \WC_Product_Simple();
-        } elseif ( isset( $product ) && ! $update_product && $force_create ) {
+		} elseif ( $product && ! $force_update && $force_create ) {
+			// If product exists, but updates are not allowed, return existing ID
 			return $product->get_id();
 		}
+	// public static function update_product( $course, $force_create = true ) {
+
+	// 	if ( empty( $course ) || 'site' === $course['format'] ) {
+	// 		return 0;
+    //     }
+
+	// 	$product = self::get_product_from_moodle_course( $course['id'] );
+
+	// 	// Manage setting of product sync option.
+	// 	$product_sync_setting = MooWoodle()->setting->get_setting( 'product_sync_option', array() );
+
+	// 	$update_product = in_array( 'update', $product_sync_setting, true );
+
+	// 	// create a new product if not exist.
+    //     if ( ! $product && $force_create ) {
+	// 		$product = new \WC_Product_Simple();
+    //     } elseif ( isset( $product ) && ! $update_product && $force_create ) {
+	// 		return $product->get_id();
+	// 	}
 
 		// Product is not exist.
 		if ( ! $product ) {
@@ -177,7 +192,7 @@ class Product {
 				continue;
 			}
 
-			$product_id = self::update_product( $course, $create_product );
+			$product_id = self::update_product( $course, $create_product, $update_product );
 
 			if ( $product_id ) {
 				$updated_ids[] = $product_id;

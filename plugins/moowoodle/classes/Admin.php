@@ -101,9 +101,10 @@ class Admin {
 					__( 'Upgrade to Pro', 'moowoodle' ),
 					'<style>
 						a:has(.upgrade-to-pro){
-							background: linear-gradient(-28deg, #f6a091, #bb939c, #5f6eb3) !important;
-							color: White !important;
-						};
+                            background: linear-gradient(-28deg, #C4A9E8, #7848B9, #852AFF) !important;
+                            color: White !important;
+                        }
+                        padding: 5px 0;
 					</style>
 					<div class="upgrade-to-pro"><i class="dashicons dashicons-awards"></i>' . esc_html__( 'Upgrade to Pro', 'moowoodle' ) . '</div> ',
 					'manage_options',
