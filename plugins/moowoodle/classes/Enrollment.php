@@ -211,7 +211,7 @@ class Enrollment {
 
 		$role_id = apply_filters( 'moowoodle_enrolled_user_role_id', 5 );
 
-	    MooWoodle()->external_service->do_request(
+	    $response = MooWoodle()->external_service->do_request(
 			'enrol_users',
 			array(
 				'enrolments' => array(
@@ -224,6 +224,10 @@ class Enrollment {
 				),
 			)
 		);
+
+		if ( empty( $enrol_response['success'] ) && MooWoodle()->show_advanced_log ) {
+			\MooWoodle\Util::log( "[MooWoodle] Enrollment failed for User #{$user_data['purchaser_id']} in Course #{$course_data['moodle_course_id']}. Error: " . wp_json_encode( $enrol_response ) );
+		}
 
 		$enrollment_data = array(
 			'user_id'         => $user_data['purchaser_id'],

@@ -47,7 +47,7 @@ const supportLink = [
         title: __('Contribute Here', 'moowoodle'),
         icon: 'adminlib-support',
         description: __('Participate in product enhancement.', 'moowoodle'),
-        link: 'https://github.com/dualcube/moowoodle/issues',
+        link: 'https://github.com/multivendorx/multivendorx/issues',
     },
 ];
 
@@ -117,6 +117,10 @@ const Synchronization: React.FC<SettingsProps> = () => {
                 proUrl={appLocalizer.shop_url}
                 tag="Why Premium"
                 buttonText="View Pricing"
+                bgCode="#0a3981" // background color
+                textCode="#fff" // text code
+                btnCode="#fff" // button color
+                btnBgCode="#ff9843" // button background color
             />
         );
     };

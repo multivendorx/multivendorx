@@ -114,7 +114,7 @@ const Course: React.FC = () => {
         searchAction = '',
         searchCourseField = ''
     ) {
-        setError(null);
+        setData(null);
         axios({
             method: 'GET',
             url: getApiLink(appLocalizer, 'courses'),

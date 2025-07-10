@@ -84,25 +84,6 @@ class Product {
 			// If product exists, but updates are not allowed, return existing ID
 			return $product->get_id();
 		}
-	// public static function update_product( $course, $force_create = true ) {
-
-	// 	if ( empty( $course ) || 'site' === $course['format'] ) {
-	// 		return 0;
-    //     }
-
-	// 	$product = self::get_product_from_moodle_course( $course['id'] );
-
-	// 	// Manage setting of product sync option.
-	// 	$product_sync_setting = MooWoodle()->setting->get_setting( 'product_sync_option', array() );
-
-	// 	$update_product = in_array( 'update', $product_sync_setting, true );
-
-	// 	// create a new product if not exist.
-    //     if ( ! $product && $force_create ) {
-	// 		$product = new \WC_Product_Simple();
-    //     } elseif ( isset( $product ) && ! $update_product && $force_create ) {
-	// 		return $product->get_id();
-	// 	}
 
 		// Product is not exist.
 		if ( ! $product ) {
@@ -216,7 +197,6 @@ class Product {
 		if ( is_multisite() ) {
 			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
 		}
-
 		if (
 			in_array( 'woocommerce-subscriptions/woocommerce-subscriptions.php', $active_plugins, true )
 			|| array_key_exists( 'woocommerce-product/woocommerce-subscriptions.php', $active_plugins )

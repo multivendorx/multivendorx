@@ -339,6 +339,8 @@ class FrontendScripts {
 						'moodle_site_url'          => MooWoodle()->setting->get_setting( 'moodle_url' ),
 						'wordpress_logo'           => MooWoodle()->plugin_url . 'src/assets/images/WordPress.png',
 						'moodle_logo'              => MooWoodle()->plugin_url . 'src/assets/images/Moodle.png',
+						'enrollment_list'          => MooWoodle()->plugin_url . 'src/assets/images/Enrollment-pc.png',
+						'cohort_list'              => MooWoodle()->plugin_url . 'src/assets/images/Enrollment-pc.png',
 						'wp_user_roles'            => wp_roles()->get_names(),
 						'md_user_roles'            => array(
 							1 => __( 'Manager', 'moowoodle' ),

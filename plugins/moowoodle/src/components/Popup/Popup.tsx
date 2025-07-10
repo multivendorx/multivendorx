@@ -7,7 +7,7 @@ const proPopupContent = {
     proUrl: typeof appLocalizer !== 'undefined' ? appLocalizer.shop_url : '#',
     moreText: __(
         'More surprises? Oh yes.',
-        'notifima'
+        'moowoodle'
     ),
     messages: [
         { icon: 'popup-icon-smart-course-sync', text: __('Bulk Course Sync.', 'moowoodle') },

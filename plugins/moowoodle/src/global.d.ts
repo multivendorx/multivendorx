@@ -21,6 +21,8 @@ declare global {
         moodle_site_url: string;
         wordpress_logo: string;
         moodle_logo: string;
+        enrollment_list: string;
+        cohort_list: string;
         wp_user_roles: any;
         md_user_roles: any;
         pro_settings_list: any;
