@@ -7,30 +7,17 @@ import React, { useState, useEffect, JSX } from 'react';
 import axios from 'axios';
 import { useTour } from '@reactour/tour';
 
-// Types
-interface AppLocalizer {
-    enquiry_form_settings_url: string;
-    module_page_url: string;
-    settings_page_url: string;
-    customization_settings_url: string;
-    apiUrl: string;
-}
-
-const appLocalizer: AppLocalizer = {
-    enquiry_form_settings_url: 'string',
-    module_page_url: 'string',
-    settings_page_url: 'string',
-    customization_settings_url: 'string',
-    apiUrl: 'string',
-};
-
 interface TourStep {
     selector: string;
     placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
     content: () => JSX.Element;
 }
 
-const Tour: React.FC = () => {
+interface TourProps {
+    appLocalizer: Record<string, any>;
+}
+
+const Tour: React.FC<TourProps> = ( { appLocalizer } ) => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour();
     const [ isNavigating, setIsNavigating ] = useState< boolean >( false );
 
@@ -89,7 +76,7 @@ const Tour: React.FC = () => {
 
     const settingsTourSteps: TourStep[] = [
         {
-            selector: '[data="catalog-showcase-tour"]',
+            selector: '[data-tour="catalog-showcase-tour"]',
             placement: 'top',
             content: () => (
                 <div className="tour-box">
@@ -117,7 +104,7 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: '[data="enquiry-showcase-tour"]',
+            selector: '[data-tour="enquiry-showcase-tour"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Enable Enquiry Mode</h3>
@@ -176,7 +163,7 @@ const Tour: React.FC = () => {
                                 navigateTo(
                                     appLocalizer.module_page_url,
                                     3,
-                                    '[data="quote-showcase-tour"]'
+                                    '[data-tour="quote-showcase-tour"]'
                                 )
                             }
                         >
@@ -193,7 +180,7 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: '[data="quote-showcase-tour"]',
+            selector: '[data-tour="quote-showcase-tour"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Enable Quote Module</h3>
@@ -216,7 +203,7 @@ const Tour: React.FC = () => {
                                     navigateTo(
                                         appLocalizer.settings_page_url,
                                         4,
-                                        '[data="quote-permission"]'
+                                        '[data-tour="quote-permission"]'
                                     );
                                 } else {
                                     navigateTo(
@@ -240,7 +227,7 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: '[data="quote-permission"]',
+            selector: '[data-tour="quote-permission"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Configure Quote Settings</h3>
@@ -250,7 +237,7 @@ const Tour: React.FC = () => {
                     </h4>
                     <div className="tour-footer">
                         <button
-                            className="btn-purple"
+                            className="admin-btn btn-purple"
                             onClick={ () =>
                                 navigateTo(
                                     appLocalizer.customization_settings_url,
