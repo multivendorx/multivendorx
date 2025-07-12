@@ -1,0 +1,15 @@
+.desc{
+    border: 0.120rem solid #e0e4e9;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+}
+.added_to_cart,
+.catalogx-add-request-quote-button{
+    margin-bottom:0.238rem;
+}
+.single_add_to_cart_button.button.wp-block-button__link,
+.wp-block-button__link.button{
+    width: fit-content !important;
+    height: fit-content !important;
+}

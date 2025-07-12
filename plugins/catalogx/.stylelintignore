@@ -1,0 +1,12 @@
+# Ignore all files in node_modules
+node_modules/
+
+# Ignore minified files
+**/*.min.css
+
+# Ignore generated SCSS/CSS files
+dist/
+build/
+
+# Ignore specific files
+vendor/

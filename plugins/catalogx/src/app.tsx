@@ -1,0 +1,89 @@
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+
+import Settings from './components/Settings/Settings';
+import Modules from './components/Modules/Modules';
+import { ModuleProvider } from 'zyra';
+import QuoteRequests from './components/QuoteRequests/quoteRequests';
+import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
+import WholesaleUser from './components/WholesaleUser/wholesaleUser';
+import Rules from './components/Rules/Rules';
+import { TourProvider } from '@reactour/tour';
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { Tour } from 'zyra';
+
+const disableBody = ( target: any ) => disableBodyScroll( target );
+const enableBody = ( target: any ) => enableBodyScroll( target );
+
+const Route = () => {
+    const currentTab = new URLSearchParams( useLocation().hash );
+    return (
+        <>
+            { currentTab.get( 'tab' ) === 'settings' && (
+                <Settings id={ 'settings' } />
+            ) }
+            { currentTab.get( 'tab' ) === 'modules' && <Modules /> }
+            { currentTab.get( 'tab' ) === 'quote-requests' && (
+                <QuoteRequests />
+            ) }
+            { currentTab.get( 'tab' ) === 'wholesale-users' && (
+                <WholesaleUser />
+            ) }
+            { currentTab.get( 'tab' ) === 'enquiry-messages' && (
+                <EnquiryMessages />
+            ) }
+            { currentTab.get( 'tab' ) === 'rules' && <Rules /> }
+        </>
+    );
+};
+
+const App = () => {
+    const currentTabParams = new URLSearchParams( useLocation().hash );
+    document
+        .querySelectorAll( '#toplevel_page_catalogx>ul>li>a' )
+        .forEach( ( menuItem ) => {
+            const menuItemUrl = new URL(
+                ( menuItem as HTMLAnchorElement ).href
+            );
+            const menuItemHashParams = new URLSearchParams(
+                menuItemUrl.hash.substring( 1 )
+            );
+
+            if ( menuItem.parentNode ) {
+                ( menuItem.parentNode as HTMLElement ).classList.remove(
+                    'current'
+                );
+            }
+            if (
+                menuItemHashParams.get( 'tab' ) ===
+                currentTabParams.get( 'tab' )
+            ) {
+                ( menuItem.parentNode as HTMLElement ).classList.add(
+                    'current'
+                );
+            }
+        } );
+
+    return (
+        <>
+            <ModuleProvider
+                modules={ ( window as any ).appLocalizer?.active_modules || [] }
+            >
+                { /*this is for tour provider */ }
+                <TourProvider
+                    steps={ [] }
+                    afterOpen={ disableBody }
+                    beforeClose={ enableBody }
+                    disableDotsNavigation={ true }
+                    showNavigation={ false }
+                    showCloseButton={ false }
+                >
+                    <Tour appLocalizer={ ( window as any ).appLocalizer } />
+                </TourProvider>
+                <Route />
+            </ModuleProvider>
+        </>
+    );
+};
+
+export default App;
