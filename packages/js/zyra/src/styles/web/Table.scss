@@ -146,6 +146,12 @@
                 font-size: 1.313rem;
                 color: #7f36d9;
               }
+              .adminlib-add-product{
+                color: #0080008a;
+              }
+              .adminlib-refresh{
+                color: #000000c0;
+              }
             }
             &:has(.product-expand) {
               min-width: 3rem;
