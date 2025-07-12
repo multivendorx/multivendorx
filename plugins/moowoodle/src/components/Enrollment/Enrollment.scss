@@ -6,21 +6,12 @@ div.enrollment-img {
     background-size: contain;
     height: 100vh;
   }
-  
-  @media only screen and (max-width: 69.3rem) {
-    div.enrollment-img {
-      background-image: url(../../assets/images/Enrollment-tab.png);
-      background-repeat: no-repeat;
-      background-position: top;
-      background-size: contain;
-    }
-  }
-  
-  @media only screen and (max-width: 34.65rem) {
-    div.enrollment-img {
-      background-image: url(../../assets/images/Enrollment-phone.png);
-      background-repeat: no-repeat;
-      background-position: top;
-      background-size: contain;
-    }
+  .action-btn button{
+    background: transparent;
+    border: none;
+    color: #522c81;
+    cursor: pointer;
+    font-weight: 400;
+    padding-top: 0.313rem;
+    font-size: 0.8rem;
   }

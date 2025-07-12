@@ -52,7 +52,7 @@ class Installer {
         $display_settings = array(
             'start_end_date'                    => array( 'start_end_date' ),
             'my_courses_priority'               => 0,
-            'my_groups_priority'                => 1,
+            'learners_hub_priority'             => 1,
             'moowoodle_create_user_custom_mail' => array(),
         );
         // Default value for log setting.
@@ -117,7 +117,7 @@ class Installer {
             `enrollment_date` timestamp NULL DEFAULT NULL,
             `unenrollment_date` timestamp NULL DEFAULT NULL,
             `unenrollment_reason` text DEFAULT NULL,
-            `bulk_purchase_id` bigint(20) NOT NULL,
+            `learners_hub_id` bigint(20) NOT NULL,
             PRIMARY KEY (`id`)
         ) $collate;";
 

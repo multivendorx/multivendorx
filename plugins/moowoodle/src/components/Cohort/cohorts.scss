@@ -5,3 +5,13 @@ div.cohort-img {
   background-size: contain;
   height: 100vh;
 }
+.header-row{
+  .header-col:last-child{
+    .admin-pro-tag{
+      right: -2rem;
+    }
+  }
+}
+.course-bulk-action button{
+  max-height: 2.15rem;
+}

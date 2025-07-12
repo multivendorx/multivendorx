@@ -141,7 +141,7 @@ export default {
             key: 'sync_user_btn',
             type: 'do-action-btn',
             interval: 2500,
-            apilink: 'synchronize',
+            apilink: 'synchronization',
             parameter: 'user',
             label: 'Sync profiles of existing users ',
             value: 'Synchronize users now!! ',

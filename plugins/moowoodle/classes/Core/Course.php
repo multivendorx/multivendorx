@@ -40,7 +40,7 @@ class Course {
 		\MooWoodle\FrontendScripts::enqueue_style( 'moowoodle-product-tab-style' );
 		\MooWoodle\FrontendScripts::localize_scripts( 'moowoodle-product-tab-script' );
 	}
-	
+
 	/**
 	 * Get course details based on filter options.
 	 *

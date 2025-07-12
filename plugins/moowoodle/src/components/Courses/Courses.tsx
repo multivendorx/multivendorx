@@ -401,7 +401,7 @@ const Course: React.FC = () => {
                     {row.original.products &&
                     Object.keys(row.original.products).length ? (
                         <i
-                            className="adminlib-update-data"
+                            className="adminlib-update-product"
                             title={__(
                                 'Sync Course Data & Update Product',
                                 'moowoodle'
@@ -416,7 +416,7 @@ const Course: React.FC = () => {
                         ></i>
                     ) : (
                         <i
-                            className="adminlib-cloud-upload"
+                            className="adminlib-add-product"
                             title={__('Create Product', 'moowoodle')}
                             onClick={() => {
                                 handleSingleAction(

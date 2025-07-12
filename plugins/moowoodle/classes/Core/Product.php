@@ -33,7 +33,6 @@ class Product {
 		add_action( 'wp_trash_post', array( $this, 'handle_woocommerce_product_trash' ), 10, 1 );
 
 		add_action( 'untrash_post', array( $this, 'handle_woocommerce_product_restore' ), 10, 1 );
-
     }
 
 	/**

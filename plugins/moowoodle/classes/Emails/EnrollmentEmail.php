@@ -79,11 +79,9 @@ class EnrollmentEmail extends \WC_Email {
      * Get default subject.
      */
 	public function get_default_subject() {
-		$site_name = get_bloginfo( 'name' );
 		return apply_filters(
 			'moowoodle_enrollment_email_heading',
-			// translators: %s: Site name.
-			sprintf( __( 'Welcome to %s!', 'moowoodle' ), $site_name )
+			sprintf( __( 'Your enrolment is confirmed - login info inside', 'moowoodle' ) )
 		);
 	}
 

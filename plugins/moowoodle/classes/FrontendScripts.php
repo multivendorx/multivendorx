@@ -163,9 +163,9 @@ class FrontendScripts {
             'moowoodle_register_scripts',
             array(
 				'moowoodle-my-courses-script' => array(
-					'src'         => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/block/my-courses/index.js',
-					'deps'        => $index_asset['dependencies'],
-					'version'     => $version,
+					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/block/my-courses/index.js',
+					'deps'    => $index_asset['dependencies'],
+					'version' => $version,
 				),
             )
         );
@@ -204,20 +204,20 @@ class FrontendScripts {
 		$register_scripts = apply_filters(
             'admin_moowoodle_register_scripts',
             array(
-				'moowoodle-admin-script'      => array(
-					'src'         => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/index.js',
-					'deps'        => $index_asset['dependencies'],
-					'version'     => $version,
+				'moowoodle-admin-script'       => array(
+					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'deps'    => $index_asset['dependencies'],
+					'version' => $version,
 				),
-				'moowoodle-components-script' => array(
-					'src'         => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/components.js',
-					'deps'        => $component_asset['dependencies'],
-					'version'     => $version,
+				'moowoodle-components-script'  => array(
+					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/components.js',
+					'deps'    => $component_asset['dependencies'],
+					'version' => $version,
 				),
-				'moowoodle-product-tab-script'    => array(
-					'src'         => MooWoodle()->plugin_url . 'assets/js/' . self::get_script_name( 'product-tab' ) . '.js',
-					'deps'        => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
-					'version'     => $version,
+				'moowoodle-product-tab-script' => array(
+					'src'     => MooWoodle()->plugin_url . 'assets/js/' . self::get_script_name( 'product-tab' ) . '.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
+					'version' => $version,
 				),
             )
         );
@@ -237,18 +237,18 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_moowoodle_register_styles',
             array(
-				'moowoodle-admin-style'      => array(
+				'moowoodle-admin-style'       => array(
 					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/index.css',
 					'deps'    => array(),
 					'version' => $version,
 				),
-				'moowoodle-components-style' => array(
+				'moowoodle-components-style'  => array(
 					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/components.css',
 					'deps'    => array(),
 					'version' => $version,
 				),
 
-				'moowoodle-product-tab-style'  => array(
+				'moowoodle-product-tab-style' => array(
 					'src'     => MooWoodle()->plugin_url . 'assets/styles/' . self::get_script_name( 'product-tab' ) . '.css',
 					'deps'    => array(),
 					'version' => $version,
@@ -310,7 +310,7 @@ class FrontendScripts {
         $localize_scripts = apply_filters(
             'moowoodle_localize_scripts',
             array(
-				'moowoodle-my-courses-script' => array(
+				'moowoodle-my-courses-script'  => array(
 					'object_name' => 'courseMyAcc',
 					'data'        => array(
 						'apiUrl'          => untrailingslashit( get_rest_url() ),
@@ -319,7 +319,7 @@ class FrontendScripts {
 						'moodle_site_url' => MooWoodle()->setting->get_setting( 'moodle_url' ),
 					),
 				),
-				'moowoodle-admin-script'      => array(
+				'moowoodle-admin-script'       => array(
 					'object_name' => 'appLocalizer',
 					'data'        => array(
 						'apiUrl'                   => untrailingslashit( get_rest_url() ),
@@ -335,8 +335,8 @@ class FrontendScripts {
 						'moodle_site_url'          => MooWoodle()->setting->get_setting( 'moodle_url' ),
 						'wordpress_logo'           => MooWoodle()->plugin_url . 'src/assets/images/WordPress.png',
 						'moodle_logo'              => MooWoodle()->plugin_url . 'src/assets/images/Moodle.png',
-						'enrollment_list'          => MooWoodle()->plugin_url . 'src/assets/images/Enrollment-pc.png',
-						'cohort_list'              => MooWoodle()->plugin_url . 'src/assets/images/Enrollment-pc.png',
+						'enrollment_list'          => MooWoodle()->plugin_url . 'src/assets/images/enrollment.png',
+						'cohort_list'              => MooWoodle()->plugin_url . 'src/assets/images/cohort.png',
 						'wp_user_roles'            => wp_roles()->get_names(),
 						'md_user_roles'            => array(
 							1 => __( 'Manager', 'moowoodle' ),
@@ -348,7 +348,7 @@ class FrontendScripts {
 						),
 					),
 				),
-				'moowoodle-product-tab-script'    => array(
+				'moowoodle-product-tab-script' => array(
 					'object_name' => 'moowoodle',
 					'data'        => array(
 						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
