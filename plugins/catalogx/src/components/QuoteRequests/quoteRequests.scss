@@ -1,0 +1,107 @@
+@use '/src/components/config' as *;
+
+.quote-img {
+    background-image: url("../../assets/images/quote-page-desktop.png");
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: contain;
+    height: 100vh;
+  }
+
+.admin-quote-list {
+    .add-to-quotation-button,
+    .filter-left-wrapper{
+        margin-left: auto;
+    }
+    .download-btn-quote-list, .add-to-quotation-button {
+        a {
+            color: $color-white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .dashicons-before {
+                &::before {
+                    padding: 0;
+                }
+            }
+        }
+    }    
+    .selectable-table {
+        .wrap-bulk-all-date{
+            &>div{
+                max-width: 13rem;
+            }
+        }
+    }
+    .rdt_Table .rdt_TableBody .rdt_TableRow .rdt_TableCell{
+        height: 4.25rem;
+        a{
+            color: $theme-color;
+        }
+    }
+}
+.quote-popup{
+    h2{
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+    textarea{
+      width: 100%;
+      resize: none;
+      border:$border-light-medium;
+      &:focus{
+       box-shadow: none;
+      }
+    }
+    .status-field{
+      display: flex;
+      select,p{
+        width: 50%;
+      }
+    }
+  }
+  .cross-icon{
+    position: absolute;
+    top: 0.825rem;
+    right: 0.825rem;
+  }
+  // popup footer style
+  .footer-button{
+    display: flex;
+    justify-content: end;
+    button{
+      margin-top: 1rem;
+      text-align: right;
+    }
+}
+
+@media only screen and (max-width: 32.125rem) {
+    .admin-quote-list {
+        .admin-page-title {
+            justify-content: flex-start; 
+            p {
+                width: 100%;
+            }
+    
+            .add-to-quotation-button{
+                margin-left: 0;
+            }
+        }
+        .selectable-table {
+            .filter-wrapper{
+                .wrap-bulk-all-date{
+                    max-width: 100%;
+    
+                    &>div{
+                        max-width: 100%;
+                    }
+    
+                    .filter-left-wrapper{
+                        margin-left: 0;
+                    }
+                }
+            }
+        }
+    }
+}
