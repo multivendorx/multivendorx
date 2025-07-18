@@ -33,6 +33,7 @@ import MultiCheckBox from './MultiCheckbox';
 import WpEditor from './WpEditor';
 import Log from './Log';
 import InputMailchimpList from './InputMailchimpList';
+import FromBuilder from './RegistrationForm';
 const LazyMapsInput = lazy( () => import( './MapsInput' ) );
 import GoogleMap from './GoogleMap';
 import Popup, { PopupProps } from './Popup';
@@ -120,7 +121,8 @@ interface InputField {
         | 'dropdown-mapping'
         | 'log'
         | 'checkbox-custom-img'
-        | 'api-connect';
+        | 'api-connect'
+		| 'form-builder';
     desc?: string;
     placeholder?: string;
     inputLabel?: string;
@@ -1797,6 +1799,23 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
+                case "form-builder":
+					input = (
+						<FromBuilder
+						name={inputField.key}
+						proSettingChange={ () =>
+							proSettingChanged(
+								inputField.proSetting ?? false
+							)
+						}
+						onChange={(value) => {
+							settingChanged.current = true;
+							updateSetting(inputField.key, value);
+						}}
+						setting={ setting }
+						/>
+					);
+					break;
             }
 
             return inputField.type === 'section' ||
