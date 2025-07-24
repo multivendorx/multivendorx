@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 
 /**
@@ -10,6 +10,7 @@ import Dialog from '@mui/material/Dialog';
 import Popoup from './Popup';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import '../styles/web/Modules.scss';
+import { useModules } from '../contexts/ModuleContext';
 
 // Types
 interface Module {
@@ -22,21 +23,34 @@ interface Module {
     pro_module?: boolean;
 }
 
+interface ProPopupContent {
+    proUrl: string;
+    title: string;
+    messages: {
+        icon: string;
+        text: string;
+    }[];
+}
+
 interface ModuleProps {
-    insertModule?: ( moduleId: string ) => void;
-    removeModule?: ( moduleId: string ) => void;
     modulesArray?: Module[];
     appLocalizer: Record< string, any >; // Allows any structure
+    apiLink: string;
+    proPopupContent: ProPopupContent;
+    pluginName: string;
 }
 
 const Modules: React.FC< ModuleProps > = ( {
-    insertModule = () => {},
-    removeModule = () => {},
     modulesArray = [],
     appLocalizer,
+    apiLink,
+    proPopupContent,
+    pluginName,
 } ) => {
     const [ modelOpen, setModelOpen ] = useState< boolean >( false );
     const [ successMsg, setSuccessMsg ] = useState< string >( '' );
+
+    const { modules, insertModule, removeModule } = useModules()
 
     const isModuleAvailable = ( moduleId: string ): boolean => {
         const module = modulesArray.find(
@@ -60,13 +74,14 @@ const Modules: React.FC< ModuleProps > = ( {
         } else {
             removeModule?.( moduleId );
         }
+        localStorage.setItem(`force_${pluginName}_context_reload`, 'true');
 
         await sendApiResponse(
             appLocalizer,
-            getApiLink( appLocalizer, 'modules' ),
+            getApiLink( appLocalizer, apiLink ),
             { id: moduleId, action }
         );
-        setSuccessMsg( 'Module activated' );
+        setSuccessMsg( `Module ${action}d` );
         setTimeout( () => setSuccessMsg( '' ), 2000 );
     };
 
@@ -83,7 +98,11 @@ const Modules: React.FC< ModuleProps > = ( {
                     tabIndex={ 0 }
                     onClick={ () => setModelOpen( false ) }
                 ></span>
-                <Popoup />
+                <Popoup
+                    proUrl={proPopupContent.proUrl}
+                    title={proPopupContent.title}
+                    messages={proPopupContent.messages}
+                />
             </Dialog>
 
             { successMsg && (
@@ -131,12 +150,13 @@ const Modules: React.FC< ModuleProps > = ( {
                             </div>
                             <div
                                 className="toggle-checkbox"
-                                data-showcase-tour={ `${ module.id }-showcase-tour` }
+                                data-tour={ `${ module.id }-showcase-tour` }
                             >
                                 <input
                                     type="checkbox"
                                     className="woo-toggle-checkbox"
                                     id={ `toggle-switch-${ module.id }` }
+									checked={ modules.includes( module.id ) }
                                     onChange={ ( e ) =>
                                         handleOnChange( e, module.id )
                                     }

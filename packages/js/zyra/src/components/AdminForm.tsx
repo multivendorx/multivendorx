@@ -15,7 +15,6 @@ import BlockText from './BlockText';
 import ButtonCustomizer from './ButtonCustomiser';
 import FormCustomizer from './NotifimaFormCustomizer';
 import FreeProFormCustomizer from './FreeProFormCustomizer';
-import FromBuilder from './RegistrationForm';
 import CatalogCustomizer from './CatalogCustomizer';
 import MultiCheckboxTable from './MultiCheckboxTable';
 import MergeComponent from './MergeComponent';
@@ -34,6 +33,7 @@ import MultiCheckBox from './MultiCheckbox';
 import WpEditor from './WpEditor';
 import Log from './Log';
 import InputMailchimpList from './InputMailchimpList';
+import FromBuilder from './RegistrationForm';
 const LazyMapsInput = lazy( () => import( './MapsInput' ) );
 import GoogleMap from './GoogleMap';
 import Popup, { PopupProps } from './Popup';
@@ -123,8 +123,8 @@ interface InputField {
         | 'log'
         | 'checkbox-custom-img'
         | 'api-connect'
-        | 'nested'
-        | 'form-builder';
+		| 'form-builder'
+        | 'nested';
     desc?: string;
     placeholder?: string;
     inputLabel?: string;
@@ -1004,7 +1004,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             }
                             name={ inputField.name }
                             keyName={ inputField.key }
-                            options={ Array.isArray( value ) ? value : [] }
+                            options={ Array.isArray( inputField.options ) ? inputField.options : [] }
                             proSetting={ isProSetting(
                                 inputField.proSetting ?? false
                             ) }
@@ -1819,7 +1819,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-
                 case 'form-builder':
                     input = (
                         <FromBuilder
