@@ -565,7 +565,7 @@ const Course: React.FC = () => {
                         <p>{modalDetails}</p>
                         <i
                             onClick={() => setOpenModal(false)}
-                            className="admin-font adminLib-cross"
+                            className="admin-font adminlib-cross"
                         ></i>
                     </div>
                 </div>

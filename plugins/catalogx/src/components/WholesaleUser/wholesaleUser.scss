@@ -1,0 +1,65 @@
+.wholesale-user-image{
+    background-image: url("../../assets/images/wholesale-pro.png");
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: contain;
+    height: 100vh;
+}
+
+.view-wholesale-wrapper{
+    .popup-navigation{
+        display: flex;
+        justify-content: space-between;
+
+        p{
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+    }
+    .popup-content-wrapper{
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        justify-content: end;
+    }
+    .popup-close-icon i{
+        cursor: pointer;
+        position: absolute;
+        top: 0.625rem;
+        right: 0.625rem;
+    }
+}
+.action-section{
+    display: flex;
+    .action-icons{
+        i{
+            font-size: 1.1rem;
+            padding: 0 0.313rem;
+            cursor: pointer;
+
+            &:hover{
+                color:#522c81;
+            }
+        }
+    }
+}
+.order-status{
+    .approved{
+        color:#7ad03a;
+    }
+    .pending{
+        color: #EAA600;
+    }
+    .reject{
+        color: #a44;
+    }
+    
+}
+.error-modal{
+    margin-bottom: 0.5rem;
+    .modal-wrapper{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
