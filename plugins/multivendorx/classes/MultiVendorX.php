@@ -5,9 +5,9 @@ namespace MultiVendorX;
 /**
  * MultiVendorX Main Class
  *
- * @version		2.2.0
- * @package		MultivendorX
- * @author 		MultiVendorX
+ * @version     2.2.0
+ * @package     MultivendorX
+ * @author      MultiVendorX
  */
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
@@ -52,8 +52,8 @@ final class MultiVendorX {
         $this->container['block_paths']    = array();
         $this->container['is_dev']         = defined( 'WP_ENV' ) && WP_ENV === 'development';
 
-        register_activation_hook( $file, [ $this, 'activate' ] );
-        register_deactivation_hook( $file, [ $this, 'deactivate' ] );
+        register_activation_hook( $file, array( $this, 'activate' ) );
+        register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
         add_filter( 'plugin_action_links_' . plugin_basename( $file ), array( &$this, 'multivendorx_settings' ) );
         add_action( 'before_woocommerce_init', array( $this, 'declare_compatibility' ) );
@@ -80,7 +80,7 @@ final class MultiVendorX {
      */
     public function deactivate() {
         delete_option( 'multivendorx_installed' );
-        delete_option('dc_product_vendor_plugin_page_install');
+        delete_option( 'dc_product_vendor_plugin_page_install' );
     }
 
     /**
@@ -104,9 +104,9 @@ final class MultiVendorX {
 
         do_action( 'multivendorx_loaded' );
     }
-    
 
-     /**
+
+    /**
      * Init all MultivendorX classess.
      * Access this classes using magic method.
      *
@@ -118,11 +118,15 @@ final class MultiVendorX {
         $this->container['admin']           = new Admin();
         $this->container['frontendScripts'] = new FrontendScripts();
         $this->container['shortcode']       = new Shortcode();
+        $this->container['modules']         = new Modules();
         $this->container['frontend']        = new Frontend();
         $this->container['filters']         = new Deprecated\DeprecatedFilterHooks();
         $this->container['actions']         = new Deprecated\DeprecatedActionHooks();
         $this->container['commission']      = new Commission\CommissionManager();
         $this->container['commission']      = new RestAPI\Rest();
+
+        // Load all active modules.
+        $this->container['modules']->load_active_modules();
     }
 
     /**
@@ -288,7 +292,7 @@ final class MultiVendorX {
     }
 }
 
-    
+
     // add_action('admin_init', [$this, 'redirect_to_multivendorx_setup'], 5);
 
 
@@ -297,48 +301,51 @@ final class MultiVendorX {
     /**
      * Init all multivendorx classess.
      * Access this classes using magic method.
+     *
      * @return void
      */
     // public function init_classes() {
-    //     $this->container['utility']     = new Utility\Utility();
-    //     $this->container['order']       = new Order\OrderManager();
-    //     $this->container['commission']  = new Commission\CommissionManager();
-    //     $this->container['gateways']     = new Gateways\GatewaysManager();
+    // $this->container['utility']     = new Utility\Utility();
+    // $this->container['order']       = new Order\OrderManager();
+    // $this->container['commission']  = new Commission\CommissionManager();
+    // $this->container['gateways']     = new Gateways\GatewaysManager();
     // }
 
-    
+
     /**
      * Load admin setup wizard class.
+     *
      * @return void
      */
     // private function admin_setup_wizard() {
-    //     $current_page = filter_input(INPUT_GET, 'page');
-    //     if ($current_page && $current_page == 'multivendorx-setup') {
-    //         $this->container['SetupWizard'] = new Admin\SetupWizard();
-    //     }
+    // $current_page = filter_input(INPUT_GET, 'page');
+    // if ($current_page && $current_page == 'multivendorx-setup') {
+    // $this->container['SetupWizard'] = new Admin\SetupWizard();
     // }
-    
+    // }
+
     /**
      * Redirect to multivendero setup page.
      * Delete WooCommerce activation redirect transient.
+     *
      * @return void
      */
     // public function redirect_to_multivendorx_setup() {
-    //     if ( get_transient( '_wc_activation_redirect' ) ) {
-    //         delete_transient( '_wc_activation_redirect' );
-    //         return;
-    //     }
-    //     if ( get_transient( '_multivendorx_activation_redirect' ) ) {
-    //         delete_transient( '_multivendorx_activation_redirect' );
-    //         if ( filter_input(INPUT_GET, 'page') === 'multivendorx-setup'
-    //         || filter_input(INPUT_GET, 'activate-multi')
-    //         || apply_filters( 'multivendorx_prevent_automatic_wizard_redirect', false )
-    //         ) {
-    //             return;
-    //         }
-    //         wp_safe_redirect( admin_url( 'index.php?page=multivendorx-setup' ) );
-    //         exit;
-    //     }
+    // if ( get_transient( '_wc_activation_redirect' ) ) {
+    // delete_transient( '_wc_activation_redirect' );
+    // return;
     // }
-    
-    
+    // if ( get_transient( '_multivendorx_activation_redirect' ) ) {
+    // delete_transient( '_multivendorx_activation_redirect' );
+    // if ( filter_input(INPUT_GET, 'page') === 'multivendorx-setup'
+    // || filter_input(INPUT_GET, 'activate-multi')
+    // || apply_filters( 'multivendorx_prevent_automatic_wizard_redirect', false )
+    // ) {
+    // return;
+    // }
+    // wp_safe_redirect( admin_url( 'index.php?page=multivendorx-setup' ) );
+    // exit;
+    // }
+    // }
+
+

@@ -5,14 +5,14 @@ namespace MultiVendorX\RestAPI;
 use MultiVendorX\RestAPI\Controllers\MultiVendorX_REST_Orders_Controller;
 use MultiVendorX\RestAPI\Controllers\MultiVendorX_REST_Settings_Controller;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * MultiVendorX Main Rest class
  *
- * @version		PRODUCT_VERSION
- * @package		MultivendorX
- * @author 		MultiVendorX
+ * @version     PRODUCT_VERSION
+ * @package     MultivendorX
+ * @author      MultiVendorX
  */
 class Rest {
     public function __construct() {
@@ -29,8 +29,8 @@ class Rest {
 
     public function all_rest_endpoints() {
         return array(
-			'orders'    => MultiVendorX_REST_Orders_Controller::class,
-			'settings'  => MultiVendorX_REST_Settings_Controller::class,
+			'orders'   => MultiVendorX_REST_Orders_Controller::class,
+			'settings' => MultiVendorX_REST_Settings_Controller::class,
 		);
     }
 }

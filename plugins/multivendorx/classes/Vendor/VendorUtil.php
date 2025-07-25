@@ -2,19 +2,20 @@
 
 namespace MultiVendorX\Vendor;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * MVX Vendor Util class
  *
- * @version		2.2.0
- * @package		MultivendorX
- * @author 		MultiVendorX
+ * @version     2.2.0
+ * @package     MultivendorX
+ * @author      MultiVendorX
  */
 
 class VendorUtil {
     /**
      * Get the vendor object of product
+     *
      * @param   mixed $product_id
      * @return  object
      */
@@ -44,6 +45,7 @@ class VendorUtil {
 
     /**
      * Get individual vendor info by term id
+     *
      * @param   int $term_id ID of term
      * @return  object | null
      */
@@ -61,11 +63,12 @@ class VendorUtil {
     /**
      * Get the vendor object from vendor id.
      * If the id is not a vendor id it return null.
+     *
      * @param   mixed $vendor_id
      * @return  \MVX_Vendor|null
      */
     public static function get_vendor( $vendor_id = 0 ) {
-        $vendor = null;
+        $vendor    = null;
         $vendor_id = $vendor_id ? $vendor_id : self::get_current_vendor_id();
         if ( self::is_user_vendor( $vendor_id ) ) {
             $vendor = new \MVX_Vendor( absint( $vendor_id ) );
@@ -75,21 +78,23 @@ class VendorUtil {
 
     /**
      * Check if a user is vendor or not.
+     *
      * @param   mixed $user
      * @return  mixed
      */
     public static function is_user_vendor( $user ) {
-        if ( $user && !empty( $user ) ) {
+        if ( $user && ! empty( $user ) ) {
             if ( ! is_object( $user ) ) {
-                $user = new \WP_User( absint($user) );
+                $user = new \WP_User( absint( $user ) );
             }
-            return apply_filters( 'is_user_mvx_vendor', ( is_array($user->roles) && in_array('dc_vendor', $user->roles) ), $user );
+            return apply_filters( 'is_user_mvx_vendor', ( is_array( $user->roles ) && in_array( 'dc_vendor', $user->roles ) ), $user );
         }
         return false;
     }
 
     /**
      * get current logged in vendor id
+     *
      * @return int
      */
     public static function get_current_vendor_id() {

@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 require_once __DIR__ . '/vendor/autoload.php';
 
 function MultiVendorX() {
-    return \MultiVendorX\MultiVendorX::init(__FILE__);
+    return \MultiVendorX\MultiVendorX::init( __FILE__ );
 }
 
 MultiVendorX();

@@ -8,6 +8,14 @@ export default {
         'Configure the basic setting of the marketplace.',
         'multivendorx'
     ),
+    video: {
+        icon: 'adminlib-general-tab', // optional icon class
+        link: 'https://example.com/video/general-settings',
+    },
+    docs: {
+        icon: 'adminlib-general-tab', // optional icon class
+        link: 'https://example.com/docs/general-settings',
+    },
     icon: 'adminlib-general-tab',
     submitUrl: 'settings',
     modal: [

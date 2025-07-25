@@ -32,7 +32,7 @@ class Install {
         $this->plugin_create_pages();
         update_option( 'dc_product_vendor_plugin_db_version', MULTIVENDORX_PLUGIN_VERSION );
 
-        do_action('multivendorx_updated');
+        do_action( 'multivendorx_updated' );
     }
 
     /**
@@ -75,7 +75,7 @@ class Install {
         if ( ! function_exists( 'dbDelta' ) ) {
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         }
-        
+
         dbDelta( $sql_commission );
     }
 
