@@ -252,11 +252,6 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_notifima_register_styles',
             array(
-				'notifima-style'            => array(
-					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'styles/index.css',
-					'deps'    => array(),
-					'version' => $version,
-				),
 				'notifima-components-style' => array(
 					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'styles/components.css',
 					'deps'    => array(),

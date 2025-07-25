@@ -230,6 +230,10 @@ This project might have bugs and may be lacking certain features. If you'd like 
 
 == Changelog ==
 
+= 3.3.3 - 2025-07-25 =
+* Added     - Compatibility of WooCommerce 10.0.4.
+* Fixed     - Resolved fatal error triggered during plugin upgrade.
+
 = 3.3.2 - 2025-07-18 =
 * Added     - Compatibility of WordPress 6.8.2.
 * Fixed     - Multiple emails were being sent when a user logged into WordPress.

@@ -237,11 +237,6 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_moowoodle_register_styles',
             array(
-				'moowoodle-admin-style'       => array(
-					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/index.css',
-					'deps'    => array(),
-					'version' => $version,
-				),
 				'moowoodle-components-style'  => array(
 					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/components.css',
 					'deps'    => array(),
