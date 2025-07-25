@@ -18,6 +18,14 @@ type TabContent = {
     icon?: string;
     link?: string;
     proDependent?: boolean;
+    video?: {
+        icon?: string;
+        link: string;
+    };
+    docs?: {
+        icon?: string;
+        link: string;
+    };
 };
 
 type TabData = {
@@ -142,32 +150,60 @@ const Tabs: React.FC< TabsProps > = ( {
     const getTabDescription: React.FC< TabData[] > = ( tabDataVal ) => {
         return tabDataVal?.map( ( { content, type } ) => {
             if ( type === 'file' ) {
-                return (
-                    ( content as TabContent ).id === currentTab &&
-                    ( content as TabContent ).id !== 'support' && (
-                        <div className="tab-description-header">
+                const tab = content as TabContent;
+
+                if ( tab.id === currentTab && tab.id !== 'support' ) {
+                    return (
+                        <div className="tab-description-header" key={ tab.id }>
                             <div className="child">
                                 <p>
                                     <i
                                         className={ `admin-font ${
-                                            ( content as TabContent ).icon
+                                            tab.icon || ''
                                         }` }
                                     ></i>
                                 </p>
                                 <div>
-                                    <div className="tab-name">
-                                        { ( content as TabContent ).name }
-                                    </div>
-                                    <div className="tab-desc">
-                                        { ( content as TabContent ).desc }
-                                    </div>
+                                    <div className="tab-name">{ tab.name }</div>
+                                    <div className="tab-desc">{ tab.desc }</div>
+
+                                    { /* Video icon link */ }
+                                    { tab.video?.icon && tab.video?.link && (
+                                        <div className="tab-video">
+                                            <a
+                                                href={ tab.video.link }
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                title="Watch Video"
+                                            >
+                                                <i
+                                                    className={ `admin-font ${ tab.video.icon }` }
+                                                ></i>
+                                            </a>
+                                        </div>
+                                    ) }
+
+                                    { /* Docs icon link */ }
+                                    { tab.docs?.icon && tab.docs?.link && (
+                                        <div className="tab-docs">
+                                            <a
+                                                href={ tab.docs.link }
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                title="View Documentation"
+                                            >
+                                                <i
+                                                    className={ `admin-font ${ tab.docs.icon }` }
+                                                ></i>
+                                            </a>
+                                        </div>
+                                    ) }
                                 </div>
                             </div>
                         </div>
-                    )
-                );
+                    );
+                }
             } else if ( type === 'folder' ) {
-                // Get tab description from child by recursion
                 return getTabDescription( content as TabData[] );
             }
             return null;

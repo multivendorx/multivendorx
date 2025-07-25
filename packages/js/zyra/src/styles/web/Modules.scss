@@ -1,5 +1,61 @@
 @use '../../global.scss' as *;
 
+.module-option-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
+/* Separator should break the row */
+.module-separator {
+	width: 100%;
+	flex-basis: 100%;
+	margin: 40px 0 20px;
+	border-bottom: 1px solid #ccc;
+
+	.separator-title {
+		font-size: 1.2rem;
+		font-weight: 600;
+		color: #333;
+		text-transform: uppercase;
+	}
+}
+
+/* Make module items align correctly */
+.module-list-item {
+	flex: 0 0 calc(33.333% - 20px); // 3-column layout
+	box-sizing: border-box;
+}
+
+/* Ensure the first module after separator starts on a new row */
+.module-separator + .module-list-item {
+	clear: both;
+}
+.module-container {
+  padding: 20px;
+}
+.module-option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.module-separator {
+  width: 100%;
+  margin: 20px 0;
+}
+.category-filter {
+  margin-bottom: 20px;
+}
+.category-filter label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+.category-filter select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
 .module-container {
   .tab-name {
     margin-bottom: 1rem;

@@ -55,6 +55,10 @@ export { default as ToggleSetting } from './components/ToggleSetting';
 export { default as Tour } from './components/TourSteps';
 export { default as WpEditor } from './components/WpEditor';
 
+export { useModules, initializeModules } from './contexts/ModuleContext';
+export { SettingProvider, useSetting } from './contexts/SettingContext';
+export type { SettingContextType } from './contexts/SettingContext';
+
 export {
     getApiResponse,
     sendApiResponse,
