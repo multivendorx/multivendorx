@@ -164,8 +164,17 @@ class FrontEnd {
         if ( ! empty( $button_settings['button_font_size'] ) ) {
             $button_css .= 'font-size:' . $button_settings['button_font_size'] . 'px; ';
         }
-        if ( ! empty( $button_settings['button_border_redious'] ) ) {
-            $button_css .= 'border-radius:' . $button_settings['button_border_redious'] . 'px;';
+        if ( ! empty( $button_settings['button_border_radious'] ) ) {
+            $button_css .= 'border-radius:' . $button_settings['button_border_radious'] . 'px;';
+        }
+        if ( ! empty( $button_settings['button_font_width'] ) ) {
+            $button_css .= 'font-weight: ' . esc_html( $button_settings['button_font_width'] ) . 'px;';
+        }
+        if ( ! empty( $button_settings['button_padding'] ) ) {
+            $button_css .= 'padding: ' . esc_html( $button_settings['button_padding'] ) . 'px;';
+        }
+        if ( ! empty( $button_settings['button_margin'] ) ) {
+            $button_css .= 'margin: ' . esc_html( $button_settings['button_margin'] ) . 'px;';
         }
 
         return $button_css;
