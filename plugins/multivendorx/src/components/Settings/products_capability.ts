@@ -169,7 +169,7 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            desc: __( 'SKU Generation', 'catalogx' ),
+            desc: __( 'SKU Generation', 'multivendorx' ),
             hint: __(
                 'Control how SKUs are handled for products.',
                 'multivendorx'

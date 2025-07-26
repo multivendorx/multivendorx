@@ -2,17 +2,17 @@
 
 namespace MultiVendorX\Commission;
 
-use MultiVendorX\Vendor\VendorUtil as VendorUtil;
-use MultiVendorX\Commission\CommissionUtil as CommissionUtil;
+use MultiVendorX\Vendor\VendorUtil;
+use MultiVendorX\Commission\CommissionUtil;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * MVX Commission class
  *
- * @version		PRODUCT_VERSION
- * @package		MultivendorX
- * @author 		MultiVendorX
+ * @version     PRODUCT_VERSION
+ * @package     MultivendorX
+ * @author      MultiVendorX
  */
 
 class Commission {
@@ -22,20 +22,22 @@ class Commission {
 
     /**
      * Constructor function.
+     *
      * @param int | object $commission commission id
      */
     public function __construct( $commission ) {
         if ( is_int( $commission ) ) {
-            $this->id           = $commission;
-            $this->commission   = CommissionUtil::get_commission_db( $commission );
+            $this->id         = $commission;
+            $this->commission = CommissionUtil::get_commission_db( $commission );
         } else {
-            $this->id           = $commission->ID;
-            $this->commission   = $commission;
+            $this->id         = $commission->ID;
+            $this->commission = $commission;
         }
     }
 
     /**
      * Get commission id.
+     *
      * @return mixed
      */
     public function get_id() {
@@ -44,6 +46,7 @@ class Commission {
 
     /**
      * Get commission information.
+     *
      * @param   string $key
      * @return  mixed
      */
@@ -53,29 +56,32 @@ class Commission {
 
     /**
      * Get the vendor of the commission.
+     *
      * @return \MVX_Vendor|null
      */
     public function get_vendor() {
-        return VendorUtil::get_vendor( $this->get_data('vendor_id') );
+        return VendorUtil::get_vendor( $this->get_data( 'vendor_id' ) );
     }
 
     /**
      * Get the commission amount include refund
+     *
      * @return mixed commission amount include refund
      */
     public function get_amount_include_refund() {
-        $commission_amount       = $this->get_data( 'commission_amount' );
-        $commission_refunded     = $this->get_data( 'commission_refunded' );
+        $commission_amount   = $this->get_data( 'commission_amount' );
+        $commission_refunded = $this->get_data( 'commission_refunded' );
         return $commission_amount + $commission_refunded;
     }
 
     /**
      * Get the total commission amount include refund.
+     *
      * @return float total amount include refund.
      */
     public function get_total_amount_include_refund() {
-        $commission_total       = $this->get_data( 'commission_total' );
-        $commission_refunded    = $this->get_data( 'commission_refunded' );
+        $commission_total    = $this->get_data( 'commission_total' );
+        $commission_refunded = $this->get_data( 'commission_refunded' );
         return $commission_total + $commission_refunded;
     }
 }

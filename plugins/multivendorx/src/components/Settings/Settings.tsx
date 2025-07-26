@@ -16,8 +16,8 @@ import {
     AdminForm,
     Banner,
     Tabs,
+    useModules
 } from 'zyra';
-import { useModules } from '../../contexts/ModuleContext';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -228,7 +228,7 @@ const Settings: React.FC< SettingsProps > = () => {
                 getForm={ GetForm }
                 BannerSection={ getBanner }
                 prepareUrl={ ( subTab: string ) =>
-                    `?page=multivendorx#&tab=settings&subtab=${ subTab }`
+                    `?page=multivendorx#&tab=marketplace&subtab=${ subTab }`
                 }
                 appLocalizer={ appLocalizer }
                 brandImg={ Brand }

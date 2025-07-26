@@ -157,7 +157,7 @@ class FrontendScripts {
 	 * Loads block assets and additional scripts defined through the `multivendorx_register_scripts` filter.
 	 */
     public static function register_scripts() {
-        $version          = MultiVendorX()->version;
+        $version = MultiVendorX()->version;
         self::enqueue_external_scripts();
         $index_asset      = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/index.asset.php';
         $component_asset  = include plugin_dir_path( __FILE__ ) . '../' . self::get_build_path_name() . 'js/components.asset.php';
@@ -165,19 +165,19 @@ class FrontendScripts {
             'multivendorx_register_scripts',
             array(
 				// 'multivendorx-frontend-script' => array(
-				// 	'src'         => MultiVendorX()->plugin_url . 'assets/js/' . self::get_script_name( 'frontend' ) . '.js',
-				// 	'deps'        => array( 'jquery', 'wp-element', 'wp-components' ),
-				// 	'version'     => $version, 
+				// 'src'         => MultiVendorX()->plugin_url . 'assets/js/' . self::get_script_name( 'frontend' ) . '.js',
+				// 'deps'        => array( 'jquery', 'wp-element', 'wp-components' ),
+				// 'version'     => $version,
 				// ),
-                'multivendorx-dashboard-script'      => array(
-					'src'         => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
-					'deps'        => $index_asset['dependencies'],
-					'version'     => $version,
+                'multivendorx-dashboard-script'            => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'deps'    => $index_asset['dependencies'],
+					'version' => $version,
 				),
 				'multivendorx-dashboard-components-script' => array(
-					'src'         => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/components.js',
-					'deps'        => $component_asset['dependencies'],
-					'version'     => $version,
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/components.js',
+					'deps'    => $component_asset['dependencies'],
+					'version' => $version,
 				),
 			)
         );
@@ -197,9 +197,9 @@ class FrontendScripts {
             'multivendorx_register_styles',
             array(
 				// 'multivendorx-frontend-style' => array(
-				// 	'src'     => MultiVendorX()->plugin_url . 'assets/styles/' . self::get_script_name( 'frontend' ) . '.css',
-				// 	'deps'    => array(),
-				// 	'version' => $version,
+				// 'src'     => MultiVendorX()->plugin_url . 'assets/styles/' . self::get_script_name( 'frontend' ) . '.css',
+				// 'deps'    => array(),
+				// 'version' => $version,
 				// ),
 			)
         );
@@ -239,14 +239,14 @@ class FrontendScripts {
             'admin_multivendorx_register_scripts',
             array(
 				'multivendorx-admin-script'      => array(
-					'src'         => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
-					'deps'        => $index_asset['dependencies'],
-					'version'     => $version,
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'deps'    => $index_asset['dependencies'],
+					'version' => $version,
 				),
 				'multivendorx-components-script' => array(
-					'src'         => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/components.js',
-					'deps'        => $component_asset['dependencies'],
-					'version'     => $version,
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/components.js',
+					'deps'    => $component_asset['dependencies'],
+					'version' => $version,
 				),
             )
         );
@@ -310,15 +310,15 @@ class FrontendScripts {
             $settings_databases_value[ $tab_name ] = MultiVendorX()->setting->get_option( $option_name );
         }
 
-        $pages = get_pages();
-        $woocommerce_pages = array(wc_get_page_id('shop'), wc_get_page_id('cart'), wc_get_page_id('checkout'), wc_get_page_id('myaccount'));
-        if($pages){
-            foreach ($pages as $page) {
-                if (!in_array($page->ID, $woocommerce_pages)) {
+        $pages             = get_pages();
+        $woocommerce_pages = array( wc_get_page_id( 'shop' ), wc_get_page_id( 'cart' ), wc_get_page_id( 'checkout' ), wc_get_page_id( 'myaccount' ) );
+        if ( $pages ) {
+            foreach ( $pages as $page ) {
+                if ( ! in_array( $page->ID, $woocommerce_pages ) ) {
                     $pages_array[] = array(
-                        'value'=> $page->ID,
-                        'label'=> $page->post_title,
-                        'key'=> $page->ID,
+                        'value' => $page->ID,
+                        'label' => $page->post_title,
+                        'key'   => $page->ID,
                     );
                 }
             }
@@ -327,7 +327,7 @@ class FrontendScripts {
         $localize_scripts = apply_filters(
             'multivendorx_localize_scripts',
             array(
-                'multivendorx-admin-script'  => array(
+                'multivendorx-admin-script' => array(
                     'object_name' => 'appLocalizer',
 					'data'        => array(
 						'apiUrl'                   => untrailingslashit( get_rest_url() ),
@@ -339,9 +339,9 @@ class FrontendScripts {
 						'pages_list'               => $pages_array,
 						'pro_url'                  => esc_url( MULTIVENDORX_PRO_SHOP_URL ),
                         'open_uploader'            => 'Upload Image',
-                        'default_logo'             => MultiVendorX()->plugin_url.'assets/images/WP-stdavatar.png',
+                        'default_logo'             => MultiVendorX()->plugin_url . 'assets/images/WP-stdavatar.png',
 					),
-                )
+                ),
 			)
         );
 

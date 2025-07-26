@@ -5,16 +5,16 @@ namespace MultiVendorX;
 /**
  * MultiVendorX Shortcode class
  *
- * @class 		Shortcode class
- * @version		PRODUCT_VERSION
- * @author 		MultivendorX
+ * @class       Shortcode class
+ * @version     PRODUCT_VERSION
+ * @author      MultivendorX
  */
 class Shortcode {
     /**
      * Shortcode class construct function
      */
     public function __construct() {
-        add_shortcode( 'multivendorx_vendor_dashboard', [ $this, 'display_vendor_dashboard' ] );
+        add_shortcode( 'multivendorx_vendor_dashboard', array( $this, 'display_vendor_dashboard' ) );
     }
 
     public function frontend_scripts() {
@@ -33,5 +33,4 @@ class Shortcode {
         <?php
         return ob_get_clean();
     }
-    
-} 
+}

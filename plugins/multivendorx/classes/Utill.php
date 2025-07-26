@@ -55,7 +55,8 @@ class Utill {
      * @return bool
      */
     public static function is_khali_dabba() {
-        return apply_filters( 'kothay_dabba', false );
+        // return apply_filters( 'kothay_dabba', false );
+        return true;
     }
 
     /**
@@ -81,11 +82,12 @@ class Utill {
 
     /**
      * Utility function add aditional single quote in a string.
+     *
      * @param   string $string
      * @return  string
      */
     public static function add_single_quots( $string ) {
-        if ( is_string( $string) ) {
+        if ( is_string( $string ) ) {
             return "'$string'";
         }
         return $string;

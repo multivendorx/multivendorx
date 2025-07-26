@@ -1,66 +1,10 @@
-@use '../../global.scss' as *;
+// @use '/src/components/config' as *;
 
-.module-option-row {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 20px;
-}
-
-/* Separator should break the row */
-.module-separator {
-	width: 100%;
-	flex-basis: 100%;
-	margin: 40px 0 20px;
-	border-bottom: 1px solid #ccc;
-
-	.separator-title {
-		font-size: 1.2rem;
-		font-weight: 600;
-		color: #333;
-		text-transform: uppercase;
-	}
-}
-
-/* Make module items align correctly */
-.module-list-item {
-	flex: 0 0 calc(33.333% - 20px); // 3-column layout
-	box-sizing: border-box;
-}
-
-/* Ensure the first module after separator starts on a new row */
-.module-separator + .module-list-item {
-	clear: both;
-}
-.module-container {
-  padding: 20px;
-}
-.module-option-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-.module-separator {
-  width: 100%;
-  margin: 20px 0;
-}
-.category-filter {
-  margin-bottom: 20px;
-}
-.category-filter label {
-  margin-right: 10px;
-  font-weight: bold;
-}
-.category-filter select {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
 .module-container {
   .tab-name {
     margin-bottom: 1rem;
 
-    h2 {
+    h1 {
       font-size: 1.625rem;
       line-height: normal;
       font-weight: 500;
@@ -76,40 +20,37 @@
     flex-wrap: wrap;
 
     .module-list-item {
-      border-radius: $border-radius-small;
-      box-shadow: 0 0 1rem rgba($color: #000, $alpha: 12.5%);
+      border-radius: 0.25rem;
+      box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.125);
       padding-top: 1.5rem;
       max-width: 20rem;
-      min-width: 20rem;
       display: flex;
       align-items: center;
       justify-content: flex-start;
       flex-direction: column;
-      background-color: $color-white;
+      background-color: #fff;
       overflow: hidden;
       min-height: 24.25rem;
       position: relative;
 
-      @media screen and (width <= 48rem) {
+      @media screen and (max-width: 48rem) {
         max-width: 100%;
       }
 
       fieldset{
-        border: $border-light-small;
+        border: 0.063rem solid #e0e4e9;
         margin-top:0.313rem;
         padding: 0.5rem;
         padding-top: 0;
-
         legend {
           background-color: #7598c66e;
-          color: $color-black;
+          color: #181819;
           padding: 0.188rem 0.375rem;
           margin-left: 0.25rem;
-          border-radius: $border-radius-small;
+          border-radius: 0.25rem;
           text-align: left;
         }
       }
-
       .admin-pro-tag {
         right: 1.25rem;
         width: fit-content;
@@ -120,8 +61,8 @@
         i {
           width: 3.024rem;
           height: 3.024rem;
-          background: $menu-color;
-          color: $color-active;
+          background: #f9f8fb;;
+          color: #65438f;
           border-radius: 0.189rem;
           font-size: 2rem;
           display: flex;
@@ -143,7 +84,6 @@
         .meta-description {
           font-size: 0.875rem;
           min-height: 5.25rem;
-
           .highlight{
             font-weight: 600;
             background-color: transparent;
@@ -158,9 +98,84 @@
         justify-content: space-between;
         gap: 0.5rem;
         padding: 0.75rem 1rem;
-        background: $background-color;
+        background: #f9f9f9;
         position: absolute;
         bottom: 0;
+
+        .toggle-checkbox-content {
+          margin-left: auto;
+          position: relative;
+
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 0.55rem;
+            left: 2.3rem;
+            width: 0.25rem;
+            height: 0.25rem;
+            border: 0.063rem solid #65438f;
+            border-radius: 8rem;
+            transition: 0.3s;
+            z-index: 0;
+          }
+
+          input {
+            height: 0;
+            width: 0;
+            visibility: hidden;
+            display: none; // hide for toggle button
+          }
+
+          label {
+            cursor: pointer;
+            width: 3.3rem;
+            height: 1.5rem;
+            background: 0 0;
+            display: block;
+            border-radius: 8rem;
+            position: relative;
+            // border: $border-light-medium;
+
+            &::before {
+              content: "";
+              position: absolute;
+              top: 50%;
+              transform: translateY(-50%);
+              left: 0.5rem;
+              width: 0.188rem;
+              height: 0.563rem;
+              background: #fff;
+              -webkit-transition: 0.3s;
+              transition: 0.3s;
+            }
+
+            &::after {
+              content: "";
+              position: absolute;
+              top: 50%;
+              transform: translateY(-50%);
+              left: 0.313rem;
+              width: 0.875rem;
+              height: 0.875rem;
+              background: #65438f;
+              border-radius: 90rem;
+              transition: 0.3s;
+              z-index: 1;
+            }
+          }
+
+          input:checked+label {
+            background: #65438f;
+            // border: $border-theme-medius;
+          }
+
+          input:checked+label::after {
+            left: calc(100% - 1.313rem);
+            transform: translateY(-50%);
+            background: #f9f9f9;
+          }
+        }
 
         .card-support {
           display: flex;
@@ -169,7 +184,7 @@
           gap: 0.5rem;
 
           .card-support-btn {
-            box-shadow: 0 0 1.25rem rgb(0 0 0 / 20%);
+            box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.2);
             overflow: hidden;
 
             &::before {
@@ -178,9 +193,9 @@
               width: 6.25rem;
               height: 100%;
               background-image: linear-gradient(120deg,
-                  rgb(255 255 255 / 0%) 30%,
-                  rgb(255 255 255 / 80%),
-                  rgb(255 255 255 / 0%) 70%);
+                  rgba(255, 255, 255, 0) 30%,
+                  rgba(255, 255, 255, 0.8),
+                  rgba(255, 255, 255, 0) 70%);
               top: 0;
               left: -6.25rem;
               opacity: 0.6;
@@ -204,7 +219,7 @@
                 left: 100%;
               }
 
-              100% {
+              to {
                 left: 100%;
               }
             }

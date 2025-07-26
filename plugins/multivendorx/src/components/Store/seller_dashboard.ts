@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'seller-dashboard',
-    priority: 3,
+    priority: 2,
     name: __( 'Seller Dashboard', 'multivendorx' ),
     desc: __(
         "Manage the appearance of your seller's dashboard.",
