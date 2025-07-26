@@ -1,18 +1,23 @@
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
-import { ModuleProvider } from './contexts/ModuleContext';
+
 import Modules from './components/Modules/Modules';
 import { useEffect } from 'react';
 import { initializeModules } from 'zyra';
+import Stores from './components/Store/Store';
+ './components/Stores/Stores';
 localStorage.setItem('force_multivendorx_context_reload', 'true');
 
 const Route = () => {
     const currentTab = new URLSearchParams( useLocation().hash );
     return (
         <>
-            { currentTab.get( 'tab' ) === 'settings' && (
-                <Settings id={ 'settings' } />
+            { currentTab.get( 'tab' ) === 'marketplace' && (
+                <Settings id={ 'marketplace' } />
+            ) }
+            { currentTab.get( 'tab' ) === 'stores' && (
+                <Stores id={ 'stores' } />
             ) }
             {currentTab.get('tab') === 'modules' && <Modules />}
         </>

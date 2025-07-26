@@ -56,7 +56,8 @@
         "axios": "^1.8.4",
         "react-csv": "^2.2.2",
         "react-modal": "^3.16.3",
-        "rollup-plugin-url": "^3.0.1"
+        "rollup-plugin-url": "^3.0.1",
+        "zustand": "^5.0.6"
     },
     "peerDependencies": {
         "@emotion/react": "^11.14.0",

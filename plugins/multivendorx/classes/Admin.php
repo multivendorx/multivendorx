@@ -68,16 +68,20 @@ class Admin {
 
             // Array contain multivendorx submenu.
             $submenus = array(
-                'settings' => array(
-                    'name'   => __( 'Settings', 'multivendorx' ),
+                'marketplace' => array(
+                    'name'   => __( 'Marketplace', 'multivendorx' ),
                     'subtab' => 'general',
                 ),
-                'modules'  => array(
+                'stores' => array(
+                    'name'   => __( 'Store Controller', 'multivendorx' ),
+                    'subtab' => 'store',
+                ),
+                'modules' => array(
                     'name'   => __( 'Modules', 'multivendorx' ),
                     'subtab' => '',
                 ),
             );
-
+            
             foreach ( $submenus as $slug => $submenu ) {
                 // prepare subtab if subtab is exist.
                 $subtab = '';

@@ -16,8 +16,8 @@ import {
     AdminForm,
     Banner,
     Tabs,
+    useModules
 } from 'zyra';
-import { useModules } from '../../contexts/ModuleContext';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 
