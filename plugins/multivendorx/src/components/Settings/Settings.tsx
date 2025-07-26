@@ -228,7 +228,7 @@ const Settings: React.FC< SettingsProps > = () => {
                 getForm={ GetForm }
                 BannerSection={ getBanner }
                 prepareUrl={ ( subTab: string ) =>
-                    `?page=multivendorx#&tab=settings&subtab=${ subTab }`
+                    `?page=multivendorx#&tab=marketplace&subtab=${ subTab }`
                 }
                 appLocalizer={ appLocalizer }
                 brandImg={ Brand }

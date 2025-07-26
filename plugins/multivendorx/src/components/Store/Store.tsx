@@ -103,7 +103,7 @@ const Store: React.FC<SettingsProps> = () => {
         getTemplateData('stores'),
         []
     );
-
+    console.log(settingsArray);
     // get current browser location
     const location = new URLSearchParams(useLocation().hash);
 
@@ -175,7 +175,7 @@ const Store: React.FC<SettingsProps> = () => {
                     getForm={GetForm}
                     BannerSection={getBanner}
                     prepareUrl={(subTab: string) =>
-                        `?page=multivendorx#&tab=store&subtab=${subTab}`
+                        `?page=multivendorx#&tab=stores&subtab=${subTab}`
                     }
                     appLocalizer={appLocalizer}
 

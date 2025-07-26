@@ -17,7 +17,7 @@ const Route = () => {
                 <Settings id={ 'marketplace' } />
             ) }
             { currentTab.get( 'tab' ) === 'stores' && (
-                <Stores id={ 'stores' } />
+                <Stores id={ 'store' } />
             ) }
             {currentTab.get('tab') === 'modules' && <Modules />}
         </>
