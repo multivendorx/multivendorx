@@ -39,6 +39,7 @@ import GoogleMap from './GoogleMap';
 import Popup, { PopupProps } from './Popup';
 import '../styles/web/AdminForm.scss';
 import NestedComponent from './NestedComponent';
+import MultiStringInput from './MultiInputString';
 
 // Types
 declare const wp: any;
@@ -124,6 +125,7 @@ interface InputField {
         | 'checkbox-custom-img'
         | 'api-connect'
         | 'nested'
+        | 'multi-string'
         | 'form-builder';
     desc?: string;
     placeholder?: string;
@@ -936,6 +938,30 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             proSetting={ isProSetting(
                                 inputField.proSetting ?? false
                             ) }
+                        />
+                    );
+                    break;
+                case 'multi-string':
+                    input = (
+                        <MultiStringInput
+                            wrapperClass="setting-form-input"
+                            descClass="settings-metabox-description"
+                            description={ inputField.desc }
+                            inputLabel={ inputField.inputLabel }
+                            inputClass={ inputField.class }
+                            buttonClass="setting-form-button"
+                            valueListClass="setting-form-list"
+                            placeholder={ inputField.placeholder }
+                            name={ inputField.name }
+                            value={ setting[ inputField.key ] || [] }
+                            onChange={ ( newValues ) =>
+                                handleChange(
+                                    { target: { value: newValues } },
+                                    inputField.key,
+                                    'single',
+                                    'multi-select'
+                                )
+                            }
                         />
                     );
                     break;
