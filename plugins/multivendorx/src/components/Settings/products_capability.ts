@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'products-capability',
     priority: 6,
-    name: __( 'Product permissions', 'multivendorx' ),
+    name: __( 'Products Capability', 'multivendorx' ),
     desc: __(
         'Manage what sellers are allowed to do with their products in your marketplace.',
         'multivendorx'

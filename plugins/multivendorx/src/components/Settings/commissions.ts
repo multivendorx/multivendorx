@@ -23,9 +23,9 @@ export default {
                     value: 'revenue_sharing_mode_admin',
                 },
                 {
-                    key: 'revenue_sharing_mode_vendor',
-                    label: 'Vendor commissions',
-                    value: 'revenue_sharing_mode_vendor',
+                    key: 'revenue_sharing_mode_seller',
+                    label: 'Seller commissions',
+                    value: 'revenue_sharing_mode_seller',
                 },
             ],
         },
@@ -301,6 +301,54 @@ export default {
                 value: 'commission_by_purchase_quantity',
             },
         },
+        {
+            key: 'product_wise_commission',
+            label: __( 'Product Wise Commission', 'multivendorx' ),
+            desc: __(
+                'Enable commission settings on a per-product basis. Set individual commission rates per product.',
+                'multivendorx'
+            ),
+            type: 'checkbox',
+            options: [
+                {
+                    key: 'product_wise_commission',
+                    value: 'product_wise_commission',
+                },
+            ],
+            look: 'toggle',
+        },
+        {
+            key: 'vendor_wise_commission',
+            label: __( 'Vendor Wise Commission', 'multivendorx' ),
+            desc: __(
+                'Enable commission settings per vendor. Assign commission rates to specific vendors.',
+                'multivendorx'
+            ),
+            type: 'checkbox',
+            options: [
+                {
+                    key: 'vendor_wise_commission',
+                    value: 'vendor_wise_commission',
+                },
+            ],
+            look: 'toggle',
+        },
+        {
+            key: 'category_wise_commission',
+            label: __( 'Category Wise Commission', 'multivendorx' ),
+            desc: __(
+                'Enable commission settings based on product categories. Set different commission rates per category.',
+                'multivendorx'
+            ),
+            type: 'checkbox',
+            options: [
+                {
+                    key: 'category_wise_commission',
+                    value: 'category_wise_commission',
+                },
+            ],
+            look: 'toggle',
+        },        
         {
             key: 'payment_method_disbursement',
             label: __( 'Commission Disbursement Method', 'multivendorx' ),

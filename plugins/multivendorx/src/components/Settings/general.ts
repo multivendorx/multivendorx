@@ -20,11 +20,11 @@ export default {
     submitUrl: 'settings',
     modal: [
         {
-            key: 'approve_vendor',
+            key: 'approve_seller',
             type: 'setting-toggle',
-            label: __( 'Vendor approval', 'multivendorx' ),
+            label: __( 'Approve Seller', 'multivendorx' ),
             desc: __(
-                'Decide how you want to approve new vendors for your marketplace: <li>Manual Approval: Review and approve vendors manually. <li>Automatic Approval: Automatically approve vendors without review.',
+                'Decide how you want to approve new sellers for your marketplace: <li>Manual Approval: Review and approve sellers manually. <li>Automatic Approval: Automatically approve sellers without review.',
                 'multivendorx'
             ),
             options: [
@@ -43,9 +43,9 @@ export default {
         {
             key: 'vendors_backend_access',
             type: 'checkbox',
-            label: __( 'Vendor backend access', 'multivendorx' ),
+            label: __( "Seller's Backend Access", 'multivendorx' ),
             desc: __(
-                'Unlock an all-in-one vendor dashboard that allows vendors to manage everything in one place',
+                'Allow sellers to access the full WordPress backend with an integrated dashboard to manage products, orders, and more from one place.',
                 'multivendorx'
             ),
             options: [
@@ -58,20 +58,14 @@ export default {
             proSetting: true,
         },
         {
-            key: 'display_product_seller',
-            type: 'checkbox',
-            label: __( 'Display vendor name on products', 'multivendorx' ),
+            key: 'seller_registration_page',
+            type: 'select',
+            label: __( 'Seller Registration Page', 'multivendorx' ),
             desc: __(
-                "show the vendor's name on their product listings. This helps customers identify who they're buying from.",
+                'Select the page where you have inserted the <code>[seller_registration]</code> shortcode. This page will be used to onboard new sellers.',
                 'multivendorx'
             ),
-            options: [
-                {
-                    key: 'display_product_seller',
-                    value: 'display_product_seller',
-                },
-            ],
-            look: 'toggle',
+            options: appLocalizer.pages_list,
         },
         {
             key: 'category_pyramid_guide',
@@ -85,6 +79,38 @@ export default {
                 {
                     key: 'category_pyramid_guide',
                     value: 'category_pyramid_guide',
+                },
+            ],
+            look: 'toggle',
+        },
+        {
+            key: 'enable_store_category',
+            type: 'checkbox',
+            label: __( 'Enable Store Category', 'multivendorx' ),
+            desc: __(
+                'Allow vendors to assign their stores to categories for better browsing and filtering.',
+                'multivendorx'
+            ),
+            options: [
+                {
+                    key: 'enable_store_category',
+                    value: 'enable_store_category',
+                },
+            ],
+            look: 'toggle',
+        },                
+        {
+            key: 'display_product_seller',
+            type: 'checkbox',
+            label: __( 'Display vendor name on products', 'multivendorx' ),
+            desc: __(
+                "show the vendor's name on their product listings. This helps customers identify who they're buying from.",
+                'multivendorx'
+            ),
+            options: [
+                {
+                    key: 'display_product_seller',
+                    value: 'display_product_seller',
                 },
             ],
             look: 'toggle',
@@ -117,16 +143,6 @@ export default {
                 "Use the <code>[mvx_vendorlist]</code> shortcode to display vendor's list on your site <a href='https://www.w3schools.com'>Learn More</a>",
                 'multivendorx'
             ),
-        },
-        {
-            key: 'registration_page',
-            type: 'select',
-            label: __( 'Registration page', 'multivendorx' ),
-            desc: __(
-                'Select the page on which you have inserted <code>[vendor_registration]</code> shortcode.This is the page where new vendors can sign up.',
-                'multivendorx'
-            ),
-            options: appLocalizer.pages_list,
         },
         {
             key: 'vendor_dashboard_page',

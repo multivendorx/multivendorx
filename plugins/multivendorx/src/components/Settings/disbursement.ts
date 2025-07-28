@@ -220,5 +220,21 @@ export default {
                 },
             ],
         },
+        {
+            key: 'exclude_cod_payments',
+            label: __( 'Exclude COD Payments', 'multivendorx' ),
+            desc: __(
+                'Disable the Cash on Delivery (COD) payment method for vendor orders.',
+                'multivendorx'
+            ),
+            type: 'checkbox',
+            options: [
+                {
+                    key: 'exclude_cod_payments',
+                    value: 'exclude_cod_payments',
+                },
+            ],
+            look: 'toggle',
+        }        
     ],
 };
