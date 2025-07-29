@@ -1,11 +1,18 @@
 /// <reference types="webpack-env" />
 
+import Membership from "@/components/Membership/Membership";
+
 
 // Predefined contexts
 const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
     settings: require.context('../components/Settings', true, /\.ts$/),
     stores: require.context(
         '../components/Store',
+        true,
+        /\.ts$/
+    ),
+    memberships: require.context(
+        '../components/Membership',
         true,
         /\.ts$/
     ),
@@ -51,11 +58,16 @@ const importAll = (
     return folderStructure;
 };
 
-// Accept 'settings' or 'synchronizations' (defaults to 'settings')
 const getTemplateData = (
-    type: 'settings' |  'stores' = 'settings'
+    type: 'settings' | 'stores' | 'memberships'
 ): SettingNode[] => {
     const ctx = contexts[type];
+
+    if (!ctx) {
+        console.warn(`⚠️ No context found for type: ${type}`);
+        return [];
+    }
+
     return importAll(ctx);
 };
 

@@ -39,103 +39,16 @@ export default {
             ),
             options: [
                 {
-                    key: 'choose_commission_type',
-                    label: __( 'Choose Commission Type', 'multivendorx' ),
-                    value: __( 'choose_commission_type', 'multivendorx' ),
-                },
-                {
                     key: 'commission_type_fixed',
                     label: __( 'Fixed Amount', 'multivendorx' ),
                     value: __( 'commission_type_fixed', 'multivendorx' ),
                 },
                 {
-                    key: 'commission_type_percent',
-                    label: __( 'Percentage', 'multivendorx' ),
-                    value: __( 'commission_type_percent', 'multivendorx' ),
-                },
-                {
-                    key: 'fixed_with_percentage_per_transaction',
-                    label: __(
-                        '%age + Fixed (per transaction)',
-                        'multivendorx'
-                    ),
-                    value: __(
-                        'fixed_with_percentage_per_transaction',
-                        'multivendorx'
-                    ),
-                },
-                {
-                    key: 'fixed_with_percentage_unit',
-                    label: __( '%age + Fixed (per unit)', 'multivendorx' ),
-                    value: __( 'fixed_with_percentage_unit', 'multivendorx' ),
-                },
-                {
-                    key: 'commission_by_product_price',
-                    label: __( 'Commission By Product Price', 'multivendorx' ),
-                    value: __( 'commission_by_product_price', 'multivendorx' ),
-                },
-                {
-                    key: 'commission_by_purchase_quantity',
-                    label: __(
-                        'Commission By Purchase Quantity',
-                        'multivendorx'
-                    ),
-                    value: __(
-                        'commission_by_purchase_quantity',
-                        'multivendorx'
-                    ),
-                },
-                {
-                    key: 'fixed_with_percentage_per_vendor',
-                    label: __( '%age + Fixed (per vendor)', 'multivendorx' ),
-                    value: __(
-                        'fixed_with_percentage_per_vendor',
-                        'multivendorx'
-                    ),
-                },
-                {
-                    key: 'commission_calculation_on_tax',
-                    label: __(
-                        'Commission Calculation on Tax',
-                        'multivendorx'
-                    ),
-                    value: __(
-                        'commission_calculation_on_tax',
-                        'multivendorx'
-                    ),
+                    key: 'commission_type_category',
+                    label: __( 'Category Based', 'multivendorx' ),
+                    value: __( 'commission_type_category', 'multivendorx' ),
                 },
             ],
-        },
-
-        // Nested Input fields added later
-        {
-            key: 'mvx_commission_fixed',
-            type: 'number',
-            label: __( 'Commission Value', 'multivendorx' ),
-            name: __( 'Fixed', 'multivendorx' ),
-            desc: __(
-                'The is the default commission amount that will be applicable for all transactions.',
-                'multivendorx'
-            ),
-            dependent: {
-                key: 'commission_type',
-                set: true,
-                value: 'commission_type_fixed',
-            },
-        },
-        {
-            key: 'mvx_commission_percentage',
-            type: 'number',
-            label: __( 'Commission Value', 'multivendorx' ),
-            desc: __(
-                'The is the default commission amount that will be applicable for all transactions.',
-                'multivendorx'
-            ),
-            dependent: {
-                key: 'commission_type',
-                set: true,
-                value: 'commission_type_percent',
-            },
         },
         {
             key: 'mvx_commission_rules_per_transaction',
@@ -165,142 +78,65 @@ export default {
             dependent: {
                 key: 'commission_type',
                 set: true,
-                value: 'fixed_with_percentage_per_transaction',
+                value: 'commission_type_fixed',
             },
         },
         {
-            key: 'mvx_commission_rules_per_unit',
-            type: 'multi-number',
-            label: __( 'Commission Value', 'multivendorx' ),
+            key: 'apply_parent_category_commission',
+            label: __( 'Apply Parent Category Commission to All Subcategories', 'multivendorx' ),
             desc: __(
-                'This is the default commission amount that will be applicable for all transactions.',
+                'Important: "All Categories" commission serves as your marketplace\'s default rate and cannot be empty. If 0 is given as the value, then the marketplace will deduct no commission from vendors.',
                 'multivendorx'
             ),
+            type: 'checkbox',
             options: [
                 {
-                    key: 'mvx_commission_fixed_per_unit',
-                    label: __( 'Fixed', 'multivendorx' ),
-                    type: 'number',
-                    desc: __( 'Fixed amount per unit', 'multivendorx' ),
-                },
-                {
-                    key: 'mvx_commission_percentage_per_unit',
-                    label: __( 'Percentage', 'multivendorx' ),
-                    type: 'number',
-                    desc: __(
-                        'Percentage of product price per unit',
-                        'multivendorx'
-                    ),
+                    key: 'apply_parent_category_commission',
+                    value: 'apply_parent_category_commission',
                 },
             ],
             dependent: {
                 key: 'commission_type',
                 set: true,
-                value: 'fixed_with_percentage_unit',
+                value: 'commission_type_category',
             },
-        },
+            look: 'toggle',
+        },        
         {
-            key: 'commission_by_product_price',
-            type: 'nested',
-            label: 'Commission By Product Price',
-            addButtonLabel: '+',
-            deleteButtonLabel: '×',
-            nestedFields: [
-                {
-                    key: 'product_cost',
-                    type: 'number',
-                    label: 'Product Cost',
-                    placeholder: 'Enter cost',
-                },
-                {
-                    key: 'rule',
-                    type: 'select',
-                    label: 'Rule',
-                    options: [
-                        { value: 'up_to', label: 'Up To' },
-                        { value: 'more_than', label: 'More than' },
-                    ],
-                },
-                {
-                    key: 'commission_type',
-                    type: 'select',
-                    label: 'Commission Type',
-                    options: [
-                        { value: 'percent', label: 'Percent' },
-                        { value: 'fixed', label: 'Fixed' },
-                        { value: 'percent_fixed', label: 'Percent + Fixed' },
-                    ],
-                },
-                {
-                    key: 'commission_percent',
-                    type: 'number',
-                    label: 'Commission Percent (%)',
-                    placeholder: 'Enter percent',
-                },
-                {
-                    key: 'commission_fixed',
-                    type: 'number',
-                    label: 'Commission Fixed ($)',
-                    placeholder: 'Enter fixed amount',
-                },
+            key: 'category_commission_rates',
+            label: __( 'Category Wise Commission Rates', 'multivendorx' ),
+            desc: __(
+                'Set commission rates for all categories or define individual rates for each category and its subcategories.',
+                'multivendorx'
+            ),
+            type: 'categorycommissioninput',
+            categories: [
+                // Parent Categories
+                { id: 1, name: 'Clothing', parent: 0 },
+                { id: 2, name: 'Electronics', parent: 0 },
+                { id: 3, name: 'Home & Kitchen', parent: 0 },
+        
+                // Subcategories for Clothing
+                { id: 11, name: 'Men', parent: 1 },
+                { id: 12, name: 'Women', parent: 1 },
+                { id: 13, name: 'Kids', parent: 1 },
+        
+                // Subcategories for Electronics
+                { id: 21, name: 'Mobiles', parent: 2 },
+                { id: 22, name: 'Laptops', parent: 2 },
+                { id: 23, name: 'Cameras', parent: 2 },
+        
+                // Subcategories for Home & Kitchen
+                { id: 31, name: 'Furniture', parent: 3 },
+                { id: 32, name: 'Decor', parent: 3 },
             ],
             dependent: {
                 key: 'commission_type',
                 set: true,
-                value: 'commission_by_product_price',
+                value: 'commission_type_category',
             },
-        },
-        {
-            key: 'commission_by_purchase_quantity',
-            type: 'nested',
-            label: 'Commission By Purchase Quantity',
-            addButtonLabel: '+',
-            deleteButtonLabel: '×',
-            nestedFields: [
-                {
-                    key: 'purchase_quantity',
-                    type: 'number',
-                    label: 'Purchase Quantity',
-                    placeholder: 'Enter quantity',
-                },
-                {
-                    key: 'quantity_rule',
-                    type: 'select',
-                    label: 'Rule',
-                    options: [
-                        { value: 'up_to', label: 'Up To' },
-                        { value: 'more_than', label: 'More than' },
-                    ],
-                },
-                {
-                    key: 'quantity_commission_type',
-                    type: 'select',
-                    label: 'Commission Type',
-                    options: [
-                        { value: 'percent', label: 'Percent' },
-                        { value: 'fixed', label: 'Fixed' },
-                        { value: 'percent_fixed', label: 'Percent + Fixed' },
-                    ],
-                },
-                {
-                    key: 'quantity_commission_percent',
-                    type: 'number',
-                    label: 'Commission Percent (%)',
-                    placeholder: 'Enter percent',
-                },
-                {
-                    key: 'quantity_commission_fixed',
-                    type: 'number',
-                    label: 'Commission Fixed ($)',
-                    placeholder: 'Enter fixed amount',
-                },
-            ],
-            dependent: {
-                key: 'commission_type',
-                set: true,
-                value: 'commission_by_purchase_quantity',
-            },
-        },
+            proSetting: false,
+        },        
         {
             key: 'product_wise_commission',
             label: __( 'Product Wise Commission', 'multivendorx' ),

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'product_report_abuse',
+    id: 'product-report-abuse',
     priority: 25,
     name: __('Product Report Abuse Settings', 'mvx-pro'),
     desc: __('Product Report Abuse Settings', 'mvx-pro'),
@@ -20,11 +20,12 @@ export default {
                 },
             ],
             look: 'toggle',
+            proSetting: true,
         },
         {
             key: 'abuse_report_reasons',
             type: 'multi-string',
-            inputLabel: __( 'Reason for Abuse Report', 'multivendorx' ),
+            label: __( 'Reason for Abuse Report', 'multivendorx' ),
             placeholder: __( 'Enter a reason and click +', 'multivendorx' ),
             desc: __(
                 'Add one or more predefined reasons that vendors can select when reporting abuse.',
@@ -32,7 +33,5 @@ export default {
             ),
             name: 'abuse_report_reasons',
         }
-        
-
     ],
 };

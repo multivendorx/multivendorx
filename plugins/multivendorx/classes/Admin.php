@@ -68,7 +68,15 @@ class Admin {
 
             // Array contain multivendorx submenu.
             $submenus = array(
-                'stores' => array(
+                'Dashboard' => array(
+                    'name'   => __( 'Dashboard', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'work-board' => array(
+                    'name'   => __( 'Work Board', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'store-conroller' => array(
                     'name'   => __( 'Store Controller', 'multivendorx' ),
                     'subtab' => 'store-appearance',
                 ),
@@ -78,7 +86,43 @@ class Admin {
                 ),
                 'marketplace' => array(
                     'name'   => __( 'Marketplace', 'multivendorx' ),
-                    'subtab' => 'general',
+                    'subtab' => 'gatekeeping',
+                ),
+                'stores' => array(
+                    'name'   => __( 'Stores', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'role-manager' => array(
+                    'name'   => __( 'Role Manager', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'payments' => array(
+                    'name'   => __( 'Payments', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'payments' => array(
+                    'name'   => __( 'Payments', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'Commissions' => array(
+                    'name'   => __( 'Commissions', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'analytics' => array(
+                    'name'   => __( 'Analytics', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'status-and-tools' => array(
+                    'name'   => __( 'Status and Tools', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'memberships' => array(
+                    'name'   => __( 'Memberships', 'multivendorx' ),
+                    'subtab' => 'message',
+                ),
+                'help-and-support' => array(
+                    'name'   => __( 'Help and Support', 'multivendorx' ),
+                    'subtab' => '',
                 ),
             );
             

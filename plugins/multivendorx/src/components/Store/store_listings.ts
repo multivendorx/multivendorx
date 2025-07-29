@@ -42,19 +42,6 @@ export default {
                     value: __( 'disable', 'multivendorx' ),
                 },
             ],
-        },
-        {
-            key: 'show_suborder_in_email',
-            type: 'checkbox',
-            label: __( 'Show Suborder in Email', 'multivendorx' ),
-            desc: __( 'Enable this to include a detailed breakdown of suborders and products in customer and vendor emails.', 'multivendorx' ),
-            options: [
-                {
-                    key: 'show_suborder_in_email',
-                    value: 'show_suborder_in_email',
-                },
-            ],
-            look: 'toggle',
-        }        
+        },     
     ],
 };

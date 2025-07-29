@@ -302,6 +302,7 @@ class FrontendScripts {
                 'products',
                 'products-capability',
                 'commissions',
+                'product-report-abuse'
             )
 		);
 

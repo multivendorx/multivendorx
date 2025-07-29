@@ -144,7 +144,7 @@ const faqs = [
 
 const Settings: React.FC< SettingsProps > = () => {
     const settingsArray: SettingItem[] = getAvailableSettings(
-        getTemplateData(),
+        getTemplateData('settings'),
         []
     );
     const location = new URLSearchParams( useLocation().hash.substring( 1 ) );

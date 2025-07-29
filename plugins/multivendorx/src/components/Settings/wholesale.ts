@@ -54,7 +54,7 @@ export default {
         },
         {
             key: 'need_approval_for_wholesale_customer',
-            type: 'settingToggle',
+            type: 'setting-toggle',
             label: __( 'Need approval for customer', 'mvx-pro' ),
             desc: __(
                 'Customer need admin approval for becoming a wholesale customer.',

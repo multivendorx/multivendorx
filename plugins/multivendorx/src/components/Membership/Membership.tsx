@@ -98,9 +98,9 @@ const products: Products[] = [
     },
 ];
 
-const Store: React.FC<SettingsProps> = () => {
+const Membership: React.FC<SettingsProps> = () => {
     const settingsArray: SettingItem[] = getAvailableSettings(
-        getTemplateData('stores'),
+        getTemplateData('memberships'),
         []
     );
     console.log(settingsArray);
@@ -175,7 +175,7 @@ const Store: React.FC<SettingsProps> = () => {
                     getForm={GetForm}
                     BannerSection={getBanner}
                     prepareUrl={(subTab: string) =>
-                        `?page=multivendorx#&tab=store-conroller&subtab=${subTab}`
+                        `?page=multivendorx#&tab=memberships&subtab=${subTab}`
                     }
                     appLocalizer={appLocalizer}
 
@@ -187,4 +187,4 @@ const Store: React.FC<SettingsProps> = () => {
     );
 };
 
-export default Store;
+export default Membership;

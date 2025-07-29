@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'general',
+    id: 'gatekeeping',
     priority: 1,
-    name: __( 'General', 'multivendorx' ),
+    name: __( 'Gatekeeping', 'multivendorx' ),
     desc: __(
         'Configure the basic setting of the marketplace.',
         'multivendorx'
@@ -84,6 +84,67 @@ export default {
             look: 'toggle',
         },
         {
+            key: 'singleproductmultiseller_show_order',
+            type: 'select',
+            label: __( 'Display Shop Page Product', 'multivendorx' ),
+            desc: __(
+                'Select the criteria on which the SPMV product is going to be based on.',
+                'multivendorx'
+            ),
+            options: [
+                {
+                    key: 'min-price',
+                    label: __( 'Min Price', 'multivendorx' ),
+                    value: __( 'min-price', 'multivendorx' ),
+                },
+                {
+                    key: 'max-price',
+                    label: __( 'Max Price', 'multivendorx' ),
+                    value: __( 'max-price', 'multivendorx' ),
+                },
+                {
+                    key: 'top-rated-vendor',
+                    label: __( 'Top rated vendor', 'multivendorx' ),
+                    value: __( 'top-rated-vendor', 'multivendorx' ),
+                },
+            ],
+            proSetting: true,
+            moduleEnabled: 'spmv',
+        },
+        {
+            key: 'moreoffers_display_position',
+            type: 'select',
+            label: __( 'More Offers Display Position', 'multivendorx' ),
+            desc: __(
+                'Select where you want the "More Offers" section to appear on the Single Product Page.',
+                'multivendorx'
+            ),
+            options: [
+                {
+                    key: 'none',
+                    label: __( 'None', 'multivendorx' ),
+                    value: 'none',
+                },
+                {
+                    key: 'above-tabs',
+                    label: __( 'Above Single Page Product Tabs', 'multivendorx' ),
+                    value: 'above-tabs',
+                },
+                {
+                    key: 'inside-tabs',
+                    label: __( 'Display Inside Single Page Product Tabs', 'multivendorx' ),
+                    value: 'inside-tabs',
+                },
+                {
+                    key: 'after-tabs',
+                    label: __( 'After Single Page Product Tabs', 'multivendorx' ),
+                    value: 'after-tabs',
+                },
+            ],
+            proSetting: false,
+            moduleEnabled: 'spmv',
+        },        
+        {
             key: 'enable_store_category',
             type: 'checkbox',
             label: __( 'Enable Store Category', 'multivendorx' ),
@@ -127,6 +188,19 @@ export default {
                 {
                     key: 'is_customer_support_details',
                     value: 'is_customer_support_details',
+                },
+            ],
+            look: 'toggle',
+        },
+        {
+            key: 'show_suborder_in_email',
+            type: 'checkbox',
+            label: __( 'Show Suborder in Email', 'multivendorx' ),
+            desc: __( 'Enable this to include a detailed breakdown of suborders and products in customer and vendor emails.', 'multivendorx' ),
+            options: [
+                {
+                    key: 'show_suborder_in_email',
+                    value: 'show_suborder_in_email',
                 },
             ],
             look: 'toggle',

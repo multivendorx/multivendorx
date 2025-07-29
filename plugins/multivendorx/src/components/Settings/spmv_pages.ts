@@ -29,33 +29,5 @@ export default {
             look: 'toggle',
             moduleEnabled: 'spmv',
         },
-        {
-            key: 'singleproductmultiseller_show_order',
-            type: 'select',
-            label: __( 'Display Shop Page Product', 'multivendorx' ),
-            desc: __(
-                'Select the criteria on which the SPMV product is going to be based on.',
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'min-price',
-                    label: __( 'Min Price', 'multivendorx' ),
-                    value: __( 'min-price', 'multivendorx' ),
-                },
-                {
-                    key: 'max-price',
-                    label: __( 'Max Price', 'multivendorx' ),
-                    value: __( 'max-price', 'multivendorx' ),
-                },
-                {
-                    key: 'top-rated-vendor',
-                    label: __( 'Top rated vendor', 'multivendorx' ),
-                    value: __( 'top-rated-vendor', 'multivendorx' ),
-                },
-            ],
-            proSetting: true,
-            moduleEnabled: 'spmv',
-        },
     ],
 };
