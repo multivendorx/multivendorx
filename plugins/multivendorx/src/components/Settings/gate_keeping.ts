@@ -84,6 +84,23 @@ export default {
             look: 'toggle',
         },
         {
+            key: 'is_singleproductmultiseller',
+            type: 'checkbox',
+            label: __( 'Allow Vendor to Copy Products', 'multivendorx' ),
+            desc: __(
+                'Let vendors search for products sold on your site and sell them from their store.',
+                'multivendorx'
+            ),
+            options: [
+                {
+                    key: 'is_singleproductmultiseller',
+                    value: 'is_singleproductmultiseller',
+                },
+            ],
+            look: 'toggle',
+            // moduleEnabled: 'spmv',
+        },
+        {
             key: 'singleproductmultiseller_show_order',
             type: 'select',
             label: __( 'Display Shop Page Product', 'multivendorx' ),
@@ -108,6 +125,10 @@ export default {
                     value: __( 'top-rated-vendor', 'multivendorx' ),
                 },
             ],
+            dependent: {
+                key: 'is_singleproductmultiseller',
+                set: true,
+            },
             proSetting: true,
             moduleEnabled: 'spmv',
         },
@@ -141,6 +162,10 @@ export default {
                     value: 'after-tabs',
                 },
             ],
+            dependent: {
+                key: 'is_singleproductmultiseller',
+                set: true,
+            },
             proSetting: false,
             moduleEnabled: 'spmv',
         },        
