@@ -5,11 +5,11 @@ import React, { ChangeEvent } from 'react';
 
 // Types
 interface RadioOption {
-    key: string;
+    key?: string;
     keyName?: string;
-    value: string;
-    label: string;
-    name: string;
+    value?: string | number; 
+    label?: string;
+    name?: string;
     color?: string[] | string; // Can be an array of colors or an image URL
 }
 

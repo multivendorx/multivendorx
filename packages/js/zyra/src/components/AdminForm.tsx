@@ -40,6 +40,7 @@ import Popup, { PopupProps } from './Popup';
 import '../styles/web/AdminForm.scss';
 import NestedComponent from './NestedComponent';
 import MultiStringInput from './MultiInputString';
+import CategoryCommissionInput from './CategoryCommissionInput';
 
 // Types
 declare const wp: any;
@@ -126,6 +127,7 @@ interface InputField {
     | 'api-connect'
     | 'nested'
     | 'multi-string'
+    | 'categorycommissioninput'
     | 'form-builder';
     desc?: string;
     placeholder?: string;
@@ -197,6 +199,12 @@ interface InputField {
     }[];
     addButtonLabel?: string;
     deleteButtonLabel?: string;
+    categories?: {
+        id: number;
+        name: string;
+        parent: number; // 0 means top-level category
+    }[];
+    
 }
 
 type Center = {
@@ -941,33 +949,65 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         />
                     );
                     break;
-                    case 'multi-string':
-                        input = (
-                            <MultiStringInput
-                                wrapperClass="setting-form-input"
-                                descClass="settings-metabox-description"
-                                description={inputField.desc}
-                                inputLabel={inputField.inputLabel}
-                                inputClass={inputField.class}
-                                buttonClass="setting-form-button"
-                                valueListClass="setting-form-list"
-                                placeholder={inputField.placeholder}
-                                name={inputField.name}
-                                value={setting[inputField.key] || []}
-                                onChange={(newValues) =>
-                                    handleChange(
-                                        { target: { value: newValues } },
-                                        inputField.key,
-                                        'single',
-                                        'multi-select'
+                case 'multi-string':
+                    input = (
+                        <MultiStringInput
+                            wrapperClass="setting-form-multi-input"
+                            inputClass="form-input"
+                            buttonClass="btn-add"
+                            listClass="multi-list"
+                            itemClass="multi-item"
+                            deleteBtnClass="btn-delete"
+                            placeholder={inputField.placeholder}
+                            values={value}
+                            name={inputField.key}
+                            proSetting={isProSetting(inputField.proSetting ?? false)}
+                            description={inputField.desc}
+                            descClass="settings-metabox-description"
+                            onChange={(e) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
                                     )
+                                ) {
+                                    handleChange(e, inputField.key);
                                 }
-                            />
-                        );
-                        break;
-                    
+                            }}
+                        />
+                    );
+                    break;
 
-
+                case 'categorycommissioninput':
+                    input = (
+                        <CategoryCommissionInput
+                            wrapperClass="setting-form-category-commission"
+                            listClass="category-list"
+                            itemClass="category-item"
+                            buttonClass="btn-expand"
+                            categories={inputField.categories || []}
+                            value={value}
+                            name={inputField.key}
+                            proSetting={isProSetting(inputField.proSetting ?? false)}
+                            description={inputField.desc}
+                            descClass="settings-metabox-description"
+                            onChange={(e) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    handleChange(e, inputField.key);
+                                }
+                            }}
+                        />
+                    );
+                    break;
                 case 'radio':
                     input = (
                         <RadioInput
@@ -984,7 +1024,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             }
                             name={inputField.name}
                             keyName={inputField.key}
-                            options={Array.isArray(value) ? value : []}
+                            options={Array.isArray(inputField.options) ? inputField.options : []}
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
                             )}

@@ -1,81 +1,112 @@
-import React, { useState, ChangeEvent, MouseEvent } from 'react';
+/**
+ * External dependencies
+ */
+import React, { useState, ChangeEvent, FocusEvent } from 'react';
 
+// Types
 interface MultiStringInputProps {
+    id?: string;
+    name?: string;
+    values?: string[];
+    placeholder?: string;
     wrapperClass?: string;
-    inputLabel?: string;
     inputClass?: string;
     buttonClass?: string;
-    valueListClass?: string;
-    placeholder?: string;
-    name?: string;
+    listClass?: string;
+    itemClass?: string;
+    deleteBtnClass?: string;
+    proSetting?: boolean;
     description?: string;
     descClass?: string;
-    value?: string[];
-    onChange?: (values: string[]) => void;
+    onChange?: (e: { target: { name?: string; value: string[] } }) => void;
+    onFocus?: (e: FocusEvent<HTMLInputElement>) => void;
+    onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
 }
 
-const MultiStringInput: React.FC<MultiStringInputProps> = ({
+export const MultiStringInput: React.FC<MultiStringInputProps> = ({
+    id,
+    name,
+    values = [],
+    placeholder,
     wrapperClass,
-    inputLabel,
     inputClass,
     buttonClass,
-    valueListClass,
-    placeholder = 'Enter value',
-    name = 'multi-string-input',
+    listClass,
+    itemClass,
+    deleteBtnClass,
+    proSetting,
     description,
     descClass,
-    value = [],
-    onChange = () => {},
+    onChange,
+    onFocus,
+    onBlur,
 }) => {
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState<string>("");
 
-    const handleAddValue = (e: MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        const trimmed = inputValue.trim();
-        if (trimmed) {
-            onChange([...value, trimmed]);
-            setInputValue('');
+    const handleAdd = () => {
+        if (inputValue.trim() !== "") {
+            const safeValues = Array.isArray(values) ? values : [];
+            const updatedValues = [...safeValues, inputValue.trim()];
+            onChange?.({ target: { name, value: updatedValues } });
+            setInputValue("");
         }
     };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value);
+    const handleDelete = (val: string) => {
+        const safeValues = Array.isArray(values) ? values : [];
+        const updatedValues = safeValues.filter((item) => item !== val);
+        onChange?.({ target: { name, value: updatedValues } });
     };
 
     return (
         <div className={wrapperClass}>
-            {inputLabel && <label>{inputLabel}</label>}
-
-            <div className="multi-input-wrap">
+            {/* Input and Add Button */}
+            <div className="multi-input-row">
                 <input
                     type="text"
+                    id={id}
                     name={name}
-                    className={`basic-input ${inputClass || ''}`}
-                    placeholder={placeholder}
                     value={inputValue}
-                    onChange={handleChange}
+                    placeholder={placeholder}
+                    className={inputClass}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                 />
                 <button
-                    onClick={handleAddValue}
-                    className={`admin-btn btn-purple ${buttonClass || ''}`}
+                    type="button"
+                    className={buttonClass || "add-button"}
+                    onClick={handleAdd}
                 >
-                    <i className="adminlib-plus-icon"></i>
+                    +
                 </button>
             </div>
 
-            {value.length > 0 && (
-                <ul className={`value-list ${valueListClass || ''}`}>
-                    {value.map((val, idx) => (
-                        <li key={idx}>{val}</li>
+            {/* Added Values List */}
+            {Array.isArray(values) && values.length > 0 && (
+                <ul className={listClass || "multi-string-list"}>
+                    {values.map((val, index) => (
+                        <li key={index} className={itemClass}>
+                            {val}
+                            <button
+                                type="button"
+                                className={deleteBtnClass || "delete-button"}
+                                onClick={() => handleDelete(val)}
+                            >
+                                ✕
+                            </button>
+                        </li>
                     ))}
                 </ul>
             )}
+
+            {proSetting && <span className="admin-pro-tag">pro</span>}
 
             {description && (
                 <p
                     className={descClass}
                     dangerouslySetInnerHTML={{ __html: description }}
-                />
+                ></p>
             )}
         </div>
     );
