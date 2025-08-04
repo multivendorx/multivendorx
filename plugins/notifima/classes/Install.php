@@ -54,8 +54,7 @@ class Install {
 
         update_option( 'notifima_version', NOTIFIMA_PLUGIN_VERSION );
 
-        do_action('notifima_updated');
-
+        do_action( 'notifima_updated' );
     }
 
     /**

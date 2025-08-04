@@ -162,9 +162,9 @@ class FrontendScripts {
             'notifima_register_scripts',
             array(
 				'notifima-frontend-script' => array(
-					'src'         => Notifima()->plugin_url . 'assets/js/' . self::get_script_name( 'frontend' ) . '.js',
-					'deps'        => array( 'jquery', 'wp-element', 'wp-components' ),
-					'version'     => $version,
+					'src'     => Notifima()->plugin_url . 'assets/js/' . self::get_script_name( 'frontend' ) . '.js',
+					'deps'    => array( 'jquery', 'wp-element', 'wp-components' ),
+					'version' => $version,
 				),
 			)
         );
@@ -226,14 +226,14 @@ class FrontendScripts {
             'admin_notifima_register_scripts',
             array(
 				'notifima-admin-script'      => array(
-					'src'         => Notifima()->plugin_url . self::get_build_path_name() . 'js/index.js',
-					'deps'        => $index_asset['dependencies'],
-					'version'     => $version,
+					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'deps'    => $index_asset['dependencies'],
+					'version' => $version,
 				),
 				'notifima-components-script' => array(
-					'src'         => Notifima()->plugin_url . self::get_build_path_name() . 'js/components.js',
-					'deps'        => $component_asset['dependencies'],
-					'version'     => $version,
+					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/components.js',
+					'deps'    => $component_asset['dependencies'],
+					'version' => $version,
 				),
             )
         );

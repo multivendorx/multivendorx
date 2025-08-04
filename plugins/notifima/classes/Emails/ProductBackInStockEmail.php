@@ -82,7 +82,9 @@ if ( ! class_exists( 'ProductBackInStockEmail' ) ) :
                 return;
             }
 
+            do_action( 'wpml_switch_language_for_email', $recipient );
             $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+            do_action( 'wpml_restore_language_from_email' );
         }
 
         /**
