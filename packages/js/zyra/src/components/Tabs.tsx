@@ -59,22 +59,20 @@ const Tabs: React.FC< TabsProps > = ( {
     const showTabSection: React.FC< TabContent > = ( tab ) => {
         return tab.link ? (
             <a href={ tab.link }>
-                <div>
+                {/* <div>
                     { tab.icon && (
                         <i className={ `admin-font ${ tab.icon }` }></i>
                     ) }
-                </div>
-                <div>
+                </div> */}
                     <p className="menu-name">{ menuCol ? null : tab.name }</p>
                     {/* <p className="menu-desc">{ menuCol ? null : tab.desc }</p> */}
-                </div>
             </a>
         ) : (
             <Link
                 className={ currentTab === tab.id ? 'active-current-tab' : '' }
                 to={ prepareUrl( tab.id ) }
             >
-                <div>
+                {/* <div>
                     { tab.icon && (
                         <i className={ ` admin-font ${ tab.icon } ` }></i>
                     ) }
@@ -84,11 +82,9 @@ const Tabs: React.FC< TabsProps > = ( {
                           tab.proDependent && (
                               <span className="admin-pro-tag">Pro</span>
                           ) }
-                </div>
-                <div>
+                </div> */}
                     <p className="menu-name">{ menuCol ? null : tab.name }</p>
                     {/* <p className="menu-desc">{ menuCol ? null : tab.desc }</p> */}
-                </div>
             </Link>
         );
     };
@@ -147,13 +143,13 @@ const Tabs: React.FC< TabsProps > = ( {
                     ( content as TabContent ).id !== 'support' && (
                         <div className="tab-description-header">
                             <div className="child">
-                                <p>
+                                {/* <p>
                                     <i
                                         className={ `admin-font ${
                                             ( content as TabContent ).icon
                                         }` }
                                     ></i>
-                                </p>
+                                </p> */}
                                 <div>
                                     <div className="tab-name">
                                         { ( content as TabContent ).name }
@@ -180,6 +176,30 @@ const Tabs: React.FC< TabsProps > = ( {
 
     return (
         <>
+            <div className="top-header">
+                <div className="left-section">
+                    <img
+                    className="brand-logo"
+                    src={ menuCol ? smallbrandImg : brandImg }
+                    alt="Logo"
+                    />
+                </div>
+                <div className="right-section"> 
+                    <div className="search-field">
+                        <i className="adminlib-search"></i>
+                        <input type="text" className="basic-input" placeholder="Search Here" />
+                    </div>
+                </div>
+            </div>
+
+            <div className="admin-breadcrumbs">
+                <div className="breadcrumbs-title">Registration Form</div>
+                <p className='breadcrumbs-menu'>
+                    <span><a href="#"> Settings </a></span>
+                     / <span>Registration Form</span> 
+                     / <span>Form</span>
+                </p>
+            </div>
             <div className={ ` general-wrapper ` }>
                 { HeaderSection && <HeaderSection /> }
 
@@ -198,18 +218,6 @@ const Tabs: React.FC< TabsProps > = ( {
                             id="current-tab-lists"
                             className="current-tab-lists"
                         >
-                            <div className="brand">
-                                <img
-                                    className="logo"
-                                    src={ menuCol ? smallbrandImg : brandImg }
-                                    alt="Logo"
-                                />
-                                <img
-                                    className="logo-small"
-                                    src={ smallbrandImg }
-                                    alt="Logo"
-                                />
-                            </div>
                             <div className="current-tab-lists-container">
                                 { tabData?.map( ( { type, content } ) => {
                                     if ( type !== 'folder' ) {
@@ -258,7 +266,7 @@ const Tabs: React.FC< TabsProps > = ( {
                                         </div>
                                     );
                                 } ) }
-                                <div
+                                {/* <div
                                     role="button"
                                     tabIndex={ 0 }
                                     className="admin-btn menu-coll-btn"
@@ -268,9 +276,9 @@ const Tabs: React.FC< TabsProps > = ( {
                                         <i className="admin-font adminlib-arrow-left"></i>
                                     </span>
                                     { menuCol ? null : 'Collapse' }
-                                </div>
+                                </div> */}
                             </div>
-                        </div>
+                        </div>         
                         <div className="tab-content">
                             { /* Render name and description of the current tab */ }
                             { getTabDescription( tabData ) }

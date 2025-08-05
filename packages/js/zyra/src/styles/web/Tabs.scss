@@ -1,30 +1,88 @@
 @use '../../global.scss' as *;
 
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem 2rem;
+  background: #fff;
+  margin-bottom: 2rem;
+
+  .left-section {
+    .brand-logo {
+      width: 12rem;
+    }
+  }
+
+  .right-section {
+    position: relative;
+
+    .search-field {
+      position: relative;
+
+      i {
+        position: absolute;
+        left: 0.5rem;
+        z-index: 9;
+        font-size: 1.313rem;
+        top: 20%;
+      }
+
+      input {
+        width: 20rem;
+        padding-left: 2rem;
+        position: relative;
+      }
+    }
+  }
+}
+
+.admin-breadcrumbs {
+  padding: 0 2rem;
+
+  .breadcrumbs-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.425rem;
+  }
+
+  .breadcrumbs-menu {
+    a {
+      color: $theme-color;
+      font-weight: 500;
+    }
+  }
+}
+
+.general-wrapper {
+  padding: 2rem;
+}
 
 .tab-content {
   position: relative;
-  background: $color-white;
+  // background: $color-white;
   width: 100%;
 
   .tab-description-body {
-    padding: 1.8rem 1.8rem 0;
+    padding: 0 1.8rem;
   }
 
   .tab-description-header {
-    padding: 1.8rem 1.8rem 0;
+    padding: 0 1.8rem;
 
     .child {
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: 1rem;
+      // display: flex;
+      // align-items: flex-start;
+      // justify-content: flex-start;
+      // gap: 1rem;
       border-bottom: 0.063rem solid #e0e4e9;
-      font-size: 0.875rem;
-      line-height: 1.5;
-      padding: 0 0 1.875rem;
+      padding: 1.5rem 0;
+      // font-size: 0.875rem;
+      // line-height: 1.5;
+      // padding: 0 0 1.875rem;
 
       .tab-name {
-        font-size: 1.625rem;
+        font-size: 1.313rem;
         line-height: 1;
         font-weight: 500;
         letter-spacing: .0.045rem;
@@ -66,15 +124,17 @@
 
 .middle-child-container {
   position: relative;
-  display: flex;
+  // display: flex;
   color: #121116;
   line-height: 1.5;
+  background-color: #fff;
 
   .current-tab-lists {
-    display: flex;
-    flex-direction: column;
-    max-width: 16rem;
+    // display: flex;
+    // flex-direction: column;
+    // max-width: 16rem;
     width: 100%;
+    padding: 1.5rem;
 
     .brand {
       padding: 2rem 0 1.5rem;
@@ -97,11 +157,14 @@
 
     .current-tab-lists-container {
       position: relative;
+      display: flex;
+      gap: 1.2rem;
+      border-bottom: 0.063rem solid #e0e4e9;
 
       .menu-coll-btn {
         font-size: 0.8125rem;
         font-weight: 500;
-        border-radius: 0; 
+        border-radius: 0;
 
         i {
           font-size: 1.25rem;
@@ -111,10 +174,10 @@
       a,
       .menu-coll-btn {
         position: relative;
-        width: 100%;
-        padding: 1rem 0.63rem 1.125rem 1.25rem;
-        border-top: 0.063rem solid #e0e4e9;
-        border-left: 0.125rem solid transparent;
+        // width: 100%;
+        // padding: 1rem 0.63rem 1.125rem 1.25rem;
+        // border-top: 0.063rem solid #e0e4e9;
+        // border-left: 0.125rem solid transparent;
         overflow: hidden;
         transition: all 100ms ease-out;
         display: flex;
@@ -123,6 +186,9 @@
         color: #000;
         gap: 0.75rem;
         background-color: transparent;
+        padding-bottom: 0.625rem;
+        border-bottom: 0.126rem solid transparent;
+        font-weight: 500;
 
         .menu-name {
           font-size: 0.938rem;
@@ -151,27 +217,20 @@
 
         &:hover {
           background: $color-white;
-          border-left: 0.126rem solid $color-active !important; // To overwrite default common.scss
+          border-bottom: 0.126rem solid $color-active !important; // To overwrite default common.scss
           color: $color-active;
         }
 
         &:focus {
           box-shadow: none;
         }
-
-        i {
-          color: #72777c;
-          font-size: 1.4375rem;
-          line-height: 1;
-          opacity: .3;
-        }
       }
 
-      
+
       .active-current-tab {
         color: $color-active;
         background: $color-white;
-        border-left: 0.126rem solid $color-active;
+        border-bottom: 0.126rem solid $color-active;
 
         .menu-name,
         i {
@@ -241,11 +300,11 @@
           width: 3.15rem;
         }
 
-        .logo{
+        .logo {
           display: none;
         }
 
-        .logo-small{
+        .logo-small {
           display: block;
         }
 
@@ -258,7 +317,7 @@
       }
     }
   }
-  
+
 }
 
 @media screen and (width <=50.211rem) {
