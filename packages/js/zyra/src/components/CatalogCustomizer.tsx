@@ -62,8 +62,8 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
     }, [ localSetting ] );
 
     const menu: MenuItem[] = [
-        { name: 'Enquiry', id: 'enquiry', icon: 'adminlib-inquiry' },
-        { name: 'Quote', id: 'quote', icon: 'adminlib-price-quote-icon' },
+        { name: 'Enquiry', id: 'enquiry', icon: 'adminlib-enquiry' },
+        { name: 'Quote', id: 'quote', icon: 'adminlib-quote' },
         { name: 'Catalog', id: 'catalog', icon: 'adminlib-catalog' },
     ];
 

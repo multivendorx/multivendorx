@@ -43,7 +43,7 @@ const ProPopup: React.FC<PopupProps> = (props) => {
                             <div className="right-section">
                                 <h4>
                                     Unlock <span className="pro-tag">Pro</span>
-                                    <i className="popup-icon-star-notifima"></i>
+                                    <i className="popup-icon-popup-star"></i>
                                 </h4>
                                 <ul className="features-list">
                                     {props.messages?.map(
@@ -70,7 +70,7 @@ const ProPopup: React.FC<PopupProps> = (props) => {
                                         rel="noreferrer"
                                         href={props.proUrl}
                                     >
-                                        Upgrade to pro
+                                        Get Pro. Sell More.
                                     </a>
                                 </div>
                             </div>
@@ -78,13 +78,24 @@ const ProPopup: React.FC<PopupProps> = (props) => {
                     )}
                     {props.moduleName && (
                         <>
-                            <h2>{props.message}</h2>
-                            <a
-                                className="admin-btn btn-red"
-                                href={props.modulePageUrl}
-                            >
-                                {props.moduleButton}
-                            </a>
+                            <div className="module-left-section">
+                                <div className="module-icon">
+                                    <i className={`adminlib-${props.moduleName}`}></i>
+                                </div>
+                            </div>
+                            <div className="module-right-section">
+                                <h2>Activate {props.moduleName}</h2>
+                                <p>{props.message}</p>
+
+                                <div className="footer-button">
+                                    <a
+                                        className="admin-btn btn-purple"
+                                        href={props.modulePageUrl}
+                                    >
+                                        {props.moduleButton}
+                                    </a>
+                                </div>
+                            </div>
                         </>
                     )}
                     {props.settings && (

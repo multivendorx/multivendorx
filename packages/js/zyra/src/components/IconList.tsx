@@ -149,8 +149,8 @@ const IconList: React.FC = () => {
                         <span>(e901)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-dynamic-pricing"></span>
-                        <span className="mls"> adminlib-dynamic-pricing</span>
+                        <span className="adminlib-rules"></span>
+                        <span className="mls"> adminlib-rules</span>
                         <span>(e902)</span>
                     </div>
                     <div className="icon-box">
@@ -192,18 +192,18 @@ const IconList: React.FC = () => {
                         <span>(e90b)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-inquiry"></span>
-                        <span className="mls"> adminlib-inquiry</span>
+                        <span className="adminlib-enquiry"></span>
+                        <span className="mls"> adminlib-enquiry</span>
                         <span>(e90c)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-price-quote-icon"></span>
-                        <span className="mls"> adminlib-price-quote-icon</span>
+                        <span className="adminlib-quote"></span>
+                        <span className="mls"> adminlib-quote</span>
                         <span>(e90d)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-warehousing-icon"></span>
-                        <span className="mls"> adminlib-warehousing-icon</span>
+                        <span className="adminlib-wholesale"></span>
+                        <span className="mls"> adminlib-wholesale</span>
                         <span>(e90e)</span>
                     </div>
                     <div className="icon-box">
@@ -212,8 +212,8 @@ const IconList: React.FC = () => {
                         <span>(e90f)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-wholesale"></span>
-                        <span className="mls"> adminlib-wholesale</span>
+                        <span className="adminlib-wholesale-icon"></span>
+                        <span className="mls"> adminlib-wholesale-icon</span>
                         <span>(e910)</span>
                     </div>
                     <div className="icon-box">
