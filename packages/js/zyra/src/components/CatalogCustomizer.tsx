@@ -50,7 +50,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
     const [ localSetting, _setLocalSetting ] = useState( setting );
 
     const setSetting = ( key: string, value: any ) => {
-        _setLocalSetting( { ...localSetting, [ key ]: value } );
+        _setLocalSetting( ( prev: any ) => ( { ...prev, [ key ]: value } ) );
         onChange( key, value );
     };
 
