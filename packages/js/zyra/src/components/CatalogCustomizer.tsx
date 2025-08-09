@@ -347,7 +347,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
      * @param endIndex   - The ending index where the button is dropped.
      */
     const onButtonDragEnd = ( startIndex: number, endIndex: number ): void => {
-        if ( endIndex === undefined || endIndex === null || endIndex === 0 ) {
+        if ( endIndex === undefined || endIndex === null || endIndex < 0 ) {
             return;
         }
 

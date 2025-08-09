@@ -34,25 +34,25 @@ const DisplayButton: React.FC< DisplayButtonProp > = ( {
     btnType = 'submit',
 } ) => {
     const style = {
-        border: `${ customStyle?.button_border_size ?? 1 }px solid ${
-            customStyle?.button_border_color ?? '#000000'
+        border: `${ customStyle?.button_border_size ?? '' }px solid ${
+            customStyle?.button_border_color ?? ''
         }`,
-        backgroundColor: customStyle?.button_background_color ?? '#ffffff',
-        color: customStyle?.button_text_color ?? '#000000',
-        borderRadius: `${ customStyle?.button_border_radious ?? 0 }px`,
-        fontSize: `${ customStyle?.button_font_size ?? 20 }px`,
-        fontWeight: `${ customStyle?.button_font_width ?? 1 }rem`,
-        margin: `${ customStyle?.button_margin ?? 0 }px`,
-        padding: `${ customStyle?.button_padding ?? 0 }px`,
+        backgroundColor: customStyle?.button_background_color ?? '',
+        color: customStyle?.button_text_color ?? '',
+        borderRadius: `${ customStyle?.button_border_radious ?? '' }px`,
+        fontSize: `${ customStyle?.button_font_size ?? '' }px`,
+        fontWeight: `${ customStyle?.button_font_width ?? '' }`,
+        margin: `${ customStyle?.button_margin ?? '' }px`,
+        padding: `${ customStyle?.button_padding ?? '' }px`,
     };
 
     const hoverStyle = {
-        border: `1px solid ${
-            customStyle?.button_border_color_onhover ?? '#000000'
+        border: `${ customStyle?.button_border_size ?? '' }px solid ${
+            customStyle?.button_border_color_onhover ?? ''
         }`,
-        color: customStyle?.button_text_color_onhover ?? '#000000',
+        color: customStyle?.button_text_color_onhover ?? '',
         backgroundColor:
-            customStyle?.button_background_color_onhover ?? '#ffffff',
+            customStyle?.button_background_color_onhover ?? '',
     };
 
     const [ hovered, setHovered ] = useState( false );
