@@ -1,6 +1,5 @@
 // /* global appLocalizer */
-import Brand from '../../assets/images/brand-logo.png';
-import BrandSmall from '../../assets/images/brand-icon.png';
+import Brand from '../../assets/images/mvx-brand-logo.png';
 import React, { useEffect, JSX } from 'react';
 import { __ } from '@wordpress/i18n';
 // Context
@@ -11,13 +10,12 @@ import { getTemplateData } from '../../services/templateService';
 import {
     getAvailableSettings,
     getSettingById,
-    SettingContent,
     Support,
     AdminForm,
     Banner,
     Tabs,
+    useModules
 } from 'zyra';
-import { useModules } from '../../contexts/ModuleContext';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -144,7 +142,7 @@ const faqs = [
 
 const Settings: React.FC< SettingsProps > = () => {
     const settingsArray: SettingItem[] = getAvailableSettings(
-        getTemplateData(),
+        getTemplateData('settings'),
         []
     );
     const location = new URLSearchParams( useLocation().hash.substring( 1 ) );
@@ -228,11 +226,10 @@ const Settings: React.FC< SettingsProps > = () => {
                 getForm={ GetForm }
                 BannerSection={ getBanner }
                 prepareUrl={ ( subTab: string ) =>
-                    `?page=multivendorx#&tab=settings&subtab=${ subTab }`
+                    `?page=multivendorx#&tab=marketplace&subtab=${ subTab }`
                 }
                 appLocalizer={ appLocalizer }
                 brandImg={ Brand }
-                smallbrandImg={ BrandSmall }
                 supprot={ supportLink }
                 Link={ Link }
             />

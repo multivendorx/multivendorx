@@ -5,130 +5,57 @@ export default {
     priority: 1,
     name: __( 'General', 'multivendorx' ),
     desc: __(
-        'Configure the basic setting of the marketplace.',
+        'Controls how sellers are onboarded and what access they get.',
         'multivendorx'
     ),
+    video: {
+        icon: 'adminlib-general-tab', // optional icon class
+        link: 'https://example.com/video/general-settings',
+    },
+    docs: {
+        icon: 'adminlib-general-tab', // optional icon class
+        link: 'https://example.com/docs/general-settings',
+    },
     icon: 'adminlib-general-tab',
     submitUrl: 'settings',
     modal: [
+
         {
-            key: 'approve_vendor',
-            type: 'setting-toggle',
-            label: __( 'Vendor approval', 'multivendorx' ),
-            desc: __(
-                'Decide how you want to approve new vendors for your marketplace: <li>Manual Approval: Review and approve vendors manually. <li>Automatic Approval: Automatically approve vendors without review.',
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'manually',
-                    label: __( 'Manually', 'multivendorx' ),
-                    value: 'manually',
-                },
-                {
-                    key: 'automatically',
-                    label: __( 'Automatically', 'multivendorx' ),
-                    value: 'automatically',
-                },
-            ],
-        },
-        {
-            key: 'vendors_backend_access',
-            type: 'checkbox',
-            label: __( 'Vendor backend access', 'multivendorx' ),
-            desc: __(
-                'Unlock an all-in-one vendor dashboard that allows vendors to manage everything in one place',
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'vendors_backend_access',
-                    value: 'vendors_backend_access',
-                },
-            ],
-            look: 'toggle',
-            proSetting: true,
-        },
-        {
-            key: 'display_product_seller',
-            type: 'checkbox',
-            label: __( 'Display vendor name on products', 'multivendorx' ),
-            desc: __(
-                "show the vendor's name on their product listings. This helps customers identify who they're buying from.",
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'display_product_seller',
-                    value: 'display_product_seller',
-                },
-            ],
-            look: 'toggle',
-        },
-        {
-            key: 'category_pyramid_guide',
-            type: 'checkbox',
-            label: __( 'Category assistance (CPG)', 'multivendorx' ),
-            desc: __(
-                'Help vendors categorize their products accurately with the Category Pyramid Guide.',
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'category_pyramid_guide',
-                    value: 'category_pyramid_guide',
-                },
-            ],
-            look: 'toggle',
-        },
-        {
-            key: 'is_customer_support_details',
-            type: 'checkbox',
-            label: __( 'Customer support information', 'multivendorx' ),
-            desc: __(
-                'Display customer support details on the "Thank You" page and in new order confirmation emails. This can improve customer satisfaction by making support easily accessible.',
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'is_customer_support_details',
-                    value: 'is_customer_support_details',
-                },
-            ],
-            look: 'toggle',
-        },
-        {
-            key: 'separator_content',
+            key: 'section',
             type: 'section',
-        },
-        {
-            key: 'vendor_list_page',
-            type: 'blocktext',
-            label: __( 'no_label', 'multivendorx' ),
-            blocktext: __(
-                "Use the <code>[mvx_vendorlist]</code> shortcode to display vendor's list on your site <a href='https://www.w3schools.com'>Learn More</a>",
+            hint: __(
+                'Core Pages & API Links',
                 'multivendorx'
             ),
         },
         {
-            key: 'registration_page',
+            key: 'seller_registration_page',
             type: 'select',
-            label: __( 'Registration page', 'multivendorx' ),
+            label: __( 'Seller Registration Page', 'multivendorx' ),
             desc: __(
-                'Select the page on which you have inserted <code>[vendor_registration]</code> shortcode.This is the page where new vendors can sign up.',
+                'Select the page where you have inserted the <code>[seller_registration]</code> shortcode. This page will be used to onboard new sellers.',
                 'multivendorx'
             ),
             options: appLocalizer.pages_list,
         },
         {
-            key: 'vendor_dashboard_page',
+            key: 'store_dashboard_page',
             type: 'select',
-            label: __( 'Vendor dashboard page', 'multivendorx' ),
+            label: __( 'store dashboard page', 'multivendorx' ),
             desc: __(
-                'Select the page on which you have inserted <code>[mvx_vendor]</code> shortcode. This will be the main dashboard page for your vendors to manage their store.',
+                'Select the page on which you have inserted <code>[mvx_store]</code> shortcode. This will be the main dashboard page for your vendors to manage their store.',
                 'multivendorx'
             ),
             options: appLocalizer.pages_list,
+        },
+        {
+            key: 'store_url',
+            type: 'text',
+            desc: __(
+                'Define the custom slug for the vendor store URL. For example, in the URL: https://yourdomain.com/store/[this-text]/[vendor-name], "[this-text]" will be replaced by the slug you set here.',
+                'multivendorx'
+            ),
+            label: __('Store Store URL', 'multivendorx'),
         },
         {
             key: 'mvx_tinymce_api_section',
@@ -156,15 +83,15 @@ export default {
                 },
                 {
                     key: '',
-                    label: '[vendor_registration]',
+                    label: '[store_registration]',
                     desc: __(
-                        'Creates a page where the vendor registration form is available',
+                        'Creates a page where the store registration form is available',
                         'multivendorx'
                     ),
                 },
                 {
                     key: '',
-                    label: '[vendor_coupons]',
+                    label: '[store_coupons]',
                     desc: __(
                         'Lets you view  a brief summary of the coupons created by the seller and number of times it has been used by the customers',
                         'multivendorx'
@@ -236,5 +163,6 @@ export default {
                 },
             ],
         },
+
     ],
 };

@@ -38,12 +38,12 @@ class MultiVendorX_REST_Orders_Controller extends \WP_REST_Controller {
 
 
     // GET permission
-    public function get_items_permissions_check() {
+    public function get_items_permissions_check($request) {
         return current_user_can( 'read' );
     }
 
     // POST permission
-    public function create_item_permissions_check() {
+    public function create_item_permissions_check($request) {
         return current_user_can( 'edit_posts' );
     }
 

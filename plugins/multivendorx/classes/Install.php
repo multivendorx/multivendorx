@@ -23,12 +23,14 @@ class Install {
      */
     public function __construct() {
 
-        if ( ! get_option( 'dc_product_vendor_plugin_db_version', false ) ) {
-            $this->create_database_table();
-            $this->set_default_settings();
-        } else {
-            $this->do_migration();
-        }
+        // if ( ! get_option( 'dc_product_vendor_plugin_db_version', false ) ) {
+        //     $this->create_database_table();
+        //     $this->set_default_settings();
+        // } else {
+        //     $this->do_migration();
+        // }
+            
+        $this->create_database_table();
         $this->plugin_create_pages();
         update_option( 'dc_product_vendor_plugin_db_version', MULTIVENDORX_PLUGIN_VERSION );
 
@@ -71,12 +73,64 @@ class Install {
             PRIMARY KEY (`ID`)
         ) $collate;";
 
+        $sql_store = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['store'] . "` (
+            `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+            `status` varchar(20) DEFAULT NULL,
+            `name` varchar(20) NOT NULL,
+            `slug` varchar(20) NOT NULL,
+            `description` TEXT DEFAULT NULL,
+            `who_created` TEXT DEFAULT NULL,
+            `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`ID`)
+        ) $collate;";
+
+        $sql_store_users = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['store_users'] . "` (
+            `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+            `store_id` bigint(20) NOT NULL,
+            `user_id` bigint(20) NOT NULL,
+            `role_id` bigint(20) NOT NULL,
+            PRIMARY KEY (`ID`)
+        ) $collate;";
+
+        $sql_store_social = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['store_meta'] . "` (
+            `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+            `store_id` bigint(20) NOT NULL,
+            `address_1` TEXT DEFAULT NULL,
+            `address_2` TEXT DEFAULT NULL,
+            `city` varchar(20) DEFAULT NULL,
+            `postcode` varchar(20) DEFAULT NULL,
+            `country` varchar(100) DEFAULT NULL,
+            `country_code` varchar(20) DEFAULT NULL,
+            `state` varchar(100) DEFAULT NULL,
+            `state_code` varchar(20) DEFAULT NULL, 
+            `phone` bigint(20) DEFAULT 0,
+            `commission` float(20, 2) NOT NULL DEFAULT 0,
+            `location` varchar(255) DEFAULT NULL,
+            `lat` varchar(100) DEFAULT NULL,
+            `lng` varchar(100) DEFAULT NULL,
+            `image` TEXT DEFAULT NULL,
+            `banner` TEXT DEFAULT NULL,
+            `banner_type` varchar(100) DEFAULT NULL,
+            `video` varchar(255) DEFAULT NULL,
+            `slider` varchar(255) DEFAULT NULL,
+            `facebook` varchar(20),
+            `twitter` varchar(20),
+            `linkdin` varchar(20),
+            `youtube` varchar(20),
+            `pinterest` varchar(20),
+            `instagram` varchar(20),
+            PRIMARY KEY (`ID`)
+        ) $collate;";
+         
         // Include upgrade functions if not loaded.
         if ( ! function_exists( 'dbDelta' ) ) {
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         }
         
         dbDelta( $sql_commission );
+        dbDelta( $sql_store );
+        dbDelta( $sql_store_users );
+        dbDelta( $sql_store_social );
     }
 
     /**
@@ -124,6 +178,6 @@ class Install {
 
         $page_id = wp_insert_post( $page_data );
 
-        update_option( 'notifima_subscription_confirmation_page', $page_id );
+        update_option( 'mvx_product_vendor_vendor_dashboard_page_id', $page_id );
     }
 }

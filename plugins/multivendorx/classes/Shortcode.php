@@ -7,7 +7,7 @@ namespace MultiVendorX;
  *
  * @class 		Shortcode class
  * @version		PRODUCT_VERSION
- * @author 		MultivendorX
+ * @author 		MultiVendorX
  */
 class Shortcode {
     /**
@@ -27,10 +27,10 @@ class Shortcode {
     public function display_vendor_dashboard() {
         $this->frontend_scripts();
         ob_start();
-        ?>
-        <div id="multivendorx-vendor-dashboard">
-        </div>
-        <?php
+
+        MultiVendorX()->plugin_path . 'templates/vendor-dashboard.php';
+        // <div id="multivendorx-vendor-dashboard">
+        // </div> 
         return ob_get_clean();
     }
     

@@ -1,0 +1,55 @@
+import { __ } from '@wordpress/i18n';
+
+export default {
+    id: 'policy',
+    priority: 3,
+    name: __( 'Add Policies For Your Site', 'mvx-pro' ),
+    desc: __( 'Add policies that are applicable to your site.', 'mvx-pro' ),
+    icon: 'adminlib-support',
+    submitUrl: 'settings',
+    modal: [
+        {
+            key: 'store-policy',
+            type: 'textarea',
+            desc: __(
+                'Site will reflect admin created policy. However stores can edit and override store policies.',
+                'multivendorx'
+            ),
+            label: __( 'Store Policy', 'multivendorx' ),
+            moduleEnabled: 'store-policy',
+        },
+        {
+            key: 'shipping_policy',
+            type: 'textarea',
+            desc: __(
+                'Site will reflect admin created policy. However stores can edit and override store policies.',
+                'multivendorx'
+            ),
+            label: __( 'Shipping Policy', 'multivendorx' ),
+            moduleEnabled: 'store-policy',
+        },
+        {
+            key: 'refund_policy',
+            type: 'textarea',
+            desc: __(
+                'Site will reflect admin created policy. However stores can edit and override store policies.',
+                'multivendorx'
+            ),
+            label: __( 'Refund Policy', 'multivendorx' ),
+            moduleEnabled: 'store-policy',
+        },
+        {
+            key: 'cancellation_policy',
+            type: 'textarea',
+            desc: __(
+                'Site will reflect admin created policy. However stores can edit and override store policies.',
+                'multivendorx'
+            ),
+            label: __(
+                'Cancellation / Return / Exchange Policy',
+                'multivendorx'
+            ),
+            moduleEnabled: 'store-policy',
+        },
+    ],
+};

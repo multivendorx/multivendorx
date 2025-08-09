@@ -7,7 +7,7 @@ namespace MultiVendorX;
  *
  * @class 		Frontend class
  * @version		PRODUCT_VERSION
- * @author 		MultivendorX
+ * @author 		MultiVendorX
  */
 class Frontend {
     /**

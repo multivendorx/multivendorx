@@ -7,10 +7,10 @@ use \MultiVendorX\Vendor\VendorUtil as VendorUtil;
 defined('ABSPATH') || exit;
 
 /**
- * MultivendorX Order Hook class
+ * MultiVendorX Order Hook class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 

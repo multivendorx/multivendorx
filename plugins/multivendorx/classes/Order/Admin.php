@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
  * MultiVendorX Order Admin class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 

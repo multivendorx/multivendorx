@@ -5,10 +5,10 @@ namespace MultiVendorX\Vendor;
 defined('ABSPATH') || exit;
 
 /**
- * MVX Vendor Util class
+ * MultiVendorX Vendor Util class
  *
  * @version		2.2.0
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 

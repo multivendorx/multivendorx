@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * MultiVendorX Vendor Order Class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 class VendorOrder {

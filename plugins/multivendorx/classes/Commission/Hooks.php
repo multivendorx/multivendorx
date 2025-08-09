@@ -6,10 +6,10 @@ use MultiVendorX\Order\VendorOrder as VendorOrder;
 defined('ABSPATH') || exit;
 
 /**
- * MVX Commission Hooks class
+ * MultiVendorX Commission Hooks class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 class Hooks {

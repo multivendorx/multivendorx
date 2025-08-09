@@ -265,11 +265,6 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_multivendorx_register_styles',
             array(
-				'multivendorx-style'            => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
-					'deps'    => array(),
-					'version' => $version,
-				),
 				'multivendorx-components-style' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/components.css',
 					'deps'    => array(),
@@ -302,6 +297,8 @@ class FrontendScripts {
                 'products',
                 'products-capability',
                 'commissions',
+                'product-report-abuse',
+                'role-manager'
             )
 		);
 
@@ -322,6 +319,29 @@ class FrontendScripts {
                     );
                 }
             }
+
+            $shortcode = '[multivendorx_vendor_dashboard]';
+            $matched_pages = array_filter( $pages, function ( $page ) use ( $shortcode ) {
+                return strpos( $page->post_content, $shortcode ) !== false;
+            });
+
+            foreach ( $matched_pages as $page ) {
+                $vendor_dashboard_pages[] = array(
+                    'value'=> $page->post_name,
+                    'label'=> $page->post_title,
+                    'key'=> $page->ID,
+                );
+            }
+        }
+
+        $woo_countries = new \WC_Countries();
+        $countries = $woo_countries->get_allowed_countries();
+        $country_list = [];
+        foreach ($countries as $countries_key => $countries_value) {
+            $country_list[] = array(
+                'label' => $countries_value,
+                'value' => $countries_key
+            );
         }
 
         $localize_scripts = apply_filters(
@@ -337,8 +357,10 @@ class FrontendScripts {
 						'tab_name'                 => __( 'MultiVendorX', 'multivendorx' ),
 						'settings_databases_value' => $settings_databases_value,
 						'pages_list'               => $pages_array,
+						'vendor_dashboard_pages'   => $vendor_dashboard_pages,
 						'pro_url'                  => esc_url( MULTIVENDORX_PRO_SHOP_URL ),
                         'open_uploader'            => 'Upload Image',
+                        'country_list'             => $country_list,
                         'default_logo'             => MultiVendorX()->plugin_url.'assets/images/WP-stdavatar.png',
 					),
                 )
