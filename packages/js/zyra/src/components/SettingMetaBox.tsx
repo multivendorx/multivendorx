@@ -138,7 +138,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
         if ( formField?.type === 'recaptcha' ) {
             onChange( 'disabled', isSiteKeyEmpty );
         }
-    }, [ isSiteKeyEmpty, formField?.type, onChange ] );
+    }, [ isSiteKeyEmpty, formField?.type ] );
 
     useEffect( () => {
         setHasOpened( opened.click );

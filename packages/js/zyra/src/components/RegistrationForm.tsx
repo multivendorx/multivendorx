@@ -516,7 +516,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
                                     >
                                         { /* Render dragable button */ }
                                         { opendInput?.id === formField.id && (
-                                            <div className="bth-move">
+                                            <div className="bth-move drag-handle">
                                                 <i className="admin-font adminlib-move"></i>
                                             </div>
                                         ) }
