@@ -359,6 +359,8 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                                                 >
                                                     Hidden
                                                 </label>
+
+                                                <span className="glider" />
                                             </div>
                                         </div>
                                     </FieldWrapper>

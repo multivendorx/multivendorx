@@ -1,0 +1,43 @@
+@use '../../global.scss' as *;
+
+.payment-tabs-component {
+    .payment-method-card {
+        margin-bottom: 1rem;
+        cursor: pointer;
+
+        .payment-method-header {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            background: #f9f4f4b8;
+            padding: 1rem;
+
+            .payment-method-icon {
+                padding: 0.5rem;
+                background: $theme-background-color;
+                border-radius: 0.5rem;
+                width: 3rem;
+                height: 3rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 1.5rem;
+                font-weight: 500;
+                color: $theme-color;
+            }
+
+            .payment-method-info {
+                .title {
+                    display: flex;
+                    gap: 0.5rem;
+
+                    span {
+                        font-size: 1.125rem;
+                        display: flex;
+                        gap: 1rem;
+                    }
+                }
+            }
+        }
+    }
+}

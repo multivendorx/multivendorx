@@ -1,27 +1,40 @@
 @use '../../global.scss' as *;
 
 .dynamic-fields-wrapper {
-  padding: 2rem;
+  padding: 1.5rem 0;
 
   .dynamic-form {
+    display: flex;
+    flex-wrap: wrap;
+
     .form-group {
       margin: 1.25rem 0;
       display: flex;
       align-items: flex-start;
       gap: 1rem;
+      width: 100%;
 
       .settings-form-label {
-        width: 27%;
+        width: 22%;
         word-wrap: break-word;
-      }
 
-      .settings-input-content {
-        flex: 1;
+        .title{
+          font-size: 0.95rem;
+          color: $text-color;
+          line-height: 0.95rem;
+        }
       }
-
-      &.no-label{
-        .settings-form-label {
-          display: none;
+      &.width-50{
+        width: 50%;
+      }
+      &.vertical{
+        flex-direction: column;
+        margin-bottom: 2rem;
+        &.settings-input-content{
+          width: fit-content;
+        }
+        .settings-form-label{
+          width: 100%;
         }
       }
     }

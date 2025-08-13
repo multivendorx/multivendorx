@@ -32,68 +32,137 @@ export interface PopupProps {
     modulePageUrl?: string;
 }
 
-const ProPopup: React.FC<PopupProps> = (props) => {
+const ProPopup: React.FC< PopupProps > = ( props ) => {
     return (
-        <DialogContent className={`${props.messages ? "pro-popup-content" : "module-popup-content"}`}>
+        <DialogContent>
             <DialogContentText>
                 <div className="popup-wrapper">
-                    {props.messages && (
-                        <>
-                            <div className="left-section"></div>
-                            <div className="right-section">
-                                <h4>
-                                    Unlock <span className="pro-tag">Pro</span>
-                                    <i className="popup-icon-star-notifima"></i>
-                                </h4>
+                    <div className="left-section"></div>
+                    <div className="right-section">
+                        { /* <div
+                            className="admin-font adminlib-cross"
+                            onClick={ () => setOpenDialog( false ) }
+                        ></div> */ }
+                        { props.messages && (
+                            <h4>
+                                Unlock <span className="pro-tag">Pro</span>
+                                <i className="popup-icon-star-notifima"></i>
+                            </h4>
+                        ) }
+                        { props.messages && (
+                            <>
                                 <ul className="features-list">
-                                    {props.messages?.map(
-                                        (message, index) => (
+                                    { props.messages?.map(
+                                        ( message, index ) => (
                                             <li
                                                 className="feature-item"
-                                                key={index}
+                                                key={ index }
                                             >
                                                 <i
-                                                    className={message.icon}
+                                                    className={ message.icon }
                                                 ></i>
-                                                <p>{message.text}</p>
+                                                <p>{ message.text }</p>
                                             </li>
                                         )
-                                    )}
+                                    ) }
                                 </ul>
                                 <span className="more-text">
-                                    {props.moreText}
+                                    { props.moreText }
                                 </span>
                                 <div className="footer-button">
                                     <a
                                         className="admin-btn btn-purple"
                                         target="_blank"
                                         rel="noreferrer"
-                                        href={props.proUrl}
+                                        href={ props.proUrl }
                                     >
                                         Upgrade to pro
                                     </a>
                                 </div>
-                            </div>
-                        </>
-                    )}
-                    {props.moduleName && (
-                        <>
-                            <h2>{props.message}</h2>
-                            <a
-                                className="admin-btn btn-red"
-                                href={props.modulePageUrl}
-                            >
-                                {props.moduleButton}
-                            </a>
-                        </>
-                    )}
-                    {props.settings && (
-                        <>
-                            <h2>{props.message}</h2>
-                            <p>{props.SettingDescription}</p>
-                        </>
-                    )}
+                            </>
+                        ) }
+                        { props.moduleName && (
+                            <>
+                                <h2>{ props.message }</h2>
+                                <a
+                                    className="admin-btn btn-red"
+                                    href={ props.modulePageUrl }
+                                >
+                                    { props.moduleButton }
+                                </a>
+                            </>
+                        ) }
+                        { props.settings && (
+                            <>
+                                <h2>{ props.message }</h2>
+                                <p>{ props.SettingDescription }</p>
+                            </>
+                        ) }
+                    </div>
                 </div>
+
+                { /* <div className="popup-wrapper">
+                    <div className="popup-content">
+                        {props.messages && (
+                            <div className="heading">
+                                Unlock <span className="pro-text">Pro</span>
+                            </div>
+                        )}
+                        <div className="popup-body">
+                            {props.messages && (
+                                <>
+                                    <strong>{props.title}</strong>
+                                    <p>&nbsp;</p>
+                                    {props.messages?.map((message, index) => (
+                                        <p key={index}>{`${index + 1
+                                            }. ${message}`}</p>
+                                    ))}
+                                    <a
+                                        className="admin-btn btn-red"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        href={props.proUrl}
+                                    >
+                                        Upgrade to Pro
+                                    </a>
+                                </>
+                            )}
+                            {props.moduleName && (
+                                <>
+                                    <h2>{props.message}</h2>
+                                    <a
+                                        className="admin-btn btn-red"
+                                        href={props.modulePageUrl}
+                                    >
+                                        {props.moduleButton}
+                                    </a>
+                                </>
+                            )}
+                            {props.settings && (
+                                <>
+                                    <h2>{props.message}</h2>
+                                    <p>{props.SettingDescription}</p>
+                                </>
+                            )}
+                        </div>
+                        {props.plugin && (
+                            <div>
+                                <h2>{props.message}</h2>
+                                <p id="description">
+                                    {props.pluginDescription}
+                                </p>
+                                <a
+                                    className="admin-btn btn-red"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href={props.pluginUrl}
+                                >
+                                    {props.pluginButton}
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                </div> */ }
             </DialogContentText>
         </DialogContent>
     );

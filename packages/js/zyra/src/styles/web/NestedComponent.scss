@@ -1,0 +1,36 @@
+@use '../../global.scss' as *;
+
+.nested-wrapper {
+    .nested-row {
+        background: #ece2f92e;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        gap: 1rem;
+
+
+        label {
+            font-size: 1.125rem;
+        }
+
+        .toggle-setting-wrapper {
+            margin-bottom: 0;
+        }
+        .basic-input{
+            width: fit-content;
+        }
+        .buttons-wrapper {
+            position: absolute;
+            right: 1rem;
+            bottom: 2.5rem;
+        }
+        .setting-form-input{
+            .basic-input{
+                width: 100%;
+            }
+        }
+    }
+}

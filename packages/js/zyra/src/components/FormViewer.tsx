@@ -322,7 +322,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
     const defaultDate: string = new Date().getFullYear() + '-01-01';
 
     return (
-        <main className="form-wrapper">
+        <main className="enquiry-pro-form">
             { formList.map( ( field ) => {
                 if ( field.disabled ) return null;
                 switch ( field.type ) {
@@ -335,13 +335,12 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'text':
                         return (
-                            <section className="section-wrapper">
+                            <section className="form-text form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
                                 <input
                                     type="text"
-                                    className="basic-input"
                                     name={ field.name }
                                     value={
                                         field.name === 'name'
@@ -382,13 +381,12 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'email':
                         return (
-                            <section className="section-wrapper">
+                            <section className="form-email form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
                                 <input
                                     type="email"
-                                    className="basic-input"
                                     name={ field.name }
                                     value={
                                         ( typeof enquiryFormData !==
@@ -421,7 +419,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'textarea':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
@@ -429,7 +427,6 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                                     name={ field.name }
                                     value={ inputs[ field.name ?? '' ] }
                                     placeholder={ field.placeholder }
-                                    className="basic-textarea"
                                     onChange={ ( e ) =>
                                         handleChange(
                                             field.name ?? '',
@@ -451,7 +448,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                     case 'checkboxes':
                         return (
                             <section
-                                className="section-wrapper"
+                                className="form-pro-sections"
                                 key={ field.name }
                             >
                                 <label htmlFor={ field.name }>
@@ -467,11 +464,11 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'multiselect':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
-                                <div className="multiselect-container items-wrapper">
+                                <div className="multiselect-container">
                                     <Multiselect
                                         options={ field.options ?? [] }
                                         onChange={ ( data ) =>
@@ -492,11 +489,11 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'dropdown':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
-                                <div className="multiselect-container items-wrapper">
+                                <div className="multiselect-container">
                                     <Multiselect
                                         options={ field.options ?? [] }
                                         onChange={ ( data ) =>
@@ -516,7 +513,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'radio':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
@@ -535,7 +532,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'recaptcha':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 <div className="recaptcha-wrapper">
                                     <input
                                         type="hidden"
@@ -547,11 +544,11 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'attachment':
                         return (
-                            <section className="section-wrapper">
+                            <section className="form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
-                                <div className="attachment-section items-wrapper">
+                                <div className="attachment-section">
                                     { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
                                     <label
                                         htmlFor="dropzone-file"
@@ -598,14 +595,13 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'datepicker':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
-                                <div>
+                                <div className="date-picker-wrapper">
                                     <input
                                         type="date"
-                                        className="basic-input"
                                         value={
                                             inputs[ field.name ?? '' ] ||
                                             defaultDate
@@ -627,13 +623,12 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'timepicker':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 <label htmlFor={ field.name }>
                                     { field.label }
                                 </label>
                                 <input
                                     type="time"
-                                    className="basic-input"
                                     value={ inputs[ field.name ?? '' ] }
                                     onChange={ ( e ) => {
                                         handleChange(
@@ -651,7 +646,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         );
                     case 'section':
                         return (
-                            <section className=" section-wrapper">
+                            <section className=" form-pro-sections">
                                 { field.label }
                             </section>
                         );
@@ -663,7 +658,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                         return null;
                 }
             } ) }
-            <section className="buttons-wrapper">
+            <section className="popup-footer-section">
                 <Button
                     customStyle={ buttonSetting }
                     onClick={ ( e ) => {
@@ -682,7 +677,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                     } }
                     children={ 'Submit' }
                 />
-                <button id="close-enquiry-popup">
+                <button id="close-enquiry-popup" className="admin-btn btn-red">
                     { 'Close' }
                 </button>
             </section>

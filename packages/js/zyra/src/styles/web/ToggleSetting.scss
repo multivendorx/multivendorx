@@ -59,7 +59,7 @@ div:has(.exclusion-modal) {
             }
         }
 
-        .modal-close-btn{
+        .modal-close-btn {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -172,12 +172,12 @@ div:has(.exclusion-modal) {
             flex-direction: column;
             gap: 0.25rem;
 
-            &::-webkit-scrollbar{
+            &::-webkit-scrollbar {
                 width: 8px;
                 margin: 0;
             }
 
-            &::-webkit-scrollbar-thumb{
+            &::-webkit-scrollbar-thumb {
                 background-color: #65438f;
                 border-radius: 0.25rem;
             }
@@ -190,46 +190,49 @@ div:has(.exclusion-modal) {
     }
 }
 
-.toggle-setting-container{
+.toggle-setting-container {
     position: relative;
     width: fit-content;
 
-    .toggle-setting-wrapper{
-        position: relative;
-        padding: 0.5rem;
-        border: .063rem solid #d4d1d9;
-        border-radius: 0.25rem;
+    .toggle-setting-wrapper {
         display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        width: max-content;
-        margin: 0;
+        margin-bottom: 1rem;
 
-        div{
+        div {
             list-style-type: none;
             margin: 0;
 
-            input[type="radio"]{
+            input[type="radio"] {
                 display: none; // for radio button hide
             }
 
-            label{
-                color: #181718;
+            label {
+                list-style-type: none;
+                margin: 0;
+                padding: 0.5rem 1.5rem;
+                border: $border-light-medium;
+                font-weight: 500;
+                line-height: 1rem;
                 font-size: 0.9rem;
-                line-height: 2.2;
-                text-align: center;
-                padding: 0.4rem 0.7rem;
-                border-radius: 0.25rem;
-                border: .063rem solid #d4d1d9;
-                transition: .1s ease-in-out;
+                color: #9fa1a4;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-right: none;
             }
-
-            input:checked + label{
-                background: #65438f;
-                color: #f9f8fb;
-                border-color: #65438f;
-            }           
+            input:checked+label {
+                color: $theme-color;
+                background: #ece2f9;
+                border: $border-theme-medium;
+            }
+            &:last-child label{
+                border-top-right-radius: 0.313rem;
+                border-bottom-right-radius: 0.313rem;
+                border-right: $border-light-medium;
+            }
+            &:first-child label{
+                border-top-left-radius: 0.313rem;
+                border-bottom-left-radius: 0.313rem;
+            }
         }
     }
 }
-
