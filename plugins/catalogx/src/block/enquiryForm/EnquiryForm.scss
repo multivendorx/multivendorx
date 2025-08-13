@@ -1,0 +1,195 @@
+.single-product-page-action-btn-catalogx {
+    position: relative;
+}
+
+.catalogx-modal {
+    width: 100%;
+    margin-top: 0.5rem;
+    top: 100%;
+
+    &.popup-enable {
+        margin: 0 0;
+
+        .enquiry-form-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba($color: #000000, $alpha: 0.5);
+            width: 100vw;
+            height: 100vh;
+            z-index: 123570;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: scroll;
+            gap: 1rem;
+
+            .modal-wrapper {
+                width: 34.375rem;
+                max-height: 40.625rem;
+                overflow-y: scroll;
+                height: auto;
+                background-color: #fff;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                margin: 1rem;
+                position: relative;
+
+                .catalogx-modal-close-btn {
+                    display: flex;
+                }
+            }
+        }
+    }
+}
+
+.single-product-page-action-btn-catalogx {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    justify-content: flex-start;
+    padding-top: 0.213rem;
+    width: 100%;
+}
+
+.admin-notice-display-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    background-color: rgb(12 216 12 / 100%);
+    color: #fff;
+    max-width: 15rem;
+    width: fit-content;
+    padding: 0.5rem 0;
+    padding: 0.5rem;
+    font-weight: 400;
+    position: fixed;
+    top: 7.188rem;
+    right: 1.512rem;
+    z-index: 99999;
+    font-size: 1rem;
+
+    &::after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        content: "";
+        width: 100%;
+        height: 0.252rem;
+        background: green;
+        animation: progress 2s linear;
+
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+    }
+}
+.loader-wrapper {
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    gap: 1rem;
+    margin: 0.5rem 0;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    background: #0000001c;
+
+    
+    .loader-item {
+        --uib-size: 2.205rem;
+        --uib-speed: 0.8s;
+        position: relative;
+        display: inline-block;
+        height: var(--uib-size);
+        width: var(--uib-size);
+        animation: spin78236 calc(var(--uib-speed) * 2.5) infinite linear;
+        .three-body-dot {
+            position: absolute;
+            height: 100%;
+            width: 30%;
+            &::after {
+            content: "";
+            position: absolute;
+            height: 0%;
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: #5007AA;
+            border-radius: 50%;
+            }
+            &:nth-child(1) {
+            bottom: 5%;
+            left: 0;
+            transform: rotate(60deg);
+            transform-origin: 50% 85%;
+            &::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite ease-in-out;
+                animation-delay: calc(var(--uib-speed) * -0.3);
+            }
+            }
+            &:nth-child(2) {
+            bottom: 5%;
+            right: 0;
+            transform: rotate(-60deg);
+            transform-origin: 50% 85%;
+            &::after {
+                bottom: 0;
+                left: 0;
+                animation: wobble1 var(--uib-speed) infinite calc(var(--uib-speed) * -0.15) ease-in-out;
+            }
+            }
+            &:nth-child(3) {
+            bottom: -5%;
+            left: 0;
+            transform: translateX(116.666%);
+            &::after {
+                top: 0;
+                left: 0;
+                animation: wobble2 var(--uib-speed) infinite ease-in-out;
+            }
+            }
+        }
+        @keyframes spin78236 {
+            0% {
+            transform: rotate(0deg);
+            }
+            100% {
+            transform: rotate(360deg);
+            }
+        }
+        @keyframes wobble1 {
+            0%,
+            100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
+            }
+            50% {
+            transform: translateY(-66%) scale(0.65);
+            opacity: 0.8;
+            }
+        }
+        @keyframes wobble2 {
+            0%,
+            100% {
+            transform: translateY(0%) scale(1);
+            opacity: 1;
+            }
+            50% {
+            transform: translateY(66%) scale(0.65);
+            opacity: 0.8;
+            }
+        }
+    }
+  } 
