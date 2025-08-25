@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Coding Standards for CatalogX">
+
+	<description>The Coding standard for the WordPress Coding Standards itself.</description>
+
+	<file>.</file>
+	<!-- Exclude Composer vendor directory. -->
+	<exclude-pattern type="relative">^\.git/*</exclude-pattern>
+	<exclude-pattern type="relative">*\.asset\.php$</exclude-pattern>
+	<exclude-pattern type="relative">^vendor/*</exclude-pattern>
+	<exclude-pattern type="relative">^src/*</exclude-pattern>
+	<exclude-pattern type="relative">^release/*</exclude-pattern>
+    <exclude-pattern type="relative">^node_modules/*</exclude-pattern>
+	<exclude-pattern type="relative">^languages/*</exclude-pattern>
+	<exclude-pattern type="relative">^log/*</exclude-pattern>
+	<exclude-pattern type="relative">^assets/*</exclude-pattern>
+
+	<!-- Only check PHP files. -->
+	<arg name="extensions" value="php"/>
+
+	<!-- Show progress, show the error codes for each message (source). -->
+	<arg value="ps"/>
+
+	<!-- Strip the filepaths down to the relevant bit. -->
+	<arg name="basepath" value="."/>
+
+	<!-- Check up to 8 files simultaneously. -->
+	<arg name="parallel" value="8"/>
+
+	<!-- Check code for cross-version PHP compatibility. -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibility"/>
+
+	<!-- Rules: WordPress Coding Standards -->
+    <!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards -->
+    <!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties -->
+    <config name="minimum_supported_wp_version" value="6.4"/>
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress">
+		<exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+	</rule>
+
+	<!-- This rule customizes the WordPress internationalization (i18n) 
+	sniff (WordPress.WP.I18n) by specifying the expected text domain in translation functions like __(), _e(), esc_html__(), etc. -->
+	<rule ref="WordPress.WP.I18n">
+        <properties>
+            <!-- Value: replace the text domain used. -->
+            <property name="text_domain" type="array" value="catalogx"/>
+        </properties>
+    </rule>
+
+	<!-- This customizes the WordPress.WhiteSpace.ControlStructureSpacing sniff, 
+	which enforces spacing and blank lines before and after control structures like if, for, foreach, while, switch, etc. -->
+	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
+        <properties>
+            <property name="blank_line_check" value="true"/>
+        </properties>
+    </rule>
+
+	<!-- The rule you've shared is part of the WordPress Coding Standards for PHP_CodeSniffer and is related to security, 
+	specifically ensuring that input data is properly validated and sanitized before being used in the code. -->
+	<!-- Ref: https://github.com/WordPress/WordPress-Coding-Standards/wiki/Sanitizing-array-input-data -->
+    <rule ref="WordPress.Security.ValidatedSanitizedInput">
+        <properties>
+            <property name="customSanitizingFunctions" type="array">
+                <element value="wc_clean"/>
+                <element value="wc_esc_json"/>
+            </property>
+        </properties>
+    </rule>
+
+	<!-- Define the custom capability for woocommerce -->
+    <!-- Ref: https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/phpcs.xml#L57 -->
+	<rule ref="WordPress.WP.Capabilities">
+		<properties>
+			<property name="custom_capabilities" type="array">
+				<element key="0" value="download_file"/>
+				<element key="1" value="read_product"/>
+				<element key="2" value="edit_products"/>
+				<element key="3" value="edit_private_products"/>
+				<element key="4" value="edit_others_products"/>
+				<element key="5" value="edit_product"/>
+				<element key="6" value="publish_shop_orders"/>
+				<element key="7" value="edit_shop_orders"/>
+				<element key="8" value="edit_others_shop_orders"/>
+				<element key="9" value="view_order"/>
+				<element key="10" value="pay_for_order"/>
+				<element key="11" value="order_again"/>
+				<element key="12" value="cancel_order"/>
+				<element key="13" value="read_private_shop_orders"/>
+				<element key="14" value="customer"/>
+				<element key="15" value="manage_woocommerce"/>
+				<element key="16" value="manage_product_terms"/>
+				<element key="17" value="view_woocommerce_reports"/>
+			</property>
+		</properties>
+	</rule>
+
+
+	<!-- Custom Bypass Rules -->
+	<!--  -->
+	<rule ref="WordPress.Files.FileName">
+        <severity>0</severity>
+    </rule>
+	<rule ref="WordPress">
+		<exclude-pattern>*/Woocommerce_Catalog_Enquiry.php</exclude-pattern>
+	</rule>
+</ruleset>
