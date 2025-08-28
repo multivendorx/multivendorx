@@ -189,7 +189,6 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
                                         role="button"
                                         tabIndex={ 0 }
                                         onClick={ () => {
-                                            if ( moduleEnabledChange() ) return;
                                             setReadonlyFields( ( prev ) =>
                                                 prev.map( ( readonly, i ) =>
                                                     i === index

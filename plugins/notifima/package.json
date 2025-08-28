@@ -1,8 +1,8 @@
 {
     "name": "notifima",
-    "displayName": "woocommerce-product-stock-manager",
-    "version": "3.0.4",
-    "description": "=== WooCommerce Product Stock Manager ===",
+    "displayName": "woocommerce-product-stock-alert",
+    "version": "3.0.5",
+    "description": "=== Notifima ===",
     "main": "index.js",
     "engines": {
         "node": "^24.0.2"
@@ -16,6 +16,7 @@
         "build:project:translation:domains": "wireit",
         "watch:build": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
         "watch:build:project:bundle": "wireit",
+        "watch:build:project:minify": "wireit",
         "lint": "pnpm --if-present \"/^lint:lang:.*$/\"",
         "lint:fix": "pnpm --if-present \"/^lint:fix:.*$/\"",
         "lint:lang:js": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -42,7 +43,7 @@
         "minify": "node bin/minify.mjs",
         "version": "node bin/version-replace.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
-        "makepot": "wp i18n make-pot --domain='notifima' --include='assets/js,classes,templates,config.php,product_stock_alert.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://notifima.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Notifima Inc. All Rights Reserved.\" languages/notifima.pot"
+        "makepot": "wp i18n make-pot --domain='notifima' --include='assets/js,classes,src,templates,config.php,product_stock_alert.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://notifima.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Notifima Inc. All Rights Reserved.\" languages/notifima.pot"
     },
     "repository": {
         "type": "git",
@@ -84,6 +85,12 @@
                 "webpack.config.js"
             ],
             "service": true
+        },
+        "watch:build:project:minify": {
+            "command": "pnpm run minify",
+            "files": [
+                "src/**/*.{js,jsx,ts,tsx,scss}"
+            ]
         }
     },
     "dependencies": {

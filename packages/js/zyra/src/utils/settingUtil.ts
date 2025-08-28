@@ -26,42 +26,42 @@ type Setting = {
  *                             May include folders with nested settings.
  * @return {Setting[]}           The sorted array of settings by priority in ascending order.
  */
-const getSettingsByPriority = ( settings: Setting[] ): Setting[] => {
-    if ( Array.isArray( settings ) ) {
-        settings.sort( ( firstSet, secondSet ) => {
-            let firstPriority = 0;
-            let secondPriority = 0;
+const getSettingsByPriority = (settings: Setting[]): Setting[] => {
+	if (!Array.isArray(settings)) return [];
+   
+	settings.sort((a, b) => {
+		const aIsFolder = a.type === 'folder';
+		const bIsFolder = b.type === 'folder';
 
-            if ( firstSet.type === 'folder' ) {
-                firstSet.content = getSettingsByPriority(
-                    firstSet.content as Setting[]
-                );
-                const firstChild = ( firstSet.content as Setting[] )[ 0 ];
-                firstPriority =
-                    ( firstChild.content as SettingContent ).priority || 0;
-            } else {
-                firstPriority = ( firstSet.content as SettingContent ).priority;
-            }
+		// Step 1: Files first
+		if (!aIsFolder && bIsFolder) return -1;
+		if (aIsFolder && !bIsFolder) return 1;
 
-            if ( secondSet.type === 'folder' ) {
-                secondSet.content = getSettingsByPriority(
-                    secondSet.content as Setting[]
-                );
-                const firstChild = ( secondSet.content as Setting[] )[ 0 ];
-                secondPriority =
-                    ( firstChild.content as SettingContent ).priority || 0;
-            } else {
-                secondPriority = ( secondSet.content as SettingContent )
-                    .priority;
-            }
+		// Step 2: Priority comparison
+		let aPriority = 0;
+		let bPriority = 0;
 
-            return firstPriority - secondPriority;
-        } );
-    }
+		if (aIsFolder) {
+			a.content = getSettingsByPriority(a.content as Setting[]);
+			const aFirstChild = (a.content as Setting[])[0];
+			aPriority = (aFirstChild?.content as SettingContent)?.priority ?? 0;
+		} else {
+			aPriority = (a.content as SettingContent)?.priority ?? 0;
+		}
 
-    return settings;
+		if (bIsFolder) {
+			b.content = getSettingsByPriority(b.content as Setting[]);
+			const bFirstChild = (b.content as Setting[])[0];
+			bPriority = (bFirstChild?.content as SettingContent)?.priority ?? 0;
+		} else {
+			bPriority = (b.content as SettingContent)?.priority ?? 0;
+		}
+
+		return aPriority - bPriority;
+	});
+
+	return settings;
 };
-
 /**
  * Filters a list of settings by a given array of setting IDs.
  *

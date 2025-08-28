@@ -13,26 +13,26 @@ interface BasicInputProps {
     inputClass?: string;
     id?: string;
     type?:
-        | 'text'
-        | 'button'
-        | 'number'
-        | 'color'
-        | 'password'
-        | 'email'
-        | 'file'
-        | 'range'
-        | 'url';
+    | 'text'
+    | 'button'
+    | 'number'
+    | 'color'
+    | 'password'
+    | 'email'
+    | 'file'
+    | 'range'
+    | 'url';
     name?: string;
     value?: string | number;
     placeholder?: string;
     min?: number;
     max?: number;
-    onChange?: ( e: ChangeEvent< HTMLInputElement > ) => void;
-    onClick?: ( e: MouseEvent< HTMLInputElement > ) => void;
-    onMouseOver?: ( e: MouseEvent< HTMLInputElement > ) => void;
-    onMouseOut?: ( e: MouseEvent< HTMLInputElement > ) => void;
-    onFocus?: ( e: FocusEvent< HTMLInputElement > ) => void;
-    onBlur?: ( e: FocusEvent< HTMLInputElement > ) => void;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    onClick?: (e: MouseEvent<HTMLInputElement>) => void;
+    onMouseOver?: (e: MouseEvent<HTMLInputElement>) => void;
+    onMouseOut?: (e: MouseEvent<HTMLInputElement>) => void;
+    onFocus?: (e: FocusEvent<HTMLInputElement>) => void;
+    onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
     parameter?: string;
     generate?: string;
     proSetting?: boolean;
@@ -43,7 +43,7 @@ interface BasicInputProps {
     readOnly?: boolean;
 }
 
-const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
+const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
     (
         {
             wrapperClass,
@@ -73,95 +73,101 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
         },
         ref
     ) => {
-        const [ copied, setCopied ] = useState( false );
+        const [copied, setCopied] = useState(false);
 
-        const generateRandomKey = ( length = 8 ): string => {
+        const generateRandomKey = (length = 8): string => {
             const characters =
                 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            return Array.from( { length } )
-                .map( () =>
+            return Array.from({ length })
+                .map(() =>
                     characters.charAt(
-                        Math.floor( Math.random() * characters.length )
+                        Math.floor(Math.random() * characters.length)
                     )
                 )
-                .join( '' );
+                .join('');
         };
 
-        const generateSSOKey = ( e: MouseEvent< HTMLButtonElement > ) => {
+        const generateSSOKey = (e: MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
-            const key = generateRandomKey( 8 );
-            if ( onChange ) {
+            const key = generateRandomKey(8);
+            if (onChange) {
                 const event = {
                     target: { value: key },
-                } as unknown as ChangeEvent< HTMLInputElement >;
-                onChange( event );
+                } as unknown as ChangeEvent<HTMLInputElement>;
+                onChange(event);
             }
         };
 
-        const handleCopy = ( e: MouseEvent< HTMLButtonElement > ) => {
+        const handleCopy = (e: MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
-            if ( value ) {
-                navigator.clipboard.writeText( String( value ) ).then( () => {
-                    setCopied( true );
-                    setTimeout( () => setCopied( false ), 10000 );
-                } );
+            if (value) {
+                navigator.clipboard.writeText(String(value)).then(() => {
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 10000);
+                });
             }
         };
 
-        const handleClear = ( e: MouseEvent< HTMLButtonElement > ) => {
+        const handleClear = (e: MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
-            if ( onChange ) {
+            if (onChange) {
                 const event = {
                     target: { value: '' },
-                } as unknown as ChangeEvent< HTMLInputElement >;
-                onChange( event );
+                } as unknown as ChangeEvent<HTMLInputElement>;
+                onChange(event);
             }
         };
 
         return (
             <>
                 <div
-                    className={ `${ wrapperClass || '' } ${
-                        generate ? 'generate' : ''
-                    }` }
+                    className={`${wrapperClass || ''} ${generate ? 'generate' : ''
+                        }`}
                 >
-                    { inputLabel && (
-                        <label htmlFor={ id }>{ inputLabel }</label>
-                    ) }
+                    {inputLabel && (
+                        <label htmlFor={id}>{inputLabel}</label>
+                    )}
 
-                    <input
-                        ref={ ref }
-                        className={ [ 'basic-input', inputClass ].join( ' ' ) }
-                        id={ id }
-                        type={ type }
-                        name={ name }
-                        placeholder={ placeholder }
-                        { ...( type !== 'file' && onChange ? { value } : {} ) }
-                        { ...( type === 'number' || type === 'range'
-                            ? { min, max }
-                            : {} ) }
-                        onChange={ onChange }
-                        onClick={ onClick }
-                        onMouseOver={ onMouseOver }
-                        onMouseOut={ onMouseOut }
-                        onFocus={ onFocus }
-                        onBlur={ onBlur }
-                        disabled={ disabled }
-                        readOnly={ readOnly }
-                    />
+                    {type === 'button' ? (
+                        <DisplayButton
+                            wraperClass={inputClass || 'admin-btn default-btn'}
+                            onClick={(e) => onClick && onClick(e as any)}
+                        >
+                            <span className="text">{name}</span>
+                        </DisplayButton>
+                    ) : (
+                        <input
+                            ref={ref}
+                            className={['basic-input', inputClass].join(' ')}
+                            id={id}
+                            type={type}
+                            name={name}
+                            placeholder={placeholder}
+                            {...(type !== 'file' && onChange ? { value } : {})}
+                            {...((type === 'number' || type === 'range') ? { min, max } : {})}
+                            onChange={onChange}
+                            onClick={onClick}
+                            onMouseOver={onMouseOver}
+                            onMouseOut={onMouseOut}
+                            onFocus={onFocus}
+                            onBlur={onBlur}
+                            disabled={disabled}
+                            readOnly={readOnly}
+                        />
+                    )}
 
-                    { parameter && (
+                    {parameter && (
                         <span
                             className="parameter"
-                            dangerouslySetInnerHTML={ { __html: parameter } }
+                            dangerouslySetInnerHTML={{ __html: parameter }}
                         />
-                    ) }
+                    )}
 
-                    { generate &&
-                        ( value === '' ? (
+                    {generate &&
+                        (value === '' ? (
                             <DisplayButton
                                 wraperClass="admin-btn btn-purple"
-                                onClick={ generateSSOKey }
+                                onClick={generateSSOKey}
                             >
                                 <>
                                     <i className="adminlib-star-icon"></i>
@@ -172,54 +178,54 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
                             <>
                                 <DisplayButton
                                     wraperClass="clear-btn"
-                                    onClick={ handleClear }
+                                    onClick={handleClear}
                                 >
                                     <i className="adminlib-delete"></i>
                                 </DisplayButton>
 
                                 <DisplayButton
                                     wraperClass="copy-btn"
-                                    onClick={ handleCopy }
+                                    onClick={handleCopy}
                                 >
                                     <>
                                         <i className="adminlib-vendor-form-copy"></i>
                                         <span
                                             className={
-                                                ! copied
+                                                !copied
                                                     ? 'tooltip'
                                                     : 'tooltip tool-clip'
                                             }
                                         >
-                                            { copied ? (
+                                            {copied ? (
                                                 <>
                                                     <i className="adminlib-success-notification"></i>
                                                     Copied
                                                 </>
                                             ) : (
                                                 'Copy to clipboard'
-                                            ) }
+                                            )}
                                         </span>
                                     </>
                                 </DisplayButton>
                             </>
-                        ) ) }
+                        ))}
 
-                    { proSetting && <span className="admin-pro-tag">pro</span> }
+                    {proSetting && <span className="admin-pro-tag">Pro</span>}
 
-                    { type === 'range' && (
-                        <output className={ descClass }>
-                            { value ?? 0 }
-                            { rangeUnit }
+                    {type === 'range' && (
+                        <output className={descClass}>
+                            {value ?? 0}
+                            {rangeUnit}
                         </output>
-                    ) }
+                    )}
                 </div>
 
-                { description && (
+                {description && (
                     <p
-                        className={ descClass }
-                        dangerouslySetInnerHTML={ { __html: description } }
+                        className={descClass}
+                        dangerouslySetInnerHTML={{ __html: description }}
                     />
-                ) }
+                )}
             </>
         );
     }

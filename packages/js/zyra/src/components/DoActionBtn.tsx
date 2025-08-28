@@ -223,7 +223,7 @@ const DoActionBtn: React.FC< DoActionBtnProps > = ( {
                         <div className="three-body-dot" />
                     </div>
                 ) }
-                { proSetting && <span className="admin-pro-tag">pro</span> }
+                { proSetting && <span className="admin-pro-tag">Pro</span> }
             </div>
 
             { syncStarted && (

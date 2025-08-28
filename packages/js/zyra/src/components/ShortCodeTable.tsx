@@ -17,50 +17,58 @@ interface Option {
 interface ShortCodeTableProps {
     descClass: string;
     description?: string;
-    options: Option[]; // Expected format: array of option objects
-    optionLabel?: string[]; // Assuming optionLabel is an array
+    options: Option[];
+    optionLabel?: string[];
+    icon?: string; // Icon as string
 }
 
-const ShortCodeTable: React.FC< ShortCodeTableProps > = ( props ) => {
-    const { descClass, description, options, optionLabel } = props;
+const ShortCodeTable: React.FC<ShortCodeTableProps> = (props) => {
+    const { descClass, description, options, optionLabel, icon } = props;
+
+    const handleCopy = (text: string) => {
+        navigator.clipboard.writeText(text);
+    };
 
     return (
         <>
             <table className="shortcode-table">
                 <thead>
                     <tr>
-                        { optionLabel && optionLabel.length > 0 ? (
-                            optionLabel.map( ( label, index ) => (
-                                <th key={ index }>{ label }</th>
-                            ) )
+                        {optionLabel && optionLabel.length > 0 ? (
+                            optionLabel.map((label, index) => (
+                                <th key={index}>{label}</th>
+                            ))
                         ) : (
-                            <th>No Labels</th> // Fallback if no labels exist
-                        ) }
+                            <th>No Labels</th>
+                        )}
                     </tr>
                 </thead>
                 <tbody>
-                    { options && options.length > 0 ? (
-                        options.map( ( option, index ) => (
-                            <tr key={ index }>
-                                <td>
-                                    <code>{ option.label }</code>
+                    {options && options.length > 0 ? (
+                        options.map((option, index) => (
+                            <tr key={index}>
+                                <td onClick={() => handleCopy(option.label!)}>
+                                    <code>{option.label}</code>
+                                    {icon && option.label && (
+                                        <i className="adminlib-vendor-form-copy"></i>
+                                    )}
                                 </td>
-                                <td>{ option.desc }</td>
+                                <td>{option.desc}</td>
                             </tr>
-                        ) )
+                        ))
                     ) : (
                         <tr>
-                            <td colSpan={ 2 }>No Options Available</td>
-                        </tr> // Fallback if no options exist
-                    ) }
+                            <td colSpan={2}>No Options Available</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
-            { description && (
+            {description && (
                 <p
-                    className={ descClass }
-                    dangerouslySetInnerHTML={ { __html: description } }
+                    className={descClass}
+                    dangerouslySetInnerHTML={{ __html: description }}
                 />
-            ) }
+            )}
         </>
     );
 };

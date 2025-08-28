@@ -54,7 +54,7 @@ const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
                 placeholder={ 'YYYY-MM-DD' }
                 onChange={ handleDateChange }
             />
-            { props.proSetting && <span className="admin-pro-tag">pro</span> }
+            { props.proSetting && <span className="admin-pro-tag">Pro</span> }
         </div>
     );
 };

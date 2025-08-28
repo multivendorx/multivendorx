@@ -27,7 +27,9 @@
     }
   }
 }
-
+.admin-table-wrapper{
+  padding: 2rem;
+}
 // admin table filter style
 .admin-table-wrapper-filter {
   display: flex;
@@ -64,7 +66,6 @@
         height: 2.625rem;
         align-items: center;
       }
-
       .header-col {
         text-align: left;
         padding: 0 0.85rem;
@@ -84,6 +85,7 @@
       .header-col:first-child {
         max-width: 2rem;
         padding-top: 0.4rem;
+        padding-right: 0;
       }
       .header-col:last-child {
         flex-grow: 0;
@@ -124,7 +126,7 @@
             background: #f8f9fc;
             box-shadow: 0 2px 15px -4px #854fff66;
         }
-
+        
         .admin-column {
           padding: 0.75rem 0.85rem;
           font-size: 0.9rem;
@@ -150,13 +152,10 @@
           }
         }
 
-        .admin-column:nth-of-type(1) {
-          max-width: 2rem;
-          padding-right: 0;
-        }
-
         .admin-column:first-child {
           padding-top: 0.875rem;
+          max-width: 2rem;
+          padding-right: 0;
         }
 
         .admin-column:last-child {
@@ -238,7 +237,7 @@
   align-items: center;
   padding: 0 1rem;
   height: 3rem;
-  width: 100%;
+  // width: 100%;
 
   .pagination-arrow {
     display: flex;
@@ -326,6 +325,7 @@
     ul {
       width: 9rem;
       padding: 0.313rem 0;
+      margin: 0;
 
       li {
         padding: 0.425rem 0.625rem;

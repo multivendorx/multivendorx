@@ -8,19 +8,21 @@ interface SectionProps {
     wrapperClass: string;
     hint?: string;
     value?: string;
+    description?: string;
 }
 
-const Section: React.FC< SectionProps > = ( { wrapperClass, hint, value } ) => {
+const Section: React.FC< SectionProps > = ( { wrapperClass, hint, value, description } ) => {
     return (
         <>
             <div className={ wrapperClass }>
                 { value && <span>{ value }</span> }
                 { hint && (
                     <p
-                        className="section-hint"
+                        className="title"
                         dangerouslySetInnerHTML={ { __html: hint } }
                     ></p>
                 ) }
+                <div className="desc">{description}</div>
             </div>
         </>
     );

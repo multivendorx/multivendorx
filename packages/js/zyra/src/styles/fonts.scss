@@ -9,7 +9,8 @@
   font-style: normal;
 }
 
-[class^="adminlib-"], [class*=" adminlib-"] {
+[class^="adminlib-"], [class*=" adminlib-"],
+input {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: adminlibrary , sans-serif !important;
   font-style: normal;
@@ -28,36 +29,17 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-.adminlib-Unified-Access:before {
-  content: "\e90b";
+.adminlib-minus:before {
+  content: "\e900";
 }
-.adminlib-Subscription-Courses:before {
-  content: "\e915";
+.adminlib-notification:before {
+  content: "\e902";
 }
-.adminlib-Single-Sign-On:before {
-  content: "\e978";
+.adminlib-update-product:before {
+  content: "\e901";
 }
-.adminlib-Gift-a-Course:before {
-  content: "\e979";
-}
-.adminlib-Classroom-Enrollment:before {
-  content: "\e97a";
-}
-.adminlib-Bulk-Course-Sync:before {
-  content: "\e97b";
-}
-.adminlib-Smart-Course-Sync1:before {
-  content: "\e97c";
-}
-.adminlib-web-page-website:before {
-  content: "\e97d";
-}
-.adminlib-keyboard-arrow-down:before {
-  content: "\e97e";
-}
-.adminlib-setting-11:before {
-  content: "\e97f";
+.adminlib-add-product:before {
+  content: "\e900";
 }
 .adminlib-cart:before {
   content: "\8907";
@@ -130,12 +112,6 @@
 }
 .adminlib-plus-circle-o:before {
   content: "\e8f7";
-}
-.adminlib-add-product:before {
-  content: "\e900";
-}
-.adminlib-update-product:before {
-  content: "\e901";
 }
 .adminlib-pagination-right-arrow:before {
   content: "\e902";
@@ -419,7 +395,7 @@
 .adminlib-analytics:before {
   content: "\e961";
 }
-.adminlib-setting:before {
+.adminlib-setting-1:before {
   content: "\e962";
 }
 .adminlib-star-o:before {

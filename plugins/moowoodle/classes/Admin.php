@@ -188,7 +188,7 @@ class Admin {
             }
 
             if ( strpos( $url, 'block' ) === false ) {
-                $path = 'build/index.js';
+                $path = 'assets/js/components.js';
             }
         }
 

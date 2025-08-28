@@ -28,11 +28,11 @@ const EditBlock = ( { attributes, setAttributes } ) => {
 
     useEffect( () => {
         if ( productId ) {
-            axios
-                .get(
-                    `${ stockNotificationBlock.apiUrl }/${ stockNotificationBlock.restUrl }/stock-notification-form?product_id=${ productId }`
-                )
-                .then( ( response ) => {
+            axios( {
+                method: 'get',
+                url: `${ stockNotificationBlock.apiUrl }/${ stockNotificationBlock.restUrl }/stock-notification-form?product_id=${ productId }`,
+                headers: { 'X-WP-Nonce': stockNotificationBlock.nonce },
+            } ).then( ( response ) => {
                     setFormHtml(
                         response.data.html ||
                             __( 'Failed to load form.', 'notifima' )

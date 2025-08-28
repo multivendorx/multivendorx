@@ -15,7 +15,8 @@
         "build:project:bundle": "wireit",
         "build:project:translation:domains": "wireit",
         "watch:build": "pnpm --if-present run  \"/^watch:build:project:.*$/\"",
-        "watch:build:project:bandle": "wireit",
+        "watch:build:project:bundle": "wireit",
+        "watch:build:project:minify": "wireit",
         "lint": "pnpm --if-present \"/^lint:lang:.*$/\"",
         "lint:fix": "pnpm --if-present \"/^lint:fix:.*$/\"",
         "lint:lang:js": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -43,7 +44,7 @@
         "minify": "node bin/minify.mjs",
         "version": "node bin/version-replace.mjs",
         "changelog": "composer install --quiet && composer exec -- changelogger",
-        "makepot": "wp i18n make-pot --domain='moowoodle' --include='assets/js,classes,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Moowoodle Inc. All Rights Reserved.\" languages/moowoodle.pot"
+        "makepot": "wp i18n make-pot --domain='moowoodle' --include='assets/js,classes,src,templates,config.php,moowoodle.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://dualcube.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') Moowoodle Inc. All Rights Reserved.\" languages/moowoodle.pot"
     },
     "repository": {
         "type": "git",
@@ -77,7 +78,7 @@
             ],
             "output": []
         },
-        "watch:build:project:bandle": {
+        "watch:build:project:bundle": {
             "command": "wp-scripts start",
             "files": [
                 "src/**/*.{js,jsx,ts,tsx,scss}",
@@ -85,6 +86,12 @@
                 "webpack.config.js"
             ],
             "service": true
+        },
+        "watch:build:project:minify": {
+            "command": "pnpm run minify",
+            "files": [
+                "src/**/*.{js,jsx,ts,tsx,scss}"
+            ]
         }
     },
     "dependencies": {

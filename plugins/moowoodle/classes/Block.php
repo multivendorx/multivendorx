@@ -43,7 +43,7 @@ class Block {
         $blocks[] = array();
         // this path is set for load the translation.
         MooWoodle()->block_paths += array(
-            'my-courses' => FrontendScripts::get_build_path_name() . 'block/my-courses/index.js',
+            'my-courses' => FrontendScripts::get_build_path_name() . 'js/block/my-courses/index.js',
         );
         return apply_filters( 'moowoodle_initialize_blocks', $blocks );
     }

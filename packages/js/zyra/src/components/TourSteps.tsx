@@ -7,18 +7,30 @@ import React, { useState, useEffect, JSX } from 'react';
 import axios from 'axios';
 import { useTour } from '@reactour/tour';
 
+// Types
+interface AppLocalizer {
+    enquiry_form_settings_url: string;
+    module_page_url: string;
+    settings_page_url: string;
+    customization_settings_url: string;
+    apiUrl: string;
+}
+
+const appLocalizer: AppLocalizer = {
+    enquiry_form_settings_url: 'string',
+    module_page_url: 'string',
+    settings_page_url: 'string',
+    customization_settings_url: 'string',
+    apiUrl: 'string',
+};
+
 interface TourStep {
     selector: string;
     placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
     content: () => JSX.Element;
 }
 
-interface TourProps {
-    appLocalizer: Record<string, any>;
-    gif: any;
-}
-
-const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
+const Tour: React.FC = () => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour();
     const [ isNavigating, setIsNavigating ] = useState< boolean >( false );
 
@@ -65,14 +77,9 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
         setIsOpen( false ); // Close the tour
 
         try {
-            await axios({
-                method: 'post',
-                url: `${ appLocalizer.apiUrl }/catalogx/v1/tour`,
-                headers: { 'X-WP-Nonce': appLocalizer.nonce },
-                data: {
-                    active: false
-                }
-            });
+            await axios.post( `${ appLocalizer.apiUrl }/catalogx/v1/tour`, {
+                active: false,
+            } );
             // console.log( "Tour marked as complete." );
         } catch ( error ) {
             // eslint-disable-next-line no-console
@@ -82,7 +89,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
 
     const settingsTourSteps: TourStep[] = [
         {
-            selector: '[data-tour="catalog-showcase-tour"]',
+            selector: '[data="catalog-showcase-tour"]',
             placement: 'top',
             content: () => (
                 <div className="tour-box">
@@ -92,7 +99,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                         catalog, removing the &quot;Add to Cart&quot; button and
                         optionally hiding prices.
                     </h4>
-                    <div className="buttons-wrapper">
+                    <div className="tour-footer">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () => setCurrentStep( 1 ) }
@@ -110,7 +117,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
             ),
         },
         {
-            selector: '[data-tour="enquiry-showcase-tour"]',
+            selector: '[data="enquiry-showcase-tour"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Enable Enquiry Mode</h3>
@@ -120,7 +127,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                         submitted forms, viewable in the admin dashboard or via
                         email.
                     </h4>
-                    <div className="buttons-wrapper">
+                    <div className="tour-footer">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () => {
@@ -162,14 +169,14 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                         customers need to fill out when submitting product
                         inquiries.
                     </h4>
-                    <div className="buttons-wrapper">
+                    <div className="tour-footer">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () =>
                                 navigateTo(
                                     appLocalizer.module_page_url,
                                     3,
-                                    '[data-tour="quote-showcase-tour"]'
+                                    '[data="quote-showcase-tour"]'
                                 )
                             }
                         >
@@ -186,7 +193,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
             ),
         },
         {
-            selector: '[data-tour="quote-showcase-tour"]',
+            selector: '[data="quote-showcase-tour"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Enable Quote Module</h3>
@@ -196,7 +203,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                         quotes and provide tailored pricing for customers to
                         proceed with purchases.
                     </h4>
-                    <div className="buttons-wrapper">
+                    <div className="tour-footer">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () => {
@@ -209,7 +216,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                                     navigateTo(
                                         appLocalizer.settings_page_url,
                                         4,
-                                        '[data-tour="quote-permission"]'
+                                        '[data="quote-permission"]'
                                     );
                                 } else {
                                     navigateTo(
@@ -233,7 +240,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
             ),
         },
         {
-            selector: '[data-tour="quote-permission"]',
+            selector: '[data="quote-permission"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Configure Quote Settings</h3>
@@ -241,9 +248,9 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                         Set up your quotation settings by defining whether to
                         limit quote requests to logged-in users only.
                     </h4>
-                    <div className="buttons-wrapper">
+                    <div className="tour-footer">
                         <button
-                            className="admin-btn btn-purple"
+                            className="btn-purple"
                             onClick={ () =>
                                 navigateTo(
                                     appLocalizer.customization_settings_url,
@@ -281,7 +288,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                     <div className="tour-box">
                         <h3>Arrange Enquiry Button</h3>
                         <img
-                            src={gif}
+                            // src={gif}
                             alt="Guide"
                             width="160"
                             // onLoad={handleImageLoad} // Handle image load event
@@ -290,7 +297,7 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
                             With the Enquiry tab selected, drag and drop to
                             position the Enquiry button and customize its look.
                         </h4>
-                        <div className="buttons-wrapper">
+                        <div className="tour-footer">
                             <button
                                 className="admin-btn btn-purple"
                                 onClick={ () => finishTour() }
@@ -310,12 +317,9 @@ const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
         const fetchTourState = async (): Promise< void > => {
             if ( window.location.href === appLocalizer.module_page_url ) {
                 try {
-
-                    const response = await axios<{ active: string }>({
-                        method: 'get',
-                        url: `${ appLocalizer.apiUrl }/catalogx/v1/tour`,
-                        headers: { 'X-WP-Nonce': appLocalizer.nonce },
-                    });
+                    const response = await axios.get< { active: string } >(
+                        `${ appLocalizer.apiUrl }/catalogx/v1/tour`
+                    );
 
                     if ( response.data.active !== '' ) {
                         if ( setSteps ) {

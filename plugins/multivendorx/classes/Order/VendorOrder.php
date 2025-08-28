@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * MultiVendorX Vendor Order Class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 class VendorOrder {
@@ -31,7 +31,7 @@ class VendorOrder {
             $this->order = wc_get_order( $this->id );
         }
 
-        $this->vendor_id = $this->order ? absint( $this->order->get_meta( '_vendor_id', true) ) : 0;
+        $this->vendor_id = $this->order ? absint( $this->order->get_meta( 'multivendorx_store_id', true) ) : 0;
     }
 
     /**
@@ -91,7 +91,7 @@ class VendorOrder {
      */
     public function get_commission() {
         if ( $this->commission === null ) {
-            $commission_id      = (int) $this->get_prop( '_commission_id' ); 
+            $commission_id      = (int) $this->get_prop( 'multivendorx_commission_id' ); 
             $this->commission   = new Commission( $commission_id );
         }
         return $this->commission;

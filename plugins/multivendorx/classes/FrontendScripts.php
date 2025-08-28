@@ -7,6 +7,8 @@
 
 namespace MultiVendorX;
 
+use MultiVendorX\Store\StoreUtil;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -37,19 +39,6 @@ class FrontendScripts {
     public function __construct() {
         add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_load_scripts' ) );
-    }
-
-    /**
-	 * Get the script file name based on environment.
-	 *
-	 * @param string $name The base name of the script file (without `.js` or `.min.js`).
-	 * @return string Script name to use for enqueueing.
-	 */
-    public static function get_script_name( $name ) {
-        if ( MultiVendorX()->is_dev ) {
-			return $name;
-        }
-        return MULTIVENDORX_PLUGIN_SLUG . '-' . $name . '.min';
     }
 
     /**
@@ -196,11 +185,11 @@ class FrontendScripts {
         $register_styles = apply_filters(
             'multivendorx_register_styles',
             array(
-				// 'multivendorx-frontend-style' => array(
-				// 	'src'     => MultiVendorX()->plugin_url . 'assets/styles/' . self::get_script_name( 'frontend' ) . '.css',
-				// 	'deps'    => array(),
-				// 	'version' => $version,
-				// ),
+				'multivendorx-dashboard-style' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
+					'deps'    => array(),
+					'version' => $version,
+				),
 			)
         );
         foreach ( $register_styles as $name => $props ) {
@@ -248,6 +237,11 @@ class FrontendScripts {
 					'deps'        => $component_asset['dependencies'],
 					'version'     => $version,
 				),
+                'multivendorx-product-tab-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/' . MULTIVENDORX_PLUGIN_SLUG . '-product-tab.min.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
+					'version' => $version,
+				),
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
@@ -265,11 +259,6 @@ class FrontendScripts {
 		$register_styles = apply_filters(
             'admin_multivendorx_register_styles',
             array(
-				'multivendorx-style'            => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/index.css',
-					'deps'    => array(),
-					'version' => $version,
-				),
 				'multivendorx-components-style' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/components.css',
 					'deps'    => array(),
@@ -302,6 +291,13 @@ class FrontendScripts {
                 'products',
                 'products-capability',
                 'commissions',
+                'marketplace-settings',
+                'user-capability',
+                'store-capability',
+                'identity-verification',
+                'commission-rule',
+                'payment-integration',
+                'store-appearance'
             )
 		);
 
@@ -322,6 +318,43 @@ class FrontendScripts {
                     );
                 }
             }
+
+            $shortcode = '[multivendorx_store_dashboard]';
+            $matched_pages = array_filter( $pages, function ( $page ) use ( $shortcode ) {
+                return strpos( $page->post_content, $shortcode ) !== false;
+            });
+            $vendor_dashboard_pages = [];
+            foreach ( $matched_pages as $page ) {
+                $vendor_dashboard_pages[] = array(
+                    'value'=> $page->post_name,
+                    'label'=> $page->post_title,
+                    'key'=> $page->ID,
+                );
+            }
+        }
+
+        $woo_countries = new \WC_Countries();
+        $countries = $woo_countries->get_allowed_countries();
+        $country_list = [];
+        foreach ($countries as $countries_key => $countries_value) {
+            $country_list[] = array(
+                'label' => $countries_value,
+                'value' => $countries_key
+            );
+        }
+
+        $store_owners = get_users([
+            'role'    => 'store_owner',
+            'orderby' => 'ID',
+            'order'   => 'ASC',
+        ]);
+
+        $owners_list = [];
+        foreach ( $store_owners as $owner ) {
+            $owners_list[] = array(
+                'label' => $owner->display_name,
+                'value' => $owner->ID
+            );
         }
 
         $localize_scripts = apply_filters(
@@ -337,11 +370,30 @@ class FrontendScripts {
 						'tab_name'                 => __( 'MultiVendorX', 'multivendorx' ),
 						'settings_databases_value' => $settings_databases_value,
 						'pages_list'               => $pages_array,
+						'vendor_dashboard_pages'   => $vendor_dashboard_pages,
 						'pro_url'                  => esc_url( MULTIVENDORX_PRO_SHOP_URL ),
                         'open_uploader'            => 'Upload Image',
+                        'country_list'             => $country_list,
+                        'store_owners'             => $owners_list,
                         'default_logo'             => MultiVendorX()->plugin_url.'assets/images/WP-stdavatar.png',
+                        'capabilities'             => StoreUtil::get_store_capability(),
+                        'custom_roles'             => Roles::multivendorx_get_roles(),
+                        'all_payments'             => MultiVendorX()->payments->all_payment_providers(),
 					),
-                )
+                ),
+                'multivendorx-product-tab-script' => array(
+					'object_name' => 'multivendorx',
+					'data'        => array(
+						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
+						'select_text' => __( 'Select an item...', 'multivendorx' ),
+					),
+				),
+                'multivendorx-dashboard-components-script' => array(
+                    'object_name' => 'color',
+                    'data'        => array(
+                        'color'            => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
+                    ),
+                ),
 			)
         );
 

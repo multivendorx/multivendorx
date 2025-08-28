@@ -2,15 +2,15 @@
 
 namespace MultiVendorX\Order;
 
-use \MultiVendorX\Vendor\VendorUtil as VendorUtil;
+use MultiVendorX\Store\StoreUtil;
 
 defined('ABSPATH') || exit;
 
 /**
- * MultivendorX Order Hook class
+ * MultiVendorX Order Hook class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 
@@ -39,10 +39,10 @@ class Hooks {
      */
     public function add_metadata_for_line_item($item, $item_key, $values, $order) {
         if ( $order &&  $order->get_parent_id() == 0 ) {
-            $vendor = VendorUtil::get_products_vendor($item['product_id']);
+            $vendor = StoreUtil::get_products_vendor($item['product_id']);
             if ($vendor) {
-                $item->add_meta_data('_sold_by', $vendor->page_title);
-                $item->add_meta_data('_vendor_id', $vendor->id);
+                $item->add_meta_data('multivendorx_sold_by', $vendor['name']);
+                $item->add_meta_data('multivendorx_store_id', $vendor['ID']);
             }
         }
     }
@@ -56,9 +56,9 @@ class Hooks {
      * @return void
      */
     public function add_metadate_for_shipping_item($item, $package_key, $package, $order) {
-        $vendor_id = $package['vendor_id'] ?? $package_key;
+        $store_id = $package['store_id'] ?? $package_key;
         if( $order && $order->get_parent_id() == 0 ) {
-            $item->add_meta_data('vendor_id', $vendor_id, true);
+            $item->add_meta_data('multivendorx_store_id', $store_id, true);
             $package_qty = array_sum(wp_list_pluck($package['contents'], 'quantity'));
             $item->add_meta_data('package_qty', $package_qty, true);
             do_action('mvx_add_shipping_package_meta');
@@ -99,13 +99,13 @@ class Hooks {
      */
     public function create_vendor_order( $order_id, $posted_data, $order ) {
 
-        if ( $order->get_parent_id() || $order->get_meta('has_mvx_sub_order') ) {
+        if ( $order->get_parent_id() || $order->get_meta('has_multivendorx_sub_order') ) {
             return;
         }
 
         MultiVendorX()->order->create_vendor_orders($order_id, $order);
 
-        $order->update_meta_data('has_mvx_sub_order', true);
+        $order->update_meta_data('has_multivendorx_sub_order', true);
         $order->save();
     }
 

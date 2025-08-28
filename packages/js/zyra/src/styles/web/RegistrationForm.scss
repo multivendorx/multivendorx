@@ -1,6 +1,6 @@
 @use '../../global.scss' as *;
 
-.registration-from-main-wrapper-section {
+.registration-from-wrapper {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -15,21 +15,29 @@
     }
 
     .addnew {
-      border: 0.063rem dotted rgba($color: #000, $alpha: 12.5%);
-      background: $menu-color;
+      // border: 0.063rem dotted rgba($color: #000, $alpha: 12.5%);
+      background: #e7e9ecc2;
       padding: 2.5rem;
       cursor: pointer;
-      max-width: 37.5rem;
       margin: 1.5rem auto 0;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       gap: 0.5rem;
-      width: 75%;
+      width:  85%;
+      border: none;
 
       p {
         color: $color-black;
+      }
+
+      i {
+        font-size: 1.2rem;
+        padding: 0.625rem;
+        color: $theme-color;
+        background: $theme-background-color;
+        border-radius: 50%;
       }
     }
 
@@ -80,7 +88,7 @@
       background: $color-light-black;
       padding: 0.5rem 0;
       right: 0.625rem;
-      top: -2.55rem;
+      top: -2.70rem;
 
       .btn-delete {
         border-right: $border-light-small;
@@ -89,7 +97,7 @@
           border: none;
           background: transparent;
 
-          i{
+          i {
             color: #fff;
             font-size: 1rem;
           }

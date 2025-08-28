@@ -83,7 +83,7 @@ const MapsInput: React.FC< MapsInputProps > = ( props ) => {
                 className={ props.containerClass || 'maps-container' }
                 style={ { width: '100%', height: '300px' } }
             ></div>
-            { props.proSetting && <span className="admin-pro-tag">pro</span> }
+            { props.proSetting && <span className="admin-pro-tag">Pro</span> }
             { props.description && (
                 <p
                     className={ props.descClass }

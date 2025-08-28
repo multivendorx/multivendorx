@@ -129,10 +129,6 @@
 
             .button-main-container {
                 position: relative;
-
-                &.disable{
-                    opacity: 0.5;
-                }
             }
 
         }
@@ -232,18 +228,11 @@
         z-index: 1;
         cursor: pointer;
         visibility: hidden;
-
-        i{
-            font-size: 1rem;
-        }
     }
 
     &:hover {
         .button-visibility {
             visibility: visible;
         }
-    }
-    &.price-section{
-        width: fit-content;
     }
 }

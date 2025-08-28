@@ -113,7 +113,7 @@ const MergeComponent: React.FC< MergeComponentProps > = ( {
 
                     return null; // Return null for unsupported types
                 } ) }
-                { proSetting && <span className="admin-pro-tag">pro</span> }
+                { proSetting && <span className="admin-pro-tag">Pro</span> }
             </section>
 
             { description && (

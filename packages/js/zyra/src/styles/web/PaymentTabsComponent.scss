@@ -1,0 +1,165 @@
+@use '../../global.scss' as *;
+
+.payment-tabs-component {
+    .payment-method-card {
+        margin-top: 1rem;
+        cursor: pointer;
+        background: #f9f4f4b8;
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem;
+
+            .details {
+                display: flex;
+                gap: 1rem;
+
+                .payment-method-icon {
+                    padding: 0.5rem;
+                    background: $theme-background-color;
+                    border-radius: 0.5rem;
+                    width: 3rem;
+                    height: 3rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                    color: $theme-color;
+
+                    img{
+                        width: 100%;
+                    }
+                }
+
+                .payment-method-info {
+                    .title-wrapper {
+                        display: flex;
+                        gap: 0.5rem;
+
+                        .title {
+                            font-size: 1.125rem;
+                            display: flex;
+                            gap: 1rem;
+                        }
+                    }
+                }
+            }
+
+            .payment-method-arrow {
+                i {
+                    font-size: 2rem;
+                }
+            }
+        }
+
+        .payment-method-form {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 1rem;
+
+            .form-group {
+                display: flex;
+                gap: 0.5rem;
+                padding: 0.5rem 1rem 0.5rem 0;
+                margin: 0;
+
+                label:first-child{
+                    width: 25%;
+                }
+                .input-content{
+                    width: 75%;
+                }
+                textarea{
+                    background: #fff;
+                }
+                .fileds-wrapper {
+                    width: 100%;
+
+                    .fileds {
+                        margin: 0;
+                        padding-top: 1rem;
+
+                        .row-item {
+                            padding: 0.875rem;
+                            background: #fff;
+                            display: flex;
+                            justify-content: space-between;
+                            gap: 0.5rem;
+
+                            .name {
+                                display: flex;
+                                gap: 0.5rem;
+
+                                div {
+                                    font-size: 1.063rem;
+                                    line-height: 1rem;
+                                }
+                                .edit-row{
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 1rem;
+
+                                    button{
+                                        border: none;
+                                        background: transparent;
+                                    }
+                                    .edit-form{
+                                        
+                                    }
+                                }
+                                .admin-badge {
+                                    font-size: 0.7rem;
+                                    padding: 0.313rem 0.5rem;
+                                    line-height: 0.725rem;
+                                }
+                            }
+
+                            .icon-wrapper {
+                                opacity: 0;
+                                transition: all 0.5s ease;
+
+                                button {
+                                    border: none;
+                                    background: transparent;
+                                    margin-left: 0.5rem;
+                                    cursor: pointer;
+                                }
+                            }
+
+                            &:hover .icon-wrapper {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+                .payment-tabs-component{
+                    .payment-method-card{
+                        background: #fff;
+                    }
+                    
+                }
+            }
+        }
+
+        &.add-method{
+            .form-group{
+                flex-direction: column;
+            }
+            .input-content{
+                width: 100% !important; /*overwrite common style*/
+            }
+        }
+        &.social-verification{
+            .form-group{
+                flex-direction: column;
+            }
+            .payment-method-form{
+                padding-top: 0;
+            }
+        }
+    }
+}

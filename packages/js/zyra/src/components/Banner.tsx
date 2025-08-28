@@ -123,7 +123,7 @@ const Banner: React.FC< BannerProps > = ( {
 
     return (
         <>
-            { ! isPro && banner && (
+            {isPro && banner && (
                 <div className="custom-banner">
                     <Dialog
                         className="admin-module-popup"

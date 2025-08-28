@@ -1,23 +1,23 @@
 === Notifima – WooCommerce Stock Manager, Inventory Management, Waitlist ===
 
 Contributors: wcmp
-Tags: stock manager, back-in-stock notifier, waitlist, inventory management, out of stock notifictaion
+Tags: stock manager, back in stock notifier, waitlist, inventory management, out of stock notifictaion
 Requires at least: 6.4
 Tested up to: 6.8.2
 Requires PHP: 8.0
-Stable tag: 3.0.4
+Stable tag: 3.0.5
 Donate link: https://multivendorx.com/donate/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WooCommerce back-in-stock notifier and stock manager plugin. Manage inventory, enable waitlists, and send stock notifications automatically.
+WooCommerce back in stock notifier and stock manager plugin. Manage inventory, enable waitlists, and send stock notifications automatically.
 
 == Description ==
-**Notifima - WooCommerce back-in-stock notifier and stock manager plugin designed to help you recover lost sales and manage inventory more efficiently.**
+**Notifima - WooCommerce back in stock notifier and stock manager plugin designed to help you recover lost sales and manage inventory more efficiently.**
 
-Easily set up waitlists for out-of-stock products, send stock notifications when items are restocked, and get a bird’s-eye view of your entire inventory - all from one place. Whether you sell simple or variable products, grouped items, or subscriptions, Notifima ensures your customers never miss out on what they want.
+Easily set up waitlists for out of stock products, send stock notifications when items are restocked, and get a bird’s-eye view of your entire inventory - all from one place. Whether you sell simple or variable products, grouped items, or subscriptions, Notifima ensures your customers never miss out on what they want.
 
-With automatic back-in-stock notifications, powerful inventory management features, and built-in tools to track and control stock levels, Notifima turns product demand into conversions.
+With automatic back in stock notifications, powerful inventory management features, and built-in tools to track and control stock levels, Notifima turns product demand into conversions.
 
 
 ## 🚀 Features:
@@ -168,6 +168,11 @@ Manual installation method requires downloading the [Notifima] (https://wordpres
 6. Inventory manager
 
 == Changelog ==
+
+= 3.0.5 - 2025-08-22 =
+* Added     - Compatibility of WooCommerce 10.1.1.
+* Added     - Support for email translation with WPML.
+* Fixed     - Translation issue with Loco Translate.
 
 = 3.0.4 - 2025-07-23 =
 * Added     - Compatibility of WordPress 6.8.2.

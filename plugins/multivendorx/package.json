@@ -16,6 +16,7 @@
         "build:project:translation:domains": "wireit",
         "watch:build": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
         "watch:build:project:bundle": "wireit",
+        "watch:build:project:minify": "wireit",
         "lint": "pnpm --if-present \"/^lint:lang:.*$/\"",
         "lint:fix": "pnpm --if-present \"/^lint:fix:.*$/\"",
         "lint:lang:js": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -84,6 +85,12 @@
                 "webpack.config.js"
             ],
             "service": true
+        },
+        "watch:build:project:minify": {
+            "command": "pnpm run minify",
+            "files": [
+                "src/**/*.{js,jsx,ts,tsx,scss}"
+            ]
         }
     },
     "dependencies": {
@@ -97,12 +104,19 @@
         "@wordpress/i18n": "wp-6.6",
         "@wordpress/react-i18n": "wp-6.6",
         "@wordpress/scripts": "^30.16.0",
+        "d3-geo": "^3.1.1",
+        "d3-zoom": "^3.0.0",
+        "leaflet": "^1.9.4",
+        "mark.js": "^8.11.1",
         "react": "^19.1.0",
         "react-csv": "^2.2.2",
         "react-data-table-component": "^7.7.0",
         "react-date-range": "^2.0.1",
         "react-dom": "^19.1.0",
+        "react-leaflet": "^4.2.1",
         "react-router-dom": "^7.6.0",
+        "react-simple-maps": "^3.0.0",
+        "recharts": "^2.15.4",
         "ts-loader": "9.5.x",
         "typescript": "5.8.x",
         "wp-textdomain": "^1.0.1",
@@ -110,6 +124,8 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.27.1",
+        "@types/leaflet": "^1.9.20",
+        "@types/mark.js": "^8.11.12",
         "@types/react": "18.3.x",
         "@types/react-csv": "^1.1.10",
         "@types/react-date-range": "^1.4.10",

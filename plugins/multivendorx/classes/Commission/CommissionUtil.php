@@ -7,10 +7,10 @@ use MultiVendorX\Utill;
 defined('ABSPATH') || exit;
 
 /**
- * MVX Commission class
+ * MultiVendorX Commission class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 

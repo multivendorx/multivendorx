@@ -6,10 +6,10 @@ use MultiVendorX\Order\VendorOrder as VendorOrder;
 defined('ABSPATH') || exit;
 
 /**
- * MVX Commission Hooks class
+ * MultiVendorX Commission Hooks class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 class Hooks {
@@ -27,13 +27,13 @@ class Hooks {
      */
     public function create_commission( $vendor_order_id, $vendor_order, $main_order ) {
 
-        $processed = $vendor_order->get_meta( '_commissions_processed', true );
+        $processed = $vendor_order->get_meta( 'multivendorx_commissions_processed', true );
 
         if ( ! $processed ) {
             
             $commission_id = MultiVendorX()->commission->calculate_commission( $vendor_order );
-            $vendor_order->update_meta_data( '_commission_id', $commission_id );
-            $vendor_order->update_meta_data( '_commissions_processed', 'yes' );
+            $vendor_order->update_meta_data( 'multivendorx_commission_id', $commission_id );
+            $vendor_order->update_meta_data( 'multivendorx_commissions_processed', 'yes' );
             
             // Action hook after commission processed.
             do_action( 'mvx_after_calculate_commission', $commission_id, $vendor_order, $main_order );
@@ -49,7 +49,7 @@ class Hooks {
     public function create_commission_refunds( $order_id, $refund_id ) {
         $vendor_order = new VendorOrder();
         if( $vendor_order->is_vendor_order() ) {
-            $commission_id = MVX()->commission->calculate_commission_refunds( $vendor_order, $refund_id );
+            $commission_id = MultiVendorX()->commission->calculate_commission_refunds( $vendor_order, $refund_id );
             /**
              * Action hook after commission refund save.
              * @since 3.4.0

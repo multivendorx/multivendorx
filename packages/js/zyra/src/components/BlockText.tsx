@@ -9,13 +9,15 @@ interface BlockTextProps {
     value: string;
 }
 
-const BlockText: React.FC< BlockTextProps > = ( { blockTextClass, value } ) => {
+const BlockText: React.FC<BlockTextProps> = ({ blockTextClass, value }) => {
     return (
         <>
-            <p
-                className={ blockTextClass }
-                dangerouslySetInnerHTML={ { __html: value } }
-            ></p>
+            <div className={blockTextClass}>
+                <i className="adminlib-info"></i>
+                <p
+                    dangerouslySetInnerHTML={{ __html: value }}
+                ></p>
+            </div>
         </>
     );
 };

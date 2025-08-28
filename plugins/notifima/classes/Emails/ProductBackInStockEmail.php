@@ -75,14 +75,25 @@ if ( ! class_exists( 'ProductBackInStockEmail' ) ) :
             $this->recipient      = $recipient;
             $this->product        = $product;
 
+            if ( class_exists( 'SitePress' ) && is_a( $product, 'WC_Product' ) ) {
+                $product_language = apply_filters( 'wpml_post_language_details', null, $product->get_id() )['language_code'] ?? '';
+                if ( $product_language ) {
+                    do_action( 'wpml_switch_language', $product_language );
+                    switch_to_locale($product_language);
+                }
+            }
+
             if ( apply_filters( 'product_backin_stock_send_admin', false ) ) {
                 $this->recipient .= ', ' . get_option( 'admin_email' );
             }
+
             if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
                 return;
             }
 
             $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+            
+            restore_previous_locale();
         }
 
         /**

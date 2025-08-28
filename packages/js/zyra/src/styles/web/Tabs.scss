@@ -1,234 +1,257 @@
 @use '../../global.scss' as *;
 
-
-.tab-content {
+.top-header {
+  padding: 0.5rem;
+  text-align: center;
+  background: $theme-background-color;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: $text-color;
   position: relative;
-  background: $color-white;
-  width: 100%;
 
-  .tab-description-body {
-    padding: 1.8rem 1.8rem 0;
+  i {
+    position: absolute;
+    right: 2rem;
+    top: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem 2rem;
+  background: #fff;
+  margin-bottom: 2rem;
+
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .brand-logo {
+      width: 12rem;
+    }
+    .version-tag{
+      display: flex;
+      gap: 0.5rem;
+
+      .admin-badge{
+        i{
+          padding-right: 0.5rem;
+        }
+      }
+    }
   }
 
-  .tab-description-header {
-    padding: 1.8rem 1.8rem 0;
+  .right-section {
+    position: relative;
+    display: flex;
+    gap: 0.875rem;
+    align-items: center;
 
-    .child {
+    .admin-icon {
+      font-size: 1.125rem;
+      padding: 0.4rem;
+      border-radius: 50%;
+      color: $theme-color;
+      cursor: pointer;
+    }
+
+    .search-field {
+      position: relative;
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: 1rem;
-      border-bottom: 0.063rem solid #e0e4e9;
-      font-size: 0.875rem;
-      line-height: 1.5;
-      padding: 0 0 1.875rem;
+      border: $border-light-small;
+      border-radius: 0.125rem;
 
-      .tab-name {
-        font-size: 1.625rem;
-        line-height: 1;
-        font-weight: 500;
-        letter-spacing: .0.045rem;
-      }
-
-      .tab-desc {
-        margin-top: 0.5rem;
-      }
-
-      p {
-        position: relative;
+      input,
+      select {
         margin: 0;
+        border:none;
 
-        &::after {
-          position: absolute;
-          content: "";
-          bottom: -2.45rem; // For header icon bottom style
-          left: 0;
-          background: $color-active;
-          width: 100%;
-          height: 0.125rem;
+        &:focus{
+          outline: none;
+          box-shadow: none;
         }
+      }
 
-        i {
-          width: 3rem;
-          height: 3rem;
-          background: $menu-color;
-          color: $color-active;
-          border-radius: 0.188rem;
-          font-size: 2rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
+      .adminlib-search {
+        position: absolute;
+        left: 0.5rem;
+        z-index: 9;
+        font-size: 1.313rem;
+        top: 20%;
+        border-right: 0;
+      }
+
+      input {
+        width: 20rem;
+        padding-left: 2rem;
+        position: relative;
+        border-right: $border-light-small;
+      }
+    }
+
+    .icon-wrapper {
+      .icon-dropdown {
+        opacity: 0;
       }
     }
   }
 }
 
-.middle-child-container {
-  position: relative;
-  display: flex;
-  color: #121116;
-  line-height: 1.5;
+.title-section {
+  margin: 0 2rem;
+  padding: 1.5rem;
+  background: #fff;
 
   .current-tab-lists {
+    padding-top: 0.5rem;
     display: flex;
-    flex-direction: column;
-    max-width: 16rem;
-    width: 100%;
+    justify-content: space-between;
+    border-bottom: 0.063rem solid #e0e4e9;
 
-    .brand {
-      padding: 2rem 0 1.5rem;
-      width: fit-content;
-      margin: 0 auto;
-
-      img.logo {
-        width: 10.25rem;
-      }
-
-      .logo-small {
-        display: none; // Hide for desktop
-      }
-
-      p {
-        text-align: end;
-        margin: 0;
-      }
-    }
-
-    .current-tab-lists-container {
-      position: relative;
-
-      .menu-coll-btn {
-        font-size: 0.8125rem;
-        font-weight: 500;
-        border-radius: 0; 
-
-        i {
-          font-size: 1.25rem;
-        }
-      }
-
-      a,
-      .menu-coll-btn {
-        position: relative;
-        width: 100%;
-        padding: 1rem 0.63rem 1.125rem 1.25rem;
-        border-top: 0.063rem solid #e0e4e9;
-        border-left: 0.125rem solid transparent;
-        overflow: hidden;
-        transition: all 100ms ease-out;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        color: #000;
-        gap: 0.75rem;
-        background-color: transparent;
-
-        .menu-name {
-          font-size: 0.938rem;
-          line-height: 1.5;
-          color: #121116;
-        }
-
-        .admin-pro-tag {
-          top: 1rem;
-        }
-
-        .menu-desc {
-          margin-top: 0.188rem;
-          color: #72777c;
-          line-height: 1.2;
-          transition: all 150ms ease-out;
-        }
-
-        .drop-down-section {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 0.25rem;
-          width: 100%;
-        }
-
-        &:hover {
-          background: $color-white;
-          border-left: 0.126rem solid $color-active !important; // To overwrite default common.scss
-          color: $color-active;
-        }
-
-        &:focus {
-          box-shadow: none;
-        }
-
-        i {
-          color: #72777c;
-          font-size: 1.4375rem;
-          line-height: 1;
-          opacity: .3;
-        }
-      }
-
-      
-      .active-current-tab {
-        color: $color-active;
-        background: $color-white;
-        border-left: 0.126rem solid $color-active;
-
-        .menu-name,
-        i {
-          color: $color-active;
-        }
-
-        i {
-          opacity: 1;
-        }
-
-        .admin-pro-tag {
-          top: 1rem;
-        }
-      }
-
-      .menu-close {
-        position: absolute;
-        width: 2.25rem;
-        height: 2.25rem;
-        top: 1.25rem;
-        font-size: 1.15rem;
-        right: 0.63rem;
-        border-radius: 0.5rem;
-        background-color: $color-white;
-        color: $color-active;
-        border: none;
-        outline: none;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .tab-wrapper {
-        width: 100%;
-
-        .subtab-wrapper {
-          padding-left: 1rem;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          position: relative;
-          max-height: 0;
-          overflow: hidden;
-          transition: max-height 0.3s linear;
-
-          a {
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          &.active {
-            max-height: 50rem;
-            height: auto;
-          }
-        }
-      }
+    .pro-btn {
+      color: $theme-color;
+      font-weight: 600;
+      gap: 0.31rem;
+      font-size: 1rem;
+      display: flex;
     }
   }
+
+  .title-wrapper {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    color: $text-color;
+    display: flex;
+    justify-content: space-between;
+
+    i {
+      margin-right: 0.5rem;
+      color: #5007aa;
+      font-size: 1.8rem;
+    }
+  }
+
+  .breadcrumbs-menu {
+    padding-top: 0.938rem;
+
+    a {
+      color: $theme-color;
+      font-weight: 500;
+    }
+  }
+
+  span:last-child {
+    a {
+      color: $text-color;
+    }
+  }
+}
+
+.general-wrapper {
+  padding: 2rem;
+}
+
+.tab-content {
+  position: relative;
+  width: 100%;
+
+  .tab-description-body {
+    padding: 0 1.8rem;
+  }
+
+  // .tab-description-header {
+  //   padding: 0 1.8rem;
+
+  //   .child {
+  //     // display: flex;
+  //     // align-items: flex-start;
+  //     // justify-content: flex-start;
+  //     // gap: 1rem;
+  //     border-bottom: 0.063rem solid #e0e4e9;
+  //     padding: 1.5rem 0;
+  //     // font-size: 0.875rem;
+  //     // line-height: 1.5;
+  //     // padding: 0 0 1.875rem;
+
+  //     .tab-name {
+  //       font-size: 1.313rem;
+  //       line-height: 1;
+  //       font-weight: 500;
+  //       letter-spacing: .0.045rem;
+  //     }
+
+  //     .tab-desc {
+  //       margin-top: 0.5rem;
+  //     }
+
+  //     p {
+  //       position: relative;
+  //       margin: 0;
+
+  //       &::after {
+  //         position: absolute;
+  //         content: "";
+  //         bottom: -2.45rem; // For header icon bottom style
+  //         left: 0;
+  //         background: $color-active;
+  //         width: 100%;
+  //         height: 0.125rem;
+  //       }
+
+  //       i {
+  //         width: 3rem;
+  //         height: 3rem;
+  //         background: $menu-color;
+  //         color: $color-active;
+  //         border-radius: 0.188rem;
+  //         font-size: 2rem;
+  //         display: flex;
+  //         align-items: center;
+  //         justify-content: center;
+  //       }
+  //     }
+  //   }
+  // }
+}
+
+.current-tab-lists {
+  width: 100%;
+  background: #fff;
+
+  .brand {
+    padding: 2rem 0 1.5rem;
+    width: fit-content;
+    margin: 0 auto;
+
+    img.logo {
+      width: 10.25rem;
+    }
+
+    .logo-small {
+      display: none; // Hide for desktop
+    }
+
+    p {
+      text-align: end;
+      margin: 0;
+    }
+  }
+
+}
+
+.middle-child-container {
+  position: relative;
+  // display: flex;
+  color: #121116;
+  line-height: 1.5;
+  background-color: #fff;
+  padding: 0 2rem 2rem;
 
   &.show-menu {
     .current-tab-lists {
@@ -241,11 +264,11 @@
           width: 3.15rem;
         }
 
-        .logo{
+        .logo {
           display: none;
         }
 
-        .logo-small{
+        .logo-small {
           display: block;
         }
 
@@ -258,7 +281,125 @@
       }
     }
   }
-  
+
+}
+.middle-child-container:has(.current-tab-lists){
+  padding-top: 2rem;
+}
+
+.current-tab-lists-container {
+  position: relative;
+  display: flex;
+  gap: 1.5rem;
+
+  .menu-item {
+    position: relative;
+    // width: 100%;
+    // padding: 1rem 0.63rem 1.125rem 1.25rem;
+    // border-top: 0.063rem solid #e0e4e9;
+    // border-left: 0.125rem solid transparent;
+    overflow: hidden;
+    transition: all 100ms ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #000;
+    gap: 0.75rem;
+    background-color: transparent;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.126rem solid transparent;
+    font-weight: 500;
+    cursor: pointer;
+
+    .menu-name {
+      font-size: 0.938rem;
+      line-height: 1.5;
+      color: #121116;
+    }
+
+    .admin-pro-tag {
+      top: 1rem;
+    }
+
+    .menu-desc {
+      margin-top: 0.188rem;
+      color: #72777c;
+      line-height: 1.2;
+      transition: all 150ms ease-out;
+    }
+
+    .drop-down-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.25rem;
+      width: 100%;
+    }
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+
+  .active-current-tab {
+    color: $color-active;
+    border-bottom: 0.126rem solid $color-active;
+
+    .menu-name,
+    i {
+      color: $color-active;
+    }
+
+    i {
+      opacity: 1;
+    }
+
+    .admin-pro-tag {
+      top: 1rem;
+    }
+  }
+
+  .menu-close {
+    position: absolute;
+    width: 2.25rem;
+    height: 2.25rem;
+    top: 1.25rem;
+    font-size: 1.15rem;
+    right: 0.63rem;
+    border-radius: 0.5rem;
+    background-color: $color-white;
+    color: $color-active;
+    border: none;
+    outline: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tab-wrapper {
+    width: 100%;
+
+    .subtab-wrapper {
+      padding-left: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s linear;
+
+      a {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      &.active {
+        max-height: 50rem;
+        height: auto;
+      }
+    }
+  }
 }
 
 @media screen and (width <=50.211rem) {
@@ -302,4 +443,13 @@
       }
     }
   }
+}
+
+
+
+
+.title-wrapper {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.425rem;
 }

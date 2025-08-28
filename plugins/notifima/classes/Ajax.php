@@ -135,12 +135,12 @@ class Ajax {
         $product_id     = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT ) ? filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT ) : '';
         $variation_id   = filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) ? filter_input( INPUT_POST, 'variation_id', FILTER_VALIDATE_INT ) : 0;
 
-        $current_user  = wp_get_current_user();
-        if ( !empty($current_user) && empty($customer_email) ) {
+        $current_user = wp_get_current_user();
+        if ( ! empty( $current_user ) && empty( $customer_email ) ) {
             $customer_email = $current_user->user_email;
         }
 
-        if (empty($customer_email)) {
+        if ( empty( $customer_email ) ) {
             wp_send_json_error( 'Empty customer Email' );
             wp_die();
         }

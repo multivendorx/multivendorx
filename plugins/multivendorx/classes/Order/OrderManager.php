@@ -2,7 +2,7 @@
 
 namespace MultiVendorX\Order;
 
-use \MultiVendorX\Vendor\VendorUtil as VendorUtil;
+use MultiVendorX\Store\StoreUtil;
 
 defined('ABSPATH') || exit;
 
@@ -10,19 +10,29 @@ defined('ABSPATH') || exit;
  * MultiVendorX Main Order class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 
 class OrderManager {
+    private $container = array();
     public function __construct() {
+        $this->init_classes();
         // Filter the query of order table before it is fetch.
         add_filter('woocommerce_order_query_args', [$this, 'set_filter_order_query']);
-
-        new Hooks();
-        new Admin();
-        new Frontend();
     }
+
+    /**
+     * Initialize all Order classes.
+     */
+    public function init_classes() {
+        $this->container = array(
+            'hook'      => new Hooks(),
+            'admin'     => new Admin(),
+            'frontend'  => new Frontend(),
+        );
+    }
+
 
     /**
      * A special function that filter the query in time of getting all order.
@@ -62,8 +72,8 @@ class OrderManager {
     public function create_vendor_orders($order_id, $order) {
         $item_info = self::group_item_vendor_based($order);
 
-        foreach ($item_info as $vendor_id => $items) {
-            $vendor_order = self::create_sub_order($order, $vendor_id, $items);
+        foreach ($item_info as $store_id => $items) {
+            $vendor_order = self::create_sub_order($order, $store_id, $items);
 
             // hook after vendor order create.
             do_action('mvx_checkout_vendor_order_processed', $vendor_order->get_id(), $vendor_order, $order);
@@ -75,11 +85,11 @@ class OrderManager {
     /**
      * Create suborder of a main order.
      * @param   object $parent_order
-     * @param   int $vendor_id
+     * @param   int $store_id
      * @param   array $items
      * @return  object
      */
-    public static function create_sub_order($parent_order, $vendor_id, $items) {
+    public static function create_sub_order($parent_order, $store_id, $items) {
         $meta = [
             'cart_hash',
             'customer_id',
@@ -130,7 +140,7 @@ class OrderManager {
 
             // save other details for suborder.
             $order->set_created_via('mvx_vendor_order');
-            $order->update_meta_data('_vendor_id', $vendor_id);
+            $order->update_meta_data('multivendorx_store_id', $store_id);
             $order->set_parent_id($parent_order->get_id());
             $order->calculate_totals();
 
@@ -143,7 +153,7 @@ class OrderManager {
             wp_update_post(
                 [
                     'ID' => $order->get_id(),
-                    'post_author' => $vendor_id,
+                    'post_author' => $store_id,
                 ]
             );
 
@@ -167,18 +177,18 @@ class OrderManager {
         $grouped_items = [];
         foreach ($items as $item_id => $item) {
             if (isset($item['product_id']) && $item['product_id'] !== 0) {
-                $vendor = VendorUtil::get_products_vendor($item['product_id']);
+                $vendor = StoreUtil::get_products_vendor($item['product_id']);
                 if ($vendor) {
-                    $grouped_items[$vendor->id][$item_id] = $item;
+                    $grouped_items[$vendor['ID']][$item_id] = $item;
                 }
             }
         }
 
         // Structure data for grouped item.
         $item_info = [];
-        foreach ($grouped_items as $vendor_id => $items) {
-            $item_info[$vendor_id] = [
-                'vendor_id'         => $vendor_id,
+        foreach ($grouped_items as $store_id => $items) {
+            $item_info[$store_id] = [
+                'store_id'         => $store_id,
                 'parent_order'      => $order,
                 'line_items'        => $items,
             ];
@@ -226,7 +236,7 @@ class OrderManager {
                 }
 
                 $item->set_backorder_meta();
-                $item->add_meta_data('_vendor_order_item_id', $item->get_product_id());
+                $item->add_meta_data('store_order_item_id', $item->get_product_id());
 
                 // Copy all metadata from order's item to new created item.
                 $metadata = $order_item->get_meta_data();
@@ -251,14 +261,14 @@ class OrderManager {
      * @return  void
      */
     public static function create_shipping_item( $order, $items ) {
-        $vendor_id = $items['vendor_id'];
+        $store_id = $items['store_id'];
         $parent_order = $items['parent_order'];
 
         $shipping_items = $parent_order->get_items('shipping');
                 
         foreach ( $shipping_items as $item_id => $item ) {
-            $shipping_vendor_id = $item->get_meta('vendor_id', true);
-            if ( $shipping_vendor_id == $vendor_id ) {
+            $shipping_vendor_id = $item->get_meta('multivendorx_store_id', true);
+            if ( $shipping_vendor_id == $store_id ) {
                 $shipping = new \WC_Order_Item_Shipping();
                 $shipping->set_props(
                     [
@@ -274,7 +284,7 @@ class OrderManager {
                     $shipping->add_meta_data($key, $value, true);
                 }
 
-                $shipping->add_meta_data('vendor_id', $vendor_id, true);
+                $shipping->add_meta_data('multivendorx_store_id', $store_id, true);
                 $item->add_meta_data('_vendor_order_shipping_item_id', $item_id );
 
                 // Action hook to adjust item before save.

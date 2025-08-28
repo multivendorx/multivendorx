@@ -2,6 +2,7 @@
 
 namespace MultiVendorX\Commission;
 
+use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
 use MultiVendorX\Vendor\VendorUtil as VendorUtil;
 
@@ -11,115 +12,151 @@ defined('ABSPATH') || exit;
  * MultiVendorX Main Commission class
  *
  * @version		PRODUCT_VERSION
- * @package		MultivendorX
+ * @package		MultiVendorX
  * @author 		MultiVendorX
  */
 class CommissionManager {
+    private $container = array();
     public function __construct() {
+        $this->init_classes();
         new Hooks();
+    }
+
+    /**
+     * Initialize all REST API controller classes.
+     */
+    public function init_classes() {
+        $this->container = array(
+            'hooks'    => new Hooks(),
+        );
     }
 
     /**
      * Calculate the commission and insert or update in database.
      * @param   mixed $order
      * @param   mixed $commission_id
-     * @param   mixed $recalculate
      * @return  mixed
      */
-    public function calculate_commission( $order = null , $commission_id = null, $recalculate = true ) {
+    public function calculate_commission( $order = null , $commission_id = null ) {
         global $wpdb;
 
         if ( $order ) {
-            $vendor_id = $order->get_meta('_vendor_id');
-            $vendor = VendorUtil::get_vendor( $vendor_id );
+            $vendor_id = $order->get_meta('multivendorx_store_id');
+            $vendor = StoreUtil::get_store_by_id( $vendor_id );
 
             $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
 
             $commission_amount = $shipping_amount = $tax_amount = $shipping_tax_amount = 0;
             $commission_rates = [];
 
-            // if recalculate is set
-            if( $recalculate ) {
+            if ( $commission_type == 'per_item' ) {
                 foreach ( $order->get_items() as $item_id => $item ) {
                     $product_id = $item['variation_id'] ? $item['variation_id'] : $item['product_id'];
 
                     $item_commission = $this->get_item_commission( $product_id, $item_id, $item, $order, $vendor );
+                    
                     $commission_values = $this->get_commission_amount( $product_id, $item, $vendor );
 
 
                     $commission_rate = [
-                        'mode' => MultiVendorX()->setting->get_setting('revenue_sharing_mode'),
-                        'type' => $commission_type,
+                        'mode' => 'store',
+                        'type' => 'per_item',
                         'commission_val' => (float) ( $commission_values['commission_val'] ?? 0 ),
                         'commission_fixed' => (float) ( $commission_values['commission_fixed'] ?? 0 )
                     ];
                     
-                    wc_update_order_item_meta( $item_id, '_vendor_item_commission', $item_commission );
+                    wc_update_order_item_meta( $item_id, 'multivendorx_store_item_commission', $item_commission );
                     $commission_amount += floatval($item_commission);
                     $commission_rates[$item_id] = $commission_rate;
                 }
-            } else {
-                $commission_rates = $order->get_meta( 'order_items_commission_rates', true );
-                foreach ( $order->get_items() as $item_id => $item ) {
-                    $product = $item->get_product();
-                    $meta_data = $item->get_meta_data();
-                    // get item commission
-                    foreach ( $meta_data as $meta ) {
-                        if ( $meta->key == '_vendor_item_commission' ) {
-                            $commission_amount += floatval( $meta->value );
+            } elseif ( $commission_type == 'store_order' ) {
+                $commission_per_store_order = MultiVendorX()->setting->get_setting( 'commission_per_store_order' );
+                foreach ($commission_per_store_order as $row) {
+                    if (array_key_exists('rule_type', $row)) {  
+                        switch ($row['rule_type']) {
+                            case 'order_value':
+                                $order_total = (float) $order->get_total();
+    
+                                if (
+                                    ($row['rule'] === 'less_than'  && $order_total <= (float) $row['order_value']) ||
+                                    ($row['rule'] === 'more_than' && $order_total >  (float) $row['order_value'])
+                                ) {
+                                    $commission_amount = $order_total * ((float) $row['commission_percentage'] / 100) + (float) $row['commission_fixed'];
+                                    break 2;
+                                }
+                                break;
+    
+                            case 'price':
+                            case 'quantity':
+                                foreach ($order->get_items() as $item_id => $item) {
+                                    $line_total = $order->get_item_subtotal($item, false, false) * $item['qty'];
+    
+                                    $base_value = $row['rule_type'] === 'price'
+                                        ? (float) wc_get_product($item['variation_id'] ?: $item['product_id'])->get_price()
+                                        : (float) $row['product_qty'];
+    
+                                    $compare_value = $row['rule_type'] === 'price'
+                                        ? (float) $line_total
+                                        : (float) $item['qty'];
+    
+                                    if (
+                                        ($row['rule'] === 'less_than'  && $compare_value <= $base_value) ||
+                                        ($row['rule'] === 'more_than' && $compare_value >  $base_value)
+                                    ) {
+                                        $commission_amount += $line_total * ((float) $row['commission_percentage'] / 100) + (float) $row['commission_fixed'];
+                                    }
+                                }
+    
+                                if ($commission_amount > 0) {
+                                    break 2; // exit foreach + switch
+                                }
+                                break;
                         }
-                        if ( $meta->key == '_vendor_order_item_id' ) {
-                            $order_item_id = absint( $meta->value );
-                            if ( isset( $commission_rates[$order_item_id] ) ) {
-                                $rate = $commission_rates[$order_item_id];
-                                $commission_rates[$item_id] = $rate;
-                                unset( $commission_rates[$order_item_id] ); // update with vendor order item id for further use
-                            }
-                        }
-                    }
+                    } 
                 }
-            }
 
-            // fixed + percentage per vendor's order
-            if ( $commission_type == 'fixed_with_percentage_per_vendor' ) {
-                $commission_amount = (float) $order->get_total() * ( (float) MultiVendorX()->vendor_caps->payment_cap['default_percentage'] / 100 ) + (float) MultiVendorX()->vendor_caps->payment_cap['fixed_with_percentage_per_vendor'];
+                if ($commission_amount <= 0) {
+                    $default_store_order_commission = reset($commission_per_store_order);                    
+                    $commission_amount = (float) $order->get_total() * ((float) $default_store_order_commission['commission_percentage'] / 100) + (float) $default_store_order_commission['commission_fixed'];
+                }
+
             }
             
             // Action hook to adjust items commission rates before save.
-            $order->update_meta_data('order_items_commission_rates', apply_filters('mvx_vendor_order_items_commission_rates', $commission_rates, $order));
+            $order->update_meta_data('multivendorx_order_items_commission_rates', apply_filters('mvx_vendor_order_items_commission_rates', $commission_rates, $order));
             
             // $order->save(); // Avoid using save() if it will save letter in same flow.
 
             // transfer shipping charges
-            if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_shipping') && !get_user_meta($vendor_id, '_vendor_give_shipping', true)) {
-                $shipping_amount = $order->get_shipping_total();
-            }
-            // transfer tax charges
-            foreach ( $order->get_items( 'tax' ) as $key => $tax ) { 
-                if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && MultiVendorX()->vendor_caps->vendor_payment_settings('give_shipping') && !get_user_meta($vendor_id, '_vendor_give_shipping', true) && !get_user_meta($vendor_id, '_vendor_give_tax', true)) {
-                    $tax_amount += $tax->get_tax_total();
-                    $shipping_tax_amount = $tax->get_shipping_tax_total();
-                } else if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && !get_user_meta($vendor_id, '_vendor_give_tax', true)) {
-                    $tax_amount += $tax->get_tax_total();
-                    $shipping_tax_amount = 0;
-                } else {
-                    $tax_amount = 0;
-                    $shipping_tax_amount = 0;
-                }
+            // if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_shipping') && !get_user_meta($vendor_id, '_vendor_give_shipping', true)) {
+            //     $shipping_amount = $order->get_shipping_total();
+            // }
+            // // transfer tax charges
+            // foreach ( $order->get_items( 'tax' ) as $key => $tax ) { 
+            //     if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && MultiVendorX()->vendor_caps->vendor_payment_settings('give_shipping') && !get_user_meta($vendor_id, '_vendor_give_shipping', true) && !get_user_meta($vendor_id, '_vendor_give_tax', true)) {
+            //         $tax_amount += $tax->get_tax_total();
+            //         $shipping_tax_amount = $tax->get_shipping_tax_total();
+            //     } else if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && !get_user_meta($vendor_id, '_vendor_give_tax', true)) {
+            //         $tax_amount += $tax->get_tax_total();
+            //         $shipping_tax_amount = 0;
+            //     } else {
+            //         $tax_amount = 0;
+            //         $shipping_tax_amount = 0;
+            //     }
 
-                if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && get_mvx_global_settings('commission_calculation_on_tax') ) {
-                    $tax_rate_id    = $tax->get_rate_id();
-                    $tax_percent    = \WC_Tax::get_rate_percent( $tax_rate_id );
-                    $tax_rate       = str_replace( '%', '', $tax_percent );
-                    if ( $tax_rate ) {
-                        $tax_amount = ( $commission_amount * $tax_rate ) / 100;
-                    }
-                }
-            }
+            //     if (MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && get_mvx_global_settings('commission_calculation_on_tax') ) {
+            //         $tax_rate_id    = $tax->get_rate_id();
+            //         $tax_percent    = \WC_Tax::get_rate_percent( $tax_rate_id );
+            //         $tax_rate       = str_replace( '%', '', $tax_percent );
+            //         if ( $tax_rate ) {
+            //             $tax_amount = ( $commission_amount * $tax_rate ) / 100;
+            //         }
+            //     }
+            // }
 
-            $include_coupon     = 0 < $order->get_total_discount() && MultiVendorX()->setting->get_setting('commission_include_coupon');
-            $include_shipping   = 0 < $shipping_amount && MultiVendorX()->vendor_caps->vendor_payment_settings('give_shipping') && !get_user_meta($vendor_id, '_vendor_give_shipping', true);
-            $include_tax        = 0 < $tax_amount && MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && !get_user_meta($vendor_id, '_vendor_give_tax', true);
+            // $include_coupon     = 0 < $order->get_total_discount() && MultiVendorX()->setting->get_setting('commission_include_coupon');
+            // $include_shipping   = 0 < $shipping_amount && MultiVendorX()->vendor_caps->vendor_payment_settings('give_shipping') && !get_user_meta($vendor_id, '_vendor_give_shipping', true);
+            // $include_tax        = 0 < $tax_amount && MultiVendorX()->vendor_caps->vendor_payment_settings('give_tax') && !get_user_meta($vendor_id, '_vendor_give_tax', true);
 
             $commission_total = (float) $commission_amount + (float) $shipping_amount + (float) $tax_amount + (float) $shipping_tax_amount;
             $commission_total = apply_filters( 'mvx_commission_total_amount', $commission_total, $commission_id );
@@ -127,10 +164,13 @@ class CommissionManager {
             // insert | update commission into commission table.
             $data = [
                 'order_id'          => $order->get_id(),
-                'vendor_id'         => $vendor_id,
-                'include_coupon'    => $include_coupon,
-                'include_shipping'  => $include_shipping,
-                'include_tax'       => $include_tax,
+                'store_id'         => $vendor_id,
+                // 'include_coupon'    => $include_coupon,
+                // 'include_shipping'  => $include_shipping,
+                // 'include_tax'       => $include_tax,
+                'include_coupon'    => 0,
+                'include_shipping'  => 0,
+                'include_tax'       => 0,
                 'commission_amount' => $commission_amount,
                 'shipping'          => $shipping_amount,
                 'tax'               => $tax_amount,
@@ -174,9 +214,9 @@ class CommissionManager {
         }
 
         // Calculate item total based on condition
-        if ( MultiVendorX()->vendor_caps->vendor_payment_settings( 'commission_include_coupon' ) ) {
+        if ( !empty (MultiVendorX()->setting->get_setting( 'commission_include_coupon' )) ) {
             $line_total = $order->get_item_total( $item, false, false ) * $item['qty'];
-            if ( MultiVendorX()->vendor_caps->vendor_payment_settings( 'admin_coupon_excluded' ) && !$order_coupon_author_is_vendor ) {
+            if ( !empty( MultiVendorX()->setting->get_setting( 'admin_coupon_excluded' ) ) && !$order_coupon_author_is_vendor ) {
                 $line_total = $order->get_item_subtotal( $item, false, false ) * $item['qty'];
             }
         } else {
@@ -196,28 +236,19 @@ class CommissionManager {
             
             $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
 
-            if ( !empty($commission) && $commission_type == 'fixed_with_percentage' ) {
-                $amount = (float) $line_total * ( (float) $commission['commission_val'] / 100 ) + (float) $commission['commission_fixed'];
-            } else if ( !empty($commission) && $commission_type == 'fixed_with_percentage_qty' ) {
+            if ( !empty($commission) && $commission_type == 'per_item' ) {
                 $amount = (float) $line_total * ( (float) $commission['commission_val'] / 100 ) + ((float) $commission['commission_fixed'] * $item['qty']);
-            } else if ( !empty($commission) && $commission_type == 'percent' ) {
-                $amount = (float) $line_total * ( (float) $commission['commission_val'] / 100 );
-            } else if ( !empty($commission) && $commission_type == 'fixed' ) {
-                $amount = (float) $commission['commission_val'] * $item['qty'];
-            } elseif ( $commission_type == 'commission_by_product_price' ) {
-                $amount = $this->get_commission_as_per_product_price( $product_id, $line_total, $item['qty'] );
-            } elseif ($commission_type == 'commission_by_purchase_quantity') {
-                $amount = $this->get_commission_by_quantity_rule( $product_id, $line_total, $item['qty'] );
             }
 
-            if ( MultiVendorX()->setting->get_setting( 'revenue_sharing_mode' ) ) {
-                if ( MultiVendorX()->setting->get_setting( 'revenue_sharing_mode' ) == 'revenue_sharing_mode_admin' ) {
-                    $amount = (float) $line_total - (float) $amount;
-                    if ( $amount < 0 ) {
-                        $amount = 0;
-                    }
-                }
-            }
+
+            // if ( MultiVendorX()->setting->get_setting( 'revenue_sharing_mode' ) ) {
+            //     if ( MultiVendorX()->setting->get_setting( 'revenue_sharing_mode' ) == 'revenue_sharing_mode_admin' ) {
+            //         $amount = (float) $line_total - (float) $amount;
+            //         if ( $amount < 0 ) {
+            //             $amount = 0;
+            //         }
+            //     }
+            // }
 
             $product_value_total += $item->get_total();
 
@@ -237,94 +268,59 @@ class CommissionManager {
      * @param   mixed $vendor
      * @return  array | bool
      */
+    //product
+    //category
+    //store
+    //global
+
     public function get_commission_amount( $product_id, $item, $vendor ) {
         $data = [];
         $product = wc_get_product( $product_id );
         
         if ( $product && $vendor ) {
-            $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
 
-            if ( $commission_type == 'fixed_with_percentage' ) {
-                $data['commission_val'] = $product->get_meta('_commission_percentage_per_product', true);
-                $data['commission_fixed'] = $product->get_meta('_commission_fixed_with_percentage', true);
+            // Variable Product 
+            $data['commission_val'] = $product->get_meta('multivendorx_variable_product_percentage_commission', true);
+            $data['commission_fixed'] = $product->get_meta('multivendorx_variable_product_fixed_commission', true);
 
-                if ( ! empty($data['commission_val'] ) ) {
-                    return $data;
-                } else {
-                    $category_wise_commission = $this->get_category_wise_commission( $product );
-                    if ( $category_wise_commission && $category_wise_commission->commission_percentage || $category_wise_commission->fixed_with_percentage ) {
-                        return [
-                            'commission_val' => $category_wise_commission->commission_percentage,
-                            'commission_fixed' => $category_wise_commission->fixed_with_percentage
-                        ];
-                    }
+            if ( ! empty( $data['commission_val'] ) || ! empty( $data['commission_fixed'] ) ) {
+                return $data;
+            }
 
-                    $vendor_commission_percentage = get_user_meta($vendor->id, '_vendor_commission_percentage', true);
-                    $vendor_commission_fixed_with_percentage = get_user_meta($vendor->id, '_vendor_commission_fixed_with_percentage', true);
-                    if ( $vendor_commission_percentage > 0 ) {
-                        return [
-                            'commission_val' => $vendor_commission_percentage,
-                            'commission_fixed' => $vendor_commission_fixed_with_percentage
-                        ]; // Use vendor user commission percentage 
-                    } else {
-                        $default_commission = $this->get_default_commission();
-                        if ( ! empty($default_commission) ) {
-                            return [
-                                'commission_val' => $default_commission['percent_amount'],
-                                'commission_fixed' => $default_commission['fixed_ammount']
-                            ];
-                        }
-                        return false;
-                    }
-                }
-            } else if ( $commission_type == 'fixed_with_percentage_qty' ) {
-                $data['commission_val'] = $product->get_meta( '_commission_percentage_per_product', true );
-                $data['commission_fixed'] = $product->get_meta( '_commission_fixed_with_percentage_qty', true );
+            // Simple Product
+            $data['commission_val'] = $product->get_meta('multivendorx_product_percentage_commission', true);
+            $data['commission_fixed'] = $product->get_meta('multivendorx_product_fixed_commission', true);
 
-                if (!empty($data['commission_val'])) {
-                    return $data; // Use product commission percentage first
-                } else {
-                    $category_wise_commission = $this->get_category_wise_commission( $product );
-                    if ( $category_wise_commission && $category_wise_commission->commission_percentage || $category_wise_commission->fixed_with_percentage_qty ) {
-                        return [
-                            'commission_val' => $category_wise_commission->commission_percentage,
-                            'commission_fixed' => $category_wise_commission->fixed_with_percentage_qty
-                        ];
-                    }
+            if ( ! empty( $data['commission_val'] ) || ! empty( $data['commission_fixed'] ) ) {
+                return $data;
+            }
+            
+            // Category
+            $category_wise_commission = $this->get_category_wise_commission( $product );
+            if ( $category_wise_commission && $category_wise_commission->commission_percentage || $category_wise_commission->commission_fixed ) {
+                return [
+                    'commission_val' => $category_wise_commission->commission_percentage,
+                    'commission_fixed' => $category_wise_commission->commission_fixed
+                ];
+            }
+            
+            // store commission
+            $store_commission_percentage = $vendor['commission_percentage'] ?? 0;
+            $store_commission_fixed = $vendor['commission_fixed'] ?? 0;
+            if ( $store_commission_percentage > 0 || $store_commission_fixed > 0 ) {
+                return [
+                    'commission_val' => $store_commission_percentage,
+                    'commission_fixed' => $store_commission_fixed
+                ]; 
+            }
 
-                    $vendor_commission_percentage = get_user_meta($vendor->id, '_vendor_commission_percentage', true);
-                    $vendor_commission_fixed_with_percentage = get_user_meta($vendor->id, '_vendor_commission_fixed_with_percentage_qty', true);
-                    if ($vendor_commission_percentage > 0) {
-                        return [
-                            'commission_val' => $vendor_commission_percentage,
-                            'commission_fixed' => $vendor_commission_fixed_with_percentage
-                        ]; // Use vendor user commission percentage 
-                    } else {
-                        $default_commission = $this->get_default_commission();
-                        if ( ! empty($default_commission ) ) {
-                            return [
-                                'commission_val' => $default_commission['percent_amount'],
-                                'commission_fixed' => $default_commission['fixed_ammount']
-                            ];
-                        }
-                    }
-                }
-            } else {
-                $data['commission_val'] = $product->get_meta( '_product_vendors_commission', true );
-                if ( ! empty($data['commission_val'] ) ) {
-                    return $data; // Use product commission percentage first
-                } else {
-                    if ( $category_wise_commission = $this->get_category_wise_commission( $product )->commision ) {
-                        return ['commission_val' => $category_wise_commission];
-                    }
-                    $vendor_commission = get_user_meta($vendor->id, '_vendor_commission', true);
-                    if ( $vendor_commission > 0 ) {
-                        return ['commission_val' => $vendor_commission]; // Use vendor user commission percentage 
-                    } else {
-                        $default_commission = $this->get_default_commission();
-                        return isset($default_commission['default_commission']) ? ['commission_val' => $default_commission['default_commission']] : false; // Use default commission
-                    }
-                }
+            // Global 
+            $commission_per_item = MultiVendorX()->setting->get_setting( 'commission_per_item' );
+            if ( ! empty($commission_per_item) ) {
+                return [
+                    'commission_val' => $commission_per_item['commission_percentage'],
+                    'commission_fixed' => $commission_per_item['commission_fixed']
+                ];
             }
         }
         return false;
@@ -342,27 +338,16 @@ class CommissionManager {
         if ( !$terms || is_wp_error( $terms ) ) {
             return null;
         }
-
-        // Find the max commission value term amoung all terms.
-        $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
         $max_commission_amount = PHP_INT_MIN;
         $max_commission_term = null;
 
         foreach ( $terms as $term ) {
             // calculate current term's commission.
             $total_commission_amount = 0;
-            if ( $commission_type == 'fixed_with_percentage' ) {
-                $commission_percentage = (float) get_term_meta( $term->term_id, 'commission_percentage', true );
-                $fixed_with_percentage = (float) get_term_meta( $term->term_id, 'fixed_with_percentage', true );
-                $total_commission_amount = $commission_percentage + $fixed_with_percentage;
-            } else if ( $commission_type == 'fixed_with_percentage_qty' ) {
-                $commission_percentage = (float) get_term_meta( $term->term_id, 'commission_percentage', true );
-                $fixed_with_percentage_qty = (float) get_term_meta( $term->term_id, 'fixed_with_percentage_qty', true );
-                $total_commission_amount = $commission_percentage + $fixed_with_percentage_qty;
-            } else {
-                $total_commission_amount = (float) get_term_meta( $term->term_id, 'commision', true );
-            }
-            
+            $commission_percentage = (float) get_term_meta( $term->term_id, 'multivendorx_category_percentage_commission', true );
+            $commission_fixed = (float) get_term_meta( $term->term_id, 'multivendorx_category_fixed_commission', true );
+            $total_commission_amount = $commission_percentage + $commission_fixed;
+
             // compare current term's commission with previously store term's commission.
             if ( $total_commission_amount > $max_commission_amount ) {
                 $max_commission_amount = $total_commission_amount;
@@ -372,131 +357,11 @@ class CommissionManager {
 
         // Store commission value of maximum commission category.
         $category_wise_commission = new \stdClass();
-        $category_wise_commission->commision = (float) ( get_term_meta( $max_commission_term->term_id, 'commision', true ) ?? 0 );
-        $category_wise_commission->commission_percentage = (float) ( get_term_meta( $max_commission_term->term_id, 'commission_percentage', true ) ?? 0 );
-        $category_wise_commission->fixed_with_percentage = (float) ( get_term_meta( $max_commission_term->term_id, 'fixed_with_percentage', true ) ?? 0 );
-        $category_wise_commission->fixed_with_percentage_qty = (float) ( get_term_meta( $max_commission_term->term_id, 'fixed_with_percentage_qty', true ) ?? 0 );
+        $category_wise_commission->commission_percentage = (float) ( get_term_meta( $max_commission_term->term_id, 'multivendorx_category_percentage_commission', true ) ?? 0 );
+        $category_wise_commission->commission_fixed = (float) ( get_term_meta( $max_commission_term->term_id, 'multivendorx_category_fixed_commission', true ) ?? 0 );
 
         // Filter hook to adjust category wise commission after calculation.
         return apply_filters( 'mvx_category_wise_commission', $category_wise_commission, $product );
-    }
-
-    /**
-     * Get the default / global-label commission.
-     * @return array
-     */
-    public function get_default_commission() {
-        $commission_amount = [];
-        $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
-        $default_commission_settings = get_mvx_global_settings( 'default_commission' );
-        if ( is_array( $default_commission_settings ) ) {
-            switch ( $commission_type ) {
-                case "fixed":
-                case "percent":
-                    $commission_amount = [ 'default_commission' => $default_commission_settings[0]['value'] ];
-                break;
-                case "fixed_with_percentage":
-                case "fixed_with_percentage_qty":
-                    foreach ( $default_commission_settings as $value ) {
-                        if ( isset( $value['key'] ) && isset( $value['value'] ) ) {
-                            $commission_amount[ $value['key'] ] = $value['value'];
-                        }
-                    }
-            }
-        }
-        return $commission_amount;
-    }
-
-    /**
-     * Get commission amount as per product price
-     * @param   mixed $product_id
-     * @param   mixed $line_total
-     * @param   mixed $item_quantity
-     * @return  float|int
-     */
-    public function get_commission_as_per_product_price( $product_id = 0, $line_total = 0, $item_quantity = 0 ) {
-        $commission_options = MultiVendorX()->setting->get_option( 'mvx_commissions_tab_settings', [] );
-        $vendor_commission_by_products = $commission_options['vendor_commission_by_products'];
-        if ( ! is_array( $vendor_commission_by_products ) ) $vendor_commission_by_products = [];
-        $commission_rule = [];
-
-        if ( ! empty( $vendor_commission_by_products ) ) {
-            $matched_rule_price = 0;
-            foreach ( $vendor_commission_by_products as $vendor_commission_product_rule ) {
-                $rule_price = $vendor_commission_product_rule['cost'];
-                $rule = isset( $vendor_commission_product_rule['rule'] ) ? $vendor_commission_product_rule['rule']['value'] : '';
-                
-                if ( ( $rule == 'upto' ) && ( (float) $line_total <= (float)$rule_price ) && ( !$matched_rule_price || ( (float)$rule_price <= (float)$matched_rule_price ) ) ) {
-                    $matched_rule_price  = $rule_price;
-                    $commission_rule['mode'] = isset($vendor_commission_product_rule['type']) ? $vendor_commission_product_rule['type']['value'] : '';
-                    $commission_rule['commission_val'] = $vendor_commission_product_rule['commission'];
-                    $commission_rule['commission_fixed'] = isset( $vendor_commission_product_rule['commission_fixed'] ) ? $vendor_commission_product_rule['commission_fixed'] : $vendor_commission_product_rule['commission'];
-                } elseif ( ( $rule == 'greater' ) && ( (float) $line_total > (float)$rule_price ) && ( !$matched_rule_price || ( (float)$rule_price >= (float)$matched_rule_price ) ) ) {
-                    $matched_rule_price = $rule_price;
-                    $commission_rule['mode'] = isset($vendor_commission_product_rule['type']) ? $vendor_commission_product_rule['type']['value'] : '';
-                    $commission_rule['commission_val'] = $vendor_commission_product_rule['commission'];
-                    $commission_rule['commission_fixed'] = isset( $vendor_commission_product_rule['commission_fixed'] ) ? $vendor_commission_product_rule['commission_fixed'] : $vendor_commission_product_rule['commission'];
-                }
-            }
-        }
-
-        $amount = 0;
-        if ( !empty( $commission_rule ) ) {
-            if ( $commission_rule['mode'] == 'percent_fixed' ) {
-                $amount = (float) $line_total * ( (float) $commission_rule['commission_val'] / 100 ) + (float) $commission_rule['commission_fixed'];
-            } else if ( $commission_rule['mode'] == 'percent' ) {
-                $amount = (float) $line_total * ( (float) $commission_rule['commission_val'] / 100 );
-            } else if ( $commission_rule['mode'] == 'fixed' ) {
-                $amount = (float) $commission_rule['commission_fixed'] * $item_quantity;
-            }
-        }
-        return $amount;
-    }
-
-    /**
-     * Get commission amount as per product quantity
-     * @param mixed $product_id
-     * @param mixed $line_total
-     * @param mixed $item_quantity
-     * @return mixed
-     */
-    public function get_commission_by_quantity_rule( $product_id = 0, $line_total = 0, $item_quantity = 0 ) {
-        $mvx_variation_commission_options = MultiVendorX()->setting->get_option( 'mvx_variation_commission_options', [] );
-        $vendor_commission_quantity_rules = $mvx_variation_commission_options['vendor_commission_by_quantity'];
-        if ( ! is_array( $vendor_commission_quantity_rules ) ) $vendor_commission_quantity_rules = [];
-
-        if ( ! $product_id ) return false;
-
-        $commission_rule = [];
-        $matched_rule_quantity = 0;
-        foreach ( $vendor_commission_quantity_rules as $vendor_commission_quantity_rule ) {
-            $rule_quantity = $vendor_commission_quantity_rule['quantity'];
-            $rule = isset($vendor_commission_quantity_rule['rule']) ? $vendor_commission_quantity_rule['rule']['value'] : '';
-
-            if ( ( $rule == 'upto' ) && ( (float) $item_quantity <= (float)$rule_quantity ) && ( !$matched_rule_quantity || ( (float)$rule_quantity <= (float)$matched_rule_quantity ) ) ) {
-                $matched_rule_quantity      = $rule_quantity;
-                $commission_rule['mode']    = isset($vendor_commission_quantity_rule['type']) ? $vendor_commission_quantity_rule['type']['value'] : '';
-                $commission_rule['commission_val'] = $vendor_commission_quantity_rule['commission'];
-                $commission_rule['commission_fixed']   = isset( $vendor_commission_quantity_rule['commission_fixed'] ) ? $vendor_commission_quantity_rule['commission_fixed'] : 0;
-            } elseif( ( $rule == 'greater' ) && ( (float) $item_quantity > (float)$rule_quantity ) && ( !$matched_rule_quantity || ( (float)$rule_quantity >= (float)$matched_rule_quantity ) ) ) {
-                $matched_rule_quantity      = $rule_quantity;
-                $commission_rule['mode']    = isset($vendor_commission_quantity_rule['type']) ? $vendor_commission_quantity_rule['type']['value'] : '';
-                $commission_rule['commission_val'] = $vendor_commission_quantity_rule['commission'];
-                $commission_rule['commission_fixed']   = isset( $vendor_commission_quantity_rule['commission_fixed'] ) ? $vendor_commission_quantity_rule['commission_fixed'] : 0;
-            }
-        }
-
-        $amount = 0;
-        if ( ! empty( $commission_rule ) ) {
-            if ( $commission_rule['mode'] == 'percent_fixed' ) {
-                $amount = (float) $line_total * ( (float) $commission_rule['commission_val'] / 100 ) + (float) $commission_rule['commission_fixed'];
-            } else if ( $commission_rule['mode'] == 'percent' ) {
-                $amount = (float) $line_total * ( (float) $commission_rule['commission_val'] / 100 );
-            } else if ( $commission_rule['mode'] == 'fixed' ) {
-                $amount = (float) $commission_rule['commission_fixed'];
-            }
-        }
-        return apply_filters('mvx_quantity_wise_commission_amount_modify', $amount, $product_id, $line_total, $item_quantity, $commission_rule);
     }
 
     /**
@@ -513,7 +378,7 @@ class CommissionManager {
         $commission_amount = get_post_meta( $commission_id, '_commission_amount', true);
         $included_coupon = get_post_meta( $commission_id, '_commission_include_coupon', true) ? true : false;
         $included_tax = get_post_meta( $commission_id, '_commission_total_include_tax', true) ? true : false;
-        $items_commission_rates = $vendor_order->get_meta( 'order_items_commission_rates', true);
+        $items_commission_rates = $vendor_order->get_meta( 'multivendorx_order_items_commission_rates', true);
         
         $refunded_total = $refunds = $global_refunds = $commission_refunded_items = array();
 

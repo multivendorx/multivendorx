@@ -5,11 +5,11 @@ import React, { ChangeEvent } from 'react';
 
 // Types
 interface RadioOption {
-    key?: string;
+    key: string;
     keyName?: string;
-    value: string | number;
-    label?: string;
-    name?: string;
+    value: string;
+    label: string;
+    name: string;
     color?: string[] | string; // Can be an array of colors or an image URL
 }
 
@@ -105,7 +105,7 @@ const RadioInput: React.FC< RadioInputProps > = ( props ) => {
                                     ) }
                             </label>
                             { props.proSetting && (
-                                <span className="admin-pro-tag">pro</span>
+                                <span className="admin-pro-tag">Pro</span>
                             ) }
                         </div>
                     );

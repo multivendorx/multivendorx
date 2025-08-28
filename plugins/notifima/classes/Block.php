@@ -52,7 +52,7 @@ class Block {
         );
 
         Notifima()->block_paths += array(
-            'block/stock-notification-block' => FrontendScripts::get_build_path_name() . 'block/stock-notification-block/index.js',
+            'block/stock-notification-block' => FrontendScripts::get_build_path_name() . 'js/block/stock-notification-block/index.js',
         );
 
         return apply_filters( 'notifima_initialize_blocks', $blocks );

@@ -15,12 +15,29 @@
 
     code{
         font-weight: 500;
+        color: $theme-color;
+        background: $theme-background-color;
     }
 
     tbody {
         tr {
             &:nth-child(odd) {
                 background: #f8f9fa;
+            }
+            td:first-child{
+                i{
+                    opacity: 0;
+                    transition: all 0.5s ease;
+                    margin-left: 0.5rem ;
+                    cursor: pointer;
+                }
+
+                &:hover{
+                    i{
+                        opacity: 1;
+
+                    }
+                }
             }
         }
     }

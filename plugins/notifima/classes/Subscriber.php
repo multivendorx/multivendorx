@@ -432,7 +432,22 @@ class Subscriber {
                 $product_ids[] = $product->get_id();
         }
 
-        return $product_ids;
+        // WPML support - get all translated product IDs for each product ID.
+        $wpml_product_ids = array();
+        foreach ( $product_ids as $pid ) {
+            $trid = apply_filters( 'wpml_element_trid', null, $pid, 'post_product' );
+            if ( $trid ) {
+                $translations = apply_filters( 'wpml_get_element_translations', null, $trid, 'post_product' );
+                foreach ( $translations as $translation ) {
+                    if ( isset( $translation->element_id ) ) {
+                        $wpml_product_ids[] = (int) $translation->element_id;
+                    }
+                }
+            } else {
+                $wpml_product_ids[] = $pid;
+            }
+        }
+        return array_unique( $wpml_product_ids );
     }
 
     /**

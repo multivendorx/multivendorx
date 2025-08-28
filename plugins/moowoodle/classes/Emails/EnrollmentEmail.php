@@ -60,7 +60,6 @@ class EnrollmentEmail extends \WC_Email {
 			return;
 		}
 
-		do_action( 'wpml_switch_language_for_email', $recipient );
         $this->send(
 			$this->get_recipient(),
 			$this->get_subject(),
@@ -68,7 +67,6 @@ class EnrollmentEmail extends \WC_Email {
 			$this->get_headers(),
 			$this->get_attachments()
 		);
-        do_action( 'wpml_restore_language_from_email' );
 
 		$user = get_user_by( 'email', $recipient );
 		if ( $user && ( get_user_meta( $user->ID, 'moowoodle_moodle_new_user_created', true ) || get_user_meta( $user->ID, 'moowoodle_wordpress_new_user_created', true ) ) ) {

@@ -202,7 +202,7 @@ class FrontendScripts {
 					'version' => $version,
 				),
 				'moowoodle-product-tab-script' => array(
-					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/' . PLUGIN_SLUG . '-product-tab.min.js',
+					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'js/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
 					'version' => $version,
 				),
@@ -231,7 +231,7 @@ class FrontendScripts {
 				),
 
 				'moowoodle-product-tab-style' => array(
-					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/' . PLUGIN_SLUG . '-product-tab.min.css',
+					'src'     => MooWoodle()->plugin_url . self::get_build_path_name() . 'styles/' . MOOWOODLE_PLUGIN_SLUG . '-product-tab.min.css',
 					'deps'    => array(),
 					'version' => $version,
 				),

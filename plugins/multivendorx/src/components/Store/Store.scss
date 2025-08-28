@@ -1,0 +1,54 @@
+// card styles start
+.width-35 {
+    width: 35%;
+}
+
+.width-65 {
+    width: 65%;
+}
+.container-wrapper {
+    display: flex;
+    gap: 1.2rem;
+    padding: 2rem;
+    background: #f0f0f1;
+}
+
+.card-wrapper {
+    display: flex;
+    gap: 1.2rem;
+    flex-direction: column;
+}
+
+.card-content {
+    box-shadow: 0 1px 3px #364a630d;
+    background: #fff;
+    padding: 1.5rem;
+
+    .card-title {
+        font-size: 1.125rem;
+        margin-bottom: 1.313rem;
+    }
+
+    .form-group-wrapper {
+        display: flex;
+        gap: 1rem;
+        align-items: end;
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 1rem;
+
+            label {
+                font-size: .875rem;
+                font-weight: 500;
+                color: #344357;
+                margin-bottom: .5rem;
+            }
+        }
+    }
+
+}
+
+// card styles start

@@ -40,19 +40,6 @@ class FrontendScripts {
     }
 
     /**
-	 * Get the script file name based on environment.
-	 *
-	 * @param string $name The base name of the script file (without `.js` or `.min.js`).
-	 * @return string Script name to use for enqueueing.
-	 */
-    public static function get_script_name( $name ) {
-        if ( Notifima()->is_dev ) {
-			return $name;
-        }
-        return PLUGIN_SLUG . '-' . $name . '.min';
-    }
-
-    /**
 	 * Get the build path for assets based on environment.
 	 *
 	 * @return string Relative path to the build directory.
@@ -162,9 +149,9 @@ class FrontendScripts {
             'notifima_register_scripts',
             array(
 				'notifima-frontend-script' => array(
-					'src'         => Notifima()->plugin_url . 'assets/js/' . self::get_script_name( 'frontend' ) . '.js',
-					'deps'        => array( 'jquery', 'wp-element', 'wp-components' ),
-					'version'     => $version,
+					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.js',
+					'deps'    => array( 'jquery', 'wp-element', 'wp-components' ),
+					'version' => $version,
 				),
 			)
         );
@@ -184,7 +171,7 @@ class FrontendScripts {
             'notifima_register_styles',
             array(
 				'notifima-frontend-style' => array(
-					'src'     => Notifima()->plugin_url . 'assets/styles/' . self::get_script_name( 'frontend' ) . '.scss',
+					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'styles/' . NOTIFIMA_PLUGIN_SLUG . '-frontend.min.css',
 					'deps'    => array(),
 					'version' => $version,
 				),
@@ -226,14 +213,14 @@ class FrontendScripts {
             'admin_notifima_register_scripts',
             array(
 				'notifima-admin-script'      => array(
-					'src'         => Notifima()->plugin_url . self::get_build_path_name() . 'js/index.js',
-					'deps'        => $index_asset['dependencies'],
-					'version'     => $version,
+					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/index.js',
+					'deps'    => $index_asset['dependencies'],
+					'version' => $version,
 				),
 				'notifima-components-script' => array(
-					'src'         => Notifima()->plugin_url . self::get_build_path_name() . 'js/components.js',
-					'deps'        => $component_asset['dependencies'],
-					'version'     => $version,
+					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'js/components.js',
+					'deps'    => $component_asset['dependencies'],
+					'version' => $version,
 				),
             )
         );
@@ -258,7 +245,7 @@ class FrontendScripts {
 					'version' => $version,
 				),
 				'notifima-admin-style'      => array(
-					'src'     => Notifima()->plugin_url . 'assets/styles/' . self::get_script_name( 'admin' ) . '.scss',
+					'src'     => Notifima()->plugin_url . self::get_build_path_name() . 'styles/' . NOTIFIMA_PLUGIN_SLUG . '-admin.min.css',
 					'deps'    => array(),
 					'version' => $version,
 				),
@@ -326,7 +313,7 @@ class FrontendScripts {
 					'data'        => array(
 						'apiUrl'  => untrailingslashit( get_rest_url() ),
 						'restUrl' => Notifima()->rest_namespace,
-						'nonce'   => wp_create_nonce( 'notifima-security-nonce' ),
+						'nonce'   => wp_create_nonce( 'wp_rest' ),
 					),
 				),
 				'notifima-stock-notification-block-editor-script' => array(
@@ -334,7 +321,7 @@ class FrontendScripts {
 					'data'        => array(
 						'apiUrl'  => untrailingslashit( get_rest_url() ),
 						'restUrl' => Notifima()->rest_namespace,
-						'nonce'   => wp_create_nonce( 'notifima-security-nonce' ),
+						'nonce'   => wp_create_nonce( 'wp_rest' ),
 					),
 				),
 			)

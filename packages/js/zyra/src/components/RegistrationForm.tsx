@@ -433,7 +433,7 @@ const CustomFrom: React.FC< CustomFormProps > = ( {
 
     return (
         // Render Registration form here
-        <div className="registration-from-main-wrapper-section">
+        <div className="registration-from-wrapper">
             { /* Render element type section */ }
             <Elements
                 selectOptions={ selectOptions }

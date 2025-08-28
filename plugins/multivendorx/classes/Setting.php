@@ -106,7 +106,13 @@ class Setting {
                 'multivendorx_wholesale_settings',
                 'multivendorx_store_support_settings',
                 'multivendorx_policy_settings',
-                'multivendorx_payment_masspay_settings'
+                'multivendorx_payment_masspay_settings',
+                'multivendorx_marketplace_settings_settings',
+                'multivendorx_store_capability_settings',
+                'multivendorx_user_capability_settings',
+                'multivendorx_commission_rule_settings',
+                'multivendorx_payment_integration_settings',
+                'multivendorx_store_appearance_settings',
 			)
         );
 

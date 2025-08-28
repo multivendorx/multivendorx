@@ -1,0 +1,87 @@
+@use '../../global.scss' as *;
+
+.endpoints-wrapper {
+
+    .endpoint {
+        .menu-item {
+            padding: 0.5rem;
+
+            .main-menu,
+            .edit-menu {
+                display: flex;
+                justify-content: space-between;
+                border: $border-theme-small;
+                padding: 0.8rem 1rem;
+                cursor: move;
+
+                .name-wrapper {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+
+                    i {
+                        font-size: 1.125rem;
+                    }
+                    .name {
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                    }
+                }
+
+                .edit-icon {
+                    display: flex;
+                    gap: 0.5rem;
+                    opacity: 0;
+                    transition: all 0.4s ease;
+
+                    i {
+                        font-size: 1.125rem;
+                        cursor: pointer;
+                    }
+
+                    .adminlib-eye {
+                        color: $theme-color;
+                    }
+                }
+
+                &:hover {
+                    background: $theme-background-color;
+
+                    .edit-icon {
+                        opacity: 1;
+                    }
+                }
+
+                input {
+                    width: fit-content;
+                    background: #fff;
+                }
+            }
+
+            .adminlib-move{
+                margin-right: 0.5rem;
+                color: $theme-color;
+                font-size: 1.313rem;
+            }
+
+            &:has(.main-menu:hover),
+                &:has(.edit-menu:hover) {
+                    background: #e8e8e8;
+                }
+            ul {
+                margin: 0;
+
+                li {
+                    padding: 0.8rem 1rem;
+                    margin: 0.5rem 0 0 2rem;
+                    border: $border-theme-small;
+                    cursor: move;
+
+                    &:hover {
+                        background: $theme-background-color;
+                    }
+                }
+            }
+        }
+    }
+}
