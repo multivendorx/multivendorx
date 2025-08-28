@@ -26,7 +26,7 @@ export default {
                 'Category selection method',
                 'multivendorx'
             ),
-            desc: __('<ul><li><b>Guided sequential selection</b>: Vendors must first choose primary category, then select from available subcategories.</li><li><b>Free multi-selection</b>ss: Vendors can select any number of categories and subcategories without restrictions.</li></ul>',
+            desc: __('<ul><li><b>Guided sequential selection</b>: Stores must first choose primary category, then select from available subcategories.</li><li><b>Free multi-selection</b>ss: Stores can select any number of categories and subcategories without restrictions.</li></ul>',
                 'multivendorx'
             ),
             options: [
