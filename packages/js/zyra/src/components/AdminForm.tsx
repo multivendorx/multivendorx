@@ -1080,7 +1080,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             }
                             name={inputField.name}
                             keyName={inputField.key}
-                            options={Array.isArray(value) ? value : []}
+                            options={Array.isArray(inputField.options) ? inputField.options : []}
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
                             )}
