@@ -28,6 +28,7 @@ export default {
                 'Upload (32px height) size badge that will appear next to verified stores for credibility.',
                 'mvx-pro'
             ),
+            //proSetting:true
         },
         {
             key: 'unverified_store_access',
@@ -39,18 +40,22 @@ export default {
                     key: 'endpoint_control',
                     label: __('Restrict access to other pages', 'mvx-pro'),
                     value: 'endpoint_control',
+                    proSetting:true,
                 },
                 {
                     key: 'redirect_verification_page',
                     label: __('Redirect to verification page', 'mvx-pro'),
                     value: 'redirect_verification_page',
+                    proSetting:true,
                 },
                 {
                     key: 'disable_add_product_endpoint',
                     label: __('Prevent product upload', 'mvx-pro'),
                     value: 'disable_add_product_endpoint',
+                    proSetting:true,
                 },
             ],
+            //proSetting:true,
             selectDeselect: true,
         },
         {
@@ -77,7 +82,7 @@ export default {
                             key: 'verification_methods',
                             type: 'verification-methods', // custom type
                             label: 'Verification Methods',
-                            addButtonLabel: 'Add Verification Method',
+                            addButtonLabel: 'Add New Method',
                             deleteButtonLabel: 'Remove',
                             nestedFields: [
                                 { key: 'label', type: 'text', label: 'Label', placeholder: 'Enter label' },
@@ -177,7 +182,8 @@ export default {
                         }
                     ],
                 },
-            ]
+            ],
+            //proSetting:true
         },
     ],
 };

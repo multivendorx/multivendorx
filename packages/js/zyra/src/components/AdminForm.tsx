@@ -28,7 +28,6 @@ import BasicInput from './BasicInput';
 import TextArea from './TextArea';
 import FileInput from './FileInput';
 import CalendarInput from './CalendarInput';
-import MultiNumInput from './MultiNumInput';
 import RadioInput from './RadioInput';
 import MultiCheckBox from './MultiCheckbox';
 import WpEditor from './WpEditor';
@@ -39,23 +38,18 @@ import GoogleMap from './GoogleMap';
 import Popup, { PopupProps } from './Popup';
 import '../styles/web/AdminForm.scss';
 import NestedComponent from './NestedComponent';
-import MultiStringInput from './MultiInputString';
 import ColorSettingInput from './ColorSettingInput';
 import EndpointEditor from './EndpointEditor';
 import PaymentTabsComponent from './PaymentTabsComponent';
 import VerificationMethods from './VerificationMethods';
 import SystemInfoAccordion from './SystemInfoAccordion';
+import MultiInput from './MultiInput';
 
 // Types
 declare const wp: any;
 
 const PENALTY = 10;
 const COOLDOWN = 1;
-
-interface CountryState {
-    label: string;
-    value: string;
-}
 
 interface DependentCondition {
     key: string;
@@ -96,8 +90,6 @@ interface InputField {
     | 'map'
     | 'google-map'
     | 'checkbox'
-    | 'country'
-    | 'state'
     | 'radio-color'
     | 'color-setting'
     | 'radio-select'
@@ -146,8 +138,10 @@ interface InputField {
     min?: number;
     max?: number;
     icon?: string;
-    iconEnable?:boolean;
-    size?:string;
+    iconEnable?: boolean;
+    size?: string;
+    before?: string;
+    after?: string;
     proSetting?: boolean;
     moduleEnabled?: boolean;
     parameter?: string;
@@ -156,8 +150,8 @@ interface InputField {
     rowNumber?: number;
     colNumber?: number;
     value?: string;
-    copyButtonLabel?:string;
-    copiedLabel?:string;
+    copyButtonLabel?: string;
+    copiedLabel?: string;
     width?: number;
     height?: number;
     multiple?: boolean;
@@ -208,7 +202,7 @@ interface InputField {
     labelAfterInput?: boolean,
     single?: boolean;
     center?: Center;
-    buttonEnable?:boolean
+    buttonEnable?: boolean
     nestedFields?: {
         key: string;
         type: 'number' | 'select';
@@ -285,7 +279,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
     const counterId = useRef<NodeJS.Timeout | number>(0);
     const [successMsg, setSuccessMsg] = useState<string>('');
     const [modelOpen, setModelOpen] = useState<boolean>(false);
-    const [countryState, setCountryState] = useState<CountryState[]>([]);
     const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
         settings: '',
@@ -438,8 +431,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
             | 'calender'
             | 'select'
             | 'multi-select'
-            | 'wpeditor'
-            | 'country' = 'simple',
+            | 'wpeditor' = 'simple',
         arrayValue: any[] = []
     ) => {
         settingChanged.current = true;
@@ -482,21 +474,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 fromType === 'wpeditor'
             ) {
                 updateSetting(key, event);
-            } else if (fromType === 'country') {
-                updateSetting(key, arrayValue[event.index]);
-
-                const countryData: Record<string, string> = JSON.parse(
-                    appLocalizer.countries.replace(/&quot;/g, '"')
-                )[event.value];
-
-                const countryListArray = Object.keys(countryData).map(
-                    (keyCountry) => ({
-                        label: keyCountry,
-                        value: countryData[keyCountry],
-                    })
-                );
-
-                setCountryState(countryListArray);
             }
         } else {
             let prevData: string[] = setting[key] || [];
@@ -520,15 +497,15 @@ const AdminForm: React.FC<AdminFormProps> = ({
         optionKey?: string
     ) => {
         if (!key || !optionKey) return;
-    
+
         settingChanged.current = true;
-    
+
         // Copy existing settings or initialize
         const currentValues: Record<string, string | number> = setting[key] || {};
-    
+
         // Save in flattened key-value format
         currentValues[optionKey] = e.target.value;
-    
+
         updateSetting(key, currentValues);
     };
 
@@ -675,6 +652,9 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             min={inputField.min ?? 0} // for range min value
                             max={inputField.max ?? 50} // for range max value
                             value={value}
+                            size={inputField.size}
+                            before={inputField.before}
+                            after={inputField.after}
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
                             )}
@@ -716,7 +696,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             placeholder={inputField.placeholder}
                             rowNumber={inputField.rowNumber} // for row number value
                             colNumber={inputField.colNumber} // for column number value
-                            value={value}
+                            value={ value || inputField.value }
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
                             )}
@@ -892,14 +872,12 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                             'select',
                                             'multi-select',
                                             'wpeditor',
-                                            'country',
                                         ].includes(inputField.type ?? '')
                                             ? (inputField.type as
                                                 | 'calender'
                                                 | 'select'
                                                 | 'multi-select'
-                                                | 'wpeditor'
-                                                | 'country')
+                                                | 'wpeditor')
                                             : 'simple' // Default for unsupported types
                                     );
                                 }
@@ -960,10 +938,10 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         </div>
                     );
                     break;
-                // Check in MVX
                 case 'multi-number':
                     input = (
-                        <MultiNumInput
+                        <MultiInput
+                            inputType="multi-number"
                             parentWrapperClass="settings-basic-input-class"
                             childWrapperClass="settings-basic-child-wrap"
                             inputWrapperClass="settings-basic-input-child-class"
@@ -986,9 +964,11 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         />
                     );
                     break;
+
                 case 'multi-string':
                     input = (
-                        <MultiStringInput
+                        <MultiInput
+                            inputType="multi-string"
                             wrapperClass="setting-form-multi-input"
                             inputClass="basic-input"
                             buttonClass="admin-btn btn-purple"
@@ -1001,7 +981,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             proSetting={isProSetting(inputField.proSetting ?? false)}
                             description={inputField.desc}
                             descClass="settings-metabox-description"
-                            onChange={(e) => {
+                            onStringChange={(e) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
@@ -1202,100 +1182,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         />
                     );
                     break;
-                // Check in MVX
-                case 'country':
-                    input = (
-                        <SelectInput
-                            name={inputField.name}
-                            wrapperClass="country-choice-class"
-                            descClass="settings-metabox-description"
-                            description={inputField.desc}
-                            inputClass={inputField.key}
-                            options={Array.isArray(value) ? value : []}
-                            value={
-                                typeof value === 'number'
-                                    ? value.toString()
-                                    : value
-                            }
-                            proSetting={isProSetting(
-                                inputField.proSetting ?? false
-                            )}
-                            onChange={(selectedOption) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange(
-                                        selectedOption,
-                                        inputField.key,
-                                        'single',
-                                        'country',
-                                        Array.isArray(selectedOption)
-                                            ? selectedOption
-                                            : [selectedOption]
-                                    );
-                                }
-                            }}
-                        />
-                    );
-                    break;
-                // Check in MVX
-                case 'state':
-                    input = (
-                        <SelectInput
-                            name={inputField.name}
-                            wrapperClass="state-choice-class"
-                            descClass="settings-metabox-description"
-                            description={inputField.desc}
-                            inputClass={inputField.key}
-                            options={countryState}
-                            value={
-                                typeof value === 'number'
-                                    ? value.toString()
-                                    : value
-                            }
-                            proSetting={isProSetting(
-                                inputField.proSetting ?? false
-                            )}
-                            onChange={(selectedOption) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange(
-                                        selectedOption,
-                                        inputField.key,
-                                        'single',
-                                        'select',
-                                        Array.isArray(selectedOption)
-                                            ? selectedOption
-                                            : [selectedOption]
-                                    );
-                                }
-                            }}
-                        />
-                    );
-                    break;
                 // For single or multiple checkbox (free / pro or some free some pro)
                 case 'checkbox':
                     let normalizedValue: string[] = [];
@@ -1462,7 +1348,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             proChanged={() => setModelOpen(true)}
                         />
                     );
-                    break;                
+                    break;
                 // Check in MVX
                 case 'wpeditor':
                     input = (
@@ -1831,11 +1717,11 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 case 'system-info':
                     input = (
                         <SystemInfoAccordion
-                        appLocalizer={appLocalizer}
-                        apiLink={String(inputField.apiLink)}
-                        copyButtonLabel={inputField.copyButtonLabel}
-                        copiedLabel={inputField.copiedLabel}
-                    />
+                            appLocalizer={appLocalizer}
+                            apiLink={String(inputField.apiLink)}
+                            copyButtonLabel={inputField.copyButtonLabel}
+                            copiedLabel={inputField.copiedLabel}
+                        />
                     );
                     break;
 

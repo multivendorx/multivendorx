@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import google from '../../../assets/images/google.png';
+import mapbox from '../../../assets/images/mapbox-logo.png';
 
 export default {
     id: 'geo-location',
@@ -55,7 +56,7 @@ export default {
                     key: 'mapbox_api_set',
                     label: __( 'Mapbox map', 'multivendorx' ),
                     value: __( 'mapbox_api_set', 'multivendorx' ),
-                    img: google,
+                    img: mapbox,
                 },
             ],
         },

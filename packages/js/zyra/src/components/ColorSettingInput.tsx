@@ -114,7 +114,9 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                         Custom Palette
                     </button>
                 </div>
+            </div>
 
+            <div className="color-setting">
                 <div className="color-palette-wrapper">
                     <div className="predefined">
                         {/* Predefined Palettes */}
@@ -167,125 +169,124 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                         )}
                     </div>
                 </div>
-            </div>
-
-            {/* Live Preview */}
-            {props.showPreview && (
-                <div className="preview-wrapper">
-                    {/* Sidebar */}
-                    <div className="tabs-wrapper">
-                        <div className="logo-wrapper">
-                            <img src="https://multivendorx.com/wp-content/uploads/2025/06/multivendorx-logo-180x40.png" alt="" />
-                            <i className="adminlib-menu"></i>
-                        </div>
-                        <ul className="dashboard-tabs">
-                            <li className="tab-name active">
-                                <a className="tab" style={{color: selectedColors.themeColor}}>
-                                    <i className="adminlib-cart"></i>
-                                    Dashboard
-                                </a>
-                            </li>
-
-                            <li className="tab-name ">
-                                <a className="tab" >
-                                    <i className="adminlib-cart"></i>
-                                    Products
-                                </a>
-                                <i className="admin-arrow adminlib-pagination-right-arrow"></i>
-                            </li>
-
-                            <ul className="subtabs">
-                                <li >
-                                    <a >All Products</a>
-                                </li>
-                                <li>
-                                    <a >Add Product</a>
-                                </li>
-                            </ul>
-                            <li className="tab-name ">
-                                <a href="#" className="tab" >
-                                    <i className="adminlib-cart"></i>
-                                    Orders                            </a>
-                                <i className="admin-arrow adminlib-pagination-right-arrow"></i>
-                            </li>
-
-                            <ul className="subtabs">
-                                <li className="">
-                                    <a href="#">
-                                        All Orders</a>
-                                </li>
-                            </ul>
-                            <li className="tab-name ">
-                                <a className="tab" >
-                                    <i className=""></i>
-                                    Coupons
-                                </a>
-                                <i className="admin-arrow adminlib-pagination-right-arrow"></i>
-                            </li>
-
-                            <ul className="subtabs">
-                                <li className="">
-                                    <a >All Coupons</a>
-                                </li>
-                                <li className="">
-                                    <a >Add Coupons</a>
-                                </li>
-                            </ul>
-                        </ul>
-                    </div>
-
-                    {/* Content Area */}
-                    <div className="tab-wrapper">
-                        <div className="top-navbar">
-                            <div className="navbar-leftside">
+                {/* Live Preview */}
+                {props.showPreview && (
+                    <div className="preview-wrapper">
+                        {/* Sidebar */}
+                        <div className="tabs-wrapper">
+                            <div className="logo-wrapper">
+                                <img src="https://multivendorx.com/wp-content/uploads/2025/06/multivendorx-logo-180x40.png" alt="" />
+                                <i className="adminlib-menu"></i>
                             </div>
-                            <div className="navbar-rightside">
-                                <ul className="navbar-right">
-                                    <li>
-                                        <div className="adminlib-icon adminlib-vendor-form-add"></div>
-                                    </li>
-                                    <li>
-                                        <div className="adminlib-icon adminlib-alarm"></div>
-                                    </li>
-                                    <li>
-                                        <div className="adminlib-icon adminlib-crop-free"></div>
-                                    </li>
-                                    <li>
-                                        <div className="adminlib-icon adminlib-contact-form"></div>
-                                    </li>
+                            <ul className="dashboard-tabs">
+                                <li className="tab-name active">
+                                    <a className="tab" style={{color: selectedColors.themeColor}}>
+                                        <i className="adminlib-cart"></i>
+                                        Dashboard
+                                    </a>
+                                </li>
 
+                                <li className="tab-name ">
+                                    <a className="tab" >
+                                        <i className="adminlib-cart"></i>
+                                        Products
+                                    </a>
+                                    <i className="admin-arrow adminlib-pagination-right-arrow"></i>
+                                </li>
 
-                                    <li className="dropdown login-user">
-                                        <a href="" className="dropdown-toggle">
-                                            <div className="avatar-wrapper" style={{backgroundColor: selectedColors.themeColor}}>
-                                                <i className="adminlib-person"></i>
-                                            </div>
-                                        </a>
+                                <ul className="subtabs">
+                                    <li >
+                                        <a >All Products</a>
                                     </li>
-
+                                    <li>
+                                        <a >Add Product</a>
+                                    </li>
                                 </ul>
-                            </div>
+                                <li className="tab-name ">
+                                    <a href="#" className="tab" >
+                                        <i className="adminlib-cart"></i>
+                                        Orders                            </a>
+                                    <i className="admin-arrow adminlib-pagination-right-arrow"></i>
+                                </li>
 
+                                <ul className="subtabs">
+                                    <li className="">
+                                        <a href="#">
+                                            All Orders</a>
+                                    </li>
+                                </ul>
+                                <li className="tab-name ">
+                                    <a className="tab" >
+                                        <i className=""></i>
+                                        Coupons
+                                    </a>
+                                    <i className="admin-arrow adminlib-pagination-right-arrow"></i>
+                                </li>
+
+                                <ul className="subtabs">
+                                    <li className="">
+                                        <a >All Coupons</a>
+                                    </li>
+                                    <li className="">
+                                        <a >Add Coupons</a>
+                                    </li>
+                                </ul>
+                            </ul>
                         </div>
-                        
+
+                        {/* Content Area */}
+                        <div className="tab-wrapper">
+                            <div className="top-navbar">
+                                <div className="navbar-leftside">
+                                </div>
+                                <div className="navbar-rightside">
+                                    <ul className="navbar-right">
+                                        <li>
+                                            <div className="adminlib-icon adminlib-vendor-form-add"></div>
+                                        </li>
+                                        <li>
+                                            <div className="adminlib-icon adminlib-alarm"></div>
+                                        </li>
+                                        <li>
+                                            <div className="adminlib-icon adminlib-crop-free"></div>
+                                        </li>
+                                        <li>
+                                            <div className="adminlib-icon adminlib-contact-form"></div>
+                                        </li>
+
+
+                                        <li className="dropdown login-user">
+                                            <a href="" className="dropdown-toggle">
+                                                <div className="avatar-wrapper" style={{backgroundColor: selectedColors.themeColor}}>
+                                                    <i className="adminlib-person"></i>
+                                                </div>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+                        {/* <div style={{ flex: 1, padding: '20px', backgroundColor: '#f9f9f9' }}>
+                            <h4 style={{ marginBottom: '10px' }}>Dashboard</h4>
+                            <button
+                                style={{
+                                    backgroundColor: selectedColors.buttonBg,
+                                    color: selectedColors.buttonText,
+                                    // border: `1px solid ${selectedColors.buttonBorder}`,
+                                    padding: '8px 14px',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Button
+                            </button>
+                        </div> */}
                     </div>
-                    {/* <div style={{ flex: 1, padding: '20px', backgroundColor: '#f9f9f9' }}>
-                        <h4 style={{ marginBottom: '10px' }}>Dashboard</h4>
-                        <button
-                            style={{
-                                backgroundColor: selectedColors.buttonBg,
-                                color: selectedColors.buttonText,
-                                // border: `1px solid ${selectedColors.buttonBorder}`,
-                                padding: '8px 14px',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            Button
-                        </button>
-                    </div> */}
-                </div>
-            )}
+                )}
+            </div>
 
             {props.description && (
                 <p className={props.descClass} dangerouslySetInnerHTML={{ __html: props.description }}></p>

@@ -95,7 +95,6 @@ class OrderManager {
             'customer_id',
             'currency',
             'prices_include_tax',
-            'customer_user',
             'customer_ip_address',
             'customer_user_agent',
             'customer_note',

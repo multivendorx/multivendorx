@@ -22,12 +22,12 @@ export default {
             options: [
                 {
                     key: 'manually',
-                    label: __( 'Manual approval', 'multivendorx' ),
+                    label: __( 'Manual', 'multivendorx' ),
                     value: 'manually',
                 },
                 {
                     key: 'automatically',
-                    label: __( 'Automatic approval', 'multivendorx' ),
+                    label: __( 'Automatic', 'multivendorx' ),
                     value: 'automatically',
                 },
             ],
@@ -42,7 +42,7 @@ export default {
             type: 'setting-toggle',
             label: __( 'Guided setup wizard', 'multivendorx' ),
             desc: __(
-                'Help vendors set up their store quickly with a guided, step-by-step process after registration.<ul><li>Enabled — Vendors see a setup wizard with clear instructions for each step.</li><li>Disabled — Vendors configure their store manually at their own pace.</li></ul>',
+                'Help vendors set up their store quickly with a guided, step-by-step process after registration.<ul><li>Enabled — The setup wizard will not appear. Stores must configure their store manually from the dashboard.</li></ul>',
                 'multivendorx'
             ),
             options: [
@@ -62,43 +62,42 @@ export default {
             key: 'onboarding_steps_configuration',
             type: 'checkbox',
             label: __( 'Onboarding steps', 'multivendorx' ),
-            desc: __( 'Choose which steps vendors must complete before they can start selling.', 'multivendorx' ),
             class: 'mvx-toggle-checkbox',
             options: [
                 {
                     key: 'store_profile_setup',
                     label: __( 'Store profile', 'multivendorx' ),
-                    desc: __( 'Add a store name, description, and logo.', 'multivendorx' ),
+                    desc: __( 'Store owners must provide: store name, business description, logo upload, basic branding information', 'multivendorx' ),
                     value: 'store_profile_setup',
                 },
                 {
                     key: 'payment_information',
                     label: __( 'Payment information', 'multivendorx' ),
-                    desc: __( 'Enter payout details such as bank or PayPal info, and provide tax details.', 'multivendorx' ),
+                    desc: __( 'Requires stores to set up, payout methods (bank account/ PayPal / Stripe etc.)', 'multivendorx' ),
                     value: 'payment_information',
-                },
+                }, 
                 {
                     key: 'shipping_configuration',
                     label: __( 'Shipping setup', 'multivendorx' ),
-                    desc: __( 'Define shipping zones, set delivery rates, and add policies.', 'multivendorx' ),
+                    desc: __( 'Forces stores to complete : Geographic shipping zones, delivery rates and pricing, ', 'multivendorx' ),
                     value: 'shipping_configuration',
                 },
                 {
                     key: 'first_product_upload',
                     label: __( 'First product', 'multivendorx' ),
-                    desc: __( 'Upload at least one product to make the store active and visible to customers.', 'multivendorx' ),
+                    desc: __( 'Mandates that store to upload at least one product listing, complete product details before going live, ensures the store is not empty when launched', 'multivendorx' ),
                     value: 'first_product_upload',
                 },
                 {
                     key: 'identity_verification',
                     label: __( 'Identity verification', 'multivendorx' ),
-                    desc: __( 'Submit documents or address details for verification.', 'multivendorx' ),
+                    desc: __( 'Requires stores to submit government-issued documents, business address verification, Know Your Customer (KYC) compliance', 'multivendorx' ),
                     value: 'identity_verification',
                 },
                 {
                     key: 'store_policies',
                     label: __( 'Store policies', 'multivendorx' ),
-                    desc: __( 'Outline refund rules, shipping terms, and general conditions.', 'multivendorx' ),
+                    desc: __( 'Requires merchants to outline refund rules, shipping terms, and general conditions.', 'multivendorx' ),
                     value: 'store_policies',
                 },
             ],
@@ -108,10 +107,10 @@ export default {
             key: 'setup_wizard_introduction',
             type: 'textarea',
             label: __( 'Getting started message', 'multivendorx' ),
-            placeholder: __(
-                'Welcome aboard, [Store Name]! We’ll guide you through the essential steps to launch your store on [Marketplace Name].',
+            value: __(
+                `Welcome aboard, [Store Name]!\nWe’ll guide you through the essential steps to launch your store on [${appLocalizer.marketplace_site}].`,
                 'multivendorx'
-            ),            
+              ),                          
             desc: __(
                 'This message appears at the beginning of the setup process to set expectations and encourage completion.',
                 'multivendorx'

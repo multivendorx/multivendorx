@@ -122,7 +122,7 @@ const SelectInput: React.FC< SelectInputProps > = ( {
                 closeMenuOnSelect={true}
                 isMulti={ type === 'multi-select' } 
             />
-            { proSetting && <span className="admin-pro-tag">Pro</span> }
+            { proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span> }
             { description && (
                 <p
                     className={ descClass }

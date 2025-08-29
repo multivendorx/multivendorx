@@ -113,7 +113,7 @@ const EndpointManager: React.FC<EndpointEditorProps> = ({
         {editKey === key ? (
           <div className="edit-menu" ref={editRef}>
             <div className="name-wrapper">
-              <i className="adminlib-move"></i>
+              <i className="adminlib-drag"></i>
               <input
                 value={editName}
                 onChange={(e) => {
@@ -154,7 +154,7 @@ const EndpointManager: React.FC<EndpointEditorProps> = ({
             className="main-menu"
           >
             <div className="name-wrapper">
-              {key !== 'dashboard' && <i className="adminlib-move"></i>}
+              {key !== 'dashboard' && <i className="adminlib-drag"></i>}
               <i className="adminlib-add-product"></i>
               <div className="name">
                 {endpoint.name}
@@ -187,7 +187,7 @@ const EndpointManager: React.FC<EndpointEditorProps> = ({
         {/* Submenu drag list */}
         {endpoint.submenu?.length > 0 && (
           <DragListView
-            nodeSelector=".submenu-row"
+            nodeSelector=".sub-menu"
             handleSelector="" // whole row draggable
             onDragEnd={onSubmenuDragEnd}
           >
@@ -197,7 +197,7 @@ const EndpointManager: React.FC<EndpointEditorProps> = ({
                 return (
                   <li
                     key={i}
-                    className="submenu-row cursor-move"
+                    className="sub-menu cursor-move"
                     style={{ opacity: endpoint.visible === false ? 0.5 : 1 }}
                   >
                     {editKey === subKey ? (
@@ -222,7 +222,8 @@ const EndpointManager: React.FC<EndpointEditorProps> = ({
                         />
                       </span>
                     ) : (
-                      <span>
+                      <>
+                        <i className="adminlib-drag"></i>
                         {sub.name}
                         <i
                           className="adminlib-create"
@@ -232,7 +233,7 @@ const EndpointManager: React.FC<EndpointEditorProps> = ({
                             setEditSlug(sub.slug);
                           }}
                         ></i>
-                      </span>
+                      </>
                     )}
                   </li>
                 );

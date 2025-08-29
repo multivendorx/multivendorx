@@ -45,7 +45,7 @@ const WorkBoard = () => {
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="icon"
+                activeTabIcon="adminlib-cart"
                 parentTabName="Workboard Dashboard"
             />
 

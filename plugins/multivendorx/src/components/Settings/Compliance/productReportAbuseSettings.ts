@@ -20,7 +20,6 @@ export default {
                 },
             ],
             look: 'toggle',
-            proSetting: true,
         },
         {
             key: 'abuse_report_reasons',

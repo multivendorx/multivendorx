@@ -12,7 +12,7 @@ export default {
             //settings_link: appLocalizer.site_url,
             req_pluging:['woocomerce','wordpress'],
             pro_module: false,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'variable',
@@ -22,7 +22,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/variable-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'external',
@@ -32,7 +32,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/external-product/',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'grouped',
@@ -42,7 +42,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/grouped-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'booking',
@@ -52,7 +52,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/booking-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'appointment',
@@ -62,7 +62,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/appointment-product/',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'subscription',
@@ -72,7 +72,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/subscription-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'accommodation',
@@ -82,7 +82,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/accommodation-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'bundle',
@@ -92,7 +92,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/bundle-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'auction',
@@ -102,7 +102,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/auction-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'rental-pro',
@@ -112,7 +112,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/rental-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         {
             id: 'gift-card',
@@ -122,7 +122,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/gift-card/',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-            parent_category: 'marketplace_types'
+            category: 'marketplace_types'
         },
         { type: 'separator', id: 'seller_management', label: 'Seller Management' },
         {
@@ -133,7 +133,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/identity-verification/',
             //settings_link: admin_url('admin.php?page=mvx#&submenu=settings&name=settings-identity-verification'),
             pro_module: true,
-            parent_category: 'seller_management'
+            category: 'seller_management'
         },
         {
             id: 'spmv',
@@ -143,7 +143,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv',
             //settings_link: admin_url('admin.php?page=mvx#&submenu=settings&name=spmv-pages'),
             pro_module: false,
-            parent_category: 'seller_management'
+            category: 'seller_management'
         },
         {
             id: 'import-export',

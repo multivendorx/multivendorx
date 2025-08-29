@@ -119,10 +119,20 @@ class Install {
             `slider` varchar(255) DEFAULT NULL,
             `facebook` varchar(20),
             `twitter` varchar(20),
-            `linkdin` varchar(20),
+            `linkedin` varchar(20),
             `youtube` varchar(20),
             `pinterest` varchar(20),
             `instagram` varchar(20),
+            `payment_method` varchar(50) DEFAULT NULL,
+            `commission_amount` float(20, 2) NOT NULL DEFAULT 0,
+            `paypal_email` varchar(50) DEFAULT NULL,
+            `bank_name` varchar(100) DEFAULT NULL,
+            `aba_routing` bigint(50) DEFAULT 0,
+            `destination_currency` varchar(50) DEFAULT NULL,
+            `bank_address` TEXT DEFAULT NULL,
+            `iban` bigint(50) DEFAULT 0,
+            `account_holder_name` varchar(100) DEFAULT NULL,
+            `account_number` bigint(20) DEFAULT 0,
             PRIMARY KEY (`ID`)
         ) $collate;";
          

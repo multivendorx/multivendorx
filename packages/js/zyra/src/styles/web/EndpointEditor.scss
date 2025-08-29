@@ -4,7 +4,7 @@
 
     .endpoint {
         .menu-item {
-            padding: 0.5rem;
+            margin-bottom: 0.5rem;
 
             .main-menu,
             .edit-menu {
@@ -22,6 +22,7 @@
                     i {
                         font-size: 1.125rem;
                     }
+
                     .name {
                         font-size: 0.9rem;
                         font-weight: 500;
@@ -51,23 +52,38 @@
                         opacity: 1;
                     }
                 }
+            }
+            .sub-menu {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
 
-                input {
-                    width: fit-content;
-                    background: #fff;
+                    i:last-child{
+                        opacity: 0;
+                    }
+
+                    &:hover{
+                        i:last-child{
+                            opacity: 1;
+                        }
+                    }
                 }
+            input {
+                width: fit-content;
+                background: #fff;
             }
 
-            .adminlib-move{
+            .adminlib-move {
                 margin-right: 0.5rem;
                 color: $theme-color;
                 font-size: 1.313rem;
             }
 
             &:has(.main-menu:hover),
-                &:has(.edit-menu:hover) {
-                    background: #e8e8e8;
-                }
+            &:has(.edit-menu:hover) {
+                background: #e8e8e8;
+            }
+
             ul {
                 margin: 0;
 

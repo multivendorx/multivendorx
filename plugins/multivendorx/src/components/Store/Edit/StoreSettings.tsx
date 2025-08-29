@@ -195,6 +195,79 @@ const StoreSettings = ({ id }: { id: string }) => {
 							</div>
 						</div>
 					</div>
+					<div className="card-content">
+						<div className="card-title">Social information</div>
+						{/* Facebook */}
+						<div className="form-group-wrapper">
+							<div className="form-group">
+								<label htmlFor="facebook">Facebook</label>
+								<BasicInput
+									name="facebook"
+									wrapperClass="setting-form-input"
+									descClass="settings-metabox-description"
+									value={formData.facebook}
+									onChange={handleChange}
+								/>
+							</div>
+						</div>
+
+						{/* Twitter */}
+						<div className="form-group-wrapper">
+							<div className="form-group">
+								<label htmlFor="twitter">Twitter</label>
+								<BasicInput
+									name="twitter"
+									wrapperClass="setting-form-input"
+									descClass="settings-metabox-description"
+									value={formData.twitter}
+									onChange={handleChange}
+								/>
+							</div>
+						</div>
+
+						{/* LinkedIn */}
+						<div className="form-group-wrapper">
+							<div className="form-group">
+								<label htmlFor="linkedin">LinkedIn</label>
+								<BasicInput
+									name="linkedin"
+									wrapperClass="setting-form-input"
+									descClass="settings-metabox-description"
+									value={formData.linkedin}
+									onChange={handleChange}
+								/>
+							</div>
+						</div>
+
+						{/* YouTube */}
+						<div className="form-group-wrapper">
+							<div className="form-group">
+								<label htmlFor="youtube">YouTube</label>
+								<BasicInput
+									name="youtube"
+									wrapperClass="setting-form-input"
+									descClass="settings-metabox-description"
+									value={formData.youtube}
+									onChange={handleChange}
+								/>
+							</div>
+						</div>
+
+						{/* Instagram */}
+						<div className="form-group-wrapper">
+							<div className="form-group">
+								<label htmlFor="instagram">Instagram</label>
+								<BasicInput
+									name="instagram"
+									wrapperClass="setting-form-input"
+									descClass="settings-metabox-description"
+									value={formData.instagram}
+									onChange={handleChange}
+								/>
+							</div>
+						</div>
+					</div>
+					
 				</div>
 
 				<div className="card-wrapper width-35">

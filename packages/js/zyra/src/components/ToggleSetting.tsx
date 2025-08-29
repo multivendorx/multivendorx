@@ -28,6 +28,7 @@ interface ToggleSettingProps {
     proSetting?: boolean;
     khali_dabba?: boolean;
     iconEnable?: boolean; // <-- new prop to render icons
+    key?: string;
 }
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({
@@ -35,6 +36,7 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
     options,
     descClass = '',
     value,
+    key,
     onChange,
     proChanged,
     proSetting = false,
@@ -62,7 +64,7 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
                                 className="toggle-setting-form-input"
                                 type="radio"
                                 id={option.key}
-                                name="approve_vendor"
+                                name={key}
                                 value={option.value}
                                 checked={value === option.value}
                                 readOnly // Prevents React warning for controlled components
@@ -71,18 +73,21 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
                                 {iconEnable ? (
                                     <i className={option.value}></i> // render icon if icon=true
                                 ) : option.img ? (
+                                    <>
                                     <img src={option.img} />
+                                    {option.label}
+                                    </>
                                 ) : (
                                     option.label
                                 )}
                             </label>
                             {option.proSetting && !khali_dabba && (
-                                <span className="admin-pro-tag">Pro</span>
+                                <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>
                             )}
                         </div>
                     ))}
                 </div>
-                {proSetting && <span className="admin-pro-tag">Pro</span>}
+                {proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>}
             </div>
             {description && (
                 <p

@@ -20,9 +20,13 @@ class Hooks {
         add_action('woocommerce_checkout_create_order_shipping_item', [$this, 'add_metadate_for_shipping_item'], 10, 4);
         add_action('woocommerce_analytics_update_order_stats', [$this, 'remove_suborder_analytics'], 10, 1);
 
-        // Create vendor order after valid checkout processed.
+        // Create store order after valid checkout processed.
         add_action('woocommerce_checkout_order_processed', [$this, 'create_vendor_order'], 1, 3);
         add_action('woocommerce_store_api_checkout_order_processed', [$this, 'create_vendor_order_block_support'], 1, 1);
+
+        // Create store order from backend.
+        // add_action('woocommerce_saved_order_items', array($this, 'create_orders_from_backend'), 10, 2 );
+        add_action('woocommerce_new_order', array($this, 'create_orders_from_backend'), 10, 2 );
 
         // After crate suborder order try to sync order status.
         add_action('woocommerce_order_status_changed', [$this, 'parent_order_to_vendor_order_status_sync'], 10, 4);
@@ -109,6 +113,39 @@ class Hooks {
         $order->save();
     }
 
+    public function create_orders_from_backend( $order_id ){
+        $this->manually_create_order_item_and_suborder($order_id);
+    }
+    
+    public function manually_create_order_item_and_suborder( $order_id = 0 ) {
+        $order = wc_get_order($order_id);
+        if(!$order) return;
+
+        $items = $order->get_items();
+        foreach ($items as $key => $value) {
+            if ( $order || (function_exists('wcs_is_subscription') && wcs_is_subscription( $order )) ) {
+                $general_cap = apply_filters('mvx_sold_by_text', __('Sold By', 'multivendorx'));
+                $vendor = StoreUtil::get_products_vendor($value['product_id']);
+                if ($vendor) {
+                    if ( !wc_get_order_item_meta( $key, 'multivendorx_store_id' ) ) 
+                        wc_add_order_item_meta($key, 'multivendorx_store_id', $vendor['id']);
+                    
+                    if ( !wc_get_order_item_meta( $key, $general_cap ) ) 
+                        wc_add_order_item_meta($key, $general_cap, $vendor['name']);
+                }
+            }
+        }
+
+        // $suborders = MultiVendorX()->order->get_suborders( $order_id, [], false);
+        // if ($suborders) {
+        //     foreach ( $suborders as $v_order_id ) {
+        //         wp_delete_post($v_order_id, true);
+        //     }
+        // }
+        $this->create_vendor_order($order_id, array(), $order );
+
+    }
+
     /**
      * Sync vendor order based on parent order status change for first time.
      * Except first time whenever parent order status change it skip for vendor order. 
@@ -154,17 +191,19 @@ class Hooks {
      * @return  void
      */
     public function vendor_order_to_parent_order_status_sync($order_id, $old_status, $new_status, $order) {
-        $vendor_order = new VendorOrder($order);
+         
+        $vendor_id = $order ? absint( $order->get_meta( 'multivendorx_store_id', true) ) : 0;
+        // $vendor_order = new VendorOrder($order);
 
-        if( $vendor_order->is_vendor_order() ) {
-            if ( current_user_can('administrator')
-                && $new_status != $old_status
-                && apply_filters('mvx_vendor_notified_when_admin_change_status', true)
-            ) {
-                $email_admin = WC()->mailer()->emails['WC_Email_Admin_Change_Order_Status'];
-                $vendor = $vendor_order->get_vendor();
-                $email_admin->trigger($order_id, $new_status, $vendor);
-            }
+        if( $vendor_id === get_current_user_id() ) {
+        //     if ( current_user_can('administrator')
+        //         && $new_status != $old_status
+        //         && apply_filters('mvx_vendor_notified_when_admin_change_status', true)
+        //     ) {
+        //         // $email_admin = WC()->mailer()->emails['WC_Email_Admin_Change_Order_Status'];
+        //         // $vendor = $vendor_order->get_vendor();
+        //         // $email_admin->trigger($order_id, $new_status, $vendor);
+        //     }
 
             $parent_order_id = $order->get_parent_id();
             if( $parent_order_id ) {

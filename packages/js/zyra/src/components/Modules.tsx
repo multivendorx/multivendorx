@@ -24,7 +24,7 @@ interface Module {
     req_plugin?: string[],
     settings_link: string;
     pro_module?: boolean;
-    parent_category?: string; // Optional to support no separators
+    category?: string; // Optional to support no separators
     type?: undefined; // Prevents conflict with Separator
 }
 
@@ -91,7 +91,7 @@ const Modules: React.FC<ModuleProps> = ({
             const hasModulesInCategory = modulesArray.modules.some(module => {
                 if ('type' in module) return false;
                 const mod = module as Module;
-                if (mod.parent_category !== separatorCategory) return false;
+                if (mod.category !== separatorCategory) return false;
                 if (selectedFilter === 'Active' && !modules.includes(mod.id)) return false;
                 if (selectedFilter === 'Inactive' && modules.includes(mod.id)) return false;
                 if (searchQuery && !mod.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -101,10 +101,10 @@ const Modules: React.FC<ModuleProps> = ({
         }
         const module = item as Module;
 
-        // If no parent_category, include only if 'All' is selected
-        if (!module.parent_category && selectedCategory !== 'All') return false;
+        // If no category, include only if 'All' is selected
+        if (!module.category && selectedCategory !== 'All') return false;
         // Apply category filter
-        if (selectedCategory !== 'All' && module.parent_category !== selectedCategory) {
+        if (selectedCategory !== 'All' && module.category !== selectedCategory) {
             return false;
         }
         // Apply status filter
@@ -160,7 +160,7 @@ const Modules: React.FC<ModuleProps> = ({
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="icon"
+                activeTabIcon="adminlib-cart"
                 parentTabName="Modules"
             />
 
@@ -257,7 +257,7 @@ const Modules: React.FC<ModuleProps> = ({
                                         </div>
                                         <div className="pro-tag">
                                             {module.pro_module && !appLocalizer.khali_dabba && (
-                                                <i className="adminlib-pro-tab"></i>
+                                                <i className="adminlib-pro-tag"></i>
                                             )}
                                         </div>
                                         {/* <div
@@ -278,7 +278,7 @@ const Modules: React.FC<ModuleProps> = ({
                                         </div> */}
                                     </div>
                                     <div className="module-details">
-                                        <div className="meta-name">{module.name}</div>
+                                        <div className="meta-name">{module.name} <span className="admin-badge blue">{module.category}</span> </div>
                                         <p
                                             className="meta-description"
                                             dangerouslySetInnerHTML={{ __html: module.desc }}

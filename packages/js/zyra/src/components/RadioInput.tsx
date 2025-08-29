@@ -105,7 +105,7 @@ const RadioInput: React.FC< RadioInputProps > = ( props ) => {
                                     ) }
                             </label>
                             { props.proSetting && (
-                                <span className="admin-pro-tag">Pro</span>
+                                <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>
                             ) }
                         </div>
                     );

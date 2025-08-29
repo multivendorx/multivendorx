@@ -279,7 +279,7 @@ if ($current_page && empty($current_sub)) {
                             MultiVendorX()->util->get_template('add-product.php');
                         } else {
                             ?>
-                            <div class="dashboard1 content-wrapper" id="<?php echo esc_attr($div_id) ?>"><?php echo esc_attr($div_id) ?>
+                            <div class="content-wrapper" id="<?php echo esc_attr($div_id) ?>"><?php echo esc_attr($div_id) ?>
                             </div><?php
                         }
                     } else {

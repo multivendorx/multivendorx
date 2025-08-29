@@ -10,6 +10,8 @@ type AdminHeaderProps = {
   onResultClick: (res: SearchResult) => void;
   onSelectChange: (value: string) => void;
   selectValue: string;
+  free?: string;
+  pro?: string;
 };
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({
@@ -20,27 +22,22 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
   onResultClick,
   onSelectChange,
   selectValue,
+  free,
+  pro = '4.1.23',
 }) => {
   return (
     <>
-      <div className="top-header">
-        <div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Necessitatibus, eos?
-        </div>
-        <i className="adminlib-close"></i>
-      </div>
-
       <div className="admin-header">
         <div className="left-section">
           <img className="brand-logo" src={brandImg} alt="Logo" />
 
           <div className="version-tag">
             <span className="admin-badge blue">
-              <b>Free:</b> 5.10.15
+              <b>Free:</b> {free}
             </span>
             <span className="admin-badge red">
-              <b>Pro:</b> 4.2.6
+
+              <i className="adminlib-pro-tag"></i> Pro: 4.2.6
             </span>
           </div>
         </div>
@@ -110,19 +107,44 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
           </div>
 
           {/* start notification */}
-          <div className="icon-wrapper" title="Notifications">
-            <i className="admin-icon adminlib-storefront"></i>
+          <div className="icon-wrapper" >
+            <i className="admin-icon adminlib-notification" title="Notifications"></i>
           </div>
           {/* end notification */}
 
-          <i
-            className="admin-icon adminlib-plus-circle-o"
-            title="Chat manager"
-          ></i>
-          <i
-            className="admin-icon adminlib-user-circle"
-            title="Category by store"
-          ></i>
+          <div className="icon-wrapper">
+            <i
+              className="admin-icon adminlib-plus-circle-o"
+              title="Admin support"
+            ></i>
+          </div>
+
+          <div className="icon-wrapper">
+            <i
+              className="admin-icon adminlib-user-circle"
+              title="Admin support"
+            ></i>
+            <div className="dropdown-menu">
+              <div className="dropdown-body">
+                <ul>
+                  <li>
+                    <a href="#">
+                      <i className="adminlib-person"></i>
+                      Manage Plan
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="#">
+                      <i className="adminlib-user-network-icon"></i>
+                      Contact Support
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </>

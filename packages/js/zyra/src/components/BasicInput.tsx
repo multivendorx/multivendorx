@@ -41,6 +41,9 @@ interface BasicInputProps {
     rangeUnit?: string;
     disabled?: boolean;
     readOnly?: boolean;
+    size?: string;
+    before?: string;
+    after?: string;
 }
 
 const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
@@ -63,6 +66,9 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
             onFocus,
             onBlur,
             parameter,
+            size,
+            before,
+            after,
             generate,
             proSetting,
             description,
@@ -136,12 +142,17 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                             <span className="text">{name}</span>
                         </DisplayButton>
                     ) : (
+                        <>
+                        {before && (
+                            <div>{before}</div>
+                         )}
                         <input
                             ref={ref}
                             className={['basic-input', inputClass].join(' ')}
                             id={id}
                             type={type}
                             name={name}
+                            style={{ width: size || '' }}
                             placeholder={placeholder}
                             {...(type !== 'file' && onChange ? { value } : {})}
                             {...((type === 'number' || type === 'range') ? { min, max } : {})}
@@ -154,6 +165,10 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                             disabled={disabled}
                             readOnly={readOnly}
                         />
+                        {after && (
+                            <div>{after}</div>
+                         )}
+                        </>                        
                     )}
 
                     {parameter && (
@@ -210,7 +225,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                             </>
                         ))}
 
-                    {proSetting && <span className="admin-pro-tag">Pro</span>}
+                    {proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>}
 
                     {type === 'range' && (
                         <output className={descClass}>

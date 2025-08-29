@@ -31,6 +31,7 @@ interface SettingsProps {
 interface Products {
     title: string;
     description: string;
+    icon?: string;
 }
 
 const supportLink = [
@@ -67,6 +68,9 @@ const products: Products[] = [
             'Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle.',
             'moowoodle'
         ),
+        icon: __(
+            'adminlib-support',
+            'moowoodle')
     },
     {
         title: __('Convenient Single Sign-On login', 'moowoodle'),
@@ -74,6 +78,9 @@ const products: Products[] = [
             'SSO enables students to access their purchased courses without the need to log in separately to the Moodle site.',
             'moowoodle'
         ),
+        icon: __(
+            'adminlib-support',
+            'moowoodle')
     },
     {
         title: __('Steady Income through Course Subscriptions', 'moowoodle'),
@@ -81,6 +88,9 @@ const products: Products[] = [
             'Generate consistent revenue by offering courses with subscription-based model.',
             'moowoodle'
         ),
+        icon: __(
+            'adminlib-support',
+            'moowoodle')
     },
     {
         title: __('Synchronize Courses in Bulk', 'moowoodle'),
@@ -88,6 +98,9 @@ const products: Products[] = [
             'Effortlessly synchronize multiple courses at once, ideal for managing large course catalogs.',
             'moowoodle'
         ),
+        icon: __(
+            'adminlib-support',
+            'moowoodle')
     },
     {
         title: __(
@@ -98,6 +111,9 @@ const products: Products[] = [
             'Synchronizes user accounts between Moodle™ and WordPress, ensuring consistent user management across both platforms without manual intervention.',
             'moowoodle'
         ),
+        icon: __(
+            'adminlib-support',
+            'moowoodle')
     },
 ];
 

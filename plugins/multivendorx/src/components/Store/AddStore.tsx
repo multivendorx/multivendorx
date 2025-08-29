@@ -62,7 +62,7 @@ const AddStore = () => {
   return (
     <>
       <AdminBreadcrumbs
-        activeTabIcon="icon"
+        activeTabIcon="adminlib-cart"
         parentTabName="Add New Store"
         buttons={[
           {

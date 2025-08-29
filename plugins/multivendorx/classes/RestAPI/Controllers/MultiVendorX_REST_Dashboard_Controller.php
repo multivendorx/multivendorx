@@ -104,6 +104,70 @@ class MultiVendorX_REST_Dashboard_Controller extends \WP_REST_Controller {
                 ),
                 'capability' => ['read_shop_coupons']
             ),
+			'analytics' => array(
+                'name'    => 'Stats / Report',
+                'slug'    => 'coupons',
+                'submenu' => array(
+                    array(
+                        'key'  => 'overview',
+                        'name' => 'Overview',
+                        'slug' => 'overview',
+                        'capability' => ['read_shop_coupons', 'edit_shop_coupons', 'delete_shop_coupons']
+                    ),
+                    array(
+                        'key'  => 'advanced report',
+                        'name' => 'Advanced Report',
+                        'slug' => 'advance report',
+                        'capability' => ['read_shop_coupons', 'edit_shop_coupons']
+                    ),
+                    array(
+                        'key'  => 'banking overview',
+                        'name' => 'Banking Overview',
+                        'slug' => 'banking overview',
+                        'capability' => ['read_shop_coupons', 'edit_shop_coupons']
+                    )
+                ),
+                'capability' => ['read_shop_coupons']
+            ),
+			'analytics' => array(
+                'name'    => 'Payments',
+                'slug'    => 'payments',
+                'submenu' => array(
+                    array(
+                        'key'  => 'withdrawl',
+                        'name' => 'Withdrawal',
+                        'slug' => 'withdrawl',
+                        'capability' => ['read_shop_coupons', 'edit_shop_coupons', 'delete_shop_coupons']
+                    ),
+                    array(
+                        'key'  => 'history',
+                        'name' => 'History',
+                        'slug' => 'history',
+                        'capability' => ['read_shop_coupons', 'edit_shop_coupons']
+                    ),
+                    array(
+                        'key'  => 'refund',
+                        'name' => 'Refund',
+                        'slug' => 'refund',
+                        'capability' => ['read_shop_coupons', 'edit_shop_coupons']
+                    )
+                ),
+                'capability' => ['read_shop_coupons']
+            ),
+			 'store_support' => array(
+                'name'    => 'Store Support',
+                'icon'    => 'adminlib-cart',
+                'slug'    => 'store_support',
+                'submenu' => array(),
+                'capability' => ['manage_users']
+            ),
+			 'knowledgebase' => array(
+                'name'    => 'Knowledgebase',
+                'icon'    => 'adminlib-cart',
+                'slug'    => 'knowledgebase',
+                'submenu' => array(),
+                'capability' => ['manage_users']
+            ),
         );
 
         $saved_endpoints = MultiVendorX()->setting->get_setting('menu_manager');

@@ -83,33 +83,36 @@ const FileInput: React.FC<FileInputProps> = (props) => {
                 className={`file-uploader ${props.wrapperClass || ''}  ${props.size || ''}`}
                 style={{ backgroundImage: localImage ? `url(${localImage})` : undefined }}
             >
-                <i className="adminlib-cloud-upload"></i>
-                <input
-                    ref={inputRef}
-                    className={props.inputClass}
-                    id={props.id}
-                    type={props.type || 'file'}
-                    name={props.name || 'file-input'}
-                    placeholder={props.placeholder}
-                    onChange={handleChange}
-                    onClick={props.onClick}
-                    onMouseOver={props.onMouseOver}
-                    onMouseOut={props.onMouseOut}
-                    onFocus={props.onFocus}
-                    onBlur={props.onBlur}
-                    // DO NOT control value with props.value (file input cannot be controlled)
-                />
-                {props.proSetting && <span className="admin-pro-tag">Pro</span>}
-                <span className="title">Drag and drop your file here</span>
-                <span>Or</span>
-                <button
-                    className={`${props.buttonClass || ''} admin-btn`}
-                    type="button"
-                    onClick={props.onButtonClick}
-                >
-                    {props.openUploader || 'Upload File'}
-                </button>
-
+                {!localImage && (
+                <>
+                    <i className="upload-icon adminlib-cloud-upload"></i>
+                    <input
+                        ref={inputRef}
+                        className={props.inputClass}
+                        id={props.id}
+                        type={props.type || 'file'}
+                        name={props.name || 'file-input'}
+                        placeholder={props.placeholder}
+                        onChange={handleChange}
+                        onClick={props.onClick}
+                        onMouseOver={props.onMouseOver}
+                        onMouseOut={props.onMouseOut}
+                        onFocus={props.onFocus}
+                        onBlur={props.onBlur}
+                        // DO NOT control value with props.value (file input cannot be controlled)
+                    />
+                    {props.proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>}
+                    <span className="title">Drag and drop your file here</span>
+                    <span>Or</span>
+                    <button
+                        className={`${props.buttonClass || ''} admin-btn`}
+                        type="button"
+                        onClick={props.onButtonClick}
+                    >
+                        {props.openUploader || 'Upload File'}
+                    </button>
+                </>
+                )}
                 {localImage && (
                     <div className="overlay">
                         <div className="button-wrapper">

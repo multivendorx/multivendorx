@@ -1,336 +1,424 @@
-/**
- * External dependencies
- */
+import { useState, useEffect, ReactNode } from 'react';
 import { LinkProps } from 'react-router-dom';
-import { useState, useEffect, ReactNode, useCallback } from 'react';
-
-/**
- * Internal dependencies
- */
-import AdminFooter, { SupportLink } from './AdminFooter';
 import '../styles/web/Tabs.scss';
-import AdminForm from './AdminForm';
-import AdminHeader from './AdminHeader';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
+import AdminFooter, { SupportLink } from './AdminFooter';
 
-// Types
 type TabContent = {
-    id: string;
-    name: string;
-    desc?: string;
-    icon?: string;
-    link?: string;
-    proDependent?: boolean;
+  id: string;
+  name: string;
+  desc?: string;
+  icon?: string;
+  link?: string;
+  proDependent?: boolean;
 };
 
 type TabData = {
-    name?: string;
-    type: 'file' | 'folder';
-    content: TabContent | TabData[];
+  name?: string;
+  type: 'file' | 'folder';
+  content: TabContent | TabData[];
 };
+
+type BreadcrumbItem = { name: string; id: string; type: string };
 
 type TabsProps = {
-    tabData: TabData[];
-    currentTab: string;
-    getForm: (currentTab: string) => ReactNode;
-    prepareUrl: (tabId: string) => string;
-    HeaderSection?: () => JSX.Element;
-    BannerSection?: () => JSX.Element;
-    horizontally?: boolean;
-    appLocalizer: any;
-    brandImg: string;
-    smallbrandImg: string;
-    supprot: SupportLink[];
-    Link: React.ElementType<LinkProps>;
-    settingName?: string
+  tabData: TabData[];
+  currentTab: string;
+  getForm: (tabId: string) => ReactNode;
+  prepareUrl: (tabId: string) => string;
+  HeaderSection?: () => JSX.Element;
+  BannerSection?: () => JSX.Element;
+  supprot: SupportLink[];
+  Link: React.ElementType<LinkProps>;
+  settingName?: string;
+  // Add navigation function prop
+  onNavigate?: (url: string) => void;
 };
 
-type BreadcrumbItem = { name: string; id: string; type: string; };
-type PathResult = { path: BreadcrumbItem[]; stack: TabData[][]; };
+// Helper functions outside component to avoid recreation on every render
+const isFile = (item: TabData): item is TabData & { content: TabContent } => {
+  return item.type === 'file';
+};
+
+const isFolder = (item: TabData): item is TabData & { content: TabData[] } => {
+  return item.type === 'folder';
+};
+
+const findFirstFile = (items: TabData[]): TabContent | null => {
+  for (const item of items) {
+    if (isFile(item)) {
+      return item.content;
+    }
+    if (isFolder(item)) {
+      const found = findFirstFile(item.content);
+      if (found) return found;
+    }
+  }
+  return null;
+};
+
+const findTabInItems = (items: TabData[], targetId: string): TabContent | null => {
+  for (const item of items) {
+    if (isFile(item) && item.content.id === targetId) {
+      return item.content;
+    }
+    if (isFolder(item)) {
+      const found = findTabInItems(item.content, targetId);
+      if (found) return found;
+    }
+  }
+  return null;
+};
+
+const findTabIcon = (items: TabData[], activeTabId: string): string | undefined => {
+  for (const item of items) {
+    if (isFile(item) && item.content.id === activeTabId) {
+      return item.content.icon;
+    }
+    if (isFolder(item)) {
+      const icon = findTabIcon(item.content, activeTabId);
+      if (icon) return icon;
+    }
+  }
+  return undefined;
+};
+
+const checkIfFolderContainsTab = (items: TabData[], activeTabId: string): boolean => {
+  return items.some(item => {
+    if (isFile(item)) {
+      return item.content.id === activeTabId;
+    }
+    if (isFolder(item)) {
+      return checkIfFolderContainsTab(item.content, activeTabId);
+    }
+    return false;
+  });
+};
+
+const findTabDescription = (items: TabData[], activeTabId: string): ReactNode => {
+  for (const item of items) {
+    if (isFile(item) && item.content.id === activeTabId) {
+      const tab = item.content;
+      if (tab.id === 'support') return null;
+      
+      return (
+        <div className="divider-section" key={tab.id}>
+          <div className="title">{tab.name}</div>
+          {tab.desc && <div className="desc">{tab.desc}</div>}
+        </div>
+      );
+    }
+    if (isFolder(item)) {
+      const desc = findTabDescription(item.content, activeTabId);
+      if (desc) return desc;
+    }
+  }
+  return null;
+};
+
+// Helper function to search for breadcrumb path
+const searchForBreadcrumbPath = (
+  items: TabData[], 
+  targetId: string, 
+  currentPath: BreadcrumbItem[]
+): BreadcrumbItem[] | null => {
+  for (const item of items) {
+    if (isFile(item) && item.content.id === targetId) {
+      return [...currentPath, { 
+        name: item.content.name, 
+        id: targetId, 
+        type: 'file' 
+      }];
+    }
+    
+    if (isFolder(item)) {
+      const folderPath = { 
+        name: item.name || '', 
+        id: item.name || '', 
+        type: 'folder' 
+      };
+      const result = searchForBreadcrumbPath(
+        item.content, 
+        targetId, 
+        [...currentPath, folderPath]
+      );
+      if (result) return result;
+    }
+  }
+  return null;
+};
 
 const Tabs: React.FC<TabsProps> = ({
-    tabData, currentTab, getForm, prepareUrl, HeaderSection, BannerSection,
-    horizontally, appLocalizer, brandImg, smallbrandImg, supprot, Link, settingName
+  tabData,
+  currentTab,
+  getForm,
+  prepareUrl,
+  HeaderSection,
+  BannerSection,
+  supprot,
+  Link,
+  settingName = '',
+  onNavigate,
 }) => {
-    const [menuCol, setMenuCol] = useState(false);
-    const [activeTab, setActiveTab] = useState<string>(currentTab);
-    const [menuStack, setMenuStack] = useState<TabData[][]>([tabData]);
-    const [breadcrumbPath, setBreadcrumbPath] = useState<BreadcrumbItem[]>([
-        { name: settingName ?? '', id: 'all-settings', type: 'root' },
-    ]);
+  const [activeTab, setActiveTab] = useState(currentTab);
+  const [menuStack, setMenuStack] = useState<TabData[][]>([tabData]);
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([
+    { name: settingName, id: 'root', type: 'root' },
+  ]);
+  const [noticeHTML, setNoticeHTML] = useState('');
 
-    const findFirstFile = useCallback((items: TabData[]): TabContent | null => {
-        for (const item of items) {
-            if (item.type === 'file') return item.content as TabContent;
-            if (item.type === 'folder') {
-                const found = findFirstFile(item.content as TabData[]);
-                if (found) return found;
+  // Build breadcrumb path for a tab
+  const createBreadcrumbPath = (targetId: string): BreadcrumbItem[] => {
+    const path = searchForBreadcrumbPath(tabData, targetId, []);
+    return path || [];
+  };
+
+  // Build menu stack from breadcrumb path
+  const createMenuStack = (breadcrumbPath: BreadcrumbItem[]): TabData[][] => {
+    const stack = [tabData];
+    let currentItems = tabData;
+    
+    for (let i = 0; i < breadcrumbPath.length - 1; i++) {
+      const crumb = breadcrumbPath[i];
+      if (crumb.type === 'folder') {
+        const folder = currentItems.find(item => 
+          isFolder(item) && item.name === crumb.id
+        );
+        if (folder && isFolder(folder)) {
+          currentItems = folder.content;
+          stack.push(currentItems);
+        }
+      }
+    }
+    return stack;
+  };
+
+  // Update all navigation state
+  const updateNavigationState = (tabId: string): void => {
+    const path = createBreadcrumbPath(tabId);
+    
+    if (path.length > 0) {
+      const fullPath = [
+        { name: settingName, id: 'root', type: 'root' }, 
+        ...path
+      ];
+      setBreadcrumbs(fullPath);
+      setMenuStack(createMenuStack(path));
+    } else {
+      setBreadcrumbs([{ name: settingName, id: 'root', type: 'root' }]);
+      setMenuStack([tabData]);
+    }
+  };
+
+  // Switch to any tab and navigate
+  const switchToTab = (tabId: string): void => {
+    setActiveTab(tabId);
+    updateNavigationState(tabId);
+    
+    // Navigate to the new URL
+    const newUrl = prepareUrl(tabId);
+    if (onNavigate) {
+      onNavigate(newUrl);
+    } else {
+      // Fallback: use window.history if onNavigate not provided
+      window.history.pushState(null, '', newUrl);
+    }
+  };
+
+  // Open folder and go to first file
+  const openFolderAndNavigate = (folderItems: TabData[]): void => {
+    if (folderItems.length === 0) return;
+    
+    setMenuStack(prev => [...prev, folderItems]);
+    const firstFile = findFirstFile(folderItems);
+    if (firstFile) {
+      switchToTab(firstFile.id);
+    }
+  };
+
+  // Go back to root menu
+  const goToRootMenu = (): void => {
+    setMenuStack([tabData]);
+    setBreadcrumbs([{ name: settingName, id: 'root', type: 'root' }]);
+    
+    const firstFile = findFirstFile(tabData);
+    if (firstFile) {
+      switchToTab(firstFile.id);
+    } else {
+      setActiveTab('');
+    }
+  };
+
+  // Navigate to folder at breadcrumb level
+  const navigateToFolderLevel = (targetIndex: number): void => {
+    let currentItems = tabData;
+    
+    for (let i = 1; i <= targetIndex; i++) {
+      const folder = currentItems.find(item => 
+        isFolder(item) && item.name === breadcrumbs[i].id
+      );
+      if (folder && isFolder(folder)) {
+        currentItems = folder.content;
+      }
+    }
+
+    setMenuStack(prev => [...prev.slice(0, targetIndex), currentItems]);
+    const firstFile = findFirstFile(currentItems);
+    if (firstFile) {
+      switchToTab(firstFile.id);
+    }
+  };
+
+  // Handle breadcrumb clicks
+  const handleBreadcrumbNavigation = (index: number, e: React.MouseEvent): void => {
+    e.preventDefault(); // Only prevent default here since we're handling navigation manually
+    const crumb = breadcrumbs[index];
+    if (!crumb) return;
+
+    if (crumb.type === 'root') {
+      goToRootMenu();
+    } else if (crumb.type === 'file') {
+      switchToTab(crumb.id);
+    } else if (crumb.type === 'folder') {
+      navigateToFolderLevel(index);
+    }
+  };
+
+  // Get current tab's icon
+  const getCurrentTabIcon = (): string | undefined => {
+    return findTabIcon(tabData, activeTab);
+  };
+
+  // Check if folder is currently active
+  const isFolderCurrentlyActive = (folderItems: TabData[]): boolean => {
+    return menuStack[menuStack.length - 1] === folderItems || 
+           checkIfFolderContainsTab(folderItems, activeTab);
+  };
+
+  // Render breadcrumb links
+  const renderBreadcrumbLinks = () =>
+    breadcrumbs.map((crumb, index) => (
+      <span key={index}>
+        {index > 0 && ' / '}
+        <Link
+          to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'}
+          onClick={(e) => handleBreadcrumbNavigation(index, e)}
+        >
+          {crumb.name}
+        </Link>
+      </span>
+    ));
+
+  // Render single menu item
+  const renderSingleMenuItem = (item: TabData, index: number) => {
+    if (isFile(item)) {
+      const tab = item.content;
+      if (!tab.id || !tab.name) return null;
+      
+      return (
+        <Link
+          key={tab.id}
+          to={prepareUrl(tab.id)}
+          className={`menu-item ${activeTab === tab.id ? 'active-current-tab' : ''}`}
+          onClick={(e) => {
+            // For file items, let the Link handle navigation naturally
+            // Only prevent default if we need to do additional processing
+            if (e.button === 0 && !e.metaKey && !e.ctrlKey) {
+              e.preventDefault();
+              switchToTab(tab.id);
             }
-        }
-        return null;
-    }, []);
+          }}
+        >
+          <p className="menu-name">{tab.name}</p>
+        </Link>
+      );
+    }
 
-    const buildPathToTab = useCallback((
-        data: TabData[], tabId: string, path: BreadcrumbItem[] = [], stack: TabData[][] = [data]
-    ): PathResult | null => {
-        for (const item of data) {
-            if (item.type === 'file') {
-                const file = item.content as TabContent;
-                if (file.id === tabId) {
-                    return { path: [...path, { name: file.name, id: file.id, type: 'file' }], stack };
-                }
-            } else if (item.type === 'folder') {
-                const folderItems = item.content as TabData[];
-                const result = buildPathToTab(folderItems, tabId,
-                    [...path, { name: item.name ?? '', id: item.name ?? '', type: 'folder' }],
-                    [...stack, folderItems]
-                );
-                if (result) return result;
+    if (isFolder(item)) {
+      const folderItems = item.content;
+      if (folderItems.length === 0) return null;
+      
+      const firstFile = findFirstFile(folderItems);
+      const folderUrl = firstFile ? prepareUrl(firstFile.id) : '#';
+      const isActive = isFolderCurrentlyActive(folderItems);
+
+      return (
+        <Link
+          key={`folder-${item.name || ''}-${index}`}
+          to={folderUrl}
+          className={`menu-item ${isActive ? 'active-current-tab' : ''}`}
+          onClick={(e) => {
+            if (firstFile && e.button === 0 && !e.metaKey && !e.ctrlKey) {
+              e.preventDefault();
+              openFolderAndNavigate(folderItems);
             }
-        }
-        return null;
-    }, []);
+          }}
+        >
+          <p className="menu-name">{item.name}</p>
+        </Link>
+      );
+    }
 
-    const updateActiveTab = useCallback((tabId: string) => {
-        setActiveTab(tabId);
-        window.history.pushState(null, '', prepareUrl(tabId));
-    }, [prepareUrl]);
+    return null;
+  };
 
-    const updateBreadcrumbAndStack = useCallback((result: PathResult | null, isTopLevel = false) => {
-        if (result) {
-            setMenuStack(isTopLevel ? [tabData] : result.stack);
-            setBreadcrumbPath([{ name: settingName ?? '', id: 'all-settings', type: 'root' }, ...result.path]);
-        }
-    }, [tabData]);
+  // Render all menu items
+  const renderAllMenuItems = (items: TabData[]) => items.map(renderSingleMenuItem);
 
-    const navigateToTab = useCallback((tabId: string) => {
-        updateActiveTab(tabId);
-        const result = buildPathToTab(tabData, tabId);
-        const isTopLevelFile = tabData.some(topItem => topItem.type === 'file' && (topItem.content as TabContent).id === tabId);
-        updateBreadcrumbAndStack(result, isTopLevelFile);
-    }, [tabData, buildPathToTab, updateActiveTab, updateBreadcrumbAndStack]);
+  // Get active tab description
+  const getActiveTabInfo = () => findTabDescription(tabData, activeTab);
 
-    const openSubmenu = useCallback((folderName: string, items: TabData[]) => {
-        const hasValidChildren = items.some(item => item.type === 'file' || (item.type === 'folder' && (item.content as TabData[]).length > 0));
-        if (!hasValidChildren) return;
-        setMenuStack((prev) => [...prev, items]);
-        const firstFile = findFirstFile(items);
-        if (firstFile) {
-            updateActiveTab(firstFile.id);
-            const result = buildPathToTab(tabData, firstFile.id);
-            updateBreadcrumbAndStack(result);
-        }
-    }, [findFirstFile, buildPathToTab, updateActiveTab, updateBreadcrumbAndStack, tabData]);
+  // Setup initial state
+  useEffect(() => {
+    const notice = document.querySelector('#screen-meta + .wrap .notice, #wpbody-content .notice');
+    if (notice) {
+      setNoticeHTML(notice.outerHTML);
+      notice.remove();
+    }
 
-    const resetToRoot = useCallback(() => {
-        setMenuStack([tabData]);
-        setBreadcrumbPath([{ name: settingName ?? '', id: 'all-settings', type: 'root' }]);
+    if (currentTab) {
+      // Update state without navigation for initial load
+      setActiveTab(currentTab);
+      updateNavigationState(currentTab);
+    } else {
+      const firstFile = findFirstFile(tabData);
+      if (firstFile) {
+        switchToTab(firstFile.id);
+      }
+    }
+  }, [currentTab, tabData]);
 
-        const firstFile = findFirstFile(tabData);
-        if (firstFile) {
-            // ✅ Select first file just like initial load
-            updateActiveTab(firstFile.id);
-            const result = buildPathToTab(tabData, firstFile.id);
-            updateBreadcrumbAndStack(result, true);
-        } else {
-            setActiveTab('');
-            window.history.pushState(null, '', prepareUrl(''));
-        }
-    }, [tabData, findFirstFile, updateActiveTab, buildPathToTab, updateBreadcrumbAndStack, prepareUrl, settingName]);
+  const currentMenu = menuStack[menuStack.length - 1];
+  const parentTab = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2]?.name : '';
+  const tabIcon = getCurrentTabIcon();
 
-    const findFolderInData = useCallback((items: TabData[], name: string): TabData[] | null => {
-        for (const item of items) {
-            if (item.type === 'folder' && item.name === name) return item.content as TabData[];
-            if (item.type === 'folder') {
-                const result = findFolderInData(item.content as TabData[], name);
-                if (result) return result;
-            }
-        }
-        return null;
-    }, []);
-
-    const goToBreadcrumb = useCallback((index: number) => {
-        const crumb = breadcrumbPath[index];
-        if (!crumb) return;
-
-        if (crumb.type === 'root') {
-            resetToRoot();
-            return;
-        }
-
-        if (crumb.type === 'folder') {
-            const folderItems = findFolderInData(tabData, crumb.id);
-            if (folderItems) {
-                setMenuStack((prev) => [...prev.slice(0, index), folderItems]);
-                const firstFile = findFirstFile(folderItems);
-                if (firstFile) {
-                    updateActiveTab(firstFile.id);
-                    const result = buildPathToTab(tabData, firstFile.id);
-                    updateBreadcrumbAndStack(result);
-                }
-            }
-        } else {
-            updateActiveTab(crumb.id);
-            const result = buildPathToTab(tabData, crumb.id);
-            if (result) {
-                setMenuStack(result.stack);
-                setBreadcrumbPath([{ name: settingName ?? '', id: 'all-settings', type: 'root' }, ...result.path]);
-            }
-        }
-    }, [breadcrumbPath, resetToRoot, findFolderInData, tabData, findFirstFile, updateActiveTab, buildPathToTab, updateBreadcrumbAndStack, settingName]);
-
-    const renderBreadcrumb = useCallback(() => breadcrumbPath.map((crumb, index) => (
-        <span key={index}>
-            {index > 0 && ' / '}
-            <Link to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'} onClick={(e) => {
-                e.preventDefault();
-                goToBreadcrumb(index);
-            }}>
-                {crumb.name}
-            </Link>
-        </span>
-    )), [breadcrumbPath, prepareUrl, goToBreadcrumb, Link]);
-
-    const getActiveTabIcon = useCallback((data: TabData[]): string | undefined => {
-        for (const item of data) {
-            if (item.type === 'file') {
-                const tab = item.content as TabContent;
-                if (tab.id === activeTab) return tab.icon;
-            }
-            if (item.type === 'folder') {
-                const icon = getActiveTabIcon(item.content as TabData[]);
-                if (icon) return icon;
-            }
-        }
-        return undefined;
-    }, [activeTab]);
-
-    const checkIfFolderHasActiveTab = useCallback((items: TabData[]): boolean => {
-        for (const item of items) {
-            if (item.type === 'file' && (item.content as TabContent).id === activeTab) return true;
-            if (item.type === 'folder' && checkIfFolderHasActiveTab(item.content as TabData[])) return true;
-        }
-        return false;
-    }, [activeTab]);
-
-    const renderMenuItem = useCallback((item: TabData, index: number) => {
-        if (item.type === 'file') {
-            const tab = item.content as TabContent;
-            if (!tab.id || !tab.name) return null;
-            return (
-                <div key={tab.id} className={`menu-item ${activeTab === tab.id ? 'active-current-tab' : ''}`} onClick={() => navigateToTab(tab.id)}>
-                    <Link to={prepareUrl(tab.id)}>
-                        <p className="menu-name">{menuCol ? null : tab.name}</p>
-                    </Link>
-                </div>
-            );
-        }
-        if (item.type === 'folder') {
-            const folderName = item.name ?? '';
-            const folderContent = item.content as TabData[];
-            if (!folderContent || folderContent.length === 0) return null;
-            const firstFile = findFirstFile(folderContent);
-            const folderUrl = firstFile ? prepareUrl(firstFile.id) : '#';
-            const isCurrentFolderOpen = menuStack.length > 1 && menuStack[menuStack.length - 1] === folderContent;
-            const isActiveFolder = isCurrentFolderOpen || checkIfFolderHasActiveTab(folderContent);
-
-            return (
-                <Link
-                    key={`folder-${folderName}-${index}`}
-                    to={folderUrl}
-                    className={`menu-item ${isActiveFolder ? 'active-current-tab' : ''}`}
-                    onClick={(e) => {
-                        if (firstFile && e.button === 0 && !e.metaKey && !e.ctrlKey) {
-                            e.preventDefault();
-                            openSubmenu(folderName, folderContent);
-                        }
-                    }}
-                >
-                    <p className="menu-name">{menuCol ? null : folderName}</p>
-                </Link>
-            );
-        }
-
-        return null;
-    }, [activeTab, menuCol, navigateToTab, prepareUrl, Link, menuStack, checkIfFolderHasActiveTab, openSubmenu]);
-
-    const renderMenuItems = useCallback((items: TabData[]) => items.map(renderMenuItem), [renderMenuItem]);
-
-    const getTabDescription = useCallback((tabDataVal: TabData[]): JSX.Element[] => {
-        return tabDataVal.flatMap(({ content, type }) => {
-            if (type === 'file') {
-                const tab = content as TabContent;
-                return tab.id === activeTab && tab.id !== 'support' ? (
-                    <div className="divider-section" key={tab.id}>
-                        <div className="title">{tab.name}</div><div className="desc">{tab.desc}</div>
-                    </div>
-                ) : [];
-            }
-            if (type === 'folder') return getTabDescription(content as TabData[]);
-            return [];
-        });
-    }, [activeTab]);
-
-    useEffect(() => {
-        if (currentTab) {
-            setActiveTab(currentTab);
-            const result = buildPathToTab(tabData, currentTab);
-            updateBreadcrumbAndStack(result);
-        } else {
-            const firstFile = findFirstFile(tabData);
-            if (firstFile) setActiveTab(firstFile.id);
-        }
-    }, [currentTab, tabData, buildPathToTab, updateBreadcrumbAndStack, findFirstFile]);
-
-    const currentMenuItems = menuStack[menuStack.length - 1];
-    const parentTabName = breadcrumbPath.length > 1 ? breadcrumbPath[breadcrumbPath.length - 2]?.name : '';
-    const activeTabIcon = getActiveTabIcon(tabData);
-
-    const [noticeHTML, setNoticeHTML] = useState<string>("");
-
-    useEffect(() => {
-        const noticeElement = document.querySelector('#screen-meta + .wrap .notice, #wpbody-content .notice');
-        if (noticeElement) {
-            setNoticeHTML(noticeElement.outerHTML);
-            noticeElement.remove();
-        }
-    }, []);
-
-    return (
-        <>
-            <AdminBreadcrumbs
-                activeTabIcon={activeTabIcon}
-                parentTabName={parentTabName}
-                renderBreadcrumb={renderBreadcrumb}
-                renderMenuItems={renderMenuItems}
-                tabData={tabData}
-                goPremium={true}
-            />
-
-            {noticeHTML && (
-                <div
-                    className="wp-admin-notice"
-                    dangerouslySetInnerHTML={{ __html: noticeHTML }}
-                />
-            )}
-            <div className="general-wrapper">
-                {HeaderSection && <HeaderSection />}
-                {BannerSection && <BannerSection />}
-                <div className={`${menuCol ? 'show-menu' : ''} middle-child-container`}>
-                    {menuStack.length > 1 && (
-                        <div id="current-tab-lists" className="current-tab-lists">
-                            <div className="current-tab-lists-container">{renderMenuItems(currentMenuItems)}</div>
-                        </div>
-                    )}
-                    <div className="tab-content">
-                        {getTabDescription(tabData)}
-                        {getForm(activeTab)}
-                    </div>
-                </div>
-                {/* <AdminFooter supportLink={supprot} /> */}
+  return (
+    <>
+      <AdminBreadcrumbs
+        activeTabIcon={tabIcon}
+        parentTabName={parentTab}
+        renderBreadcrumb={renderBreadcrumbLinks}
+        renderMenuItems={renderAllMenuItems}
+        tabData={tabData}
+        goPremium={true}
+      />
+      {noticeHTML && <div className="wp-admin-notice" dangerouslySetInnerHTML={{ __html: noticeHTML }} />}
+      <div className="general-wrapper">
+        {HeaderSection && <HeaderSection />}
+        <div className="middle-child-container">
+          {menuStack.length > 1 && (
+            <div id="current-tab-lists" className="current-tab-lists">
+              <div className="current-tab-lists-container">{renderAllMenuItems(currentMenu)}</div>
             </div>
-        </>
-    );
+          )}
+          <div className="tab-content">
+            {getActiveTabInfo()}
+            {getForm(activeTab)}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Tabs;

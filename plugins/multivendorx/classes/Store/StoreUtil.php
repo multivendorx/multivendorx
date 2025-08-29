@@ -44,7 +44,9 @@ class StoreUtil {
 
         $table = "{$wpdb->prefix}" . Utill::TABLES['store'];
         $result = $wpdb->update( $table, $args, [ 'ID' => $id ] );
-
+        if($result == false ){
+            file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: : " . var_export($wpdb->last_error, true) . "\n", FILE_APPEND);
+        }
         return $result;
     }
 
@@ -54,7 +56,7 @@ class StoreUtil {
 
         $table = "{$wpdb->prefix}" . Utill::TABLES['store_meta'];
         $result = $wpdb->update( $table, $args, [ 'store_id' => $id ] );
-
+        
         return $result;
     }
 
@@ -176,9 +178,9 @@ class StoreUtil {
                 'desc'  => 'Set how vendors handle their product listings',
                 'capability' =>
                 [
-                    'manage_users' => 'Manage Users',
+                    //'manage_users' => 'Manage Users',
                     'manage_products' => 'Manage Products',
-                    'read_products' => 'Read Products',
+                    'read_products' => 'View Products',
                     'edit_products' => 'Edit Products',
                     'delete_products' => 'Delete Products',
                     'publish_products' => 'Publish Products',
@@ -190,19 +192,52 @@ class StoreUtil {
                 'desc'  => 'Set how vendors handle their order listings',
                 'capability' =>
                 [
-                    'read_shop_orders' => 'Read Orders',
+                    'read_shop_orders' => 'View Orders',
+                    'view_shop_orders' => 'Manage Orders',
                     'edit_shop_orders' => 'Edit Orders',
                     'delete_shop_orders' => 'Delete Orders',
+                    'add_shop_orders_note' => 'Add Order Notes',
                 ],
             ],
             'coupons' => [
-                'label' => 'Manage Coupons',
+                'label' => 'Coupon Management',
                 'desc'  => 'Set how vendors handle their coupons listings',
                 'capability' =>
                 [
-                    'read_shop_coupons' => 'Read Coupons',
+                    'manage_shop_coupons' => 'Manage Coupons',
+                    'read_shop_coupons' => 'View Coupons',
                     'edit_shop_coupons' => 'Edit Coupons',
                     'delete_shop_coupons' => 'Delete Coupons',
+                ],
+            ],
+            'analytics' => [
+                'label' => 'Analytics & Report',
+                'desc'  => 'Set how vendors handle their coupons listings',
+                'capability' =>
+                [
+                    'read_shop_report' => 'View Reports',
+                    'edit_shop_report' => 'Edit Sales Data',
+                    'export_shop_report' => 'Export Data',
+                ],
+            ],
+            'inventory' => [
+                'label' => 'Inventory Management',
+                'desc'  => 'Set how vendors handle their coupons listings',
+                'capability' =>
+                [
+                    'read_shop_report' => 'Manage Inventory',
+                    'edit_shop_report' => 'Track Stock',
+                    'export_shop_report' => 'Set Stock Alerts',
+                ],
+            ],
+            'commission' => [
+                'label' => 'Commission & Earning',
+                'desc'  => 'Set how vendors handle their coupons listings',
+                'capability' =>
+                [
+                    'read_shop_earning' => 'View Earning',
+                    'edit_withdrawl_request' => 'Request Withdrawl',
+                    'view_commission_history' => 'Commission History',
                 ],
             ]
         ];

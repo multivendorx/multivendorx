@@ -4,7 +4,6 @@
     .payment-method-card {
         margin-top: 1rem;
         cursor: pointer;
-        background: #f9f4f4b8;
 
         .payment-method {
             display: flex;
@@ -12,6 +11,7 @@
             justify-content: space-between;
             gap: 1rem;
             padding: 1rem;
+            background: #f9f4f4b8;
 
             .details {
                 display: flex;
@@ -30,7 +30,7 @@
                     font-weight: 500;
                     color: $theme-color;
 
-                    img{
+                    img {
                         width: 100%;
                     }
                 }
@@ -60,6 +60,14 @@
             display: flex;
             flex-wrap: wrap;
             padding: 1rem;
+            border: $border-light-small;
+            border-top: 0;
+
+            .button-wrapper {
+                width: 100%;
+                display: flex;
+                justify-content: end;
+            }
 
             .form-group {
                 display: flex;
@@ -67,15 +75,18 @@
                 padding: 0.5rem 1rem 0.5rem 0;
                 margin: 0;
 
-                label:first-child{
+                label:first-child {
                     width: 25%;
                 }
-                .input-content{
+
+                .input-content {
                     width: 75%;
                 }
-                textarea{
+
+                textarea {
                     background: #fff;
                 }
+
                 .fileds-wrapper {
                     width: 100%;
 
@@ -85,7 +96,7 @@
 
                         .row-item {
                             padding: 0.875rem;
-                            background: #fff;
+                            background: #f3f2f2cf;
                             display: flex;
                             justify-content: space-between;
                             gap: 0.5rem;
@@ -98,19 +109,20 @@
                                     font-size: 1.063rem;
                                     line-height: 1rem;
                                 }
-                                .edit-row{
+
+                                .edit-row {
                                     display: flex;
                                     align-items: center;
                                     gap: 1rem;
 
-                                    button{
+                                    button {
                                         border: none;
                                         background: transparent;
                                     }
-                                    .edit-form{
-                                        
-                                    }
+
+                                    .edit-form {}
                                 }
+
                                 .admin-badge {
                                     font-size: 0.7rem;
                                     padding: 0.313rem 0.5rem;
@@ -136,28 +148,33 @@
                         }
                     }
                 }
-                .payment-tabs-component{
-                    .payment-method-card{
+
+                .payment-tabs-component {
+                    .payment-method-card {
                         background: #fff;
                     }
-                    
+
                 }
             }
         }
 
-        &.add-method{
-            .form-group{
-                flex-direction: column;
-            }
-            .input-content{
-                width: 100% !important; /*overwrite common style*/
+        &.add-method {
+            // .form-group {
+            //     flex-direction: column;
+            // }
+
+            .input-content {
+                width: 100% !important;
+                /*overwrite common style*/
             }
         }
-        &.social-verification{
-            .form-group{
+
+        &.social-verification {
+            .form-group {
                 flex-direction: column;
             }
-            .payment-method-form{
+
+            .payment-method-form {
                 padding-top: 0;
             }
         }

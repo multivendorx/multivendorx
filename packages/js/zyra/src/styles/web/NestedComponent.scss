@@ -13,13 +13,11 @@
 
         .form-wrapper{
             display: flex;
-            gap: 1rem;
-        }
-        .form-wrapper:first-child{
-            width: 100%;
+            gap: 0.5rem;
         }
         label {
-            font-size: 1.125rem;
+            font-size: 0.95rem;
+            padding-top: 0.425rem;
         }
 
         .toggle-setting-wrapper {
@@ -29,9 +27,8 @@
             width: fit-content;
         }
         .buttons-wrapper {
-            position: absolute;
-            right: 1rem;
-            bottom: 2.5rem;
+            width: 100%;
+            padding-top: 0;
         }
         .setting-form-input{
             .basic-input{

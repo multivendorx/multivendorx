@@ -1,16 +1,20 @@
 @use '../../global.scss' as *;
 
-.form-group-color-setting {
+.color-setting {
+    display: flex;
+    gap: 2rem;
+    padding-top: 1rem;
     .color-palette-wrapper {
+        width: 22%;
         .predefined {
             display: flex;
             gap: 0.5rem;
+            flex-direction: column;
 
             .palette {
                 display: flex;
                 align-items: center;
                 margin-bottom: 8px;
-                width: fit-content;
 
                 input {
                     display: none;
@@ -26,7 +30,7 @@
                     padding: 10px 12px;
                     cursor: pointer;
                     background-color: #fff;
-                    width: 240px;
+                    width: 100%;
                     transition: all 0.2s ease;
 
                     &.checked {
@@ -48,7 +52,7 @@
                     border-radius: 4px;
                     overflow: hidden;
 
-                    div{
+                    div {
                         width: 100%;
                     }
                 }
@@ -59,13 +63,12 @@
             .palette {
                 display: flex;
                 gap: 1rem;
-                flex-wrap: wrap;
+                flex-direction: column;
 
                 .color-wrapper {
                     display: flex;
                     gap: 4px;
                     padding: 0.313rem;
-                    width: 12rem;
                     border: $border-light-small;
 
                     input {
@@ -89,11 +92,10 @@
 }
 
 .preview-wrapper {
-    margin-top: 20px;
     display: flex;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 30rem;
+    border-radius: 0.5px;
+    width: 78%;
     height: 35rem;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -192,7 +194,7 @@
         position: relative;
 
         .top-navbar {
-            width: 90%;
+            width: 96%;
             background: #fff;
             display: flex;
             justify-content: space-between;

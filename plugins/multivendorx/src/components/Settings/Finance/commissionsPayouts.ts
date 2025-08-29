@@ -113,7 +113,8 @@ export default {
                 {
                     key: 'commission_per_store_order',
                     type: 'multi-number',
-                    // label: __('Commission Value', 'multivendorx'),
+                    label: __('Store Commission Will Be', 'multivendorx'),
+                    skipLabel:true,
                     desc: __(
                         'This is the default commission amount that will be applicable for all transactions.',
                         'multivendorx'

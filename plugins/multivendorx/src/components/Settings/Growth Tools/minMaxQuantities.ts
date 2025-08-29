@@ -19,7 +19,7 @@ export default {
             options: [
                 {
                     key: 'mvx_commission_percentage_per_unit',
-                    label: __( 'Minimum quantity', 'multivendorx' ),
+                    label: __( 'Min', 'multivendorx' ),
                     type: 'number',
                     desc: __(
                         'Set the lowest number of units a customer can order.',
@@ -28,7 +28,7 @@ export default {
                 },
                 {
                     key: 'mvx_commission_fixed_per_unit',
-                    label: __( 'Maximum quantity', 'multivendorx' ),
+                    label: __( 'Max', 'multivendorx' ),
                     type: 'number',
                     desc: __(
                         'Set the highest number of units a customer can order.',
@@ -36,6 +36,7 @@ export default {
                     ),
                 },
             ],
+            //proSetting:true
         },
     ],
 };

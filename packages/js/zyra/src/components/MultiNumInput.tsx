@@ -135,7 +135,7 @@ const MultiNumInput: React.FC<MultiNumInputProps> = ({
                         ) : (
                             <input
                                 id={`${idPrefix}-${option.key}`}
-                                className={inputClass}
+                                className={inputClass || 'basic-input'}
                                 type={option.type || 'text'}
                                 name={option.name}
                                 value={selectedValue}
@@ -153,7 +153,7 @@ const MultiNumInput: React.FC<MultiNumInputProps> = ({
                                 {inputJSX}
                                 {isLabelAfterInput && labelJSX}
 
-                                {proSetting && <span className="admin-pro-tag">Pro</span>}
+                                {proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>}
                             </div>
 
                             {option.desc && (

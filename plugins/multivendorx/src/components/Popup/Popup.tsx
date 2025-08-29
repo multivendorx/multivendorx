@@ -2,7 +2,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { ProPopup } from 'zyra';
-// import './popup.scss';
+import './popup.scss';
 
 const proPopupContent = {
     proUrl: typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#',

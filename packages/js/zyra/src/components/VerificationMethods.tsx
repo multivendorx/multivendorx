@@ -128,7 +128,8 @@ const VerificationMethods: React.FC<VerificationMethodsProps> = ({
     <div className="fileds-wrapper">
       {label && <h4>{label}</h4>}
 
-      <button type="button" className="admin-btn btn-purple" onClick={startAdd}>
+      <button type="button" className="admin-btn btn-green" onClick={startAdd}>
+        
         {addButtonLabel}
       </button>
 

@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { AdminHeader, initializeModules } from "zyra";
+import { AdminHeader, Banner, initializeModules } from "zyra";
 import Settings from "./components/Settings/Settings";
 import Modules from "./components/Modules/Modules";
 import Store from "./components/Store/Store";
@@ -11,6 +11,7 @@ import SetupWizard from "./blocks/setupWizard/SetupWizard";
 import WorkBoard from "./components/WorkBoard/workboard";
 import Memberships from "./components/Membership/Membership";
 import Commission from "./components/Commission/Commission";
+import { __ } from '@wordpress/i18n';
 
 localStorage.setItem("force_multivendorx_context_reload", "true");
 
@@ -56,7 +57,7 @@ const Route = () => {
       )}
       {currentTab.get("tab") === "commissions" && (
         <div id="commissions">
-          <Commission/>
+          <Commission />
         </div>
       )}
       {currentTab.get("tab") === "setup" && (
@@ -67,7 +68,48 @@ const Route = () => {
     </>
   );
 };
+interface Products {
+  title: string;
+  description: string;
+}
 
+const products: Products[] = [
+  {
+    title: __('Double Opt-In', 'notifima'),
+    description: __(
+      'Experience the power of Double Opt-In for our Stock Alert Form - Guaranteed precision in every notification!',
+      'notifima'
+    ),
+  },
+  {
+    title: __('Your Subscription Hub', 'notifima'),
+    description: __(
+      'Subscription Dashboard - Easily monitor and download lists of out-of-stock subscribers for seamless management.',
+      'notifima'
+    ),
+  },
+  {
+    title: __('Mailchimp Bridge', 'notifima'),
+    description: __(
+      'Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
+      'notifima'
+    ),
+  },
+  {
+    title: __('Unsubscribe Notifications', 'notifima'),
+    description: __(
+      'User-Initiated Unsubscribe from In-Stock Notifications.',
+      'notifima'
+    ),
+  },
+  {
+    title: __('Ban Spam Emails', 'notifima'),
+    description: __(
+      'Email and Domain Blacklist for Spam Prevention.',
+      'notifima'
+    ),
+  },
+];
 const App = () => {
   const currentTabParams = new URLSearchParams(useLocation().hash);
 
@@ -169,6 +211,17 @@ const App = () => {
 
   return (
     <>
+      <Banner
+        products={products}
+        isPro={appLocalizer.khali_dabba}
+        proUrl={appLocalizer.pro_url}
+        tag="Why Premium"
+        buttonText="View Pricing"
+        bgCode="#852aff" // backgroud color
+        textCode="#fff" // text code
+        btnCode="#fff" // button color
+        btnBgCode="#e35047" // button backgroud color
+      />
       <AdminHeader
         brandImg={Brand}
         query={query}
@@ -177,6 +230,7 @@ const App = () => {
         onResultClick={handleResultClick}
         onSelectChange={handleSelectChange}
         selectValue={selectValue}
+        free={appLocalizer.freeVersion}
       />
       <Route />
     </>

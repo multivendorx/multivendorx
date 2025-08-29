@@ -40,13 +40,13 @@ const Dashboard = () => {
             <div className="card-body">
               <div className="value">
                 <span>$47,892</span>
-                <a href="#">View net revenue</a>
               </div><span className="icon">
                 <i className="adminlib-dynamic-pricing"></i>
               </span>
             </div>
           </div>
         </div>
+
         <div className="column">
           <div className="cards">
             <div className="title-wrapper">
@@ -58,6 +58,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
         <div className="column">
           <div className="cards">
             <div className="title-wrapper">
@@ -69,6 +70,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
         <div className="column">
           <div className="cards">
             <div className="title-wrapper">
@@ -82,7 +84,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="row">
+      {/* <div className="row">
         <div className="column">
           <h3>Top products</h3>
           <div className="activity-wrapper">
@@ -187,9 +189,9 @@ const Dashboard = () => {
 
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="row">
+      {/* <div className="row">
         <div className="column">
           <h3>Top products</h3>
           <div className="activity-wrapper">
@@ -300,7 +302,7 @@ const Dashboard = () => {
             ))}
           </MapContainer>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

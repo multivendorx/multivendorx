@@ -61,6 +61,18 @@ export default {
             label: __( 'Store URL', 'multivendorx' ),
         },
         {
+            key: 'mapbox_api_key',
+            type: 'text',
+            label: __( 'Mapbox access token', 'multivendorx' ),
+            desc: __(
+                '<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token</a>',
+                'multivendorx'
+            ),
+            size:"8rem",
+            before: "https://multivendorxs.mystagingwebsite.com/",
+            after: "/home",
+        },
+        {
             key: 'section',
             type: 'section',
             hint: __(

@@ -34,15 +34,10 @@
     .brand-logo {
       width: 12rem;
     }
-    .version-tag{
+
+    .version-tag {
       display: flex;
       gap: 0.5rem;
-
-      .admin-badge{
-        i{
-          padding-right: 0.5rem;
-        }
-      }
     }
   }
 
@@ -60,6 +55,11 @@
       cursor: pointer;
     }
 
+    .adminlib-notification {
+      font-size: 1.313rem;
+      padding: 0.313rem;
+    }
+
     .search-field {
       position: relative;
       display: flex;
@@ -69,9 +69,9 @@
       input,
       select {
         margin: 0;
-        border:none;
+        border: none;
 
-        &:focus{
+        &:focus {
           outline: none;
           box-shadow: none;
         }
@@ -95,8 +95,114 @@
     }
 
     .icon-wrapper {
-      .icon-dropdown {
-        opacity: 0;
+      position: relative;
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 2rem;
+        overflow: hidden;
+        border: 1px solid #e5e9f2;
+        box-shadow: 0 3px 12px 1px #3a227226;
+        max-width: 14rem;
+        min-width: 14rem;
+        right: 0;
+        background: #fff;
+        border-radius: 0.313rem;
+        transition: all 0.3s ease;
+
+        .dropdown-header {
+          padding: 1.125rem 1.75rem;
+          background: #f5f6fa;
+          border-bottom: 0.063rem solid #f5f6fa;
+
+          .user-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+
+            .user-avatar {
+              border-radius: 50%;
+              height: 40px;
+              width: 40px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              color: #fff;
+              background: #9d72ff;
+              font-size: 14px;
+              font-weight: 700;
+              letter-spacing: .06em;
+              flex-shrink: 0;
+              position: relative;
+
+              span {
+                color: #fff;
+                font-size: 14px;
+                font-weight: 700;
+                letter-spacing: .06em;
+              }
+            }
+
+            .user-info {
+              display: flex;
+              flex-direction: column;
+              gap: 0.125rem;
+
+              .user-name {
+                font-size: .875rem;
+                font-weight: 700;
+                color: #364a63;
+              }
+
+              .user-email {
+                font-size: 0.75rem;
+                font-weight: 400;
+              }
+            }
+          }
+        }
+
+        .dropdown-body {
+          margin: 0;
+
+          ul {
+            list-style: none;
+            padding: 0.5rem 0;
+            margin: 0;
+
+            li {
+              margin: 0;
+
+              a {
+                display: flex;
+                align-items: center;
+                color: #526484;
+                font-size: 0.813rem;
+                line-height: 1.4rem;
+                font-weight: 500;
+                padding: .5rem 1.313rem;
+                position: relative;
+                gap: 0.5rem;
+
+                i {
+                  font-size: 1.25rem;
+                }
+
+                &:hover {
+                  color: #854fff;
+                  background: $theme-background-color;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &:hover {
+        .dropdown-menu {
+          display: block;
+        }
       }
     }
   }
@@ -115,10 +221,21 @@
 
     .pro-btn {
       color: $theme-color;
+      line-height: 1.7rem;
       font-weight: 600;
       gap: 0.31rem;
       font-size: 1rem;
       display: flex;
+
+      i:first-child {
+        font-size: 1.4rem;
+      }
+
+      i:last-child {
+        transform: rotate(-45deg);
+        padding-left: 0.313rem;
+        line-height: 1.5rem;
+      }
     }
   }
 
@@ -283,7 +400,8 @@
   }
 
 }
-.middle-child-container:has(.current-tab-lists){
+
+.middle-child-container:has(.current-tab-lists) {
   padding-top: 2rem;
 }
 

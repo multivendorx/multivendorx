@@ -1,45 +1,38 @@
 @font-face {
-  font-family: adminlibrary;
-  src: url('./assets/fonts/adminlibrary.eot');
-  src: url('./assets/fonts/adminlibrary.eot?#iefix') format('embedded-opentype'),
-       url('./assets/fonts/adminlibrary.woff') format('woff'),
-       url('./assets/fonts/adminlibrary.ttf') format('truetype'),
-       url('./assets/fonts/adminlibrary.svg#adminlibrary') format('svg');
+  font-family: 'adminlibrary';
+  src:  url('./assets/fonts/adminlibrary.eot?xfjp3c');
+  src:  url('./assets/fonts/adminlibrary.eot?xfjp3c#iefix') format('embedded-opentype'),
+    url('./assets/fonts/adminlibrary.ttf?xfjp3c') format('truetype'),
+    url('./assets/fonts/adminlibrary.woff?xfjp3c') format('woff'),
+    url('./assets/fonts/adminlibrary.svg?xfjp3c#adminlibrary') format('svg');
   font-weight: normal;
   font-style: normal;
+  font-display: block;
 }
 
-[class^="adminlib-"], [class*=" adminlib-"],
-input {
+[class^="adminlib-"], [class*=" adminlib-"], input::before {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: adminlibrary , sans-serif !important;
+  font-family: 'adminlibrary' !important;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
   line-height: 1;
-  
-  /* Enable Ligatures ================ */
-  letter-spacing: 0;
-  font-feature-settings: "liga" 1;
-  font-feature-settings: "liga";
-  font-variant-ligatures: discretionary-ligatures;
 
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.adminlib-minus:before {
+
+.adminlib-pro-tag:before {
+  content: "\e902";
+}
+.adminlib-drag:before {
   content: "\e900";
 }
 .adminlib-notification:before {
-  content: "\e902";
-}
-.adminlib-update-product:before {
   content: "\e901";
-}
-.adminlib-add-product:before {
-  content: "\e900";
 }
 .adminlib-cart:before {
   content: "\8907";
@@ -113,314 +106,350 @@ input {
 .adminlib-plus-circle-o:before {
   content: "\e8f7";
 }
-.adminlib-pagination-right-arrow:before {
-  content: "\e902";
-}
-.adminlib-pagination-left-arrow:before {
-  content: "\e903";
-}
-.adminlib-pagination-next-arrow:before {
-  content: "\e904";
-}
-.adminlib-pagination-prev-arrow:before {
-  content: "\e905";
-}
-.adminlib-refresh:before {
-  content: "\e906";
-}
-.adminlib-refresh-buttons:before {
+.adminlib-add-product:before {
   content: "\e907";
 }
-.adminlib-centralized-connections:before {
+.adminlib-update-product:before {
   content: "\e908";
 }
-.adminlib-desktop-pc-valuation:before {
+.adminlib-pagination-right-arrow:before {
   content: "\e909";
 }
-.adminlib-rules:before {
+.adminlib-pagination-left-arrow:before {
   content: "\e90a";
 }
-.adminlib-social-media-content:before {
+.adminlib-pagination-next-arrow:before {
+  content: "\e90b";
+}
+.adminlib-pagination-prev-arrow:before {
   content: "\e90c";
 }
-.adminlib-user-network-icon:before {
+.adminlib-refresh:before {
   content: "\e90d";
 }
-.adminlib-price:before {
+.adminlib-refresh-buttons:before {
   content: "\e90e";
 }
-.adminlib-catalog:before {
+.adminlib-centralized-connections:before {
   content: "\e90f";
 }
-.adminlib-contact-form:before {
+.adminlib-desktop-pc-valuation:before {
   content: "\e910";
 }
-.adminlib-exclude:before {
+.adminlib-dynamic-pricing:before {
   content: "\e911";
 }
-.adminlib-enquiry:before {
+.adminlib-Unified-Access:before {
   content: "\e912";
 }
-.adminlib-quote:before {
+.adminlib-social-media-content:before {
   content: "\e913";
 }
-.adminlib-wholesale:before {
+.adminlib-user-network-icon:before {
   content: "\e914";
 }
-.adminlib-wholesale-icon:before {
+.adminlib-price:before {
+  content: "\e915";
+}
+.adminlib-catalog:before {
   content: "\e916";
 }
-.adminlib-mailchimp:before {
+.adminlib-contact-form:before {
   content: "\e917";
 }
-.adminlib-mail:before {
+.adminlib-exclude:before {
   content: "\e918";
 }
-.adminlib-file-submission:before {
+.adminlib-inquiry:before {
   content: "\e919";
 }
-.adminlib-submission-message:before {
+.adminlib-price-quote-icon:before {
   content: "\e91a";
 }
-.adminlib-settings:before {
+.adminlib-warehousing-icon:before {
   content: "\e91b";
 }
-.adminlib-cross:before {
+.adminlib-Subscription-Courses:before {
   content: "\e91c";
 }
-.adminlib-icon-yes:before {
+.adminlib-wholesale:before {
   content: "\e91d";
 }
-.adminlib-calendar:before {
+.adminlib-mailchimp:before {
   content: "\e91e";
 }
-.adminlib-menu:before {
+.adminlib-mail:before {
   content: "\e91f";
 }
-.adminlib-send:before {
+.adminlib-file-submission:before {
   content: "\e920";
 }
-.adminlib-link:before {
+.adminlib-submission-message:before {
   content: "\e921";
 }
-.adminlib-resize:before {
+.adminlib-settings:before {
   content: "\e922";
 }
-.adminlib-crop-free:before {
+.adminlib-cross:before {
   content: "\e923";
 }
-.adminlib-text-fields:before {
+.adminlib-icon-yes:before {
   content: "\e924";
 }
-.adminlib-support:before {
+.adminlib-calendar:before {
   content: "\e925";
 }
-.adminlib-create:before {
+.adminlib-menu:before {
   content: "\e926";
 }
-.adminlib-arrow-right:before {
+.adminlib-send:before {
   content: "\e927";
 }
-.adminlib-button-appearance:before {
+.adminlib-link:before {
   content: "\e928";
 }
-.adminlib-enquiry-form-tab:before {
+.adminlib-resize:before {
   content: "\e929";
 }
-.adminlib-exclusion-tab:before {
+.adminlib-crop-free:before {
   content: "\e92a";
 }
-.adminlib-general-tab:before {
+.adminlib-text-fields:before {
   content: "\e92b";
 }
-.adminlib-live-preview-tab:before {
+.adminlib-support:before {
   content: "\e92c";
 }
-.adminlib-pro-tab:before {
+.adminlib-create:before {
   content: "\e92d";
 }
-.adminlib-next:before {
+.adminlib-arrow-right:before {
   content: "\e92e";
 }
-.adminlib-previous:before {
+.adminlib-button-appearance:before {
   content: "\e92f";
 }
-.adminlib-select:before {
+.adminlib-enquiry-form-tab:before {
   content: "\e930";
 }
-.adminlib-success-notification:before {
+.adminlib-exclusion-tab:before {
   content: "\e931";
 }
-.adminlib-drop-down:before {
+.adminlib-general-tab:before {
   content: "\e932";
 }
-.adminlib-vendor-form-delete:before {
+.adminlib-live-preview-tab:before {
   content: "\e933";
 }
-.adminlib-vendor-form-copy:before {
+.adminlib-pro-tab:before {
   content: "\e934";
 }
-.adminlib-vendor-form-add:before {
+.adminlib-next:before {
   content: "\e935";
 }
-.adminlib-select-question-type:before {
+.adminlib-previous:before {
   content: "\e936";
 }
-.adminlib-form-url:before {
+.adminlib-select:before {
   content: "\e937";
 }
-.adminlib-form-textbox:before {
+.adminlib-success-notification:before {
   content: "\e938";
 }
-.adminlib-form-textarea:before {
+.adminlib-drop-down:before {
   content: "\e939";
 }
-.adminlib-form-address01:before {
+.adminlib-vendor-form-delete:before {
   content: "\e93a";
 }
-.adminlib-form-address02:before {
+.adminlib-vendor-form-copy:before {
   content: "\e93b";
 }
-.adminlib-form-attachment:before {
+.adminlib-vendor-form-add:before {
   content: "\e93c";
 }
-.adminlib-form-checkboxes:before {
+.adminlib-select-question-type:before {
   content: "\e93d";
 }
-.adminlib-paint-brush:before {
+.adminlib-form-url:before {
   content: "\e93e";
 }
-.adminlib-form-city:before {
+.adminlib-form-textbox:before {
   content: "\e93f";
 }
-.adminlib-form-country:before {
+.adminlib-form-textarea:before {
   content: "\e940";
 }
-.adminlib-form-dropdown:before {
+.adminlib-form-address01:before {
   content: "\e941";
 }
-.adminlib-form-email:before {
+.adminlib-form-address02:before {
   content: "\e942";
 }
-.adminlib-form-multi-select:before {
+.adminlib-form-attachment:before {
   content: "\e943";
 }
-.adminlib-form-paypal-email:before {
+.adminlib-form-checkboxes:before {
   content: "\e944";
 }
-.adminlib-form-phone:before {
+.adminlib-paint-brush:before {
   content: "\e945";
 }
-.adminlib-form-postcode:before {
+.adminlib-form-city:before {
   content: "\e946";
 }
-.adminlib-form-radio:before {
+.adminlib-form-country:before {
   content: "\e947";
 }
-.adminlib-form-recaptcha:before {
+.adminlib-form-dropdown:before {
   content: "\e948";
 }
-.adminlib-form-section:before {
+.adminlib-form-email:before {
   content: "\e949";
 }
-.adminlib-form-state:before {
+.adminlib-form-multi-select:before {
   content: "\e94a";
 }
-.adminlib-star-icon:before {
+.adminlib-form-paypal-email:before {
   content: "\e94b";
 }
-.adminlib-form-store-description:before {
+.adminlib-form-phone:before {
   content: "\e94c";
 }
-.adminlib-folder-open:before {
+.adminlib-form-postcode:before {
   content: "\e94d";
 }
-.adminlib-undo:before {
+.adminlib-form-radio:before {
   content: "\e94e";
 }
-.adminlib-dropdown-checklist:before {
+.adminlib-form-recaptcha:before {
   content: "\e94f";
 }
-.adminlib-multi-select:before {
+.adminlib-form-section:before {
   content: "\e950";
 }
-.adminlib-captcha-automatic-code:before {
+.adminlib-form-state:before {
   content: "\e951";
 }
-.adminlib-cloud-upload:before {
+.adminlib-star-icon:before {
   content: "\e952";
 }
-.adminlib-help:before {
+.adminlib-form-store-description:before {
   content: "\e953";
 }
-.adminlib-t-letter-bold:before {
+.adminlib-folder-open:before {
   content: "\e954";
 }
-.adminlib-clock2:before {
+.adminlib-undo:before {
   content: "\e955";
 }
-.adminlib-alarm:before {
+.adminlib-dropdown-checklist:before {
   content: "\e956";
 }
-.adminlib-thumbs-ok:before {
+.adminlib-multi-select:before {
   content: "\e957";
 }
-.adminlib-preview:before {
+.adminlib-captcha-automatic-code:before {
   content: "\e958";
 }
-.adminlib-paid:before {
+.adminlib-cloud-upload:before {
   content: "\e959";
 }
-.adminlib-order:before {
+.adminlib-help:before {
   content: "\e95a";
 }
-.adminlib-multiple-inputs:before {
+.adminlib-t-letter-bold:before {
   content: "\e95b";
 }
-.adminlib-global-community:before {
+.adminlib-clock2:before {
   content: "\e95c";
 }
-.adminlib-experiment-results:before {
+.adminlib-alarm:before {
   content: "\e95d";
 }
-.adminlib-copy:before {
+.adminlib-thumbs-ok:before {
   content: "\e95e";
 }
-.adminlib-cogs-on-wheels:before {
+.adminlib-preview:before {
   content: "\e95f";
 }
-.adminlib-blocks:before {
+.adminlib-paid:before {
   content: "\e960";
 }
-.adminlib-analytics:before {
+.adminlib-order:before {
   content: "\e961";
 }
-.adminlib-setting-1:before {
+.adminlib-multiple-inputs:before {
   content: "\e962";
 }
-.adminlib-star-o:before {
+.adminlib-global-community:before {
   content: "\e963";
 }
-.adminlib-star:before {
+.adminlib-experiment-results:before {
   content: "\e964";
 }
-.adminlib-pushpin:before {
+.adminlib-copy:before {
   content: "\e965";
 }
-.adminlib-arrow-left:before {
+.adminlib-cogs-on-wheels:before {
   content: "\e966";
 }
-.adminlib-arrow-up:before {
+.adminlib-blocks:before {
   content: "\e967";
 }
-.adminlib-arrow-down:before {
+.adminlib-analytics:before {
   content: "\e968";
 }
-.adminlib-import:before {
+.adminlib-setting-1:before {
+  content: "\e969";
+}
+.adminlib-star-o:before {
+  content: "\e96a";
+}
+.adminlib-star:before {
+  content: "\e96b";
+}
+.adminlib-pushpin:before {
   content: "\e96c";
 }
-.adminlib-export:before {
+.adminlib-arrow-left:before {
   content: "\e96d";
+}
+.adminlib-arrow-up:before {
+  content: "\e96e";
+}
+.adminlib-arrow-down:before {
+  content: "\e96f";
+}
+.adminlib-import:before {
+  content: "\e970";
+}
+.adminlib-export:before {
+  content: "\e971";
+}
+.adminlib-Single-Sign-On:before {
+  content: "\e978";
+}
+.adminlib-Gift-a-Course:before {
+  content: "\e979";
+}
+.adminlib-Classroom-Enrollment:before {
+  content: "\e97a";
+}
+.adminlib-Bulk-Course-Sync:before {
+  content: "\e97b";
+}
+.adminlib-Smart-Course-Sync1:before {
+  content: "\e97c";
+}
+.adminlib-web-page-website:before {
+  content: "\e97d";
+}
+.adminlib-keyboard-arrow-down:before {
+  content: "\e97e";
+}
+.adminlib-setting-11:before {
+  content: "\e97f";
 }
 .adminlib-unread:before {
   content: "\e9ba";

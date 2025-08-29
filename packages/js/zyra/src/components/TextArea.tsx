@@ -62,7 +62,7 @@ export const TextArea: React.FC< TextAreaProps > = ( {
                 onFocus={ onFocus }
                 onBlur={ onBlur }
             />
-            { proSetting && <span className="admin-pro-tag">Pro</span> }
+            { proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span> }
             { description && (
                 <p
                     className={ descClass }

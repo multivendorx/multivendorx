@@ -55,6 +55,7 @@ export default {
                     value: 'whatsapp',
                 },
             ],
+            //proSetting:true
         },
         {
             key: 'messenger_color',

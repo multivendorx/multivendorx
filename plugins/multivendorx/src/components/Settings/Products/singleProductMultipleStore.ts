@@ -57,7 +57,6 @@ export default {
                 key: 'is_singleproductmultistore',
                 set: true,
             },
-            proSetting: true,
             moduleEnabled: 'spmv',
         },
         {

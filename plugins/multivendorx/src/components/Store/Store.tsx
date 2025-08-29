@@ -23,7 +23,7 @@ const Store = () => {
       {!isAddStore && !isViewStore && !iseditStore && (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="icon"
+                activeTabIcon="adminlib-cart"
                 parentTabName="Stores"
                 buttons={[
                     {

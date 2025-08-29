@@ -252,7 +252,7 @@ const DropDownMapping: React.FC< DropDownMappingProps > = ( {
                         <span className="text">Add</span>
                         <i className="adminlib-vendor-form-add"></i>
                     </button>
-                    { proSetting && <span className="admin-pro-tag">Pro</span> }
+                    { proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span> }
                 </div>
             </div>
             { description && (
