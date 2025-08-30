@@ -427,6 +427,7 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                                     name={ field.name }
                                     value={ inputs[ field.name ?? '' ] }
                                     placeholder={ field.placeholder }
+                                    className="textarea-basic"
                                     onChange={ ( e ) =>
                                         handleChange(
                                             field.name ?? '',

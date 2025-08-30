@@ -7,9 +7,9 @@ import React, { ChangeEvent } from 'react';
 interface RadioOption {
     key: string;
     keyName?: string;
-    value: string;
-    label: string;
-    name: string;
+    value: string | number;
+    label?: string;
+    name?: string;
     color?: string[] | string; // Can be an array of colors or an image URL
 }
 

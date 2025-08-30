@@ -56,7 +56,7 @@ const MergeComponent: React.FC< MergeComponentProps > = ( {
             return; // Skip the initial render
         }
         onChange( data );
-    }, [ data, onChange ] );
+    }, [ data ] );
 
     return (
         <>
