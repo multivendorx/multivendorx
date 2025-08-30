@@ -49,19 +49,19 @@ export default {
                 {
                     key: 'show_store_owner_info',
                     label: __( 'Address', 'multivendorx' ),
-					desc: __( 'Display store's physical address to customers', 'multivendorx' ),
+					desc: __( 'Display stores physical address to customers', 'multivendorx' ),
                     value: 'show_store_owner_info',
                 },
                 {
                     key: 'show_store_description',
                     label: __( 'Phone number', 'multivendorx' ),
-					desc: __( 'Display store's contact phone number', 'multivendorx' ),
+					desc: __( 'Display stores contact phone number', 'multivendorx' ),
                     value: 'show_store_description',
                 },
                 {
                     key: 'show_store_description',
                     label: __( 'Email address', 'multivendorx' ),
-					desc: __( 'Display store's email address for customer contact', 'multivendorx' ),
+					desc: __( 'Display stores email address for customer contact', 'multivendorx' ),
                     value: 'show_store_description',
                 },
                 {

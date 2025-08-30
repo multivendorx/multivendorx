@@ -389,14 +389,14 @@ const Tabs: React.FC<TabsProps> = ({
   }, [currentTab, tabData]);
 
   const currentMenu = menuStack[menuStack.length - 1];
-  const parentTab = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2]?.name : '';
+  const tabTitle = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2]?.name : '';
   const tabIcon = getCurrentTabIcon();
 
   return (
     <>
       <AdminBreadcrumbs
         activeTabIcon={tabIcon}
-        parentTabName={parentTab}
+        tabTitle={tabTitle}
         renderBreadcrumb={renderBreadcrumbLinks}
         renderMenuItems={renderAllMenuItems}
         tabData={tabData}

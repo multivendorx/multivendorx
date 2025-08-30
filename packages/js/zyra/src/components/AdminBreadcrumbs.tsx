@@ -9,7 +9,7 @@ interface ButtonConfig {
 
 interface AdminBreadcrumbsProps {
     activeTabIcon?: string;
-    parentTabName?: string;
+    tabTitle?: string;
     renderBreadcrumb?: () => React.ReactNode;
     renderMenuItems?: (items: any[]) => React.ReactNode;
     tabData?: any[];
@@ -20,7 +20,7 @@ interface AdminBreadcrumbsProps {
 
 const AdminBreadcrumbs: React.FC<AdminBreadcrumbsProps> = ({
     activeTabIcon = '',
-    parentTabName = '',
+    tabTitle = '',
     renderBreadcrumb,
     renderMenuItems,
     tabData = [],
@@ -33,7 +33,7 @@ const AdminBreadcrumbs: React.FC<AdminBreadcrumbsProps> = ({
             <div className="title-wrapper">
                 <div className="title">
                     {activeTabIcon && <i className={activeTabIcon}></i>}
-                    {parentTabName}
+                    {tabTitle}
                 </div>
 
                 <div className="buttons">
@@ -55,7 +55,7 @@ const AdminBreadcrumbs: React.FC<AdminBreadcrumbsProps> = ({
                         })}
                 </div>
             </div>
-
+            {!renderBreadcrumb && <div className="description">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam corporis deleniti ipsum commodi. Porro, tempore.</div>}
             {renderBreadcrumb && <div className="breadcrumbs-menu">{renderBreadcrumb()}</div>}
 
             {renderMenuItems && tabData.length > 0 && (

@@ -2,13 +2,15 @@
 
 .grid-table {
     width: 100%;
-    border: 0.120rem solid #e0e4e9;
-    border-radius: 0.25rem;
     font-size: 0.875rem;
-    padding: 1rem;
+    position: relative;
 
     thead {
         width: 100%;
+        position: sticky;
+        top: 1.8rem;
+        z-index: 9;
+        background: #fff;
 
         tr {
             display: flex;
@@ -23,6 +25,7 @@
                 justify-content: center;
                 flex: 1 0 0;
                 font-weight: 500;
+                font-size: 1rem;
 
                 &:first-child {
                     max-width: 9.375rem;
@@ -34,14 +37,19 @@
     tbody {
         width: 100%;
 
+        h1{
+            font-size: 1.25rem;
+            padding: 0.625rem 0;
+        }
+
         tr {
             display: flex;
             align-items: stretch;
             align-content: stretch;
-            padding: 0.5rem 0;
-            background: #f8f9fa;
+            padding: 0.75rem 0;
+            background: #fff;
             margin: 0.5rem 0;
-            border-radius: 0.25rem;
+            border: $border-light-small;
 
             td {
                 display: flex;
@@ -252,6 +260,9 @@
                     }
                 }
             }
+        }
+        tr:nth-child(odd){
+            background: $background-color;
         }
     }
 }

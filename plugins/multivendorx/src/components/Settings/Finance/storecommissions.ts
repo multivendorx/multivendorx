@@ -64,6 +64,7 @@ export default {
                 {
                     key: 'product_price',
                     type: 'number',
+                    label: '+',
                     options: [
                         {
                             key: 'product_price',
@@ -122,16 +123,23 @@ export default {
                     ),
                     options: [
                         {
-                            key: 'commission_percentage',
-                            label: __('%', 'multivendorx'),
-                            type: 'number',
-                            labelAfterInput: true,
-                        },
-                        {
                             key: 'commission_fixed',
                             label: __('$', 'multivendorx'),
                             type: 'number',
                             labelAfterInput: false,
+                        },
+                    ],
+                },
+                {
+                    key: 'store_order',
+                    type: 'multi-number',
+                    label: __('+', 'multivendorx'),
+                    options: [
+                        {
+                            key: 'commission_percentage',
+                            label: __('%', 'multivendorx'),
+                            type: 'number',
+                            labelAfterInput: true,
                         },
                     ],
                 },
@@ -196,10 +204,10 @@ export default {
             key: 'commission_calculation_on_tax',
             type: 'setting-toggle',
             label: __('Tax amount', 'multivendorx'),
-            settingDescription: __(
-                'Configure how taxes are treated in commission calculations.'multivendorx'),
+            settingDescription: __('Configure how taxes are treated in commission calculations.', 'multivendorx'),
 			desc: __( '<li>No Tax Inclusion: Calculate commission on pre-tax amount only.<li>100% Tax Inclusion: Include full tax amount in commission base.<li>Commission-Based Tax: Calculate commission on total order value including taxes, not just product price',
-                ','multivendorx'),
+                'multivendorx'),
+
             options: [
                 {
                     key: 'per_transaction',

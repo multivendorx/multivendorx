@@ -174,10 +174,14 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
         return (
           <div
             key={method.id}
-            className={`${method.wrapperClass || ""} payment-method-card`}
+            className="payment-method-card"
           >
             {/* Header */}
-            <div className="payment-method" style={{ cursor: "pointer" }}>
+            <div className="payment-method" 
+                 onClick={() =>
+                      setActiveTab(isActive ? null : method.icon)
+                    }
+            >
               <div className="details">
                 <div className="payment-method-icon">
                   <img src={method.icon} />
@@ -193,17 +197,23 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
               {/* Enable / Disable */}
               <div className="right-section">
                 {isEnabled ? (
-                  <div
-                    className="payment-method-arrow"
-                    onClick={() =>
-                      setActiveTab(isActive ? null : method.icon)
-                    }
+                  // <div
+                  //   className="payment-method-arrow"
+                  //   onClick={() =>
+                  //     setActiveTab(isActive ? null : method.icon)
+                  //   }
+                  // >
+                  //   </div>
+                    <span
+                    className="admin-badge red"
+                    onClick={() => toggleEnable(method.id, false)}
                   >
-                    <span className="admin-btn btn-light-blue">Manage</span>
-                  </div>
+                    Disable
+                  </span>
+                  
                 ) : (
                   <span
-                    className="admin-btn btn-purple"
+                    className="admin-badge green"
                     onClick={() => toggleEnable(method.id, true)}
                   >
                     Enable
@@ -214,22 +224,10 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
 
             {/* Form */}
             {isEnabled && isActive && (
-              <div className="payment-method-form">
-                <div className="form-group">
-                  <label>Enable {method.label}</label>
-                  <div className="input-content">
-                    <span
-                      className="admin-badge red"
-                      onClick={() => toggleEnable(method.id, false)}
-                    >
-                      Disable
-                    </span>
-                  </div>
-                </div>
-
+              <div className= {`${method.wrapperClass || ""} payment-method-form`}>
                 {method.formFields.map((field) => (
                   <div key={field.key} className="form-group">
-                    <label>{field.label}</label>
+                    {field.label && <label>{field.label}</label> }
                     <div className="input-content">
                       {renderField(method.id, field)}
                     </div>

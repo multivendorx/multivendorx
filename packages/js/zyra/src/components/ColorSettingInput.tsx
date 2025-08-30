@@ -17,6 +17,7 @@ interface PaletteOption {
     value?: string;
     label?: string;
     colors?: Partial<CustomColors>;
+    image?: string;
 }
 
 interface ColorSettingProps {
@@ -117,10 +118,12 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
             </div>
 
             <div className="color-setting">
+
                 <div className="color-palette-wrapper">
                     <div className="predefined">
                         {/* Predefined Palettes */}
                         {mode === 'predefined' && props.predefinedOptions.map(option => {
+                            
                             const checked = selectedPalette === option.value;
                             return (
                                 <div key={option.key} className="palette">
@@ -135,12 +138,20 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                     />
                                     <label
                                         htmlFor={`${props.idPrefix}-${option.key}`}
-                                    >
+                                    >   
+                                        {option.colors && (
                                         <div className="color">
                                             {option.colors && Object.values(option.colors).map((c, i) => (
                                                 <div key={i} style={{ backgroundColor: c }}></div>
                                             ))}
                                         </div>
+                                        )}
+                                        {option.image && (
+                                        <div className="color">
+                                            <img src={option.image} alt="" />
+                                        </div>
+                                        )}
+
                                         <span >{option.label}</span>
                                     </label>
                                 </div>
@@ -157,7 +168,6 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                             type="color"
                                             value={val}
                                             onChange={(e) => handleCustomChange(key as keyof CustomColors, e.target.value)}
-                                            // style={{ width: '100%', height: '36px', cursor: 'pointer' }}
                                         />
                                         <label >
                                             <div>{key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())}</div>
@@ -167,10 +177,12 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                 ))}
                             </div>
                         )}
+                        
                     </div>
                 </div>
+                
                 {/* Live Preview */}
-                {props.showPreview && (
+                {props.showPreview &&  (
                     <div className="preview-wrapper">
                         {/* Sidebar */}
                         <div className="tabs-wrapper">

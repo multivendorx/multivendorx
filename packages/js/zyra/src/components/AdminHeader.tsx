@@ -33,11 +33,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
 
           <div className="version-tag">
             <span className="admin-badge blue">
-              <b>Free:</b> {free}
+              <i className="adminlib-adminlib-info"></i> <b>Free:</b> {free}
             </span>
             <span className="admin-badge red">
 
-              <i className="adminlib-pro-tag"></i> Pro: 4.2.6
+              <i className="adminlib-pro-tag"></i> <b>Pro:</b> 4.2.6
             </span>
           </div>
         </div>

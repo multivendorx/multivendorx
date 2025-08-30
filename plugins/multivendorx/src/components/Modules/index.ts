@@ -584,7 +584,7 @@ export default {
             //settings_link: appLocalizer.site_url,
             pro_module: true,
 			category: 'integration'
-        }
+        },
 		{
             id: 'geo-location',
             name: __('Geo Location', 'multivendorx'),
@@ -594,7 +594,7 @@ export default {
             //settings_link: appLocalizer.site_url,
             pro_module: true,
 			category: 'integration'
-        }
+        },
         {
             id: 'question-answer',
             name: __('Question & Answer', 'multivendorx'),
@@ -604,7 +604,7 @@ export default {
             //settings_link: appLocalizer.site_url,
             pro_module: true,
 			category: 'engagement'
-        }
+        },
        {
             id: 'enquiry',
             name: __('Enquiry', 'multivendorx'),

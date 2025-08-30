@@ -141,78 +141,76 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
                 />
             ) : (
                 <div>
-                    <div className="fields-header">
-                        <h3 className="name">{ 'Field Name' }</h3>
-                        <h3 className="set-name">{ 'Set new field name' }</h3>
-                    </div>
-                    <div className="registrationfrom-main-wrapper-section">
-                        <div className="form-field">
-                            { formFields.map( ( fields, index ) => (
+                    <div className="form-field">
+                        <div className="edit-form-wrapper free-form">
+                            <h3 className="form-label">{ 'Field Name' }</h3>
+                            <h3 className="set-name">{ 'Set new field name' }</h3>
+                        </div>
+                        { formFields.map( ( fields, index ) => (
+                            <div
+                                className="edit-form-wrapper free-form"
+                                key={ index }
+                            >
                                 <div
-                                    className="edit-form-wrapper free-form"
-                                    key={ index }
+                                    className="form-label"
+                                    style={ {
+                                        opacity: readonlyFields[ index ]
+                                            ? '0.3'
+                                            : '1',
+                                    } }
                                 >
-                                    <div
-                                        className="form-label"
+                                    { fields.desc }
+                                </div>
+                                <div className="settings-form-group-radio">
+                                    <input
+                                        className="basic-input"
+                                        type="text"
+                                        onChange={ ( e ) =>
+                                            updateFieldLabel(
+                                                fields.key,
+                                                e.target.value
+                                            )
+                                        }
+                                        value={
+                                            getFields( fields.key )
+                                                ?.label || ''
+                                        }
+                                        readOnly={ readonlyFields[ index ] }
                                         style={ {
                                             opacity: readonlyFields[ index ]
                                                 ? '0.3'
                                                 : '1',
                                         } }
-                                    >
-                                        { fields.desc }
-                                    </div>
-                                    <div className="settings-form-group-radio">
-                                        <input
-                                            className="basic-input"
-                                            type="text"
-                                            onChange={ ( e ) =>
-                                                updateFieldLabel(
-                                                    fields.key,
-                                                    e.target.value
-                                                )
-                                            }
-                                            value={
-                                                getFields( fields.key )
-                                                    ?.label || ''
-                                            }
-                                            readOnly={ readonlyFields[ index ] }
-                                            style={ {
-                                                opacity: readonlyFields[ index ]
-                                                    ? '0.3'
-                                                    : '1',
-                                            } }
-                                        />
-                                    </div>
-                                    <div
-                                        className="button-visibility"
-                                        role="button"
-                                        tabIndex={ 0 }
-                                        onClick={ () => {
-                                            setReadonlyFields( ( prev ) =>
-                                                prev.map( ( readonly, i ) =>
-                                                    i === index
-                                                        ? ! readonly
-                                                        : readonly
-                                                )
-                                            );
-                                            activeDeactiveFields(
-                                                fields.key,
-                                                readonlyFields[ index ]
-                                            );
-                                        } }
-                                    >
-                                        <i
-                                            className={ `admin-font ${
-                                                readonlyFields[ index ]
-                                                    ? 'adminlib-eye-blocked enable-visibility'
-                                                    : 'adminlib-eye'
-                                            }` }
-                                        />
-                                    </div>
+                                    />
                                 </div>
-                            ) ) }
-                        </div>
+                                <div
+                                    className="button-visibility"
+                                    role="button"
+                                    tabIndex={ 0 }
+                                    onClick={ () => {
+                                        setReadonlyFields( ( prev ) =>
+                                            prev.map( ( readonly, i ) =>
+                                                i === index
+                                                    ? ! readonly
+                                                    : readonly
+                                            )
+                                        );
+                                        activeDeactiveFields(
+                                            fields.key,
+                                            readonlyFields[ index ]
+                                        );
+                                    } }
+                                >
+                                    <i
+                                        className={ `admin-font ${
+                                            readonlyFields[ index ]
+                                                ? 'adminlib-eye-blocked enable-visibility'
+                                                : 'adminlib-eye'
+                                        }` }
+                                    />
+                                </div>
+                            </div>
+                        ) ) }
                     </div>
                 </div>
             ) }

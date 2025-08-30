@@ -28,7 +28,7 @@ const ViewStore = () => {
     <>
       <AdminBreadcrumbs
         activeTabIcon="adminlib-storefront"
-        parentTabName="View Store"
+        tabTitle="View Store"
         buttons={[
           {
             label: 'Back',

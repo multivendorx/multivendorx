@@ -227,6 +227,7 @@ const Customizer: React.FC< CustomizerProps > = ( {
                                         />
                                         <input
                                             type="text"
+                                            className="basic-input"
                                             value={
                                                 setting.button_text_color_onhover
                                                     ? setting.button_text_color_onhover
