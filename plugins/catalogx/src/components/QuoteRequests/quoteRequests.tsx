@@ -9,11 +9,11 @@ export default function QuotesList() {
 
     return (
         <>
-            <AdminBreadcrumbs
-                activeTabIcon="adminlib-cart"
-                parentTabName="Quote Requests"
-            />
-            <div className="admin-table-wrapper" id="quote-list-table">
+            <div id="quote-list-table">
+                <AdminBreadcrumbs
+                    activeTabIcon="adminlib-cart"
+                    parentTabName="Quote Requests"
+                />
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }
@@ -35,7 +35,7 @@ export default function QuotesList() {
                     ) }
                 </Dialog>
                 <div
-                    className="quote-img"
+                    className="admin-table-wrapper quote-img"
                     onClick={ () => {
                         setOpenDialog( true );
                     } }

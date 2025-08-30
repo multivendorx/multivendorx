@@ -11,14 +11,14 @@ const Rules = () => {
 
     return (
         <>
-            <AdminBreadcrumbs
-                activeTabIcon="adminlib-cart"
-                parentTabName="Rules"
-            />
             <main
-                className="admin-table-wrapper catalog-rules-main-container"
+                className="catalog-rules-main-container"
                 id="rules-list-table"
             >
+                <AdminBreadcrumbs
+                    activeTabIcon="adminlib-cart"
+                    parentTabName="Rules"
+                />
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }
@@ -40,7 +40,7 @@ const Rules = () => {
                     ) }
                 </Dialog>
                 <div
-                    className="dynamic-rule-img"
+                    className="admin-table-wrapper dynamic-rule-img"
                     onClick={ () => {
                         setOpenDialog( true );
                     } }
