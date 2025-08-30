@@ -1,6 +1,8 @@
 <?php
 
 namespace MultiVendorX\Order;
+
+use MultiVendorX\Commission\CommissionUtil;
 use MultiVendorX\Store\StoreUtil;
 
 defined('ABSPATH') || exit;
@@ -16,7 +18,11 @@ defined('ABSPATH') || exit;
 class Admin {
     public function __construct() {
         add_filter('manage_woocommerce_page_wc-orders_columns', array($this, 'shop_order_columns'), 99);
-        add_action('manage_woocommerce_page_wc-orders_custom_column', array($this, 'show_shop_order_columns'), 99, 2);         
+        add_action('manage_woocommerce_page_wc-orders_custom_column', array($this, 'show_shop_order_columns'), 99, 2);
+        
+        add_filter('woocommerce_order_actions', array($this, 'woocommerce_order_actions'),10,2);
+        add_action('woocommerce_order_action_regenerate_order_commissions', array($this, 'regenerate_order_commissions'));
+        add_action('woocommerce_order_action_regenerate_suborders', array($this, 'regenerate_suborders'));
     }
 
     public function shop_order_columns($columns) {
@@ -58,5 +64,43 @@ class Admin {
                 }
                 break;
         }
+    }
+
+    public function woocommerce_order_actions($actions, $order) {
+        if ( $order && $order->get_parent_id() )
+            $actions['regenerate_order_commissions'] = __('Regenerate order commissions', 'multivendorx');
+        if ( $order && !$order->get_parent_id() )
+            $actions['regenerate_suborders'] = __('Regenerate suborders', 'multivendorx');
+        
+        return $actions;
+    }
+
+    public function regenerate_order_commissions($order) {
+        if ( ! $order->get_parent_id() ) {
+            return;
+        }
+
+        $commission_id = $order->get_meta( 'multivendorx_commission_id', true) ?? '';
+
+        $commission = CommissionUtil::get_commission_db($commission_id);
+
+        if( $commission->paid_status == 'paid' ) {
+            return;
+        }
+        if (!in_array($order->get_status(), apply_filters( 'mvx_regenerate_order_commissions_statuses', array( 'on-hold', 'pending', 'processing', 'completed' ), $order ))) {
+            return;
+        }
+
+        $order->delete_meta_data( 'multivendorx_commissions_processed' );
+
+        $regenerate_commission_id = MultiVendorX()->commission->calculate_commission( $order, $commission_id );
+
+        $order->update_meta_data( 'multivendorx_commission_id', $regenerate_commission_id );
+        $order->update_meta_data( 'multivendorx_commissions_processed', 'yes' );
+        $order->save();
+    }
+
+    public function regenerate_suborders($order) {
+        MultiVendorX()->order->create_vendor_orders($order);
     }
 }

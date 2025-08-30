@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'payout-management',
+    id: 'disbursement',
     priority: 2,
     name: __('Disbursement', 'multivendorx'),
     desc: __(

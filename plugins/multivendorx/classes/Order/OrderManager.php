@@ -69,14 +69,33 @@ class OrderManager {
      * @param   object $order
      * @return  void
      */
-    public function create_vendor_orders($order_id, $order) {
+    public function create_vendor_orders($order) {
+        $suborders = MultiVendorX()->order->get_suborders($order->get_id()) ?? [];
         $item_info = self::group_item_vendor_based($order);
 
-        foreach ($item_info as $store_id => $items) {
-            $vendor_order = self::create_sub_order($order, $store_id, $items);
+        $existing_orders = [];
+        foreach ( $suborders as $order ) {
+            if ( $order instanceof WC_Order ) {
+                $order_id = $order->get_id();
+                $store_id = $order->get_meta( 'multivendorx_store_id' ); 
+                $store_exists = StoreUtil::get_store_by_id($store_id);
+                if ( $store_exists ) {
+                    $existing_orders[ $order_id ] = $store_id;
+                }
+            }
+        }
 
+        foreach ($item_info as $store_id => $items) {
+            if ( in_array( $store_id, $existing_orders, true ) ) {
+                $suborder_id = array_keys( $existing_orders, $store_id, true );
+                $vendor_order = self::create_sub_order($order,  $store_id, $items, $suborder_id, true);
+                //regenerate commission
+                $this->container['admin']->regenerate_order_commissions($vendor_order);
+            } else {
+                $vendor_order = self::create_sub_order($order, $store_id, $items );
+                do_action('mvx_checkout_vendor_order_processed', $vendor_order, $order);
+            }
             // hook after vendor order create.
-            do_action('mvx_checkout_vendor_order_processed', $vendor_order->get_id(), $vendor_order, $order);
 
             $vendor_order->save();
         }
@@ -89,7 +108,7 @@ class OrderManager {
      * @param   array $items
      * @return  object
      */
-    public static function create_sub_order($parent_order, $store_id, $items) {
+    public static function create_sub_order($parent_order, $store_id, $items, $suborder_id = 0, $is_update = false) {
         $meta = [
             'cart_hash',
             'customer_id',
@@ -124,7 +143,24 @@ class OrderManager {
         ];
 
         try {
-            $order = new \WC_Order();
+            $order = $is_update ? wc_get_order($suborder_id) : new \WC_Order();
+
+            if ( $is_update ) {
+                foreach ( $order->get_items() as $item_id => $item ) {
+                    $order->remove_item( $item_id );
+                }
+
+                // Remove all shipping items
+                foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
+                    $order->remove_item( $item_id );
+                }
+
+                // Remove all coupons
+                foreach ( $order->get_items( 'coupon' ) as $item_id => $item ) {
+                    $order->remove_item( $item_id );
+                }
+
+            }
 
             // set meta value of suborder from parent order.
             foreach ($meta as $key) {
@@ -137,10 +173,13 @@ class OrderManager {
             self::create_shipping_item($order, $items);
             self::create_coupon_item($order, $items);
 
-            // save other details for suborder.
-            $order->set_created_via('mvx_vendor_order');
-            $order->update_meta_data('multivendorx_store_id', $store_id);
-            $order->set_parent_id($parent_order->get_id());
+            if ( !$is_update ) {
+                // save other details for suborder.
+                $order->set_created_via('mvx_vendor_order');
+                $order->update_meta_data('multivendorx_store_id', $store_id);
+                $order->set_parent_id($parent_order->get_id());
+            }
+
             $order->calculate_totals();
 
             /**
@@ -149,12 +188,12 @@ class OrderManager {
              */
             do_action('mvx_checkout_create_order', $parent_order, $order, $items);
 
-            wp_update_post(
-                [
-                    'ID' => $order->get_id(),
-                    'post_author' => $store_id,
-                ]
-            );
+            // wp_update_post(
+            //     [
+            //         'ID' => $order->get_id(),
+            //         'post_author' => $store_id,
+            //     ]
+            // );
 
             return $order;
 

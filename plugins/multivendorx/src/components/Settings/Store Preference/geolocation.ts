@@ -23,11 +23,6 @@ export default {
             ),
             options: [
                 {
-                    key: 'both',
-                    label: __( 'Both', 'multivendorx' ),
-                    value: 'both',
-                },
-                {
                     key: 'store_lisiting',
                     label: __( 'Store lisiting', 'multivendorx' ),
                     value: 'store_lisiting',
@@ -36,6 +31,11 @@ export default {
                     key: 'shop_page',
                     label: __( 'Shop page', 'multivendorx' ),
                     value: 'shop_page',
+                },
+				{
+                    key: 'both',
+                    label: __( 'Both', 'multivendorx' ),
+                    value: 'both',
                 },
             ],
         },

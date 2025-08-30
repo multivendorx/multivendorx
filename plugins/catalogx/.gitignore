@@ -1,0 +1,11 @@
+node_modules
+composer.lock
+!/src/assets/
+final-release
+languages
+release
+vendor
+docker-compose.yml
+dist
+.wireit
+.cache

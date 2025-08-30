@@ -1,0 +1,162 @@
+{
+    "name": "catalogx",
+    "displayName": "woocommerce-catalog-enquiry",
+    "version": "6.0.8",
+    "description": "=== CatalogX ===\r Contributors: wcmp\r Tags: catalog, woocommerce catalog, product catalog, woocommerce product enquiry, woocommerce enquiry form, woocommerce catalogue only, product catalogue, catalog for woocommerce, catalog mode, remove add to cart \r Donate link: https://multivendorx.com/donate\r Requires at least: 4.4\r Tested up to: 6.1\r Requires PHP: 5.6\r Stable tag: 4.0.9\r License: GPLv2 or later\r License URI: http://www.gnu.org/licenses/gpl-2.0.html",
+    "main": "index.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "scripts": {
+        "build": "echo \"${npm_package_name}\" && pnpm --if-present --workspace-concurrency=Infinity --stream --filter \"${npm_package_name}\" \"/^build:project:.*$/\"",
+        "build:zip": "pnpm install && pnpm run readme && pnpm --if-present \"/^build:project:.*$/\" && pnpm run makepot && node bin/release.mjs",
+        "build:project": "pnpm --if-present \"/^build:project:.*$/\"",
+        "build:project:bundle": "wireit",
+        "build:project:translation:domains": "wireit",
+        "watch:build": "pnpm --if-present run \"/^watch:build:project:.*$/\"",
+        "watch:build:project:bundle": "wireit",
+        "watch:build:project:minify": "wireit",
+        "lint": "pnpm --if-present \"/^lint:lang:.*$/\"",
+        "lint:fix": "pnpm --if-present \"/^lint:fix:.*$/\"",
+        "lint:lang:js": "eslint . --ext .js,.jsx,.ts,.tsx",
+        "lint:lang:php": "composer run-script phpcs",
+        "lint:lang:css": "wp-scripts lint-style",
+        "lint:fix:css": "stylelint '**/*.{css,scss}' --fix",
+        "lint:fix:js": "wp-scripts format --fix",
+        "lint:fix:php": "composer run-script phpfix",
+        "test": "pnpm test:unit",
+        "test:unit": "pnpm test:php",
+        "test:php": "./vendor/bin/phpunit -c ./phpunit.xml.dist",
+        "env:start": "pnpm wp-env start && pnpm run env:start:database",
+        "env:start:database": "node bin/create-docker-compose.mjs && docker compose up -d",
+        "env:dev": "pnpm wp-env start --update && pnpm run env:start:database && pnpm --if-present --filter storybook run watch:build:storybook",
+        "env:stop": "pnpm wp-env stop && docker compose down",
+        "env:clean": "pnpm wp-env clean",
+        "env:restart": "pnpm wp-env restart",
+        "env:destroy": "pnpm wp-env destroy && rimraf docker-compose.yml",
+        "readme": "wp-readme-to-md",
+        "composer": "composer dump-autoload && composer update",
+        "preinstall": "npx only-allow pnpm",
+        "postinstall": "rimraf -g vendor release .wireit composer.lock languages && composer install",
+        "clean": "node bin/clean-files.mjs",
+        "minify": "node bin/minify.mjs",
+        "changelog": "composer install --quiet && composer exec -- changelogger",
+        "makepot": "wp i18n make-pot --domain='catalogx' --include='assets/js,classes,templates,src,modules,config.php,Woocommerce_Catalog_Enquiry.php' . --headers='{\"Report-Msgid-Bugs-To\":\"https://catalogx.com/contact/\"}' --file-comment=\"Copyright (c) $(date +'%Y') CatalogX Inc. All Rights Reserved.\" languages/catalogx.pot"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/multivendorx/catalogx.git"
+    },
+    "author": "MultiVendorX",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/multivendorx/catalogx/issues"
+    },
+    "homepage": "https://github.com/multivendorx/catalogx#readme",
+    "wireit": {
+        "build:project:bundle": {
+            "command": "wp-scripts build --progress && pnpm run minify && node bin/move-files.mjs && pnpm run clean",
+            "files": [
+                "src/**/*.{js,jsx,ts,tsx,scss}",
+                "tsconfig.json",
+                "webpack.config.js"
+            ],
+            "output": [
+                "release/assets/**"
+            ],
+            "clean": true
+        },
+        "build:project:translation:domains": {
+            "command": "node ./bin/package-update-textdomain.js",
+            "files": [
+                "classes/**",
+                "templates/**"
+            ],
+            "output": []
+        },
+        "watch:build:project:bundle": {
+            "command": "wp-scripts start",
+            "files": [
+                "src/**/*.{js,jsx,ts,tsx,scss}",
+                "tsconfig.json",
+                "webpack.config.js"
+            ],
+            "service": true
+        },
+        "watch:build:project:minify": {
+            "command": "pnpm run minify",
+            "files": [
+                "src/**/*.{js,jsx,ts,tsx,scss}"
+            ]
+        }
+    },
+    "devDependencies": {
+        "@babel/runtime": ">=7.26.10",
+        "@types/body-scroll-lock": "^3.1.2",
+        "@types/react": "18.3.23",
+        "@types/react-dom": "18.3.7",
+        "@types/react-router-dom": "^5.3.3",
+        "@types/webpack-env": "^1.18.8",
+        "@types/wordpress__block-editor": "^11.5.16",
+        "@types/wordpress__blocks": "^12.5.17",
+        "@types/wordpress__data": "^7.0.0",
+        "@types/wordpress__element": "^2.14.1",
+        "@types/wordpress__i18n": "^3.11.0",
+        "@wordpress/env": "10.23.0",
+        "@wordpress/scripts": "^30.12.0",
+        "axios": "^1.8.2",
+        "clean-css": "^5.3.3",
+        "fs-extra": "^11.3.0",
+        "style-loader": "^4.0.0",
+        "terser": "^5.41.0",
+        "typescript": "5.8.3",
+        "wireit": "^0.14.12"
+    },
+    "dependencies": {
+        "@babel/runtime": ">=7.26.10",
+        "@emotion/react": "^11.13.3",
+        "@emotion/styled": "^11.13.0",
+        "@mapbox/mapbox-gl-geocoder": "^5.0.3",
+        "@mui/material": "^5.16.7",
+        "@reactour/tour": "^3.7.0",
+        "@tanstack/react-table": "^8.21.3",
+        "@tinymce/tinymce-react": "^5.1.1",
+        "@wordpress/block-editor": "^14.2.0",
+        "@wordpress/blocks": "^13.7.0",
+        "@wordpress/data": "^10.0.2",
+        "@wordpress/element": "^6.7.0",
+        "@wordpress/i18n": "^5.19.0",
+        "@wordpress/shortcode": "^4.7.0",
+        "body-scroll-lock": "^4.0.0-beta.0",
+        "emoji-picker-react": "^4.12.0",
+        "file-type": "^19.5.0",
+        "google-map-react": "^2.2.1",
+        "mapbox-gl": "^3.12.0",
+        "react": "18.3.1",
+        "react-beautiful-dnd": "^13.1.1",
+        "react-csv": "^2.2.2",
+        "react-data-table-component": "^7.6.2",
+        "react-date-range": "^2.0.1",
+        "react-dom": "18.3.1",
+        "react-drag-listview": "^2.0.0",
+        "react-draggable": "^4.4.6",
+        "react-google-recaptcha": "^3.1.0",
+        "react-icon": "^1.0.0",
+        "react-icons": "^5.3.0",
+        "react-modal": "^3.16.1",
+        "react-movable": "^3.3.1",
+        "react-multi-date-picker": "^4.5.2",
+        "react-pdf": "^9.1.0",
+        "react-router-dom": "^6.30.1",
+        "react-select": "^5.8.0",
+        "react-sortablejs": "^6.1.4",
+        "react-spinners": "^0.13.8",
+        "reactour": "^1.19.4",
+        "router": "^2.1.0",
+        "sass": "^1.89.2",
+        "sortablejs": "^1.15.3",
+        "wp-textdomain": "^1.0.1",
+        "ws": "^8.18.0",
+        "zyra": "workspace:*"
+    }
+}

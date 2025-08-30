@@ -17,50 +17,51 @@ localStorage.setItem("force_multivendorx_context_reload", "true");
 
 const Route = () => {
   const currentTab = new URLSearchParams(useLocation().hash);
+  const tab = currentTab.get("tab") || "dashboard";
 
   return (
     <>
-      {currentTab.get("tab") === "settings" && (
+      {tab === "settings" && (
         <div id="settings">
           <Settings id={"settings"} />
         </div>
       )}
-      {currentTab.get("tab") === "memberships" && (
+      {tab === "memberships" && (
         <div id="memberships">
           <Memberships />
         </div>
       )}
-      {currentTab.get("tab") === "status-tools" && (
+      {tab === "status-tools" && (
         <div id="status-tools">
           <StatusAndTools id="status-tools" />
         </div>
       )}
-      {currentTab.get("tab") === "modules" && (
+      {tab === "modules" && (
         <div id="modules">
           <Modules />
         </div>
       )}
-      {currentTab.get("tab") === "stores" && (
+      {tab === "stores" && (
         <div id="stores">
           <Store />
         </div>
       )}
-      {currentTab.get("tab") === "work-board" && (
+      {tab === "work-board" && (
         <div id="work-board">
           <WorkBoard />
         </div>
       )}
-      {currentTab.get("tab") === "dashboard" && (
+      {tab === "dashboard" && (
         <div id="dashboard">
           <AdminDashboard />
         </div>
       )}
-      {currentTab.get("tab") === "commissions" && (
+      {tab === "commissions" && (
         <div id="commissions">
           <Commission />
         </div>
       )}
-      {currentTab.get("tab") === "setup" && (
+      {tab === "setup" && (
         <div id="setup">
           <SetupWizard />
         </div>
@@ -110,6 +111,7 @@ const products: Products[] = [
     ),
   },
 ];
+
 const App = () => {
   const currentTabParams = new URLSearchParams(useLocation().hash);
 

@@ -1,0 +1,6 @@
+src/
+node_modules/
+rollup.config.js
+tsconfig.json
+.gitignore
+package-lock.json

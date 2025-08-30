@@ -1,0 +1,57 @@
+{
+    "name": "multivendorx/catalogx",
+    "description": "CatalogX converts your WooCommerce store into a product catalog, letting you hide prices and remove the ‘Add to Cart’ button with ease.",
+    "type": "wordpress-plugin",
+    "homepage": "https://catalogx.com",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "MultiVendorX",
+            "email": "contact@multivendorx.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "CatalogX\\": [
+                "classes/",
+                "modules/"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.0"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "dev-develop",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/phpcompatibility-wp": "dev-master",
+        "phpunit/phpunit": "9.6.x-dev",
+        "wp-phpunit/wp-phpunit": "dev-master",
+        "yoast/phpunit-polyfills": "^4.0@dev",
+        "brain/monkey": "^2.0@dev",
+        "automattic/jetpack-changelogger": "^6.0@dev"
+    },
+    "scripts": {
+        "phpcs": [
+            "vendor/bin/phpcs -p -s"
+        ],
+        "phpfix": [
+            "vendor/bin/phpcbf -p"
+        ],
+        "phpcs:report": [
+            "vendor/bin/phpcs --report-file='phpreport.txt'"
+        ],
+        "test": [
+            "vendor/bin/phpunit"
+        ]
+    }
+}

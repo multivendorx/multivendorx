@@ -21,12 +21,11 @@ class Hooks {
         add_action('woocommerce_analytics_update_order_stats', [$this, 'remove_suborder_analytics'], 10, 1);
 
         // Create store order after valid checkout processed.
-        add_action('woocommerce_checkout_order_processed', [$this, 'create_vendor_order'], 1, 3);
-        add_action('woocommerce_store_api_checkout_order_processed', [$this, 'create_vendor_order_block_support'], 1, 1);
+        // add_action('woocommerce_checkout_order_processed', [$this, 'create_vendor_order'] );
+        add_action('woocommerce_store_api_checkout_order_processed', [$this, 'create_vendor_order'] );
 
         // Create store order from backend.
-        // add_action('woocommerce_saved_order_items', array($this, 'create_orders_from_backend'), 10, 2 );
-        add_action('woocommerce_new_order', array($this, 'create_orders_from_backend'), 10, 2 );
+        add_action('woocommerce_new_order', array($this, 'manually_create_vendor_order'), 10, 2 );
 
         // After crate suborder order try to sync order status.
         add_action('woocommerce_order_status_changed', [$this, 'parent_order_to_vendor_order_status_sync'], 10, 4);
@@ -84,12 +83,12 @@ class Hooks {
     }
 
     /**
-     * Create the vendor orders of a main order for block support.
+     * Create the store orders of a main order form backend.
      * @param   object $order
      * @return  void
      */
-    public function create_vendor_order_block_support( $order ) {
-        $this->create_vendor_order($order->get_id(), [], $order);
+    public function manually_create_vendor_order( $order_id, $order ) {
+        $this->create_vendor_order($order);
     }
 
 
@@ -101,21 +100,18 @@ class Hooks {
      * @param   mixed $order
      * @return  void
      */
-    public function create_vendor_order( $order_id, $posted_data, $order ) {
+    public function create_vendor_order( $order ) {
 
         if ( $order->get_parent_id() || $order->get_meta('has_multivendorx_sub_order') ) {
             return;
         }
 
-        MultiVendorX()->order->create_vendor_orders($order_id, $order);
+        MultiVendorX()->order->create_vendor_orders($order);
 
         $order->update_meta_data('has_multivendorx_sub_order', true);
         $order->save();
     }
 
-    public function create_orders_from_backend( $order_id ){
-        $this->manually_create_order_item_and_suborder($order_id);
-    }
     
     public function manually_create_order_item_and_suborder( $order_id = 0 ) {
         $order = wc_get_order($order_id);
@@ -142,7 +138,7 @@ class Hooks {
         //         wp_delete_post($v_order_id, true);
         //     }
         // }
-        $this->create_vendor_order($order_id, array(), $order );
+        $this->create_vendor_order($order_id );
 
     }
 

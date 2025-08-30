@@ -1,0 +1,25 @@
+{
+    "apiVersion": 2,
+    "name": "catalogx/enquiry-button",
+    "title": "Enquiry Button",
+    "category": "catalogx",
+    "icon": "admin-comments",
+    "description": "A block that displays enquiry button.",
+    "supports": {
+        "html": false
+    },
+    "textdomain": "catalogx",
+    "editorScript": [
+        "file:./index.js",
+        "catalogx-enquiry-frontend-script",
+        "catalogx-enquiry-form-script"
+    ],
+    "script": [
+        "file:./index.js",
+        "catalogx-enquiry-frontend-script",
+        "catalogx-enquiry-form-script"
+    ],
+    "editorStyle": [ "catalogx-enquiry-form-style", "catalogx-frontend-style" ],
+    "style": [ "catalogx-enquiry-form-style", "catalogx-frontend-style" ],
+    "render": "file:./render.php"
+}

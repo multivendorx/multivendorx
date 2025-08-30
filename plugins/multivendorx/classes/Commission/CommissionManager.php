@@ -56,8 +56,6 @@ class CommissionManager {
                     $item_commission = $this->get_item_commission( $product_id, $item_id, $item, $order, $vendor );
                     
                     $commission_values = $this->get_commission_amount( $product_id, $item, $vendor );
-
-
                     $commission_rate = [
                         'mode' => 'store',
                         'type' => 'per_item',
@@ -178,9 +176,9 @@ class CommissionManager {
                 'paid_status'       => 'unpaid'
             ];
             $format = [ "%d", "%d", "%d", "%d", "%d", "%f", "%f", "%f", "%f", "%s" ];
-
             if ( ! $commission_id ) {
-                $commission_id = $wpdb->insert( $wpdb->prefix . Utill::TABLES['commission'], $data, $format );
+                $wpdb->insert( $wpdb->prefix . Utill::TABLES['commission'], $data, $format );
+                $commission_id = $wpdb->insert_id;
             } else {
                 $wpdb->update( $wpdb->prefix . Utill::TABLES['commission'], $data, ['ID' => $commission_id], $format );
             }
@@ -220,7 +218,7 @@ class CommissionManager {
                 $line_total = $order->get_item_subtotal( $item, false, false ) * $item['qty'];
             }
         } else {
-            $line_total = $order->get_item_subtotal( $item, false, false ) * $item['qty'];
+            $line_total = $order->get_item_total( $item, false, false ) * $item['qty'];
         }
 
         // Filter the item total before calculating item commission.

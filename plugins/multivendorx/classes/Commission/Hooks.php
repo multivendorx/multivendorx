@@ -25,7 +25,7 @@ class Hooks {
      * @param   object $main_order
      * @return  void
      */
-    public function create_commission( $vendor_order_id, $vendor_order, $main_order ) {
+    public function create_commission( $vendor_order, $main_order ) {
 
         $processed = $vendor_order->get_meta( 'multivendorx_commissions_processed', true );
 

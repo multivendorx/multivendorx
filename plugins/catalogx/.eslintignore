@@ -1,0 +1,20 @@
+# Build outputs
+assets/
+.cache/
+
+# normal files
+vendor/
+templates/
+assets/
+classes/
+release/
+
+# Dependencies
+node_modules/
+
+# Tests
+
+
+# Configs
+*.config.js
+webpack.config.js
