@@ -151,11 +151,11 @@ class Utill {
      * @param string $default_value The default string to return if no translation is found.
      * @return string The translated string.
      */
-    public static function get_translated_string( $context, $name, $default_value ) {
+    public static function get_translated_string( $name, $default_value, $is_pro = false ) {
         if ( function_exists( 'icl_t' ) ) {
-            return icl_t( $context, $name, $default_value );
+            return icl_t( $is_pro ? 'catalogx-pro' : 'catalogx', $name, $default_value );
         } else {
-            return __( $default_value, $context );
+            return __( $default_value, $is_pro ? 'catalogx-pro' : 'catalogx' );
         }
     }
 
