@@ -123,6 +123,7 @@ class FrontendScripts {
 	 * @param string $path         URL to the script.
 	 * @param array  $deps         Optional. An array of dependencies. Default empty array.
 	 * @param string $version      Optional. Script version. Default empty string.
+	 * @param bool   $is_pro       The script is from free or pro.
 	 */
     public static function register_script( $handle, $path, $deps = array(), $version = '', $is_pro ) {
 		self::$scripts[] = $handle;

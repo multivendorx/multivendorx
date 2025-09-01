@@ -146,9 +146,9 @@ class Utill {
     /**
      * WPML support for language translation
      *
-     * @param string $context The translation context (used by WPML).
      * @param string $name The name of the string to translate.
      * @param string $default_value The default string to return if no translation is found.
+     * @param bool   $is_pro The function call is from free or pro.
      * @return string The translated string.
      */
     public static function get_translated_string( $name, $default_value, $is_pro = false ) {

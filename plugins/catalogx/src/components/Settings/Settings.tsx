@@ -12,7 +12,6 @@ import {
     getSettingById,
     SettingContent,
     AdminForm,
-    Banner,
     Tabs,
     useModules,
     SettingProvider,
@@ -27,11 +26,6 @@ type SettingItem = Record< string, any >;
 
 interface SettingsProps {
     id: string;
-}
-
-interface Products {
-    title: string;
-    description: string;
 }
 
 const supportLink = [
