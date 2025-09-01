@@ -127,7 +127,7 @@ class FrontendScripts {
     public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
 		self::$scripts[] = $handle;
 		wp_register_script( $handle, $path, $deps, $version, true );
-        wp_set_script_translations( $handle, 'catalogx' );
+        wp_set_script_translations( $handle, str_contains( $handle, '-pro-' ) ? 'catalogx-pro' : 'catalogx' );
 	}
 
 	/**
