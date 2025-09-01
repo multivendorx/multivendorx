@@ -10,7 +10,7 @@ type SearchItem = {
 type AdminHeaderProps = {
   brandImg: string;
   query: string;
-  results: SearchItem[];
+  results?: SearchItem[];
   onSearchChange: (value: string) => void;
   onResultClick: (res: SearchItem) => void;
   onSelectChange: (value: string) => void;
@@ -22,7 +22,7 @@ type AdminHeaderProps = {
 const AdminHeader: React.FC<AdminHeaderProps> = ({
   brandImg,
   query,
-  results,
+  results = [],
   onSearchChange,
   onResultClick,
   onSelectChange,
