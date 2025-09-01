@@ -124,10 +124,10 @@ class FrontendScripts {
 	 * @param array  $deps         Optional. An array of dependencies. Default empty array.
 	 * @param string $version      Optional. Script version. Default empty string.
 	 */
-    public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
+    public static function register_script( $handle, $path, $deps = array(), $version = '', $text_domain = '' ) {
 		self::$scripts[] = $handle;
 		wp_register_script( $handle, $path, $deps, $version, true );
-        wp_set_script_translations( $handle, str_contains( $handle, '-pro-' ) ? 'catalogx-pro' : 'catalogx' );
+        wp_set_script_translations( $handle, $text_domain );
 	}
 
 	/**
@@ -159,26 +159,30 @@ class FrontendScripts {
 					'src'     => CatalogX()->plugin_url . self::get_build_path_name() . 'modules/Enquiry/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
 					'deps'    => array( 'jquery', 'jquery-blockui' ),
 					'version' => $version,
+                	'text_domain' => 'catalogx',
 				),
 				'catalogx-enquiry-form-script'      => array(
 					'src'     => CatalogX()->plugin_url . self::get_build_path_name() . 'js/block/enquiryForm/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks', 'wp-hooks' ),
 					'version' => $version,
+                	'text_domain' => 'catalogx',
 				),
 				'catalogx-quote-cart-script'        => array(
 					'src'     => CatalogX()->plugin_url . self::get_build_path_name() . 'js/block/quote-cart/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
+                	'text_domain' => 'catalogx',
 				),
 				'catalogx-add-to-quote-cart-script' => array(
 					'src'     => CatalogX()->plugin_url . self::get_build_path_name() . 'modules/Quote/js/' . CATALOGX_PLUGIN_SLUG . '-frontend.min.js',
 					'deps'    => array( 'jquery' ),
 					'version' => $version,
+                	'text_domain' => 'catalogx',
 				),
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
+			self::register_script( $name, $props['src'], $props['deps'], $props['version'], $props['text_domain'] );
 		}
 	}
 
@@ -230,16 +234,18 @@ class FrontendScripts {
 					'src'     => CatalogX()->plugin_url . self::get_build_path_name() . 'js/index.js',
 					'deps'    => $index_asset['dependencies'],
 					'version' => $version,
+                	'text_domain' => 'catalogx',
 				),
 				'catalogx-components-script' => array(
 					'src'     => CatalogX()->plugin_url . self::get_build_path_name() . 'js/components.js',
 					'deps'    => $component_asset['dependencies'],
 					'version' => $version,
+                	'text_domain' => 'catalogx',
 				),
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
+			self::register_script( $name, $props['src'], $props['deps'], $props['version'], $props['text_domain'] );
 		}
 	}
 
