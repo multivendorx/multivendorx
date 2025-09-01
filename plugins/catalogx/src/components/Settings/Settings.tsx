@@ -85,7 +85,7 @@ const products: Products[] = [
 
 const Settings: React.FC< SettingsProps > = () => {
     const settingsArray: SettingItem[] = getAvailableSettings(
-        getTemplateData(),
+        getTemplateData( 'settings' ),
         []
     );
     const location = new URLSearchParams( useLocation().hash.substring( 1 ) );
@@ -168,6 +168,7 @@ const Settings: React.FC< SettingsProps > = () => {
                 smallbrandImg={ BrandSmall }
                 supprot={ supportLink }
                 Link={ Link }
+                settingName={ 'Settings' }
             />
         </SettingProvider>
     );

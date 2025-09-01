@@ -34,7 +34,7 @@ const WholesaleUser = () => {
                         <ShowPopup moduleName="wholesale" />
                     ) }
                 </Dialog>
-                <div 
+                <div
                     className="admin-table-wrapper olesale-user-image"
                     onClick={ () => {
                         setOpenDialog( true );

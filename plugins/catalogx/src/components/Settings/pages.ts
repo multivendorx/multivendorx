@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'pages',
-    priority: 80,
+    priority: 4,
     name: __( 'Page Endpoint', 'catalogx' ),
     desc: __(
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
