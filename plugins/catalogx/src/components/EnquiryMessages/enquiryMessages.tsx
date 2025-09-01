@@ -8,7 +8,7 @@ const EnquiryMessages = () => {
 
     return (
         <>
-            <div className="admin-table-wrapper" id="enquiry-messages">
+            <div id="enquiry-messages">
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }
@@ -30,7 +30,7 @@ const EnquiryMessages = () => {
                     ) }
                 </Dialog>
                 <div
-                    className="enquiry-img"
+                    className="enquiry-img image-wrapper"
                     onClick={ () => {
                         setOpenDialog( true );
                     } }

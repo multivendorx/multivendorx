@@ -10,11 +10,11 @@ namespace MultiVendorX;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MultivendorX Modules Class
+ * MultiVendorX Modules Class
  *
  * @class       Modules class
  * @version     PRODUCT_VERSION
- * @author      MultivendorX
+ * @author      MultiVendorX
  */
 class Modules {
     /**
@@ -73,18 +73,23 @@ class Modules {
                 array(
 					'simple'                => array(
 						'id'           => 'simple',
-						'module_file'  => MultivendorX()->plugin_path . 'modules/Simple/Module.php',
-						'module_class' => 'MultivendorX\Simple\Module',
+						'module_file'  => MultiVendorX()->plugin_path . 'modules/Simple/Module.php',
+						'module_class' => 'MultiVendorX\Simple\Module',
 					),
 					'variable'              => array(
 						'id'           => 'variable',
-						'module_file'  => MultivendorX()->plugin_path . 'modules/Variable/Module.php',
-						'module_class' => 'MultivendorX\Variable\Module',
+						'module_file'  => MultiVendorX()->plugin_path . 'modules/Variable/Module.php',
+						'module_class' => 'MultiVendorX\Variable\Module',
 					),
                     'identity-verification' => array(
 						'id'           => 'identity-verification',
-						'module_file'  => MultivendorX()->plugin_path . 'modules/Identity/Module.php',
-						'module_class' => 'MultivendorX\Identity\Module',
+						'module_file'  => MultiVendorX()->plugin_path . 'modules/Identity/Module.php',
+						'module_class' => 'MultiVendorX\Identity\Module',
+					),
+                    'store-policy' => array(
+						'id'           => 'store-policy',
+						'module_file'  => MultiVendorX()->plugin_path . 'modules/StorePolicy/Module.php',
+						'module_class' => 'MultiVendorX\StorePolicy\Module',
 					),
 				)
             );
@@ -104,7 +109,7 @@ class Modules {
             return $this->active_modules;
         }
 
-        $this->active_modules = MultivendorX()->setting->get_option( self::ACTIVE_MODULES_DB_KEY, array() );
+        $this->active_modules = MultiVendorX()->setting->get_option( self::ACTIVE_MODULES_DB_KEY, array() );
 
         return $this->active_modules;
     }

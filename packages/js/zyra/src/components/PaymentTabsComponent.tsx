@@ -3,18 +3,19 @@ import "../styles/web/PaymentTabsComponent.scss";
 import VerificationMethods from "./VerificationMethods";
 import TextArea from "./TextArea";
 import ToggleSetting from "./ToggleSetting";
+import MultiCheckBox from "./MultiCheckbox";
 
 interface PaymentFormField {
   key: string;
   type:
-    | "text"
-    | "password"
-    | "number"
-    | "checkbox"
-    | "verification-methods"
-    | "textarea"
-    | "payment-tabs"
-    | "setting-toggle";
+  | "text"
+  | "password"
+  | "number"
+  | "checkbox"
+  | "verification-methods"
+  | "textarea"
+  | "payment-tabs"
+  | "setting-toggle";
   label: string;
   placeholder?: string;
   nestedFields?: any[];
@@ -72,10 +73,16 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
     });
   };
 
-  const toggleEnable = (methodId: string, enable: boolean) => {
+  const toggleEnable = (methodId: string, enable: boolean, icon?: string) => {
     handleInputChange(methodId, "enable", enable);
-    if (!enable) setActiveTab(null);
+
+    if (enable) {
+      setActiveTab(icon || null); // 👈 open the tab on enable
+    } else {
+      setActiveTab(null); // 👈 close tab on disable
+    }
   };
+
 
   const renderField = (methodId: string, field: PaymentFormField) => {
     const fieldValue = value[methodId]?.[field.key];
@@ -110,9 +117,9 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
             options={
               Array.isArray(field.options)
                 ? field.options.map((opt) => ({
-                    ...opt,
-                    value: String(opt.value),
-                  }))
+                  ...opt,
+                  value: String(opt.value),
+                }))
                 : []
             }
             value={fieldValue || ""}
@@ -146,7 +153,9 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
             colNumber={field.colNumber}
             value={fieldValue || ""}
             proSetting={false}
-            onChange={(e) => handleInputChange(methodId, field.key, e.target.value)}
+            onChange={(e) =>
+              handleInputChange(methodId, field.key, e.target.value)
+            }
           />
         );
 
@@ -168,66 +177,65 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
   return (
     <div className="payment-tabs-component">
       {methods.map((method) => {
+        console.log(value)
         const isEnabled = !!value?.[method.id]?.enable;
         const isActive = activeTab === method.icon;
 
         return (
-          <div
-            key={method.id}
-            className="payment-method-card"
-          >
+          <div key={method.id} className="payment-method-card">
             {/* Header */}
-            <div className="payment-method" 
-                 onClick={() =>
-                      setActiveTab(isActive ? null : method.icon)
-                    }
+            <div
+              className="payment-method"
+              onClick={() =>
+                setActiveTab(isActive ? null : method.icon)
+              }
             >
               <div className="details">
                 <div className="payment-method-icon">
-                  <img src={method.icon} />
+                  <img src={method.icon} alt={method.label} />
                 </div>
                 <div className="payment-method-info">
                   <div className="title-wrapper">
                     <span className="title">{method.label}</span>
+                    <div
+                      className={`admin-badge ${isEnabled ? "green" : "red"}`}
+                    >
+                      {isEnabled ? "Active" : "Inactive"}
+                    </div>
                   </div>
                   <div className="method-desc">{method.desc}</div>
                 </div>
               </div>
 
-              {/* Enable / Disable */}
-              <div className="right-section">
-                {isEnabled ? (
-                  // <div
-                  //   className="payment-method-arrow"
-                  //   onClick={() =>
-                  //     setActiveTab(isActive ? null : method.icon)
-                  //   }
-                  // >
-                  //   </div>
-                    <span
-                    className="admin-badge red"
-                    onClick={() => toggleEnable(method.id, false)}
-                  >
-                    Disable
-                  </span>
-                  
-                ) : (
-                  <span
-                    className="admin-badge green"
-                    onClick={() => toggleEnable(method.id, true)}
-                  >
-                    Enable
-                  </span>
-                )}
+              {/* Enable / Disable Toggle */}
+              <div className="right-section toggle-btn">
+                <MultiCheckBox
+                  khali_dabba={false}
+                  wrapperClass="toggle-btn"
+                  descClass="settings-metabox-description"
+                  inputWrapperClass="toggle-checkbox-header"
+                  inputInnerWrapperClass="toggle-checkbox"
+                  inputClass="payment-toggle"
+                  idPrefix="toggle-switch"
+                  options={[{ key: method.id, value: method.id }]}
+                  value={isEnabled ? [method.id] : []}
+                  onChange={(e: any) => {
+                    const newEnabled = e.target.checked;
+                    toggleEnable(method.id, newEnabled, method.icon);
+                  }}
+                />
+
               </div>
             </div>
 
             {/* Form */}
             {isEnabled && isActive && (
-              <div className= {`${method.wrapperClass || ""} payment-method-form`}>
+              <div
+                className={`${method.wrapperClass || ""} payment-method-form`}
+              >
                 {method.formFields.map((field) => (
                   <div key={field.key} className="form-group">
-                    {field.label && <label>{field.label}</label> }
+                    {field.label && <label>{field.label}</label>}
                     <div className="input-content">
                       {renderField(method.id, field)}
                     </div>

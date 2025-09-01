@@ -292,9 +292,11 @@ const Modules: React.FC<ModuleProps> = ({
                                         </div> */}
                                     </div>
                                     <div className="module-details">
-                                        {module.category && (
-                                            <div className="meta-name">{module.name} <span className="admin-badge blue">{module.category}</span> </div>
-                                        )}
+                                        
+                                            <div className="meta-name">{module.name}
+                                                {module.category && ( <span className="admin-badge blue">{module.category}</span>  )}
+                                            </div>
+                                       
                                         <p
                                             className="meta-description"
                                             dangerouslySetInnerHTML={{ __html: module.desc }}
@@ -309,8 +311,8 @@ const Modules: React.FC<ModuleProps> = ({
                                 </div>
                                 <div className="module-footer">
                                     <div className="buttons">
-                                        <a href={module.doc_link}><i className="adminlib-book"></i></a>
-                                        <a href={module.video_link}><i className="adminlib-button-appearance"></i></a>
+                                        {module.doc_link && ( <a href={module.doc_link}><i className="adminlib-book"></i></a> )}
+                                        {module.video_link && ( <a href={module.video_link}><i className="adminlib-button-appearance"></i></a> )}
                                     </div>
                                     <div
                                         className="toggle-checkbox"

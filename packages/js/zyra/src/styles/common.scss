@@ -94,6 +94,11 @@ a {
 .btn-red {
   background: #fde8e4;
   color: #f06b4f;
+
+  &:hover{
+    background: #fde8e4;
+    color: #f06b4f;
+  }
 }
 
 .btn-light-blue {
@@ -570,6 +575,7 @@ input[type="checkbox"]:focus {
   width: fit-content;
   display: flex;
   gap: 0.125rem;
+  z-index: 2;
 }
 
 // admin form start
@@ -1048,11 +1054,14 @@ input[type="checkbox"]:focus {
 // toggle btn start
 .toggle-checkbox-header {
   min-width: fit-content;
+  display: flex;
   gap: 0.313rem;
   margin-right: 0.945rem;
   position: relative;
   z-index: 0;
-
+    .toggle-checkbox{
+      margin: 0;
+    }
   .admin-pro-tag {
     position: relative;
     display: inline;
@@ -1288,7 +1297,6 @@ input[type="checkbox"]:focus {
       }
     }
   }
-
   // multi input style end
 }
 
@@ -1465,5 +1473,10 @@ input[type="checkbox"]:focus {
     box-shadow: none;
   }
 }
-
 // multi select end
+
+// pro image wrapper start
+.image-wrapper{
+  margin: 2rem;
+}
+// pro image wrapper end

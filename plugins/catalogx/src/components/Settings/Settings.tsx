@@ -61,50 +61,12 @@ const supportLink = [
     },
 ];
 
-const products: Products[] = [
-    {
-        title: __( 'Advanced Enquiries', 'catalogx' ),
-        description: __( 'Rich customer-admin messaging system', 'catalogx' ),
-    },
-    {
-        title: __( 'Dynamic Pricing', 'catalogx' ),
-        description: __( 'Automated multi-tier price rules', 'catalogx' ),
-    },
-    {
-        title: __( 'Wholesale Sales', 'catalogx' ),
-        description: __( 'B2B ordering with bulk discounts', 'catalogx' ),
-    },
-    {
-        title: __( 'Custom Quotes', 'catalogx' ),
-        description: __(
-            'Speed up sales with personalized quotes.',
-            'catalogx'
-        ),
-    },
-];
-
 const Settings: React.FC< SettingsProps > = () => {
     const settingsArray: SettingItem[] = getAvailableSettings(
         getTemplateData(),
         []
     );
     const location = new URLSearchParams( useLocation().hash.substring( 1 ) );
-
-    const getBanner = () => {
-        return (
-            <Banner
-                products={ products }
-                isPro={ false }
-                proUrl={ appLocalizer.pro_url }
-                tag="Why Premium"
-                buttonText="View Pricing"
-                bgCode="#5C2EDE" // backgroud color
-                textCode="#fff" // text code
-                btnCode="#fff" // button color
-                btnBgCode="#e35047" // button backgroud color
-            />
-        );
-    };
     // Render the dynamic form
     const GetForm = ( currentTab: string | null ): JSX.Element | null => {
         const {
@@ -159,7 +121,6 @@ const Settings: React.FC< SettingsProps > = () => {
                 tabData={ settingsArray as any }
                 currentTab={ location.get( 'subtab' ) as string }
                 getForm={ GetForm }
-                BannerSection={ getBanner }
                 prepareUrl={ ( subTab: string ) =>
                     `?page=catalogx#&tab=settings&subtab=${ subTab }`
                 }

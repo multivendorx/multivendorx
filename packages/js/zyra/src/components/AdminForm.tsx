@@ -696,7 +696,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             placeholder={inputField.placeholder}
                             rowNumber={inputField.rowNumber} // for row number value
                             colNumber={inputField.colNumber} // for column number value
-                            value={ value || inputField.value }
+                            value={value || inputField.value}
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
                             )}
@@ -1812,7 +1812,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             }}
                         />
                     );
-                    break;
                     break;
 
                 case 'endpoint-editor':

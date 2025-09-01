@@ -413,7 +413,7 @@ const Tabs: React.FC<TabsProps> = ({
     <>
       <AdminBreadcrumbs
         activeTabIcon={tabIcon}
-        tabTitle={tabTitle}
+        tabTitle={parentTab}
         renderBreadcrumb={renderBreadcrumbLinks}
         renderMenuItems={renderAllMenuItems}
         tabData={tabData}

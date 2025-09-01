@@ -117,6 +117,7 @@ export default {
                     type: 'multi-number',
                     label: __('Store commission will be', 'multivendorx'),
                     skipLabel: true,
+                    FirstRowLabel:__('Fixed', 'multivendorx'),
                     desc: __(
                         'This is the default commission amount that will be applicable for all transactions.',
                         'multivendorx'

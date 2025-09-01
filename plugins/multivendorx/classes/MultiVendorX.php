@@ -108,7 +108,7 @@ final class MultiVendorX {
     
 
      /**
-     * Init all MultivendorX classess.
+     * Init all MultiVendorX classess.
      * Access this classes using magic method.
      *
      * @return void
@@ -128,14 +128,19 @@ final class MultiVendorX {
         $this->container['rest']            = new RestAPI\Rest();
         $this->container['payments']        = new Payments\Payments();
         $this->container['store']           = new Store\Store();
+        $this->container['modules']         = new Modules();
+
+        // Load all active modules.
+        $this->container['modules']->load_active_modules();
+
         flush_rewrite_rules();
 
     }
 
     /**
-     * Add MultivendorX Email Class.
+     * Add MultiVendorX Email Class.
      *
-     * @param array $emails  All multivendorx emails.
+     * @param array $emails  All MultiVendorX emails.
      * @return array
      */
     public function setup_email_class( $emails ) {

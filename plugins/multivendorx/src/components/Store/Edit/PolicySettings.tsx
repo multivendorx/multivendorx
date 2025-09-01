@@ -83,9 +83,9 @@ const PolicySettings = ({ id }: { id: string }) => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<TextArea name="description" wrapperClass="setting-from-textarea"
+								<TextArea name="shipping_policy" wrapperClass="setting-from-textarea"
 									inputClass="textarea-input"
-									descClass="settings-metabox-description" value={formData.shippingPolicy} onChange={handleChange} />
+									descClass="settings-metabox-description" value={formData.shipping_policy} onChange={handleChange} />
 							</div>
 						</div>
 
@@ -97,9 +97,9 @@ const PolicySettings = ({ id }: { id: string }) => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<TextArea name="description" wrapperClass="setting-from-textarea"
+								<TextArea name="refund_policy" wrapperClass="setting-from-textarea"
 									inputClass="textarea-input"
-									descClass="settings-metabox-description" value={formData.refundPolicy} onChange={handleChange} />
+									descClass="settings-metabox-description" value={formData.refund_policy} onChange={handleChange} />
 							</div>
 						</div>
 
@@ -111,9 +111,9 @@ const PolicySettings = ({ id }: { id: string }) => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<TextArea name="description" wrapperClass="setting-from-textarea"
+								<TextArea name="exchange_policy" wrapperClass="setting-from-textarea"
 									inputClass="textarea-input"
-									descClass="settings-metabox-description" value={formData.cancelReturnExchange} onChange={handleChange} />
+									descClass="settings-metabox-description" value={formData.exchange_policy} onChange={handleChange} />
 							</div>
 						</div>
 

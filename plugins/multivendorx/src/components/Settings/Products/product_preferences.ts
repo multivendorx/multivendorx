@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'product_preferencess',
+    id: 'product-preferencess',
     priority: 1,
     name: __( 'Product Preferences', 'multivendorx' ),
     desc: __(
@@ -15,7 +15,7 @@ export default {
             key: 'type_options',
             type: 'checkbox',
             label: __( 'Allowed product type', 'multivendorx' ),
-			settingDescription: __( 'Select the product fields vendors can configure when adding or managing their products.', 'multivendorx' ),
+			settingDescription: __( 'Select the product fields stores can configure when adding or managing their products.', 'multivendorx' ),
             class: 'mvx-toggle-checkbox',
             desc: __(
                 '<li><b>Virtual products </b>: Choose this option for products that don’t have a physical form (e.g., services, memberships). <li><b>Downloadable products</b>: Use this option for products that customers can download (e.g., software, eBooks).',
@@ -38,7 +38,7 @@ export default {
         {
             key: 'products_fields',
             type: 'checkbox',
-            label: __( 'Product information fields', 'multivendorx' ),
+            label: __( 'Edit product page blocks', 'multivendorx' ),
 			settingDescription: __( 'Control which product data fields are available to stores when creating or editing products.', 'multivendorx' ),
             class: 'mvx-toggle-checkbox',
             options: [

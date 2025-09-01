@@ -1,18 +1,18 @@
 <?php
 /**
- * MultivendorX module Module class file
+ * MultiVendorX module Module class file
  *
- * @package MultivendorX
+ * @package MultiVendorX
  */
 
-namespace MultivendorX\Simple;
+namespace MultiVendorX\Simple;
 
 /**
- * MultivendorX Simple Module class
+ * MultiVendorX Simple Module class
  *
  * @class       Module class
  * @version     6.0.0
- * @author      MultivendorX
+ * @author      MultiVendorX
  */
 class Module {
     /**

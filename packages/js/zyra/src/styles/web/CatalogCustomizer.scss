@@ -147,15 +147,21 @@
     }
 
     .pro-banner {
-        border: 0.063rem dashed #522c81;
+        border: 0.063rem solid #522c81;
         border-radius: 0.25rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 0.5rem;
-        padding: 1rem;
-        background: #522c812e;
+        padding: 0.5rem;
         flex-wrap: wrap;
+
+        i{
+            transform: rotate(-45deg);
+        }
+        p{
+            font-size: 1rem;
+        }
     }
 }
 
@@ -229,7 +235,9 @@
         cursor: pointer;
         visibility: hidden;
     }
-
+    &.disable{
+        opacity: 0.5;
+    }
     &:hover {
         .button-visibility {
             visibility: visible;

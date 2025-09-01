@@ -10,10 +10,10 @@ const WholesaleUser = () => {
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="adminlib-cart"
-                parentTabName="Wholesale User"
+                activeTabIcon="adminlib-wholesale"
+                tabTitle="Wholesale User"
             />
-            <div className="admin-table-wrapper" id="wholesale-list-table">
+            <div id="wholesale-list-table">
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }
@@ -35,7 +35,7 @@ const WholesaleUser = () => {
                     ) }
                 </Dialog>
                 <div
-                    className="wholesale-user-image"
+                    className="image-wrapper wholesale-user-image"
                     onClick={ () => {
                         setOpenDialog( true );
                     } }

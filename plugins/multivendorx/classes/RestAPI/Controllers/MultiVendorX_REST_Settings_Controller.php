@@ -129,19 +129,17 @@ class MultiVendorX_REST_Settings_Controller extends \WP_REST_Controller {
         $action    = $request->get_param( 'action' );
 
         // Setup wizard module.
-        $modules = $request->get_param( 'modules' );
-        foreach ( $modules as $module_id ) {
-            MultivendorX()->modules->activate_modules( array( $module_id ) );
-        }
+        $modules = $request->get_param( 'modules' ) ?? [];
+        MultiVendorX()->modules->activate_modules( $modules );
 
         // Handle the actions.
         switch ( $action ) {
             case 'activate':
-                MultivendorX()->modules->activate_modules( array( $module_id ) );
+                MultiVendorX()->modules->activate_modules( array( $module_id ) );
                 break;
 
             default:
-                MultivendorX()->modules->deactivate_modules( array( $module_id ) );
+                MultiVendorX()->modules->deactivate_modules( array( $module_id ) );
                 break;
         }
     }

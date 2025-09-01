@@ -99,7 +99,7 @@ const VerificationMethods: React.FC<VerificationMethodsProps> = ({
     setForm({});
     setValidationMsg("");
   };
-  
+
 
   const deleteRow = (index: number) => {
     const newRows = rows.filter((_, i) => i !== index);
@@ -128,20 +128,11 @@ const VerificationMethods: React.FC<VerificationMethodsProps> = ({
     <div className="fileds-wrapper">
       {label && <h4>{label}</h4>}
 
-      <button type="button" className="admin-btn btn-green" onClick={startAdd}>
-        
-        {addButtonLabel}
-      </button>
 
-      {validationMsg && (
-        <p className="validation-msg" style={{ color: "red", marginTop: "8px" }}>
-          {validationMsg}
-        </p>
-      )}
 
       <ul className="fileds">
         {rows.map((row, idx) => (
-          <li key={idx} className="row-item"  style={{ opacity: row.active ? 0.3 : 1 }}>
+          <li key={idx} className="row-item" style={{ opacity: row.active ? 0.3 : 1 }}>
             <div className="name">
               {editingIndex === idx ? (
                 <div className="edit-row" ref={formRef}>
@@ -169,7 +160,7 @@ const VerificationMethods: React.FC<VerificationMethodsProps> = ({
               ) : (
                 <>
                   <div>{row.label}</div>
-                 <span className={row.required ? "" : "admin-badge red"}>{row.required ? '' : 'Required'}</span>
+                  <span className={row.required ? "" : "admin-badge red"}>{row.required ? 'Not Required' : 'Required'}</span>
                 </>
               )}
             </div>
@@ -210,6 +201,18 @@ const VerificationMethods: React.FC<VerificationMethodsProps> = ({
           </li>
         ))}
       </ul>
+      {editingIndex === null && (
+        <button type="button" className="admin-btn btn-green" onClick={startAdd}>
+          {addButtonLabel}
+        </button>
+      )}
+
+
+      {validationMsg && (
+        <p className="validation-msg" style={{ color: "red", marginTop: "8px" }}>
+          {validationMsg}
+        </p>
+      )}
     </div>
   );
 };

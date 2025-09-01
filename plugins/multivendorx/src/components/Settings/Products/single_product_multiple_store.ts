@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'single-product-multiple-store',
     priority: 2,
-    name: __( 'Single Product Multiple Store', 'multivendorx' ),
+    name: __( 'Single Product Multiple Vendors', 'multivendorx' ),
     desc: __(
-        'Manage how multiple vendors can list and sell the same product in your marketplace.',
+        'Manage how multiple vendors (stores) can list and sell the same product in your marketplace.',
         'multivendorx'
     ),
     icon: 'adminlib-general-tab',
@@ -16,7 +16,7 @@ export default {
             type: 'checkbox',
             label: __( 'Allow store to copy products', 'multivendorx' ),
             desc: __(
-                'Enable this to let vendors search for existing products in your marketplace and add them to their own store catalog.',
+                'Enable this to let vendors (stores) search for existing products in your marketplace and add them to their own store catalog.',
                 'multivendorx'
             ),
             options: [

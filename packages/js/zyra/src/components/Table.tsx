@@ -567,6 +567,7 @@ const Table: React.FC< TableProps > = ( {
                                 </tbody>
                             </table>
                             { /* Pagination Controls */ }
+                            {/* { ( data?.length as number ) > 10 && ( */}
                             <div className="table-pagination">
                                 { /* Page size dropdown */ }
                                 <div className="pagination-number-wrapper">
@@ -590,8 +591,7 @@ const Table: React.FC< TableProps > = ( {
                                     </select>
                                 </div>
                                 <div className="pagination-arrow">
-                                    <div
-                                        role="button"
+                                    <span
                                         tabIndex={ 0 }
                                         className={ `${
                                             ! table.getCanPreviousPage()
@@ -605,9 +605,8 @@ const Table: React.FC< TableProps > = ( {
                                         } }
                                     >
                                         <i className="admin-font adminlib-pagination-prev-arrow"></i>
-                                    </div>
-                                    <div
-                                        role="button"
+                                    </span>
+                                    <span
                                         tabIndex={ 0 }
                                         className={ `${
                                             ! table.getCanPreviousPage()
@@ -621,15 +620,26 @@ const Table: React.FC< TableProps > = ( {
                                         } }
                                     >
                                         <i className="admin-font adminlib-pagination-left-arrow"></i>
-                                    </div>
-                                    <span>
+                                    </span>
+                                    {/* <span>
                                         Page{ ' ' }
                                         { table.getState().pagination
                                             .pageIndex + 1 }{ ' ' }
                                         of { pageCount }
-                                    </span>
-                                    <div
-                                        role="button"
+                                    </span> */}
+                                    <div className="pagination">
+                                        {Array.from({ length: pageCount }, (_, i) => (
+                                            <button
+                                            key={i}
+                                            className={`number-btn ${table.getState().pagination.pageIndex === i ? "active" : ""}`}
+                                            onClick={() => table.setPageIndex(i)}
+                                            >
+                                            {i + 1}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <span
                                         tabIndex={ 0 }
                                         className={ `${
                                             ! table.getCanNextPage()
@@ -643,9 +653,8 @@ const Table: React.FC< TableProps > = ( {
                                         } }
                                     >
                                         <i className="admin-font adminlib-pagination-right-arrow"></i>
-                                    </div>
-                                    <div
-                                        role="button"
+                                    </span>
+                                    <span
                                         tabIndex={ 0 }
                                         className={ `${
                                             ! table.getCanNextPage()
@@ -659,9 +668,10 @@ const Table: React.FC< TableProps > = ( {
                                         } }
                                     >
                                         <i className="admin-font adminlib-pagination-next-arrow"></i>
-                                    </div>
+                                    </span>
                                 </div>
                             </div>
+                            {/* ) }  */}
                         </div>
                     ) }
                     { successMsg && (
