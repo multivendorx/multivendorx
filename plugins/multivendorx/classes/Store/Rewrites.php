@@ -88,10 +88,10 @@ class Rewrites {
         $store_name = get_query_var( $this->custom_store_url );
 
         if ( ! empty( $store_name ) ) {
-            $store = StoreUtil::get_store_by_slug($store_name);
+            $store = Store::get_store_by_slug($store_name);
 
             if ( $store ) {
-                 return MultiVendorX()->util->get_template( 'store.php', ['store_id' => $store['ID']] );
+                 return MultiVendorX()->util->get_template( 'store.php', ['store_id' => $store->get_id()] );
             }
         }
 

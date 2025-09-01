@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'product -store-category -control',
+    id: 'product-store-category-control',
     priority: 3,
     name: __( 'Category Pyramid Guide (CPG)', 'multivendorx' ),
     desc: __(

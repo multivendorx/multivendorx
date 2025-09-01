@@ -18,7 +18,7 @@ export default {
 			settingDescription: __( 'Select the product fields vendors can configure when adding or managing their products.', 'multivendorx' ),
             class: 'mvx-toggle-checkbox',
             desc: __(
-                'Select the product fields vendors can configure when adding or managing their products: <li><b>Virtual products </b>: Choose this option for products that don’t have a physical form (e.g., services, memberships). <li><b>Downloadable products</b>: Use this option for products that customers can download (e.g., software, eBooks).',
+                '<li><b>Virtual products </b>: Choose this option for products that don’t have a physical form (e.g., services, memberships). <li><b>Downloadable products</b>: Use this option for products that customers can download (e.g., software, eBooks).',
                 'multivendorx'
             ),
             options: [
@@ -109,7 +109,7 @@ export default {
                 'SKU management for products',
                 'multivendorx'
             ),
-            desc: __(
+            settingDescription: __(
                 'Choose how SKUs for simple, external, or parent products are generated:',
                 'multivendorx'
             ),
@@ -141,7 +141,7 @@ export default {
                 'SKU formatting options',
                 'multivendorx'
             ),
-            desc: __(
+            settingDescription: __(
                 'Choose whether to replace spaces in attribute names when generating SKUs:',
                 'multivendorx'
             ),

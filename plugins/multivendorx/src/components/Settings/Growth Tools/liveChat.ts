@@ -26,7 +26,7 @@ export default {
                 },
                 {
                     key: 'none',
-                    label: __('Do not display', 'multivendorx'),
+                    label: __('Both', 'multivendorx'),
                     value: 'none',
                 },
             ],

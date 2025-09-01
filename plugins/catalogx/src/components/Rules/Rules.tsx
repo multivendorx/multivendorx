@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './Rules.scss';
 import Dialog from '@mui/material/Dialog';
 import ShowPopup from '../Popup/Popup';
+import { AdminBreadcrumbs } from 'zyra';
 
 const Rules = () => {
     // State variable declearation
@@ -10,8 +11,12 @@ const Rules = () => {
 
     return (
         <>
+            <AdminBreadcrumbs
+                activeTabIcon="adminlib-cart"
+                parentTabName="Rules"
+            />
             <main
-                className="catalog-rules-main-container"
+                className="admin-table-wrapper catalog-rules-main-container"
                 id="rules-list-table"
             >
                 <Dialog

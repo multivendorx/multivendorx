@@ -2,13 +2,18 @@ import Dialog from '@mui/material/Dialog';
 import React, { useState } from 'react';
 import ShowPopup from '../Popup/Popup';
 import './quoteRequests.scss';
+import { AdminBreadcrumbs } from 'zyra';
 
 export default function QuotesList() {
     const [ openDialog, setOpenDialog ] = useState( false );
 
     return (
         <>
-            <div className="admin-quote-list" id="quote-list-table">
+            <AdminBreadcrumbs
+                activeTabIcon="adminlib-cart"
+                parentTabName="Quote Requests"
+            />
+            <div className="admin-table-wrapper" id="quote-list-table">
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }

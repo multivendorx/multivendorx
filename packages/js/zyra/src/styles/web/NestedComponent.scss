@@ -36,4 +36,8 @@
             }
         }
     }
+    .nested-row:first-child{
+        background: transparent;
+        border: $border-light-small;
+    }
 }

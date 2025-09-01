@@ -100,7 +100,7 @@ const findTabDescription = (items: TabData[], activeTabId: string): ReactNode =>
     if (isFile(item) && item.content.id === activeTabId) {
       const tab = item.content;
       if (tab.id === 'support') return null;
-      
+
       return (
         <div className="divider-section" key={tab.id}>
           <div className="title">{tab.name}</div>
@@ -118,28 +118,28 @@ const findTabDescription = (items: TabData[], activeTabId: string): ReactNode =>
 
 // Helper function to search for breadcrumb path
 const searchForBreadcrumbPath = (
-  items: TabData[], 
-  targetId: string, 
+  items: TabData[],
+  targetId: string,
   currentPath: BreadcrumbItem[]
 ): BreadcrumbItem[] | null => {
   for (const item of items) {
     if (isFile(item) && item.content.id === targetId) {
-      return [...currentPath, { 
-        name: item.content.name, 
-        id: targetId, 
-        type: 'file' 
+      return [...currentPath, {
+        name: item.content.name,
+        id: targetId,
+        type: 'file'
       }];
     }
-    
+
     if (isFolder(item)) {
-      const folderPath = { 
-        name: item.name || '', 
-        id: item.name || '', 
-        type: 'folder' 
+      const folderPath = {
+        name: item.name || '',
+        id: item.name || '',
+        type: 'folder'
       };
       const result = searchForBreadcrumbPath(
-        item.content, 
-        targetId, 
+        item.content,
+        targetId,
         [...currentPath, folderPath]
       );
       if (result) return result;
@@ -177,11 +177,11 @@ const Tabs: React.FC<TabsProps> = ({
   const createMenuStack = (breadcrumbPath: BreadcrumbItem[]): TabData[][] => {
     const stack = [tabData];
     let currentItems = tabData;
-    
+
     for (let i = 0; i < breadcrumbPath.length - 1; i++) {
       const crumb = breadcrumbPath[i];
       if (crumb.type === 'folder') {
-        const folder = currentItems.find(item => 
+        const folder = currentItems.find(item =>
           isFolder(item) && item.name === crumb.id
         );
         if (folder && isFolder(folder)) {
@@ -196,10 +196,10 @@ const Tabs: React.FC<TabsProps> = ({
   // Update all navigation state
   const updateNavigationState = (tabId: string): void => {
     const path = createBreadcrumbPath(tabId);
-    
+
     if (path.length > 0) {
       const fullPath = [
-        { name: settingName, id: 'root', type: 'root' }, 
+        { name: settingName, id: 'root', type: 'root' },
         ...path
       ];
       setBreadcrumbs(fullPath);
@@ -214,7 +214,7 @@ const Tabs: React.FC<TabsProps> = ({
   const switchToTab = (tabId: string): void => {
     setActiveTab(tabId);
     updateNavigationState(tabId);
-    
+
     // Navigate to the new URL
     const newUrl = prepareUrl(tabId);
     if (onNavigate) {
@@ -228,7 +228,7 @@ const Tabs: React.FC<TabsProps> = ({
   // Open folder and go to first file
   const openFolderAndNavigate = (folderItems: TabData[]): void => {
     if (folderItems.length === 0) return;
-    
+
     setMenuStack(prev => [...prev, folderItems]);
     const firstFile = findFirstFile(folderItems);
     if (firstFile) {
@@ -240,7 +240,7 @@ const Tabs: React.FC<TabsProps> = ({
   const goToRootMenu = (): void => {
     setMenuStack([tabData]);
     setBreadcrumbs([{ name: settingName, id: 'root', type: 'root' }]);
-    
+
     const firstFile = findFirstFile(tabData);
     if (firstFile) {
       switchToTab(firstFile.id);
@@ -252,9 +252,9 @@ const Tabs: React.FC<TabsProps> = ({
   // Navigate to folder at breadcrumb level
   const navigateToFolderLevel = (targetIndex: number): void => {
     let currentItems = tabData;
-    
+
     for (let i = 1; i <= targetIndex; i++) {
-      const folder = currentItems.find(item => 
+      const folder = currentItems.find(item =>
         isFolder(item) && item.name === breadcrumbs[i].id
       );
       if (folder && isFolder(folder)) {
@@ -291,8 +291,8 @@ const Tabs: React.FC<TabsProps> = ({
 
   // Check if folder is currently active
   const isFolderCurrentlyActive = (folderItems: TabData[]): boolean => {
-    return menuStack[menuStack.length - 1] === folderItems || 
-           checkIfFolderContainsTab(folderItems, activeTab);
+    return menuStack[menuStack.length - 1] === folderItems ||
+      checkIfFolderContainsTab(folderItems, activeTab);
   };
 
   // Render breadcrumb links
@@ -314,7 +314,7 @@ const Tabs: React.FC<TabsProps> = ({
     if (isFile(item)) {
       const tab = item.content;
       if (!tab.id || !tab.name) return null;
-      
+
       return (
         <Link
           key={tab.id}
@@ -337,7 +337,7 @@ const Tabs: React.FC<TabsProps> = ({
     if (isFolder(item)) {
       const folderItems = item.content;
       if (folderItems.length === 0) return null;
-      
+
       const firstFile = findFirstFile(folderItems);
       const folderUrl = firstFile ? prepareUrl(firstFile.id) : '#';
       const isActive = isFolderCurrentlyActive(folderItems);
@@ -389,14 +389,31 @@ const Tabs: React.FC<TabsProps> = ({
   }, [currentTab, tabData]);
 
   const currentMenu = menuStack[menuStack.length - 1];
-  const parentTab = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2]?.name : '';
+
+  const findTabName = (items: TabData[], activeTabId: string): string | undefined => {
+    for (const item of items) {
+      if (isFile(item) && item.content.id === activeTabId) {
+        return item.content.name;
+      }
+      if (isFolder(item)) {
+        const name = findTabName(item.content, activeTabId);
+        if (name) return name;
+      }
+    }
+    return undefined;
+  };
+  
+  const parentTab = findTabName(tabData, activeTab) || '';
+
+
+
   const tabIcon = getCurrentTabIcon();
 
   return (
     <>
       <AdminBreadcrumbs
         activeTabIcon={tabIcon}
-        parentTabName={parentTab}
+        tabTitle={tabTitle}
         renderBreadcrumb={renderBreadcrumbLinks}
         renderMenuItems={renderAllMenuItems}
         tabData={tabData}

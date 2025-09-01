@@ -46,7 +46,7 @@ const WorkBoard = () => {
         <>
             <AdminBreadcrumbs
                 activeTabIcon="adminlib-cart"
-                parentTabName="Workboard Dashboard"
+                tabTitle="Workboard Dashboard"
             />
 
             {/* Workboard Stats */}

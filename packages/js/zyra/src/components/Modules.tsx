@@ -160,8 +160,8 @@ const Modules: React.FC<ModuleProps> = ({
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="adminlib-cart"
-                parentTabName="Modules"
+                activeTabIcon="adminlib-module"
+                tabTitle="Modules"
             />
 
             <div className="module-container">
@@ -183,9 +183,23 @@ const Modules: React.FC<ModuleProps> = ({
                 </Dialog>
 
                 {successMsg && (
-                    <div className="admin-notice-display-title">
+                    // <div className="admin-notice-wrapper">
+                    //     <i className="admin-font adminlib-icon-yes"></i>
+                    //     {successMsg}
+                    // </div>
+                    // <div className="admin-notice-wrapper notice-error">
+                    //     <i className="admin-font adminlib-info"></i>
+                    //     <div className="notice-details">
+                    //         <div className="title">oops!</div>
+                    //         <div className="desc">{successMsg}</div>
+                    //     </div>
+                    // </div>
+                    <div className="admin-notice-wrapper">
                         <i className="admin-font adminlib-icon-yes"></i>
-                        {successMsg}
+                        <div className="notice-details">
+                            <div className="title">Great!</div>
+                            <div className="desc">{successMsg}</div>
+                        </div>
                     </div>
                 )}
 
@@ -278,7 +292,9 @@ const Modules: React.FC<ModuleProps> = ({
                                         </div> */}
                                     </div>
                                     <div className="module-details">
-                                        <div className="meta-name">{module.name} <span className="admin-badge blue">{module.category}</span> </div>
+                                        {module.category && (
+                                            <div className="meta-name">{module.name} <span className="admin-badge blue">{module.category}</span> </div>
+                                        )}
                                         <p
                                             className="meta-description"
                                             dangerouslySetInnerHTML={{ __html: module.desc }}

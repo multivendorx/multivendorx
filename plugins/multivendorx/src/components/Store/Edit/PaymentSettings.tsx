@@ -124,7 +124,6 @@ const PaymentSettings = ({ id }: { id: string }) => {
 										<BasicInput
 											name="paypal_email"
 											wrapperClass="setting-form-input"
-											placeholder="0.00"
 											descClass="settings-metabox-description"
 											value={formData.paypal_email}
 											onChange={handleChange}
@@ -142,7 +141,6 @@ const PaymentSettings = ({ id }: { id: string }) => {
 										<BasicInput
 											name="paypal_email"
 											wrapperClass="setting-form-input"
-											placeholder="0.00"
 											descClass="settings-metabox-description"
 											value={formData.paypal_email}
 											onChange={handleChange}
@@ -157,7 +155,6 @@ const PaymentSettings = ({ id }: { id: string }) => {
 											name="aba_routing_number"
 											type="number"
 											wrapperClass="setting-form-input"
-											placeholder="0.00"
 											descClass="settings-metabox-description"
 											value={formData.aba_routing_number}
 											onChange={handleChange}

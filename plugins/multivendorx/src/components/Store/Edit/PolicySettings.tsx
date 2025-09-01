@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BasicInput, TextArea, ToggleSetting, getApiLink } from 'zyra';
 
-const VendorSettings = ({ id }: { id: string }) => {
+const PolicySettings = ({ id }: { id: string }) => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
@@ -124,4 +124,4 @@ const VendorSettings = ({ id }: { id: string }) => {
 	);
 };
 
-export default VendorSettings;
+export default PolicySettings;

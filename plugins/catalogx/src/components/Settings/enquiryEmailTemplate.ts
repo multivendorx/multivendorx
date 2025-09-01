@@ -8,14 +8,8 @@ export default {
         'Select your preferred enquiry details email template',
         'catalogx'
     ),
-    icon: 'adminlib-mail',
     submitUrl: 'settings',
     modal: [
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: __( 'Common Settings', 'catalogx' ),
-        },
         {
             key: 'additional_alert_email',
             type: 'textarea',

@@ -382,6 +382,7 @@ class FrontendScripts {
                         'all_payments'             => MultiVendorX()->payments->all_payment_providers(),
                         'freeVersion'              => MultivendorX()->version,
                         'marketplace_site'         => get_bloginfo(),
+                        'site_url'                 => site_url(),
 					),
                 ),
                 'multivendorx-product-tab-script' => array(

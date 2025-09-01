@@ -211,10 +211,10 @@ const StoreSettings = ({ id }: { id: string }) => {
 							</div>
 						</div>
 
-						{/* Twitter */}
+						{/* x */}
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label htmlFor="twitter">Twitter</label>
+								<label htmlFor="twitter">X</label>
 								<BasicInput
 									name="twitter"
 									wrapperClass="setting-form-input"

@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import ShowPopup from '../Popup/Popup';
 import './wholesaleUser.scss';
+import { AdminBreadcrumbs } from 'zyra';
 
 const WholesaleUser = () => {
     const [ openDialog, setOpenDialog ] = useState( false );
 
     return (
         <>
-            <div className="admin-wholesale-list" id="wholesale-list-table">
+            <AdminBreadcrumbs
+                activeTabIcon="adminlib-cart"
+                parentTabName="Wholesale User"
+            />
+            <div className="admin-table-wrapper" id="wholesale-list-table">
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }

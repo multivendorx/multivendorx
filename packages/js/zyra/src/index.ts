@@ -56,6 +56,7 @@ export { default as Tour } from './components/TourSteps';
 export { default as WpEditor } from './components/WpEditor';
 export { default as AdminHeader } from './components/AdminHeader';
 export { default as AdminBreadcrumbs } from './components/AdminBreadcrumbs';
+export { default as NestedComponent } from './components/NestedComponent';
 
 export {
     useModules,

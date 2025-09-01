@@ -33,6 +33,16 @@ const importAll = (
         }
     });
 
+    // Utility: format folder names
+    const formatFolderName = (name: string): string => {
+        return name
+            .replace(/[_-]/g, ' ')                      // convert _ and - to space
+            .replace(/([a-z])([A-Z])/g, '$1 $2')        // split camelCase
+            .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')  // keep acronyms together
+            .replace(/\s+/g, ' ')                       // collapse multiple spaces
+            .trim();                                    // clean up edges
+    };
+    
     // Step 2: Build folder/file structure
     inpContext.keys().forEach((key) => {
         const path = key.substring(2); // remove leading './'
@@ -44,13 +54,15 @@ const importAll = (
         parts.forEach((folder) => {
             fullPath = fullPath ? `${fullPath}/${folder}` : folder;
 
+            const formattedFolderName = formatFolderName(folder);
+
             let folderObject = currentFolder.find(
-                (item) => item.name === folder && item.type === 'folder'
+                (item) => item.name === formattedFolderName && item.type === 'folder'
             ) as SettingNode | undefined;
 
             if (!folderObject) {
                 folderObject = {
-                    name: folder,
+                    name: formattedFolderName, // ✅ formatted name for folders
                     type: 'folder',
                     content: [],
                     folderPriority: folderPriorityMap[fullPath], // attach priority if exists
@@ -61,10 +73,10 @@ const importAll = (
             currentFolder = folderObject.content;
         });
 
-        // Step 3: Skip folder-priority.ts
-        if (fileName !== 'folder-priority.ts') {
+        // Step 3: Skip folderPriority.ts
+        if (fileName !== 'folderPriority.ts') {
             currentFolder.push({
-                name: fileName!.replace('.ts', ''),
+                name: fileName!.replace('.ts', ''), // keep raw file name
                 type: 'file',
                 content: inpContext(key).default,
             });

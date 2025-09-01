@@ -95,44 +95,11 @@ class Install {
             PRIMARY KEY (`ID`)
         ) $collate;";
 
-        $sql_store_social = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['store_meta'] . "` (
+        $sql_store_meta = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['store_meta'] . "` (
             `ID` bigint(20) NOT NULL AUTO_INCREMENT,
             `store_id` bigint(20) NOT NULL,
-            `address_1` TEXT DEFAULT NULL,
-            `address_2` TEXT DEFAULT NULL,
-            `city` varchar(20) DEFAULT NULL,
-            `postcode` varchar(20) DEFAULT NULL,
-            `country` varchar(100) DEFAULT NULL,
-            `country_code` varchar(20) DEFAULT NULL,
-            `state` varchar(100) DEFAULT NULL,
-            `state_code` varchar(20) DEFAULT NULL, 
-            `phone` bigint(20) DEFAULT 0,
-            `commission_fixed` float(20, 2) NOT NULL DEFAULT 0,
-            `commission_percentage` float(20, 2) NOT NULL DEFAULT 0,
-            `location` varchar(255) DEFAULT NULL,
-            `lat` varchar(100) DEFAULT NULL,
-            `lng` varchar(100) DEFAULT NULL,
-            `image` TEXT DEFAULT NULL,
-            `banner` TEXT DEFAULT NULL,
-            `banner_type` varchar(100) DEFAULT NULL,
-            `video` varchar(255) DEFAULT NULL,
-            `slider` varchar(255) DEFAULT NULL,
-            `facebook` varchar(20),
-            `twitter` varchar(20),
-            `linkedin` varchar(20),
-            `youtube` varchar(20),
-            `pinterest` varchar(20),
-            `instagram` varchar(20),
-            `payment_method` varchar(50) DEFAULT NULL,
-            `commission_amount` float(20, 2) NOT NULL DEFAULT 0,
-            `paypal_email` varchar(50) DEFAULT NULL,
-            `bank_name` varchar(100) DEFAULT NULL,
-            `aba_routing` bigint(50) DEFAULT 0,
-            `destination_currency` varchar(50) DEFAULT NULL,
-            `bank_address` TEXT DEFAULT NULL,
-            `iban` bigint(50) DEFAULT 0,
-            `account_holder_name` varchar(100) DEFAULT NULL,
-            `account_number` bigint(20) DEFAULT 0,
+            `meta_key` VARCHAR(255) DEFAULT NULL,
+            `meta_value` LONGTEXT,
             PRIMARY KEY (`ID`)
         ) $collate;";
          
@@ -144,7 +111,7 @@ class Install {
         dbDelta( $sql_commission );
         dbDelta( $sql_store );
         dbDelta( $sql_store_users );
-        dbDelta( $sql_store_social );
+        dbDelta( $sql_store_meta );
     }
 
     /**

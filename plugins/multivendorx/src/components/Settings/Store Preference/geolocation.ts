@@ -18,7 +18,7 @@ export default {
             type: 'setting-toggle',
             label: __( 'Show map', 'multivendorx' ),
             desc: __(
-                'Select the unit of measurement for distance-based search filters on the store or product locator.',
+                'Select where the store map will appear. You can place it on the Shop page or on the Store List page or Both',
                 'multivendorx'
             ),
             options: [

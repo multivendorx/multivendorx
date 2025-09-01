@@ -6,7 +6,8 @@ import StoreSettings from './StoreSettings';
 
 import PaymentSettings from './PaymentSettings';
 import StoreQueue from './StoreCrew';
-import VendorSettings from './VendorSettings';
+import PolicySettings from './PolicySettings';
+import ShippingSettings from './ShippingSettings';
 
 const EditStore = () => {
     const location = useLocation();
@@ -51,6 +52,15 @@ const EditStore = () => {
         {
             type: 'file',
             content: {
+                id: 'vendor-shipping',
+                name: 'Vendor Shipping',
+                desc: 'Vendor Shipping',
+                icon: 'adminlib-credit-card',
+            },
+        },
+        {
+            type: 'file',
+            content: {
                 id: 'vendor-policy',
                 name: 'Vendor Policy',
                 desc: 'Vendor Policy',
@@ -67,8 +77,10 @@ const EditStore = () => {
                 return <StoreQueue id={editId} />;
             case 'payment':
                 return <PaymentSettings id={editId} />;
+            case 'vendor-shipping':
+                return <ShippingSettings id={editId} />;
             case 'vendor-policy':
-                return <VendorSettings id={editId} />;
+                return <PolicySettings id={editId} />;
             default:
                 return <div></div>;
         }

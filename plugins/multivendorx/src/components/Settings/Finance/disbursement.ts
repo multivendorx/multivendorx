@@ -5,7 +5,7 @@ export default {
     priority: 2,
     name: __('Disbursement', 'multivendorx'),
     desc: __(
-        "Tailor your marketplace's commission plan to fit your revenue-sharing preferences.",
+        "Tailor your marketplace commission plan to fit your revenue sharing preferences.",
         'multivendorx'
     ),
     icon: 'adminlib-dynamic-pricing',
@@ -14,7 +14,7 @@ export default {
         {
             key: 'payment_schedule',
             type: 'setting-toggle',
-            label: __('Payout Frequency', 'multivendorx'),
+            label: __('Payout frequency', 'multivendorx'),
             options: [
                 {
                     key: 'mannual',
@@ -51,7 +51,7 @@ export default {
         {
             key: 'commission_threshold',
             type: 'multi-number',
-            label: __('Minimum Payout Threshold', 'multivendorx'),
+            label: __('Minimum payout threshold', 'multivendorx'),
             desc: __(
                 'Minimum balance before payout is processed',
                 'multivendorx'
@@ -59,7 +59,6 @@ export default {
             options: [
                 {
                     key: 'commission_percentage',
-                    label: __('Min', 'multivendorx'),
                     type: 'number',
                     labelAfterInput: true,
                 },
@@ -68,23 +67,23 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            hint: __('Payout Timing & Eligibility', 'multivendorx'),
+            hint: __('Payout timing and eligibility', 'multivendorx'),
             desc: __('Define when earnings become available for payout based on order status', 'multivendorx')
         },
         {
             key: 'commission_by_product_price',
             type: 'nested',
             single: true,
-            label: 'Withdrawal Rules',
+            label: 'Withdrawal rules',
             nestedFields: [
                 {
                     key: 'commission_threshold_time',
                     type: 'multi-number',
-                    label: __('Lock Period', 'multivendorx'),
+                    label: __('Lock period', 'multivendorx'),
                     options: [
                         {
                             key: 'commission_percentage',
-                            label: __('days', 'multivendorx'),
+                            label: __('Days', 'multivendorx'),
                             type: 'number',
                             labelAfterInput: true,
                         },
@@ -93,7 +92,7 @@ export default {
                 {
                     key: 'commission_threshold_time',
                     type: 'multi-number',
-                    label: __('Free Withdrawal', 'multivendorx'),
+                    label: __('Free withdrawal', 'multivendorx'),
                     options: [
                         {
                             key: 'commission_percentage',
@@ -104,7 +103,7 @@ export default {
                 {
                     key: 'commission_threshold_time',
                     type: 'multi-number',
-                    label: __('Processing Fee', 'multivendorx'),
+                    label: __('Processing fee', 'multivendorx'),
                     options: [
                         {
                             key: 'commission_percentage',
@@ -117,7 +116,7 @@ export default {
         {
             key: 'order_status',
             type: 'checkbox',
-            label: __('Eligible Order Statuses', 'multivendorx'),
+            label: __('Eligible order statuses', 'multivendorx'),
             class: 'mvx-toggle-checkbox',
 
             options: [
@@ -128,7 +127,7 @@ export default {
                 },
                 {
                     key: ' delivered ',
-                    label: __(' Delivered ', 'multivendorx'),
+                    label: __('Delivered', 'multivendorx'),
                     value: ' delivered ',
                 },
                 {

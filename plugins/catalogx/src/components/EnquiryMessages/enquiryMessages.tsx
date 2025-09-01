@@ -8,7 +8,7 @@ const EnquiryMessages = () => {
 
     return (
         <>
-            <div id="enquiry-messages">
+            <div className="admin-table-wrapper" id="enquiry-messages">
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }

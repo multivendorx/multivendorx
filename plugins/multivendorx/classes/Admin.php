@@ -6,7 +6,7 @@
  */
 
 namespace MultiVendorX;
-use MultiVendorX\Store\StoreUtil;
+use MultiVendorX\Store\Store;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -294,9 +294,9 @@ class Admin {
 
                     <?php
                     if ( $linked_store ) {
-                        $store = StoreUtil::get_store_by_id( $linked_store );
+                        $store = Store::get_store_by_id( $linked_store );
                         if ( $store ) {
-                            echo '<option value="' . esc_attr( $store['ID'] ) . '" selected="selected">' . esc_html( $store['name'] ) . '</option>';
+                            echo '<option value="' . esc_attr( $store->get_id() ) . '" selected="selected">' . esc_html( $store->get('name') ) . '</option>';
                         }
                     }
                     ?>
@@ -450,13 +450,13 @@ class Admin {
 
     public function multivendorx_get_stores() {
         $term   = sanitize_text_field( filter_input( INPUT_GET, 'term', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ?? '' );
-        $stores = StoreUtil::get_store_by_name($term);
+        $stores = Store::get_store_by_name($term);
 
         $results = array();
         foreach ( $stores as $store ) {
             $results[] = array(
-                'id'   => $store['ID'],
-                'text' => $store['name'],
+                'id'   => $store->get_id(),
+                'text' => $store->get('name'),
             );
         }
 
