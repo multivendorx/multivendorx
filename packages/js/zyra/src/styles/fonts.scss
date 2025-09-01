@@ -25,14 +25,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.adminlib-pro-tag:before {
-  content: "\e902";
-}
-.adminlib-drag:before {
+.adminlib-minus:before {
   content: "\e900";
 }
-.adminlib-notification:before {
+.adminlib-minus-bold:before {
   content: "\e901";
+}
+.adminlib-module:before {
+  content: "\e902";
+}
+.adminlib-membership:before {
+  content: "\e903";
+}
+.adminlib-commission:before {
+  content: "\e904";
 }
 .adminlib-cart:before {
   content: "\8907";
@@ -106,40 +112,46 @@
 .adminlib-plus-circle-o:before {
   content: "\e8f7";
 }
-.adminlib-add-product:before {
+.adminlib-drag:before {
+  content: "\e905";
+}
+.adminlib-notification:before {
+  content: "\e906";
+}
+.adminlib-pro-tag:before {
   content: "\e907";
 }
-.adminlib-update-product:before {
+.adminlib-add-product:before {
   content: "\e908";
 }
-.adminlib-pagination-right-arrow:before {
+.adminlib-update-product:before {
   content: "\e909";
 }
-.adminlib-pagination-left-arrow:before {
+.adminlib-pagination-right-arrow:before {
   content: "\e90a";
 }
-.adminlib-pagination-next-arrow:before {
+.adminlib-pagination-left-arrow:before {
   content: "\e90b";
 }
-.adminlib-pagination-prev-arrow:before {
+.adminlib-pagination-next-arrow:before {
   content: "\e90c";
 }
-.adminlib-refresh:before {
+.adminlib-pagination-prev-arrow:before {
   content: "\e90d";
 }
-.adminlib-refresh-buttons:before {
+.adminlib-refresh:before {
   content: "\e90e";
 }
-.adminlib-centralized-connections:before {
+.adminlib-refresh-buttons:before {
   content: "\e90f";
 }
-.adminlib-desktop-pc-valuation:before {
+.adminlib-centralized-connections:before {
   content: "\e910";
 }
-.adminlib-dynamic-pricing:before {
+.adminlib-desktop-pc-valuation:before {
   content: "\e911";
 }
-.adminlib-Unified-Access:before {
+.adminlib-rules:before {
   content: "\e912";
 }
 .adminlib-social-media-content:before {
@@ -160,19 +172,19 @@
 .adminlib-exclude:before {
   content: "\e918";
 }
-.adminlib-inquiry:before {
+.adminlib-enquiry:before {
   content: "\e919";
 }
-.adminlib-price-quote-icon:before {
+.adminlib-quote:before {
   content: "\e91a";
 }
-.adminlib-warehousing-icon:before {
+.adminlib-wholesale:before {
   content: "\e91b";
 }
 .adminlib-Subscription-Courses:before {
   content: "\e91c";
 }
-.adminlib-wholesale:before {
+.adminlib-wholesal:before {
   content: "\e91d";
 }
 .adminlib-mailchimp:before {
@@ -187,7 +199,7 @@
 .adminlib-submission-message:before {
   content: "\e921";
 }
-.adminlib-settings:before {
+.adminlib-setting-fill:before {
   content: "\e922";
 }
 .adminlib-cross:before {
@@ -400,7 +412,7 @@
 .adminlib-analytics:before {
   content: "\e968";
 }
-.adminlib-setting-1:before {
+.adminlib-setting:before {
   content: "\e969";
 }
 .adminlib-star-o:before {
@@ -447,9 +459,6 @@
 }
 .adminlib-keyboard-arrow-down:before {
   content: "\e97e";
-}
-.adminlib-setting-11:before {
-  content: "\e97f";
 }
 .adminlib-unread:before {
   content: "\e9ba";

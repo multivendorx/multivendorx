@@ -12,6 +12,7 @@
             gap: 1rem;
             padding: 1rem;
             background: #f9f4f4b8;
+            cursor: pointer;
 
             .details {
                 display: flex;
@@ -156,6 +157,23 @@
 
                 }
             }
+
+            &.social-verification{
+                padding-top: 0.5rem;
+                label{
+                    width: 0;
+                }
+                .payment-method{
+                    background: transparent;
+                    border: $border-light-small;
+                    padding: 0.625rem;
+
+                    .payment-method-icon{
+                        width: 2rem;
+                        height: 2rem;
+                    }
+                }
+            }
         }
 
         &.add-method {
@@ -166,16 +184,6 @@
             .input-content {
                 width: 100% !important;
                 /*overwrite common style*/
-            }
-        }
-
-        &.social-verification {
-            .form-group {
-                flex-direction: column;
-            }
-
-            .payment-method-form {
-                padding-top: 0;
             }
         }
     }

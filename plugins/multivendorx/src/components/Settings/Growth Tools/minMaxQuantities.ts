@@ -12,8 +12,8 @@ export default {
             key: 'mvx_commission_rules_per_unit',
             type: 'multi-number',
             label: __( 'Global quantity rules', 'multivendorx' ),
-            desc: __(
-                'Define minimum and maximum purchase quantities for products.',
+            settingDescription: __(
+                'Control the minimum and maximum number of units a customer is allowed to purchase for each product.',
                 'multivendorx'
             ),
             options: [
@@ -22,7 +22,7 @@ export default {
                     label: __( 'Min', 'multivendorx' ),
                     type: 'number',
                     desc: __(
-                        'Set the lowest number of units a customer can order.',
+                        'Minimum order quantity',
                         'multivendorx'
                     ),
                 },
@@ -31,7 +31,7 @@ export default {
                     label: __( 'Max', 'multivendorx' ),
                     type: 'number',
                     desc: __(
-                        'Set the highest number of units a customer can order.',
+                        'Maximum order quantity.',
                         'multivendorx'
                     ),
                 },

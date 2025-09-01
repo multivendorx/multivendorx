@@ -83,7 +83,7 @@ class MultiVendorX_REST_Store_Controller extends \WP_REST_Controller {
         $limit          = max( intval( $request->get_param( 'row' ) ), 10 );
         $page           = max( intval( $request->get_param( 'page' ) ), 1 );
         $offset         = ( $page - 1 ) * $limit;
-        $count  = $request->get_param( 'count' );
+        $count          = $request->get_param( 'count' );
 
         $stores = StoreUtil::get_store();
     
@@ -119,74 +119,83 @@ class MultiVendorX_REST_Store_Controller extends \WP_REST_Controller {
     public function create_item( $request ) {
         $store_data = $request->get_param('formData');
 
-        $insert_id = StoreUtil::create_store([
-            'name'          => $store_data[ 'name' ] ?? '',
-            'slug'          => $store_data[ 'slug' ] ?? '',
-            'description'   => $store_data[ 'description' ] ?? '',
-            'who_created'   => 'admin' ?? '',
-        ]);
+        // Create store object
+        $store = new \MultiVendorX\Store\Store();
 
-        StoreUtil::create_store_meta([
-            'store_id'      => $insert_id,
-            'image'         => $store_data[ 'image' ] ?? '',
-            'banner'        => $store_data[ 'banner' ] ?? '',
-            'banner_type'   => 'image',
-        ]);
+        $core_fields = [ 'name', 'slug', 'description', 'who_created', 'status' ];
+        foreach ( $core_fields as $field ) {
+            if ( isset( $store_data[ $field ] ) ) {
+                $store->set( $field, $store_data[ $field ] );
+            }
+        }
 
-        return rest_ensure_response ([ 'success' => true, 'id' => $insert_id ]);
+        $insert_id = $store->save();
+
+        if ( $insert_id ) {
+            foreach ( $store_data as $key => $value ) {
+                if ( ! in_array( $key, $core_fields, true ) ) {
+                    $store->update_meta( $key, $value );
+                }
+            }
+        }
+
+        return rest_ensure_response( [
+            'success' => true,
+            'id'      => $insert_id,
+        ] );
     }
+
 
     public function get_item( $request ) {
-        $id = $request->get_param('id');
-        $store = StoreUtil::get_store_by_id($id);
-        return rest_ensure_response($store);
+        $id = absint( $request->get_param( 'id' ) );
+
+        // Load the store
+        $store = new \MultiVendorX\Store\Store( $id );
+
+        $response = [
+            'id'          => $store->get_id(),
+            'name'        => $store->get('name'),
+            'slug'        => $store->get('slug'),
+            'description' => $store->get('description'),
+            'who_created' => $store->get('who_created'),
+            'status'      => $store->get('status'),
+        ];
+
+
+        // Add meta data
+        foreach ( $store->meta_data as $key => $values ) {
+            $response[ $key ] = is_array( $values ) ? $values[0] : $values;
+        }
+
+        return rest_ensure_response( $response );
     }
 
-    public function update_item($request) {
-        $id   = $request->get_param('id');
+    public function update_item( $request ) {
+        $id   = absint( $request->get_param( 'id' ) );
         $data = $request->get_json_params();
 
-        $store_updated = StoreUtil::update_store($id, [
-            'name'          => $data['name'] ?? '',
-            'slug'          => $data['slug'] ?? '',
-            'description'   => $data['description'] ?? '',
-            'who_created'   => 'admin' ?? '',
-        ]);
-        file_put_contents( plugin_dir_path(__FILE__) . "/error.log", date("d/m/Y H:i:s", time()) . ":orders: :data " . var_export($data, true) . "\n", FILE_APPEND);
-        $updated = StoreUtil::update_store_meta($id, [
-            'image'                 => $data['image'] ?? '',
-            'banner'                => $data['banner'] ?? '',
-            'banner_type'           => 'image',
-            'address_1'             => $data['address_1'] ?? '',
-            'address_2'             => $data['address_2'] ?? '',
-            'phone'                 => $data['phone'] ?? '',
-            'city'                  => $data['city'] ?? '',
-            'state'                 => $data['state'] ?? '',
-            'country'               => $data['country'] ?? '',
-            'postcode'              => $data['postcode'] ?? '',
-            'commission_fixed'      => $data['commission_fixed'] ?? '',
-            'commission_percentage' => $data['commission_percentage'] ?? '',
-            'facebook'              => $data['facebook'] ?? '',
-            'twitter'               => $data['twitter'] ?? '',
-            'linkedin'              => $data['linkedin'] ?? '',
-            'youtube'               => $data['youtube'] ?? '',
-            'instagram'             => $data['instagram'] ?? '',
-            'payment_method'        => $data['payment_method'] ?? '',
-            'commission_amount'     => $data['commission_amount'] ?? '',
-            'paypal_email'          => $data['paypal_email'] ?? '',
-            'bank_name'             => $data['bank_name'] ?? '',
-            'aba_routing'           => $data['aba_routing'] ?? '',
-            'destination_currency'  => $data['destination_currency'] ?? '',
-            'bank_address'          => $data['bank_address'] ?? '',
-            'iban'                  => $data['iban'] ?? '',
-            'account_holder_name'   => $data['account_holder_name'] ?? '',
-            'account_number'        => $data['account_number'] ?? '',
-        ]);
+        $store->set( 'name',        $data['name'] ?? $store->get('name') );
+        $store->set( 'slug',        $data['slug'] ?? $store->get('slug') );
+        $store->set( 'description', $data['description'] ?? $store->get('description') );
+        $store->set( 'who_created', 'admin' );
+        $store->set( 'status',      $data['status'] ?? $store->get('status') );
 
-        if ($store_updated || $updated) {
-            return rest_ensure_response(['success' => true, 'id' => $id]);
+        if ( is_array( $data ) ) {
+            foreach ( $data as $key => $value ) {
+                if ( ! in_array( $key, [ 'id', 'name', 'slug', 'description', 'who_created', 'status' ], true ) ) {
+                    $store->update_meta( $key, $value );
+                }
+            }
         }
+
+        $store->save();
+
+        return rest_ensure_response( [
+            'success' => true,
+            'id'      => $store->get_id(),
+        ] );
     }
+
 
     public function get_states_by_country($request) {
         $country_code = $request->get_param('country');

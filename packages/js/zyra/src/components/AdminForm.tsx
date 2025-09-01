@@ -651,7 +651,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             rangeUnit={inputField.rangeUnit} // for range parameter
                             min={inputField.min ?? 0} // for range min value
                             max={inputField.max ?? 50} // for range max value
-                            value={value}
+                            value={value || inputField.value}
                             size={inputField.size}
                             before={inputField.before}
                             after={inputField.after}
@@ -1060,7 +1060,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             }
                             name={inputField.name}
                             keyName={inputField.key}
-                            options={Array.isArray(value) ? value : []}
+                            options={Array.isArray(inputField.options) ? inputField.options : []}
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
                             )}

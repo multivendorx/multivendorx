@@ -24,6 +24,7 @@ declare global {
         all_payments: any;
         freeVersion : any;
         marketplace_site:any;
+        site_url:any;
     }
     interface Color{
         color: any;

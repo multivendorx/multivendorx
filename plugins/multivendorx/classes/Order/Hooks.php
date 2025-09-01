@@ -44,8 +44,8 @@ class Hooks {
         if ( $order &&  $order->get_parent_id() == 0 ) {
             $vendor = StoreUtil::get_products_vendor($item['product_id']);
             if ($vendor) {
-                $item->add_meta_data('multivendorx_sold_by', $vendor['name']);
-                $item->add_meta_data('multivendorx_store_id', $vendor['ID']);
+                $item->add_meta_data('multivendorx_sold_by', $vendor->get('name'));
+                $item->add_meta_data('multivendorx_store_id', $vendor->get_id());
             }
         }
     }
@@ -124,10 +124,10 @@ class Hooks {
                 $vendor = StoreUtil::get_products_vendor($value['product_id']);
                 if ($vendor) {
                     if ( !wc_get_order_item_meta( $key, 'multivendorx_store_id' ) ) 
-                        wc_add_order_item_meta($key, 'multivendorx_store_id', $vendor['id']);
+                        wc_add_order_item_meta($key, 'multivendorx_store_id', $vendor->get_id());
                     
                     if ( !wc_get_order_item_meta( $key, $general_cap ) ) 
-                        wc_add_order_item_meta($key, $general_cap, $vendor['name']);
+                        wc_add_order_item_meta($key, $general_cap, $vendor->get('name'));
                 }
             }
         }

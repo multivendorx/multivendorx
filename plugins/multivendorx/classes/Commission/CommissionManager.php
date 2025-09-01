@@ -2,7 +2,7 @@
 
 namespace MultiVendorX\Commission;
 
-use MultiVendorX\Store\StoreUtil;
+use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
 use MultiVendorX\Vendor\VendorUtil as VendorUtil;
 
@@ -42,7 +42,7 @@ class CommissionManager {
 
         if ( $order ) {
             $vendor_id = $order->get_meta('multivendorx_store_id');
-            $vendor = StoreUtil::get_store_by_id( $vendor_id );
+            $vendor = Store::get_store_by_id( $vendor_id );
 
             $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
 
@@ -303,8 +303,8 @@ class CommissionManager {
             }
             
             // store commission
-            $store_commission_percentage = $vendor['commission_percentage'] ?? 0;
-            $store_commission_fixed = $vendor['commission_fixed'] ?? 0;
+            $store_commission_percentage = $vendor->get_meta('commission_percentage') ?? 0;
+            $store_commission_fixed = $vendor->get_meta('commission_fixed') ?? 0;
             if ( $store_commission_percentage > 0 || $store_commission_fixed > 0 ) {
                 return [
                     'commission_val' => $store_commission_percentage,

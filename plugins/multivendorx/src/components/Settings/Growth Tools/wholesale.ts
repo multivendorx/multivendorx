@@ -19,12 +19,12 @@ export default {
             options: [
                 {
                     key: 'automatic',
-                    label: __('Automatic approval', 'multivendorx'),
+                    label: __('Automatic', 'multivendorx'),
                     value: 'automatic',
                 },
                 {
                     key: 'manual',
-                    label: __('Manual approval', 'multivendorx'),
+                    label: __('Manual', 'multivendorx'),
                     value: 'manual',
                 },
             ],

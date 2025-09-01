@@ -2,6 +2,7 @@
 
 namespace MultiVendorX\Order;
 
+use MultiVendorX\Store\Store;
 use MultiVendorX\Store\StoreUtil;
 
 defined('ABSPATH') || exit;
@@ -78,7 +79,7 @@ class OrderManager {
             if ( $order instanceof WC_Order ) {
                 $order_id = $order->get_id();
                 $store_id = $order->get_meta( 'multivendorx_store_id' ); 
-                $store_exists = StoreUtil::get_store_by_id($store_id);
+                $store_exists = Store::get_store_by_id($store_id);
                 if ( $store_exists ) {
                     $existing_orders[ $order_id ] = $store_id;
                 }
@@ -217,7 +218,7 @@ class OrderManager {
             if (isset($item['product_id']) && $item['product_id'] !== 0) {
                 $vendor = StoreUtil::get_products_vendor($item['product_id']);
                 if ($vendor) {
-                    $grouped_items[$vendor['ID']][$item_id] = $item;
+                    $grouped_items[$vendor->get_id()][$item_id] = $item;
                 }
             }
         }
