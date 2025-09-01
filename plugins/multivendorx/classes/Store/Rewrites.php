@@ -35,40 +35,44 @@ class Rewrites {
 
     public function register_rule() {
 
-        add_rewrite_rule(
-            '^' . $this->custom_store_url . '/([^/]+)/?$',
-            'index.php?' . $this->custom_store_url . '=$matches[1]',
-            'top'
-        );
+        $rules = [
+            [
+                '^' . $this->custom_store_url . '/([^/]+)/?$',
+                'index.php?' . $this->custom_store_url . '=$matches[1]',
+                'top',
+            ],
+            [
+                '^' . $this->custom_store_url . '/([^/]+)/page/([0-9]{1,})/?$',
+                'index.php?' . $this->custom_store_url . '=$matches[1]&paged=$matches[2]',
+                'top',
+            ],
+            [
+                '^' . $this->custom_store_url . '/([^/]+)/reviews?$',
+                'index.php?' . $this->custom_store_url . '=$matches[1]&store_review=true',
+                'top',
+            ],
+            [
+                '^' . $this->custom_store_url . '/([^/]+)/reviews/page/?([0-9]{1,})/?$',
+                'index.php?' . $this->custom_store_url . '=$matches[1]&paged=$matches[2]&store_review=true',
+                'top',
+            ],
+            [
+                '^dashboard/?$',
+                'index.php?pagename=dashboard',
+                'top',
+            ],
+            [
+                '^dashboard/([^/]+)/?([^/]*)/?$',
+                'index.php?pagename=dashboard&dashboard_page=$matches[1]&dashboard_subpage=$matches[2]',
+                'top',
+            ],
+        ];
 
-        add_rewrite_rule(
-            '^' . $this->custom_store_url . '/([^/]+)/page/([0-9]{1,})/?$',
-            'index.php?' . $this->custom_store_url . '=$matches[1]&paged=$matches[2]',
-            'top'
-        );
+        $rules = apply_filters( 'multivendorx_rewrite_rules', $rules, $this );
 
-        add_rewrite_rule( 
-            '^' . $this->custom_store_url . '/([^/]+)/reviews?$', 
-            'index.php?' . $this->custom_store_url . '=$matches[1]&store_review=true',
-             'top' 
-        );
-        add_rewrite_rule( 
-            '^' . $this->custom_store_url . '/([^/]+)/reviews/page/?([0-9]{1,})/?$',
-            'index.php?' . $this->custom_store_url . '=$matches[1]&paged=$matches[2]&store_review=true', 
-            'top' 
-        );
-
-        add_rewrite_rule(
-            '^dashboard/?$',
-            'index.php?pagename=dashboard',
-            'top'
-        );
-
-        add_rewrite_rule(
-            '^dashboard/([^/]+)/?([^/]*)/?$',
-            'index.php?pagename=dashboard&dashboard_page=$matches[1]&dashboard_subpage=$matches[2]',
-            'top'
-        );
+        foreach ( $rules as $rule ) {
+            add_rewrite_rule( $rule[0], $rule[1], $rule[2] );
+        }
     }
 
     public function register_query_var( $vars ) {
@@ -81,7 +85,7 @@ class Rewrites {
             $vars[] = $var;
         }
 
-        return $vars;
+        return apply_filters( 'multivendorx_query_vars', $vars, $this );
     }
 
     public function store_template( $template ) {

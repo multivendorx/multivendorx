@@ -27,6 +27,7 @@ interface MultiNumberProps {
     inputLabelClass?: string;
     inputClass?: string;
     labelAfterInput?: boolean;
+    optionLabel?:string;
     onChange?: (e: ChangeEvent<HTMLInputElement>, keyName?: string, optionKey?: string, index?: number) => void;
 }
 
@@ -83,6 +84,7 @@ const MultiInput: React.FC<MultiInputProps> = (props) => {
 
     const renderRadioOptions = (option: MultiNumOption, selectedValue: string | number, idPrefix: string, keyName?: string, onChange?: Function, index?: number) => (
         <div className="toggle-setting-wrapper">
+            <div></div>
             {option.options?.map((opt) => (
                 <div
                     role="button"

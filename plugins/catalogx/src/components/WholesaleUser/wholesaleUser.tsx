@@ -9,11 +9,11 @@ const WholesaleUser = () => {
 
     return (
         <>
+            <AdminBreadcrumbs
+                activeTabIcon="adminlib-wholesale"
+                tabTitle="Wholesale User"
+            />
             <div id="wholesale-list-table">
-                <AdminBreadcrumbs
-                    activeTabIcon="adminlib-cart"
-                    parentTabName="All Wholesale Users"
-                />
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }
@@ -35,7 +35,7 @@ const WholesaleUser = () => {
                     ) }
                 </Dialog>
                 <div
-                    className="admin-table-wrapper olesale-user-image"
+                    className="image-wrapper wholesale-user-image"
                     onClick={ () => {
                         setOpenDialog( true );
                     } }

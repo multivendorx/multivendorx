@@ -39,8 +39,12 @@ const Rules = () => {
                         <ShowPopup moduleName="Rules" />
                     ) }
                 </Dialog>
+                <AdminBreadcrumbs
+                    activeTabIcon="adminlib-rules"
+                    tabTitle="Rules"
+                />
                 <div
-                    className="admin-table-wrapper dynamic-rule-img"
+                    className="dynamic-rule-img image-wrapper"
                     onClick={ () => {
                         setOpenDialog( true );
                     } }

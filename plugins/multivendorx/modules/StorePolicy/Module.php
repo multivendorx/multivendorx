@@ -1,14 +1,14 @@
 <?php
 /**
- * MultiVendorX module Module class file
+ * MultiVendorX Module class file
  *
  * @package MultiVendorX
  */
 
-namespace MultiVendorX\Variable;
+namespace MultiVendorX\StorePolicy;
 
 /**
- * MultiVendorX Variable Module class
+ * MultiVendorX Store Policy Module class
  *
  * @class       Module class
  * @version     6.0.0
@@ -30,13 +30,11 @@ class Module {
     private static $instance = null;
 
     /**
-     * Variable class constructor function
+     * Simple class constructor function
      */
     public function __construct() {
         // Init helper classes.
         $this->init_classes();
-
-        do_action( 'load_premium_variable_module' );
     }
 
     /**
@@ -45,6 +43,7 @@ class Module {
      * @return void
      */
     public function init_classes() {
+        $this->container['frontend'] = new Frontend();
     }
 
     /**
@@ -73,7 +72,7 @@ class Module {
     }
 
     /**
-     * Initializes Variable class.
+     * Initializes Simple class.
      * Checks for an existing instance
      * And if it doesn't find one, create it.
      *

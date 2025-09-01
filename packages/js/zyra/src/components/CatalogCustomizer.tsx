@@ -85,7 +85,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
                     } }
                     className="button-visibility"
                 >
-                    <i className="admin-font adminlib-support"></i>
+                    <i className={`adminlib-eye ${hideProductPrice ? "-blocked" : ""}`}></i>
                 </div>
                 <p
                     className="product-price"
@@ -114,7 +114,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
                     } }
                     className="button-visibility"
                 >
-                    <i className="admin-font adminlib-support"></i>
+                    <i className={`adminlib-eye ${hideProductDesc ? "-blocked" : ""}`}></i>
                 </div>
                 <p
                     className="product-description"
@@ -594,11 +594,12 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
                                 <p>Upgrade to pro for endless customization</p>
                                 <a
                                     href={ proUrl }
-                                    className="admin-btn btn-purple"
+                                    className="admin-btn btn-red"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
                                     Upgrade now
+                                    <i className="adminlib-arrow-right"></i>
                                 </a>
                             </article>
                         ) }

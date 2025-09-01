@@ -25,6 +25,7 @@ class StoreUtil {
     }
 
     public function get_store_tabs( $store_id ) {
+
         $tabs = [
             'products'      => [
                 'title' => __( 'Products', 'multivendorx' ),
@@ -62,7 +63,6 @@ class StoreUtil {
     public function get_store_review_url($store_id) {
         return $this->get_store_url( $store_id, 'reviews' );
     }
-
 
     public static function get_store_capability() {
         $capabilities = [

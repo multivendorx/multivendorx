@@ -13,7 +13,10 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "MultiVendorX\\": "classes/"
+            "MultiVendorX\\": [
+                "classes/",
+                "modules/"
+            ]
         }
     },
     "require": {

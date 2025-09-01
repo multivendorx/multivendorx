@@ -61,9 +61,9 @@ const EditStore = () => {
         {
             type: 'file',
             content: {
-                id: 'vendor-policy',
-                name: 'Vendor Policy',
-                desc: 'Vendor Policy',
+                id: 'store-policy',
+                name: 'Store Policy',
+                desc: 'Store Policy',
                 icon: 'adminlib-credit-card',
             },
         },
@@ -79,7 +79,7 @@ const EditStore = () => {
                 return <PaymentSettings id={editId} />;
             case 'vendor-shipping':
                 return <ShippingSettings id={editId} />;
-            case 'vendor-policy':
+            case 'store-policy':
                 return <PolicySettings id={editId} />;
             default:
                 return <div></div>;
