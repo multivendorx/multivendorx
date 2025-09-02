@@ -7,30 +7,18 @@ import React, { useState, useEffect, JSX } from 'react';
 import axios from 'axios';
 import { useTour } from '@reactour/tour';
 
-// Types
-interface AppLocalizer {
-    enquiry_form_settings_url: string;
-    module_page_url: string;
-    settings_page_url: string;
-    customization_settings_url: string;
-    apiUrl: string;
-}
-
-const appLocalizer: AppLocalizer = {
-    enquiry_form_settings_url: 'string',
-    module_page_url: 'string',
-    settings_page_url: 'string',
-    customization_settings_url: 'string',
-    apiUrl: 'string',
-};
-
 interface TourStep {
     selector: string;
     placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
     content: () => JSX.Element;
 }
 
-const Tour: React.FC = () => {
+interface TourProps {
+    appLocalizer: Record<string, any>;
+    gif: any;
+}
+
+const Tour: React.FC<TourProps> = ( { appLocalizer, gif } ) => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour();
     const [ isNavigating, setIsNavigating ] = useState< boolean >( false );
 
@@ -77,8 +65,13 @@ const Tour: React.FC = () => {
         setIsOpen( false ); // Close the tour
 
         try {
-            await axios.post( `${ appLocalizer.apiUrl }/catalogx/v1/tour`, {
-                active: false,
+            await axios( {
+                method: 'post',
+                url: `${ appLocalizer.apiUrl }/catalogx/v1/tour`,
+                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+                data: {
+                    active: false
+                }
             } );
             // console.log( "Tour marked as complete." );
         } catch ( error ) {
@@ -89,7 +82,7 @@ const Tour: React.FC = () => {
 
     const settingsTourSteps: TourStep[] = [
         {
-            selector: '[data="catalog-showcase-tour"]',
+            selector: '[data-tour="catalog-showcase-tour"]',
             placement: 'top',
             content: () => (
                 <div className="tour-box">
@@ -99,7 +92,7 @@ const Tour: React.FC = () => {
                         catalog, removing the &quot;Add to Cart&quot; button and
                         optionally hiding prices.
                     </h4>
-                    <div className="tour-footer">
+                    <div className="buttons-wrapper">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () => setCurrentStep( 1 ) }
@@ -117,7 +110,7 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: '[data="enquiry-showcase-tour"]',
+            selector: '[data-tour="enquiry-showcase-tour"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Enable Enquiry Mode</h3>
@@ -127,7 +120,7 @@ const Tour: React.FC = () => {
                         submitted forms, viewable in the admin dashboard or via
                         email.
                     </h4>
-                    <div className="tour-footer">
+                    <div className="buttons-wrapper">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () => {
@@ -169,14 +162,14 @@ const Tour: React.FC = () => {
                         customers need to fill out when submitting product
                         inquiries.
                     </h4>
-                    <div className="tour-footer">
+                    <div className="buttons-wrapper">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () =>
                                 navigateTo(
                                     appLocalizer.module_page_url,
                                     3,
-                                    '[data="quote-showcase-tour"]'
+                                    '[data-tour="quote-showcase-tour"]'
                                 )
                             }
                         >
@@ -193,7 +186,7 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: '[data="quote-showcase-tour"]',
+            selector: '[data-tour="quote-showcase-tour"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Enable Quote Module</h3>
@@ -203,7 +196,7 @@ const Tour: React.FC = () => {
                         quotes and provide tailored pricing for customers to
                         proceed with purchases.
                     </h4>
-                    <div className="tour-footer">
+                    <div className="buttons-wrapper">
                         <button
                             className="admin-btn btn-purple"
                             onClick={ () => {
@@ -214,9 +207,9 @@ const Tour: React.FC = () => {
 
                                 if ( checkbox?.checked ) {
                                     navigateTo(
-                                        appLocalizer.settings_page_url,
+                                        appLocalizer.settings_page_url.replace( /subtab=[^&]+/, "subtab=quotation" ),
                                         4,
-                                        '[data="quote-permission"]'
+                                        '[data-tour="quote-permission"]'
                                     );
                                 } else {
                                     navigateTo(
@@ -240,7 +233,7 @@ const Tour: React.FC = () => {
             ),
         },
         {
-            selector: '[data="quote-permission"]',
+            selector: '[data-tour="quote-permission"]',
             content: () => (
                 <div className="tour-box">
                     <h3>Configure Quote Settings</h3>
@@ -248,9 +241,9 @@ const Tour: React.FC = () => {
                         Set up your quotation settings by defining whether to
                         limit quote requests to logged-in users only.
                     </h4>
-                    <div className="tour-footer">
+                    <div className="buttons-wrapper">
                         <button
-                            className="btn-purple"
+                            className="admin-btn btn-purple"
                             onClick={ () =>
                                 navigateTo(
                                     appLocalizer.customization_settings_url,
@@ -288,7 +281,7 @@ const Tour: React.FC = () => {
                     <div className="tour-box">
                         <h3>Arrange Enquiry Button</h3>
                         <img
-                            // src={gif}
+                            src={gif}
                             alt="Guide"
                             width="160"
                             // onLoad={handleImageLoad} // Handle image load event
@@ -297,7 +290,7 @@ const Tour: React.FC = () => {
                             With the Enquiry tab selected, drag and drop to
                             position the Enquiry button and customize its look.
                         </h4>
-                        <div className="tour-footer">
+                        <div className="buttons-wrapper">
                             <button
                                 className="admin-btn btn-purple"
                                 onClick={ () => finishTour() }
@@ -317,9 +310,11 @@ const Tour: React.FC = () => {
         const fetchTourState = async (): Promise< void > => {
             if ( window.location.href === appLocalizer.module_page_url ) {
                 try {
-                    const response = await axios.get< { active: string } >(
-                        `${ appLocalizer.apiUrl }/catalogx/v1/tour`
-                    );
+                    const response = await axios<{ active: string }>({
+                        method: 'get',
+                        url: `${ appLocalizer.apiUrl }/catalogx/v1/tour`,
+                        headers: { 'X-WP-Nonce': appLocalizer.nonce },
+                    });
 
                     if ( response.data.active !== '' ) {
                         if ( setSteps ) {
