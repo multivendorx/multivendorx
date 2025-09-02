@@ -12,7 +12,7 @@ export default {
             key: 'store-policy',
             type: 'textarea',
             desc: __(
-                'The marketplace will display policies created by the admin. However, stores can edit and override their own store policies.',
+                'Policies created by the admin are displayed by default. Stores can edit and override their own policies.',
                 'multivendorx'
             ),
             label: __( 'Store policy', 'multivendorx' ),
@@ -22,7 +22,7 @@ export default {
             key: 'shipping_policy',
             type: 'textarea',
             desc: __(
-                'The marketplace will display policies created by the admin. However, stores can edit and override their own shipping policies.',
+                'Admin-created shipping policies are displayed by default. Stores can modify them as needed.',
                 'multivendorx'
             ),
             label: __( 'Shipping policy', 'multivendorx' ),
@@ -32,7 +32,7 @@ export default {
             key: 'refund_policy',
             type: 'textarea',
             desc: __(
-                'The marketplace will display policies created by the admin. However, stores can edit and override their own refund policies.',
+                'Admin creates refund policies. Stores can adjust them for their store.',
                 'multivendorx'
             ),
             label: __( 'Refund policy', 'multivendorx' ),
@@ -42,7 +42,7 @@ export default {
             key: 'cancellation_policy',
             type: 'textarea',
             desc: __(
-                'The marketplace will display policies created by the admin. However, stores can edit and override their own cancellation, return, or exchange policies.',
+                'Default cancellation, return, or exchange policies set by the admin are displayed. Stores can override them.',
                 'multivendorx'
             ),
             label: __( 'Cancellation / return / exchange policy', 'multivendorx' ),

@@ -5,7 +5,7 @@ export default {
     priority: 1,
     name: __( 'Onboarding', 'multivendorx' ),
     desc: __(
-        'Decide what vendors see first after signing up and guide them through the key steps to get their store ready for sales.',
+        'Decide what stores see first after signing up and guide them through the key steps to get their store ready for sales.',
         'multivendorx'
     ),
     icon: 'adminlib-storefront',
@@ -42,7 +42,7 @@ export default {
             type: 'setting-toggle',
             label: __( 'Guided setup wizard', 'multivendorx' ),
             desc: __(
-                'Help vendors set up their store quickly with a guided, step-by-step process after registration. If disabled, the setup wizard will not appear.',
+                'Help stores set up their store quickly with a guided, step-by-step process after registration. If disabled, the setup wizard will not appear.',
                 'multivendorx'
             ),
             options: [
