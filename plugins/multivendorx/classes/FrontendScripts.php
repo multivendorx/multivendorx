@@ -8,6 +8,7 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Store\StoreUtil;
+use MultiVendorX\Vendor\VendorUtil as VendorUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -168,6 +169,11 @@ class FrontendScripts {
 					'deps'        => $component_asset['dependencies'],
 					'version'     => $version,
 				),
+                'multivendorx-registration-form-script' => array(
+					'src'         => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/RegistrationForm/index.js',
+					'deps'        => $component_asset['dependencies'],
+					'version'     => $version,
+				),
 			)
         );
         foreach ( $register_scripts as $name => $props ) {
@@ -285,7 +291,7 @@ class FrontendScripts {
 			'multivendorx_additional_tabs_names',
             array(
                 'general',
-                'vendor-registration-form',
+                'store-registration-form',
                 'seller-dashboard',
                 'store',
                 'products',
@@ -299,7 +305,7 @@ class FrontendScripts {
                 'commission-rule',
                 'payment-integration',
                 'store-appearance',
-                'product-report-abuse'
+                'product-report-abuse',
             )
 		);
 
@@ -399,6 +405,20 @@ class FrontendScripts {
                         'color'            => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
                     ),
                 ),
+                'multivendorx-registration-form-script'          => array(
+					'object_name' => 'registrationForm',
+					'data'        => array(
+						'apiUrl'              => untrailingslashit( get_rest_url() ),
+						'nonce'               => wp_create_nonce( 'wp_rest' ),
+						'settings'            => VendorUtil::get_vendor_registration_form() ?? array(),
+						'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
+						'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
+						'error_strings'       => array(
+							'required' => __( 'This field is required', 'multivendorx' ),
+							'invalid'  => __( 'Invalid email format', 'multivendorx' ),
+						),
+					),
+				),
 			)
         );
 

@@ -353,7 +353,6 @@
   .action-dropdown {
     overflow: hidden;
     border: $border-light-small;
-    box-shadow: 0 5px 15px 1px #897e7e26;
     position: absolute;
     inset: 0px 0px auto auto;
     background: #fff;
@@ -366,19 +365,19 @@
       margin: 0;
 
       li {
-        padding: 0.425rem 0.625rem;
+        padding: 0 0.625rem;
         display: flex;
         align-items: center;
         gap: 0.425rem;
         width: 100%;
-        font-size: 0.75rem;
+        font-size: 0.813rem;
         font-weight: 500;
         cursor: pointer;
         transition: all 0.3s linear;
 
-        &:hover {
-          background: #ece2f98f;
-        }
+        // &:hover {
+        //   background: #ece2f98f;
+        // }
       }
     }
     &.show{

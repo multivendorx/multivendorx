@@ -95,4 +95,25 @@ class VendorUtil {
     public static function get_current_vendor_id() {
         return apply_filters( 'mvx_current_loggedin_vendor_id', get_current_user_id() );
     }
+    /**
+     * Get the 
+     *
+     * @return array List of freeform field settings.
+     */
+    public static function get_vendor_registration_form() {
+        $form_settings = MultivendorX()->setting->get_option( 'multivendorx_store_registration_form_settings', array() );
+        // if ( function_exists( 'icl_t' ) ) {
+        //     foreach ( $form_settings['formfieldlist'] as &$free_field ) {
+        //         if ( isset( $free_field['label'] ) ) {
+        //             $free_field['label'] = icl_t( 'multivendorx', 'free_form_label_' . $free_field['key'], $free_field['label'] );
+        //         }
+        //     }
+        // }
+
+        $formfieldlist = isset($form_settings['store_registration_from'])
+        ? $form_settings['store_registration_from']
+        : array();
+
+       return $formfieldlist;
+    }
 }

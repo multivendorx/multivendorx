@@ -144,41 +144,86 @@ class Install {
 
     public function plugin_create_pages() {
 
-        $option_value = get_option( 'mvx_product_vendor_vendor_dashboard_page_id' );
-
-        if ( $option_value > 0 && get_post( $option_value ) ) {
-            return;
-        }
-
-        $page_found = get_posts(
-            array(
-				'name'        => 'dashboard',
-				'post_status' => 'publish',
-				'post_type'   => 'page',
-				'fields'      => 'ids',
-				'numberposts' => 1,
-            )
-        );
-
-        if ( $page_found ) {
-            if ( ! $option_value ) {
-                update_option( 'mvx_product_vendor_vendor_dashboard_page_id', $page_found[0] );
-            }
-            return;
-        }
-
-        $page_data = array(
-            'post_status'    => 'publish',
-            'post_type'      => 'page',
-            'post_author'    => 1,
-            'post_name'      => 'dashboard',
-            'post_title'     => __( 'Store Dashboard', 'multivendorx' ),
-            'post_content'   => '[multivendorx_store_dashboard]',
-            'comment_status' => 'closed',
-        );
-
-        $page_id = wp_insert_post( $page_data );
-
-        update_option( 'mvx_product_vendor_vendor_dashboard_page_id', $page_id );
+        $pages_to_create = [
+            [
+                'option_key' => 'mvx_product_vendor_vendor_dashboard_page_id',
+                'slug'       => 'dashboard',
+                'title'      => __( 'Store Dashboard', 'multivendorx' ),
+                'shortcode'  => '[multivendorx_store_dashboard]',
+            ],
+            [
+                'option_key' => 'mvx_product_vendor_store_registration_page_id',
+                'slug'       => 'store-registration',
+                'title'      => __( 'Store Registration', 'multivendorx' ),
+                'shortcode'  => '[multivendorx_store_registration]',
+            ],
+            [
+                'option_key' => 'mvx_product_vendor_vendor_orders_page_id',
+                'slug'       => 'vendor-orders',
+                'title'      => __( 'Vendor Orders', 'multivendorx' ),
+                'shortcode'  => '[multivendorx_vendor_orders]',
+            ],
+        ];
+        
+        $this->plugin_create_pages_dynamic( $pages_to_create );
+        
     }
+
+    public function plugin_create_pages_dynamic( $pages = [] ) {
+        if ( empty( $pages ) || ! is_array( $pages ) ) {
+            return;
+        }
+    
+        foreach ( $pages as $page ) {
+            // Validate required keys
+            if ( empty( $page['option_key'] ) || empty( $page['slug'] ) || empty( $page['title'] ) || empty( $page['shortcode'] ) ) {
+                continue;
+            }
+    
+            $option_key = $page['option_key'];
+            $slug       = $page['slug'];
+            $title      = $page['title'];
+            $shortcode  = $page['shortcode'];
+    
+            // Check if option already set
+            $option_value = get_option( $option_key );
+            if ( $option_value > 0 && get_post( $option_value ) ) {
+                continue;
+            }
+    
+            // Check if page with slug exists
+            $page_found = get_posts(
+                array(
+                    'name'        => $slug,
+                    'post_status' => 'publish',
+                    'post_type'   => 'page',
+                    'fields'      => 'ids',
+                    'numberposts' => 1,
+                )
+            );
+    
+            if ( $page_found ) {
+                if ( ! $option_value ) {
+                    update_option( $option_key, $page_found[0] );
+                }
+                continue;
+            }
+    
+            // Create the page
+            $page_data = array(
+                'post_status'    => 'publish',
+                'post_type'      => 'page',
+                'post_author'    => 1,
+                'post_name'      => $slug,
+                'post_title'     => $title,
+                'post_content'   => $shortcode,
+                'comment_status' => 'closed',
+            );
+    
+            $page_id = wp_insert_post( $page_data );
+    
+            update_option( $option_key, $page_id );
+        }
+    }
+    
 }

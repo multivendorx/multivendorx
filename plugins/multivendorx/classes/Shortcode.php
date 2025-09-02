@@ -15,6 +15,7 @@ class Shortcode {
      */
     public function __construct() {
         add_shortcode( 'multivendorx_store_dashboard', [ $this, 'display_store_dashboard' ] );
+        add_shortcode( 'multivendorx_store_registration', [ $this, 'display_store_registration' ] );
         add_action( 'wp_enqueue_scripts', array($this, 'frontend_scripts'));
     }
 
@@ -26,6 +27,9 @@ class Shortcode {
         FrontendScripts::enqueue_script( 'multivendorx-dashboard-script' );
         FrontendScripts::localize_scripts( 'multivendorx-dashboard-components-script' );
         FrontendScripts::enqueue_style( 'multivendorx-dashboard-style' );
+
+        FrontendScripts::enqueue_script( 'multivendorx-registration-form-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-registration-form-script' );
     }
 
     public function display_store_dashboard() {
@@ -51,5 +55,25 @@ class Shortcode {
 
         return ob_get_clean();
     }
+
+    public function display_store_registration() {
+        // Enqueue frontend scripts
+        $this->frontend_scripts();
+    
+        // Start output buffering
+        ob_start();
+        ?>
+        <div id="multivendorx-registration-form">
+            <?php
+            // Here you can render the actual registration form if needed
+            // Example: echo do_shortcode('[multivendorx_store_registration]');
+            ?>
+        </div>
+        <?php
+    
+        // Return the output buffer content
+        return ob_get_clean();
+    }
+    
     
 } 

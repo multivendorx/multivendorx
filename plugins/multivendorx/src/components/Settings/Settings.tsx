@@ -16,7 +16,7 @@ import {
     Tabs,
     useModules
 } from 'zyra';
-import ShowProPopup from '../Popup/Popup';
+import ShowProPopup from '../Popup/popup';
 import { useLocation, Link } from 'react-router-dom';
 
 // Types

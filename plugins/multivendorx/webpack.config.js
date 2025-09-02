@@ -15,44 +15,45 @@ const staticPatterns = [
 ];
 
 // 2. Dynamic block.json + render.php copy patterns
-// const blockBasePath = path.resolve( __dirname, 'src/block' );
-// const blockDirs = fs
-//     .readdirSync( blockBasePath, { withFileTypes: true } )
-//     .filter( ( dirent ) => dirent.isDirectory() )
-//     .map( ( dirent ) => dirent.name );
+const blockBasePath = path.resolve( __dirname, 'src/blocks' );
+const blockDirs = fs
+    .readdirSync( blockBasePath, { withFileTypes: true } )
+    .filter( ( dirent ) => dirent.isDirectory() )
+    .map( ( dirent ) => dirent.name );
 
-// const dynamicPatterns = blockDirs.flatMap( ( blockName ) => {
-//     const blockPath = path.join( blockBasePath, blockName );
-//     const outPath = path.resolve(
-//         __dirname,
-//         'release/assets/js/block',
-//         blockName
-//     );
+const dynamicPatterns = blockDirs.flatMap( ( blockName ) => {
+    const blockPath = path.join( blockBasePath, blockName );
+    const outPath = path.resolve(
+        __dirname,
+        'release/assets/js/block',
+        blockName
+    );
 
-//     const patterns = [];
+    const patterns = [];
 
-//     if ( fs.existsSync( path.join( blockPath, 'block.json' ) ) ) {
-//         patterns.push( {
-//             from: path.join( blockPath, 'block.json' ),
-//             to: path.join( outPath, 'block.json' ),
-//         } );
-//     }
+    if ( fs.existsSync( path.join( blockPath, 'block.json' ) ) ) {
+        patterns.push( {
+            from: path.join( blockPath, 'block.json' ),
+            to: path.join( outPath, 'block.json' ),
+        } );
+    }
 
-//     if ( fs.existsSync( path.join( blockPath, 'render.php' ) ) ) {
-//         patterns.push( {
-//             from: path.join( blockPath, 'render.php' ),
-//             to: path.join( outPath, 'render.php' ),
-//         } );
-//     }
+    if ( fs.existsSync( path.join( blockPath, 'render.php' ) ) ) {
+        patterns.push( {
+            from: path.join( blockPath, 'render.php' ),
+            to: path.join( outPath, 'render.php' ),
+        } );
+    }
 
-//     return patterns;
-// } );
+    return patterns;
+} );
 
 module.exports = {
     ...defaultConfig,
 
     entry: {
         index: './src/index.tsx',
+        'block/RegistrationForm/index': './src/blocks/RegistrationForm/index.js',
     },
 
     output: {
@@ -171,7 +172,7 @@ module.exports = {
             injectPolyfill: true,
         } ),
         new CopyWebpackPlugin( {
-            patterns: [ ...staticPatterns ],
+            patterns: [ ...staticPatterns, ...dynamicPatterns ],
         } ),
     ],
 

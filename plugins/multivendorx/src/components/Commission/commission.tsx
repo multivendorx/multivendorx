@@ -2,14 +2,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Table, getApiLink, TableCell } from 'zyra';
+import { Table, getApiLink, TableCell, AdminBreadcrumbs } from 'zyra';
 import {
     ColumnDef,
     RowSelectionState,
     PaginationState,
 } from '@tanstack/react-table';
 import { useLocation } from 'react-router-dom';
-import EditCommission from './EditCommission';
+import EditCommission from './editCommission';
 
 type CommissionRow = {
     id?: number;
@@ -295,6 +295,10 @@ const Commission: React.FC = () => {
 
     return (
         <>
+            <AdminBreadcrumbs
+                activeTabIcon="adminlib-cart"
+                tabTitle="Commissions"
+            />
             {isTabActive && iseditCommission && <EditCommission />}
             {!iseditCommission && (
                 <div className="admin-table-wrapper">

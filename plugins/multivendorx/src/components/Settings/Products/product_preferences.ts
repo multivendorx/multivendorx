@@ -45,13 +45,13 @@ export default {
                 {
                     key: 'general',
                     label: __( 'General', 'multivendorx' ),
-					desc: __( 'Displays name, description, and price.', 'multivendorx' ),
+					desc: __( 'Store can add description, and price of the product', 'multivendorx' ),
                     value: 'general',
                 },
                 {
                     key: 'inventory',
                     label: __( 'Inventory', 'multivendorx' ),
-					desc: __( 'Enable stock management options like SKU, stock levels, and availability.', 'multivendorx' ),
+					desc: __( 'Stores can configure stock management options like SKU, stock levels, and availability.', 'multivendorx' ),
                     value: 'inventory',
                 },
                 {
@@ -87,7 +87,7 @@ export default {
                 {
                     key: 'GTIN',
                     label: __( 'GTIN', 'multivendorx' ),
-					desc: __( 'Allow stores to include a Global Trade Item Number (barcode/identifier) for product tracking.', 'multivendorx' ),
+					desc: __( 'Global Trade Item Number (barcode/identifier) can be assigned for product tracking.', 'multivendorx' ),
                     value: 'GTIN',
                 },
             ],

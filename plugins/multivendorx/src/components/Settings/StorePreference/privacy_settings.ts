@@ -4,10 +4,7 @@ export default {
     id: 'privacy-settings',
     priority: 6,
     name: __( 'Privacy', 'multivendorx' ),
-    desc: __(
-        'Control what customers see about your stores',
-        'multivendorx'
-    ),
+    desc: __('Manage what customers can see about your stores.','multivendorx'),
     icon: 'adminlib-storefront',
     submitUrl: 'settings',
     modal: [ 
@@ -15,32 +12,32 @@ export default {
             key: 'store_page_details',
             type: 'checkbox',
             label: __( 'Store branding', 'multivendorx' ),
-            settingDescription: __( 'Control what store information is displayed on product listings and detail pages.', 'multivendorx' ),
+            settingDescription: __( 'Decide which details appear with products and on store pages.', 'multivendorx' ),
             class: 'mvx-toggle-checkbox',
             options: [
                 {
                     key: 'show_store_name_on_products',
                     label: __( 'Name', 'multivendorx' ),
-                    desc: __( 'Display store name on product listings, archive page and chekout/cart pages.', 'multivendorx' ),
+                    desc: __( 'Include the store name on product listings, archive, checkout, and cart pages.', 'multivendorx' ),
                     value: 'show_store_owner_info',
                 },
                 {
                     key: 'show_store_logo_next_to_products',
                     label: __( 'Logo', 'multivendorx' ),
-                    desc: __( 'Store logo will be displayed alongside product information', 'multivendorx' ),
+                    desc: __( 'Place the store logo alongside product details.', 'multivendorx' ),
                     value: 'show_store_description',
                 },
 				
 				{
                     key: 'show_store_description',
                     label: __( 'Store description', 'multivendorx' ),
-					desc: __( 'Store description is displayed on store and product pages. ', 'multivendorx' ),
+					desc: __( 'Present a short store bio on product and store pages.', 'multivendorx' ),
                     value: 'show_store_description',
                 },
                 {
                     key: 'show_store_ratings',
                     label: __( 'Store ratings', 'multivendorx' ),
-					desc: __( 'Display customer ratings and reviews in the store page and below the product page', 'multivendorx' ),
+					desc: __( 'Highlight customer feedback on store and product pages.', 'multivendorx' ),
                     value: 'show_store_ratings',
                 },
                                 
@@ -51,22 +48,25 @@ export default {
             key: 'store_page_details',
             type: 'checkbox',
             label: __( 'Store contact informations', 'multivendorx' ),
-            settingDescription: __( 'Control which store contact details are visible to customers.', 'multivendorx' ),
+            settingDescription: __( 'Choose the contact details visible to customers.', 'multivendorx' ),
             class: 'mvx-toggle-checkbox',
             options: [
                 {
                     key: 'show_store_owner_info',
                     label: __( 'Business address', 'multivendorx' ),
+					desc: __('Make the store’s physical location available.','multivendorx'),
                     value: 'show_store_owner_info',
                 },
                 {
                     key: 'show_store_description',
                     label: __( 'Phone number', 'multivendorx' ),
+					desc: __('Provide a direct contact number.','multivendorx'),
                     value: 'show_store_description',
                 },
                 {
                     key: 'show_store_description',
                     label: __( 'Email address', 'multivendorx' ),
+					desc: __('Offer an email for customer queries.','multivendorx'),
                     value: 'show_store_description',
                 },
                 
@@ -94,7 +94,7 @@ export default {
             key: 'store_policy_override',
             type: 'checkbox',
             label: __( 'Store policy override', 'multivendorx' ),
-            settingDescription: __( 'Allow stores to set their own policies instead of using the default admin policies.', 'multivendorx' ),
+            settingDescription: __( 'Give stores the option to create their own policies instead of using marketplace defaults.', 'multivendorx' ),
             class: 'mvx-toggle-checkbox',
             options: [
                 {
@@ -118,7 +118,7 @@ export default {
         {
             key: 'separator_store_policy_override',
             type: 'section',
-            desc: __( 'Allow store owners to temporarily disable their profile, hiding it and its products from the marketplace.', 'multivendorx' ),
+            desc: __( 'Store owners can temporarily disable their profile, hiding it and its products from the marketplace.', 'multivendorx' ),
             hint: __(
                 'Store profile controls',
                 'multivendorx'
@@ -128,7 +128,7 @@ export default {
             key: 'enable_profile_deactivation_request',
             type: 'checkbox',
             label: __( 'Store profile deactivation requests', 'multivendorx' ),
-			desc: __( 'Allow store owners to submit requests for temporary store hiding. <br><b>Note</b>: When a store is deactivated, both the store page and all its products become invisible to customers until the store is reactivated by an administrator. If a store is permanently deleted by admin, the admin can decide whether to allocate all the products to another store or take ownership of them.', 'multivendorx' ),
+			desc: __( 'Store owners will submit requests for temporary store hiding. <br><b>Note</b>: When a store is deactivated, both the store page and all its products become invisible to customers until the store is reactivated by an administrator. If a store is permanently deleted by admin, the admin can decide whether to allocate all the products to another store or take ownership of them.', 'multivendorx' ),
             options: [
                 {
                     key: 'enable_profile_deactivation_request',

@@ -3,17 +3,22 @@ import { useEffect, useState } from 'react';
 import { AdminHeader, Banner, initializeModules } from 'zyra';
 
 import Settings from './components/Settings/Settings';
-import Modules from './components/Modules/Modules';
-import Store from './components/Store/Store';
-import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import StatusAndTools from './components/StatusAndTools/StatusAndTools';
+import Modules from './components/Modules/modules';
+import Store from './components/Store/store';
+import AdminDashboard from './components/AdminDashboard/adminDashboard';
+import StatusAndTools from './components/StatusAndTools/statusAndTools';
 import SetupWizard from './blocks/setupWizard/SetupWizard';
-import WorkBoard from './components/WorkBoard/workboard';
-import Memberships from './components/Membership/Membership';
+import CustomerServices from './components/CustomerService/customerServices';
+import Memberships from './components/Membership/membership';
 
 import Brand from './assets/images/mvx-brand-logo.png';
 import { searchIndex, SearchItem } from './searchIndex';
 import { __ } from '@wordpress/i18n';
+import Notification from './components/Notifications/notification';
+import Announcements from './components/Announcements/announcements';
+import Knowledgebase from './components/Knowledgebase/knowledgebase';
+import Blogs from './components/Blogs/blogs';
+import Commission from './components/Commission/commission';
 
 localStorage.setItem('force_multivendorx_context_reload', 'true');
 
@@ -43,8 +48,13 @@ const Route = () => {
       {currentTab.get('tab') === 'status-tools' && <StatusAndTools id="status-tools" />}
       {currentTab.get('tab') === 'modules' && <Modules />}
       {currentTab.get('tab') === 'stores' && <Store />}
-      {currentTab.get('tab') === 'work-board' && <WorkBoard />}
+      {currentTab.get('tab') === 'commissions' && <Commission />}
+      {currentTab.get('tab') === 'customer-services' && <CustomerServices />}
+      {currentTab.get('tab') === 'notifications' && <Notification />}
       {currentTab.get('tab') === 'dashboard' && <AdminDashboard />}
+      {currentTab.get('tab') === 'announcements' && <Announcements />}
+      {currentTab.get('tab') === 'knowledgebase' && <Knowledgebase />}
+      {currentTab.get('tab') === 'blogs' && <Blogs />}
       {currentTab.get('tab') === 'setup' && <SetupWizard />}
     </>
   );

@@ -85,7 +85,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
                     } }
                     className="button-visibility"
                 >
-                    <i className={`adminlib-eye ${hideProductPrice ? "-blocked" : ""}`}></i>
+                    <i className={`adminlib-eye${hideProductPrice ? "-blocked" : ""}`}></i>
                 </div>
                 <p
                     className="product-price"
@@ -114,7 +114,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
                     } }
                     className="button-visibility"
                 >
-                    <i className={`adminlib-eye ${hideProductDesc ? "-blocked" : ""}`}></i>
+                    <i className={`adminlib-eye${hideProductDesc ? "-blocked" : ""}`}></i>
                 </div>
                 <p
                     className="product-description"

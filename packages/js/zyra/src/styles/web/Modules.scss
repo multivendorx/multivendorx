@@ -139,6 +139,24 @@
           }
         }
       }
+
+      fieldset{
+        border: $border-light-small;
+        margin-top: .313rem;
+        padding: 0 .5rem .5rem;
+
+        legend{
+          border-radius: .25rem;
+          color: #e35047;
+          margin-left: .25rem;
+          padding: .188rem .375rem;
+          text-align: left;
+
+          &.free{
+            color: #000;
+          }
+        }
+      }
     }
   }
 }

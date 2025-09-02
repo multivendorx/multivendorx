@@ -7,6 +7,7 @@
 
 namespace MultiVendorX;
 use MultiVendorX\Store\Store;
+use MultiVendorX\Commission\CommissionUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -81,15 +82,20 @@ class Admin {
                 "
             > Pro </span>' : '';
 
+            $commission_count = CommissionUtil::get_commissions(['paid_status' => 'unpaid'], true, true);
             // Array contain multivendorx submenu.
             $submenus = array(
                 'dashboard' => array(
                     'name'   => __( 'Dashboard', 'multivendorx' ),
                     'subtab' => '',
                 ),
-                'work-board' => array(
-                    'name'   => __( 'Work Board', 'multivendorx' ),
-                    'subtab' => 'activity-reminder',
+                'notifications' => array(
+                    'name'   => __( 'Notifications', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'customer-services' => array(
+                    'name'   => __( 'Customer Services', 'multivendorx' ),
+                    'subtab' => '',
                 ),
                 'stores' => array(
                     'name'   => __( 'Stores', 'multivendorx' ),
@@ -98,6 +104,7 @@ class Admin {
                 'commissions' => array(
                     'name'   => __( 'Commissions', 'multivendorx' ),
                     'subtab' => '',
+                    'count'  => $commission_count,
                 ),
                 'analytics' => array(
                     'name'   => __( 'Analytics', 'multivendorx' ),
@@ -119,6 +126,18 @@ class Admin {
                     'name'   => __( 'Status and Tools', 'multivendorx' ),
                     'subtab' => 'database-tools',
                 ),
+                'announcements' => array(
+                    'name'   => __( 'Announcements', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'knowledgebase' => array(
+                    'name'   => __( 'Knowledgebase', 'multivendorx' ),
+                    'subtab' => '',
+                ),
+                'blogs' => array(
+                    'name'   => __( 'Blogs', 'multivendorx' ),
+                    'subtab' => '',
+                ),
                 'help-and-support' => array(
                     'name'   => __( 'Help and Support', 'multivendorx' ),
                     'subtab' => '',
@@ -137,14 +156,24 @@ class Admin {
                     $subtab = '&subtab=' . $submenu['subtab'];
                 }
 
+                $menu_name = $submenu['name'];
+
+                if ( isset( $submenu['count'] ) && $submenu['count'] > 0 ) {
+                    $menu_name = $menu_name . " <span class='update-plugins count-" . intval( $submenu['count'] ) . "' style='margin-left:5px;'>
+                                    <span class='plugin-count'>" . intval( $submenu['count'] ) . "</span>
+                                 </span>";
+                }
+                
                 add_submenu_page(
                     'multivendorx',
                     $submenu['name'],
-                    "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $submenu['name'] . '</span>',
+                    "<span style='position: relative; display: block; width: 100%;' class='admin-menu'>" . $menu_name . '</span>',
                     'manage_options',
                     'multivendorx#&tab=' . $slug . $subtab,
-                    '_-return_null'
+                    '__return_null'
                 );
+                
+
             }
 
             // Register upgrade to pro submenu page.

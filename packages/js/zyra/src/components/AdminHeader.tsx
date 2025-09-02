@@ -131,11 +131,32 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
           </div>
 
           {/* start notification */}
-          <div className="icon-wrapper">
+          <div className="icon-wrapper notification">
             <i
               className="admin-icon adminlib-notification"
               title="Notifications"
             ></i>
+            <div className="dropdown-menu">
+              <div className="title">Notification</div>
+              <div className="notification">
+                <ul>
+                  <li>
+                    <a href="#">
+                      <i className="adminlib-user-network-icon"></i>
+                      <span>Congratulation Lettie</span>
+                      <span>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tenetur, blanditiis.</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i className="adminlib-user-network-icon"></i>
+                      <span>Congratulation Lettie</span>
+                      <span>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tenetur, blanditiis.</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
           {/* end notification */}
 
