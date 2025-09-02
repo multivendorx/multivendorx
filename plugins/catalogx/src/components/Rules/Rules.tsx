@@ -15,10 +15,6 @@ const Rules = () => {
                 className="catalog-rules-main-container"
                 id="rules-list-table"
             >
-                <AdminBreadcrumbs
-                    activeTabIcon="adminlib-cart"
-                    parentTabName="Rules"
-                />
                 <Dialog
                     className="admin-module-popup"
                     open={ openDialog }

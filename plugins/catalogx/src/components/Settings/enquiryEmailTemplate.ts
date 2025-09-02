@@ -2,12 +2,13 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'enquiry-email-temp',
-    priority: 3,
+    priority: 5,
     name: __( 'Enquiry Email', 'catalogx' ),
     desc: __(
         'Select your preferred enquiry details email template',
         'catalogx'
     ),
+    icon: 'adminlib-contact-form',
     submitUrl: 'settings',
     modal: [
         {

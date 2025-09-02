@@ -414,7 +414,7 @@ class FrontendScripts {
 
         // Get all tab setting's database value.
         $settings_value = array();
-        $tabs_names     = array( 'enquiry-catalog-customization', 'all-settings', 'enquiry-form-customization', 'enquiry-quote-exclusion', 'tools', 'enquiry-email-temp', 'wholesale', 'wholesale-registration', 'pages' );
+        $tabs_names     = array( 'enquiry-catalog-customization', 'all-settings', 'enquiry-form-customization', 'enquiry-quote-exclusion', 'tools', 'enquiry-email-temp', 'wholesale', 'wholesale-registration', 'pages', 'enquiry', 'quotation', 'wholesale', 'extra' );
         foreach ( $tabs_names as $tab_name ) {
 			$settings_value[ $tab_name ] = CatalogX()->setting->get_option( str_replace( '-', '_', 'catalogx_' . $tab_name . '_settings' ) );
         }

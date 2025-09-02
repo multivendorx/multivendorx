@@ -35,7 +35,7 @@ export default function QuotesList() {
                     tabTitle="Quote Requests"
                 />
                 <div
-                    className="admin-table-wrapper quote-img"
+                    className="image-wrapper quote-img"
                     onClick={ () => {
                         setOpenDialog( true );
                     } }

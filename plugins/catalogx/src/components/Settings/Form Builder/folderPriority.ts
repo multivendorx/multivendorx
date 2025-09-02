@@ -1,3 +1,3 @@
 export default {
-    priority: 5,
+    priority: 3,
 };
