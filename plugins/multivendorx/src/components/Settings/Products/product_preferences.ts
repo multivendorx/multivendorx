@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-    id: 'product_preferencess',
+    id: 'product-preferencess',
     priority: 1,
     name: __( 'Product Preferences', 'multivendorx' ),
     desc: __(
@@ -45,7 +45,7 @@ export default {
                 {
                     key: 'general',
                     label: __( 'General', 'multivendorx' ),
-					desc: __( 'Enables name, description, and price.', 'multivendorx' ),
+					desc: __( 'Displays name, description, and price.', 'multivendorx' ),
                     value: 'general',
                 },
                 {
@@ -96,9 +96,9 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            desc: __( 'SKU generation', 'multivendorx' ),
+            desc: __( 'Control how SKUs are handled for products.', 'multivendorx' ),
             hint: __(
-                'Control how SKUs are handled for products.',
+                'SKU generation',
                 'multivendorx'
             ),
         },
@@ -176,7 +176,7 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            desc: __( '', 'multivendorx' ),
+            desc: __( 'Products similar in type, category, or vendor are displayed as related items to guide customers toward additional purchases.', 'multivendorx' ),
             hint: __('Related products source','multivendorx'),
         },
         {
@@ -186,7 +186,8 @@ export default {
                 'Recommendation source',
                 'multivendorx'
             ),
-            desc: __(
+            settingDescription: __( 'Choose whether related products are shown from the same vendor only or from the entire marketplace.', 'multivendorx' ),
+           desc: __(
                 '<li>Same store: Show related products only from the current store.<li>All stores: Show related products from across the marketplace. Choose whether to replace spaces in attribute names when generating SKUs:',
                 'multivendorx'
             ),

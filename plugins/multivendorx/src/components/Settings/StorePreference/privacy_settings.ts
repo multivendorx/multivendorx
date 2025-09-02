@@ -56,20 +56,17 @@ export default {
             options: [
                 {
                     key: 'show_store_owner_info',
-                    label: __( 'Address', 'multivendorx' ),
-					desc: __( 'Display stores physical address to customers', 'multivendorx' ),
+                    label: __( 'Business address', 'multivendorx' ),
                     value: 'show_store_owner_info',
                 },
                 {
                     key: 'show_store_description',
                     label: __( 'Phone number', 'multivendorx' ),
-					desc: __( 'Display stores contact phone number', 'multivendorx' ),
                     value: 'show_store_description',
                 },
                 {
                     key: 'show_store_description',
                     label: __( 'Email address', 'multivendorx' ),
-					desc: __( 'Display stores email address for customer contact', 'multivendorx' ),
                     value: 'show_store_description',
                 },
                 

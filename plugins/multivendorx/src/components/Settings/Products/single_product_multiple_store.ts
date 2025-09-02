@@ -11,27 +11,11 @@ export default {
     icon: 'adminlib-general-tab',
     submitUrl: 'settings',
     modal: [
-        {
-            key: 'is_singleproductmultistore',
-            type: 'checkbox',
-            label: __( 'Allow store to copy products', 'multivendorx' ),
-            desc: __(
-                'Enable this to let vendors (stores) search for existing products in your marketplace and add them to their own store catalog.',
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'is_singleproductmultistore',
-                    value: 'is_singleproductmultistore',
-                },
-            ],
-            look: 'toggle',
-            // moduleEnabled: 'spmv',
-        },
+        
         {
             key: 'singleproductmultistore_show_order',
-            type: 'select',
-            label: __( 'Display shop page product', 'multivendorx' ),
+            type: 'setting-toggle',
+            label: __( 'SPMV Product listing priority', 'multivendorx' ),
             desc: __(
                 'Choose which version of SPMV product will be shown as the main listing on the shop page (e.g., top-rated store, min / max priced product).',
                 'multivendorx'
@@ -39,12 +23,12 @@ export default {
             options: [
                 {
                     key: 'min-price',
-                    label: __( 'Min price', 'multivendorx' ),
+                    label: __( 'Lowest price', 'multivendorx' ),
                     value: __( 'min-price', 'multivendorx' ),
                 },
                 {
                     key: 'max-price',
-                    label: __( 'Max Price', 'multivendorx' ),
+                    label: __( 'Highest price', 'multivendorx' ),
                     value: __( 'max-price', 'multivendorx' ),
                 },
                 {
@@ -61,10 +45,10 @@ export default {
         },
         {
             key: 'moreoffers_display_position',
-            type: 'select',
+            type: 'setting-toggle',
             label: __( 'More offers display position', 'multivendorx' ),
             desc: __(
-                'Select where the “More Offers” section will appear on the single product page, showing buyers other vendors selling the same item.',
+                'Decide where additional SPMV offers should be displayed on the single product page to make them visible to customers.',
                 'multivendorx'
             ),
             options: [

@@ -40,7 +40,7 @@ export default {
             defaulValue: 'google_map_set',
             label: __( 'Map provider', 'multivendorx' ),
 			settingDescription: __('Choose the service that powers your maps and location search:','multivendorx'),
-            desc: __( '<ul><li>Google Maps – reliable and widely used, requires a Google API key.<li><li>Mapbox – customizable map provider, may also require an API key.</li></ul>', 'multivendorx' ),
+            desc: __( '<ul><li>Google Maps – reliable and widely used, requires a Google API key.<li>Mapbox – customizable map provider, may also require an API key.</li></ul>', 'multivendorx' ),
             options: [
                 {
                     key: 'google_map_set',
@@ -88,8 +88,8 @@ export default {
             key: 'radius_search_distance',
             type: 'multi-number',
             label: __( 'Location search', 'multivendorx' ),
-            settingDescription: __( 'Define how customers can control their search radius when looking for nearby stores. This ensures they see results that are relevant to their location.', 'multivendorx' ),
-			 desc: __( '<ul><li>Minimum distance – set the smallest possible radius a customer can select. For example, if set to 1 km, customers cannot search for anything closer than 1 km.<li><li>Maximum distance – set the largest radius available for search. For example, setting it to 500 km allows customers to expand their search across a wider region.</li><li>Units – decide whether distances are measured in kilometers or miles, depending on your store’s target region.</li></ul>', 'multivendorx' ),
+            settingDescription: __( 'Define how customers can control their search radius when looking for nearby stores.', 'multivendorx' ),
+			 desc: __( '<ul><li>Minimum distance – set the smallest possible radius a customer can select. For example, if set to 1 km, customers cannot search for anything closer than 1 km.<li>Maximum distance – set the largest radius available for search. For example, setting it to 500 km allows customers to expand their search across a wider region.</li><li>Units – decide whether distances are measured in kilometers or miles, depending on your store’s target region.</li></ul>', 'multivendorx' ),
              options: [
                 {
                     key: 'radius_search_min_distance',

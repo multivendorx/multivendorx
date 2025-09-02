@@ -5,7 +5,7 @@ export default {
     priority: 1,
     name: __( 'Product Advertising', 'mvx-pro' ),
     desc: __(
-        'Let vendors promote their top products or unique offerings in site-wide placements.',
+        'Let stores promote their top products or unique offerings in site-wide placements.',
         'mvx-pro'
     ),
     icon: 'adminlib-clock2',
