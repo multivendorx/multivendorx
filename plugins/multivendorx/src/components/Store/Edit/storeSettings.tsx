@@ -4,6 +4,10 @@ import { BasicInput, TextArea, FileInput, SelectInput, getApiLink } from 'zyra';
 
 const StoreSettings = ({ id }: { id: string }) => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
+	const statusOptions = [
+		{ label: "Active", value: "active" },
+		{ label: "Inactive", value: "inactive" },
+	];
 
 	const [imagePreviews, setImagePreviews] = useState<{ [key: string]: string }>({});
 	const [stateOptions, setStateOptions] = useState<{ label: string; value: string }[]>([]);
@@ -196,11 +200,86 @@ const StoreSettings = ({ id }: { id: string }) => {
 						</div>
 					</div>
 					<div className="card-content">
+						<div className="card-title">
+							Status
+						</div>
+						<div className="form-group-wrapper">
+							<div className="form-group">
+								<label htmlFor="product-name">Status 1</label>
+								<SelectInput
+								name="status"
+								value={formData.status}
+								options={statusOptions}
+								type="single-select"
+								onChange={(newValue) => {
+									if (!newValue || Array.isArray(newValue)) return;
+
+									const updated = { ...formData, status: newValue.value };
+									setFormData(updated);
+									autoSave(updated); // if you want autosave on change
+								}}
+								/>
+							</div>
+							<div className="form-group">
+								<label htmlFor="product-name">Status 2</label>
+								<SelectInput
+								name="status"
+								value={formData.status}
+								options={statusOptions}
+								type="single-select"
+								onChange={(newValue) => {
+									if (!newValue || Array.isArray(newValue)) return;
+
+									const updated = { ...formData, status: newValue.value };
+									setFormData(updated);
+									autoSave(updated); // if you want autosave on change
+								}}
+								/>
+
+							</div>
+						</div>	
+						<div className="form-group-wrapper">
+							<div className="form-group">
+								<label htmlFor="product-name">Status 3</label>
+								<SelectInput
+								name="status"
+								value={formData.status}
+								options={statusOptions}
+								type="single-select"
+								onChange={(newValue) => {
+									if (!newValue || Array.isArray(newValue)) return;
+
+									const updated = { ...formData, status: newValue.value };
+									setFormData(updated);
+									autoSave(updated); // if you want autosave on change
+								}}
+								/>
+							</div>
+							<div className="form-group">
+								<label htmlFor="product-name">Status 4</label>
+								<SelectInput
+								name="status"
+								value={formData.status}
+								options={statusOptions}
+								type="single-select"
+								onChange={(newValue) => {
+									if (!newValue || Array.isArray(newValue)) return;
+
+									const updated = { ...formData, status: newValue.value };
+									setFormData(updated);
+									autoSave(updated); // if you want autosave on change
+								}}
+								/>
+
+							</div>
+						</div>			
+					</div>
+					<div className="card-content">
 						<div className="card-title">Social information</div>
 						{/* Facebook */}
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label htmlFor="facebook">Facebook</label>
+								<label htmlFor="facebook"><i className="adminlib-supervised-user-circle"></i> Facebook</label>
 								<BasicInput
 									name="facebook"
 									wrapperClass="setting-form-input"
@@ -214,7 +293,7 @@ const StoreSettings = ({ id }: { id: string }) => {
 						{/* x */}
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label htmlFor="twitter">X</label>
+								<label htmlFor="twitter"><i className="adminlib-supervised-user-circle"></i> X</label>
 								<BasicInput
 									name="twitter"
 									wrapperClass="setting-form-input"
@@ -228,7 +307,7 @@ const StoreSettings = ({ id }: { id: string }) => {
 						{/* LinkedIn */}
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label htmlFor="linkedin">LinkedIn</label>
+								<label htmlFor="linkedin"><i className="adminlib-supervised-user-circle"></i> LinkedIn</label>
 								<BasicInput
 									name="linkedin"
 									wrapperClass="setting-form-input"
@@ -242,7 +321,7 @@ const StoreSettings = ({ id }: { id: string }) => {
 						{/* YouTube */}
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label htmlFor="youtube">YouTube</label>
+								<label htmlFor="youtube"><i className="adminlib-supervised-user-circle"></i> YouTube</label>
 								<BasicInput
 									name="youtube"
 									wrapperClass="setting-form-input"
@@ -256,7 +335,7 @@ const StoreSettings = ({ id }: { id: string }) => {
 						{/* Instagram */}
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label htmlFor="instagram">Instagram</label>
+								<label htmlFor="instagram"><i className="adminlib-supervised-user-circle"></i> Instagram</label>
 								<BasicInput
 									name="instagram"
 									wrapperClass="setting-form-input"
@@ -273,9 +352,9 @@ const StoreSettings = ({ id }: { id: string }) => {
 				<div className="card-wrapper width-35">
 					<div className="card-content">
 						<div className="card-title">
-
+							
 						</div>
-
+							
 						<div className="form-group-wrapper">
 							<div className="form-group">
 								<label htmlFor="product-name">Profile Image</label>

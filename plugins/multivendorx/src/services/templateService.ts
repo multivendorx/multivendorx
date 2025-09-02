@@ -22,10 +22,10 @@ const importAll = (
     const folderPriorityMap: Record<string, number> = {};
 
     inpContext.keys().forEach((key) => {
-        if (key.endsWith('folder_priority.ts')) {
+        if (key.endsWith('folderPriority.ts')) {
             const folderPath = key
                 .replace('./', '')
-                .replace('/folder_priority.ts', '');
+                .replace('/folderPriority.ts', '');
             const priorityData = inpContext(key)?.default;
             if (priorityData && typeof priorityData.priority === 'number') {
                 folderPriorityMap[folderPath] = priorityData.priority;

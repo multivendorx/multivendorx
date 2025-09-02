@@ -4,10 +4,7 @@ export default {
     id: 'disbursement',
     priority: 2,
     name: __('Disbursement', 'multivendorx'),
-    desc: __(
-        "Tailor your marketplace commission plan to fit your revenue sharing preferences.",
-        'multivendorx'
-    ),
+    desc: __("Tailor your marketplace commission plan to fit your revenue sharing preferences.",'multivendorx'),
     icon: 'adminlib-dynamic-pricing',
     submitUrl: 'settings',
     modal: [
@@ -15,6 +12,8 @@ export default {
             key: 'payment_schedule',
             type: 'setting-toggle',
             label: __('Payout frequency', 'multivendorx'),
+			settingDescription: __("Select the frequency at which store commissions are automatically transferred from the admin account via PayPal Payouts, PayPal MassPay, or Stripe.",'multivendorx'),
+             desc: __("<ul><li>Manual – Payments are not scheduled automatically. The admin can pay vendors manually or vendors can request withdrawals.</li><li>Automatic (Hourly, Daily, Weekly, Fortnightly, Monthly) – Earnings are transferred automatically from the admin account to vendor accounts at the selected interval.</li></ul>",'multivendorx'),
             options: [
                 {
                     key: 'mannual',
@@ -52,8 +51,7 @@ export default {
             key: 'commission_threshold',
             type: 'multi-number',
             label: __('Minimum payout threshold', 'multivendorx'),
-            desc: __(
-                'Minimum balance before payout is processed',
+            settingDescription: __('Stores can only request a manual payout once their pending commission reaches this minimum amount.Example: If the threshold is set to $100, a store can request payout only after its total commission reaches $100.',
                 'multivendorx'
             ),
             options: [

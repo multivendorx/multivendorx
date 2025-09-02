@@ -2,7 +2,7 @@ import { Modules } from 'zyra';
 // import context
 import { getModuleData } from '../../services/templateService';
 import './modules.scss';
-import ShowProPopup from '../Popup/Popup';
+import ShowProPopup from '../Popup/popup';
 
 const PluginModules = () => {
     const modulesArray = getModuleData();

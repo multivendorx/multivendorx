@@ -29,10 +29,20 @@ declare global {
     interface Color{
         color: any;
     }
+    interface RegistrationForm{
+        apiUrl: string;
+        nonce: string;
+        settings: Array;
+        default_placeholder: Array;
+        content_before_form: any;
+        content_after_form: any;
+        error_strings: Array;
+    }
     declare module '*.png';
     declare module '*.jpg';
     declare module '*.jpeg';
 
     var appLocalizer: AppLocalizer;
     var color: Color;
+    var registrationForm:RegistrationForm
 }

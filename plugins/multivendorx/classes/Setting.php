@@ -84,7 +84,7 @@ class Setting {
             array(
 				'multivendorx_extra_settings',
 				'multivendorx_general_settings',
-                'multivendorx_vendor-registration-form_settings',
+                'multivendorx_store-registration-form_settings',
                 'multivendorx_seller_dashboard_settings',
                 'multivendorx_disbursement_settings',
                 'multivendorx_commissions_settings',

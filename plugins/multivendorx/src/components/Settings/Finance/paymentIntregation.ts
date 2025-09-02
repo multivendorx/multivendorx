@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import payPal from '../../../assets/images/paypal.png';
 
-const methods = Object.entries(appLocalizer.all_payments).map(([key, value]) => {
+const methods = Object.entries(appLocalizer?.all_payments).map(([key, value]) => {
     return value;
 });
 

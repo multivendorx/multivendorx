@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Table, getApiLink, TableCell } from 'zyra';
+import { Table, getApiLink, TableCell, AdminBreadcrumbs } from 'zyra';
 import {
     ColumnDef,
     RowSelectionState,
@@ -16,7 +16,7 @@ type StoreRow = {
     status?: string;
 };
 
-const StoreTable: React.FC = () => {
+const Blogs: React.FC = () => {
 
     const [data, setData] = useState<StoreRow[] | null>(null);
 
@@ -51,14 +51,14 @@ const StoreTable: React.FC = () => {
         requestData(rowsPerPage, currentPage);
         setPageCount(Math.ceil(totalRows / rowsPerPage));
     }, [pagination]);
-    const [ showDropdown, setShowDropdown ] = useState( false );
+    const [showDropdown, setShowDropdown] = useState(false);
 
-    const toggleDropdown = ( id: any ) => {
-        if ( showDropdown === id ) {
-            setShowDropdown( false );
+    const toggleDropdown = (id: any) => {
+        if (showDropdown === id) {
+            setShowDropdown(false);
             return;
         }
-        setShowDropdown( id );
+        setShowDropdown(id);
     };
     // Fetch data from backend.
     function requestData(
@@ -148,11 +148,11 @@ const StoreTable: React.FC = () => {
                             <i
                                 className="adminlib-more-vertical"
                                 onClick={() =>
-                                    toggleDropdown(row.original.id)
+                                    toggleDropdown(row.original.order_id)
                                 }
                             ></i>
                             <div
-                                className={`action-dropdown ${showDropdown === row.original.id
+                                className={`action-dropdown ${showDropdown === row.original.order_id
                                     ? 'show'
                                     : ''
                                     }`}
@@ -185,6 +185,10 @@ const StoreTable: React.FC = () => {
 
     return (
         <>
+            <AdminBreadcrumbs
+                activeTabIcon="adminlib-cart"
+                tabTitle="Blogs"
+            />
             <div className="admin-table-wrapper">
                 <Table
                     data={data}
@@ -204,4 +208,4 @@ const StoreTable: React.FC = () => {
     );
 };
 
-export default StoreTable;
+export default Blogs;

@@ -29,10 +29,10 @@ const salesIcon = new L.DivIcon({
   html: `<div style="background:#5007aa;color:#fff;border-radius:50%;padding:6px 10px;font-size:12px;">$</div>`,
 });
 
-import "./AdminDashboard.scss";
+import "./adminDashboard.scss";
 import "../../dashboard/dashboardCommon.scss";
-import BestSellingProducts from './BestSellingProducts';
-import TopSellers from './TopSellers';
+import BestSellingProducts from './bestSellingProducts';
+import TopSellers from './topSellers';
 
 const AdminDashboard = () => {
   const location = useLocation();

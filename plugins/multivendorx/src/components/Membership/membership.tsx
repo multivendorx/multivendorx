@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Tabs } from 'zyra';
 import Brand from '../../../assets/images/brand-logo.png';
 import BrandSmall from '../../../assets/images/brand-icon.png';
-import MessageAndMail from './MessageAndMail';
+import MessageAndMail from './messageAndMail';
 
 
 const Memberships = () => {

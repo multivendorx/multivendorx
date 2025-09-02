@@ -15,7 +15,7 @@ export default {
             type: 'setting-toggle',
             label: __( 'Show map on', 'multivendorx' ),
 			settingDescription: __('Decide where the store map should appear:','multivendorx'),
-            desc: __('<ul><li>Store listing – show the map on the store listing page.</li><li>Shop page – show the map on the shop page where all products are displayed.</li><li>Both – show the map on both pages for maximum visibility.</li></ul>','multivendorx'),
+            desc: __('<ul><li>Store listing – Display a map on the page that lists all stores, showing their locations for easier discovery.</li><li>Shop page – show the map on the shop page where all products are displayed.</li><li>Both – show the map on both pages for maximum visibility.</li></ul>','multivendorx'),
             options: [
                 {
                     key: 'store_lisiting',

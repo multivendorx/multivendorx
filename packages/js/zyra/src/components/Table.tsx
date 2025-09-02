@@ -382,9 +382,9 @@ const Table: React.FC< TableProps > = ( {
     const typeCountActive = filterData.typeCount || 'all';
     return (
         <>
+        {typeCounts && typeCounts.length > 0 && (
             <div className="admin-table-wrapper-filter">
-                { typeCounts &&
-                    typeCounts.map( ( countInfo, index ) => (
+                { typeCounts.map( ( countInfo, index ) => (
                         <div
                             key={ index } // Add a key for better React performance
                             role="button"
@@ -404,6 +404,7 @@ const Table: React.FC< TableProps > = ( {
                         </div>
                     ) ) }
             </div>
+            )}
             <div className="filter-wrapper">
                 <div className="wrap-bulk-all-date">
                     { realtimeFilter &&
