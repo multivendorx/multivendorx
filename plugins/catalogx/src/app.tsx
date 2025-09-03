@@ -108,7 +108,8 @@ const App = () => {
             <AdminHeader
                 brandImg={ Brand }
                 // results={ results }
-                // free={appLocalizer.freeVersion}
+                free={appLocalizer.freeVersion}
+                pro={appLocalizer.proVersion}
             />
             <TourProvider
                 steps={ [] }
