@@ -120,12 +120,12 @@ class FrontendScripts {
 	 * Register and store a script for later use.
 	 *
 	 * @param string $handle       Name of the script.
+	 * @param bool   $is_pro       The script is from free or pro.
 	 * @param string $path         URL to the script.
 	 * @param array  $deps         Optional. An array of dependencies. Default empty array.
 	 * @param string $version      Optional. Script version. Default empty string.
-	 * @param bool   $is_pro       The script is from free or pro.
 	 */
-    public static function register_script( $handle, $path, $deps = array(), $version = '', $is_pro ) {
+    public static function register_script( $handle, $is_pro, $path, $deps = array(), $version = '' ) {
 		self::$scripts[] = $handle;
 		wp_register_script( $handle, $path, $deps, $version, true );
         wp_set_script_translations( $handle, $is_pro ? 'catalogx-pro' : 'catalogx' );
@@ -179,7 +179,7 @@ class FrontendScripts {
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'], $props['is_pro'] ?? false );
+			self::register_script( $name, $props['is_pro'] ?? false, $props['src'], $props['deps'], $props['version'] );
 		}
 	}
 
@@ -240,7 +240,7 @@ class FrontendScripts {
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'], $props['is_pro'] ?? false );
+			self::register_script( $name, $props['is_pro'] ?? false, $props['src'], $props['deps'], $props['version'] );
 		}
 	}
 
