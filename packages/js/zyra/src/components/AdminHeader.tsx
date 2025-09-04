@@ -16,7 +16,7 @@ type AdminHeaderProps = {
   onSelectChange: (value: string) => void;
   selectValue: string;
   free?: string;
-  pro?: string;
+  pro?: string | null;
 };
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({
@@ -28,7 +28,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
   onSelectChange,
   selectValue,
   free,
-  pro = "4.1.23",
+  pro,
 }) => {
   return (
     <>
@@ -40,10 +40,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
             <span className="admin-badge blue">
               <i className="adminlib-adminlib-info"></i> <b>Free:</b> {free}
             </span>
-            <span className="admin-badge red">
-              <i className="adminlib-pro-tag"></i> Pro: {pro}
-
-            </span>
+            { pro && (
+              <span className="admin-badge red">
+                <i className="adminlib-pro-tag"></i> Pro: {pro}
+              </span>
+            ) }
           </div>
         </div>
 
