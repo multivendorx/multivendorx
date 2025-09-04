@@ -244,6 +244,7 @@ interface InputField {
         sidebarActiveBg?: string;
     };
     modal?: { icon: string; id: string; label: string; connected: boolean; desc: string; formFields: { key: string; type: 'text' | 'password' | 'number' | 'checkbox'; label: string; placeholder?: string }[] }[];
+    image?: any;
 
 }
 
@@ -1111,7 +1112,27 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
                             )}
-                            onChange={onSelectChange}
+                            onChange={(
+                                newValue: SingleValue<SelectOptions> | MultiValue<SelectOptions>,
+                                actionMeta: ActionMeta<SelectOptions>
+                            ) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(
+                                            inputField.moduleEnabled ?? ''
+                                        ),
+                                        String(
+                                            inputField.dependentSetting ?? ''
+                                        ),
+                                        String(
+                                            inputField.dependentPlugin ?? ''
+                                        )
+                                    )
+                                ) {
+                                    onSelectChange(newValue, actionMeta)
+                                }
+                            }}
                         />
                     );
                     break;
@@ -1515,7 +1536,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                 settingChanged.current = true;
                                 updateSetting(key, data);
                             }}
-                            SampleProduct="#"
+                            SampleProduct={inputField.image}
                             proUrl="#"
                         />
                     );

@@ -33,18 +33,16 @@ const getSettingsByPriority = (settings: Setting[]): Setting[] => {
 		const aIsFolder = a.type === 'folder';
 		const bIsFolder = b.type === 'folder';
 
-		// Step 1: Files first
-		if (!aIsFolder && bIsFolder) return -1;
-		if (aIsFolder && !bIsFolder) return 1;
-
-		// Step 2: Priority comparison
 		let aPriority = 0;
 		let bPriority = 0;
 
 		if (aIsFolder) {
 			a.content = getSettingsByPriority(a.content as Setting[]);
 			const aFirstChild = (a.content as Setting[])[0];
-			aPriority = (aFirstChild?.content as SettingContent)?.priority ?? 0;
+			aPriority =
+                (a as any).folderPriority ??
+                (aFirstChild?.content as SettingContent)?.priority ??
+                0;
 		} else {
 			aPriority = (a.content as SettingContent)?.priority ?? 0;
 		}
@@ -52,7 +50,10 @@ const getSettingsByPriority = (settings: Setting[]): Setting[] => {
 		if (bIsFolder) {
 			b.content = getSettingsByPriority(b.content as Setting[]);
 			const bFirstChild = (b.content as Setting[])[0];
-			bPriority = (bFirstChild?.content as SettingContent)?.priority ?? 0;
+			bPriority =
+                (b as any).folderPriority ??
+                (bFirstChild?.content as SettingContent)?.priority ??
+                0;
 		} else {
 			bPriority = (b.content as SettingContent)?.priority ?? 0;
 		}

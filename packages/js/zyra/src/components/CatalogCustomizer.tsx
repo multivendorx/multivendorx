@@ -50,7 +50,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
     const [ localSetting, _setLocalSetting ] = useState( setting );
 
     const setSetting = ( key: string, value: any ) => {
-        _setLocalSetting( { ...localSetting, [ key ]: value } );
+        _setLocalSetting( ( prev: any ) => ( { ...prev, [ key ]: value } ) );
         onChange( key, value );
     };
 
@@ -62,8 +62,8 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
     }, [ localSetting ] );
 
     const menu: MenuItem[] = [
-        { name: 'Enquiry', id: 'enquiry', icon: 'adminlib-inquiry' },
-        { name: 'Quote', id: 'quote', icon: 'adminlib-price-quote-icon' },
+        { name: 'Enquiry', id: 'enquiry', icon: 'adminlib-enquiry' },
+        { name: 'Quote', id: 'quote', icon: 'adminlib-quote' },
         { name: 'Catalog', id: 'catalog', icon: 'adminlib-catalog' },
     ];
 
@@ -347,7 +347,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
      * @param endIndex   - The ending index where the button is dropped.
      */
     const onButtonDragEnd = ( startIndex: number, endIndex: number ): void => {
-        if ( endIndex === undefined || endIndex === null || endIndex === 0 ) {
+        if ( endIndex === undefined || endIndex === null || endIndex < 0 ) {
             return;
         }
 
