@@ -257,6 +257,7 @@ const Settings: React.FC<SettingsProps> = () => {
                 smallbrandImg={BrandSmall}
                 supprot={supportLink}
                 Link={Link}
+                settingName={'Settings'}
             />
         </SettingProvider>
     );

@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom';
 import Settings from './components/Settings/Settings';
 import { ModuleProvider } from './contexts/ModuleContext';
 import Synchronization from './components/Synchronization/Synchronization';
-import Courses from './components/Courses/Courses';
 import Cohort from './components/Cohort/Cohort';
 import Enrollment from './components/Enrollment/Enrollment';
+import Courses from './components/Courses/Courses';
 
 // for react tour
 // import { TourProvider } from '@reactour/tour';

@@ -61,7 +61,7 @@ module.exports = {
         path: path.resolve(__dirname, 'release/assets'),
         filename: 'js/[name].js',
         chunkFilename: 'chunks/[name].[contenthash].js',
-        // clean: true,
+        clean: false,
     },
 
     optimization: {

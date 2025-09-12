@@ -22,15 +22,16 @@ interface ToggleSettingProps {
     options: Option[];
     wrapperClass?: string;
     descClass?: string;
-    value: string;
-    onChange: (value: string) => void;
+    value: string | string[];
+    onChange: (value: string | string[]) => void;
     proChanged?: () => void;
     proSetting?: boolean;
     khali_dabba?: boolean;
-    iconEnable?: boolean; // <-- new prop to render icons
+    iconEnable?: boolean;
     key?: string;
     addonBefore?: string;
     addonAfter?: string;
+    multiSelect?: boolean;
 }
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({
@@ -43,58 +44,79 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
     proChanged,
     proSetting = false,
     khali_dabba,
-    iconEnable = false, // default false
+    iconEnable = false,
     addonAfter,
-    addonBefore
+    addonBefore,
+    multiSelect = false,
 }) => {
+
+    const handleChange = (optionValue: string, isPro: boolean) => {
+        if (isPro && !khali_dabba) {
+            proChanged?.();
+            return;
+        }
+
+        if (multiSelect) {
+            const current = Array.isArray(value) ? value : [];
+            let newValues: string[];
+            if (current.includes(optionValue)) {
+                newValues = current.filter((v) => v !== optionValue);
+            } else {
+                newValues = [...current, optionValue];
+            }
+            onChange(newValues);
+        } else {
+            onChange(optionValue);
+        }
+    };
+
     return (
         <>
             <div className="toggle-setting-container">
                 {addonBefore && <span className="before">{addonBefore}</span>}
 
                 <div className="toggle-setting-wrapper">
-                    {options.map((option) => (
-                        <div
-                            role="button"
-                            tabIndex={0}
-                            key={option.key}
-                            onClick={() => {
-                                if (option.proSetting && !khali_dabba) {
-                                    proChanged?.();
-                                } else {
-                                    onChange(option.value);
-                                }
-                            }}
-                        >
-                            <input
-                                className="toggle-setting-form-input"
-                                type="radio"
-                                id={option.key}
-                                name={key}
-                                value={option.value}
-                                checked={value === option.value}
-                                readOnly // Prevents React warning for controlled components
-                            />
-                            <label htmlFor={option.key}>
-                                {iconEnable ? (
-                                    <i className={option.value}></i> // render icon if icon=true
-                                ) : option.img ? (
-                                    <>
-                                        <img src={option.img} />
-                                        {option.label}
-                                    </>
-                                ) : (
-                                    option.label
+                    {options.map((option) => {
+                        const isChecked = multiSelect
+                            ? Array.isArray(value) && value.includes(option.value)
+                            : value === option.value;
+
+                        return (
+                            <div
+                                role="button"
+                                tabIndex={0}
+                                key={option.key}
+                                onChange={() => handleChange(option.value, !!option.proSetting)}
+                            >
+                                <input
+                                    className="toggle-setting-form-input"
+                                    type={multiSelect ? 'checkbox' : 'radio'}
+                                    id={option.key}
+                                    name={key}
+                                    value={option.value}
+                                    checked={isChecked}
+                                    readOnly
+                                />
+                                <label htmlFor={option.key}>
+                                    {iconEnable ? (
+                                        <i className={option.value}></i>
+                                    ) : option.img ? (
+                                        <>
+                                            <img src={option.img} />
+                                            {option.label}
+                                        </>
+                                    ) : (
+                                        option.label
+                                    )}
+                                </label>
+                                {option.proSetting && !khali_dabba && (
+                                    <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>
                                 )}
-                            </label>
-                            {option.proSetting && !khali_dabba && (
-                                <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>
-                            )}
-                        </div>
-                    ))}
+                            </div>
+                        );
+                    })}
                 </div>
                 {addonAfter && <span className="after">{addonAfter}</span>}
-
                 {proSetting && <span className="admin-pro-tag"><i className="adminlib-pro-tag"></i>Pro</span>}
             </div>
             {description && (

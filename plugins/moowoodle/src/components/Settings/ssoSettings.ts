@@ -39,6 +39,7 @@ export default {
                 appLocalizer.moodle_site_url +
                     'admin/settings.php?section=authsettingmoowoodle'
             ),
+            size:'8rem',
             label: __('SSO Secret Key', 'moowoodle'),
             proSetting: true,
             generate: true,

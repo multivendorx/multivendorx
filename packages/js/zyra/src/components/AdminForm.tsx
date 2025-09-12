@@ -151,6 +151,7 @@ interface InputField {
     rowNumber?: number;
     colNumber?: number;
     value?: string;
+    multiSelect?: boolean;
     copyButtonLabel?: string;
     copiedLabel?: string;
     width?: number;
@@ -1306,6 +1307,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             descClass="settings-metabox-description"
                             description={inputField.desc}
                             key={inputField.key}
+                            multiSelect={inputField.multiSelect}
                             iconEnable={inputField.iconEnable}
                             options={
                                 Array.isArray(inputField.options)
@@ -1315,7 +1317,11 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     }))
                                     : []
                             }
-                            value={String(value ?? inputField.defaultValue ?? '')}
+                            value={
+                                inputField.multiSelect
+                                    ? (Array.isArray(value) ? value : [String(value ?? inputField.defaultValue ?? '')])
+                                    : String(value ?? inputField.defaultValue ?? '')
+                            }
                             proSetting={isProSetting(inputField.proSetting ?? false)}
                             onChange={(data) => {
                                 if (

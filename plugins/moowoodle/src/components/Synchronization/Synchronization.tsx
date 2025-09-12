@@ -184,6 +184,7 @@ const Synchronization: React.FC<SettingsProps> = () => {
                     smallbrandImg={BrandSmall}
                     supprot={supportLink}
                     Link={Link}
+                    settingName={'Synchronization'}
                 />
             </SettingProvider>
         </>
