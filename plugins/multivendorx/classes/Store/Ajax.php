@@ -17,6 +17,7 @@ class Ajax {
         add_action('wp_ajax_switch_store', array($this, 'multivendorx_switch_store'));
     }
 
+    
     public function multivendorx_switch_store() {
         $store_id = filter_input( INPUT_POST, 'store_id', FILTER_SANITIZE_NUMBER_INT ) ?? 0;
         $user_id  = get_current_user_id();

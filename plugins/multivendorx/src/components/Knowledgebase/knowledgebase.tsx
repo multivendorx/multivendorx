@@ -23,6 +23,14 @@ type AnnouncementStatus = {
     name: string;
     count: number;
 };
+
+const bulkActionOptions = [
+    { value: '', label: __('Bulk actions', 'multivendorx') },
+    { value: 'publish', label: __('Publish', 'multivendorx') },
+    { value: 'pending', label: __('Pending', 'multivendorx') },
+    { value: 'delete', label: __('Delete', 'multivendorx') },
+];
+
 export const KnowledgeBase: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [data, setData] = useState<KBRow[] | null>(null);
@@ -45,9 +53,10 @@ export const KnowledgeBase: React.FC = () => {
     });
     const bulkSelectRef = useRef<HTMLSelectElement>(null);
     const [modalDetails, setModalDetails] = useState<string>('');
+    const [openModal, setOpenModal] = useState(false);
     const handleCloseForm = () => {
         setAddEntry(false);
-        setFormData({ title: '', url: '', content: '', stores: '' }); // reset form
+        setFormData({ title: '', content: '', status: 'pending' }); // reset form
         setEditId(null); // reset edit mode
         setError(null); // clear any error
     };
@@ -56,21 +65,41 @@ export const KnowledgeBase: React.FC = () => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
-    const handleBulkAction = () => {
-        if (appLocalizer.khali_dabba) {
-            if (!Object.keys(rowSelection).length) {
-                setModalDetails('Select rows.');
-                setOpenModal(true);
-                return;
-            }
-            if (!bulkSelectRef.current?.value) {
-                setModalDetails('Please select a action.');
-                setOpenModal(true);
-                return;
-            }
-            setData(null);
+    const handleBulkAction = async () => {
+        const action = bulkSelectRef.current?.value;
+        const selectedIds = Object.keys(rowSelection).map((key) => {
+            const index = Number(key);
+            return data && data[index] ? data[index].id : null;
+        }).filter((id): id is number => id !== null);
+
+        if (!selectedIds.length) {
+            setModalDetails('Select rows.');
+            setOpenModal(true);
+            return;
+        }
+
+        if (!action) {
+            setModalDetails('Please select an action.');
+            setOpenModal(true);
+            return;
+        }
+
+        setData(null);
+
+        try {
+            await axios({
+            method: 'PUT',
+            url: getApiLink(appLocalizer, 'knowledge/bulk'),
+            headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            data: { action, ids: selectedIds },
+        });
+        requestData(pagination.pageSize, pagination.pageIndex + 1);
+        setRowSelection({}); // Clear selection
+        } catch (err) {
+            setError(__('Failed to perform bulk action', 'multivendorx'));
         }
     };
+
     const toggleDropdown = (id: any) => {
         if (showDropdown === id) {
             setShowDropdown(false);
@@ -95,7 +124,7 @@ export const KnowledgeBase: React.FC = () => {
             }
         } catch {
             setError(__('Failed to load entry', 'multivendorx'));
-        }
+        } 
     };
 
     // Submit form
@@ -130,28 +159,33 @@ export const KnowledgeBase: React.FC = () => {
             setError(__('Failed to save entry', 'multivendorx'));
         } finally {
             setSubmitting(false); // re-enable buttons
-        }
+        } 
     };
 
 
     // Fetch data
-    const requestData = (rowsPerPage = 10, currentPage = 1) => {
+    const requestData = (
+        rowsPerPage = 10,
+        currentPage = 1,
+        status: string = 'all'
+    ) => {
         setData(null);
         axios({
             method: 'GET',
             url: getApiLink(appLocalizer, 'knowledge'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
-            params: { page: currentPage, row: rowsPerPage },
+            params: { page: currentPage, row: rowsPerPage, status },
         })
             .then((response) => {
-                setData(response.data || []);
-                setAnnouncementStatus([
-                    { key: 'all', name: 'All', count: response.data.all || 0 },
-                    { key: 'publish', name: 'Published', count: response.data.publish || 0 },
-                    { key: 'pending', name: 'Pending', count: response.data.pending || 0 },
-                ]);
-            })
-            .catch(() => setError(__('Failed to load entries', 'multivendorx')));
+            const res = response.data;
+            setData(res.items || []);
+            setTotalRows(res.total || 0);
+            setAnnouncementStatus([
+                { key: 'all', name: 'All', count: res.all ?? res.total ?? 0 },
+                { key: 'publish', name: 'Published', count: res.publish ?? 0 },
+                { key: 'pending', name: 'Pending', count: res.pending ?? 0 },
+            ]);
+            }).catch(() => setError(__('Failed to load entries', 'multivendorx')));
     };
 
     useEffect(() => {
@@ -161,7 +195,7 @@ export const KnowledgeBase: React.FC = () => {
 
     // Columns
     // Columns
-    const columns: ColumnDef<StoreRow>[] = [
+    const columns: ColumnDef<KBRow>[] = [
         {
             id: 'select',
             header: ({ table }) => (
@@ -188,6 +222,22 @@ export const KnowledgeBase: React.FC = () => {
             ),
         },
         {
+            header: __('Date', 'multivendorx'),
+            cell: ({ row }) => {
+                const rawDate = row.original.date;
+                let formattedDate = '-';
+                if (rawDate) {
+                    const dateObj = new Date(rawDate);
+                    formattedDate = new Intl.DateTimeFormat('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                    }).format(dateObj);
+                }
+                return <TableCell title={formattedDate}>{formattedDate}</TableCell>;
+            },
+        },
+        {
             header: __('Status', 'multivendorx'),
             cell: ({ row }) => (
                 <TableCell title={row.original.status || ''}>
@@ -204,14 +254,15 @@ export const KnowledgeBase: React.FC = () => {
             render: () => (
                 <div className=" bulk-action">
                     <select name="action" className="basic-select" ref={bulkSelectRef}>
-                        <option value="">{__('Bulk actions')}</option>
-                        <option value="publish">{__('Publish', 'multivendorx')}</option>
-                        <option value="pending">{__('Pending', 'multivendorx')}</option>
-                        <option value="delete">{__('Delete', 'multivendorx')}</option>
+                        {bulkActionOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
                     </select>
-                    {/* <button name="bulk-action-apply" className="admin-btn btn-purple" onClick={handleBulkAction}>
+                    <button name="bulk-action-apply" className="admin-btn btn-purple" onClick={handleBulkAction}>
                         {__('Apply')}
-                    </button> */}
+                    </button>
                 </div>
             ),
         },

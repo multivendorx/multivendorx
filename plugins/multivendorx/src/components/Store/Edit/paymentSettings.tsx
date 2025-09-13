@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BasicInput, ToggleSetting, getApiLink } from 'zyra';
 
 interface PaymentField {
+	html: string | TrustedHTML;
 	name: string;
 	type?: string;
 	label: string;
@@ -23,6 +24,7 @@ const PaymentSettings = ({ id }: { id: string|null }) => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+	console.log(appLocalizer.all_store_settings);
 	const storePayment: StorePaymentConfig =
 		(appLocalizer.all_store_settings as StorePaymentConfig) || {};
 
@@ -126,22 +128,37 @@ const PaymentSettings = ({ id }: { id: string|null }) => {
 							</div>
 						</div>
 
-						{selectedProvider?.fields?.map((field) => (
-							<div className="form-group-wrapper" key={field.name}>
-								<div className="form-group">
-									<label htmlFor={field.name}>{field.label}</label>
-									<BasicInput
-										name={field.name}
-										type={field.type || "text"}
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
-										placeholder={field.placeholder || ""}
-										value={formData[field.name] || ""}
-										onChange={handleChange}
+						{selectedProvider?.fields?.map((field, index) => {
+							console.log('jj');
+							if (field.type === "html" && field.html) {
+								// Render HTML returned from PHP (like onboarding UI)
+								return (
+									<div
+										key={`html-${index}`}
+										className="form-group-wrapper"
+										dangerouslySetInnerHTML={{ __html: field.html }}
 									/>
+								);
+							}
+
+							// Default input field rendering
+							return (
+								<div className="form-group-wrapper" key={field.name}>
+									<div className="form-group">
+										<label htmlFor={field.name}>{field.label}</label>
+										<BasicInput
+											name={field.name}
+											type={field.type || "text"}
+											wrapperClass="setting-form-input"
+											descClass="settings-metabox-description"
+											placeholder={field.placeholder || ""}
+											value={formData[field.name] || ""}
+											onChange={handleChange}
+										/>
+									</div>
 								</div>
-							</div>
-						))}
+							);
+						})}
 					</div>
 				</div>
 				{/* Commission Amount */}

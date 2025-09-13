@@ -5,6 +5,7 @@ import { BasicInput, ToggleSetting, getApiLink } from 'zyra';
 console.log(appLocalizer?.store_id);
 
 interface PaymentField {
+  html: string | TrustedHTML;
   name: string;
   type?: string;
   label: string;
@@ -119,22 +120,38 @@ const Withdrawl: React.FC = () => {
 							</div>
 						</div>
 		
-						{selectedProvider?.fields?.map((field) => (
-							<div className="form-group-wrapper" key={field.name}>
-								<div className="form-group">
-									<label htmlFor={field.name}>{field.label}</label>
-									<BasicInput
-									name={field.name}
-									type={field.type || "text"}
-									wrapperClass="setting-form-input"
-									descClass="settings-metabox-description"
-									placeholder={field.placeholder || ""}
-									value={formData[field.name] || ""}
-									onChange={handleChange}
+						{/* Dynamic Fields */}
+						{selectedProvider?.fields?.map((field, index) => {
+							console.log('kk');
+							// Case 1: PHP provided raw HTML block
+							if (field.type === "html" && field.html) {
+								return (
+									<div
+										key={`html-${index}`}
+										className="form-group-wrapper"
+										dangerouslySetInnerHTML={{ __html: field.html }}
 									/>
+								);
+							}
+
+							// Case 2: Normal input field
+							return (
+								<div className="form-group-wrapper" key={field.name || index}>
+									<div className="form-group">
+										{field.label && <label htmlFor={field.name}>{field.label}</label>}
+										<BasicInput
+											name={field.name || ""}
+											type={field.type || "text"}
+											wrapperClass="setting-form-input"
+											descClass="settings-metabox-description"
+											placeholder={field.placeholder || ""}
+											value={formData[field.name || ""] || ""}
+											onChange={handleChange}
+										/>
+									</div>
 								</div>
-							</div>
-						))}
+							);
+						})}
 
 					</div>
 				</div>

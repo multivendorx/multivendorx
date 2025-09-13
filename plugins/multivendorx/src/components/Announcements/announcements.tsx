@@ -35,7 +35,12 @@ export interface RealtimeFilter {
     name: string;
     render: (updateFilter: (key: string, value: any) => void, filterValue: any) => ReactNode;
 }
-
+const bulkActionOptions = [
+    { value: '', label: __('Bulk actions', 'multivendorx') },
+    { value: 'publish', label: __('Publish', 'multivendorx') },
+    { value: 'pending', label: __('Pending', 'multivendorx') },
+    { value: 'delete', label: __('Delete', 'multivendorx') },
+];
 const Announcements: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [data, setData] = useState<StoreRow[] | null>(null);
@@ -155,6 +160,40 @@ const Announcements: React.FC = () => {
     };
 
 
+    const handleBulkAction = async () => {
+        const action = bulkSelectRef.current?.value;
+        const selectedIds = Object.keys(rowSelection).map((key) => {
+            const index = Number(key);
+            return data && data[index] ? data[index].id : null;
+        }).filter((id): id is number => id !== null);
+
+        if (!selectedIds.length) {
+            setModalDetails('Select rows.');
+            setOpenModal(true);
+            return;
+        }
+
+        if (!action) {
+            setModalDetails('Please select an action.');
+            setOpenModal(true);
+            return;
+        }
+
+        setData(null);
+
+        try {
+            await axios({
+            method: 'PUT',
+            url: getApiLink(appLocalizer, 'knowledge/bulk'),
+            headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            data: { action, ids: selectedIds },
+        });
+        requestData(pagination.pageSize, pagination.pageIndex + 1);
+        setRowSelection({}); // Clear selection
+        } catch (err) {
+            setError(__('Failed to perform bulk action', 'multivendorx'));
+        }
+    };
     // Fetch total rows on mount
     useEffect(() => {
         axios({
@@ -211,7 +250,11 @@ const Announcements: React.FC = () => {
     };
 
     // Fetch data from backend
-    function requestData(rowsPerPage = 10, currentPage = 1, typeCount = '') {
+    function requestData(
+        rowsPerPage = 10,
+        currentPage = 1,
+        status: string = 'all'
+    ) {
         setData(null);
         axios({
             method: 'GET',
@@ -220,15 +263,16 @@ const Announcements: React.FC = () => {
             params: {
                 page: currentPage,
                 row: rowsPerPage,
-                status: typeCount === 'all' ? '' : typeCount,
+                status: status
             },
         })
             .then((response) => {
-                setData(response.data || []);
+                const { items, counts } = response.data;
+                setData(items || []);
                 setAnnouncementStatus([
-                    { key: 'all', name: 'All', count: response.data.all || 0 },
-                    { key: 'publish', name: 'Published', count: response.data.publish || 0 },
-                    { key: 'pending', name: 'Pending', count: response.data.pending || 0 },
+                    { key: 'all', name: 'All', count: counts.all || 0 },
+                    { key: 'publish', name: 'Published', count: counts.publish || 0 },
+                    { key: 'pending', name: 'Pending', count: counts.pending || 0 },
                 ]);
             })
             .catch(() => {
@@ -317,11 +361,16 @@ const Announcements: React.FC = () => {
             render: () => (
                 <div className=" bulk-action">
                     <select name="action" className="basic-select" ref={bulkSelectRef}>
-                        <option value="">{__('Bulk actions')}</option>
-                        <option value="publish">{__('Publish', 'multivendorx')}</option>
-                        <option value="pending">{__('Pending', 'multivendorx')}</option>
-                        <option value="delete">{__('Delete', 'multivendorx')}</option>
+                        {bulkActionOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
                     </select>
+                    <button name="bulk-action-apply" className="admin-btn btn-purple" onClick={handleBulkAction}>
+                        {__('Apply')}
+                    </button>
+
                 </div>
             ),
         },
