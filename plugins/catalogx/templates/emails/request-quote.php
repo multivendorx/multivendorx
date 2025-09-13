@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-do_action( 'catalogx_email_header', $email_heading );
+do_action( 'catalogx_email_header', $args['email_heading'] );
 $customer_data = $args['customer_data'];
 ?>
 <body>

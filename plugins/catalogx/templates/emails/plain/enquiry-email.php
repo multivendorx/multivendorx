@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $enquiry_data = $args['enquiry_data'];
 
-echo esc_html( $email_heading ) . "\n\n";
+echo esc_html( $args['email_heading'] ) . "\n\n";
 
 echo sprintf( esc_html__( 'Dear Admin', 'catalogx' ) ) . "\n\n";
 echo sprintf( esc_html__( 'Please find the product enquiry, details are given below', 'catalogx' ) ) . "\n\n";

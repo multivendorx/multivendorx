@@ -146,13 +146,13 @@ class Rest {
         if ( 'enquiry' === $action ) {
             $display_option = $request->get_param( 'displayOption' );
             $restrict_user  = $request->get_param( 'restrictUserEnquiry' );
-            CatalogX()->setting->update_setting( 'is_disable_popup', $display_option, 'catalogx_all_settings_settings' );
-            CatalogX()->setting->update_setting( 'enquiry_user_permission', $restrict_user, 'catalogx_all_settings_settings' );
+            CatalogX()->setting->update_setting( 'is_disable_popup', $display_option, 'catalogx_enquiry_settings' );
+            CatalogX()->setting->update_setting( 'enquiry_user_permission', $restrict_user, 'catalogx_enquiry_settings' );
         }
 
         if ( 'quote' === $action ) {
             $restrict_user = $request->get_param( 'restrictUserQuote' );
-            CatalogX()->setting->update_setting( 'quote_user_permission', $restrict_user, 'catalogx_all_settings_settings' );
+            CatalogX()->setting->update_setting( 'quote_user_permission', $restrict_user, 'catalogx_quotation_settings' );
         }
 
         return rest_ensure_response( $all_details );

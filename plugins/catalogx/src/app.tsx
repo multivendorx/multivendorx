@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import Settings from './components/Settings/Settings';
@@ -13,10 +13,12 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { AdminHeader, Banner, Tour, initializeModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import Brand from './assets/images/Brand.png';
+import { searchIndex, SearchItem } from './searchIndex';
 
 const disableBody = ( target: any ) => disableBodyScroll( target );
 const enableBody = ( target: any ) => enableBodyScroll( target );
 localStorage.setItem( 'force_catalogx_context_reload', 'true' );
+
 interface Products {
     title: string;
     description: string;
@@ -43,45 +45,36 @@ const Route = () => {
         </>
     );
 };
+
 const products: Products[] = [
     {
-        title: __( 'Double Opt-In', 'catalogx' ),
-        description: __(
-            'Experience the power of Double Opt-In for our Stock Alert Form - Guaranteed precision in every notification!',
-            'catalogx'
-        ),
+        title: __( 'Advanced Enquiries', 'catalogx' ),
+        description: __( 'Rich customer-admin messaging system', 'catalogx' ),
     },
     {
-        title: __( 'Your Subscription Hub', 'catalogx' ),
-        description: __(
-            'Subscription Dashboard - Easily monitor and download lists of out-of-stock subscribers for seamless management.',
-            'catalogx'
-        ),
+        title: __( 'Dynamic Pricing', 'catalogx' ),
+        description: __( 'Automated multi-tier price rules', 'catalogx' ),
     },
     {
-        title: __( 'Mailchimp Bridge', 'catalogx' ),
-        description: __(
-            'Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
-            'catalogx'
-        ),
+        title: __( 'Wholesale Sales', 'catalogx' ),
+        description: __( 'B2B ordering with bulk discounts', 'catalogx' ),
     },
     {
-        title: __( 'Unsubscribe Notifications', 'catalogx' ),
+        title: __( 'Custom Quotes', 'catalogx' ),
         description: __(
-            'User-Initiated Unsubscribe from In-Stock Notifications.',
-            'catalogx'
-        ),
-    },
-    {
-        title: __( 'Ban Spam Emails', 'catalogx' ),
-        description: __(
-            'Email and Domain Blacklist for Spam Prevention.',
+            'Speed up sales with personalized quotes.',
             'catalogx'
         ),
     },
 ];
+
 const App = () => {
     const currentTabParams = new URLSearchParams( useLocation().hash );
+
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState<SearchItem[]>([]);
+    const [selectValue, setSelectValue] = useState('all');
+
     document
         .querySelectorAll( '#toplevel_page_catalogx>ul>li>a' )
         .forEach( ( menuItem ) => {
@@ -107,14 +100,50 @@ const App = () => {
             }
         } );
 
-    const handleSelectChange = ( val: string ) => {
-        setSelectValue( val );
-    };
-
-    // --- INIT MODULES ---
     useEffect( () => {
         initializeModules( appLocalizer, 'catalogx', 'free', 'modules' );
     }, [] );
+
+    // 🔹 Search handlers
+    const handleSearchChange = (value: string) => {
+        setQuery(value);
+    
+        if (!value.trim()) {
+            setResults([]);
+            return;
+        }
+    
+        const lowerValue = value.toLowerCase();
+    
+        const filtered = searchIndex.filter((item) => {
+            // Filter by dropdown selection
+            if (selectValue !== 'all' && item.tab !== selectValue) return false;
+    
+            // Case-insensitive search
+            const name = item.name?.toLowerCase() || '';
+            const desc = item.desc?.toLowerCase() || '';
+            return name.includes(lowerValue) || desc.includes(lowerValue);
+        });
+    
+        setResults(filtered);
+    };
+
+    const handleSelectChange = (value: string) => {
+        setSelectValue(value);
+    
+        // Re-run search for current query whenever dropdown changes
+        if (query.trim()) {
+            handleSearchChange(query);
+        } else {
+            setResults([]);
+        }
+    };
+
+    const handleResultClick = (item: SearchItem) => {
+        window.location.hash = item.link;
+        setQuery('');
+        setResults([]);
+    };
 
     return (
         <>
@@ -122,17 +151,17 @@ const App = () => {
                 products={ products }
                 isPro={ appLocalizer.khali_dabba }
                 proUrl={ appLocalizer.pro_url }
-                tag="Why Premium"
-                buttonText="View Pricing"
-                bgCode="#852aff" // backgroud color
-                textCode="#fff" // text code
-                btnCode="#fff" // button color
-                btnBgCode="#e35047" // button backgroud color
             />
             <AdminHeader
                 brandImg={ Brand }
-                onSelectChange={ handleSelectChange }
-                // free={appLocalizer.freeVersion}
+                query={query}
+                results={ results }
+                onSearchChange={handleSearchChange}
+                onResultClick={handleResultClick}
+                onSelectChange={handleSelectChange}
+                selectValue={selectValue}
+                free={ appLocalizer.freeVersion }
+                pro={ appLocalizer.proVersion }
             />
             <TourProvider
                 steps={ [] }

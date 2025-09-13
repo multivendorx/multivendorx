@@ -21,21 +21,8 @@
 
     .basic-input,
     .basic-select,
-    .textarea-basic {
-        width: 100%;
-        border: 0.063rem solid #e0e4e9 !important; // for overwrite woocommerce style
-        border-radius: 0.25rem;
-        padding: 0.313rem 0.5rem;
+    .textarea-input {
         background: #d6b5ff21;
-        border-color: #d6b5ff;
-        font-size: 0.875rem;
-        line-height: 1.5;
-
-        &:focus {
-            outline: none;
-            box-shadow: none !important; // for overwrite woocommerce style
-        }
-
     }
     .form-title{
         font-size: 1.75rem;

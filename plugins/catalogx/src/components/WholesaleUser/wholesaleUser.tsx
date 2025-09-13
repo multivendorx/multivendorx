@@ -9,10 +9,6 @@ const WholesaleUser = () => {
 
     return (
         <>
-            <AdminBreadcrumbs
-                activeTabIcon="adminlib-wholesale"
-                tabTitle="Wholesale User"
-            />
             <div id="wholesale-list-table">
                 <Dialog
                     className="admin-module-popup"
@@ -34,6 +30,10 @@ const WholesaleUser = () => {
                         <ShowPopup moduleName="wholesale" />
                     ) }
                 </Dialog>
+                <AdminBreadcrumbs
+                    activeTabIcon="adminlib-wholesale"
+                    tabTitle="Wholesale User"
+                />
                 <div
                     className="image-wrapper wholesale-user-image"
                     onClick={ () => {
