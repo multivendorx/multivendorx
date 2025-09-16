@@ -65,9 +65,15 @@ class FrontEnd {
         // Hover style.
         add_action( 'wp_head', array( $this, 'frontend_hover_styles' ) );
 
-        add_filter( 'notifima_display_product_lead_time', array( $this, 'display_product_lead_time' ), 10 );
-    }
+        add_filter( 'notifima_display_product_lead_time', array( $this, 'display_product_lead_time' ), 10 );       
 
+
+         add_action( 'template_redirect', array( $this, 'maybe_hide_outofstock_message' ));
+
+
+    }
+   
+    
     /**
      * Add the product subscription form in single product page.
      */
@@ -187,8 +193,10 @@ class FrontEnd {
      * @return  void
      */
     public function display_product_subscription_form( $product_obj = null ) {
+      
         global $product;
-
+        $discontinued = $product->get_meta( '_custom_discontinued' ); 
+        if ( $discontinued === 'no' ) {
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
 
         if ( empty( $product_obj ) ) {
@@ -218,6 +226,11 @@ class FrontEnd {
             }
         } else {
             echo wp_kses( $this->get_subscribe_form( $product_obj ), self::$allowed_html );
+        }
+    }
+        else
+        {
+           echo '<p class="stock discontinued">This product has been discontinued.</p>';
         }
     }
 
@@ -323,5 +336,26 @@ class FrontEnd {
         }
 
         return '';
+    }     
+    public function maybe_hide_outofstock_message() {
+    if ( ! is_product() ) {
+        return;
     }
+
+    add_filter( 'gettext', [ $this, 'hide_outofstock_message' ], 10, 3 );
+}
+
+public function hide_outofstock_message( $translated, $text, $domain ) {
+   
+    if ( $domain === 'woocommerce' && $text === 'This product is currently out of stock and unavailable.' ) {
+        global $product;        
+        if ( $product && is_a( $product, 'WC_Product' ) ) {            
+            $discontinued = $product->get_meta( '_custom_discontinued' );
+            if ( $discontinued === 'yes' ) {
+                return '';
+            }
+        }
+        }
+    return $translated;
+}
 }

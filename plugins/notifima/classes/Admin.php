@@ -45,7 +45,11 @@ class Admin {
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_notifima_redirect_host' ) );
         // For loco translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
+       
+        add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_discontinued_status' ) );
+        add_action( 'woocommerce_product_options_inventory_product_data', array( $this, 'discontinued_checkbox' ), 10 );    
     }
+     
 
     /**
      * Add options page.
@@ -242,7 +246,7 @@ class Admin {
     /**
      * Notifima news on Product edit page ( simple ).
      */
-    public function display_product_subscriber_count_in_metabox() {
+    public function display_product_subscriber_count_in_metabox() {      
         global $post;
         $product = wc_get_product( $post->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
@@ -266,6 +270,8 @@ class Admin {
      * @param WP_Post $variation       The WP_Post object for the variation.
      */
     public function display_product_subscriber_count_in_variation_metabox( $loop, $variation_data, $variation ) {
+        
+              
         $product = wc_get_product( $variation->ID );
         if ( Subscriber::is_product_outofstock( $product ) ) {
             $product_subscriber = $product->get_meta( 'no_of_subscribers', true );
@@ -327,5 +333,16 @@ class Admin {
         }
 
         return $hosts;
+    }
+    public function save_discontinued_status( $product ) {
+        $is_discontinued = isset( $_POST['_custom_discontinued'] ) ? 'yes' : 'no';
+        $product->update_meta_data( '_custom_discontinued', $is_discontinued );
+    }
+    public function discontinued_checkbox() {
+        woocommerce_wp_checkbox( array(
+        'id'          => '_custom_discontinued',
+        'label'       => __( 'Mark this product as Discontinued', 'woocommerce' )
+        
+    ) );
     }
 }
