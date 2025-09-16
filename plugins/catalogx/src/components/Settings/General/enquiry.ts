@@ -92,5 +92,37 @@ export default {
             ],
             moduleEnabled: 'enquiry',
         },
+        {
+            key: 'is_page_redirect',
+            type: 'checkbox',
+            label: __( 'Redirect after enquiry form Submission', 'catalogx' ),
+            desc: __(
+                'Enable this to redirect user to another page after successful enquiry submission.',
+                'catalogx'
+            ),
+            options: [
+                {
+                    key: 'is_page_redirect',
+                    value: 'is_page_redirect',
+                },
+            ],
+            look: 'toggle',
+            moduleEnabled: 'enquiry',
+        },
+        {
+            key: 'redirect_page_id',
+            dependent: {
+                key: 'is_page_redirect',
+                set: true,
+            },
+            type: 'select',
+            label: __( 'Post enquiry submission redirect page', 'catalogx' ),
+            desc: __(
+                'Select page where user will be redirected after successful enquiry.',
+                'catalogx'
+            ),
+            options: appLocalizer.all_pages,
+            moduleEnabled: 'enquiry',
+        },
     ],
 };

@@ -91,6 +91,10 @@ class Setting {
                 'catalogx_enquiry_email_temp_settings',
 				'catalogx_wholesale_settings',
 				'catalogx_wholesale_registration_settings',
+                'catalogx_enquiry_settings',
+                'catalogx_quotation_settings',
+                'catalogx_wholesale_settings',
+                'catalogx_extra_settings',
 			)
         );
 

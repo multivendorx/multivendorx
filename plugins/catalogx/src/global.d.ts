@@ -53,6 +53,8 @@ declare global {
         quote_module_active: boolean;
         quote_base_url: string;
         redirect_url: string;
+        freeVersion: string;
+        proVersion: string | null;
     }
 
     interface EnquiryFormData {
