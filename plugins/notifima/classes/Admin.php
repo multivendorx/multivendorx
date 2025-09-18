@@ -46,8 +46,8 @@ class Admin {
         // For loco translation.
         add_action( 'load_script_textdomain_relative_path', array( $this, 'textdomain_relative_path' ), 10, 2 );
        
-        add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_discontinued_status' ) );
-        add_action( 'woocommerce_product_options_inventory_product_data', array( $this, 'discontinued_checkbox' ), 10 );    
+        add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_product_discontinued_status' ) );
+        add_action( 'woocommerce_product_options_inventory_product_data', array( $this, 'product_discontinued_checkbox' ), 10 );    
     }
      
 
@@ -334,15 +334,20 @@ class Admin {
 
         return $hosts;
     }
-    public function save_discontinued_status( $product ) {
-        $is_discontinued = isset( $_POST['_custom_discontinued'] ) ? 'yes' : 'no';
-        $product->update_meta_data( '_custom_discontinued', $is_discontinued );
+public function save_product_discontinued_status( $product ) {
+    $product_discontinued = filter_input( INPUT_POST, '_product_discontinued', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+    if ( $product_discontinued ) {
+        $product->update_meta_data( '_product_discontinued', 'yes' );
+    } else {
+        $product->delete_meta_data( '_product_discontinued' );
     }
-    public function discontinued_checkbox() {
-        woocommerce_wp_checkbox( array(
-        'id'          => '_custom_discontinued',
-        'label'       => __( 'Mark this product as Discontinued', 'woocommerce' )
-        
+}
+    public function product_discontinued_checkbox() {
+    woocommerce_wp_checkbox( array(
+        'id'          => '_product_discontinued',
+        'label'       => __( 'Mark this product as Discontinued', 'woocommerce' ),
+        'description' => __( 'Mark this product as Discontinued from Shop.', 'woocommerce' ),
     ) );
-    }
+}
 }

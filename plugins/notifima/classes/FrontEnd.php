@@ -68,7 +68,7 @@ class FrontEnd {
         add_filter( 'notifima_display_product_lead_time', array( $this, 'display_product_lead_time' ), 10 );       
 
 
-         add_action( 'template_redirect', array( $this, 'maybe_hide_outofstock_message' ));
+         add_action( 'template_redirect', array( $this, 'maybe_hide_product_outofstock_message' ));
 
 
     }
@@ -195,8 +195,8 @@ class FrontEnd {
     public function display_product_subscription_form( $product_obj = null ) {
       
         global $product;
-        $discontinued = $product->get_meta( '_custom_discontinued' ); 
-        if ( $discontinued === 'no' ) {
+        $discontinued = $product->get_meta( '_product_discontinued' ); 
+        if ( $discontinued != 'yes' ) {
         $product_obj = is_int( $product_obj ) ? wc_get_product( $product_obj ) : ( $product_obj ? $product_obj : $product );
 
         if ( empty( $product_obj ) ) {
@@ -230,7 +230,8 @@ class FrontEnd {
     }
         else
         {
-           echo '<p class="stock discontinued">This product has been discontinued.</p>';
+          $product_discontinued_text = Notifima()->setting->get_setting( 'product_discontinued_text' );
+          echo '<span class="product-discontinued">' . esc_html( $product_discontinued_text ) . '</span>';
         }
     }
 
@@ -334,28 +335,25 @@ class FrontEnd {
 
             return '<p>' . esc_html( $lead_time_static_text ) . '</p>';
         }
-
         return '';
     }     
-    public function maybe_hide_outofstock_message() {
+public function maybe_hide_product_outofstock_message() {
     if ( ! is_product() ) {
         return;
     }
-
-    add_filter( 'gettext', [ $this, 'hide_outofstock_message' ], 10, 3 );
+    add_filter( 'gettext', [ $this, 'hide_product_outofstock_message' ], 10, 3 );
 }
 
-public function hide_outofstock_message( $translated, $text, $domain ) {
-   
+public function hide_product_outofstock_message( $translated, $text, $domain ) {
     if ( $domain === 'woocommerce' && $text === 'This product is currently out of stock and unavailable.' ) {
-        global $product;        
-        if ( $product && is_a( $product, 'WC_Product' ) ) {            
-            $discontinued = $product->get_meta( '_custom_discontinued' );
-            if ( $discontinued === 'yes' ) {
+        global $product;
+        if ( $product && is_a( $product, 'WC_Product' ) ) {
+            $product_discontinued = $product->get_meta( '_product_discontinued' );
+            if ( $product_discontinued === 'yes' ) {
                 return '';
             }
         }
-        }
+    }
     return $translated;
 }
 }
