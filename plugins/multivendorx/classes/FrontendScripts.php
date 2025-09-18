@@ -179,6 +179,16 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'react-jsx-runtime' ),
 					'version' => $version,
 				),
+                'multivendorx-qna-frontend-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/QuestionsAnswers/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+					'deps'    => array( 'jquery' ),
+					'version' => $version,
+				),
+                'multivendorx-review-frontend-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/StoreReview/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+					'deps'    => array( 'jquery' ),
+					'version' => $version,
+				),
 			)
         );
         foreach ( $register_scripts as $name => $props ) {
@@ -421,6 +431,20 @@ class FrontendScripts {
 						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
 					),
 				),
+                'multivendorx-qna-frontend-script' => array(
+					'object_name' => 'qnaFrontend',
+					'data'        => array(
+						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
+                        'nonce'    => wp_create_nonce('qna_ajax_nonce'),
+					),
+				),
+                'multivendorx-review-frontend-script' => array(
+					'object_name' => 'review',
+					'data'        => array(
+						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
+                        'nonce'    => wp_create_nonce('review_ajax_nonce'),
+					),
+				),
                 'multivendorx-dashboard-script' => array(
                     'object_name' => 'appLocalizer',
                     'data'        => array(
@@ -430,6 +454,7 @@ class FrontendScripts {
                         'color'                    => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
                         'store_payment_settings'    => MultiVendorX()->payments->get_all_store_payment_settings(),
                         'store_id'                  => get_user_meta(wp_get_current_user()->ID, 'multivendorx_active_store', true),
+                        'ajaxurl'     => admin_url( 'admin-ajax.php' ),
                     ),
                 ),
                 'multivendorx-registration-form-script'          => array(

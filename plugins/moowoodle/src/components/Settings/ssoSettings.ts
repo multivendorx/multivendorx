@@ -29,7 +29,12 @@ export default {
         },
         {
             key: 'moowoodle_sso_secret_key',
-            type: 'text',
+            type: 'text',            
+            dependent: {
+                key: 'moowoodle_sso_enable', // parent dependent key
+                set: true,
+                value: 'moowoodle_sso_enable', // updated value
+            },
             desc: sprintf(
                 /* translators: %s: URL to Moodle SSO settings page */
                 __(

@@ -8,13 +8,6 @@ defined( 'ABSPATH' ) || exit;
 
 class MultiVendorX_REST_Settings_Controller extends \WP_REST_Controller {
 
-    /**
-	 * Endpoint namespace.
-	 *
-	 * @var string
-	 */
-	protected $namespace = 'multivendorx/v1';
-
 	/**
 	 * Route base.
 	 *
@@ -25,7 +18,7 @@ class MultiVendorX_REST_Settings_Controller extends \WP_REST_Controller {
 
     public function register_routes() {
         register_rest_route(
-            $this->namespace,
+            MultiVendorX()->rest_namespace,
             '/' . $this->rest_base,
             array(
 				array(
@@ -37,7 +30,7 @@ class MultiVendorX_REST_Settings_Controller extends \WP_REST_Controller {
         );
         // enable/disable the module.
         register_rest_route(
-            $this->namespace,
+            MultiVendorX()->rest_namespace,
             '/' . $this->modules_base,
             array(
                 array(

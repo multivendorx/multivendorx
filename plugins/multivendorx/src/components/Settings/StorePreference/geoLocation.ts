@@ -7,7 +7,7 @@ export default {
     priority: 3,
     name: 'Geolocation',
     desc: __('Help customers discover stores and products near them by enabling location-based search and maps.', 'multivendorx'),
-    icon: 'adminlib-form-section',
+    icon: 'adminlib-location',
     submitUrl: 'settings',
     modal: [
         {
@@ -94,12 +94,12 @@ export default {
             nestedFields: [
                 {
                     key: 'radius_search_min_distance',
-                    prefixUnit: __('Min', 'multivendorx'),
+                    preInsideText: __('Min', 'multivendorx'),
                     type: 'number',
                 },
                 {
                     key: 'radius_search_max_distance',
-                    prefixUnit: __('Max', 'multivendorx'),
+                    preInsideText: __('Max', 'multivendorx'),
                     type: 'number',
                 },
 

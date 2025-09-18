@@ -74,16 +74,6 @@ const EditStore = () => {
         {
             type: 'file',
             content: {
-                id: 'staff',
-                name: 'Store Staff',
-                desc: 'Store Users',
-                hideTabHeader: true,
-                icon: 'adminlib-credit-card',
-            },
-        },
-        {
-            type: 'file',
-            content: {
                 id: 'payment',
                 name: 'Payment',
                 desc: 'Payment Methods',
@@ -107,6 +97,16 @@ const EditStore = () => {
                 id: 'store-policy',
                 name: 'Store Policy',
                 desc: 'Store Policy',
+                hideTabHeader: true,
+                icon: 'adminlib-credit-card',
+            },
+        },
+        {
+            type: 'file',
+            content: {
+                id: 'staff',
+                name: 'Store Staff',
+                desc: 'Store Users',
                 hideTabHeader: true,
                 icon: 'adminlib-credit-card',
             },

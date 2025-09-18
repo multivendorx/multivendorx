@@ -4,7 +4,6 @@ namespace MultiVendorX\Commission;
 
 use MultiVendorX\Store\Store;
 use MultiVendorX\Utill;
-use MultiVendorX\Vendor\VendorUtil as VendorUtil;
 
 defined('ABSPATH') || exit;
 
@@ -41,8 +40,8 @@ class CommissionManager {
         global $wpdb;
 
         if ( $order ) {
-            $vendor_id = $order->get_meta('multivendorx_store_id');
-            $vendor = Store::get_store_by_id( $vendor_id );
+            $store_id = $order->get_meta('multivendorx_store_id');
+            $vendor = Store::get_store_by_id( $store_id );
 
             $commission_type = MultiVendorX()->setting->get_setting( 'commission_type' );
 
@@ -152,7 +151,7 @@ class CommissionManager {
             if ( !empty(MultiVendorX()->setting->get_setting('give_shipping')) ) {
                 $shipping_amount = $order->get_shipping_total();
             }
-            // // transfer tax charges
+            // transfer tax charges
             foreach ( $order->get_items( 'tax' ) as $key => $tax ) { 
                 if ( MultiVendorX()->setting->get_setting('give_tax') == 'full_tax' && MultiVendorX()->setting->get_setting('give_shipping') ) {
                     $tax_amount += $tax->get_tax_total();
@@ -172,20 +171,26 @@ class CommissionManager {
                 }
             }
 
+            // in commission total add facilitator_fee and gateway fee.
             $commission_total = (float) $commission_amount + (float) $shipping_amount + (float) $tax_amount + (float) $shipping_tax_amount;
             $commission_total = apply_filters( 'mvx_commission_total_amount', $commission_total, $commission_id );
 
             // insert | update commission into commission table.
             $data = [
-                'order_id'          => $order->get_id(),
-                'store_id'         => $vendor_id,
-                'commission_amount' => $commission_amount,
-                'shipping'          => $shipping_amount,
-                'tax'               => $tax_amount,
-                'commission_total'  => $commission_total,
-                'paid_status'       => 'unpaid'
+                'order_id'              => $order->get_id(),
+                'store_id'              => $store_id,
+                'customer_id'           => $order->get_customer_id(),
+                'total_order_amount'    => $order->get_total(),
+                'commission_amount'     => $commission_amount,
+                'shipping_amount'       => $shipping_amount,
+                'tax_amount'            => $tax_amount,
+                'shipping_tax_amount'   => $shipping_tax_amount,
+                'discount_amount'       => $order->get_discount_total(),
+                'commission_total'      => $commission_total,
+                'currency'              => get_woocommerce_currency(),
+                'status'                => $order->get_status() == 'cancelled' ? 'cancelled' : 'paid'
             ];
-            $format = [ "%d", "%d", "%f", "%f", "%f", "%f", "%s" ];
+            $format = [ "%d", "%d", "%d", "%f", "%f", "%f", "%f", "%f", "%f", "%f", "%s", "%s" ];
             if ( ! $commission_id ) {
                 $wpdb->insert( $wpdb->prefix . Utill::TABLES['commission'], $data, $format );
                 $commission_id = $wpdb->insert_id;

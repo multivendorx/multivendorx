@@ -1,31 +1,10 @@
 @use './config.scss' as *;
 
-.column {
-    padding: 1.625rem;
-    border-radius: 0.313rem;
-    box-shadow: 0 0.125rem 0.5rem 0 rgb(223 222 225 / 43%);
-    background: #fff;
-    width: 100%;
-
-    .action-btn-wrapper {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    h3 {
-        padding-bottom: 0.85rem;
-        margin: 0;
-    }
-
-    .admin-table-wrapper {
-        padding: 0;
-    }
-}
-
 .card-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    width: 100%;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     border-bottom: $border-light-small;
@@ -68,6 +47,50 @@
                 padding: 0;
                 font-size: 1rem;
             }
+        }
+    }
+}
+
+.column {
+    padding: 1.625rem;
+    border-radius: 0.313rem;
+    box-shadow: 0 0.125rem 0.5rem 0 rgb(223 222 225 / 43%);
+    background: #fff;
+    width: 100%;
+
+    .action-btn-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    h3 {
+        padding-bottom: 0.85rem;
+        margin: 0;
+    }
+
+    .admin-table-wrapper {
+        padding: 0;
+    }
+
+    .column {
+        width: 94%;
+        padding: 1rem;
+        margin-bottom: 0.813rem;
+
+        .product-name {
+            font-size: 1.063rem;
+        }
+
+        .price {}
+
+        .items {
+            padding: 0.313rem;
+        }
+
+        .card-header {
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
         }
     }
 }
@@ -229,4 +252,94 @@
         }
     }
 }
+
 // card styles start
+
+
+
+.registration-from-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+    padding: 1rem;
+    background: #f3f3f39e;
+    gap: 1.5rem;
+
+    .elements-wrapper {
+        background: #fff;
+        width: 17rem;
+        padding: 1.125rem;
+        position: sticky;
+        top: 1.875rem;
+        min-height: 90vh;
+
+        .tab-titles {
+            padding: 0;
+            margin-bottom: 1.125rem;
+
+            .title {
+                text-align: center;
+                width: 50%;
+
+                p {
+                    font-size: 1.063rem;
+                }
+            }
+        }
+
+        .section-meta {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+
+            h2 {
+                font-size: 1.313rem;
+                font-weight: 500;
+                line-height: 1.5rem;
+            }
+
+            i {
+                font-size: 1.5rem;
+                transition: transform 0.3s ease;
+
+                &.rotate {
+                    transform: rotate(90deg);
+
+                }
+            }
+        }
+
+        .section-container {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.35s ease, opacity 0.25s ease;
+
+            &.open {
+                max-height: 1000px;
+                opacity: 1;
+            }
+
+            i{
+                font-size: 1.313rem;
+                padding: 0.313rem;
+                background: #ece2f9f1;
+                color: #5007aa;
+                border-radius: 0.313rem;
+            }
+        }
+    }
+
+    .registration-form-main-section {
+        background: #fff;
+        width: 50%;
+    }
+
+    .registration-edit-form {
+        background: #fff;
+        width: 25%;
+    }
+}

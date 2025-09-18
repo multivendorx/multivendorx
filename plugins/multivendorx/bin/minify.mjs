@@ -5,15 +5,18 @@ import fs from 'fs-extra';
 import path from 'path';
 import { glob } from 'glob';
 import chalk from 'chalk';
+import sass from 'sass';
 
 /**
  * This is the list of folders where the .js and .css files are present.
  * format: (path start from the root of the project './')
  * 1. 'dist' (directory)
  */
-const sourceFolders = [ "assets" ];
+const sourceFolders = [
+    "assets",
+    ...glob.sync("modules/*/assets/*").map(p => p.split(path.sep).join('/'))
+];
 
-let outputFolder;
 const { name } = JSON.parse( fs.readFileSync( "package.json" ) );
 
 ( async () => {
@@ -28,26 +31,42 @@ const { name } = JSON.parse( fs.readFileSync( "package.json" ) );
         for ( const file of files ) {
             try {
                 console.log( chalk.bgCyanBright.black( `🧹Minify ${ file }` ) );
-                const ext = path.extname( file );
+                let ext = path.extname( file );
                 const content = await fs.readFile( file, "utf8" );
 
                 let minified;
                 if ( ext === ".js" ) {
-                    // min path for js
-                    outputFolder = "release/assets/js/";
                     const result = await minifyJs( content );
                     minified = result.code;
                 } else if ( ext === ".scss" ) {
-                    // min path for css
-                    outputFolder = "release/assets/styles/";
-                    const result = new CleanCSS().minify( content );
+                    const compiled = sass.compile(file);
+                    const result = new CleanCSS().minify( compiled.css );
                     minified = result.styles;
+                    ext = ".css";
                 }
 
-                const relativePath = path.relative( sourceFolder, file );
-                const parsed = path.parse( relativePath );
-                const newFileName = `${ name }-${ parsed.name }.min${ parsed.ext }`;
-                const outputPath = path.join( outputFolder, newFileName );
+                const relativePath = path.relative('.', file);
+                const normalizedPath = relativePath.split(path.sep).join('/'); // normalize slashes
+                const parsed = path.parse(relativePath);
+
+                let outputPath;
+                if (normalizedPath.startsWith('assets/js')) {
+                    outputPath = `release/assets/js/${name}-${parsed.name}.min${ext}`;
+                } else if (normalizedPath.startsWith('assets/styles')) {
+                    outputPath = `release/assets/styles/${name}-${parsed.name}.min${ext}`;
+                } else if (normalizedPath.startsWith('modules/')) {
+                    const parts = normalizedPath.split('/'); // safe now
+                    const moduleName = parts[1];
+                    const assetType = parts[3]; // js or styles
+                    outputPath = path.join(
+                        `release/assets/modules/${moduleName}/${assetType}`,
+                        `${name}-${parsed.name}.min${ext}`
+                    );
+                } else {
+                    console.log(chalk.yellow(`⚠️ Unknown file location: ${file}, skipping.`));
+                    continue;
+                }
+
 
                 await fs.outputFile( outputPath, minified );
             } catch ( err ) {

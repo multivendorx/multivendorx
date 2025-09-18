@@ -111,12 +111,12 @@ const selectOptions: SelectOption[] = [
         label: 'Date Picker',
     },
     {
-        icon: 'adminlib-alarm icon-form-address01',
+        icon: 'adminlib-alarm icon-form-address',
         value: 'TimePicker',
         label: 'Time Picker',
     },
     {
-        icon: 'adminlib-divider icon-form-address01',
+        icon: 'adminlib-divider icon-form-address',
         value: 'divider',
         label: 'Divider',
     },
@@ -132,7 +132,7 @@ const selectOptionsStore: SelectOption[] = [
         icon: 'adminlib-text icon-form-textarea',
         value: 'textarea',
         label: 'Store Desc',
-        name: 'decription',
+        name: 'description',
     },
     {
         icon: 'adminlib-t-letter-bold icon-form-textbox',
@@ -156,13 +156,13 @@ const selectOptionsStore: SelectOption[] = [
         icon: 'adminlib-dropdown-checklist icon-form-dropdown',
         value: 'dropdown',
         label: 'Country',
-        name:'country',
+        name: 'country',
     },
     {
         icon: 'adminlib-dropdown-checklist icon-form-dropdown',
         value: 'dropdown',
         label: 'State',
-        name:'state',
+        name: 'state',
     },
     {
         icon: 'adminlib-t-letter-bold icon-form-textbox',
@@ -176,71 +176,9 @@ const selectOptionsStore: SelectOption[] = [
         label: 'Post Code',
         name: 'post_code'
     },
-    { icon: 'adminlib-unread icon-form-email', value: 'email', label: 'Paypal Email',name:'paypal_email' },
+    { icon: 'adminlib-unread icon-form-email', value: 'email', label: 'Paypal Email', name: 'paypal_email' },
 
 ];
-// /**
-//  * Component that renders an action section for adding new items.
-//  *
-//  * @param {AddNewBtnProps} props          - The props object.
-//  * @param {() => void}     props.onAddNew - Callback function invoked when the add button is clicked.
-//  * @param {boolean}        props.large    - If true, renders the large version of the button.
-//  */
-// export const AddNewBtn: React.FC<AddNewBtnProps> = ({ onAddNew, large }) => {
-// 	return (
-// 		<>
-// 			{large ? (
-// 				<div className="addnew">
-// 					<div
-// 						role="button"
-// 						tabIndex={0}
-// 						onClick={() => onAddNew?.()}
-// 					>
-// 						<i className="admin-font adminlib-move"></i>
-// 					</div>
-// 					<p>{'Click to add next text field'}</p>
-// 				</div>
-// 			) : (
-// 				<div
-// 					className="add-new-sections"
-// 					role="button"
-// 					tabIndex={0}
-// 					onClick={() => onAddNew?.()}
-// 				>
-// 					<div>
-// 						<span>
-// 							<i className="admin-font adminlib-move"></i>
-// 						</span>
-// 					</div>
-// 				</div>
-// 			)}
-// 		</>
-// 	);
-// };
-
-// /**
-//  * Component that renders a delete button section.
-//  *
-//  * @param {DeleteBtnProps} props            - The props object.
-//  * @param {() => void}     props.onDelete   - Callback function invoked when the delete button is clicked.
-//  * @param {boolean}        props.hideDelete - If true, hides or disables the delete button.
-//  */
-// export const DeleteBtn: React.FC<DeleteBtnProps> = ({
-// 	onDelete,
-// 	hideDelete,
-// }) => {
-// 	return (
-// 		<div
-// 			className={`delete ${hideDelete ? 'disable' : ''}`}
-// 			role="button"
-// 			tabIndex={0}
-// 			onClick={() => onDelete?.()}
-// 		>
-// 			<i className="admin-font adminlib-close"></i>
-// 		</div>
-// 	);
-// };
-
 interface FormField {
     id: number;
     type: string;
@@ -365,34 +303,6 @@ const CustomFrom: React.FC<CustomFormProps> = ({
      * Function generate a empty form field and return it.
      * By default it set the type to simple text
      */
-
-    // const getNewFormField = (type: string = 'text'): FormField => {
-    //     const newFormField: FormField = {
-    //         id: randMaxId ?? 0, // Ensure randMaxId is a number (or fallback to 0)
-    //         type,
-    //         label: '',
-    //         required: false,
-    //         name: `${type}-${getUniqueName()}`,
-    //     };
-
-    //     if (
-    //         ['multiselect', 'radio', 'dropdown', 'checkboxes'].includes(
-    //             type
-    //         )
-    //     ) {
-    //         newFormField.label = DEFAULT_LABEL_SELECT;
-    //         newFormField.options = DEFAULT_OPTIONS;
-    //     } else {
-    //         newFormField.label = DEFAULT_LABEL_SIMPLE(type);
-    //         newFormField.placeholder = DEFAULT_PLACEHOLDER(type);
-    //     }
-
-    //     // update randMaxId by 1
-    //     setRendMaxId((prev) => (prev ?? 0) + 1);
-
-    //     return newFormField;
-    // };
-
     const getNewFormField = (
         type: string = 'text',
         fixedName?: string
@@ -425,24 +335,6 @@ const CustomFrom: React.FC<CustomFormProps> = ({
      * @param {string} [type="text"] - The type of the new form field to create.
      * @return {FormField | undefined} The newly created form field object, or undefined if blocked.
      */
-    // const appendNewFormField = (index: number, type = 'text') => {
-    //     if (proSettingChange()) return;
-    //     const newField = getNewFormField(type);
-
-    //     // Create a new array with the new element inserted
-    //     const newFormFieldList = [
-    //         ...formFieldList.slice(0, index + 1),
-    //         newField,
-    //         ...formFieldList.slice(index + 1),
-    //     ];
-
-    //     // Update the state with the new array
-    //     settingHasChanged.current = true;
-    //     setFormFieldList(newFormFieldList);
-
-    //     return newField;
-    // };
-
     const appendNewFormField = (
         index: number,
         type = 'text',
@@ -540,22 +432,201 @@ const CustomFrom: React.FC<CustomFormProps> = ({
         settingHasChanged.current = true;
         setFormFieldList(newFormFieldList);
     };
+    const [activeTab, setActiveTab] = useState("blocks");
+    const [settingsActiveTab, setSettingsActiveTab] = useState("blocks");
+    const tabs = [
+        {
+            id: "blocks",
+            label: "Blocks",
+            content: (
+                <>
+                    <Elements
+                        label="General"
+                        selectOptions={selectOptions}
+                        onClick={(type) => {
+                            const newInput = appendNewFormField(
+                                formFieldList.length - 1,
+                                type
+                            );
+                            setOpendInput(newInput);
+                        }}
+                    />
+                    <Elements
+                        label="Multivendor Free"
+                        selectOptions={selectOptionsStore}
+                        onClick={(type) => {
+                            const option = selectOptionsStore.find((o) => o.value === type);
+                            const fixedName = option?.name;
 
+                            // Append new store field as readonly
+                            appendNewFormField(
+                                formFieldList.length - 1,
+                                type,
+                                fixedName,
+                                true // readonly flag
+                            );
+
+                            // Ensure meta box does not open
+                            SetIsInputBoxClick({ click: false });
+                            setOpendInput(null);
+                        }}
+                    />
+                    <Elements
+                        label="Multivendor Pro"
+                        selectOptions={selectOptionsStore}
+                        onClick={(type) => {
+                            const option = selectOptionsStore.find((o) => o.value === type);
+                            const fixedName = option?.name;
+
+                            // Append new store field as readonly
+                            appendNewFormField(
+                                formFieldList.length - 1,
+                                type,
+                                fixedName,
+                                true // readonly flag
+                            );
+
+                            // Ensure meta box does not open
+                            SetIsInputBoxClick({ click: false });
+                            setOpendInput(null);
+                        }}
+                    />
+                    <Elements
+                        label="Store"
+                        selectOptions={selectOptionsStore}
+                        onClick={(type) => {
+                            const option = selectOptionsStore.find((o) => o.value === type);
+                            const fixedName = option?.name;
+
+                            // Append new store field as readonly
+                            appendNewFormField(
+                                formFieldList.length - 1,
+                                type,
+                                fixedName,
+                                true // readonly flag
+                            );
+
+                            // Ensure meta box does not open
+                            SetIsInputBoxClick({ click: false });
+                            setOpendInput(null);
+                        }}
+                    />
+                </>
+            ),
+        },
+        { id: "templates", label: "Templates", content: <div /> },
+    ];
+
+    const settingstabs = [
+        {
+            id: "blocks",
+            label: "Blocks",
+            content: (
+                <>
+                    <Elements
+                        label="General"
+                        selectOptions={selectOptions}
+                        onClick={(type) => {
+                            const newInput = appendNewFormField(
+                                formFieldList.length - 1,
+                                type
+                            );
+                            setOpendInput(newInput);
+                        }}
+                    />
+                    <Elements
+                        label="Multivendor Free"
+                        selectOptions={selectOptionsStore}
+                        onClick={(type) => {
+                            const option = selectOptionsStore.find((o) => o.value === type);
+                            const fixedName = option?.name;
+
+                            // Append new store field as readonly
+                            appendNewFormField(
+                                formFieldList.length - 1,
+                                type,
+                                fixedName,
+                                true // readonly flag
+                            );
+
+                            // Ensure meta box does not open
+                            SetIsInputBoxClick({ click: false });
+                            setOpendInput(null);
+                        }}
+                    />
+                    <Elements
+                        label="Multivendor Pro"
+                        selectOptions={selectOptionsStore}
+                        onClick={(type) => {
+                            const option = selectOptionsStore.find((o) => o.value === type);
+                            const fixedName = option?.name;
+
+                            // Append new store field as readonly
+                            appendNewFormField(
+                                formFieldList.length - 1,
+                                type,
+                                fixedName,
+                                true // readonly flag
+                            );
+
+                            // Ensure meta box does not open
+                            SetIsInputBoxClick({ click: false });
+                            setOpendInput(null);
+                        }}
+                    />
+                    <Elements
+                        label="Store"
+                        selectOptions={selectOptionsStore}
+                        onClick={(type) => {
+                            const option = selectOptionsStore.find((o) => o.value === type);
+                            const fixedName = option?.name;
+
+                            // Append new store field as readonly
+                            appendNewFormField(
+                                formFieldList.length - 1,
+                                type,
+                                fixedName,
+                                true // readonly flag
+                            );
+
+                            // Ensure meta box does not open
+                            SetIsInputBoxClick({ click: false });
+                            setOpendInput(null);
+                        }}
+                    />
+                </>
+            ),
+        },
+        { id: "templates", label: "Templates", content: <div /> },
+    ];
     return (
         <>
             <div className="registration-from-wrapper">
                 { /* Render element type section */}
-                <Elements
-                    label='General'
-                    selectOptions={selectOptions}
-                    onClick={(type) => {
-                        const newInput = appendNewFormField(
-                            formFieldList.length - 1,
-                            type
-                        );
-                        setOpendInput(newInput);
-                    }}
-                />
+                <div className="elements-wrapper">
+                    <div className="tab-titles">
+                        {tabs.map((tab) => (
+                            <div
+                                key={tab.id}
+                                className={`title ${activeTab === tab.id ? "active" : ""}`}
+                                onClick={() => setActiveTab(tab.id)}
+                            >
+                                <p>{tab.label}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="tab-contend">
+                        {tabs.map(
+                            (tab) =>
+                                activeTab === tab.id && (
+                                    <div key={tab.id} className="tab-panel">
+                                        {tab.content}
+                                    </div>
+                                )
+                        )}
+                    </div>
+                </div>
+
                 <div className="registration-form-main-section">
                     { /* Render form title here */}
                     {
@@ -691,7 +762,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                     </div>
 
                                                     {/* Show settings only if field is editable */}
-                                                    {!formField.readonly && (
+                                                    {/* {!formField.readonly && (
                                                         <SettingMetaBox
                                                             formField={formField}
                                                             opened={isInputBoxClick}
@@ -703,7 +774,7 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                                                             }
                                                             inputTypeList={selectOptions}
                                                         />
-                                                    )}
+                                                    )} */}
                                                 </section>
                                             )}
 
@@ -915,31 +986,31 @@ const CustomFrom: React.FC<CustomFormProps> = ({
                         btnType='button'
                     />
                 </div>
+                <div className="registration-edit-form">
+                    <div className="tab-titles">
+                        {settingstabs.map((tab) => (
+                            <div
+                                key={tab.id}
+                                className={`title ${settingsActiveTab === tab.id ? "active" : ""}`}
+                                onClick={() => setSettingsActiveTab(tab.id)}
+                            >
+                                <p>{tab.label}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="tab-contend">
+                        {settingstabs.map(
+                            (tab) =>
+                                settingsActiveTab === tab.id && (
+                                    <div key={tab.id} className="tab-panel">
+                                        {tab.content}
+                                    </div>
+                                )
+                        )}
+                    </div>
+                </div>
             </div>
-            <div className="registration-from-wrapper">
-                { /* Render element type section */}
-                <Elements
-                    label='Store'
-                    selectOptions={selectOptionsStore}
-                    onClick={(type) => {
-                        const option = selectOptionsStore.find((o) => o.value === type);
-                        const fixedName = option?.name;
 
-                        // Append new store field as readonly
-                        appendNewFormField(
-                            formFieldList.length - 1,
-                            type,
-                            fixedName,
-                            true // readonly flag
-                        );
-
-                        // Ensure meta box does not open
-                        SetIsInputBoxClick({ click: false });
-                        setOpendInput(null);
-                    }}
-                />
-
-            </div>
         </>
 
     );

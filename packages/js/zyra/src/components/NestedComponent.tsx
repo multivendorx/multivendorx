@@ -23,12 +23,12 @@ interface NestedField {
   firstRowOnly?: boolean;
   skipFirstRow?: boolean;
   skipLabel?: boolean;
-  parameter?: string;
-  prefixUnit?: string;
-  addonBefore?: string;
-  addonAfter?: string;
-  addonBeforeFirstRow?:string;
-  addonAfterFirstRow?:string;
+  postInsideText?: string;
+  preInsideText?: string;
+  preText?: string;
+  postText?: string;
+  preTextFirstRow?:string;
+  postTextFirstRow?:string;
   desc?: string;
   size?: string;
   min?: number;
@@ -156,8 +156,8 @@ const NestedComponent: React.FC<NestedComponentProps> = ({
               options={field.options || []}
               value={val}
               onChange={(newVal) => handleChange(rowIndex, field.key, newVal)}
-              addonBefore={field.addonBefore}
-              addonAfter={field.addonAfter}  
+              preText={field.preText}
+              postText={field.postText}  
             />
           </div>
         );
@@ -175,17 +175,17 @@ const NestedComponent: React.FC<NestedComponentProps> = ({
               id={`${field.key}-${rowIndex}`}
               name={field.key}
               value={val}
-              prefixUnit={field.prefixUnit}
-              parameter={field.parameter}
-              addonBefore={
+              preInsideText={field.preInsideText}
+              postInsideText={field.postInsideText}
+              preText={
                 rowIndex === 0
-                  ? field.addonBeforeFirstRow ?? field.addonBefore
-                  : field.addonBefore
+                  ? field.preTextFirstRow ?? field.preText
+                  : field.preText
               }
-              addonAfter={
+              postText={
                 rowIndex === 0
-                  ? field.addonAfterFirstRow ?? field.addonAfter
-                  : field.addonAfter
+                  ? field.postTextFirstRow ?? field.postText
+                  : field.postText
               }
               min={field.min ?? 0}
               description={field.desc}
@@ -207,8 +207,8 @@ const NestedComponent: React.FC<NestedComponentProps> = ({
               name={field.key}
               description={field.desc}
               inputClass={field.className}
-              addonBefore={field.addonBefore}
-              addonAfter={field.addonAfter}
+              preText={field.preText}
+              postText={field.postText}
               options={
                 Array.isArray(field.options)
                   ? field.options.map((opt) => ({

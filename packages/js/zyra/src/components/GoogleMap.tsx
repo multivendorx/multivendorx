@@ -22,7 +22,6 @@ interface AutoCompleteProps {
 }
 
 declare const appLocalizer: { google_api: string };
-
 const AutoComplete: React.FC< AutoCompleteProps > = ( {
     map,
     mapApi,

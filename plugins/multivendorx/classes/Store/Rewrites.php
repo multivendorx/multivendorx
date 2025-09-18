@@ -26,7 +26,6 @@ class Rewrites {
         add_action( 'init', [ $this, 'register_rule' ] );
         add_filter( 'query_vars', [ $this, 'register_query_var' ] );
         add_filter( 'template_include', [ $this, 'store_template' ], 10 );
-        // add_filter( 'template_include', [ $this, 'store_review_template' ], 10 );
         add_filter( 'template_include', [ $this, 'dashboard_template' ], 10 );
 
         add_action( 'wp', [ $this, 'flash_rewrite_rules' ], 10 );
@@ -65,8 +64,14 @@ class Rewrites {
             'compare' => '=',
         ];
         $query->set( 'meta_query', $meta_query );
-    }
+       
+        // Pagination fix
+        $paged = max( 1, get_query_var( 'paged' ) );
+        $query->set( 'paged', $paged );
+        $query->set( 'wc_query', 'product_query' ); // WooCommerce flag
 
+
+    }
 
     public function register_rule() {
 
@@ -79,16 +84,6 @@ class Rewrites {
             [
                 '^' . $this->custom_store_url . '/([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?' . $this->custom_store_url . '=$matches[1]&paged=$matches[2]',
-                'top',
-            ],
-            [
-                '^' . $this->custom_store_url . '/([^/]+)/reviews?$',
-                'index.php?' . $this->custom_store_url . '=$matches[1]&store_review=true',
-                'top',
-            ],
-            [
-                '^' . $this->custom_store_url . '/([^/]+)/reviews/page/?([0-9]{1,})/?$',
-                'index.php?' . $this->custom_store_url . '=$matches[1]&paged=$matches[2]&store_review=true',
                 'top',
             ],
             [
@@ -112,7 +107,6 @@ class Rewrites {
 
     public function register_query_var( $vars ) {
         $vars[] = $this->custom_store_url;
-        $vars[] = 'store_review';
         $vars[] = 'tab';
         $vars[] = 'subtab';
 
@@ -137,15 +131,6 @@ class Rewrites {
                 MultiVendorX()->util->get_template( 'store.php', ['store_id' => $store->get_id()] );
                 exit;
             }
-        }
-
-        return $template;
-    }
-
-    public function store_review_template( $template ) {
-
-        if ( get_query_var( 'store_review' ) ) {
-            return MultiVendorX()->util->get_template( 'store-review.php', [] );
         }
 
         return $template;

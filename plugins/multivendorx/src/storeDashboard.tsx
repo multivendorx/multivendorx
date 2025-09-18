@@ -3,7 +3,6 @@ import { render } from "@wordpress/element";
 const modules = require.context("./dashboard", false, /\.tsx$/);
 export default function replaceDashboardDivs(container: HTMLElement) {
   const colorConfig = (window as any).appLocalizer?.color?.colors;
-  console.log(colorConfig)
   if (colorConfig) {
     const theme = {
       selectedPalette: "custom",

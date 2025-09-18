@@ -8,7 +8,7 @@ export default {
         'Choose which menus to show or hide in the store dashboard and arrange their display order.',
         'multivendorx'
     ),
-    icon: 'adminlib-storefront',
+    icon: 'adminlib-menu-manager',
     submitUrl: 'settings',
     modal: [
        {

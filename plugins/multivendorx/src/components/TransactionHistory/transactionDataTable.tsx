@@ -27,22 +27,7 @@ const TransactionDataTable: React.FC = ({storeId}) => {
     });
     const [pageCount, setPageCount] = useState(0);
 
-    // Fetch total rows on mount
-    useEffect(() => {
-        axios({
-            method: 'GET',
-            url: getApiLink(appLocalizer, 'products'),
-            headers: { 'X-WP-Nonce': appLocalizer.nonce },
-            params: { count: true },
-        })
-            .then((response) => {
-                setTotalRows(response.data || 0);
-                setPageCount(Math.ceil(response.data / pagination.pageSize));
-            })
-            .catch(() => {
-                setError(__('Failed to load total rows', 'multivendorx'));
-            });
-    }, []);
+
 
     useEffect(() => {
         const currentPage = pagination.pageIndex + 1;

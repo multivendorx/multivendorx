@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BasicInput, FileInput, SelectInput, TextArea } from "zyra";
 
-const AddCoupons: React.FC = () => {
+const Storefront: React.FC = () => {
     const [activeTab, setActiveTab] = useState("general-information");
 
     const tabs = [
@@ -382,4 +382,4 @@ const AddCoupons: React.FC = () => {
     );
 };
 
-export default AddCoupons;
+export default Storefront;

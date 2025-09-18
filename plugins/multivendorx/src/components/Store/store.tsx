@@ -57,7 +57,7 @@ const Store = () => {
       {!isAddStore && !isViewStore && !iseditStore && (
         <>
           <AdminBreadcrumbs
-            activeTabIcon="adminlib-cart"
+            activeTabIcon="adminlib-storefront"
             tabTitle="Stores"
             description={'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'}
             buttons={[

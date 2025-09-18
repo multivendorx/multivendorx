@@ -129,7 +129,7 @@ const StoreReviews: React.FC = () => {
 
                             <div className="sub-tag">
                                 <div className="tag">
-                                    <i className="adminlib-form-address01"></i>
+                                    <i className="adminlib-form-address"></i>
                                     <div className="text">Fast Shipping</div>
                                 </div>
                                 <div className="tag">

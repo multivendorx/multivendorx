@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useState, ChangeEvent, FocusEvent } from 'react';
+import React, { useState, FocusEvent } from 'react';
 import "../styles/web/MultiInputString.scss";
 
 // Types
@@ -76,7 +76,7 @@ const MultiInput: React.FC<MultiInputProps> = (props) => {
                                 className={deleteBtnClass || "admin-btn btn-red"} 
                                 onClick={() => handleDelete(val)}
                             >
-                                <i className="adminlib-cross"></i>Remove
+                                <i className="adminlib-delete"></i>Remove
                             </span>
                         </li>
                     ))}

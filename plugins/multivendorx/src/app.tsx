@@ -158,6 +158,44 @@ const App = () => {
         onSelectChange={handleSelectChange}
         selectValue={selectValue}
         free={appLocalizer.freeVersion}
+        showDropdown={true} 
+        dropdownOptions={[
+          { value: 'all', label: 'All' },
+          { value: 'modules', label: 'Modules' },
+          { value: 'settings', label: 'Settings' },
+        ]}
+        showMessages={true}
+        notifications={[
+          {
+            heading: "New Order Received",
+            message: "Order #1024 has been placed",
+            time: "1 hour ago",
+            icon: "adminlib-cart-icon",
+            color: "blue",
+            link: "/orders"
+          },
+          {
+            heading: "New Review",
+            message: "John left a 5-star review",
+            time: "30 mins ago",
+            icon: "adminlib-star-icon",
+            color: "yellow",
+            link: "/reviews"
+          }
+        ]}
+        notificationsLink="/notifications"
+        showNotifications={true}
+        messages={[
+          {
+            heading: "Support Ticket #123",
+            message: "Customer reported an issue",
+            time: "15 mins ago",
+            icon: "adminlib-user-network-icon",
+            color: "red",
+            link: "/tickets/123"
+          }
+        ]}
+        messagesLink="/messages"
       />
       <Route />
     </>

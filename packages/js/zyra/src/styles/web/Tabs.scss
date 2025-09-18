@@ -73,6 +73,36 @@
       border: $border-light-small;
       border-radius: 0.125rem;
 
+      ul {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 260px;
+        max-height: 250px;
+        overflow-y: auto;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-top: 4px;
+        padding: 0;
+        list-style: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        z-index: 1000;
+
+        li {
+          padding: 8px 12px;
+          cursor: pointer;
+          font-size: 14px;
+          color: #333;
+          border-bottom: 1px solid #f0f0f0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+      }
+      
+
       input,
       select {
         margin: 0;
@@ -287,9 +317,10 @@
     display: flex;
     justify-content: space-between;
 
-    .title{
+    .title {
       font-size: 1.4rem;
     }
+
     i {
       margin-right: 0.5rem;
       color: $theme-color;

@@ -76,7 +76,7 @@ const Notification = () => {
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="adminlib-cart"
+                activeTabIcon="adminlib-bar-chart"
                 tabTitle="Actions Dashboard"
                 description={'Manage all pending administrative actions including approvals, payouts, and notifications.'}
             />

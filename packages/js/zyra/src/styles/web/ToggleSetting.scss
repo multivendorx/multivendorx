@@ -192,6 +192,9 @@ div:has(.exclusion-modal) {
 .toggle-setting-container {
     position: relative;
     width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .toggle-setting-wrapper {
@@ -201,7 +204,7 @@ div:has(.exclusion-modal) {
         list-style-type: none;
         margin: 0;
 
-        input{
+        input {
             display: none; // for radio button hide
         }
 
@@ -224,8 +227,9 @@ div:has(.exclusion-modal) {
             img {
                 height: 3rem;
             }
-            i{
-                font-size: 1.313rem;
+
+            i {
+                font-size: 1.5rem;
             }
         }
 
@@ -272,6 +276,7 @@ div:has(.exclusion-modal) {
         margin-left: 0.75rem;
     }
 }
+
 // toggle checkbox end
 
 .toggle-checkbox {

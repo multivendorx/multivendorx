@@ -51,7 +51,7 @@ export default {
                 'Decide where additional SPMV offers should be displayed on the single product page to make them visible to customers.',
                 'multivendorx'
             ),
-            addonAfter:__(' single page product tabs.', 'multivendorx'),
+            postText:__(' single page product tabs.', 'multivendorx'),
             options: [
                 {
                     key: 'none',

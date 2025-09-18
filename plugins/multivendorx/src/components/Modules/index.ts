@@ -9,10 +9,12 @@ export default {
             id: 'booking',
             name: __('Booking', 'multivendorx'),
             desc: "Allow customers to reserve appointments, equipment, or services.",
-            icon: 'adminlib-rules', 
+            icon: 'adminlib-booking', 
             doc_link: 'https://multivendorx.com/docs/knowledgebase/booking-product',
             //settings_link: appLocalizer.site_url,
-			req_pluging: ['WooCommerce Booking', 'wordpress'],
+            req_pluging: [
+                { name: 'WooCommerce Booking', link: 'https://woocommerce.com/products/woocommerce-bookings/' }
+            ],
             pro_module: true,
             category: 'marketplace_types'
         },
@@ -20,11 +22,11 @@ export default {
             id: 'appointment',
             name: __('Appointments', 'multivendorx'),
             desc: "Dedicated appointment booking functionality.",
-            icon: 'adminlib-rules',
+            icon: 'adminlib-appointments',
             doc_link: 'https://multivendorx.com/docs/knowledgebase/appointment-product/',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['WooCommerce Appointment', 'wordpress'],
+			req_pluging: [{ name: 'WooCommerce Appointment', link: 'https://bookingwp.com/plugins/woocommerce-appointments/' }],
             category: 'marketplace_types'
         },
         {
@@ -35,7 +37,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/subscription-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['WooCommerce Subscription', 'wordpress'],
+			req_pluging: [{ name: 'WooCommerce Subscription', link: 'https://woocommerce.com/products/woocommerce-subscriptions/' }],
             category: 'marketplace_types'
         },
         {
@@ -46,7 +48,8 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/accommodation-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['WooCommerce Accomodation & Booking', 'WooCommerce Booking'],
+			req_pluging: ['{ name: 'WooCommerce Accomodation & Booking', link: 'https://woocommerce.com/products/woocommerce-accommodation-bookings/',
+                         { name: 'WooCommerce Booking', link: 'https://woocommerce.com/products/woocommerce-bookings/' }],
             category: 'marketplace_types'
         },
         {
@@ -57,7 +60,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/bundle-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['Product Bundle'],
+			req_pluging: [{ name: 'Product Bundle', link: 'https://woocommerce.com/products/product-bundles/' }],
             category: 'marketplace_types'
         },
         {
@@ -68,7 +71,8 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/auction-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['WooCommerce Simple Auction , YITH WooCommerce Auction'],
+			req_pluging: [{ name: 'WooCommerce Simple Auction', link: 'https://codecanyon.net/item/woocommerce-simple-auctions-wordpress-auctions/6811382' }
+                , { name: 'YITH WooCommerce Auction', link: 'https://yithemes.com/themes/plugins/yith-woocommerce-auctions/' }],
             category: 'marketplace_types'
         },
         {
@@ -79,7 +83,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/rental-product',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['R&B WooCommerce Booking & Rental'],
+			req_pluging: [{ name: 'RnB WooCommerce Booking & Rental', link: 'https://codecanyon.net/item/rnb-woocommerce-rental-booking-system/14835145?ref=redqteam' }],
             category: 'marketplace_types'
         },
         { type: 'separator', id: 'product_type', label: 'Product Types' },
@@ -131,7 +135,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/gift-card/',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['yith WooCommerce Gift Cards'],
+			req_pluging: [{ name: 'YITH WooCommerce Gift Cards', link: 'https://wordpress.org/plugins/yith-woocommerce-gift-cards/' }],
             category: 'product_type'
         },
         { type: 'separator', id: 'store_management', label: 'Store Management' },
@@ -355,7 +359,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/weight-shipping',
             //settings_link: admin_url('admin.php?page=wc-settings&tab=shipping'),
             pro_module: false,
-			req_pluging: ['Table Rate Shipping'],
+			req_pluging: [{ name: 'Table Rate Shipping', link: 'https://woocommerce.com/products/table-rate-shipping/'}],
             category: 'shipping_management'
         },
         {
@@ -366,7 +370,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/per-product-shipping',
             //settings_link: admin_url('admin.php?page=wc-settings&tab=shipping'),
             pro_module: true,
-			req_pluging: ['Per Product Shipping for WooCommerce'],
+			req_pluging: [{ name: 'Per Product Shipping for WooCommerce', link: 'https://woocommerce.com/products/per-product-shipping/' }],
             category: 'shipping_management'
         },
         { type: 'separator', id: 'customer_experience', label: 'Customer Experience' },
@@ -551,7 +555,8 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/mvx-elementor',
             //settings_link: appLocalizer.site_url,
             pro_module: false,
-			req_pluging: ['Elementor Website Builder','Elementor Pro'],
+			req_pluging: [{ name: 'Elementor Website Builder', link: 'https://wordpress.org/plugins/elementor/' },
+                { name: 'Elementor Pro', link: 'https://elementor.com/pricing/' }],
             category: 'integration'
         },
         {
@@ -562,8 +567,8 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/mvx-buddypress',
             //settings_link: admin_url('admin.php?page=mvx#&submenu=settings&name=social'),
             pro_module: false,
-			req_pluging: ['BuddyPress'],
-            category: 'integration'
+			req_pluging: [{ name: 'BuddyPress', link: 'href="https://wordpress.org/plugins/buddypress/' }],
+             category: 'integration'
         },
         {
             id: 'wpml',
@@ -573,7 +578,9 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/mvx-wpml',
             //settings_link: appLocalizer.site_url,
             pro_module: false,
-				req_pluging: ['WPML','WooCommerce Multilingual'],
+				req_pluging: [{ name: 'WPML', link: 'https://wpml.org/' }],
+                [{ name: 'WooCommerce Multilingual', link: 'https://wordpress.org/plugins/woocommerce-multilingual/' }],
+                ['<a href="" target="blank"></a>'],
             category: 'integration'
         },
         {
@@ -584,7 +591,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/mvx-acf',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['Advance Custom Field'],
+			req_pluging: [{ name: 'Advance Custom Field', link: 'https://wordpress.org/plugins/advanced-custom-fields/' }],
             category: 'integration'
         },
         {
@@ -595,7 +602,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/geo-my-wp',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['GEOmyWP'],
+			req_pluging: [{ name: 'GEOmyWP', link: 'https://wordpress.org/plugins/geo-my-wp/' }],
             category: 'integration'
         },
         {
@@ -606,7 +613,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/affiliate-product/',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['Affiliate WP'],
+			req_pluging: [{ name: 'Affiliate WP', link: 'https://affiliatewp.com/' }],
             category: 'integration'
         },
         {
@@ -617,7 +624,7 @@ export default {
             doc_link: 'https://multivendorx.com/docs/knowledgebase/mvx-product-addon',
             //settings_link: appLocalizer.site_url,
             pro_module: true,
-			req_pluging: ['Product Addons'],
+			req_pluging: [{ name: 'Product Addons', link: 'https://woocommerce.com/products/product-add-ons/' }],
             category: 'integration'
         },
         {

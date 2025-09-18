@@ -35,6 +35,7 @@ declare global {
         site_url:any;
         woocommerce_currency:any;
         color: any;
+        ajaxurl: string;
     }
     interface Color{
         color: any;

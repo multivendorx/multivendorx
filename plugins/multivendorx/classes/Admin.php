@@ -50,9 +50,14 @@ class Admin {
         add_action( 'init', array( $this, 'register_multivendorx_custom_post_types' ), 5 );
 
         //add store tab in coupons section backend
-        add_filter('woocommerce_coupon_data_tabs', array(&$this, 'add_store_tab_in_coupon'));
-        add_action('woocommerce_coupon_data_panels', array(&$this, 'add_content_in_store_tab'), 10, 1);
-        add_action('woocommerce_coupon_options_save', array(&$this, 'save_store_in_coupon'), 10, 2);
+        add_filter('woocommerce_coupon_data_tabs', array($this, 'add_store_tab_in_coupon'));
+        add_action('woocommerce_coupon_data_panels', array($this, 'add_content_in_store_tab'), 10, 1);
+        add_action('woocommerce_coupon_options_save', array($this, 'save_store_in_coupon'), 10, 2);
+    
+        // Display radios after order actions for COD order if shipping not found
+        add_action( 'add_meta_boxes', array($this, 'add_option_for_payment'), 10, 2);
+        add_action( 'woocommerce_process_shop_order_meta', array($this, 'save_option_for_payment'));
+
     }
 
     /**
@@ -230,6 +235,7 @@ class Admin {
     public function enqueue_admin_script() {
         if ( get_current_screen()->id === 'toplevel_page_multivendorx' ) {
             wp_enqueue_script( 'wp-element' );
+            wp_enqueue_editor();
             // Support for media
             wp_enqueue_media();
             FrontendScripts::admin_load_scripts();
@@ -575,5 +581,48 @@ class Admin {
             update_post_meta( $post_id, 'multivendorx_store_id', $linked_store_id );
         }
     }
+
+    public function add_option_for_payment($page, $order) {
+        if( $page && $page != 'woocommerce_page_wc-orders' ) return;
+        if(  $order->get_parent_id() == 0 ) return;
+        
+        add_meta_box(
+            'multivendorx_cod_order_payment_box', 
+            __( 'COD Order Payment', 'multivendorx' ), 
+            [ $this, 'render_multivendorx_cod_order_payment_box' ], 
+            $page,
+            'side',  
+            'default'
+        );
+        
+    }
+
+    public function render_multivendorx_cod_order_payment_box( $post ) {
+        $order = wc_get_order( $post->ID );
+        $value = $order ? $order->get_meta( 'multivendorx_cod_order_payment', true ) : '';
+        ?>
+        <p>
+            <label>
+                <input type="radio" name="order_payment" value="admin" <?php checked( $value, 'admin' ); ?> />
+                <?php _e( 'Admin', 'multivendorx' ); ?>
+            </label><br>
+            <label>
+                <input type="radio" name="order_payment" value="store" <?php checked( $value, 'store' ); ?> />
+                <?php _e( 'Store', 'multivendorx' ); ?>
+            </label>
+        </p>
+        <?php
+    }
+
+    public function save_option_for_payment( $order_id ) {
+
+        $selected = filter_input( INPUT_POST, 'order_payment', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        if ( $selected !== null ) {
+            $order = wc_get_order($order_id);
+            $order->update_meta_data( 'multivendorx_cod_order_payment', $selected );
+            $order->save();
+        }
+    }
+
     
 }

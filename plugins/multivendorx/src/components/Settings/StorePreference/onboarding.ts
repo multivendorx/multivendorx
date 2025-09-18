@@ -8,7 +8,7 @@ export default {
         'Decide what stores see first after signing up and guide them through the key steps to get their store ready for sales.',
         'multivendorx'
     ),
-    icon: 'adminlib-storefront',
+    icon: 'adminlib-onboarding',
     submitUrl: 'settings',
     modal: [
         {

@@ -12,7 +12,7 @@ export default {
         {
             key: 'cohort_sync_option',
             type: 'checkbox',
-            desc: __('', 'moowoodle'),
+            settingDescription: __('Moodle cohort data is mapped to WordPress products, allowing new products to be created or existing ones to be updated with cohort details.', 'moowoodle'),
             label: __('Cohort & product synchronization', 'moowoodle'),
             selectDeselect: true,
             options: [

@@ -55,7 +55,7 @@ export default {
             ),
             size: '8rem',
             max: 365,
-            parameter: 'days',
+            postInsideText: 'days',
             moduleEnabled: 'marketplace-refund',
         },
         {

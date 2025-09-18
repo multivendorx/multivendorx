@@ -91,6 +91,11 @@ class Modules {
 						'module_file'  => MultiVendorX()->plugin_path . 'modules/StorePolicy/Module.php',
 						'module_class' => 'MultiVendorX\StorePolicy\Module',
 					),
+                    'store-review' => array(
+						'id'           => 'store-review',
+						'module_file'  => MultiVendorX()->plugin_path . 'modules/StoreReview/Module.php',
+						'module_class' => 'MultiVendorX\StoreReview\Module',
+					),
                     'bank-transfer' => array(
                         'id'           => 'bank-transfer',
 						'module_file'  => MultiVendorX()->plugin_path . 'modules/BankTransfer/Module.php',
@@ -105,6 +110,11 @@ class Modules {
                         'id'           => 'paypal-payout',
 						'module_file'  => MultiVendorX()->plugin_path . 'modules/PaypalPayout/Module.php',
 						'module_class' => 'MultiVendorX\PaypalPayout\Module',
+					),
+                    'question-answer' => array(
+                        'id'           => 'question-answer',
+						'module_file'  => MultiVendorX()->plugin_path . 'modules/QuestionsAnswers/Module.php',
+						'module_class' => 'MultiVendorX\QuestionsAnswers\Module',
 					),
 
 				)

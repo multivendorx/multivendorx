@@ -10,7 +10,7 @@ import {
     PaginationState,
 } from '@tanstack/react-table';
 import { useLocation } from 'react-router-dom';
-import EditCommission from './editCommission';
+import ViewCommission from './viewCommission';
 export interface RealtimeFilter {
     name: string;
     render: (updateFilter: (key: string, value: any) => void, filterValue: any) => ReactNode;
@@ -39,19 +39,10 @@ type CommissionRow = {
 type FilterData = {
     searchAction?: string;
     searchField?: string;
-
     typeCount?: any;
 };
 
 const Commission: React.FC = () => {
-    const location = useLocation();
-    const hash = location.hash;
-
-    const isTabActive = hash.includes('tab=commissions');
-    // const isAddStore = hash.includes('create');
-    // const isViewStore = hash.includes('view');
-    const iseditCommission = hash.includes('edit');
-
     const dateRef = useRef<HTMLDivElement | null>(null);
     const [openModal, setOpenModal] = useState(false);
     const [modalDetails, setModalDetails] = useState<string>('');
@@ -62,6 +53,8 @@ const Commission: React.FC = () => {
     const [totalRows, setTotalRows] = useState<number>(0);
     const [openDatePicker, setOpenDatePicker] = useState(false);
     const [viewCommission, setViewCommission] = useState(false);
+    const [selectedCommissionId, setSelectedCommissionId] = useState<number | null>(null);
+
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
         pageSize: 10,
@@ -309,14 +302,15 @@ const Commission: React.FC = () => {
                             >
                                 <ul>
                                     <li
-                                        // onClick={() =>
-                                        //     (window.location.href = `?page=multivendorx#&tab=commissions&edit/${row.original.id}`)
-                                        // }
-                                        onClick={() => setViewCommission(true)}
+                                        onClick={() => {
+                                            setSelectedCommissionId(row.original.id ?? null);
+                                            setViewCommission(true);
+                                        }}
                                     >
                                         <i className="adminlib-eye"></i>
                                         {__('View', 'multivendorx')}
                                     </li>
+
                                     <li
                                         onClick={() =>
                                             (window.location.href = `?page=multivendorx#&tab=stores&edit/${row.original.id}`)
@@ -473,227 +467,38 @@ const Commission: React.FC = () => {
         total: string;
     }
 
-    const demoData: OrderItem[] = [
-        {
-            id: 1,
-            name: "Charcoal Detox",
-            sku: "8678",
-            cost: "$95.00",
-            discount: "-$5.00",
-            qty: 1,
-            total: "$95.00",
-        },
-        {
-            id: 2,
-            name: "Lavender Soap",
-            sku: "9023",
-            cost: "$12.00",
-            qty: 2,
-            total: "$24.00",
-        },
-    ];
-
-
-    const popupColumns: ColumnDef<OrderItem>[] = [
-        {
-            id: 'select',
-            header: ({ table }) => (
-                <input
-                    type="checkbox"
-                    checked={table.getIsAllRowsSelected()}
-                    onChange={table.getToggleAllRowsSelectedHandler()}
-                />
-            ),
-            cell: ({ row }) => (
-                <input
-                    type="checkbox"
-                    checked={row.getIsSelected()}
-                    onChange={row.getToggleSelectedHandler()}
-                />
-            ),
-        },
-        {
-            header: __('Store Name', 'multivendorx'),
-            cell: ({ row }) => (
-                <TableCell title={row.original.name || ''}>
-                    <div className="name">{row.original.name ?? '-'}</div>
-                    <div className="sub-text"> Sku: {row.original.sku ?? '-'} </div>
-                </TableCell>
-            ),
-        },
-        {
-            header: __('Cost', 'multivendorx'),
-            cell: ({ row }) => (
-                <TableCell title={row.original.cost || ''}>
-                    {row.original.cost ?? '-'}
-                </TableCell>
-            ),
-        },
-        {
-            header: __('Qty', 'multivendorx'),
-            cell: ({ row }) => (
-                <TableCell title={row.original.qty || ''}>
-                    {row.original.qty ?? '-'}
-                </TableCell>
-            ),
-        },
-        {
-            header: __('total', 'multivendorx'),
-            cell: ({ row }) => (
-                <TableCell title={row.original.total || ''}>
-                    {row.original.total ?? '-'}
-                </TableCell>
-            ),
-        },
-    ];
-
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="adminlib-cart"
+                activeTabIcon="adminlib-commission"
                 tabTitle="Commissions"
                 description={'Details of commissions earned by each store for every order, including order amount, commission rate, and payout status.'}
             />
+            <div className="admin-table-wrapper">
+                <Table
+                    data={data}
+                    columns={columns as ColumnDef<Record<string, any>, any>[]}
+                    rowSelection={rowSelection}
+                    onRowSelectionChange={setRowSelection}
+                    defaultRowsPerPage={10}
+                    realtimeFilter={realtimeFilter}
+                    pageCount={pageCount}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    handlePagination={requestApiForData}
+                    perPageOption={[10, 25, 50]}
+                    typeCounts={commissionStatus as CommissionStatus}
+                    bulkActionComp={() => <BulkAction />}
+                />
+            </div>
 
-            {isTabActive && iseditCommission && <EditCommission />}
-            {!iseditCommission && (
-                <div className="admin-table-wrapper">
-                    <Table
-                        data={data}
-                        columns={columns as ColumnDef<Record<string, any>, any>[]}
-                        rowSelection={rowSelection}
-                        onRowSelectionChange={setRowSelection}
-                        defaultRowsPerPage={10}
-                        realtimeFilter={realtimeFilter}
-                        pageCount={pageCount}
-                        pagination={pagination}
-                        onPaginationChange={setPagination}
-                        handlePagination={requestApiForData}
-                        perPageOption={[10, 25, 50]}
-                        typeCounts={commissionStatus as CommissionStatus}
-                        bulkActionComp={() => <BulkAction />}
-                    />
-                </div>
-            )}
-
-            {viewCommission && (
-                <CommonPopup
+            {viewCommission && selectedCommissionId !== null && (
+                <ViewCommission
                     open={viewCommission}
                     onClose={() => setViewCommission(false)}
-                    width="1200px"
-                    height="100%"
-                    header={
-                        <>
-                            <div className="title">
-                                <i className="adminlib-cart"></i>
-                                View Commission
-                                {/* {editId ? __('Edit Announcement', 'multivendorx') : __('Add Announcement', 'multivendorx')} */}
-                            </div>
-                            <p>Publish important news, updates, or alerts that appear directly in store dashboards, ensuring sellers never miss critical information.</p>
-                            <i
-                                onClick={() => setViewCommission(false)}
-                                className="icon adminlib-close"
-                            ></i>
-                        </>
-                    }
-                    footer={
-                        <>
-                            <div
-                                onClick={() => setViewCommission(false)}
-                                className="admin-btn btn-red"
-                            >
-                                Cancel
-                            </div>
-
-                        </>
-                    }
-                >
-
-                    <div className="content multi">
-                        <div className="section left">
-                            <div className="vendor-details">
-                                <div className="name">
-                                    Joye Hop
-                                </div>
-                                <div className="details">
-                                    <div className="email">
-                                        <i className="adminlib-mail"></i><b>Email:</b> test_vendor@test.com
-                                    </div>
-                                    <div className="method">
-                                        <i className="adminlib-form-paypal-email"></i><b>Payment Method:</b> <span className="admin-badge blue">Stripe Connect</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="popup-divider"></div>
-
-                            <div className="heading">
-                                Order Details
-                            </div>
-                            <Table
-                                data={demoData}
-                                columns={popupColumns as ColumnDef<Record<string, any>, any>[]}
-                                rowSelection={{}}
-                                onRowSelectionChange={() => { }}
-                                defaultRowsPerPage={5}
-                            />
-
-                            <div className="heading">
-                                Shipping
-                            </div>
-                            <Table
-                                data={demoData}
-                                columns={popupColumns as ColumnDef<Record<string, any>, any>[]}
-                                rowSelection={{}}
-                                onRowSelectionChange={() => { }}
-                                defaultRowsPerPage={5}
-                            />
-
-                        </div>
-                        <div className="section right">
-                            <div className="heading">
-                                Commission Overview
-                            </div>
-                            <div className="commission-details">
-                                <div className="items">
-                                    <div className="text">Associated Order</div>
-                                    <div className="value">#501421</div>
-                                </div>
-                                <div className="items">
-                                    <div className="text">Order Status</div>
-                                    <div className="value"><span className="admin-badge yellow">On hold</span></div>
-                                </div>
-                                <div className="items">
-                                    <div className="text">Commission Status</div>
-                                    <div className="value"><span className="admin-badge red">Unpaid</span></div>
-                                </div>
-                                <div className="items">
-                                    <div className="text">Commission Amount</div>
-                                    <div className="value">$28.50</div>
-                                </div>
-                                <div className="items">
-                                    <div className="text">Shipping</div>
-                                    <div className="value">$28.50</div>
-                                </div>
-                                <div className="items">
-                                    <div className="text">Tax</div>
-                                    <div className="value">$28.50</div>
-                                </div>
-                            </div>
-                            <div className="popup-divider"></div>
-                            <div className="heading">
-                                Commission Notes
-                            </div>
-                            <div className="settings-metabox-note">
-                                <i className="adminlib-info"></i>
-                                <p>Commission for order (ID: 27297) is created.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </CommonPopup>
+                    commissionId={selectedCommissionId}
+                />
             )}
-
         </>
     );
 };

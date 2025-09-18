@@ -5,7 +5,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: start;
-        align-items: start;
+        align-items: center;
         gap: 0.5rem;
 
         &.multiple {
@@ -24,11 +24,13 @@
             display: inline-block;
             color: $text-color;
         }
+
         .settings-input-content{
             .toggle-setting-container{
                 padding-left: 0.5rem;
             }
         }
+
         .toggle-setting-container,
         .form-select-field-wrapper {
             display: inline-block;
@@ -57,6 +59,7 @@
             width: fit-content;
         }
     }
+
     .nested-row.multiple:first-child {
         background: transparent;
         padding: 0;

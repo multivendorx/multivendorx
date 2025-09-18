@@ -427,8 +427,8 @@ const IconList: React.FC = () => {
                         <span>(e937)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-form-address01"></span>
-                        <span className="mls"> adminlib-form-address01</span>
+                        <span className="adminlib-form-address"></span>
+                        <span className="mls"> adminlib-form-address</span>
                         <span>(e938)</span>
                     </div>
                     <div className="icon-box">
@@ -571,8 +571,8 @@ const IconList: React.FC = () => {
                         <span>(e952)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-clock2"></span>
-                        <span className="mls"> adminlib-clock2</span>
+                        <span className="adminlib-clock"></span>
+                        <span className="mls"> adminlib-clock</span>
                         <span>(e953)</span>
                     </div>
                     <div className="icon-box">

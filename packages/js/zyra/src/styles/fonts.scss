@@ -25,618 +25,573 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.adminlib-minus::before {
-  content: "\e900";
-}
-
-.adminlib-minus-bold::before {
-  content: "\e901";
-}
-
-.adminlib-module::before {
-  content: "\e902";
-}
-
-.adminlib-membership::before {
-  content: "\e903";
-}
-
-.adminlib-commission::before {
+.adminlib-review:before {
   content: "\e904";
 }
-
-.adminlib-cart::before {
-  content: "\8907";
-}
-
-.adminlib-person::before {
-  content: "\e520";
-}
-
-.adminlib-tools::before {
-  content: "\e700";
-}
-
-.adminlib-supervised-user-circle::before {
-  content: "\e702";
-}
-
-.adminlib-vpn-key::before {
-  content: "\e704";
-}
-
-.adminlib-user-circle::before {
-  content: "\e800";
-}
-
-.adminlib-error::before {
-  content: "\e802";
-}
-
-.adminlib-security::before {
-  content: "\e803";
-}
-
-.adminlib-storefront::before {
-  content: "\e804";
-}
-
-.adminlib-editor-list-ul::before {
-  content: "\e805";
-}
-
-.adminlib-search::before {
-  content: "\e806";
-}
-
-.adminlib-info::before {
-  content: "\e807";
-}
-
-.adminlib-check::before {
-  content: "\e809";
-}
-
-.adminlib-smile-o::before {
-  content: "\e80a";
-}
-
-.adminlib-close::before {
-  content: "\e810";
-}
-
-.adminlib-captcha::before {
-  content: "\e820";
-}
-
-.adminlib-checkbox::before {
-  content: "\e822";
-}
-
-.adminlib-divider::before {
-  content: "\e828";
-}
-
-.adminlib-radio::before {
-  content: "\e84e";
-}
-
-.adminlib-toggle::before {
-  content: "\e869";
-}
-
-.adminlib-text::before {
-  content: "\e86d";
-}
-
-.adminlib-section::before {
-  content: "\e898";
-}
-
-.adminlib-book::before {
-  content: "\e8f0";
-}
-
-.adminlib-plus-circle-o::before {
-  content: "\e8f7";
-}
-
-.adminlib-drag::before {
+.adminlib-report:before {
   content: "\e905";
 }
-
-.adminlib-notification::before {
+.adminlib-payment:before {
   content: "\e906";
 }
-
-.adminlib-pro-tag::before {
+.adminlib-finance:before {
   content: "\e907";
 }
-
-.adminlib-add-product::before {
+.adminlib-google:before {
   content: "\e908";
 }
-
-.adminlib-update-product::before {
+.adminlib-cohort:before {
   content: "\e909";
 }
-
-.adminlib-pagination-right-arrow::before {
-  content: "\e90a";
+.adminlib-cart:before {
+  content: "\8907";
 }
-
-.adminlib-pagination-left-arrow::before {
-  content: "\e90b";
+.adminlib-person:before {
+  content: "\e520";
 }
-
-.adminlib-pagination-next-arrow::before {
+.adminlib-tools:before {
+  content: "\e700";
+}
+.adminlib-supervised-user-circle:before {
+  content: "\e702";
+}
+.adminlib-vpn-key:before {
+  content: "\e704";
+}
+.adminlib-user-circle:before {
+  content: "\e800";
+}
+.adminlib-error:before {
+  content: "\e802";
+}
+.adminlib-security:before {
+  content: "\e803";
+}
+.adminlib-storefront:before {
+  content: "\e804";
+}
+.adminlib-editor-list-ul:before {
+  content: "\e805";
+}
+.adminlib-search:before {
+  content: "\e806";
+}
+.adminlib-info:before {
+  content: "\e807";
+}
+.adminlib-check:before {
+  content: "\e809";
+}
+.adminlib-smile-o:before {
+  content: "\e80a";
+}
+.adminlib-close:before {
+  content: "\e810";
+}
+.adminlib-captcha:before {
+  content: "\e820";
+}
+.adminlib-checkbox:before {
+  content: "\e822";
+}
+.adminlib-divider:before {
+  content: "\e828";
+}
+.adminlib-radio:before {
+  content: "\e84e";
+}
+.adminlib-toggle:before {
+  content: "\e869";
+}
+.adminlib-text:before {
+  content: "\e86d";
+}
+.adminlib-section:before {
+  content: "\e898";
+}
+.adminlib-book:before {
+  content: "\e8f0";
+}
+.adminlib-plus-circle-o:before {
+  content: "\e8f7";
+}
+.adminlib-youtube:before {
+  content: "\e900";
+}
+.adminlib-verification9:before {
+  content: "\e901";
+}
+.adminlib-verification8:before {
+  content: "\e902";
+}
+.adminlib-verification7:before {
+  content: "\e903";
+}
+.adminlib-verification5:before {
   content: "\e90c";
 }
-
-.adminlib-pagination-prev-arrow::before {
-  content: "\e90d";
-}
-
-.adminlib-refresh::before {
+.adminlib-verification3:before {
   content: "\e90e";
 }
-
-.adminlib-refresh-buttons::before {
+.adminlib-verification2:before {
   content: "\e90f";
 }
-
-.adminlib-centralized-connections::before {
+.adminlib-verification1:before {
   content: "\e910";
 }
-
-.adminlib-desktop-pc-valuation::before {
+.adminlib-twitter:before {
   content: "\e911";
 }
-
-.adminlib-rules::before {
+.adminlib-social-share:before {
   content: "\e912";
 }
-
-.adminlib-social-media-content::before {
+.adminlib-single-product:before {
   content: "\e913";
 }
-
-.adminlib-user-network-icon::before {
+.adminlib-product:before {
   content: "\e914";
 }
-
-.adminlib-price::before {
+.adminlib-privacy:before {
   content: "\e915";
 }
-
-.adminlib-catalog::before {
+.adminlib-onboarding:before {
   content: "\e916";
 }
-
-.adminlib-contact-form::before {
+.adminlib-multi-product:before {
   content: "\e917";
 }
-
-.adminlib-exclude::before {
+.adminlib-menu-manager:before {
   content: "\e918";
 }
-
-.adminlib-enquiry::before {
+.adminlib-marketplace:before {
   content: "\e919";
 }
-
-.adminlib-quote::before {
+.adminlib-location:before {
   content: "\e91a";
 }
-
-.adminlib-wholesale::before {
+.adminlib-linkedin-border:before {
   content: "\e91b";
 }
-
-.adminlib-Subscription-Courses::before {
+.adminlib-linkedin:before {
   content: "\e91c";
 }
-
-.adminlib-wholesal::before {
-  content: "\e91d";
-}
-
-.adminlib-mailchimp::before {
-  content: "\e91e";
-}
-
-.adminlib-mail::before {
+.adminlib-form:before {
   content: "\e91f";
 }
-
-.adminlib-file-submission::before {
+.adminlib-facebook-fill:before {
   content: "\e920";
 }
-
-.adminlib-submission-message::before {
+.adminlib-facebook:before {
   content: "\e921";
 }
-
-.adminlib-setting-fill::before {
+.adminlib-customer-service:before {
   content: "\e922";
 }
-
-.adminlib-cross::before {
+.adminlib-booking:before {
   content: "\e923";
 }
-
-.adminlib-icon-yes::before {
+.adminlib-bar-chart:before {
   content: "\e924";
 }
-
-.adminlib-calendar::before {
+.adminlib-appointments:before {
   content: "\e925";
 }
-
-.adminlib-menu::before {
+.adminlib-appearance:before {
   content: "\e926";
 }
-
-.adminlib-send::before {
+.adminlib-advertisement:before {
   content: "\e927";
 }
-
-.adminlib-link::before {
-  content: "\e928";
-}
-
-.adminlib-resize::before {
+.adminlib-actions:before {
   content: "\e929";
 }
-
-.adminlib-crop-free::before {
+.adminlib-minus:before {
   content: "\e92a";
 }
-
-.adminlib-text-fields::before {
+.adminlib-minus-bold:before {
   content: "\e92b";
 }
-
-.adminlib-support::before {
+.adminlib-module:before {
   content: "\e92c";
 }
-
-.adminlib-create::before {
+.adminlib-membership:before {
   content: "\e92d";
 }
-
-.adminlib-arrow-right::before {
+.adminlib-commission:before {
   content: "\e92e";
 }
-
-.adminlib-button-appearance::before {
+.adminlib-drag:before {
   content: "\e92f";
 }
-
-.adminlib-enquiry-form-tab::before {
+.adminlib-notification:before {
   content: "\e930";
 }
-
-.adminlib-exclusion-tab::before {
+.adminlib-pro-tag:before {
   content: "\e931";
 }
-
-.adminlib-general-tab::before {
+.adminlib-add-product:before {
   content: "\e932";
 }
-
-.adminlib-live-preview-tab::before {
+.adminlib-update-product:before {
   content: "\e933";
 }
-
-.adminlib-pro-tab::before {
+.adminlib-pagination-right-arrow:before {
   content: "\e934";
 }
-
-.adminlib-next::before {
+.adminlib-pagination-left-arrow:before {
   content: "\e935";
 }
-
-.adminlib-previous::before {
+.adminlib-pagination-next-arrow:before {
   content: "\e936";
 }
-
-.adminlib-select::before {
+.adminlib-pagination-prev-arrow:before {
   content: "\e937";
 }
-
-.adminlib-success-notification::before {
+.adminlib-refresh:before {
   content: "\e938";
 }
-
-.adminlib-drop-down::before {
+.adminlib-refresh-buttons:before {
   content: "\e939";
 }
-
-.adminlib-vendor-form-delete::before {
+.adminlib-centralized-connections:before {
   content: "\e93a";
 }
-
-.adminlib-vendor-form-copy::before {
+.adminlib-desktop-pc-valuation:before {
   content: "\e93b";
 }
-
-.adminlib-vendor-form-add::before {
+.adminlib-rules:before {
   content: "\e93c";
 }
-
-.adminlib-select-question-type::before {
+.adminlib-social-media-content:before {
   content: "\e93d";
 }
-
-.adminlib-form-url::before {
+.adminlib-user-network-icon:before {
   content: "\e93e";
 }
-
-.adminlib-form-textbox::before {
+.adminlib-price:before {
   content: "\e93f";
 }
-
-.adminlib-form-textarea::before {
+.adminlib-catalog:before {
   content: "\e940";
 }
-
-.adminlib-form-address01::before {
+.adminlib-contact-form:before {
   content: "\e941";
 }
-
-.adminlib-form-address02::before {
+.adminlib-exclude:before {
   content: "\e942";
 }
-
-.adminlib-form-attachment::before {
+.adminlib-enquiry:before {
   content: "\e943";
 }
-
-.adminlib-form-checkboxes::before {
+.adminlib-quote:before {
   content: "\e944";
 }
-
-.adminlib-paint-brush::before {
+.adminlib-wholesale:before {
   content: "\e945";
 }
-
-.adminlib-form-city::before {
+.adminlib-subscription-courses:before {
   content: "\e946";
 }
-
-.adminlib-form-country::before {
+.adminlib-wholesal:before {
   content: "\e947";
 }
-
-.adminlib-form-dropdown::before {
+.adminlib-mailchimp:before {
   content: "\e948";
 }
-
-.adminlib-form-email::before {
+.adminlib-mail:before {
   content: "\e949";
 }
-
-.adminlib-form-multi-select::before {
+.adminlib-file-submission:before {
   content: "\e94a";
 }
-
-.adminlib-form-paypal-email::before {
+.adminlib-submission-message:before {
   content: "\e94b";
 }
-
-.adminlib-form-phone::before {
+.adminlib-setting-fill:before {
   content: "\e94c";
 }
-
-.adminlib-form-postcode::before {
+.adminlib-cross:before {
   content: "\e94d";
 }
-
-.adminlib-form-radio::before {
+.adminlib-icon-yes:before {
   content: "\e94e";
 }
-
-.adminlib-form-recaptcha::before {
+.adminlib-calendar:before {
   content: "\e94f";
 }
-
-.adminlib-form-section::before {
+.adminlib-menu:before {
   content: "\e950";
 }
-
-.adminlib-form-state::before {
+.adminlib-send:before {
   content: "\e951";
 }
-
-.adminlib-star-icon::before {
+.adminlib-link:before {
   content: "\e952";
 }
-
-.adminlib-form-store-description::before {
+.adminlib-resize:before {
   content: "\e953";
 }
-
-.adminlib-folder-open::before {
+.adminlib-crop-free:before {
   content: "\e954";
 }
-
-.adminlib-undo::before {
+.adminlib-text-fields:before {
   content: "\e955";
 }
-
-.adminlib-dropdown-checklist::before {
+.adminlib-support:before {
   content: "\e956";
 }
-
-.adminlib-multi-select::before {
+.adminlib-create:before {
   content: "\e957";
 }
-
-.adminlib-captcha-automatic-code::before {
+.adminlib-arrow-right:before {
   content: "\e958";
 }
-
-.adminlib-cloud-upload::before {
+.adminlib-button-appearance:before {
   content: "\e959";
 }
-
-.adminlib-help::before {
+.adminlib-enquiry-form-tab:before {
   content: "\e95a";
 }
-
-.adminlib-t-letter-bold::before {
+.adminlib-exclusion-tab:before {
   content: "\e95b";
 }
-
-.adminlib-clock2::before {
+.adminlib-general-tab:before {
   content: "\e95c";
 }
-
-.adminlib-alarm::before {
+.adminlib-live-preview-tab:before {
   content: "\e95d";
 }
-
-.adminlib-thumbs-ok::before {
+.adminlib-pro-tab:before {
   content: "\e95e";
 }
-
-.adminlib-preview::before {
+.adminlib-next:before {
   content: "\e95f";
 }
-
-.adminlib-paid::before {
+.adminlib-previous:before {
   content: "\e960";
 }
-
-.adminlib-order::before {
+.adminlib-select:before {
   content: "\e961";
 }
-
-.adminlib-multiple-inputs::before {
+.adminlib-success-notification:before {
   content: "\e962";
 }
-
-.adminlib-global-community::before {
+.adminlib-drop-down:before {
   content: "\e963";
 }
-
-.adminlib-experiment-results::before {
+.adminlib-vendor-form-delete:before {
   content: "\e964";
 }
-
-.adminlib-copy::before {
+.adminlib-vendor-form-copy:before {
   content: "\e965";
 }
-
-.adminlib-cogs-on-wheels::before {
+.adminlib-vendor-form-add:before {
   content: "\e966";
 }
-
-.adminlib-blocks::before {
+.adminlib-select-question-type:before {
   content: "\e967";
 }
-
-.adminlib-analytics::before {
+.adminlib-form-url:before {
   content: "\e968";
 }
-
-.adminlib-setting::before {
+.adminlib-form-textbox:before {
   content: "\e969";
 }
-
-.adminlib-star-o::before {
+.adminlib-form-textarea:before {
   content: "\e96a";
 }
-
-.adminlib-star::before {
+.adminlib-form-address:before {
   content: "\e96b";
 }
-
-.adminlib-pushpin::before {
+.adminlib-form-address02:before {
   content: "\e96c";
 }
-
-.adminlib-arrow-left::before {
+.adminlib-form-attachment:before {
   content: "\e96d";
 }
-
-.adminlib-arrow-up::before {
+.adminlib-form-checkboxes:before {
   content: "\e96e";
 }
-
-.adminlib-arrow-down::before {
+.adminlib-paint-brush:before {
   content: "\e96f";
 }
-
-.adminlib-import::before {
+.adminlib-form-city:before {
   content: "\e970";
 }
-
-.adminlib-export::before {
+.adminlib-form-country:before {
   content: "\e971";
 }
-
-.adminlib-Single-Sign-On::before {
+.adminlib-form-dropdown:before {
+  content: "\e972";
+}
+.adminlib-form-email:before {
+  content: "\e973";
+}
+.adminlib-form-multi-select:before {
+  content: "\e974";
+}
+.adminlib-form-paypal-email:before {
+  content: "\e975";
+}
+.adminlib-form-phone:before {
+  content: "\e976";
+}
+.adminlib-form-postcode:before {
+  content: "\e977";
+}
+.adminlib-form-radio:before {
   content: "\e978";
 }
-
-.adminlib-Gift-a-Course::before {
+.adminlib-form-recaptcha:before {
   content: "\e979";
 }
-
-.adminlib-Classroom-Enrollment::before {
+.adminlib-form-section:before {
   content: "\e97a";
 }
-
-.adminlib-Bulk-Course-Sync::before {
+.adminlib-form-state:before {
   content: "\e97b";
 }
-
-.adminlib-Smart-Course-Sync1::before {
+.adminlib-star-icon:before {
   content: "\e97c";
 }
-
-.adminlib-web-page-website::before {
+.adminlib-form-store-description:before {
   content: "\e97d";
 }
-
-.adminlib-keyboard-arrow-down::before {
+.adminlib-folder-open:before {
   content: "\e97e";
 }
-
-.adminlib-unread::before {
+.adminlib-undo:before {
+  content: "\e97f";
+}
+.adminlib-dropdown-checklist:before {
+  content: "\e980";
+}
+.adminlib-multi-select:before {
+  content: "\e981";
+}
+.adminlib-captcha-automatic-code:before {
+  content: "\e982";
+}
+.adminlib-cloud-upload:before {
+  content: "\e983";
+}
+.adminlib-help:before {
+  content: "\e984";
+}
+.adminlib-t-letter-bold:before {
+  content: "\e985";
+}
+.adminlib-clock:before {
+  content: "\e986";
+}
+.adminlib-alarm:before {
+  content: "\e987";
+}
+.adminlib-thumbs-ok:before {
+  content: "\e988";
+}
+.adminlib-preview:before {
+  content: "\e989";
+}
+.adminlib-paid:before {
+  content: "\e98a";
+}
+.adminlib-order:before {
+  content: "\e98b";
+}
+.adminlib-multiple-inputs:before {
+  content: "\e98c";
+}
+.adminlib-global-community:before {
+  content: "\e98d";
+}
+.adminlib-experiment-results:before {
+  content: "\e98e";
+}
+.adminlib-copy:before {
+  content: "\e98f";
+}
+.adminlib-cogs-on-wheels:before {
+  content: "\e990";
+}
+.adminlib-blocks:before {
+  content: "\e991";
+}
+.adminlib-analytics:before {
+  content: "\e992";
+}
+.adminlib-setting:before {
+  content: "\e993";
+}
+.adminlib-star-o:before {
+  content: "\e994";
+}
+.adminlib-star:before {
+  content: "\e995";
+}
+.adminlib-pushpin:before {
+  content: "\e996";
+}
+.adminlib-arrow-left:before {
+  content: "\e997";
+}
+.adminlib-arrow-up:before {
+  content: "\e998";
+}
+.adminlib-arrow-down:before {
+  content: "\e999";
+}
+.adminlib-import:before {
+  content: "\e99a";
+}
+.adminlib-export:before {
+  content: "\e99b";
+}
+.adminlib-Single-Sign-On:before {
+  content: "\e99c";
+}
+.adminlib-Gift-a-Course:before {
+  content: "\e99d";
+}
+.adminlib-classroom-enrollment:before {
+  content: "\e99e";
+}
+.adminlib-Bulk-Course-Sync:before {
+  content: "\e99f";
+}
+.adminlib-Smart-Course-Sync1:before {
+  content: "\e9a0";
+}
+.adminlib-web-page-website:before {
+  content: "\e9a1";
+}
+.adminlib-keyboard-arrow-down:before {
+  content: "\e9a2";
+}
+.adminlib-unread:before {
   content: "\e9ba";
 }
-
-.adminlib-eye::before {
+.adminlib-eye:before {
   content: "\e9ce";
 }
-
-.adminlib-eye-blocked::before {
+.adminlib-eye-blocked:before {
   content: "\e9d1";
 }
-
-.adminlib-move::before {
+.adminlib-move:before {
   content: "\e5402";
 }
-
-.adminlib-delete::before {
+.adminlib-delete:before {
   content: "\e5800";
 }
-
-.adminlib-more-vertical::before {
+.adminlib-more-vertical:before {
   content: "\e8051";
 }
-
-.adminlib-attachment::before {
+.adminlib-attachment:before {
   content: "\e8598";
 }
-
-.adminlib-dots-three-horizontal::before {
+.adminlib-dots-three-horizontal:before {
   content: "\e8eee";
 }
-
-.adminlib-credit-card::before {
+.adminlib-credit-card:before {
   content: "\e9502";
 }

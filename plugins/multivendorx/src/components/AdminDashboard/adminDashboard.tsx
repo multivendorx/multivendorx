@@ -22,7 +22,14 @@ const salesByLocations = [
   { name: "Germany", coordinates: [51, 10], sales: 5400 },
   { name: "Australia", coordinates: [-25, 133], sales: 4300 },
 ];
-
+interface Payment {
+  id: number;
+  customer: string;
+  amount: string;
+  method: string;
+  date: string;
+  status: 'Paid' | 'Pending' | 'Failed';
+}
 // Custom marker icon (optional)
 const salesIcon = new L.DivIcon({
   className: "custom-marker",
@@ -106,6 +113,33 @@ const AdminDashboard = () => {
     { text: "Disbursements", iconClass: "icon-payment", href: "#" },
     { text: "Customer Support", iconClass: "icon-payment", href: "#" },
   ];
+
+const payments: Payment[] = [
+  {
+    id: 1,
+    customer: "John Doe",
+    amount: "$380",
+    method: "Credit Card",
+    date: "2025-09-01",
+    status: "Paid",
+  },
+  {
+    id: 2,
+    customer: "Jane Smith",
+    amount: "$120",
+    method: "PayPal",
+    date: "2025-09-03",
+    status: "Pending",
+  },
+  {
+    id: 3,
+    customer: "Robert Brown",
+    amount: "$220",
+    method: "Bank Transfer",
+    date: "2025-09-05",
+    status: "Failed",
+  },
+];
   return (
     <>
       <div className="admin-dashboard">
@@ -195,7 +229,34 @@ const AdminDashboard = () => {
 
         <div className="row">
           <div className="column">
-                
+            <div className="card-header">
+              <div className="left">
+                <div className="title">
+                  Payments
+                </div>
+              </div>
+              <div className="right">
+                <span>Updated 1 month ago</span>
+              </div>
+            </div>
+            <div className="top-items">
+              {payments.map((payment) => (
+                <div className="items" key={payment.id}>
+                  <div className="left-side">
+                    <div className="image">
+                      {/* <img src={payment.image} alt={payment.customer} /> */}
+                    </div>
+                    <div className="details">
+                      <div className="item-title">{payment.customer}</div>
+                      <div className="sub-text">{payment.method}</div>
+                    </div>
+                  </div>
+                  <div className="right-side">
+                    <div className="price">{payment.amount}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="column">
             <div className="card-header">

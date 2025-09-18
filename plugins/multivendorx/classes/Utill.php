@@ -30,6 +30,7 @@ class Utill {
         'store_meta'    => 'multivendorx_store_meta',
         'transaction'   => 'multivendorx_transactions',
         'real_time_transaction'   => 'multivendorx_real_time_transactions',
+        'product_qna'   => 'multivendorx_questions_and_answers',
     );
 
     /**

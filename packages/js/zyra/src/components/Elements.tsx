@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { useState } from 'react';
 
 // Types
 interface Option {
@@ -12,29 +12,35 @@ interface Option {
 
 interface ElementsProps {
     selectOptions: Option[];
-    onClick: ( value: string ) => void;
-    label?:string;
+    onClick: (value: string) => void;
+    label?: string;
 }
 
-const Elements: React.FC< ElementsProps > = ( { selectOptions, onClick,label } ) => {
+const Elements: React.FC<ElementsProps> = ({ selectOptions, onClick, label }) => {
+    const [isOpen, setIsOpen] = useState(true);
     return (
         <aside className="elements-section">
-            <div className="section-meta">
+            <div className="section-meta"
+                onClick={() => setIsOpen((prev) => !prev)}
+                role="button"
+                tabIndex={0}>
                 {label && <h2>{label}</h2>}
+                <i className={`adminlib-pagination-right-arrow ${isOpen ? "rotate" : ""}`}></i>
             </div>
-            <main className="section-container">
-                { selectOptions.map( ( option ) => (
+
+            <main className={`section-container ${isOpen ? "open" : "closed"}`}>
+                {selectOptions.map((option) => (
                     <div
-                        key={ option.value } // ✅ Added key for React's rendering optimization
+                        key={option.value}
                         role="button"
-                        tabIndex={ 0 }
+                        tabIndex={0}
                         className="elements-items"
-                        onClick={ () => onClick( option.value ) }
+                        onClick={() => onClick(option.value)}
                     >
-                        { option.icon && <i className={ option.icon }></i> }
-                        <p className="list-title">{ option.label }</p>
+                        {option.icon && <i className={option.icon}></i>}
+                        <p className="list-title">{option.label}</p>
                     </div>
-                ) ) }
+                ))}
             </main>
         </aside>
     );

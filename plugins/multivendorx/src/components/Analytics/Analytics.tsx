@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { AdminBreadcrumbs, SelectInput } from 'zyra';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   BarChart,
@@ -39,6 +39,8 @@ import Transactions from './Payout';
 import Revenue from './Revenue';
 import RefundedOrders from './RefundedOrders';
 import StoreOrders from './StoreOrders';
+import RevenueOld from './RevenueOld';
+import RefundedOrderOld from './RefundedOrderOld';
 
 const Analytics = () => {
   const location = useLocation();
@@ -69,58 +71,85 @@ const Analytics = () => {
   ];
   const overview = [
     {
-      id: 'sales',
-      label: 'Total Sales',
-      count: 475,
-      icon: 'adminlib-star',
-    },
-    {
       id: 'earnings',
-      label: 'Admin Earnings',
-      count: 625,
-      icon: 'adminlib-support',
+      label: 'Net Product',
+      count: "7896",
+      icon: 'adminlib-support green',
     },
     {
       id: 'Vendors',
-      label: 'Total Store',
-      count: 8,
-      icon: 'adminlib-global-community',
+      label: 'Admin Commission',
+      count: "85669",
+      icon: 'adminlib-global-community blue',
     },
     {
       id: 'Pending Withdrawals',
-      label: 'Withdrawals',
-      count: 10,
-      icon: 'adminlib-calendar',
+      label: 'Vendor Payout Pending',
+      count: "88200",
+      icon: 'adminlib-calendar red',
     },
+    {
+      id: 'Pending Withdrawals',
+      label: 'Amount Refunds',
+      count: "600",
+      icon: 'adminlib-calendar green',
+    },
+    {
+      id: 'Pending Withdrawals',
+      label: 'No. of refunds',
+      count: "600",
+      icon: 'adminlib-calendar blue',
+    },
+
   ];
   const pieData = [
-    { name: "Admin", value: 1200 },
-    { name: "Vendor", value: 2400 },
-    { name: "Shipping", value: 800 },
-    { name: "Free", value: 200 },
+    { name: "Admin Net Earning", value: 1200 },
+    { name: "Vendor Commission", value: 2400 },
+    { name: "Vendor Net Commission", value: 800 },
+    { name: "Sub Total", value: 200 },
+    { name: "Shipping", value: 200 },
   ];
   const [activeTab, setActiveTab] = useState("overview");
   const tabs = [
-    { id: "overview", label: "Overview", content: <Overview overview={overview} data={data} overviewData={overviewData} pieData={pieData} /> },
-    { id: "revenue", label: "Revenue", content: <Revenue/> },
-    { id: "payout", label: "Payout", content: <Transactions/> },
-    { id: "storeOrder ", label: "Store Order ", content: <StoreOrders/> },
-    { id: "refundedOrders", label: "Refunded Orders", content: <RefundedOrders/> },
+    { id: "overview", label: "Marketplace Report", content: <Overview overview={overview} data={data} overviewData={overviewData} pieData={pieData} /> },
+    { id: "revenue", label: "Product Report", content: <Revenue /> },
+    { id: "payout", label: "Store Report", content: <Transactions /> },
+    // { id: "refundedOrders", label: "Traffic & Conversion", content: <RefundedOrders /> },
+    // { id: "RevenueOld", label: "Revenue", content: <RevenueOld /> },
+    { id: "StoreOrders", label: "Store Orders", content: <StoreOrders /> },
+    { id: "RefundedOrderOld", label: "Refunded Order", content: <RefundedOrderOld /> },
   ];
-  
-  const COLORS = ["#5007aa", "#00c49f", "#ff7300", "#d400ffff"];
+
+  const COLORS = ["#5007aa", "#00c49f", "#ff7300", "#d400ffff", "#004ec4ff"];
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
+
     <>
       <AdminBreadcrumbs
-        activeTabIcon="adminlib-cart"
+        activeTabIcon="adminlib-analytics"
         tabTitle="Analytics"
         description={'Manage all pending administrative actions including approvals, payouts, and notifications.'}
 
       />
       <div className="admin-dashboard tab">
 
-        <div className="row">
-              {/* Tab Titles */}
+        <div className="row ">
+          {/* Tab Titles */}
+          <div className="card-header">
+            <div className="left">
               <div className="tab-titles">
                 {tabs.map((tab) => (
                   <div
@@ -132,6 +161,8 @@ const Analytics = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
         </div>
 
         {tabs.map(

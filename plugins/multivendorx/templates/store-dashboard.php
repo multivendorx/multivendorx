@@ -116,112 +116,115 @@ if ($current_page && empty($current_sub)) {
         </div>
 
         <div class="dashboard-content tab-wrapper">
+            <div class="top-navbar-wrapper">            
+                <div class="top-navbar">
+                    <div class="navbar-leftside">
+                    </div>
+                    <div class="navbar-rightside">
+                        <ul class="navbar-right">
+                            <li>
+                                <div class="adminlib-icon adminlib-vendor-form-add"></div>
+                            </li>
+                            <li>
+                                <div class="adminlib-icon adminlib-alarm"></div>
+                            </li>
+                            <li>
+                                <div class="adminlib-icon adminlib-crop-free"></div>
+                            </li>
+                            <li>
+                                <div class="adminlib-icon adminlib-contact-form"></div>
+                            </li>
 
-            <div class="top-navbar">
-                <div class="navbar-leftside">
-                </div>
-                <div class="navbar-rightside">
-                    <ul class="navbar-right">
-                        <li>
-                            <div class="adminlib-icon adminlib-vendor-form-add"></div>
-                        </li>
-                        <li>
-                            <div class="adminlib-icon adminlib-alarm"></div>
-                        </li>
-                        <li>
-                            <div class="adminlib-icon adminlib-crop-free"></div>
-                        </li>
-                        <li>
-                            <div class="adminlib-icon adminlib-contact-form"></div>
-                        </li>
 
+                            <li class="dropdown login-user">
+                                <div class="avatar-wrapper">
+                                    <i class="adminlib-icon adminlib-person"></i>
+                                </div>
+                                <div class="dropdown-menu">
 
-                        <li class="dropdown login-user">
-                            <div class="avatar-wrapper">
-                                <i class="adminlib-icon adminlib-person"></i>
-                            </div>
-                            <div class="dropdown-menu">
-
-                                <div class="dropdown-header">
-                                    <div class="user-card">
-                                        <div class="user-avatar">
-                                            <span>MS</span>
-                                        </div>
-                                        <div class="user-info">
-                                            <span class="user-name">Max Smith </span>
-                                            <span class="user-email">maxsmith@gmail.com </span>
+                                    <div class="dropdown-header">
+                                        <div class="user-card">
+                                            <div class="user-avatar">
+                                                <span>MS</span>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">Max Smith </span>
+                                                <span class="user-email">maxsmith@gmail.com </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="dropdown-body">
-                                    <ul>
-                                        <li>
-                                            <a href="#">
-                                                <i class="adminlib-person"></i>
-                                                View Profile
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">
-                                                <i class="adminlib-user-network-icon"></i>
-                                                Account Setting
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">
-                                                <i class="adminlib-user-network-icon"></i>
-                                                WordPress backend
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">
-                                                <i class="adminlib-setting-1"></i>
-                                                Storefront
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="store-wrapper">
-                                    <h3>Switch stores</h3>
-                                    <ul>
-                                        <?php
-                                        foreach ($store_ids as $id) {
-                                            if ($id == $active_store)
-                                                continue; // skip active one
-                                            $store = Store::get_store_by_id($id);
-                                            ?>
+                                    <div class="dropdown-body">
+                                        <ul>
                                             <li>
-                                                <a href="javascript:void(0);" class="switch-store"
-                                                    data-store-id="<?php echo esc_attr($id); ?>">
-                                                    <i class="adminlib-user-network-icon"></i>
-                                                    <?php echo esc_html($store->get('name')); ?>
+                                                <a href="#">
+                                                    <i class="adminlib-person"></i>
+                                                    View Profile
                                                 </a>
                                             </li>
 
-                                            <?php
-                                        }
-                                        ?>
-                                    </ul>
-                                </div>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="adminlib-user-network-icon"></i>
+                                                    Account Setting
+                                                </a>
+                                            </li>
 
-                                <div class="dropdown-footer">
-                                    <ul>
-                                        <li>
-                                            <a href="#">
-                                                <i class="adminlib-import"></i>
-                                                Sign Out
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="adminlib-user-network-icon"></i>
+                                                    WordPress backend
+                                                </a>
+                                            </li>
 
-                    </ul>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="adminlib-setting-1"></i>
+                                                    Storefront
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <?php if (!empty($store_ids) && is_array($store_ids)): ?>
+                                        <div class="store-wrapper">
+                                            <h3>Switch stores</h3>
+                                            <ul>
+                                                <?php
+                                                foreach ($store_ids as $id) {
+                                                    if ($id == $active_store)
+                                                        continue; // skip active one
+                                                    $store = Store::get_store_by_id($id);
+                                                    ?>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="switch-store"
+                                                            data-store-id="<?php echo esc_attr($id); ?>">
+                                                            <i class="adminlib-user-network-icon"></i>
+                                                            <?php echo esc_html($store->get('name')); ?>
+                                                        </a>
+                                                    </li>
+
+                                                    <?php
+                                                }
+                                                ?>
+                                            </ul>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <div class="dropdown-footer">
+                                        <ul>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="adminlib-import"></i>
+                                                    Sign Out
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
                 </div>
             </div>
             <?php
@@ -229,12 +232,12 @@ if ($current_page && empty($current_sub)) {
                 <div>
                     <?php echo 'waiting for approval'; ?>
                 </div>
-            <?php
+                <?php
             } elseif ($store->get('status') == 'reject') { ?>
                 <div>
                     <?php echo 'The application is rejected'; ?>
                 </div>
-            <?php
+                <?php
             } else {
                 $div_id = '';
                 $allowed = true;
@@ -284,8 +287,15 @@ if ($current_page && empty($current_sub)) {
                                 MultiVendorX()->util->get_template('add-product.php');
                             } else {
                                 ?>
-                                <div class="content-wrapper" id="<?php echo esc_attr($div_id) ?>"><?php echo esc_attr($div_id) ?>
-                                </div><?php
+                                <div class="content-wrapper" id="<?php echo esc_attr($div_id) ?>">     
+                                    <div class="page-title-wrapper">
+                                        <div class="page-title">
+                                            <div class="title"><?php echo esc_attr($div_id) ?></div>
+                                            <div class="des">Manage your store information and preferences</div>
+                                        </div>
+                                    </div> 
+                                </div>
+                                <?php
                             }
                         } else {
                             echo '<div>You do not have permission to access this section.</div>';

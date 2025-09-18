@@ -31,8 +31,8 @@ export default {
                 {
                     key: 'low_stock_alert_threshold',
                     type: 'number',
-                    addonBefore: __('Notify stores when inventory falls below', 'multivendorx'),
-                    addonAfter: __('units.', 'multivendorx'),
+                    preText: __('Notify stores when inventory falls below', 'multivendorx'),
+                    postText: __('units.', 'multivendorx'),
                     size: '8rem',
                     dependent: {
                         key: 'low_stock_alert',      // field it depends on
@@ -62,8 +62,8 @@ export default {
                 {
                     key: 'out_of_stock_alert_threshold',
                     type: 'number',
-                    addonBefore: __('Notify stores when inventory reaches below', 'multivendorx'),
-                    addonAfter: __('units.', 'multivendorx'),
+                    preText: __('Notify stores when inventory reaches below', 'multivendorx'),
+                    postText: __('units.', 'multivendorx'),
                     size: '8rem',
                     dependent: {
                         key: 'out_of_stock_alert',   // depends on checkbox

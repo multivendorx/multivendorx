@@ -8,7 +8,7 @@ export default {
     priority: 5,
     name: __('Invoice & Taxation', 'mvx-pro'),
     desc: __('Set up when and how invoices are generated in your marketplace.', 'mvx-pro'),
-    icon: 'adminlib-clock2',
+    icon: 'adminlib-clock',
     submitUrl: 'settings',
     modal: [
         {
@@ -138,8 +138,7 @@ export default {
             type: 'file',
             label: __('Company logo', 'mvx-pro'),
             desc: __('Upload your company logo for invoices', 'mvx-pro'),
-            height: 75,
-            width: 75,
+            size: 'small',
             proSetting: true,
             moduleEnabled: 'invoice',
         },

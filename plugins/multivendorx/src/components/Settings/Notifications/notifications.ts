@@ -1,6 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import google from '../../../assets/images/google.png';
-import mapbox from '../../../assets/images/mapbox-logo.png';
 
 export default {
     id: 'notii',
@@ -10,5 +8,6 @@ export default {
     icon: 'adminlib-form-section',
     submitUrl: 'settings',
     modal: [
+        
     ],
 };

@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { Table, getApiLink, TableCell, AdminBreadcrumbs, BasicInput, TextArea, CommonPopup } from 'zyra';
@@ -7,6 +7,7 @@ import { ColumnDef, RowSelectionState, PaginationState } from '@tanstack/react-t
 import "../Announcements/announcements.scss";
 
 type KBRow = {
+    date: any;
     id?: number;
     title?: string;
     content?: string;
@@ -23,18 +24,26 @@ type AnnouncementStatus = {
     name: string;
     count: number;
 };
+type FilterData = {
+    typeCount?: any;
+};
+export interface RealtimeFilter {
+    name: string;
+    render: (updateFilter: (key: string, value: any) => void, filterValue: any) => ReactNode;
+}
+
 export const KnowledgeBase: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [data, setData] = useState<KBRow[] | null>(null);
     const [addEntry, setAddEntry] = useState(false);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-    const [totalRows, setTotalRows] = useState(0);
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
         pageSize: 10,
     });
-    const [announcementStatus, setAnnouncementStatus] = useState<AnnouncementStatus[] | null>(null);
-
+    const [announcementStatus, setStatus] = useState<AnnouncementStatus[] | null>(null);
+    const [pageCount, setPageCount] = useState(0);
+    const [page, setPage] = useState('');
     const [editId, setEditId] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -45,9 +54,10 @@ export const KnowledgeBase: React.FC = () => {
     });
     const bulkSelectRef = useRef<HTMLSelectElement>(null);
     const [modalDetails, setModalDetails] = useState<string>('');
+    const [openModal, setOpenModal] = useState(false);
     const handleCloseForm = () => {
         setAddEntry(false);
-        setFormData({ title: '', url: '', content: '', stores: '' }); // reset form
+        setFormData({ title: '', content: '', status: 'pending' }); // reset form
         setEditId(null); // reset edit mode
         setError(null); // clear any error
     };
@@ -56,21 +66,42 @@ export const KnowledgeBase: React.FC = () => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
-    const handleBulkAction = () => {
-        if (appLocalizer.khali_dabba) {
-            if (!Object.keys(rowSelection).length) {
-                setModalDetails('Select rows.');
-                setOpenModal(true);
-                return;
-            }
-            if (!bulkSelectRef.current?.value) {
-                setModalDetails('Please select a action.');
-                setOpenModal(true);
-                return;
-            }
-            setData(null);
+    const handleBulkAction = async () => {
+        const action = bulkSelectRef.current?.value;
+        const selectedIds = Object.keys(rowSelection).map((key) => {
+            const index = Number(key);
+            return data && data[index] ? data[index].id : null;
+        }).filter((id): id is number => id !== null);
+    
+        if (!selectedIds.length) {
+            setModalDetails('Select rows.');
+            setOpenModal(true);
+            return;
         }
-    };
+    
+        if (!action) {
+            setModalDetails('Please select an action.');
+            setOpenModal(true);
+            return;
+        }
+    
+        setData(null);
+    
+        try {
+            await axios({
+                method: 'PUT',
+                url: getApiLink(appLocalizer, 'knowledge'),
+                headers: { 'X-WP-Nonce': appLocalizer.nonce },
+                data: { bulk: true, action, ids: selectedIds },
+            });
+    
+            requestData(pagination.pageSize, pagination.pageIndex + 1, page);
+            setRowSelection({});
+        } catch (err) {
+            setError(__('Failed to perform bulk action', 'multivendorx'));
+        }
+    };    
+
     const toggleDropdown = (id: any) => {
         if (showDropdown === id) {
             setShowDropdown(false);
@@ -95,7 +126,7 @@ export const KnowledgeBase: React.FC = () => {
             }
         } catch {
             setError(__('Failed to load entry', 'multivendorx'));
-        }
+        } 
     };
 
     // Submit form
@@ -122,7 +153,7 @@ export const KnowledgeBase: React.FC = () => {
                 setAddEntry(false);
                 setFormData({ title: '', content: '', status: 'pending' });
                 setEditId(null);
-                requestData(pagination.pageSize, pagination.pageIndex + 1);
+                requestData(pagination.pageSize, pagination.pageIndex + 1, page);
             } else {
                 setError(__('Failed to save entry', 'multivendorx'));
             }
@@ -130,100 +161,126 @@ export const KnowledgeBase: React.FC = () => {
             setError(__('Failed to save entry', 'multivendorx'));
         } finally {
             setSubmitting(false); // re-enable buttons
-        }
+        } 
     };
 
+
+    const requestApiForData = ( rowsPerPage: number, currentPage: number, filterData: FilterData ) => {
+    setData( null );
+        requestData(
+            rowsPerPage,
+            currentPage,
+            filterData?.typeCount,
+        );
+    };
 
     // Fetch data
-    const requestData = (rowsPerPage = 10, currentPage = 1) => {
-        setData(null);
+    function requestData(
+        rowsPerPage: number = 10,
+        currentPage: number = 1,
+        typeCount: string = ''
+    ) {
         axios({
-            method: 'GET',
-            url: getApiLink(appLocalizer, 'knowledge'),
-            headers: { 'X-WP-Nonce': appLocalizer.nonce },
-            params: { page: currentPage, row: rowsPerPage },
+          method: 'get',
+          url: getApiLink(appLocalizer, 'knowledge'),
+          headers: { 'X-WP-Nonce': appLocalizer.nonce },
+          params: { 
+            page: currentPage, 
+            row: rowsPerPage, 
+            status: typeCount === 'all' ? '' : typeCount,
+        },
+    }).then((response) => {
+        const res = response.data;
+        setData(res.items);
+        setPageCount(Math.ceil((res.total || 0) / rowsPerPage));
+        setStatus([
+            { key: 'all', name: 'All', count: res.all ?? res.total ?? 0 },
+            { key: 'publish', name: 'Published', count: res.publish ?? 0 },
+            { key: 'pending', name: 'Pending', count: res.pending ?? 0 },
+        ]);
+        setPage(typeCount == 'all' ? '' : typeCount);
         })
-            .then((response) => {
-                setData(response.data || []);
-                setAnnouncementStatus([
-                    { key: 'all', name: 'All', count: response.data.all || 0 },
-                    { key: 'publish', name: 'Published', count: response.data.publish || 0 },
-                    { key: 'pending', name: 'Pending', count: response.data.pending || 0 },
-                ]);
-            })
-            .catch(() => setError(__('Failed to load entries', 'multivendorx')));
-    };
+        .catch(() => setError(__('Failed to load entries', 'multivendorx')));
+    };      
 
     useEffect(() => {
         const currentPage = pagination.pageIndex + 1;
-        requestData(pagination.pageSize, currentPage);
+        requestData(pagination.pageSize, currentPage, page);
     }, [pagination]);
 
     // Columns
-    // Columns
-    const columns: ColumnDef<StoreRow>[] = [
+    const columns: ColumnDef<KBRow>[] = [
         {
-            id: 'select',
-            header: ({ table }) => (
-                <input
-                    type="checkbox"
-                    checked={table.getIsAllRowsSelected()}
-                    onChange={table.getToggleAllRowsSelectedHandler()}
-                />
-            ),
-            cell: ({ row }) => (
-                <input
-                    type="checkbox"
-                    checked={row.getIsSelected()}
-                    onChange={row.getToggleSelectedHandler()}
-                />
-            ),
+          id: 'select',
+          header: ({ table }) => (
+            <input
+              type="checkbox"
+              checked={table.getIsAllRowsSelected()}
+              onChange={table.getToggleAllRowsSelectedHandler()}
+            />
+          ),
+          cell: ({ row }) => (
+            <input
+              type="checkbox"
+              checked={row.getIsSelected()}
+              onChange={row.getToggleSelectedHandler()}
+            />
+          ),
         },
         {
-            header: __('Title', 'multivendorx'),
-            cell: ({ row }) => (
-                <TableCell title={row.original.title || ''}>
-                    {row.original.title || '-'}
-                </TableCell>
-            ),
+          header: __('Title', 'multivendorx'),
+          cell: ({ row }) => (
+            <TableCell title={row.original.title || ''}>
+              {row.original.title || '-'}
+            </TableCell>
+          ),
         },
         {
             header: __('Content', 'multivendorx'),
             cell: ({ row }) => (
-                <TableCell title={row.original.content || ''}>
-                    {row.original.content || '-'}
-                </TableCell>
+              <TableCell title={row.original.content || ''}>
+                {row.original.content || '-'}
+              </TableCell>
             ),
         },
         {
-            header: __('Status', 'multivendorx'),
-            cell: ({ row }) => (
-                <TableCell title={row.original.status || ''}>
-                    {row.original.status ? row.original.status.charAt(0).toUpperCase() + row.original.status.slice(1) : '-'}
-                </TableCell>
-            ),
+          header: __('Date', 'multivendorx'),
+          cell: ({ row }) => {
+            const rawDate = row.original.date;
+            let formattedDate = '-';
+            if (rawDate) {
+              const dateObj = new Date(rawDate);
+              formattedDate = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              }).format(dateObj);
+            }
+            return <TableCell title={formattedDate}>{formattedDate}</TableCell>;
+          },
         },
-
-    ];
-
-    const realtimeFilter: RealtimeFilter[] = [
         {
-            name: 'bulk-action',
-            render: () => (
-                <div className=" bulk-action">
-                    <select name="action" className="basic-select" ref={bulkSelectRef}>
-                        <option value="">{__('Bulk actions')}</option>
-                        <option value="publish">{__('Publish', 'multivendorx')}</option>
-                        <option value="pending">{__('Pending', 'multivendorx')}</option>
-                        <option value="delete">{__('Delete', 'multivendorx')}</option>
-                    </select>
-                    {/* <button name="bulk-action-apply" className="admin-btn btn-purple" onClick={handleBulkAction}>
-                        {__('Apply')}
-                    </button> */}
-                </div>
-            ),
+          header: __('Status', 'multivendorx'),
+          cell: ({ row }) => (
+            <TableCell title={row.original.status || ''}>
+              {row.original.status
+                ? row.original.status.charAt(0).toUpperCase() + row.original.status.slice(1)
+                : '-'}
+            </TableCell>
+          ),
         },
-    ];
+      ];
+      
+        const BulkAction: React.FC = () => (
+            <div className=" bulk-action">
+                <select name="action" className="basic-select" ref={bulkSelectRef} onChange={handleBulkAction}>
+                    <option value="">{__('Bulk actions')}</option>
+                    <option value="publish">{__('Publish', 'multivendorx')}</option>
+                    <option value="pending">{__('Pending', 'multivendorx')}</option>
+                    <option value="delete">{__('Delete', 'multivendorx')}</option>
+                </select>
+            </div>
+        );
 
     return (
         <>
@@ -305,22 +362,23 @@ export const KnowledgeBase: React.FC = () => {
             )}
 
             <div className="admin-table-wrapper">
-                <Table
-                    data={data}
-                    columns={columns as ColumnDef<Record<string, any>, any>[]}
-                    rowSelection={rowSelection}
-                    onRowSelectionChange={setRowSelection}
-                    defaultRowsPerPage={10}
-                    pagination={pagination}
-                    realtimeFilter={realtimeFilter}
-                    onPaginationChange={setPagination}
-                    handlePagination={requestData}
-                    perPageOption={[10, 25, 50]}
-                    onRowClick={(row: any) => {
-                        handleEdit(row.id);
-                    }}
-                    typeCounts={announcementStatus as AnnouncementStatus[]}
-                />
+            <Table
+                data={data}
+                columns={columns as ColumnDef<Record<string, any>, any>[]}
+                rowSelection={rowSelection}
+                onRowSelectionChange={setRowSelection}
+                defaultRowsPerPage={10}
+                pageCount={pageCount}
+                pagination={pagination}
+                onPaginationChange={setPagination}
+                handlePagination={requestApiForData}
+                perPageOption={[10, 25, 50]}
+                onRowClick={(row: any) => {
+                    handleEdit(row.id);
+                }}
+                typeCounts={announcementStatus as AnnouncementStatus[]}
+                bulkActionComp={() => <BulkAction />}
+            />
             </div>
         </>
     );

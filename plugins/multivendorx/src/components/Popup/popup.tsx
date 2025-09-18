@@ -45,6 +45,20 @@ const proPopupContent = {
             text: __( 'Export/Import Stock.', 'notifima' ),
         },
     ],
+    btnLink: [
+        {
+            value: '1 site License ($299)',
+            link: 'https://multivendorx.com/checkout/'
+        },
+        {
+            value: '3 site License ($399)',
+            link: 'https://multivendorx.com/checkout/$399'
+        },
+        {
+            value: '10 site License ($599)',
+            link: 'https://multivendorx.com/checkout/$599'
+        },
+    ]
 };
 
 const ShowProPopup: React.FC = () => {

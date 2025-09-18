@@ -74,10 +74,10 @@ export default {
                             value: 'product_price',
                         },
                     ],
-                    prefixUnit:'$',
+                    preInsideText:'$',
                     size:"8rem",
                     skipFirstRow: true,
-                    addonAfter: "then",
+                    postText: "then",
                     dependent: {
                         key: 'rule_type',
                         set: true,
@@ -94,7 +94,7 @@ export default {
                         },
                     ],
                     skipFirstRow: true,
-                    addonAfter: "then",
+                    postText: "then",
                     dependent: {
                         key: 'rule_type',
                         set: true,
@@ -111,8 +111,8 @@ export default {
                         },
                     ],
                     size:"8rem",
-                    prefixUnit:'$',
-                    addonAfter: "then",
+                    preInsideText:'$',
+                    postText: "then",
                     dependent: {
                         key: 'rule_type',
                         set: true,
@@ -122,19 +122,19 @@ export default {
                 {
                     key: 'commission_fixed',
                     type: 'text',
-                    prefixUnit: __('$', 'multivendorx'),
+                    preInsideText: __('$', 'multivendorx'),
                     size: "8rem",
-                    addonBefore: 'fixed',
-                    addonBeforeFirstRow:"Fixed",
-                    addonAfter: "+",
+                    preText: 'fixed',
+                    preTextFirstRow:"Fixed",
+                    postText: "+",
                 },
                 {
                     key: 'commission_percentage',
                     type: 'number',
                     size: '8rem',
-                    parameter: __('%', 'multivendorx'),
-                    addonAfter: "commission will be charged.",
-                    addonAfterFirstRow:"",
+                    postInsideText: __('%', 'multivendorx'),
+                    postText: "commission will be charged.",
+                    postTextFirstRow:"",
                 },
             ],
             dependent: {
@@ -156,15 +156,15 @@ export default {
                 {
                     key: 'commission_fixed',
                     type: 'number',
-                    prefixUnit: __('$', 'multivendorx'),
+                    preInsideText: __('$', 'multivendorx'),
                     size: "8rem",
-                    addonBefore: 'Fixed',
-                    addonAfter: "+",
+                    preText: 'Fixed',
+                    postText: "+",
                 },
                 {
                     key: 'commission_percentage',
                     type: 'number',
-                    parameter: __('%', 'catalogx'),
+                    postInsideText: __('%', 'multivendorx'),
                     size: "8rem",
                 },
             ],
@@ -178,7 +178,7 @@ export default {
             key: 'separator_content',
             type: 'section',
             hint: __("What's included along with store commission", 'multivendorx'),
-            desc: __('Choose which order components are factored into commission calculations', 'multivendorx')
+            desc: __('Choose which order components are factored into commission calculations.', 'multivendorx')
         },
         {
             key: 'give_shipping',

@@ -14,7 +14,7 @@ export default {
         {
             key: 'sync-course-options',
             type: 'checkbox',
-            desc: __('', 'moowoodle'),
+            settingDescription: __('Moodle course information is synchronized with WordPress products through categories, IDs, images, and groups.', 'moowoodle'),
             label: __('Course information mapping', 'moowoodle'),
             selectDeselect: true,
             options: [
@@ -51,7 +51,7 @@ export default {
                     key: 'sync_group',
                     label: __('Course group', 'moowoodle'),
                     hints: __(
-                        'Copies course images and sets them as WooCommerce product images.',
+                        'Moodle course groups are fetched and linked with products.',
                         'moowoodle'
                     ),
                     value: 'sync_group',
@@ -67,7 +67,7 @@ export default {
         {
             key: 'product_sync_option',
             type: 'checkbox',
-            desc: __('', 'moowoodle'),
+            desettingDescription: __('Course information from Moodle is used to generate new products or refresh existing ones in WordPress.', 'moowoodle'),
             label: __('Course & product synchronization', 'moowoodle'),
             selectDeselect: true,
             options: [

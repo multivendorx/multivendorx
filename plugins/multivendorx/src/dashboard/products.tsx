@@ -405,7 +405,7 @@ const AllProduct: React.FC = () => {
                                         }
                                     >
                                         <i className="adminlib-eye"></i>
-                                        {__('View Store', 'multivendorx')}
+                                        {__('View', 'multivendorx')}
                                     </li>
                                     <li
                                         onClick={() =>
@@ -413,7 +413,7 @@ const AllProduct: React.FC = () => {
                                         }
                                     >
                                         <i className="adminlib-create"></i>
-                                        {__('Edit Store', 'multivendorx')}
+                                        {__('Edi', 'multivendorx')}
                                     </li>
                                 </ul>
                             </div>

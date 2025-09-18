@@ -50,7 +50,7 @@ const DropDownMapping: React.FC< DropDownMappingProps > = ( {
     const [ btnAllow, setBtnAllow ] = useState( false );
     const settingChanged = useRef( false );
 
-    // ✅ Fix infinite loop by memoizing and ensuring stable dependencies
+    //Fix infinite loop by memoizing and ensuring stable dependencies
     useEffect( () => {
         const updatedAvailableFields: Record< string, string[] > = {};
         systems.forEach( ( system ) => {

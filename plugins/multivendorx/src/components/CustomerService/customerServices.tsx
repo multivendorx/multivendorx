@@ -5,6 +5,7 @@ import AbuseReports from './abuseReports';
 import StoreReviews from './storeReviews ';
 import './customerServices.scss';
 import '../AdminDashboard/adminDashboard.scss';
+import Qna from './qnaTable';
 
 const CustomerServices = () => {
 
@@ -44,7 +45,7 @@ const CustomerServices = () => {
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="adminlib-cart"
+                activeTabIcon="adminlib-customer-service"
                 tabTitle="Customer Service"
                 description={'Manage store reviews, support requests, financial transactions, and reported issues.'}
             />
@@ -112,6 +113,7 @@ const CustomerServices = () => {
                         <AbuseReports />
                     </div>
                 </div>
+                <Qna/>
             </div>
         </>
     );

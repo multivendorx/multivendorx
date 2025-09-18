@@ -74,17 +74,20 @@
       option{
         color: #000;
       }
+
       &:focus{
         outline: none;
-        box-shadow: none !important; /*for overwrite common style*/
+        box-shadow: none !important; /* for overwrite common style */
       }
     }
   }
+
   &.bulk{
       .wrap-bulk-all-date{
         background: #E2C290;
       }
     }
+
   .close-btn{
     color: #f06b4f;
     font-size: 0.95rem;
@@ -172,10 +175,12 @@
         .name{
           font-weight: 500;
         }
+
         .sub-text{
           color: #0000007a;
           padding-top: 0.313rem;
         }
+
         .product-image {
           width: 2.313rem;
           height: 2.313rem;
@@ -237,8 +242,6 @@
         }
 
         .admin-column:nth-of-type(2) {
-          // min-width: 14rem;
-
           .product-image {
             display: flex;
             gap: 0.5rem;
@@ -456,9 +459,9 @@
     display: none;
     z-index: 2;
     border-radius: 0.313rem;
+    width: 10rem;
 
     ul {
-      width: 9rem;
       padding: 0.313rem 0;
       margin: 0;
 

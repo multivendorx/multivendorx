@@ -22,9 +22,12 @@ class Roles {
      */
     public function __construct() {
         add_action( 'init', [ $this, 'multivendorx_add_custom_role' ] );
+        add_filter( 'user_has_cap', array($this, 'assign_cap_authenticate_user') );
     }
 
     public function multivendorx_add_custom_role() {
+        global $wp_roles;
+        
         if ( ! get_role( 'store_owner' ) ) {
             add_role(
                 'store_owner',
@@ -33,6 +36,12 @@ class Roles {
                     'read' => true,
                 )
             );
+        }
+
+        $all_caps = $this->get_custom_capability();
+        foreach ( $all_caps as $cap ) {
+            $wp_roles->add_cap( 'administrator', $cap );
+            $wp_roles->add_cap( 'store_owner', $cap );
         }
     }
 
@@ -46,5 +55,23 @@ class Roles {
             'order_assistant'   =>  __('Order Assistant', 'multivendorx'),
         ];
         return $custom_roles;
+    }
+
+    public function assign_cap_authenticate_user( $allcaps ) {
+        if ( is_user_logged_in() ) {
+            $allcaps['create_stores'] = true;
+        }
+
+        return $allcaps;
+    }
+
+    public function get_custom_capability() {
+        $capabilities = [
+            'create_stores',
+            'edit_stores',
+            'delete_stores'
+        ];
+
+        return $capabilities;
     }
 }

@@ -387,8 +387,10 @@
             .icon {
                 font-size: 1.25rem;
                 margin-top: 0.313rem;
+                span{
+                    font-size: 1rem;
+                }
             }
-
             .image {
                 img {
                     height: 2.5rem;

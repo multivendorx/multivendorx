@@ -17,9 +17,9 @@ export default {
             type: 'textarea',
             desc: __(
                 'Put your custom css here, to customize the enquiry form.',
-                'catalogx'
+                'multivendorx'
             ),
-            label: __( 'Addional CSS', 'catalogx' ),
+            label: __( 'Addional CSS', 'multivendorx' ),
         },
     ],
 };

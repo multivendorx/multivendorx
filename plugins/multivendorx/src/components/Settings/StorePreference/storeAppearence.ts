@@ -8,10 +8,10 @@ export default {
     priority: 5,
     name: __('Appearance', 'multivendorx'),
     desc: __(
-        "Control how stores look and feel on your marketplace",
+        "Control how stores look and feel on your marketplace.",
         'multivendorx'
     ),
-    icon: 'adminlib-clock2',
+    icon: 'adminlib-appearance',
     submitUrl: 'settings',
     modal: [
         {
@@ -34,17 +34,17 @@ export default {
             key: 'store_color_settings',
             type: 'color-setting',
             label: 'Shop banner section',
-            settingDescription: 'Choose how the store’s shop page appears, including banner, logo, and description  .',
+            settingDescription: 'Choose how the store’s shop page appears, including banner, logo, and description.',
             images: [
                 {
                     key: 'template1',
-                    label: 'Neo frame',
+                    label: 'Neo Frame',
                     img: template1,
                     value: 'template1',
                 },
                 {
                     key: 'template2',
-                    label: 'Elegant wave',
+                    label: 'Elegant Wave',
                     img: template2,
                     value: 'template2',
                 },

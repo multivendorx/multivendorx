@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
-import { BasicInput, CommonPopup, MultiCheckBox, Table, TableCell, TextArea } from 'zyra';
+import { BasicInput, CommonPopup, getApiLink, MultiCheckBox, SelectInput, Table, TableCell, TextArea, ToggleSetting } from 'zyra';
 import {
     ColumnDef,
     RowSelectionState,
     PaginationState,
 } from '@tanstack/react-table';
+import axios from 'axios';
 
 type StoreRow = {
     id: number;
@@ -17,16 +18,66 @@ type StoreRow = {
     expiry?: string;       // Expiry Date
     status?: string;
 };
+const discountOptions = [
+    { label: "Percentage discount", value: "percent" },
+    { label: "Fixed cart discount", value: "fixed_cart" },
+    { label: "Fixed product discount", value: "fixed_product" },
+];
+const handleToggleChange = (value: string) => {
 
+};
 const AllCoupon: React.FC = () => {
-    const [data, setData] = useState<StoreRow[]>([]);
+    const [id, setId] = useState<string | null>(null);
+    const [formData, setFormData] = useState<any>({
+        title: "",
+        content: "",
+        discount_type: "",
+        coupon_amount: "",
+        free_shipping: "no",
+        expiry_date: "",
+        usage_limit: "",
+        limit_usage_to_x_items: "",
+        usage_limit_per_user: "",
+        minimum_amount: "",
+        maximum_amount: "",
+        individual_use: "no",
+        exclude_sale_items: "no",
+        product_ids: [],
+        exclude_product_ids: [],
+        product_categories: [],
+        exclude_product_categories: [],
+        customer_email: "",
+    });
 
+    useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const dashboardId = searchParams.get("dashboard");
+        setId(dashboardId);
+    }, []);
+
+    const [data, setData] = useState<StoreRow[]>([]);
+    const [storeProducts, setStoreProducts] = useState<{ value: string; label: string }[]>([]);
+    const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     const [totalRows, setTotalRows] = useState<number>(0);
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
         pageSize: 10,
     });
+    useEffect(() => {
+        if (!id) return;
+
+        axios({
+            method: 'GET',
+            url: getApiLink(appLocalizer, `store/${id}`),
+            headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            params: { store: 'store' }
+        }).then((res) => {
+            const data = res.data || {};
+            setStoreProducts(data.products);
+            setCategories(data.categories)
+        });
+    }, [id]);
 
     const [showDropdown, setShowDropdown] = useState(false);
     const [AddCoupon, setAddCoupon] = useState(false);
@@ -41,6 +92,54 @@ const AllCoupon: React.FC = () => {
     const [pageCount, setPageCount] = useState(0);
     const [activeTab, setActiveTab] = useState("general");
 
+    const handleSave = async (status: "draft" | "publish") => {
+        try {
+            const payload = {
+                ...formData,
+                status: status,
+                store_id: id, // attach store id if needed
+            };
+            console.log(payload)
+
+            await axios.post(
+                getApiLink(appLocalizer, "coupons"),
+                payload,
+                { headers: { "X-WP-Nonce": appLocalizer.nonce } }
+            );
+            // Close popup
+            setAddCoupon(false);
+
+            // Optionally: reset form
+            setFormData({
+                title: "",
+                content: "",
+                discount_type: "",
+                coupon_amount: "",
+                free_shipping: "no",
+                expiry_date: "",
+                usage_limit: "",
+                limit_usage_to_x_items: "",
+                usage_limit_per_user: "",
+                minimum_amount: "",
+                maximum_amount: "",
+                individual_use: "no",
+                exclude_sale_items: "no",
+                product_ids: [],
+                exclude_product_ids: [],
+                product_categories: [],
+                exclude_product_categories: [],
+                customer_email: "",
+            });
+
+            // Optionally reload coupons list
+            // fetchCoupons();
+
+        } catch (err) {
+            console.error("Error saving coupon:", err);
+            alert("Failed to save coupon");
+        }
+    };
+
     const tabs = [
         {
             id: "general",
@@ -50,28 +149,60 @@ const AllCoupon: React.FC = () => {
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Discount type</label>
-                            <BasicInput type="text" name="discount_type" />
+                            <SelectInput
+                                name="discount_type"
+                                value={formData.discount_type}
+                                options={discountOptions}
+                                type="single-select"
+                                onChange={(val: any) =>
+                                    setFormData({ ...formData, discount_type: val?.value || "" })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Coupon amount</label>
-                            <BasicInput type="number" name="coupon_amount" />
+                            <BasicInput
+                                type="number"
+                                name="coupon_amount"
+                                value={formData.coupon_amount}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, coupon_amount: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Allow free shipping</label>
-                            <BasicInput type="text" name="free_shipping" />
+                            <ToggleSetting
+                                wrapperClass="setting-form-input"
+                                options={[
+                                    { key: "yes", value: "yes", label: "Yes" },
+                                    { key: "no", value: "no", label: "No" },
+                                ]}
+                                value={formData.free_shipping}
+                                onChange={(val: any) =>
+                                    setFormData({ ...formData, free_shipping: val })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Coupon expiry date</label>
-                            <BasicInput type="date" name="expiry_date" />
+                            <BasicInput
+                                type="date"
+                                name="expiry_date"
+                                value={formData.expiry_date}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, expiry_date: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
                 </>
@@ -85,21 +216,41 @@ const AllCoupon: React.FC = () => {
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Usage limit per coupon</label>
-                            <BasicInput type="number" name="limit_per_coupon" />
+                            <BasicInput
+                                type="number"
+                                name="usage_limit"
+                                value={formData.usage_limit}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, usage_limit: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Limit usage to X items</label>
-                            <BasicInput type="number" name="limit_per_items" />
+                            <BasicInput
+                                type="number"
+                                name="limit_usage_to_x_items"
+                                value={formData.limit_usage_to_x_items}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, limit_usage_to_x_items: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
-
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Usage limit per user</label>
-                            <BasicInput type="number" name="limit_per_user" />
+                            <BasicInput
+                                type="number"
+                                name="usage_limit_per_user"
+                                value={formData.usage_limit_per_user}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, usage_limit_per_user: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
                 </>
@@ -113,70 +264,182 @@ const AllCoupon: React.FC = () => {
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Minimum spend</label>
-                            <BasicInput type="number" name="min_spend" />
+                            <BasicInput
+                                type="number"
+                                name="minimum_amount"
+                                value={formData.minimum_amount}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, minimum_amount: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Maximum spend</label>
-                            <BasicInput type="number" name="max_spend" />
+                            <BasicInput
+                                type="number"
+                                name="maximum_amount"
+                                value={formData.maximum_amount}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, maximum_amount: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Individual use only</label>
-                            <BasicInput type="checkbox" name="individual_use" />
+                            <MultiCheckBox
+                                khali_dabba={appLocalizer?.khali_dabba ?? false}
+                                wrapperClass="toggle-btn"
+                                descClass="settings-metabox-description"
+                                inputWrapperClass="toggle-checkbox-header"
+                                inputInnerWrapperClass="toggle-checkbox"
+                                inputClass="basic-input"
+                                idPrefix="toggle-switch"
+                                options={[
+                                    { key: "yes", value: "yes" },
+                                    { key: "no", value: "no" },
+                                ]}
+                                value={
+                                    formData.individual_use === "yes"
+                                        ? ["yes"]
+                                        : ["no"]
+                                }
+                                onChange={(selected: any) =>
+                                    setFormData({
+                                        ...formData,
+                                        individual_use: selected.includes("yes") ? "yes" : "no",
+                                    })
+                                }
+                            />
+
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Exclude sale items</label>
-                            <BasicInput type="checkbox" name="exclude_sale_items" />
+                            <MultiCheckBox
+                                khali_dabba={appLocalizer?.khali_dabba ?? false}
+                                wrapperClass="toggle-btn"
+                                descClass="settings-metabox-description"
+                                inputWrapperClass="toggle-checkbox-header"
+                                inputInnerWrapperClass="toggle-checkbox"
+                                inputClass="basic-input"
+                                idPrefix="toggle-switch"
+                                options={[{ key: "exclude_sale_items", value: "yes" }]}
+                                value={
+                                    formData.exclude_sale_items === "yes"
+                                        ? ["exclude_sale_items"]
+                                        : []
+                                }
+                                onChange={(selected: any) =>
+                                    setFormData({
+                                        ...formData,
+                                        exclude_sale_items: selected.includes("exclude_sale_items")
+                                            ? "yes"
+                                            : "no",
+                                    })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Products</label>
-                            <BasicInput type="text" name="products" />
+                            <SelectInput
+                                name="product_ids"
+                                type="multi-select"
+                                options={storeProducts}
+                                value={formData.product_ids}
+                                onChange={(newValue: any) =>
+                                    setFormData({
+                                        ...formData,
+                                        product_ids: newValue.map((item: any) => item.value),
+                                    })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Exclude products</label>
-                            <BasicInput type="text" name="exclude_products" />
+                            <SelectInput
+                                name="exclude_product_ids"
+                                type="multi-select"
+                                options={storeProducts}
+                                value={formData.exclude_product_ids}
+                                onChange={(newValue: any) =>
+                                    setFormData({
+                                        ...formData,
+                                        exclude_product_ids: newValue.map((item: any) => item.value),
+                                    })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Product categories</label>
-                            <BasicInput type="text" name="product_categories" />
+                            <SelectInput
+                                name="product_categories"
+                                type="multi-select"
+                                options={categories}
+                                value={formData.product_categories}
+                                onChange={(newValue: any) =>
+                                    setFormData({
+                                        ...formData,
+                                        product_categories: newValue.map((item: any) => item.value),
+                                    })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Exclude categories</label>
-                            <BasicInput type="text" name="exclude_categories" />
+                            <SelectInput
+                                name="exclude_product_categories"
+                                type="multi-select"
+                                options={categories}
+                                value={formData.exclude_product_categories}
+                                onChange={(newValue: any) =>
+                                    setFormData({
+                                        ...formData,
+                                        exclude_product_categories: newValue.map(
+                                            (item: any) => item.value
+                                        ),
+                                    })
+                                }
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-wrapper">
                         <div className="form-group">
                             <label>Allowed emails</label>
-                            <BasicInput type="text" name="allowed_emails" />
+                            <BasicInput
+                                type="text"
+                                name="customer_email"
+                                value={formData.customer_email}
+                                onChange={(e: any) =>
+                                    setFormData({ ...formData, customer_email: e.target.value })
+                                }
+                            />
                         </div>
                     </div>
                 </>
             ),
-        },
+        }
     ];
-
 
     // 🔹 Add demo data on mount
     useEffect(() => {
@@ -345,14 +608,14 @@ const AllCoupon: React.FC = () => {
         <>
             <div className="header-wrapper">
                 <div
-                className="admin-btn btn-purple"
-                onClick={() => setAddCoupon(true)}
-            >
-                <i className="adminlib-plus-circle-o"></i>
-                Add New
+                    className="admin-btn btn-purple"
+                    onClick={() => setAddCoupon(true)}
+                >
+                    <i className="adminlib-plus-circle-o"></i>
+                    Add New
+                </div>
             </div>
-            </div>
-            
+
             {AddCoupon && (
                 <CommonPopup
                     open={AddCoupon}
@@ -376,14 +639,14 @@ const AllCoupon: React.FC = () => {
                         <>
                             <div
                                 className="admin-btn btn-red"
-                                onClick={() => setAddCoupon(false)}
+                                onClick={() => handleSave("draft")}
                             >
                                 Draft
                                 <i className="adminlib-contact-form"></i>
                             </div>
                             <div
                                 className="admin-btn btn-purple"
-                                onClick={() => setAddCoupon(false)}
+                                onClick={() => handleSave("publish")}
                             >
                                 Publish
                                 <i className="adminlib-check"></i>
@@ -401,6 +664,10 @@ const AllCoupon: React.FC = () => {
                                 <BasicInput
                                     type="text"
                                     name="title"
+                                    value={formData.title}
+                                    onChange={(e: any) =>
+                                        setFormData({ ...formData, title: e.target.value })
+                                    }
                                 />
                             </div>
                         </div>
@@ -411,6 +678,10 @@ const AllCoupon: React.FC = () => {
                                     name="content"
                                     inputClass="textarea-input"
                                     rowNumber={6}
+                                    value={formData.content}
+                                    onChange={(e: any) =>
+                                        setFormData({ ...formData, content: e.target.value })
+                                    }
                                 />
                             </div>
                         </div>

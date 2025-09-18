@@ -24,10 +24,10 @@ a {
 
 .form-select-field-wrapper input:focus {
   box-shadow: none !important;
+
   /* for overwrite react components */
   outline: none;
 }
-
 #admin-main-wrapper {
   margin-left: -1.25rem;
   font-family: Figtree, sans-serif;
@@ -205,6 +205,7 @@ a {
     }
   }
 }
+
 // copy btn end
 
 // all input style start
@@ -358,7 +359,7 @@ input[type="checkbox"]:checked::before {
 }
 
 input.minus-icon::before {
-  content: "\e900";
+  content: "\e92a";
   padding: 0.063rem;
 }
 
@@ -857,6 +858,11 @@ input[type="checkbox"]:focus {
   // multi input style end  
 }
 
+.settings-input-content:has(.grid-table),
+.settings-input-content:has(.registration-from-wrapper) {
+  width: 100%;
+}
+
 .select-deselect-trigger {
   margin-bottom: 1rem;
 }
@@ -907,6 +913,7 @@ input[type="checkbox"]:focus {
   gap: 0.625rem;
   padding-top: 0.5rem;
 }
+
 // footer button style end
 
 .settings-from-multi-select {
@@ -947,14 +954,13 @@ input[type="checkbox"]:focus {
 }
 
 .form-select-field-wrapper {
-
   .select-wrapper {
     display: inline-flex;
     gap: 0.5rem;
     align-items: center;
     width: 100%;
 
-    .react-select{
+    .react-select {
       width: 100%;
     }
 
@@ -976,6 +982,62 @@ input[type="checkbox"]:focus {
 }
 
 // pro image wrapper end
-.more-btn{
+.more-btn {
   cursor: pointer;
+}
+
+// live chart
+.live-chat-wrapper {
+  position: fixed;
+  z-index: 99999;
+  width: 25%;
+  right: 1rem;
+  bottom: 1rem;
+  border-radius: 0.313rem;
+  box-shadow: 0 0.125rem 0.5rem 0 rgba(47, 43, 61, 0.12);
+  transform: translateX(110%);
+  transition: all 0.4s ease;
+  background: #fff;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  &.minimized {
+    width: 0;
+    height: 0;
+  }
+
+  i {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 99;
+    color: #000;
+    font-size: 1.125rem;
+    background: #fff;
+    padding: 0.125rem;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &.icon {
+      right: 3rem;
+    }
+  }
+}
+
+// live chart
+.minimized-icon {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  background: #5007aa;
+  z-index: 9999;
+
+  .admin-icon {
+    color: #fff;
+    font-size: 1.313rem;
+    padding: 0.75rem;
+    border-radius: 50%;
+  }
 }

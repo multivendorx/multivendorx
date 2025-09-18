@@ -11,13 +11,13 @@ const overview = [
   },
   {
     id: 'earnings',
-    label: 'Vendor Commission',
+    label: 'Store Commission',
     count: 625,
     icon: 'adminlib-support',
   },
   {
     id: 'Vendors',
-    label: 'Vendor Net Commission',
+    label: 'Store Net Commission',
     count: 8,
     icon: 'adminlib-global-community',
   },
@@ -83,7 +83,15 @@ const StoreOrders: React.FC = () => {
       ),
     },
     {
-      header: __('Vendor', 'multivendorx'),
+      header: __('Order Id', 'multivendorx'),
+      cell: ({ row }) => (
+        <TableCell title={row.original.store_name || ''}>
+          {'#7585'}
+        </TableCell>
+      ),
+    },
+    {
+      header: __('Store', 'multivendorx'),
       cell: ({ row }) => (
         <TableCell title={row.original.store_name || ''}>
           {row.original.vendor || '-'}
@@ -130,7 +138,16 @@ const StoreOrders: React.FC = () => {
   ];
   return (
     <>
-        <Table
+    <div className="row">
+      <div className="column">
+        <div className="card-header">
+            <div className="left">
+              <div className="title">
+                Revenue Distribution
+              </div>
+            </div>
+          </div>
+          <Table
           data={demoData}
           columns={columns as ColumnDef<Record<string, any>, any>[]}
           rowSelection={rowSelection}
@@ -143,6 +160,9 @@ const StoreOrders: React.FC = () => {
           perPageOption={[10, 25, 50]}
           typeCounts={[]}
         />
+      </div>
+    </div>
+        
     </>
   );
 };

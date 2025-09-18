@@ -5,7 +5,7 @@ export default {
     priority: 3,
     name: __('Coupon and Discount', 'mvx-pro'),
     desc: __('Manage how discounts and coupons affect commission calculations.', 'mvx-pro'),
-    icon: 'adminlib-clock2',
+    icon: 'adminlib-clock',
     submitUrl: 'settings',
     modal: [        
         {

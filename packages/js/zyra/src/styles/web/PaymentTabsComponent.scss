@@ -9,30 +9,39 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1rem;
+            gap: 0.5rem;
             padding: 0.5rem 0.625rem;
             background: #f9f4f4b8;
             cursor: pointer;
+
+            .toggle-icon {
+                padding-right: 0.5rem;
+                border-right: $border-light-small;
+
+                i {
+                    font-size: 1.313rem;
+                    color: #5007aa;
+                    cursor: pointer;
+                }
+
+                .disable {
+                    color: #8a888873;
+                }
+            }
 
             .details {
                 display: flex;
                 gap: 0.5rem;
                 align-items: center;
+                width: 100%;
+                justify-content: space-between;
 
-                .toggle-icon {
-                    padding-right: 0.5rem;
-                    border-right: $border-light-small;
-
-                    i {
-                        font-size: 1.313rem;
-                        color: #5007aa;
-                        cursor: pointer;
-                    }
-
-                    .disable {
-                        color: #8a888873;
-                    }
+                .details-wrapper {
+                    display: flex;
+                    gap: 0.5rem;
                 }
+
+
 
                 .payment-method-icon {
                     padding: 0.313rem;
@@ -77,6 +86,14 @@
                 }
             }
 
+            .right-section {
+                width: 2rem;
+
+                i {
+                    font-size: 1.25rem;
+                }
+            }
+
             .payment-method-arrow {
                 i {
                     font-size: 2rem;
@@ -104,11 +121,12 @@
             max-height: 0;
             opacity: 0;
 
-            &.open{
+            &.open {
                 opacity: 1;
                 max-height: 25rem;
                 padding: 1rem;
             }
+
             .button-wrapper {
                 width: 100%;
                 display: flex;

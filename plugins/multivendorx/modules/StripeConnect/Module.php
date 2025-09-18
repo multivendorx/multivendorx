@@ -36,7 +36,6 @@ class Module {
         // Init helper classes.
         $this->init_classes();
         add_filter('multivendorx_payment_providers', [$this, 'add_payment_provider']);
-
     }
 
     public function add_payment_provider($providers) {

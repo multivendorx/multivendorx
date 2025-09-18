@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 
 /**
@@ -21,7 +21,7 @@ interface Module {
     icon: string;
     doc_link: string;
     video_link: string;
-    req_plugin?: string[],
+    req_plugin?: { name: string; link: string }[];
     settings_link: string;
     pro_module?: boolean;
     category?: string; // Optional to support no separators
@@ -171,7 +171,7 @@ const Modules: React.FC<ModuleProps> = ({
                 activeTabIcon="adminlib-module"
                 tabTitle="Modules"
                 description={'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and vendors.'}
-                
+
             />
 
             <div className="module-container">
@@ -302,11 +302,11 @@ const Modules: React.FC<ModuleProps> = ({
                                         </div> */}
                                     </div>
                                     <div className="module-details">
-                                        
-                                            <div className="meta-name">{module.name}
-                                                {module.category && ( <span className="admin-badge blue">{formatCategory(module.category)}</span>  )}
-                                            </div>
-                                       
+
+                                        <div className="meta-name">{module.name}
+                                            {module.category && (<span className="admin-badge blue">{formatCategory(module.category)}</span>)}
+                                        </div>
+
                                         <p
                                             className="meta-description"
                                             dangerouslySetInnerHTML={{ __html: module.desc }}
@@ -314,15 +314,23 @@ const Modules: React.FC<ModuleProps> = ({
                                         {requiredPlugins.length > 0 && (
                                             <div className="requires">
                                                 <div className="requires-title">Requires:</div>
-                                                <p className="meta-description">{requiredPlugins.join(', ')}</p>
+                                                {requiredPlugins.map((plugin: { name: string; link: string }, idx: number) => (
+                                                    <span key={idx}>
+                                                        <a href={plugin.link} target="_blank" rel="noopener noreferrer">
+                                                            {plugin.name}
+                                                        </a>
+                                                        {idx < requiredPlugins.length - 1 ? ', ' : ''}
+                                                    </span>
+                                                ))}
+                                                {/* <p className="meta-description">{requiredPlugins.join(', ')}</p> */}
                                             </div>
                                         )}
                                     </div>
                                 </div>
                                 <div className="module-footer">
                                     <div className="buttons">
-                                        {module.doc_link && ( <a href={module.doc_link}><i className="adminlib-book"></i></a> )}
-                                        {module.video_link && ( <a href={module.video_link}><i className="adminlib-button-appearance"></i></a> )}
+                                        {module.doc_link && (<a href={module.doc_link}><i className="adminlib-book"></i></a>)}
+                                        {module.video_link && (<a href={module.video_link}><i className="adminlib-button-appearance"></i></a>)}
                                     </div>
                                     <div
                                         className="toggle-checkbox"

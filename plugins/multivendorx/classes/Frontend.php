@@ -20,13 +20,8 @@ class Frontend {
 
         add_action('woocommerce_after_shop_loop_item', array($this, 'add_text_in_shop_and_single_product_page'), 6);
         add_action('woocommerce_product_meta_start', array($this, 'add_text_in_shop_and_single_product_page'), 25);
-
         add_action('woocommerce_get_item_data', array($this, 'add_sold_by_text_cart'), 30, 2);
-
         add_filter('woocommerce_product_tabs', array($this, 'product_vendor_tab'));
-        // if ( MultiVendorX()->modules->is_active( 'store-policy' ) ) {
-            add_filter('woocommerce_product_tabs', array($this, 'product_policy_tab'));
-        // }
 
         add_filter('woocommerce_related_products', array($this, 'show_related_products'), 99, 3);
         // add_filter('woocommerce_login_redirect', array($this, 'multivendorx_store_login'), 10, 2);
@@ -112,32 +107,6 @@ class Frontend {
     public function woocommerce_product_store_tab() {
         MultiVendorX()->util->get_template( 'store-single-product-tab.php' );
     }
-
-    public function product_policy_tab($tabs) {
-        global $product;
-        if ($product) {
-            $policies = StoreUtil::get_store_product_policies($product->get_id());
-            if (count($policies) > 0) {
-                $tabs['policies'] = array(
-                    'title' => __('Policies', 'multivendorx'),
-                    'priority' => 30,
-                    'callback' => array($this, 'woocommerce_product_policies_tab')
-                );
-            }
-        }
-
-        return $tabs;
-    }
-
-    /**
-     * Add Polices tab html
-     *
-     * @return void
-     */
-    public function woocommerce_product_policies_tab() {
-        MultiVendorX()->util->get_template( 'store-single-product-policy-tab.php' );
-    }
-
 
     /**
      * Show related products or not

@@ -26,7 +26,6 @@ interface CustomizerProps {
 const Customizer: React.FC< CustomizerProps > = ( {
     onChange,
     setting,
-    setHoverOn,
 } ) => {
     const [ select, setSelect ] = useState< string >( '' );
     const [ buttonLink, setButtonLink ] = useState< string >(

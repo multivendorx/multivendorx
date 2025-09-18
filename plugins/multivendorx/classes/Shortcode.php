@@ -65,14 +65,22 @@ class Shortcode {
     
         // Start output buffering
         ob_start();
-        ?>
-        <div id="multivendorx-registration-form">
-            <?php
-            // Here you can render the actual registration form if needed
-            // Example: echo do_shortcode('[multivendorx_store_registration]');
+        if (is_user_logged_in()) {
             ?>
-        </div>
-        <?php
+            <div id="multivendorx-registration-form">
+                <?php
+                // Here you can render the actual registration form if needed
+                // Example: echo do_shortcode('[multivendorx_store_registration]');
+                ?>
+            </div>
+            <?php
+        } else {
+            ?>
+            <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>">
+                Kindly login before registration
+            </a>
+            <?php
+        }
     
         // Return the output buffer content
         return ob_get_clean();

@@ -58,18 +58,42 @@ class Install {
         // Get the charset collate for the tables.
         $collate = $wpdb->get_charset_collate();
 
+        // $sql_commission = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['commission'] . "` (
+        //     `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+        //     `order_id` bigint(20) NOT NULL,
+        //     `store_id` bigint(20) NOT NULL,
+        //     `commission_amount` float(20, 2) NOT NULL DEFAULT 0,
+        //     `shipping` float(20, 2) NOT NULL DEFAULT 0,
+        //     `tax` float(20, 2) NOT NULL DEFAULT 0,
+        //     `commission_total` float(20, 2) NOT NULL DEFAULT 0,
+        //     `commission_refunded` float(20, 2) NOT NULL DEFAULT 0,
+        //     `paid_status` varchar(20) NOT NULL,
+        //     `commission_note`  longtext NULL,
+        //     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        //     PRIMARY KEY (`ID`)
+        // ) $collate;";
+
         $sql_commission = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['commission'] . "` (
             `ID` bigint(20) NOT NULL AUTO_INCREMENT,
             `order_id` bigint(20) NOT NULL,
             `store_id` bigint(20) NOT NULL,
+            `facilitator_id` bigint(20) NOT NULL DEFAULT 0,
+            `customer_id` bigint(20) NOT NULL,
+            `total_order_amount` float(10, 2) NOT NULL DEFAULT 0,
             `commission_amount` float(20, 2) NOT NULL DEFAULT 0,
-            `shipping` float(20, 2) NOT NULL DEFAULT 0,
-            `tax` float(20, 2) NOT NULL DEFAULT 0,
+            `facilitator_fee` float(20, 2) NOT NULL DEFAULT 0,
+            `gateway_fee` float(20, 2) NOT NULL DEFAULT 0,
+            `shipping_amount` float(20, 2) NOT NULL DEFAULT 0,
+            `tax_amount` float(20, 2) NOT NULL DEFAULT 0,
+            `shipping_tax_amount` float(20, 2) NOT NULL DEFAULT 0,
+            `discount_amount` float(20, 2) NOT NULL DEFAULT 0,
             `commission_total` float(20, 2) NOT NULL DEFAULT 0,
             `commission_refunded` float(20, 2) NOT NULL DEFAULT 0,
-            `paid_status` varchar(20) NOT NULL,
+            `currency` varchar(10) NOT NULL,
+            `status` enum('paid','refunded','partially_refunded','cancelled') DEFAULT 'paid',
             `commission_note`  longtext NULL,
-            `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (`ID`)
         ) $collate;";
 
@@ -107,7 +131,7 @@ class Install {
             `order_id` bigint(20) unsigned DEFAULT NULL,
             `commission_id` bigint(20) unsigned DEFAULT NULL,
             `entry_type` enum('Dr','Cr') NOT NULL,
-            `transaction_type` enum('Commission','Withdrawal','Refund','Reversed') NOT NULL,
+            `transaction_type` enum('Commission','Withdrawal','Refund','Reversed', 'COD received') NOT NULL,
             `amount` float(20,2) NOT NULL,
             `balance` float(20,2) NOT NULL,
             `locking_balance` float(20,2) NOT NULL,
@@ -139,6 +163,20 @@ class Install {
             KEY `idx_commission` (`commission_id`)
         ) $collate;";
 
+        $sql_qna = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}" . Utill::TABLES['product_qna'] . "` (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            question_text TEXT NOT NULL,
+            question_by INT NOT NULL,
+            question_date DATETIME NOT NULL,
+            answer_text TEXT,
+            answer_by INT,
+            answer_date DATETIME,
+            total_votes INT DEFAULT 0,
+            voters TEXT,
+            question_visibility VARCHAR(50) DEFAULT 'public'
+        ) $collate;";
+
         // Include upgrade functions if not loaded.
         if ( ! function_exists( 'dbDelta' ) ) {
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -150,6 +188,7 @@ class Install {
         dbDelta( $sql_store_meta );
         dbDelta( $sql_transaction );
         dbDelta( $sql_real_time_transaction );
+        dbDelta( $sql_qna );
     }
 
     public function create_database_triggers() {
@@ -161,7 +200,7 @@ class Install {
         // Create the trigger
         $sql = "
         CREATE TRIGGER update_store_balance
-        BEFORE INSERT ON wp_multivendorx_transaction_ledger
+        BEFORE INSERT ON wp_multivendorx_transactions
         FOR EACH ROW
         BEGIN
             DECLARE last_balance DECIMAL(20,2);
@@ -169,7 +208,7 @@ class Install {
 
             SELECT balance, locking_balance
             INTO last_balance, last_locking_balance
-            FROM wp_multivendorx_transaction_ledger
+            FROM wp_multivendorx_transactions
             WHERE store_id = NEW.store_id
             ORDER BY id DESC
             LIMIT 1;

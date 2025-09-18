@@ -1,10 +1,7 @@
 @use '../../global.scss' as *;
 
+
 .registration-from-wrapper {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  position: relative;
 
   .registration-form-main-section {
     flex: 1;
@@ -24,7 +21,7 @@
       justify-content: center;
       flex-direction: column;
       gap: 0.5rem;
-      width:  85%;
+      width: 85%;
       border: none;
 
       p {

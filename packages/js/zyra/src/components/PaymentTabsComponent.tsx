@@ -58,6 +58,7 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
   onChange,
 }) => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
 
   const handleInputChange = (
     methodKey: string,
@@ -180,73 +181,62 @@ const PaymentTabsComponent: React.FC<PaymentTabsComponentProps> = ({
             <div
               className="payment-method"
             >
-              <div className="details">
-                <div className="toggle-icon">
-                  {isEnabled ? (
-                    <i
-                      className="adminlib-eye"
-                      onClick={() => toggleEnable(method.id, false, method.icon)}
-                    />
-                  ) : (
-                    <i
-                      className="adminlib-eye-blocked disable"
-                      onClick={() => toggleEnable(method.id, true, method.icon)}
-                    />
-                  )}
-                </div>
-                <div className="payment-method-icon">
-                  <img src={method.icon} alt={method.label} />
-                </div>
-                <div className="payment-method-info">
-                  <div className="title-wrapper">
-                    <span className="title">{method.label}</span>
-                    <div
-                      className={`admin-badge ${isEnabled ? "green" : "red"}`}
-                    >
-                      {isEnabled ? "Active" : "Inactive"}
-                    </div>
-                  </div>
-                  <div className="method-desc">{method.desc}</div>
-                </div>
+              <div className="toggle-icon">
+                {isEnabled ? (
+                  <i
+                    className="adminlib-eye"
+                    onClick={() => toggleEnable(method.id, false, method.icon)}
+                  />
+                ) : (
+                  <i
+                    className="adminlib-eye-blocked disable"
+                    onClick={() => toggleEnable(method.id, true, method.icon)}
+                  />
+                )}
               </div>
-
-              <div className="right-section toggle-btn">
-                {/* <MultiCheckBox
-                  khali_dabba={false}
-                  wrapperClass="toggle-btn"
-                  descClass="settings-metabox-description"
-                  inputWrapperClass="toggle-checkbox-header"
-                  inputInnerWrapperClass="toggle-checkbox"
-                  inputClass="payment-toggle"
-                  idPrefix="toggle-switch"
-                  options={[{ key: method.id, value: method.id }]}
-                  value={isEnabled ? [method.id] : []}
-                  onChange={(e: any) => {
-                    const newEnabled = e.target.checked;
-                    toggleEnable(method.id, newEnabled, method.icon);
-                  }}
-                /> */}
+              <div className="details" onClick={() => setActiveTab(isActive ? null : method.icon)}>
+                <div className="details-wrapper">
+                  <div className="payment-method-icon">
+                    {/* <img src={method.icon} alt={method.label} /> */}
+                    <i className={method.icon}></i>
+                  </div>
+                  <div className="payment-method-info">
+                    <div className="title-wrapper">
+                      <span className="title">{method.label}</span>
+                      <div
+                        className={`admin-badge ${isEnabled ? "green" : "red"}`}
+                      >
+                        {isEnabled ? "Active" : "Inactive"}
+                      </div>
+                    </div>
+                    <div className="method-desc">{method.desc}</div>
+                  </div>
+                </div>
                 {isEnabled && (
                   <div className="admin-btn btn-purple" onClick={() => setActiveTab(isActive ? null : method.icon)} >Manage</div>
                 )}
               </div>
+
+              <div className="right-section toggle-btn" onClick={() => toggleEnable(method.id, true, method.icon)}>
+                <i className="adminlib-more-vertical"></i>                                
+              </div>
             </div>
 
-              <div
-                 className={`${method.wrapperClass || ""} payment-method-form 
+            <div
+              className={`${method.wrapperClass || ""} payment-method-form
                  ${isEnabled && isActive ? "open" : ""
-            }`}
-              >
-                {method.formFields.map((field) => (
-                  <div key={field.key} className="form-group">
-                    {field.label && <label>{field.label}</label>}
-                    <div className="input-content">
-                      {renderField(method.id, field)}
-                    </div>
+                }`}
+            >
+              {method.formFields.map((field) => (
+                <div key={field.key} className="form-group">
+                  {field.label && <label>{field.label}</label>}
+                  <div className="input-content">
+                    {renderField(method.id, field)}
                   </div>
-                ))}
-              </div>
-            
+                </div>
+              ))}
+            </div>
+
           </div>
         );
       })}

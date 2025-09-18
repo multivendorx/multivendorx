@@ -1,7 +1,6 @@
 import { ReactNode, forwardRef } from "react";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   Slide,
@@ -30,7 +29,6 @@ type PopupProps = {
 const CommonPopup = ({
   open,
   onClose,
-  title = "Popup",
   children,
   header,
   footer,

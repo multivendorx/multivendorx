@@ -79,7 +79,7 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
 
         props.onChange?.({
             target: {
-                name: 'vendor_color_settings',
+                name: 'store_color_settings',
                 value: {
                     selectedPalette: value,
                     colors,
@@ -96,7 +96,7 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
 
         props.onChange?.({
             target: {
-                name: 'vendor_color_settings',
+                name: 'store_color_settings',
                 value: {
                     selectedPalette: 'custom',
                     colors: updated,

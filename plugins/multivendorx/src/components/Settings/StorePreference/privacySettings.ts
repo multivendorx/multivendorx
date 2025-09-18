@@ -5,7 +5,7 @@ export default {
     priority: 6,
     name: __( 'Privacy', 'multivendorx' ),
     desc: __('Manage how store details are shared with customers, from branding and contact info to policies and profile visibility.','multivendorx'),
-    icon: 'adminlib-storefront',
+    icon: 'adminlib-privacy',
     submitUrl: 'settings',
     modal: [ 
         {
@@ -80,7 +80,7 @@ export default {
                 {
                     key: 'group_items_by_store_in_cart',
                     label: __( 'Group items by store in cart', 'multivendorx' ),
-                    desc: __( 'Organize cart contents by individual stores for clarity', 'multivendorx' ),
+                    desc: __( 'Organize cart contents by individual stores for clarity.', 'multivendorx' ),
                     value: 'group_items_by_store_in_cart',
                 },
             ],
