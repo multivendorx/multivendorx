@@ -4,8 +4,11 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'sso',
     priority: 30,
-    name: __('Single Sign On', 'moowoodle'),
-    desc: __('Manage seamless login and logout synchronization', 'moowoodle'),
+    name: __( 'Single Sign On', 'moowoodle' ),
+    desc: __(
+        'Manage seamless login and logout synchronization.',
+        'moowoodle'
+    ),
     icon: 'adminlib-vpn-key',
     submitUrl: 'settings',
     proDependent: true,
@@ -14,10 +17,10 @@ export default {
             key: 'moowoodle_sso_enable',
             type: 'checkbox',
             desc: __(
-                'Enabling this option allows users to access Moodle courses directly, bypassing the need for login',
+                'Enabling this option allows users to access Moodle courses directly, bypassing the need for login.',
                 'moowoodle'
             ),
-            label: __('Single Sign On', 'moowoodle'),
+            label: __( 'Single Sign On', 'moowoodle' ),
             options: [
                 {
                     key: 'moowoodle_sso_enable',
@@ -29,7 +32,7 @@ export default {
         },
         {
             key: 'moowoodle_sso_secret_key',
-            type: 'text',            
+            type: 'text',
             dependent: {
                 key: 'moowoodle_sso_enable', // parent dependent key
                 set: true,
@@ -44,7 +47,8 @@ export default {
                 appLocalizer.moodle_site_url +
                     'admin/settings.php?section=authsettingmoowoodle'
             ),
-            label: __('SSO Secret Key', 'moowoodle'),
+            size: '50%',
+            label: __( 'SSO secret key', 'moowoodle' ),
             proSetting: true,
             generate: true,
         },

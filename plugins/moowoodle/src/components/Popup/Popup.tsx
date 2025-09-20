@@ -4,55 +4,59 @@ import { __ } from '@wordpress/i18n';
 import { ProPopup } from 'zyra';
 import './Popup.scss';
 const proPopupContent = {
-    proUrl: typeof appLocalizer !== 'undefined' ? appLocalizer.shop_url : '#',
-    title: __(
-        'Unlock revenue-boosting features with CatalogX Pro today!',
-        'catalogx'
-    ),
+    proUrl: typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#',
+    title: __('Your students will love this!', 'moowoodle'),
+    moreText: __('Better courses, bigger profits', 'moowoodle'),
+    upgradeBtnText: __('Yes, Upgrade Me!', 'moowoodle'),
     messages: [
         {
-            icon: 'popup-icon-personalized-pricing',
-            text: __('Send custom quotes', 'catalogx'),
+            icon: 'adminlib-Bulk-Course-Sync',
+            text: __('Bulk Course Sync', 'moowoodle'),
+            des: __('Sync multiple Moodle™ courses to WordPress with one click.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-multiple-products exclusive-forms',
-            text: __('Multi-product enquiry cart', 'catalogx'),
+            icon: 'adminlib-classroom-enrollment',
+            text: __('Cohort Enrollment', 'moowoodle'),
+            des: __('Sell and enroll entire Moodle™ cohorts via WooCommerce.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-add-file-uploads',
-            text: __('File uploads & custom enquiry fields', 'catalogx'),
+            icon: 'adminlib-cohort',
+            text: __('Group Enrollment', 'moowoodle'),
+            des: __('Map course variations to Moodle™ groups for targeted enrollment.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-different-users',
-            text: __('Role-based pricing', 'catalogx'),
+            icon: 'adminlib-global-community',
+            text: __('Classroom Enrollment', 'moowoodle'),
+            des: __('Buy multiple seats and assign them to students or teams.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-discounts',
-            text: __('Category-based discounts', 'catalogx'),
+            icon: 'adminlib-Gift-a-Course',
+            text: __('Gift a Course', 'moowoodle'),
+            des: __('Let customers purchase and gift courses to others.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-wholesale-order',
-            text: __('Wholesale order forms', 'catalogx'),
+            icon: 'adminlib-Single-Sign-On',
+            text: __('Single Sign-On (SSO)', 'moowoodle'),
+            des: __('Access Moodle™ and WordPress with one login.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-out-of-stock',
-            text: __('Enquiry for hidden/out-of-stock products', 'catalogx'),
+            icon: 'adminlib-Single-Sign-On',
+            text: __('Smart Course Sync', 'moowoodle'),
+            des: __('Keep course details updated between Moodle™ and WordPress.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-shortcode',
-            text: __('Enquiry button via shortcode', 'catalogx'),
+            icon: 'adminlib-subscription-courses',
+            text: __('Subscription Courses', 'moowoodle'),
+            des: __('Offer courses with recurring subscription plans.', 'moowoodle'),
         },
         {
-            icon: 'popup-icon-emails',
-            text: __('Auto-send branded enquiry emails', 'catalogx'),
-        },
-        {
-            icon: 'popup-icon-dashboard',
-            text: __('Track all enquiries in one dashboard', 'catalogx'),
+            icon: 'adminlib-user-network-icon',
+            text: __('Unified Access', 'moowoodle'),
+            des: __('Give learners one dashboard for all their courses.', 'moowoodle'),
         },
     ],
+    btnLink: appLocalizer.products_link,
 };
-
 
 const ShowProPopup: React.FC = () => {
     return <ProPopup {...proPopupContent} />;

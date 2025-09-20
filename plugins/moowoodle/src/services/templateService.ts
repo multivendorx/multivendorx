@@ -1,8 +1,8 @@
 /// <reference types="webpack-env" />
 
 // Predefined contexts
-const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
-    settings: require.context('../components/Settings', true, /\.ts$/),
+const contexts: Record< string, __WebpackModuleApi.RequireContext > = {
+    settings: require.context( '../components/Settings', true, /\.ts$/ ),
     synchronizations: require.context(
         '../components/Synchronization',
         true,
@@ -21,31 +21,31 @@ const importAll = (
 ): SettingNode[] => {
     const folderStructure: SettingNode[] = [];
 
-    inpContext.keys().forEach((key) => {
-        const path = key.substring(2);
-        const parts = path.split('/');
+    inpContext.keys().forEach( ( key ) => {
+        const path = key.substring( 2 );
+        const parts = path.split( '/' );
         const fileName = parts.pop();
         let currentFolder = folderStructure;
 
-        parts.forEach((folder) => {
+        parts.forEach( ( folder ) => {
             let folderObject = currentFolder.find(
-                (item) => item.name === folder && item.type === 'folder'
+                ( item ) => item.name === folder && item.type === 'folder'
             ) as SettingNode | undefined;
 
-            if (!folderObject) {
+            if ( ! folderObject ) {
                 folderObject = { name: folder, type: 'folder', content: [] };
-                currentFolder.push(folderObject);
+                currentFolder.push( folderObject );
             }
 
             currentFolder = folderObject.content;
-        });
+        } );
 
-        currentFolder.push({
-            name: fileName!.replace('.js', ''),
+        currentFolder.push( {
+            name: fileName!.replace( '.js', '' ),
             type: 'file',
-            content: inpContext(key).default,
-        });
-    });
+            content: inpContext( key ).default,
+        } );
+    } );
 
     return folderStructure;
 };
@@ -54,17 +54,17 @@ const importAll = (
 const getTemplateData = (
     type: 'settings' | 'synchronizations' = 'settings'
 ): SettingNode[] => {
-    const ctx = contexts[type];
-    return importAll(ctx);
+    const ctx = contexts[ type ];
+    return importAll( ctx );
 };
 
 const getModuleData = (): any | null => {
     try {
-        const module = require('../components/Modules/index.ts').default;
+        const module = require( '../components/Modules/index.ts' ).default;
         return module;
-    } catch (error) {
+    } catch ( error ) {
         // eslint-disable-next-line no-console
-        console.warn('Module not found, skipping...');
+        console.warn( 'Module not found, skipping...' );
         return null;
     }
 };

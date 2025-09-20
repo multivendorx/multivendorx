@@ -1,6 +1,6 @@
 declare module 'body-scroll-lock' {
-    export function disableBodyScroll(targetElement: Element): void;
-    export function enableBodyScroll(targetElement: Element): void;
+    export function disableBodyScroll( targetElement: Element ): void;
+    export function enableBodyScroll( targetElement: Element ): void;
 }
 
 // src/global.d.ts
@@ -12,6 +12,7 @@ declare global {
         restUrl: string;
         nonce: string;
         shop_url: string;
+        video_url: string;
         tab_name: string;
         khali_dabba: boolean;
         accountmenu: any;
@@ -22,6 +23,10 @@ declare global {
         wp_user_roles: any;
         md_user_roles: any;
         pro_settings_list: any;
+        free_version: any;
+        chat_url: any;
+        pro_data: any;
+        products_link: any;
     }
 
     interface CourseMyAcc {

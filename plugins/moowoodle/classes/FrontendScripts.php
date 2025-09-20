@@ -288,7 +288,6 @@ class FrontendScripts {
 		// Get my account menu.
 		$my_account_menu = wc_get_account_menu_items();
 		unset( $my_account_menu['my-courses'] );
-
         $localize_scripts = apply_filters(
             'moowoodle_localize_scripts',
             array(
@@ -310,12 +309,23 @@ class FrontendScripts {
 						'settings_databases_value' => $settings_databases_value,
 						'khali_dabba'              => Util::is_khali_dabba(),
 						'shop_url'                 => MOOWOODLE_PRO_SHOP_URL,
+						'video_url'                => MOOWOODLE_YOUTUBE_VIDEO_URL,
+						'chat_url'                 => MOOWOODLE_CHAT_URL,
 						'accountmenu'              => $my_account_menu,
 						'tab_name'                 => __( 'MooWoodle', 'moowoodle' ),
 						'log_url'                  => get_site_url( null, str_replace( ABSPATH, '', MooWoodle()->log_file ) ),
 						'wc_email_url'             => admin_url( '/admin.php?page=wc-settings&tab=email&section=enrollmentemail' ),
 						'moodle_site_url'          => MooWoodle()->setting->get_setting( 'moodle_url' ),
 						'wp_user_roles'            => wp_roles()->get_names(),
+						'free_version'             => MooWoodle()->version,
+						'products_link'            => MOOWOODLE_PRODUCTS_LINKS,
+						'pro_data'                 => apply_filters(
+                            'moowoodle_update_pro_data',
+                            array(
+								'version'         => false,
+								'manage_plan_url' => MOOWOODLE_PRO_SHOP_URL,
+                            )
+                        ),
 						'md_user_roles'            => array(
 							1 => __( 'Manager', 'moowoodle' ),
 							2 => __( 'Course creator', 'moowoodle' ),

@@ -65,13 +65,13 @@ class Admin {
 					'name'   => __( 'Enrolments', 'moowoodle' ) . $pro_sticker,
 					'subtab' => '',
 				),
-				'settings'        => array(
-					'name'   => __( 'Settings', 'moowoodle' ),
-					'subtab' => 'general',
-				),
 				'synchronization' => array(
 					'name'   => __( 'Synchronization', 'moowoodle' ),
 					'subtab' => 'synchronize-course',
+				),
+				'settings'        => array(
+					'name'   => __( 'Settings', 'moowoodle' ),
+					'subtab' => 'general',
 				),
 			);
 
@@ -148,7 +148,7 @@ class Admin {
      *
 	 * @return never
 	 */
-	public function handle_external_redirects() {
+	public static function handle_external_redirects() {
 		wp_safe_redirect( esc_url_raw( MOOWOODLE_PRO_SHOP_URL ) );
 		exit;
 	}

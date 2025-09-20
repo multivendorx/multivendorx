@@ -4,7 +4,7 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'display',
     priority: 20,
-    name: __('Shop Central', 'moowoodle'),
+    name: __( 'Shop Central', 'moowoodle' ),
     desc: __(
         'Efficient course information handling for customers.',
         'moowoodle'
@@ -19,11 +19,11 @@ export default {
                 'When enabled, the course duration, such as the start and end dates, will be visible on the shop page.',
                 'moowoodle'
             ),
-            label: __('Display course duration in Shop Page', 'moowoodle'),
+            label: __( "Display course duration in 'Shop Page'", 'moowoodle' ),
             options: [
                 {
                     key: 'start_end_date',
-                    label: __('', 'moowoodle'),
+                    label: __( '', 'moowoodle' ),
                     value: 'start_end_date',
                 },
             ],
@@ -36,12 +36,12 @@ export default {
                 "'<b>My Course</b>' menu will appear beneath the selected menu on the WooCommerce 'My Account' page of customer dashboard.",
                 'moowoodle'
             ),
-            label: __('Endpoint menu position - My Course', 'moowoodle'),
-            options: Object.entries(appLocalizer.accountmenu).map(
-                ([name], index) => {
+            label: __( "Endpoint menu position - 'My Course'", 'moowoodle' ),
+            options: Object.entries( appLocalizer.accountmenu ).map(
+                ( [ key, label ], index ) => {
                     return {
                         key: index,
-                        label: name,
+                        label: label,
                         value: index,
                     };
                 }
@@ -58,7 +58,7 @@ export default {
                 ),
                 appLocalizer.wc_email_url
             ),
-            label: __('Disable new user registration email', 'moowoodle'),
+            label: __( 'Disable new user registration email', 'moowoodle' ),
             options: [
                 {
                     key: 'moowoodle_create_user_custom_mail',

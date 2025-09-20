@@ -3,8 +3,11 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'synchronize-cohort',
     priority: 30,
-    name: __('Cohort synchronization', 'moowoodle'),
-    desc: __('Fetch Moodle cohort on demand & generate products on demand.', 'moowoodle'),
+    name: __( 'Cohorts Synchronization', 'moowoodle' ),
+    desc: __(
+        'Fetch Moodle cohort on demand & generate products on demand.',
+        'moowoodle'
+    ),
     icon: 'adminlib-book',
     submitUrl: 'settings',
     proDependent: true,
@@ -12,13 +15,16 @@ export default {
         {
             key: 'cohort_sync_option',
             type: 'checkbox',
-            settingDescription: __('Moodle cohort data is mapped to WordPress products, allowing new products to be created or existing ones to be updated with cohort details.', 'moowoodle'),
-            label: __('Cohort & product synchronization', 'moowoodle'),
+            settingDescription: __(
+                'Moodle cohort data is mapped to WordPress products, allowing new products to be created or existing ones to be updated with cohort details.',
+                'moowoodle'
+            ),
+            label: __( 'Cohort & product synchronization', 'moowoodle' ),
             selectDeselect: true,
             options: [
                 {
                     key: 'create',
-                    label: __('Create new products along with', 'moowoodle'),
+                    label: __( 'Create new products along with', 'moowoodle' ),
                     hints: __(
                         'This will additionally create new products based on Moodle cohort fetched, if they do not already exist in WordPress.',
                         'moowoodle'
@@ -44,6 +50,9 @@ export default {
         {
             key: 'sync_cohort_btn',
             type: 'do-action-btn',
+            label: 'On-Demand Cohort',
+            settingDescription:
+                'All cohorts are immediately fetched from Moodle and updated in WordPress. This action runs independently of the scheduled synchronization settings.',
             interval: 2500,
             apilink: 'synchronization',
             parameter: 'cohort',
