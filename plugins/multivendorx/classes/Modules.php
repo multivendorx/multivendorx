@@ -116,6 +116,11 @@ class Modules {
 						'module_file'  => MultiVendorX()->plugin_path . 'modules/QuestionsAnswers/Module.php',
 						'module_class' => 'MultiVendorX\QuestionsAnswers\Module',
 					),
+                    'spmv' => array(
+                        'id'           => 'spmv',
+						'module_file'  => MultiVendorX()->plugin_path . 'modules/Spmv/Module.php',
+						'module_class' => 'MultiVendorX\SPMV\Module',
+					),
 
 				)
             );

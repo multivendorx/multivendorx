@@ -199,6 +199,11 @@ class FrontendScripts {
 					'deps'    => array( 'jquery' ),
 					'version' => $version,
 				),
+                'multivendorx-admin-product-auto-search-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/Spmv/js/' . MULTIVENDORX_PLUGIN_SLUG . '-admin-product-auto-search.min.js',
+					'deps'    => array( 'jquery' ),
+					'version' => $version,
+				),
 			)
         );
         foreach ( $register_scripts as $name => $props ) {
@@ -486,6 +491,13 @@ class FrontendScripts {
 					'data'        => array(
 						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
                         'nonce'    => wp_create_nonce('review_ajax_nonce'),
+					),
+				),
+                'multivendorx-admin-product-auto-search-script' => array(
+					'object_name' => 'admin_product_auto_search',
+					'data'        => array(
+						'ajaxurl'     => admin_url( 'admin-ajax.php' ),
+                        'search_products_nonce' => wp_create_nonce('search-products'),
 					),
 				),
                 'multivendorx-dashboard-script' => array(
