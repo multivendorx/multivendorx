@@ -20,7 +20,7 @@ $enquiry_data = $args['enquiry_data'];
         <div class="email-container">
                 <div style="width:100%; background: #557DA1; padding: 40px 30px; border: 1px solid #557DA1;">
                     <h2 style="font-family: Arial; line-height: 43px; text-align: center; color: #fff; font-size: 46px; font-weight: 700; margin: 0;padding: 0 0 0px 0;">
-                        <?php echo esc_html__( 'New Product Enquiry', 'catalogx' ) . esc_html( $product_title ); ?>
+                        <?php echo esc_html__( 'New Product Enquiry', 'catalogx' ) ?>
                     </h2>
                 </div>
             

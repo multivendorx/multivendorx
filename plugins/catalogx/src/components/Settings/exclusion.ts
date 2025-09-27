@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'enquiry-quote-exclusion',
-    priority: 40,
+    priority: 4,
     name: __( 'Exclusion', 'catalogx' ),
     desc: __(
         'Exclude catalog viewing, enquiries, and quotes by user roles and product attributes.',

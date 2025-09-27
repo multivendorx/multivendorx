@@ -63,6 +63,13 @@ class EnquiryEmail extends \WC_Email {
     public $args;
 
     /**
+     * Template loader instance.
+     *
+     * @var object
+     */
+    public $template_loader;
+
+    /**
      * Constructor
      */
     public function __construct() {

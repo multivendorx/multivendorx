@@ -2,7 +2,7 @@ import { __, sprintf } from '@wordpress/i18n';
 
 export default {
     id: 'wholesale',
-    priority: 60,
+    priority: 4,
     name: __( 'Wholesale', 'catalogx' ),
     desc: __( 'Wholesale sign up and registration management.', 'catalogx' ),
     icon: 'adminlib-wholesale',

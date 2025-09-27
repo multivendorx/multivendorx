@@ -120,14 +120,15 @@ class FrontendScripts {
 	 * Register and store a script for later use.
 	 *
 	 * @param string $handle       Name of the script.
+	 * @param bool   $is_pro       The script is from free or pro.
 	 * @param string $path         URL to the script.
 	 * @param array  $deps         Optional. An array of dependencies. Default empty array.
 	 * @param string $version      Optional. Script version. Default empty string.
 	 */
-    public static function register_script( $handle, $path, $deps = array(), $version = '' ) {
+    public static function register_script( $handle, $is_pro, $path, $deps = array(), $version = '' ) {
 		self::$scripts[] = $handle;
 		wp_register_script( $handle, $path, $deps, $version, true );
-        wp_set_script_translations( $handle, 'catalogx' );
+        wp_set_script_translations( $handle, $is_pro ? 'catalogx-pro' : 'catalogx' );
 	}
 
 	/**
@@ -178,7 +179,7 @@ class FrontendScripts {
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
+			self::register_script( $name, $props['is_pro'] ?? false, $props['src'], $props['deps'], $props['version'] );
 		}
 	}
 
@@ -239,7 +240,7 @@ class FrontendScripts {
             )
         );
 		foreach ( $register_scripts as $name => $props ) {
-			self::register_script( $name, $props['src'], $props['deps'], $props['version'] );
+			self::register_script( $name, $props['is_pro'] ?? false, $props['src'], $props['deps'], $props['version'] );
 		}
 	}
 
@@ -413,7 +414,7 @@ class FrontendScripts {
 
         // Get all tab setting's database value.
         $settings_value = array();
-        $tabs_names     = array( 'enquiry-catalog-customization', 'all-settings', 'enquiry-form-customization', 'enquiry-quote-exclusion', 'tools', 'enquiry-email-temp', 'wholesale', 'wholesale-registration', 'pages' );
+        $tabs_names     = array( 'enquiry-catalog-customization', 'all-settings', 'enquiry-form-customization', 'enquiry-quote-exclusion', 'tools', 'enquiry-email-temp', 'wholesale', 'wholesale-registration', 'pages', 'enquiry', 'quotation', 'wholesale', 'extra' );
         foreach ( $tabs_names as $tab_name ) {
 			$settings_value[ $tab_name ] = CatalogX()->setting->get_option( str_replace( '-', '_', 'catalogx_' . $tab_name . '_settings' ) );
         }
@@ -470,6 +471,8 @@ class FrontendScripts {
 						'mvx_active'                 => Utill::is_active_plugin( 'multivendorx' ),
 						'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
 						'quote_base_url'             => $quote_base_url,
+						'freeVersion'                => CatalogX()->version,
+						'proVersion'                 => apply_filters( 'catalogx_pro_version', null ),
 					),
 				),
 				'catalogx-enquiry-frontend-script'      => array(

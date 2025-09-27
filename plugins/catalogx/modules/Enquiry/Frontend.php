@@ -95,7 +95,7 @@ class Frontend {
             $button_css .= $additional_css_settings;
         }
 
-        $button_settings['button_text'] = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
+        $button_settings['button_text'] = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'send_an_enquiry', 'Send an enquiry' );
         $button_position_settings       = CatalogX()->setting->get_setting( 'shop_page_button_position_setting', array() );
         $position                       = array_search( 'enquiry_button', $button_position_settings, true );
         $position                       = false !== $position ? $position : 0;
@@ -274,7 +274,7 @@ class Frontend {
         if ( isset( $additional_css_settings ) && ! empty( $additional_css_settings ) ) {
             $button_css .= $additional_css_settings;
         }
-        $button_text = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'catalogx', 'send_an_enquiry', 'Send an enquiry' );
+        $button_text = ! empty( $button_settings['button_text'] ) ? $button_settings['button_text'] : \CatalogX\Utill::get_translated_string( 'send_an_enquiry', 'Send an enquiry' );
         if ( is_shop() ) {
             $product_link = get_permalink( $product->get_id() );
             echo '<a href="' . esc_url( $product_link ) . '" class="single_add_to_cart_button button wp-block-button__link" style="' . esc_attr( $button_css ) . '">' . esc_html( $button_text ) . '</a>';
