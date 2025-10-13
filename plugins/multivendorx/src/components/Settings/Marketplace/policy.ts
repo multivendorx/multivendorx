@@ -2,8 +2,8 @@ import { __ } from '@wordpress/i18n';
 
 export default {
     id: 'policy',
-    priority: 6,
-    name: __( 'Add Policies', 'mvx-pro' ),
+    priority: 3,
+    name: __( 'Policies', 'mvx-pro' ),
     desc: __( 'Define and publish the rules and guidelines that apply to your marketplace.', 'mvx-pro' ),
     icon: 'adminlib-support',
     submitUrl: 'settings',
