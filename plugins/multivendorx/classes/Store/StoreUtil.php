@@ -191,16 +191,6 @@ class StoreUtil {
             if ( $vendor_obj ) {
                 $vendor_data = $vendor_obj;
             }
-
-            // if ( ! $vendor_data ) {
-            //     $product_obj = get_post( $product_id );
-            //     if ( is_object( $product_obj ) ) {
-            //         $author_id = $product_obj->post_author;
-            //         if ( $author_id ) {
-            //             $vendor_data = Store::get_store_by_id( $author_id );
-            //         }
-            //     }
-            // }
         }
         return $vendor_data;
     }

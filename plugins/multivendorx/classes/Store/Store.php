@@ -47,9 +47,8 @@ class Store {
         $table = "{$wpdb->prefix}" . Utill::TABLES['store'];
 
         $row = $wpdb->get_row( $wpdb->prepare(
-            "SELECT * FROM $table WHERE ID = %d AND status = %s",
+            "SELECT * FROM $table WHERE ID = %d",
             $store_id,
-            'active'
         ), ARRAY_A );
 
         if ( $row ) {
@@ -200,8 +199,8 @@ class Store {
         $like = '%' . $wpdb->esc_like( $name ) . '%';
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$table} WHERE name LIKE %s",
-                $like
+                "SELECT * FROM {$table} WHERE name LIKE %s AND status = %s",
+                $like, 'active'
             ),
             ARRAY_A
         );

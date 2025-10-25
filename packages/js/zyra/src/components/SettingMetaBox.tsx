@@ -21,6 +21,7 @@ interface FormField {
     charlimit?: number;
     row?: number;
     column?: number;
+    label?: string;
     sitekey?: string;
     filesize?: number;
     required?: boolean;
@@ -127,6 +128,8 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
     );
 
     useEffect(() => {
+console.log(formField)
+
         setHasOpened(opened.click);
     }, [opened]);
 
@@ -207,7 +210,8 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
             case 'checkboxes':
             case 'radio':
                 return (
-                    <div className="multioption-wrapper">
+                    <div className="multioption-wrapper"
+                    onClick={(e) => e.stopPropagation()}>
                         <label htmlFor="">Set option</label>
                         <ReactSortable
                             list={formField.options || []}
@@ -300,8 +304,8 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
 
                     <InputField
                         label="Field Label"
-                        value={formField?.name || ''}
-                        onChange={(value) => onChange('name', value)}
+                        value={formField?.label || ''}
+                        onChange={(value) => onChange('label', value)}
                     />
 
                     {metaType === 'setting-meta' ? (
