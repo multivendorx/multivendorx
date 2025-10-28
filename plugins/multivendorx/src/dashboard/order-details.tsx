@@ -94,9 +94,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
             }
         };
 
+
         fetchOrder();
     }, [orderId]);
-    console.log("od",orderData)
+    console.log("od", orderData)
     const handleChange = (field: keyof typeof values, val: number) => {
         const newVals = { ...values, [field]: val };
         const baseTotal = 100; // example base price
@@ -418,12 +419,29 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
                                                             />
                                                         </td>
                                                     </tr>
-                                                    <tr><td>Amount already refunded:</td><td>-$0.00</td></tr>
                                                     <tr>
-
-                                                        <td>Total available to refund:</td>
-                                                        <td>$20.00</td>
+                                                        <td>Amount already refunded:</td>
+                                                        <td>
+                                                            -{appLocalizer.currency_symbol}{orderData?.refunds?.reduce(
+                                                                (sum, refund) => sum + Math.abs(Number(refund.total || 0)),
+                                                                0
+                                                            ).toFixed(2) || "0.00"}
+                                                        </td>
                                                     </tr>
+
+                                                    <tr>
+                                                        <td>Total available to refund:</td>
+                                                        <td>
+                                                            {appLocalizer.currency_symbol}{(
+                                                                (Number(orderData?.total || 0) ?? 0) -
+                                                                orderData?.refunds?.reduce(
+                                                                    (sum, refund) => sum + Math.abs(Number(refund.total || 0)),
+                                                                    0
+                                                                )
+                                                            ).toFixed(2)}
+                                                        </td>
+                                                    </tr>
+
                                                     <tr>
                                                         <td>Refund amount:</td>
                                                         <td>

@@ -223,11 +223,9 @@ class Rest {
     
         // Fetch custom user meta
         $active_store = get_user_meta($user_id, 'multivendorx_active_store', true);
-    
         // Get all users for that store
         $users = StoreUtil::get_store_users($active_store);
-    
-        if (is_array($users) && in_array($user_id, $users)) {
+        if (is_array($users) && in_array($user_id, $users['users'])) {
             return true;
         }
     
