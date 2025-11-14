@@ -1489,7 +1489,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                     input = (
                         <BlockText
                             key={inputField.blocktext}
-                            blockTextClass="settings-metabox-note"
+                            blockTextClass= {inputField.blockTextClass || 'settings-metabox-note'}
                             title={inputField.title}
                             value={String(inputField.blocktext)}// Text or HTML content to display inside the block (safe HTML injected).
                         />

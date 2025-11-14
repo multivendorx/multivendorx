@@ -36,7 +36,7 @@ class Shortcode {
         FrontendScripts::enqueue_script( 'multivendorx-dashboard-components-script' );
         FrontendScripts::enqueue_script( 'multivendorx-dashboard-script' );
         FrontendScripts::localize_scripts( 'multivendorx-dashboard-script' );
-        // FrontendScripts::enqueue_style( 'multivendorx-dashboard-style' );
+        FrontendScripts::enqueue_style( 'multivendorx-dashboard-style' );
 
         FrontendScripts::enqueue_script( 'multivendorx-registration-form-script' );
         FrontendScripts::localize_scripts( 'multivendorx-registration-form-script' );

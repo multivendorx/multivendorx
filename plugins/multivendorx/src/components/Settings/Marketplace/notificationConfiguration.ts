@@ -5,17 +5,24 @@ export default {
     id: 'notification-configuration',
     priority: 5,
     name: __('Notification Configuration', 'multivendorx'),
-    desc: __('Define what each store role can access and manage within the marketplace. All notifications dispatched by the site can be <a href="' +
-        appLocalizer.site_url +
-        '/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=notifications" target="_blank">tracked and reviewed from this page', 'multivendorx'),
+    desc: __('Define what each store role can access and manage within the marketplace. All notifications dispatched by the site can be tracked and reviewed from this page', 'multivendorx'),
     icon: 'adminlib-user-network-icon',
     submitUrl: 'settings',
     modal: [
-        // ===== Email Section =====
+        {
+            key: 'registration page',
+            type: 'blocktext',
+            label: __('no_label', 'multivendorx'),
+            blocktext: __(
+                'Only store owners can apply for store registration. Applicants must log in or create an account before proceeding. So, Make sure WooCommerce’s Account & Privacy settings are configured to allow user registration.',
+                'multivendorx'
+            ),
+            // blockTextClass: "nor"
+        },
         {
             key: 'email_section',
             type: 'section',
-            hint: __('The email provider used to deliver marketplace notifications is specified here.', 'multivendorx'),
+            hint: __('Email provider', 'multivendorx'),
         },
         {
             key: 'email_provider',
@@ -60,15 +67,10 @@ export default {
             label: __('Sender email address', 'multivendorx'),
             placeholder: __('noreply@yourstore.com', 'multivendorx'),
             settingDescription: __('The email address from which marketplace notifications will be sent.', 'multivendorx'),
-        },
-        {
-            key: 'sender_email',
-            type: 'text',
-            label: __('Sender Email', 'multivendorx'),
             desc: __('The email address from which notifications are sent is provided. Test emails can be sent to confirm delivery.', 'multivendorx'),
+
         },
 
-        // ===== SMS Section =====
         {
             key: 'sms_section',
             type: 'section',
