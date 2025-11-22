@@ -23,21 +23,41 @@ $border-radius-large: 0.5rem;
 $border-radius-button: 8rem;
 $button-color-palette: (
   red: (
-    background: #fde8e4bb,
+    background: #fde8e4,
     color: #f06b4f
   ),
   green: (
-    background: #d9f5f0d8,
-    color: #06be9f
+    background: #c6f6d5,
+    color: #276749
+  ),
+  teal: (
+    background: #b2f5ea,
+    color: #285e61
+  ),
+  orange:(
+  background: #fff0e1,
+    color: #9c4221
   ),
   yellow: (
-    background: #fff0e1e3,
-    color: #ff9f43
+    background: #fefcbf,
+    color: #975a16
   ),
   blue: (
-    background: #bfdeed44,
-    color: #003d66de
-  )
+    background: #bee3f8,
+    color: #2c5282
+  ),
+  purple: (
+    background: #e9d8fd,
+    color: #553c9a
+  ),
+  indigo: (
+    background: #c3dafe,
+    color: #434190
+  ),
+  pink: (
+    background: #fed7e2,
+    color: #97266d
+  ),
 );
 $icon-color-palette: (
   red: (
@@ -45,15 +65,55 @@ $icon-color-palette: (
     color: #f06b4f
   ),
   green: (
-    background: #d9f5f0,
-    color: #06be9f
+    background: #c6f6d5,
+    color: #276749
+  ),
+  teal: (
+    background: #b2f5ea,
+    color: #285e61
+  ),
+  orange:(
+  background: #fff0e1,
+    color: #9c4221
   ),
   yellow: (
-    background: #fff0e1,
-    color: #ff9f43
+    background: #fefcbf,
+    color: #975a16
   ),
   blue: (
-    background: #bfdeed6e,
-    color: #003d66de
-  )
+    background: #bee3f8,
+    color: #2c5282
+  ),
+  purple: (
+    background: #e9d8fd,
+    color: #553c9a
+  ),
+  indigo: (
+    background: #c3dafe,
+    color: #434190
+  ),
+  pink: (
+    background: #fed7e2,
+    color: #97266d
+  ),
+
 );
+// $icon-color-palette: (
+//   red: (
+//     background: #fde8e4,
+//     color: #f06b4f
+//   ),
+//   green: (
+//     background: #d9f5f0,
+//     color: #06be9f
+//   ),
+//   yellow: (
+//     background: #fff0e1,
+//     color: #ff9f43
+//   ),
+//   blue: (
+//     background: #bfdeed6e,
+//     color: #003d66de
+//   ),
+  
+// );

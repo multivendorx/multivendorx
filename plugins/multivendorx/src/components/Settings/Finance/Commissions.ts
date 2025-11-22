@@ -245,7 +245,7 @@ export default {
             blocktext: __(
                 'To allow each store to set up and manage its own shipping methods, zones, and rates, please enable the <a href="' +
                 appLocalizer.site_url +
-                '/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=facilitator"> Shipping” module.</a></b>',
+                '/wp-admin/admin.php?page=multivendorx#&tab=modules"> "Shipping module".</a></b>',
                 'multivendorx'
             ),
         },

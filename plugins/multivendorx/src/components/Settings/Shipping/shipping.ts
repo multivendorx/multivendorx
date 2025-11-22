@@ -32,7 +32,7 @@ export default {
                             key: "zones",
                             type: "clickable-list",
                             label: "Shipping Zones",
-                            desc: "test code",
+                            desc: "Create shipping zones in WooCommerce → Shipping using the ‘Add Zone’ button. Assign the shipping method ‘Store shipping’ to let each store set its own shipping costs for that zone.",
                             items: appLocalizer.all_zones,
                             button: {
                               label: "Add New Zone",

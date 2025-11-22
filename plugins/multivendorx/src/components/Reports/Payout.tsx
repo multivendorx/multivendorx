@@ -275,9 +275,9 @@ const Transactions: React.FC = () => {
                 <span className="title">{row.original.store_name || '-'}</span>
                 <div className="des">
                   {row.original.email && (
-                    <div>
-                      <b><i className="adminlib-mail"></i></b> {row.original.email}
-                    </div>
+                    <>
+                      <i className="adminlib-mail"></i> {row.original.email}
+                    </>
                   )}
                   {row.original.phone && (
                     <div>
@@ -477,15 +477,15 @@ const Transactions: React.FC = () => {
       {/* <div className="row">
         <div className="column"> */}
       <div className="card-header p-top">
-            <div className="left">
-              <div className="title">
-                Account Overview
-              </div>
-            </div>
-            <div className="right">
-              <span>Updated 1 month ago</span>
-            </div>
+        <div className="left">
+          <div className="title">
+            Account Overview
           </div>
+        </div>
+        <div className="right">
+          <span>Updated 1 month ago</span>
+        </div>
+      </div>
       <Table
         data={data}
         columns={columns as ColumnDef<Record<string, any>, any>[]}

@@ -167,7 +167,7 @@ const ReportAbuseTable: React.FC<Props> = ({ onUpdated }) => {
                                             href={storeLink}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="store-link"
+                                            className="link-item"
                                         >
                                             {storeName}
                                         </a>

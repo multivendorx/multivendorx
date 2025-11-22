@@ -60,21 +60,21 @@ const StoreSettings = ({ id, data, onUpdate }: { id: string | null; data: any; o
     useEffect(() => {
 
         let parsedEmails = [];
-    
+
         try {
             parsedEmails = data.emails ? JSON.parse(data.emails) : [];
         } catch (e) {
             console.error("Invalid email JSON", e);
             parsedEmails = [];
         }
-    
+
         if (Array.isArray(parsedEmails)) {
             setEmails(parsedEmails);
             setPrimaryEmail(data.primary_email || parsedEmails[0] || '');
         }
 
     }, [data]);
-    
+
 
     // === HANDLE INPUT & AUTO-CONVERT TO CHIP ===
     const handleInputKeyDown = (e: React.KeyboardEvent) => {
@@ -819,74 +819,36 @@ const StoreSettings = ({ id, data, onUpdate }: { id: string | null; data: any; o
                         <div className="form-group-wrapper">
                             <div className="form-group">
                                 <label>Store email(s)</label>
-
                                 <div
                                     ref={inputRef}
-                                    className="email-chips-input"
-                                    style={{
-                                        border: '1px solid #ddd',
-                                        borderRadius: '8px',
-                                        padding: '8px 12px',
-                                        minHeight: '44px',
-                                        display: 'flex',
-                                        flexWrap: 'wrap',
-                                        gap: '8px',
-                                        alignItems: 'center',
-                                        background: 'white',
-                                        cursor: 'text'
-                                    }}
+                                    className="emails-section"
                                     onClick={() => inputRef.current?.querySelector('input')?.focus()}
                                 >
                                     {emails.map((email) => (
                                         <div
+                                            className={`admin-badge ${primaryEmail === email ? 'yellow' : ''}`}
                                             key={email}
-                                            style={{
-                                                background: primaryEmail === email ? '#e3f2fd' : '#f5f5f5',
-                                                color: primaryEmail === email ? '#1976d2' : '#333',
-                                                border: primaryEmail === email ? '1px solid #1976d2' : '1px solid #ddd',
-                                                borderRadius: '16px',
-                                                padding: '4px 8px 4px 12px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
-                                                fontSize: '14px'
-                                            }}
                                         >
-                                            {primaryEmail === email && <i className="adminlib-star" style={{ color: '#ffa000', fontSize: '16px' }}></i>}
-                                            <span>{email}</span>
-                                            <button
-                                                type="button"
+                                            <i
                                                 onClick={(e) => { e.stopPropagation(); togglePrimary(email); }}
-                                                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', marginLeft: '4px' }}
                                                 title="Set as primary"
-                                            >
-                                                {primaryEmail === email ? '★' : '☆'}
-                                            </button>
-                                            <button
-                                                type="button"
+                                                className={`stat-icon adminlib-star${primaryEmail === email ? ' primary' : '-o'}`}
+                                            ></i>
+                                            <span>{email}</span>
+                                            <i className="adminlib-delete close-icon"
                                                 onClick={(e) => { e.stopPropagation(); removeEmail(email); }}
-                                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', color: '#999' }}
                                             >
-                                                ×
-                                            </button>
+                                            </i>
                                         </div>
                                     ))}
 
-                                    <div style={{ position: 'relative', flex: 1, minWidth: '200px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div className="input-wrapper">
                                         <input
                                             type="text"
                                             value={inputValue}
                                             onChange={(e) => setInputValue(e.target.value)}
                                             onKeyDown={handleInputKeyDown}
                                             placeholder={emails.length === 0 ? "Enter email addresses..." : ""}
-                                            style={{
-                                                border: 'none',
-                                                outline: 'none',
-                                                width: '100%',
-                                                padding: '4px 0',
-                                                fontSize: '14px',
-                                                background: 'transparent'
-                                            }}
                                             autoFocus={emails.length === 0}
                                         />
 
@@ -900,27 +862,14 @@ const StoreSettings = ({ id, data, onUpdate }: { id: string | null; data: any; o
                                                     setInputValue('');
                                                     saveEmails(newEmails, primaryEmail || email);
                                                 }}
-                                                style={{
-                                                    background: '#e3f6ff',
-                                                    color: '#1976d2',
-                                                    padding: '4px 10px',
-                                                    borderRadius: '12px',
-                                                    fontSize: '13px',
-                                                    cursor: 'pointer',
-                                                    whiteSpace: 'nowrap',
-                                                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                                                    transition: 'all 0.2s'
-                                                }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#dbeafe'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e3f6ff'}
                                             >
-                                                → {inputValue.trim()}
+                                                {inputValue.trim()}
                                             </div>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="settings-metabox-description" style={{ marginTop: '8px' }}>
+                                <div className="settings-metabox-description">
                                     <strong>Primary email</strong>: Click the star on any email to make it primary (shown on storefront).<br />
                                     Additional emails receive notifications only.
                                 </div>

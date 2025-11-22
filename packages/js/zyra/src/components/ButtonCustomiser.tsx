@@ -567,7 +567,7 @@ const ButtonCustomizer: React.FC< ButtonCustomizerProps > = ( {
 
     // Set button styles based on hover state
     const style: React.CSSProperties = {
-        border: '1px solid transparent',
+        border: '',
         backgroundColor: buttonHoverOn
             ? setting.button_background_color_onhover
             : setting.button_background_color,
@@ -579,16 +579,16 @@ const ButtonCustomizer: React.FC< ButtonCustomizerProps > = ( {
             : setting.button_border_color,
         borderRadius: setting.button_border_radious
             ? `${ setting.button_border_radious }px`
-            : '0px',
+            : '',
         borderWidth: setting.button_border_size
             ? `${ setting.button_border_size }px`
-            : '0px',
+            : '',
         fontSize: setting.button_font_size,
         fontWeight: setting.button_font_width,
         padding: setting.button_padding
             ? `${ setting.button_padding }px`
-            : '0px',
-        margin: setting.button_margin ? `${ setting.button_margin }px` : '0px',
+            : '',
+        margin: setting.button_margin ? `${ setting.button_margin }px` : '',
     };
 
     useEffect( () => {

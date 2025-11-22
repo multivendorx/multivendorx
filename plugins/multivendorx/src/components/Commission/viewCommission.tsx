@@ -285,29 +285,6 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({ open, onClose, commissi
       },
     },
   ];
-  const getStatusColor = (status = '') => {
-    const formatted = status.toLowerCase();
-
-    switch (formatted) {
-      case 'processing':
-        return 'yellow';
-      case 'on-hold':
-      case 'on hold':
-        return 'blue';
-      case 'refunded':
-        return 'red';
-      case 'completed':
-        return 'green';
-      case 'cancelled':
-        return 'green';
-      case 'failed':
-        return 'blue';
-      case 'paid':
-        return 'green';
-      default:
-        return 'gray';
-    }
-  };
 
   const shippingColumns: ColumnDef<any>[] = [
     {
@@ -339,7 +316,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({ open, onClose, commissi
     <CommonPopup
       open={open}
       onClose={onClose}
-      width="50%"
+      width="1000px"
       height="100%"
       header={
         <>
@@ -357,124 +334,53 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({ open, onClose, commissi
           <i onClick={onClose} className="icon adminlib-close"></i>
         </>
       }
+    // footer={
+    //   <>
+    //     <div onClick={onClose} className="admin-btn btn-red">
+    //       {__("Cancel", "multivendorx")}
+    //     </div>
+    //   </>
+    // }
     >
-      <div className="content">
-        <div className="vendor-details">
-          <div className="name">
-            {storeData?.id ? (
-              <a
-                href={`${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/admin.php?page=multivendorx#&tab=stores&view&id=${storeData.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="store-link"
-              >
-                {storeData.name}
-              </a>
-            ) : (
-              storeData?.name ?? "-"
-            )}
-          </div>
-          <div className="details">
-            {storeData?.email && (
-              <div className="email">
-                <i className="adminlib-mail"></i>
-                <b>Email:</b> {storeData.email.split(/\s*[\n,]\s*/)[0]}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="details-wrapper">
-          <div className="details">
-            <div className="name">Associated Order</div>
-            <div className="value">
-              {commissionData?.order_id ? (
+      <div className="content multi">
+        {/* your existing code untouched */}
+        <div className="section left">
+          <div className="vendor-details">
+            <div className="name">
+              {storeData?.id ? (
                 <a
-                  href={`${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${commissionData.order_id}&action=edit`}
+                  href={`${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/admin.php?page=multivendorx#&tab=stores&view&id=${storeData.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="link-item"
+                  className="store-link"
                 >
-                  #{commissionData.order_id}
+                  {storeData.name}
                 </a>
               ) : (
-                '-'
+                storeData?.name ?? "-"
               )}
             </div>
-          </div>
-          <div className="details">
-            <div className="name">Order Status</div>
-            <div className="value">
-              <span className={`admin-badge ${getStatusColor(orderData?.status)}`}>
-                {orderData?.status
-                  ? orderData.status
-                    .replace(/^wc-/, '')               // remove wc-
-                    .replace(/[-_]/g, ' ')             // remove hyphens AND underscores → space
-                    .replace(/\s+/g, ' ')              // clean multiple spaces
-                    .replace(/\b\w/g, (c) => c.toUpperCase()) // capitalize each word
-                    .trim()
-                  : ''}
-              </span>
-            </div>
-          </div>
-          <div className="details">
-            <div className="name">Commission Status</div>
-            <div className="value">
-              <span className={`admin-badge ${commissionData?.status === 'paid' ? 'green' : 'red'}`}>
-                {commissionData?.status
-                  ? commissionData.status
-                    .replace(/^wc-/, '')               // remove wc-
-                    .replace(/[-_]/g, ' ')             // remove hyphens AND underscores → space
-                    .replace(/\s+/g, ' ')              // clean multiple spaces
-                    .replace(/\b\w/g, (c) => c.toUpperCase()) // capitalize each word
-                    .trim()
-                  : ''}
-              </span>
-            </div>
-          </div>
-          <div className="details">
-            <div className="name">Commission Amount</div>
-            <div className="value">
-              {formatCurrency(
-                parseFloat(commissionData?.amount ?? 0) +
-                parseFloat(commissionData?.commission_refunded ?? 0)
+            <div className="details">
+              {storeData?.email && (
+                <div className="email">
+                  <i className="adminlib-mail"></i>
+                  <b>Email:</b> {storeData.email.split(/\s*[\n,]\s*/)[0]}
+                </div>
               )}
-            </div>
-          </div>
-          <div className="details">
-            <div className="name">Shipping</div>
-            <div className="value">
-              {formatCurrency(commissionData?.shipping)}
-            </div>
-          </div>
-          <div className="details">
-            <div className="name">Tax</div>
-            <div className="value">
-              {formatCurrency(
-                  (Number(commissionData?.tax || 0) +
-                    Number(commissionData?.shipping_tax_amount || 0))
-                )}
-            </div>
-          </div>
-          {commissionData?.commission_refunded > 0 && (
-          <div className="details">
-            <div className="name">Commission refund</div>
-            <div className="value">
-              {formatCurrency(commissionData.commission_refunded)}
-            </div>
-          </div>
-          )}
-          <div className="details">
-            <div className="name">Total</div>
-            <div className="value">
-              {formatCurrency(commissionData?.total)}
-            </div>
-          </div>
-        </div>
 
+              {/* {orderData?.payment_method_title && (
+                <div className="method">
+                  <i className="adminlib-form-paypal-email"></i>
+                  <b>Payment Method:</b>{" "}
+                  <span className="admin-badge blue">{orderData.payment_method_title}</span>
+                </div>
+              )} */}
 
+            </div>
+          </div>
 
-        <div className="section left">
+          <div className="popup-divider"></div>
+
           <div className="heading">{__("Order Details", "multivendorx")}</div>
           <Table
             data={orderItems}
@@ -490,7 +396,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({ open, onClose, commissi
 
         </div>
 
-        {/* <div className="section right">
+        <div className="section right">
           <div className="heading">{__("Order Overview", "multivendorx")}</div>
           <div className="commission-details">
             <div className="items">
@@ -513,15 +419,12 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({ open, onClose, commissi
             <div className="items">
               <div className="text">Order Status</div>
               <div className="value">
-
-                <span className={`admin-badge ${getStatusColor(orderData?.status)}`}>
+                <span className="admin-badge yellow">
                   {orderData?.status
                     ? orderData.status
-                      .replace(/^wc-/, '')               // remove wc-
-                      .replace(/[-_]/g, ' ')             // remove hyphens AND underscores → space
-                      .replace(/\s+/g, ' ')              // clean multiple spaces
-                      .replace(/\b\w/g, (c) => c.toUpperCase()) // capitalize each word
-                      .trim()
+                      .replace(/^wc-/, '')          // remove 'wc-' prefix if exists
+                      .replace(/_/g, ' ')           // replace underscores with spaces
+                      .replace(/\b\w/g, (c) => c.toUpperCase()) // capitalize first letter of each word
                     : ''}
                 </span>
 
@@ -539,11 +442,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({ open, onClose, commissi
                 <span className={`admin-badge ${commissionData?.status === 'paid' ? 'green' : 'red'}`}>
                   {commissionData?.status
                     ? commissionData.status
-                      .replace(/^wc-/, '')               // remove wc-
-                      .replace(/[-_]/g, ' ')             // remove hyphens AND underscores → space
-                      .replace(/\s+/g, ' ')              // clean multiple spaces
+                      .replace(/^wc-/, '') // remove any prefix like 'wc-'
+                      .replace(/_/g, ' ')  // replace underscores with spaces
                       .replace(/\b\w/g, (c) => c.toUpperCase()) // capitalize each word
-                      .trim()
                     : ''}
                 </span>
               </div>
@@ -596,7 +497,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({ open, onClose, commissi
             </>
           )}
 
-        </div> */}
+        </div>
 
       </div>
     </CommonPopup>

@@ -367,7 +367,6 @@ const Notification: React.FC = () => {
                                 {openChannel === "sms" && "SMS Message"}
                                 {openChannel === "mail" && "Email Message"}
                             </div>
-                            <p>Edit this event.</p>
                             <i
                                 className="icon adminlib-close"
                                 onClick={() => setOpenChannel(null)}
@@ -387,7 +386,6 @@ const Notification: React.FC = () => {
                         <div className="form-group-wrapper">
                             {openChannel === "system" && (
                                 <div className="form-group">
-
                                     <>
                                         <label>System Message</label>
                                         <TextArea

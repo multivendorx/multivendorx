@@ -318,7 +318,7 @@ export default {
             label: __('Withdrawal request approval', 'multivendorx'),
             settingDescription: __("Control how withdrawl requests are handled when stores initiate withdrawals manually.", 'multivendorx'),
             desc: __(
-                '<strong>Depending on your chosen approval mode:</strong><br><br><strong>Automatic</strong><br> If the payment method is <em>Stripe Connect</em> or <em>PayPal Payout</em>, the withdrawal is automatically approved and transferred to the store\'s account as soon as it\'s requested. For all other payment methods, withdrawals must be processed manually.<br><br><strong>Example:</strong>A store\'s $150 commission becomes available after a 7-day clearance period. Once they request a withdrawal, Stripe instantly transfers the amount to their connected account.<br><br><strong>Manual</strong><br>The store submits a withdrawal request, and the admin must manually review and disburse the funds.<br><br><strong>Example:</strong> The same $150 request appears in the admin dashboard. The admin verifies the transaction and manually releases the payment.',
+                '<strong>Depending on your chosen approval mode:</strong><br><br><strong>Automatic</strong><br> If the payment method is <em>Stripe Connect</em> or <em>PayPal Payout</em>, the withdrawal is automatically approved and transferred to the store\'s account as soon as it\'s requested. For all other payment methods, withdrawals must be processed manually.<br><strong>Example:</strong>A store\'s $150 commission becomes available after a 7-day clearance period. Once they request a withdrawal, Stripe instantly transfers the amount to their connected account.<br><br><strong>Manual</strong><br>The store submits a withdrawal request, and the admin must manually review and disburse the funds.<br><strong>Example:</strong> The same $150 request appears in the admin dashboard. The admin verifies the transaction and manually releases the payment.',
                 'multivendorx'
             ),
 
@@ -344,7 +344,7 @@ export default {
                 'Define how many withdrawal requests a store can make without incurring additional fees. After the free limit is reached, a small service fee can be applied to each subsequent withdrawal to discourage frequent small payouts.',
                 'multivendorx'
             ),
-            desc: __( '<strong>Example:</strong><br> You set <em>2 free withdrawals</em>.<br><br> If a store withdraws once or twice, no fee is applied.<br><br> On the <em>third withdrawal</em>, a processing fee (for example, $2 or 1% of the amount) is deducted before payout.', 'multivendorx' ),
+            desc: __( '<strong>Example:</strong> You set <em>2 free withdrawals</em>.<br> If a store withdraws once or twice, no fee is applied.<br> On the <em>third withdrawal</em>, a processing fee (for example, $2 or 1% of the amount) is deducted before payout.', 'multivendorx' ),
             nestedFields: [
                 {
                     key: 'free_withdrawals', // updated key

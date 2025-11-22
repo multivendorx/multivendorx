@@ -15,17 +15,10 @@ body:has(.admin-main-wrapper) {
 a {
   text-decoration: none;
   color: $color-black;
-
-  // &:hover,
-  // &:focus {
-  //   color: $color-active;
-  //   outline: none
-  // }
 }
 
 .form-select-field-wrapper input:focus {
   box-shadow: none !important;
-  /* for overwrite react components */
   outline: none;
 }
 

@@ -483,7 +483,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
     return (
         <div className="registration-from-wrapper">
             <div className="elements-wrapper">
-                <div className="tab-titles">
+                {/* <div className="tab-titles">
                     {tabs.map(tab => (
                         <div
                             key={tab.id}
@@ -493,7 +493,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                             <p>{tab.label}</p>
                         </div>
                     ))}
-                </div>
+                </div> */}
                 <div className="tab-contend">
                     {tabs.map(tab => activeTab === tab.id && <div key={tab.id} className="tab-panel">{tab.content}</div>)}
                 </div>
