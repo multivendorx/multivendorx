@@ -157,7 +157,7 @@ class Ajax {
                 $include    = array();
                 foreach ( $ids as $id ) {
                     $product        = wc_get_product( $id );
-                    $product_map_id = get_post_meta( $id, '_mvx_spmv_map_id', true );
+                    $product_map_id = get_post_meta( $id, Utill::POST_META_SETTINGS['spmv_map_id'], true );
                     if ( $product && $product_map_id ) {
                         $results     = Util::fetch_products_map( $product_map_id );
                         $product_ids = wp_list_pluck( $results, 'product_id' );
@@ -177,7 +177,7 @@ class Ajax {
             } else {
                 $unique_gtin_arr = array();
                 foreach ( $posts as $post_id ) {
-                    $unique_gtin_arr[ $post_id ] = get_post_meta( $post_id, '_mvx_gtin_code', true );
+                    $unique_gtin_arr[ $post_id ] = get_post_meta( $post_id, Utill::POST_META_SETTINGS['gtin_code'], true );
                 }
                 $ids = array_keys( array_unique( $unique_gtin_arr ) );
             }
@@ -188,7 +188,7 @@ class Ajax {
             if ( count( $product_objects ) > 0 ) {
                 foreach ( $product_objects as $product_object ) {
                     if ( $product_object ) {
-                        $gtin_code = get_post_meta( $product_object->get_id(), '_mvx_gtin_code', true );
+                        $gtin_code = get_post_meta( $product_object->get_id(), Utill::POST_META_SETTINGS['gtin_code'], true );
                         // if (is_user_mvx_vendor($user_id) && mvx_is_product_type_avaliable($product_object->get_type())) {
                             // product cat
                             $product_cats = '';
@@ -349,7 +349,7 @@ class Ajax {
             // if ($gtin_code)
             // update_post_meta($duplicate_product->get_id(), '_mvx_gtin_code', wc_clean($gtin_code));
 
-            $has_mvx_spmv_map_id = get_post_meta( $product->get_id(), '_mvx_spmv_map_id', true );
+            $has_mvx_spmv_map_id = get_post_meta( $product->get_id(), Utill::POST_META_SETTINGS['spmv_map_id'], true );
             if ( $has_mvx_spmv_map_id ) {
                 $data = array(
 					'product_id'     => $duplicate_product->get_id(),
@@ -378,7 +378,7 @@ class Ajax {
             do_action( 'mvx_create_duplicate_product', $duplicate_product );
 
             $product_id          = $duplicate_product->get_id();
-            $permalink_structure = get_option( 'permalink_structure' );
+            $permalink_structure = get_option( Utill::WORDPRESS_SETTINGS['permalink'] );
 
             if ( ! empty( $permalink_structure ) ) {
                 $redirect_url = home_url( "dashboard/{$tab}/{$subtab}/{$product_id}/" );

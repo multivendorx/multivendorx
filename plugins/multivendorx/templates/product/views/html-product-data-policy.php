@@ -27,7 +27,7 @@ $_mvx_cancallation_policy = get_post_meta( $id, '_mvx_cancallation_policy', true
                 <?php
                     $shipping_policy_settings = array(
                         'textarea_name' => '_mvx_shipping_policy',
-                        'textarea_rows' => get_option( 'default_post_edit_rows', 10 ),
+                        'textarea_rows' => get_option( Utill::WORDPRESS_SETTINGS['rows'], 10 ),
                         'quicktags'     => array( 'buttons' => 'em,strong,link' ),
                         'tinymce'       => array(
                             'theme_advanced_buttons1' => 'bold,italic,strikethrough,separator,bullist,numlist,separator,blockquote,separator,justifyleft,justifycenter,justifyright,separator,link,unlink,separator,undo,redo,separator',
@@ -47,7 +47,7 @@ $_mvx_cancallation_policy = get_post_meta( $id, '_mvx_cancallation_policy', true
                 <?php
                     $refund_policy_settings = array(
                         'textarea_name' => '_mvx_refund_policy',
-                        'textarea_rows' => get_option( 'default_post_edit_rows', 10 ),
+                        'textarea_rows' => get_option( Utill::WORDPRESS_SETTINGS['rows'], 10 ),
                         'quicktags'     => array( 'buttons' => 'em,strong,link' ),
                         'tinymce'       => array(
                             'theme_advanced_buttons1' => 'bold,italic,strikethrough,separator,bullist,numlist,separator,blockquote,separator,justifyleft,justifycenter,justifyright,separator,link,unlink,separator,undo,redo,separator',
@@ -67,7 +67,7 @@ $_mvx_cancallation_policy = get_post_meta( $id, '_mvx_cancallation_policy', true
                 <?php
                     $cancallation_policy_settings = array(
                         'textarea_name' => '_mvx_cancallation_policy',
-                        'textarea_rows' => get_option( 'default_post_edit_rows', 10 ),
+                        'textarea_rows' => get_option( Utill::WORDPRESS_SETTINGS['rows'], 10 ),
                         'quicktags'     => array( 'buttons' => 'em,strong,link' ),
                         'tinymce'       => array(
                             'theme_advanced_buttons1' => 'bold,italic,strikethrough,separator,bullist,numlist,separator,blockquote,separator,justifyleft,justifycenter,justifyright,separator,link,unlink,separator,undo,redo,separator',

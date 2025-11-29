@@ -53,7 +53,7 @@ class Rest {
         $product_id = $product->get_id();
 
         // Get store ID from product meta
-        $store_id = get_post_meta( $product_id, 'multivendorx_store_id', true );
+        $store_id = get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true );
 
         if ( $store_id ) {
             // Get store information

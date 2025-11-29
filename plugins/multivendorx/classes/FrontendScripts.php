@@ -347,48 +347,10 @@ class FrontendScripts {
         // Get all tab setting's database value.
         $settings_databases_value = array();
 
-		$tabs_names = apply_filters(
-			'multivendorx_additional_tabs_names',
-            array(
-                'general',
-                'store-registration-form',
-                'menu-manager',
-                'privacy-settings',
-                'store-coupon',
-                'store',
-                'products',
-                'policy',
-                'disbursement',
-                'commissions',
-                'marketplace-settings',
-                'user-capability',
-                'store-capability',
-                'identity-verification',
-                'commission-rule',
-                'payment-integration',
-                'store-appearance',
-                'product-report-abuse',
-                'store-commissions',
-                'store-inventory',
-                'review-management',
-                'order-actions-refunds',
-                'advertising',
-                'product-preferencess',
-                'product-store-category-control',
-                'geolocation',
-                'shipping',
-                'legal-compliance',
-                'product-compliance',
-                'tax-compliance',
-                'custom-css',
-                'single-product-multiple-store',
-                'pending-approval',
-                'rejected',
-                'permanently-rejected',
-                'under-review',
-                'suspended',
-            )
-		);
+        $tabs_names = apply_filters(
+            'multivendorx_additional_tabs_names',
+            array_keys( Utill::ADMIN_SETTINGS )
+        );
 
         foreach ( $tabs_names as $tab_name ) {
             $option_name                           = str_replace( '-', '_', 'multivendorx_' . $tab_name . '_settings' );
@@ -498,7 +460,7 @@ class FrontendScripts {
 							'module_page_url'          => admin_url( 'admin.php?page=multivendorx#&tab=modules' ),
 							'color'                    => MultiVendorX()->setting->get_setting( 'store_color_settings' ),
 							'tax'                      => MultiVendorX()->setting->get_setting( 'give_tax' ),
-							'taxes_enabled'            => get_option( 'woocommerce_calc_taxes' ),
+							'taxes_enabled'            => get_option( Utill::WOO_SETTINGS['taxes'] ),
 							'country_list'             => $country_list,
 							'state_list'               => WC()->countries->get_states(),
 							'store_owners'             => $owners_list,
@@ -652,7 +614,7 @@ class FrontendScripts {
                         'ajaxurl'                  => admin_url( 'admin-ajax.php' ),
                         'admin_url'                => admin_url(),
                         'currency'                 => get_woocommerce_currency(),
-                        'taxes_enabled'            => get_option( 'woocommerce_calc_taxes' ),
+                        'taxes_enabled'            => get_option( Utill::WOO_SETTINGS['taxes'] ),
                         'currency_symbol'          => get_woocommerce_currency_symbol(),
                         'price_format'             => get_woocommerce_price_format(),
                         'decimal_sep'              => wc_get_price_decimal_separator(),
@@ -660,7 +622,7 @@ class FrontendScripts {
                         'decimals'                 => wc_get_price_decimals(),
                         'edit_order_capability'    => current_user_can( 'edit_shop_orders' ),
                         'add_product_link'         => StoreUtil::get_endpoint_url( 'products', 'edit' ),
-                        'permalink_structure'      => get_option( 'permalink_structure' ) ? true : false,
+                        'permalink_structure'      => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? true : false,
                         'view_notifications_link'  => StoreUtil::get_endpoint_url( 'view-notifications' ),
                         'all_zones'                => apply_filters( 'multivendorx_get_all_store_zones', array() ),
                         'all_verification_methods' => MultiVendorX()->setting->get_setting( 'all_verification_methods' ),

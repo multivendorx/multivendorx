@@ -177,7 +177,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
             $items = array();
     
             foreach ( $posts as $post ) {
-                $stores      = (array) get_post_meta( $post->ID, 'multivendorx_announcement_stores', true );
+                $stores      = (array) get_post_meta( $post->ID, Utill::POST_META_SETTINGS['announcement_stores'], true );
                 $store_names = array();
     
                 foreach ( $stores as $store_id ) {
@@ -472,8 +472,8 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                 'title'   => $post->post_title,
                 'content' => $post->post_content,
                 'status'  => $post->post_status,
-                'url'     => get_post_meta( $id, 'multivendorx_announcement_url', true ),
-                'stores'  => get_post_meta( $id, 'multivendorx_announcement_stores', true ),
+                'url'     => get_post_meta( $id, Utill::POST_META_SETTINGS['announcement_url'], true ),
+                'stores'  => get_post_meta( $id, Utill::POST_META_SETTINGS['announcement_stores'], true ),
                 'date'    => get_post_time( 'Y-m-d H:i:s', true, $post ),
             );
     

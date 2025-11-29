@@ -328,9 +328,9 @@ class Admin {
 	public function add_additional_product_data_panels() {
 		global $post;
 
-        $linked_store                  = get_post_meta( $post->ID, 'multivendorx_store_id', true );
-        $product_fixed_commission      = get_post_meta( $post->ID, 'multivendorx_product_fixed_commission', true );
-        $product_percentage_commission = get_post_meta( $post->ID, 'multivendorx_product_percentage_commission', true );
+        $linked_store                  = get_post_meta( $post->ID, Utill::POST_META_SETTINGS['store_id'], true );
+        $product_fixed_commission      = get_post_meta( $post->ID, Utill::POST_META_SETTINGS['fixed_commission'], true );
+        $product_percentage_commission = get_post_meta( $post->ID, Utill::POST_META_SETTINGS['percentage_commission'], true );
 
         ?>
         <div id="multivendorx-store-link-tab" class="panel woocommerce_options_panel hidden">
@@ -407,8 +407,8 @@ class Admin {
 
     public function add_variation_settings( $loop, $variation_data, $variation ) {
         $commission_percentage = $commission_fixed = '';
-        $commission_percentage = get_post_meta( $variation->ID, 'multivendorx_variable_product_percentage_commission', true );
-        $commission_fixed      = get_post_meta( $variation->ID, 'multivendorx_variable_product_fixed_commission', true );
+        $commission_percentage = get_post_meta( $variation->ID, Utill::POST_META_SETTINGS['variable_product_percentage'], true );
+        $commission_fixed      = get_post_meta( $variation->ID, Utill::POST_META_SETTINGS['variable_product_fixed'], true );
 
         woocommerce_wp_text_input(
             array(
@@ -526,8 +526,7 @@ class Admin {
     public function add_content_in_store_tab( $coupon_id ) {
 
         $current_coupon = get_post( $coupon_id );
-        $linked_store   = get_post_meta( $coupon_id, 'multivendorx_store_id', true );
-
+        $linked_store   = get_post_meta( $coupon_id, Utill::POST_META_SETTINGS['store_id'], true );
         ?>
         <div id="store_coupon_data" class="panel woocommerce_options_panel">
             <p class="form-field">

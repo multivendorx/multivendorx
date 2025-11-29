@@ -95,7 +95,7 @@ class MultiVendorX_REST_Tour_Controller extends \WP_REST_Controller {
         }
         try{
             // Directly fetch stored value
-            $status = get_option( 'multivendorx_tour_active', false );
+            $status = get_option( Utill::OTHER_SETTINGS['tour_active'], false );
 
             // Force boolean
             $status = filter_var( $status, FILTER_VALIDATE_BOOLEAN );
@@ -140,7 +140,7 @@ class MultiVendorX_REST_Tour_Controller extends \WP_REST_Controller {
             return $error;
         }
         try{
-            update_option( 'multivendorx_tour_active', $request->get_param( 'active' ) );
+            update_option( Utill::OTHER_SETTINGS['tour_active'], $request->get_param( 'active' ) );
             return array( 'success' => true );
         }catch ( \Exception $e ) {
             MultiVendorX()->util->log(

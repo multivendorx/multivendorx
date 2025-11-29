@@ -341,7 +341,7 @@ class CommissionManager {
         if ( $order->get_coupon_codes() ) {
             foreach ( $order->get_coupon_codes() as $coupon_code ) {
                 $coupon   = new \WC_Coupon( $coupon_code );
-                $store_id = (int) get_post_meta( $coupon->get_id(), 'multivendorx_store_id', true );
+                $store_id = (int) get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
 
                 if ( $store_id && Store::get_store_by_id( $store_id ) ) {
                     $store_coupon = true;

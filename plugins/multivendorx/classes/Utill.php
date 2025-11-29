@@ -41,6 +41,90 @@ class Utill {
         'system_events'           => 'multivendorx_system_events',
     );
 
+    const ADMIN_SETTINGS = array(
+        'general'                        => 'multivendorx_general_settings',
+        'store-registration-form'        => 'multivendorx_store-registration-form_settings',
+        'menu-manager'                   => 'multivendorx_menu_manager_settings',
+        'privacy-settings'               => 'multivendorx_privacy_settings_settings',
+        'store-coupon'                   => 'multivendorx_store_coupon_settings',
+        'store'                          => 'multivendorx_store_settings',
+        'products'                       => 'multivendorx_products_settings',
+        'policy'                         => 'multivendorx_policy_settings',
+        'disbursement'                   => 'multivendorx_disbursement_settings',
+        'commissions'                    => 'multivendorx_commissions_settings',
+        'marketplace-settings'           => 'multivendorx_marketplace_settings_settings',
+        'user-capability'                => 'multivendorx_user_capability_settings',
+        'store-capability'               => 'multivendorx_store_capability_settings',
+        'identity-verification'          => 'multivendorx_identity_verification_settings',
+        'commission-rule'                => 'multivendorx_commission_rule_settings',
+        'payment-integration'            => 'multivendorx_payment_integration_settings',
+        'store-appearance'               => 'multivendorx_store_appearance_settings',
+        'product-report-abuse'           => 'multivendorx_product_report_abuse_settings',
+        'store-commissions'              => 'multivendorx_store_commissions_settings',
+        'store-inventory'                => 'multivendorx_store_inventory_settings',
+        'review-management'              => 'multivendorx_review_management_settings',
+        'order-actions-refunds'          => 'multivendorx_order_actions_refunds_settings',
+        'advertising'                    => 'multivendorx_advertising_settings',
+        'product-preferencess'           => 'multivendorx_product_preferencess_settings',
+        'product-store-category-control' => 'multivendorx_product_preferencess_settings',
+        'geolocation'                    => 'multivendorx_geolocation_settings',
+        'shipping'                       => 'multivendorx_shipping_settings',
+        'legal-compliance'               => 'multivendorx_legal_compliance_settings',
+        'product-compliance'             => 'multivendorx_product_compliance_settings',
+        'tax-compliance'                 => 'multivendorx_tax_compliance_settings',
+        'custom-css'                     => 'multivendorx_custom_css_settings',
+        'single-product-multiple-store'  => 'multivendorx_single_product_multiple_store_settings',
+        'pending-approval'               => 'multivendorx_pending_approval_settings',
+        'rejected'                       => 'multivendorx_rejected_settings',
+        'permanently-rejected'           => 'multivendorx_permanently_rejected_settings',
+        'under-review'                   => 'multivendorx_under_review_settings',
+        'suspended'                      => 'multivendorx_suspended_settings',
+    );
+
+    const OTHER_SETTINGS = array(
+        'installed'                        => 'multivendorx_installed',
+        'plugin_activated'                 => 'multivendorx_plugin_activated',
+        'plugin_db_version'                => 'dc_product_vendor_plugin_db_version',
+        'plugin_page_install'              => 'dc_product_vendor_plugin_page_install',
+        'log_file'                         => 'multivendorx_log_file',
+        'tour_active'                      => 'multivendorx_tour_active',
+        'admin_email'                      => 'admin_email',
+        'default_role'                     => 'default_role',
+    );
+
+    const WOO_SETTINGS = array(
+        'taxes'                           => 'woocommerce_calc_taxes',
+        'generate_password'               => 'woocommerce_registration_generate_password',
+        'default_country'                 => 'woocommerce_default_country',
+        'manage_stock'                    => 'woocommerce_manage_stock',
+        'weight_unit'                     => 'woocommerce_weight_unit',
+        'dimension_unit'                  => 'woocommerce_dimension_unit',
+        'notify_low_stock'                => 'woocommerce_notify_low_stock_amount',
+    );
+
+    const WORDPRESS_SETTINGS = array(
+        'permalink'                       => 'permalink_structure',
+        'rows'                            => 'default_post_edit_rows',
+    );
+    const POST_META_SETTINGS = array(
+        'store_id'                        => 'multivendorx_store_id',
+        'fixed_commission'                => 'multivendorx_product_fixed_commission',
+        'percentage_commission'           => 'multivendorx_product_percentage_commission',
+        'variable_product_percentage'     => 'multivendorx_variable_product_percentage_commission',
+        'variable_product_fixed'          => 'multivendorx_variable_product_fixed_commission',
+        'do_list'                         => '_dismiss_to_do_list',
+        'spmv_map_id'                     => '_mvx_spmv_map_id',
+        'gtin_code'                       => '_mvx_gtin_code',
+        'shipping_policy'                 => 'multivendorx_shipping_policy',
+        'refund_policy'                   => 'multivendorx_refund_policy',
+        'cancellation_policy'             => 'multivendorx_cancellation_policy',
+        'announcement_stores'             => 'multivendorx_announcement_stores',
+        'announcement_url'                => 'multivendorx_announcement_url',
+        
+
+    );
+    const ACTIVE_MODULES_DB_KEY = 'multivendorx_all_active_module_list';
+
     /**
      * MooWoodle LOG function.
      *

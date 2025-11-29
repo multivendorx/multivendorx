@@ -97,7 +97,7 @@ class MultiVendorX_REST_Logs_Controller extends \WP_REST_Controller {
                 break;
             case 'clear':
                 $wp_filesystem->delete( MultiVendorX()->log_file );
-                delete_option( 'multivendorx_log_file' ); // Remove log file reference from options table.
+                delete_option( Utill::OTHER_SETTINGS['log_file'] ); // Remove log file reference from options table.
                 return rest_ensure_response( true );
             default:
                 $logs = array();
@@ -124,7 +124,7 @@ class MultiVendorX_REST_Logs_Controller extends \WP_REST_Controller {
             return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
         }
         // Get the file parameter from the request.
-        $file      = get_option( 'multivendorx_log_file' );
+        $file      = get_option( Utill::OTHER_SETTINGS['log_file'] );
         $file      = basename( $file );
         $file_path = MultiVendorX()->multivendorx_logs_dir . '/' . $file;
 

@@ -22,7 +22,6 @@ class Modules {
      *
      * @var string
      */
-    const ACTIVE_MODULES_DB_KEY = 'multivendorx_all_active_module_list';
 
     /**
      * List of all module.
@@ -199,7 +198,7 @@ class Modules {
             return $this->active_modules;
         }
 
-        $this->active_modules = MultiVendorX()->setting->get_option( self::ACTIVE_MODULES_DB_KEY, array() );
+        $this->active_modules = MultiVendorX()->setting->get_option( Utill::ACTIVE_MODULES_DB_KEY, array() );
 
         return $this->active_modules;
     }
@@ -252,7 +251,7 @@ class Modules {
 
         // store activated module as active module.
         if ( $activated_modules !== $active_modules ) {
-            update_option( self::ACTIVE_MODULES_DB_KEY, $activated_modules );
+            update_option( Utill::ACTIVE_MODULES_DB_KEY, $activated_modules );
         }
 
         self::$module_activated = true;
@@ -325,7 +324,7 @@ class Modules {
         $active_modules       = $this->get_active_modules();
         $this->active_modules = array_unique( array_merge( $active_modules, $modules ) );
 
-        update_option( self::ACTIVE_MODULES_DB_KEY, $this->active_modules );
+        update_option( Utill::ACTIVE_MODULES_DB_KEY, $this->active_modules );
 
         self::$module_activated = false;
 
@@ -351,7 +350,7 @@ class Modules {
 
         $this->active_modules = $active_modules;
 
-        update_option( self::ACTIVE_MODULES_DB_KEY, $this->active_modules );
+        update_option( Utill::ACTIVE_MODULES_DB_KEY, $this->active_modules );
 
         add_action(
             'shutdown',

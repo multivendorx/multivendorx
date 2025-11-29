@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
     <div class="row-padding"> 
         <?php if ( wc_product_weight_enabled() ) : ?> 
             <div class="form-group">
-                <label class="control-label col-sm-3 col-md-3" for="_weight"><?php esc_html_e( 'Weight', 'multivendorx' ) . ' (' . get_option( 'woocommerce_weight_unit' ) . ')'; ?></label>
+                <label class="control-label col-sm-3 col-md-3" for="_weight"><?php esc_html_e( 'Weight', 'multivendorx' ) . ' (' . get_option( Utill::WOO_SETTINGS['weight_unit'] ) . ')'; ?></label>
                 <div class="col-md-6 col-sm-9">
                     <input class="form-control" type="text" id="_weight" name="_weight" value="<?php echo isset( $_POST['_weight'] ) ? absint( $_POST['_weight'] ) : $product_object->get_weight( 'edit' ); ?>" placeholder="<?php echo wc_format_localized_decimal( 0 ); ?>" />
                 </div>
@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
         <?php endif; ?>
         <?php if ( wc_product_dimensions_enabled() ) : ?> 
             <div class="form-group">
-                <label class="control-label col-sm-3 col-md-3" for="product_length"><?php printf( __( 'Dimensions (%s)', 'multivendorx' ), get_option( 'woocommerce_dimension_unit' ) ); ?></label>
+                <label class="control-label col-sm-3 col-md-3" for="product_length"><?php printf( __( 'Dimensions (%s)', 'multivendorx' ), get_option( Utill::WOO_SETTINGS['dimension_unit']  ) ); ?></label>
                 <div class="col-md-6 col-sm-9">
                     <div class="row">
                         <div class="col-md-4">

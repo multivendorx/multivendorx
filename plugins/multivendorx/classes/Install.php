@@ -35,7 +35,7 @@ class Install {
         $this->create_database_table();
         $this->create_database_triggers();
         $this->plugin_create_pages();
-        update_option( 'dc_product_vendor_plugin_db_version', MULTIVENDORX_PLUGIN_VERSION );
+        update_option( Utill::OTHER_SETTINGS['plugin_db_version'], MULTIVENDORX_PLUGIN_VERSION );
 
         do_action( 'multivendorx_updated' );
     }
@@ -400,9 +400,9 @@ class Install {
      */
     private function set_default_settings() {
         // 1. Get the existing option from DB
-        $settings = get_option( 'multivendorx_identity_verification_settings', array() );
+        $settings = get_option( Utill::ADMIN_SETTINGS['identity-verification'], array() );
 
-        $order_settings = get_option( 'multivendorx_order_actions_refunds_settings', array() );
+        $order_settings = get_option( Utill::ADMIN_SETTINGS['order-actions-refunds'], array() );
 
         // 2. Modify only what you need
         $settings['all_verification_methods']['ID']['verification_methods'] = array(
@@ -535,13 +535,12 @@ By signing and submitting, the Seller accepts all terms above.
             'pending_msg' => 'Your store is awaiting approval and will be activated soon.',
         );
 
-        update_option( 'multivendorx_pending_approval_settings', $pending_store_status );
+        update_option( Utill::ADMIN_SETTINGS['pending-approval'], $pending_store_status );
 
         $reject_store_status = array(
             'rejected_msg' => 'Your application was not approved. Please review feedback and reapply.',
         );
-
-        update_option( 'multivendorx_rejected_settings', $reject_store_status );
+        update_option( Utill::ADMIN_SETTINGS['rejected'], $reject_store_status );
 
         // $permanent_reject_store_status = array (
         // 'permanent_rejected_msg' => 'Your application has been permanently rejected. Contact admin for clarification.',
@@ -553,19 +552,19 @@ By signing and submitting, the Seller accepts all terms above.
             'under_review_msg' => 'Your store is under review. Sales and payouts are temporarily paused.',
         );
 
-        update_option( 'multivendorx_under_review_settings', $under_review_store_status );
+        update_option( Utill::ADMIN_SETTINGS['under-review'], $under_review_store_status );
 
         $suspended_store_status = array(
             'suspended_msg' => 'Your store is suspended due to a policy issue. Contact admin to resolve it.',
         );
 
-        update_option( 'multivendorx_suspended_settings', $suspended_store_status );
+        update_option( Utill::ADMIN_SETTINGS['suspended'], $suspended_store_status );
 
         // 6. Save back to DB
-        update_option( 'multivendorx_identity_verification_settings', $settings );
-        update_option( 'multivendorx_order_actions_refunds_settings', $order_settings );
-        update_option( 'multivendorx_legal_compliance_settings', $legal_settings );
-        update_option( 'multivendorx_product_compliance_settings', $product_compliance_settings );
+        update_option( Utill::ADMIN_SETTINGS['identity-verification'], $settings );
+        update_option( Utill::ADMIN_SETTINGS['order-actions-refunds'], $order_settings );
+        update_option( Utill::ADMIN_SETTINGS['legal-compliance'], $legal_settings );
+        update_option( Utill::ADMIN_SETTINGS['product-compliance'], $product_compliance_settings );
     }
 
 

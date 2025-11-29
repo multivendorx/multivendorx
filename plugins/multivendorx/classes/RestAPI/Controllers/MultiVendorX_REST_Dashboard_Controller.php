@@ -527,7 +527,7 @@ class MultiVendorX_REST_Dashboard_Controller extends \WP_REST_Controller {
      * Retrieve sanitized tab and subtab.
      */
     private function get_tab_and_subtab(): array {
-        if ( get_option( 'permalink_structure' ) ) {
+        if ( get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ) {
             $segment = sanitize_key( get_query_var( 'segment' ) ?: 'dashboard' );
             $element = sanitize_key( get_query_var( 'element' ) );
         } else {

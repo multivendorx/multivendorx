@@ -73,7 +73,7 @@ class Shortcode {
         <?php
         $user = wp_get_current_user();
         if ( ! is_user_logged_in() ) {
-            if ( ( 'no' === get_option( 'woocommerce_registration_generate_password' ) && ! is_user_logged_in() ) ) {
+            if ( ( 'no' === get_option( Utill::WOO_SETTINGS['generate_password'] ) && ! is_user_logged_in() ) ) {
                 wp_enqueue_script( 'wc-password-strength-meter' );
             }
             echo '<div class="mvx-dashboard woocommerce">';

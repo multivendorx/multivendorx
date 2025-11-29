@@ -29,7 +29,7 @@ $post           = $args['post'];
             </div> 
         <?php endif; ?>
         <?php do_action( 'mvx_frontend_product_options_sku', $post->ID, $product_object, $post ); ?>
-        <?php if ( apply_filters( 'mvx_can_vendor_manage_stock', 'yes' === get_option( 'woocommerce_manage_stock' ) ) ) : ?> 
+        <?php if ( apply_filters( 'mvx_can_vendor_manage_stock', 'yes' === get_option( Utill::WOO_SETTINGS['manage_stock'] ) ) ) : ?> 
             <?php
             $manage_stock_visibility = apply_filters( 'inventory_tab_manage_stock_section', array( 'simple', 'variable' ) );
             if ( $self->mvx_is_allowed_product_type( ...$manage_stock_visibility ) ) :
@@ -85,7 +85,7 @@ $post           = $args['post'];
                                 <span class="img_tip" data-desc="<?php esc_html_e( 'When product stock reaches this amount you will be notified by email', 'multivendorx' ); ?>"></span>
                             </label>
                             <div class="input-wrapper">
-                                <input class="basic-input" type="text" id="_low_stock_amount" name="_low_stock_amount" value="<?php echo isset( $_POST['_low_stock_amount'] ) ? absint( $_POST['_low_stock_amount'] ) : $product_object->get_low_stock_amount( 'edit' ); ?>" placeholder="<?php echo esc_attr( get_option( 'woocommerce_notify_low_stock_amount' ) ); ?>" /> 
+                                <input class="basic-input" type="text" id="_low_stock_amount" name="_low_stock_amount" value="<?php echo isset( $_POST['_low_stock_amount'] ) ? absint( $_POST['_low_stock_amount'] ) : $product_object->get_low_stock_amount( 'edit' ); ?>" placeholder="<?php echo esc_attr( get_option( Utill::WOO_SETTINGS['notify_low_stock'] ) ); ?>" /> 
                             </div>
                         </div>
                     </div>

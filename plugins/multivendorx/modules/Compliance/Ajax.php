@@ -26,7 +26,7 @@ class Ajax {
         }
 
         // Get store_id from product meta
-        $store_id = get_post_meta( $product_id, 'multivendorx_store_id', true ) ?? 0;
+        $store_id = get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true ) ?? 0;
 
         // 🔹 Check if this user (email) already reported this product
         $existing_reports = Util::get_report_abuse_information(

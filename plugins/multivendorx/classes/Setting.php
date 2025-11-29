@@ -82,56 +82,12 @@ class Setting {
          */
         $this->settings_keys = apply_filters(
             'multivendorx_register_settings_keys',
-            array(
-				'multivendorx_extra_settings',
-				'multivendorx_general_settings',
-                'multivendorx_store-registration-form_settings',
-                'multivendorx_privacy_settings_settings',
-                'multivendorx_store_coupon_settings',
-                'multivendorx_disbursement_settings',
-                'multivendorx_commissions_settings',
-                'multivendorx_spmv_pages_settings',
-                'multivendorx_product_preferencess_settings',
-                'multivendorx_products_settings',
-                'multivendorx_refund_management_settings',
-                'multivendorx_identity_verification_settings',
-                'multivendorx_invoice_default_settings',
-                'multivendorx_store_settings',
-                'multivendorx_advertising_settings',
-                'multivendorx_live_chat_settings',
-                'multivendorx_store_inventory_settings',
-                'multivendorx_min_max_settings',
-                'multivendorx_review_management_settings',
-                'multivendorx_order_settings',
-                'multivendorx_social_settings',
-                'multivendorx_product_store_category_control_settings',
-                'multivendorx_wholesale_settings',
-                'multivendorx_store_support_settings',
-                'multivendorx_policy_settings',
-                'multivendorx_payment_masspay_settings',
-                'multivendorx_marketplace_settings_settings',
-                'multivendorx_store_capability_settings',
-                'multivendorx_user_capability_settings',
-                'multivendorx_commission_rule_settings',
-                'multivendorx_payment_integration_settings',
-                'multivendorx_store_appearance_settings',
-                'multivendorx_product_report_abuse_settings',
-                'multivendorx_store_commissions_settings',
-                'multivendorx_order_actions_refunds_settings',
-                'multivendorx_menu_manager_settings',
-                'multivendorx_geolocation_settings',
-                'multivendorx_shipping_settings',
-                'multivendorx_legal_compliance_settings',
-                'multivendorx_product_compliance_settings',
-                'multivendorx_tax_compliance_settings',
-                'multivendorx_custom_css_settings',
-                'multivendorx_single_product_multiple_store_settings',
-                'multivendorx_pending_approval_settings',
-                'multivendorx_rejected_settings',
-                'multivendorx_permanently_rejected_settings',
-                'multivendorx_under_review_settings',
-                'multivendorx_suspended_settings',
-			)
+            array_merge(
+                array(
+                    'multivendorx_extra_settings',
+                ),
+                array_values( Utill::ADMIN_SETTINGS )
+            )
         );
 
         return $this->settings_keys;

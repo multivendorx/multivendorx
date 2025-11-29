@@ -424,8 +424,8 @@ class Frontend {
 					update_post_meta( $post_id, '_product_image_gallery', implode( ',', $attachment_ids ) );
 
 					// remove dismiss meta if exists
-					if ( get_post_meta( $post_id, '_dismiss_to_do_list', true ) ) {
-						delete_post_meta( $post_id, '_dismiss_to_do_list' );
+					if ( get_post_meta( $post_id, Utill::POST_META_SETTINGS['do_list'], true ) ) {
+						delete_post_meta( $post_id, Utill::POST_META_SETTINGS['do_list'] );
 					}
 
 					// Policy tab data save

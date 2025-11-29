@@ -98,7 +98,7 @@ $product_object   = $args['product_object'];
                                     <label for="variable_is_virtual[<?php echo esc_attr( $loop ); ?>]"><input type="checkbox" class="form-control variable_is_virtual" id="variable_is_virtual[<?php echo esc_attr( $loop ); ?>]" name="variable_is_virtual[<?php echo esc_attr( $loop ); ?>]" <?php checked( $variation_object->get_virtual( 'edit' ), true ); ?> /> <?php esc_html_e( 'Virtual', 'multivendorx' ); ?></label>
                                 </div>
                             <?php endif; ?>
-                            <?php if ( 'yes' === get_option( 'woocommerce_manage_stock' ) ) : ?>
+                            <?php if ( 'yes' === get_option( Utill::WOO_SETTINGS['manage_stock'] ) ) : ?>
                                 <div class="form-group">
                                     <label for="variable_manage_stock[<?php echo esc_attr( $loop ); ?>]"><input type="checkbox" class="form-control variable_manage_stock" id="variable_manage_stock[<?php echo esc_attr( $loop ); ?>]" name="variable_manage_stock[<?php echo esc_attr( $loop ); ?>]" <?php checked( $variation_object->get_manage_stock( 'edit' ), true ); ?> /> <?php esc_html_e( 'Manage stock?', 'multivendorx' ); ?></label>
                                 </div>
@@ -187,7 +187,7 @@ $product_object   = $args['product_object'];
                 </div>
             </div>
 
-            <?php if ( 'yes' === get_option( 'woocommerce_manage_stock' ) ) : ?>
+            <?php if ( 'yes' === get_option( Utill::WOO_SETTINGS['manage_stock'] ) ) : ?>
                 <div class="show_if_variation_manage_stock">
                         <div class="form-group">
                             <label class="control-label col-md-6"><?php echo __( 'Stock quantity', 'multivendorx' ); ?></label>
@@ -244,7 +244,7 @@ $product_object   = $args['product_object'];
                     <?php if ( wc_product_weight_enabled() ) : ?>
                         <div class="col-md-6 hide_if_variation_virtual">
                             <div class="form-group">
-                                <label class="control-label col-md-6"><?php printf( __( 'Weight (%s)', 'multivendorx' ), esc_html( get_option( 'woocommerce_weight_unit' ) ) ); ?></label>    
+                                <label class="control-label col-md-6"><?php printf( __( 'Weight (%s)', 'multivendorx' ), esc_html( get_option( Utill::WOO_SETTINGS['weight_unit'] ) ) ); ?></label>    
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" id="variable_weight<?php echo esc_attr( $loop ); ?>" name="variable_weight[<?php echo esc_attr( $loop ); ?>]" value="<?php echo wc_format_localized_decimal( $variation_object->get_weight( 'edit' ) ); ?>" placeholder="<?php echo wc_format_localized_decimal( $product_object->get_weight() ); ?>" />
                                 </div>
@@ -259,7 +259,7 @@ $product_object   = $args['product_object'];
                         ?>
                         <div class="col-md-6 dimensions_field hide_if_variation_virtual">
                             <div class="form-group">
-                                <label class="control-label col-md-3"><?php printf( esc_html__( 'Dimensions (L&times;W&times;H) (%s)', 'multivendorx' ), esc_html( get_option( 'woocommerce_dimension_unit' ) ) ); ?></label>    
+                                <label class="control-label col-md-3"><?php printf( esc_html__( 'Dimensions (L&times;W&times;H) (%s)', 'multivendorx' ), esc_html( get_option( Utill::WOO_SETTINGS['dimension_unit'] ) ) ); ?></label>    
                                 <div class="col-md-3">
                                     <input placeholder="<?php echo $parent_length ? esc_attr( $parent_length ) : esc_attr__( 'Length', 'multivendorx' ); ?>" class="input-text form-control col-md-4 wc_input_decimal" size="6" type="text" name="variable_length[<?php echo esc_attr( $loop ); ?>]" value="<?php echo esc_attr( wc_format_localized_decimal( $variation_object->get_length( 'edit' ) ) ); ?>" />
                                 </div>

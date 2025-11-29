@@ -98,7 +98,7 @@ if ( is_user_logged_in() && ! current_user_can( 'edit_products' ) ) {
                         <button class="btn btn-default view-all-products-btn"><?php esc_html_e( 'View All Products', 'multivendorx' ); ?></button>
                         <?php
 
-						if ( get_option( 'permalink_structure' ) ) {
+						if ( get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ) {
                             $category_url = '?new_listing=1&cats_hier=1';
                         } else {
                             $category_url = StoreUtil::get_endpoint_url( 'products', 'edit' ) . '&new_listing=1&cats_hier=1';

@@ -40,7 +40,7 @@ class Ajax {
         $user_id    = get_current_user_id();
         $question   = sanitize_textarea_field( $_POST['question'] );
         $product_id = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT ) ?: 0;
-        $store_id   = intval( get_post_meta( $product_id, 'multivendorx_store_id', true ) ?: 0 );
+        $store_id   = intval( get_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], true ) ?: 0 );
 
         $wpdb->insert(
             $table,

@@ -23,7 +23,7 @@ class NewStoreEmail extends MultiVendorXEmails {
      * Trigger email
      */
     public function trigger( $store_id ) {
-        $this->recipient = get_option( 'admin_email' );
+        $this->recipient = get_option( Utill::OTHER_SETTINGS['admin_email'] );
 
         if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
             return;
