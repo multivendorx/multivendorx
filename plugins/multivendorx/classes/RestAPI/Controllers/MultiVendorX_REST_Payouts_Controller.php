@@ -96,11 +96,11 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             // Pagination
             $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
             $page   = max( intval( $request->get_param( 'page' ) ), 1 );
@@ -149,13 +149,13 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
             }
 
             return rest_ensure_response( $formatted_products );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -174,26 +174,26 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $registrations = $request->get_header( 'registrations' );
 
             $store_data = $request->get_param( 'formData' );
             // Create store object
             $store = new \MultiVendorX\Store\Store();
-    
+
             $core_fields = array( 'name', 'slug', 'description', 'who_created', 'status' );
             foreach ( $core_fields as $field ) {
                 if ( isset( $store_data[ $field ] ) ) {
                     $store->set( $field, $store_data[ $field ] );
                 }
             }
-    
+
             $insert_id = $store->save();
-    
+
             if ( $insert_id && ! $registrations ) {
                 foreach ( $store_data as $key => $value ) {
                     if ( ! in_array( $key, $core_fields, true ) ) {
@@ -201,7 +201,7 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                     }
                 }
             }
-    
+
             if ( $registrations ) {
                 // Collect all non-core fields into one array
                 $non_core_fields = array();
@@ -210,26 +210,26 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                         $non_core_fields[ $key ] = $value;
                     }
                 }
-    
+
                 // Save them under one key
                 if ( ! empty( $non_core_fields ) ) {
                     $store->update_meta( 'multivendorx-registration-data', $non_core_fields );
                 }
             }
-    
+
             return rest_ensure_response(
                 array(
                     'success' => true,
                     'id'      => $insert_id,
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -248,32 +248,32 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $id            = absint( $request->get_param( 'id' ) );
             $fetch_user    = $request->get_param( 'fetch_user' );
             $registrations = $request->get_header( 'registrations' );
             if ( $fetch_user ) {
                 $users = StoreUtil::get_store_users( $id );
-    
+
                 $response = array(
                     'id'           => $id,
                     'store_owners' => $users,
                 );
                 return rest_ensure_response( $response );
             }
-    
+
             // Load the store
             $store = new \MultiVendorX\Store\Store( $id );
             if ( $registrations ) {
                 $response = StoreUtil::get_store_registration_form( $store->get_id() );
-    
+
                 return rest_ensure_response( $response );
             }
-    
+
             $response = array(
                 'id'          => $store->get_id(),
                 'name'        => $store->get( 'name' ),
@@ -282,20 +282,20 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                 'who_created' => $store->get( 'who_created' ),
                 'status'      => $store->get( 'status' ),
             );
-    
+
             // Add meta data
             foreach ( $store->meta_data as $key => $values ) {
                 $response[ $key ] = is_array( $values ) ? $values[0] : $values;
             }
-    
+
             return rest_ensure_response( $response );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -314,16 +314,16 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $id   = absint( $request->get_param( 'id' ) );
             $data = $request->get_json_params();
-    
+
             $store = new \MultiVendorX\Store\Store( $id );
-    
+
             if ( $data['store_owners'] ) {
                 StoreUtil::add_store_users(
                     array(
@@ -332,20 +332,20 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                         'role_id'      => 'store_owner',
                     )
                 );
-    
+
                 return rest_ensure_response(
                     array(
                         'success' => true,
                     )
                 );
             }
-    
+
             $store->set( 'name', $data['name'] ?? $store->get( 'name' ) );
             $store->set( 'slug', $data['slug'] ?? $store->get( 'slug' ) );
             $store->set( 'description', $data['description'] ?? $store->get( 'description' ) );
             $store->set( 'who_created', 'admin' );
             $store->set( 'status', $data['status'] ?? $store->get( 'status' ) );
-    
+
             if ( is_array( $data ) ) {
                 foreach ( $data as $key => $value ) {
                     if ( ! in_array( $key, array( 'id', 'name', 'slug', 'description', 'who_created', 'status' ), true ) ) {
@@ -353,22 +353,22 @@ class MultiVendorX_REST_Payouts_Controller extends \WP_REST_Controller {
                     }
                 }
             }
-    
+
             $store->save();
-    
+
             return rest_ensure_response(
                 array(
                     'success' => true,
                     'id'      => $store->get_id(),
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

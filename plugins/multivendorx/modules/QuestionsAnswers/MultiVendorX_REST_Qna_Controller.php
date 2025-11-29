@@ -96,11 +96,11 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $store_id   = $request->get_param( 'store_id' );
             $limit      = max( intval( $request->get_param( 'row' ) ), 10 );
             $page       = max( intval( $request->get_param( 'page' ) ), 1 );
@@ -112,13 +112,13 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
             $search     = sanitize_text_field( $request->get_param( 'searchField' ) );
             $orderBy    = sanitize_text_field( $request->get_param( 'orderBy' ) );
             $order      = sanitize_text_field( $request->get_param( 'order' ) );
-    
+
             $args = array();
-    
+
             if ( $store_id ) {
                 $args['store_id'] = intval( $store_id );
             }
-    
+
             // --- Step 3: Handle Search on Product ---
             if ( ! empty( $search ) ) {
                 $product_query = new \WC_Product_Query(
@@ -134,9 +134,9 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                         ),
                     )
                 );
-    
+
                 $matched_product_ids = $product_query->get_products();
-    
+
                 if ( empty( $matched_product_ids ) ) {
                     // No matching product found
                     return rest_ensure_response(
@@ -148,28 +148,28 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                         )
                     );
                 }
-    
+
                 $args['product_ids'] = $matched_product_ids;
             }
-    
+
             // --- Step 4: Count Only Request ---
             if ( $count ) {
                 $args['count'] = true;
                 $total_count   = Util::get_question_information( $args );
                 return rest_ensure_response( (int) $total_count );
             }
-    
+
             // --- Step 5: Build Base Query Args ---
             $args['limit']  = $limit;
             $args['offset'] = $offset;
-    
+
             if ( $start_date ) {
                 $args['start_date'] = $start_date;
             }
             if ( $end_date ) {
                 $args['end_date'] = $end_date;
             }
-    
+
             // --- Step 6: Add Filter by Status (from frontend tabs) ---
             if ( $status === 'has_answer' ) {
                 $args['has_answer'] = true;
@@ -180,10 +180,10 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                 $args['orderBy'] = $orderBy;
                 $args['order']   = $order;
             }
-    
+
             // --- Step 7: Fetch Question Data ---
             $questions = Util::get_question_information( $args );
-    
+
             // --- Step 8: Format Data ---
             $formatted = array_map(
                 function ( $q ) {
@@ -193,9 +193,9 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                     $author_name = ( $first_name && $last_name )
                     ? $first_name . ' ' . $last_name
                     : get_the_author_meta( 'display_name', $q['question_by'] );
-    
+
                     $store_obj = MultivendorX()->store->get_store_by_id( $q['store_id'] );
-    
+
                     // Get product image
                     $product_image = '';
                     if ( $product ) {
@@ -204,7 +204,7 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                             $product_image = wp_get_attachment_image_url( $image_id, 'thumbnail' ); // or 'full'
                         }
                     }
-    
+
                     return array(
                         'id'                  => (int) $q['id'],
                         'product_id'          => (int) $q['product_id'],
@@ -227,22 +227,22 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                 },
                 $questions ?: array()
             );
-    
+
             // --- Step 9: Get Counters ---
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['has_answer'], $base_args['no_answer'] );
             $base_args['count'] = true;
-    
+
             $all_count = Util::get_question_information( $base_args );
-    
+
             $answered_args               = $base_args;
             $answered_args['has_answer'] = true;
             $answered_count              = Util::get_question_information( $answered_args );
-    
+
             $unanswered_args              = $base_args;
             $unanswered_args['no_answer'] = true;
             $unanswered_count             = Util::get_question_information( $unanswered_args );
-    
+
             // --- Step 10: Return Final Response ---
             return rest_ensure_response(
                 array(
@@ -252,13 +252,13 @@ class MultiVendorX_REST_Qna_Controller extends \WP_REST_Controller {
                     'unanswered' => (int) $unanswered_count,
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

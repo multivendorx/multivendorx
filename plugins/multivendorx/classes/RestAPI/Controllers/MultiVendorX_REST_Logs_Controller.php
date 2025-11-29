@@ -1,9 +1,16 @@
 <?php
-
+/**
+ * Multivendorx REST API Logs Controller class.
+ */
 namespace MultiVendorX\RestAPI\Controllers;
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Class MultiVendorX_REST_Logs_Controller
+ *
+ * @package MultiVendorX\RestAPI\Controllers
+ */
 class MultiVendorX_REST_Logs_Controller extends \WP_REST_Controller {
 
 	/**
@@ -13,6 +20,9 @@ class MultiVendorX_REST_Logs_Controller extends \WP_REST_Controller {
 	 */
 	protected $rest_base = 'logs';
 
+    /**
+     * Register the routes for the objects of the controller.
+     */
     public function register_routes() {
         register_rest_route(
             MultiVendorX()->rest_namespace,
@@ -53,21 +63,35 @@ class MultiVendorX_REST_Logs_Controller extends \WP_REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ), // only admins can delete
+					'permission_callback' => array( $this, 'update_item_permissions_check' ), // Only admins can delete.
 				),
 			)
         );
     }
 
+    /**
+     * Get_items_permissions_check checks the get items permissions.
+     *
+     * @param mixed $request all requests params from api.
+     */
     public function get_items_permissions_check( $request ) {
         return current_user_can( 'read' ) || current_user_can( 'edit_stores' );
     }
 
-    // POST permission
+    /**
+     * Create_item_permissions_check creates the item permissions check.
+     *
+     * @param mixed $request all requests params from api.
+     */
     public function create_item_permissions_check( $request ) {
         return current_user_can( 'manage_options' );
     }
 
+    /**
+     * Update_item_permissions_check updates the item permissions check.
+     *
+     * @param mixed $request all requests params from api.
+     */
     public function update_item_permissions_check( $request ) {
         return current_user_can( 'manage_options' );
     }
@@ -94,7 +118,6 @@ class MultiVendorX_REST_Logs_Controller extends \WP_REST_Controller {
         switch ( $action ) {
             case 'download':
                 return $this->download_log( $request );
-                break;
             case 'clear':
                 $wp_filesystem->delete( MultiVendorX()->log_file );
                 delete_option( 'multivendorx_log_file' ); // Remove log file reference from options table.

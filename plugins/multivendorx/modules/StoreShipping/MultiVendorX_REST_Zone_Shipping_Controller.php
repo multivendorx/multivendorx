@@ -94,21 +94,21 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $store_id = $request->get_param( 'store_id' );
             $zones    = Util::get_zones( $store_id );
             return rest_ensure_response( $zones );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -128,11 +128,11 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $store_id  = intval( $request->get_param( 'store_id' ) );
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
@@ -146,7 +146,7 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             if ( empty( $zone_id ) ) {
                 return rest_ensure_response(
                     array(
@@ -155,7 +155,7 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             if ( empty( $store_id ) ) {
                 return rest_ensure_response(
                     array(
@@ -164,18 +164,18 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             // Prepare store object
             $store = new \MultiVendorX\Store\Store( $store_id );
-    
+
             // Sanitize settings
             $clean_settings = is_array( $settings )
                 ? array_map( 'sanitize_text_field', $settings )
                 : array();
-    
+
             // Build dynamic meta key using method_id
             $meta_key = sprintf( '%s_%d', $method_id, $zone_id );
-    
+
             // Save only the settings as meta value
             $store->update_meta( $meta_key, $clean_settings );
             $store->save();
@@ -185,7 +185,7 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
             $shipping->process_admin_options();
             // Clear WooCommerce shipping cache
             \WC_Cache_Helper::get_transient_version( 'shipping', true );
-    
+
             // Return response
             return rest_ensure_response(
                 array(
@@ -196,13 +196,13 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'meta_key' => $meta_key,
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -221,15 +221,15 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $store_id  = $request->get_param( 'store_id' );
             $method_id = $request->get_param( 'method_id' );
             $zone_id   = $request->get_param( 'zone_id' );
-    
+
             // Validate required params
             if ( empty( $store_id ) || empty( $method_id ) || empty( $zone_id ) ) {
                 return rest_ensure_response(
@@ -239,17 +239,17 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             $method = Util::get_shipping_method( $store_id, $method_id, $zone_id );
-    
+
             return rest_ensure_response( $method );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -268,16 +268,16 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $store_id  = intval( $request->get_param( 'store_id' ) );
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
             $settings  = $request->get_param( 'settings' );
-    
+
             if ( ! $method_id || ! $zone_id || ! $store_id || ! $settings ) {
                 return rest_ensure_response(
                     array(
@@ -286,7 +286,7 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             // -------------------------
             // Save or update shipping method in store meta instead of old table
             // -------------------------
@@ -298,7 +298,7 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'settings'  => $settings,
                 )
             );
-    
+
             if ( ! $updated ) {
                 return rest_ensure_response(
                     array(
@@ -307,15 +307,15 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             // Process settings in Shipping class
             $shipping = new Zone_Shipping();
             $shipping->set_post_data( $settings );
             $shipping->process_admin_options();
-    
+
             // Clear WooCommerce shipping cache
             \WC_Cache_Helper::get_transient_version( 'shipping', true );
-    
+
             return rest_ensure_response(
                 array(
                     'success' => true,
@@ -323,13 +323,13 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'data'    => $updated,
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -348,15 +348,15 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $store_id  = intval( $request->get_param( 'store_id' ) );
             $zone_id   = intval( $request->get_param( 'zone_id' ) );
             $method_id = sanitize_text_field( $request->get_param( 'method_id' ) );
-    
+
             if ( ! $store_id || ! $zone_id || ! $method_id ) {
                 return rest_ensure_response(
                     array(
@@ -365,9 +365,9 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             $result = Util::delete_shipping_method( $store_id, $zone_id, $method_id );
-    
+
             if ( is_wp_error( $result ) ) {
                 return rest_ensure_response(
                     array(
@@ -376,20 +376,20 @@ class MultiVendorX_REST_Zone_Shipping_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             return rest_ensure_response(
                 array(
                     'success' => true,
                     'message' => __( 'Shipping method deleted successfully', 'multivendorx' ),
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

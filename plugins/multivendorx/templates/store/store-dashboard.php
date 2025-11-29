@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Template Name: Store Dashboard
+ *
+ * @package MultiVendorX
+ */
 use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Store\Store;
 
@@ -13,7 +17,7 @@ $store_ids    = $page_info['store_ids'] ?? array();
 $available_stores = array_filter(
     $store_ids,
     function ( $id ) use ( $active_store ) {
-        // Skip the active store if it exists in the list
+        // Skip the active store if it exists in the list.
         return $active_store ? ( $id !== $active_store ) : true;
     }
 );
@@ -55,14 +59,14 @@ $available_stores = array_filter(
 
                             <?php if ( $has_submenu ) : ?>
                                 <ul class="subtabs">
-                                    <?php foreach ( $section['submenu'] as $submenu ) : ?>
+                                    <?php foreach ( $section['submenu'] as $submenu_item ) : ?>
                                         <?php
-                                        $sub_active = ( $page_info['current_page'] === $section['slug'] && $page_info['current_sub'] === $submenu['slug'] );
+                                        $sub_active = ( $page_info['current_page'] === $section['slug'] && $page_info['current_sub'] === $submenu_item['slug'] );
                                         ?>
                                         <li class="<?php echo $sub_active ? 'active' : ''; ?>">
                                             <a
-                                                href="<?php echo esc_url( StoreUtil::get_endpoint_url( $section['slug'], $submenu['slug'] ) ); ?>">
-                                                <?php echo esc_html( $submenu['name'] ); ?>
+                                                href="<?php echo esc_url( StoreUtil::get_endpoint_url( $section['slug'], $submenu_item['slug'] ) ); ?>">
+                                                <?php echo esc_html( $submenu_item['name'] ); ?>
                                             </a>
                                         </li>
                                     <?php endforeach; ?>
@@ -185,8 +189,8 @@ $available_stores = array_filter(
                 <?php } else { ?>
                     <?php
                     if ( ! empty( $page_info['content'] ) ) {
-                        echo $page_info['content'];
-                    }
+                        echo wp_kses_post( $page_info['content'] );
+                    }                    
                     ?>
                 <?php } ?>
             </div>

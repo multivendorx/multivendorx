@@ -80,11 +80,11 @@ class MultiVendorX_REST_Status_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $key = $request->get_param( 'key' );
             if ( $key == 'default_pages' ) {
                 MultiVendorX()->install->plugin_create_pages();
@@ -92,13 +92,13 @@ class MultiVendorX_REST_Status_Controller extends \WP_REST_Controller {
             }
             $system_info = MultiVendorX()->status->get_system_info();
             return rest_ensure_response( $system_info );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

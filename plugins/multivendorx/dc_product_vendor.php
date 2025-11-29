@@ -14,12 +14,17 @@
  * Text Domain: multivendorx
  * Requires Plugins: woocommerce
  * Domain Path: /languages/
+ *
+ * @package MultiVendorX
  */
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+/**
+ * Main MultiVendorX Class
+ */
 function MultiVendorX() {
     return \MultiVendorX\MultiVendorX::init( __FILE__ );
 }

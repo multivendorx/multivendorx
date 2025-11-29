@@ -8,7 +8,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 $store_id = $args['store_id'];
@@ -31,14 +31,14 @@ do_action( 'woocommerce_before_main_content' );
         <?php endif; ?>
 
         <?php
-        // Store banner & vendor info
+        // Store banner & vendor info.
         do_action( 'mvx_archive_description' );
         MultiVendorX()->util->get_template( 'store/store-banner-info.php', array( 'store_id' => $store_id ) );
         ?>
     </header>
 
     <?php
-    // Tabs
+    // Tabs.
     MultiVendorX()->util->get_template( 'store/store-tabs.php', array( 'store_id' => $store_id ) );
 	?>
 

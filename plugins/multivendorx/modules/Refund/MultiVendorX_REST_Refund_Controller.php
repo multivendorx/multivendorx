@@ -68,11 +68,11 @@ class MultiVendorX_REST_Refund_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             // Parameters
             $limit         = max( 1, intval( $request->get_param( 'row' ) ) );
             $page          = max( 1, intval( $request->get_param( 'page' ) ) );
@@ -222,13 +222,13 @@ class MultiVendorX_REST_Refund_Controller extends \WP_REST_Controller {
             }
 
             return rest_ensure_response( array_values( $refund_list ) );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

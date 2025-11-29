@@ -127,16 +127,21 @@ class Utill {
     /**
      * Utility function add aditional single quote in a string.
      *
-     * @param   string $string
+     * @param   string $text
      * @return  string
      */
-    public static function add_single_quots( $string ) {
-        if ( is_string( $string ) ) {
-            return "'$string'";
+    public static function add_single_quots( $text ) {
+        if ( is_string( $text ) ) {
+            return "'$text'";
         }
-        return $string;
+        return $text;
     }
 
+    /**
+     * Check if current page is store dashboard page.
+     *
+     * @return bool
+     */
     public static function is_store_dashboard() {
         $dashboard_page = (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' );
         // if (is_page($dashboard_page)) {
@@ -146,6 +151,11 @@ class Utill {
         return is_page( $dashboard_page );
     }
 
+    /**
+     * Check if current page is store registration page.
+     *
+     * @return bool
+     */
     public static function is_store_registration_page() {
         $registration_page = (int) MultiVendorX()->setting->get_setting( 'store_registration_page' );
         // if (is_page($registration_page)) {

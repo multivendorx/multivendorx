@@ -1,24 +1,31 @@
 <?php
+/**
+ * Store Review Form Template
+ *
+ * @package MultiVendorX
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 $store_id     = $args['store_id'] ?? 0;
 $is_logged_in = is_user_logged_in();
-$current_user = wp_get_current_user();
+$user         = wp_get_current_user();
 $parameters   = MultiVendorX()->setting->get_setting( 'ratings_parameters', array() );
 
-// Default values
+// Default values.
 $review_status          = '';
-$is_verified_buyer      = 0; // Default true
+// Default true.
+$is_verified_buyer      = 0;
 $is_verified_buyer_only = reset( MultiVendorX()->setting->get_setting( 'is_storereview_varified', array() ) ) ?? false;
 
 if ( $is_logged_in && $store_id ) {
-    $review_status = \MultiVendorX\StoreReview\Util::get_user_review_status( $store_id, $current_user->ID );
+    $review_status = \MultiVendorX\StoreReview\Util::get_user_review_status( $store_id, $user->ID );
 
-    // If setting is enabled, check if user is verified buyer
+    // If setting is enabled, check if user is verified buyer.
     if ( $is_verified_buyer_only ) {
-        $is_verified_buyer = \MultiVendorX\StoreReview\Util::is_verified_buyer( $store_id, $current_user->ID );
+        $is_verified_buyer = \MultiVendorX\StoreReview\Util::is_verified_buyer( $store_id, $user->ID );
     }
 }
 ?>
@@ -33,7 +40,7 @@ if ( $is_logged_in && $store_id ) {
                     <?php esc_html_e( 'Please login to submit a review.', 'multivendorx' ); ?>
                 </div>
 
-            <?php elseif ( $review_status === 'pending' || $review_status === 'rejected' ) : ?>
+                <?php elseif ( 'pending' === $review_status || 'rejected' === $review_status ) : ?>
                 <div class="woocommerce-info">
                     <?php esc_html_e( 'You have already submitted a review for this store.', 'multivendorx' ); ?>
                 </div>
@@ -69,15 +76,6 @@ if ( $is_logged_in && $store_id ) {
                                 }
                                 $param_key = sanitize_title( $param_value );
                                 ?>
-                                <!-- <p>
-                                    <label></label>
-                                    <select name="rating[<?php echo esc_attr( $param_value ); ?>]" class="multivendorx-rating-select">
-                                        <option value=""><?php esc_html_e( 'Rate...', 'multivendorx' ); ?></option>
-                                        <?php for ( $i = 1; $i <= 5; $i++ ) : ?>
-                                            <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                                        <?php endfor; ?>
-                                    </select>
-                                </p> -->
 
                                 <div class="rating" data-selected="0">
                                     <i class="adminlib-star-o" data-value="1"></i>

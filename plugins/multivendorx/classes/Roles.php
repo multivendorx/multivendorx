@@ -26,6 +26,9 @@ class Roles {
         add_filter( 'map_meta_cap', array( $this, 'specific_capability' ), 10, 4 );
     }
 
+    /**
+     * Add custom role
+     */
     public function multivendorx_add_custom_role() {
         global $wp_roles;
 
@@ -46,7 +49,11 @@ class Roles {
         }
     }
 
-
+    /**
+     * Get all roles with labels
+     *
+     * @return array
+     */
     public static function multivendorx_get_roles() {
         $custom_roles = array(
             'store_owner'      => __( 'Store Owner', 'multivendorx' ),
@@ -58,6 +65,13 @@ class Roles {
         return $custom_roles;
     }
 
+    /**
+     * Assign capability to authenticate user
+     *
+     * @param array $allcaps
+     *
+     * @return array
+     */
     public function assign_cap_authenticate_user( $allcaps ) {
         if ( is_user_logged_in() ) {
             $allcaps['create_stores'] = true;
@@ -72,6 +86,11 @@ class Roles {
         return $allcaps;
     }
 
+    /**
+     * Get custom capability
+     *
+     * @return array
+     */
     public function get_custom_capability() {
         $capabilities = array(
             'create_stores',
@@ -82,12 +101,22 @@ class Roles {
         return $capabilities;
     }
 
-    public function specific_capability( $caps, $cap, $user_id, $args ) {
+    /**
+     * Specific capability for store owner
+     *
+     * @param array  $caps
+     * @param string $cap
+     * @param int    $user_id
+     * @param array  $args
+     *
+     * @return array
+     */
+    public function specific_capability( $caps, $cap, $user_id ) {
         if ( is_user_logged_in() ) {
             $user = get_userdata( $user_id );
 
-            if ( in_array( 'store_owner', (array) $user->roles ) ) {
-                if ( $cap === 'edit_posts' ) {
+            if ( in_array( 'store_owner', (array) $user->roles, true ) ) {
+                if ( 'edit_posts' === $cap ) {
                     // $segment = get_query_var('segment');
                     // $endpoints = MultiVendorX()->setting->get_setting('menu_manager');
 

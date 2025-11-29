@@ -89,27 +89,27 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $limit        = max( intval( $request->get_param( 'row' ) ), 10 );
             $page         = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset       = ( $page - 1 ) * $limit;
             $count_param  = $request->get_param( 'count' );
             $status_param = $request->get_param( 'status' );
             $searchField  = sanitize_text_field( $request->get_param( 'searchField' ) );
-    
+
             $start_date_raw = sanitize_text_field( $request->get_param( 'startDate' ) );
             $end_date_raw   = sanitize_text_field( $request->get_param( 'endDate' ) );
-    
+
             $start_timestamp = ! empty( $start_date_raw ) ? strtotime( str_replace( 'T', ' ', preg_replace( '/\.\d+Z?$/', '', $start_date_raw ) ) ) : false;
             $end_timestamp   = ! empty( $end_date_raw ) ? strtotime( str_replace( 'T', ' ', preg_replace( '/\.\d+Z?$/', '', $end_date_raw ) ) ) : false;
-    
+
             $start_date = $start_timestamp ? date( 'Y-m-d 00:00:00', $start_timestamp ) : '';
             $end_date   = $end_timestamp ? date( 'Y-m-d 23:59:59', $end_timestamp ) : '';
-    
+
             // Existing count logic
             if ( $count_param ) {
                 $posts = get_posts(
@@ -122,7 +122,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                 );
                 return rest_ensure_response( count( $posts ) );
             }
-    
+
             // Base query args — always show latest first
             $query_args = array(
                 'post_type'        => 'multivendorx_an',
@@ -134,21 +134,21 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                 'suppress_filters' => false,           // ensure no filters override sorting
                 'no_found_rows'    => false,           // enables pagination count
             );
-    
+
             $store_id_raw = $request->get_param( 'store_id' );
             $store_id     = intval( $store_id_raw );
-    
+
             if ( $store_id > 0 ) {
                 $query_args['meta_query'] = array(
                     'relation' => 'OR',
-    
+
                     // Match specific store ID
                     array(
                         'key'     => 'multivendorx_announcement_stores',
                         'value'   => ';i:' . $store_id . ';',
                         'compare' => 'LIKE',
                     ),
-    
+
                     // Match announcements intended for ALL stores (value = 0)
                     array(
                         'key'     => 'multivendorx_announcement_stores',
@@ -157,7 +157,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     ),
                 );
             }
-    
+
             // Add date filter if provided
             if ( $start_date && $end_date ) {
                 $query_args['date_query'] = array(
@@ -172,21 +172,21 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
             if ( ! empty( $searchField ) ) {
                 $query_args['s'] = $searchField; // WP_Query searches post_title + content
             }
-    
+
             $posts = get_posts( $query_args );
             $items = array();
-    
+
             foreach ( $posts as $post ) {
                 $stores      = (array) get_post_meta( $post->ID, 'multivendorx_announcement_stores', true );
                 $store_names = array();
-    
+
                 foreach ( $stores as $store_id ) {
                     $store_obj = MultivendorX()->store->get_store_by_id( $store_id );
                     if ( $store_obj ) {
                         $store_names[] = $store_obj->get( 'name' );
                     }
                 }
-    
+
                 $items[] = array(
                     'id'         => $post->ID,
                     'title'      => $post->post_title,
@@ -196,7 +196,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'status'     => $post->post_status,
                 );
             }
-    
+
             // Counts (no date or search filter applied)
             $counter = function ( $status ) {
                 $args = array(
@@ -206,18 +206,18 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'fields'         => 'ids',
                     'no_found_rows'  => false,
                 );
-    
+
                 $q     = new \WP_Query( $args );
                 $count = isset( $q->found_posts ) ? intval( $q->found_posts ) : 0;
                 wp_reset_postdata();
                 return $count;
             };
-    
+
             $publish_count = $counter( 'publish' );
             $pending_count = $counter( 'pending' );
             $draft_count   = $counter( 'draft' );
             $all_count     = $counter( 'any' );
-    
+
             return rest_ensure_response(
                 array(
                     'items'   => $items,
@@ -227,13 +227,13 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'draft'   => $draft_count,
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -252,11 +252,11 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $stores = $request->get_param( 'stores' ) ?: array();
 
             $post_id = wp_insert_post(
@@ -268,7 +268,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                 ),
                 true
             );
-    
+
             if ( is_wp_error( $post_id ) ) {
                 return rest_ensure_response(
                     array(
@@ -281,13 +281,13 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
             if ( ! empty( $stores ) ) {
                 update_post_meta( $post_id, 'multivendorx_announcement_stores', $stores );
             }
-    
+
             // Optionally save URL as post meta
             $url = $formData['url'] ?? '';
             if ( ! empty( $url ) ) {
                 update_post_meta( $post_id, 'multivendorx_announcement_url', esc_url_raw( $url ) );
             }
-    
+
             return rest_ensure_response(
                 array(
                     'success' => true,
@@ -299,13 +299,13 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'stores'  => $stores,
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -324,19 +324,19 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $data   = $request->get_params();
             $stores = $request->get_param( 'stores' ) ?: array();
-    
+
             // Bulk update handling
             if ( isset( $data['bulk'] ) && ! empty( $data['ids'] ) && ! empty( $data['action'] ) ) {
                 $action = sanitize_key( $data['action'] );
                 $ids    = array_map( 'absint', $data['ids'] );
-    
+
                 foreach ( $ids as $id ) {
                     switch ( $action ) {
                         case 'publish':
@@ -353,7 +353,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                             break;
                     }
                 }
-    
+
                 return rest_ensure_response(
                     array(
                         'success' => true,
@@ -361,15 +361,15 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             // Normal single update
             $post_id = absint( $request->get_param( 'id' ) );
             $post    = get_post( $post_id );
-    
+
             if ( ! $post || $post->post_type !== 'multivendorx_an' ) {
                 return new \WP_Error( 'not_found', __( 'Announcement not found', 'multivendorx' ), array( 'status' => 404 ) );
             }
-    
+
             // Update post with new title/content/status
             $updated_id = wp_update_post(
                 array(
@@ -382,7 +382,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                 ),
                 true
             );
-    
+
             if ( is_wp_error( $updated_id ) ) {
                 return rest_ensure_response(
                     array(
@@ -391,10 +391,10 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     )
                 );
             }
-    
+
             // Update stores meta
             update_post_meta( $post_id, 'multivendorx_announcement_stores', $stores );
-    
+
             return rest_ensure_response(
                 array(
                     'success' => true,
@@ -405,13 +405,13 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'stores'  => $stores,
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -431,11 +431,11 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $id = absint( $request->get_param( 'id' ) );
             if ( ! $id ) {
                 return new \WP_Error(
@@ -444,7 +444,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     array( 'status' => 400 )
                 );
             }
-    
+
             $post = get_post( $id );
             if ( ! $post || $post->post_type !== 'multivendorx_an' ) {
                 return new \WP_Error(
@@ -453,7 +453,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     array( 'status' => 404 )
                 );
             }
-    
+
             $store_data = array();
             if ( ! empty( $stores ) && is_array( $stores ) ) {
                 foreach ( $stores as $store_id ) {
@@ -466,7 +466,7 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     }
                 }
             }
-    
+
             $response = array(
                 'id'      => $id,
                 'title'   => $post->post_title,
@@ -476,15 +476,15 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                 'stores'  => get_post_meta( $id, 'multivendorx_announcement_stores', true ),
                 'date'    => get_post_time( 'Y-m-d H:i:s', true, $post ),
             );
-    
+
             return rest_ensure_response( $response );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -503,11 +503,11 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $post_id = absint( $request->get_param( 'id' ) );
             if ( ! $post_id ) {
                 return new \WP_Error( 'invalid_id', __( 'Invalid announcement ID', 'multivendorx' ), array( 'status' => 400 ) );
@@ -530,13 +530,13 @@ class MultiVendorX_REST_Announcement_Controller extends \WP_REST_Controller {
                     'message' => __( 'Announcement deleted successfully', 'multivendorx' ),
                 )
             );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

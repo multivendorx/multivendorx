@@ -83,11 +83,11 @@ class MultiVendorX_REST_Commission_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             // Check if CSV download is requested
             $format = $request->get_param( 'format' );
             if ( $format === 'csv' ) {
@@ -235,13 +235,13 @@ class MultiVendorX_REST_Commission_Controller extends \WP_REST_Controller {
                 'cancelled'          => $cancelled,
             );
             return rest_ensure_response( $response );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -382,11 +382,11 @@ class MultiVendorX_REST_Commission_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             // Get commission ID from request
             $id = absint( $request->get_param( 'id' ) );
 
@@ -466,13 +466,13 @@ class MultiVendorX_REST_Commission_Controller extends \WP_REST_Controller {
             );
 
             return rest_ensure_response( $response );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -491,14 +491,14 @@ class MultiVendorX_REST_Commission_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $order_id = absint( $request->get_param( 'orderId' ) );
             $action   = $request->get_param( 'action' );
-    
+
             if ( $action == 'regenerate' ) {
                 $order = wc_get_order( $order_id );
                 if ( $order ) {
@@ -506,13 +506,13 @@ class MultiVendorX_REST_Commission_Controller extends \WP_REST_Controller {
                     return rest_ensure_response( array( 'success' => true ) );
                 }
             }
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

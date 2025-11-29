@@ -67,71 +67,71 @@ class MultiVendorX_REST_Settings_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $all_details       = array();
             $get_settings_data = $request->get_param( 'setting' );
             $settingsname      = $request->get_param( 'settingName' );
             $settingsname      = str_replace( '-', '_', $settingsname );
             $optionname        = 'multivendorx_' . $settingsname . '_settings';
-    
+
             // save the settings in database.
             MultiVendorX()->setting->update_option( $optionname, $get_settings_data );
-    
+
             do_action( 'multivendorx_after_save_settings', $settingsname, $get_settings_data );
-    
+
             $all_details['error'] = __( 'Settings Saved', 'multivendorx' );
-    
+
             if ( $settingsname == 'store_capability' || $settingsname == 'user_capability' ) {
                 $store_cap = MultiVendorX()->setting->get_option( 'multivendorx_store_capability_settings' );
                 $user_cap  = MultiVendorX()->setting->get_option( 'multivendorx_user_capability_settings' );
-    
+
                 $store_owner_caps = array();
                 foreach ( $store_cap as $caps ) {
                     $store_owner_caps = array_merge( $store_owner_caps, $caps );
                 }
-    
+
                 $store_owner_caps = array_unique( $store_owner_caps );
-    
+
                 // Create store_owner entry
                 $result = array(
                     'store_owner' => $store_owner_caps,
                 );
-    
+
                 foreach ( $user_cap as $role => $caps ) {
                     if ( $role !== 'store_owner' ) {
                         $user_cap[ $role ] = array_values( array_intersect( $caps, $store_owner_caps ) );
                     }
                 }
-    
+
                 MultiVendorX()->setting->update_option( 'multivendorx_user_capability_settings', array_merge( $user_cap, $result ) );
-    
+
                 $role = get_role( 'store_owner' );
-    
+
                 if ( $role ) {
                     // Remove all existing caps
                     foreach ( $role->capabilities as $cap => $grant ) {
                         $role->remove_cap( $cap );
                     }
-    
+
                     // Add fresh caps
                     foreach ( $store_owner_caps as $cap ) {
                         $role->add_cap( $cap, true );
                     }
                 }
             }
-    
+
             return $all_details;
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -156,35 +156,35 @@ class MultiVendorX_REST_Settings_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $module_id = $request->get_param( 'id' );
             $action    = $request->get_param( 'action' );
-    
+
             // Setup wizard module.
             $modules = $request->get_param( 'modules' ) ?? array();
             MultiVendorX()->modules->activate_modules( $modules );
-    
+
             // Handle the actions.
             switch ( $action ) {
                 case 'activate':
                     MultiVendorX()->modules->activate_modules( array( $module_id ) );
                     break;
-    
+
                 default:
                     MultiVendorX()->modules->deactivate_modules( array( $module_id ) );
                     break;
             }
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }

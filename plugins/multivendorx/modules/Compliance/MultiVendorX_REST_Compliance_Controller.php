@@ -95,28 +95,28 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
             $page   = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset = ( $page - 1 ) * $limit;
-    
+
             // Get filters
             $store_id   = $request->get_param( 'store_id' );
             $start_date = $request->get_param( 'start_date' );
             $end_date   = $request->get_param( 'end_date' );
             $order_by   = $request->get_param( 'orderBy' ) ?: 'created_at';
             $order      = strtoupper( $request->get_param( 'order' ) ) === 'ASC' ? 'ASC' : 'DESC';
-    
+
             // Count only
             if ( $request->get_param( 'count' ) ) {
                 $total_count = Util::get_report_abuse_information( array( 'count' => true ) );
                 return rest_ensure_response( (int) $total_count );
             }
-    
+
             // Prepare args
             $args = array(
                 'limit'    => $limit,
@@ -124,32 +124,32 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
                 'order_by' => $order_by,
                 'order'    => $order,
             );
-    
+
             if ( isset( $store_id ) && $store_id !== '' ) {
                 $args['store_ids'] = array( intval( $store_id ) );
             }
-    
+
             if ( ! empty( $start_date ) && ! empty( $end_date ) ) {
                 $args['date_range'] = array(
                     'start' => $start_date,
                     'end'   => $end_date,
                 );
             }
-    
+
             // Fetch reports
             $reports = Util::get_report_abuse_information( $args );
-    
+
             $formatted = array_map(
                 function ( $r ) {
                     $store      = new \MultiVendorX\Store\Store( $r['store_id'] );
                     $store_name = $store->data['name'] ?? '';
-    
+
                     $product       = wc_get_product( $r['product_id'] );
                     $product_name  = $product ? $product->get_name() : '';
                     $product_link  = $product ? get_permalink( $product->get_id() ) : '';
                     $product_sku   = $product ? $product->get_sku() : '';
                     $product_image = $product ? wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) : '';
-    
+
                     return array(
                         'ID'            => (int) $r['ID'],
                         'store_id'      => (int) $r['store_id'],
@@ -168,15 +168,15 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
                 },
                 $reports
             );
-    
+
             return rest_ensure_response( $formatted );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -195,7 +195,7 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
@@ -214,19 +214,19 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             return rest_ensure_response( $data );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -245,19 +245,19 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             return rest_ensure_response( array( 'success' => true ) );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
@@ -276,11 +276,11 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
                     'Message=' . $error->get_error_message() . '; ' .
                     'Data=' . wp_json_encode( $error->get_error_data() ) . "\n\n"
                 );
-            }            
+            }
 
             return $error;
         }
-        try{
+        try {
             // Get report ID
             $id = absint( $request->get_param( 'id' ) );
             if ( ! $id ) {
@@ -313,13 +313,13 @@ class MultiVendorX_REST_Compliance_Controller extends \WP_REST_Controller {
             }
 
             return rest_ensure_response( array( 'success' => true ) );
-        }catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             MultiVendorX()->util->log(
                 'MVX REST Exception: ' .
                 'Message=' . $e->getMessage() . '; ' .
                 'File=' . $e->getFile() . '; ' .
                 'Line=' . $e->getLine() . "\n\n"
-            );        
+            );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
