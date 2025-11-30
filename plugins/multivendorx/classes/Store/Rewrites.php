@@ -84,7 +84,7 @@ class Rewrites {
                 '^' . $this->custom_store_url . '/([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?' . $this->custom_store_url . '=$matches[1]&paged=$matches[2]',
                 'top',
-            ],     
+            ),     
             [
 
                 '^dashboard/([^/]*)/?',

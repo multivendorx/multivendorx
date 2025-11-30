@@ -697,45 +697,9 @@ class MultiVendorX_REST_Store_Controller extends \WP_REST_Controller {
                 );
             }
 
-        return rest_ensure_response( [
-            'success' => true,
-            'id'      => $insert_id,
-            'redirect'=> $registrations ? get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ) : null,
-        ] );
-    }
-    
-    public function get_item( $request ) {
-        $id = absint( $request->get_param( 'id' ) );
-        $action = $request->get_param( 'action' );
-
-        if ($id && $action == 'switch') {
-            update_user_meta(get_current_user_id(), 'multivendorx_active_store', $id);
-
-            $dashboard_page_id = (int) MultiVendorX()->setting->get_setting('store_dashboard_page');
-            if ($dashboard_page_id) {
-                $redirect_url = get_permalink($dashboard_page_id);
+            if ( $store_data['status'] == 'active' ) {
+                do_action( 'multivendorx_after_store_active', $insert_id );
             }
-            return rest_ensure_response([
-                'redirect' => $redirect_url
-            ]);
-        }
-
-        $store = $request->get_param( 'store' );
-        if( $store ){
-            return $this->get_store_products_and_category( $request );
-        }
-        $fetch_user = $request->get_param( 'fetch_user' );
-        $registrations = $request->get_header( 'registrations' );
-        if ($fetch_user) {
-            $users = StoreUtil::get_store_users($id);
-
-            $response = [
-                'id'           => $id,
-                'store_owners' => $users['users'],
-                'primary_owner' => (int) $users['primary_owner'],
-            ];
-            return rest_ensure_response( $response );
-        }
 
             $admin_email = get_option( 'admin_email' );
             $store_email = 'test@gmail.com';
@@ -797,6 +761,20 @@ class MultiVendorX_REST_Store_Controller extends \WP_REST_Controller {
         }
         try{
             $id    = absint( $request->get_param( 'id' ) );
+            $action = $request->get_param( 'action' );
+
+            if ($id && $action == 'switch') {
+                update_user_meta(get_current_user_id(), 'multivendorx_active_store', $id);
+
+                $dashboard_page_id = (int) MultiVendorX()->setting->get_setting('store_dashboard_page');
+                if ($dashboard_page_id) {
+                    $redirect_url = get_permalink($dashboard_page_id);
+                }
+                return rest_ensure_response([
+                    'redirect' => $redirect_url
+                ]);
+            }
+
             $store = $request->get_param( 'store' );
             if ( $store ) {
                 return $this->get_store_products_and_category( $request );

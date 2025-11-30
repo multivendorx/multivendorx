@@ -23,13 +23,10 @@ class Frontend {
         //     add_action( 'mvx_process_product_object', array( $this, 'mvx_save_generated_sku') );
         // }
 
-            add_action( 'mvx_process_product_object', array( $this, 'mvx_save_generated_sku' ) );
-        }
-
         add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_text_in_shop_and_single_product_page' ), 6 );
         add_action( 'woocommerce_product_meta_start', array( $this, 'add_text_in_shop_and_single_product_page' ), 25 );
         add_action( 'woocommerce_get_item_data', array( $this, 'add_sold_by_text_cart' ), 30, 2 );
-        add_filter( 'woocommerce_product_tabs', array( $this, 'product_vendor_tab' ) );
+        add_filter( 'woocommerce_product_tabs', array( $this, 'product_store_tab' ) );
 
         add_filter( 'woocommerce_related_products', array( $this, 'show_related_products' ), 99, 3 );
 
@@ -103,7 +100,7 @@ class Frontend {
         $store_details = MultiVendorX()->setting->get_setting( 'store_branding_details', array() );
 
         if ( in_array( 'show_store_name', $store_details ) ) {
-            $store = StoreUtil::get_products_vendor( $product_id );
+            $store = StoreUtil::get_products_store( $product_id );
             if ( ! $store ) {
 				return;
             }
@@ -186,10 +183,10 @@ class Frontend {
         return $array;
     }
 
-    public function product_vendor_tab( $tabs ) {
+    public function product_store_tab( $tabs ) {
         global $product;
         if ( $product ) {
-            $store = StoreUtil::get_products_vendor( $product->get_id() );
+            $store = StoreUtil::get_products_store( $product->get_id() );
             if ( $store ) {
                 $title         = __( 'Store', 'multivendorx' );
                 $tabs['store'] = array(
@@ -213,7 +210,7 @@ class Frontend {
      */
     public function show_related_products( $query, $product_id, $args ) {
         if ( $product_id ) {
-            $store   = StoreUtil::get_products_vendor( $product_id ) ?? '';
+            $store   = StoreUtil::get_products_store( $product_id ) ?? '';
             $related = MultiVendorX()->setting->get_setting( 'recommendation_source', '' );
             if ( ! empty( $related ) && 'none' == $related ) {
                 return array();
@@ -265,7 +262,7 @@ class Frontend {
         $stores = array();
         if ( is_object( $cart ) ) {
             foreach ( $cart->get_cart() as $cart_item ) {
-                $store = StoreUtil::get_products_vendor( $cart_item['product_id'] );
+                $store = StoreUtil::get_products_store( $cart_item['product_id'] );
                 if ( $store ) {
                     $store_id = $store->get_id();
                     if ( ! empty( $store_id ) ) {
@@ -282,7 +279,7 @@ class Frontend {
         $admin_products = array();
 
         foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
-            $store = StoreUtil::get_products_vendor( $cart_item['product_id'] );
+            $store = StoreUtil::get_products_store( $cart_item['product_id'] );
 
             if ( $store ) {
                 $store_groups[ $store->get_id() ][ $cart_item_key ] = $cart_item;

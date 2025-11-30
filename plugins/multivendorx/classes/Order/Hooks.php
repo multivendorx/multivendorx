@@ -43,7 +43,7 @@ class Hooks {
      */
     public function add_metadata_for_line_item( $item, $item_key, $values, $order ) {
         if ( $order && $order->get_parent_id() == 0 ) {
-            $vendor = StoreUtil::get_products_vendor( $item['product_id'] );
+            $vendor = StoreUtil::get_products_store( $item['product_id'] );
             if ( $vendor ) {
                 $item->add_meta_data( 'multivendorx_sold_by', $vendor->get( 'name' ) );
                 // $item->add_meta_data('multivendorx_store_id', $vendor->get_id());
@@ -131,7 +131,7 @@ class Hooks {
         foreach ( $items as $key => $value ) {
             if ( $order || ( function_exists( 'wcs_is_subscription' ) && wcs_is_subscription( $order ) ) ) {
                 $general_cap = apply_filters( 'mvx_sold_by_text', __( 'Sold By', 'multivendorx' ) );
-                $vendor      = StoreUtil::get_products_vendor( $value['product_id'] );
+                $vendor      = StoreUtil::get_products_store( $value['product_id'] );
                 if ( $vendor ) {
                     if ( ! wc_get_order_item_meta( $key, 'multivendorx_store_id' ) ) {
                         wc_add_order_item_meta( $key, 'multivendorx_store_id', $vendor->get_id() );

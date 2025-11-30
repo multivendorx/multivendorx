@@ -23,8 +23,6 @@ class Install {
      */
     public function __construct() {
 
-        $this->set_default_settings();
-
         // if ( ! get_option( 'dc_product_vendor_plugin_db_version', false ) ) {
         // $this->create_database_table();
         // $this->set_default_settings();
@@ -35,6 +33,8 @@ class Install {
         $this->create_database_table();
         $this->create_database_triggers();
         $this->plugin_create_pages();
+        $this->set_default_settings();
+
         update_option( 'dc_product_vendor_plugin_db_version', MULTIVENDORX_PLUGIN_VERSION );
 
         do_action( 'multivendorx_updated' );
@@ -612,9 +612,29 @@ By signing and submitting, the Seller accepts all terms above.
 
         update_option('multivendorx_payment_integration_settings', $payment_settings);
 
+        $dashboard_page = get_posts(array(
+            'post_type'   => 'page',
+            'post_status' => 'publish',
+            'fields'      => 'ids',
+            'numberposts' => 1,
+            's'           => '[multivendorx_store_dashboard]',
+        ));
+
+        $store_dashboard_page_id = $dashboard_page ? reset($dashboard_page) : false;
+
+        $page = get_posts(array(
+            'post_type'   => 'page',
+            'post_status' => 'publish',
+            'fields'      => 'ids',
+            'numberposts' => 1,
+            's'           => '[multivendorx_store_registration]',
+        ));
+
+        $store_registration_page_id = $page ? reset($page) : false;
+
         $marketplace_settings = array (
-            // 'store_registration_page' => '11',
-            // 'store_dashboard_page' => '10',
+            'store_registration_page' => $store_registration_page_id,
+            'store_dashboard_page' => $store_dashboard_page_id,
             'store_url' => 'store',
         );
         update_option('multivendorx_marketplace_settings_settings', $marketplace_settings);

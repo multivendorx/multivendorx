@@ -229,7 +229,7 @@ class OrderManager {
         $grouped_items = array();
         foreach ( $items as $item_id => $item ) {
             if ( isset( $item['product_id'] ) && $item['product_id'] !== 0 ) {
-                $vendor = StoreUtil::get_products_vendor( $item['product_id'] );
+                $vendor = StoreUtil::get_products_store( $item['product_id'] );
                 if ( $vendor ) {
                     $grouped_items[ $vendor->get_id() ][ $item_id ] = $item;
                 }

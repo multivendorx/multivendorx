@@ -4,7 +4,7 @@ use MultiVendorX\Store\StoreUtil;
 global $product;
 $html = '';
 
-$store = StoreUtil::get_products_vendor( $product->get_id() );
+$store = StoreUtil::get_products_store( $product->get_id() );
 if ( $store ) {
     $html .= apply_filters( 'mvx_before_seller_info_tab', '' );
 

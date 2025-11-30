@@ -8,7 +8,6 @@
 namespace MultiVendorX;
 
 use MultiVendorX\Store\StoreUtil;
-use MultiVendorX\Vendor\VendorUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -647,7 +646,7 @@ class FrontendScripts {
                         'apiUrl'              => untrailingslashit( get_rest_url() ),
                         'restUrl'             => MultiVendorX()->rest_namespace,
                         'nonce'               => wp_create_nonce( 'wp_rest' ),
-                        'settings'            => VendorUtil::get_vendor_registration_form() ?? array(),
+                        'settings'            => MultiVendorX()->setting->get_setting( 'store_registration_from', array()),
                         'content_before_form' => apply_filters( 'multivendorx_add_content_before_form', '' ),
                         'content_after_form'  => apply_filters( 'multivendorx_add_content_after_form', '' ),
                         'error_strings'       => array(
