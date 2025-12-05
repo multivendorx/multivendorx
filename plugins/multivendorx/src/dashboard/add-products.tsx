@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import {
     BasicInput,
     CommonPopup,
-    DynamicRowSetting,
     FileInput,
     InputWithSuggestions,
     MultiCheckBox,
@@ -15,28 +14,6 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 import { DateTimePicker } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-
-const downloadTemplate = {
-    fields: [
-        {
-            key: 'name',
-            type: 'text',
-            label: 'File Name',
-            placeholder: 'File name',
-        },
-        {
-            key: 'file',
-            type: 'text',
-            label: 'File URL',
-            placeholder: 'File URL',
-        },
-    ],
-    create: () => ({
-        id: appLocalizer.random_string_generate,
-        name: '',
-        file: '',
-    }),
-};
 
 const AddProduct = () => {
     const location = useLocation();
@@ -50,7 +27,6 @@ const AddProduct = () => {
         }
     }
     const [product, setProduct] = useState({});
-    const [shippingClasses, setShippingClasses] = useState([]);
 
     const [featuredImage, setFeaturedImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
@@ -497,21 +473,6 @@ const AddProduct = () => {
         }
     };
 
-    useEffect(() => {
-        axios
-            .get(`${appLocalizer.apiUrl}/wc/v3/products/shipping_classes`, {
-                headers: { 'X-WP-Nonce': appLocalizer.nonce },
-            })
-            .then((res) => {
-                const options = res.data.map((cls) => ({
-                    value: cls.slug,
-                    label: cls.name,
-                }));
-
-                setShippingClasses(options);
-            });
-    }, []);
-
     const [tagInput, setTagInput] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [existingTags, setExistingTags] = useState([]);
@@ -560,39 +521,6 @@ const AddProduct = () => {
 
         setTagInput('');
         setSuggestions([]);
-    };
-
-    const updateDownloadableFile = (id, key, value) => {
-        setProduct((prev) => ({
-            ...prev,
-            downloads: prev.downloads.map((file) =>
-                file.id === id ? { ...file, [key]: value } : file
-            ),
-        }));
-    };
-
-    const removeDownloadableFile = (uniqueId) => {
-        setProduct((prev) => ({
-            ...prev,
-            downloads: prev.downloads.filter((f) => f.id !== uniqueId),
-        }));
-    };
-
-    const openMediaUploader = (id) => {
-        const frame = wp.media({
-            title: 'Select or Upload File',
-            button: { text: 'Use this file' },
-            multiple: false,
-        });
-
-        frame.on('select', () => {
-            const attachment = frame.state().get('selection').first().toJSON();
-            // updateDownloadableFile(id, "file", attachment.url);
-            updateDownloadableFile(id, 'file', attachment.url);
-            updateDownloadableFile(id, 'name', attachment.filename);
-        });
-
-        frame.open();
     };
 
     const openFeaturedUploader = () => {
@@ -918,244 +846,11 @@ const AddProduct = () => {
                     </div>
 
                     {!product.virtual && (
-                        <div className="card" id="card-shipping">
-                            <div className="card-header">
-                                <div className="left">
-                                    <div className="title">Shipping</div>
-                                </div>
-                                <div className="right">
-                                    <i
-                                        className="adminlib-pagination-right-arrow  arrow-icon"
-                                        onClick={() =>
-                                            toggleCard('card-shipping')
-                                        }
-                                    ></i>
-                                </div>
-                            </div>
-                            <div className="card-body">
-                                <div className="form-group-wrapper">
-                                    <div className="form-group">
-                                        <label htmlFor="product-name">
-                                            Weight ({appLocalizer.weight_unit})
-                                        </label>
-                                        <BasicInput
-                                            name="weight"
-                                            wrapperClass="setting-form-input"
-                                            value={product.weight}
-                                            onChange={(e) =>
-                                                handleChange(
-                                                    'weight',
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label htmlFor="product-name">
-                                            Shipping classes
-                                        </label>
-                                        <SelectInput
-                                            name="shipping_class"
-                                            options={shippingClasses}
-                                            value={product.shipping_class}
-                                            onChange={(selected) =>
-                                                handleChange(
-                                                    'shipping_class',
-                                                    selected.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group-wrapper">
-                                    <div className="form-group">
-                                        <label htmlFor="product-name">
-                                            Dimensions (
-                                            {appLocalizer.dimension_unit})
-                                        </label>
-                                        <BasicInput
-                                            name="product_length"
-                                            wrapperClass="setting-form-input"
-                                            value={product.product_length}
-                                            placeholder="Length"
-                                            onChange={(e) =>
-                                                handleChange(
-                                                    'product_length',
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="product-name"> </label>
-                                        <BasicInput
-                                            name="product_width"
-                                            wrapperClass="setting-form-input"
-                                            value={product.product_width}
-                                            placeholder="Width"
-                                            onChange={(e) =>
-                                                handleChange(
-                                                    'product_width',
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="product-name"> </label>
-                                        <BasicInput
-                                            name="product_height"
-                                            wrapperClass="setting-form-input"
-                                            value={product.product_height}
-                                            placeholder="Height"
-                                            onChange={(e) =>
-                                                handleChange(
-                                                    'product_height',
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        applyFilters('product_shipping', null, product, handleChange)
                     )}
 
                     {product.downloadable && (
-                        <div className="card" id="card-downloadable">
-                            <div className="card-header">
-                                <div className="left">
-                                    <div className="title">Downloadable</div>
-                                </div>
-                                <div className="right">
-                                    <i
-                                        className="adminlib-pagination-right-arrow  arrow-icon"
-                                        onClick={() =>
-                                            toggleCard('card-downloadable')
-                                        }
-                                    ></i>
-                                </div>
-                            </div>
-                            <div className="card-body">
-                                {/* {product.downloads?.map((file, index) => (
-                                    <div key={file.id} className="shipping-country-wrapper">
-                                        <div className="shipping-country">
-                                            <div className="country item">
-
-                                                <BasicInput
-                                                    name="file_name"
-                                                    wrapperClass="setting-form-input"
-                                                    value={file.name}
-                                                    placeholder="File name"
-                                                    onChange={(e) =>
-                                                        updateDownloadableFile(file.id, "name", e.target.value)
-                                                    }
-                                                />
-
-                                                <BasicInput
-                                                    name="file_url"
-                                                    wrapperClass="setting-form-input"
-                                                    value={file.file}
-                                                    placeholder="File URL"
-                                                    onChange={(e) =>
-                                                        updateDownloadableFile(file.id, "file", e.target.value)
-                                                    }
-                                                />
-
-                                                <div
-                                                    className="admin-btn btn-purple"
-                                                    onClick={() => openMediaUploader(file.id)}
-                                                >
-                                                    Upload file
-                                                </div>
-
-                                                <div
-                                                    className="delete-icon adminlib-delete"
-                                                    onClick={() => removeDownloadableFile(file.id)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-
-                                <div className="admin-btn btn-purple-bg" onClick={addDownloadableFile}>
-                                    <i className="adminlib-plus-circle-o"></i> Add new
-                                </div> */}
-
-                                <DynamicRowSetting
-                                    keyName="downloads"
-                                    template={downloadTemplate}
-                                    value={product.downloads}
-                                    addLabel="Add new"
-                                    onChange={(rows) =>
-                                        setProduct((prev) => ({
-                                            ...prev,
-                                            downloads: rows,
-                                        }))
-                                    }
-                                    childrenRenderer={(row) => (
-                                        <>
-                                            <div
-                                                className="admin-btn btn-purple"
-                                                onClick={() =>
-                                                    openMediaUploader(row.id)
-                                                }
-                                            >
-                                                Upload file
-                                            </div>
-
-                                            <div
-                                                className="delete-icon adminlib-delete"
-                                                onClick={() =>
-                                                    removeDownloadableFile(
-                                                        row.id
-                                                    )
-                                                }
-                                            />
-                                        </>
-                                    )}
-                                />
-
-                                <div className="form-group-wrapper">
-                                    <div className="form-group">
-                                        <label htmlFor="product-name">
-                                            Download limit
-                                        </label>
-                                        <BasicInput
-                                            name="download_limit"
-                                            type="number"
-                                            wrapperClass="setting-form-input"
-                                            value={product.download_limit}
-                                            onChange={(e) =>
-                                                handleChange(
-                                                    'download_limit',
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label htmlFor="product-name">
-                                            Download expiry
-                                        </label>
-                                        <BasicInput
-                                            name="download_expiry"
-                                            type="number"
-                                            wrapperClass="setting-form-input"
-                                            value={product.download_expiry}
-                                            onChange={(e) =>
-                                                handleChange(
-                                                    'download_expiry',
-                                                    e.target.value
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        applyFilters('product_downloadable', null, product, setProduct, handleChange)
                     )}
 
                     {/* Variants start */}
