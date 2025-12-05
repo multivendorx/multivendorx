@@ -252,7 +252,7 @@
 //                                                     className="admin-btn btn-purple-bg"
 //                                                     onClick={() => handleAddState(index)}
 //                                                 >
-//                                                     <i className="adminlib-plus-circle-o"></i> Add State/Region
+//                                                     <i className="adminlib-plus-circle"></i> Add State/Region
 //                                                 </button>
 //                                             </div>
 //                                         </div>
@@ -317,7 +317,7 @@
 //                 className="admin-btn btn-purple-bg"
 //                 onClick={handleAddCountry}
 //             >
-//                 <i className="adminlib-plus-circle-o"></i> Add Country
+//                 <i className="adminlib-plus-circle"></i> Add Country
 //             </button>
 //         </div>
 //     );

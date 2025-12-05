@@ -2,7 +2,6 @@
 
 
 .registration-from-wrapper {
-
     .registration-form-main-section {
         flex: 1;
         padding: 2rem;
@@ -21,7 +20,7 @@
                 right: 0.313rem;
                 font-size: 1.063rem;
                 cursor: pointer;
-                color: rgb(5, 5, 226);
+                color: rgb(5 5 226);
 
             }
 
@@ -211,7 +210,7 @@
                     padding: 8px 0.625rem;
                     text-align: center;
                     cursor: grab;
-                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
                     transition: background 0.2s ease;
 
                     &:hover {
@@ -258,8 +257,7 @@
         .tab-contend {
             min-height: 80vh;
             max-height: 80vh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden auto;
             scrollbar-width: thin;
             scrollbar-color: #abaaac57 #f1f1f1;
         }
@@ -275,7 +273,7 @@
             h2 {
                 font-size: 1.125rem;
                 font-weight: 500;
-                line-height: 1.5rem;
+                line-height: 1.5;
             }
 
             i {

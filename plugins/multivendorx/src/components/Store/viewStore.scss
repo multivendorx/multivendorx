@@ -20,7 +20,6 @@
 .store-header {
     background: #fff;
     border-radius: 0.313rem;
-    // padding: 1rem;
     border: 0.063rem solid #5007aa2e;
 
     .banner {
@@ -249,7 +248,7 @@
             font-size: 1.45rem;
             font-weight: 600;
             color: $theme-color;
-            line-height: 1.5rem;
+            line-height: 1;
         }
     }
 }

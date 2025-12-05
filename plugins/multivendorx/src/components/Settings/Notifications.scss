@@ -1,9 +1,7 @@
 @use '../config.scss' as *;
 
 .notification-container {
-    // padding-top: 2rem;
     position: relative;
-
 
     .admin-badge.disable {
         filter: grayscale(1);
@@ -13,7 +11,7 @@
     .product-wrapper.notification {
         .notification-icon {
             position: relative;
-            font-family: adminlibrary !important;
+            // font-family: adminlibrary, sans-serif !important;
 
             &::before {
                 position: absolute;
@@ -127,7 +125,7 @@
             color: $theme-color;
             border-radius: 0.313rem;
             font-size: 1.25rem;
-            font-family: adminlibrary !important;
+            // font-family: adminlibrary, sans-serif !important;
             position: relative;
 
             &::before {
@@ -140,7 +138,7 @@
             .title {
                 font-size: 1.125rem;
                 font-weight: 500;
-                line-height: 1rem;
+                line-height: 1;
                 padding-bottom: 0.125rem;
                 display: flex;
                 gap: 0.5rem;
@@ -254,10 +252,6 @@
         justify-content: space-between;
         margin-bottom: 1.813rem;
         align-items: center;
-
-        // .category-item {
-        //     background: $theme-background-color;
-        // }
     }
 
     .tabs-wrapper {
@@ -301,10 +295,7 @@
             }
         }
     }
-
-
 }
-
 
 .drawer-add-recipient {
     display: flex;

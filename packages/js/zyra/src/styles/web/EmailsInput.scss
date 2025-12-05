@@ -13,7 +13,7 @@
     .email {
         font-size: 0.813rem;
         font-weight: 600;
-        line-height: 0.7rem;
+        line-height: 0.7;
         padding: 0.313rem 0.5rem;
         border-radius: 15rem;
         display: flex;
@@ -40,9 +40,6 @@
 
     .close-icon {
         color: $accent-color;
-        // font-size: 1rem;
-        // background: #fff;
-        // border-radius: 50%;
     }
 
     input,
@@ -57,6 +54,7 @@
 
         div {
             position: absolute;
+
             // bottom: -100%;
             background: #d7d7d7;
             color: $text-color;
@@ -80,4 +78,5 @@
         }
     }
 }
+
 // email component end

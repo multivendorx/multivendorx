@@ -35,10 +35,6 @@ body:has(.admin-main-wrapper) {
 .dashboard-content {
   font-family: Figtree, sans-serif;
 
-  // a:focus {
-  //   box-shadow: none;
-  // }
-
   p,
   h1,
   h2,
@@ -185,6 +181,7 @@ body:has(.admin-main-wrapper) {
   padding: 0.313rem;
   border-radius: $border-radius-small;
   display: flex;
+
   // align-items: end;
   gap: 0.25rem;
   border: 0.063rem solid;
@@ -678,7 +675,6 @@ body:has(.admin-main-wrapper) {
     }
 
     @keyframes wobble1 {
-
       0%,
       100% {
         transform: translateY(0%) scale(1);
@@ -692,7 +688,6 @@ body:has(.admin-main-wrapper) {
     }
 
     @keyframes wobble2 {
-
       0%,
       100% {
         transform: translateY(0%) scale(1);
@@ -1153,7 +1148,6 @@ body:has(.admin-main-wrapper) {
 }
 
 .action-icons {
-
   &:hover,
   &:has(.action-dropdown:hover) {
     .action-dropdown.hover {

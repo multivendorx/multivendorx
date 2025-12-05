@@ -324,7 +324,7 @@ const ShippingDelivery = () => {
                                                     autoSave({ ...formData, distance_rules: updatedRules });
                                                 }}
                                             >
-                                                <i className="adminlib-plus-circle-o"></i> Add Rule
+                                                <i className="adminlib-plus-circle"></i> Add Rule
                                             </button>
                                         </div>
                                     </div> */}

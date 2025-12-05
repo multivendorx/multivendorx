@@ -344,7 +344,7 @@ const Dashboard: React.FC = () => {
   const analyticsData = [
     { icon: "adminlib-dollar theme-color1", number: formatCurrency(store?.commission?.total_order_amount || 0), text: "Total Revenue" },
     { icon: "adminlib-order theme-color2", number: totalOrder, text: "Total Orders" },
-    { icon: "adminlib-store-seo theme-color3", number: formatCurrency(store?.commission?.commission_total || 0), text: "Store Views" },
+    { icon: "adminlib-store-seo theme-color3", number: formatCurrency(store?.commission?.commission_total || 0), text: "Store Views(p)" },
     { icon: "adminlib-commission theme-color4", number: formatCurrency(store?.commission?.commission_total || 0), text: "Commission Earned" },
   ];
 
@@ -520,7 +520,7 @@ const Dashboard: React.FC = () => {
                   <div className="details">
                     <div className="text">{item.text}</div>
                     <div className="number">{item.number}</div>
-                    <div className="report"><div>Last 30 days : <span>$189</span>  </div> <div> Previous 30 days: <span>$690</span></div></div>
+                    <div className="report"><div>Last 30 days : <span>$189(p)</span>  </div> <div> Previous 30 days: <span>$690(p)</span></div></div>
                   </div>
                   <div className="analytics-icon">
                     <i className={item.icon}></i>
@@ -541,7 +541,6 @@ const Dashboard: React.FC = () => {
                 <div className="title">
                   Sales Overview (P)
                 </div>
-                {/* <div className="des">Lorem ipsum dolor sit amet.</div> */}
               </div>
               <div className="right">
                 <i className="adminlib-external"></i>

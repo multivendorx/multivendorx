@@ -252,7 +252,7 @@ const Store = () => {
                                     setaddStore(true);
                                 }}
                             >
-                                <i className="adminlib-plus-circle-o"></i>
+                                <i className="adminlib-plus-circle"></i>
                                 Add Store
                             </div>,
                         ]}

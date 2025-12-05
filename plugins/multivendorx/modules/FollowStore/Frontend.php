@@ -86,7 +86,7 @@ class Frontend {
                         <button class="follow-btn" 
                         data-store-id="' . esc_attr( $store_id ) . '" 
                         data-user-id="' . esc_attr( $user_id ) . '">
-                        <i class="adminlib-plus-circle-o"></i>
+                        <i class="adminlib-plus-circle"></i>
                         Loading...
                       </button>
                       ';

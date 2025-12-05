@@ -768,7 +768,7 @@ a:focus {
                 background: #b5b3b777;
                 border-radius: 50%;
                 position: relative;
-                font-family: adminlibrary;
+                font-family: adminlibrary, sans-serif;
                 padding: 0.063rem;
             }
 
@@ -802,7 +802,7 @@ a:focus {
         padding: 1rem;
         border: 0.063rem solid var(--colorPrimary);
         margin: 1rem 0;
-        background: color-mix(in srgb, var(--colorPrimary) 5%, white);
+        background: color-mix(in srgb, var(--colorPrimary) 5%, #fff);
         border-radius: 0.5rem;
 
         span {
@@ -959,7 +959,7 @@ a:focus {
         }
 
         .stock {
-            color: green;
+            color: rgba(0, 128, 0, 0.918);
         }
 
         .product {

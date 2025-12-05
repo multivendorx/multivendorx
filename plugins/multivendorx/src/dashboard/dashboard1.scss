@@ -1,4 +1,5 @@
 @use './dashboardCommon.scss' as *;
+@use '../components/AdminDashboard/adminDashboard';
 
 ul {
     padding: 0;
@@ -228,6 +229,7 @@ a {
                             }
                         }
                     }
+
                     // user dropdown end
                 }
             }
@@ -270,12 +272,12 @@ a {
     }
 
     .card-content {
-        box-shadow: 0 1px 3px #364a630d;
+        box-shadow: 0 0.063rem 0.188rem #364a630d;
         background: #fff;
         padding: 1.5rem;
 
         .admin-table {
-            border: 0.063rem solid whitesmoke;
+            border: 0.063rem solid #f5f5f5;
         }
 
         .address-wrapper {
@@ -344,6 +346,12 @@ a {
                     transform: rotate(0);
                 }
             }
+        }
+
+        &.transparent {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
         }
 
         .action-btn-wrapper {
@@ -738,7 +746,6 @@ a {
             .number {
                 font-size: 1.813rem;
                 line-height: 1.813rem;
-                padding-bottom: 0.313rem;
                 font-weight: 600;
                 padding: 1.25rem 0;
             }
@@ -1062,7 +1069,7 @@ a {
         right: -0.25rem;
         top: -0.45rem;
         padding: 0.125rem;
-        background: red;
+        background: #f00;
         border-radius: 50%;
         width: 0.75rem;
         height: 0.75rem;
@@ -1495,6 +1502,7 @@ a {
     &.theme-color1 {
         div {
             background: color-mix(in srgb, var(--colorPrimary) 15%, transparent);
+
             span {
                 background: var(--colorPrimary);
             }
@@ -1504,6 +1512,7 @@ a {
     &.theme-color2 {
         div {
             background: color-mix(in srgb, var(--colorSecondary) 15%, transparent);
+
             span {
                 background: var(--colorSecondary);
             }
@@ -1513,6 +1522,7 @@ a {
     &.theme-color3 {
         div {
             background: color-mix(in srgb, var(--colorAccent) 15%, transparent);
+
             span {
                 background: var(--colorAccent);
             }
@@ -1522,6 +1532,7 @@ a {
     &.theme-color4 {
         div {
             background: color-mix(in srgb, var(--colorSupport) 15%, transparent);
+
             span {
                 background: var(--colorSupport);
             }
@@ -1731,6 +1742,7 @@ a {
         width: 3rem;
     }
 }
+
 // store profile end
 
 // column details start
@@ -1767,4 +1779,5 @@ a {
         }
     }
 }
+
 // column details start

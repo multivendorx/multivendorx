@@ -8,7 +8,6 @@ import Dialog from '@mui/material/Dialog';
  * Internal dependencies
  */
 import { getApiLink, sendApiResponse } from '../utils/apiService';
-import '../styles/web/Modules.scss';
 import { useModules } from '../contexts/ModuleContext';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 

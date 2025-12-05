@@ -550,7 +550,7 @@ export const Announcements: React.FC = () => {
                             setAddAnnouncements(true);
                         }}
                     >
-                        <i className="adminlib-plus-circle-o"></i>
+                        <i className="adminlib-plus-circle"></i>
                         {__('Add New', 'multivendorx')}
                     </div>
                 ]}

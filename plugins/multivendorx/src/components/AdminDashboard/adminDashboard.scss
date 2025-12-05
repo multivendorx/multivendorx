@@ -145,7 +145,6 @@
     border-bottom: $border-light-small;
 
     .title {
-        padding-bottom: 0.313rem;
         cursor: pointer;
         text-align: center;
         display: flex;
@@ -154,9 +153,7 @@
         align-items: center;
         background: #fff;
         padding: 1rem 1rem 0.313rem 1rem;
-        // border-radius: 0.313rem;
         min-width: 10%;
-        // border-radius: 0.313rem;
 
 
         .icon {
@@ -906,23 +903,23 @@
                     border-radius: 0.313rem;
 
                     &.blue {
-                        background: rgba(0, 0, 255, 0.233);
-                        color: blue;
+                        background: #0000ff3b;
+                        color: #00f;
                     }
 
                     &.orange {
-                        color: orange;
-                        background: rgba(255, 166, 0, 0.336);
+                        color: #ffa500;
+                        background: #ffa60056;
                     }
 
                     &.green {
-                        color: rgba(19, 134, 4, 0.904);
-                        background: rgba(0, 128, 0, 0.349);
+                        color: #138604e7;
+                        background: #00800059;
                     }
 
                     &.red {
-                        color: rgb(224, 5, 5);
-                        background: rgba(255, 0, 0, 0.37);
+                        color: #e00505;
+                        background: #ff00005e;
                     }
                 }
             }

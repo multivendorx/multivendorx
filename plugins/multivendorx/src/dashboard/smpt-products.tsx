@@ -27,7 +27,7 @@ const SmptProducts: React.FC = () => {
                         <div className="price">$299</div>
                         <div className="overley">
                             <div className="admin-btn btn-purple-bg">
-                                <i className="adminlib-plus-circle-o"></i> Copy
+                                <i className="adminlib-plus-circle"></i> Copy
                             </div>
                         </div>
                     </div>
@@ -38,7 +38,7 @@ const SmptProducts: React.FC = () => {
                         <div className="price">$299</div>
                         <div className="overley">
                             <div className="admin-btn btn-purple-bg">
-                                <i className="adminlib-plus-circle-o"></i> Copy
+                                <i className="adminlib-plus-circle"></i> Copy
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ const SmptProducts: React.FC = () => {
                         <div className="price">$299</div>
                         <div className="overley">
                             <div className="admin-btn btn-purple-bg">
-                                <i className="adminlib-plus-circle-o"></i> Copy
+                                <i className="adminlib-plus-circle"></i> Copy
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@ const SmptProducts: React.FC = () => {
                         <div className="price">$299</div>
                         <div className="overley">
                             <div className="admin-btn btn-purple-bg">
-                                <i className="adminlib-plus-circle-o"></i> Copy
+                                <i className="adminlib-plus-circle"></i> Copy
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@ const SmptProducts: React.FC = () => {
                         <div className="price">$299</div>
                         <div className="overley">
                             <div className="admin-btn btn-purple-bg">
-                                <i className="adminlib-plus-circle-o"></i> Copy
+                                <i className="adminlib-plus-circle"></i> Copy
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ const SmptProducts: React.FC = () => {
                         <div className="price">$299</div>
                         <div className="overley">
                             <div className="admin-btn btn-purple-bg">
-                                <i className="adminlib-plus-circle-o"></i> Copy
+                                <i className="adminlib-plus-circle"></i> Copy
                             </div>
                         </div>
                     </div>

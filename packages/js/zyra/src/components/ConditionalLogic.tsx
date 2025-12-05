@@ -158,7 +158,7 @@ const ConditionalLogicModal: React.FC<ConditionalLogicProps> = ({
                 ))}
 
                 <button className="add-rule-btn admin-btn default-btn" onClick={addRule}>
-                  <i className="admin-font adminlib-plus-circle-o"></i> Add Rule
+                  <i className="admin-font adminlib-plus-circle"></i> Add Rule
                 </button>
               </div>
             </>

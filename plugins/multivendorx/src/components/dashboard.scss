@@ -87,7 +87,7 @@
         .details {
             .number {
                 font-size: 1.25rem;
-                line-height: 1.5rem;
+                line-height: 0.9rem;
                 padding-bottom: 0.313rem;
                 font-weight: 600;
             }
@@ -114,15 +114,13 @@
             i {
                 font-size: 2.5rem;
                 padding: 0.625rem;
-                line-height: 4rem;
+                line-height: 1.5;
             }
 
             .details {
                 .number {
                     font-size: 2.063rem;
                 }
-
-                .text {}
             }
         }
     }
@@ -145,7 +143,7 @@
     flex-direction: column;
 
     .table-wrapper {
-        border: 0.063rem solid whitesmoke;
+        border: 0.063rem solid #f5f5f5;
     }
 }
 
@@ -286,170 +284,121 @@
 
 // card styles start
 
-// task start
-.task-list-wrapper {
-    .task-list {
-        li {
-            padding: 0.5rem 0;
-            border-bottom: $border-light-small;
-            display: flex;
-            gap: 0.625rem;
-
-            span {
-                font-size: 0.95rem;
-                line-height: 1.4rem;
-            }
-
-            .add-mode {
-                margin-top: 1rem;
-                border: 0;
-            }
-
-            input {
-                margin: 0;
-            }
-
-            &:has(input:checked) span {
-                text-decoration: line-through;
-                color: #00000075;
-            }
-
-            .delete-icon {
-                display: none;
-                font-size: 1.25rem;
-                color: #e35047;
-                cursor: pointer;
-            }
-
-            &:hover {
-                .delete-icon {
-                    display: block;
-                }
-            }
-        }
-    }
-}
-
-// task end
-
-
 // action start
-.overview-card-wrapper {
-    display: flex;
-    gap: 1rem;
-    width: 100%;
-    flex-wrap: wrap;
+// .overview-card-wrapper {
+//     display: flex;
+//     gap: 1rem;
+//     width: 100%;
+//     flex-wrap: wrap;
 
-    &.tab {
-        cursor: pointer;
-        padding-bottom: 1.5rem;
+//     &.tab {
+//         cursor: pointer;
+//         padding-bottom: 1.5rem;
 
-        .tab-action {
-            width: 24%;
-            box-sizing: border-box;
+//         .tab-action {
+//             width: 24%;
+//             box-sizing: border-box;
 
-            &:hover {
-                background: $theme-color;
-                color: #fff;
+//             &:hover {
+//                 background: $theme-color;
+//                 color: #fff;
 
-                .details-wrapper {
-                    color: #fff;
+//                 .details-wrapper {
+//                     color: #fff;
 
-                    i {
-                        background: #fff;
-                        color: $theme-color;
-                    }
-                }
-            }
-        }
+//                     i {
+//                         background: #fff;
+//                         color: $theme-color;
+//                     }
+//                 }
+//             }
+//         }
 
-        .details-wrapper {
-            align-items: end;
+//         .details-wrapper {
+//             align-items: end;
 
-            .title {
-                span {
-                    font-size: 3rem;
-                }
-            }
-        }
-    }
+//             .title {
+//                 span {
+//                     font-size: 3rem;
+//                 }
+//             }
+//         }
+//     }
 
-    .action {
-        width: 100%;
-        padding: 1rem;
-        border-radius: 0.313rem;
+//     .action {
+//         width: 100%;
+//         padding: 1rem;
+//         border-radius: 0.313rem;
 
-        .title {
-            justify-content: space-between;
-            display: flex;
-            font-size: 2.5rem;
-            line-height: 2.5rem;
-            color: #000;
-            margin-bottom: 1.313rem;
+//         .title {
+//             justify-content: space-between;
+//             display: flex;
+//             font-size: 2.5rem;
+//             line-height: 2.5rem;
+//             color: #000;
+//             margin-bottom: 1.313rem;
 
-            i {
-                font-size: 1.5rem;
-            }
-        }
+//             i {
+//                 font-size: 1.5rem;
+//             }
+//         }
 
-        .description {
-            font-size: 1.125rem;
-            color: #000;
-            font-weight: 500;
-        }
-    }
+//         .description {
+//             font-size: 1.125rem;
+//             color: #000;
+//             font-weight: 500;
+//         }
+//     }
 
-    .action:nth-child(1) {
-        background: #5007aa14;
+//     .action:nth-child(1) {
+//         background: #5007aa14;
 
-        i {
-            color: $theme-color;
-        }
-    }
+//         i {
+//             color: $theme-color;
+//         }
+//     }
 
-    .action:nth-child(2) {
-        background: #bfdeed;
+//     .action:nth-child(2) {
+//         background: #bfdeed;
 
-        i {
-            color: #003d66;
-        }
-    }
+//         i {
+//             color: #003d66;
+//         }
+//     }
 
-    .action:nth-child(3) {
-        background: #d9f5f0;
+//     .action:nth-child(3) {
+//         background: #d9f5f0;
 
-        i {
-            color: #06be9f;
-        }
-    }
+//         i {
+//             color: #06be9f;
+//         }
+//     }
 
-    .action:nth-child(4) {
-        background: #5007aa14;
+//     .action:nth-child(4) {
+//         background: #5007aa14;
 
-        i {
-            color: $theme-color;
-        }
-    }
+//         i {
+//             color: $theme-color;
+//         }
+//     }
 
-    .action:nth-child(5) {
-        background: #b89d0325;
+//     .action:nth-child(5) {
+//         background: #b89d0325;
 
-        i {
-            color: #b89d03;
-        }
-    }
+//         i {
+//             color: #b89d03;
+//         }
+//     }
 
-    .action:nth-child(6) {
-        background: #b8039a1f;
+//     .action:nth-child(6) {
+//         background: #b8039a1f;
 
-        i {
-            color: #b8039a;
-        }
-    }
-}
-
+//         i {
+//             color: #b8039a;
+//         }
+//     }
+// }
 // action style end
-
 
 // payout page price section start --common
 .payout-wrapper {
@@ -613,7 +562,6 @@
 
 // tab action cart end
 
-
 // location map box style start
 #location-map {
     height: 18.75rem;
@@ -658,29 +606,6 @@
     }
 }
 
-// .payout-notice {
-//     padding: 0.625rem;
-//     border-radius: 0.313rem;
-//     font-size: 1.063rem;
-
-
-//     i {
-//         padding-right: 0.313rem;
-//     }
-
-//     &.error-notice {
-//         color: #ff0000eb;
-//         background: #ff00001c;
-
-//         i {
-//             color: #ff0000eb;
-
-//         }
-
-//     }
-// }
-
-
 .settings-metabox-description.slug i {
     font-size: 0.813rem;
 }
@@ -688,7 +613,6 @@
 .admin-pro-tag.module:has(.adminlib-spmv) {
     text-transform: uppercase;
 }
-
 
 // settings shipping add country start
 .shipping-country-wrapper {

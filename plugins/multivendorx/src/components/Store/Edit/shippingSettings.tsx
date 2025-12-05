@@ -355,7 +355,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
                                                         autoSave({ ...formData, distance_rules: updatedRules });
                                                     }}
                                                 >
-                                                    <i className="adminlib-plus-circle-o"></i> {__('Add Rule', 'multivendorx')}
+                                                    <i className="adminlib-plus-circle"></i> {__('Add Rule', 'multivendorx')}
                                                 </button>
                                             </div>
                                         </div>

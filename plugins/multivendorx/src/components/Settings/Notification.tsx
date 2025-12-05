@@ -269,7 +269,7 @@ const Notification: React.FC = () => {
                                     <td className="admin-column notificaton">
                                         <div className="table-row-custom">
                                             <div className="product-wrapper notification">
-                                                <span className={`item-icon notification-icon icon-${notif.id}`}></span>
+                                                <span className={`item-icon notification-icon adminlibrary adminicon-${notif.id}`}></span>
                                                 <div className="details">
                                                     <div className="title">
                                                         {notif.event}
@@ -581,7 +581,7 @@ const Notification: React.FC = () => {
                                 onKeyPress={(e) => e.key === 'Enter' && addRecipient(editingNotification)}
                             />
                             <button className="admin-btn btn-purple" onClick={() => addRecipient(editingNotification)}>
-                                <i className="adminlib-plus-circle-o"></i>
+                                <i className="adminlib-plus-circle"></i>
                                 Add
                             </button>
                         </div>
@@ -596,7 +596,7 @@ const Notification: React.FC = () => {
                         <div key={notif.id} className="notification-card">
                             <div className="card-body">
                                 <div className="title-wrapper">
-                                    <i className={`notification-icon ${notif.icon}`}></i>
+                                    <i className={`notification-icon adminlibrary ${notif.icon}`}></i>
                                     <div className="details">
                                         <div className="title">{notif.event}</div>
                                         <div className="description">{notif.description}</div>

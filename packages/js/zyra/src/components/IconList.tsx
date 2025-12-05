@@ -128,8 +128,8 @@ const IconList: React.FC = () => {
                         <span>(e8f0)</span>
                     </div>
                     <div className="icon-box">
-                        <span className="adminlib-plus-circle-o"></span>
-                        <span className="mls"> adminlib-plus-circle-o</span>
+                        <span className="adminlib-plus-circle"></span>
+                        <span className="mls"> adminlib-plus-circle</span>
                         <span>(e8f7)</span>
                     </div>
                     <div className="icon-box">

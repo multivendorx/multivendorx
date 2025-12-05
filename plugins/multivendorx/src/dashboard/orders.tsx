@@ -654,7 +654,7 @@ const Orders: React.FC = () => {
                                 className="admin-btn btn-purple-bg"
                                 onClick={() => { window.location.hash = `add`; }}
                             >
-                                <i className="adminlib-plus-circle-o"></i>
+                                <i className="adminlib-plus-circle"></i>
                                 Add New
                             </div>
                         </div>

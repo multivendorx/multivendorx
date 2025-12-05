@@ -24,7 +24,6 @@
      text-align: center;
      vertical-align: middle;
      line-height: 0;
-    //  -webkit-appearance: none;
      box-shadow: inset 0 0.063rem 0.125rem rgba(0, 0, 0, 0.1);
      transition: 0.05s border-color ease-in-out;
  }
@@ -32,7 +31,6 @@
  // store template start
  .multivendorx-banner {
      position: relative;
-     //  height: 25rem;
      background-size: contain !important;
      background-position: center !important;
      background-repeat: no-repeat !important;
@@ -156,7 +154,6 @@
          align-items: center;
          flex-direction: column;
          gap: 0.5rem;
-         //  padding-top: 0.313rem;
 
          .follower-count {
              font-size: 0.9rem;
@@ -425,7 +422,7 @@
                      font-size: 2.5rem;
                      font-weight: 700;
                      color: #000;
-                     line-height: 3rem;
+                     line-height: 3;
                  }
 
                  .total-number {
@@ -491,12 +488,12 @@
              li {
                  padding: .625rem;
                  border: .063rem solid #d3d0d0;
-                 line-height: 1rem;
+                 line-height: 1;
                  border-radius: .25rem;
                  background: #0080000d;
 
                  span {
-                     color: green;
+                     color: rgba(0, 128, 0, 0.973);
                      font-weight: 600;
                      font-size: 1.125rem;
                  }
@@ -541,7 +538,7 @@
 
                          span {
                              font-size: 0.813rem;
-                             line-height: 0.9rem;
+                             line-height: 0.9;
                              padding-left: 0.5rem;
                              color: #00000085;
                              font-weight: 500;
@@ -635,11 +632,6 @@
      }
 
  }
-
- //  review page end
-//  #commentform {
-//      display: none;
-//  }
 
  .order-refund-product-list {
      display: flex;
