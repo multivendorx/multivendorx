@@ -57,10 +57,10 @@ class Frontend {
         // Generate HTML.
         $html  = '<button class="mvx-follow-btn" 
                     data-store-id="' . esc_attr( $store_id ) . '" 
-                    data-user-id="' . esc_attr( $current_user_id ) . '">
-                    Loading...
-                  </button>';
-        $html .= ' <span class="mvx-follower-count" id="followers-count-' . esc_attr( $store_id ) . '">...</span>';
+                    data-user-id="' . esc_attr( $current_user_id ) . '" 
+                    style="display:none;">
+                </button>';
+        $html .= ' <span class="mvx-follower-count" id="followers-count-' . esc_attr( $store_id ) . '">0 Follower</span>';
 
         // Apply filter.
         $html = apply_filters( 'mvx_follow_button_html', $html, $store_id, $current_user_id );
@@ -84,13 +84,13 @@ class Frontend {
 				$html  = '<div class="buttons-wrapper">
                         <div class="follow-wrapper"> 
                         <button class="follow-btn" 
-                        data-store-id="' . esc_attr( $store_id ) . '" 
-                        data-user-id="' . esc_attr( $user_id ) . '">
-                        <i class="adminlib-plus-circle-o"></i>
-                        Loading...
-                      </button>
+                            data-store-id="' . esc_attr( $store_id ) . '" 
+                            data-user-id="' . esc_attr( $user_id ) . '" 
+                            ">
+                            Follow
+                        </button>
                       ';
-				$html .= ' <span class="follower-count" id="followers-count-' . esc_attr( $store_id ) . '">...</span> </div> 
+				$html .= ' <span class="follower-count" id="followers-count-' . esc_attr( $store_id ) . '">0 Follower</span> </div> 
                         <button>Live Chat</button>
                         <button>Support</button>
                         </div>';

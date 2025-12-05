@@ -22,13 +22,6 @@ defined( 'ABSPATH' ) || exit;
 class CommissionManager {
 
     /**
-     * Container for all objects.
-     *
-     * @var array
-     */
-    private $container = array();
-
-    /**
      * Constructor.
      */
     public function __construct() {

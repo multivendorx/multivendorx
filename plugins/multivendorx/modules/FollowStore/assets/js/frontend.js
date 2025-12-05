@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
             nonce: followStoreFrontend.nonce
         }, function(res){
             if(res.success){
-                btn.text(res.data.button_text);
+                btn.text(res.data.button_text).show();
 
                 if(res.data.button_text === 'Login to Follow'){
                     btn.off('click').on('click', function(){
