@@ -21,20 +21,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.adminlib-chatgpt:before {
+  content: "\e902";
+}
 .adminlib-gemini:before {
   content: "\e900";
 }
 .adminlib-openrouter:before {
   content: "\e901";
-}
-.adminlib-chatgpt .path1:before {
-  content: "\e902";
-  color: rgb(255, 255, 255);
-}
-.adminlib-chatgpt .path2:before {
-  content: "\e903";
-  margin-left: -1.0048828125em;
-  color: rgb(0, 0, 0);
 }
 .adminlib-ai:before {
   content: "\e904";

@@ -14,7 +14,7 @@ export default {
 		{
 			key: 'store_selling_mode',
 			type: 'setting-toggle',
-			label: __('Store selling mode', 'multivendorx'),
+			label: __('Store Selling Mode', 'multivendorx'),
 			desc: __('Decide how stores are allowed to sell products in your marketplace:<ul><li><strong>Shared product listing</strong> - Stores can copy existing products and sell them alongside new products they create.</li><li><strong>Franchise</strong> - Franchise stores can sell only their own products and products created by the admin.</li><li><strong>Default</strong> - Stores can sell only their own products, following standard marketplace rules.</li></ul>','multivendorx'),
 options: [
 				{
@@ -62,7 +62,6 @@ options: [
 				'Choose which version of shared product will be shown as the main listing on the shop page (e.g., top-rated store, min / max priced product).',
 				'multivendorx'
 			),
-			moduleEnabled: 'spmv',
 			dependent: {
 				key: 'store_selling_mode',
 				set: true,
@@ -99,7 +98,6 @@ options: [
 				'Decide where additional offers by other stores should be displayed on the single product page to make them visible to customers.',
 				'multivendorx'
 			),
-			moduleEnabled: 'spmv',
 			dependent: {
 				key: 'store_selling_mode',
 				set: true,

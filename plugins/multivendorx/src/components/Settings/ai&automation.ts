@@ -8,9 +8,24 @@ export default {
 		'Enable and configure third-party AI services to assist with product detail generation and other automation tasks.',
 		'multivendorx'
 	),
-	icon: 'adminlib-automation',
+	icon: 'adminlib-ai',
 	submitUrl: 'settings',
 	modal: [
+		{
+			key: 'tinymce_api_section',
+			type: 'text',
+			label: __('API key', 'multivendorx'),
+		},
+		{
+			key: 'tinymce_api_section',
+			type: 'text',
+			label: __('API key', 'multivendorx'),
+		},
+		{
+			key: 'tinymce_api_section',
+			type: 'text',
+			label: __('API key', 'multivendorx'),
+		},
 		// --- AI Provider Choice ---
 		{
 			key: 'choose_ai_provider',
@@ -30,37 +45,37 @@ export default {
 					key: 'gemini_api',
 					label: __('Gemini (Google)', 'multivendorx'),
 					value: __('gemini_api', 'multivendorx'),
-					icon: 'adminlib-google',
+					icon: 'adminlib-gemini',
 				},
 				{
 					key: 'openai_api',
 					label: __('OpenAI (ChatGPT)', 'multivendorx'),
 					value: __('openai_api', 'multivendorx'),
-					icon: 'adminlib-openai',
+					icon: 'adminlib-chatgpt',
 				},
 				{
 					key: 'openrouter_api',
 					label: __('OpenRouter (Free/Open Models)', 'multivendorx'),
 					value: __('openrouter_api', 'multivendorx'),
-					icon: 'adminlib-cloud',
+					icon: 'adminlib-openrouter',
 				},
 			],
 		},
 		// --- Gemini API Key Section ---
-		{
-			key: 'gemini_api_key',
-			type: 'text',
-			label: __('Gemini API Key', 'multivendorx'),
-			desc: __(
-				'<a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank">Click here to generate your Gemini API key.</a>',
-				'multivendorx'
-			),
-			dependent: {
-				key: 'choose_ai_provider',
-				set: true,
-				value: 'gemini_api',
-			},
-		},
+		// {
+		// 	key: 'gemini_api_key',
+		// 	type: 'text',
+		// 	label: __('Gemini API Key', 'multivendorx'),
+		// 	desc: __(
+		// 		'<a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank">Click here to generate your Gemini API key.</a>',
+		// 		'multivendorx'
+		// 	),
+		// 	dependent: {
+		// 		key: 'choose_ai_provider',
+		// 		set: true,
+		// 		value: 'gemini_api',
+		// 	},
+		// },
 		// --- OpenAI API Key Section ---
 		{
 			key: 'openai_api_key',
@@ -137,30 +152,32 @@ export default {
 					key: 'gemini_api_image_enhancement',
 					label: __('Gemini (Google)', 'multivendorx'),
 					value: 'gemini_api',
+					icon: 'adminlib-gemini',
 				},
 				{
 					key: 'openrouter_api_image_enhancement',
 					label: __('OpenRouter (Multiple Models)', 'multivendorx'),
 					value: 'openrouter_api',
+					icon: 'adminlib-openrouter',
 				},
 			],
 			defaultValue: 'gemini_api_image_enhancement',
 		},
 		// --- Gemini Image Enhancement Settings ---
-		{
-			key: 'gemini_api_image_enhancement_key',
-			type: 'text',
-			label: __('Gemini API Key for Image Enhancement', 'multivendorx'),
-			desc: __(
-				'<a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank">Click here to generate your Gemini API key.</a>',
-				'multivendorx'
-			),
-			dependent: {
-				key: 'image_enhancement_provider',
-				set: true,
-				value: 'gemini_api',
-			},
-		},
+		// {
+		// 	key: 'gemini_api_image_enhancement_key',
+		// 	type: 'text',
+		// 	label: __('Gemini API Key for Image Enhancement', 'multivendorx'),
+		// 	desc: __(
+		// 		'<a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank">Click here to generate your Gemini API key.</a>',
+		// 		'multivendorx'
+		// 	),
+		// 	dependent: {
+		// 		key: 'image_enhancement_provider',
+		// 		set: true,
+		// 		value: 'gemini_api',
+		// 	},
+		// },
 		// --- OpenRouter Image Enhancement Settings ---
 		{
 			key: 'openrouter_api_image_enhancement_key',

@@ -14,8 +14,6 @@ export default {
 		{
 			key: 'store_compliance_management',
 			type: 'payment-tabs',
-			// label: 'What Must Sellers Complete Before Selling?',
-			// settingDescription: __('Check all requirements sellers must finish to activate their store', 'multivendorx'),
 			modal: [
 				{
 					id: 'seller-verification',
@@ -271,7 +269,6 @@ export default {
 					disableBtn: true,
 					moduleEnabled: 'marketplace-compliance',
 					proSetting: true,
-					// countBtn: true,
 					desc: 'Verify tax information and monitor transactions',
 					formFields: [
 						{
