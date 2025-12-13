@@ -345,6 +345,7 @@ const Select: React.FC<SelectProps> = ({
 interface Column {
     key: string;
     label: string;
+    type?: 'checkbox' | 'description';
     moduleEnabled?: string;
     proSetting?: string;
 }
@@ -352,6 +353,7 @@ interface Column {
 interface Row {
     key: string;
     label: string;
+    description?: string;
     options?: { value: string | number; label: string }[];
 }
 
@@ -417,7 +419,7 @@ const MultiCheckboxTable: React.FC<MultiCheckboxTableProps> = ({
                                     </span>
                                 )}
                             </th>
-                         ))}
+                        ))}
                     </tr>
                 </thead>
 
@@ -427,6 +429,17 @@ const MultiCheckboxTable: React.FC<MultiCheckboxTableProps> = ({
                             <tr key={row.key}>
                                 <td>{row.label}</td>
                                 {columns.map((column) => {
+                                    if (column.type === 'description') {
+                                        return (
+                                            <td
+                                                key={`desc_${row.key}`}
+                                                className="grid-table-cell-class description-cell"
+                                            >
+                                                {row.description || '—'}
+                                            </td>
+                                        );
+                                    }
+
                                     const key = `${column.key}_${row.key}`;
                                     const value = setting[key] || [];
 
@@ -447,7 +460,6 @@ const MultiCheckboxTable: React.FC<MultiCheckboxTableProps> = ({
                                                 />
                                             ) : (
                                                 <input
-                                                    placeholder="select"
                                                     type="checkbox"
                                                     checked={
                                                         Array.isArray(setting[column.key]) &&
@@ -461,35 +473,30 @@ const MultiCheckboxTable: React.FC<MultiCheckboxTableProps> = ({
 
                                                         if (
                                                             column.moduleEnabled &&
-                                                            !modules.includes(
-                                                                column.moduleEnabled
-                                                            )
+                                                            !modules.includes(column.moduleEnabled)
                                                         ) {
                                                             moduleChange(column.moduleEnabled);
                                                             return;
                                                         }
 
-                                                        const selectedKeys = Array.isArray(
-                                                            setting[column.key]
-                                                        )
+                                                        const selectedKeys = Array.isArray(setting[column.key])
                                                             ? setting[column.key]
                                                             : [];
 
                                                         const updatedSelection = e.target.checked
                                                             ? [...selectedKeys, row.key]
                                                             : selectedKeys.filter(
-                                                                (keyVal: any) =>
-                                                                    keyVal !== row.key
+                                                                (keyVal: any) => keyVal !== row.key
                                                             );
 
                                                         onChange(column.key, updatedSelection);
                                                     }}
                                                 />
-                                                
                                             )}
                                         </td>
                                     );
                                 })}
+
                             </tr>
                         ))
                     ) : (
@@ -517,9 +524,9 @@ const MultiCheckboxTable: React.FC<MultiCheckboxTableProps> = ({
                                                     <td>{capLabel}</td>
                                                     {columns.map((column) => {
                                                         const hasExists = storeTabSetting &&
-                                                                Object.values(storeTabSetting).some(
+                                                            Object.values(storeTabSetting).some(
                                                                 (arr) => arr?.includes(capKey)
-                                                                );
+                                                            );
 
                                                         return (
                                                             <td

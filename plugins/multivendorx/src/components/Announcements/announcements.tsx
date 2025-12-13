@@ -24,7 +24,7 @@ import './announcements.scss';
 import { truncateText } from '@/services/commonFunction';
 
 type AnnouncementRow = {
-	stores: any;
+	stores: number[] | null;
 	date: string;
 	title: string;
 	content: string;
@@ -42,7 +42,7 @@ type AnnouncementStatus = {
 type FilterData = {
 	searchField: string;
 	typeCount?: string;
-	date?: any;
+	date?: FilterDate;
 };
 
 type AnnouncementForm = {
@@ -52,12 +52,31 @@ type AnnouncementForm = {
 	stores: number[];
 	status: 'draft' | 'pending' | 'publish';
 };
+interface Store {
+	id: number;
+	store_name: string;
+}
+
+interface StoreOption {
+	value: string;
+	label: string;
+}
+
+interface DateRange {
+	startDate: Date;
+	endDate: Date;
+}
+
+interface FilterDate {
+	start_date?: Date;
+	end_date?: Date;
+}
 
 export interface RealtimeFilter {
 	name: string;
 	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
+		updateFilter: (key: string, value: unknown) => void,
+		filterValue: unknown
 	) => ReactNode;
 }
 
@@ -97,10 +116,10 @@ export const Announcements: React.FC = () => {
 				}
 			);
 			const stores = response.data?.stores || [];
-			const options = [
-				{ value: '0', label: __('All Stores', 'multivendorx') },
-				...stores.map((store: any) => ({
-					value: store.id.toString(),
+			const options: StoreOption[] = [
+				{ value: 0, label: __('All Stores', 'multivendorx') },
+				...stores.map((store: Store) => ({
+					value: store.id,
 					label: store.store_name,
 				})),
 			];
@@ -209,8 +228,8 @@ export const Announcements: React.FC = () => {
 			await fetchTotalRows();
 			requestData(pagination.pageSize, pagination.pageIndex + 1);
 			setRowSelection({});
-		} catch (err) {
-			setError(__('Failed to perform bulk action', 'multivendorx'));
+		} catch (err: unknown) {
+			setError(__(`Failed to perform bulk action${err}`, 'multivendorx'));
 		}
 	};
 
@@ -230,16 +249,15 @@ export const Announcements: React.FC = () => {
 					title: response.data.title || '',
 					url: response.data.url || '',
 					content: response.data.content || '',
-					stores: response.data.stores
-						? response.data.stores.map((s: any) => Number(s)) // ensure numbers
-						: [],
+					stores: response.data.stores ??  [],
 					status: response.data.status || 'draft',
 				});
+
 				setEditId(id);
 				setAddAnnouncements(true);
 			}
-		} catch (err) {
-			setError(__('Failed to load announcement', 'multivendorx'));
+		} catch (err: unknown) {
+			setError(__(`Failed to load announcement${err}`, 'multivendorx'));
 		}
 	};
 
@@ -286,8 +304,8 @@ export const Announcements: React.FC = () => {
 			} else {
 				setError(__('Failed to save announcement', 'multivendorx'));
 			}
-		} catch (err) {
-			setError(__('Failed to save announcement', 'multivendorx'));
+		} catch (err: unknown) {
+			setError(__(`Failed to save announcement${err}`, 'multivendorx'));
 		} finally {
 			setSubmitting(false);
 		}
@@ -529,15 +547,15 @@ export const Announcements: React.FC = () => {
 							{
 								label: __('Edit', 'multivendorx'),
 								icon: 'adminlib-edit',
-								onClick: (rowData: any) => {
-									handleEdit(rowData.id); // opens edit popup
+								onClick: (rowData: AnnouncementRow) => {
+									handleEdit(rowData.id);
 								},
 								hover: true,
 							},
 							{
 								label: __('Delete', 'multivendorx'),
 								icon: 'adminlib-delete',
-								onClick: async (rowData: any) => {
+								onClick: async (rowData: AnnouncementRow) => {
 									if (!rowData.id) {
 										return;
 									}
@@ -573,10 +591,10 @@ export const Announcements: React.FC = () => {
 											'',
 											''
 										);
-									} catch (err) {
+									} catch (err: unknown) {
 										setError(
 											__(
-												'Failed to delete announcement',
+												`Failed to delete announcement${err}`,
 												'multivendorx'
 											)
 										);
@@ -616,7 +634,7 @@ export const Announcements: React.FC = () => {
 					<MultiCalendarInput
 						wrapperClass=""
 						inputClass=""
-						onChange={(range: any) => {
+						onChange={(range: DateRange) => {
 							updateFilter('date', {
 								start_date: range.startDate,
 								end_date: range.endDate,
@@ -627,7 +645,6 @@ export const Announcements: React.FC = () => {
 			),
 		},
 	];
-
 	return (
 		<>
 			<AdminBreadcrumbs
@@ -733,7 +750,7 @@ export const Announcements: React.FC = () => {
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer.settings_databases_value[
-										'marketplace'
+									'marketplace'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
@@ -755,32 +772,51 @@ export const Announcements: React.FC = () => {
 								type="multi-select"
 								options={storeOptions}
 								value={formData.stores.map((id) =>
-									id.toString()
+									id
 								)}
-								onChange={(newValue: any) => {
-									const selectedValues = Array.isArray(
-										newValue
-									)
-										? newValue.map((opt: any) =>
-												Number(opt.value)
-											)
-										: [];
+								onChange={(newValue: StoreOption[]) => {
+									if (!Array.isArray(newValue)) {
+										setFormData((prev) => ({
+											...prev,
+											stores: [],
+										}));
+										return;
+									}
+
+									const selectedIds = newValue.map((opt) =>
+										Number(opt.value)
+									);
+
+									const hadAllStores =
+										formData.stores.includes(0);
+									const hasAllStoresNow =
+										selectedIds.includes(0);
+
+									if (!hadAllStores && hasAllStoresNow) {
+										setFormData((prev) => ({
+											...prev,
+											stores: [0],
+										}));
+										return;
+									}
+
+									if (
+										hadAllStores &&
+										selectedIds.length > 1
+									) {
+										setFormData((prev) => ({
+											...prev,
+											stores: selectedIds.filter(
+												(id) => id !== 0
+											),
+										}));
+										return;
+									}
 
 									setFormData((prev) => ({
 										...prev,
-										stores: selectedValues,
+										stores: selectedIds,
 									}));
-
-									if (
-										selectedValues.length > 0 &&
-										validationErrors.stores
-									) {
-										setValidationErrors((prev) => {
-											const updated = { ...prev };
-											delete updated.stores;
-											return updated;
-										});
-									}
 								}}
 							/>
 
@@ -837,7 +873,7 @@ export const Announcements: React.FC = () => {
 					<Table
 						data={data}
 						columns={
-							columns as ColumnDef<Record<string, any>, any>[]
+							columns as ColumnDef<AnnouncementRow, unknown>[]
 						}
 						rowSelection={rowSelection}
 						onRowSelectionChange={setRowSelection}

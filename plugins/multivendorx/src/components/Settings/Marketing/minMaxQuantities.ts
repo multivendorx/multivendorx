@@ -37,7 +37,7 @@ export default {
 					preInsideText: __('Max', 'multivendorx'),
 					type: 'number',
 				},
-			]
+			],
 		},
 		{
 			key: 'product_amount_rules',
@@ -60,7 +60,7 @@ export default {
 					preInsideText: __('Max', 'multivendorx'),
 					type: 'number',
 				},
-			]
+			],
 		},
 		{
 			key: 'section',
@@ -88,7 +88,7 @@ export default {
 					preInsideText: __('Max', 'multivendorx'),
 					type: 'number',
 				},
-			]
+			],
 		},
 		{
 			key: 'order_amount_rules',
@@ -111,7 +111,7 @@ export default {
 					preInsideText: __('Max', 'multivendorx'),
 					type: 'number',
 				},
-			]
+			],
 		},
 	],
 };

@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Tabs } from 'zyra';
 
 import MessageAndMail from './messageAndMail';
+import MultivendorxProFeatures from './MultivendorxProFeatures';
 
 
 const Memberships = () => {
@@ -38,9 +39,9 @@ const Memberships = () => {
     const getForm = (tabId: string) => {
         switch (tabId) {
             case 'payment-membership-message':
-                return <MessageAndMail id=''/>;
+                return <MessageAndMail id='' />;
             case 'payment-membership-design':
-                return <h1>design</h1>;
+                return <MultivendorxProFeatures />;
             default:
                 return <div></div>;
         }

@@ -11,7 +11,7 @@ import {
 	SelectInput,
 	TextArea,
 	getApiLink,
-	useModules
+	useModules,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -440,7 +440,7 @@ const AddProduct = () => {
 				images: imagePayload,
 				categories: finalCategories,
 				meta_data: [
-					...(product.meta_data),
+					...product.meta_data,
 					{
 						key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
