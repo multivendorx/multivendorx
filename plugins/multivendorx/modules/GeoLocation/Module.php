@@ -32,25 +32,8 @@ class Module {
      * Constructor.
      */
     public function __construct() {
-        $this->init_classes();
-        $this->init_hooks();
     }
 
-    /**
-     * Initialize classes.
-     */
-    public function init_classes() {
-        // Ensure classes are loaded before instantiation.
-        if ( ! class_exists( 'MultiVendorX\\Geolocation\\StoreGeolocation' ) ) {
-            require_once plugin_dir_path( __FILE__ ) . 'StoreGeolocation.php';
-        }
-
-        if ( ! class_exists( 'MultiVendorX\\Geolocation\\GeoLocation' ) ) {
-            require_once plugin_dir_path( __FILE__ ) . 'GeoLocation.php';
-        }
-
-        $this->container['geo_location'] = new GeoLocation();
-    }
 
     /**
      * Initialize hooks.
@@ -63,21 +46,7 @@ class Module {
      * Ensure class autoloading is working correctly.
      */
     public function ensure_class_autoloading() {
-        // Manual class loading as fallback.
-        $class_files = array(
-            'StoreGeolocation' => 'StoreGeolocation.php',
-            'GeoLocation'      => 'GeoLocation.php',
-        );
-
-        foreach ( $class_files as $class_name => $file ) {
-            $full_class = 'MultiVendorX\\Geolocation\\' . $class_name;
-            if ( ! class_exists( $full_class ) ) {
-                $file_path = plugin_dir_path( __FILE__ ) . $file;
-                if ( file_exists( $file_path ) ) {
-                    require_once $file_path;
-                }
-            }
-        }
+        
     }
 
     /**
