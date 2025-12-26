@@ -34,8 +34,29 @@ class Cron {
         if ( ! wp_next_scheduled( 'multivendorx_clear_notifications' ) ) {
             wp_schedule_event( time(), 'daily', 'multivendorx_clear_notifications' );
         }
+
+        // This is add for testing
+        add_filter( 'multivendorx_system_events', [$this, 'add_new_event'], 10 );
     }
 
+    public function add_new_event($existing) {
+        $new = [
+            'add_custom_event'        => array(
+				'name'           => 'Custom event',
+				'desc'           => 'This is custom event.',
+				'admin_enabled'  => true,
+				'store_enabled'  => true,
+				'email_subject'  => 'Custom event',
+				'email_body'     => 'This is custom event.',
+				'sms_content'    => 'This is custom event.',
+				'system_message' => 'Custom event',
+				'tag'            => 'Store',
+				'category'       => 'activity',
+			),
+        ];
+
+        return array_merge($existing, $new);
+    }
     /**
      * Add custom cron schedules
      *

@@ -41,6 +41,11 @@ class Notifications extends \WP_REST_Controller {
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				),
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_items' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
 			)
         );
 
@@ -239,6 +244,19 @@ class Notifications extends \WP_REST_Controller {
             MultiVendorX()->util->log( $e );
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+        }
+    }
+
+    public function update_items ( $request ) {
+        $sync_notifications = MultiVendorX()->setting->get_setting( 'sync_notifications', '' );
+
+        if ($sync_notifications == 'sync_only_new_entry') {
+            MultiVendorX()->notifications->delete_all_events();
+            MultiVendorX()->notifications->insert_system_events(true);
+        } 
+
+        if ($sync_notifications == 'sync_existing_entry') {
+            MultiVendorX()->notifications->sync_events();
         }
     }
 
