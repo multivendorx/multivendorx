@@ -139,13 +139,13 @@ const Intro: React.FC<IntroProps> = ({ onNext }) => {
 													{task.title}
 												</span>
 												{task.description && (
-													<span className="step-desc">
+													<span className="desc">
 														{task.description}
 													</span>
 												)}
 											</div>
 										</div>
-										<button className="step-action">
+										<button className="admin-btn btn-blue">
 											{task.actionText} &rarr;
 										</button>
 									</div>

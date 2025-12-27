@@ -13,6 +13,8 @@ interface Option {
     hints?: string;
     desc?: string;
     edit?: boolean;
+    preText?: string;
+    postText?: string;
 }
 
 interface MultiCheckBoxProps {
@@ -48,6 +50,8 @@ interface MultiCheckBoxProps {
     hintInnerClass?: string;
     khali_dabba: boolean;
     moduleEnabled?: boolean;
+    preText?: string;
+    postText?: string;
 }
 
 const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
@@ -195,6 +199,15 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                         props.value?.includes(option.value) ?? false;
 
                     return (
+                        <>
+                        { props.preText && (
+                                <span
+                                    className="before"
+                                    dangerouslySetInnerHTML={ {
+                                        __html: props.preText,
+                                    } }
+                                />
+                            ) }
                         <div
                             key={option.key}
                             className={props.inputWrapperClass}
@@ -312,13 +325,12 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                             />
                                             <div className="edit-icon">
                                                 <span
-                                                    className="save-icon admin-badge green"
+                                                    className="admin-badge green border adminlib-check"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         saveEditedOption(index);
                                                     }}
                                                 >
-                                                    <i className="adminlib-check"></i>
                                                 </span>
                                             </div>
                                         </div>
@@ -384,7 +396,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                             option.value
                                                         );
                                                     }}
-                                                    className="admin-badge blue adminlib-edit"
+                                                    className="admin-badge blue border adminlib-edit"
                                                 >
                                                 </span>
                                                 <span
@@ -392,7 +404,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                         e.stopPropagation();
                                                         deleteOption(index);
                                                     }}
-                                                    className="admin-badge red adminlib-delete"
+                                                    className="admin-badge red border adminlib-delete"
                                                 >
                                                 </span>
                                             </div>
@@ -402,6 +414,15 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                 )}
                             </div>
                         </div>
+                        { props.postText && (
+                                <span
+                                    className="after"
+                                    dangerouslySetInnerHTML={ {
+                                        __html: props.postText,
+                                    } }
+                                />
+                            ) }
+                        </>
                     );
                 })}
 

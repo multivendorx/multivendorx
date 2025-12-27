@@ -13,15 +13,14 @@ export default {
 	modal: [
 		{
 			key: 'store_compliance_management',
-			type: 'payment-tabs',
+			type: 'expandable-panel',
 			modal: [
 				{
 					id: 'seller-verification',
 					icon: 'adminlib-seller-verification',
 					label: 'Seller verification',
 					connected: true,
-					disableBtn: true,
-					 
+					disableBtn: true,					 
 					desc: 'Verify store identity and business legitimacy',
 					moduleEnabled: 'marketplace-compliance',
 					proSetting: true,

@@ -509,7 +509,7 @@ const NestedComponent: React.FC<NestedComponentProps> = ({
                                     <span className="step-title">
                                         {field.label}
                                     </span>
-                                    <span className="step-desc">
+                                    <span className="desc">
                                         {field.desc}
                                     </span>
                                 </div>

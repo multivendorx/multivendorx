@@ -288,7 +288,7 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'<li>No tax - Calculate commission on pre-tax amount only.<li>Full tax - Include 100% tax in commission base.<li>Commission based tax - Calculate commission on total order value including taxes, not just product price.',
+				'<ul><li>No tax - Calculate commission on pre-tax amount only.<li>Full tax - Include 100% tax in commission base.<li>Commission based tax - Calculate commission on total order value including taxes, not just product price.</li> </ul>',
 				'multivendorx'
 			),
 			options: [

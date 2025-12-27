@@ -134,7 +134,7 @@
   padding-top: 0.45rem;
   color: $sub-text-color;
   width: 100%;
-  line-height: 1.5;
+  line-height: 1.625;
   margin: 0;
   font-size: 0.813rem;
 
@@ -149,11 +149,12 @@
   ul {
     list-style-type: none;
     margin: 0;
+    margin-left: 1rem;
   }
 
   li {
     list-style-type: number;
-    margin-left: 1rem;
+    margin: 0;
   }
 
   code {

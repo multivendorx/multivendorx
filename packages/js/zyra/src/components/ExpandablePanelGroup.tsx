@@ -37,7 +37,6 @@ interface PanelFormField {
     | 'password'
     | 'number'
     | 'checkbox'
-    | 'verification-methods'
     | 'textarea'
     | 'expandable-panel'
     | 'multi-checkbox'
@@ -663,7 +662,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                     <span className="step-title">
                                         {field.title}
                                     </span>
-                                    <span className="step-desc">
+                                    <span className="desc">
                                         {field.des}
                                     </span>
                                 </div>

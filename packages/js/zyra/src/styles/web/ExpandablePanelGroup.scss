@@ -156,22 +156,17 @@
                     color: $text-color;
                     font-size: 0.95rem;
                 }
-
                 .input-content {
-                    width: 100%;
-                }
-                
-                .input-content:has(label) {
                     width: 75%;
                 }
 
                 textarea {
-                    background: #fff;
+                    background: $background-white;
                 }
 
                 .expandable-panel-group {
                     .expandable-item {
-                        background: #fff;
+                        background: $background-white;
                     }
 
                 }
@@ -385,7 +380,7 @@
     max-width: 50rem;
     margin: 2rem auto;
     padding: 1.5rem;
-    background: #fff;
+    background: $background-white;
     border-radius: 0.313rem;
 
     .wizard-section {
@@ -393,19 +388,13 @@
         margin: 0.625rem;
         border-radius: 0.313rem;
     }
-
-    // .wizard-title {
-    //     font-size: 1.313rem;
-    //     padding-bottom: 1rem;
-    //     margin: 0;
-    // }
 }
 
 .wizard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 1.25rem;
+    padding: 1.25rem;
     cursor: pointer;
 }
 
@@ -453,7 +442,7 @@
 .step-status {
     width: 1.25rem;
     height: 1.25rem;
-    border: 1px solid #bbb;
+    border: $border-light-small;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -482,23 +471,6 @@
     line-height: 0.95rem;
 }
 
-.step-desc {
-    color: #666;
-}
-
-.step-action {
-    background-color: #0073e6;
-    border: none;
-    color: white;
-    padding: 6px 0.75rem;
-    border-radius: 0.313rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-}
-
-.step-action:hover {
-    background-color: #346291;
-}
 
 // setup wizard start
 
@@ -538,7 +510,7 @@
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        background: #fff;
+        background: $background-white;
         margin: 0;
         border: 0.063rem solid transparent;
 

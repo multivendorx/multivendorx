@@ -234,7 +234,8 @@ const field = {
 const Membership = ({ id }: { id: string }) => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [pricingType, setPricingType] = useState<'free' | 'paid'>('free');
-	const [aiFeatures, setAiFeatures] = useState<'product' | 'image' | 'product_image'>('product');
+	const [aiFeatures, setAiFeatures] = useState(false);
+	const [featuredProducts, setfeaturedProducts] = useState(false);
 	const [starFill, setstarFill] = useState(false);
 	const [features, setFeatures] = useState<string[]>(['']);
 	const [rules, setRules] = useState<any[]>([]);
@@ -831,8 +832,6 @@ const Membership = ({ id }: { id: string }) => {
 													),
 												},
 											]}
-										// value={formData.status}
-										// onChange={handleToggleChange}
 										/>
 										<div
 											className="recommended-wrapper"
@@ -1422,59 +1421,142 @@ const Membership = ({ id }: { id: string }) => {
 							<div className="card-body">
 								<div className="form-group-wrapper">
 									<div className="form-group">
-										<label htmlFor="">
-											Allow AI features
-										</label>
-										<ToggleSetting
-											wrapperClass="setting-form-input"
-											descClass="settings-metabox-description"
-											options={[
-												{
-													key: 'product',
-													value: 'product',
-													label: __(
-														'Product',
-														'multivendorx'
-													),
-												},
-												{
-													key: 'image',
-													value: 'image',
-													label: __(
-														'Image',
-														'multivendorx'
-													),
-												},
-												{
-													key: 'product_image',
-													value: 'product_image',
-													label: __(
-														'Product Image',
-														'multivendorx'
-													),
-												},
-											]}
-											value={aiFeatures}
-											onChange={(value: string) =>
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-sold-individually"
+											type="checkbox"
+											value={aiFeatures ? ['ai_usage'] : []}
+											preText={"Product limits & pricing"}
+											onChange={(e) =>
 												setAiFeatures(
-													value as 'product' | 'image' | 'product_image'
+													(e as React.ChangeEvent<HTMLInputElement>)
+														.target.checked
 												)
 											}
+											options={[
+												{
+													key: 'ai_usage',
+													value: 'ai_usage',
+												},
+											]}
 										/>
 									</div>
 								</div>
-								{aiFeatures === 'image' && (
+								{aiFeatures && (
 									<>
 										<div className="form-group-wrapper">
-											<div className="form-group">
-												<label htmlFor="">Allow upto</label>
+											<div className="form-group row">
+												<label htmlFor="">Maximum products upload allowed</label>
 												<BasicInput
 													name="name"
 													wrapperClass="setting-form-input"
 													descClass="settings-metabox-description"
 													value={formData.name}
 													onChange={handleChange}
-													postInsideText={'image'}
+													postInsideText={'max'}
+													size="8rem"
+												/>
+											</div>
+										</div>
+										<div className="form-group-wrapper">
+											<div className="form-group row">
+												<label htmlFor="">Charge per extra product</label>
+												<BasicInput
+													name="name"
+													wrapperClass="setting-form-input"
+													descClass="settings-metabox-description"
+													value={formData.name}
+													onChange={handleChange}
+													postInsideText={'min'}
+													size="6rem"
+												/>
+											</div>
+										</div>
+										<div className="form-group-wrapper">
+											<div className="form-group row">
+												<label htmlFor="">Images per product</label>
+												<BasicInput
+													name="name"
+													wrapperClass="setting-form-input"
+													descClass="settings-metabox-description"
+													value={formData.name}
+													onChange={handleChange}
+													postInsideText={'max'}
+													size="8rem"
+												/>
+											</div>
+										</div>
+										<div className="form-group-wrapper">
+											<div className="form-group row">
+												<label htmlFor="">Featured products allowed</label>
+												<BasicInput
+													name="name"
+													wrapperClass="setting-form-input"
+													descClass="settings-metabox-description"
+													value={formData.name}
+													onChange={handleChange}
+													postInsideText={'max'}
+													size="8rem"
+												/>
+											</div>
+										</div>
+									</>
+								)}
+
+								<div className="form-group-wrapper">
+									<div className="form-group">
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-sold-individually"
+											type="checkbox"
+											value={featuredProducts ? ['featured_products'] : []}
+											preText={"AI usage and limits"}
+											onChange={(e) =>
+												setfeaturedProducts(
+													(e as React.ChangeEvent<HTMLInputElement>)
+														.target.checked
+												)
+											}
+											options={[
+												{
+													key: 'featured_products',
+													value: 'featured_products',
+												},
+											]}
+										/>
+									</div>
+								</div>
+
+								{featuredProducts && (
+									<>
+										<div className="form-group-wrapper">
+											<div className="form-group row">
+												<label htmlFor="">Featured products allowed</label>
+												<BasicInput
+													name="name"
+													wrapperClass="setting-form-input"
+													descClass="settings-metabox-description"
+													value={formData.name}
+													onChange={handleChange}
+													postInsideText={'max'}
+													size="8rem"
+												/>
+											</div>
+										</div>
+										<div className="form-group-wrapper">
+											<div className="form-group row">
+												<label htmlFor="">AI image credits per store</label>
+												<BasicInput
+													name="name"
+													wrapperClass="setting-form-input"
+													descClass="settings-metabox-description"
+													value={formData.name}
+													onChange={handleChange}
+													postInsideText={'max'}
 													size="8rem"
 												/>
 											</div>
@@ -1590,7 +1672,7 @@ const Membership = ({ id }: { id: string }) => {
 											descClass="settings-metabox-description"
 											value={formData.name}
 											onChange={handleChange}
-											postInsideText= {"%"}
+											postInsideText={"%"}
 											size="8rem"
 										/>
 									</div>
@@ -1646,13 +1728,9 @@ const Membership = ({ id }: { id: string }) => {
 												},
 											]}
 										/>
-
 									</div>
 									{featuredEnabled && (
 										<div className="form-group">
-											{/* <label htmlFor="product-name">
-												Upto
-											</label> */}
 											<BasicInput
 												name="name"
 												wrapperClass="setting-form-input"

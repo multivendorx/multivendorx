@@ -111,7 +111,7 @@ export default {
 				'multivendorx'
 			),
 			class: 'mvx-toggle-checkbox',
-			addNewBtn: 'Add Custom Provider',
+			addNewBtnText: 'Add Custom Provider',
 			options: [
 				{
 					key: 'australia_post',

@@ -48,7 +48,14 @@
         background: $theme-color
     }
 }
+.toggle-btn{
+    display: flex;
+    gap: 0.5rem;
 
+    .before{
+        font-size: 0.95rem;
+    }
+}
 .toggle-checkbox-header {
     min-width: fit-content;
     display: flex;

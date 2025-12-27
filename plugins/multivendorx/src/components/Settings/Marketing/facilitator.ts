@@ -28,7 +28,7 @@ export default {
 				'multivendorx'
 			),
 			moduleEnabled: 'facilitator',
-			className: 'select-class',
+			 
 			size: '40%',
 			options: appLocalizer.facilitators_list,
 		},

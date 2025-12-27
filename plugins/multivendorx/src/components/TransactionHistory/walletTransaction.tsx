@@ -877,6 +877,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 												<div className="details">
 													<div className="name">
 														{formattedPaymentMethod}
+														<div className="admin-badge green">Completed</div>
 													</div>
 													<div className="des">
 														{new Date(
@@ -894,21 +895,16 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 											</div>
 
 											<div
-												className={`right-details ${
-													parseFloat(txn.debit) < 0
-														? 'negative'
-														: 'positive'
-												}`}
+												className="right-details"
 											>
 												<div
 													className={`price ${
 														parseFloat(txn.debit) <
 														0
-															? 'negative'
-															: 'positive'
+															? 'color-red'
+															: 'color-green'
 													}`}
 												>
-													{' '}
 													{formatCurrency(txn.debit)}
 												</div>
 											</div>

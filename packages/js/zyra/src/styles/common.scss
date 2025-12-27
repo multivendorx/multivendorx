@@ -205,13 +205,13 @@ $index: 1;
   // only background color
   .#{$name}-bg,
   .admin-bg-color#{$index} {
-    background: map-get($style, color);
+    background: map-get($style, color) !important;
   }
 
   // only color
   .#{$name}-color,
   .admin-color#{$index} {
-    color: map-get($style, color);
+    color: map-get($style, color) !important;
   }
 
   $index: $index + 1;
@@ -610,7 +610,7 @@ $index: 1;
   padding: .125rem .438rem;
   position: absolute;
   right: 1rem;
-  top: 1.5rem;
+  top: 0.5rem;
   transform: translateY(-50%);
   width: fit-content;
   display: flex;

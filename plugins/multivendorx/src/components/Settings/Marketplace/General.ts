@@ -28,17 +28,9 @@ export default {
 				'Choose the page with [store_registration] shortcode, this is where stores sign up.',
 				'multivendorx'
 			),
-			className: 'select-class',
+			size: "30rem",
 			options: appLocalizer.pages_list,
 		},
-		// {
-		//     key: "sample_map",
-		//     type: "map",
-		//     label: 'Sample map',
-		//     desc: "This is a simple map",
-		//     Lat: 22.5726,
-		//     Lng: 88.3639
-		// },
 		{
 			key: 'store_dashboard_page',
 			type: 'select',
@@ -47,6 +39,7 @@ export default {
 				'The page with [marketplace_store] shortcode will act as the store’s control center.',
 				'multivendorx'
 			),
+			size: "30rem",
 			options: appLocalizer.pages_list,
 		},
 		{

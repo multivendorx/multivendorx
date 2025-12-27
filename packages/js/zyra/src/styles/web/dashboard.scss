@@ -305,6 +305,14 @@
         margin-bottom: 1rem;
         /* add product form style*/
 
+        &.row{
+            flex-direction: row;
+            gap: 0.5rem;
+
+            label{
+                width: 60%;
+            }
+        }
         &.align-bottom {
             align-items: end;
         }
@@ -671,9 +679,8 @@
     }
 
     .title {
-        font-size: 1.625rem;
+        font-size: 1.25rem;
         margin: 1rem;
-        margin-top: 1.5rem;
     }
 
     .des {

@@ -678,7 +678,6 @@ export const Announcements: React.FC = () => {
 				open={addAnnouncements}
 				onClose={handleCloseForm}
 				width="31.25rem"
-				height="70%"
 				header={
 					<>
 						<div className="title">

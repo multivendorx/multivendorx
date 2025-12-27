@@ -25,7 +25,7 @@ export default {
 		},
 		{
 			key: 'store_status_management',
-			type: 'payment-tabs',
+			type: 'expandable-panel',
 			modal: [
 				{
 					id: 'store_pending_status',

@@ -79,7 +79,7 @@ export default {
                 'Choose the previous MultiVendorX version you want to switch to.<br>Use this option if you are facing issues after an update and need to restore an earlier version.',
                 'multivendorx'
             ),
-            className: 'select-class',
+             
             size: '30rem',
             options: [
                 {

@@ -113,7 +113,7 @@ export default {
 				set: true,
 				value: 'openrouter_api',
 			},
-			className: 'select-class',
+			 
 			options: [
 				{
 					key: 'openai/gpt-4o-mini',
@@ -197,7 +197,7 @@ export default {
 				set: true,
 				value: 'openrouter_api',
 			},
-			className: 'select-class',
+			 
 			options: [
 				{
 					key: 'google/gemini-2.5-flash-image-preview',

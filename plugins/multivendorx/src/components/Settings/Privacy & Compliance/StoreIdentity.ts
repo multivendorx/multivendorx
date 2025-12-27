@@ -72,7 +72,6 @@ export default {
 			buttonEnable: true,
 			addNewBtn: true,
 			addNewTemplate: {
-				// icon: 'adminlib-credit-card',
 				label: 'New Verification Method',
 				desc: 'Configure your custom verification methods',
 
