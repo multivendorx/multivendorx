@@ -269,7 +269,9 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                             <div className="edit-icon">
                                 { endpoint.visible !== false && (
                                     <i
-                                        onClick={ () => startEdit( key, endpoint ) }
+                                        onClick={ () =>
+                                            startEdit( key, endpoint )
+                                        }
                                         className="adminlib-edit"
                                     ></i>
                                 ) }
@@ -285,16 +287,16 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                 ( [ k, item ] ) =>
                                                     k === key
                                                         ? [
-                                                            k,
-                                                            {
-                                                                ...item,
-                                                                visible:
-                                                                    item.visible ===
-                                                                    false
-                                                                        ? true
-                                                                        : false,
-                                                            },
-                                                        ]
+                                                              k,
+                                                              {
+                                                                  ...item,
+                                                                  visible:
+                                                                      item.visible ===
+                                                                      false
+                                                                          ? true
+                                                                          : false,
+                                                              },
+                                                          ]
                                                         : [ k, item ]
                                             ) as [ string, Endpoint ][];
                                             autoSave( updated );

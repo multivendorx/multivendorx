@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-// Add these interfaces after the imports
+
+interface MapboxControl {
+    onAdd: ( map: MapboxMap ) => HTMLElement;
+    onRemove?: () => void;
+}
+
 interface MapboxMap {
     setCenter: ( center: [ number, number ] ) => void;
     setZoom: ( zoom: number ) => void;
     remove: () => void;
-    addControl: ( control: unknown, position?: string ) => void;
+    addControl: ( control: MapboxControl, position?: string ) => void;
     on: (
         event: string,
         callback: ( event: MapboxClickEvent ) => void
@@ -47,7 +52,7 @@ declare global {
                 draggable: boolean;
                 color: string;
             } ) => MapboxMarker;
-            NavigationControl: new () => unknown;
+            NavigationControl: new () => MapboxControl;
             accessToken: string;
         };
         MapboxGeocoder: new ( options: {

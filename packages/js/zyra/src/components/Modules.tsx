@@ -24,7 +24,7 @@ interface Module {
     settings_link: string;
     pro_module?: boolean;
     category?: string | string[]; // Optional to support no separators
-    type?: undefined; // Prevents conflict with Separator
+    type?: string; // Prevents conflict with Separator
 }
 
 interface Separator {
@@ -40,7 +40,6 @@ interface AppLocalizer {
     nonce: string;
     apiUrl: string;
     restUrl: string;
-    [ key: string ]: unknown; // Allow other properties
 }
 
 interface ModuleProps {
@@ -49,7 +48,7 @@ interface ModuleProps {
     pluginName: string;
     brandImg: string;
     appLocalizer: AppLocalizer;
-    proPopupContent?: React.FC< unknown >;
+    proPopupContent?: React.FC;
 }
 
 const Modules: React.FC< ModuleProps > = ( {
@@ -68,7 +67,7 @@ const Modules: React.FC< ModuleProps > = ( {
 
     const { modules, insertModule, removeModule } = useModules();
 
-    const formatCategory = ( category: string | undefined ): string => {
+    const formatCategory = ( category: string  ): string => {
         if ( ! category ) {
             return '';
         }

@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import SimpleInput from './SimpleInput';
 import MultipleOptions from './MultipleOption';
-import { FormField } from './RegistrationForm';
 
 interface SubField {
-    id: number; // Use number for ReactSortable
+    id: number;
     key: string;
     label: string;
     type: 'text' | 'select';
@@ -13,6 +12,7 @@ interface SubField {
     options?: string[];
     required?: boolean;
     readonly?: boolean;
+    parentId?: number;
 }
 
 export interface AddressFormField {
@@ -20,15 +20,15 @@ export interface AddressFormField {
     type: string;
     label: string;
     fields?: SubField[];
-    value?: Record< string, string | undefined >;
+    value?: Record< string, string  >;
     readonly?: boolean;
 }
 
 interface AddressFieldProps {
     formField: AddressFormField;
     onChange: ( key: 'fields', value: SubField[] ) => void;
-    opendInput: FormField | null;
-    setOpendInput: React.Dispatch< React.SetStateAction< FormField | null > >;
+    opendInput: SubField | null;
+    setOpendInput: React.Dispatch< React.SetStateAction< SubField | null > >;
 }
 
 const AddressField: React.FC< AddressFieldProps > = ( {
@@ -71,7 +71,7 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                                 ...f,
                                 readonly: formField.readonly,
                                 parentId: formField.id,
-                            } as unknown as FormField );
+                            } );
                         } }
                     >
                         <div className="meta-menu">

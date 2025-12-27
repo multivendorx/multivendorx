@@ -15,7 +15,7 @@ interface AppLocalizer {
     tab_name: string;
     apiUrl: string;
     restUrl: string;
-    [ key: string ]: string | number | boolean; // for any other unknown keys
+    [ key: string ]: string | number | boolean;
 }
 
 // Types

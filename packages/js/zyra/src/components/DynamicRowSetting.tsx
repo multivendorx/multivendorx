@@ -54,7 +54,7 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
     value,
     onChange,
     addLabel = 'Add New',
-    childrenRenderer = undefined,
+    childrenRenderer = () => <></>,
 } ) => {
     const handleAdd = () => {
         const emptyRow: RowValue = {};

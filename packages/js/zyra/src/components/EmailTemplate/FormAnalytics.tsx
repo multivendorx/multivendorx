@@ -3,7 +3,6 @@ import React from 'react';
 interface FormField {
     type: string;
     required?: boolean;
-    [ key: string ]: unknown;
 }
 
 interface FormAnalyticsProps {

@@ -6,7 +6,7 @@ import { ReactSortable } from 'react-sortablejs';
 
 import '../styles/web/SettingMetaBox.scss';
 
-type FormFieldValue = string | number | boolean | Option[] | undefined;
+type FormFieldValue = string | number | boolean | Option[] ;
 type SettingFieldKey = keyof FormField | 'value';
 
 // Types

@@ -12,12 +12,13 @@ import ButtonCustomizer from './ButtonCustomiser';
 import '../styles/web/CatalogCustomizer.scss';
 
 // Types
+// Types
 type SettingValue =
     | string
     | number
     | boolean
     | string[]
-    | Record< string, unknown >;
+    | Record< string, string | number | boolean | string[] >;
 
 interface CatalogCustomizerProps {
     onChange: ( key: string, value: SettingValue ) => void;
@@ -78,7 +79,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
 
     const PriceSectionContent = () => {
         const [ hideProductPrice, setHideProductPrice ] = useState< boolean >(
-            setting.hide_product_price
+            Boolean( setting.hide_product_price )
         );
 
         return (
@@ -112,7 +113,7 @@ const CatalogCustomizer: React.FC< CatalogCustomizerProps > = ( {
 
     const ProductDescriptionContent = () => {
         const [ hideProductDesc, setHideProductDesc ] = useState< boolean >(
-            setting.hide_product_desc
+            Boolean( setting.hide_product_desc )
         );
         return (
             <div className="description-section toggle-visibility">

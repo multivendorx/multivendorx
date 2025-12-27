@@ -15,7 +15,6 @@ interface AppLocalizer {
     nonce: string;
     apiUrl: string;
     restUrl: string;
-    [ key: string ]: unknown;
 }
 
 // Types

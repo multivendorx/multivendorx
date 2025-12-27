@@ -3,10 +3,10 @@ import { Dialog, DialogContent, DialogActions, Slide } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import '../styles/web/CommonPopup.scss';
 // Slide transition from the right
-const Transition = forwardRef( function Transition(
-    props: TransitionProps & { children: React.ReactElement },
-    ref: React.Ref< unknown >
-) {
+const Transition = forwardRef<
+    HTMLDivElement,
+    TransitionProps & { children: React.ReactElement }
+>( function Transition( props, ref ) {
     return <Slide direction="left" ref={ ref } { ...props } />;
 } );
 

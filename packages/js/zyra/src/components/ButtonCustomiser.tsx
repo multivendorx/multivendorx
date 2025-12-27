@@ -25,10 +25,12 @@ export interface ButtonSettings {
     button_text?: string;
 }
 
+type ButtonSettingValue = string | number | ButtonSettings;
+
 interface ButtonCustomizerProps {
     onChange: (
         key: string,
-        value: unknown,
+        value: ButtonSettingValue,
         isRestoreDefaults?: boolean
     ) => void;
     setting?: ButtonSettings;
@@ -40,7 +42,7 @@ interface ButtonCustomizerProps {
 interface CustomizerProps {
     onChange: (
         key: string,
-        value: unknown,
+        value: ButtonSettingValue,
         isRestoreDefaults?: boolean
     ) => void;
     setting?: ButtonSettings;

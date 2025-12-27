@@ -101,7 +101,7 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
     const handleOptionFieldChange = (
         index: number,
         key: keyof Option,
-        value: string | number | boolean | Option[] | undefined
+        value: string | number | boolean | Option[] 
     ) => {
         const newOptions = [ ...options ];
         newOptions[ index ] = { ...newOptions[ index ], [ key ]: value };

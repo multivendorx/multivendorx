@@ -329,7 +329,7 @@ const AdminHeader: React.FC< AdminHeaderProps > = ( {
                                                                 rel={
                                                                     item.targetBlank
                                                                         ? 'noopener noreferrer'
-                                                                        : undefined
+                                                                        : ''
                                                                 }
                                                                 className="item"
                                                             >

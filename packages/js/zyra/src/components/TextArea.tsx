@@ -16,7 +16,7 @@ interface TextAreaProps {
     description?: string;
     descClass?: string;
     tinymceApiKey?: string;
-    usePlainText?: boolean; // <-- switch between TinyMCE or plain textarea
+    usePlainText?: boolean;
     onChange?: ( e: ChangeEvent< HTMLTextAreaElement > ) => void;
     onClick?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
     onMouseOver?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
@@ -49,7 +49,7 @@ const TextArea: React.FC< TextAreaProps > = ( {
             // create fake event to mimic textarea behavior
             const fakeEvent = {
                 target: { name, value: content },
-            } as unknown as ChangeEvent< HTMLTextAreaElement >;
+            } as ChangeEvent< HTMLTextAreaElement >;
             onChange( fakeEvent );
         }
     };

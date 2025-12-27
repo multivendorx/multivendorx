@@ -330,7 +330,7 @@ interface InputField {
             label: string;
             placeholder?: string;
         }[];
-    }
+    };
     link?: string;
 }
 
@@ -359,9 +359,7 @@ type SettingValue =
     | boolean
     | string[]
     | number[]
-    | Record< string, unknown >
-    | null
-    | undefined;
+    | Record< string, unknown >;
 
 type Settings = Record< string, SettingValue >;
 
@@ -473,10 +471,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
     };
 
     const moduleEnabledChanged = (
-        moduleEnabled: string | undefined,
+        moduleEnabled: string ,
         dependentSetting: string = '',
         dependentPlugin: boolean = false,
-        dependentPluginName: string | undefined = ''
+        dependentPluginName: string  = ''
     ): boolean => {
         const popupData: PopupProps = {
             moduleName: '',
@@ -1510,18 +1508,21 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         normalizedValue = [ value ];
                     }
 
-                    const normalizedOptions =
-                        Array.isArray(setting[`${inputField.key}_options`])
-                            ? setting[`${inputField.key}_options`].map((opt) => ({
-                                ...opt,
-                                value: String(opt.value),
-                            }))
-                            : Array.isArray(inputField.options)
-                            ? inputField.options.map((opt) => ({
-                                ...opt,
-                                value: String(opt.value),
-                            }))
-                            : [];
+                    const normalizedOptions = Array.isArray(
+                        setting[ `${ inputField.key }_options` ]
+                    )
+                        ? setting[ `${ inputField.key }_options` ].map(
+                              ( opt ) => ( {
+                                  ...opt,
+                                  value: String( opt.value ),
+                              } )
+                          )
+                        : Array.isArray( inputField.options )
+                        ? inputField.options.map( ( opt ) => ( {
+                              ...opt,
+                              value: String( opt.value ),
+                          } ) )
+                        : [];
 
                     input = (
                         <MultiCheckBox
@@ -1559,7 +1560,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             rightContentClass="settings-metabox-description"
                             rightContent={ inputField.rightContent } // for place checkbox right
                             addNewBtn={ inputField.addNewBtnText }
-                            options={normalizedOptions}
+                            options={ normalizedOptions }
                             value={ normalizedValue }
                             proSetting={ isProSetting(
                                 inputField.proSetting ?? false
@@ -1604,13 +1605,13 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     String( moduleEnabled ?? '' )
                                 );
                             } }
-                            onOptionsChange={(options) => {
+                            onOptionsChange={ ( options ) => {
                                 settingChanged.current = true;
                                 updateSetting(
-                                    `${inputField.key}_options`,
+                                    `${ inputField.key }_options`,
                                     options
                                 );
-                            }}
+                            } }
                         />
                     );
                     break;
@@ -2244,8 +2245,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             appLocalizer={ appLocalizer }
                             methods={ inputField.modal ?? [] } //Array of available payment methods/options.
                             buttonEnable={ inputField.buttonEnable } //Flag to enable/disable action buttons in the UI.
-                            addNewBtn={inputField.addNewBtn}
-                            addNewTemplate={inputField.addNewTemplate ?? []}
+                            addNewBtn={ inputField.addNewBtn }
+                            addNewTemplate={ inputField.addNewTemplate ?? [] }
                             iconEnable={ inputField.iconEnable }
                             iconOptions={ inputField.iconOptions || [] }
                             value={ value || {} }

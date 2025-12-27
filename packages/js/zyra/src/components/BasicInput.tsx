@@ -114,7 +114,7 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
             if ( onChange ) {
                 const event = {
                     target: { value: key },
-                } as unknown as ChangeEvent< HTMLInputElement >;
+                } as ChangeEvent< HTMLInputElement >;
                 onChange( event );
             }
         };
@@ -134,7 +134,7 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
             if ( onChange ) {
                 const event = {
                     target: { value: '' },
-                } as unknown as ChangeEvent< HTMLInputElement >;
+                } as ChangeEvent< HTMLInputElement >;
                 onChange( event );
             }
         };

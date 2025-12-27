@@ -1,6 +1,11 @@
 import React, { ChangeEvent, useState, useEffect } from 'react';
 import '../styles/web/ColorSettingInput.scss';
 
+interface ColorSettingValue {
+    selectedPalette: string;
+    colors: Partial< CustomColors >;
+}
+
 interface CustomColors {
     // themeColor: string;
     // heading: string,
@@ -39,7 +44,9 @@ interface ColorSettingProps {
     predefinedOptions: PaletteOption[];
     images: ImagePaletteOption[];
     value?: { selectedPalette: string; colors: Partial< CustomColors > }; // object from DB
-    onChange?: ( e: { target: { name: string; value: unknown } } ) => void;
+    onChange?: ( e: {
+        target: { name: string; value: ColorSettingValue };
+    } ) => void;
     idPrefix?: string;
     showPreview?: boolean;
 }

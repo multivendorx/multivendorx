@@ -17,7 +17,7 @@ interface SelectOption {
 }
 
 interface Setting {
-    [ key: string ]: string | SelectOption[] | boolean | number | undefined;
+    [ key: string ]: string | SelectOption[] | boolean | number ;
 }
 
 interface AppLocalizer {

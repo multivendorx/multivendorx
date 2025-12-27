@@ -31,76 +31,82 @@ interface ShortCodeTableProps {
     icon?: string; // Icon as string
 }
 
-const ShortCodeTable: React.FC<ShortCodeTableProps> = (props) => {
+const ShortCodeTable: React.FC< ShortCodeTableProps > = ( props ) => {
     const { descClass, description, options, optionLabel, icon } = props;
 
-    const handleCopy = (text: string) => {
-        navigator.clipboard.writeText(text);
+    const handleCopy = ( text: string ) => {
+        navigator.clipboard.writeText( text );
     };
 
     return (
         <>
-            {options.map((option, index) => (
-                <div className="shortcode-wrapper" key={option.label || index}>
+            { options.map( ( option, index ) => (
+                <div
+                    className="shortcode-wrapper"
+                    key={ option.label || index }
+                >
                     <div className="shortcode-details">
                         <div className="shortcode-title">
-                            {option.name} - <code>{option.label}</code>
-                            {icon && option.label && (
+                            { option.name } - <code>{ option.label }</code>
+                            { icon && option.label && (
                                 <i
                                     className="adminlib-vendor-form-copy"
-                                    onClick={() =>
-                                        option.label && handleCopy(option.label)
+                                    onClick={ () =>
+                                        option.label &&
+                                        handleCopy( option.label )
                                     }
                                 ></i>
-                            )}
+                            ) }
                         </div>
 
-                        <div className="des">{option.desc}</div>
+                        <div className="des">{ option.desc }</div>
                     </div>
-
 
                     <div className="shortcode-table">
                         <table>
-                            {option.arguments && option.arguments.length > 0 && (
-                                <thead>
-                                    <tr>
-                                        <th>Attribute</th>
-                                        <th>What it controls</th>
-                                        <th>Available options</th>
-                                        <th>Example</th>
-                                    </tr>
-                                </thead>
-                            )}
-                            <tbody>
-                                {Array.isArray(option.arguments) &&
-                                    option.arguments.length > 0 ? (
-                                    option.arguments.map((arg, i) => (
-                                        <tr key={i}>
-                                            <td><b>{arg.attribute}</b></td>
-                                            <td>{arg.description}</td>
-                                            <td>{arg.accepted}</td>
-                                            <td>{arg.default}</td>
+                            { option.arguments &&
+                                option.arguments.length > 0 && (
+                                    <thead>
+                                        <tr>
+                                            <th>Attribute</th>
+                                            <th>What it controls</th>
+                                            <th>Available options</th>
+                                            <th>Example</th>
                                         </tr>
-                                    ))
+                                    </thead>
+                                ) }
+                            <tbody>
+                                { Array.isArray( option.arguments ) &&
+                                option.arguments.length > 0 ? (
+                                    option.arguments.map( ( arg, i ) => (
+                                        <tr key={ i }>
+                                            <td>
+                                                <b>{ arg.attribute }</b>
+                                            </td>
+                                            <td>{ arg.description }</td>
+                                            <td>{ arg.accepted }</td>
+                                            <td>{ arg.default }</td>
+                                        </tr>
+                                    ) )
                                 ) : (
                                     <tr>
-                                        <td colSpan={4} className="no-args">
+                                        <td colSpan={ 4 } className="no-args">
                                             No arguments required
                                         </td>
                                     </tr>
-                                )}
+                                ) }
                             </tbody>
                         </table>
                     </div>
                 </div>
-            ))}
+            ) ) }
 
-            {description && (
+            { description && (
                 <p
-                    className={descClass}
-                    dangerouslySetInnerHTML={{ __html: description }}
+                    className={ descClass }
+                    dangerouslySetInnerHTML={ { __html: description } }
                 />
-            )}
+            ) }
         </>
     );
 };

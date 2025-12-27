@@ -227,7 +227,7 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
                             scroll={ { enabled: true } }
                             maxDate={ new Date() }
                             onChange={ handleDateChange }
-                            rangeColors={['var(--colorPrimary)']}
+                            rangeColors={ [ 'var(--colorPrimary)' ] }
                         />
                     </div>
                 ) }
