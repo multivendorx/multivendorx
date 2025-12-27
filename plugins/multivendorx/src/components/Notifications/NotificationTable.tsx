@@ -43,7 +43,7 @@ const NotificationTable = (React.FC = () => {
 				setError(__('Failed to load total rows', 'multivendorx'));
 			});
 	}, []);
-	console.log(data);
+
 	useEffect(() => {
 		const currentPage = pagination.pageIndex + 1;
 		const rowsPerPage = pagination.pageSize;

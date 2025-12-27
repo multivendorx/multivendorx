@@ -119,17 +119,21 @@ class Notifications extends \WP_REST_Controller {
             $events_notifications = $request->get_param( 'events' );
 
             if ( $header_notifications ) {
+                $args = array(
+                    'limit'    => 10,
+                    'offset'   => 1,
+                );
                 $store_id = $request->get_param( 'store_id' );
-                $results  = MultiVendorX()->notifications->get_all_notifications( ! empty( $store_id ) ? $store_id : null );
+                $results  = MultiVendorX()->notifications->get_all_notifications( ! empty( $store_id ) ? $store_id : null, $args );
 
                 $formated_notifications = array();
 
                 foreach ( $results as $row ) {
                     $formated_notifications[] = array(
-                        'id'      => (int) $row->id,
+                        'id'      => (int) $row['id'],
                         'icon'    => 'adminlib-cart',
-                        'title'   => $row->title,
-                        'message' => $row->message,
+                        'title'   => $row['title'],
+                        'message' => $row['message'],
                         'time'    => $this->time_ago( $row->created_at ),
                     );
                 }

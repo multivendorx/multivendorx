@@ -871,7 +871,7 @@ class Notifications {
                 $where[] = "category = '" . esc_sql( $args['category'] ) . "'";
             }
 
-            if ( isset( $args['store_id'] ) ) {
+            if ( isset( $args['store_id'] ) && ! empty( $args['store_id'] ) ) {
                 $where[] = "store_id = '" . esc_sql( $args['store_id'] ) . "'";
             }
 

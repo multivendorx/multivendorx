@@ -13,7 +13,7 @@ const HeaderNotifications = () => {
 			url: getApiLink(appLocalizer, 'notifications'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
-				header: true,
+				header: true
 			},
 		})
 			.then((response) => {
