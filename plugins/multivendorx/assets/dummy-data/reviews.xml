@@ -1,0 +1,51 @@
+<reviews>
+    <review>
+        <reviewer>John Doe</reviewer>
+        <email>john@example.com</email>
+        <rating>5</rating>
+        <comment>Excellent quality, totally worth the price.</comment>
+    </review>
+
+    <review>
+        <reviewer>Priya Sharma</reviewer>
+        <email>priya@gmail.com</email>
+        <rating>4</rating>
+        <comment>Good product but delivery was slightly late.</comment>
+    </review>
+
+    <review>
+        <reviewer>Rahul Verma</reviewer>
+        <email>rahul@gmail.com</email>
+        <rating>5</rating>
+        <comment>Highly recommended! Great quality.</comment>
+    </review>
+
+    <review>
+        <reviewer>Arjun Mehta</reviewer>
+        <email>arjun@gmail.com</email>
+        <rating>5</rating>
+        <comment>Excellent product quality!</comment>
+    </review>
+
+    <review>
+        <reviewer>Neha Sharma</reviewer>
+        <email>neha@gmail.com</email>
+        <rating>4</rating>
+        <comment>Very good but delivery was slow.</comment>
+    </review>
+
+    <review>
+        <reviewer>Ravi Kumar</reviewer>
+        <email>ravi@gmail.com</email>
+        <rating>5</rating>
+        <comment>Highly recommended seller.</comment>
+    </review>
+
+    <review>
+        <reviewer>Pooja Verma</reviewer>
+        <email>pooja@gmail.com</email>
+        <rating>3</rating>
+        <comment>Product is okay for the price.</comment>
+    </review>
+
+</reviews>

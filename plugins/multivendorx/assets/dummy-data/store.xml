@@ -1,0 +1,85 @@
+<stores>
+    <store>
+        <name>Demo Electronics</name>
+        <slug>demo-electronics</slug>
+        <description>Best electronic gadgets store</description>
+        <owner_index>0</owner_index>
+        <status>active</status>
+        <phone>9876543210</phone>
+        <address_1>123 Market Street</address_1>
+        <city>Kolkata</city>
+        <state>WB</state>
+        <country>IN</country>
+        <postcode>700001</postcode>
+    </store>
+
+    <store>
+        <name>Fashion Hub</name>
+        <slug>fashion-hub</slug>
+        <description>Trendy fashion products</description>
+        <owner_index>1</owner_index>
+        <status>active</status>
+        <phone>9998887777</phone>
+        <address_1>Park Street</address_1>
+        <city>Kolkata</city>
+        <state>WB</state>
+        <country>IN</country>
+        <postcode>700016</postcode>
+    </store>
+
+    <store>
+        <name>Gadget World</name>
+        <slug>gadget-world</slug>
+        <description>Latest gadgets and accessories</description>
+        <owner_index>0</owner_index>
+        <status>active</status>
+        <phone>8887776665</phone>
+        <address_1>Salt Lake</address_1>
+        <city>Kolkata</city>
+        <state>WB</state>
+        <country>IN</country>
+        <postcode>700091</postcode>
+    </store>
+
+    <store>
+        <name>Tech World</name>
+        <slug>tech-world</slug>
+        <description>Electronics and smart gadgets</description>
+        <owner_index>0</owner_index>
+        <status>active</status>
+        <phone>9876500011</phone>
+        <address_1>MG Road</address_1>
+        <city>Bangalore</city>
+        <state>KA</state>
+        <country>IN</country>
+        <postcode>560001</postcode>
+    </store>
+
+    <store>
+        <name>Fashion Villa</name>
+        <slug>fashion-villa</slug>
+        <description>Trendy fashion store</description>
+        <owner_index>1</owner_index>
+        <status>active</status>
+        <phone>9898989898</phone>
+        <address_1>Link Road</address_1>
+        <city>Mumbai</city>
+        <state>MH</state>
+        <country>IN</country>
+        <postcode>400001</postcode>
+    </store>
+
+    <store>
+        <name>Home Hub</name>
+        <slug>home-hub</slug>
+        <description>Home essentials and decor</description>
+        <owner_index>2</owner_index>
+        <status>active</status>
+        <phone>9123456789</phone>
+        <address_1>Sector 21</address_1>
+        <city>Noida</city>
+        <state>UP</state>
+        <country>IN</country>
+        <postcode>201301</postcode>
+    </store>
+</stores>

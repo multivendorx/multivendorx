@@ -1,0 +1,150 @@
+<products>
+    <product>
+        <name>Wireless Headphones</name>
+        <slug>wireless-headphones</slug>
+        <description>High quality wireless headphones</description>
+        <short_description>Bluetooth headphones</short_description>
+        <price>2999</price>
+        <sale_price>2499</sale_price>
+        <sku>WH-001</sku>
+        <type>simple</type>
+        <status>publish</status>
+        <store_index>0</store_index>
+
+        <categories>
+            <category>12</category>
+        </categories>
+
+        <tags>
+            <tag>electronics</tag>
+            <tag>audio</tag>
+        </tags>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>20</quantity>
+            <status>instock</status>
+        </stock>
+    </product>
+
+    <product>
+        <name>Smart Watch</name>
+        <slug>smart-watch</slug>
+        <description>Fitness tracking smart watch</description>
+        <short_description>Heart rate and steps tracker</short_description>
+        <price>3999</price>
+        <sale_price>3499</sale_price>
+        <sku>SW-002</sku>
+        <type>simple</type>
+        <status>publish</status>
+        <store_index>0</store_index>
+
+        <categories>
+            <category>12</category>
+        </categories>
+
+        <tags>
+            <tag>electronics</tag>
+            <tag>watch</tag>
+        </tags>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>15</quantity>
+            <status>instock</status>
+        </stock>
+    </product>
+
+    <product>
+        <name>Men Cotton T-Shirt</name>
+        <slug>men-cotton-tshirt</slug>
+        <description>Soft cotton daily wear t-shirt</description>
+        <short_description>Comfort fit</short_description>
+        <price>799</price>
+        <sale_price>699</sale_price>
+        <sku>TS-100</sku>
+        <type>simple</type>
+        <status>publish</status>
+        <store_index>1</store_index>
+
+        <categories>
+            <category>22</category>
+        </categories>
+
+        <tags>
+            <tag>fashion</tag>
+            <tag>clothing</tag>
+        </tags>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>25</quantity>
+            <status>instock</status>
+        </stock>
+    </product>
+    
+    <product>
+        <name>Bluetooth Speaker</name>
+        <slug>bluetooth-speaker</slug>
+        <description>Portable bluetooth speaker</description>
+        <short_description>Loud and clear sound</short_description>
+        <price>1999</price>
+        <sale_price>1499</sale_price>
+        <sku>SPK-001</sku>
+        <type>simple</type>
+        <status>publish</status>
+        <store_index>0</store_index>
+        <categories><category>12</category></categories>
+        <tags><tag>electronics</tag><tag>audio</tag></tags>
+        <stock><manage>true</manage><quantity>30</quantity><status>instock</status></stock>
+    </product>
+
+    <product>
+        <name>Smart Watch Pro</name>
+        <slug>smart-watch-pro</slug>
+        <description>Advanced fitness smartwatch</description>
+        <short_description>Fitness and health tracking</short_description>
+        <price>4999</price>
+        <sale_price>4499</sale_price>
+        <sku>SW-202</sku>
+        <type>simple</type>
+        <status>publish</status>
+        <store_index>0</store_index>
+        <categories><category>12</category></categories>
+        <tags><tag>fitness</tag><tag>watch</tag></tags>
+        <stock><manage>true</manage><quantity>25</quantity><status>instock</status></stock>
+    </product>
+
+    <product>
+        <name>Men Denim Jacket</name>
+        <slug>men-denim-jacket</slug>
+        <description>Stylish winter jacket</description>
+        <short_description>Denim jacket</short_description>
+        <price>2499</price>
+        <sale_price>1999</sale_price>
+        <sku>JKT-101</sku>
+        <type>simple</type>
+        <status>publish</status>
+        <store_index>1</store_index>
+        <categories><category>22</category></categories>
+        <tags><tag>fashion</tag><tag>winter</tag></tags>
+        <stock><manage>true</manage><quantity>40</quantity><status>instock</status></stock>
+    </product>
+
+    <product>
+        <name>Wooden Study Table</name>
+        <slug>wooden-study-table</slug>
+        <description>Premium wooden study table</description>
+        <short_description>Strong and durable</short_description>
+        <price>6999</price>
+        <sale_price>6499</sale_price>
+        <sku>TABLE-01</sku>
+        <type>simple</type>
+        <status>publish</status>
+        <store_index>2</store_index>
+        <categories><category>30</category></categories>
+        <tags><tag>furniture</tag><tag>home</tag></tags>
+        <stock><manage>true</manage><quantity>10</quantity><status>instock</status></stock>
+    </product>
+
+</products>

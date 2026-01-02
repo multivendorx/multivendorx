@@ -1,4 +1,16 @@
 import { __ } from '@wordpress/i18n';
+
+const productTypes = [
+    { key: 'simple', label: 'Simple (Default)', value: 'simple' },
+    { key: 'booking', label: 'Booking', value: 'booking', pro: true },
+    { key: 'rental', label: 'Rental', value: 'rental', pro: true },
+    { key: 'auction', label: 'Auction', value: 'auction', pro: true },
+    { key: 'appointment', label: 'Appointment', value: 'appointment', pro: true },
+    { key: 'bundle', label: 'Bundle', value: 'bundle', pro: true },
+    { key: 'subscription', label: 'Subscription', value: 'subscription', pro: true },
+    { key: 'gift_card', label: 'Gift Card', value: 'gift_card', pro: true },
+];
+console.log(appLocalizer);
 export default {
     id: 'development-tools',
     priority: 3,
@@ -38,16 +50,59 @@ export default {
             desc: __('', 'multivendorx'),
         },
         {
-			type: 'button',
-			name: __('Import dummy data', 'multivendorx'),
-			label: __('Import Dummy Data', 'multivendorx'),
-			desc: __(
-				'Import Dummy Data for testing purpose.',
-				'multivendorx'
-			),
-			apilink: 'import-dummy-data',
-			method: 'POST'
-		},
+            key: 'import_dummy_data',
+            type: 'do-action-btn',
+            value: __('Import Dummy Data', 'multivendorx'),
+            label: __('Import Dummy Data', 'multivendorx'),
+            desc: __('Import dummy data for testing purpose. This will create store owners, stores, products, and orders.', 'multivendorx'),
+            apilink: 'import-dummy-data',
+            parameter: 'action',
+            interval: 1000,
+            successMessage: __('Dummy data imported successfully!', 'multivendorx'),
+            failureMessage: __('Failed to import dummy data.', 'multivendorx'),
+            tasks: [
+                { 
+                    action: 'import_store_owners', 
+                    message: __('Importing store owners...', 'multivendorx'),
+                    cacheKey: 'store_owners',
+                    successMessage: __('Store owners imported', 'multivendorx'),
+                    failureMessage: __('Failed to import store owners', 'multivendorx')
+                },
+                { 
+                    action: 'import_stores', 
+                    message: __('Creating stores...', 'multivendorx'),
+                    cacheKey: 'store_ids',
+                    successMessage: __('Stores created', 'multivendorx'),
+                    failureMessage: __('Failed to create stores', 'multivendorx')
+                },
+                { 
+                    action: 'import_products', 
+                    message: __('Importing products...', 'multivendorx'),
+                    cacheKey: 'product_ids',
+                    successMessage: __('Products imported', 'multivendorx'),
+                    failureMessage: __('Failed to import products', 'multivendorx'),
+                    additionalData: (selectedProductType: any) => ({ product_type: selectedProductType || 'simple' }),
+                },
+                { 
+                    action: 'import_commissions', 
+                    message: __('Creating commissions...', 'multivendorx'),
+                    successMessage: __('Commissions created', 'multivendorx'),
+                    failureMessage: __('Failed to create commissions', 'multivendorx')
+                },
+                { 
+                    action: 'import_orders', 
+                    message: __('Creating orders...', 'multivendorx'),
+                    successMessage: __('Orders created', 'multivendorx'),
+                    failureMessage: __('Failed to create orders', 'multivendorx')
+                },
+                { 
+                    action: 'import_reviews', 
+                    message: __('Creating reviews...', 'multivendorx'),
+                    successMessage: __('Reviews created', 'multivendorx'),
+                    failureMessage: __('Failed to create reviews', 'multivendorx')
+                }
+            ],
+        },
         {
             key: 'default_pages',
             type: 'button',

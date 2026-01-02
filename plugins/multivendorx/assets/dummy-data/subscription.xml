@@ -1,0 +1,78 @@
+<products type="subscription">
+
+    <product>
+        <store_index>0</store_index>
+        <name>Monthly Membership</name>
+        <description>Access to premium features billed monthly.</description>
+        <short_description>Monthly subscription</short_description>
+        <status>publish</status>
+        <sku>SUB-001</sku>
+        <price>299</price>
+
+        <meta>
+            <billing_period>month</billing_period>
+            <billing_interval>1</billing_interval>
+        </meta>
+    </product>
+
+    <product>
+        <store_index>1</store_index>
+        <name>Quarterly Membership</name>
+        <description>Premium access billed every 3 months.</description>
+        <short_description>Quarterly subscription</short_description>
+        <status>publish</status>
+        <sku>SUB-002</sku>
+        <price>799</price>
+
+        <meta>
+            <billing_period>month</billing_period>
+            <billing_interval>3</billing_interval>
+        </meta>
+    </product>
+
+    <product>
+        <store_index>2</store_index>
+        <name>Annual Membership</name>
+        <description>Best value yearly subscription plan.</description>
+        <short_description>Yearly subscription</short_description>
+        <status>publish</status>
+        <sku>SUB-003</sku>
+        <price>2999</price>
+
+        <meta>
+            <billing_period>year</billing_period>
+            <billing_interval>1</billing_interval>
+        </meta>
+    </product>
+
+    <product>
+        <store_index>0</store_index>
+        <name>Premium Support Add-on</name>
+        <description>24/7 priority customer support.</description>
+        <short_description>Support subscription</short_description>
+        <status>publish</status>
+        <sku>SUB-004</sku>
+        <price>199</price>
+
+        <meta>
+            <billing_period>month</billing_period>
+            <billing_interval>1</billing_interval>
+        </meta>
+    </product>
+
+    <product>
+        <store_index>1</store_index>
+        <name>Enterprise Plan</name>
+        <description>Advanced tools and priority services for businesses.</description>
+        <short_description>Enterprise subscription</short_description>
+        <status>publish</status>
+        <sku>SUB-005</sku>
+        <price>9999</price>
+
+        <meta>
+            <billing_period>year</billing_period>
+            <billing_interval>1</billing_interval>
+        </meta>
+    </product>
+
+</products>

@@ -1,0 +1,197 @@
+<products type="bundle">
+
+    <product>
+        <store_index>0</store_index>
+        <name>Starter Essentials Bundle</name>
+        <slug>starter-essentials-bundle</slug>
+        <description>Perfect starter kit including daily use products</description>
+        <short_description>Basic essentials bundle</short_description>
+        <status>publish</status>
+        <sku>BUNDLE-001</sku>
+
+        <meta>
+            <bundled_products>
+                <product>
+                    <product_id>101</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>102</product_id>
+                    <quantity>2</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>103</product_id>
+                    <quantity>1</quantity>
+                    <optional>true</optional>
+                </product>
+            </bundled_products>
+        </meta>
+
+        <categories>
+            <category>80</category>
+        </categories>
+
+        <tags>
+            <tag>bundle</tag>
+            <tag>starter</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Fitness Combo Pack</name>
+        <slug>fitness-combo-pack</slug>
+        <description>Fitness essentials combo pack</description>
+        <short_description>Workout bundle</short_description>
+        <status>publish</status>
+        <sku>BUNDLE-002</sku>
+
+        <meta>
+            <bundled_products>
+                <product>
+                    <product_id>201</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>202</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>203</product_id>
+                    <quantity>1</quantity>
+                    <optional>true</optional>
+                </product>
+            </bundled_products>
+        </meta>
+
+        <categories>
+            <category>81</category>
+        </categories>
+
+        <tags>
+            <tag>fitness</tag>
+            <tag>bundle</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>2</store_index>
+        <name>Office Productivity Pack</name>
+        <slug>office-productivity-pack</slug>
+        <description>Office essentials for productivity</description>
+        <short_description>Work essentials bundle</short_description>
+        <status>publish</status>
+        <sku>BUNDLE-003</sku>
+
+        <meta>
+            <bundled_products>
+                <product>
+                    <product_id>301</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>302</product_id>
+                    <quantity>2</quantity>
+                    <optional>true</optional>
+                </product>
+                <product>
+                    <product_id>303</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+            </bundled_products>
+        </meta>
+
+        <categories>
+            <category>82</category>
+        </categories>
+
+        <tags>
+            <tag>office</tag>
+            <tag>productivity</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>0</store_index>
+        <name>Home Essentials Pack</name>
+        <slug>home-essentials-pack</slug>
+        <description>Daily home utility bundle</description>
+        <short_description>Home essentials</short_description>
+        <status>publish</status>
+        <sku>BUNDLE-004</sku>
+
+        <meta>
+            <bundled_products>
+                <product>
+                    <product_id>401</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>402</product_id>
+                    <quantity>2</quantity>
+                    <optional>true</optional>
+                </product>
+            </bundled_products>
+        </meta>
+
+        <categories>
+            <category>83</category>
+        </categories>
+
+        <tags>
+            <tag>home</tag>
+            <tag>bundle</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Electronics Mega Bundle</name>
+        <slug>electronics-mega-bundle</slug>
+        <description>High value electronics combo</description>
+        <short_description>Electronics bundle</short_description>
+        <status>publish</status>
+        <sku>BUNDLE-005</sku>
+
+        <meta>
+            <bundled_products>
+                <product>
+                    <product_id>501</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>502</product_id>
+                    <quantity>1</quantity>
+                    <optional>false</optional>
+                </product>
+                <product>
+                    <product_id>503</product_id>
+                    <quantity>1</quantity>
+                    <optional>true</optional>
+                </product>
+            </bundled_products>
+        </meta>
+
+        <categories>
+            <category>84</category>
+        </categories>
+
+        <tags>
+            <tag>electronics</tag>
+            <tag>bundle</tag>
+        </tags>
+    </product>
+
+</products>

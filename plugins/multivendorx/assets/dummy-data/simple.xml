@@ -1,0 +1,142 @@
+<products type="simple">
+
+    <product>
+        <store_index>0</store_index>
+        <name>Wireless Headphones</name>
+        <slug>wireless-headphones</slug>
+        <description>High quality wireless headphones with noise cancellation.</description>
+        <short_description>Bluetooth headphones</short_description>
+        <status>publish</status>
+        <sku>SIMPLE-001</sku>
+        <price>2999</price>
+        <sale_price>2499</sale_price>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>25</quantity>
+            <status>instock</status>
+        </stock>
+
+        <categories>
+            <category>10</category>
+        </categories>
+
+        <tags>
+            <tag>electronics</tag>
+            <tag>audio</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Men Cotton T-Shirt</name>
+        <slug>men-cotton-tshirt</slug>
+        <description>Soft cotton T-shirt for daily wear</description>
+        <short_description>Comfort fit T-shirt</short_description>
+        <status>publish</status>
+        <sku>SIMPLE-002</sku>
+        <price>799</price>
+        <sale_price>699</sale_price>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>50</quantity>
+            <status>instock</status>
+        </stock>
+
+        <categories>
+            <category>22</category>
+        </categories>
+
+        <tags>
+            <tag>fashion</tag>
+            <tag>clothing</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>2</store_index>
+        <name>Bluetooth Speaker</name>
+        <slug>bluetooth-speaker</slug>
+        <description>Portable Bluetooth speaker with deep bass</description>
+        <short_description>Portable speaker</short_description>
+        <status>publish</status>
+        <sku>SIMPLE-003</sku>
+        <price>1999</price>
+        <sale_price>1499</sale_price>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>30</quantity>
+            <status>instock</status>
+        </stock>
+
+        <categories>
+            <category>12</category>
+        </categories>
+
+        <tags>
+            <tag>audio</tag>
+            <tag>speaker</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>0</store_index>
+        <name>Office Chair</name>
+        <slug>office-chair</slug>
+        <description>Ergonomic office chair with lumbar support</description>
+        <short_description>Office chair</short_description>
+        <status>publish</status>
+        <sku>SIMPLE-004</sku>
+        <price>4599</price>
+        <sale_price>3999</sale_price>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>15</quantity>
+            <status>instock</status>
+        </stock>
+
+        <categories>
+            <category>30</category>
+        </categories>
+
+        <tags>
+            <tag>furniture</tag>
+            <tag>office</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Smart LED Bulb</name>
+        <slug>smart-led-bulb</slug>
+        <description>Wi-Fi enabled smart LED bulb</description>
+        <short_description>Smart lighting</short_description>
+        <status>publish</status>
+        <sku>SIMPLE-005</sku>
+        <price>899</price>
+        <sale_price>699</sale_price>
+
+        <stock>
+            <manage>true</manage>
+            <quantity>40</quantity>
+            <status>instock</status>
+        </stock>
+
+        <categories>
+            <category>40</category>
+        </categories>
+
+        <tags>
+            <tag>smart-home</tag>
+            <tag>lighting</tag>
+        </tags>
+    </product>
+
+</products>

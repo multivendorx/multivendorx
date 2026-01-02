@@ -108,52 +108,101 @@ class PaypalPayout {
      * @return void
      */
     public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null ) {
+
+        file_put_contents(
+            plugin_dir_path(__FILE__) . '/paypal-debug.log',
+            "\n==== PAYMENT START ====\n" .
+            "Store ID: $store_id\nAmount: $amount\nOrder ID: $order_id\n",
+            FILE_APPEND
+        );
+    
         $payment_settings = MultiVendorX()->setting->get_setting( 'payment_methods', array() );
         $paypal_settings  = $payment_settings['paypal-payout'] ?? null;
-        if ( $paypal_settings && ! empty( $paypal_settings['enable'] ) ) {
-            $status         = 'failed';
-            $store          = new Store( $store_id );
-            $receiver_email = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) === 'paypal-payout'
-                                ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['paypal_email'] )
-                                : '';
-            $client_id      = $paypal_settings['client_id'] ?? '';
-            $client_secret  = $paypal_settings['client_secret'] ?? '';
-            if ( $receiver_email && $client_id && $client_secret ) {
-                $sandbox  = ( 'sandbox' === $paypal_settings['payment_mode'] );
-                $currency = get_woocommerce_currency();
-
-                // 1. access token
-                $access_token = $this->get_paypal_access_token( $client_id, $client_secret, $sandbox );
-                if ( $access_token ) {
-                    // 2. create payout
-                    $payout_response = $this->create_paypal_payout(
-                        $access_token,
-                        $receiver_email,
-                        $amount,
-                        $currency,
-                        $store_id,
-                        $sandbox
-                    );
-
-                    // Success when batch id exists.
-                    if ( ! empty( $payout_response ) && ! empty( $payout_response['batch_header']['payout_batch_id'] ) ) {
-                        $status = 'success';
-                    }
-                }
-            }
-
-            do_action(
-                'multivendorx_after_payment_complete',
-                $store_id,
-                'Paypal Payout',
-                $status,        // :heavy_check_mark: dynamic status here
-                $order_id,
-                $transaction_id,
-                $note,
-                $amount
+    
+        if ( ! $paypal_settings ) {
+            file_put_contents(
+                plugin_dir_path(__FILE__) . '/paypal-debug.log',
+                "Paypal settings missing\n",
+                FILE_APPEND
             );
+            return;
         }
+    
+        $status = 'failed';
+    
+        $store          = new Store( $store_id );
+        $receiver_email = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) === 'paypal-payout'
+            ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['paypal_email'] )
+            : '';
+    
+        $client_id     = $paypal_settings['client_id'] ?? '';
+        $client_secret = $paypal_settings['client_secret'] ?? '';
+        $sandbox       = ( 'sandbox' === $paypal_settings['payment_mode'] );
+    
+        file_put_contents(
+            plugin_dir_path(__FILE__) . '/paypal-debug.log',
+            "Receiver: {$receiver_email}\nClient ID Exists: " . ( $client_id ? 'YES' : 'NO' ) .
+            "\nSandbox: " . ( $sandbox ? 'YES' : 'NO' ) . "\n",
+            FILE_APPEND
+        );
+    
+        if ( ! $receiver_email || ! $client_id || ! $client_secret ) {
+            file_put_contents(
+                plugin_dir_path(__FILE__) . '/paypal-debug.log',
+                "Missing required PayPal data\n",
+                FILE_APPEND
+            );
+            return;
+        }
+    
+        $access_token = $this->get_paypal_access_token( $client_id, $client_secret, $sandbox );
+    
+        file_put_contents(
+            plugin_dir_path(__FILE__) . '/paypal-debug.log',
+            "Access Token Response:\n" . print_r( $access_token, true ) . "\n",
+            FILE_APPEND
+        );
+    
+        if ( ! $access_token ) {
+            return;
+        }
+    
+        $payout_response = $this->create_paypal_payout(
+            $access_token,
+            $receiver_email,
+            $amount,
+            get_woocommerce_currency(),
+            $store_id,
+            $sandbox
+        );
+    
+        file_put_contents(
+            plugin_dir_path(__FILE__) . '/paypal-debug.log',
+            "Payout API Response:\n" . print_r( $payout_response, true ) . "\n",
+            FILE_APPEND
+        );
+    
+        if ( ! empty( $payout_response['batch_header']['payout_batch_id'] ) ) {
+            $status = 'success';
+        }
+    
+        do_action(
+            'multivendorx_after_payment_complete',
+            $store_id,
+            'Paypal Payout',
+            $status,
+            $order_id,
+            $transaction_id,
+            $note
+        );
+    
+        file_put_contents(
+            plugin_dir_path(__FILE__) . '/paypal-debug.log',
+            "FINAL STATUS: {$status}\n=========================\n",
+            FILE_APPEND
+        );
     }
+    
     /**
      * Get PayPal access token using client credentials
      *
@@ -164,30 +213,50 @@ class PaypalPayout {
      * @return string|bool access token or false on failure
      */
     private function get_paypal_access_token( $client_id, $client_secret, $sandbox = false ) {
-        $base_url = $sandbox
-            ? 'https://api.sandbox.paypal.com'
-            : 'https://api.paypal.com';
-        $args     = array(
+
+        $url = $sandbox
+            ? 'https://api.sandbox.paypal.com/v1/oauth2/token'
+            : 'https://api.paypal.com/v1/oauth2/token';
+    
+        $args = array(
             'method'  => 'POST',
+            'timeout' => 30,
             'headers' => array(
-                'Accept'          => 'application/json',
-                'Accept-Language' => 'en_US',
-                'Content-Type'    => 'application/x-www-form-urlencoded',
+                'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
+                'Content-Type'  => 'application/x-www-form-urlencoded',
+                'Accept'        => 'application/json',
             ),
             'body'    => 'grant_type=client_credentials',
-            'timeout' => 30,
         );
-        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-        $args['headers']['Authorization'] = 'Basic ' . base64_encode( $client_id . ':' . $client_secret );
-        $response                         = wp_remote_post( $base_url . '/v1/oauth2/token', $args );
+    
+        $response = wp_remote_post( $url, $args );
+    
         if ( is_wp_error( $response ) ) {
+            file_put_contents(
+                plugin_dir_path(__FILE__) . '/paypal-debug.log',
+                "ACCESS TOKEN ERROR: " . $response->get_error_message() . "\n",
+                FILE_APPEND
+            );
             return false;
         }
+    
+        $code = wp_remote_retrieve_response_code( $response );
         $body = wp_remote_retrieve_body( $response );
+    
+        file_put_contents(
+            plugin_dir_path(__FILE__) . '/paypal-debug.log',
+            "ACCESS TOKEN RAW RESPONSE ($code):\n$body\n",
+            FILE_APPEND
+        );
+    
         $data = json_decode( $body, true );
-
-        return ! empty( $data ) ? $data['access_token'] : false;
-    }
+    
+        if ( empty( $data['access_token'] ) ) {
+            return false;
+        }
+    
+        return $data['access_token'];
+    }    
 
     /**
      * Create PayPal payout

@@ -1,0 +1,157 @@
+<products>
+
+    <product>
+        <name>Doctor Consultation</name>
+        <slug>doctor-consultation</slug>
+        <description>Online consultation with certified doctor</description>
+        <short_description>15 min medical consultation</short_description>
+        <price>499</price>
+        <sale_price>399</sale_price>
+        <sku>APPT-001</sku>
+        <type>appointment</type>
+        <status>publish</status>
+        <store_index>0</store_index>
+
+        <appointment>
+            <duration>15</duration>
+            <duration_unit>minutes</duration_unit>
+            <buffer_time>5</buffer_time>
+            <max_participants>1</max_participants>
+            <availability>daily</availability>
+        </appointment>
+
+        <categories>
+            <category>45</category>
+        </categories>
+
+        <tags>
+            <tag>health</tag>
+            <tag>doctor</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <name>Online Fitness Training</name>
+        <slug>online-fitness-training</slug>
+        <description>One-on-one online fitness training session</description>
+        <short_description>Live fitness coaching</short_description>
+        <price>799</price>
+        <sale_price>699</sale_price>
+        <sku>APPT-002</sku>
+        <type>appointment</type>
+        <status>publish</status>
+        <store_index>1</store_index>
+
+        <appointment>
+            <duration>45</duration>
+            <duration_unit>minutes</duration_unit>
+            <buffer_time>10</buffer_time>
+            <max_participants>1</max_participants>
+            <availability>weekdays</availability>
+        </appointment>
+
+        <categories>
+            <category>46</category>
+        </categories>
+
+        <tags>
+            <tag>fitness</tag>
+            <tag>training</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <name>Career Counseling Session</name>
+        <slug>career-counseling-session</slug>
+        <description>Career guidance session with industry expert</description>
+        <short_description>Career & job guidance</short_description>
+        <price>999</price>
+        <sale_price>899</sale_price>
+        <sku>APPT-003</sku>
+        <type>appointment</type>
+        <status>publish</status>
+        <store_index>2</store_index>
+
+        <appointment>
+            <duration>30</duration>
+            <duration_unit>minutes</duration_unit>
+            <buffer_time>10</buffer_time>
+            <max_participants>1</max_participants>
+            <availability>weekends</availability>
+        </appointment>
+
+        <categories>
+            <category>47</category>
+        </categories>
+
+        <tags>
+            <tag>career</tag>
+            <tag>consulting</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <name>Online Yoga Session</name>
+        <slug>online-yoga-session</slug>
+        <description>Live guided yoga class</description>
+        <short_description>Morning yoga session</short_description>
+        <price>599</price>
+        <sale_price>499</sale_price>
+        <sku>APPT-004</sku>
+        <type>appointment</type>
+        <status>publish</status>
+        <store_index>1</store_index>
+
+        <appointment>
+            <duration>60</duration>
+            <duration_unit>minutes</duration_unit>
+            <buffer_time>15</buffer_time>
+            <max_participants>10</max_participants>
+            <availability>daily</availability>
+        </appointment>
+
+        <categories>
+            <category>48</category>
+        </categories>
+
+        <tags>
+            <tag>yoga</tag>
+            <tag>wellness</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <name>Business Consultation Call</name>
+        <slug>business-consultation-call</slug>
+        <description>One-on-one business strategy call</description>
+        <short_description>Business growth consultation</short_description>
+        <price>1499</price>
+        <sale_price>1299</sale_price>
+        <sku>APPT-005</sku>
+        <type>appointment</type>
+        <status>publish</status>
+        <store_index>0</store_index>
+
+        <appointment>
+            <duration>60</duration>
+            <duration_unit>minutes</duration_unit>
+            <buffer_time>15</buffer_time>
+            <max_participants>1</max_participants>
+            <availability>weekdays</availability>
+        </appointment>
+
+        <categories>
+            <category>49</category>
+        </categories>
+
+        <tags>
+            <tag>business</tag>
+            <tag>consulting</tag>
+        </tags>
+    </product>
+
+</products>

@@ -1,0 +1,147 @@
+<products type="booking">
+
+    <product>
+        <store_index>0</store_index>
+        <name>Luxury Hotel Room</name>
+        <slug>luxury-hotel-room</slug>
+        <description>Premium hotel room with sea view and all amenities.</description>
+        <short_description>Luxury hotel booking</short_description>
+        <status>publish</status>
+        <sku>BOOK-001</sku>
+        <price>2000</price>
+
+        <meta>
+            <booking_duration>1</booking_duration>
+            <booking_duration_unit>day</booking_duration_unit>
+            <max_persons>2</max_persons>
+            <min_persons>1</min_persons>
+            <booking_type>daily</booking_type>
+        </meta>
+
+        <categories>
+            <category>70</category>
+        </categories>
+
+        <tags>
+            <tag>hotel</tag>
+            <tag>luxury</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Conference Hall Booking</name>
+        <slug>conference-hall-booking</slug>
+        <description>Spacious conference hall for meetings and events</description>
+        <short_description>Corporate hall booking</short_description>
+        <status>publish</status>
+        <sku>BOOK-002</sku>
+        <price>5000</price>
+
+        <meta>
+            <booking_duration>4</booking_duration>
+            <booking_duration_unit>hour</booking_duration_unit>
+            <max_persons>50</max_persons>
+            <min_persons>10</min_persons>
+            <booking_type>hourly</booking_type>
+        </meta>
+
+        <categories>
+            <category>71</category>
+        </categories>
+
+        <tags>
+            <tag>conference</tag>
+            <tag>business</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>2</store_index>
+        <name>Vacation Home Rental</name>
+        <slug>vacation-home-rental</slug>
+        <description>Fully furnished vacation home for families</description>
+        <short_description>Holiday home booking</short_description>
+        <status>publish</status>
+        <sku>BOOK-003</sku>
+        <price>4500</price>
+
+        <meta>
+            <booking_duration>1</booking_duration>
+            <booking_duration_unit>day</booking_duration_unit>
+            <max_persons>6</max_persons>
+            <min_persons>2</min_persons>
+            <booking_type>daily</booking_type>
+        </meta>
+
+        <categories>
+            <category>72</category>
+        </categories>
+
+        <tags>
+            <tag>holiday</tag>
+            <tag>villa</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>0</store_index>
+        <name>Photography Studio Booking</name>
+        <slug>photography-studio-booking</slug>
+        <description>Professional studio for photoshoots</description>
+        <short_description>Studio rental</short_description>
+        <status>publish</status>
+        <sku>BOOK-004</sku>
+        <price>1200</price>
+
+        <meta>
+            <booking_duration>2</booking_duration>
+            <booking_duration_unit>hour</booking_duration_unit>
+            <max_persons>5</max_persons>
+            <min_persons>1</min_persons>
+            <booking_type>hourly</booking_type>
+        </meta>
+
+        <categories>
+            <category>73</category>
+        </categories>
+
+        <tags>
+            <tag>studio</tag>
+            <tag>photography</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Co-working Desk</name>
+        <slug>coworking-desk</slug>
+        <description>Flexible co-working desk booking</description>
+        <short_description>Shared workspace booking</short_description>
+        <status>publish</status>
+        <sku>BOOK-005</sku>
+        <price>500</price>
+
+        <meta>
+            <booking_duration>1</booking_duration>
+            <booking_duration_unit>day</booking_duration_unit>
+            <max_persons>1</max_persons>
+            <min_persons>1</min_persons>
+            <booking_type>daily</booking_type>
+        </meta>
+
+        <categories>
+            <category>74</category>
+        </categories>
+
+        <tags>
+            <tag>coworking</tag>
+            <tag>office</tag>
+        </tags>
+    </product>
+
+</products>

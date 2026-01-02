@@ -1,0 +1,139 @@
+<products type="gift_card">
+
+    <product>
+        <store_index>0</store_index>
+        <name>Gift Card ₹1000</name>
+        <slug>gift-card-1000</slug>
+        <description>Gift card worth ₹1000 usable on all products</description>
+        <short_description>₹1000 Gift Card</short_description>
+        <status>publish</status>
+        <sku>GIFT-001</sku>
+        <price>1000</price>
+
+        <meta>
+            <gift_amount>1000</gift_amount>
+            <expiry_days>365</expiry_days>
+            <is_virtual>true</is_virtual>
+        </meta>
+
+        <categories>
+            <category>90</category>
+        </categories>
+
+        <tags>
+            <tag>gift</tag>
+            <tag>voucher</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Gift Card ₹2000</name>
+        <slug>gift-card-2000</slug>
+        <description>Perfect gift for special occasions</description>
+        <short_description>₹2000 Gift Card</short_description>
+        <status>publish</status>
+        <sku>GIFT-002</sku>
+        <price>2000</price>
+
+        <meta>
+            <gift_amount>2000</gift_amount>
+            <expiry_days>365</expiry_days>
+            <is_virtual>true</is_virtual>
+        </meta>
+
+        <categories>
+            <category>90</category>
+        </categories>
+
+        <tags>
+            <tag>gift</tag>
+            <tag>voucher</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>2</store_index>
+        <name>Gift Card ₹5000</name>
+        <slug>gift-card-5000</slug>
+        <description>Premium gift card for premium shopping</description>
+        <short_description>₹5000 Gift Card</short_description>
+        <status>publish</status>
+        <sku>GIFT-003</sku>
+        <price>5000</price>
+
+        <meta>
+            <gift_amount>5000</gift_amount>
+            <expiry_days>365</expiry_days>
+            <is_virtual>true</is_virtual>
+        </meta>
+
+        <categories>
+            <category>90</category>
+        </categories>
+
+        <tags>
+            <tag>gift</tag>
+            <tag>voucher</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>0</store_index>
+        <name>Festival Gift Card</name>
+        <slug>festival-gift-card</slug>
+        <description>Special festival season gift card</description>
+        <short_description>Festival Gift</short_description>
+        <status>publish</status>
+        <sku>GIFT-004</sku>
+        <price>2500</price>
+
+        <meta>
+            <gift_amount>2500</gift_amount>
+            <expiry_days>180</expiry_days>
+            <is_virtual>true</is_virtual>
+        </meta>
+
+        <categories>
+            <category>90</category>
+        </categories>
+
+        <tags>
+            <tag>festival</tag>
+            <tag>gift</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Custom Value Gift Card</name>
+        <slug>custom-value-gift-card</slug>
+        <description>Choose your own gift amount</description>
+        <short_description>Flexible value gift card</short_description>
+        <status>publish</status>
+        <sku>GIFT-005</sku>
+        <price>0</price>
+
+        <meta>
+            <gift_amount>custom</gift_amount>
+            <min_amount>500</min_amount>
+            <max_amount>10000</max_amount>
+            <expiry_days>365</expiry_days>
+            <is_virtual>true</is_virtual>
+        </meta>
+
+        <categories>
+            <category>90</category>
+        </categories>
+
+        <tags>
+            <tag>gift</tag>
+            <tag>custom</tag>
+        </tags>
+    </product>
+
+</products>

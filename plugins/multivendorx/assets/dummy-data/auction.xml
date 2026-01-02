@@ -1,0 +1,152 @@
+<products type="auction">
+
+    <product>
+        <store_index>0</store_index>
+        <name>Vintage Watch Auction</name>
+        <slug>vintage-watch-auction</slug>
+        <description>Classic vintage wrist watch in excellent condition</description>
+        <short_description>Vintage luxury watch</short_description>
+        <status>publish</status>
+        <sku>AUCT-001</sku>
+        <type>auction</type>
+
+        <meta>
+            <start_price>1000</start_price>
+            <bid_increment>100</bid_increment>
+            <reserve_price>1500</reserve_price>
+            <buy_now_price>5000</buy_now_price>
+            <auction_start_date>2025-01-05 10:00:00</auction_start_date>
+            <auction_end_date>2025-12-31 23:59:59</auction_end_date>
+        </meta>
+
+        <categories>
+            <category>55</category>
+        </categories>
+
+        <tags>
+            <tag>vintage</tag>
+            <tag>watch</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Antique Wooden Chair</name>
+        <slug>antique-wooden-chair</slug>
+        <description>Handcrafted antique wooden chair from 1950s</description>
+        <short_description>Antique furniture auction</short_description>
+        <status>publish</status>
+        <sku>AUCT-002</sku>
+        <type>auction</type>
+
+        <meta>
+            <start_price>2000</start_price>
+            <bid_increment>200</bid_increment>
+            <reserve_price>3000</reserve_price>
+            <buy_now_price>8000</buy_now_price>
+            <auction_start_date>2025-01-10 09:00:00</auction_start_date>
+            <auction_end_date>2025-12-20 22:00:00</auction_end_date>
+        </meta>
+
+        <categories>
+            <category>56</category>
+        </categories>
+
+        <tags>
+            <tag>antique</tag>
+            <tag>furniture</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>2</store_index>
+        <name>Rare Comic Book</name>
+        <slug>rare-comic-book</slug>
+        <description>Limited edition rare comic book for collectors</description>
+        <short_description>Collector comic auction</short_description>
+        <status>publish</status>
+        <sku>AUCT-003</sku>
+        <type>auction</type>
+
+        <meta>
+            <start_price>500</start_price>
+            <bid_increment>50</bid_increment>
+            <reserve_price>1000</reserve_price>
+            <buy_now_price>3000</buy_now_price>
+            <auction_start_date>2025-01-15 12:00:00</auction_start_date>
+            <auction_end_date>2025-11-30 21:00:00</auction_end_date>
+        </meta>
+
+        <categories>
+            <category>57</category>
+        </categories>
+
+        <tags>
+            <tag>comic</tag>
+            <tag>collectible</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>0</store_index>
+        <name>Signed Cricket Bat</name>
+        <slug>signed-cricket-bat</slug>
+        <description>Cricket bat signed by international player</description>
+        <short_description>Sports memorabilia auction</short_description>
+        <status>publish</status>
+        <sku>AUCT-004</sku>
+        <type>auction</type>
+
+        <meta>
+            <start_price>3000</start_price>
+            <bid_increment>250</bid_increment>
+            <reserve_price>5000</reserve_price>
+            <buy_now_price>12000</buy_now_price>
+            <auction_start_date>2025-02-01 10:00:00</auction_start_date>
+            <auction_end_date>2025-12-15 20:00:00</auction_end_date>
+        </meta>
+
+        <categories>
+            <category>58</category>
+        </categories>
+
+        <tags>
+            <tag>sports</tag>
+            <tag>memorabilia</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Luxury Painting Artwork</name>
+        <slug>luxury-painting-artwork</slug>
+        <description>Original hand-painted luxury artwork</description>
+        <short_description>Art auction</short_description>
+        <status>publish</status>
+        <sku>AUCT-005</sku>
+        <type>auction</type>
+
+        <meta>
+            <start_price>10000</start_price>
+            <bid_increment>500</bid_increment>
+            <reserve_price>15000</reserve_price>
+            <buy_now_price>30000</buy_now_price>
+            <auction_start_date>2025-01-20 11:00:00</auction_start_date>
+            <auction_end_date>2025-12-25 18:00:00</auction_end_date>
+        </meta>
+
+        <categories>
+            <category>59</category>
+        </categories>
+
+        <tags>
+            <tag>art</tag>
+            <tag>painting</tag>
+        </tags>
+    </product>
+
+</products>

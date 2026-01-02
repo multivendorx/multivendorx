@@ -22,7 +22,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class CommissionUtil {
 
-
     /**
      * Get a single commission row from databse by using commission id.
      * Return stdClass object represent a single row.

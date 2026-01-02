@@ -1,0 +1,29 @@
+<orders>
+  <order>
+    <status>processing</status>
+    <billing>
+      <first_name>John</first_name>
+      <last_name>Doe</last_name>
+      <email>john@example.com</email>
+      <phone>9999999999</phone>
+      <address_1>Main Street</address_1>
+      <city>NY</city>
+      <postcode>10001</postcode>
+      <country>US</country>
+    </billing>
+
+    <items>
+      <item>
+        <product_index>0</product_index>
+        <quantity>2</quantity>
+        <subtotal>100</subtotal>
+        <total>100</total>
+      </item>
+    </items>
+
+    <shipping>
+      <method>Flat Rate</method>
+      <cost>10</cost>
+    </shipping>
+  </order>
+</orders>

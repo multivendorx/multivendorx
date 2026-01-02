@@ -1,0 +1,97 @@
+<stores>
+    <store>
+        <username>teststore1</username>
+        <password>dummyPass</password>
+        <firstname>Test</firstname>
+        <lastname>Store One</lastname>
+        <email>teststore1@gmail.com</email>
+        <nickname>TestStore1</nickname>
+        <images>
+            <image>
+                <src>https://picsum.photos/300/300?random=1</src>
+                <position>store</position>
+            </image>
+            <image>
+                <src>https://picsum.photos/1200/400?random=2</src>
+                <position>cover</position>
+            </image>
+        </images>
+    </store>
+
+    <store>
+        <username>teststore2</username>
+        <password>dummyPass</password>
+        <firstname>Test</firstname>
+        <lastname>Store Two</lastname>
+        <email>teststore2@gmail.com</email>
+        <nickname>TestStore2</nickname>
+        <images>
+            <image>
+                <src>https://picsum.photos/300/300?random=3</src>
+                <position>store</position>
+            </image>
+            <image>
+                <src>https://picsum.photos/1200/400?random=4</src>
+                <position>cover</position>
+            </image>
+        </images>
+    </store>
+    
+    <store>
+        <username>techworld</username>
+        <password>dummy123</password>
+        <firstname>Rohit</firstname>
+        <lastname>Sharma</lastname>
+        <email>techworld@gmail.com</email>
+        <nickname>TechWorld</nickname>
+        <images>
+            <image>
+                <src>https://picsum.photos/300/300?random=10</src>
+                <position>store</position>
+            </image>
+            <image>
+                <src>https://picsum.photos/1200/400?random=11</src>
+                <position>cover</position>
+            </image>
+        </images>
+    </store>
+
+    <store>
+        <username>fashionvilla</username>
+        <password>dummy123</password>
+        <firstname>Neha</firstname>
+        <lastname>Singh</lastname>
+        <email>fashionvilla@gmail.com</email>
+        <nickname>FashionVilla</nickname>
+        <images>
+            <image>
+                <src>https://picsum.photos/300/300?random=12</src>
+                <position>store</position>
+            </image>
+            <image>
+                <src>https://picsum.photos/1200/400?random=13</src>
+                <position>cover</position>
+            </image>
+        </images>
+    </store>
+
+    <store>
+        <username>homehub</username>
+        <password>dummy123</password>
+        <firstname>Amit</firstname>
+        <lastname>Kumar</lastname>
+        <email>homehub@gmail.com</email>
+        <nickname>HomeHub</nickname>
+        <images>
+            <image>
+                <src>https://picsum.photos/300/300?random=14</src>
+                <position>store</position>
+            </image>
+            <image>
+                <src>https://picsum.photos/1200/400?random=15</src>
+                <position>cover</position>
+            </image>
+        </images>
+    </store>
+
+</stores>

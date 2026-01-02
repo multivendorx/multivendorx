@@ -1,0 +1,142 @@
+<products type="rental">
+
+    <product>
+        <store_index>0</store_index>
+        <name>Bike Rental</name>
+        <slug>bike-rental</slug>
+        <description>Rent a bike on a daily basis</description>
+        <short_description>Bike rental</short_description>
+        <status>publish</status>
+        <sku>RENT-001</sku>
+        <price>500</price>
+
+        <meta>
+            <rental_unit>day</rental_unit>
+            <deposit>1000</deposit>
+            <min_rental_period>1</min_rental_period>
+            <max_rental_period>30</max_rental_period>
+        </meta>
+
+        <categories>
+            <category>100</category>
+        </categories>
+
+        <tags>
+            <tag>bike</tag>
+            <tag>rental</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Car Rental</name>
+        <slug>car-rental</slug>
+        <description>Self-drive car rental service</description>
+        <short_description>Car rental</short_description>
+        <status>publish</status>
+        <sku>RENT-002</sku>
+        <price>2500</price>
+
+        <meta>
+            <rental_unit>day</rental_unit>
+            <deposit>5000</deposit>
+            <min_rental_period>1</min_rental_period>
+            <max_rental_period>15</max_rental_period>
+        </meta>
+
+        <categories>
+            <category>101</category>
+        </categories>
+
+        <tags>
+            <tag>car</tag>
+            <tag>rental</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>2</store_index>
+        <name>Camera Rental</name>
+        <slug>camera-rental</slug>
+        <description>Professional DSLR camera rental</description>
+        <short_description>Camera on rent</short_description>
+        <status>publish</status>
+        <sku>RENT-003</sku>
+        <price>1500</price>
+
+        <meta>
+            <rental_unit>day</rental_unit>
+            <deposit>3000</deposit>
+            <min_rental_period>1</min_rental_period>
+            <max_rental_period>10</max_rental_period>
+        </meta>
+
+        <categories>
+            <category>102</category>
+        </categories>
+
+        <tags>
+            <tag>camera</tag>
+            <tag>rental</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>0</store_index>
+        <name>Sound System Rental</name>
+        <slug>sound-system-rental</slug>
+        <description>Professional sound system for events</description>
+        <short_description>Sound system on rent</short_description>
+        <status>publish</status>
+        <sku>RENT-004</sku>
+        <price>3000</price>
+
+        <meta>
+            <rental_unit>day</rental_unit>
+            <deposit>5000</deposit>
+            <min_rental_period>1</min_rental_period>
+            <max_rental_period>7</max_rental_period>
+        </meta>
+
+        <categories>
+            <category>103</category>
+        </categories>
+
+        <tags>
+            <tag>sound</tag>
+            <tag>equipment</tag>
+        </tags>
+    </product>
+
+
+    <product>
+        <store_index>1</store_index>
+        <name>Projector Rental</name>
+        <slug>projector-rental</slug>
+        <description>HD projector for meetings and events</description>
+        <short_description>Projector rental</short_description>
+        <status>publish</status>
+        <sku>RENT-005</sku>
+        <price>1800</price>
+
+        <meta>
+            <rental_unit>day</rental_unit>
+            <deposit>3500</deposit>
+            <min_rental_period>1</min_rental_period>
+            <max_rental_period>10</max_rental_period>
+        </meta>
+
+        <categories>
+            <category>104</category>
+        </categories>
+
+        <tags>
+            <tag>projector</tag>
+            <tag>rental</tag>
+        </tags>
+    </product>
+
+</products>
