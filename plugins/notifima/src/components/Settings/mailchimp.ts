@@ -5,7 +5,7 @@ export default {
     priority: 5,
     name: __( 'Mailchimp Integration', 'notifima' ),
     desc: __( 'Integrate Mailchimp for email marketing.', 'notifima' ),
-    icon: 'adminlib-mailchimp',
+    icon: 'adminfont-mailchimp',
     proDependent: true,
     submitUrl: 'settings',
     modal: [

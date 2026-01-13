@@ -179,9 +179,13 @@ module.exports = {
 
     resolve: {
         extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
-        modules: [ 'node_modules' ],
+        modules: [ 'node_modules',
+            //path.resolve( __dirname, '../../packages/js' ),
+         ],
+        //symlinks: true,
         alias: {
             '@': path.resolve( __dirname, './src' ), // So you can use "@/assets/..." in SCSS or imports
+            
         },
     },
 

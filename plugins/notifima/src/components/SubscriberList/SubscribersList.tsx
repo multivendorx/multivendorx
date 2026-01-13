@@ -37,7 +37,7 @@ const SubscribersList: React.FC = () => {
                     aria-labelledby="form-dialog-title"
                 >
                     <span
-                        className="admin-font adminlib-cross"
+                        className="admin-font adminfont-cross"
                         onClick={ () => setOpenDialog( false ) }
                     ></span>
                     <Popup />

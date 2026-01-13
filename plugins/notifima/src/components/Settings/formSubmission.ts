@@ -5,7 +5,7 @@ export default {
     priority: 3,
     name: __( 'Prompt Messages', 'notifima' ),
     desc: __( 'Manage post-form submission messages.', 'notifima' ),
-    icon: 'adminlib-submission-message',
+    icon: 'adminfont-submission-message',
     submitUrl: 'settings',
     modal: [
         {
@@ -19,11 +19,7 @@ export default {
             ),
             label: __( 'Successful form submission', 'notifima' ),
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'alert_email_exist',
             type: 'textarea',
@@ -35,11 +31,7 @@ export default {
             ),
             label: __( 'Repeated subscription alert', 'notifima' ),
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'valid_email',
             type: 'textarea',
@@ -50,11 +42,7 @@ export default {
             ),
             label: __( 'Email validation error', 'notifima' ),
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'alert_unsubscribe_message',
             type: 'textarea',
@@ -68,7 +56,7 @@ export default {
         {
             key: 'note_blocktext',
             type: 'blocktext',
-            label: 'no_label',
+            label: ' ',
             blocktext:
                 'Disclaimer – Loco Translator Compatibility: This plugin allows you to customize certain frontend text settings and descriptions. Default texts are Loco Translator-ready, but any changes made in the corresponding custom text box will no longer be available for translation via Loco Translator. Hence, please enter the customized text in your desired language only.',
         },

@@ -5,6 +5,6 @@ export default {
     priority: 10,
     name: __( "Faq's", 'notifima' ),
     desc: __( 'Instant solutions at hand.', 'notifima' ),
-    icon: 'adminlib-support',
+    icon: 'adminfont-support',
     modal: [],
 };

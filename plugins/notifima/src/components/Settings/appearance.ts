@@ -4,7 +4,7 @@ export default {
     priority: 1,
     name: __( 'Appearance', 'notifima' ),
     desc: __( 'Customize stock alert form.', 'notifima' ),
-    icon: 'adminlib-settings',
+    icon: 'adminfont-setting',
     submitUrl: 'settings',
     modal: [
         {
@@ -12,11 +12,7 @@ export default {
             type: 'notifima-form-customizer',
             label: __( 'Personalize Layout', 'notifima' ),
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'unsubscribe_button_text',
             type: 'text',
@@ -27,11 +23,7 @@ export default {
             ),
             placeholder: __( 'Unsubscribe', 'notifima' ),
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'is_guest_subscriptions_enable',
             type: 'checkbox',
@@ -66,11 +58,7 @@ export default {
             ],
             look: 'toggle',
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'display_lead_times',
             type: 'checkbox',
@@ -91,6 +79,11 @@ export default {
                     label: __( 'On backorder', 'notifima' ),
                     value: 'onbackorder',
                 },
+                // {
+                //     key: 'available',
+                //     label: __( 'available', 'notifima' ),
+                //     value: 'available',
+                // },
             ],
         },
         {
@@ -139,11 +132,7 @@ export default {
                 },
             ],
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'is_enable_no_interest',
             type: 'checkbox',
@@ -178,11 +167,7 @@ export default {
                 set: true,
             },
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'is_double_optin',
             type: 'checkbox',
@@ -207,7 +192,7 @@ export default {
                     value: 'is_double_optin',
                 },
             ],
-            proSetting: true,
+            proSetting: false, //turned false
             look: 'toggle',
         },
         {
@@ -225,11 +210,7 @@ export default {
             },
             proSetting: true,
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'is_recaptcha_enable',
             type: 'checkbox',
@@ -275,11 +256,7 @@ export default {
                 set: true,
             },
         },
-        {
-            key: 'separator_content',
-            type: 'section',
-            label: '',
-        },
+        
         {
             key: 'additional_alert_email',
             type: 'textarea',
@@ -293,7 +270,7 @@ export default {
         {
             key: 'note_blocktext',
             type: 'blocktext',
-            label: 'no_label',
+            label: ' ',
             blocktext:
                 'Disclaimer – Loco Translator Compatibility: This plugin allows you to customize certain frontend text settings and descriptions. Default texts are Loco Translator-ready, but any changes made in the corresponding custom text box will no longer be available for translation via Loco Translator. Hence, please enter the customized text in your desired language only.',
         },

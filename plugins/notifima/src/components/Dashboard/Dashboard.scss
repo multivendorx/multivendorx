@@ -1,0 +1,916 @@
+@use '../config.scss' as *;
+
+// admin tab
+
+.admin-tab {
+    .tabs-item .tab {
+        padding-top: 0;
+    }
+}
+
+// welcome section start
+.pro-banner-wrapper {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    .heading {
+        font-size: 1.75rem;
+        line-height: 2.313rem;
+        font-weight: 600;
+        color: #000000d1;
+    }
+
+    .description {
+        font-size: 0.9rem;
+        padding: 0.313rem 0;
+        margin-bottom: 2rem;
+        line-height: 1.313rem;
+    }
+
+    .button-wrapper {
+        display: flex;
+    }
+
+    a:hover {
+        color: #000;
+    }
+
+    img {
+        width: 11rem;
+    }
+}
+
+// welcome section end
+
+// section pro banner
+.pro-banner {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.313rem;
+    margin-top: 2rem;
+
+    .text {
+        font-size: 1.25rem;
+        color: #000;
+    }
+
+    .des {
+        padding-bottom: 0.813rem;
+    }
+}
+
+// pro banner end
+
+// .tab-titles {
+//     display: flex;
+//     gap: 1.313rem;
+//     // margin-bottom: 2.5rem;
+//     // padding-bottom: 0.5rem;
+//     // border-bottom: $border-light-small;
+
+//     .title {
+//         cursor: pointer;
+//         text-align: center;
+//         display: flex;
+//         flex-direction: column;
+//         gap: 0.313rem;
+//         align-items: center;
+//         background: #fff;
+//         padding: 1rem 1rem 0.313rem 1rem;
+//         min-width: 10%;
+
+
+//         .icon {
+//             font-size: 1.625rem;
+//         }
+
+//         p {
+//             font-size: .938rem;
+//             line-height: 1.5;
+//             color: #707070;
+//             font-weight: 500;
+
+//             i {
+//                 padding-right: 0.313rem;
+//                 font-size: 1.125rem;
+//             }
+//         }
+
+//         &.active {
+//             color: $theme-color;
+//             border-bottom: 0.126rem solid $theme-color;
+
+//             p {
+//                 color: $theme-color;
+//             }
+//         }
+//     }
+
+//     &.hover {
+//         .title {
+
+//             &:hover {
+//                 background: $theme-color;
+
+//                 i {
+//                     color: #fff;
+//                 }
+
+//                 p {
+//                     color: #fff;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
+// admin dashboard card design start
+.header {
+    padding: 1rem;
+    background: #fff;
+    margin-bottom: 0.625rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .title-wrapper {
+        .title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: $text-color;
+        }
+
+        img {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 0.313rem;
+            border: $border-light-small;
+            padding-right: 0.5rem;
+        }
+    }
+
+    .right {
+        .analytics-container {
+            padding: 0;
+            gap: 1rem;
+
+            .analytics-item {
+                border: $border-light-small;
+                padding: 0.313rem;
+                border-radius: 0.313rem;
+            }
+        }
+    }
+}
+
+.cards {
+    .title-wrapper {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 2.5rem;
+
+        div {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        span {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    }
+
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+
+        .value {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            span {
+                font-size: 1.7rem;
+                font-weight: 600;
+            }
+
+            a {
+                text-decoration: underline;
+                color: $text-color;
+            }
+        }
+
+        .icon {
+            padding: 0.625rem;
+            font-size: 1.8rem;
+            color: $theme-color;
+            background: #5007aa26;
+            border-radius: 0.313rem;
+        }
+    }
+}
+
+.cards-wrapper {
+    display: flex;
+    gap: 0.85rem;
+    justify-content: space-between;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        padding: 0;
+        background: transparent;
+    }
+
+    .cards {
+        // display: flex;
+        padding: 0.85rem;
+        border-radius: 0.313rem;
+        background: transparent;
+        border: $border-light-small;
+
+        a {
+            font-size: 0.813rem;
+            font-weight: 500;
+            color: $theme-color;
+        }
+
+        h3 {
+            font-size: 0.83rem;
+            padding-bottom: 0.125rem;
+        }
+
+        img {
+            height: 1.75rem;
+            width: auto;
+        }
+    }
+
+    &.plugin {
+        .cards {
+            background: #f8f9fa;
+            border: none;
+            width: 100%;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+        }
+
+        .tag {
+            display: flex;
+            align-items: center;
+            gap: 0.813rem;
+        }
+    }
+
+    &.quick-link {
+        flex-direction: column;
+        gap: 0;
+
+        .icon {
+            font-size: 1.313rem;
+            color: $theme-color;
+        }
+
+        .header a {
+            display: flex;
+            gap: 0.313rem;
+            align-items: center;
+
+            i {
+                font-size: 0.813rem;
+            }
+        }
+    }
+}
+
+// admin dashboard card design end
+
+.activity-wrapper {
+    .activity {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.313rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.5s ease;
+        border-radius: 0.313rem;
+
+        .icon {
+            font-size: 1.125rem;
+            background: $theme-background-color;
+            padding: 0.5rem;
+            border-radius: 50%;
+
+            i {
+                color: $theme-color;
+            }
+        }
+
+        .details {
+            color: #000;
+            display: flex;
+            font-size: 1rem;
+            flex-direction: column;
+
+            &.inactive {
+                text-decoration: line-through;
+            }
+
+            span {
+                font-size: 0.8rem;
+                color: $text-color
+            }
+        }
+
+        &:hover {
+            background: #f4f2f2;
+        }
+
+        &.inactive {
+            background: #ff00000d;
+
+            .icon {
+                background: #fde8e4;
+
+                i {
+                    color: #f06b4f;
+                }
+            }
+
+            .details {
+                color: #f06b4f;
+            }
+        }
+    }
+}
+
+// top items start
+.top-items {
+    .items {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.625rem 0;
+
+        .left-side {
+            display: flex;
+            gap: 0.5rem;
+            align-items: start;
+
+            .icon {
+                font-size: 1.25rem;
+                margin-top: 0.313rem;
+
+                span {
+                    font-size: 1rem;
+                }
+            }
+
+            .image {
+                img {
+                    height: 2.5rem;
+                }
+            }
+
+            .item-title {
+                font-size: 1rem;
+                color: #000;
+            }
+
+            .sub-text {
+                font-size: 0.813rem;
+                padding-top: 0.125rem;
+            }
+        }
+
+        .right-side {
+            .price {
+                font-size: 1.125rem;
+            }
+        }
+    }
+}
+
+// top items end
+
+// support start
+.support-wrapper {
+    .support-item {
+        display: flex;
+        gap: 1rem;
+        padding: 0.313rem;
+        margin-bottom: 0.313rem;
+        border-bottom: $border-light-small;
+
+        .image {
+            i {
+                font-size: 1.45rem;
+                color: $theme-color;
+            }
+        }
+
+        .details {
+            .name {
+                font-size: 1.063rem;
+                color: $text-color;
+                padding-bottom: 0.313rem;
+            }
+        }
+    }
+}
+
+// support end
+
+.right-pro-banner {
+    .title {
+        font-size: 1.45rem;
+        line-height: 1.313rem;
+        color: $text-color;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .des {
+        font-size: 0.9rem;
+        padding-top: 0.5rem;
+    }
+
+    .image-wrapper {
+        text-align: center;
+        margin: 0;
+        margin-bottom: 1.5rem;
+
+        img {
+            height: 20rem;
+        }
+    }
+
+    ul {
+        margin: 2rem 0;
+        display: flex;
+        flex-wrap: wrap;
+
+        li {
+            width: 48%;
+            color: #000;
+            line-height: 1rem;
+            margin-bottom: 0.625rem;
+
+            i {
+                color: $theme-color;
+                font-size: 1.063rem;
+                padding-right: 0.5rem;
+            }
+        }
+    }
+
+    .button-wrapper {
+        display: flex;
+    }
+}
+
+//  free vs pro tabel start
+.free-vs-pro {
+    .buttons-wrapper {
+        margin-top: 0.5rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 0.063rem solid $theme-background-color;
+
+        thead {
+            tr {
+                background: $theme-background-color;
+                color: $theme-color;
+                font-size: 1.25rem;
+            }
+        }
+
+        tr {
+            td {
+                padding: 0.625rem;
+                font-size: 1rem;
+
+                .close-icon {
+                    color: #f06b4f;
+                }
+
+                .check-icon {
+                    color: $theme-color;
+                }
+            }
+        }
+
+        tbody {
+            tr:nth-child(even) {
+                background: #f8f9fa;
+                ;
+            }
+        }
+
+        td:first-child {
+            width: 70%;
+        }
+
+        td:nth-child(2),
+        td:nth-child(3) {
+            width: 15%;
+        }
+    }
+}
+
+// free vs pro tabel end
+
+// features section start
+.features-wrapper {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: space-between;
+
+    .feature {
+        padding-top: 0.5rem;
+        width: 31%;
+        display: flex;
+        gap: 0.625rem;
+        align-items: start;
+
+        i {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.313rem;
+        }
+
+        h3 {
+            font-size: 1rem;
+            padding-bottom: 0.313rem;
+        }
+
+    }
+}
+
+// mini module start
+.mini-module {
+    display: flex;
+    flex-wrap: wrap;
+
+    .module-list-item {
+        width: calc(100% / 4 - 1.625rem);
+        padding: 0.75rem;
+        border: $border-light-small;
+        border-radius: 0.313rem;
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-self: start;
+
+            i.font {
+                font-size: 1.25rem;
+                color: $theme-color;
+            }
+
+            .admin-pro-tag {
+                position: relative !important;
+                transform: translateY(0);
+                font-size: 0.75rem;
+                display: flex;
+                align-items: center;
+                left: 0;
+                top: 0;
+
+                i {
+                    font-size: 0.813rem;
+                    color: #e35047;
+                }
+            }
+        }
+
+        .module-name {
+            font-size: 0.9rem;
+            color: #000;
+            margin-top: 1.25rem;
+        }
+    }
+}
+
+// video section start
+.video-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+
+    .details-wrapper {
+        width: 33%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 0.813rem;
+
+        .title {
+            font-size: 1.45rem;
+            line-height: 1.5rem;
+            text-align: center;
+        }
+
+        .des {
+            font-size: 0.95rem;
+            color: #616060ee;
+            text-align: center;
+
+        }
+    }
+
+    .video-wrapper {
+        width: 33%;
+        padding: 1rem;
+        border: $border-light-small;
+        border-radius: 0.313rem;
+
+        iframe {
+            width: 100%;
+            max-height: 31.25rem;
+            height: 12rem;
+        }
+
+        .title {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+        }
+
+        .des {
+            padding: 0 1rem;
+        }
+    }
+}
+
+// video section end
+
+#store-location-autocomplete-container {
+    .mapboxgl-ctrl-geocoder {
+        max-width: 100%;
+        width: 100%;
+        box-shadow: none;
+
+        input {
+            border: 0.063rem solid #dbdfea !important; // for overwrite wordpress style
+            border-radius: 0.25rem;
+            padding: 0.313rem 0.5rem;
+            background: transparent !important; // for overwrite theme style
+            font-size: 0.875rem;
+            line-height: 1.5;
+            box-shadow: none;
+            box-sizing: border-box;
+            padding-left: 2rem;
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 0.188rem #5007aa1c !important;
+                border-color: $theme-color !important; // for overwrite wordpress style
+            }
+        }
+    }
+}
+
+// membership plan start
+.plan-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .icon i {
+        border-radius: .313rem;
+        font-size: 2rem;
+        padding: .313rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2.313rem;
+        width: 2.313rem;
+    }
+
+    .title {
+        font-size: 1.125rem;
+    }
+
+    .des {
+        font-size: 0.95rem;
+    }
+}
+
+// membership-features start
+.membership-features {
+    .features-list {
+        padding-top: 0.313rem;
+
+        .feature-row {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.625rem 0;
+            padding: 0.5rem;
+            background: #efefefec;
+            border-radius: 0.313rem;
+
+            .feature-number {
+                padding: 0.313rem;
+                width: 1.25rem;
+                height: 1.25rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                font-size: 1.25rem;
+                background: $theme-color;
+                color: #fff;
+            }
+        }
+    }
+}
+
+// dropdown menu style (table action, icon action)  remove
+.icon-wrapper {
+    position: relative;
+    .dropdown-icon{
+
+    }
+    .count {
+        position: absolute;
+        font-size: 0.75rem;
+        right: -0.25rem;
+        top: -0.45rem;
+        padding: 0.125rem;
+        background: $accent-color;
+        border-radius: 50%;
+        width: 0.75rem;
+        height: 0.75rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dropdown {
+        position: absolute;
+        top: 2rem;
+        overflow: hidden;
+        border: 0.063rem solid #e5e9f2;
+        max-width: 14rem;
+        min-width: 14rem;
+        right: 0;
+        background: #fff;
+        border-radius: 0.313rem;
+        transition: all 0.3s ease;
+        z-index: 9999;
+
+        .dropdown-body {
+            margin: 0;
+
+            .tabs-wrapper{
+                padding: 0.75rem;
+            }
+        }
+
+        .dropdown-header {
+            .title {
+                padding: 0.75rem;
+                border-bottom: $border-light-small;
+                display: flex;
+                justify-content: space-between;
+                font-size: 1.25rem;
+                align-items: center;
+            }
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0.5rem 0;
+
+            li {
+                margin: 0;
+
+                .item {
+                    display: flex;
+                    align-items: end;
+                    color: #526484;
+                    font-size: 0.95rem;
+                    line-height: 0.813;
+                    font-weight: 500;
+                    padding: .813rem 1.313rem;
+                    position: relative;
+                    gap: 0.5rem;
+                    cursor: pointer;
+
+
+                    i {
+                        font-size: 1.063rem;
+                    }
+
+                    &:hover {
+                        color: #854fff;
+                        background: $theme-background-color;
+                    }
+                }
+
+                &.delete {
+
+                    .item {
+                        color: $accent-color;
+                        border-top: 0.063rem solid;
+
+                        &:hover {
+                            background: transparent;
+                        }
+                    }
+                }
+            }
+        }
+
+        .footer {
+            padding: 0.75rem;
+            border: $border-light-small;
+        }
+
+        &.notification {
+            min-width: 25rem;
+
+            ul {
+                margin: 0;
+                max-height: 20rem;
+                overflow: auto;
+
+                li {
+                    margin: 0;
+                }
+
+                .item,
+                a {
+                    display: flex;
+                    gap: 0.813rem;
+                    padding: 0.75rem;
+                    align-items: start;
+                    border-bottom: $border-light-small;
+
+                    &:hover {
+                        background: #f3f3f3;
+                    }
+
+                    .icon {
+                        padding: 0.313rem;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        i {
+                            font-size: 1.5rem;
+                        }
+                    }
+
+                    // .check-icon {
+                    //   font-size: 1.125rem;
+                    //   position: absolute;
+                    //   right: 1rem;
+                    // }
+
+                    .details {
+                        span {
+                            display: block;
+                        }
+
+                        .heading {
+                            font-size: 0.95rem;
+                            color: #000;
+                        }
+
+                        .message {
+                            color: #00000082;
+                            padding: 0.313rem 0;
+                        }
+
+                        .time {
+                            font-size: 0.813rem;
+                            color: #0000004a;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// dropdown menu end

@@ -81,6 +81,10 @@ class Admin {
 
             // Array contain notifima submenu.
             $submenus = array(
+                'dashboard'         => array(
+                'name'   => __( 'Dashboard', 'notifima' ),
+                'subtab' => '',
+                ),
                 'settings'          => array(
                     'name'   => __( 'Settings', 'notifima' ),
                     'subtab' => 'appearance',
@@ -142,7 +146,7 @@ class Admin {
      * @return void
      */
     public function create_setting_page() {
-        echo '<div id="admin-main-wrapper"></div>';
+        echo '<div id="admin-main-wrapper" class="multivendorx-main-wrapper"></div>';
     }
 
     /**

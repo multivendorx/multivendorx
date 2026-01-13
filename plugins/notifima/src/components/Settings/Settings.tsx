@@ -8,6 +8,8 @@ import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 // Services
 import { getTemplateData } from '../../services/templateService';
 // Utils
+
+
 import {
     getAvailableSettings,
     getSettingById,
@@ -20,6 +22,7 @@ import {
 import { useModules } from '../../contexts/ModuleContext';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
+import settings from 'react-multi-date-picker/plugins/settings';
 
 // Types
 type SettingItem = Record< string, any >;
@@ -36,7 +39,7 @@ interface Products {
 const supportLink = [
     {
         title: __( 'Get in touch with Support', 'notifima' ),
-        icon: 'adminlib-mail',
+        icon: 'adminfont-mail',
         description: __(
             'Reach out to the support team for assistance or guidance.',
             'notifima'
@@ -45,7 +48,7 @@ const supportLink = [
     },
     {
         title: __( 'Explore Documentation', 'notifima' ),
-        icon: 'adminlib-submission-message',
+        icon: 'adminfont-submission-message',
         description: __(
             'Understand the plugin and its settings.',
             'notifima'
@@ -54,7 +57,7 @@ const supportLink = [
     },
     {
         title: __( 'Contribute Here', 'notifima' ),
-        icon: 'adminlib-support',
+        icon: 'adminfont-support',
         description: __( 'Participate in product enhancement.', 'notifima' ),
         link: 'https://github.com/multivendorx/multivendorx/issues/',
     },
@@ -145,20 +148,21 @@ const faqs = [
     },
 ];
 
-const Settings: React.FC< SettingsProps > = () => {
+const Settings: React.FC< SettingsProps > = () => {                          //Get all Setting Tabs
     const settingsArray: SettingItem[] = getAvailableSettings(
         getTemplateData(),
         []
     );
-    const location = new URLSearchParams( useLocation().hash.substring( 1 ) );
+    const location = new URLSearchParams( useLocation().hash.substring( 1 ) );    // Read current tab from Url
 
     const getBanner = () => {
         return (
-            <Banner
+            <Banner                                        //Zyra Banner Shows
                 products={ products }
                 isPro={ appLocalizer.khali_dabba }
                 proUrl={ appLocalizer.pro_url }
                 tag="Why Premium"
+                
                 buttonText="View Pricing"
                 bgCode="#852aff" // backgroud color
                 textCode="#fff" // text code
@@ -168,32 +172,64 @@ const Settings: React.FC< SettingsProps > = () => {
         );
     };
     // Render the dynamic form
-    const GetForm = ( currentTab: string | null ): JSX.Element | null => {
+    const GetForm = ( currentTab: string | null ): JSX.Element | null => {       // Main Brain - getForm()
         // get the setting context
-        const { setting, settingName, setSetting, updateSetting } =
-            useSetting();
-        const { modules } = useModules();
+        const { setting, settingName, setSetting, updateSetting } =            //Get setting state
+            useSetting();                                                      // setting - current form data
+        const { modules } = useModules();                                   // updateSetting - sqave when user changes
 
         if ( ! currentTab ) return null;
-        const settingModal = getSettingById( settingsArray as any, currentTab );
+        const settingModal = getSettingById( settingsArray as any, currentTab );  // Load selected tab schema/structure
+        const [storeTabSetting, setStoreTabSetting] = React.useState<any>(null);
 
         // Ensure settings context is initialized
         if ( settingName !== currentTab ) {
-            setSetting(
+            setSetting(                                         // initialiaze setting values from wordpress Db
                 currentTab,
-                appLocalizer.settings_databases_value[ currentTab ] || {}
-            );
+                appLocalizer.settings_databases_value[ currentTab ] || {} //appLocaliqer = php -> JS localized data
+            );                  // so this load save data values from database into react
         }
 
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        useEffect( () => {
-            if ( settingName === currentTab ) {
+        useEffect( () => {                                  // auto sync when value changes
+            if ( settingName === currentTab ) {             // Keeps database and Js data in sync
                 appLocalizer.settings_databases_value[ settingName ] = setting;
-            }
-        }, [ setting, settingName, currentTab ] );
+            }const storeCapability =
+				appLocalizer.settings_databases_value['store-capability'];
+
+			if (storeCapability) {
+				setStoreTabSetting(storeCapability);
+				const userCapability =
+					appLocalizer.settings_databases_value['user-capability'] ||
+					{};
+
+				// all capability arrays into one
+				const storeOwnerCaps: string[] = [];
+				Object.values(storeCapability).forEach((caps) => {
+					if (Array.isArray(caps)) {
+						storeOwnerCaps.push(...caps);
+					}
+				});
+
+				const result = { store_owner: storeOwnerCaps };
+
+				Object.entries(userCapability).forEach(([role, caps]) => {
+					if (role !== 'store_owner' && Array.isArray(caps)) {
+						userCapability[role] = caps.filter((cap) =>
+							storeOwnerCaps.includes(cap)
+						);
+					}
+				});
+
+				appLocalizer.settings_databases_value['user-capability'] = {
+					...userCapability,
+					...result,
+				};
+			}
+		}, [setting, settingName, currentTab]);
 
         // Special component
-        if ( currentTab === 'faq' ) {
+        if ( currentTab === 'faq' ) {        // Special FAQ Component
             return (
                 <Support
                     title="Thank you for using Notifima"
@@ -206,7 +242,7 @@ const Settings: React.FC< SettingsProps > = () => {
 
         return (
             <>
-                { settingName === currentTab ? (
+                { settingName === currentTab ? (             //Normal Tab -> shows form
                     <AdminForm
                         settings={ settingModal as SettingContent }
                         proSetting={ appLocalizer.pro_settings_list }
@@ -215,6 +251,7 @@ const Settings: React.FC< SettingsProps > = () => {
                         appLocalizer={ appLocalizer }
                         modules={ modules }
                         Popup={ ShowProPopup }
+                        storeTabSetting={storeTabSetting}
                     />
                 ) : (
                     <>Loading...</>
@@ -224,9 +261,9 @@ const Settings: React.FC< SettingsProps > = () => {
     };
 
     return (
-        <SettingProvider>
-            <Tabs
-                tabData={ settingsArray as any }
+        <SettingProvider>           
+            <Tabs                                     //Final Render - Tab Layout
+                tabData={ settingsArray as any }       
                 currentTab={ location.get( 'subtab' ) as string }
                 getForm={ GetForm }
                 BannerSection={ getBanner }
@@ -238,6 +275,9 @@ const Settings: React.FC< SettingsProps > = () => {
                 smallbrandImg={ BrandSmall }
                 supprot={ supportLink }
                 Link={ Link }
+                settingName={ 'Settings' }
+                activeTabIcon={ true }      //Notifima setting icon
+                
             />
         </SettingProvider>
     );
