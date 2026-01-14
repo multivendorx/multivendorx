@@ -1,6 +1,6 @@
 declare module 'body-scroll-lock' {
-    export function disableBodyScroll( targetElement: Element ): void;
-    export function enableBodyScroll( targetElement: Element ): void;
+    export function disableBodyScroll(targetElement: Element): void;
+    export function enableBodyScroll(targetElement: Element): void;
 }
 
 // src/global.d.ts
@@ -22,7 +22,6 @@ declare global {
         pro_data: any;
         freeVersion: any;
         shop_url: any;
-
     }
 
     declare module '*.png';

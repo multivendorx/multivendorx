@@ -9,7 +9,6 @@ import { SettingProvider, useSetting } from '../../contexts/SettingContext';
 import { getTemplateData } from '../../services/templateService';
 // Utils
 
-
 import {
     getAvailableSettings,
     getSettingById,
@@ -22,10 +21,10 @@ import {
 import { useModules } from '../../contexts/ModuleContext';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
-import settings from 'react-multi-date-picker/plugins/settings';
+// import settings from 'react-multi-date-picker/plugins/settings';
 
 // Types
-type SettingItem = Record< string, any >;
+type SettingItem = Record<string, any>;
 
 interface SettingsProps {
     id: string;
@@ -38,7 +37,7 @@ interface Products {
 
 const supportLink = [
     {
-        title: __( 'Get in touch with Support', 'notifima' ),
+        title: __('Get in touch with Support', 'notifima'),
         icon: 'adminfont-mail',
         description: __(
             'Reach out to the support team for assistance or guidance.',
@@ -47,53 +46,50 @@ const supportLink = [
         link: 'https://notifima.com/contact-us/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
     },
     {
-        title: __( 'Explore Documentation', 'notifima' ),
+        title: __('Explore Documentation', 'notifima'),
         icon: 'adminfont-submission-message',
-        description: __(
-            'Understand the plugin and its settings.',
-            'notifima'
-        ),
+        description: __('Understand the plugin and its settings.', 'notifima'),
         link: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
     },
     {
-        title: __( 'Contribute Here', 'notifima' ),
+        title: __('Contribute Here', 'notifima'),
         icon: 'adminfont-support',
-        description: __( 'Participate in product enhancement.', 'notifima' ),
+        description: __('Participate in product enhancement.', 'notifima'),
         link: 'https://github.com/multivendorx/multivendorx/issues/',
     },
 ];
 
 const products: Products[] = [
     {
-        title: __( 'Double Opt-In', 'notifima' ),
+        title: __('Double Opt-In', 'notifima'),
         description: __(
             'Experience the power of Double Opt-In for our Stock Alert Form - Guaranteed precision in every notification!',
             'notifima'
         ),
     },
     {
-        title: __( 'Your Subscription Hub', 'notifima' ),
+        title: __('Your Subscription Hub', 'notifima'),
         description: __(
             'Subscription Dashboard - Easily monitor and download lists of out-of-stock subscribers for seamless management.',
             'notifima'
         ),
     },
     {
-        title: __( 'Mailchimp Bridge', 'notifima' ),
+        title: __('Mailchimp Bridge', 'notifima'),
         description: __(
             'Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
             'notifima'
         ),
     },
     {
-        title: __( 'Unsubscribe Notifications', 'notifima' ),
+        title: __('Unsubscribe Notifications', 'notifima'),
         description: __(
             'User-Initiated Unsubscribe from In-Stock Notifications.',
             'notifima'
         ),
     },
     {
-        title: __( 'Ban Spam Emails', 'notifima' ),
+        title: __('Ban Spam Emails', 'notifima'),
         description: __(
             'Email and Domain Blacklist for Spam Prevention.',
             'notifima'
@@ -114,10 +110,7 @@ const faqs = [
         open: true,
     },
     {
-        question: __(
-            'Why is the out-of-stock form not appearing?',
-            'notifima'
-        ),
+        question: __('Why is the out-of-stock form not appearing?', 'notifima'),
         answer: __(
             'There might be a theme conflict issue. To troubleshoot, switch to a default theme like Twenty Twenty-Four and check if the form appears.',
             'notifima'
@@ -125,10 +118,7 @@ const faqs = [
         open: false,
     },
     {
-        question: __(
-            'Does Notifima support product variations?',
-            'notifima'
-        ),
+        question: __('Does Notifima support product variations?', 'notifima'),
         answer: __(
             'Yes, product variations are fully supported and editable from the Inventory Manager. Notifima handles variable products with ease and uses an expandable feature to make managing variations clear and straightforward.',
             'notifima'
@@ -148,21 +138,21 @@ const faqs = [
     },
 ];
 
-const Settings: React.FC< SettingsProps > = () => {                          //Get all Setting Tabs
+const Settings: React.FC<SettingsProps> = () => {
+    //Get all Setting Tabs
     const settingsArray: SettingItem[] = getAvailableSettings(
         getTemplateData(),
         []
     );
-    const location = new URLSearchParams( useLocation().hash.substring( 1 ) );    // Read current tab from Url
+    const location = new URLSearchParams(useLocation().hash.substring(1)); // Read current tab from Url
 
     const getBanner = () => {
         return (
-            <Banner                                        //Zyra Banner Shows
-                products={ products }
-                isPro={ appLocalizer.khali_dabba }
-                proUrl={ appLocalizer.pro_url }
+            <Banner //Zyra Banner Shows
+                products={products}
+                isPro={appLocalizer.khali_dabba}
+                proUrl={appLocalizer.pro_url}
                 tag="Why Premium"
-                
                 buttonText="View Pricing"
                 bgCode="#852aff" // backgroud color
                 textCode="#fff" // text code
@@ -172,112 +162,117 @@ const Settings: React.FC< SettingsProps > = () => {                          //G
         );
     };
     // Render the dynamic form
-    const GetForm = ( currentTab: string | null ): JSX.Element | null => {       // Main Brain - getForm()
+    const GetForm = (currentTab: string | null): JSX.Element | null => {
+        // Main Brain - getForm()
         // get the setting context
-        const { setting, settingName, setSetting, updateSetting } =            //Get setting state
-            useSetting();                                                      // setting - current form data
-        const { modules } = useModules();                                   // updateSetting - sqave when user changes
+        const { setting, settingName, setSetting, updateSetting } =
+            useSetting(); //Get setting state // setting - current form data
+        const { modules } = useModules(); // updateSetting - sqave when user changes
 
-        if ( ! currentTab ) return null;
-        const settingModal = getSettingById( settingsArray as any, currentTab );  // Load selected tab schema/structure
+        if (!currentTab) {
+            return null;
+        }
+        const settingModal = getSettingById(settingsArray as any, currentTab); // Load selected tab schema/structure
         const [storeTabSetting, setStoreTabSetting] = React.useState<any>(null);
 
         // Ensure settings context is initialized
-        if ( settingName !== currentTab ) {
-            setSetting(                                         // initialiaze setting values from wordpress Db
+        if (settingName !== currentTab) {
+            setSetting(
+                // initialiaze setting values from wordpress Db
                 currentTab,
-                appLocalizer.settings_databases_value[ currentTab ] || {} //appLocaliqer = php -> JS localized data
-            );                  // so this load save data values from database into react
+                appLocalizer.settings_databases_value[currentTab] || {} //appLocaliqer = php -> JS localized data
+            ); // so this load save data values from database into react
         }
+        useEffect(() => {
+            // auto sync when value changes
+            if (settingName === currentTab) {
+                // Keeps database and Js data in sync
+                appLocalizer.settings_databases_value[settingName] = setting;
+            }
+            const storeCapability =
+                appLocalizer.settings_databases_value['store-capability'];
 
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useEffect( () => {                                  // auto sync when value changes
-            if ( settingName === currentTab ) {             // Keeps database and Js data in sync
-                appLocalizer.settings_databases_value[ settingName ] = setting;
-            }const storeCapability =
-				appLocalizer.settings_databases_value['store-capability'];
+            if (storeCapability) {
+                setStoreTabSetting(storeCapability);
+                const userCapability =
+                    appLocalizer.settings_databases_value['user-capability'] ||
+                    {};
 
-			if (storeCapability) {
-				setStoreTabSetting(storeCapability);
-				const userCapability =
-					appLocalizer.settings_databases_value['user-capability'] ||
-					{};
+                // all capability arrays into one
+                const storeOwnerCaps: string[] = [];
+                Object.values(storeCapability).forEach((caps) => {
+                    if (Array.isArray(caps)) {
+                        storeOwnerCaps.push(...caps);
+                    }
+                });
 
-				// all capability arrays into one
-				const storeOwnerCaps: string[] = [];
-				Object.values(storeCapability).forEach((caps) => {
-					if (Array.isArray(caps)) {
-						storeOwnerCaps.push(...caps);
-					}
-				});
+                const result = { store_owner: storeOwnerCaps };
 
-				const result = { store_owner: storeOwnerCaps };
+                Object.entries(userCapability).forEach(([role, caps]) => {
+                    if (role !== 'store_owner' && Array.isArray(caps)) {
+                        userCapability[role] = caps.filter((cap) =>
+                            storeOwnerCaps.includes(cap)
+                        );
+                    }
+                });
 
-				Object.entries(userCapability).forEach(([role, caps]) => {
-					if (role !== 'store_owner' && Array.isArray(caps)) {
-						userCapability[role] = caps.filter((cap) =>
-							storeOwnerCaps.includes(cap)
-						);
-					}
-				});
-
-				appLocalizer.settings_databases_value['user-capability'] = {
-					...userCapability,
-					...result,
-				};
-			}
-		}, [setting, settingName, currentTab]);
+                appLocalizer.settings_databases_value['user-capability'] = {
+                    ...userCapability,
+                    ...result,
+                };
+            }
+        }, [setting, settingName, currentTab]);
 
         // Special component
-        if ( currentTab === 'faq' ) {        // Special FAQ Component
+        if (currentTab === 'faq') {
+            // Special FAQ Component
             return (
                 <Support
                     title="Thank you for using Notifima"
                     subTitle="We want to help you enjoy a wonderful experience with all of our products."
                     url="https://www.youtube.com/embed/cgfeZH5z2dM?si=3zjG13RDOSiX2m1b"
-                    faqData={ faqs }
+                    faqData={faqs}
                 />
             );
         }
 
         return (
             <>
-                { settingName === currentTab ? (             //Normal Tab -> shows form
+                {settingName === currentTab ? ( //Normal Tab -> shows form
                     <AdminForm
-                        settings={ settingModal as SettingContent }
-                        proSetting={ appLocalizer.pro_settings_list }
-                        setting={ setting }
-                        updateSetting={ updateSetting }
-                        appLocalizer={ appLocalizer }
-                        modules={ modules }
-                        Popup={ ShowProPopup }
+                        settings={settingModal as SettingContent}
+                        proSetting={appLocalizer.pro_settings_list}
+                        setting={setting}
+                        updateSetting={updateSetting}
+                        appLocalizer={appLocalizer}
+                        modules={modules}
+                        Popup={ShowProPopup}
                         storeTabSetting={storeTabSetting}
                     />
                 ) : (
                     <>Loading...</>
-                ) }
+                )}
             </>
         );
     };
 
     return (
-        <SettingProvider>           
-            <Tabs                                     //Final Render - Tab Layout
-                tabData={ settingsArray as any }       
-                currentTab={ location.get( 'subtab' ) as string }
-                getForm={ GetForm }
-                BannerSection={ getBanner }
-                prepareUrl={ ( subTab: string ) =>
-                    `?page=notifima#&tab=settings&subtab=${ subTab }`
+        <SettingProvider>
+            <Tabs //Final Render - Tab Layout
+                tabData={settingsArray as any}
+                currentTab={location.get('subtab') as string}
+                getForm={GetForm}
+                BannerSection={getBanner}
+                prepareUrl={(subTab: string) =>
+                    `?page=notifima#&tab=settings&subtab=${subTab}`
                 }
-                appLocalizer={ appLocalizer }
-                brandImg={ Brand }
-                smallbrandImg={ BrandSmall }
-                supprot={ supportLink }
-                Link={ Link }
-                settingName={ 'Settings' }
-                activeTabIcon={ true }      //Notifima setting icon
-                
+                appLocalizer={appLocalizer}
+                brandImg={Brand}
+                smallbrandImg={BrandSmall}
+                supprot={supportLink}
+                Link={Link}
+                settingName={'Settings'}
+                activeTabIcon={true} //Notifima setting icon
             />
         </SettingProvider>
     );
