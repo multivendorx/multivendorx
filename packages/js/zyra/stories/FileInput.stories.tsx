@@ -79,3 +79,21 @@ export const DefaultEmptyState: Story = {
         );
     },
 };
+
+export const MultipleFiles: Story = {
+    args: {
+        wrapperClass: 'setting-file-uploader-class',
+        multiple: true,
+        imageSrc: [
+            'https://picsum.photos/id/1011/200/200',
+            'https://picsum.photos/id/1012/200/200',
+            'https://picsum.photos/id/1013/200/200',
+        ],
+        imageWidth: 100,
+        imageHeight: 100,
+        buttonClass: 'btn btn-purple',
+        openUploader: 'Upload Images',
+        proSetting: true,
+        description: 'You can upload multiple images and select a main image.',
+    },
+};

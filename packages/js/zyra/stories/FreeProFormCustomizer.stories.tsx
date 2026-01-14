@@ -11,7 +11,7 @@ export default meta;
 
 type Story = StoryObj<typeof FreeProFormCustomizer>;
 
-export const TestFreeProFormCustomizer: Story = {
+export const TestProFormCustomizer: Story = {
     args: {
         setting: {
             freefromsetting: [
