@@ -156,6 +156,7 @@ export default {
         {
             key: 'shown_interest_text',
             type: 'textarea',
+            class: 'textarea-input',
             label: __( 'Subscriber count notification message', 'notifima' ),
             desc: __(
                 'Personalize the notification text to let users know about the quantity of subscribers for out-of-stock item. Note: Use %no_of_subscribed% as number of interest/subscribed persons.',
@@ -197,6 +198,7 @@ export default {
         {
             key: 'double_opt_in_success',
             type: 'textarea',
+            class: 'textarea-input',
             desc: __(
                 'Default: Kindly check your inbox to confirm the subscription.',
                 'notifima'
@@ -258,6 +260,7 @@ export default {
         {
             key: 'additional_alert_email',
             type: 'textarea',
+            class: 'textarea-input',
             desc: __(
                 "Set the email address to receive notifications when a user subscribes to an out-of-stock product. You can add multiple comma-separated emails.<br/> Default: The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
                 'notifima'
