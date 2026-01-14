@@ -583,7 +583,6 @@ const Notification: React.FC = () => {
 								<FormGroup label={__('System Message', 'multivendorx')} htmlFor="system-message">
 									<TextArea
 										name="system_message"
-										inputClass="textarea-input"
 										value={
 											formData.system_message || ''
 										}
@@ -614,7 +613,6 @@ const Notification: React.FC = () => {
 								<FormGroup label={__('SMS Content', 'multivendorx')} htmlFor="sms-content">
 									<TextArea
 										name="sms_content"
-										inputClass="textarea-input"
 										value={formData.sms_content || ''}
 										onClick={(e) =>
 											setCursorPos({
@@ -666,7 +664,6 @@ const Notification: React.FC = () => {
 									<FormGroup cols={2} label={__('Email Body', 'multivendorx')} htmlFor="email-body">
 										<TextArea
 											name="email_body"
-											inputClass="textarea-input"
 											value={formData.email_body || ''}
 											onClick={(e) =>
 												setCursorPos({

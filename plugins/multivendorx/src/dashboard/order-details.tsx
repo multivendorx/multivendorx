@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, getApiLink, useModules } from 'zyra';
+import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, TextArea, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -37,9 +37,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		appLocalizer.settings_databases_value['shipping']
 			.shipping_providers;
 
-	const filteredShippingProviders = shipping_providers_options.filter(
-		(option) => selected_shipping_providers.includes(option.value)
-	);
+	// const filteredShippingProviders = shipping_providers_options.filter(
+	// 	(option) => selected_shipping_providers.includes(option.value)
+	// );
 	// When any item total changes, recalculate refundAmount
 	const handleItemChange = (id, field, value) => {
 		setRefundItems((prev) => {
@@ -325,7 +325,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 					<Container>
 						<Column grid={8}>
-							<Card>
+							<Card contentHeight>
 								<div className="table-wrapper view-order-table">
 									<table className="admin-table">
 										<thead className="admin-table-header">
@@ -409,18 +409,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																</div>
 
 																{isRefund && (
-																	<input
+																	<BasicInput
+																		name="refund-amount"
 																		type="number"
-																		min="0"
-																		className="basic-input"
-																		value={
-																			refundItems[
-																				item
-																					.id
-																			]
-																				?.quantity ??
-																			0
-																		}
+																		value={refundItems[
+																			item
+																				.id
+																		]
+																			?.quantity ??
+																			0}
 																		onChange={(
 																			e
 																		) =>
@@ -463,10 +460,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		</div>
 																	)}
 																{isRefund && (
-																	<input
-																		type="text"
-																		min="0"
-																		className="basic-input"
+																	<BasicInput
+																		name="refund-amount"
+																		type="number"
 																		value={
 																			refundItems[
 																				item
@@ -505,20 +501,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																	?.refunded_tax !==
 																	0 && (
 																		<div>
-																			{
-																				refundMap[
-																					item
-																						.id
-																				]
-																					.refunded_tax
-																			}
+																			{refundMap[item.id].refunded_tax}
 																		</div>
 																	)}
 																{isRefund && (
-																	<input
-																		type="text"
-																		min="0"
-																		className="basic-input"
+																	<BasicInput
+																		name="refund-amount"
+																		type="number"
 																		value={
 																			refundItems[
 																				item
@@ -583,11 +572,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															<td className="admin-column"></td>
 															<td className="admin-column">
 																{isRefund ? (
-																	<input
-																		type="text"
-																		min="0"
-																		className="basic-input"
-																		// value="$95"
+																	<BasicInput
+																		name="refund"
+																		type="number"
 																		value={
 																			refundItems[
 																				item
@@ -629,10 +616,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															</td>
 															<td className="admin-column">
 																{isRefund ? (
-																	<input
-																		type="text"
-																		min="0"
-																		className="basic-input"
+																	<BasicInput
+																		name="refund"
+																		type="number"
 																		value={
 																			refundItems[
 																				item
@@ -714,36 +700,33 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								<div className="coupons-calculation-wrapper">
 									<div className="left">
 										{!isRefund ? (
-											<button
-												className="admin-btn btn-purple"
-												onClick={() =>
-													setIsRefund(true)
-												}
-											>
-												Refund
-											</button>
+											<AdminButton
+												buttons={[
+													{
+														text: __('Refund', 'multivendorx'),
+														className: 'purple',
+														onClick: () => setIsRefund(true),
+													},
+												]}
+											/>
 										) : (
-											<div className="buttons-wrapper left">
-												<button
-													className="admin-btn btn-green"
-													onClick={handleRefundSubmit}
-												>
-													Refund $
-													{refundDetails.refundAmount.toFixed(
-														2
-													)}{' '}
-													manually
-												</button>
-												<button
-													className="admin-btn btn-red"
-													onClick={() =>
-														setIsRefund(false)
-													}
-												>
-													Cancel
-												</button>
-											</div>
+											<AdminButton
+												wrapperClass="left"
+												buttons={[
+													{
+														text: `${__('Refund', 'multivendorx')} $${refundDetails.refundAmount.toFixed(2)} ${__('manually', 'multivendorx')}`,
+														className: 'green',
+														onClick: handleRefundSubmit,
+													},
+													{
+														text: __('Cancel', 'multivendorx'),
+														className: 'red',
+														onClick: () => setIsRefund(false),
+													},
+												]}
+											/>
 										)}
+
 									</div>
 
 									{isRefund && (
@@ -802,12 +785,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													<tr>
 														<td>Refund amount:</td>
 														<td>
-															<input
+															<BasicInput
+																name="refund-amount"
 																type="number"
-																className="basic-input"
-																value={
-																	refundDetails.refundAmount
-																}
+																value={refundDetails.refundAmount}
 																onChange={(e) =>
 																	setRefundDetails(
 																		{
@@ -824,16 +805,12 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													</tr>
 													<tr>
 														<td>
-															Reason for refund
-															(optional):
+															Reason for refund (optional):
 														</td>
 														<td>
-															<textarea
-																className="textarea-input"
+															<TextArea
+																value={refundDetails.reason}
 																placeholder="Reason for refund"
-																value={
-																	refundDetails.reason
-																}
 																onChange={(e) =>
 																	setRefundDetails(
 																		{
@@ -920,66 +897,67 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 							<Card
 								title={__('Customer details', 'multivendorx')}
 							>
-								<div className="store-owner-details">
-									<div className="profile">
-										<div className="avatar">
-											<img
-												src={customerData?.avatar_url}
-												alt={`${orderData?.billing?.first_name || __('Customer', 'multivendorx')} avatar`}
-											/>
-										</div>
-
-										<div className="details">
-											{/* Customer Name */}
-											{modules.includes('privacy') && Array.isArray(customer_information_access) &&
-												customer_information_access.includes('name') && (
-													<div className="name">
-														{orderData?.billing?.first_name ||
-															orderData?.billing?.last_name
-															? `${orderData?.billing?.first_name ?? ''} ${orderData?.billing?.last_name ?? ''
-															}`
-															: __('Guest Customer', 'multivendorx')}
-													</div>
-												)}
-
-											<div className="des">
-												{__('Customer ID', 'multivendorx')}: #
-												{orderData?.customer_id && orderData.customer_id !== 0
-													? orderData.customer_id
-													: '—'}
-											</div>
-
-											{/* Email */}
-											{modules.includes('privacy') && Array.isArray(customer_information_access) &&
-												customer_information_access.includes('email_address') &&
-												orderData?.billing?.email && (
-													<div className="des">
-														<i className="adminfont-mail" /> {orderData.billing.email}
-													</div>
-												)}
-
-											{/* Phone */}
-											{modules.includes('privacy') && Array.isArray(customer_information_access) &&
-												customer_information_access.includes('phone_number') &&
-												orderData?.billing?.phone && (
-													<div className="des">
-														<i className="adminfont-phone" /> {orderData.billing.phone}
-													</div>
-												)}
-										</div>
-									</div>
-								</div>
+								<InfoItem
+									title={
+										modules.includes('privacy') &&
+											Array.isArray(customer_information_access) &&
+											customer_information_access.includes('name')
+											? orderData?.billing?.first_name || orderData?.billing?.last_name
+												? `${orderData?.billing?.first_name ?? ''} ${orderData?.billing?.last_name ?? ''}`
+												: __('Guest Customer', 'multivendorx')
+											: __('Customer', 'multivendorx')
+									}
+									avatar={{
+										image: customerData?.avatar_url,
+									}}
+									descriptions={[
+										{
+											label: __('Customer ID', 'multivendorx'),
+											value:
+												orderData?.customer_id && orderData.customer_id !== 0
+													? `#${orderData.customer_id}`
+													: '—',
+										},
+										...(modules.includes('privacy') &&
+											Array.isArray(customer_information_access) &&
+											customer_information_access.includes('email_address') &&
+											orderData?.billing?.email
+											? [
+												{
+													value: (
+														<>
+															<i className="adminfont-mail" />{' '}
+															{orderData.billing.email}
+														</>
+													),
+												},
+											]
+											: []),
+										...(modules.includes('privacy') &&
+											Array.isArray(customer_information_access) &&
+											customer_information_access.includes('phone_number') &&
+											orderData?.billing?.phone
+											? [
+												{
+													value: (
+														<>
+															<i className="adminfont-phone" />{' '}
+															{orderData.billing.phone}
+														</>
+													),
+												},
+											]
+											: []),
+									]}
+								/>
 
 							</Card>
 
 							<Card
 								title={__('Billing address', 'multivendorx')}
 							>
-								<div className="overview-wrapper">
-									<div className="items">
-										<div className="title">
-											{__('Address', 'multivendorx')}
-										</div>
+								<FormGroupWrapper>
+									<FormGroup row label={__('Address', 'multivendorx')}>
 										<div className="details">
 											{orderData?.billing?.address_1 ||
 												orderData?.billing?.city ||
@@ -1085,26 +1063,18 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 												</div>
 											)}
 										</div>
-									</div>
+									</FormGroup>
+									<FormGroup row label={__('Payment method', 'multivendorx')}>
+										<div className="admin-badge blue">
+											{orderData?.payment_method_title ||
+												__(
+													'Not specified',
+													'multivendorx'
+												)}
+										</div>
+									</FormGroup>
+								</FormGroupWrapper>
 
-									<div className="items">
-										<div className="title">
-											{__(
-												'Payment method',
-												'multivendorx'
-											)}
-										</div>
-										<div className="details">
-											<div className="admin-badge blue">
-												{orderData?.payment_method_title ||
-													__(
-														'Not specified',
-														'multivendorx'
-													)}
-											</div>
-										</div>
-									</div>
-								</div>
 							</Card>
 							{modules.includes('privacy') && Array.isArray(customer_information_access) &&
 								customer_information_access.includes('shipping_address') && (
@@ -1130,7 +1100,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 							>
 								<FormGroupWrapper>
 									<FormGroup label={__('Create Shipping', 'multivendorx')} htmlFor="create-shipping">
-										<SelectInput
+										{/* <SelectInput
 											options={filteredShippingProviders}
 											type="single-select"
 											value={shipmentData.provider}
@@ -1140,11 +1110,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													provider: option.value,
 												}))
 											}
-										/>
+										/> */}
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking Url ', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInput
-											wrapperClass="setting-form-input"
+
 											descClass="settings-metabox-description"
 											value={shipmentData.tracking_url}
 											onChange={(e) =>
@@ -1157,7 +1127,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking ID', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInput
-											wrapperClass="setting-form-input"
+
 											descClass="settings-metabox-description"
 											value={shipmentData.tracking_id}
 											onChange={(e) =>
@@ -1189,15 +1159,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											orderData.order_notes.length > 0 ? (
 											<div className="notification-wrapper">
 												<ul>
-													{orderData.order_notes.map(
+													{orderData.order_notes.slice(0, 5).map(
 														(note: any, index: number) => (
 															<li key={index}>
-																<div className="icon-wrapper">
+																<div className={`icon-wrapper admin-color${index + 2}`}>
 																	<i
 																		className={
 																			note.is_customer_note
-																				? 'adminfont-mail orange'
-																				: 'adminfont-form-paypal-email blue'
+																				? 'adminfont-mail'
+																				: 'adminfont-contact-form'
 																		}
 																	></i>
 																</div>
@@ -1219,10 +1189,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																	></div>
 																	<span>
 																		{new Date(
-																			note
-																				.date_created
-																				.date
-																		).toLocaleString()}
+																			note.date_created.date
+																		).toLocaleDateString(
+																			'en-GB',
+																			{
+																				day: '2-digit',
+																				month: 'short',
+																				year: 'numeric',
+																			}
+																		)}
 																	</span>
 																</div>
 															</li>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButton, Card, CommonPopup, getApiLink } from 'zyra';
+import { AdminButton, Card, Column, CommonPopup, getApiLink, MiniCard } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -135,31 +135,62 @@ const Documentation: React.FC = () => {
 							</div>
 						</div>
 					)}
-
-					{filteredDocuments.map((doc) => (
-						<div key={doc.id} className="document">
-							<div className="document-icon">
-								<i className="adminfont-contact-form"></i>
-							</div>
-							<div className="document-content">
-								<div className="title">{doc.title}</div>
-								<div className="des">
-									{truncateText(doc.content || '', 10)}
-									<a
-										className="read-more"
-										onClick={() =>
-											handleReadMore(doc)
-										}
-									>
-										{__(
-											'Read More',
-											'multivendorx'
-										)}
-									</a>
-								</div>
-							</div>
-						</div>
-					))}
+					<Column row>
+						{filteredDocuments.map((doc) => (
+							<>
+								{/* <div key={doc.id} className="document">
+									<div className="document-icon">
+										<i className="adminfont-contact-form"></i>
+									</div>
+									<div className="document-content">
+										<div className="title">{doc.title}</div>
+										<div className="des">
+											{truncateText(doc.content || '', 10)}
+											<a
+												className="read-more"
+												onClick={() =>
+													handleReadMore(doc)
+												}
+											>
+												{__(
+													'Read More',
+													'multivendorx'
+												)}
+											</a>
+										</div>
+									</div>
+								</div> */}
+								<MiniCard
+									background
+									cols={3}
+									header={
+										<>
+											<i className={`icon adminfont-contact-form blue`}></i>
+											<div className="tag">
+												<span className="admin-badge yellow">
+													{__('Products', 'multivendorx')}
+												</span>
+											</div>
+										</>
+									}
+									title={truncateText(doc.title || '', 4)}
+									description={
+										<>
+											{truncateText(doc.content || '', 10)}
+											<a
+												className="read-more"
+												onClick={() =>
+													handleReadMore(doc)
+												}
+											>
+												{__('Read more', 'multivendorx')}
+											</a>
+										</>
+									}
+								/>
+							</>
+						))}
+					</Column>
 				</div>
 			</Card>
 

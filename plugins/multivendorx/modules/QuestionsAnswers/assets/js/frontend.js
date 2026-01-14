@@ -97,10 +97,10 @@ jQuery(document).ready(function ($) {
                     <li class="qna-empty">
                         Have not discovered the information you seek
                         <button
-                            type="button"
+                            type="submit"
                             id="qna-direct-submit"
                             data-question="${search}"
-                            class="qna-ask-now">
+                            class="woocommerce-button button">
                             Ask now
                         </button>
                     </li>

@@ -256,7 +256,7 @@ a {
             .navbar-rightside {
                 .navbar-right {
                     display: flex;
-                    gap: 1.25rem;
+                    gap: 0.313rem;
                     align-items: center;
                     list-style-type: none;
                     margin: 0;
@@ -266,8 +266,8 @@ a {
                         cursor: pointer;
 
                         .adminfont-icon {
-                            color: $sub-text-color;
-                            font-size: 1.25rem;
+                            // color: $sub-text-color;
+                            // font-size: 1.25rem;
 
                             &.dark-icon {
                                 font-size: 1.625rem;
@@ -730,8 +730,7 @@ a {
 }
 
 .table-wrapper {
-    border: none !important;
-    /* overwrite zyra style*/
+    border: none !important; /* overwrite zyra style*/
 
     table {
         width: 100%;

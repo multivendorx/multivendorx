@@ -244,8 +244,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 			render: (updateFilter, filterValue) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -445,9 +443,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						<>
 							<TextArea
 								name="reject_reason"
-								wrapperClass="setting-from-textarea"
-								inputClass="textarea-input"
-								descClass="settings-metabox-description"
 								value={rejectReason}
 								onChange={(
 									e: React.ChangeEvent<HTMLTextAreaElement>

@@ -50,7 +50,7 @@ export default {
 							key: 'required_tasks',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							class: 'mvx-toggle-checkbox',
+							 
 							options: [
 								{
 									key: 'block_dashboard_access',
@@ -134,7 +134,7 @@ export default {
 							key: 'non_compliance_action',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							class: 'mvx-toggle-checkbox',
+							 
 							options: [
 								{
 									key: 'disable_product',
@@ -218,7 +218,7 @@ export default {
 							key: 'non_compliance_action',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							class: 'mvx-toggle-checkbox',
+							 
 							options: [
 								{
 									key: 'block_store_access',
@@ -288,7 +288,7 @@ export default {
 							key: 'non_compliance_action',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							class: 'mvx-toggle-checkbox',
+							 
 							options: [
 								{
 									key: 'disable_payouts',

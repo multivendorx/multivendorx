@@ -300,8 +300,6 @@ const StoreReviews: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperclassName=""
-						inputclassName=""
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -692,7 +690,6 @@ const StoreReviews: React.FC = () => {
 							<FormGroup label={__('Respond to customer', 'multivendorx')} htmlFor="reply">
 								<TextArea
 									name="reply"
-									inputClass="textarea-input"
 									value={replyText}
 									onChange={(e) => setReplyText(e.target.value)}
 									usePlainText={true}

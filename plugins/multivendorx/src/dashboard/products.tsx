@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
-	BasicInput,
 	useModules,
 	Table,
 	TableCell,
 	MultiCalendarInput,
+	getApiLink,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -14,7 +14,7 @@ import {
 } from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { formatCurrency } from '../services/commonFunction';
+import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 import AddProductCom from './add-products';
 import SpmvProducts from './spmv-products';
 import { ReactNode } from 'react';
@@ -37,6 +37,13 @@ type FilterData = {
 	category?: any;
 	stock_status?: string;
 	productType?: string;
+	categoryFilter?: string;
+	languageFilter?: string;
+};
+type ProductStatus = {
+	key: string;
+	name: string;
+	count: number;
 };
 export interface RealtimeFilter {
 	name: string;
@@ -45,23 +52,17 @@ export interface RealtimeFilter {
 		filterValue: any
 	) => ReactNode;
 }
-const formatWooDate = (dateString: string) => {
-	if (!dateString) {
-		return '-';
-	}
-	const date = new Date(dateString);
-	return date.toLocaleString('en-US', {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric',
-	});
-};
 
 const stockStatusOptions = [
 	{ key: '', name: 'Stock Status' },
 	{ key: 'instock', name: 'In Stock' },
 	{ key: 'outofstock', name: 'Out of Stock' },
 	{ key: 'onbackorder', name: 'On Backorder' },
+];
+const StatusOptions = [
+	{ key: '', name: 'Status' },
+	{ key: 'instock', name: 'Published' },
+	{ key: 'outofstock', name: 'Draft' },
 ];
 const productTypeOptions = [
 	{ key: '', name: 'Product Type' },
@@ -74,6 +75,8 @@ const AllProduct: React.FC = () => {
 	const [data, setData] = useState<ProductRow[]>([]);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 	const [totalRows, setTotalRows] = useState<number>(0);
+	const [productStatus, setProductStatus] = useState<ProductStatus[]>([]);
+	const [languageProductCounts, setLanguageProductCounts] = useState<ProductStatus[]>([]);
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
@@ -90,21 +93,68 @@ const AllProduct: React.FC = () => {
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
 	const basePath = siteUrl.replace(window.location.origin, '');
 
-	const query = new URLSearchParams(location.search);
-	let element = query.get('element');
+	const params = new URLSearchParams(location.search);
+
+	let element = params.get('element');
 
 	if (!element) {
-		const parts = location.pathname.split('/').filter(Boolean);
-		if (parts.length >= 3) {
-			element = element || parts[2];
-		}
-		// if (parts.length >= 4) {
-		//     element = element || parts[2];
-		// }
+		const path = location.pathname;
+		if (path.includes('/edit/')) element = 'edit';
+		else if (path.includes('/add/')) element = 'add';
 	}
 
 	const isAddProduct = element === 'edit';
 	const isSpmvOn = element === 'add';
+
+	const handleDelete = async (productId) => {
+		const res = await axios.delete(
+			`${appLocalizer.apiUrl}/wc/v3/products/${productId}`,
+			{
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			}
+		);
+
+		requestData();
+	};
+
+	const createAutoDraftProduct = () => {
+		try {
+			const payload = {
+				name: 'Auto Draft',
+				status: 'draft',
+			};
+
+			axios
+				.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				})
+				.then((res) => {
+					setNewProductId(res.data.id);
+				});
+		} catch (err) {
+			console.error(
+				'Error creating auto-draft:',
+				err.response?.data || err
+			);
+		}
+	};
+
+	useEffect(() => {
+		if (!newProductId) {
+			return;
+		}
+
+		if (appLocalizer.permalink_structure) {
+			navigate(
+				`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${newProductId}`
+			);
+		} else {
+			navigate(
+				`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${newProductId}`
+			);
+		}
+	}, [newProductId]);
+
 	const fetchCategories = async () => {
 		try {
 			const response = await axios.get(
@@ -119,28 +169,240 @@ const AllProduct: React.FC = () => {
 		}
 	};
 
+	const fetchProductStatusCounts = async () => {
+		try {
+			const statuses = [
+				'all',
+				'publish',
+				'draft',
+				'pending',
+				'private',
+				'trash',
+			];
+
+			const counts: ProductStatus[] = await Promise.all(
+				statuses.map(async (status) => {
+					const params: any = {
+						per_page: 1,
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+					};
+
+					if (status !== 'all') {
+						params.status = status;
+					}
+
+					const res = await axios.get(
+						`${appLocalizer.apiUrl}/wc/v3/products`,
+						{
+							headers: { 'X-WP-Nonce': appLocalizer.nonce },
+							params,
+						}
+					);
+
+					const total = parseInt(res.headers['x-wp-total'] || '0');
+
+					return {
+						key: status,
+						name:
+							status === 'all'
+								? __('All', 'multivendorx')
+								: status.charAt(0).toUpperCase() +
+								status.slice(1),
+						count: total,
+					};
+				})
+			);
+
+			const filteredCounts = counts.filter(
+				(status) => status.key === 'all' || status.count > 0
+			);
+
+			setProductStatus(filteredCounts);
+		} catch (error) {
+			console.error('Failed to fetch order status counts:', error);
+		}
+	};
+
+	const fetchWpmlTranslations = async () => {
+		if (!modules.includes('wpml')) return;
+
+		try {
+			const response = await axios.get(getApiLink(appLocalizer, 'multivendorx-wpml'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			});
+			const langs = response.data || [];
+
+			// Initialize language counts with 0
+			const initialCounts = langs.map((lang: any) => ({
+				key: lang.code,
+				name: lang.name,
+				count: 0,
+			}));
+			setLanguageProductCounts(initialCounts);
+
+			// Then fetch actual counts asynchronously
+			if (langs.length) {
+				fetchLanguageWiseProductCounts(langs);
+			}
+		} catch (err) {
+			setLanguageProductCounts([]);
+			console.error('Failed to fetch WPML translations', err);
+		}
+	};
+
+	const fetchLanguageWiseProductCounts = async (langs: any[]) => {
+		if (!langs?.length) return;
+
+		try {
+			const counts = await Promise.all(
+				langs.map(async (lang) => {
+					const params: any = {
+						per_page: 1,
+						lang: lang.code,
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+					};
+					const res = await axios.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+						params,
+					});
+					const total = parseInt(res.headers['x-wp-total'] || '0');
+
+					return {
+						key: lang.code,
+						name: lang.name,
+						count: total,
+					};
+				})
+			);
+
+			// Merge counts with previous state so UI doesn't jump
+			setLanguageProductCounts((prev) =>
+				prev.map((lang) => {
+					const updated = counts.find((c) => c.key === lang.key);
+					return updated ? { ...lang, count: updated.count } : lang;
+				})
+			);
+		} catch (error) {
+			console.error('Failed to fetch language wise product counts:', error);
+		}
+	};
+
 	useEffect(() => {
 		fetchCategories();
+		fetchProductStatusCounts();
+		fetchWpmlTranslations();
 	}, []);
 
+	useEffect(() => {
+		const currentPage = pagination.pageIndex + 1;
+		const rowsPerPage = pagination.pageSize;
+		requestData(rowsPerPage, currentPage);
+	}, [pagination]);
+
+	// Fetch data from backend.
+	function requestData(
+		rowsPerPage: number,
+		currentPage: number,
+		category?: string,
+		stockStatus?: string,
+		searchField?: string,
+		productType?: string,
+		startDate?: Date,
+		endDate?: Date,
+		categoryFilter?: string,
+		languageFilter?: string,
+	) {
+		category = category || '';
+		stockStatus = stockStatus || '';
+		searchField = searchField || '';
+		productType = productType || '';
+		startDate = startDate || new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+		endDate = endDate || new Date();
+		categoryFilter = categoryFilter || '';
+		languageFilter = languageFilter || '';
+
+		setData(null);
+		const params: any = {
+			page: currentPage,
+			row: rowsPerPage,
+			category: category,
+			after: startDate,
+			before: endDate,
+			meta_key: 'multivendorx_store_id',
+			value: appLocalizer.store_id,
+			lang: languageFilter,
+		};
+
+		if (stockStatus) {
+			params.stock_status = stockStatus;
+		}
+
+		if (searchField) {
+			params.search = searchField;
+		}
+		if (productType) {
+			params.type = productType;
+		}
+		if (categoryFilter && categoryFilter !== 'all') {
+			params.status = categoryFilter;
+		}
+		axios({
+			method: 'GET',
+			url: `${appLocalizer.apiUrl}/wc/v3/products`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: params, // Use the dynamically built params object
+		})
+			.then((response) => {
+				const formattedProducts = response.data.map((p: any) => ({
+					id: p.id,
+					name: p.name,
+					sku: p.sku || '-',
+					price: p.price ? `${p.price}` : '-',
+					stock_status: p.stock_status,
+					categories: p.categories,
+					date_created: p.date_created,
+					status: p.status,
+					permalink: p.permalink,
+					image: p.images?.length ? p.images[0].src : null,
+				}));
+				setData(formattedProducts);
+
+				const total = parseInt(response.headers['x-wp-total']);
+				setTotalRows(total);
+				setPageCount(Math.ceil(total / rowsPerPage));
+			})
+			.catch(() => {
+				setData([]);
+				setTotalRows(0);
+				setPageCount(0);
+			});
+	}
+
+	// Handle pagination and filter changes
+	const requestApiForData = (
+		rowsPerPage: number,
+		currentPage: number,
+		filterData: FilterData
+	) => {
+		setData([]);
+		// Arguments must be passed in the exact order requestData expects them.
+		requestData(
+			rowsPerPage, // 1: rowsPerPage
+			currentPage, // 2: currentPage
+			filterData?.category, // 3: category
+			filterData?.stock_status, // 4: stockStatus
+			filterData?.searchField, // 5: searchField (Assuming filterData uses searchField for the search box value)
+			filterData?.productType, // 6: productType
+			filterData?.date?.start_date, // 7: startDate
+			filterData?.date?.end_date, // 8: endDate
+			filterData?.categoryFilter,
+			filterData?.languageFilter,
+		);
+	};
+
 	const columns: ColumnDef<ProductRow>[] = [
-		// {
-		// 	id: 'select',
-		// 	header: ({ table }) => (
-		// 		<input
-		// 			type="checkbox"
-		// 			checked={table.getIsAllRowsSelected()}
-		// 			onChange={table.getToggleAllRowsSelectedHandler()}
-		// 		/>
-		// 	),
-		// 	cell: ({ row }) => (
-		// 		<input
-		// 			type="checkbox"
-		// 			checked={row.getIsSelected()}
-		// 			onChange={row.getToggleSelectedHandler()}
-		// 		/>
-		// 	),
-		// },
 		{
 			header: __('Product Name', 'multivendorx'),
 			cell: ({ row }) => (
@@ -152,11 +414,10 @@ const AllProduct: React.FC = () => {
 						className="product-wrapper"
 					>
 						{row.original.image ? (
-							// <img
-							// 	src={row.original.image}
-							// 	alt={row.original.name}
-							// />
-							<></>
+							<img
+								src={row.original.image}
+								alt={row.original.name}
+							/>
 						) : (
 							<i className="item-icon adminfont-multi-product"></i>
 						)}
@@ -170,10 +431,6 @@ const AllProduct: React.FC = () => {
 			),
 		},
 		{
-			id: 'price',
-			accessorKey: 'price',
-			accessorFn: (row) => parseFloat(row.price || '0'),
-			enableSorting: true,
 			header: __('Price', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell>
@@ -223,7 +480,7 @@ const AllProduct: React.FC = () => {
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell>
-					{formatWooDate(row.original.date_created)}
+					{formatWcShortDate(row.original.date_created)}
 				</TableCell>
 			),
 		},
@@ -231,7 +488,17 @@ const AllProduct: React.FC = () => {
 			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
-				return <TableCell type="status" status={row.original.status} />;
+				const statusMap: Record<string, string> = {
+					publish: 'Published',
+					draft: 'Draft',
+					pending: 'Pending',
+					private: 'Private',
+					trash: 'Trash',
+				};
+
+				const displayStatus = statusMap[row.original.status] || row.original.status;
+
+				return <TableCell type="status" status={displayStatus} />;
 			},
 		},
 		{
@@ -274,7 +541,7 @@ const AllProduct: React.FC = () => {
 									const url = row.original.permalink;
 									navigator.clipboard
 										.writeText(url)
-										.catch(() => {});
+										.catch(() => { });
 								},
 							},
 							{
@@ -283,11 +550,34 @@ const AllProduct: React.FC = () => {
 								onClick: (rowData) => {
 									handleDelete(rowData.id);
 								},
-								 
+
 							},
 						],
 					}}
 				/>
+			),
+		},
+	];
+
+	const searchFilter: RealtimeFilter[] = [
+		{
+			name: 'searchField',
+			render: (updateFilter, filterValue) => (
+				<>
+					<div className="search-section">
+						<input
+							name="searchField"
+							type="text"
+							placeholder={__('Search', 'multivendorx')}
+							onChange={(e) => {
+								updateFilter(e.target.name, e.target.value);
+							}}
+							className="basic-select"
+							value={filterValue || ''}
+						/>
+						<i className="adminfont-search"></i>
+					</div>
+				</>
 			),
 		},
 	];
@@ -367,12 +657,34 @@ const AllProduct: React.FC = () => {
 			),
 		},
 		{
+			name: 'status',
+			render: (
+				updateFilter: (key: string, value: string) => void,
+				filterValue: string | undefined
+			) => (
+				<div className="group-field">
+					<select
+						name="status"
+						onChange={(e) =>
+							updateFilter(e.target.name, e.target.value)
+						}
+						value={filterValue || ''}
+						className="basic-select"
+					>
+						{StatusOptions?.map((s: any) => (
+							<option key={s.key} value={s.key}>
+								{s.name}
+							</option>
+						))}
+					</select>
+				</div>
+			),
+		},
+		{
 			name: 'date',
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) => {
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -384,167 +696,6 @@ const AllProduct: React.FC = () => {
 			),
 		},
 	];
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<>
-					<div className="search-section">
-						<input
-							name="searchField"
-							type="text"
-							placeholder={__('Search', 'multivendorx')}
-							onChange={(e) => {
-								updateFilter(e.target.name, e.target.value);
-							}}
-							className="basic-select"
-							value={filterValue || ''}
-						/>
-						<i className="adminfont-search"></i>
-					</div>
-				</>
-			),
-		},
-	];
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-	}, [pagination]);
-
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		category = '',
-		stockStatus = '', // <-- Positional Argument 4
-		searchField = '', // <-- Positional Argument 5
-		productType = '', // <-- Positional Argument 6
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
-	) {
-		setData([]);
-
-		const params: any = {
-			page: currentPage,
-			row: rowsPerPage,
-			category: category,
-			after: startDate,
-			before: endDate,
-			meta_key: 'multivendorx_store_id',
-			value: appLocalizer.store_id,
-		};
-
-		if (stockStatus) {
-			params.stock_status = stockStatus;
-		}
-
-		if (searchField) {
-			params.search = searchField;
-		}
-		if (productType) {
-			params.type = productType;
-		}
-		axios({
-			method: 'GET',
-			url: `${appLocalizer.apiUrl}/wc/v3/products`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: params, // Use the dynamically built params object
-		})
-			.then((response) => {
-				const formattedProducts = response.data.map((p: any) => ({
-					id: p.id,
-					name: p.name,
-					sku: p.sku || '-',
-					price: p.price ? `${p.price}` : '-',
-					stock_status: p.stock_status,
-					categories: p.categories,
-					date_created: p.date_created,
-					status: p.status,
-					permalink: p.permalink,
-				}));
-				setData(formattedProducts);
-
-				const total = parseInt(response.headers['x-wp-total']);
-				setTotalRows(total);
-				setPageCount(Math.ceil(total / rowsPerPage));
-			})
-			.catch(() => {
-				setData([]);
-				setTotalRows(0);
-				setPageCount(0);
-			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		setData([]);
-		// Arguments must be passed in the exact order requestData expects them.
-		requestData(
-			rowsPerPage, // 1: rowsPerPage
-			currentPage, // 2: currentPage
-			filterData?.category, // 3: category
-			filterData?.stock_status, // 4: stockStatus
-			filterData?.searchField, // 5: searchField (Assuming filterData uses searchField for the search box value)
-			filterData?.productType, // 6: productType
-			filterData?.date?.start_date, // 7: startDate
-			filterData?.date?.end_date // 8: endDate
-		);
-	};
-
-	const handleDelete = async (productId) => {
-		const res = await axios.delete(
-			`${appLocalizer.apiUrl}/wc/v3/products/${productId}`,
-			{
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			}
-		);
-
-		requestData();
-	};
-
-	const createAutoDraftProduct = () => {
-		try {
-			const payload = {
-				name: 'Auto Draft',
-				status: 'draft',
-			};
-
-			axios
-				.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				})
-				.then((res) => {
-					setNewProductId(res.data.id);
-				});
-		} catch (err) {
-			console.error(
-				'Error creating auto-draft:',
-				err.response?.data || err
-			);
-		}
-	};
-
-	useEffect(() => {
-		if (!newProductId) {
-			return;
-		}
-
-		if (appLocalizer.permalink_structure) {
-			navigate(
-				`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${newProductId}`
-			);
-		} else {
-			navigate(
-				`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${newProductId}`
-			);
-		}
-	}, [newProductId]);
 
 	return (
 		<>
@@ -558,14 +709,14 @@ const AllProduct: React.FC = () => {
 							</div>
 						</div>
 						<div className="buttons-wrapper">
-							{modules.includes('import-export') && 
+							{modules.includes('import-export') &&
 								applyFilters(
 									'product_import_export',
 									null,
 									requestData,
 									rowSelection,
 									data,
-								)								
+								)
 							}
 							<div
 								className="admin-btn btn-purple-bg"
@@ -602,11 +753,12 @@ const AllProduct: React.FC = () => {
 							pagination={pagination}
 							onPaginationChange={setPagination}
 							perPageOption={[10, 25, 50]}
-							typeCounts={[]}
 							realtimeFilter={realtimeFilter}
 							handlePagination={requestApiForData}
 							totalCounts={totalRows}
 							searchFilter={searchFilter}
+							categoryFilter={productStatus}
+							languageFilter={languageProductCounts}
 						/>
 					</div>
 				</>

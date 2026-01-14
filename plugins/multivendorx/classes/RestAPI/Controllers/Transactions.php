@@ -456,14 +456,26 @@ class Transactions extends \WP_REST_Controller {
         if ( $withdraw ) {
             if ( 'approve' === $action && $threshold_amount < $amount ) {
                 MultiVendorX()->payments->processor->process_payment( $store_id, $amount );
-            } else {
-                $parameters = array(
-                    'store_email' => 'test@gmail.com',
-                    'store_id'    => $store_id,
-                    'category'    => 'activity',
+                do_action(
+                    'multivendorx_notify_withdrawal_released',
+                    'withdrawal_released',
+                    array(
+                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+                        'category'    => 'activity',
+                    )
                 );
-
-                do_action( 'multivendorx_notify_payout_rejected', 'payout_rejected', $parameters );
+            } else {
+                do_action(
+                    'multivendorx_notify_withdrawl_rejected',
+                    'withdrawl_rejected',
+                    array(
+                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+                        'amount'    => $amount,
+                        'category'    => 'activity',
+                    )
+                );
             }
 
             $store->delete_meta( Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] );
@@ -504,6 +516,20 @@ class Transactions extends \WP_REST_Controller {
 
         if ( $should_update_meta ) {
             $store->update_meta( Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'], $amount );
+
+            do_action(
+                'multivendorx_notify_withdrawal_requested',
+                'withdrawal_requested',
+                array(
+                    'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
+                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+                    'store_name' => $store->get( 'name' ),
+                    'amount'    => $amount,
+                    'category'    => 'activity',
+                )
+            );
         }
 
         return rest_ensure_response(

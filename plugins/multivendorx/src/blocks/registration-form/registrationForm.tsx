@@ -147,7 +147,7 @@ const RegistrationForm = () => {
 				<>
 					<div className="store-selector">
 						<ToggleSetting
-							wrapperClass="setting-form-input"
+							 
 							options={stores}
 							value={selectedStore?.value || ''}
 							onChange={(val: any) => handleStoreChange(val)}

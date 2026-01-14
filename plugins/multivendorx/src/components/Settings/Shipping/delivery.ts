@@ -54,7 +54,7 @@ export default {
 							'adminfont-refund',
 							'adminfont-cart',
 							'adminfont-active',
-							'adminfont-distance-shipping',
+							'adminfont-store-shipping',
 							'adminfont-geo-my-wp',
 							'adminfont-per-product-shipping',
 							'adminfont-verification7',

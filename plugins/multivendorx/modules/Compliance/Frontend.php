@@ -64,53 +64,57 @@ class Frontend
         if (apply_filters('mvx_show_report_abuse_link', true, $product)) {
             $report_abuse_text = apply_filters('mvx_report_abuse_text', __('Report Abuse', 'multivendorx'), $product);
             ?>
-            <div class="mvx-report-abuse-wrapper">
-                <a href="javascript:void(0);" class="open-report-abuse"><?php echo esc_html($report_abuse_text); ?></a>
+            <div class="multivendorx-report-abuse-wrapper">
+                <a href="javascript:void(0);" class="open-popup open-report-abuse"><?php echo esc_html($report_abuse_text); ?></a>
+                <div class="report-abuse-form multivendorx-popup" style="display:none;">
+                    <form class="woocommerce-form woocommerce-form-login login multivendorx-popup-content">
+                        <span class="popup-close"><i class="dashicons dashicons-no-alt"></i></span>
+                        <h3>
+                            <?php
+                            $report_title = sprintf(
+                                /* translators: %s: Product name for abuse report */
+                                esc_html__('Report abuse for "%s"', 'multivendorx'),
+                                esc_html($product->get_name())
+                            );
+                            printf('<h3>%s</h3>', esc_html($report_title));
+                            ?>
+                        </h3>
 
-                <form class="woocommerce-form woocommerce-form-login login report-abuse-form" style="display:none;">
-                    <h3>
-                        <?php
-                        $report_title = sprintf(
-                            /* translators: %s: Product name for abuse report */
-                            esc_html__('Report abuse for "%s"', 'multivendorx'),
-                            esc_html($product->get_name())
-                        );
-                        printf('<h3>%s</h3>', esc_html($report_title));
-                        ?>
-                    </h3>
+                        <!-- Name & Email -->
+                        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                            <label for="report-abuse-name"><?php esc_attr_e('Name', 'multivendorx'); ?></label>
+                            <input type="text" name="report-abuse-name"
+                                class="woocommerce-Input woocommerce-Input--text input-text report-abuse-name">
+                        </p>
+                        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                            <label for="report-abuse-email"><?php esc_attr_e('Email', 'multivendorx'); ?></label>
+                            <input type="email" name=""
+                                class="report-abuse-email woocommerce-Input woocommerce-Input--text input-text">
+                        </p>
 
-                    <!-- Name & Email -->
-                    <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                        <label for="report-abuse-name"><?php esc_attr_e('Name', 'multivendorx'); ?></label>
-                        <input type="text" name="report-abuse-name"
-                            class="woocommerce-Input woocommerce-Input--text input-text report-abuse-name">
-                    </p>
-                    <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                        <label for="report-abuse-email"><?php esc_attr_e('Email', 'multivendorx'); ?></label>
-                        <input type="email" name="" class="report-abuse-email woocommerce-Input woocommerce-Input--text input-text">
-                    </p>
+                        <!-- Radio buttons for reasons -->
+                        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                        <div class="report-abuse-reasons-wrapper woocommerce-form woocommerce-form--radio">
+                            <!-- Dynamic radio buttons will be appended here via jQuery -->
+                        </div>
+                        </p>
+                        <!-- Custom message textarea (hidden initially) -->
+                        <p class="report-abuse-custom-msg woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide" style="display:none;">
+                            <textarea class="report-abuse-msg input-text"
+                                placeholder="<?php esc_attr_e('Message', 'multivendorx'); ?>"></textarea>
+                        </p>
 
-                    <!-- Radio buttons for reasons -->
-                    <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <div class="report-abuse-reasons-wrapper woocommerce-form woocommerce-form--radio">
-                        <!-- Dynamic radio buttons will be appended here via jQuery -->
-                    </div>
-                    </p>
-                    <!-- Custom message textarea (hidden initially) -->
-                    <p class="report-abuse-custom-msg" style="display:none;">
-                        <textarea class="report_abuse_msg" placeholder="<?php esc_attr_e('Message', 'multivendorx'); ?>"></textarea>
-                    </p>
+                        <input type="hidden" class="report_abuse_product_id" value="<?php echo esc_attr($product->get_id()); ?>">
 
-                    <input type="hidden" class="report_abuse_product_id" value="<?php echo esc_attr($product->get_id()); ?>">
+                        <!-- Submit button -->
+                        <button type="button" class="submit-report-abuse woocommerce-button button wp-element-button">
+                            <?php esc_html_e('Report', 'multivendorx'); ?>
+                        </button>
 
-                    <!-- Submit button -->
-                    <button type="button" class="submit-report-abuse woocommerce-button button wp-element-button">
-                        <?php esc_html_e('Report', 'multivendorx'); ?>
-                    </button>
-
-                    <div class="report-abuse-msg-box woocommerce-notices-wrapper">
-                    </div>
-                </form>
+                        <div class="report-abuse-msg-box woocommerce-notices-wrapper">
+                        </div>
+                    </form>
+                </div>
             </div>
             <?php
         }

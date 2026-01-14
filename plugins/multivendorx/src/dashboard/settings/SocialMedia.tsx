@@ -62,7 +62,7 @@ const SocialMedia = () => {
 					</label>
 					<BasicInput
 						name="facebook"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.facebook}
 						onChange={handleChange}
@@ -79,7 +79,7 @@ const SocialMedia = () => {
 					</label>
 					<BasicInput
 						name="twitter"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.twitter}
 						onChange={handleChange}
@@ -96,7 +96,7 @@ const SocialMedia = () => {
 					</label>
 					<BasicInput
 						name="linkedin"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.linkedin}
 						onChange={handleChange}
@@ -113,7 +113,7 @@ const SocialMedia = () => {
 					</label>
 					<BasicInput
 						name="youtube"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.youtube}
 						onChange={handleChange}
@@ -130,7 +130,7 @@ const SocialMedia = () => {
 					</label>
 					<BasicInput
 						name="instagram"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.instagram}
 						onChange={handleChange}

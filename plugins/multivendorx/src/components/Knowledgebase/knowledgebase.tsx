@@ -362,8 +362,6 @@ export const KnowledgeBase: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) => {
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -614,7 +612,6 @@ export const KnowledgeBase: React.FC = () => {
 							<FormGroup label={__('Content', 'multivendorx')} htmlFor="Content">
 								<TextArea
 									name="content"
-									inputClass="textarea-input"
 									value={formData.content}
 									onChange={handleChange}
 									usePlainText={false}

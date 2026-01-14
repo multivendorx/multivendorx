@@ -139,7 +139,7 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
         return (
             <>
                 <div
-                    className={ `${ wrapperClass || '' } ${
+                    className={ `setting-form-input ${ wrapperClass || '' } ${
                         clickBtnName || generate ? 'input-button' : ''
                     } ${
                         preInsideText || postInsideText ? 'inner-input' : ''

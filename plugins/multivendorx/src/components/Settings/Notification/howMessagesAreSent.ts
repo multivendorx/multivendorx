@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'how-messages-are-sent',
+	id: 'notification-configuration',
 	priority: 1,
 	name: 'How messages are sent',
-	tabTitle: 'Notification recipients',
+	tabTitle: 'Email & SMS delivery',
 	desc: __(
 		'Define who receives notification messages from the marketplace.',
 		'multivendorx'
@@ -47,7 +47,6 @@ export default {
 				'multivendorx'
 			),
 		},
-
 		{
 			key: 'sender_name',
 			type: 'text',
@@ -73,7 +72,21 @@ export default {
 				'multivendorx'
 			),
 		},
-
+		{
+			key: 'sms_section',
+			type: 'section',
+			hint: __('SMS delivery settings', 'multivendorx'),
+		},
+		{
+			key: 'sms_sender_phone_number',
+			type: 'text',
+			label: __('Sender phone number', 'multivendorx'),
+			placeholder: __('+1 4151234567', 'multivendorx'),
+			settingDescription: __(
+				'The phone number SMS messages are sent from. Use country code followed by phone number. Example: +1 – 4151234567, +91 – 9876543210',
+				'multivendorx'
+			),
+		},
 		{
 			key: 'sms_section',
 			type: 'section',
@@ -138,16 +151,6 @@ export default {
 			},
 		},
 		{
-			key: 'twilio_from_number',
-			type: 'text',
-			label: __('From Number', 'multivendorx'),
-			dependent: {
-				key: 'sms_gateway_selector',
-				set: true,
-				value: 'twilio',
-			},
-		},
-		{
 			key: 'vonage_api_key',
 			type: 'text',
 			label: __('API Key', 'multivendorx'),
@@ -162,16 +165,6 @@ export default {
 			key: 'vonage_api_secret',
 			type: 'text',
 			label: __('API Secret', 'multivendorx'),
-			dependent: {
-				key: 'sms_gateway_selector',
-				set: true,
-				value: 'vonage',
-			},
-		},
-		{
-			key: 'vonage_from_number',
-			type: 'text',
-			label: __('From Number', 'multivendorx'),
 			dependent: {
 				key: 'sms_gateway_selector',
 				set: true,
@@ -208,30 +201,6 @@ export default {
 				key: 'sms_gateway_selector',
 				set: true,
 				value: 'plivo',
-			},
-		},
-		{
-			key: 'plivo_from_number',
-			type: 'text',
-			label: __('From Number', 'multivendorx'),
-			dependent: {
-				key: 'sms_gateway_selector',
-				set: true,
-				value: 'plivo',
-			}
-		},
-		{
-			key: 'sms_sender_phone_number',
-			type: 'text',
-			label: __('Sender phone number', 'multivendorx'),
-			placeholder: __('+1 4151234567', 'multivendorx'),
-			settingDescription: __(
-				'The phone number SMS messages are sent from. Use country code followed by phone number. Example: +1 – 4151234567, +91 – 9876543210',
-				'multivendorx'
-			),
-			dependent: {
-				key: 'sms_gateway_selector',
-				set: true,
 			},
 		},
 		

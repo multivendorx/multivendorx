@@ -8,6 +8,7 @@
 namespace MultiVendorX\Announcement;
 
 use MultiVendorX\Utill;
+use MultiVendorX\Store\Store;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -345,6 +346,23 @@ class Rest extends \WP_REST_Controller {
                     Utill::POST_META_SETTINGS['announcement_url'],
                     esc_url_raw( $url )
                 );
+            }
+
+            foreach ($stores as $store_id) {
+                $store = new Store($store_id);
+
+                do_action(
+                    'multivendorx_notify_system_announcement',
+                        'system_announcement',
+                        array(
+                            'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                            'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+                            'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
+                            'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                            'announcement_message'    => $content,
+                            'category'    => 'activity',
+                        )
+                    );
             }
 
             return rest_ensure_response(

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { MultiCalendarInput, Table, TableCell } from 'zyra';
+import { MultiCalendarInput, Table, TableCell, useModules } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,
@@ -22,7 +22,7 @@ type FilterData = {
 	searchAction?: string;
 	searchField?: string;
 	category?: any;
-	typeCount?: any;
+	categoryFilter?: any;
 	stock_status?: string;
 	productType?: string;
 };
@@ -35,6 +35,7 @@ export interface RealtimeFilter {
 }
 
 const Orders: React.FC = () => {
+	const { modules } = useModules();
 	const location = useLocation();
 	const [data, setData] = useState<any[]>([]);
 	const [pagination, setPagination] = useState<PaginationState>({
@@ -73,21 +74,199 @@ const Orders: React.FC = () => {
 		})
 		.filter((id): id is number => id !== null);
 
-	// Fetch orders
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
+	const BulkAction: React.FC = () => {
+		const handleBulkActionChange = async (action: string) => {
+			if (!action || selectedOrderIds.length === 0) {
+				return;
+			}
+			// Change order status
+			try {
+				await Promise.all(
+					selectedOrderIds.map((orderId) =>
+						axios.put(
+							`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+							{ status: action },
+							{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+						)
+					)
+				);
 
-		if (hash === 'refund-requested') {
-			// call API with refund-requested filter
-			requestApiForData(rowsPerPage, currentPage, {
-				typeCount: 'refund-requested',
+				setRowSelection({});
+				fetchOrderStatusCounts();
+				requestData(pagination.pageSize, pagination.pageIndex + 1);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				if (bulkSelectRef.current) {
+					bulkSelectRef.current.value = '';
+				}
+			}
+		};
+
+		const downloadSelectedCSV = () => {
+			if (selectedOrderIds.length === 0) {
+				alert('No orders selected for export');
+				return;
+			}
+
+			const selectedOrders = data.filter((order) =>
+				selectedOrderIds.includes(order.id)
+			);
+
+			const csvRows: string[] = [];
+			csvRows.push('Order ID,Customer,Email,Total,Status,Date');
+
+			selectedOrders.forEach((order) => {
+				const customer = order.billing?.first_name
+					? `${order.billing.first_name} ${order.billing.last_name || ''
+					}`
+					: 'Guest';
+				const email = order.billing?.email || '';
+				const total = order.total || '';
+				const status = order.status || '';
+				const date = order.date_created || '';
+
+				csvRows.push(
+					`"${order.id}","${customer}","${email}","${total}","${status}","${date}"`
+				);
 			});
-		} else {
-			// normal API call
-			requestData(rowsPerPage, currentPage);
+
+			const csvString = csvRows.join('\n');
+			const blob = new Blob([csvString], {
+				type: 'text/csv;charset=utf-8;',
+			});
+			const link = document.createElement('a');
+			link.href = URL.createObjectURL(blob);
+			link.download = `selected_orders_${appLocalizer.store_id
+				}_${new Date().toISOString()}.csv`;
+			link.click();
+			URL.revokeObjectURL(link.href);
+		};
+
+		return (
+			<>
+				<div className="action-item">
+					<i className="adminfont-form"></i>
+					<select
+						name="action"
+						ref={bulkSelectRef}
+						onChange={(e) => handleBulkActionChange(e.target.value)}
+					>
+						<option value="">
+							{__('Bulk Actions', 'multivendorx')}
+						</option>
+						<option value="completed">
+							{__('Completed', 'multivendorx')}
+						</option>
+						<option value="processing">
+							{__('Processing', 'multivendorx')}
+						</option>
+						<option value="pending">
+							{__('Pending', 'multivendorx')}
+						</option>
+						<option value="on-hold">
+							{__('On Hold', 'multivendorx')}
+						</option>
+						<option value="cancelled">
+							{__('Cancelled', 'multivendorx')}
+						</option>
+						<option value="refunded">
+							{__('Refunded', 'multivendorx')}
+						</option>
+						<option value="failed">
+							{__('Failed', 'multivendorx')}
+						</option>
+					</select>
+				</div>
+				<div className="action-item">
+					<button
+						type="button"
+						className="admin-btn"
+						onClick={downloadSelectedCSV}
+					>
+						<i className="adminfont-download"></i>
+						{__('Download CSV', 'multivendorx')}
+					</button>
+				</div>
+			</>
+		);
+	};
+
+	const exportAllOrders = async () => {
+		try {
+			let allOrders: any[] = [];
+			let page = 1;
+			const perPage = 100; // WooCommerce API max per page
+
+			// Fetch all pages
+			while (true) {
+				const res = await axios.get(
+					`${appLocalizer.apiUrl}/wc/v3/orders`,
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+						params: {
+							per_page: perPage,
+							page,
+							meta_key: 'multivendorx_store_id',
+							value: appLocalizer.store_id,
+						},
+					}
+				);
+
+				allOrders = allOrders.concat(res.data);
+
+				const totalPages = parseInt(
+					res.headers['x-wp-totalpages'] || '1'
+				);
+				if (page >= totalPages) {
+					break;
+				}
+				page++;
+			}
+
+			if (allOrders.length === 0) {
+				alert('No orders found to export');
+				return;
+			}
+
+			// Convert orders to CSV
+			const csvRows: string[] = [];
+			csvRows.push('Order ID,Customer,Email,Total,Status,Date'); // Header
+
+			allOrders.forEach((order) => {
+				const customer = order.billing?.first_name
+					? `${order.billing.first_name} ${order.billing.last_name || ''
+					}`
+					: 'Guest';
+				const email = order.billing?.email || '';
+				const total = order.total || '';
+				const status = order.status || '';
+				const date = order.date_created || '';
+
+				csvRows.push(
+					[order.id, customer, email, total, status, date]
+						.map((field) => `"${field}"`)
+						.join(',')
+				);
+			});
+
+			const csvString = csvRows.join('\n');
+
+			// Trigger download
+			const blob = new Blob([csvString], {
+				type: 'text/csv;charset=utf-8;',
+			});
+			const link = document.createElement('a');
+			link.href = URL.createObjectURL(blob);
+			link.download = `orders_${appLocalizer.store_id
+				}_${new Date().toISOString()}.csv`;
+			link.click();
+			URL.revokeObjectURL(link.href);
+		} catch (err) {
+			console.error('Failed to export all orders:', err);
+			alert('Failed to export orders, check console for details');
 		}
-	}, [pagination]);
+	};
 
 	const fetchOrderStatusCounts = async () => {
 		try {
@@ -98,11 +277,14 @@ const Orders: React.FC = () => {
 				'on-hold',
 				'completed',
 				'cancelled',
-				'refund-requested',
 				'refunded',
 				'failed',
 				'trash',
 			];
+
+			if (modules.includes('marketplace-refund')) {
+				statuses.push('refund-requested');
+			}
 
 			const counts: OrderStatus[] = await Promise.all(
 				statuses.map(async (status) => {
@@ -131,7 +313,7 @@ const Orders: React.FC = () => {
 							status === 'all'
 								? __('All', 'multivendorx')
 								: status.charAt(0).toUpperCase() +
-									status.slice(1),
+								status.slice(1),
 						count: total,
 					};
 				})
@@ -139,9 +321,8 @@ const Orders: React.FC = () => {
 
 			// Filter out zero-count statuses except "all"
 			const filteredCounts = counts.filter(
-				(status) => status.key === 'all' || status.count > 0
+				(status) => status.count > 0
 			);
-
 			setOrderStatus(filteredCounts);
 		} catch (error) {
 			console.error('Failed to fetch order status counts:', error);
@@ -156,11 +337,11 @@ const Orders: React.FC = () => {
 	function requestData(
 		rowsPerPage = 10,
 		currentPage = 1,
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date(),
 		extraParams: any = {}
 	) {
-		setData([]);
+		setData(null);
 
 		const params: any = {
 			page: currentPage,
@@ -221,164 +402,28 @@ const Orders: React.FC = () => {
 			}
 		}
 
-		// Add typeCount filter
-		if (filterData.typeCount && filterData.typeCount !== 'all') {
-			params.status = filterData.typeCount;
+		// Add categoryFilter filter
+		if (filterData.categoryFilter && filterData.categoryFilter !== 'all') {
+			params.status = filterData.categoryFilter;
 		}
-		console.log('params', params);
 		requestData(rowsPerPage, currentPage, startDate, endDate, params);
 	};
 
-	const handleBulkAction = async () => {
-		const action = bulkSelectRef.current?.value;
+	// Fetch orders
+	useEffect(() => {
+		const currentPage = pagination.pageIndex + 1;
+		const rowsPerPage = pagination.pageSize;
 
-		if (!action || selectedOrderIds.length === 0) {
-			return;
-		}
-
-		try {
-			await Promise.all(
-				selectedOrderIds.map((orderId) =>
-					axios.put(
-						`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-						{ status: action },
-						{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-					)
-				)
-			);
-
-			setRowSelection({});
-			fetchOrderStatusCounts();
-			requestData(pagination.pageSize, pagination.pageIndex + 1);
-		} catch (err) {
-			console.error(err);
-		} finally {
-			if (bulkSelectRef.current) {
-				bulkSelectRef.current.value = '';
-			}
-		}
-	};
-
-	const BulkAction: React.FC = () => {
-		const handleBulkActionChange = async (action: string) => {
-			if (!action || selectedOrderIds.length === 0) {
-				return;
-			}
-
-			// Change order status
-			try {
-				await Promise.all(
-					selectedOrderIds.map((orderId) =>
-						axios.put(
-							`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-							{ status: action },
-							{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-						)
-					)
-				);
-
-				setRowSelection({});
-				fetchOrderStatusCounts();
-				requestData(pagination.pageSize, pagination.pageIndex + 1);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				if (bulkSelectRef.current) {
-					bulkSelectRef.current.value = '';
-				}
-			}
-		};
-
-		const downloadSelectedCSV = () => {
-			if (selectedOrderIds.length === 0) {
-				alert('No orders selected for export');
-				return;
-			}
-
-			const selectedOrders = data.filter((order) =>
-				selectedOrderIds.includes(order.id)
-			);
-
-			const csvRows: string[] = [];
-			csvRows.push('Order ID,Customer,Email,Total,Status,Date');
-
-			selectedOrders.forEach((order) => {
-				const customer = order.billing?.first_name
-					? `${order.billing.first_name} ${
-							order.billing.last_name || ''
-						}`
-					: 'Guest';
-				const email = order.billing?.email || '';
-				const total = order.total || '';
-				const status = order.status || '';
-				const date = order.date_created || '';
-
-				csvRows.push(
-					`"${order.id}","${customer}","${email}","${total}","${status}","${date}"`
-				);
+		if (hash === 'refund-requested') {
+			// call API with refund-requested filter
+			requestApiForData(rowsPerPage, currentPage, {
+				categoryFilter: 'refund-requested',
 			});
-
-			const csvString = csvRows.join('\n');
-			const blob = new Blob([csvString], {
-				type: 'text/csv;charset=utf-8;',
-			});
-			const link = document.createElement('a');
-			link.href = URL.createObjectURL(blob);
-			link.download = `selected_orders_${
-				appLocalizer.store_id
-			}_${new Date().toISOString()}.csv`;
-			link.click();
-			URL.revokeObjectURL(link.href);
-		};
-
-		return (
-			<>
-				<div className="action-item">
-					<i className="adminfont-form"></i>
-					<select
-						name="action"
-						ref={bulkSelectRef}
-						onChange={(e) => handleBulkActionChange(e.target.value)}
-					>
-						<option value="">
-							{__('Bulk Actions', 'multivendorx')}
-						</option>
-						<option value="completed">
-							{__('Completed', 'multivendorx')}
-						</option>
-						<option value="processing">
-							{__('Processing', 'multivendorx')}
-						</option>
-						<option value="pending">
-							{__('Pending', 'multivendorx')}
-						</option>
-						<option value="on-hold">
-							{__('On Hold', 'multivendorx')}
-						</option>
-						<option value="cancelled">
-							{__('Cancelled', 'multivendorx')}
-						</option>
-						<option value="refunded">
-							{__('Refunded', 'multivendorx')}
-						</option>
-						<option value="failed">
-							{__('Failed', 'multivendorx')}
-						</option>
-					</select>
-				</div>
-				<div className="action-item">
-					<button
-						type="button"
-						className="admin-btn"
-						onClick={downloadSelectedCSV}
-					>
-						<i className="adminfont-download"></i>
-						{__('Download CSV', 'multivendorx')}
-					</button>
-				</div>
-			</>
-		);
-	};
+		} else {
+			// normal API call
+			requestData(rowsPerPage, currentPage);
+		}
+	}, [pagination]);
 
 	const columns: ColumnDef<any>[] = [
 		{
@@ -425,9 +470,8 @@ const Orders: React.FC = () => {
 				const { billing } = row.original;
 				const name =
 					billing?.first_name || billing?.last_name
-						? `${billing.first_name || ''} ${
-								billing.last_name || ''
-							}`
+						? `${billing.first_name || ''} ${billing.last_name || ''
+						}`
 						: billing?.email || __('Guest', 'multivendorx');
 				return <TableCell>{name}</TableCell>;
 			},
@@ -461,9 +505,8 @@ const Orders: React.FC = () => {
 				} else if (minutes > 0) {
 					timeAgo = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
 				} else {
-					timeAgo = `${seconds} second${
-						seconds !== 1 ? 's' : ''
-					} ago`;
+					timeAgo = `${seconds} second${seconds !== 1 ? 's' : ''
+						} ago`;
 				}
 
 				return <TableCell>{timeAgo}</TableCell>;
@@ -498,22 +541,16 @@ const Orders: React.FC = () => {
 							// Conditionally include the "View" button
 							...(appLocalizer.edit_order_capability
 								? [
-										{
-											label: __('View', 'multivendorx'),
-											icon: 'adminfont-eye',
-											onClick: (rowData) => {
-												setSelectedOrder(rowData);
-												// window.location.href = `view/${rowData.id}`;
-
-												window.location.hash = `view/${rowData.id}`;
-
-												// const currentPath = window.location.pathname.replace(/\/$/, '');
-												// const newPath = `${currentPath}/view/${rowData.id}`;
-												// window.history.pushState({}, '', newPath);
-											},
-											hover: true,
+									{
+										label: __('View', 'multivendorx'),
+										icon: 'adminfont-eye',
+										onClick: (rowData) => {
+											setSelectedOrder(rowData);
+											window.location.hash = `view/${rowData.id}`;
 										},
-									]
+										hover: true,
+									},
+								]
 								: []),
 							{
 								label: __('Download', 'multivendorx'),
@@ -559,8 +596,6 @@ const Orders: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) => {
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -623,84 +658,6 @@ const Orders: React.FC = () => {
 		},
 	];
 
-	const exportAllOrders = async () => {
-		try {
-			let allOrders: any[] = [];
-			let page = 1;
-			const perPage = 100; // WooCommerce API max per page
-
-			// Fetch all pages
-			while (true) {
-				const res = await axios.get(
-					`${appLocalizer.apiUrl}/wc/v3/orders`,
-					{
-						headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						params: {
-							per_page: perPage,
-							page,
-							meta_key: 'multivendorx_store_id',
-							value: appLocalizer.store_id,
-						},
-					}
-				);
-
-				allOrders = allOrders.concat(res.data);
-
-				const totalPages = parseInt(
-					res.headers['x-wp-totalpages'] || '1'
-				);
-				if (page >= totalPages) {
-					break;
-				}
-				page++;
-			}
-
-			if (allOrders.length === 0) {
-				alert('No orders found to export');
-				return;
-			}
-
-			// Convert orders to CSV
-			const csvRows: string[] = [];
-			csvRows.push('Order ID,Customer,Email,Total,Status,Date'); // Header
-
-			allOrders.forEach((order) => {
-				const customer = order.billing?.first_name
-					? `${order.billing.first_name} ${
-							order.billing.last_name || ''
-						}`
-					: 'Guest';
-				const email = order.billing?.email || '';
-				const total = order.total || '';
-				const status = order.status || '';
-				const date = order.date_created || '';
-
-				csvRows.push(
-					[order.id, customer, email, total, status, date]
-						.map((field) => `"${field}"`)
-						.join(',')
-				);
-			});
-
-			const csvString = csvRows.join('\n');
-
-			// Trigger download
-			const blob = new Blob([csvString], {
-				type: 'text/csv;charset=utf-8;',
-			});
-			const link = document.createElement('a');
-			link.href = URL.createObjectURL(blob);
-			link.download = `orders_${
-				appLocalizer.store_id
-			}_${new Date().toISOString()}.csv`;
-			link.click();
-			URL.revokeObjectURL(link.href);
-		} catch (err) {
-			console.error('Failed to export all orders:', err);
-			alert('Failed to export orders, check console for details');
-		}
-	};
-
 	return (
 		<>
 			{!isViewOrder && !isAddOrder && !selectedOrder && (
@@ -753,7 +710,7 @@ const Orders: React.FC = () => {
 						totalCounts={totalRows}
 						searchFilter={searchFilter}
 						realtimeFilter={realtimeFilter}
-						typeCounts={orderStatus}
+						categoryFilter={orderStatus}
 						bulkActionComp={() => <BulkAction />}
 						defaultCounts={hash ? 'refund-requested' : 'all'}
 					/>

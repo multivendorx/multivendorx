@@ -145,9 +145,6 @@ const Settings = ({ id }: { id: string }) => {
 							<FormGroup label={__('Payment Due Message', 'multivendorx')}>
 								<TextArea
 									name="short_description"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 								// value={product.short_description}
 								// onChange={(e) =>
 								//     handleChange(
@@ -160,9 +157,6 @@ const Settings = ({ id }: { id: string }) => {
 							<FormGroup label={__('Upcoming Renewal Reminder', 'multivendorx')}>
 								<TextArea
 									name="short_description"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 								// value={product.short_description}
 								// onChange={(e) =>
 								//     handleChange(
@@ -175,9 +169,6 @@ const Settings = ({ id }: { id: string }) => {
 							<FormGroup label={__('Grace Period Expiry Message', 'multivendorx')}>
 								<TextArea
 									name="short_description"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 								// value={product.short_description}
 								// onChange={(e) =>
 								//     handleChange(
@@ -197,7 +188,7 @@ const Settings = ({ id }: { id: string }) => {
 							<FormGroup label={__('Primary Webhook URL', 'multivendorx')}>
 								<BasicInput
 									name="name"
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									value={formData.name}
 									onChange={handleChange}
@@ -206,7 +197,7 @@ const Settings = ({ id }: { id: string }) => {
 							<FormGroup label={__('Stripe Webhook URL', 'multivendorx')}>
 								<BasicInput
 									name="name"
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									value={formData.name}
 									onChange={handleChange}
@@ -221,7 +212,7 @@ const Settings = ({ id }: { id: string }) => {
 									name="name"
 									postText="before expiration"
 									size="8rem"
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									postInsideText="Days"
 								/>

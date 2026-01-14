@@ -117,7 +117,7 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 					<BasicInput
 						name="download_limit"
 						type="number"
-						wrapperClass="setting-form-input"
+						 
 						value={product.download_limit}
 						onChange={(e) =>
 							handleChange(
@@ -132,7 +132,7 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 					<BasicInput
 						name="download_expiry"
 						type="number"
-						wrapperClass="setting-form-input"
+						 
 						value={product.download_expiry}
 						onChange={(e) =>
 							handleChange(

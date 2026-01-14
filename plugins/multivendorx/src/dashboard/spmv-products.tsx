@@ -144,18 +144,15 @@ const SpmvProducts: React.FC = () => {
 							</div>
 						</div>
 					</div>
-					{/* <AdminButton
+					<AdminButton
 						buttons={
 							{
 								icon: 'plus',
-								text: 'Add new product',
+								text: 'Add New Poduct',
 								className: 'purple-bg',
-								onClick: createAutoDraftProduct(),
+								onClick: createAutoDraftProduct,
 							}}
-					/> */}
-					<button onClick={createAutoDraftProduct}>
-						Add
-					</button>
+					/>
 				</div>
 
 				<div className="product-wrapper">

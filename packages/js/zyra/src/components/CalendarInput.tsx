@@ -64,9 +64,9 @@ const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
     };
 
     return (
-        <div className={ props.wrapperClass }>
+        <div className={ `settings-calender ${ props.wrapperClass || '' }`}>
             <DatePicker
-                className={ props.inputClass }
+                className={`${ props.inputClass || 'teal' }`}
                 format={ props.format || 'YYYY-MM-DD' }
                 multiple={ props.multiple }
                 range={ props.range }

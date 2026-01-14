@@ -67,7 +67,7 @@ export default {
 			key: 'store_advertisement_advanced_settings',
 			type: 'checkbox',
 			label: __('Advanced advertising settings', 'multivendorx'),
-			class: 'mvx-toggle-checkbox',
+			 
 			options: [
 				{
 					key: 'enable_advertisement_in_subscription',

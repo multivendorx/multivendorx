@@ -98,12 +98,12 @@ const Checkboxes: React.FC< {
     };
 
     return (
-        <div className="multiselect-container items-wrapper">
+        <>
             { options.map( ( option ) => (
-                // <div key={option.value} className="select-items">
-                <label htmlFor={ option.value }>
+                <label htmlFor={ option.value } className="woocommerce-form__label woocommerce-form__label-for-checkbox">
                     <input
                         type="checkbox"
+                        className="woocommerce-form__input woocommerce-form__input-checkbox"
                         id={ option.value }
                         checked={
                             !! checkedItems.find(
@@ -114,10 +114,10 @@ const Checkboxes: React.FC< {
                             handleChange( option, e.target.checked )
                         }
                     />
-                    { option.label }
+                   <span>{ option.label }</span>
                 </label>
             ) ) }
-        </div>
+        </>
     );
 };
 
@@ -184,15 +184,16 @@ const Radio: React.FC< RadioProps > = ( { options, onChange } ) => {
         <div className="multiselect-container items-wrapper">
             { options.map( ( option, index ) => {
                 return (
-                    <label data-index={ index } htmlFor={ option.value }>
+                    <label className="woocommerce-form__label woocommerce-form__label-for-radio" data-index={ index } htmlFor={ option.value }>
                         <input
                             type="radio"
+                            className="woocommerce-form__input woocommerce-form__input-radio"
                             id={ option.value }
                             value={ option.value }
                             checked={ selectdedItem === option.value }
                             onChange={ handleChange }
                         />
-                        { option.label }
+                       <span>{ option.label }</span> 
                     </label>
                 );
             } ) }
@@ -909,7 +910,6 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                     } }
                     children={ 'Submit' }
                 />
-                <button id="close-enquiry-popup">{ 'Close' }</button>
             </p>
         </form>
     );

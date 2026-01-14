@@ -94,7 +94,7 @@ const MinMax = ({ product, setProduct }) => {
 					<BasicInput
 						name="min_quantity"
 						type="number"
-						wrapperClass="setting-form-input"
+						 
 						preInsideText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_quantity}
 						onChange={(e) =>
@@ -108,7 +108,7 @@ const MinMax = ({ product, setProduct }) => {
 					<BasicInput
 						name="max_quantity"
 						type="number"
-						wrapperClass="setting-form-input"
+						 
 						preInsideText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_quantity}
 						onChange={(e) =>
@@ -127,7 +127,7 @@ const MinMax = ({ product, setProduct }) => {
 					<BasicInput
 						name="min_amount"
 						type="number"
-						wrapperClass="setting-form-input"
+						 
 						preInsideText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_amount}
 						onChange={(e) =>
@@ -141,7 +141,7 @@ const MinMax = ({ product, setProduct }) => {
 					<BasicInput
 						name="max_amount"
 						type="number"
-						wrapperClass="setting-form-input"
+						 
 						preInsideText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_amount}
 						onChange={(e) =>

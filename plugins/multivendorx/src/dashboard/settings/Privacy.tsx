@@ -12,6 +12,7 @@ import {
 	Column,
 	Card,
 	useModules,
+	AdminButton,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -86,119 +87,86 @@ const Privacy = () => {
 		<>
 			<SuccessNotice message={successMsg} />
 
-			<Container>
-				<Column row>
-					{modules.includes('privacy') && Array.isArray(store_policy) &&
-						store_policy.includes('store') && (
-							<Card title="Store policy">
-								<FormGroupWrapper>
-									<FormGroup>
-										<TextArea
-											name="store_policy"
-											wrapperClass="setting-from-textarea"
-											inputClass="textarea-input"
-											descClass="settings-metabox-description"
-											value={formData.store_policy}
-											onChange={handleChange}
-											usePlainText={false}
-											tinymceApiKey={
-												appLocalizer
-													.settings_databases_value[
-												'marketplace'
-												]['tinymce_api_section'] ?? ''
-											}
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
-						)}
-					{modules.includes('privacy') && Array.isArray(store_policy) &&
-						store_policy.includes('shipping') && (
-							<Card title="Shipping policy">
-								<FormGroupWrapper>
-									<FormGroup>
-										<TextArea
-											name="shipping_policy"
-											wrapperClass="setting-from-textarea"
-											inputClass="textarea-input"
-											descClass="settings-metabox-description"
-											value={formData.shipping_policy}
-											onChange={handleChange}
-											usePlainText={false}
-											tinymceApiKey={
-												appLocalizer
-													.settings_databases_value[
-												'marketplace'
-												]['tinymce_api_section'] ?? ''
-											}
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
-						)}
-					{modules.includes('privacy') && Array.isArray(store_policy) &&
-						store_policy.includes('refund') && (
-							<Card title="Refund policy">
-								<FormGroupWrapper>
-									<FormGroup>
-										<TextArea
-											name="refund_policy"
-											wrapperClass="setting-from-textarea"
-											inputClass="textarea-input"
-											descClass="settings-metabox-description"
-											value={formData.refund_policy}
-											onChange={handleChange}
-											usePlainText={false}
-											tinymceApiKey={
-												appLocalizer
-													.settings_databases_value[
-												'marketplace'
-												]['tinymce_api_section'] ?? ''
-											}
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
-						)}
-					{modules.includes('privacy') && Array.isArray(store_policy) &&
-						store_policy.includes('cancellation_return') && (
-							<Card title="Cancellation / return / exchange policy">
-								<FormGroupWrapper>
-									<FormGroup>
-										<TextArea
-											name="cancellation_policy"
-											wrapperClass="setting-from-textarea"
-											inputClass="textarea-input"
-											descClass="settings-metabox-description"
-											value={formData.cancellation_policy}
-											onChange={handleChange}
-											usePlainText={false}
-											tinymceApiKey={
-												appLocalizer
-													.settings_databases_value[
-												'marketplace'
-												]['tinymce_api_section'] ?? ''
-											}
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
-						)}
-
-				</Column>
-			</Container>
-			<Section key="section" hint="Deactivation" />
-
-			{formData.deactivation_reason ? (
-				<div>
-					{__(
-						"When you delete a channel, all messages from this channel will be removed from Slack immediately. This can't be undone. Keep in mind: Any files uploaded to this channel won't be removed. You can archive a channel instead without removing its messages.",
-						'multivendorx'
+			<FormGroupWrapper>
+				{modules.includes('privacy') && Array.isArray(store_policy) &&
+					store_policy.includes('store') && (
+						<FormGroup label={__('Store policy', 'multivendorx')}>
+							<TextArea
+								name="store_policy"
+								value={formData.store_policy}
+								onChange={handleChange}
+								usePlainText={false}
+								tinymceApiKey={
+									appLocalizer
+										.settings_databases_value[
+									'marketplace'
+									]['tinymce_api_section'] ?? ''
+								}
+							/>
+						</FormGroup>
 					)}
-				</div>
-			) : (
-				<>
-					<FormGroupWrapper>
+				{modules.includes('privacy') && Array.isArray(store_policy) &&
+					store_policy.includes('shipping') && (
+						<FormGroup label={__('Shipping policy', 'multivendorx')}>
+							<TextArea
+								name="shipping_policy"
+								value={formData.shipping_policy}
+								onChange={handleChange}
+								usePlainText={false}
+								tinymceApiKey={
+									appLocalizer
+										.settings_databases_value[
+									'marketplace'
+									]['tinymce_api_section'] ?? ''
+								}
+							/>
+						</FormGroup>
+					)}
+				{modules.includes('privacy') && Array.isArray(store_policy) &&
+					store_policy.includes('refund') && (
+						<FormGroup label={__('Refund policy', 'multivendorx')}>
+							<TextArea
+								name="refund_policy"
+								value={formData.refund_policy}
+								onChange={handleChange}
+								usePlainText={false}
+								tinymceApiKey={
+									appLocalizer
+										.settings_databases_value[
+									'marketplace'
+									]['tinymce_api_section'] ?? ''
+								}
+							/>
+						</FormGroup>
+					)}
+				{modules.includes('privacy') && Array.isArray(store_policy) &&
+					store_policy.includes('cancellation_return') && (
+						<FormGroup label={__('Cancellation / return / exchange policy', 'multivendorx')}>
+							<TextArea
+								name="cancellation_policy"
+								value={formData.cancellation_policy}
+								onChange={handleChange}
+								usePlainText={false}
+								tinymceApiKey={
+									appLocalizer
+										.settings_databases_value[
+									'marketplace'
+									]['tinymce_api_section'] ?? ''
+								}
+							/>
+						</FormGroup>
+					)}
+				<Section key="section" hint="Deactivation" />
+
+				{formData.deactivation_reason ? (
+					<div>
+						{__(
+							"When you delete a channel, all messages from this channel will be removed from Slack immediately. This can't be undone. Keep in mind: Any files uploaded to this channel won't be removed. You can archive a channel instead without removing its messages.",
+							'multivendorx'
+						)}
+					</div>
+				) : (
+					<>
 						<FormGroup
 							label={__('Enable Deactivation', 'multivendorx')}
 							htmlFor="enable_deactivation"
@@ -227,37 +195,34 @@ const Privacy = () => {
 								}}
 							/>
 						</FormGroup>
-					</FormGroupWrapper>
 
-					{formData.enable_deactivation && (
-						<>
-							<div className="form-group-wrapper">
-								<div className="form-group">
-									<label htmlFor="store-description">
-										{__(
-											'Deactivation Reason',
-											'multivendorx'
-										)}
-									</label>
+						{formData.enable_deactivation && (
+							<>
+								<FormGroup label={__('Deactivation Reason', 'multivendorx')}>
 									<TextArea
 										name="deactivation_reason"
-										inputClass="textarea-input"
 										value={
 											updateData.deactivation_reason || ''
 										}
 										onChange={handleChange}
 									/>
-								</div>
-							</div>
-							<div className="buttons-wrapper">
-								<button className="admin-btn btn-purple">
-									{__('Submit', 'multivendorx')}
-								</button>
-							</div>
-						</>
-					)}
-				</>
-			)}
+								</FormGroup>
+								<AdminButton
+									wrapperClass='end'
+									buttons={[
+										{
+											icon: 'save',
+											text: 'Submit',
+											className: 'purple-bg',
+										},
+									]}
+								/>
+							</>
+						)}
+
+					</>
+				)}
+			</FormGroupWrapper>
 		</>
 	);
 };

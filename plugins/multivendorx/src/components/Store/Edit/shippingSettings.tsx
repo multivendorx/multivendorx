@@ -3,7 +3,7 @@ import ShippingRatesByCountry from '@/dashboard/settings/ShippingRatesByCountry'
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, getApiLink, SuccessNotice, ToggleSetting } from 'zyra';
+import { BasicInput, Card, Column, Container, DynamicRowSetting, FormGroup, FormGroupWrapper, getApiLink, SuccessNotice, ToggleSetting } from 'zyra';
 
 const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 	const [formData, setFormData] = useState<{ [key: string]: any }>({}); // Use 'any' for simplicity here
@@ -88,10 +88,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 					<Column>
 						<Card title={__('Method type', 'multivendorx')}>
 							<FormGroupWrapper>
-								<FormGroup>
+								<FormGroup row>
 									<ToggleSetting
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
 										description="Choose your preferred payment method."
 										options={
 											appLocalizer.shipping_methods
@@ -136,12 +134,12 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 										</div>
 										<FormGroupWrapper>
 											{/* Default Shipping Price */}
-											<FormGroup label={__(`Default Shipping Price (${appLocalizer.currency_symbol})`, 'multivendorx')} htmlFor="multivendorx_shipping_type_price">
+											<FormGroup row label={__(`Default Shipping Price (${appLocalizer.currency_symbol})`, 'multivendorx')} htmlFor="multivendorx_shipping_type_price">
 												<BasicInput
 													type="number"
 													name="multivendorx_shipping_type_price"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
+													size="12rem"
+													 
 													placeholder={__(
 														'0.00',
 														'multivendorx'
@@ -151,6 +149,9 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 														''
 													}
 													onChange={handleChange}
+													desc={__('This is the shipping cost applied to every order.',
+														'multivendorx'
+													)}
 												/>
 												<div className="settings-metabox-description">
 													{__(
@@ -160,7 +161,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												</div>
 											</FormGroup>
 											{/* Per Product Additional Price */}
-											<FormGroup
+											<FormGroup row
 												label={__(
 													`Per Product Additional Price (${appLocalizer.currency_symbol})`,
 													'multivendorx'
@@ -170,8 +171,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInput
 													type="number"
 													name="multivendorx_additional_product"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
+													size="12rem"
+													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.multivendorx_additional_product || ''}
 													onChange={handleChange}
@@ -186,7 +187,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Per Qty Additional Price */}
-											<FormGroup
+											<FormGroup row
 												label={__(
 													`Per Qty Additional Price (${appLocalizer.currency_symbol})`,
 													'multivendorx'
@@ -196,8 +197,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInput
 													type="number"
 													name="multivendorx_additional_qty"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
+													size="12rem"
+													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.multivendorx_additional_qty || ''}
 													onChange={handleChange}
@@ -212,7 +213,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Free Shipping Minimum Order Amount */}
-											<FormGroup
+											<FormGroup row
 												label={__(
 													`Free Shipping Minimum Order Amount (${appLocalizer.currency_symbol})`,
 													'multivendorx'
@@ -222,8 +223,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInput
 													type="number"
 													name="free_shipping_amount"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
+
+													 
 													placeholder={__('NO Free Shipping', 'multivendorx')}
 													value={formData.free_shipping_amount || ''}
 													onChange={handleChange}
@@ -238,7 +239,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Local Pickup Cost */}
-											<FormGroup
+											<FormGroup row
 												label={__(
 													`Local Pickup Cost (${appLocalizer.currency_symbol})`,
 													'multivendorx'
@@ -248,8 +249,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInput
 													type="number"
 													name="local_pickup_cost"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
+
+													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.local_pickup_cost || ''}
 													onChange={handleChange}
@@ -296,7 +297,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</div>
 
 											{/* Default Cost */}
-											<FormGroup
+											<FormGroup row
 												label={__(
 													`Default Cost (${appLocalizer.currency_symbol}) *`,
 													'multivendorx'
@@ -306,8 +307,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInput
 													type="number"
 													name="distance_default_cost"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
+
+													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.distance_default_cost || ''}
 													onChange={handleChange}
@@ -317,10 +318,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Distance Type */}
-											<FormGroup label={__('Distance Type', 'multivendorx')}>
+											<FormGroup row label={__('Distance Type', 'multivendorx')}>
 												<ToggleSetting
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
 													description={__(
 														'Choose your preferred shipping method.',
 														'multivendorx'
@@ -337,15 +336,13 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Max Distance */}
-											<FormGroup
+											<FormGroup row
 												label={__('Max Distance', 'multivendorx')}
 												htmlFor="distance_max"
 											>
 												<BasicInput
 													type="number"
 													name="distance_max"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
 													placeholder={__('0', 'multivendorx')}
 													value={formData.distance_max || ''}
 													onChange={handleChange}
@@ -355,7 +352,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Local Pickup Cost */}
-											<FormGroup
+											<FormGroup row
 												label={__(
 													`Local Pickup Cost (${appLocalizer.currency_symbol}) (Optional)`,
 													'multivendorx'
@@ -365,8 +362,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInput
 													type="number"
 													name="distance_local_pickup_cost"
-													wrapperClass="setting-form-input"
-													descClass="settings-metabox-description"
+
+													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.distance_local_pickup_cost || ''}
 													onChange={handleChange}
@@ -376,8 +373,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Distance–Cost Rules */}
-											<FormGroup label={__('Distance-Cost Rules', 'multivendorx')}>
-												<div className="shipping-country-wrapper">
+											<FormGroup row label={__('Distance-Cost Rules', 'multivendorx')}>
+												{/* <div className="shipping-country-wrapper">
 													{(formData.distance_rules || []).map((rule, index) => (
 														<div key={index} className="shipping-country rule">
 															<div className="item">
@@ -468,7 +465,47 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												>
 													<i className="adminlib-plus"></i>
 													{__('Add Rule', 'multivendorx')}
-												</button>
+												</button> */}
+												<DynamicRowSetting
+													keyName="distance_rules"
+													addLabel={__('Add Rule', 'multivendorx')}
+													value={formData.distance_rules || []}
+													template={{
+														fields: [
+															{
+																key: 'max_distance',
+																type: 'number',
+																label: __('Up to', 'multivendorx'),
+																placeholder: __('Up to', 'multivendorx'),
+																step: '0.1',
+																min: '0',
+															},
+															{
+																key: 'cost',
+																type: 'number',
+																label: __(
+																	`Cost (${appLocalizer.currency_symbol})`,
+																	'multivendorx'
+																),
+																placeholder: __(
+																	`Cost ${appLocalizer.currency_symbol}`,
+																	'multivendorx'
+																),
+																step: '0.01',
+																min: '0',
+															},
+														],
+													}}
+
+													onChange={(updatedRules: any[]) => {
+														const updated = {
+															...formData,
+															distance_rules: updatedRules,
+														};
+														setFormData(updated);
+														autoSave(updated);
+													}}
+												/>
 											</FormGroup>
 										</FormGroupWrapper>
 									</>

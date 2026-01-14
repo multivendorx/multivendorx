@@ -229,9 +229,7 @@ class Install {
             `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
             `store_id` BIGINT(20) DEFAULT NULL,
             `category` ENUM('activity', 'notification') NOT NULL DEFAULT 'activity',
-            `type` ENUM(
-                'new_store_approval'
-            ) NOT NULL,
+            `type` TEXT NOT NULL,
             `title` VARCHAR(255) NOT NULL,
             `message` TEXT NOT NULL,
             `is_read` BOOLEAN DEFAULT 0,

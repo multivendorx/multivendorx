@@ -1,0 +1,13 @@
+{
+	"apiVersion": 2,
+	"name": "multivendorx/store-description",
+	"title": "Store Description",
+	"category": "multivendorx",
+	"icon": "store",
+	"description": "Displays the store name",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "multivendorx",
+	"editorScript": "file:./index.js"
+}

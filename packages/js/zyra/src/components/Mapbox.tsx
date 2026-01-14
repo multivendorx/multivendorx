@@ -323,29 +323,20 @@ const Mapbox = ({
 
     return (
         <>
-            <FormGroupWrapper>
-                <FormGroup label={labelSearch} htmlFor="store-location-autocomplete">
+            <FormGroup label={labelSearch}>
+                <div
+                    ref={mapContainerRef}
+                    id="location-map"
+                >
                     <div
                         ref={geocoderContainerRef}
                         id="store-location-autocomplete-container"
                     ></div>
-                </FormGroup>
-                <FormGroup label={labelMap}>
-                    <div
-                        ref={mapContainerRef}
-                        id="location-map"
-                        style={{
-                            height: '400px',
-                            width: '100%',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                        }}
-                    ></div>
-                    <span className="settings-metabox-description">
-                        {instructionText}
-                    </span>
-                </FormGroup>
-            </FormGroupWrapper>
+                </div>
+                <span className="settings-metabox-description">
+                    {instructionText}
+                </span>
+            </FormGroup>
         </>
     );
 };

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
-import template1 from '../../../assets/images/template/store/template1.jpg';
-import template2 from '../../../assets/images/template/store/template2.jpg';
-import template3 from '../../../assets/images/template/store/template3.jpg';
+import DashboardTemplate from '../../../assets/template/Dashbord';
+import InvoiceDOM from '../../../assets/template/Invoice.dom';
+import InvoicePDF from '../../../assets/template/Invoice.pdf';
 
 export default {
 	id: 'store-invoice',
@@ -90,7 +90,7 @@ export default {
 			type: 'checkbox',
 			classes: 'vertical',
 			label: __('Automatic email delivery', 'multivendorx'),
-			class: 'mvx-toggle-checkbox',
+			 
 			desc: __(
 				'Choose how invoices are automatically sent to customers and stores',
 				'multivendorx'
@@ -174,32 +174,119 @@ export default {
 			moduleEnabled: 'invoice',
 		},
 		{
-			key: 'store_color_settings',
+			key: 'invoice_template_builder',
 			type: 'color-setting',
-			label: 'Dashboard color scheme',
-			settingDescription:
-				'Choose a dashboard color scheme from predefined sets or customize your own. Each scheme defines the button style, and hover effects for a consistent look.',
+			label: __('Invoice Template & PDF', 'mvx-pro'),
 			moduleEnabled: 'invoice',
-			images: [
+			showPreview: true,
+			showPdfButton: true,
+			showTemplates: true,
+			/* 🔹 HTML templates */
+			templates: [
+			  {
+				key: 'dashbord',
+				label: __('dashbord', 'mvx-pro'),
+				preview: DashboardTemplate,
+				component: DashboardTemplate,
+			  },
+			  {
+				key: 'invoice_2',
+				label: 'Invoice Modern',
+				preview: InvoiceDOM,
+				component: InvoiceDOM,
+				pdf: InvoicePDF,
+			  }			  
+			],
+			predefinedOptions: [
 				{
-					key: 'template1',
-					label: 'Outer Space',
-					img: template1,
-					value: 'template1',
+					key: 'orchid_bloom',
+					label: 'Orchid Bloom',
+					value: 'orchid_bloom',
+					colors: {
+						colorPrimary: '#FF5959',
+						colorSecondary: '#FADD3A',
+						colorAccent: '#49BEB6',
+						colorSupport: '#075F63',
+					},
 				},
 				{
-					key: 'template2',
-					label: 'Green Lagoon',
-					img: template2,
-					value: 'template2',
+					key: 'emerald_edge',
+					label: 'Emerald Edge',
+					value: 'emerald_edge',
+					colors: {
+						colorPrimary: '#e6b924',
+						colorSecondary: '#d888c1',
+						colorAccent: '#6b7923',
+						colorSupport: '#6e97d0',
+					},
 				},
 				{
-					key: 'template3',
-					label: 'Old West',
-					img: template3,
-					value: 'template3',
+					key: 'solar_ember',
+					label: 'Solar Ember',
+					value: 'solar_ember',
+					colors: {
+						colorPrimary: '#fe900d',
+						colorSecondary: '#6030db',
+						colorAccent: '#17cadb',
+						colorSupport: '#a52fff',
+					},
+				},
+				{
+					key: 'crimson_blaze',
+					label: 'Crimson Blaze',
+					value: 'crimson_blaze',
+					colors: {
+						colorPrimary: '#04e762',
+						colorSecondary: '#f5b700',
+						colorAccent: '#dc0073',
+						colorSupport: '#008bf8',
+					},
+				},
+				{
+					key: 'golden_ray',
+					label: 'Golden Ray',
+					value: 'golden_ray',
+					colors: {
+						colorPrimary: '#0E117A',
+						colorSecondary: '#399169',
+						colorAccent: '#12E2A4',
+						colorSupport: '#DCF516',
+					},
+				},
+				{
+					key: 'obsidian_night',
+					label: 'Obsidian Night',
+					value: 'obsidian_night',
+					colors: {
+						colorPrimary: '#00eed0',
+						colorSecondary: '#0197af',
+						colorAccent: '#4b227a',
+						colorSupport: '#02153d',
+					},
+				},
+				{
+					key: 'obsidian',
+					label: 'Obsidian',
+					value: 'obsidian',
+					colors: {
+						colorPrimary: '#7ccc63',
+						colorSecondary: '#f39c12',
+						colorAccent: '#e74c3c',
+						colorSupport: '#2c3e50',
+					},
+				},
+				{
+					key: 'black',
+					label: 'black',
+					value: 'black',
+					colors: {
+						colorPrimary: '#2c3e50',
+						colorSecondary: '#2c3e50',
+						colorAccent: '#2c3e50',
+						colorSupport: '#2c3e50',
+					},
 				},
 			],
-		},
+		}		  
 	],
 };

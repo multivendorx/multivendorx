@@ -1,0 +1,16 @@
+{
+	"apiVersion": 2,
+	"name": "multivendorx/stores",
+	"title": "Stores List(w)",
+	"category": "widgets",
+	"icon": "store",
+	"description": "A block that displays stores list using React.",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "multivendorx",
+	"editorScript": "file:./index.js",
+	"script": "file:./index.js",
+	"editorStyle": "",
+	"style": ""
+}

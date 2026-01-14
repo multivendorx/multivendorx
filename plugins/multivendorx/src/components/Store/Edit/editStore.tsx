@@ -1040,7 +1040,7 @@ const EditStore = () => {
 					<FormGroupWrapper>
 						<FormGroup label={__('Deletion method', 'multivendorx')} htmlFor="deletion-method">
 							<ToggleSetting
-								wrapperClass="setting-form-input"
+								 
 								descClass="settings-metabox-description"
 								options={[
 									{

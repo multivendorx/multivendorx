@@ -601,11 +601,11 @@ body.dark {
 
 // view order table
 .view-order-table {
-    tr {
-        td:first-child {
-            min-width: 40%;
-        }
-    }
+    // tr {
+    //     td:first-child {
+    //         min-width: 40%;
+    //     }
+    // }
 
     .item-details {
         display: flex;
@@ -649,57 +649,57 @@ body.dark {
 
     .admin-column {
         input {
-            width: 3rem;
+            width: 5rem;
         }
     }
 }
 
-.order-overview {
-    display: flex;
-    justify-content: space-between;
+// .order-overview {
+//     display: flex;
+//     justify-content: space-between;
 
-    .details {
-        width: 50%;
+//     .details {
+//         width: 50%;
 
-        .text-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding-bottom: 0.5rem;
+//         .text-wrapper {
+//             display: flex;
+//             align-items: center;
+//             gap: 0.5rem;
+//             padding-bottom: 0.5rem;
 
-            .text {
-                width: 10rem;
-                font-size: 1.125rem;
-            }
-        }
-    }
-}
+//             .text {
+//                 width: 10rem;
+//                 font-size: 1.125rem;
+//             }
+//         }
+//     }
+// }
 
 // information notice start
-.information-notioce {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    margin: 0.625rem 0;
-    background: #fff0e1e3;
-    color: #ff9f43;
-    border-radius: 0.313rem;
+// .information-notioce {
+//     display: flex;
+//     align-items: center;
+//     gap: 0.5rem;
+//     padding: 0.75rem;
+//     margin: 0.625rem 0;
+//     background: #fff0e1e3;
+//     color: #ff9f43;
+//     border-radius: 0.313rem;
 
-    i {
-        font-size: 1.063rem;
-        padding: 0.25rem;
-        color: #fff;
-        background: #ff9f43;
-        border-radius: 0.313rem;
-    }
+//     i {
+//         font-size: 1.063rem;
+//         padding: 0.25rem;
+//         color: #fff;
+//         background: #ff9f43;
+//         border-radius: 0.313rem;
+//     }
 
-    p {
-        margin: 0;
-        font-size: 1.063rem;
-        line-height: 1.125rem;
-    }
-}
+//     p {
+//         margin: 0;
+//         font-size: 1.063rem;
+//         line-height: 1.125rem;
+//     }
+// }
 
 // information notice end
 
@@ -805,6 +805,11 @@ body.dark {
     label {
         width: 25%;
         font-size: 1rem;
+    }
+}
+.tax-wrapper{
+    h2{
+        padding: 1.5rem 0 1rem 0;
     }
 }
 

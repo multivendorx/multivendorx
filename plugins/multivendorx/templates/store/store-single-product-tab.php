@@ -62,8 +62,8 @@ if ($store) {
             $rating_value = number_format( (float) $details['overall_reviews'], 1 );
             $review_count = (int) ( $details['total_reviews'] ?? 0 );
         
-            $html .= '<div class="admin-badge yellow">
-                <i class="adminlib-star"></i> '
+            $html .= '<div class="store-rating">
+                <i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i><i class="dashicons dashicons-star-filled"></i> '
                 . esc_html( $rating_value ) .
                 ' <span>(' . esc_html( $review_count ) . ')</span>
             </div>';
@@ -82,19 +82,19 @@ if ($store) {
         }
 
         if ( in_array( 'show_store_phone', $store_contact_details, true ) && ! empty( $details['phone'] ) ) {
-            $html .= '<div class="store-info"><i class="adminlib-form-phone"></i>'
+            $html .= '<div class="store-info"><i class="dashicons dashicons-phone"></i>'
                 . esc_html( $details['phone'] ) .
             '</div>';
         }
         
 
         if ( in_array( 'show_store_email', $store_contact_details, true ) && ! empty( $details['email'] ) ) {
-            $html .= '<div class="store-info"><i class="adminlib-mail"></i> '
+            $html .= '<div class="store-info"><i class="dashicons dashicons-email"></i> '
                 . esc_html( $details['email'] ) .
             '</div>';
         }
 
-        $html .= '<a class="button product_type_simple" href="' . esc_url(MultiVendorX()->store->storeutil->get_store_url($store->get_id())) . '">'
+        $html .= '<a class="button wp-element-button" href="' . esc_url(MultiVendorX()->store->storeutil->get_store_url($store->get_id())) . '">'
             // translators: %1$s is the store/vendor name.
             . sprintf(__('More Products from %1$s', 'multivendorx'), $store->get('name')) . '</a>';
 

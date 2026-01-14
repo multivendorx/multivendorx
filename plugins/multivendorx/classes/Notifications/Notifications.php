@@ -103,7 +103,7 @@ class Notifications {
 					'sms_content'    => 'Store [store_name] permanently rejected.',
 					'system_message' => 'Store permanently rejected: [store_name].',
 					'tag'            => 'Store',
-					'category'       => 'activity',
+					'category'       => 'notification',
 				),
 
 				'store_activated'               => array(
@@ -116,7 +116,7 @@ class Notifications {
 					'sms_content'    => 'Store [store_name] is now active.',
 					'system_message' => 'Store activated: [store_name].',
 					'tag'            => 'Store',
-					'category'       => 'activity',
+					'category'       => 'notification',
 				),
 
 				'store_under_review'            => array(
@@ -155,7 +155,7 @@ class Notifications {
 					'sms_content'    => 'Store [store_name] permanently deactivated.',
 					'system_message' => 'Store permanently deactivated: [store_name].',
 					'tag'            => 'Store',
-					'category'       => 'activity',
+					'category'       => 'notification',
 				),
 
 				// ========== ORDER EVENTS ==========
@@ -170,7 +170,7 @@ class Notifications {
 					'sms_content'      => 'New order [order_id] received.',
 					'system_message'   => 'Order [order_id] placed successfully.',
 					'tag'              => 'Order',
-					'category'         => 'activity',
+					'category'         => 'notification',
 				),
 
 				'order_processing'              => array(
@@ -183,7 +183,7 @@ class Notifications {
 					'sms_content'      => 'Order [order_id] is now processing.',
 					'system_message'   => 'Order [order_id] status: Processing.',
 					'tag'              => 'Order',
-					'category'         => 'activity',
+					'category'         => 'notification',
 				),
 
 				'order_completed'               => array(
@@ -196,7 +196,7 @@ class Notifications {
 					'sms_content'      => 'Order [order_id] completed successfully.',
 					'system_message'   => 'Order [order_id] marked as completed.',
 					'tag'              => 'Order',
-					'category'         => 'activity',
+					'category'         => 'notification',
 				),
 
 				'order_cancelled'               => array(
@@ -210,7 +210,7 @@ class Notifications {
 					'sms_content'      => 'Order [order_id] cancelled successfully.',
 					'system_message'   => 'Order [order_id] cancelled.',
 					'tag'              => 'Order',
-					'category'         => 'activity',
+					'category'         => 'notification',
 				),
 
 				'order_refunded'                => array(
@@ -223,21 +223,21 @@ class Notifications {
 					'sms_content'      => 'Refund for [order_id] processed.',
 					'system_message'   => 'Order [order_id] refunded.',
 					'tag'              => 'Order',
-					'category'         => 'activity',
+					'category'         => 'notification',
 				),
 
 				// ========== PAYMENT ==========
-				'payment_received'              => array(
-					'name'           => 'Payment received',
+				'payout_received'              => array(
+					'name'           => 'Payout received',
 					'desc'           => 'A payment is received for an order.',
 					'store_enabled'  => true,
 					'admin_enabled'  => true,
-					'email_subject'  => 'Payment received',
-					'email_body'     => 'Payment for order [order_id] has been received successfully.',
-					'sms_content'    => 'Payment received for [order_id].',
-					'system_message' => 'Payment for [order_id] received.',
+					'email_subject'  => 'Payout received',
+					'email_body'     => 'Payout for order [order_id] has been received successfully.',
+					'sms_content'    => 'Payout received for [order_id].',
+					'system_message' => 'Payout for [order_id] received.',
 					'tag'            => 'Payment',
-					'category'       => 'activity',
+					'category'       => 'notification',
 				),
 
 				'payout_failed'                 => array(
@@ -250,7 +250,7 @@ class Notifications {
 					'sms_content'    => 'Payout failed for [store_name].',
 					'system_message' => 'Payout error for [store_name].',
 					'tag'            => 'Payment',
-					'category'       => 'activity',
+					'category'       => 'notification',
 				),
 
 				// ========== REFUND ==========
@@ -268,19 +268,6 @@ class Notifications {
 					'category'         => 'activity',
 				),
 
-				'refund_approved'               => array(
-					'name'             => 'Refund approved',
-					'desc'             => 'A refund request is approved by the admin.',
-					'store_enabled'    => true,
-					'customer_enabled' => true,
-					'email_subject'    => 'Refund approved',
-					'email_body'       => 'Your refund for order [order_id] has been approved.',
-					'sms_content'      => 'Refund approved for [order_id].',
-					'system_message'   => 'Refund approved for [order_id].',
-					'tag'              => 'Refund',
-					'category'         => 'activity',
-				),
-
 				'refund_rejected'               => array(
 					'name'             => 'Refund rejected',
 					'desc'             => 'A refund request is rejected by the admin.',
@@ -289,19 +276,6 @@ class Notifications {
 					'email_body'       => 'Your refund request for order [order_id] has been rejected.',
 					'sms_content'      => 'Refund request rejected for [order_id].',
 					'system_message'   => 'Refund rejected for [order_id].',
-					'tag'              => 'Refund',
-					'category'         => 'activity',
-				),
-
-				'refund_processed'              => array(
-					'name'             => 'Refund processed',
-					'desc'             => 'A refund is processed and completed successfully.',
-					'admin_enabled'    => true,
-					'customer_enabled' => true,
-					'email_subject'    => 'Refund processed',
-					'email_body'       => 'Refund for order [order_id] has been processed successfully.',
-					'sms_content'      => 'Refund processed for [order_id].',
-					'system_message'   => 'Refund processed successfully.',
 					'tag'              => 'Refund',
 					'category'         => 'activity',
 				),
@@ -317,7 +291,7 @@ class Notifications {
 					'sms_content'    => 'New product “[product_name]” added by [store_name].',
 					'system_message' => 'Product “[product_name]” added successfully.',
 					'tag'            => 'Product',
-					'category'       => 'activity',
+					'category'       => 'notification',
 				),
 
 				'product_approved'              => array(
@@ -341,7 +315,7 @@ class Notifications {
 					'sms_content'    => 'Product “[product_name]” rejected.',
 					'system_message' => 'Product “[product_name]” rejected.',
 					'tag'            => 'Product',
-					'category'       => 'notification',
+					'category'       => 'activity',
 				),
 
 				'product_low_stock'             => array(
@@ -353,7 +327,7 @@ class Notifications {
 					'sms_content'    => 'Low stock alert: “[product_name]” – [quantity] left.',
 					'system_message' => 'Low stock alert for “[product_name]”.',
 					'tag'            => 'Product',
-					'category'       => 'notification',
+					'category'       => 'activity',
 				),
 
 				'product_out_of_stock'          => array(
@@ -365,21 +339,7 @@ class Notifications {
 					'sms_content'    => 'Out of stock: “[product_name]”.',
 					'system_message' => 'Product “[product_name]” is out of stock.',
 					'tag'            => 'Product',
-					'category'       => 'notification',
-				),
-
-				// ========== REVIEWS ==========
-				'product_review_received'       => array(
-					'name'             => 'New product review',
-					'desc'             => 'A new review is submitted for a product.',
-					'store_enabled'    => true,
-					'customer_enabled' => true,
-					'email_subject'    => 'New product review received',
-					'email_body'       => '[rating]-star review received for “[store_name]” by [customer_name].',
-					'sms_content'      => 'New review received for “[store_name]”.',
-					'system_message'   => 'New review received for “[store_name]”.',
-					'tag'              => 'Review',
-					'category'         => 'notification',
+					'category'       => 'activity',
 				),
 
 				// ========== WITHDRAWALS ==========
@@ -393,7 +353,7 @@ class Notifications {
 					'sms_content'    => 'Withdrawal request of [amount] submitted.',
 					'system_message' => 'Withdrawal requested by [store_name].',
 					'tag'            => 'Payment',
-					'category'       => 'notification',
+					'category'       => 'activity',
 				),
 
 				'withdrawal_released'           => array(
@@ -432,7 +392,7 @@ class Notifications {
 					'sms_content'      => 'Product “[product_name]” reported.',
 					'system_message'   => 'Abuse report for “[product_name]” received.',
 					'tag'              => 'Report',
-					'category'         => 'notification',
+					'category'         => 'activity',
 				),
 
 				'report_abuse_action_taken'     => array(
@@ -453,7 +413,7 @@ class Notifications {
 					'name'             => 'System announcement',
 					'desc'             => 'A system-wide announcement is published by the admin.',
 					'store_enabled'    => true,
-					'customer_enabled' => true,
+					'admin_enabled' => true,
 					'email_subject'    => 'New announcement',
 					'email_body'       => '[announcement_message]',
 					'sms_content'      => '[announcement_message]',
@@ -475,29 +435,6 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'commission_processed'          => array(
-					'name'           => 'Commission processed',
-					'desc'           => 'A commission payment is processed for a store.',
-					'store_enabled'  => true,
-					'admin_enabled'  => true,
-					'email_subject'  => 'Commission processed',
-					'email_body'     => 'Commission payment of [amount] processed for [store_name].',
-					'sms_content'    => 'Commission processed for [store_name].',
-					'system_message' => 'Commission payment processed for [store_name].',
-					'tag'            => 'Commission',
-					'category'       => 'activity',
-				),
-				'commission_credit'             => array(
-					'name'           => 'Commission Credited',
-					'desc'           => 'A commission is credited for an order.',
-					'store_enabled'  => true,
-					'email_subject'  => 'Commission Credited',
-					'email_body'     => 'Commission received for order #{order_id}.',
-					'sms_content'    => 'Commission credited for order #{order_id}.',
-					'system_message' => 'Commission received for order #{order_id}.',
-					'tag'            => 'Commission',
-					'category'       => 'notification',
-				),
 				// ========== FOLLOWED STORE PRODUCT ACTIVITY ==========
 
 				'followed_store_new_product'    => array(
@@ -524,19 +461,7 @@ class Notifications {
 					'sms_content'    => 'New coupon from [store_name]: [coupon_code].',
 					'system_message' => 'New coupon added by followed store [store_name].',
 					'tag'            => 'Coupon',
-					'category'       => 'activity',
-				),
-
-				'order_new'                     => array(
-					'name'           => 'New Order Received',
-					'desc'           => 'A new order is received by the store.',
-					'store_enabled'  => true,
-					'email_subject'  => 'New Order Received',
-					'email_body'     => 'New order #{order_id} received.',
-					'sms_content'    => 'New order #{order_id} received.',
-					'system_message' => 'Order #{order_id} received.',
-					'tag'            => 'Order',
-					'category'       => 'notification',
+					'category'       => 'notifications',
 				),
 
 				'order_ready_to_ship'           => array(
@@ -573,7 +498,7 @@ class Notifications {
 					'sms_content'      => 'Return request for order #{order_id}.',
 					'system_message'   => 'Return request received for order #{order_id}.',
 					'tag'              => 'Refund',
-					'category'         => 'notification',
+					'category'         => 'activity',
 				),
             )
         );
@@ -670,6 +595,9 @@ class Notifications {
             $to      = array_unique( $receivers );
             $subject = $event->email_subject;
             $message = $event->email_body;
+            foreach ( $parameters as $key => $value ) {
+				$message = str_replace('[' . $key . ']', $value, $message);
+			}
             $headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
             wp_mail( $to, $subject, $message, $headers );
@@ -686,7 +614,15 @@ class Notifications {
                 $receivers[] = $parameters['store_phn'];
             }
 
+            if ( $event->customer_enabled ) {
+                $receivers[] = $parameters['customer_phn'];
+            }
+
             $message = $event->sms_content;
+
+			foreach ( $parameters as $key => $value ) {
+				$message = str_replace('[' . $key . ']', $value, $message);
+			}
 
             $gateway = $this->active_gateway();
             if ( $gateway ) {
@@ -893,6 +829,7 @@ class Notifications {
 
             if ( isset( $args['count'] ) ) {
                 $query = "SELECT COUNT(*) FROM {$table}";
+				$where[] = "is_dismissed = 0 AND is_read = 0";
             } else {
                 $query = "SELECT * FROM {$table}";
             }

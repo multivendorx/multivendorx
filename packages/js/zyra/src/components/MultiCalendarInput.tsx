@@ -183,7 +183,7 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
     };
 
     return (
-        <div className={ props.wrapperClass }>
+        <div className={ `settings-calender ${ props.wrapperClass || '' }`}>
             <div className="date-picker-section-wrapper" ref={ dateRef }>
                 { props.showLabel && getLabel() && (
                     <div className="date-label">{ getLabel() }</div>

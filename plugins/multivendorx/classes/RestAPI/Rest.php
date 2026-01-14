@@ -59,6 +59,7 @@ class Rest {
         add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
     }
 
+
     /**
      * Add store data to WooCommerce product API response
      *

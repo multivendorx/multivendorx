@@ -383,8 +383,6 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -468,9 +466,6 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 						<div className="form-group">
 							<TextArea
 								name="reject_reason"
-								wrapperClass="setting-from-textarea"
-								inputClass="textarea-input"
-								descClass="settings-metabox-description"
 								value={rejectReason}
 								onChange={(
 									e: React.ChangeEvent<HTMLTextAreaElement>

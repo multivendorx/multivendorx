@@ -21,6 +21,12 @@ defined('ABSPATH') || exit;
  */
 class Utill
 {
+    /**
+     * Utill class construct function
+     */
+    public function __construct() {
+        add_action('wp', array($this, 'disable_wpml_switcher_on_dashboard'), 99);
+    }
 
     /**
      * Constent holds table name
@@ -351,6 +357,24 @@ class Utill
     {
         return apply_filters('kothay_dabba', false);
     }
+    /**
+     * Check if a WordPress plugin is active
+     *
+     * @param string $plugin_slug Plugin folder/filename, e.g., 'woocommerce/woocommerce.php'
+     * @return bool
+     */
+    public static function is_active_plugin($plugin_slug = '')
+    {
+        if (empty($plugin_slug)) {
+            return false;
+        }
+
+        if (! function_exists('is_plugin_active')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        return is_plugin_active($plugin_slug);
+    }
 
     /**
      * Get other templates ( e.g. product attributes ) passing attributes and including the file.
@@ -420,5 +444,18 @@ class Utill
             $store = Store::get_store($store_name, 'slug');
         }
         return $store ?? false;
+    }
+    
+    /**
+     * Disable WPML language switcher on multivendorx React store dashboard
+     */
+    public function disable_wpml_switcher_on_dashboard()
+    {
+
+        if (! Utill::is_store_dashboard()) {
+            return;
+        }
+
+        add_filter('icl_ls_languages', '__return_empty_array');
     }
 }

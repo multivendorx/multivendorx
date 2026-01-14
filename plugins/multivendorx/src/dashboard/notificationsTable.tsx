@@ -155,8 +155,6 @@ const NotificationsTable = (React.FC = () => {
 				perPageOption={[10, 25, 50]}
 				typeCounts={[]}
 				totalCounts={totalRows}
-				// searchFilter={searchFilter}
-				// realtimeFilter={realtimeFilter}
 			/>
 		</>
 	);

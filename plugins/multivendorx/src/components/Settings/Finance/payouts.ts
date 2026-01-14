@@ -13,7 +13,7 @@ export default {
 		{
 			key: 'store_rating_page',
 			type: 'blocktext',
-			label: __('no_label', 'multivendorx'),
+			label: __(' ', 'multivendorx'),
 			blocktext: __(
 				'From MultiVendorX 5.0.0, Wallet Support has been introduced. <b> Workflow: Customer makes a purchase ➝ Commission is credited to the store wallet ➝ Payout is released from the wallet based on the configured payout frequency.</b>',
 				'multivendorx'
@@ -30,7 +30,7 @@ export default {
 				'Select the order statuses after which earning will be added to the store wallet.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			options: [
 				{
 					key: 'completed',

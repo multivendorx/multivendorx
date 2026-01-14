@@ -222,7 +222,7 @@ export default {
             key: 'override_existing_fields',
             type: 'checkbox',
             label: __('Fields available for override', 'multivendorx'),
-            class: 'mvx-toggle-checkbox',
+             
             options: [
                 {
                     key: 'override_notifiers',

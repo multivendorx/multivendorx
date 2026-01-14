@@ -92,9 +92,6 @@ const ShopPolicies = () => {
 							<FormGroup label={__('Title', 'multivendorx')} htmlFor="title">
 								<TextArea
 									name="shipping_policy"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 									value={formData.shipping_policy}
 									onChange={handleChange}
 								/>
@@ -106,9 +103,6 @@ const ShopPolicies = () => {
 						<FormGroupWrapper>
 							<TextArea
 								name="refund_policy"
-								wrapperClass="setting-from-textarea"
-								inputClass="textarea-input"
-								descClass="settings-metabox-description"
 								value={formData.refund_policy}
 								onChange={handleChange}
 							/>
@@ -119,9 +113,6 @@ const ShopPolicies = () => {
 						<FormGroupWrapper>
 							<TextArea
 								name="exchange_policy"
-								wrapperClass="setting-from-textarea"
-								inputClass="textarea-input"
-								descClass="settings-metabox-description"
 								value={formData.exchange_policy}
 								onChange={handleChange}
 							/>

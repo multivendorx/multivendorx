@@ -605,7 +605,6 @@ export const Announcements: React.FC = () => {
 								onClick: (rowData: AnnouncementRow) => {
 									handleEdit(rowData.id);
 								},
-								hover: true,
 							},
 							{
 								label: __('Delete', 'multivendorx'),
@@ -613,7 +612,6 @@ export const Announcements: React.FC = () => {
 								onClick: (rowData: AnnouncementRow) => {
 									handleDeleteClick(rowData);
 								},
-								hover: true,
 							},
 						],
 					}}
@@ -645,8 +643,6 @@ export const Announcements: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: DateRange) => {
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -756,7 +752,6 @@ export const Announcements: React.FC = () => {
 						<FormGroup label={__('Announcement message', 'multivendorx')} htmlFor="content">
 							<TextArea
 								name="content"
-								inputClass="textarea-input"
 								value={formData.content}
 								onChange={handleChange}
 								usePlainText={false}
@@ -826,7 +821,7 @@ export const Announcements: React.FC = () => {
 						</FormGroup>
 						<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 							<ToggleSetting
-								wrapperClass="setting-form-input"
+								 
 								descClass="settings-metabox-description"
 								description={__(
 									'Select the status of the announcement.',

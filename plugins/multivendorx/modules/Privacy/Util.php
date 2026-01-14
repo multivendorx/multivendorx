@@ -57,10 +57,17 @@ class Util {
             $address     = $store->get_meta( Utill::STORE_SETTINGS_KEYS['address'] ) ?? '';
 
             $logo_html = '';
+
             if ( in_array( 'show_store_logo_next_to_products', $store_details, true ) ) {
-                $logo_url  = $store->get_meta( 'image' ) ?? MultiVendorX()->plugin_url . 'assets/images/default-store.jpg';
-                $logo_html = '<img src="' . esc_url( $logo_url ) . '" alt="' . esc_attr( $name ) . '" />';
+                $logo_url = $store->get_meta( 'image' );
+
+                if ( ! empty( $logo_url ) ) {
+                    $logo_html = '<img src="' . esc_url( $logo_url ) . '" alt="' . esc_attr( $name ) . '" />';
+                } else {
+                    $logo_html = '<i class="dashicons dashicons-store"></i>';
+                }
             }
+
 
             $overall_reviews = Rating::get_overall_rating( $store->get_id() );
             $reviews         = Rating::get_reviews_by_store( $store->get_id() );

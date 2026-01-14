@@ -121,7 +121,12 @@ class Notifications extends \WP_REST_Controller {
 
             if ( $header_notifications ) {
                 $store_id = $request->get_param( 'store_id' );
-
+                $count = $request->get_param( 'count' );
+                
+                if ($count) {
+                    $results = MultiVendorX()->notifications->get_all_notifications( ['count' => true] );
+                    return rest_ensure_response($results);
+                }
                 $args = array(
                     'limit'    => 10,
                     'offset'   => 0,

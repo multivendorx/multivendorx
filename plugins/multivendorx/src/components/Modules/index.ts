@@ -202,7 +202,7 @@ export default {
 		},
 		{
 			id: 'spmv',
-			name: __('Co-listed products', 'multivendorx'),
+			name: __('Shared listing', 'multivendorx'),
 			desc: 'Allows more than one store to sell the same product with their own price and stock.',
 			icon: 'adminfont-spmv',
 			doc_link:
@@ -350,7 +350,7 @@ export default {
 			id: 'store-shipping',
 			name: __('Store Shipping', 'multivendorx'),
 			desc: 'Shipping charges calculated based on distance between store address and delivery location.',
-			icon: 'adminfont-distance-shipping',
+			icon: 'adminfont-store-shipping',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/distance-shipping',
 			settings_link: `${appLocalizer.plugin_url}settings&subtab=shipping`,

@@ -68,6 +68,11 @@ body:has(.admin-main-wrapper) {
     min-width: 1rem;
     appearance: none;
     border-radius: 50%;
+    width: 1rem;
+
+    &:checked{
+      background: $theme-color;
+    }
   }
 
   input[type="checkbox"] {
@@ -1130,12 +1135,11 @@ $index: 1;
     .action-dropdown.hover {
       display: block;
       left: -50%;
-      // transform: translate(-75%, 0);
       height: 1rem;
       position: absolute;
       inset: 0 auto auto 0;
-      transform: translate(-102%, 0rem);
-      background: $background-white;
+      transform: translate(-100%, 0rem);
+      background: $background-color;
       height: 100%;
       padding: 0 0.313rem;
       box-shadow: $box-shadow;
@@ -1178,15 +1182,9 @@ $index: 1;
             }
           }
 
-          // &.hover {
           li {
             display: block;
-            // }
           }
-
-          // &:not(.hover) {
-          //   display: none;
-          // }
         }
       }
     }

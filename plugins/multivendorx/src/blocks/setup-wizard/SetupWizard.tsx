@@ -142,7 +142,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'notice',
 					type: 'blocktext',
-					label: __('no_label', 'multivendorx'),
+					label: __(' ', 'multivendorx'),
 					blocktext: __(
 						'Ready to unlock the full potential of your marketplace? Activate Woocommerce Rental with MultiVendorX Pro and start selling like a pro today!',
 						'multivendorx'
@@ -155,7 +155,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'notice',
 					type: 'blocktext',
-					label: __('no_label', 'multivendorx'),
+					label: __(' ', 'multivendorx'),
 					blocktext: __(
 						'Ready to unlock the full potential of your marketplace? Activate Woocommerce Simple Auction with MultiVendorX Pro and start selling like a pro today!',
 						'multivendorx'
@@ -168,7 +168,7 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'notice',
 					type: 'blocktext',
-					label: __('no_label', 'multivendorx'),
+					label: __(' ', 'multivendorx'),
 					blocktext: __(
 						'Ready to unlock the full potential of your marketplace? Activate Woocommerce Subscription with MultiVendorX Pro and start selling like a pro today!',
 						'multivendorx'
@@ -341,7 +341,7 @@ const SetupWizard: React.FC = () => {
 						'Choose when store earnings are added to their wallet.',
 						'multivendorx'
 					),
-					class: 'mvx-toggle-checkbox',
+					 
 					options: [
 						{
 							key: 'completed',

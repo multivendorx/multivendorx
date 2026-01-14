@@ -64,7 +64,7 @@ const proFeatures = {
 		{ key: 'advertisement', value: 'advertisement', label: __('Product advertising', 'multivendorx'), desc: __('Promote products across the marketplace', 'multivendorx') },
 		{ key: 'affiliate_program', value: 'affiliate_program', label: __('Affiliate program', 'multivendorx'), desc: __('Use affiliates to drive more sales', 'multivendorx') },
 		{ key: 'wholesale', value: 'wholesale', label: __('Wholesale pricing', 'multivendorx'), desc: __('Sell products at wholesale prices', 'multivendorx') },
-		],
+	],
 };
 const orderPermissionField = {
 	key: 'order_permissions',
@@ -164,8 +164,8 @@ const exportedOrderInfoField = {
 		{ key: 'business_hours', value: 'business_hours', label: __('Business hours', 'multivendorx'), desc: __('Set store working and availability hours', 'multivendorx') },
 		{ key: 'vacation_mode', value: 'vacation_mode', label: __('Vacation mode', 'multivendorx'), desc: __('Temporarily pause store operations', 'multivendorx') },
 		{ key: 'min_max_quantities', value: 'min_max_quantities', label: __('Minimum and maximum quantities', 'multivendorx'), desc: __('Set minimum and maximum order quantities per product', 'multivendorx') },
-	    { key: 'analytics_dashboard', value: 'analytics_dashboard', label: __('Store analytics', 'multivendorx'), desc: __('View store sales, earnings, and performance insights', 'multivendorx') },
-		
+		{ key: 'analytics_dashboard', value: 'analytics_dashboard', label: __('Store analytics', 'multivendorx'), desc: __('View store sales, earnings, and performance insights', 'multivendorx') },
+
 	],
 };
 const orderEmailInfoField = {
@@ -173,13 +173,13 @@ const orderEmailInfoField = {
 	look: 'checkbox',
 	selectDeselect: true,
 	class: 'basic-checkbox',
-	
+
 	options: [
 		{ key: 'live_chat', value: 'live_chat', label: __('Live chat', 'multivendorx'), desc: __('Chat with customers in real time', 'multivendorx') },
 		{ key: 'customer_support', value: 'customer_support', label: __('Customer support', 'multivendorx'), desc: __('Respond to customer support requests', 'multivendorx') },
 		{ key: 'enquiry', value: 'enquiry', label: __('Product enquiries', 'multivendorx'), desc: __('Receive and respond to customer product enquiries', 'multivendorx') },
 		{ key: 'gift_card', value: 'gift_card', label: __('Gift cards', 'multivendorx'), desc: __('Sell gift cards to customers', 'multivendorx') },
-		
+
 	],
 };
 const businessAndPaymentsFeatures = {
@@ -187,12 +187,12 @@ const businessAndPaymentsFeatures = {
 	look: 'checkbox',
 	selectDeselect: true,
 	class: 'basic-checkbox',
-	
+
 	options: [
 		{ key: 'paypal_marketplace', value: 'paypal_marketplace', label: __('PayPal marketplace', 'multivendorx'), desc: __('Accept marketplace payments via PayPal', 'multivendorx') },
 		{ key: 'stripe_marketplace', value: 'stripe_marketplace', label: __('Stripe marketplace', 'multivendorx'), desc: __('Accept marketplace payments via Stripe', 'multivendorx') },
 		{ key: 'store_staff', value: 'store_staff', label: __('Staff manager', 'multivendorx'), desc: __('Allow stores to add staff members to help manage their store', 'multivendorx') },
-		
+
 	],
 };
 
@@ -689,8 +689,8 @@ const Membership = ({ id }: { id: string }) => {
 							action={
 								<div className="field-wrapper">
 									<ToggleSetting
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
+
+
 										options={[
 											{
 												key: 'draft',
@@ -724,8 +724,8 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup label="Name" htmlFor="product-name">
 									<BasicInput
 										name="name"
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
+
+
 										value={formData.name}
 										onChange={handleChange}
 									/>
@@ -733,9 +733,6 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup label="Description" htmlFor="short_description">
 									<TextArea
 										name="short_description"
-										wrapperClass="setting-from-textarea"
-										inputClass="textarea-input"
-										descClass="settings-metabox-description"
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
@@ -750,7 +747,7 @@ const Membership = ({ id }: { id: string }) => {
 									{/* <MultiCheckBox
 										khali_dabba={true}
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+										  
 										description={productTypeField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -805,7 +802,7 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup row label={__('Categories stores can list in', 'multivendorx')} className="border-top" desc={__('Limit where stores can list their products. This helps you control what your marketplace focuses on.')}>
 									{/* <MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+										  
 										description={categoryField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -862,8 +859,8 @@ const Membership = ({ id }: { id: string }) => {
 									>
 										<BasicInput
 											name="product_category_limit"
-											wrapperClass="setting-form-input"
-											descClass="settings-metabox-description"
+											 
+											  
 											value={formData.product_category_limit}
 											onChange={handleChange}
 											postInsideText="max"
@@ -886,7 +883,7 @@ const Membership = ({ id }: { id: string }) => {
 								>
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+
 										description={vendorStorefrontField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -910,8 +907,8 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup row label="How many listings a store can add" className="border-top" desc={__('Control how many listings a store can have at the same time.', 'multivendorx')}>
 									<BasicInput
 										name="name"
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
+
+
 										value={formData.name}
 										onChange={handleChange}
 										// postInsideText={'credits per month'}
@@ -923,8 +920,8 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup row label="Images per listing" className="border-top" desc={__('Control how many images a store can add for each listing.', 'multivendorx')}>
 									<BasicInput
 										name="name"
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
+
+
 										value={formData.name}
 										onChange={handleChange}
 										// postInsideText={'credits per month'}
@@ -943,7 +940,7 @@ const Membership = ({ id }: { id: string }) => {
 									<MultiCheckBox
 										khali_dabba={true}
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+
 										description={productTypeField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -981,7 +978,7 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup label="Information in exported orders" className="border-top">
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+
 										description={exportedOrderInfoField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -1003,7 +1000,7 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup label="Customer support" className="border-top">
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+
 										description={orderEmailInfoField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -1025,7 +1022,7 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup label="Payment & support" className="border-top">
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+
 										description={businessAndPaymentsFeatures.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -1055,7 +1052,7 @@ const Membership = ({ id }: { id: string }) => {
 								>
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+
 										description={orderPermissionField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -1084,8 +1081,8 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup row label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
 									<BasicInput
 										name="name"
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
+
+
 										value={formData.name}
 										onChange={handleChange}
 										postText={'credits per month'}
@@ -1095,8 +1092,8 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup row label="AI for writing product details" className="border-top" desc={__('AI for writing product details', 'multivendorx')}>
 									<BasicInput
 										name="name"
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
+
+
 										value={formData.name}
 										onChange={handleChange}
 										postText={'credits per month'}
@@ -1117,7 +1114,7 @@ const Membership = ({ id }: { id: string }) => {
 								>
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										descClass="settings-metabox-description"
+										  
 										description={vendorStorefrontField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
@@ -1150,8 +1147,6 @@ const Membership = ({ id }: { id: string }) => {
 									htmlFor="membership_type"
 								>
 									<ToggleSetting
-										wrapperClass="setting-form-input"
-										descClass="settings-metabox-description"
 										options={[
 											{
 												key: 'free',
@@ -1182,8 +1177,8 @@ const Membership = ({ id }: { id: string }) => {
 										>
 											<BasicInput
 												name="signup_fee"
-												wrapperClass="setting-form-input"
-												descClass="settings-metabox-description"
+
+
 												value={formData.signup_fee}
 												onChange={handleChange}
 												pInsideText="$"
@@ -1197,9 +1192,7 @@ const Membership = ({ id }: { id: string }) => {
 										>
 											<BasicInput
 												name="recurring_price"
-												wrapperClass="setting-form-input"
-												descClass="settings-metabox-description"
-												postInnerText = "month"
+												postInsideText="Month"
 												value={formData.recurring_price}
 												onChange={handleChange}
 											/>

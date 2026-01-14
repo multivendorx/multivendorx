@@ -102,9 +102,6 @@ const AdditionalInformation = () => {
 							<div className="form-group">
 								<TextArea
 									name="messageToBuyer"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 									value={formData.messageToBuyer || ''}
 									onChange={handleChange}
 								/>
@@ -122,7 +119,7 @@ const AdditionalInformation = () => {
 							<div className="form-group">
 								<label>{__('Hide Address', 'zcrm')}</label>
 								<ToggleSetting
-									wrapperClass="setting-form-input"
+									 
 									options={[
 										{
 											key: 'yes',
@@ -147,7 +144,7 @@ const AdditionalInformation = () => {
 							<div className="form-group">
 								<label>{__('Hide Phone', 'zcrm')}</label>
 								<ToggleSetting
-									wrapperClass="setting-form-input"
+									 
 									options={[
 										{
 											key: 'yes',
@@ -172,7 +169,7 @@ const AdditionalInformation = () => {
 							<div className="form-group">
 								<label>{__('Hide Email', 'zcrm')}</label>
 								<ToggleSetting
-									wrapperClass="setting-form-input"
+									 
 									options={[
 										{
 											key: 'yes',

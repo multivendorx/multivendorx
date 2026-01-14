@@ -257,33 +257,21 @@ const GoogleMap = ({
 
     return (
         <>
-            <FormGroupWrapper>
-                <FormGroup label={labelSearch} htmlFor="store-location-autocomplete">
-                    <div id="store-location-autocomplete-container">
-                        <input
-                            ref={autocompleteInputRef}
-                            id="store-location-autocomplete"
-                            type="text"
-                            className="basic-input"
-                            placeholder={placeholderSearch}
-                            defaultValue={locationAddress}
-                        />
-                    </div>
-                </FormGroup>
-
-                <FormGroup label={labelMap}>
-                    <div
-                        ref={mapContainerRef}
-                        id="location-map"
-                        style={{
-                            height: '400px',
-                            width: '100%',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                        }}
+            <FormGroup label={labelSearch}>
+                <div
+                    ref={mapContainerRef}
+                    id="location-map"
+                >
+                    <input
+                        ref={autocompleteInputRef}
+                        id="store-location-autocomplete"
+                        type="text"
+                        className="basic-input"
+                        placeholder={placeholderSearch}
+                        defaultValue={locationAddress}
                     />
-                </FormGroup>
-            </FormGroupWrapper>
+                </div>
+            </FormGroup>
         </>
     );
 };

@@ -24,6 +24,12 @@
             width: auto;
         }
 
+        .icon {
+            padding: 0.5rem;
+            font-size: 1.25rem;
+            border-radius: 0.313rem;
+        }
+
         a {
             font-size: 0.813rem;
             font-weight: 500;
@@ -39,6 +45,19 @@
 
     .mini-card-title {
         margin-bottom: 0.313rem;
+        line-height: 1.125;
+    }
+
+    .mini-card-description {
+        line-height: 1.25;
+
+        .read-more{
+            display: block;
+            margin-top: 0.5rem;
+            color: $theme-color;
+            font-weight: 600;
+            cursor: pointer;
+        }
     }
 
     .mini-card-value {

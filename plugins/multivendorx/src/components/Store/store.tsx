@@ -321,7 +321,7 @@ const Store = () => {
 										type="text"
 										name="slug"
 										value={formData.slug || ''}
-										wrapperClass="setting-form-input"
+										 
 										onChange={handleChange}
 										required={true}
 										clickBtnName={__(
@@ -356,7 +356,6 @@ const Store = () => {
 								<FormGroup label={__('Description', 'multivendorx')} htmlFor="Description">
 									<TextArea
 										name="description"
-										inputClass="textarea-input"
 										value={formData.description || ''}
 										onChange={handleChange}
 										usePlainText={false}
@@ -412,7 +411,6 @@ const Store = () => {
 											'Upload Image',
 											'multivendorx'
 										)}
-										buttonClass="admin-btn btn-purple"
 										onButtonClick={() =>
 											runUploader('image')
 										}

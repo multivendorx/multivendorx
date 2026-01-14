@@ -581,7 +581,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 								<FormGroup label={__('Reject Message', 'multivendorx')} htmlFor="content">
 									<TextArea
 										name="content"
-										inputClass="textarea-input"
 										value={formData.content}
 										onChange={handleChange}
 										usePlainText={false}

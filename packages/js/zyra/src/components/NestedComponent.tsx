@@ -308,7 +308,7 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                                     e.target.value
                                 );
                             } }
-                            wrapperClass="setting-form-input"
+                             
                         />
                     </>
                 );

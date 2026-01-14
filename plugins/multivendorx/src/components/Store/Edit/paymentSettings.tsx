@@ -174,7 +174,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 						<FormGroupWrapper>
 							<FormGroup>
 								<ToggleSetting
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									description={
 										paymentOptions &&
@@ -281,7 +281,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 											type={
 												field.type || 'text'
 											}
-											wrapperClass="setting-form-input"
+											 
 											descClass="settings-metabox-description"
 											placeholder={
 												field.placeholder
@@ -322,7 +322,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 									preInsideText="$"
 									postText="+"
 									name="commission_fixed"
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									value={formData.commission_fixed}
 									onChange={handleChange}
@@ -332,7 +332,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								<BasicInput
 									postInsideText="%"
 									name="commission_percentage"
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									value={formData.commission_percentage}
 									onChange={handleChange}

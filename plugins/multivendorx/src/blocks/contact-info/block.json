@@ -1,0 +1,14 @@
+{
+	"apiVersion": 2,
+	"name": "multivendorx/contact-info",
+	"title": "Contact Info (w)",
+	"category": "widgets",
+	"icon": "email",
+	"description": "A contact form block to send email.",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "multivendorx",
+	"editorScript": "file:./index.js",
+	"script": "file:./index.js"
+}

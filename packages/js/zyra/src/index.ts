@@ -32,7 +32,6 @@ export { default as Modules } from './components/Modules';
 export { default as MultiCheckBox } from './components/MultiCheckbox';
 export { default as MultiCheckboxTable } from './components/MultiCheckboxTable';
 export { default as MultipleOptions } from './components/MultipleOption';
-export { default as MultiInput } from './components/MultiInput';
 export { default as ProPopup } from './components/Popup';
 export { default as RadioInput } from './components/RadioInput';
 export { default as Recaptcha } from './components/Recaptcha';

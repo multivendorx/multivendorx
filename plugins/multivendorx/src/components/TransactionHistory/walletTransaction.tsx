@@ -948,7 +948,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 								</div>
 							</div>
 							<Column row>
-
 								<MiniCard background
 									title={__('Upcoming Balance', 'multivendorx')}
 									value={formatCurrency(wallet.locking_balance)}
@@ -1128,9 +1127,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 							<FormGroup label={__('Note', 'multivendorx')} htmlFor="Note">
 								<TextArea
 									name="note"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 									value={note}
 									onChange={(
 										e: React.ChangeEvent<HTMLTextAreaElement>

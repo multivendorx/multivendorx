@@ -19,7 +19,7 @@ export default {
 				'Decide which details appear with products and on store pages.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			moduleEnabled: 'privacy',
 			options: [
 				{
@@ -69,7 +69,7 @@ export default {
 				'Choose the contact details visible to customers.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			moduleEnabled: 'privacy',
 			options: [
 				{
@@ -110,7 +110,7 @@ export default {
 				'Control whether customers see orders grouped by vendor in cart, checkout, and confirmation emails.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			moduleEnabled: 'privacy',
 			options: [
 				{
@@ -133,7 +133,7 @@ export default {
 				'Give stores the option to create their own policies instead of using marketplace defaults.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			moduleEnabled: 'privacy',
 			options: [
 				{
@@ -176,7 +176,7 @@ export default {
 				'Choose what stores can see about customers.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			moduleEnabled: 'privacy',
 			options: [
 				{

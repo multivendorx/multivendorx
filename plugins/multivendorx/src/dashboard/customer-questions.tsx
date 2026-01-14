@@ -403,8 +403,6 @@ const CustomerQuestions: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -443,7 +441,7 @@ const CustomerQuestions: React.FC = () => {
 			<div className="page-title-wrapper">
 				<div className="page-title">
 					<div className="title">
-						{__('Product questions in queue', 'multivendorx')}
+						{__('Customer questions', 'multivendorx')}
 					</div>
 
 					<div className="des">
@@ -513,7 +511,7 @@ const CustomerQuestions: React.FC = () => {
 							<BasicInput
 								name="question"
 								value={qna}
-								wrapperClass="setting-form-input"
+								 
 								descClass="settings-metabox-description"
 								onChange={(e) => setQna(e.target.value)}
 							/>
@@ -522,7 +520,6 @@ const CustomerQuestions: React.FC = () => {
 						<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
 							<TextArea
 								name="answer"
-								inputClass="textarea-input"
 								value={answer}
 								onChange={(e) => setAnswer(e.target.value)}
 							/>

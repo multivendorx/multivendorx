@@ -127,7 +127,8 @@
 		"recharts": "^3.5.1",
 		"ts-loader": "9.5.4",
 		"wp-textdomain": "^1.0.1",
-		"zyra": "workspace:*"
+		"zyra": "workspace:*",
+		"@react-pdf/renderer": "^4.3.2"
 	},
 	"devDependencies": {
 		"@babel/preset-react": "^7.28.5",

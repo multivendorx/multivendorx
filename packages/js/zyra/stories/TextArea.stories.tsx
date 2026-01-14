@@ -33,7 +33,6 @@ export const PlainText: Story = {
                 value={value}
                 rowNumber={5}
                 colNumber={50}
-                inputClass="textarea-input"
                 usePlainText
                 description="Please enter your detailed comments."
                 descClass="settings-metabox-description"

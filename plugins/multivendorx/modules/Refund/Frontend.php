@@ -8,6 +8,7 @@
 namespace MultiVendorX\Refund;
 
 use MultiVendorX\Utill;
+use MultiVendorX\Store\Store;
 
 /**
  * MultiVendorX Refund Frontend class
@@ -87,11 +88,12 @@ class Frontend {
             return;
         }
         ?>
-        <p><button type="button" class="button wp-element-button" id="cust_request_refund_btn" name="cust_request_refund_btn"
+        <p><button type="button" class="button wp-element-button" id="cust-request-refund-btn" name="cust-request-refund-btn"
                 value="<?php echo esc_attr( $refund_button_text ); ?>">
                 <?php echo esc_html( $refund_button_text ); ?></button></p>
-        <div id="mvx-myac-order-refund-wrap" class="mvx-myac-order-refund-wrap">
-            <form method="POST" enctype="multipart/form-data">
+        <div id="multivendorx-myac-order-refund-wrap" class="multivendorx-myac-order-refund-wrap multivendorx-popup" style="display:none;">
+            <form method="POST" enctype="multipart/form-data" class="multivendorx-popup-content">
+                <span class="popup-close"><i class="dashicons dashicons-no-alt"></i></span>
                 <?php wp_nonce_field( 'customer_request_refund', 'cust-request-refund-nonce' ); ?>
                 <p class=" form-row form-row-wide">
 
@@ -192,18 +194,18 @@ class Frontend {
         wp_add_inline_script(
             'woocommerce',
             '( function( $ ) {
-            $("#mvx-myac-order-refund-wrap").hide();
-            $("#mvx-myac-order-refund-wrap .cust-rr-other").hide();
-            $("#mvx-myac-order-refund-wrap .refund_reason_option input").on("click", function(){
+            $("#multivendorx-myac-order-refund-wrap").hide();
+            $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
+            $("#multivendorx-myac-order-refund-wrap .refund_reason_option input").on("click", function(){
                 var others_checked = $("input:radio[name=refund_reason_option]:checked").val();
                 if(others_checked == "others"){
-                    $("#mvx-myac-order-refund-wrap .cust-rr-other").show();
+                    $("#multivendorx-myac-order-refund-wrap .cust-rr-other").show();
                 }else{
-                    $("#mvx-myac-order-refund-wrap .cust-rr-other").hide();
+                    $("#multivendorx-myac-order-refund-wrap .cust-rr-other").hide();
                 }
             });
-			$("#cust_request_refund_btn").click(function(){
-				$("#mvx-myac-order-refund-wrap").slideToggle();
+			$("#cust-request-refund-btn").click(function(){
+				$("#multivendorx-myac-order-refund-wrap").slideToggle();
 			});
 		} )( jQuery );'
         );
@@ -417,6 +419,24 @@ class Frontend {
 
         $order->set_status( 'refund-requested' );
         $order->save();
+
+        $store_id = $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
+        $store = new Store($store_id);
+
+        do_action(
+            'multivendorx_notify_refund_requested',
+                'refund_requested',
+                array(
+                    'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
+                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+                    'customer_email' => $order->get_billing_email(),
+                    'customer_phn' => $order->get_billing_phone(),
+                    'order_id'    => $order->get_id(),
+                    'category'    => 'activity',
+                )
+            );
 
         // Add order note with proper escaping.
         $user_info = get_userdata( get_current_user_id() );

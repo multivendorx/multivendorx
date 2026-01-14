@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useState, useEffect } from 'react';
+import React, { ChangeEvent, useState, useEffect, useMemo } from 'react';
 import '../styles/web/ColorSettingInput.scss';
 import ToggleSetting from './ToggleSetting';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 
 interface CustomColors {
     colorPrimary: string;
@@ -29,19 +30,56 @@ interface ImagePaletteOption {
     img?: string;
 }
 
+// 🔹 NEW: Template & Theme interfaces for invoice templates
+type ThemeVars = Record<string, string>;
+
+interface Template {
+    key: string;
+    label: string;
+  
+    // HTML preview
+    preview?: React.ComponentType<any>;
+    component: React.ComponentType<any>;
+  
+    // PDF-only component (must return <Document />)
+    pdf?: React.FC<{ themeVars: ThemeVars }>;
+  }
+
+interface PresetTheme {
+    name: string;
+    vars: Partial<ThemeVars>;
+}
+
 interface ColorSettingProps {
     wrapperClass?: string;
     inputClass?: string;
     descClass?: string;
     description?: string;
+
     predefinedOptions: PaletteOption[];
     images: ImagePaletteOption[];
-    value?: { selectedPalette: string; colors: Partial< CustomColors > }; // object from DB
-    onChange?: ( e: {
-        target: { name: string; value: ColorSettingValue };
-    } ) => void;
+
+    value?: {
+        selectedPalette: string;
+        colors: Partial<CustomColors>;
+        templateKey?: string;
+        themeVars?: ThemeVars;
+    };
+
+    onChange?: (e: {
+        target: {
+            name: string;
+            value:
+                | ColorSettingValue
+                | { templateKey: string; themeVars: ThemeVars };
+        };
+    }) => void;
     idPrefix?: string;
     showPreview?: boolean;
+    templates?: Template[];
+    showPdfButton?: boolean;
+    pdfFileName?: string;
+    showTemplates?: boolean;
 }
 
 const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
@@ -50,9 +88,51 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
         props.value?.selectedPalette ||
         ( props.predefinedOptions[ 0 ]?.value ?? '' );
     const initialColors = props.value?.colors || {};
+    const [templateKey, setTemplateKey] = useState(
+        props.value?.templateKey || props.templates?.[0]?.key
+    );
+    
+    const activeTemplate = useMemo(
+        () => props.templates?.find(t => t.key === templateKey),
+        [props.templates, templateKey]
+    );
+    const ActivePdf = activeTemplate?.pdf;
+    const changeTemplate = (key: string) => {
+        setTemplateKey(key);
+    
+        props.onChange?.({
+            target: {
+                name: 'store_color_settings',
+                value: {
+                    templateKey: key,
+                    themeVars,
+                },
+            },
+        });
+    };
+    
+    const emitTemplateChange = (vars: ThemeVars, key?: string) => {
+        props.onChange?.({
+            target: {
+                name: 'store_color_settings',
+                value: {
+                    templateKey: key || templateKey,
+                    themeVars: vars,
+                },
+            },
+        });
+    };
+    
+    // 🔹 Determine initial mode based on whether templates are provided
+    const hasTemplates = props.showTemplates;
+    const initialMode = hasTemplates && initialPalette === 'templates'
+        ? 'templates'
+        : initialPalette === 'custom'
+        ? 'custom'
+        : 'predefined';
 
-    const [ mode, setMode ] = useState< 'predefined' | 'custom' >(
-        initialPalette === 'custom' ? 'custom' : 'predefined'
+    const [ mode, setMode ] = useState< 'predefined' | 'custom' | 'templates' >(
+        initialMode as 'predefined' | 'custom' | 'templates'
     );
     const [ selectedPalette, setSelectedPalette ] = useState( initialPalette );
     const [ selectedColors, setSelectedColors ] =
@@ -64,6 +144,19 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
         colorSupport: '#075F63',
         ...initialColors,
     } );
+
+    const themeVars: ThemeVars = useMemo(() => {
+        return {
+            '--primary': selectedColors.colorPrimary || '#000',
+            '--secondary': selectedColors.colorSecondary || '#000',
+            '--accent': selectedColors.colorAccent || '#000',
+            '--accent-secondary': selectedColors.colorSecondary || '#888',
+            '--support': selectedColors.colorSupport || '#000',
+            '--bg-card': '#ffffff',
+            '--text-primary': '#111827',
+            '--text-muted': '#6b7280',
+        };
+    }, [selectedColors]);
 
     const [ selectedImage, setSelectedImage ] = useState< string | null >(
         props.images?.[ 0 ]?.img || null
@@ -137,16 +230,23 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
             },
         } );
     };
-
     return (
         <>
-            <div className={ props.wrapperClass }>
+            <div className={ `form-group-color-setting ${ props.wrapperClass || '' }`}>
                 { /* Toggle Mode */ }
                 { ! selectedImage && (
                     <>
                         <ToggleSetting
-                            wrapperClass="setting-form-input"
                             options={ [
+                                ...( !!props.templates?.length
+                                    ? [
+                                          {
+                                              key: 'templates',
+                                              value: 'templates',
+                                              label: 'Templates',
+                                          },
+                                      ]
+                                    : [] ),
                                 {
                                     key: 'predefined',
                                     value: 'predefined',
@@ -159,8 +259,10 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
                                 },
                             ] }
                             value={ mode }
-                            onChange={ ( val: string ) => {
-                                if ( val === 'predefined' ) {
+                            onChange={ ( val: string | string[] ) => {
+                                const selectedVal = Array.isArray( val ) ? val[ 0 ] : val;
+
+                                if ( selectedVal === 'predefined' ) {
                                     setMode( 'predefined' );
 
                                     const value =
@@ -188,7 +290,7 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
                                     } );
                                 }
 
-                                if ( val === 'custom' ) {
+                                if ( selectedVal === 'custom' ) {
                                     setMode( 'custom' );
                                     setSelectedPalette( 'custom' );
                                     setSelectedColors( customColors );
@@ -202,6 +304,14 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
                                             },
                                         },
                                     } );
+                                }
+                                if ( selectedVal === 'templates' ) {
+                                    setMode( 'templates' );
+                                    setSelectedPalette( 'templates' );
+                                    setSelectedColors( {} );
+
+                                    // Emit template change instead
+                                    emitTemplateChange( themeVars, templateKey );
                                 }
                             } }
                         />
@@ -220,8 +330,8 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
                                 return (
                                     <div key={ option.key } className="palette">
                                         <input
-                                            className={ props.inputClass }
-                                            id={ `${ props.idPrefix }-${ option.key }` }
+                                            className={`setting-form-input ${ props.inputClass || '' }`}
+                                            id={ `color-setting-${ option.key }` }
                                             type="radio"
                                             name="vendor_color_scheme_picker"
                                             checked={ checked }
@@ -301,304 +411,47 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
                             </div>
                         ) }
                     </div>
-                </div>
+                    <div className="templates">
+                        { hasTemplates && (
+                            <div className="template-list">
+                                {props.templates!.map((tpl) => {
+                                    const Preview = tpl.preview || tpl.component;
+                                    const isActive = tpl.key === templateKey;
 
-                { /* Live Preview */ }
-                { props.showPreview && (
-                    <div className="preview-wrapper">
-                        { /* Sidebar */ }
-                        <div className="left-wrapper">
-                            <div className="logo-wrapper">
-                                <div
-                                    className="logo"
-                                    style={ {
-                                        color: selectedColors.colorPrimary,
-                                    } }
-                                >
-                                    MultivendorX
-                                </div>
-                                <i className="adminfont-menu"></i>
+                                    return (
+                                        <div
+                                            key={tpl.key}
+                                            className={`template-card ${isActive ? 'active' : ''}`}
+                                            onClick={() => changeTemplate(tpl.key)}
+                                        >
+                                            <div className="template-preview">
+                                                <Preview
+                                                    themeVars={themeVars}
+                                                    isPreview
+                                                />
+                                            </div>
+
+                                            <div className="template-label">
+                                                {tpl.label}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                            <ul className="dashboard-tabs">
-                                <li className="tab-name active">
-                                    <a
-                                        className="tab"
-                                        style={ {
-                                            color: '#fff',
-                                            background:
-                                                selectedColors.colorPrimary,
-                                        } }
-                                    >
-                                        <i className="adminfont-module"></i>
-                                        Dashboard
-                                    </a>
-                                </li>
-
-                                <li className="tab-name ">
-                                    <a className="tab">
-                                        <i className="adminfont-single-product"></i>
-                                        Products
-                                    </a>
-                                    <i className="admin-arrow adminfont-pagination-right-arrow"></i>
-                                </li>
-
-                                <li className="tab-name ">
-                                    <a className="tab">
-                                        <i className="adminfont-sales"></i>
-                                        Sales
-                                    </a>
-                                    <i className="admin-arrow adminfont-pagination-right-arrow"></i>
-                                </li>
-
-                                <ul className="subtabs">
-                                    <li>
-                                        <a>Order</a>
-                                    </li>
-                                    <li>
-                                        <a>Refund</a>
-                                    </li>
-                                    <li>
-                                        <a>Commissions</a>
-                                    </li>
-                                </ul>
-
-                                <li className="tab-name ">
-                                    <a className="tab">
-                                        <i className="adminfont-coupon"></i>
-                                        Coupons
-                                    </a>
-                                    <i className="admin-arrow adminfont-pagination-right-arrow"></i>
-                                </li>
-
-                                <li className="tab-name ">
-                                    <a href="#" className="tab">
-                                        <i className="adminfont-wallet"></i>
-                                        Wallet
-                                    </a>
-                                    <i className="admin-arrow adminfont-pagination-right-arrow"></i>
-                                </li>
-
-                                <li className="tab-name ">
-                                    <a href="#" className="tab">
-                                        <i className="adminfont-customer-service"></i>
-                                        Store Support
-                                    </a>
-                                    <i className="admin-arrow adminfont-pagination-right-arrow"></i>
-                                </li>
-
-                                <li className="tab-name ">
-                                    <a href="#" className="tab">
-                                        <i className="adminfont-report"></i>
-                                        Stats / Report
-                                    </a>
-                                    <i className="admin-arrow adminfont-pagination-right-arrow"></i>
-                                </li>
-                                <li className="tab-name ">
-                                    <a href="#" className="tab">
-                                        <i className="adminfont-resources"></i>
-                                        Resources
-                                    </a>
-                                    <i className="admin-arrow adminfont-pagination-right-arrow"></i>
-                                </li>
-                            </ul>
-                        </div>
-
-                        { /* Content Area */ }
-                        <div className="tab-wrapper">
-                            <div className="top-navbar">
-                                <div className="navbar-leftside"></div>
-                                <div className="navbar-rightside">
-                                    <ul className="navbar-right">
-                                        <li>
-                                            <div className="adminfont-icon adminfont-moon"></div>
-                                        </li>
-                                        <li>
-                                            <div className="adminfont-icon adminfont-product-addon"></div>
-                                        </li>
-                                        <li>
-                                            <div className="adminfont-icon adminfont-storefront"></div>
-                                        </li>
-                                        <li>
-                                            <div className="adminfont-icon adminfont-notification"></div>
-                                        </li>
-                                        <li>
-                                            <div className="adminfont-icon adminfont-crop-free"></div>
-                                        </li>
-
-                                        <li className="dropdown login-user">
-                                            <a
-                                                href=""
-                                                className="dropdown-toggle"
-                                            >
-                                                <div
-                                                    className="avatar-wrapper"
-                                                    style={ {
-                                                        backgroundColor:
-                                                            selectedColors.colorPrimary,
-                                                    } }
-                                                >
-                                                    <i className="adminfont-person"></i>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="tab-content-wrapper">
-                                <div className="title-wrapper">
-                                    <div className="left-section">
-                                        <div className="title">
-                                            Good Morning, Store owner!
-                                        </div>
-                                        <div className="des"></div>
-                                    </div>
-                                    <div
-                                        className="dashboard-btn"
-                                        style={ {
-                                            background:
-                                                selectedColors.colorPrimary,
-                                        } }
-                                    >
-                                        Add new
-                                    </div>
-                                </div>
-
-                                <div className="dashboard-card-wrapper">
-                                    <div
-                                        className="item"
-                                        style={ {
-                                            background: `color-mix(in srgb, ${ selectedColors.colorPrimary } 15%, transparent)`,
-                                        } }
-                                    >
-                                        <div className="details">
-                                            <div className="price"></div>
-                                            <div className="des"></div>
-                                        </div>
-                                        <div
-                                            className="icon-wrapper"
-                                            style={ {
-                                                background:
-                                                    selectedColors.colorPrimary,
-                                            } }
-                                        >
-                                            <i className="adminfont-dollar"></i>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="item"
-                                        style={ {
-                                            background: `color-mix(in srgb, ${ selectedColors.colorSecondary } 15%, transparent)`,
-                                        } }
-                                    >
-                                        <div className="details">
-                                            <div className="price"></div>
-                                            <div className="des"></div>
-                                        </div>
-                                        <div
-                                            className="icon-wrapper"
-                                            style={ {
-                                                background:
-                                                    selectedColors.colorSecondary,
-                                            } }
-                                        >
-                                            <i className="adminfont-order"></i>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="item"
-                                        style={ {
-                                            background: `color-mix(in srgb, ${ selectedColors.colorAccent } 15%, transparent)`,
-                                        } }
-                                    >
-                                        <div className="details">
-                                            <div className="price"></div>
-                                            <div className="des"></div>
-                                        </div>
-                                        <div
-                                            className="icon-wrapper"
-                                            style={ {
-                                                background:
-                                                    selectedColors.colorAccent,
-                                            } }
-                                        >
-                                            <i className="adminfont-store-seo"></i>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="item"
-                                        style={ {
-                                            background: `color-mix(in srgb, ${ selectedColors.colorSupport } 15%, transparent)`,
-                                        } }
-                                    >
-                                        <div className="details">
-                                            <div className="price"></div>
-                                            <div className="des"></div>
-                                        </div>
-                                        <div
-                                            className="icon-wrapper"
-                                            style={ {
-                                                background:
-                                                    selectedColors.colorSupport,
-                                            } }
-                                        >
-                                            <i className="adminfont-commission"></i>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="dashboard-row">
-                                    <div className="section column-8">
-                                        <div className="section-header">
-                                            <div className="title"></div>
-                                        </div>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <div className="section column-4">
-                                        <div className="section-header">
-                                            <div className="title"></div>
-                                        </div>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                </div>
-
-                                <div className="dashboard-row">
-                                    <div className="section column-4">
-                                        <div className="section-header">
-                                            <div className="title"></div>
-                                        </div>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <div className="section column-8">
-                                        <div className="section-header">
-                                            <div className="title"></div>
-                                        </div>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        )}
                     </div>
-                ) }
+
+                </div>
+                { /* Live Preview */ }
+                {props.showPreview && mode === 'templates' && activeTemplate && (
+                    <div className="template-live-preview">
+                        <activeTemplate.component
+                            themeVars={themeVars}
+                            isPreview
+                        />
+                    </div>
+                )}
+
             </div>
 
             { /* Image Palette List */ }
@@ -659,6 +512,17 @@ const ColorSettingInput: React.FC< ColorSettingProps > = ( props ) => {
                     dangerouslySetInnerHTML={ { __html: props.description } }
                 ></p>
             ) }
+
+            {props.showPdfButton && ActivePdf && (
+            <PDFDownloadLink
+                document={<ActivePdf themeVars={themeVars} />}
+                fileName={`invoice-${templateKey}.pdf`}
+            >
+                {({ loading }) =>
+                loading ? 'Generating PDF…' : 'Download PDF'
+                }
+            </PDFDownloadLink>
+            )}
         </>
     );
 };

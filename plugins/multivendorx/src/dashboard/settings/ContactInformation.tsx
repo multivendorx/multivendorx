@@ -94,7 +94,7 @@ const ContactInformation = () => {
 					<BasicInput
 						name="phone"
 						value={formData.phone}
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						onChange={handleChange}
 						readOnly={settings.includes('store_contact')}
@@ -109,7 +109,7 @@ const ContactInformation = () => {
 						type="email"
 						name="email"
 						value={formData.email}
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						onChange={handleChange}
 						readOnly={settings.includes('store_contact')}
@@ -126,7 +126,7 @@ const ContactInformation = () => {
 					>
 						<BasicInput
 							name="live_chat"
-							wrapperClass="setting-form-input"
+							 
 							descClass="settings-metabox-description"
 						/>
 					</FormGroup>

@@ -36,7 +36,7 @@ class Plivo {
     public function send( $to, $message ) {
         $auth_id     = MultiVendorX()->setting->get_setting( 'plivo_auth_id' );
         $auth_token  = MultiVendorX()->setting->get_setting( 'plivo_auth_token' );
-        $from_number = MultiVendorX()->setting->get_setting( 'plivo_from_number' );
+        $from_number = MultiVendorX()->setting->get_setting( 'sms_sender_phone_number' );
 
         $args = array(
             'headers' => array(

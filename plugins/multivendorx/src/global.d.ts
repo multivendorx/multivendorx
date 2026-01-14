@@ -3,6 +3,15 @@ declare module 'body-scroll-lock' {
 	export function enableBodyScroll(targetElement: Element): void;
 }
 
+// Module declarations for asset imports
+declare module '*.png';
+declare module '*.jpg';
+declare module '*.jpeg';
+declare module '*.html' {
+	const content: string;
+	export default content;
+}
+
 // src/global.d.ts
 export {};
 
@@ -84,9 +93,6 @@ declare global {
 		content_after_form: any;
 		error_strings: Array;
 	}
-	declare module '*.png';
-	declare module '*.jpg';
-	declare module '*.jpeg';
 
 	var appLocalizer: AppLocalizer;
 	var color: Color;

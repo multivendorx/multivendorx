@@ -163,7 +163,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 			url: getApiLink(appLocalizer, `store/${rejectStoreId}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: {
-				status: 'declined',
+				status: 'rejected',
 				_reject_note: rejectReason || '', // allow empty reason
 			},
 		})
@@ -278,8 +278,6 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -343,7 +341,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 									icon: 'permanently-rejected',
 									text: __('Reject', 'multivendorx'),
 									className: 'red-bg',
-									onClick: () => submitReject,
+									onClick: () => submitReject(),
 								},
 							]}
 						/>
@@ -353,9 +351,6 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 						<FormGroupWrapper>
 							<TextArea
 								name="reject_reason"
-								wrapperClass="setting-from-textarea"
-								inputClass="textarea-input"
-								descClass="settings-metabox-description"
 								value={rejectReason}
 								onChange={(
 									e: React.ChangeEvent<HTMLTextAreaElement>

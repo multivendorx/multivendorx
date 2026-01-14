@@ -161,7 +161,7 @@ const Withdrawl: React.FC = () => {
 					htmlFor="payment_method"
 				>
 					<ToggleSetting
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						description={
 							paymentOptions && paymentOptions.length === 0
@@ -310,7 +310,7 @@ const Withdrawl: React.FC = () => {
 									key={field.key || ''}
 									name={field.key}
 									type={field.type || 'text'}
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									placeholder={
 										field.placeholder

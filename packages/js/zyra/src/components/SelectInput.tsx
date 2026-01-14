@@ -134,7 +134,7 @@ const SelectInput: React.FC< SelectInputProps > = ( {
         : optionsData.find( ( opt ) => opt.value === value ) || null;
 
     return (
-        <div className={ wrapperClass } style={ { width: size || '100%' } }>
+        <div className={ `form-select-field-wrapper ${wrapperClass || '' }`} style={ { width: size || '100%' } }>
             { selectDeselect && (
                 <button
                     className={ selectDeselectClass }
@@ -165,7 +165,7 @@ const SelectInput: React.FC< SelectInputProps > = ( {
             </div>
             { description && (
                 <p
-                    className={ descClass }
+                    className="settings-metabox-description"
                     dangerouslySetInnerHTML={ { __html: description } }
                 ></p>
             ) }

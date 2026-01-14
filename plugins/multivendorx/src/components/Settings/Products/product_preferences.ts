@@ -19,7 +19,7 @@ export default {
 				'Select the product fields stores can configure when adding or managing their products.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			desc: __(
 				'<ul><li>Virtual - Choose this option for products that don’t have a physical form (e.g., services, memberships). <li>Downloadable - Use this option for products that customers can download (e.g., software, eBooks).</li><ul>',
 				'multivendorx'
@@ -46,7 +46,7 @@ export default {
 				'Control which product data fields are available to stores when creating or editing products.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			options: [
 				{
 					key: 'general',

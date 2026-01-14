@@ -501,8 +501,6 @@ const Qna: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -614,7 +612,7 @@ const Qna: React.FC = () => {
 								<BasicInput
 									name="phone"
 									value={qna}
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									onChange={(e) => setQna(e.target.value)}
 								/>
@@ -622,14 +620,13 @@ const Qna: React.FC = () => {
 							<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
 								<TextArea
 									name="answer"
-									inputClass="textarea-input"
 									value={answer}
 									onChange={(e) => setAnswer(e.target.value)}
 								/>
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">
 								<ToggleSetting
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									options={[
 										{

@@ -347,8 +347,6 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 			render: (updateFilter, filterValue) => (
 				<div className="right">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,

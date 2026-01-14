@@ -63,7 +63,7 @@ export default {
 			key: 'onboarding_steps_configuration',
 			type: 'checkbox',
 			label: __('Onboarding steps', 'multivendorx'),
-			class: 'mvx-toggle-checkbox',
+			 
 			options: [
 				{
 					key: 'store_profile_setup',
@@ -158,18 +158,18 @@ export default {
 			type: 'setting-toggle',
 			label: __('Product listing model', 'multivendorx'),
 			desc: __(
-				'Decide how stores are allowed to sell products in your marketplace:<ul><li><strong>Independent</strong> - Stores can sell only their own products, following standard marketplace rules.</li><li><strong>Co-listed products</strong> - Stores can copy existing products and sell them alongside new products they create.</li><li><strong>Franchise</strong> - Franchise stores can sell only their own products and products created by the admin.</li>',
+				'Decide how stores are allowed to sell products in your marketplace:<ul><li><strong>Own listing</strong> - Stores can sell only their own products, following standard marketplace rules.</li><li><strong>Shared listing</strong> - Stores can copy existing products and sell them alongside new products they create.</li><li><strong>Franchise</strong> - Franchise stores can sell only their own products and products created by the admin.</li>',
 				'multivendorx'
 			),
 			options: [
 				{
 					key: 'default',
-					label: __('Independent seller', 'multivendorx'),
+					label: __('Own listing', 'multivendorx'),
 					value: 'default',
 				},
 				{
 					key: 'single_product_multiple_vendor',
-					label: __('Co-listed products', 'multivendorx'),
+					label: __('Shared listing', 'multivendorx'),
 					value: 'single_product_multiple_vendor',
 				},
 				{
@@ -255,7 +255,7 @@ export default {
 			type: 'setting-toggle',
 			label: __('Franchise store assignment method', 'multivendorx'),
 			desc: __(
-				'Define how customer orders are assigned to franchise stores after checkout:<ul><li><strong>Nearest store</strong> - Orders are automatically assigned to the closest eligible franchise store based on the customer’s delivery address and the store’s configured "location restrictions".</li><li><strong>Manual assignment</strong> - Orders are created without a store assignment and must be manually assigned by the admin from the backend.</li></ul>',
+				'Define how customer orders are assigned to franchise stores after checkout:<ul><li><strong>Nearest store</strong> - Orders are automatically assigned to the closest eligible franchise store based on the customer’s delivery address and the store’s configured "location restrictions".Best suited for physical or region-based fulfillment.</li><li><strong>Manual assignment</strong> - Orders are created without a store assignment and must be manually assigned by the admin from the backend.</li></ul>',
 				'multivendorx'
 			),
 			dependent: {
@@ -268,10 +268,6 @@ export default {
 					key: 'nearest_store',
 					label: __('Nearest store', 'multivendorx'),
 					value: 'nearest_store',
-					desc: __(
-						'Automatically assign orders to the closest eligible franchise store based on the customer’s delivery address. Best suited for physical or region-based fulfillment.',
-						'multivendorx'
-					),
 				},
 				{
 					key: 'manual_assignment',

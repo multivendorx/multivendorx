@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
 	BasicInput,
 	CalendarInput,
@@ -17,6 +17,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	AdminButton,
+	getApiLink,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -24,6 +25,10 @@ import { __ } from '@wordpress/i18n';
 const AddProduct = () => {
 	const location = useLocation();
 	const { modules } = useModules();
+	const navigate = useNavigate();
+	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
+	const basePath = siteUrl.replace(window.location.origin, '');
+
 	const query = new URLSearchParams(location.search);
 	let productId = query.get('context_id');
 	if (!productId) {
@@ -33,6 +38,7 @@ const AddProduct = () => {
 		}
 	}
 	const [product, setProduct] = useState({});
+	const [translation, setTranslation] = useState([]);
 
 	const [featuredImage, setFeaturedImage] = useState(null);
 	const [galleryImages, setGalleryImages] = useState([]);
@@ -58,6 +64,21 @@ const AddProduct = () => {
 				setGalleryImages(images.slice(1));
 				setProduct(res.data);
 			});
+		if (modules.includes('wpml')) {
+			axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'multivendorx-wpml'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { product_id: productId }
+			})
+				.then((response) => {
+					setTranslation(response.data);
+				})
+				.catch(() => {
+					setTranslation([])
+				});
+		}
+
 	}, [productId]);
 
 	const [categories, setCategories] = useState([]);
@@ -592,6 +613,44 @@ const AddProduct = () => {
 	}, [product, featuredImage]);
 
 	const isPublishDisabled = !Object.values(checklist).every(Boolean);
+	const handleTranslationClick = (lang) => {
+		if (lang.translated_product_id) {
+			if (appLocalizer.permalink_structure) {
+				navigate(
+					`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${lang.translated_product_id}/`
+				);
+			} else {
+				navigate(
+					`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${lang.translated_product_id}`
+				);
+			}
+			return;
+		}
+
+		// CASE 2: Translation does not exist → create or fetch translation
+		axios({
+			method: 'POST',
+			url: getApiLink(appLocalizer, 'multivendorx-wpml'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			data: {
+				product_id: productId,
+				lang: lang.code,
+			},
+		}).then((res) => {
+			if (res.data?.product_id) {
+				if (appLocalizer.permalink_structure) {
+					navigate(
+						`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${res.data.product_id}/`
+					);
+				} else {
+					navigate(
+						`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${res.data.product_id}`
+					);
+				}
+			}
+		});
+	};
+
 
 	return (
 		<>
@@ -715,7 +774,7 @@ const AddProduct = () => {
 							<FormGroup label={__('Product name', 'multivendorx')}>
 								<BasicInput
 									name="name"
-									wrapperClass="setting-form-input"
+									 
 									value={product.name}
 									onChange={(e) => handleChange('name', e.target.value)}
 								/>
@@ -725,9 +784,6 @@ const AddProduct = () => {
 							<FormGroup label={__('Product short description', 'multivendorx')}>
 								<TextArea
 									name="short_description"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 									value={product.short_description}
 									onChange={(e) =>
 										handleChange('short_description', e.target.value)
@@ -739,9 +795,6 @@ const AddProduct = () => {
 							<FormGroup label={__('Product description', 'multivendorx')}>
 								<TextArea
 									name="description"
-									wrapperClass="setting-from-textarea"
-									inputClass="textarea-input"
-									descClass="settings-metabox-description"
 									value={product.description}
 									onChange={(e) =>
 										handleChange('description', e.target.value)
@@ -764,7 +817,7 @@ const AddProduct = () => {
 									<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
 										<BasicInput
 											name="regular_price"
-											wrapperClass="setting-form-input"
+											 
 											value={product.regular_price}
 											onChange={(e) =>
 												handleChange('regular_price', e.target.value)
@@ -775,7 +828,7 @@ const AddProduct = () => {
 									<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
 										<BasicInput
 											name="sale_price"
-											wrapperClass="setting-form-input"
+											 
 											value={product.sale_price}
 											onChange={(e) =>
 												handleChange('sale_price', e.target.value)
@@ -789,7 +842,7 @@ const AddProduct = () => {
 							<FormGroup cols={2} label={__('SKU', 'multivendorx')}>
 								<BasicInput
 									name="sku"
-									wrapperClass="setting-form-input"
+									 
 									value={product.sku}
 									onChange={(e) => handleChange('sku', e.target.value)}
 								/>
@@ -860,7 +913,7 @@ const AddProduct = () => {
 									<FormGroup cols={3} label={__('Quantity', 'multivendorx')}>
 										<BasicInput
 											name="stock"
-											wrapperClass="setting-form-input"
+											 
 											value={product.stock}
 											onChange={(e) =>
 												handleChange('stock', e.target.value)
@@ -883,7 +936,7 @@ const AddProduct = () => {
 									<FormGroup cols={3} label={__('Low stock threshold', 'multivendorx')}>
 										<BasicInput
 											name="low_stock_amount"
-											wrapperClass="setting-form-input"
+											 
 											value={product.low_stock_amount}
 											onChange={(e) =>
 												handleChange('low_stock_amount', e.target.value)
@@ -1041,7 +1094,7 @@ const AddProduct = () => {
 							{/* Status */}
 							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 								<ToggleSetting
-									wrapperClass="setting-form-input"
+									 
 									descClass="settings-metabox-description"
 									options={[
 										{ key: 'draft', value: 'draft', label: __('Draft', 'multivendorx') },
@@ -1225,71 +1278,111 @@ const AddProduct = () => {
 							</FormGroupWrapper>
 						)}
 					</Card>
+					{modules.includes('wpml') && (
+						<Card
+							title={__('Translations', 'multivendorx')}
+							iconName="adminfont-translate"
+							toggle={true}
+						>
+							<FormGroupWrapper>
+								<div className="mvx-translation-list">
+									{translation?.map((lang) => (
+										<div
+											key={lang.code}
+											className="mvx-translation-row"
+										>
+											<div>
+												<img
+													src={lang.flag_url}
+													alt={lang.code}
+													style={{ width: 18, height: 18 }}
+												/>
+												<strong>{lang.native_name}</strong>
+												{lang.is_default && (
+													<span className="admin-badge gray">
+														{__('Default', 'multivendorx')}
+													</span>
+												)}
+											</div>
 
+											{!lang.is_default && (
+												<button
+													className="admin-btn btn-small btn-secondary"
+													onClick={() => handleTranslationClick(lang)}
+												>
+													<i className="adminfont-edit" />
+												</button>
+											)}
+										</div>
+									))}
+								</div>
+							</FormGroupWrapper>
+						</Card>
+					)}
 					<Card
 						title="Product tag"
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle={true} // enable collapse/expand
 					>
 						<FormGroupWrapper>
-								{/* Selected tags */}
-								<div className="tag-list">
-									{product.tags?.map((tag) => (
-										<span className="admin-badge blue" key={tag.id}>
-											{tag.name}
-											<span
-												onClick={() =>
-													setProduct((prev) => ({
-														...prev,
-														tags: prev.tags.filter(
-															(t) => t.name !== tag.name
-														),
-													}))
-												}
-											>
-												<i className="delete-icon adminfont-delete" />
-											</span>
+							{/* Selected tags */}
+							<div className="tag-list">
+								{product.tags?.map((tag) => (
+									<span className="admin-badge blue" key={tag.id}>
+										{tag.name}
+										<span
+											onClick={() =>
+												setProduct((prev) => ({
+													...prev,
+													tags: prev.tags.filter(
+														(t) => t.name !== tag.name
+													),
+												}))
+											}
+										>
+											<i className="delete-icon adminfont-delete" />
 										</span>
-									))}
-								</div>
+									</span>
+								))}
+							</div>
 
-								{/* Tag input + dropdown */}
-								<div className="dropdown-field">
-									<input
-										type="text"
-										value={tagInput}
-										onChange={(e) => handleTagInput(e.target.value)}
-										onKeyDown={(e) =>
-											e.key === 'Enter' && addTag(tagInput)
-										}
-										placeholder={__('Type tag…', 'multivendorx')}
-										className="basic-input dropdown-input"
-									/>
+							{/* Tag input + dropdown */}
+							<div className="dropdown-field">
+								<input
+									type="text"
+									value={tagInput}
+									onChange={(e) => handleTagInput(e.target.value)}
+									onKeyDown={(e) =>
+										e.key === 'Enter' && addTag(tagInput)
+									}
+									placeholder={__('Type tag…', 'multivendorx')}
+									className="basic-input dropdown-input"
+								/>
 
-									<button
-										className="admin-btn btn-green"
-										onClick={() => addTag(tagInput)}
-									>
-										<i className="adminfont-plus" />{' '}
-										{__('Add', 'multivendorx')}
-									</button>
+								<button
+									className="admin-btn btn-green"
+									onClick={() => addTag(tagInput)}
+								>
+									<i className="adminfont-plus" />{' '}
+									{__('Add', 'multivendorx')}
+								</button>
 
-									{suggestions.length > 0 && (
-										<div className="input-dropdown">
-											<ul>
-												{suggestions.map((tag) => (
-													<li
-														key={tag.id || tag.name}
-														className="dropdown-item"
-														onMouseDown={() => addTag(tag)}
-													>
-														{tag.name}
-													</li>
-												))}
-											</ul>
-										</div>
-									)}
-								</div>
+								{suggestions.length > 0 && (
+									<div className="input-dropdown">
+										<ul>
+											{suggestions.map((tag) => (
+												<li
+													key={tag.id || tag.name}
+													className="dropdown-item"
+													onMouseDown={() => addTag(tag)}
+												>
+													{tag.name}
+												</li>
+											))}
+										</ul>
+									</div>
+								)}
+							</div>
 						</FormGroupWrapper>
 					</Card>
 
@@ -1307,7 +1400,6 @@ const AddProduct = () => {
 										type="hidden"
 										imageSrc={featuredImage?.thumbnail}
 										openUploader={__('Select Featured Image', 'multivendorx')}
-										buttonClass="admin-btn btn-purple"
 										onButtonClick={openFeaturedUploader}
 										onRemove={() => setFeaturedImage(null)}
 										onReplace={openFeaturedUploader}
@@ -1328,7 +1420,6 @@ const AddProduct = () => {
 									type="hidden"
 									imageSrc={null}
 									openUploader="Add Gallery Image"
-									buttonClass="admin-btn btn-purple"
 									onButtonClick={openGalleryUploader}
 								/>
 

@@ -83,7 +83,7 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="name"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.name || ''}
 						onChange={handleChange}
@@ -97,7 +97,7 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="slug"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.slug || ''}
 						onChange={handleChange}
@@ -110,7 +110,6 @@ const GeneralSettings = () => {
 				>
 					<TextArea
 						name="description"
-						inputClass="textarea-input"
 						value={formData.description || ''}
 						onChange={handleChange}
 						readOnly={settings.includes('store_description')}
@@ -126,7 +125,7 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="messageToBuyer"
-						wrapperClass="setting-form-input"
+						 
 						descClass="settings-metabox-description"
 						value={formData.messageToBuyer || ''}
 						onChange={handleChange}

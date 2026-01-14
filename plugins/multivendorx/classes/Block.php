@@ -70,6 +70,42 @@ class Block {
             'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
         );
 
+        $blocks[] = array(
+            'name'       => 'store-coupons', // block name.
+            'textdomain' => 'multivendorx',
+            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
+        );
+
+        $blocks[] = array(
+            'name'       => 'store-products', // block name.
+            'textdomain' => 'multivendorx',
+            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
+        );
+
+        $blocks[] = array(
+            'name'       => 'stores', // block name.
+            'textdomain' => 'multivendorx',
+            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
+        );
+
+        $blocks[] = array(
+            'name'       => 'contact-info', // block name.
+            'textdomain' => 'multivendorx',
+            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
+        );
+
+        $blocks[] = array(
+            'name'       => 'store-name', // block name.
+            'textdomain' => 'multivendorx',
+            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
+        );
+
+        $blocks[] = array(
+            'name'       => 'store-description', // block name.
+            'textdomain' => 'multivendorx',
+            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
+        );
+
         return apply_filters( 'multivendorx_initialize_blocks', $blocks );
     }
 

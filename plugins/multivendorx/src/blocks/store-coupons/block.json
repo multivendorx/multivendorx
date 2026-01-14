@@ -1,0 +1,14 @@
+{
+	"apiVersion": 2,
+	"name": "multivendorx/store-coupons",
+	"title": "Store Coupons(w)",
+	"category": "widgets",
+	"icon": "tickets-alt",
+	"description": "Display vendor store coupons using React.",
+	"supports": {
+	  "html": false
+	},
+	"editorScript": "file:./index.js",
+	"script": "file:./index.js"
+  }
+  

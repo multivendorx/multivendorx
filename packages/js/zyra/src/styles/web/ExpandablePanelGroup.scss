@@ -83,10 +83,12 @@
                             display: flex;
                             gap: 1rem;
                         }
-                        .panel-badges{
+
+                        .panel-badges {
                             display: flex;
                             gap: 0.5rem;
                         }
+
                         .admin-badge {
                             padding: 0.313rem;
                         }
@@ -118,10 +120,12 @@
                 .disable-icon {
                     color: gray;
                 }
-                ul{
+
+                ul {
                     margin: 0;
                 }
-                .dropdown{
+
+                .dropdown {
                     min-width: 11rem;
                     max-width: 11rem;
                 }
@@ -156,6 +160,7 @@
                     color: $text-color;
                     font-size: 0.95rem;
                 }
+
                 .input-content {
                     width: 75%;
                 }
@@ -227,6 +232,14 @@
                     font-size: 0.75rem;
                 }
             }
+
+            .clickable-list-wrapper {
+                .clickable-items {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;    
+                }
+            }
         }
 
         &.add-method {
@@ -236,6 +249,7 @@
         }
 
         &.disable {
+
             .details,
             .toggle-icon {
                 filter: grayscale(1);
@@ -252,7 +266,7 @@
         }
     }
 
-    .buttons-wrapper{
+    .buttons-wrapper {
         margin: 0;
     }
 }

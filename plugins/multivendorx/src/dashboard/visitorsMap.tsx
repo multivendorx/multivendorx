@@ -69,18 +69,15 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
 
     const tableRows = data
         ? Object.entries(data.map_stats)
-                .map(([code, value]) => ({
-                    countryCode: code.toUpperCase(),
-                    visitors: value.hits_count,
-                }))
-                .sort((a, b) => b.visitors - a.visitors)
+            .map(([code, value]) => ({
+                countryCode: code.toUpperCase(),
+                visitors: value.hits_count,
+            }))
+            .sort((a, b) => b.visitors - a.visitors)
         : [];
 
     return (
-        <div className="">
-
-            {loading && <p>Loading visitor map…</p>}
-
+        <>
             {!loading && data && (
                 <div style={{ position: 'relative' }}>
 
@@ -90,7 +87,7 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
                                 position: 'absolute',
                                 top: 10,
                                 left: 10,
-                                background: '#fff',
+                                background: '#5007aa',
                                 padding: '6px 10px',
                                 borderRadius: '4px',
                                 boxShadow: '0 0 4px rgba(0,0,0,0.25)',
@@ -105,7 +102,6 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
 
                     <ComposableMap
                         projectionConfig={{ scale: 145 }}
-                        style={{ width: '100%', height: '270px' }}
                     >
                         <Geographies geography={GEO_URL}>
                             {({ geographies }) =>
@@ -142,18 +138,12 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
                     </ComposableMap>
 
                     {tableRows.length > 0 && (
-                        <div style={{ marginTop: '16px', maxHeight: '220px', overflowY: 'auto' }}>
-                            <table
-                                style={{
-                                    width: '100%',
-                                    borderCollapse: 'collapse',
-                                    fontSize: '13px',
-                                }}
-                            >
+                        <div className="table-wrapper">
+                            <table>
                                 <thead>
-                                    <tr>
-                                        <th>Country</th>
-                                        <th>Visitors</th>
+                                    <tr className="header">
+                                        <td>Country</td>
+                                        <td>Visitors</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -169,7 +159,7 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
                     )}
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

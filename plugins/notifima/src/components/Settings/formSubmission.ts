@@ -11,8 +11,6 @@ export default {
         {
             key: 'alert_success',
             type: 'textarea',
-            class: 'textarea-input',
-            // Translators: This message display dynamic product title and emails.
             desc: __(
                 'Tip: Utilize %product_title% for dynamic product titles and %customer_email% for personalized customer email addresses in your messages.',
                 'notifima'
@@ -23,8 +21,6 @@ export default {
         {
             key: 'alert_email_exist',
             type: 'textarea',
-            class: 'textarea-input',
-            // Translators: This message display dynamic product title and emails.
             desc: __(
                 'Tip: Enhance personalization by incorporating %product_title% for dynamic product titles and %customer_email% for individual customer emails.',
                 'notifima'
@@ -35,7 +31,6 @@ export default {
         {
             key: 'valid_email',
             type: 'textarea',
-            class: 'textarea-input',
             desc: __(
                 'Personalize the message shown to users when they try to subscribe with an invalid email address.',
                 'notifima'
@@ -46,7 +41,6 @@ export default {
         {
             key: 'alert_unsubscribe_message',
             type: 'textarea',
-            class: 'textarea-input',
             desc: __(
                 'Modify the text that confirms user that they have successful unsubscribe.',
                 'notifima'

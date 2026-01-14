@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import template1 from '../../../assets/images/template/store/template1.jpg';
 import template2 from '../../../assets/images/template/store/template2.jpg';
 import template3 from '../../../assets/images/template/store/template3.jpg';
+import DashboardTemplate from '../../../assets/template/Dashbord';
 
 export default {
 	id: 'store-appearance',
@@ -68,6 +69,14 @@ export default {
 			settingDescription:
 				'Choose a dashboard color scheme from predefined sets or customize your own. Each scheme defines the button style, and hover effects for a consistent look.',
 			showPreview: true,
+			templates: [
+				{
+				  key: 'dashbord',
+				  label: __('dashbord', 'mvx-pro'),
+				  preview: DashboardTemplate,
+				  component: DashboardTemplate,
+				}			  
+			  ],
 			predefinedOptions: [
 				{
 					key: 'orchid_bloom',

@@ -63,7 +63,7 @@ export default {
 				},
 				{
 					id: 'distance-based-shipping',
-					icon: 'adminfont-distance-shipping',
+					icon: 'adminfont-store-shipping',
 					label: 'Distance-based shipping',
 					disableBtn: true,
 					enableOption: true,
@@ -89,7 +89,7 @@ export default {
 				' Choose which shipping providers stores can use. Only the carriers you enable will be available for sellers to ship their products and add tracking details. This helps keep all shipments through trusted, approved providers.',
 				'multivendorx'
 			),
-			class: 'mvx-toggle-checkbox',
+			 
 			addNewBtnText: 'Add Custom Provider',
 			options: [
 				{

@@ -15,7 +15,7 @@ export default {
 			key: 'customer_refund_status',
 			type: 'checkbox',
 			label: __('Eligible order status for refund', 'multivendorx'),
-			class: 'mvx-toggle-checkbox',
+			 
 			settingDescription: __(
 				'Customers can only request a refund when their order is in the selected status.',
 				'multivendorx'

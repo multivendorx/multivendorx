@@ -128,8 +128,6 @@ const Appearance = () => {
 						imageHeight={75}
 						openUploader={__('Upload Image', 'multivendorx')}
 						imageSrc={imagePreviews.image}
-						buttonClass="admin-btn btn-purple"
-						descClass="settings-metabox-description"
 						onRemove={() => {
 							if (settings.includes('store_images')) return;
 
@@ -178,8 +176,6 @@ const Appearance = () => {
 							imageHeight={100}
 							openUploader={__('Upload Banner', 'multivendorx')}
 							imageSrc={imagePreviews.banner}
-							buttonClass="admin-btn btn-purple"
-							descClass="settings-metabox-description"
 							onRemove={() => {
 								if (settings.includes('store_images')) return;
 

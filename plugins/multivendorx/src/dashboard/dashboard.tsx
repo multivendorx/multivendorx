@@ -128,24 +128,25 @@ const Dashboard: React.FC = () => {
 				setPendingRefund([]);
 			});
 
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'announcement'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: 1,
-				row: 5,
-				store_id: appLocalizer.store_id,
-				status: 'publish',
-				startDate: dateRange.startDate,
-				endDate: dateRange.endDate,
-				dashboard: true
-			},
-		})
-			.then((response) => {
-				setAnnouncement(response.data.items || []);
-			});
-
+		if (modules.includes('announcement')) {
+			axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'announcement'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: 1,
+					row: 5,
+					store_id: appLocalizer.store_id,
+					status: 'publish',
+					startDate: dateRange.startDate,
+					endDate: dateRange.endDate,
+					dashboard: true
+				},
+			})
+				.then((response) => {
+					setAnnouncement(response.data.items || []);
+				});
+		}
 		axios({
 			method: 'GET',
 			url: `${appLocalizer.apiUrl}/wc/v3/products`,
@@ -453,8 +454,6 @@ const Dashboard: React.FC = () => {
 
 				<div className="buttons-wrapper">
 					<MultiCalendarInput
-						wrapperClass=""
-						inputClass=""
 						onChange={(range: DateRange) => {
 							setDateRange({
 								startDate: range.startDate,
@@ -600,7 +599,7 @@ const Dashboard: React.FC = () => {
 					</Card>
 				</Column>
 
-				<Column>
+				<Column grid={4}>
 					<Card
 						title={__('Visitors Map', 'multivendorx')}
 					>
@@ -609,7 +608,7 @@ const Dashboard: React.FC = () => {
 					</Card>
 				</Column>
 
-				<Column>
+				<Column grid={8}>
 					<Card
 						title={__('Recent Orders', 'multivendorx')}
 						iconName="adminfont-external icon"
@@ -890,7 +889,6 @@ const Dashboard: React.FC = () => {
 						</Card>
 					</Column>
 				)}
-
 				{modules.includes('privacy') && Array.isArray(access) && access.includes('name') && (
 					<Column grid={4}>
 						<Card
@@ -903,7 +901,7 @@ const Dashboard: React.FC = () => {
 										title={customer.name}
 										avatar={{
 											text: customer.name?.charAt(0).toUpperCase(),
-											iconClass: 'red-color', // keeps your red avatar style
+											iconClass: 'red-color',
 										}}
 										descriptions={[
 											{
@@ -927,7 +925,7 @@ const Dashboard: React.FC = () => {
 					>
 						<div className="activity-log">
 							{activities && activities.length > 0 ? (
-								activities.map((a, i) => (
+								activities.slice(0, 5).map((a, i) => (
 									<div key={i} className="activity">
 										<div className="title">{a.title}</div>
 										<div className="des">
@@ -947,7 +945,7 @@ const Dashboard: React.FC = () => {
 					</Card>
 				</Column>
 				{modules.includes('store-review') && (
-					<Column grid={8}>
+					<Column grid={4}>
 						<Card
 							title={__('Latest Reviews', 'multivendorx')}
 							iconName="adminfont-external icon"

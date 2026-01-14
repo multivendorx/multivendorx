@@ -100,7 +100,7 @@ const StoreFollower: React.FC = () => {
 					</div>
 					<div className="des">
 						{__(
-							'Manage your store information and preferences',
+							'See all your store followers, engage with them, and grow your loyal customer base.',
 							'multivendorx'
 						)}
 					</div>

@@ -297,13 +297,10 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 												<FormGroup>
 													<TextArea
 														name="store_application_note"
-														wrapperClass="setting-from-textarea"
 														placeholder={__(
 															'Optional note for approval or rejection',
 															'multivendorx'
 														)}
-														inputClass="textarea-input"
-														descClass="settings-metabox-description"
 														value={
 															formData.store_application_note ||
 															''

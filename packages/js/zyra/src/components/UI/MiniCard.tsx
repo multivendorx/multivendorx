@@ -13,6 +13,7 @@ type MiniCardProps = {
 	title?: React.ReactNode;
     background?: boolean;
     border?: boolean;
+	width?: string;
 	value?: React.ReactNode;
 	description?: React.ReactNode;
 	items?: MiniCardItem[];
@@ -28,10 +29,11 @@ const MiniCard: React.FC<MiniCardProps> = ({
 	items,
 	children,
     background,
-    border
+    border,
+	cols,
 }) => {
 	return (
-		<div className={`mini-card ${className} ${background ? 'background' : ''} ${border ? 'border' : ''}`}>
+		<div className={`mini-card ${className} ${background ? 'background' : ''} ${border ? 'border' : ''}`} data-cols={cols}>
 			{header && <div className="mini-card-header">{header}</div>}
 
 			{title && <h3 className="mini-card-title">{title}</h3>}

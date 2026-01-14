@@ -18,7 +18,7 @@ interface FileInputProps {
     imageSrc?: string | string[];
     imageWidth?: number;
     imageHeight?: number;
-    buttonClass?: string;
+    buttonColor?: string;
     onButtonClick?: ( event: MouseEvent< HTMLButtonElement > ) => void;
     openUploader?: string;
     description?: string;
@@ -150,7 +150,7 @@ const FileInput: React.FC< FileInputProps > = ( props ) => {
                         <i className="upload-icon adminfont-cloud-upload"></i>
                         <input
                             ref={ inputRef }
-                            className={ props.inputClass }
+                            className={ `basic-input ${ props.inputClass || '' }`}
                             id={ props.id }
                             type={ props.type || 'file' }
                             name={ props.name || 'file-input' }
@@ -170,7 +170,7 @@ const FileInput: React.FC< FileInputProps > = ( props ) => {
                         <span>Or</span>
                         <button
                             className={ `${
-                                props.buttonClass || ''
+                                props.buttonColor || 'btn-purple-bg'
                             } admin-btn` }
                             type="button"
                             onClick={ props.onButtonClick }

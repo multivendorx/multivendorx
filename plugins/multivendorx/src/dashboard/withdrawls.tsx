@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container, AdminButton, Column, FormGroupWrapper, FormGroup } from 'zyra';
+import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container, AdminButton, Column, FormGroupWrapper, FormGroup, MiniCard } from 'zyra';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -170,89 +170,64 @@ const Withdrawls: React.FC = () => {
 				</Column>
 				<Column grid={6}>
 					<Card>
-						<div className="payout-wrapper">
-							<div className="payout-header">
-								<div className="price-wrapper">
-									<div className="price-title">
-										{__(
-											'Available balance',
-											'multivendorx'
-										)}
-									</div>
-									<div className="price">
-										{formatCurrency(data.available_balance)}{' '}
-										<div className="admin-badge green">
-											{__(
-												'Ready to withdraw',
-												'multivendorx'
-											)}
-										</div>
-									</div>
+						<div className="payout-card-wrapper">
+							<div className="price-wrapper">
+								<div className="admin-badge green">
+									{__(
+										'Ready to withdraw',
+										'multivendorx'
+									)}
+								</div>
+								<div className="price">
+									{formatCurrency(data.available_balance)}{' '}
+								</div>
+								<div className="desc">
+									<b>$25 (p)</b>{' '}
+									{__(
+										'minimum required to withdraw',
+										'multivendorx'
+									)}
 								</div>
 							</div>
+							<Column row>
+								<MiniCard
+									background
+									title={__('Upcoming Balance', 'multivendorx')}
+									value={formatCurrency(data.reserve_balance)}
+									description={__(
+										'Pending settlement. Released soon',
+										'multivendorx'
+									)}
+								/>
+								<MiniCard
+									background
+									title={__('Free Withdrawals', 'multivendorx')}
+									value={
+										<>
+											{data.locking_day} {__('Days', 'multivendorx')}{' '}
+											<span>{__('Left', 'multivendorx')}</span>
+										</>
+									}
+									description={
+										<>
+											{__('Then', 'multivendorx')} $5% (p) + $6(p) {__('fee', 'multivendorx')}
+										</>
+									}
+								/>
 
-							<div className="small-text">
-								<b>$25 (p)</b>{' '}
-								{__(
-									'minimum required to withdraw',
-									'multivendorx'
-								)}
-							</div>
+							</Column>
 
-							<div className="payout-card-wrapper">
-								<div className="payout-card">
-									<div className="card-title">
-										{__('Upcoming Balance', 'multivendorx')}
-									</div>
-									<div className="card-price">
-										{formatCurrency(data.reserve_balance)}
-									</div>
-									<div className="card-des">
-										{__(
-											'Pending settlement. Released soon',
-											'multivendorx'
-										)}
-									</div>
-								</div>
-
-								<div className="payout-card">
-									<div className="card-title">
-										{__('Free Withdrawals', 'multivendorx')}
-									</div>
-									<div className="card-price">
-										{data.locking_day}{' '}
-										{__('Days', 'multivendorx')}{' '}
-										<span>
-											{__('Left', 'multivendorx')}
-										</span>
-									</div>
-									<div className="card-des">
-										{__('Then', 'multivendorx')} $5% (p) +
-										$6(p) {__('fee', 'multivendorx')}
-									</div>
-								</div>
-							</div>
-
-							<div className="small-text">
+							<div className="desc">
 								{__(
 									'Some funds locked during settlement',
 									'multivendorx'
 								)}
 							</div>
-							<div className="small-text">
+							<div className="desc">
 								{__('Auto payouts run', 'multivendorx')} 2-12-25
 								(p)
 							</div>
 
-							{/* <div className="buttons-wrapper">
-							<div
-								className="admin-btn btn-purple-bg"
-								onClick={() => setRequestWithdrawal(true)}
-							>
-								<i className="adminfont-withdraw"></i>
-								{__('Request Withdrawal', 'multivendorx')}
-							</div>
-						</div> */}
 							<AdminButton
 								buttons={{
 									icon: 'withdraw',
@@ -270,11 +245,12 @@ const Withdrawls: React.FC = () => {
 				<CommonPopup
 					open={requestWithdrawal}
 					width="31.25rem"
+					height="40%"
+					onClose={() => setRequestWithdrawal(false)}
 					header={{
 						icon: 'wallet',
 						title: __('Request Withdrawal', 'multivendorx'),
 					}}
-
 					footer={
 						<>
 							<AdminButton

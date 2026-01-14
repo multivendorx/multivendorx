@@ -40,13 +40,16 @@ class Shortcode
     public function frontend_scripts()
     {
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script('multivendorx-dashboard-components-script');
-        FrontendScripts::enqueue_script('multivendorx-dashboard-script');
-        FrontendScripts::localize_scripts('multivendorx-dashboard-script');
-        FrontendScripts::enqueue_style('multivendorx-dashboard-style');
+
         FrontendScripts::enqueue_style('multivendorx-store-product-style');
+        FrontendScripts::enqueue_script('multivendorx-store-name-script');
+        FrontendScripts::enqueue_script('multivendorx-store-description-script');
         if (Utill::is_store_dashboard()) {
             wp_deregister_style('wc-blocks-style');
+            FrontendScripts::enqueue_script('multivendorx-dashboard-components-script');
+            FrontendScripts::enqueue_script('multivendorx-dashboard-script');
+            FrontendScripts::localize_scripts('multivendorx-dashboard-script');
+            FrontendScripts::enqueue_style('multivendorx-dashboard-style');
 
             wp_enqueue_script('wp-element');
             wp_enqueue_media();

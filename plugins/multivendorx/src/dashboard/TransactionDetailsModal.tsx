@@ -1,6 +1,6 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { CommonPopup } from 'zyra';
+import { CommonPopup, FormGroup, FormGroupWrapper } from 'zyra';
 
 type TransactionRow = {
 	id: number;
@@ -30,12 +30,8 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 				header={{
 					icon: 'wallet-in',
 					title: __('Transaction Details', 'multivendorx'),
-					description: __(
-						'Track your order commissions and watch your earnings grow.',
-						'multivendorx'
-					),
+					description: __('Track your order commissions and watch your earnings grow.', 'multivendorx'),
 				}}
-
 			>
 				<>
 					<div className="heading">

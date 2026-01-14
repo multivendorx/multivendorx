@@ -8,6 +8,7 @@ import NestedComponent from './NestedComponent';
 import SelectInput from './SelectInput';
 import { getApiLink } from '../utils/apiService';
 import axios from 'axios';
+import AdminButton from './UI/AdminButton';
 
 interface ClickableItem {
     name: string;
@@ -512,36 +513,36 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         methodId: string,
         valuee: string | number | boolean | null = null
     ): boolean => {
-        const settingValue = value[ methodId ]?.[ key ];
+        const settingValue = value[methodId]?.[key];
 
         // If settingValue is an array
-        if ( Array.isArray( settingValue ) ) {
+        if (Array.isArray(settingValue)) {
             // If value is null and settingValue has elements, return true
-            if ( valuee === null && settingValue.length > 0 ) {
+            if (valuee === null && settingValue.length > 0) {
                 return true;
             }
 
-            return settingValue.includes( valuee );
+            return settingValue.includes(valuee);
         }
 
         // If settingValue is not an array
-        if ( valuee === null && Boolean( settingValue ) ) {
+        if (valuee === null && Boolean(settingValue)) {
             return true;
         }
 
         return settingValue === valuee;
     };
 
-    const shouldRender = ( dependent: any, methodId: string ): boolean => {
-        if ( dependent.set === true && ! isContain( dependent.key, methodId ) ) {
+    const shouldRender = (dependent: any, methodId: string): boolean => {
+        if (dependent.set === true && !isContain(dependent.key, methodId)) {
             return false;
         }
-        if ( dependent.set === false && isContain( dependent.key, methodId ) ) {
+        if (dependent.set === false && isContain(dependent.key, methodId)) {
             return false;
         }
         if (
             dependent.value !== undefined &&
-            ! isContain( dependent.key, methodId, dependent.value )
+            !isContain(dependent.key, methodId, dependent.value)
         ) {
             return false;
         }
@@ -575,13 +576,10 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             case 'blocktext':
                 return (
                     <BlockText
-                        key={ field.blocktext }
-                        blockTextClass={
-                            field.blockTextClass ||
-                            'settings-metabox-note'
-                        }
-                        title={ field.title }
-                        value={ String( field.blocktext ) }
+                        key={field.blocktext}
+                        blockTextClass={field.blockTextClass}
+                        title={field.title}
+                        value={String(field.blocktext)}
                     />
                 );
 
@@ -613,7 +611,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                 field.items.map((item, idx) => (
                                     <li
                                         key={idx}
-                                        className={`clickable-item ${item.url ? 'has-link' : ''
+                                        className={`clickable-item admin-badge blue ${item.url ? 'has-link' : ''
                                             }`}
                                         onClick={() => {
                                             if (item.url) {
@@ -629,20 +627,22 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
 
                         { /* Render bottom button */}
                         {field.button?.label && (
-                            <button
-                                className="admin-btn btn-purple"
-                                onClick={(e) => {
-                                    if (field.button.url) {
-                                        e.preventDefault();
-                                        window.open(
-                                            field.button.url,
-                                            '_blank'
-                                        );
-                                    }
-                                }}
-                            >
-                                {field.button.label}
-                            </button>
+                            <AdminButton
+                            wrapperClass='left'
+                                buttons={[
+                                    {
+                                        icon: 'plus',
+                                        text: field.button.label,
+                                        className: 'purple',
+                                        onClick: (e) => {
+                                            if (field.button.url) {
+                                                e.preventDefault();
+                                                window.open(field.button.url, '_blank');
+                                            }
+                                        },
+                                    },
+                                ]}
+                            />
                         )}
 
                         {field.desc && (
@@ -656,8 +656,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             case 'textarea':
                 return (
                     <TextArea
-                        wrapperClass="setting-from-textarea"
-                        inputClass={`${field.class || ''} textarea-input`}
+                        inputClass={field.class}
                         description={field.desc || ''}
                         key={field.key}
                         id={field.key}
