@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import CommonPopup from '../src/components/CommonPopup';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@mui/material';
+import AdminButton from '../src/components/UI/AdminButton';
 
 const meta: Meta<typeof CommonPopup> = {
     title: 'Zyra/Components/CommonPopup',
@@ -20,9 +21,14 @@ export const Default: Story = {
 
         return (
             <>
-                <Button variant="contained" onClick={() => setOpen(true)}>
-                    Open Popup
-                </Button>
+                <AdminButton
+                    wrapperClass='left'
+                    buttons={{
+                        text: 'Open Default Popup',
+                        onClick: () => setOpen(true),
+                        className: 'btn btn-primary',
+                    }}
+                />
 
                 <CommonPopup open={open} onClose={() => setOpen(false)}>
                     <p>This is the default popup content.</p>
@@ -39,14 +45,52 @@ export const WithHeader: Story = {
 
         return (
             <>
-                <Button variant="contained" onClick={() => setOpen(true)}>
-                    Open Popup with Header
-                </Button>
+                <AdminButton
+                    wrapperClass='left'
+                    buttons={{
+                        text: 'Open Header Popup',
+                        onClick: () => setOpen(true),
+                        className: 'btn btn-primary',
+                    }}
+                />
 
                 <CommonPopup
                     open={open}
                     onClose={() => setOpen(false)}
-                    header={<h3 style={{ margin: 0 }}>Popup Header</h3>}
+                    header={{
+                        title: "Popup Header",
+                        description: "This is a description for the popup header.",
+                    }}
+                >
+                    <p>This popup has a custom header.</p>
+                    <p>You can include titles, icons, or other elements.</p>
+                </CommonPopup>
+            </>
+        );
+    },
+};
+
+export const WithHeaderWithoutDesc: Story = {
+    render: () => {
+        const [open, setOpen] = useState(true);
+
+        return (
+            <>
+                <AdminButton
+                    wrapperClass='left'
+                    buttons={{
+                        text: 'Open Header Popup',
+                        onClick: () => setOpen(true),
+                        className: 'btn btn-primary',
+                    }}
+                />
+
+                <CommonPopup
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    header={{
+                        title: "Popup Header",
+                        }}
                 >
                     <p>This popup has a custom header.</p>
                     <p>You can include titles, icons, or other elements.</p>
@@ -62,34 +106,93 @@ export const WithFooter: Story = {
 
         return (
             <>
-                <Button variant="contained" onClick={() => setOpen(true)}>
-                    Open Popup with Footer
-                </Button>
+                <AdminButton 
+                    wrapperClass='left' 
+                    buttons={{
+                        text: 'Open Popup with Footer',
+                        onClick: () => setOpen(true)
+                        
+                    }}
+                   
+                />
+
+                <CommonPopup
+                    open={open}
+                    width="31.25rem"
+                    height="50%"
+                    onClose={() => setOpen(false)}
+                    footer={
+                        <AdminButton
+						buttons={[
+							{
+								icon: 'close',
+								text:'Cancel',
+								className: 'red',
+								onClick: () => setOpen(false),
+							},
+							{
+								icon: 'save',
+								text: 'Save',
+								className: 'purple-bg',
+								onClick: () => alert('Save action executed!'),
+							},
+						]}
+					    />
+                    }
+                >
+                    <p>This popup includes a custom footer.</p>
+                    <p>You can include buttons or actions here.</p>
+                </CommonPopup>
+            </>
+        );
+    },
+};
+
+export const WithHeaderAndFooter: Story = {
+    render: () => {
+        const [open, setOpen] = useState(true);
+
+        return (
+            <>
+                <AdminButton 
+                    wrapperClass='left'
+                    buttons={{
+                        text: 'Open Popup with Header and Footer',
+                        onClick: () => setOpen(true)
+                    }}
+                   
+                />
 
                 <CommonPopup
                     open={open}
                     onClose={() => setOpen(false)}
-                    header={<h3>Popup Header</h3>}
+                    width="31.25rem"
+                    height="50%"
+                    header={{
+                        title: "Popup Header",
+
+                    }}
                     footer={
-                        <>
-                            <Button
-                                variant="outlined"
-                                onClick={() => setOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                variant="contained"
-                                onClick={() => alert('Action executed!')}
-                            >
-                                Save
-                            </Button>
-                        </>
+                        <AdminButton
+						buttons={[
+							{
+								icon: 'close',
+								text:'Cancel',
+								className: 'red',
+								onClick: () => setOpen(false),
+							},
+							{
+								icon: 'save',
+								text: 'Save',
+								className: 'purple-bg',
+								onClick: () => alert('Save action executed!'),
+							},
+						]}
+					    />
                     }
-                    width={400}
                 >
-                    <p>This popup includes a custom footer.</p>
-                    <p>You can include buttons or actions here.</p>
+                    <p>This popup has both a header and a footer.</p>
+                    <p>You can include titles, buttons, or other elements.</p>
                 </CommonPopup>
             </>
         );
@@ -102,16 +205,21 @@ export const CustomSize: Story = {
 
         return (
             <>
-                <Button variant="contained" onClick={() => setOpen(true)}>
-                    Open Popup with Custom Size
-                </Button>
+                <AdminButton 
+                    wrapperClass='left'
+                    buttons={{
+                        text: 'Open Popup with Custom Size',
+                        onClick: () => setOpen(true)
+                    }}
+                   
+                />
 
                 <CommonPopup
                     open={open}
                     onClose={() => setOpen(false)}
-                    header={<h3>Popup Header</h3>}
-                    width={600}
-                    height={300}
+                    header={{title: "Popup Header"}}
+                    width="50rem"
+                    height="80%"
                 >
                     <p>This popup has custom width and height.</p>
                     <p>You can adjust the size via props.</p>

@@ -16,6 +16,7 @@ export const TestFormViewer: Story = {
         formFields: {
             formfieldlist: [
                 {
+                    id: 'field1',
                     type: 'text',
                     name: 'username',
                     label: 'Username',
@@ -24,14 +25,16 @@ export const TestFormViewer: Story = {
                     charlimit: 50,
                 },
                 {
+                    id: 'field2',
                     type: 'attachment',
-                    name: 'username',
-                    label: 'Username',
-                    placeholder: 'Enter your username',
+                    name: 'profilePicture',
+                    label: 'Profile Picture',
+                    placeholder: 'Upload your profile picture',
                     required: true,
                     charlimit: 50,
                 },
                 {
+                    id: 'field3',
                     type: 'textarea',
                     name: 'bio',
                     label: 'Bio',
@@ -39,7 +42,8 @@ export const TestFormViewer: Story = {
                     col: 50,
                 },
                 {
-                    type: 'select',
+                    id: 'field4',
+                    type: 'dropdown',
                     name: 'country',
                     label: 'Country',
                     options: [

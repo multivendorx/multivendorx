@@ -48,6 +48,34 @@ export const TestFileInput: Story = {
         },
     },
     render: (args) => {
-        return <FileInput key={'sample_file'} {...args} />;
+        return <div className='multivendorx-main-wrapper'><FileInput key={'sample_file'} {...args} /></div>;
+    },
+};
+
+export const DefaultEmptyState: Story = {
+    args: {
+        wrapperClass: 'setting-file-uploader-class',
+        openUploader: '',
+        imageSrc: '',
+        type: '',
+        name: '',
+        size: '',
+        multiple: false,
+    },
+    render: (args) => {
+        return (
+            // <div className='multivendorx-main-wrapper'>
+                <FileInput
+                    {...args}
+                    imageSrc={undefined}
+                    onChange={(value) => {
+                        console.log('Uploaded value:', value);
+                    }}
+                    onButtonClick={() => {
+                        console.log('Upload button clicked');
+                    }}
+                />
+            // </div>
+        );
     },
 };

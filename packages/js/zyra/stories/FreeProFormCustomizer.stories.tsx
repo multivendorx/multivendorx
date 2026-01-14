@@ -49,3 +49,36 @@ export const TestFreeProFormCustomizer: Story = {
         return <FreeProFormCustomizer {...args} />;
     },
 };
+
+
+export const TestFreeFormCustomizer: Story = {
+    args: {
+        setting: {
+            freefromsetting: [
+                {
+                    key: 'emailNotifications',
+                    label: 'Enable Email Notifications',
+                    active: true,
+                    desc: 'Receive updates via email',
+                },
+                {
+                    key: 'smsAlerts',
+                    label: 'Enable SMS Alerts',
+                    active: false,
+                    desc: 'Get alerts via SMS',
+                },
+            ],
+        },
+        proSetting: false,
+        moduleEnabledChange: () => {
+            console.log('Toggled Module');
+            return false;
+        },
+        onChange: (key, value) => {
+            console.log(`Changed ${key} to`, value);
+        },
+    },
+    render: (args) => {
+        return <FreeProFormCustomizer {...args} />;
+    },
+};

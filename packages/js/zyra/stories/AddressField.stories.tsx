@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import AddressField, { AddressFormField } from '../src/components/AddressField';
+import '../src/styles/common.scss';
 
 const meta: Meta<typeof AddressField> = {
     title: 'Zyra/Components/AddressField',
@@ -32,7 +33,7 @@ export const DefaultAddressField: Story = {
         const [openedInput, setOpenedInput] = useState<any>(null);
 
         return (
-            <div style={{ maxWidth: '600px', margin: '20px auto' }}>
+            <div className='multivendorx-main-wrapper' >
                 <AddressField
                     formField={addressField}
                     onChange={(key, value) =>
@@ -59,7 +60,7 @@ export const ReadonlyAddressField: Story = {
         const [openedInput, setOpenedInput] = useState<any>(null);
 
         return (
-            <div style={{ maxWidth: '600px', margin: '20px auto' }}>
+            <div className='multivendorx-main-wrapper' >
                 <AddressField
                     formField={addressField}
                     onChange={() => {}}
@@ -83,7 +84,7 @@ export const EmptyAddressField: Story = {
         const [openedInput, setOpenedInput] = useState<any>(null);
 
         return (
-            <div style={{ maxWidth: '600px', margin: '20px auto' }}>
+            <div className= 'multivendorx-main-wrapper' >
                 <AddressField
                     formField={addressField}
                     onChange={(key, value) =>
@@ -96,3 +97,5 @@ export const EmptyAddressField: Story = {
         );
     },
 };
+
+
