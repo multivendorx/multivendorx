@@ -456,7 +456,7 @@ body.dark {
 }
 
 .add-variant {
-    .select-variations-wrapper {
+    .select-variant-wrapper {
         background: $theme-background-color;
         padding: 0.313rem 0.813rem;
         border-radius: 0.313rem;
@@ -816,75 +816,6 @@ body.dark {
     }
 }
 
-
-// checklist start
-.card-wrapper:has(.checklist-wrapper) {
-    height: fit-content;
-    position: sticky !important;
-    top: 5rem;
-}
-
-.checklist-wrapper {
-    .checklist-title {
-        font-size: 1.25rem;
-        color: $text-color;
-        font-weight: 600;
-    }
-
-    ul {
-        margin: 0;
-        list-style-type: none;
-
-        li {
-            margin: 1.125rem 0;
-            font-size: 1rem;
-            font-weight: 500;
-            display: flex;
-            gap: 0.45rem;
-            color: $text-color;
-
-            span {
-                width: 2.125rem;
-                height: 0.95rem;
-                display: inline-block;
-                background: $background-color;
-                border-radius: 50%;
-                position: relative;
-                font-family: adminfonts, sans-serif;
-                padding: 0.063rem;
-            }
-
-            .details {
-                .title {
-                    font-size: 1rem;
-                    font-weight: 600;
-                    margin-bottom: 0.313rem;
-                }
-
-                .des {
-                    font-size: 0.813rem;
-                }
-            }
-
-            &.checked {
-                span {
-                    background: $theme-color;
-
-
-                    &::before {
-                        position: absolute;
-                        content: "\e809";
-                        color: #fff;
-                        font-size: 0.95rem;
-                    }
-                }
-            }
-        }
-    }
-}
-
-// checklist end
-
 // ai assist start
 .ai-assist-wrapper {
     // height: 15rem;
@@ -1032,94 +963,94 @@ body.dark {
 
 
 // variant style start
-.variant-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.813rem;
-    margin: 1rem 0;
+// .variant-wrapper {
+//     display: flex;
+//     flex-wrap: wrap;
+//     gap: 0.813rem;
+//     margin: 1rem 0;
 
-    .variant-box {
-        width: calc(33% - 0.625rem);
-        padding: 1rem;
-        border: $border-light-small;
-        box-sizing: border-box;
-        border-radius: 0.313rem;
-        position: relative;
+//     .variant-box {
+//         width: calc(33% - 0.625rem);
+//         padding: 1rem;
+//         border: $border-light-small;
+//         box-sizing: border-box;
+//         border-radius: 0.313rem;
+//         position: relative;
 
-        .variant-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.625rem;
-            margin-bottom: 0.813rem;
+//         .variant-items {
+//             display: flex;
+//             flex-wrap: wrap;
+//             gap: 0.625rem;
+//             margin-bottom: 0.813rem;
 
-            .variant {
-                width: fit-content;
-                padding: 0.5rem;
-                min-width: 3rem;
-                border-radius: 0.313rem;
-                border: $border-light-small;
+//             .variant {
+//                 width: fit-content;
+//                 padding: 0.5rem;
+//                 min-width: 3rem;
+//                 border-radius: 0.313rem;
+//                 border: $border-light-small;
 
-                .value {
-                    font-size: 1.125rem;
-                    line-height: 1.25;
-                }
+//                 .value {
+//                     font-size: 1.125rem;
+//                     line-height: 1.25;
+//                 }
 
-                .name {
-                    color: #a7a5a5;
-                    font-size: 0.813rem;
-                    padding-top: 0.125rem;
-                }
-            }
-        }
+//                 .name {
+//                     color: #a7a5a5;
+//                     font-size: 0.813rem;
+//                     padding-top: 0.125rem;
+//                 }
+//             }
+//         }
 
-        .edit-icon {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            display: none;
-            transition: all 0.4s ease;
-        }
+//         .edit-icon {
+//             position: absolute;
+//             top: 1rem;
+//             right: 1rem;
+//             display: none;
+//             transition: all 0.4s ease;
+//         }
 
-        &:hover {
-            .edit-icon {
-                display: block;
-            }
-        }
+//         &:hover {
+//             .edit-icon {
+//                 display: block;
+//             }
+//         }
 
-        .sku {
-            font-size: 1rem;
-            color: #a7a5a5;
-        }
+//         .sku {
+//             font-size: 1rem;
+//             color: #a7a5a5;
+//         }
 
-        .price {
-            font-size: 1.25rem;
-            line-height: 1.5rem;
-            padding: 0.25rem 0;
-        }
+//         .price {
+//             font-size: 1.25rem;
+//             line-height: 1.5rem;
+//             padding: 0.25rem 0;
+//         }
 
-        .stock {
-            color: rgba(0, 128, 0, 0.918);
-        }
+//         .stock {
+//             color: rgba(0, 128, 0, 0.918);
+//         }
 
-        .product {
-            display: flex;
-            align-items: start;
-            gap: 0.625rem;
+//         .product {
+//             display: flex;
+//             align-items: start;
+//             gap: 0.625rem;
 
-            .image-section {
-                margin-top: 0.5rem;
+//             .image-section {
+//                 margin-top: 0.5rem;
 
-                i {
-                    padding: 0.625rem;
-                    font-size: 1.5rem;
-                    background: $theme-background-color;
-                    color: $theme-color;
-                    border-radius: 0.313rem;
-                }
-            }
-        }
-    }
-}
+//                 i {
+//                     padding: 0.625rem;
+//                     font-size: 1.5rem;
+//                     background: $theme-background-color;
+//                     color: $theme-color;
+//                     border-radius: 0.313rem;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 // variant style end
 
@@ -1281,3 +1212,66 @@ body.dark {
         cursor: pointer;
     }
 }
+
+// variant style start
+.variant-wrapper {
+    border-bottom: $border-light-small;
+    padding-bottom: 0.625rem;
+
+    .variant {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 0;
+    }
+
+    .option-wrapper {
+        padding-left: 3.5rem;
+    }
+
+    .admin-btn {
+        margin-top: 0.5rem;
+    }
+
+    // show variant
+    .variant-show {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        padding: 1rem;
+
+        .attributes {
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .variantion-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+    }
+}
+
+.variant-list {
+    .header td:first-child {
+        width: 14rem;
+    }
+
+    tbody tr {
+        td:first-child {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+            align-items: center;
+
+            i {
+                font-size: 1.25rem;
+                padding: 0.625rem;
+            }
+        }
+    }
+}
+
+// variant style end

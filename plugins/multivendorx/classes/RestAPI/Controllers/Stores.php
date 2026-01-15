@@ -256,14 +256,17 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Pagination & filters.
-            $limit  = max( (int) $request->get_param( 'row' ), 10 );
-            $page   = max( (int) $request->get_param( 'page' ), 1 );
+            $limit  = $request->get_param( 'row' );
+            $page   = $request->get_param( 'page' );
             $offset = ( $page - 1 ) * $limit;
+            $args = array();
 
-            $args = array(
-                'limit'  => $limit,
-                'offset' => $offset,
-            );
+            if ( ! empty( $limit ) ) {
+                $args['limit'] = $limit;
+            }
+            if ( ! empty( $offset ) ) {
+                $args['offset'] = $offset;
+            }
 
             $search = sanitize_text_field( $request->get_param( 'searchField' ) );
             if ( ! empty( $search ) ) {
@@ -274,8 +277,13 @@ class Stores extends \WP_REST_Controller {
                     $request->get_param( 'endDate' )
                 );
                 
-                $args['start_date'] = $dates['start_date'];
-                $args['end_date']   = $dates['end_date'];
+                if ( ! empty( $dates['start_date'] ) ) {
+                    $args['start_date'] = $dates['start_date'];
+                }
+                
+                if ( ! empty( $dates['end_date'] ) ) {
+                    $args['end_date'] = $dates['end_date'];
+                }
             }
 
             $status = $request->get_param( 'filter_status' );
@@ -357,7 +365,6 @@ class Stores extends \WP_REST_Controller {
                     );
                 }
             }
-
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
             if ( $lat && $lng && $radius ) {

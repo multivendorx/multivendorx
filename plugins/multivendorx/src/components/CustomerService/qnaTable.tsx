@@ -22,6 +22,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import { Dialog } from '@mui/material';
+import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 export interface RealtimeFilter {
 	name: string;
 	render: (
@@ -95,6 +96,17 @@ const Qna: React.FC = () => {
 		id: number;
 	} | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	const handleDeleteClick = (rowData) => {
 		setSelectedQn({
@@ -150,20 +162,20 @@ const Qna: React.FC = () => {
 	useEffect(() => {
 		const currentPage = pagination.pageIndex + 1;
 		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage, 'no_answer');
+		requestData(rowsPerPage, currentPage,);
 		setPageCount(Math.ceil(totalRows / rowsPerPage));
 	}, [pagination]);
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage :number,
-		currentPage :number,
-		categoryFilter = 'no_answer',
+		rowsPerPage: number,
+		currentPage: number,
+		categoryFilter = '',
 		store = '',
 		searchField = '',
 		orderBy = '',
 		order = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date(),
 		question_visibility = ''
 	) {
@@ -180,8 +192,8 @@ const Qna: React.FC = () => {
 				searchField,
 				orderBy,
 				order,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				question_visibility
 			},
 		})
@@ -202,22 +214,8 @@ const Qna: React.FC = () => {
 				];
 
 				setStatus(statuses.filter((status) => status.count > 0));
-				let totalFiltered = 0;
-				switch (categoryFilter) {
-					case 'all':
-						totalFiltered = response.data.all || 0;
-						break;
-					case 'has_answer':
-						totalFiltered = response.data.answered || 0;
-						break;
-					case 'no_answer':
-					default:
-						totalFiltered = response.data.unanswered || 0;
-				}
-				setTotalRows(totalFiltered);
-
-				// Update pagination pageCount
-				setPageCount(Math.ceil(totalFiltered / rowsPerPage));
+				setTotalRows(response.data.all|| 0)
+				setPageCount(Math.ceil(response.data.all / rowsPerPage));
 			})
 			.catch(() => {
 				setData([]);
@@ -230,6 +228,11 @@ const Qna: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
@@ -238,8 +241,8 @@ const Qna: React.FC = () => {
 			filterData?.searchField,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date,
+			date?.start_date,
+			date?.end_date,
 			filterData?.question_visibility
 		);
 	};
@@ -278,7 +281,6 @@ const Qna: React.FC = () => {
 			setSelectedQna(null);
 			setAnswer('');
 		} catch (err) {
-			console.error('Failed to save answer:', err);
 			alert('Failed to save answer');
 		}
 	};
@@ -372,16 +374,8 @@ const Qna: React.FC = () => {
 				row.question_date ? new Date(row.question_date).getTime() : 0, // numeric timestamp for sorting
 			enableSorting: true,
 			cell: ({ row }) => {
-				const rawDate = row.original.question_date;
-				const formattedDate = rawDate
-					? new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(new Date(rawDate))
-					: '-';
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.question_date)}</TableCell>
 				);
 			},
 		},
@@ -498,16 +492,21 @@ const Qna: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) =>
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							})
-						}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
@@ -569,7 +568,6 @@ const Qna: React.FC = () => {
 				handlePagination={requestApiForData}
 				categoryFilter={status as Status[]}
 				searchFilter={searchFilter}
-				defaultCounts="no_answer"
 			/>
 
 			{selectedQna && (
@@ -611,7 +609,7 @@ const Qna: React.FC = () => {
 								<BasicInput
 									name="phone"
 									value={qna}
-									 
+
 									descClass="settings-metabox-description"
 									onChange={(e) => setQna(e.target.value)}
 								/>
@@ -625,7 +623,7 @@ const Qna: React.FC = () => {
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">
 								<ToggleSetting
-									 
+
 									descClass="settings-metabox-description"
 									options={[
 										{

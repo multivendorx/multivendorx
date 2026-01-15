@@ -949,7 +949,9 @@ By signing and submitting, the Seller accepts all terms above.
         if (!empty($previous_capability_settings['publish_and_submit_products'])) {
             $store_permissions['products'] = array('edit_approved_products');
         }
-
+        if (!empty($previous_capability_settings['is_upload_files'])) {
+            $store_permissions['products'] = array('upload_files');
+        }
         if (!empty($previous_capability_settings['is_submit_coupon'])) {
             $store_permissions['coupons'] = array('add_shop_coupons', 'read_shop_coupons');
         }
@@ -959,26 +961,22 @@ By signing and submitting, the Seller accepts all terms above.
         if (!empty($previous_capability_settings['is_edit_delete_published_coupon'])) {
             $store_permissions['coupons'] = array('edit_shop_coupons');
         }
-        update_option( Utill::MULTIVENDORX_SETTINGS['store-capability'], $store_permissions );
 
         $previous_product_settings = get_option( 'mvx_products_tab_settings', [] );
         $product_settings = array(
             'type_options'    => !empty($previous_product_settings['type_options']) ? $previous_product_settings['type_options'] : array(),
             'products_fields' => !empty($previous_product_settings['products_fields']) ? $previous_product_settings['products_fields'] : array(),
             );
-        update_option( Utill::MULTIVENDORX_SETTINGS['product-preferencess'], $product_settings );
             
         $previous_general_settings = get_option( 'mvx_settings_general_tab_settings', [] );
         $general_settings = array(
             'approve_store' => !empty($previous_general_settings['approve_vendor']) ? $previous_general_settings['approve_vendor'] : 'manually',
         );
-        update_option( Utill::MULTIVENDORX_SETTINGS['general'], $general_settings );
 
         $privacy_settings = array(
             'store_branding_details' => !empty($general_settings['display_product_seller']) ? array('show_store_name', 'show_store_description', 'show_store_logo_next_to_products') : array(),
             'store_order_display' => !empty($general_settings['display_product_seller']) ? array('group_items_by_store_in_cart') : array(),
         );
-        update_option( Utill::MULTIVENDORX_SETTINGS['privacy'], $privacy_settings );
 
         $previous_store_settings = get_option( 'mvx_store_tab_settings', [] );
 
@@ -986,7 +984,247 @@ By signing and submitting, the Seller accepts all terms above.
             $privacy_settings['store_branding_details'] = array();
             $privacy_settings['store_contact_details'] = array();
         }
+
+        if (!empty($previous_general_settings['registration_page'])) {
+            $marketplace_settings['store_registration_page'] = $previous_general_settings['registration_page']['value'];
+        }
+
+        if (!empty($previous_general_settings['vendor_dashboard_page'])) {
+            $marketplace_settings['store_dashboard_page'] = $previous_general_settings['vendor_dashboard_page']['value'];
+        }
+
+        $permalinks = get_option('dc_vendors_permalinks', []);
+        if (!empty($permalinks['vendor_shop_base'])) {
+            $marketplace_settings['store_url'] = $permalinks['vendor_shop_base'];
+        }
+
+        if (!empty($previous_general_settings['mvx_tinymce_api_section'])) {
+            $marketplace_settings['tinymce_api_section'] = $previous_general_settings['mvx_tinymce_api_section'];
+        }
+
+        $previous_dashboard_settings = get_option( 'mvx_seller_dashbaord_tab_settings', [] );
+
+        if (!empty($previous_dashboard_settings['setup_wizard_introduction'])) {
+            $general_settings['setup_wizard_introduction'] = $previous_dashboard_settings['setup_wizard_introduction'];
+        }
+
+        if (!empty($previous_dashboard_settings['mvx_new_dashboard_site_logo'])) {
+            $appearance_settings['store_dashboard_site_logo'] = $previous_dashboard_settings['mvx_new_dashboard_site_logo'];
+        }
+
+        if (!empty($previous_dashboard_settings['vendor_color_scheme_picker'])) {
+            if ($previous_dashboard_settings['vendor_color_scheme_picker'] == 'outer_space_blue') {
+                $appearance_settings['store_color_settings']['selectedPalette']= 'obsidian_night';
+                $appearance_settings['store_color_settings']['colors']= array (
+                        'colorPrimary' => '#00EED0',
+                        'colorSecondary' => '#0197AF',
+                        'colorAccent'   => '#4B227A',
+                        'colorSupport' => '#02153D',
+                    );
+            }
+
+            if ($previous_dashboard_settings['vendor_color_scheme_picker'] == 'green_lagoon') {
+                $appearance_settings['store_color_settings']['selectedPalette']= 'golden_ray';
+                $appearance_settings['store_color_settings']['colors']= array (
+                        'colorPrimary' => '#0E117A',
+                        'colorSecondary' => '#399169',
+                        'colorAccent' => '#12E2A4',
+                        'colorSupport' => '#DCF516',
+                    );
+            }
+
+            if ($previous_dashboard_settings['vendor_color_scheme_picker'] == 'old_west') {
+                $appearance_settings['store_color_settings']['selectedPalette']= 'emerald_edge';
+                $appearance_settings['store_color_settings']['colors']= array (
+                        'colorPrimary' => '#E6B924',
+                        'colorSecondary' => '#D888C1',
+                        'colorAccent' => '#6B7923',
+                        'colorSupport' => '#6E97D0',
+                    );
+            }
+
+            if ($previous_dashboard_settings['vendor_color_scheme_picker'] == 'wild_watermelon') {
+                $appearance_settings['store_color_settings']['selectedPalette']= 'orchid_bloom';
+                $appearance_settings['store_color_settings']['colors']= array (
+                        'colorPrimary' => '#FF5959',
+                        'colorSecondary' => '#FADD3A',
+                        'colorAccent' => '#49BEB6',
+                        'colorSupport' => '#075F63',
+                    );
+            }
+        }
+
+        if (!empty($previous_store_settings['mvx_vendor_shop_template'])) {
+            $appearance_settings['store_banner_template'] = $previous_store_settings['mvx_vendor_shop_template'];
+        }
+
+        if (!empty($previous_store_settings['mvx_store_sidebar_position'])) {
+            $appearance_settings['store_sidebar'] = $previous_store_settings['mvx_store_sidebar_position'];
+        }
+
+        if (!empty($previous_store_settings['choose_map_api'])) {
+            $map_settings['choose_map_api'] = $previous_store_settings['choose_map_api']['value'];
+            $map_settings['google_api_key'] = $previous_store_settings['google_api_key'];
+            $map_settings['mapbox_api_key'] = $previous_store_settings['mapbox_api_key'];
+        }
+
+        if (!empty($previous_store_settings['show_related_products'])) {
+            if ($previous_store_settings['show_related_products']['value'] == 'vendors_related') {
+                $product_settings['recommendation_source'] = 'same_store';
+            }
+            if ($previous_store_settings['show_related_products']['value'] == 'all_related') {
+                $product_settings['recommendation_source'] = 'all_stores';
+            }
+            if ($previous_store_settings['show_related_products']['value'] == 'disable') {
+                $product_settings['recommendation_source'] = 'none';
+            }
+        }
+
+        $previous_spmv_settings = get_option( 'mvx_spmv_pages_tab_settings', [] );
+        if (!empty($previous_spmv_settings['is_singleproductmultiseller'])) {
+            $general_settings['store_selling_mode'] = 'single_product_multiple_vendor';
+        }
+        
+        if (!empty($previous_spmv_settings['singleproductmultiseller_show_order'])) {
+            if ($previous_spmv_settings['singleproductmultiseller_show_order'] == 'min-price') {
+                $general_settings['spmv_show_order'] = 'min_price';
+            }
+            if ($previous_spmv_settings['singleproductmultiseller_show_order'] == 'max-price') {
+                $general_settings['spmv_show_order'] = 'max_price';
+            }
+            if ($previous_spmv_settings['singleproductmultiseller_show_order'] == 'top-rated-vendor') {
+                $general_settings['spmv_show_order'] = 'top_rated_store';
+            }
+        }
+
+        $previous_disbursement_settings = get_option( 'mvx_disbursement_tab_settings', [] );
+        if (!empty($previous_disbursement_settings['commission_calculation_on_tax'])) {
+            $commission_settings['give_tax'] = 'commision_based_tax'; 
+        }
+
+        if (!empty($previous_disbursement_settings['give_tax'])) {
+            $commission_settings['give_tax'] = 'full_tax'; 
+        } else {
+            $commission_settings['give_tax'] = 'no_tax'; 
+        }
+
+        $previous_order_settings = get_option( 'mvx_order_tab_settings', [] );
+        if (!empty($previous_order_settings['disallow_vendor_order_status'])) {
+            $store_permissions['orders'] = array('edit_shop_orders');
+        }
+        if (!empty($previous_order_settings['display_suborder_in_mail'])) {
+            $marketplace_settings['display_customer_order'] = 'suborder';
+        }
+
+        $previous_commission_settings = get_option( 'mvx_commissions_tab_settings', [] );
+        if (!empty($previous_commission_settings['revenue_sharing_mode']) && $previous_commission_settings['revenue_sharing_mode'] == 'revenue_sharing_mode_vendor') {
+            update_option( Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store'], true);
+        }
+
+        if (!empty($previous_commission_settings['commission_type'])) {
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed') {
+                $commission_settings['commission_type'] = 'per_item';
+                $commission_settings['commission_per_item'] =  array(
+                        array(
+                            'commission_fixed' => array_column($previous_commission_settings['default_commission'], 'value', 'key')['fixed_ammount'] ?? '',
+                            'commission_percentage' => '',
+                        ),
+                    );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'percent') {
+                $commission_settings['commission_type'] = 'per_item';
+                $commission_settings['commission_per_item'] =  array(
+                        array(
+                            'commission_fixed' => '',
+                            'commission_percentage' => array_column($previous_commission_settings['default_commission'], 'value', 'key')['percent_ammount'] ?? '',
+                        ),
+                    );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed_with_percentage_qty') {
+                $commission_settings['commission_type'] = 'per_item';
+                $commission_settings['commission_per_item'] =  array(
+                        array(
+                            'commission_fixed' => array_column($previous_commission_settings['default_commission'], 'value', 'key')['fixed_ammount'] ?? '',
+                            'commission_percentage' => array_column($previous_commission_settings['default_commission'], 'value', 'key')['percent_ammount'] ?? '',
+                        ),
+                    );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed_with_percentage') {
+                $commission_settings['commission_type'] = 'store_order';
+                $commission_settings['commission_per_store_order'] =  array(
+                        array(
+                            'commission_fixed' => array_column($previous_commission_settings['default_commission'], 'value', 'key')['fixed_ammount'] ?? '',
+                            'commission_percentage' => array_column($previous_commission_settings['default_commission'], 'value', 'key')['percent_ammount'] ?? '',
+                        ),
+                    );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'commission_by_product_price') {
+                $commission_settings['commission_type'] = 'store_order';
+                if (!empty($previous_commission_settings['vendor_commission_by_products'])) {
+                    foreach ($previous_commission_settings['vendor_commission_by_products'] as $product_rule) {
+                        $new_rule = array();
+
+                        $new_rule['rule_type']    = 'price';
+                        $new_rule['product_price'] = $product_rule['cost'] ?? '';
+
+                        $rule_map = array(
+                            'upto'    => 'less_than',
+                            'greater' => 'more_than',
+                        );
+
+                        $new_rule['rule'] = $rule_map[ $product_rule['rule']['value'] ] ?? '';
+
+                        // Commission percentage
+                        $new_rule['commission_percentage'] = $product_rule['commission'] ?? '0';
+
+                        // Commission fixed
+                        $new_rule['commission_fixed'] = $product_rule['commission_fixed'] ?? '0';
+
+                        $commission_settings['commission_per_store_order'][] = $new_rule;
+                    }
+                }
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'commission_by_purchase_quantity') {
+                $commission_settings['commission_type'] = 'store_order';
+                if (!empty($previous_commission_settings['vendor_commission_by_quantity'])) {
+                    foreach ($previous_commission_settings['vendor_commission_by_quantity'] as $quantity_rule) {
+                        $new_rule = array();
+
+                        $new_rule['rule_type']    = 'quantity';
+                        $new_rule['product_qty'] = $quantity_rule['quantity'] ?? '';
+
+                        $rule_map = array(
+                            'upto'    => 'less_than',
+                            'greater' => 'more_than',
+                        );
+
+                        $new_rule['rule'] = $rule_map[ $quantity_rule['rule']['value'] ] ?? '';
+
+                        // Commission percentage
+                        $new_rule['commission_percentage'] = $quantity_rule['commission'] ?? '0';
+
+                        // Commission fixed
+                        $new_rule['commission_fixed'] = $quantity_rule['commission_fixed'] ?? '0';
+
+                        $commission_settings['commission_per_store_order'][] = $new_rule;
+                    }
+                }
+            }
+        }
+
+        update_option( Utill::MULTIVENDORX_SETTINGS['store-capability'], $store_permissions );
+        update_option( Utill::MULTIVENDORX_SETTINGS['product-preferencess'], $product_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['general'], $general_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['privacy'], $privacy_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['marketplace'], $marketplace_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['store-appearance'], $appearance_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['geolocation'], $map_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['store-commissions'], $commission_settings );
 
     }
 }

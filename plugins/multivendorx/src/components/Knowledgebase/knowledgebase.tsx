@@ -26,6 +26,7 @@ import {
 } from '@tanstack/react-table';
 import '../Announcements/announcements.scss';
 import { Dialog } from '@mui/material';
+import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 
 type KBRow = {
 	date: any;
@@ -86,6 +87,14 @@ export const KnowledgeBase: React.FC = () => {
 		id: number;
 	} | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	const handleDeleteClick = (rowData) => {
 		setSelectedKb({
@@ -283,11 +292,11 @@ export const KnowledgeBase: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage: number,
+		currentPage: number,
 		categoryFilter = '',
 		searchField = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
 		setData(null);
@@ -299,8 +308,8 @@ export const KnowledgeBase: React.FC = () => {
 				page: currentPage,
 				row: rowsPerPage,
 				status: categoryFilter === 'all' ? '' : categoryFilter,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				searchField,
 			},
 		})
@@ -340,14 +349,18 @@ export const KnowledgeBase: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData(null);
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.categoryFilter,
 			filterData?.searchField,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -357,11 +370,18 @@ export const KnowledgeBase: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
+						onChange={(range: DateRange) => {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							});
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
 						}}
 					/>
 				</div>
@@ -369,14 +389,6 @@ export const KnowledgeBase: React.FC = () => {
 		},
 	];
 
-	const truncateText = (text: string, maxLength: number) => {
-		if (!text) {
-			return '-';
-		}
-		return text.length > maxLength
-			? text.slice(0, maxLength) + '...'
-			: text;
-	};
 	// Columns
 	const columns: ColumnDef<KBRow>[] = [
 		{
@@ -401,7 +413,6 @@ export const KnowledgeBase: React.FC = () => {
 			cell: ({ row }) => (
 				<TableCell title={row.original.title || ''}>
 					{truncateText(row.original.title || '', 30)}{' '}
-					{/* truncate to 30 chars */}
 				</TableCell>
 			),
 		},
@@ -410,7 +421,6 @@ export const KnowledgeBase: React.FC = () => {
 			cell: ({ row }) => (
 				<TableCell title={row.original.content || ''}>
 					{truncateText(row.original.content || '', 50)}{' '}
-					{/* truncate to 50 chars */}
 				</TableCell>
 			),
 		},
@@ -420,30 +430,18 @@ export const KnowledgeBase: React.FC = () => {
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => {
-				const rawDate = row.original.date;
-				let formattedDate = '-';
-				if (rawDate) {
-					const dateObj = new Date(rawDate);
-					formattedDate = new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(dateObj);
-				}
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
 				);
 			},
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell

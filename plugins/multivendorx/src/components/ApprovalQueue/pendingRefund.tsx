@@ -71,7 +71,14 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	const [formData, setFormData] = useState({ content: '' });
 	const [viewOrder, setViewOrder] = useState<StoreRow | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 	/**
 	 * Fetch store list on mount
 	 */
@@ -116,8 +123,8 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	 * Fetch data from backend (WooCommerce Orders)
 	 */
 	const requestData = (
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage :number,
+		currentPage :number,
 		searchField = '',
 		store_id = '',
 		orderBy = '',
@@ -125,7 +132,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) => {
-		setData([]);
+		setData(null);
 
 		//Base WooCommerce query params
 		const params: any = {
@@ -221,6 +228,11 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
@@ -228,8 +240,8 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			filterData?.store_id,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -267,11 +279,18 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
+						onChange={(range: DateRange) => {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							});
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
 						}}
 					/>
 				</div>
@@ -366,7 +385,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	 */
 	const columns: ColumnDef<StoreRow>[] = [
 		{
-			id: 'order_id',
 			header: __('Order', 'multivendorx'),
 			cell: ({ row }) => {
 				const id = row.original.id;

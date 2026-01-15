@@ -170,9 +170,10 @@ const AICard = () => {
 	}
 
 	return (
-		<Card
+		<Card contentHeight
 			className="theme-bg"
 			title={__('AI assist', 'multivendorx')}
+			desc={__('Get help creating your product listing', 'multivendorx')}
 			iconName="adminfont-pagination-right-arrow arrow-icon"
 			toggle
 		>

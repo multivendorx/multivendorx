@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { Column, Container, getApiLink, MultiCalendarInput, Table, TableCell } from 'zyra';
 import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import TransactionDetailsModal from './TransactionDetailsModal';
-import { formatCurrency } from '../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../services/commonFunction';
 
 type TransactionRow = {
 	id: number;
@@ -94,7 +94,6 @@ const Transactions: React.FC = () => {
 		endDate = new Date()
 	) {
 		setData(null);
-
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'transaction'),
@@ -103,8 +102,8 @@ const Transactions: React.FC = () => {
 				page: currentPage,
 				row: rowsPerPage,
 				store_id: appLocalizer.store_id,
-				start_date: startDate,
-				end_date: endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				filter_status: categoryFilter == 'all' ? '' : categoryFilter,
 				transaction_status: transactionStatus,
 				transaction_type: transactionType,
@@ -151,14 +150,19 @@ const Transactions: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.categoryFilter,
 			filterData?.transactionType,
 			filterData?.transactionStatus,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 

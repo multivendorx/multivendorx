@@ -15,6 +15,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
+import { formatWcShortDate } from '@/services/commonFunction';
 
 type StoreRow = {
 	id?: number;
@@ -65,7 +66,14 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 	const [rejectProductId, setRejectProductId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false); // prevent multiple clicks
 	const [store, setStore] = useState<any[] | null>(null);
-
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 	useEffect(() => {
 		axios({
 			method: 'GET',
@@ -83,8 +91,8 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 	const formatDateToISO8601 = (date: Date) => date.toISOString().slice(0, 19);
 
 	const requestData = (
-		rowsPerPage:number,
-		currentPage :number,
+		rowsPerPage: number,
+		currentPage: number,
 		store = '',
 		orderBy = '',
 		order = '',
@@ -94,7 +102,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 		const now = new Date();
 		const formattedStartDate = formatDateToISO8601(
 			startDate ||
-				new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
+			new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
 		);
 		const formattedEndDate = formatDateToISO8601(endDate || now);
 
@@ -204,14 +212,19 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.store,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -302,19 +315,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 			enableSorting: true,
 			header: __('Date Created', 'multivendorx'),
 			cell: ({ row }) => {
-				const rawDate = row.original?.date_created;
-				if (!rawDate) {
-					return <TableCell>-</TableCell>;
-				}
-
-				const date = new Date(rawDate);
-				const formatted = date.toLocaleDateString('en-US', {
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric',
-				});
-
-				return <TableCell title={formatted}>{formatted}</TableCell>;
+				return <TableCell title={formatted}>{formatWcShortDate(row.original?.date_created)}</TableCell>;
 			},
 		},
 		{
@@ -330,7 +331,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 							);
 						}}
 					>
-						<i className="adminfont-check"></i> Approve
+						<i className="adminfont-check"></i> {__('Approve', 'multivendorx')}
 					</span>
 
 					<span
@@ -342,7 +343,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 							)
 						}
 					>
-						<i className="adminfont-close"></i> Reject
+						<i className="adminfont-close"></i>{__('Reject', 'multivendorx')}
 					</span>
 				</TableCell>
 			),
@@ -381,12 +382,19 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						onChange={(range: any) =>
-							updateFilter('date', {
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
+						onChange={(range: DateRange) => {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							})
-						}
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
+						}}
 					/>
 				</div>
 			),
@@ -445,7 +453,8 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 									setIsSubmitting(false);
 								}}
 							>
-								Cancel
+								{__('Cancel', 'multivendorx')}
+
 							</div>
 							<button
 								className="admin-btn btn-purple"

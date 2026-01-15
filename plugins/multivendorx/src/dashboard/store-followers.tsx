@@ -50,7 +50,9 @@ const StoreFollower: React.FC = () => {
 		setPageCount(Math.ceil(totalRows / rowsPerPage));
 	}, []);
 
-	const requestData = (rowsPerPage = 10, currentPage = 1) => {
+	const requestData = (rowsPerPage: number, currentPage: number) => {
+		setData(null);
+	
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'store'),
@@ -61,10 +63,16 @@ const StoreFollower: React.FC = () => {
 				row: rowsPerPage,
 				follower: 'follower',
 			},
-		}).then((response) => {
-			setData(response.data || []);
-		});
+		})
+			.then((response) => {
+				setData(response.data || []);
+			})
+			.catch((error) => {
+				console.error('Store fetch failed:', error);
+				setData([]);
+			});
 	};
+
 
 	const requestApiForData = (rowsPerPage: number, currentPage: number) => {
 		requestData(rowsPerPage, currentPage);

@@ -18,6 +18,7 @@ import {
 	FormGroup,
 	AdminButton,
 	getApiLink,
+	CommonPopup,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -675,6 +676,136 @@ const AddProduct = () => {
 		});
 	};
 
+	// variation start
+	const [tempOptions, setTempOptions] = useState<Record<number, string>>({});
+	const [openPopup, setopenPopup] = useState(false);
+
+	const [variant, setVariant] = useState([
+		{
+			id: Date.now(),
+			name: '',
+			options: [],
+			isEditing: true,
+		},
+	]);
+	const addVariation = () => {
+		setVariant((prev) => [
+			...prev,
+			{
+				id: Date.now(),
+				name: '',
+				options: [],
+				isEditing: true,
+			},
+		]);
+	};
+	const updateVariation = (index: number, key: string, value: any) => {
+		const updated = [...variant];
+		updated[index][key] = value;
+		setVariant(updated);
+	};
+	// wrapper variation delete
+	const deleteVariation = (vIndex: number) => {
+		setVariant((prev) => prev.filter((_, i) => i !== vIndex));
+	};
+
+	// under variation delete
+	const deleteOption = (vIndex: number, oIndex: number) => {
+		const updated = [...variant];
+		updated[vIndex].options = updated[vIndex].options.filter(
+			(_, i) => i !== oIndex
+		);
+		setVariant(updated);
+	};
+
+	// add new when type
+	const handleAddNewOption = (vIndex: number) => {
+		const value = tempOptions[vIndex]?.trim();
+		if (!value) return;
+
+		setVariant((prev) => {
+			const updated = [...prev];
+			updated[vIndex].options = [
+				...updated[vIndex].options,
+				value,
+			];
+			return updated;
+		});
+
+		// clear input
+		setTempOptions((prev) => ({
+			...prev,
+			[vIndex]: '',
+		}));
+	};
+	const handleTempOptionChange = (vIndex: number, value: string) => {
+		setTempOptions((prev) => ({
+			...prev,
+			[vIndex]: value,
+		}));
+	};
+	const addOption = (vIndex: number) => {
+		handleAddNewOption(vIndex);
+	};
+
+	// toggle edit btn
+	const toggleEditMode = (vIndex: number, value: boolean) => {
+		setVariant((prev) => {
+			const updated = [...prev];
+			updated[vIndex].isEditing = value;
+			return updated;
+		});
+	};
+
+
+
+	// combination start
+	const generateCombinations = (variants) => {
+		if (!variants.length) return [];
+
+		return variants.reduce((acc, variant) => {
+			if (acc.length === 0) {
+				return variant.options.map(opt => ({
+					[variant.name]: opt,
+				}));
+			}
+
+			const result = [];
+			acc.forEach(prev => {
+				variant.options.forEach(opt => {
+					result.push({
+						...prev,
+						[variant.name]: opt,
+					});
+				});
+			});
+			return result;
+		}, []);
+	};
+
+	// varidation
+	const validvariant = variant.filter(
+		(variation) =>
+			variation.name?.trim() !== '' &&
+			variation.options.length > 0 &&
+			variation.options.every((opt) => opt.trim() !== '')
+	);
+	const combinations =
+		validvariant.length > 0
+			? generateCombinations(validvariant)
+			: [];
+
+	// edit and show toggle
+	const setEditMode = (vIndex: number, value: boolean) => {
+		setVariant((prev) => {
+			const updated = [...prev];
+			updated[vIndex] = {
+				...updated[vIndex],
+				isEditing: value,
+			};
+			return updated;
+		});
+	};
 
 	return (
 		<>
@@ -725,10 +856,10 @@ const AddProduct = () => {
 			</div>
 
 			<Container>
-				<Column grid={2}>
-					<Card>
+				<Column grid={3}>
+					<Card title={__('Product type', 'multivendorx')}>
 						<FormGroupWrapper>
-							<FormGroup label={__('Product type', 'multivendorx')} htmlFor="product-type">
+							<FormGroup desc={__('A standalone product with no variant', 'multivendorx')}>
 								<SelectInput
 									name="type"
 									options={typeOptions}
@@ -740,9 +871,17 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
-					<Card>
+					<Card
+						title={__('Recommended', 'multivendorx')}
+						// desc={__('Complete these fields to create a comprehensive product listing', 'multivendorx')}
+						action={
+							<>
+								<div className="admin-badge blue">1/6</div>
+							</>
+						}
+					>
 						<FormGroupWrapper>
-							<FormGroup label={__('Checklist', 'multivendorx')} htmlFor="product-type">
+							<FormGroup>
 								<div className="checklist-wrapper">
 									<ul>
 										<li
@@ -750,9 +889,9 @@ const AddProduct = () => {
 												checklist.name ? 'checked' : ''
 											}
 										>
-											<span></span>
+											<div className="check-icon"><span></span></div>
 											<div className="details">
-												<div className="title">Name</div>
+												<div className="title">Product Name</div>
 												<div className="des">A clear, descriptive title that helps customers find your product</div>
 											</div>
 										</li>
@@ -766,10 +905,10 @@ const AddProduct = () => {
 															: ''
 													}
 												>
-													<span></span>
+													<div className="check-icon"><span></span></div>
 													<div className="details">
 														<div className="title">Price</div>
-														<div className="des">A clear, descriptive title that helps customers find your product</div>
+														<div className="des">Set competitive prices including any sale or discount options</div>
 													</div>
 												</li>
 
@@ -780,7 +919,7 @@ const AddProduct = () => {
 															: ''
 													}
 												>
-													<span></span>
+													<div className="check-icon"><span></span></div>
 													<div className="details">
 														<div className="title">Stock</div>
 														<div className="des">A clear, descriptive title that helps customers find your product</div>
@@ -793,10 +932,10 @@ const AddProduct = () => {
 												checklist.image ? 'checked' : ''
 											}
 										>
-											<span></span>
+											<div className="check-icon"><span></span></div>
 											<div className="details">
-												<div className="title">Image</div>
-												<div className="des">A clear, descriptive title that helps customers find your product</div>
+												<div className="title">Product Images</div>
+												<div className="des">High-quality photos showing your product from multiple angles</div>
 											</div>
 										</li>
 
@@ -805,10 +944,10 @@ const AddProduct = () => {
 												checklist.image ? 'checked' : ''
 											}
 										>
-											<span></span>
+											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Category</div>
-												<div className="des">A clear, descriptive title that helps customers find your product</div>
+												<div className="des">Organize your product to help customers browse your store</div>
 											</div>
 										</li>
 
@@ -817,7 +956,7 @@ const AddProduct = () => {
 												checklist.image ? 'checked' : ''
 											}
 										>
-											<span></span>
+											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Policies</div>
 												<div className="des">A clear, descriptive title that helps customers find your product</div>
@@ -837,7 +976,7 @@ const AddProduct = () => {
 					</Card>
 				</Column>
 
-				<Column grid={7}>
+				<Column grid={6}>
 					{/* General information */}
 					<Card contentHeight
 						title={__('General information', 'multivendorx')}
@@ -846,7 +985,7 @@ const AddProduct = () => {
 					>
 						<FormGroupWrapper>
 							{/* Product Name */}
-							<FormGroup label={__('Product name', 'multivendorx')}>
+							<FormGroup label={__('Product name', 'multivendorx')} desc={__('A unique name for your product', 'multivendorx')}>
 								<BasicInput
 									name="name"
 
@@ -856,7 +995,7 @@ const AddProduct = () => {
 							</FormGroup>
 
 							{/* Short Description */}
-							<FormGroup label={__('Product short description', 'multivendorx')}>
+							<FormGroup label={__('Product short description', 'multivendorx')} desc={__('A short description displayed on product and checkout pages', 'multivendorx')}>
 								<TextArea
 									name="short_description"
 									value={product.short_description}
@@ -881,7 +1020,7 @@ const AddProduct = () => {
 
 					{/* Price and stock */}
 					<Card contentHeight
-						title={__('Price and stock', 'multivendorx')}
+						title={__('Price', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
 					>
@@ -912,18 +1051,40 @@ const AddProduct = () => {
 									</FormGroup>
 								</>
 							)}
+						</FormGroupWrapper>
+					</Card>
 
-							{/* SKU + Sold Individually */}
-							{/* <FormGroup cols={2} label={__('SKU', 'multivendorx')}>
-								<BasicInput
-									name="sku"
-
-									value={product.sku}
-									onChange={(e) => handleChange('sku', e.target.value)}
-								/>
-							</FormGroup>
-
-							<FormGroup cols={2} label={__('Sold individually', 'multivendorx')}>
+					<Card contentHeight
+						title={__('Inventory', 'multivendorx')}
+						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						toggle
+						action={
+							<>
+								<div className="field-wrapper">
+									{__('Stock management', 'multivendorx')}
+									<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-manage-stock"
+											type="checkbox"
+											value={product.manage_stock ? ['manage_stock'] : []}
+											onChange={(e) =>
+												handleChange(
+													'manage_stock',
+													(e as React.ChangeEvent<HTMLInputElement>).target.checked
+												)
+											}
+											options={[
+												{ key: 'manage_stock', value: 'manage_stock' },
+											]}
+										/>
+								</div>
+							</>
+						}
+					>
+						<FormGroupWrapper>
+							{/* <FormGroup cols={2} label={__('Track Quantity', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
 									inputWrapperClass="toggle-checkbox-header"
@@ -944,6 +1105,34 @@ const AddProduct = () => {
 									]}
 								/>
 							</FormGroup> */}
+							{/* <FormGroup cols={2} label={__('Sold Individually', 'multivendorx')}>
+								<MultiCheckBox
+									wrapperClass="toggle-btn"
+									inputWrapperClass="toggle-checkbox-header"
+									inputInnerWrapperClass="toggle-checkbox"
+									idPrefix="toggle-switch-manage-stock"
+									type="checkbox"
+									value={product.manage_stock ? ['manage_stock'] : []}
+									onChange={(e) =>
+										handleChange(
+											'manage_stock',
+											(e as React.ChangeEvent<HTMLInputElement>).target.checked
+										)
+									}
+									options={[
+										{ key: 'manage_stock', value: 'manage_stock' },
+									]}
+								/>
+							</FormGroup> */}
+							{/* SKU + Sold Individually */}
+							<FormGroup cols={2} label={__('SKU', 'multivendorx')}>
+								<BasicInput
+									name="sku"
+
+									value={product.sku}
+									onChange={(e) => handleChange('sku', e.target.value)}
+								/>
+							</FormGroup>
 
 							{/* Stock Management */}
 							{/* <FormGroup cols={2} label={__('Stock management', 'multivendorx')}>
@@ -966,24 +1155,26 @@ const AddProduct = () => {
 								/>
 							</FormGroup> */}
 
-							{/* {!product.manage_stock && (
-								<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
-									<SelectInput
-										name="stock_status"
-										options={stockStatusOptions}
-										type="single-select"
-										value={product.stock_status}
-										onChange={(selected) =>
-											handleChange('stock_status', selected.value)
-										}
-									/>
-								</FormGroup>
-							)} */}
+							{!product.manage_stock && (
+								<>
+									<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
+										<SelectInput
+											name="stock_status"
+											options={stockStatusOptions}
+											type="single-select"
+											value={product.stock_status}
+											onChange={(selected) =>
+												handleChange('stock_status', selected.value)
+											}
+										/>
+									</FormGroup>
+								</>
+							)}
 
 							{/* Managed Stock Fields */}
-							{/* {product.manage_stock && (
+							{product.manage_stock && (
 								<>
-									<FormGroup cols={3} label={__('Quantity', 'multivendorx')}>
+									<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
 										<BasicInput
 											name="stock"
 
@@ -994,7 +1185,7 @@ const AddProduct = () => {
 										/>
 									</FormGroup>
 
-									<FormGroup cols={3} label={__('Allow backorders?', 'multivendorx')}>
+									<FormGroup cols={2} label={__('Allow backorders?', 'multivendorx')}>
 										<SelectInput
 											name="backorders"
 											options={backorderOptions}
@@ -1006,7 +1197,7 @@ const AddProduct = () => {
 										/>
 									</FormGroup>
 
-									<FormGroup cols={3} label={__('Low stock threshold', 'multivendorx')}>
+									<FormGroup cols={2} label={__('Low stock threshold', 'multivendorx')}>
 										<BasicInput
 											name="low_stock_amount"
 
@@ -1017,42 +1208,30 @@ const AddProduct = () => {
 										/>
 									</FormGroup>
 								</>
-							)} */}
+							)}
 						</FormGroupWrapper>
 					</Card>
 
 					<Card contentHeight
-						title={__('Inventory', 'multivendorx')}
+						title={__('Linked Products', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
 					>
 						<FormGroupWrapper>
-							<FormGroup label={__('SKU', 'multivendorx')}>
+							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
 								<BasicInput
-									name="sku"
+									name="name"
 
-									value={product.sku}
-									onChange={(e) => handleChange('sku', e.target.value)}
+								// value={product.name}
+								// onChange={(e) => handleChange('name', e.target.value)}
 								/>
 							</FormGroup>
-							<FormGroup cols={2} label={__('Stock Quantity', 'multivendorx')}>
+							<FormGroup cols={2} label={__('Cross-sells', 'multivendorx')}>
 								<BasicInput
-									name="stock"
+									name="name"
 
-									value={product.stock}
-									onChange={(e) =>
-										handleChange('stock', e.target.value)
-									}
-								/>
-							</FormGroup>
-							<FormGroup cols={2} label={__('Low stock threshold', 'multivendorx')}>
-								<BasicInput
-									name="low_stock_amount"
-
-									value={product.low_stock_amount}
-									onChange={(e) =>
-										handleChange('low_stock_amount', e.target.value)
-									}
+								// value={product.name}
+								// onChange={(e) => handleChange('name', e.target.value)}
 								/>
 							</FormGroup>
 						</FormGroupWrapper>
@@ -1084,39 +1263,337 @@ const AddProduct = () => {
 							handleChange
 						)}
 
-					{product?.type == 'variable' &&
+					{product?.type == 'variable' && 
 						applyFilters(
-							'product_variable',
-							null,
-							product,
-							setProduct
+						'product_variable',
+						null,
+						product,
+						setProduct
+					)}
+
+					<Card contentHeight
+						title={__('Variatations', 'multivendorx')}
+						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						toggle
+						action={
+							<>
+								<div className="admin-btn btn-purple-bg"><i className="adminfont-plus"></i> Add Attribute</div>
+								<div className="admin-btn btn-purple-bg"><i className="adminfont-plus"></i> Add variant</div>
+							</>
+						}
+					>
+						{variant.map((variation, vIndex) => (
+							<div className="variant-wrapper" key={variation.id}>
+
+								{variation.isEditing && (
+									<div className="edit-wrapper">
+										<div className="variant">
+											<div className="drag-icon">
+												<i className="adminfont-drag"></i>
+											</div>
+
+											<FormGroupWrapper>
+												<FormGroup label={__('Variant name', 'multivendorx')}>
+													<BasicInput
+														value={variation.name}
+														onChange={(e) =>
+															updateVariation(vIndex, 'name', e.target.value)
+														}
+													/>
+												</FormGroup>
+											</FormGroupWrapper>
+
+											<span
+												className="admin-badge red adminfont-delete"
+												onClick={() => deleteVariation(vIndex)}
+											/>
+										</div>
+
+										<div className="option-wrapper">
+											<FormGroupWrapper>
+												<FormGroup label={__('Option value', 'multivendorx')} />
+											</FormGroupWrapper>
+
+											{variation.options.map((opt, oIndex) => (
+												<div className="variant" key={oIndex}>
+													<div className="drag-icon">
+														<i className="adminfont-drag"></i>
+													</div>
+
+													<BasicInput
+														value={opt}
+														onChange={(e) => {
+															const updated = [...variation.options];
+															updated[oIndex] = e.target.value;
+															updateVariation(vIndex, 'options', updated);
+														}}
+													/>
+
+													<span
+														className="admin-badge red adminfont-delete"
+														onClick={() => deleteOption(vIndex, oIndex)}
+													/>
+												</div>
+											))}
+
+											<div className="add-new">
+												<FormGroupWrapper>
+													<FormGroup>
+														<BasicInput
+															placeholder="Add another value"
+															value={tempOptions[vIndex] || ''}
+															onChange={(e) =>
+																handleTempOptionChange(vIndex, e.target.value)
+															}
+															onKeyDown={(e) => {
+																if (e.key === 'Enter') {
+																	e.preventDefault();
+																	addOption(vIndex);
+																}
+															}}
+														/>
+													</FormGroup>
+												</FormGroupWrapper>
+											</div>
+
+											<div className="buttons-wrapper">
+												<div
+													className="admin-btn btn-green"
+													onClick={() => setEditMode(vIndex, false)}
+												>
+													<i className="adminfont-active"></i> Done
+												</div>
+
+												<div
+													className="admin-btn btn-purple"
+													onClick={() => handleAddNewOption(vIndex)}
+												>
+													<i className="adminfont-plus"></i> Add New
+												</div>
+											</div>
+										</div>
+									</div>
+								)}
+
+								{!variation.isEditing && (
+									<div className="variant-show">
+										<div className="left-section">
+											<div className="attributes">
+												{variation.name || __('No variant', 'multivendorx')}
+											</div>
+
+											<div className="variantion-wrapper">
+												{variation.options.map((opt, idx) => (
+													<div className="admin-badge blue" key={idx}>
+														{opt}
+													</div>
+												))}
+											</div>
+										</div>
+
+										<div className="right-section">
+											<div
+												className="admin-btn btn-purple"
+												onClick={() => setEditMode(vIndex, true)}
+											>
+												<i className="adminfont-edit"></i> Edit
+											</div>
+										</div>
+									</div>
+								)}
+							</div>
+						))}
+
+
+						<div className="admin-btn btn-purple" onClick={addVariation}><i className="adminfont-plus"></i> Add variants Like size or color</div>
+
+						{combinations.length > 0 && (
+							<div className="table-wrapper variant-list">
+								<table>
+									<thead>
+										<tr className="header">
+											<td>{__('Variant', 'multivendorx')}</td>
+											<td>{__('Price', 'multivendorx')}</td>
+											<td>{__('Quantity', 'multivendorx')}</td>
+											<td>{__('SKU', 'multivendorx')}</td>
+											<td></td>
+										</tr>
+									</thead>
+									<tbody>
+										{combinations.map((combo) => (
+											<tr key={Object.values(combo).join('|')}>
+												<td>
+													<i className="adminfont-product admin-badge purple"></i>
+													{Object.values(combo).join(' / ')}
+												</td>
+
+												<td>
+													<BasicInput
+														name="price"
+														preInsideText={__('$', 'multivendorx')}
+														size="8rem"
+													/>
+												</td>
+
+												<td>100</td>
+
+												<td>
+													<BasicInput name="sku" size="10rem" />
+												</td>
+
+												<td>
+													<div className="buttons-wrapper">
+														<span
+															className="admin-badge blue adminfont-edit"
+															onClick={() => setopenPopup(true)}
+														></span>
+														<span className="admin-badge red adminfont-delete"></span>
+													</div>
+												</td>
+											</tr>
+										))}
+									</tbody>
+
+								</table>
+							</div>
 						)}
+					</Card>
+					<CommonPopup
+						open={openPopup}
+						onClose={() => setopenPopup(false)}
+						width="31rem"
+						height="70%"
+						header={{
+							icon: 'commission',
+							title: __('Edit Variant', 'multivendorx')
+						}}
+						footer={
+							<AdminButton
+								buttons={[
+									{
+										icon: 'close',
+										text: 'Cancel',
+										className: 'red',
+										// onClick: () => setDeleteModal(false),
+									},
+									{
+										icon: 'save',
+										text: 'Save',
+										className: 'purple-bg',
+										// onClick: () => {
+										// 	if (deleteOption) {
+										// 		deleteStoreApiCall(deleteOption);
+										// 	}
+										// },
+									},
+								]}
+							/>
+						}
+					>
+						<FormGroupWrapper>
+							<FormGroup cols={2} label={__('Regular price ($)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={2} label={__('Sale price ($)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup label={__('Stock status', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup label={__('SKU', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={3} label={__('Length (in)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={3} label={__('Width (in)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={3} label={__('Height (in)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</CommonPopup>
 				</Column>
 
 				<Column grid={3}>
 					{/* ai assist */}
 					{applyFilters('product_ai_assist', null, product)}
-					<Card
+					<Card contentHeight
 						title={__('Publishing', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+						action={
+							<>
+								<label
+									onClick={() => setstarFill((prev) => !prev)}
+									style={{ cursor: 'pointer' }}
+									className="field-wrapper"
+								>
+									<i
+										className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'
+											}`}
+									/>
+									{__('Featured product', 'multivendorx')}
+								</label>
+							</>
+						}
 					>
 						<FormGroupWrapper>
 							<FormGroup row label={__('Catalog Visibility', 'multivendorx')} htmlFor="catalog-visibility">
 								<div ref={visibilityRef}>
 									<div className="catalog-visibility">
 										<span className="catalog-visibility-value">
-											<b>{VISIBILITY_LABELS[product.catalog_visibility]}</b>
+											{VISIBILITY_LABELS[product.catalog_visibility]}
 										</span>
 										<span
-											className="admin-badge blue"
 											onClick={() => {
 												setIsEditingVisibility((prev) => !prev);
 												setIsEditingStatus(false);
 											}}
 
 										>
-											<i className="adminfont-edit" />
+											<i className="adminfont-keyboard-arrow-down" />
 										</span>
 									</div>
 									{/* Edit catalog visibility */}
@@ -1146,18 +1623,6 @@ const AddProduct = () => {
 													}}
 												/>
 											</FormGroup>
-											<FormGroup>
-												<label
-													onClick={() => setstarFill((prev) => !prev)}
-													style={{ cursor: 'pointer' }}
-												>
-													<i
-														className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'
-															}`}
-													/>
-													{__('This is a featured product', 'multivendorx')}
-												</label>
-											</FormGroup>
 										</div>
 									)}
 								</div>
@@ -1170,16 +1635,15 @@ const AddProduct = () => {
 								<div ref={visibilityRef}>
 									<div className="catalog-visibility">
 										<span className="catalog-visibility-value">
-											<b>{STATUS_LABELS[product.status]}</b>
+											{STATUS_LABELS[product.status]}
 										</span>
 										<span
-											className="admin-badge blue"
 											onClick={() => {
 												setIsEditingStatus((prev) => !prev);
 												setIsEditingVisibility(false);
 											}}
 										>
-											<i className="adminfont-edit" />
+											<i className="adminfont-keyboard-arrow-down" />
 										</span>
 									</div>
 
@@ -1254,14 +1718,14 @@ const AddProduct = () => {
 							<FormGroup row label={__('Cataloged at', 'multivendorx')} htmlFor="status">
 								<div className="catalog-visibility">
 									<span className="catalog-visibility-value">
-										<b>{__('Dec 16, 2025', 'multivendorx')}</b>
+										{__('Dec 16, 2025', 'multivendorx')}
 									</span>
 								</div>
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
 
-					<Card
+					<Card contentHeight
 						title={__('Category', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
@@ -1428,7 +1892,7 @@ const AddProduct = () => {
 							</FormGroupWrapper>
 						</Card>
 					)}
-					<Card
+					<Card contentHeight
 						title="Product tag"
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle={true} // enable collapse/expand
@@ -1496,7 +1960,7 @@ const AddProduct = () => {
 					</Card>
 
 					{/* image upload */}
-					<Card
+					<Card contentHeight
 						title="Upload image"
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
@@ -1562,15 +2026,14 @@ const AddProduct = () => {
 						</FormGroupWrapper>
 					</Card>
 
-					<Card
+					 <Card
 						title={__('Visibility', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
-					>
-						{/* Product type */}
-						<FormGroupWrapper>
-							{/* Virtual / Downloadable */}
-							<FormGroup>
+					> 
+					 <FormGroupWrapper> 
+					{/* Virtual / Downloadable */}
+					 <FormGroup>
 								<div className="checkbox-wrapper">
 									<div className="item">
 										<input
@@ -1594,14 +2057,13 @@ const AddProduct = () => {
 										{__('Download', 'multivendorx')}
 									</div>
 								</div>
-							</FormGroup>
+							</FormGroup> 
 
-							{/* Catalog visibility summary */}
-							<FormGroup>
+					 <FormGroup>
 								<div className="catalog-visibility">
 									{__('Catalog Visibility:', 'multivendorx')}
 									<span className="catalog-visibility-value">
-										<b>{VISIBILITY_LABELS[product.catalog_visibility]}</b>
+										{VISIBILITY_LABELS[product.catalog_visibility]}
 									</span>
 									<span
 										className="admin-badge blue"
@@ -1614,10 +2076,10 @@ const AddProduct = () => {
 										<i className="adminfont-edit" />
 									</span>
 								</div>
-							</FormGroup>
+							</FormGroup> 
 
-							{/* Edit catalog visibility */}
-							{isEditingVisibility && (
+					{/* Edit catalog visibility */}
+					{isEditingVisibility && (
 								<>
 									<FormGroup>
 										<RadioInput
@@ -1656,10 +2118,10 @@ const AddProduct = () => {
 										</label>
 									</FormGroup>
 								</>
-							)}
+							)} 
 
-							{/* Status */}
-							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
+					{/* Status */}
+					 <FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 								<ToggleSetting
 
 									descClass="settings-metabox-description"
@@ -1671,10 +2133,10 @@ const AddProduct = () => {
 									value={product.status}
 									onChange={(value) => handleChange('status', value)}
 								/>
-							</FormGroup>
+							</FormGroup> 
 
-							{/* Publish date */}
-							{product.status === 'publish' && (
+					{/* Publish date */}
+					 {product.status === 'publish' && (
 								<label>{__('Published on Dec 16, 2025', 'multivendorx')}</label>
 							)}
 
@@ -1715,11 +2177,11 @@ const AddProduct = () => {
 										)}
 									</div>
 								</FormGroup>
-							)}
-						</FormGroupWrapper>
-					</Card>
+							)} 
+					</FormGroupWrapper>
+					 </Card> 
 				</Column>
-			</Container>
+			</Container >
 		</>
 	);
 };

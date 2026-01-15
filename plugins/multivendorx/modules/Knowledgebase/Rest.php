@@ -134,15 +134,13 @@ class Rest extends \WP_REST_Controller {
             $status_param = $request->get_param( 'status' );
             $search_field = sanitize_text_field( $request->get_param( 'searchField' ) );
 
-            $start_date_raw = sanitize_text_field( $request->get_param( 'startDate' ) );
-            $end_date_raw   = sanitize_text_field( $request->get_param( 'endDate' ) );
-
-            $start_timestamp = ! empty( $start_date_raw ) ? strtotime( preg_replace( '/\.\d+Z?$/', '', str_replace( 'T', ' ', $start_date_raw ) ) ) : false;
-            $end_timestamp   = ! empty( $end_date_raw ) ? strtotime( preg_replace( '/\.\d+Z?$/', '', str_replace( 'T', ' ', $end_date_raw ) ) ) : false;
-
-            $start_date = $start_timestamp ? gmdate( 'Y-m-d 00:00:00', $start_timestamp ) : '';
-            $end_date   = $end_timestamp ? gmdate( 'Y-m-d 23:59:59', $end_timestamp ) : '';
-
+            $dates = Utill::normalize_date_range(
+                $request->get_param('startDate'),
+                $request->get_param('endDate')
+            );
+    
+            $start_date = $dates['start_date'] ?? null;
+            $end_date   = $dates['end_date'] ?? null;
             /**
              * COUNT ONLY
              */
@@ -170,14 +168,19 @@ class Rest extends \WP_REST_Controller {
                 'order'          => 'DESC',
             );
 
-            if ( $start_date && $end_date ) {
-                $query_args['date_query'] = array(
-                    array(
-                        'after'     => $start_date,
-                        'before'    => $end_date,
-                        'inclusive' => true,
-                    ),
-                );
+            if (! empty($start_date) || ! empty($end_date)) {
+    
+                $date_query = array('inclusive' => true);
+    
+                if (! empty($start_date)) {
+                    $date_query['after'] = $start_date;
+                }
+    
+                if (! empty($end_date)) {
+                    $date_query['before'] = $end_date;
+                }
+    
+                $query_args['date_query'] = array($date_query);
             }
 
             if ( ! empty( $search_field ) ) {

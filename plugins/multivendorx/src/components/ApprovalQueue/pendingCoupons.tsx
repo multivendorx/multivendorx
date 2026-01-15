@@ -16,6 +16,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
+import { formatWcShortDate } from '@/services/commonFunction';
 
 type CouponRow = {
 	store_name: string;
@@ -63,6 +64,14 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 	const [rejectCouponId, setRejectCouponId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [store, setStore] = useState<any[] | null>(null);
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	useEffect(() => {
 		axios({
@@ -144,8 +153,8 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 	const formatDateToISO8601 = (date: Date) => date.toISOString().slice(0, 19);
 
 	const requestData = (
-		rowsPerPage :number,
-		currentPage :number,
+		rowsPerPage: number,
+		currentPage: number,
 		store = '',
 		orderBy = '',
 		order = '',
@@ -200,15 +209,19 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData(null);
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.store,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -241,16 +254,22 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 		},
 		{
 			name: 'date',
-			render: (updateFilter, filterValue) => (
+			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						onChange={(range: any) =>
-							updateFilter('date', {
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
+						onChange={(range: DateRange) => {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							})
-						}
-						value={filterValue}
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
+						}}
 					/>
 				</div>
 			),
@@ -328,16 +347,8 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 			enableSorting: true,
 			header: __('Date created', 'multivendorx'),
 			cell: ({ row }) => {
-				const rawDate = row.original.date_created;
-				const formattedDate = rawDate
-					? new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(new Date(rawDate))
-					: '-';
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.date_created)}</TableCell>
 				);
 			},
 		},

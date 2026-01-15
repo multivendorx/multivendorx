@@ -103,6 +103,7 @@ class Utill
         'tour_active'         => 'multivendorx_tour_active',
         'admin_email'         => 'admin_email',
         'default_role'        => 'default_role',
+        'revenue_mode_store'  => 'revenue_mode_store',
     );
 
     const WOO_SETTINGS = array(

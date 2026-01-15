@@ -124,7 +124,6 @@ class Transactions extends \WP_REST_Controller {
                 $request->get_param( 'startDate' ),
                 $request->get_param( 'endDate' )
             );
-    
             // Build args
             $args = array_filter(
                 array(

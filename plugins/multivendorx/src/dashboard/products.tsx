@@ -59,11 +59,7 @@ const stockStatusOptions = [
 	{ key: 'outofstock', name: 'Out of Stock' },
 	{ key: 'onbackorder', name: 'On Backorder' },
 ];
-const StatusOptions = [
-	{ key: '', name: 'Status' },
-	{ key: 'instock', name: 'Published' },
-	{ key: 'outofstock', name: 'Draft' },
-];
+
 const productTypeOptions = [
 	{ key: '', name: 'Product Type' },
 	{ key: 'simple', name: 'Simple Product' },
@@ -92,6 +88,17 @@ const AllProduct: React.FC = () => {
 	const navigate = useNavigate();
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
 	const basePath = siteUrl.replace(window.location.origin, '');
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	const params = new URLSearchParams(location.search);
 
@@ -386,20 +393,24 @@ const AllProduct: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData([]);
-		// Arguments must be passed in the exact order requestData expects them.
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
+	
 		requestData(
-			rowsPerPage, // 1: rowsPerPage
-			currentPage, // 2: currentPage
-			filterData?.category, // 3: category
-			filterData?.stock_status, // 4: stockStatus
-			filterData?.searchField, // 5: searchField (Assuming filterData uses searchField for the search box value)
-			filterData?.productType, // 6: productType
-			filterData?.date?.start_date, // 7: startDate
-			filterData?.date?.end_date, // 8: endDate
+			rowsPerPage,
+			currentPage,
+			filterData?.category,
+			filterData?.stock_status,
+			filterData?.searchField,
+			filterData?.productType,
+			date.start_date,
+			date.end_date,
 			filterData?.categoryFilter,
 			filterData?.languageFilter,
-		);
+		);	
 	};
 
 	const columns: ColumnDef<ProductRow>[] = [
@@ -446,17 +457,17 @@ const AllProduct: React.FC = () => {
 				<TableCell>
 					{row.original.stock_status === 'instock' && (
 						<span className="admin-badge green-color">
-							In Stock
+							{__('In Stock', 'multivendorx')}
 						</span>
 					)}
 					{row.original.stock_status === 'outofstock' && (
 						<span className="admin-badge red-color">
-							Out of Stock
+							{__('Out of Stock', 'multivendorx')}
 						</span>
 					)}
 					{row.original.stock_status === 'onbackorder' && (
 						<span className="admin-badge yellow-color">
-							On Backorder
+							{__('On Backorder', 'multivendorx')}
 						</span>
 					)}
 					{!row.original.stock_status && '-'}
@@ -485,7 +496,6 @@ const AllProduct: React.FC = () => {
 			),
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				const statusMap: Record<string, string> = {
@@ -502,7 +512,6 @@ const AllProduct: React.FC = () => {
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -657,42 +666,23 @@ const AllProduct: React.FC = () => {
 			),
 		},
 		{
-			name: 'status',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="group-field">
-					<select
-						name="status"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						{StatusOptions?.map((s: any) => (
-							<option key={s.key} value={s.key}>
-								{s.name}
-							</option>
-						))}
-					</select>
-				</div>
-			),
-		},
-		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];

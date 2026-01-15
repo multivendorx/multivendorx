@@ -9,6 +9,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import { Dialog } from '@mui/material';
+import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 
 export interface RealtimeFilter {
 	name: string;
@@ -63,6 +64,14 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 	});
 	const [pageCount, setPageCount] = useState(0);
 	const [store, setStore] = useState<any[] | null>(null);
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	// delete popup
 	const handleDeleteClick = (rowData: ReportRow) => {
@@ -222,16 +231,8 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 			enableSorting: true,
 			header: __('Date created', 'multivendorx'),
 			cell: ({ row }) => {
-				const rawDate = row.original.created_at;
-				const formattedDate = rawDate
-					? new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(new Date(rawDate))
-					: '-';
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.created_at)}</TableCell>
 				);
 			},
 		},
@@ -259,13 +260,13 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 
 	// 🔹 Fetch data from backend
 	function requestData(
-		rowsPerPage :number,
-		currentPage :number,
+		rowsPerPage: number,
+		currentPage: number,
 		store = '',
 		orderBy = '',
 		order = '',
-		startDate?: Date,
-		endDate?: Date
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		endDate = new Date()
 	) {
 		setData(null);
 
@@ -277,8 +278,8 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				page: currentPage,
 				row: rowsPerPage,
 				store_id: store,
-				start_date: startDate,
-				end_date: endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				orderBy,
 				order,
 			},
@@ -301,14 +302,19 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.store,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -342,16 +348,22 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 		},
 		{
 			name: 'date',
-			render: (updateFilter, filterValue) => (
+			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						onChange={(range: any) =>
-							updateFilter('date', {
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
+						onChange={(range: DateRange) => {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							})
-						}
-						value={filterValue}
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
+						}}
 					/>
 				</div>
 			),

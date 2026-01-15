@@ -226,7 +226,7 @@ class Dashboard extends \WP_REST_Controller {
                         'capability' => array( 'access_tools' ),
                     ),
                 ),
-                'capability' => array( 'capability' ),
+                'capability' => array( 'view_documentation' ),
             ),
             'settings'      => array(
                 'name'       => 'Settings',

@@ -108,9 +108,9 @@ const StoreCommission: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
+		rowsPerPage :number,
+		currentPage :number,
+		categoryFilter = '',
 		orderBy = '',
 		order = '',
 		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
@@ -125,7 +125,7 @@ const StoreCommission: React.FC = () => {
 				store_id: appLocalizer.store_id,
 				page: currentPage,
 				row: rowsPerPage,
-				status: typeCount === 'all' ? '' : typeCount,
+				status: categoryFilter === 'all' ? '' : categoryFilter,
 				orderBy,
 				order,
 				startDate: startDate ? formatLocalDate(startDate) : '',
@@ -182,6 +182,11 @@ const StoreCommission: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		setCurrentFilterData(filterData);
 		requestData(
 			rowsPerPage,
@@ -189,8 +194,8 @@ const StoreCommission: React.FC = () => {
 			filterData?.categoryFilter,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -230,8 +235,8 @@ const StoreCommission: React.FC = () => {
 				if (filterData?.store) {
 					params.store_id = filterData.store;
 				}
-				if (filterData?.typeCount && filterData.typeCount !== 'all') {
-					params.status = filterData.typeCount;
+				if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+					params.status = filterData.categoryFilter;
 				}
 
 				// If specific rows are selected, send their IDs
@@ -341,10 +346,10 @@ const StoreCommission: React.FC = () => {
 			}
 
 			if (
-				currentFilterData?.typeCount &&
-				currentFilterData.typeCount !== 'all'
+				currentFilterData?.categoryFilter &&
+				currentFilterData.categoryFilter !== 'all'
 			) {
-				params.status = currentFilterData.typeCount;
+				params.status = currentFilterData.categoryFilter;
 			}
 
 			const response = await axios({
@@ -370,7 +375,6 @@ const StoreCommission: React.FC = () => {
 			link.remove();
 			window.URL.revokeObjectURL(url);
 		} catch (error) {
-			console.error('Error exporting CSV:', error);
 			alert(
 				__('Failed to export CSV. Please try again.', 'multivendorx')
 			);

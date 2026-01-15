@@ -391,8 +391,6 @@ const Membership = ({ id }: { id: string }) => {
 	};
 	//  multicheckbox end
 
-
-
 	// nastes component start
 	const nestedFields = [
 		{
@@ -670,6 +668,8 @@ const Membership = ({ id }: { id: string }) => {
 		},
 	];
 
+	// checklish hide show 
+	const [isChecklistOpen, setIsChecklistOpen] = useState(false);
 
 	return (
 		<>
@@ -683,6 +683,38 @@ const Membership = ({ id }: { id: string }) => {
 			<SuccessNotice message={successMsg} />
 			<div className="general-wrapper">
 				<Container>
+					<Column>
+						<Card>
+							<div className={`checklist-wrapper row ${isChecklistOpen ? 'show' : 'hide'}`}>
+								<ul>
+									<li className="checked">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Product Name</div>
+											<div className="des">A clear, descriptive title that helps customers find your product</div>
+										</div>
+									</li>
+									<li className="checked">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Product Name</div>
+											<div className="des">A clear, descriptive title that helps customers find your product</div>
+										</div>
+									</li>
+									<li className="checked">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Product Name</div>
+											<div className="des">A clear, descriptive title that helps customers find your product</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div className="checklist-icon" onClick={() => setIsChecklistOpen((prev) => !prev)}>
+								<i className={`adminfont-next ${isChecklistOpen ? 'rotated' : ''}`}></i>
+							</div>
+						</Card>
+					</Column>
 					<Column grid={8}>
 						<Card
 							title="Plan details"
@@ -724,8 +756,6 @@ const Membership = ({ id }: { id: string }) => {
 								<FormGroup label="Name" htmlFor="product-name">
 									<BasicInput
 										name="name"
-
-
 										value={formData.name}
 										onChange={handleChange}
 									/>

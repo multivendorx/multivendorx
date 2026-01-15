@@ -121,18 +121,22 @@ class Payments {
 
         return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
     }
-
+	//this a hack need to fix later
+    private static $store_payment_settings = null;
     /**
      * Get all store payment settings.
      */
     public function get_all_store_payment_settings() {
+        if ( self::$store_payment_settings !== null ) {
+            return self::$store_payment_settings;
+        }
         $store_settings = array();
 
         foreach ( $this->providers as $provider ) {
                 $provider_obj                      = new $provider['class']();
                 $store_settings[ $provider['id'] ] = $provider_obj->get_store_payment_settings();
         }
-
+        self::$store_payment_settings = $store_settings;
         return $store_settings;
     }
 }

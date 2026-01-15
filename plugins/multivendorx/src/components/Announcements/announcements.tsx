@@ -27,7 +27,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import './announcements.scss';
-import { truncateText } from '@/services/commonFunction';
+import { formatLocalDate, truncateText } from '@/services/commonFunction';
 import { Dialog } from '@mui/material';
 
 type AnnouncementRow = {
@@ -416,8 +416,8 @@ export const Announcements: React.FC = () => {
 				page: currentPage,
 				row: rowsPerPage,
 				status: categoryFilter === 'all' ? '' : categoryFilter,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				searchField,
 			},
 		})
@@ -459,20 +459,24 @@ export const Announcements: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		const selectedStatus = announcementStatus?.find(
 			(status) => status.key === filterData?.categoryFilter
 		);
 
 		setTotalRows(selectedStatus ? selectedStatus.count : announcementStatus?.find(s => s.key === 'all')?.count || 0);
 
-		setData(null);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.categoryFilter,
 			filterData?.searchField,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 

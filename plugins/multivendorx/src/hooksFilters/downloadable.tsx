@@ -92,58 +92,60 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 	};
 
 	return (
-		<Card contentHeight
-			title={__('Downloadable', 'multivendorx')}
-			iconName="adminfont-pagination-right-arrow arrow-icon"
-			toggle
-		>
-			<DynamicRowSetting
-				keyName="downloads"
-				template={downloadTemplate}
-				value={product.downloads}
-				addLabel={__('Add new', 'multivendorx')}
-				onChange={(rows) => {
-					const cleanedRows = rows.map(({ upload, ...rest }) => rest);
+		// <Card contentHeight
+		// 	title={__('Downloadable', 'multivendorx')}
+		// 	iconName="adminfont-pagination-right-arrow arrow-icon"
+		// 	toggle
+		// >
+		<>
+			<FormGroup>
+				<DynamicRowSetting
+					keyName="downloads"
+					template={downloadTemplate}
+					value={product.downloads}
+					addLabel={__('Add new', 'multivendorx')}
+					onChange={(rows) => {
+						const cleanedRows = rows.map(({ upload, ...rest }) => rest);
 
-					setProduct((prev) => ({
-						...prev,
-						downloads: cleanedRows,
-					}));
-				}}
-			/>
+						setProduct((prev) => ({
+							...prev,
+							downloads: cleanedRows,
+						}));
+					}}
+				/>
+			</FormGroup>
 
-			<FormGroupWrapper>
-				<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
-					<BasicInput
-						name="download_limit"
-						type="number"
-						 
-						value={product.download_limit}
-						onChange={(e) =>
-							handleChange(
-								'download_limit',
-								e.target.value
-							)
-						}
-					/>
-				</FormGroup>
+			<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
+				<BasicInput
+					name="download_limit"
+					type="number"
 
-				<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
-					<BasicInput
-						name="download_expiry"
-						type="number"
-						 
-						value={product.download_expiry}
-						onChange={(e) =>
-							handleChange(
-								'download_expiry',
-								e.target.value
-							)
-						}
-					/>
-				</FormGroup>
-			</FormGroupWrapper>
-		</Card >
+					value={product.download_limit}
+					onChange={(e) =>
+						handleChange(
+							'download_limit',
+							e.target.value
+						)
+					}
+				/>
+			</FormGroup>
+
+			<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
+				<BasicInput
+					name="download_expiry"
+					type="number"
+
+					value={product.download_expiry}
+					onChange={(e) =>
+						handleChange(
+							'download_expiry',
+							e.target.value
+						)
+					}
+				/>
+			</FormGroup>
+		</>
+		// </Card >
 	);
 };
 

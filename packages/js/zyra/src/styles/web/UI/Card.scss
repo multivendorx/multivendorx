@@ -3,8 +3,9 @@
 .card-header {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 1rem;
-    margin-bottom: 1.5rem;
+    padding: 1.5rem 1rem 1rem;
+    background: #efefef;
+    border-radius: .313rem 0.313rem 0 0;
     align-items: start;
 
     .icon {
@@ -42,6 +43,10 @@
             display: flex;
             align-items: center;
             gap: 0.313rem;
+
+            .toggle-checkbox-header {
+                margin: 0;
+            }
         }
 
         span {
@@ -72,18 +77,14 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    border: 0.063rem solid #e5e5e5;
 
     .table-wrapper {
         border: $border-light-small;
     }
 
-    .card-header {
-        margin: 1.5rem;
-        margin-bottom: 0;
-    }
-
     .card-body {
-        padding: 1.5rem;
+        padding: 1rem;
         transition: all 0.5s ease;
         display: flex;
         flex-direction: column;
@@ -99,9 +100,9 @@
         }
 
         .card-header {
-            margin: 0;
+            // margin: 0;
             border-bottom: $border-light-small;
-            margin-bottom: 1rem;
+            // margin-bottom: 1rem;
         }
     }
 
@@ -113,16 +114,23 @@
             padding: 0;
         }
     }
-    &.content-width{
+
+    &.content-width {
         width: fit-content;
     }
-    &.content-height{
+
+    &.content-height {
         height: fit-content;
     }
-    &.theme-bg{
+
+    &.theme-bg {
+        .card-header {
+            background: transparent;
+        }
+
         background: $theme-background-color;
-        
     }
+
     &:has(.hide-body) {
         .card-content {
             border: none;
@@ -135,3 +143,91 @@
         }
     }
 }
+
+
+// checklist start common and delete
+.card-wrapper:has(.checklist-wrapper) {
+    height: fit-content;
+    position: sticky !important;
+    top: 5rem;
+    z-index: 9;
+}
+.card-wrapper:has(.checklist-wrapper.row) {
+    top: 2.125rem;
+}
+.checklist-wrapper {
+    .checklist-title {
+        font-size: 1.25rem;
+        color: $text-color;
+        font-weight: 600;
+    }
+
+    ul {
+        margin: 0;
+        list-style-type: none;
+
+        li {
+            margin: 1.125rem 0;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            gap: 0.45rem;
+            color: $text-color;
+
+            .check-icon {
+                width: 1.5rem;
+
+                span {
+                    width: 0.95rem;
+                    height: 0.95rem;
+                    display: inline-block;
+                    background: $background-color;
+                    border-radius: 50%;
+                    position: relative;
+                    font-family: adminfonts, sans-serif;
+                    padding: 0.063rem;
+                }
+            }
+
+            .details {
+                .title {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin-bottom: 0.313rem;
+                }
+
+                .des {
+                    font-size: 0.813rem;
+                }
+            }
+
+            &.checked {
+                span {
+                    background: $theme-color;
+
+
+                    &::before {
+                        position: absolute;
+                        content: "\e809";
+                        color: #fff;
+                        font-size: 0.95rem;
+                    }
+                }
+            }
+        }
+    }
+
+    &.row {
+        ul {
+            display: flex;
+            gap: 0.625rem;
+            justify-content: center;
+
+            li {
+                margin: 0;
+            }
+        }
+    }
+}
+
+// checklist end
