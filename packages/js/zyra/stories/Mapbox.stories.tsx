@@ -64,7 +64,7 @@ export const PredefinedLocation: Story = {
     );
   },
   args: {
-    apiKey: 'YOUR_MAPBOX_ACCESS_TOKEN', // Replace with valid token
+    apiKey: 'pk.eyJ1IjoibW91bWl0YTIyIiwiYSI6ImNsNm40YnlxMjA3MzQzZW1vNGUzdHU4cWQifQ.ylkBBpH4xHOlOBtII6373g', // Replace with valid token
     locationAddress: 'Empire State Building, NYC',
     labelSearch: 'Search for a location',
     labelMap: 'Select location on map',

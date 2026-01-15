@@ -1,6 +1,6 @@
 import MultiCheckbox from '../src/components/MultiCheckbox';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-
+import '../src/styles/common.scss';
 const meta: Meta<typeof MultiCheckbox> = {
     title: 'Zyra/Components/MultiCheckbox',
     component: MultiCheckbox,
@@ -153,7 +153,7 @@ export const TestMultiCheckboxSingle: Story = {
         ...commonProps,
     },
     render: (args) => {
-        return <MultiCheckbox key={'sample_checkbox'} {...args} />;
+        return <div className='multivendorx-main-wrapper' ><MultiCheckbox key={'sample_checkbox'} {...args} /></div>;
     },
 };
 
@@ -191,7 +191,7 @@ export const TestMultiCheckboxMulti: Story = {
         ...commonProps,
     },
     render: (args) => {
-        return <MultiCheckbox key={'sync-course-options'} {...args} />;
+        return <div className='multivendorx-main-wrapper' ><MultiCheckbox key={'sync-course-options'} {...args} /></div>;
     },
 };
 
@@ -217,7 +217,7 @@ export const TestMultiCheckboxMultiDefault: Story = {
         ...commonProps,
     },
     render: (args) => {
-        return <MultiCheckbox key={'sync-course-options'} {...args} />;
+        return <div className='multivendorx-main-wrapper' ><MultiCheckbox key={'sync-course-options'} {...args} /></div>;
     },
 };
 
@@ -252,6 +252,49 @@ export const TestSyncCheckboxMulti: Story = {
         onChange: () => change([''] as string[]),
     },
     render: (args) => {
-        return <MultiCheckbox key={'sync-course-options'} {...args} />;
+        return <div className='multivendorx-main-wrapper' ><MultiCheckbox key={'sync-course-options'} {...args} /></div>;
+    },
+};
+
+export const ProUnlocked: Story = {
+    args: {
+        khali_dabba: false,
+        description: `This is a pro setting unlocked example.`,
+        options: [
+            {
+                key: 'pro1',
+                label: 'Pro Option',
+                value: 'pro1',
+                proSetting: true,
+            },
+        ],
+        value: [],
+        ...commonProps,
+    },
+};
+
+export const RadioMode: Story = {
+    args: {
+        type: 'radio',
+        options: [
+            { key: 'r1', label: 'Radio 1', value: 'radio1' },
+            { key: 'r2', label: 'Radio 2', value: 'radio2' },
+        ],
+        value: ['radio1'],
+        khali_dabba: false,
+        ...commonProps,
+    },
+};
+
+export const PrePostText: Story = {
+    args: {
+        preText: '<strong>Before</strong>',
+        postText: '<em>After</em>',
+        options: [
+            { key: 'p', label: 'Wrapped Option', value: 'p' },
+        ],
+        value: [],
+        khali_dabba: false,
+        ...commonProps,
     },
 };

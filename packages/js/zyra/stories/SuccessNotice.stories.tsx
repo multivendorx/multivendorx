@@ -30,3 +30,24 @@ export const NoMessage: Story = {
         message: '', // component should render nothing
     },
 };
+
+export const CustomTitleOnly: Story = {
+    args: {
+        title: 'Done!',
+        message: 'Your changes were saved.',
+    },
+};
+
+export const CustomIconOnly: Story = {
+    args: {
+        message: 'Operation completed successfully.',
+        iconClass: 'adminfont-check-circle',
+    },
+};
+
+export const LongMessage: Story = {
+    args: {
+        message:
+            'Congratulations! Your operation was successful. You can now proceed to the next step in your workflow. If you need further assistance, feel free to reach out to our support team.',
+    },
+};

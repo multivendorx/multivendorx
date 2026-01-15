@@ -47,3 +47,38 @@ ProSetting.args = {
   inputClass: 'basic-input',
   proSetting: true,
 };
+
+export const TodayRange = Template.bind({});
+TodayRange.args = {};
+TodayRange.render = (args) => (
+  <MultiCalendarInput
+    {...args}
+    showLabel
+    value={{
+      startDate: new Date(),
+      endDate: new Date(),
+    }}
+  />
+);
+
+export const ThisWeek = Template.bind({});
+ThisWeek.render = (args) => {
+  const today = new Date();
+  const day = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  return (
+    <MultiCalendarInput
+      {...args}
+      showLabel
+      value={{
+        startDate: monday,
+        endDate: sunday,
+      }}
+    />
+  );
+};
+

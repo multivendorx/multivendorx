@@ -18,7 +18,7 @@ const sampleOptions: SelectOptions[] = [
     { value: 'option3', label: 'Option 3' },
 ];
 
-export const SingleSelect: Story = {
+export const SingleSelectWithPrePostText: Story = {
     args: {
         wrapperClass: 'select-wrapper-container',
         name: 'single-select',
@@ -42,10 +42,6 @@ export const MultiSelect: Story = {
         description: 'You can select multiple options.',
         descClass: 'description-text',
         preText: 'Start:',
-        postText: 'End',
-        selectDeselect: true,
-        selectDeselectClass: 'btn-deselect',
-        selectDeselectValue: 'Deselect All',
         onMultiSelectDeselectChange: (e) => {
             console.log('Deselect clicked', e);
         },
@@ -60,5 +56,44 @@ export const WithNoDefaultValue: Story = {
         type: 'single-select',
         description: 'No default value is selected.',
         descClass: 'description-text',
+    },
+};
+
+export const EmptyOptions: Story = {
+    args: {
+        wrapperClass: 'select-wrapper-container',
+        name: 'empty-select',
+        options: [],
+        type: 'single-select',
+        description: 'No options available.',
+        descClass: 'description-text',
+    },
+};
+
+export const NoPrePostText: Story = {
+    args: {
+        wrapperClass: 'select-wrapper-container',
+        name: 'no-pre-post',
+        options: sampleOptions,
+        value: 'option2',
+        type: 'single-select',
+        description: 'Select one option from the dropdown.',
+        descClass: 'description-text',
+    },
+};
+
+export const MultiSelectWithDeselect: Story = {
+    args: {
+        wrapperClass: 'select-wrapper-container',
+        name: 'multi-deselect',
+        options: sampleOptions,
+        value: ['option1', 'option2'],
+        type: 'multi-select',
+        selectDeselect: true,
+        selectDeselectClass: 'btn-deselect',
+        selectDeselectValue: 'Clear All',
+        onMultiSelectDeselectChange: () =>
+        console.log('Clear all clicked'),   
+        preText: 'Choose options:',
     },
 };
