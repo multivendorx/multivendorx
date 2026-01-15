@@ -44,6 +44,18 @@ const Transactions: React.FC = () => {
 		TransactionStatus[] | null
 	>(null);
 
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
+
 	// 🔹 Fetch total rows on mount or date change
 	useEffect(() => {
 		axios({
@@ -73,15 +85,15 @@ const Transactions: React.FC = () => {
 
 	// 🔹 Fetch data from backend
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
+		rowsPerPage :number,
+		currentPage :number,
+		categoryFilter = '',
 		transactionType = '',
 		transactionStatus = '',
 		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
-		setData([]);
+		setData(null);
 
 		axios({
 			method: 'GET',
@@ -93,30 +105,43 @@ const Transactions: React.FC = () => {
 				store_id: appLocalizer.store_id,
 				start_date: startDate,
 				end_date: endDate,
-				filter_status: typeCount == 'all' ? '' : typeCount,
+				filter_status: categoryFilter == 'all' ? '' : categoryFilter,
 				transaction_status: transactionStatus,
 				transaction_type: transactionType,
 			},
 		})
 			.then((response) => {
 				setData(response.data.transaction || []);
-				setTransactionStatus([
+				const statuses = [
+					{ key: 'all', name: 'All', count: response.data.all || 0 },
 					{
-						key: 'all',
-						name: 'All',
-						count: response.data.all || 0,
+						key: 'Completed',
+						name: 'Completed',
+						count: response.data.completed || 0,
 					},
 					{
-						key: 'Cr',
-						name: 'Credit',
-						count: response.data.credit || 0,
+						key: 'Processed',
+						name: 'Processed',
+						count: response.data.processed || 0,
 					},
 					{
-						key: 'Dr',
-						name: 'Debit',
-						count: response.data.debit || 0,
+						key: 'Upcoming',
+						name: 'Upcoming',
+						count: response.data.upcoming || 0,
 					},
-				]);
+					{
+						key: 'Failed',
+						name: 'Failed',
+						count: response.data.failed || 0,
+					},
+				];
+
+				// keep only items whose count is NOT zero
+				const filteredStatuses = statuses.filter(
+					(item) => item.count !== 0
+				);
+
+				setTransactionStatus(filteredStatuses);
 			})
 			.catch(() => setData([]));
 	}
@@ -129,7 +154,7 @@ const Transactions: React.FC = () => {
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
+			filterData?.categoryFilter,
 			filterData?.transactionType,
 			filterData?.transactionStatus,
 			filterData?.date?.start_date,
@@ -156,12 +181,10 @@ const Transactions: React.FC = () => {
 			),
 		},
 		{
-			id: 'id',
 			header: __('ID', 'multivendorx'),
 			cell: ({ row }) => <TableCell>#{row.original.id}</TableCell>,
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
@@ -195,10 +218,6 @@ const Transactions: React.FC = () => {
 			),
 		},
 		{
-			id: 'credit',
-			accessorKey: 'credit',
-			enableSorting: true,
-			accessorFn: (row) => parseFloat(row.credit || '0'),
 			header: __('Credit', 'multivendorx'),
 			cell: ({ row }) => {
 				const credit = row.original.credit;
@@ -212,10 +231,6 @@ const Transactions: React.FC = () => {
 			},
 		},
 		{
-			id: 'debit',
-			accessorKey: 'debit',
-			enableSorting: true,
-			accessorFn: (row) => parseFloat(row.debit || '0'),
 			header: __('Debit', 'multivendorx'),
 			cell: ({ row }) => {
 				const debit = row.original.debit;
@@ -229,10 +244,6 @@ const Transactions: React.FC = () => {
 			},
 		},
 		{
-			id: 'balance',
-			accessorKey: 'balance',
-			enableSorting: true,
-			accessorFn: (row) => parseFloat(row.balance || '0'),
 			header: __('Balance', 'multivendorx'),
 			cell: ({ row }) => {
 				const balance = row.original.balance;
@@ -321,19 +332,13 @@ const Transactions: React.FC = () => {
 						className="basic-select"
 					>
 						<option value="">
-							{__('Select Status', 'multivendorx')}
+							{__('Financial Transactions', 'multivendorx')}
 						</option>
-						<option value="Upcoming">
-							{__('Upcoming', 'multivendorx')}
+						<option value="Cr">
+							{__('Credit', 'multivendorx')}
 						</option>
-						<option value="Processed">
-							{__('Processed', 'multivendorx')}
-						</option>
-						<option value="Completed">
-							{__('Completed', 'multivendorx')}
-						</option>
-						<option value="Failed">
-							{__('Failed', 'multivendorx')}
+						<option value="Dr">
+							{__('Debit', 'multivendorx')}
 						</option>
 					</select>
 				</div>
@@ -342,16 +347,21 @@ const Transactions: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
@@ -386,7 +396,7 @@ const Transactions: React.FC = () => {
 						handlePagination={requestApiForData}
 						perPageOption={[10, 25, 50]}
 						totalCounts={totalRows}
-						typeCounts={transactionStatus as TransactionStatus[]}
+						categoryFilter={transactionStatus as TransactionStatus[]}
 					/>
 
 					{modalTransaction && (

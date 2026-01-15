@@ -53,19 +53,48 @@ const Orders: React.FC = () => {
 	const isViewOrder = hash.includes('view');
 	const isAddOrder = hash.includes('add');
 
-	useEffect(() => {
-		if (isViewOrder) {
-			const orderId = hash.split('view/')[1];
-			if (orderId) {
-				const foundOrder = data.find(
-					(o) => o.id.toString() === orderId
-				);
-				setSelectedOrder(foundOrder || null);
-			}
-		} else {
+	const fetchOrderById = async (orderId: string | number) => {
+		try {
+			const res = await axios.get(
+				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+					}
+				}
+			);
+
+			const order = res.data;
+
+			setSelectedOrder(order);
+
+		} catch (error) {
 			setSelectedOrder(null);
 		}
+	};
+
+	useEffect(() => {
+		if (!isViewOrder) {
+			setSelectedOrder(null);
+			return;
+		}
+
+		const orderId = hash.split('view/')[1];
+		if (!orderId) return;
+
+		const foundOrder = data?.find(
+			(o) => o.id.toString() === orderId.toString()
+		);
+
+		if (foundOrder) {
+			setSelectedOrder(foundOrder);
+		} else {
+			fetchOrderById(orderId);
+		}
 	}, [hash, data]);
+
 
 	const selectedOrderIds = Object.keys(rowSelection)
 		.map((key) => {

@@ -156,8 +156,8 @@ const Qna: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage :number,
+		currentPage :number,
 		categoryFilter = 'no_answer',
 		store = '',
 		searchField = '',
@@ -230,7 +230,6 @@ const Qna: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData(null);
 		requestData(
 			rowsPerPage,
 			currentPage,

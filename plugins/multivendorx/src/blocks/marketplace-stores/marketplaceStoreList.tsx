@@ -38,6 +38,8 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const storesList = (window as any).storesList;
 	const settings = storesList.settings_databases_value;
 
+	const [isUserLocation, setIsUserLocation] = useState(false);
+
 	useEffect(() => {
 		if (!settings?.geolocation) return;
 
@@ -72,7 +74,9 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		order: order,
 		category: category,
 		product: '',
-	});
+		location_lat: '',
+		location_lng: '',
+	  });	  
 
 	useEffect(() => {
 		axios
@@ -187,6 +191,31 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		}));
 	};
 
+	const requestUserLocation = () => {
+		if (!navigator.geolocation) return;
+	
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				const lat = position.coords.latitude.toString();
+				const lng = position.coords.longitude.toString();
+	
+				setIsUserLocation(true);
+	
+				setFilters((prev) => ({
+					...prev,
+					location_lat: lat,
+					location_lng: lng,
+				}));
+	
+				setAddressData((prev) => ({
+					...prev,
+					location_lat: lat,
+					location_lng: lng,
+					location_address: 'My Current Location',
+				}));
+			}
+		);
+	};	
 
 	const renderMapComponent = () => {
 		if (!modules.includes('geo-location') || !apiKey) {
@@ -198,11 +227,13 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 			locationAddress: addressData.location_address,
 			locationLat: addressData.location_lat,
 			locationLng: addressData.location_lng,
+			isUserLocation,
 			onLocationUpdate: handleLocationUpdate,
 			labelSearch: __('Search for a location'),
 			labelMap: __('Drag or click on the map to choose a location'),
 			instructionText: __('Enter a search term or drag/drop a pin on the map.'),
 			placeholderSearch: __('Search for a location...'),
+			stores: { data },
 		};
 
 		switch (settings.geolocation.choose_map_api) {
@@ -222,6 +253,9 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 			{renderMapComponent()}
 			<div className="">
 				{/* Filter Bar */}
+				<button onClick={requestUserLocation}>
+					Use My Current Location
+				</button>
 				<input
 					type="text"
 					name="address"

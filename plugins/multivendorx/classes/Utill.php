@@ -458,4 +458,29 @@ class Utill
 
         add_filter('icl_ls_languages', '__return_empty_array');
     }
+
+    public static function normalize_date_range( $start_raw, $end_raw ) {
+        $start_raw = sanitize_text_field( $start_raw );
+        $end_raw   = sanitize_text_field( $end_raw );
+    
+        $start_date = '';
+        $end_date   = '';
+    
+        if ( $start_raw && $end_raw ) {
+            // Site timezone (WordPress standard)
+            $timezone = wp_timezone();
+    
+            $start_dt = new \DateTime( $start_raw . ' 00:00:00', $timezone );
+            $end_dt   = new \DateTime( $end_raw . ' 23:59:59', $timezone );
+    
+            $start_date = $start_dt->format( 'Y-m-d H:i:s' );
+            $end_date   = $end_dt->format( 'Y-m-d H:i:s' );
+        }
+    
+        return [
+            'start_date' => $start_date,
+            'end_date'   => $end_date,
+        ];
+    }
+    
 }

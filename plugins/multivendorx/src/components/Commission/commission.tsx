@@ -19,7 +19,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import ViewCommission from './viewCommission';
-import { formatCurrency } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWcShortDate, } from '../../services/commonFunction';
 
 export interface RealtimeFilter {
 	name: string;
@@ -65,7 +65,7 @@ type CommissionRow = {
 type FilterData = {
 	searchAction?: string;
 	searchField?: string;
-	typeCount?: any;
+	categoryFilter?: string;
 	store?: string;
 	order?: any;
 	orderBy?: any;
@@ -99,20 +99,16 @@ const DownloadCSVButton: React.FC<{
 			// Prepare parameters for CSV download
 			const params: any = {
 				format: 'csv',
-				startDate: filterData?.date?.start_date
-					? filterData.date.start_date.toISOString().split('T')[0]
-					: '',
-				endDate: filterData?.date?.end_date
-					? filterData.date.end_date.toISOString().split('T')[0]
-					: '',
+				startDate:formatLocalDate(filterData.date.start_date ?? ''),
+				endDate:formatLocalDate(filterData.date.end_date??''),
 			};
 
 			// Add filters if present
 			if (filterData?.store) {
 				params.store_id = filterData.store;
 			}
-			if (filterData?.typeCount && filterData.typeCount !== 'all') {
-				params.status = filterData.typeCount;
+			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+				params.status = filterData.categoryFilter;
 			}
 
 			// If specific rows are selected, send their IDs
@@ -209,114 +205,21 @@ const Commission: React.FC = () => {
 		pageIndex: 0,
 		pageSize: 10,
 	});
-
 	const [commissionStatus, setCommissionStatus] = useState<
 		CommissionStatus[] | null
 	>(null);
 	const [pageCount, setPageCount] = useState(0);
-
-	// Fetch total rows on mount
-	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		})
-			.then((response) => {
-				setStore(response.data.stores);
-			})
-			.catch(() => {
-				setStore([]);
-			});
-
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'commission'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { count: true },
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(Math.ceil(response.data / pagination.pageSize));
-			})
-			.catch(() => { });
-	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, [pagination]);
-
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
-		store = '',
-		orderBy = '',
-		order = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
-	) {
-		setData(null);
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'commission'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				status: typeCount === 'all' ? '' : typeCount,
-				store_id: store,
-				orderBy,
-				order,
-				startDate,
-				endDate,
-			},
-		})
-			.then((response) => {
-				setData(response.data.commissions || []);
-
-				const statuses = [
-					{ key: 'all', name: 'All', count: response.data.all || 0 },
-					{
-						key: 'paid',
-						name: 'Paid',
-						count: response.data.paid || 0,
-					},
-					{
-						key: 'unpaid',
-						name: 'Unpaid',
-						count: response.data.unpaid || 0,
-					},
-					{
-						key: 'refunded',
-						name: 'Refunded',
-						count: response.data.refunded || 0,
-					},
-					{
-						key: 'partially_refunded',
-						name: 'Partially Refunded',
-						count: response.data.partially_refunded || 0,
-					},
-					{
-						key: 'cancelled',
-						name: 'Cancelled',
-						count: response.data.cancelled || 0,
-					},
-				];
-
-				// Remove items where count === 0
-				setCommissionStatus(
-					statuses.filter((status) => status.count > 0)
-				);
-			})
-			.catch(() => {
-				setData([]);
-			});
-	}
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	const actionButton: RealtimeFilter[] = [
 		{
@@ -341,20 +244,16 @@ const Commission: React.FC = () => {
 				// Prepare parameters for CSV download - NO pagination params
 				const params: any = {
 					format: 'csv',
-					startDate: filterData?.date?.start_date
-						? filterData.date.start_date.toISOString().split('T')[0]
-						: '',
-					endDate: filterData?.date?.end_date
-						? filterData.date.end_date.toISOString().split('T')[0]
-						: '',
+					startDate:formatLocalDate(filterData.date.start_date ?? ''),
+					endDate:formatLocalDate(filterData.date.end_date??''),
 				};
 
 				// Add filters if present
 				if (filterData?.store) {
 					params.store_id = filterData.store;
 				}
-				if (filterData?.typeCount && filterData.typeCount !== 'all') {
-					params.status = filterData.typeCount;
+				if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+					params.status = filterData.categoryFilter;
 				}
 
 				// Make API request for CSV
@@ -411,6 +310,130 @@ const Commission: React.FC = () => {
 		);
 	};
 
+	const handleSingleAction = (action: string, row: any) => {
+		let commissionId = row.id;
+
+		if (!commissionId) {
+			return;
+		}
+
+		axios({
+			method: 'PUT',
+			url: getApiLink(appLocalizer, `commission/${commissionId}`),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			data: { action, orderId: row?.orderId },
+		})
+			.then(() => {
+				requestData(pagination.pageSize, pagination.pageIndex + 1);
+			})
+			.catch(console.error);
+	};
+
+	// Fetch data from backend.
+	function requestData(
+		rowsPerPage: number,
+		currentPage: number,
+		categoryFilter = '',
+		store = '',
+		orderBy = '',
+		order = '',
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		endDate = new Date(),
+	) {
+		setData(null);
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'commission'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				page: currentPage,
+				row: rowsPerPage,
+				status: categoryFilter === 'all' ? '' : categoryFilter,
+				store_id: store,
+				orderBy,
+				order,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',				
+			},
+		})
+			.then((response) => {
+				setData(response.data.commissions || []);
+
+				setTotalRows(response.data.all || 0);
+				setPageCount(Math.ceil(response.data.all / pagination.pageSize));
+
+				const statuses = [
+					{ key: 'all', name: 'All', count: response.data.all || 0 },
+					{
+						key: 'paid',
+						name: 'Paid',
+						count: response.data.paid || 0,
+					},
+					{
+						key: 'unpaid',
+						name: 'Unpaid',
+						count: response.data.unpaid || 0,
+					},
+					{
+						key: 'refunded',
+						name: 'Refunded',
+						count: response.data.refunded || 0,
+					},
+					{
+						key: 'partially_refunded',
+						name: 'Partially Refunded',
+						count: response.data.partially_refunded || 0,
+					},
+					{
+						key: 'cancelled',
+						name: 'Cancelled',
+						count: response.data.cancelled || 0,
+					},
+				];
+
+				// Remove items where count === 0
+				setCommissionStatus(
+					statuses.filter((status) => status.count > 0)
+				);
+			})
+			.catch(() => {
+				setData([]);
+			});
+	}
+
+	// Fetch total rows on mount
+	useEffect(() => {
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'store'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+		})
+			.then((response) => {
+				setStore(response.data.stores);
+			})
+			.catch(() => {
+				setStore([]);
+			});
+
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'commission'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: { count: true },
+		})
+			.then((response) => {
+				setTotalRows(response.data || 0);
+				setPageCount(Math.ceil(response.data / pagination.pageSize));
+			})
+			.catch(() => { });
+	}, []);
+
+	useEffect(() => {
+		const currentPage = pagination.pageIndex + 1;
+		const rowsPerPage = pagination.pageSize;
+		requestData(rowsPerPage, currentPage);
+	}, [pagination]);
+
 	// Handle pagination and filter changes
 	const requestApiForData = (
 		rowsPerPage: number,
@@ -418,11 +441,10 @@ const Commission: React.FC = () => {
 		filterData: FilterData
 	) => {
 		setCurrentFilterData(filterData);
-		setData(null);
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
+			filterData?.categoryFilter,
 			filterData?.store,
 			filterData?.orderBy,
 			filterData?.order,
@@ -430,6 +452,7 @@ const Commission: React.FC = () => {
 			filterData?.date?.end_date
 		);
 	};
+
 	// Column definitions (your existing columns remain the same)
 	const columns: ColumnDef<CommissionRow>[] = [
 		{
@@ -450,9 +473,6 @@ const Commission: React.FC = () => {
 			),
 		},
 		{
-			id: 'id',
-			accessorKey: 'ID',
-			enableSorting: true,
 			header: __('ID', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell title={'id'}>
@@ -501,9 +521,6 @@ const Commission: React.FC = () => {
 			},
 		},
 		{
-			id: 'total_order_amount',
-			accessorKey: 'total_order_amount',
-			enableSorting: true,
 			header: __('Order Amount', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -518,8 +535,6 @@ const Commission: React.FC = () => {
 			),
 		},
 		{
-			id: 'commission-summary',
-			enableSorting: true,
 			header: __('Commission Summary', 'multivendorx'),
 			cell: ({ row }) => {
 				const isExpanded = expandedRows[row.original.id!];
@@ -677,9 +692,6 @@ const Commission: React.FC = () => {
 			},
 		},
 		{
-			id: 'store_payable',
-			accessorKey: 'store_payable',
-			enableSorting: true,
 			header: __('Store Earning', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell title={''}>
@@ -688,9 +700,6 @@ const Commission: React.FC = () => {
 			),
 		},
 		{
-			id: 'marketplace_payable',
-			accessorKey: 'marketplace_payable',
-			enableSorting: true,
 			header: __('Marketplace Earning', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell title={''}>
@@ -699,7 +708,6 @@ const Commission: React.FC = () => {
 			),
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
@@ -710,31 +718,13 @@ const Commission: React.FC = () => {
 			accessorKey: 'created_at',
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
-			cell: ({ row }) => {
-				const date = row.original.createdAt;
-				if (!date) {
-					return <TableCell>-</TableCell>;
-				}
-
-				// Format the date for display
-				const formattedDate = new Date(date).toLocaleDateString(
-					'en-US',
-					{
-						year: 'numeric',
-						month: 'short',
-						day: 'numeric',
-					}
-				);
-
-				return (
-					<TableCell title={`${formattedDate}`}>
-						{formattedDate}
-					</TableCell>
-				);
-			},
+			cell: ({ row }) => (
+				<TableCell title={''}>
+					{formatWcShortDate(row.original.createdAt)}
+				</TableCell>
+			),
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -767,25 +757,6 @@ const Commission: React.FC = () => {
 		},
 	];
 
-	const handleSingleAction = (action: string, row: any) => {
-		let commissionId = row.id;
-
-		if (!commissionId) {
-			return;
-		}
-
-		axios({
-			method: 'PUT',
-			url: getApiLink(appLocalizer, `commission/${commissionId}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: { action, orderId: row?.orderId },
-		})
-			.then(() => {
-				requestData(pagination.pageSize, pagination.pageIndex + 1);
-			})
-			.catch(console.error);
-	};
-
 	const realtimeFilter: RealtimeFilter[] = [
 		{
 			name: 'store',
@@ -817,11 +788,18 @@ const Commission: React.FC = () => {
 			name: 'date',
 			render: (updateFilter) => (
 				<MultiCalendarInput
-					onChange={(range: any) => {
-						updateFilter('date', {
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
 							start_date: range.startDate,
 							end_date: range.endDate,
-						});
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
 					}}
 				/>
 			),
@@ -840,31 +818,31 @@ const Commission: React.FC = () => {
 			/>
 			<Container general>
 				<Column>
-				<Table
-					data={data}
-					columns={
-						columns as ColumnDef<Record<string, any>, any>[]
-					}
-					rowSelection={rowSelection}
-					onRowSelectionChange={setRowSelection}
-					defaultRowsPerPage={10}
-					realtimeFilter={realtimeFilter}
-					pageCount={pageCount}
-					pagination={pagination}
-					onPaginationChange={setPagination}
-					handlePagination={requestApiForData}
-					perPageOption={[10, 25, 50]}
-					typeCounts={commissionStatus as CommissionStatus}
-					bulkActionComp={() => (
-						<BulkActions
-							selectedRows={rowSelection}
-							data={data}
-							filterData={currentFilterData}
-						/>
-					)}
-					totalCounts={totalRows}
-					actionButton={actionButton}
-				/>
+					<Table
+						data={data}
+						columns={
+							columns as ColumnDef<Record<string, any>, any>[]
+						}
+						rowSelection={rowSelection}
+						onRowSelectionChange={setRowSelection}
+						defaultRowsPerPage={10}
+						realtimeFilter={realtimeFilter}
+						pageCount={pageCount}
+						pagination={pagination}
+						onPaginationChange={setPagination}
+						handlePagination={requestApiForData}
+						perPageOption={[10, 25, 50]}
+						categoryFilter={commissionStatus as CommissionStatus}
+						bulkActionComp={() => (
+							<BulkActions
+								selectedRows={rowSelection}
+								data={data}
+								filterData={currentFilterData}
+							/>
+						)}
+						totalCounts={totalRows}
+						actionButton={actionButton}
+					/>
 				</Column>
 			</Container>
 			{viewCommission && selectedCommissionId !== null && (

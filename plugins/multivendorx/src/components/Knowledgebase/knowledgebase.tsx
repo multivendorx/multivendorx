@@ -47,8 +47,8 @@ type AnnouncementStatus = {
 	count: number;
 };
 type FilterData = {
-	categoryFilter?: any;
-	searchField?: any;
+	categoryFilter?: string;
+	searchField?: string;
 };
 export interface RealtimeFilter {
 	name: string;
@@ -72,7 +72,6 @@ export const KnowledgeBase: React.FC = () => {
 	>(null);
 	const [pageCount, setPageCount] = useState(0);
 	const [editId, setEditId] = useState<number | null>(null);
-	const [error, setError] = useState<string | null>(null);
 	const [formData, setFormData] = useState<KBForm>({
 		title: '',
 		content: '',
@@ -141,7 +140,6 @@ export const KnowledgeBase: React.FC = () => {
 		setAddEntry(false);
 		setFormData({ title: '', content: '', status: 'pending' }); // reset form
 		setEditId(null); // reset edit mode
-		setError(null); // clear any error
 		setValidationErrors({});
 	};
 	// Handle input changes
@@ -190,7 +188,7 @@ export const KnowledgeBase: React.FC = () => {
 			requestData(pagination.pageSize, pagination.pageIndex + 1);
 			setRowSelection({});
 		} catch (err) {
-			setError(__('Failed to perform bulk action', 'multivendorx'));
+			console.log(__('Failed to perform bulk action', 'multivendorx'));
 		}
 	};
 
@@ -213,7 +211,7 @@ export const KnowledgeBase: React.FC = () => {
 				setAddEntry(true);
 			}
 		} catch {
-			setError(__('Failed to load entry', 'multivendorx'));
+			console.log(__('Failed to load entry', 'multivendorx'));
 		}
 	};
 
@@ -246,11 +244,9 @@ export const KnowledgeBase: React.FC = () => {
 				handleCloseForm();
 				await fetchTotalRows();
 				requestData(pagination.pageSize, pagination.pageIndex + 1);
-			} else {
-				setError(__('Failed to save entry', 'multivendorx'));
 			}
 		} catch {
-			setError(__('Failed to save entry', 'multivendorx'));
+			console.log(__('Failed to save entry', 'multivendorx'));
 		} finally {
 			setSubmitting(false);
 		}
@@ -269,7 +265,7 @@ export const KnowledgeBase: React.FC = () => {
 			setTotalRows(total);
 			setPageCount(Math.ceil(total / pagination.pageSize));
 		} catch {
-			setError(__('Failed to load total rows', 'multivendorx'));
+			console.log(__('Failed to load total rows', 'multivendorx'));
 		}
 	};
 
@@ -334,7 +330,6 @@ export const KnowledgeBase: React.FC = () => {
 				setAnnouncementStatus(statuses.filter((s) => s.count > 0));
 			})
 			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
 				setData([]);
 			});
 	}

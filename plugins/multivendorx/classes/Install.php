@@ -929,4 +929,64 @@ By signing and submitting, the Seller accepts all terms above.
             wp_insert_post( $page_data );
         }
     }
+
+    /**
+     * Migrate old Multivendorx settings 
+     * @return void
+     */
+    public function migrate_old_settings() {
+         $previous_capability_settings = get_option( 'mvx_products_capability_tab_settings', [] );
+
+        if (!empty($previous_capability_settings['is_submit_product'])) {
+            $store_permissions['products'] = array('read_products', 'add_products');
+        }
+        if (!empty($previous_capability_settings['is_published_product'])) {
+            $store_permissions['products'] = array('publish_products');
+        }
+        if (!empty($previous_capability_settings['is_edit_delete_published_product'])) {
+            $store_permissions['products'] = array('edit_published_products');
+        }
+        if (!empty($previous_capability_settings['publish_and_submit_products'])) {
+            $store_permissions['products'] = array('edit_approved_products');
+        }
+
+        if (!empty($previous_capability_settings['is_submit_coupon'])) {
+            $store_permissions['coupons'] = array('add_shop_coupons', 'read_shop_coupons');
+        }
+        if (!empty($previous_capability_settings['is_published_coupon'])) {
+            $store_permissions['coupons'] = array('publish_coupons');
+        }
+        if (!empty($previous_capability_settings['is_edit_delete_published_coupon'])) {
+            $store_permissions['coupons'] = array('edit_shop_coupons');
+        }
+        update_option( Utill::MULTIVENDORX_SETTINGS['store-capability'], $store_permissions );
+
+        $previous_product_settings = get_option( 'mvx_products_tab_settings', [] );
+        $product_settings = array(
+            'type_options'    => !empty($previous_product_settings['type_options']) ? $previous_product_settings['type_options'] : array(),
+            'products_fields' => !empty($previous_product_settings['products_fields']) ? $previous_product_settings['products_fields'] : array(),
+            );
+        update_option( Utill::MULTIVENDORX_SETTINGS['product-preferencess'], $product_settings );
+            
+        $previous_general_settings = get_option( 'mvx_settings_general_tab_settings', [] );
+        $general_settings = array(
+            'approve_store' => !empty($previous_general_settings['approve_vendor']) ? $previous_general_settings['approve_vendor'] : 'manually',
+        );
+        update_option( Utill::MULTIVENDORX_SETTINGS['general'], $general_settings );
+
+        $privacy_settings = array(
+            'store_branding_details' => !empty($general_settings['display_product_seller']) ? array('show_store_name', 'show_store_description', 'show_store_logo_next_to_products') : array(),
+            'store_order_display' => !empty($general_settings['display_product_seller']) ? array('group_items_by_store_in_cart') : array(),
+        );
+        update_option( Utill::MULTIVENDORX_SETTINGS['privacy'], $privacy_settings );
+
+        $previous_store_settings = get_option( 'mvx_store_tab_settings', [] );
+
+        if (!empty($previous_store_settings['mvx_hide_vendor_details'])) {
+            $privacy_settings['store_branding_details'] = array();
+            $privacy_settings['store_contact_details'] = array();
+        }
+        update_option( Utill::MULTIVENDORX_SETTINGS['privacy'], $privacy_settings );
+
+    }
 }

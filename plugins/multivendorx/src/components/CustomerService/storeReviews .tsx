@@ -50,11 +50,11 @@ type Status = {
 
 type FilterData = {
 	searchField: string;
-	typeCount?: any;
+	categoryFilter?: string;
 	store?: string;
 	rating?: string;
-	orderBy?: any;
-	order?: any;
+	orderBy?: string;
+	order?: string;
 };
 
 export interface RealtimeFilter {
@@ -153,9 +153,9 @@ const StoreReviews: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
+		rowsPerPage :number,
+		currentPage :number,
+		categoryFilter = '',
 		store = '',
 		rating = '',
 		searchField = '',
@@ -172,7 +172,7 @@ const StoreReviews: React.FC = () => {
 			params: {
 				page: currentPage,
 				row: rowsPerPage,
-				status: typeCount === 'all' ? '' : typeCount,
+				status: categoryFilter === 'all' ? '' : categoryFilter,
 				store_id: store,
 				overall_rating: rating,
 				searchField,
@@ -220,7 +220,7 @@ const StoreReviews: React.FC = () => {
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
+			filterData?.categoryFilter,
 			filterData?.store,
 			filterData?.rating,
 			filterData?.searchField,
@@ -312,26 +312,6 @@ const StoreReviews: React.FC = () => {
 		},
 	];
 
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<div className="search-section">
-					<input
-						name="searchField"
-						type="text"
-						placeholder={__('Search', 'multivendorx')}
-						onChange={(e) => {
-							updateFilter(e.target.name, e.target.value);
-						}}
-						value={filterValue || ''}
-					/>
-					<i className="adminfont-search"></i>
-				</div>
-			),
-		},
-	];
-
 	// 🔹 Handle reply saving
 	const handleSaveReply = async () => {
 		if (!selectedReview) {
@@ -395,7 +375,6 @@ const StoreReviews: React.FC = () => {
 			),
 		},
 		{
-			id: 'customer',
 			header: __('Customer', 'multivendorx'),
 			cell: ({ row }) => {
 				const { customer_id, customer_name } = row.original;
@@ -590,7 +569,7 @@ const StoreReviews: React.FC = () => {
 				handlePagination={requestApiForData}
 				perPageOption={[10, 25, 50]}
 				totalCounts={totalRows}
-				typeCounts={status as Status[]}
+				categoryFilter={status as Status[]}
 				realtimeFilter={realtimeFilter}
 			/>
 			{selectedReview && (

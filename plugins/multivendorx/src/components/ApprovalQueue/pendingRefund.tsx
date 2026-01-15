@@ -67,7 +67,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [store, setStore] = useState<any[]>([]);
-	const [error, setError] = useState<string | null>(null);
 	const [popupOpen, setPopupOpen] = useState(false);
 	const [formData, setFormData] = useState({ content: '' });
 	const [viewOrder, setViewOrder] = useState<StoreRow | null>(null);
@@ -84,7 +83,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			})
 			.then((response) => setStore(response.data.stores || []))
 			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
 				setStore([]);
 			});
 
@@ -105,9 +103,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				setTotalRows(total);
 				setPageCount(Math.ceil(total / pagination.pageSize));
 			})
-			.catch(() => {
-				setError(__('Failed to load total rows', 'multivendorx'));
-			});
 	}, []);
 
 	useEffect(() => {
@@ -214,7 +209,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				setData(orders);
 			})
 			.catch((error) => {
-				setError(__('Failed to load order data', 'multivendorx'));
 				setData([]);
 			});
 	};
@@ -356,7 +350,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			requestData(pagination.pageSize, pagination.pageIndex + 1);
 			onUpdated?.();
 		} catch (err) {
-			setError(__('Failed to reject order', 'multivendorx'));
+			console.log(err)
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -505,7 +499,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						searchFilter={searchFilter}
 						totalCounts={totalRows}
 					/>
-					{error && <div className="error-message">{error}</div>}
 					<CommonPopup
 						open={popupOpen}
 						onClose={handleCloseForm}

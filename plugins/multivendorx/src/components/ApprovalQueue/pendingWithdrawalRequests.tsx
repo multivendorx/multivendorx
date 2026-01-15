@@ -55,8 +55,8 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 	}, [pagination]);
 
 	// Fetch data from backend.
-	function requestData(rowsPerPage = 10, currentPage = 1) {
-		setData([]);
+	function requestData(rowsPerPage :number, currentPage :number) {
+		setData(null);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'store'),
@@ -78,7 +78,6 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 
 	// Handle pagination and filter changes
 	const requestApiForData = (rowsPerPage: number, currentPage: number) => {
-		setData(null);
 		requestData(rowsPerPage, currentPage);
 	};
 	const handleSingleAction = (action: string, row: any) => {
@@ -186,7 +185,6 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 					onPaginationChange={setPagination}
 					handlePagination={requestApiForData}
 					perPageOption={[10, 25, 50]}
-					typeCounts={[]}
 				/>
 			</div>
 		</>

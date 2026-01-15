@@ -83,8 +83,8 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 	const formatDateToISO8601 = (date: Date) => date.toISOString().slice(0, 19);
 
 	const requestData = (
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage:number,
+		currentPage :number,
 		store = '',
 		orderBy = '',
 		order = '',
@@ -204,7 +204,6 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData(null);
 		requestData(
 			rowsPerPage,
 			currentPage,
@@ -236,7 +235,6 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 			),
 		},
 		{
-			id: 'product',
 			header: __('Product', 'multivendorx'),
 			cell: ({ row }) => {
 				const product = row.original;
@@ -408,7 +406,6 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				onPaginationChange={setPagination}
 				handlePagination={requestApiForData}
 				perPageOption={[10, 25, 50]}
-				typeCounts={[]}
 				totalCounts={totalRows}
 				realtimeFilter={realtimeFilter}
 			/>

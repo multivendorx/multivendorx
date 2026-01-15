@@ -45,6 +45,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			setOrderItems([]); // reset
 			return;
 		}
+		setOrderItems(null);
 
 		axios({
 			method: 'GET',
@@ -124,7 +125,6 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							} else {
 								setShippingItems([]);
 							}
-
 							//Convert WooCommerce line_items → OrderItem[]
 							if (Array.isArray(order.line_items)) {
 								const fetchProductImages = order.line_items.map(

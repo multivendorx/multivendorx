@@ -145,7 +145,6 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 			),
 		},
 		{
-			id: 'product',
 			header: __('Product', 'multivendorx'),
 			cell: ({ row }) => {
 				const product = row.original;
@@ -237,7 +236,6 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -261,8 +259,8 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 
 	// 🔹 Fetch data from backend
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage :number,
+		currentPage :number,
 		store = '',
 		orderBy = '',
 		order = '',

@@ -140,12 +140,14 @@ class Rest extends \WP_REST_Controller {
             $status_param = sanitize_key( $request->get_param( 'status' ) );
             $search_field = sanitize_text_field( $request->get_param( 'searchField' ) );
 
-            // ----- Date Filter -----
-            $start_raw = sanitize_text_field( $request->get_param( 'startDate' ) );
-            $end_raw   = sanitize_text_field( $request->get_param( 'endDate' ) );
+            $dates = Utill::normalize_date_range(
+                $request->get_param( 'startDate' ),
+                $request->get_param( 'endDate' )
+            );
 
-            $start_date = $start_raw ? gmdate( 'Y-m-d H:i:s', strtotime( $start_raw ) ) : '';
-            $end_date   = $end_raw ? gmdate( 'Y-m-d H:i:s', strtotime( $end_raw ) ) : '';
+            $start_date = $dates['start_date'];
+            $end_date   = $dates['end_date'];
+
             $dashboard      = $request->get_param( 'dashboard' );
 
             // ----- Count Only (FAST) -----

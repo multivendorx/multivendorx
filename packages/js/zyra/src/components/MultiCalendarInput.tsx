@@ -34,7 +34,16 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         'bottom'
     );
     const dateRef = useRef< HTMLDivElement | null >( null );
+    const closeTimeoutRef = useRef<number | null>(null);
     const [ openDatePicker, setOpenDatePicker ] = useState( false );
+    useEffect(() => {
+        return () => {
+            if (closeTimeoutRef.current) {
+                window.clearTimeout(closeTimeoutRef.current);
+            }
+        };
+    }, []);
+    
     useEffect( () => {
         const handleClickOutside = ( event: MouseEvent ) => {
             if (
@@ -61,31 +70,37 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         }
         setOpenDatePicker( ( prev ) => ! prev );
     };
-
-    const handleDateChange = ( ranges: RangeKeyDict ) => {
-        const selection: Range = ranges.selection;
-
-        if ( selection?.endDate instanceof Date ) {
-            // ensure end of day for endDate
-            selection.endDate.setHours( 23, 59, 59, 999 );
-        }
-
-        const newRange = [
+    
+    const handleDateChange = (ranges: RangeKeyDict) => {
+        const selection = ranges.selection;
+        if (!selection?.startDate || !selection?.endDate) return;
+    
+        // Normalize to LOCAL day boundaries
+        const start = new Date(selection.startDate);
+        start.setHours(0, 0, 0, 0);
+    
+        const end = new Date(selection.endDate);
+        end.setHours(23, 59, 59, 999);
+    
+        setSelectedRange([
             {
-                startDate: selection.startDate || new Date(),
-                endDate: selection.endDate || new Date(),
-                key: selection.key || 'selection',
+                startDate: start,
+                endDate: end,
+                key: 'selection',
             },
-        ];
-
-        setSelectedRange( newRange );
-        props.onChange?.( {
-            startDate: newRange[ 0 ].startDate!,
-            endDate: newRange[ 0 ].endDate!,
-        } );
-
-        setOpenDatePicker( false );
+        ]);
+    
+        // Return LOCAL Date objects only
+        props.onChange?.({
+            startDate: start,
+            endDate: end,
+        });
+    
+        closeTimeoutRef.current = window.setTimeout(() => {
+            setOpenDatePicker(false);
+        }, 1500);
     };
+    
 
     const getLabel = () => {
         const start = selectedRange[ 0 ].startDate!;

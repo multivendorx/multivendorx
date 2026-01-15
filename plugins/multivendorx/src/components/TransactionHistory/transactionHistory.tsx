@@ -5,7 +5,6 @@ import { __ } from '@wordpress/i18n';
 import '../Announcements/announcements.scss';
 import { AdminBreadcrumbs, getApiLink, SelectInput, Tabs } from 'zyra';
 import axios from 'axios';
-import DirectTransaction from './directTransaction';
 import WalletTransaction from './walletTransaction';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -79,7 +78,6 @@ export const TransactionHistory: React.FC = () => {
 					/>
 				);
 			case 'direct-transaction':
-				// return <DirectTransaction storeId={selectedStore?.value} />;
 				const output = applyFilters(
 					'direct_transaction_output',
 					null,

@@ -43,11 +43,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 				setTotalRows(response.data || 0);
 				setPageCount(Math.ceil(response.data / pagination.pageSize));
 			})
-			.catch(() => {
-				setError(__('Failed to load total rows', 'multivendorx'));
-			});
 	}, []);
-	console.log(totalRows);
 	useEffect(() => {
 		const currentPage = pagination.pageIndex + 1;
 		const rowsPerPage = pagination.pageSize;
@@ -56,8 +52,8 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 	}, [pagination]);
 
 	// Fetch data from backend.
-	function requestData(rowsPerPage = 10, currentPage = 1) {
-		setData([]);
+	function requestData(rowsPerPage :number, currentPage :number) {
+		setData(null);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'store'),
@@ -79,7 +75,6 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 
 	// Handle pagination and filter changes
 	const requestApiForData = (rowsPerPage: number, currentPage: number) => {
-		setData(null);
 		requestData(rowsPerPage, currentPage);
 	};
 
@@ -185,7 +180,6 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 					onPaginationChange={setPagination}
 					handlePagination={requestApiForData}
 					perPageOption={[10, 25, 50]}
-					typeCounts={[]}
 				/>
 			</div>
 		</>

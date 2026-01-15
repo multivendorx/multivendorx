@@ -138,9 +138,13 @@ class Stores extends \WP_REST_Controller {
                     return $cached;
                 }
 
-                $start = gmdate( 'Y-m-d H:i:s', strtotime( $request->get_param( 'start_date' ) ) );
-                $end   = gmdate( 'Y-m-d H:i:s', strtotime( $request->get_param( 'end_date' ) ) );
-
+                $dates = Utill::normalize_date_range(
+                    $request->get_param( 'start_date' ),
+                    $request->get_param( 'end_date' )
+                );
+                
+                $start = $dates['start_date'];
+                $end   = $dates['end_date'];
                 global $wpdb;
 
                  $rows = $wpdb->get_results(
@@ -265,19 +269,13 @@ class Stores extends \WP_REST_Controller {
             if ( ! empty( $search ) ) {
                 $args['searchField'] = $search;
             } else {
-                $start = sanitize_text_field( $request->get_param( 'startDate' ) );
-                $end   = sanitize_text_field( $request->get_param( 'endDate' ) );
-
-                if ( $start && $end ) {
-                    $args['start_date'] = gmdate(
-                        'Y-m-d 00:00:00',
-                        strtotime( preg_replace( '/\.\d+Z?$/', '', str_replace( 'T', ' ', $start ) ) )
-                    );
-                    $args['end_date']   = gmdate(
-                        'Y-m-d 23:59:59',
-                        strtotime( preg_replace( '/\.\d+Z?$/', '', str_replace( 'T', ' ', $end ) ) )
-                    );
-                }
+                $dates = Utill::normalize_date_range(
+                    $request->get_param( 'startDate' ),
+                    $request->get_param( 'endDate' )
+                );
+                
+                $args['start_date'] = $dates['start_date'];
+                $args['end_date']   = $dates['end_date'];
             }
 
             $status = $request->get_param( 'filter_status' );
@@ -296,12 +294,27 @@ class Stores extends \WP_REST_Controller {
             if ( ! empty( $filters ) ) {
                 $args['orderBy'] = $filters['sort'] ?? $args['orderBy'] ?? '';
                 $args['order']   = $filters['order'] ?? '';
+                $lat    = !empty($filters['location_lat']) ? $filters['location_lat'] : 0;
+                $lng    = !empty($filters['location_lng']) ? $filters['location_lng'] : 0;
+                $radius = !empty($filters['distance']) ? $filters['distance'] : 0;
+                $unit   = $filters['miles'] ?? 'km';
 
-                if ( isset( $filters['limit'] ) && is_numeric( $filters['limit'] ) ) {
+                switch ($unit) {
+                    case 'miles':
+                        $earth_radius = 3959;
+                        break;
+                    case 'nm':
+                        $earth_radius = 3440;
+                        break;
+                    default:
+                        $earth_radius = 6371;
+                }                
+
+                if ( !empty( $filters['limit'] ) && $filters['limit'] ) {
                     $args['limit'] = absint( $filters['limit'] );
                 }
 
-                if ( isset( $filters['offset'] ) && is_numeric( $filters['offset'] ) ) {
+                if ( !empty( $filters['offset'] ) && $filters['offset'] ) {
                     $args['offset'] = absint( $filters['offset'] );
                 }
 
@@ -346,16 +359,32 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Fetch & format stores.
-            $stores           = StoreUtil::get_store_information( $args );
+            $stores = StoreUtil::get_store_information( $args );
+            if ( $lat && $lng && $radius ) {
+                $stores = array_filter( $stores, function ( $store ) use ( $lat, $lng, $radius, $earth_radius ) {
+                    $store_id   = (int) $store['ID'];
+                    $store_meta = Store::get_store( $store_id );
+                    $store_lat = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? 0.00 ;
+                    $store_lng = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? 0.00 ;
+                    if ( ! $store_lat || ! $store_lng ) {
+                        return false;
+                    }
+                    $delta_latitude = deg2rad( $store_lat - $lat );
+                    $delta_longitude = deg2rad( $store_lng - $lng );
+                    $haversine = sin($delta_latitude / 2) ** 2 +
+                         cos(deg2rad($lat)) * cos(deg2rad($store_lat)) *
+                         sin($delta_longitude / 2) ** 2;
+                    $distance = $earth_radius * ( 2 * atan2( sqrt($haversine), sqrt(1 - $haversine) ) );
+                    return $distance <= $radius;
+                });
+                $stores = array_values( $stores );
+            }            
             $formatted_stores = array();
-
             foreach ( $stores as $store ) {
                 $store_id   = (int) $store['ID'];
                 $store_meta = Store::get_store( $store_id );
-
                 $owner_id = StoreUtil::get_primary_owner( $store_id );
                 $owner    = get_userdata( $owner_id );
-
                 $formatted_stores[] = apply_filters(
                     'multivendorx_stores',
                     array(
@@ -371,6 +400,8 @@ class Stores extends \WP_REST_Controller {
                         'store_image'         => $store_meta->meta_data['image'] ?? '',
                         'store_banner'        => $store_meta->meta_data['banner'] ?? '',
                         'address_1'           => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address_1'] ] ?? '',
+                        'location_lat'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? '',
+                        'location_lng'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? '',
                         'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),
                     )
                 );
