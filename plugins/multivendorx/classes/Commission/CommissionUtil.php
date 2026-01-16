@@ -85,16 +85,16 @@ class CommissionUtil {
         $where = array();
 
         if ( isset( $args['ID'] ) ) {
-            $ids     = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "ID IN ($ids)";
+            $ids        = is_array( $args['ID'] ) ? $args['ID'] : array( $args['ID'] );
+            $ids        = implode( ',', array_map( 'intval', $ids ) );
+            $or_where[] = "ID IN ($ids)";
         }
-
+        
         if ( isset( $args['order_id'] ) ) {
-            $ids     = is_array( $args['order_id'] ) ? $args['order_id'] : array( $args['order_id'] );
-            $ids     = implode( ',', array_map( 'intval', $ids ) );
-            $where[] = "order_id IN ($ids)";
-        }
+            $ids        = is_array( $args['order_id'] ) ? $args['order_id'] : array( $args['order_id'] );
+            $ids        = implode( ',', array_map( 'intval', $ids ) );
+            $or_where[] = "order_id IN ($ids)";
+        }        
 
         if ( isset( $args['store_id'] ) ) {
             $ids     = is_array( $args['store_id'] ) ? $args['store_id'] : array( $args['store_id'] );
@@ -126,10 +126,20 @@ class CommissionUtil {
             $query = "SELECT * FROM {$table}";
         }
 
-        if ( ! empty( $where ) ) {
-            $condition = ( isset( $args['condition'] ) && strtoupper( $args['condition'] ) === 'OR' ) ? ' OR ' : ' AND ';
-            $query    .= ' WHERE ' . implode( $condition, $where );
-        }
+        if ( ! empty( $where ) || ! empty( $or_where ) ) {
+            $query .= ' WHERE ';
+        
+            if ( ! empty( $where ) ) {
+                $query .= implode( ' AND ', $where );
+            }
+        
+            if ( ! empty( $or_where ) ) {
+                if ( ! empty( $where ) ) {
+                    $query .= ' AND ';
+                }
+                $query .= '(' . implode( ' OR ', $or_where ) . ')';
+            }
+        }        
 
         // Sorting
         if ( ! empty( $args['orderBy'] ) && ! $is_count ) {

@@ -388,7 +388,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		orderBy = '',
 		order = '',
 		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
+		endDate = new Date(),
+		searchFiled = ''
 	) {
 		if (!storeId) {
 			return;
@@ -411,6 +412,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				transaction_type: transactionType,
 				orderBy,
 				order,
+				searchFiled
 			},
 		})
 			.then((response) => {
@@ -479,7 +481,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			filterData?.orderBy,
 			filterData?.order,
 			date?.start_date,
-			date?.end_date
+			date?.end_date,
+			filterData.searchField,
 		);
 	};
 
@@ -690,7 +693,28 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			),
 		},
 	];
-
+	const searchFilter: RealtimeFilter[] = [
+		{
+			name: 'searchField',
+			render: (updateFilter, filterValue) => (
+				<>
+					<div className="search-section">
+						<input
+							name="searchField"
+							type="text"
+							placeholder={__('Search', 'multivendorx')}
+							onChange={(e) => {
+								updateFilter(e.target.name, e.target.value);
+							}}
+							value={filterValue || ''}
+							className="basic-input"
+						/>
+						<i className="adminfont-search"></i>
+					</div>
+				</>
+			),
+		},
+	];
 	// 🔹 Fetch wallet/transaction overview whenever store changes
 	useEffect(() => {
 		if (!storeId) {
@@ -1119,6 +1143,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 							perPageOption={[10, 25, 50]}
 							categoryFilter={transactionStatus as TransactionStatus[]}
 							totalCounts={totalRows}
+							searchFilter={searchFilter}
 							realtimeFilter={realtimeFilter}
 							actionButton={actionButton}
 							bulkActionComp={() => (

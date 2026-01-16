@@ -806,7 +806,7 @@ const AddProduct = () => {
 			return updated;
 		});
 	};
-// variation end
+	// variation end
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -979,22 +979,40 @@ const AddProduct = () => {
 				<Column grid={6}>
 					<Card contentHeight
 						title={__('Variatations', 'multivendorx')}
-						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						// toggle
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						<div className="variation-title-wrapper">
 							{__('Attributes', 'multivendorx')}
-							<AdminButton
-								wrapperClass="right"
-								buttons={[
-									{
-										icon: 'plus',
-										text: 'Add variants Like size or color',
-										className: 'purple',
-										onClick: addVariation,
-									}
-								]}
-							/>
+							<div className="add-dropdown-wrapper">
+								<AdminButton
+									wrapperClass="right"
+									buttons={[
+										{
+											icon: 'plus',
+											text: 'Add variants Like size or color',
+											className: 'purple',
+											onClick: addVariation,
+										}
+									]}
+								/>
+								{/* <div className="add-dropdown">
+									<ul>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li>Color</li>
+										<li className="add-btn">Add new attribute</li>
+									</ul>
+								</div> */}
+							</div>
 						</div>
 						{variant.map((variation, vIndex) => (
 							<>
@@ -1005,8 +1023,8 @@ const AddProduct = () => {
 												<div
 													className="admin-btn btn-red"
 													onClick={() => deleteVariation(vIndex)}
-													>
-														<i className="adminfont-delete"></i> Delete
+												>
+													<i className="adminfont-delete"></i> Delete
 												</div>
 												<div
 													className="admin-btn btn-green"
@@ -1300,8 +1318,8 @@ const AddProduct = () => {
 					{/* General information */}
 					<Card contentHeight
 						title={__('General information', 'multivendorx')}
-						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						// toggle
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						<FormGroupWrapper>
 							{/* Product Name */}
@@ -1343,8 +1361,8 @@ const AddProduct = () => {
 						<>
 							<Card contentHeight
 								title={__('Price', 'multivendorx')}
-								// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-								// toggle
+							// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+							// toggle
 							>
 								<FormGroupWrapper>
 									{/* Regular & Sale Price (Simple Product) */}
@@ -1533,9 +1551,9 @@ const AddProduct = () => {
 					</Card>
 
 					<Card contentHeight
-						title={__('Linked Products', 'multivendorx')}
-						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						// toggle
+						title={__('Related listings', 'multivendorx')}
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
@@ -1758,8 +1776,8 @@ const AddProduct = () => {
 
 					<Card contentHeight
 						title={__('Category', 'multivendorx')}
-						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						// toggle
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						{appLocalizer.settings_databases_value['product-preferencess']
 							?.category_selection_method === 'yes' ? (
@@ -1931,8 +1949,8 @@ const AddProduct = () => {
 					)}
 					<Card contentHeight
 						title="Product tag"
-						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						// toggle={true} // enable collapse/expand
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle={true} // enable collapse/expand
 					>
 						<FormGroupWrapper>
 							{/* Selected tags */}
@@ -1999,8 +2017,8 @@ const AddProduct = () => {
 					{/* image upload */}
 					<Card contentHeight
 						title="Upload image"
-						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						// toggle
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						{/* Featured Image */}
 						<FormGroupWrapper>

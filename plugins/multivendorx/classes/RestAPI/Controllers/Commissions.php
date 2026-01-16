@@ -164,13 +164,12 @@ class Commissions extends \WP_REST_Controller
                 $request->get_param('endDate')
             );
 
-            $start_date = $range['start_date'];
-            $end_date   = $range['end_date'];
-            
             // Sorting params.
             $order_by = sanitize_text_field($request->get_param('orderBy'));
             $order    = sanitize_text_field($request->get_param('order'));
-
+            $search_action = sanitize_text_field( $request->get_param( 'searchAction' ) );
+            $search_value  = sanitize_text_field( $request->get_param( 'searchValue' ) );
+            
             // Prepare filter.
             $filter = array();
 
@@ -182,11 +181,31 @@ class Commissions extends \WP_REST_Controller
                 $filter['status'] = $status;
             }
 
-            if (! empty($start_date) && ! empty($end_date)) {
-                $filter['start_date'] = $start_date;
-                $filter['end_date']   = $end_date;
+            if (! empty($range['start_date']) && ! empty($range['end_date'])) {
+                $filter['start_date'] = $range['start_date'];
+                $filter['end_date']   = $range['end_date'];
             }
-
+            if ( ! empty( $search_value ) && is_numeric( $search_value ) ) {
+                unset($filter['start_date'], $filter['end_date']);
+                switch ( $search_action ) {
+            
+                    case 'commission_id':
+                        $filter['ID'] = (int) $search_value;
+                        break;
+            
+                    case 'order_id':
+                        $filter['order_id'] = (int) $search_value;
+                        break;
+            
+                    case 'all':
+                    default:
+                        $filter['ID']        = (int) $search_value;
+                        $filter['order_id'] = (int) $search_value;
+                        $filter['condition'] = 'OR';
+                        break;
+                }
+            }
+            
             // Default: latest first
             $filter['orderBy'] = $order_by ?: 'created_at';
             $filter['order']   = strtolower($order) === 'asc' ? 'ASC' : 'DESC';
@@ -199,7 +218,6 @@ class Commissions extends \WP_REST_Controller
                     CommissionUtil::get_commission_information($filter)
                 );
             }
-
             // Fetch commissions.
             $commissions = CommissionUtil::get_commission_information(
                 array_merge(

@@ -339,6 +339,8 @@ const Commission: React.FC = () => {
 		order = '',
 		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date(),
+		searchAction ='',
+		searchValue ='',
 	) {
 		setData(null);
 		axios({
@@ -353,7 +355,9 @@ const Commission: React.FC = () => {
 				orderBy,
 				order,
 				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',				
+				endDate: endDate ? formatLocalDate(endDate) : '',	
+				searchAction,
+				searchValue,			
 			},
 		})
 			.then((response) => {
@@ -449,7 +453,9 @@ const Commission: React.FC = () => {
 			filterData?.orderBy,
 			filterData?.order,
 			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			filterData?.date?.end_date,
+			filterData.searchAction,
+			filterData.searchField
 		);
 	};
 
@@ -806,6 +812,49 @@ const Commission: React.FC = () => {
 		},
 	];
 
+	const searchFilter: RealtimeFilter[] = [
+		{
+			name: 'searchAction',
+			render: (updateFilter, filterValue) => (
+				<div className="search-action">
+					<select
+						value={filterValue || ''}
+						onChange={(e) => {
+							updateFilter('searchAction', e.target.value || '');
+						}}
+					>
+						<option value="all">{__('All', 'multivendorx')}</option>
+						<option value="commission_id">
+							{__('Commission Id', 'multivendorx')}
+						</option>
+						<option value="order_id">
+							{__('Order Id', 'multivendorx')}
+						</option>
+					</select>
+				</div>
+			),
+		},
+		{
+			name: 'searchField',
+			render: (updateFilter, filterValue) => (
+				<>
+					<div className="search-section">
+						<input
+							name="searchField"
+							type="text"
+							placeholder={__('Search', 'multivendorx')}
+							onChange={(e) => {
+								updateFilter(e.target.name, e.target.value);
+							}}
+							value={filterValue || ''}
+							className="basic-input"
+						/>
+						<i className="adminfont-search"></i>
+					</div>
+				</>
+			),
+		},
+	];
 	return (
 		<>
 			<AdminBreadcrumbs
@@ -832,6 +881,7 @@ const Commission: React.FC = () => {
 						onPaginationChange={setPagination}
 						handlePagination={requestApiForData}
 						perPageOption={[10, 25, 50]}
+						searchFilter={searchFilter}
 						categoryFilter={commissionStatus as CommissionStatus}
 						bulkActionComp={() => (
 							<BulkActions

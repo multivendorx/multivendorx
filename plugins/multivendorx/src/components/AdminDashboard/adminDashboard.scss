@@ -955,3 +955,18 @@
     }
 }
 
+.checklist-wrapper {
+    .checklist-title {
+        text-align: center;
+        margin-bottom: 0.625rem;
+    }
+}
+
+.side-ber {
+    position: fixed;
+    background: $theme-color;
+    color: #fff;
+    padding: 0.625rem;
+    font-size: 1.313rem;
+    border-radius: 0.313rem;
+}

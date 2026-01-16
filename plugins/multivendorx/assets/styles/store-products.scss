@@ -326,14 +326,14 @@
 
              .qna-votes {
                  display: flex;
-                 align-items: start;
+                 align-items: center;
                  gap: 0.625rem;
                  justify-content: end;
 
-                 span {
-                     font-size: 1.25rem;
-                     padding: 0.5rem;
-                 }
+                //  span {
+                //      font-size: 1.25rem;
+                //      padding: 0.5rem;
+                //  }
 
                  p {
                      margin: 0;

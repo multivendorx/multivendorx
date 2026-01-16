@@ -114,7 +114,9 @@ const StoreCommission: React.FC = () => {
 		orderBy = '',
 		order = '',
 		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
+		endDate = new Date(),
+		searchAction ='',
+		searchValue ='',
 	) {
 		setData(null);
 		axios({
@@ -130,6 +132,8 @@ const StoreCommission: React.FC = () => {
 				order,
 				startDate: startDate ? formatLocalDate(startDate) : '',
 				endDate: endDate ? formatLocalDate(endDate) : '',	
+				searchAction,
+				searchValue,
 			},
 		})
 			.then((response) => {
@@ -195,7 +199,9 @@ const StoreCommission: React.FC = () => {
 			filterData?.orderBy,
 			filterData?.order,
 			date?.start_date,
-			date?.end_date
+			date?.end_date,
+			filterData.searchAction,
+			filterData.searchField
 		);
 	};
 
@@ -679,7 +685,49 @@ const StoreCommission: React.FC = () => {
 			),
 		},
 	];
-
+	const searchFilter: RealtimeFilter[] = [
+		{
+			name: 'searchAction',
+			render: (updateFilter, filterValue) => (
+				<div className="search-action">
+					<select
+						value={filterValue || ''}
+						onChange={(e) => {
+							updateFilter('searchAction', e.target.value || '');
+						}}
+					>
+						<option value="all">{__('All', 'multivendorx')}</option>
+						<option value="commission_id">
+							{__('Commission Id', 'multivendorx')}
+						</option>
+						<option value="order_id">
+							{__('Order Id', 'multivendorx')}
+						</option>
+					</select>
+				</div>
+			),
+		},
+		{
+			name: 'searchField',
+			render: (updateFilter, filterValue) => (
+				<>
+					<div className="search-section">
+						<input
+							name="searchField"
+							type="text"
+							placeholder={__('Search', 'multivendorx')}
+							onChange={(e) => {
+								updateFilter(e.target.name, e.target.value);
+							}}
+							value={filterValue || ''}
+							className="basic-input"
+						/>
+						<i className="adminfont-search"></i>
+					</div>
+				</>
+			),
+		},
+	];
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -719,6 +767,7 @@ const StoreCommission: React.FC = () => {
 				totalCounts={totalRows}
 				pageCount={pageCount}
 				realtimeFilter={realtimeFilter}
+				searchFilter={searchFilter}
 				bulkActionComp={() => (
 					<BulkActions
 						selectedRows={rowSelection}

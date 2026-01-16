@@ -754,111 +754,120 @@ const Membership = ({ id }: { id: string }) => {
 					<Column>
 						<Card>
 							<div className={`checklist-wrapper row ${isChecklistOpen ? 'hide' : 'show'}`}>
+								<div className="checklist-title">Recommended</div>
 								<ul>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Plan Name</div>
-											<div className="des">A clear, descriptive title that helps stores identify your plan</div>
+											{/* <div className="des">A clear, descriptive title</div> */}
 										</div>
 									</li>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Description</div>
-											<div className="des">Explain what this plan offers to stores</div>
+											{/* <div className="des">Explain what this plan </div> */}
 										</div>
 									</li>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Features</div>
-											<div className="des">Select premium features for this plan	</div>
+											{/* <div className="des">Select premium features for this plan	</div> */}
 										</div>
 									</li>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Pricing</div>
-											<div className="des">Set competitive prices including any sale or discount options</div>
+											{/* <div className="des">Set competitive prices including</div> */}
 										</div>
 									</li>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Permissions</div>
-											<div className="des">A clear, descriptive title that helps customers</div>
+											{/* <div className="des">A clear, descriptive title</div> */}
 										</div>
 									</li>
 								</ul>
 							</div>
 							<div className="checklist-icon" onClick={() => setIsChecklistOpen((prev) => !prev)}>
-								<i className={`adminfont-${isChecklistOpen ? 'previous' : 'next'}`}></i>
+								<i className={`adminfont-${isChecklistOpen ? 'cross' : 'cross'}`}></i>
 							</div>
+							{/* {isChecklistOpen && ( */}
+								{/* <> */}
+									<div className="side-ber">
+										<i className="adminfont-module"></i>
+									</div>
+								{/* </>
+							)} */}
 						</Card>
 					</Column>
 					<Column grid={8}>
 						<Card
 							title="Plan details"
 							action={
-								<div className="field-wrapper">
-									<div className="catalog-visibility">
-										<span className="catalog-visibility-value">
-											{VISIBILITY_LABELS[catalogVisibility]}
-										</span>
+								<>
+									<div className="field-wrapper">
+										<div className="catalog-visibility">
+											<span className="catalog-visibility-value">
+												{VISIBILITY_LABELS[catalogVisibility]}
+											</span>
 
-										<span
-											onClick={() => {
-												setIsEditingVisibility((prev) => !prev);
-											}}
+											<span
+												onClick={() => {
+													setIsEditingVisibility((prev) => !prev);
+												}}
 
-										>
-											<i className="adminfont-keyboard-arrow-down" />
-										</span>
-									</div>
-									{isEditingVisibility && (
-										<div className="setting-dropdown">
-											<FormGroup>
-												<RadioInput
-													name="catalog_visibility"
-													idPrefix="catalog_visibility"
-													type="radio"
-													wrapperClass="settings-form-group-radio"
-													inputWrapperClass="radio-basic-input-wrap"
-													inputClass="setting-form-input"
-													descClass="settings-metabox-description"
-													activeClass="radio-select-active"
-													radiSelectLabelClass="radio-label"
-													options={[
-														{
-															key: 'draft',
-															value: 'draft',
-															label: __('Draft', 'multivendorx'),
-														},
-														{
-															key: 'publish',
-															value: 'publish',
-															label: __('Published', 'multivendorx'),
-														},
-														{
-															key: 'pending',
-															value: 'pending',
-															label: __('Pending Review', 'multivendorx'),
-														},
-													]}
-													value={catalogVisibility}
-													onChange={(e) => {
-														const value = e.target.value;
-														setCatalogVisibility(value);
-														handleChange('catalog_visibility', value);
-														setIsEditingVisibility(false);
-													}}
-												/>
-
-											</FormGroup>
+											>
+												<i className="adminfont-keyboard-arrow-down" />
+											</span>
 										</div>
-									)}
-									<div
+										{isEditingVisibility && (
+											<div className="setting-dropdown">
+												<FormGroup>
+													<RadioInput
+														name="catalog_visibility"
+														idPrefix="catalog_visibility"
+														type="radio"
+														wrapperClass="settings-form-group-radio"
+														inputWrapperClass="radio-basic-input-wrap"
+														inputClass="setting-form-input"
+														descClass="settings-metabox-description"
+														activeClass="radio-select-active"
+														radiSelectLabelClass="radio-label"
+														options={[
+															{
+																key: 'draft',
+																value: 'draft',
+																label: __('Draft', 'multivendorx'),
+															},
+															{
+																key: 'publish',
+																value: 'publish',
+																label: __('Published', 'multivendorx'),
+															},
+															{
+																key: 'pending',
+																value: 'pending',
+																label: __('Pending Review', 'multivendorx'),
+															},
+														]}
+														value={catalogVisibility}
+														onChange={(e) => {
+															const value = e.target.value;
+															setCatalogVisibility(value);
+															handleChange('catalog_visibility', value);
+															setIsEditingVisibility(false);
+														}}
+													/>
+
+												</FormGroup>
+											</div>
+										)}
+										{/* <div
 										className="recommended-wrapper"
 										onClick={() => setstarFill((prev) => !prev)}
 									>
@@ -869,8 +878,17 @@ const Membership = ({ id }: { id: string }) => {
 										<div className="hover-text">
 											Mark as recommended plan
 										</div>
+									</div> */}
 									</div>
-								</div>
+									<label
+										onClick={() => setstarFill((prev) => !prev)}
+										style={{ cursor: 'pointer' }}
+										className="field-wrapper"
+									>
+										{__('Mark as recommended plan', 'multivendorx')}
+										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
+									</label>
+								</>
 							}
 						>
 							<FormGroupWrapper>
@@ -1376,7 +1394,7 @@ const Membership = ({ id }: { id: string }) => {
 							action={
 								<>
 									<div className="field-wrapper">
-										{__('Offer a trial period', 'multivendorx')}
+										{/* {__('Offer a trial period', 'multivendorx')} */}
 										<MultiCheckBox
 											wrapperClass="toggle-btn"
 											inputWrapperClass="toggle-checkbox-header"
@@ -1424,7 +1442,6 @@ const Membership = ({ id }: { id: string }) => {
 											postInsideText="days"
 										/>
 									</FormGroup>
-									<FormGroup cols={2}></FormGroup>
 								</FormGroupWrapper>
 							)}
 							{/* <div className="card-header">
@@ -1458,7 +1475,7 @@ const Membership = ({ id }: { id: string }) => {
 							action={
 								<>
 									<div className="field-wrapper">
-										{__('Offer grace period', 'multivendorx')}
+										{/* {__('Offer grace period', 'multivendorx')} */}
 										<MultiCheckBox
 											wrapperClass="toggle-btn"
 											inputWrapperClass="toggle-checkbox-header"

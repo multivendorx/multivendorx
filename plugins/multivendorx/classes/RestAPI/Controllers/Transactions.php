@@ -126,6 +126,7 @@ class Transactions extends \WP_REST_Controller
             $order_by = sanitize_text_field($request->get_param('orderBy')) ?: 'created_at';
             $order    = strtoupper(sanitize_text_field($request->get_param('order'))) ?: 'DESC';
             $dashboard = $request->get_param('dashboard');
+            $search_id = $request->get_param('searchFiled');
             $dates = Utill::normalize_date_range(
                 $request->get_param('startDate'),
                 $request->get_param('endDate')
@@ -163,6 +164,12 @@ class Transactions extends \WP_REST_Controller
                 }
             }
 
+            if (!empty($search_id) && is_numeric($search_id)) {
+                $args['id'] = intval($search_id);
+            
+                unset($args['start_date'], $args['end_date']);
+            }
+            
             $transactions = Transaction::get_transaction_information($args);
 
             $formatted = array_map(

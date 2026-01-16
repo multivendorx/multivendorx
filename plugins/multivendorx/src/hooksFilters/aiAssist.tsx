@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addFilter } from '@wordpress/hooks';
-import { Card, getApiLink } from 'zyra';
+import { AdminButton, Card, getApiLink } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -174,8 +174,8 @@ const AICard = () => {
 			className="theme-bg"
 			title={__('AI assist', 'multivendorx')}
 			desc={__('Get help creating your product listing', 'multivendorx')}
-			// iconName="adminfont-pagination-right-arrow arrow-icon"
-			// toggle
+		// iconName="adminfont-pagination-right-arrow arrow-icon"
+		// toggle
 		>
 			<div className="ai-assist-wrapper">
 				{/* Error */}
@@ -352,8 +352,7 @@ const AICard = () => {
 						disabled={isLoading}
 					/>
 				</div>
-				<div className="admin-btn btn-purple-bg" onClick={!isLoading ? handleSendPrompt : undefined}>
-					{/* <i className="adminfont-mail"></i> */}
+				{/* <div className="admin-btn btn-purple-bg" onClick={!isLoading ? handleSendPrompt : undefined}>
 					<i
 						className={`adminfont-send ${isLoading ? 'loading' : ''
 							}`}
@@ -362,7 +361,15 @@ const AICard = () => {
 						}}
 					></i>
 					Generate with AI
-				</div>
+				</div> */}
+				<AdminButton
+					buttons={{
+						icon: 'send',
+						text: 'Generate with AI',
+						className: 'purple-bg',
+						onClick: !isLoading ? handleSendPrompt : undefined,
+					}}
+				/>
 			</div>
 		</Card>
 

@@ -255,7 +255,8 @@ const Transactions: React.FC = () => {
 		transactionType = '',
 		transactionStatus = '',
 		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
+		endDate = new Date(),
+		searchFiled = ''
 	) {
 		setData(null);
 		axios({
@@ -271,6 +272,7 @@ const Transactions: React.FC = () => {
 				filter_status: categoryFilter == 'all' ? '' : categoryFilter,
 				transaction_status: transactionStatus,
 				transaction_type: transactionType,
+				searchFiled
 			},
 		})
 			.then((response) => {
@@ -327,7 +329,8 @@ const Transactions: React.FC = () => {
 			filterData?.transactionType,
 			filterData?.transactionStatus,
 			date?.start_date,
-			date?.end_date
+			date?.end_date,
+			filterData.searchField,
 		);
 	};
 
@@ -534,6 +537,28 @@ const Transactions: React.FC = () => {
 			),
 		},
 	];
+	const searchFilter: RealtimeFilter[] = [
+		{
+			name: 'searchField',
+			render: (updateFilter, filterValue) => (
+				<>
+					<div className="search-section">
+						<input
+							name="searchField"
+							type="text"
+							placeholder={__('Search', 'multivendorx')}
+							onChange={(e) => {
+								updateFilter(e.target.name, e.target.value);
+							}}
+							value={filterValue || ''}
+							className="basic-input"
+						/>
+						<i className="adminfont-search"></i>
+					</div>
+				</>
+			),
+		},
+	];
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -565,6 +590,7 @@ const Transactions: React.FC = () => {
 						handlePagination={requestApiForData}
 						perPageOption={[10, 25, 50]}
 						totalCounts={totalRows}
+						searchFilter={searchFilter}
 						categoryFilter={transactionStatus as TransactionStatus[]}
 						bulkActionComp={() => (
 							<TransactionBulkActions

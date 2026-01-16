@@ -135,10 +135,9 @@ const Documentation: React.FC = () => {
 							</div>
 						</div>
 					)}
-					<Column row>
-						{filteredDocuments.map((doc) => (
-							<>
-								{/* <div key={doc.id} className="document">
+					{filteredDocuments.map((doc) => (
+						<>
+							{/* <div key={doc.id} className="document">
 									<div className="document-icon">
 										<i className="adminfont-contact-form"></i>
 									</div>
@@ -160,6 +159,7 @@ const Documentation: React.FC = () => {
 										</div>
 									</div>
 								</div> */}
+							
 								<MiniCard
 									background
 									cols={3}
@@ -188,9 +188,9 @@ const Documentation: React.FC = () => {
 										</>
 									}
 								/>
-							</>
-						))}
-					</Column>
+							
+						</>
+					))}
 				</div>
 			</Card>
 

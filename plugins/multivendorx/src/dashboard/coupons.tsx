@@ -95,6 +95,7 @@ const AllCoupon: React.FC = () => {
 		),
 		end_date: new Date(),
 	});
+	const bulkSelectRef = useRef<HTMLSelectElement>(null);
 	// delete popup 
 	const handleDeleteClick = (rowData: CouponRow) => {
 		setSelectedCoupon({
@@ -509,16 +510,16 @@ const AllCoupon: React.FC = () => {
 	const fetchCouponStatusCounts = async () => {
 		try {
 			const statuses = ['all', 'publish', 'draft', 'pending'];
-	
+
 			const counts = await Promise.all(
 				statuses.map(async (status) => {
 					const params: any = {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
 					};
-	
+
 					params.status = status === 'all' ? 'any' : status;
-	
+
 					const res = await axios.get(
 						`${appLocalizer.apiUrl}/wc/v3/coupons`,
 						{
@@ -526,9 +527,9 @@ const AllCoupon: React.FC = () => {
 							params,
 						}
 					);
-	
+
 					const total = parseInt(res.headers['x-wp-total'] || '0');
-	
+
 					return {
 						key: status,
 						name: COUPON_STATUS_LABELS[status],
@@ -536,7 +537,7 @@ const AllCoupon: React.FC = () => {
 					};
 				})
 			);
-	
+
 			setCouponTypeCounts(
 				counts.filter((c) => c.count > 0)
 			);
@@ -646,7 +647,44 @@ const AllCoupon: React.FC = () => {
 			date.end_date,
 		);
 	};
+	const handleBulkAction = async () => {
+		const action = bulkSelectRef.current?.value;
+		const selectedIds = Object.keys(rowSelection)
+			.map((key) => {
+				const index = Number(key);
+				return data && data[index] ? data[index].id : null;
+			})
+			.filter((id): id is number => id !== null);
 
+		if (!selectedIds.length) {
+			return;
+		}
+
+		if (!action) {
+			return;
+		}
+		setData(null);
+
+		try {
+			if (action === 'delete') {
+				await axios({
+					method: 'POST', // WooCommerce bulk endpoint uses POST
+					url: `${appLocalizer.apiUrl}/wc/v3/coupons/batch`,
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					data: {
+						delete: selectedIds, // array of product IDs to delete
+					},
+				});
+			}
+
+			// Refresh the data after action
+			fetchCouponStatusCounts();
+			requestData(pagination.pageSize, pagination.pageIndex + 1);
+			setRowSelection({});
+		} catch (err: unknown) {
+			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
+		}
+	};
 	useEffect(() => {
 		fetchCouponStatusCounts();
 		const currentPage = pagination.pageIndex + 1;
@@ -850,7 +888,19 @@ const AllCoupon: React.FC = () => {
 			),
 		},
 	];
-
+	const BulkAction: React.FC = () => (
+		<div className="action">
+			<i className="adminfont-form"></i>
+			<select
+				name="action"
+				ref={bulkSelectRef}
+				onChange={handleBulkAction}
+			>
+				<option value="">{__('Bulk actions')}</option>
+				<option value="delete">{__('Delete', 'multivendorx')}</option>
+			</select>
+		</div>
+	);
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -1018,6 +1068,7 @@ const AllCoupon: React.FC = () => {
 				totalCounts={totalRows}
 				categoryFilter={couponTypeCounts}
 				searchFilter={searchFilter}
+				bulkActionComp={() => <BulkAction />}
 			/>
 		</>
 	);

@@ -218,6 +218,10 @@
     }
 
     &.row {
+        .checklist-title{
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
         ul {
             display: flex;
             gap: 0.625rem;

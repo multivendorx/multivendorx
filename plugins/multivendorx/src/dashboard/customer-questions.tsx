@@ -298,12 +298,12 @@ const CustomerQuestions: React.FC = () => {
 					<TableCell title={text}>
 						<div className="question-wrapper">
 							<div className="question">Q: {displayText}</div>
-							{displayAnswer && (
-								<div className="answer">A: {displayAnswer}</div>
-							)}
 							<div className="des">
 								By: {row.original.author_name ?? '-'}
 							</div>
+							{displayAnswer && (
+								<div className="answer">A: {displayAnswer}</div>
+							)}
 						</div>
 					</TableCell>
 				);

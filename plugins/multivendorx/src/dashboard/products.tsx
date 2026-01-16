@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, act } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
 	useModules,
@@ -109,6 +109,7 @@ const AllProduct: React.FC = () => {
 		),
 		end_date: new Date(),
 	});
+	const bulkSelectRef = useRef<HTMLSelectElement>(null);
 
 	const params = new URLSearchParams(location.search);
 
@@ -189,7 +190,7 @@ const AllProduct: React.FC = () => {
 	const fetchProductStatusCounts = async () => {
 		try {
 			const statuses = ['all', 'publish', 'draft', 'pending', 'private', 'trash'];
-	
+
 			const counts: ProductStatus[] = await Promise.all(
 				statuses.map(async (status) => {
 					const params: any = {
@@ -197,11 +198,11 @@ const AllProduct: React.FC = () => {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
 					};
-	
+
 					if (status !== 'all') {
 						params.status = status;
 					}
-	
+
 					const res = await axios.get(
 						`${appLocalizer.apiUrl}/wc/v3/products`,
 						{
@@ -209,9 +210,9 @@ const AllProduct: React.FC = () => {
 							params,
 						}
 					);
-	
+
 					const total = parseInt(res.headers['x-wp-total'] || '0');
-	
+
 					return {
 						key: status,
 						name: STATUS_LABELS[status],
@@ -219,7 +220,7 @@ const AllProduct: React.FC = () => {
 					};
 				})
 			);
-	
+
 			setProductStatus(
 				counts.filter((s) => s.count > 0)
 			);
@@ -227,7 +228,7 @@ const AllProduct: React.FC = () => {
 			console.error('Failed to fetch product status counts:', error);
 		}
 	};
-	
+
 
 	const fetchWpmlTranslations = async () => {
 		if (!modules.includes('wpml')) return;
@@ -293,6 +294,7 @@ const AllProduct: React.FC = () => {
 			console.error('Failed to fetch language wise product counts:', error);
 		}
 	};
+
 
 	useEffect(() => {
 		fetchCategories();
@@ -396,7 +398,7 @@ const AllProduct: React.FC = () => {
 			end_date: new Date(),
 		};
 		setDateFilter(date);
-	
+
 		requestData(
 			rowsPerPage,
 			currentPage,
@@ -408,10 +410,27 @@ const AllProduct: React.FC = () => {
 			date.end_date,
 			filterData?.categoryFilter,
 			filterData?.languageFilter,
-		);	
+		);
 	};
 
 	const columns: ColumnDef<ProductRow>[] = [
+		{
+			id: 'select',
+			header: ({ table }) => (
+				<input
+					type="checkbox"
+					checked={table.getIsAllRowsSelected()}
+					onChange={table.getToggleAllRowsSelectedHandler()}
+				/>
+			),
+			cell: ({ row }) => (
+				<input
+					type="checkbox"
+					checked={row.getIsSelected()}
+					onChange={row.getToggleSelectedHandler()}
+				/>
+			),
+		},
 		{
 			header: __('Product Name', 'multivendorx'),
 			cell: ({ row }) => (
@@ -685,6 +704,62 @@ const AllProduct: React.FC = () => {
 		},
 	];
 
+
+	const handleBulkAction = async () => {
+		const action = bulkSelectRef.current?.value;
+		const selectedIds = Object.keys(rowSelection)
+			.map((key) => {
+				const index = Number(key);
+				return data && data[index] ? data[index].id : null;
+			})
+			.filter((id): id is number => id !== null);
+
+		if (!selectedIds.length) {
+			return;
+		}
+
+		if (!action) {
+			return;
+		}
+		setData(null);
+
+		try {
+			if (action === 'delete') {
+				await axios({
+					method: 'POST', // WooCommerce bulk endpoint uses POST
+					url: `${appLocalizer.apiUrl}/wc/v3/products/batch`,
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					data: {
+						delete: selectedIds, // array of product IDs to delete
+					},
+				});
+			}
+
+			// Refresh the data after action
+			fetchCategories();
+			fetchProductStatusCounts();
+			fetchWpmlTranslations();
+			requestData(pagination.pageSize, pagination.pageIndex + 1);
+			setRowSelection({});
+		} catch (err: unknown) {
+			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
+		}
+	};
+
+	const BulkAction: React.FC = () => (
+		<div className="action">
+			<i className="adminfont-form"></i>
+			<select
+				name="action"
+				ref={bulkSelectRef}
+				onChange={handleBulkAction}
+			>
+				<option value="">{__('Bulk actions')}</option>
+				<option value="delete">{__('Delete', 'multivendorx')}</option>
+			</select>
+		</div>
+	);
+
 	return (
 		<>
 			{!isAddProduct && !isSpmvOn && (
@@ -747,6 +822,7 @@ const AllProduct: React.FC = () => {
 							searchFilter={searchFilter}
 							categoryFilter={productStatus}
 							languageFilter={languageProductCounts}
+							bulkActionComp={() => <BulkAction />}
 						/>
 					</div>
 				</>
