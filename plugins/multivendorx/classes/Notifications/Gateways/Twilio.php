@@ -37,6 +37,8 @@ class Twilio {
         $account_sid = MultiVendorX()->setting->get_setting( 'twilio_account_sid' );
         $auth_token  = MultiVendorX()->setting->get_setting( 'twilio_auth_token' );
         $from_number = MultiVendorX()->setting->get_setting( 'sms_sender_phone_number' );
+        $from_number = $from_number[1] . $from_number[0];
+        $to = $to[1] . $to[0];
 
         $args = array(
             'headers' => array(

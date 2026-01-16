@@ -35,6 +35,7 @@ class Clickatell {
      * @return WP_Error|true
      */
     public function send( $to, $message ) {
+        $to = $to[1] . $to[0];
         $api_key = MultiVendorX()->setting->get_setting( 'clickatell_api_key' );
 
         $args = array(

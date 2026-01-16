@@ -4,6 +4,7 @@ import {
     FocusEvent,
     useState,
     forwardRef,
+    ReactNode,
 } from 'react';
 import DisplayButton from './DisplayButton';
 
@@ -39,7 +40,7 @@ interface BasicInputProps {
     onMouseOut?: ( e: MouseEvent< HTMLInputElement > ) => void;
     onFocus?: ( e: FocusEvent< HTMLInputElement > ) => void;
     onBlur?: ( e: FocusEvent< HTMLInputElement > ) => void;
-    postInsideText?: string;
+    postInsideText?: string | ReactNode;
     generate?: string;
     clickBtnName?: string;
     feedback?: InputFeedback;
@@ -52,7 +53,7 @@ interface BasicInputProps {
     size?: string;
     preText?: string;
     postText?: string;
-    preInsideText?: string;
+    preInsideText?: string | ReactNode;
     required?: boolean;
 }
 
@@ -186,14 +187,15 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
                                 className="input-wrapper"
                                 style={ { width: size || '100%' } }
                             >
-                                { preInsideText && (
-                                    <span
-                                        className="pre"
-                                        dangerouslySetInnerHTML={ {
-                                            __html: preInsideText,
-                                        } }
-                                    />
-                                ) }
+                                {preInsideText && (
+                                    <span className="pre">
+                                        {typeof preInsideText === 'string' ? (
+                                            <span dangerouslySetInnerHTML={{ __html: preInsideText }} />
+                                        ) : (
+                                            preInsideText
+                                        )}
+                                    </span>
+                                )}
                                 <input
                                     ref={ ref }
                                     className={ [
@@ -231,11 +233,14 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
 
                                 { postInsideText && (
                                     <span
-                                        className="parameter"
-                                        dangerouslySetInnerHTML={ {
-                                            __html: postInsideText,
-                                        } }
-                                    />
+                                        className="post"
+                                    >
+                                        {typeof postInsideText === 'string' ? (
+                                            <span dangerouslySetInnerHTML={{ __html: postInsideText }} />
+                                        ) : (
+                                            postInsideText
+                                        )}
+                                    </span>
                                 ) }
                                 { clickBtnName && (
                                     <DisplayButton

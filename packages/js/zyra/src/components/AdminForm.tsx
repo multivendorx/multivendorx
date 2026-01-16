@@ -48,6 +48,7 @@ import MultiCalendarInput from './MultiCalendarInput';
 import CalendarInput from './CalendarInput';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
 import TemplateColorPdfBuilder from './TemplateColorPdfBuilder';
+import defaultCountryCodes from '../assets/phone/CountryCodes.json';
 
 interface WPMediaAttachment {
     url: string;
@@ -374,6 +375,7 @@ type SettingValue =
     | undefined;
 
 type Settings = Record< string, SettingValue >;
+type PrefixedValue = [string, string, string];
 
 interface ApiResponse {
     error?: string;
@@ -833,6 +835,74 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'number':
                 case 'range':
                 case 'time':
+                    let preInsideContent: React.ReactNode = inputField.preInsideText;
+                    let postInsideContent: React.ReactNode = inputField.postInsideText;
+
+                    // detect if this field uses prefix/suffix mode
+                    const isPrefixed =
+                        inputField.preInsideText === 'country-code-select' ||
+                        inputField.postInsideText === 'country-code-select';
+
+                    let displayValue: string = '';
+                    let pre = '+1';
+                    let suf = '';
+
+                    if (isPrefixed) {
+                        const storedValue = setting[inputField.key] as PrefixedValue | undefined;
+                        const tuple = Array.isArray(storedValue) ? storedValue : ['', '+1', ''];
+                        displayValue = tuple[0];
+                        pre = tuple[1];
+                        suf = tuple[2];
+                    } else {
+                        displayValue = String(setting[inputField.key] ?? '');
+                    }
+                    const rawOptions = inputField.options?.length
+                        ? inputField.options
+                        : defaultCountryCodes;
+
+                    const countryOptions: SelectOptions[] = rawOptions.map((c: any) => ({
+                        value: c.dial_code || c.value,           // support {dial_code} or {value}
+                        label:
+                            c.name
+                                ? `${c.name} (${c.dial_code || c.value})`
+                                : c.label || c.dial_code || c.value,
+                    }));
+                    if (inputField.preInsideText === 'country-code-select') {
+                        preInsideContent = (
+                            <SelectInput
+                                options={countryOptions}
+                                value={pre}
+                                size="120px"
+                                onChange={(newValue) => {
+                                    const selected = newValue as SingleValue<SelectOptions>;
+                                    if (!selected) return;
+                                    const prev = setting[inputField.key] as PrefixedValue | undefined;
+                                    const val = prev?.[0] || '';
+                                    const suf = prev?.[2] || '';
+                                    updateSetting(inputField.key, [val, selected.value, suf]);
+                                    settingChanged.current = true;
+                                }}
+                            />
+                        );
+                    }                    
+                    if (inputField.postInsideText === 'country-code-select') {
+                        postInsideContent = (
+                            <SelectInput
+                                options={countryOptions}
+                                value={pre}
+                                size="120px"
+                                onChange={(newValue) => {
+                                    const selected = newValue as SingleValue<SelectOptions>;
+                                    if (!selected) return;
+                                    const prev = setting[inputField.key] as PrefixedValue | undefined;
+                                    const val = prev?.[0] || '';
+                                    const suf = prev?.[2] || '';
+                                    updateSetting(inputField.key, [val, selected.value, suf]);
+                                    settingChanged.current = true;
+                                }}
+                            />
+                        );
+                    }                    
                     input = (
                         <BasicInput
                             wrapperClass={inputField.wrapperClass}
@@ -847,8 +917,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             rangeUnit={ inputField.rangeUnit } // for range parameter
                             min={ inputField.min ?? 0 } // for range min value
                             max={ inputField.max ?? 50 } // for range max value
-                            value={ value || inputField.value }
+                            value={displayValue}
                             size={ inputField.size } //Width of the input container.
+                            preInsideText={preInsideContent} //Content displayed before input (icon/text).
                             preText={ inputField.preText } //Content displayed before input (icon/text).
                             postText={ inputField.postText } //Content displayed after input (icon/text).
                             proSetting={ isProSetting(
@@ -871,12 +942,20 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                         )
                                     )
                                 ) {
-                                    handleChange( e, inputField.key );
+                                    if (isPrefixed) {
+                                        const prev = setting[inputField.key] as PrefixedValue | undefined;
+                                        const pre = prev?.[1] || '+1';
+                                        const suf = prev?.[2] || '';
+                                    
+                                        updateSetting(inputField.key, [e.target.value, pre, suf]);
+                                        settingChanged.current = true;
+                                    } else {
+                                        handleChange(e, inputField.key);
+                                    }
                                 }
                             } }
-                            preInsideText={ inputField.preInsideText } //Symbol/unit shown inside input at start.
-                            postInsideText={ inputField.postInsideText } // for showing text beside the text box
-                            generate={ inputField.generate } //Enables generate button for random/auto value generation.
+                            postInsideText={ postInsideContent }
+                            generate={ inputField.generate } 
                         />
                     );
                     break;

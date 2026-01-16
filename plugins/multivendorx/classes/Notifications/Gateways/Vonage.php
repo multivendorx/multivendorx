@@ -37,7 +37,8 @@ class Vonage {
         $api_key     = MultiVendorX()->setting->get_setting( 'vonage_api_key' );
         $api_secret  = MultiVendorX()->setting->get_setting( 'vonage_api_secret' );
         $from_number = MultiVendorX()->setting->get_setting( 'sms_sender_phone_number' );
-
+        $from_number = $from_number[1] . $from_number[0];
+        $to = $to[1] . $to[0];
         $args = array(
             'body' => array(
                 'from'       => $from_number,

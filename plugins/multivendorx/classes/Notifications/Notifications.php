@@ -596,8 +596,11 @@ class Notifications {
             $subject = $event->email_subject;
             $message = $event->email_body;
             foreach ( $parameters as $key => $value ) {
-				$message = str_replace('[' . $key . ']', $value, $message);
-			}
+				if ( is_array($value) ) {
+					$value = implode(' ', array_filter($value));
+				}
+				$message = str_replace('[' . $key . ']', (string) $value, $message);
+			}			
             $headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
             wp_mail( $to, $subject, $message, $headers );
@@ -621,15 +624,18 @@ class Notifications {
             $message = $event->sms_content;
 
 			foreach ( $parameters as $key => $value ) {
+				if( is_array($value) ) {
+					$value = implode(' ', array_filter($value));
+				}
 				$message = str_replace('[' . $key . ']', $value, $message);
 			}
 
             $gateway = $this->active_gateway();
-            if ( $gateway ) {
-                foreach ( $receivers as $number ) {
-                    $gateway->send( $number, $message );
-                }
-            }
+            foreach ( $receivers as $number ) {
+				if ( ! empty($number) ) {
+					$gateway->send( $number, $message );
+				}
+			}			
         }
     }
 
