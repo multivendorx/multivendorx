@@ -76,7 +76,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		product: '',
 		location_lat: '',
 		location_lng: '',
-	  });	  
+	});
 
 	useEffect(() => {
 		axios
@@ -193,20 +193,20 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 
 	const requestUserLocation = () => {
 		if (!navigator.geolocation) return;
-	
+
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
 				const lat = position.coords.latitude.toString();
 				const lng = position.coords.longitude.toString();
-	
+
 				setIsUserLocation(true);
-	
+
 				setFilters((prev) => ({
 					...prev,
 					location_lat: lat,
 					location_lng: lng,
 				}));
-	
+
 				setAddressData((prev) => ({
 					...prev,
 					location_lat: lat,
@@ -215,7 +215,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				}));
 			}
 		);
-	};	
+	};
 
 	const renderMapComponent = () => {
 		if (!modules.includes('geo-location') || !apiKey) {
@@ -253,49 +253,69 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 			{renderMapComponent()}
 			<div className="">
 				{/* Filter Bar */}
-				<button onClick={requestUserLocation}>
-					Use My Current Location
-				</button>
-				<input
-					type="text"
-					name="address"
-					value={filters.address}
-					onChange={handleInputChange}
-					placeholder="Enter Address"
-					className=""
-				/>
-				<select
-					name="distance"
-					value={filters.distance}
-					onChange={handleInputChange}
-					className=""
-				>
-					<option value="">Within</option>
-					<option value="5">5</option>
-					<option value="10">10</option>
-					<option value="25">25</option>
-				</select>
-				<select
-					name="miles"
-					value={filters.miles}
-					onChange={handleInputChange}
-					className=""
-				>
-					<option value="miles">Miles</option>
-					<option value="km">Kilometers</option>
-					<option value="nm">Nautical miles</option>
-				</select>
+				<form className="woocommerce-form woocommerce-form-login login">
+					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+						<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
+							Use My Current Location
+						</button>
+					</p>
+					<div className="clear"></div>
 
-				<select
-					name="sort"
-					value={filters.sort}
-					onChange={handleInputChange}
-					className=""
-				>
-					<option value="name">Select</option>
-					<option value="category">By Category</option>
-					<option value="shipping">By Shipping</option>
-				</select>
+					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+						<input
+							type="text"
+							name="address"
+							value={filters.address}
+							onChange={handleInputChange}
+							placeholder="Enter Address"
+							className="woocommerce-Input woocommerce-Input--text input-text"
+						/>
+					</p>
+					<div className="clear"></div>
+
+					<p className="form-row form-row-wide">
+						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+							<select
+								name="distance"
+								value={filters.distance}
+								onChange={handleInputChange}
+								className=""
+							>
+								<option value="">Within</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="25">25</option>
+							</select>
+						</p>
+
+						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+							<select
+								name="miles"
+								value={filters.miles}
+								onChange={handleInputChange}
+								className=""
+							>
+								<option value="miles">Miles</option>
+								<option value="km">Kilometers</option>
+								<option value="nm">Nautical miles</option>
+							</select>
+						</p>
+
+						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+
+							<select
+								name="sort"
+								value={filters.sort}
+								onChange={handleInputChange}
+								className=""
+							>
+								<option value="name">Select</option>
+								<option value="category">By Category</option>
+								<option value="shipping">By Shipping</option>
+							</select>
+						</p>
+					</p>
+				</form>
 
 				{filters.sort == 'category' && (
 					<select
@@ -341,13 +361,13 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 										<img src={store.image} />
 									</div>
 
-									<div className="flex gap-2">
-										<button className="">
-											📞{store.phone}
-										</button>
-										<button className="">
-											📍{store.address_1}
-										</button>
+									<div className="">
+										<span>
+											{store.phone}
+										</span>
+										<span>
+											{store.address_1}
+										</span>
 									</div>
 								</div>
 
@@ -379,6 +399,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					<button
 						disabled={page === 1}
 						onClick={() => setPage((p) => p - 1)}
+						className="woocommerce-button button wp-element-button"
 					>
 						Previous
 					</button>
@@ -390,6 +411,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					<button
 						disabled={page >= totalPages}
 						onClick={() => setPage((p) => p + 1)}
+						className="woocommerce-button button wp-element-button"
 					>
 						Next
 					</button>

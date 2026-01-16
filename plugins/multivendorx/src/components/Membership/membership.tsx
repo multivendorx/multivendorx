@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import {
 	BasicInput,
@@ -18,6 +18,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	AdminButton,
+	RadioInput,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -227,6 +228,8 @@ const field = {
 };
 
 const Membership = ({ id }: { id: string }) => {
+	const visibilityRef = useRef<HTMLDivElement | null>(null);
+	const [product, setProduct] = useState({});
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [pricingType, setPricingType] = useState<'free' | 'paid'>('free');
 	const [selectedValues, setSelectedValues] = useState<string[]>([]);
@@ -235,6 +238,35 @@ const Membership = ({ id }: { id: string }) => {
 	const [rules, setRules] = useState<any[]>([]);
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 	const [featuredEnabled, setFeaturedEnabled] = useState(false);
+	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
+	const [catalogVisibility, setCatalogVisibility] = useState<string>('draft');
+	useEffect(() => {
+		if (product?.catalog_visibility) {
+			setCatalogVisibility(product.catalog_visibility);
+		}
+	}, [product]);
+
+	const VISIBILITY_LABELS: Record<string, string> = {
+		draft: __('Draft', 'multivendorx'),
+		publish: __('Published', 'multivendorx'),
+		pending: __('Pending Review', 'multivendorx'),
+	};
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				visibilityRef.current &&
+				!visibilityRef.current.contains(event.target as Node)
+			) {
+				setIsEditingVisibility(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
 
 	const [imagePreviews, setImagePreviews] = useState<{
 		[key: string]: string;
@@ -685,33 +717,47 @@ const Membership = ({ id }: { id: string }) => {
 				<Container>
 					<Column>
 						<Card>
-							<div className={`checklist-wrapper row ${isChecklistOpen ? 'show' : 'hide'}`}>
+							<div className={`checklist-wrapper row ${isChecklistOpen ? 'hide' : 'show'}`}>
 								<ul>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
-											<div className="title">Product Name</div>
-											<div className="des">A clear, descriptive title that helps customers find your product</div>
+											<div className="title">Plan Name</div>
+											<div className="des">A clear, descriptive title that helps stores identify your plan</div>
 										</div>
 									</li>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
-											<div className="title">Product Name</div>
-											<div className="des">A clear, descriptive title that helps customers find your product</div>
+											<div className="title">Description</div>
+											<div className="des">Explain what this plan offers to stores</div>
 										</div>
 									</li>
 									<li className="checked">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
-											<div className="title">Product Name</div>
-											<div className="des">A clear, descriptive title that helps customers find your product</div>
+											<div className="title">Features</div>
+											<div className="des">Select premium features for this plan	</div>
+										</div>
+									</li>
+									<li className="checked">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Pricing</div>
+											<div className="des">Set competitive prices including any sale or discount options</div>
+										</div>
+									</li>
+									<li className="checked">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Permissions</div>
+											<div className="des">A clear, descriptive title that helps customers</div>
 										</div>
 									</li>
 								</ul>
 							</div>
 							<div className="checklist-icon" onClick={() => setIsChecklistOpen((prev) => !prev)}>
-								<i className={`adminfont-next ${isChecklistOpen ? 'rotated' : ''}`}></i>
+								<i className={`adminfont-${isChecklistOpen ? 'previous' : 'next'}`}></i>
 							</div>
 						</Card>
 					</Column>
@@ -720,23 +766,62 @@ const Membership = ({ id }: { id: string }) => {
 							title="Plan details"
 							action={
 								<div className="field-wrapper">
-									<ToggleSetting
+									<div className="catalog-visibility">
+										<span className="catalog-visibility-value">
+											{VISIBILITY_LABELS[catalogVisibility]}
+										</span>
 
+										<span
+											onClick={() => {
+												setIsEditingVisibility((prev) => !prev);
+											}}
 
-										options={[
-											{
-												key: 'draft',
-												value: 'draft',
-												label: __('Draft', 'multivendorx'),
-											},
-											{
-												key: 'published',
-												value: 'Published',
-												label: __('Published', 'multivendorx'),
-											},
-										]}
-									/>
+										>
+											<i className="adminfont-keyboard-arrow-down" />
+										</span>
+									</div>
+									{isEditingVisibility && (
+										<div className="setting-dropdown">
+											<FormGroup>
+												<RadioInput
+													name="catalog_visibility"
+													idPrefix="catalog_visibility"
+													type="radio"
+													wrapperClass="settings-form-group-radio"
+													inputWrapperClass="radio-basic-input-wrap"
+													inputClass="setting-form-input"
+													descClass="settings-metabox-description"
+													activeClass="radio-select-active"
+													radiSelectLabelClass="radio-label"
+													options={[
+														{
+															key: 'draft',
+															value: 'draft',
+															label: __('Draft', 'multivendorx'),
+														},
+														{
+															key: 'publish',
+															value: 'publish',
+															label: __('Published', 'multivendorx'),
+														},
+														{
+															key: 'pending',
+															value: 'pending',
+															label: __('Pending Review', 'multivendorx'),
+														},
+													]}
+													value={catalogVisibility}
+													onChange={(e) => {
+														const value = e.target.value;
+														setCatalogVisibility(value);
+														handleChange('catalog_visibility', value);
+														setIsEditingVisibility(false);
+													}}
+												/>
 
+											</FormGroup>
+										</div>
+									)}
 									<div
 										className="recommended-wrapper"
 										onClick={() => setstarFill((prev) => !prev)}
@@ -753,14 +838,14 @@ const Membership = ({ id }: { id: string }) => {
 							}
 						>
 							<FormGroupWrapper>
-								<FormGroup label="Name" htmlFor="product-name">
+								<FormGroup label="Name" htmlFor="product-name" desc={__('A unique name for your membership plan', 'multivendorx')}>
 									<BasicInput
 										name="name"
 										value={formData.name}
 										onChange={handleChange}
 									/>
 								</FormGroup>
-								<FormGroup label="Description" htmlFor="short_description">
+								<FormGroup label="Description" htmlFor="short_description" desc={__('A short description displayed on product and checkout pages', 'multivendorx')}>
 									<TextArea
 										name="short_description"
 									/>
@@ -870,7 +955,7 @@ const Membership = ({ id }: { id: string }) => {
 										name="categories"
 										type="multi-select"
 										options={categoryOptions}
-										size={"10rem"}
+										size={"18rem"}
 										value={categoryOptions.filter(opt =>
 											selectedCategories.includes(opt.value)
 										)}
@@ -1177,6 +1262,7 @@ const Membership = ({ id }: { id: string }) => {
 									htmlFor="membership_type"
 								>
 									<ToggleSetting
+										wrapperClass="full-width"
 										options={[
 											{
 												key: 'free',

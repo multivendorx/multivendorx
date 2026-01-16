@@ -2025,14 +2025,13 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
-
+{/* 
 					 <Card
 						title={__('Visibility', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
 					> 
 					 <FormGroupWrapper> 
-					{/* Virtual / Downloadable */}
 					 <FormGroup>
 								<div className="checkbox-wrapper">
 									<div className="item">
@@ -2078,7 +2077,6 @@ const AddProduct = () => {
 								</div>
 							</FormGroup> 
 
-					{/* Edit catalog visibility */}
 					{isEditingVisibility && (
 								<>
 									<FormGroup>
@@ -2120,7 +2118,6 @@ const AddProduct = () => {
 								</>
 							)} 
 
-					{/* Status */}
 					 <FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 								<ToggleSetting
 
@@ -2135,7 +2132,6 @@ const AddProduct = () => {
 								/>
 							</FormGroup> 
 
-					{/* Publish date */}
 					 {product.status === 'publish' && (
 								<label>{__('Published on Dec 16, 2025', 'multivendorx')}</label>
 							)}
@@ -2179,7 +2175,7 @@ const AddProduct = () => {
 								</FormGroup>
 							)} 
 					</FormGroupWrapper>
-					 </Card> 
+					 </Card>  */}
 				</Column>
 			</Container >
 		</>

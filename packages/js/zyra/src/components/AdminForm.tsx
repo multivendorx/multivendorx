@@ -1621,8 +1621,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <ToggleSetting
                             khali_dabba={ appLocalizer?.khali_dabba ?? false }
-                            wrapperClass={ `setting-form-input` }
-                            descClass="settings-metabox-description"
+                            wrapperClass={ inputField.wrapperClass }
                             description={ inputField.desc }
                             key={ inputField.key }
                             iconEnable={ inputField.iconEnable } // If true, will display the toggle value as an icon

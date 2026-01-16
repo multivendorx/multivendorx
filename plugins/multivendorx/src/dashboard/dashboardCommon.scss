@@ -1170,17 +1170,6 @@ body.dark {
     .setting-input {
         position: relative;
         align-items: end !important; // overwrite common style
-
-        .setting-dropdown {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: $background-white;
-            border: $border-light-small;
-            z-index: 9;
-            width: 100%;
-            padding: 0.625rem;
-        }
     }
 }
 
@@ -1196,20 +1185,6 @@ body.dark {
         display: flex;
         gap: 0.125rem;
         font-size: 0.875rem;
-    }
-}
-
-.catalog-visibility {
-    display: flex;
-    align-items: end;
-    justify-content: end;
-    gap: 0.313rem;
-    margin-bottom: 0.625rem;
-    color: $text-color;
-
-    .admin-badge {
-        font-size: 0.813rem;
-        cursor: pointer;
     }
 }
 
