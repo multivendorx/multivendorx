@@ -60,7 +60,7 @@ export default {
 			hint: __('Customer-facing order presentation & invoicing', 'multivendorx'),
 		},
 		{
-			key: 'sms_gateway_selector',
+			key: 'display_customer_order',
 			type: 'setting-toggle',
 			label: __('Customers will see information for', 'multivendorx'),
 			custom: true,

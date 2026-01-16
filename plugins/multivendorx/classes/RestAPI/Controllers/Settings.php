@@ -181,6 +181,12 @@ class Settings extends \WP_REST_Controller {
                 }
             }
 
+            if ( 'store-commissions' === $settingsname ) {
+                if ( get_option(Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store']) ) {
+                    delete_option(Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store']);
+                }
+            }
+
             return $all_details;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );

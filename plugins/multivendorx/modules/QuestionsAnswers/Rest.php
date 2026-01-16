@@ -9,6 +9,7 @@
 namespace MultiVendorX\QuestionsAnswers;
 
 use MultiVendorX\QuestionsAnswers\Util;
+use MultiVendorX\Utill;
 
 defined('ABSPATH') || exit;
 
@@ -142,15 +143,16 @@ class Rest extends \WP_REST_Controller
             $limit      = max(intval($request->get_param('row')), 10);
             $page       = max(intval($request->get_param('page')), 1);
             $offset     = ($page - 1) * $limit;
-            $start_date = sanitize_text_field($request->get_param('startDate'));
-            $end_date   = sanitize_text_field($request->get_param('endDate'));
             $count      = $request->get_param('count');
             $status     = sanitize_text_field($request->get_param('status'));
             $search     = sanitize_text_field($request->get_param('searchField'));
             $orderBy    = sanitize_text_field($request->get_param('orderBy'));
             $order      = sanitize_text_field($request->get_param('order'));
             $question_visibility     = sanitize_text_field($request->get_param('question_visibility'));
-
+            $range = Utill::normalize_date_range(
+                $request->get_param('startDate'),
+                $request->get_param('endDate')
+            );
             $args = array();
 
             if ($store_id) {
@@ -196,11 +198,12 @@ class Rest extends \WP_REST_Controller
             $args['limit']  = $limit;
             $args['offset'] = $offset;
 
-            if ($start_date) {
-                $args['start_date'] = $start_date;
+            if (! empty($range['start_date'])) {
+                $args['start_date'] = $range['start_date'];
             }
-            if ($end_date) {
-                $args['end_date'] = $end_date;
+            
+            if (! empty($range['end_date'])) {
+                $args['end_date'] = $range['end_date'];
             }
 
             // --- Step 6: Add Filter by Status (from frontend tabs) ---

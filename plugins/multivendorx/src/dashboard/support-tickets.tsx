@@ -67,7 +67,6 @@ export interface RealtimeFilter {
 
 const SupportTickets: React.FC = () => {
 	const [data, setData] = useState<Review[]>([]);
-	const [error, setError] = useState<string>();
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [pageCount, setPageCount] = useState<number>(0);
@@ -111,7 +110,6 @@ const SupportTickets: React.FC = () => {
 				setStore(response.data.stores);
 			})
 			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
 				setStore([]);
 			});
 		axios({
@@ -125,7 +123,7 @@ const SupportTickets: React.FC = () => {
 				setPageCount(Math.ceil(response.data / pagination.pageSize));
 			})
 			.catch(() => {
-				setError(__('Failed to load total rows', 'multivendorx'));
+				console.log(__('Failed to load total rows', 'multivendorx'));
 			});
 	}, []);
 
@@ -149,7 +147,7 @@ const SupportTickets: React.FC = () => {
 		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
-		setData([]);
+		setData(null);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'review'),
@@ -193,7 +191,7 @@ const SupportTickets: React.FC = () => {
 				]);
 			})
 			.catch(() => {
-				setError(__('Failed to load Q&A', 'multivendorx'));
+				console.log(__('Failed to load Q&A', 'multivendorx'));
 				setData([]);
 			});
 	}
@@ -204,7 +202,6 @@ const SupportTickets: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData([]);
 		requestData(
 			rowsPerPage,
 			currentPage,
@@ -288,26 +285,6 @@ const SupportTickets: React.FC = () => {
 		},
 	];
 
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<div className="search-section">
-					<input
-						name="searchField"
-						type="text"
-						placeholder={__('Search', 'multivendorx')}
-						onChange={(e) => {
-							updateFilter(e.target.name, e.target.value);
-						}}
-						value={filterValue || ''}
-					/>
-					<i className="adminfont-search"></i>
-				</div>
-			),
-		},
-	];
-
 	// 🔹 Handle reply saving
 	const handleSaveReply = async () => {
 		if (!selectedReview) {
@@ -371,7 +348,6 @@ const SupportTickets: React.FC = () => {
 			),
 		},
 		{
-			id: 'customer',
 			header: __('Customer', 'multivendorx'),
 			cell: ({ row }) => {
 				const { customer_id, customer_name } = row.original;

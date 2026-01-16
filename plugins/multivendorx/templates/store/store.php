@@ -22,6 +22,9 @@ if ( ! $store_id ) {
 get_header( 'shop' );
 
 do_action( 'woocommerce_before_main_content' );
+if (MultiVendorX()->setting->get_setting( 'store_sidebar' ) == 'left') {
+    get_sidebar();
+}
 ?>
 <div class="mvx-store-wrapper">
 
@@ -47,6 +50,9 @@ do_action( 'woocommerce_before_main_content' );
 </div>
 
 <?php
+if (MultiVendorX()->setting->get_setting( 'store_sidebar' ) == 'right') {
+    get_sidebar();
+}
 do_action( 'woocommerce_after_main_content' );
 
 get_footer( 'shop' );

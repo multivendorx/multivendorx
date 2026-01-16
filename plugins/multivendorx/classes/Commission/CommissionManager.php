@@ -83,7 +83,7 @@ class CommissionManager {
             $store_earning          = (float) ( $order->get_subtotal() - $order->get_discount_total() - $commission_amount );
 
             // For migrate users.
-            if ( $store->get_meta( 'revenue_mode_store' ) ) {
+            if ( get_option(Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store']) ) {
                 $marketplace_commission = (float) ( $order->get_subtotal() - $order->get_discount_total() - $commission_amount );
                 $store_earning          = $commission_amount;
             }

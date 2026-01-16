@@ -172,7 +172,8 @@
             top: 1rem;
             left: 0.5rem;
         }
-        input[type=radio]:checked::before{
+
+        input[type=radio]:checked::before {
             color: $theme-color;
         }
 
@@ -197,7 +198,8 @@
                 }
             }
         }
-        div:has(input:checked)+div label{
+
+        div:has(input:checked)+div label {
             border: $border-light-medium;
         }
     }
@@ -208,6 +210,16 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    // for full width 
+    &.full-width {
+        width: 100%;
+
+        .toggle-option,
+        .toggle-setting-wrapper {
+            width: 100%;
+        }
+    }
 }
 
 .toggle-setting-container:has(.custom) {

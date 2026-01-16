@@ -16,13 +16,14 @@ import {
 	FormGroup,
 	AdminButton,
 	MiniCard,
+	MultiCalendarInput,
 } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { formatCurrency } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commission/viewCommission';
 
 type StoreRow = {
@@ -61,10 +62,10 @@ type TransactionStatus = {
 type FilterData = {
 	searchAction?: string;
 	searchField?: string;
-	typeCount?: any;
+	categoryFilter?: string;
 	store?: string;
-	order?: any;
-	orderBy?: any;
+	order?: string;
+	orderBy?: string;
 	date?: {
 		start_date: Date;
 		end_date: Date;
@@ -129,8 +130,8 @@ const DownloadTransactionCSVButton: React.FC<{
 			}
 
 			// Add status filter (Cr/Dr)
-			if (filterData?.typeCount && filterData.typeCount !== 'all') {
-				params.filter_status = filterData.typeCount;
+			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+				params.filter_status = filterData.categoryFilter;
 			}
 
 			// If specific rows are selected, send their IDs
@@ -246,8 +247,8 @@ const ExportAllTransactionCSVButton: React.FC<{
 			}
 
 			// Add status filter (Cr/Dr)
-			if (filterData?.typeCount && filterData.typeCount !== 'all') {
-				params.filter_status = filterData.typeCount;
+			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+				params.filter_status = filterData.categoryFilter;
 			}
 
 			// Make API request for CSV
@@ -314,7 +315,6 @@ const TransactionBulkActions: React.FC<{
 				filterData={filterData}
 				storeId={storeId}
 			/>
-			{/* Add other bulk actions here if needed */}
 		</div>
 	);
 };
@@ -352,6 +352,17 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 	const [selectedCommissionId, setSelectedCommissionId] = useState<
 		number | null
 	>(null);
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	// Add search filter with export button
 	const actionButton: RealtimeFilter[] = [
@@ -367,69 +378,24 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			),
 		},
 	];
-	// 🔹 Helper: get effective date range
-	const getEffectiveDateRange = () => {
-		if (dateRange.startDate && dateRange.endDate) {
-			return dateRange;
-		}
-		const now = new Date();
-		const start = new Date(now.getFullYear(), now.getMonth(), 1); // first day of current month
-		const end = new Date(
-			now.getFullYear(),
-			now.getMonth() + 1,
-			0,
-			23,
-			59,
-			59
-		); // last day of current month
-		return { startDate: start, endDate: end };
-	};
-
-	// 🔹 Fetch total rows on mount or date change
-	useEffect(() => {
-		if (!storeId) {
-			return;
-		}
-
-		const { startDate, endDate } = getEffectiveDateRange();
-
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'transaction'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				count: true,
-				store_id: storeId,
-				start_date: startDate.toISOString().split('T')[0],
-				end_date: endDate.toISOString().split('T')[0],
-			},
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(
-					Math.ceil((response.data || 0) / pagination.pageSize)
-				);
-			})
-			.catch(() => setData([]));
-	}, [storeId, dateRange, pagination.pageSize]);
 
 	// 🔹 Fetch data from backend
 	function requestData(
 		rowsPerPage = 10,
 		currentPage = 1,
-		typeCount = '',
+		categoryFilter = '',
 		transactionType = '',
 		transactionStatus = '',
 		orderBy = '',
-		order = ''
+		order = '',
+		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		endDate = new Date()
 	) {
 		if (!storeId) {
 			return;
 		}
 
 		setData(null);
-
-		const { startDate, endDate } = getEffectiveDateRange();
 
 		axios({
 			method: 'GET',
@@ -439,9 +405,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				page: currentPage,
 				row: rowsPerPage,
 				store_id: storeId,
-				start_date: startDate.toISOString().split('T')[0],
-				end_date: endDate.toISOString().split('T')[0],
-				status: typeCount == 'all' ? '' : typeCount,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',	
+				status: categoryFilter == 'all' ? '' : categoryFilter,
 				transaction_status: transactionStatus,
 				transaction_type: transactionType,
 				orderBy,
@@ -450,6 +416,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		})
 			.then((response) => {
 				setData(response.data.transaction || []);
+				setTotalRows(response.data.all || 0);
+				setPageCount(Math.ceil(response.data.all / pagination.pageSize));
 
 				const statuses = [
 					{ key: 'all', name: 'All', count: response.data.all || 0 },
@@ -501,11 +469,13 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
+			filterData?.categoryFilter,
 			filterData?.transactionType,
 			filterData?.transactionStatus,
 			filterData?.orderBy,
-			filterData?.order
+			filterData?.order,
+			filterData?.date?.start_date,
+			filterData?.date?.end_date
 		);
 	};
 
@@ -533,7 +503,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			cell: ({ row }) => <TableCell>#{row.original.id}</TableCell>,
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
@@ -610,6 +579,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			},
 		},
 		{
+			id: 'date',
+			accessorKey: 'date',
+			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => {
 				const rawDate = row.original.date;
@@ -724,6 +696,26 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 						</option>
 					</select>
 				</div>
+			),
+		},
+		{
+			name: 'date',
+			render: (updateFilter) => (
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
@@ -963,7 +955,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 													{__('automatically every hour.', 'multivendorx')}
 												</>
 											)}
-											</>
+										</>
 									}
 								/>
 
@@ -1150,7 +1142,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 							onPaginationChange={setPagination}
 							handlePagination={requestApiForData}
 							perPageOption={[10, 25, 50]}
-							typeCounts={transactionStatus as TransactionStatus[]}
+							categoryFilter={transactionStatus as TransactionStatus[]}
 							totalCounts={totalRows}
 							realtimeFilter={realtimeFilter}
 							actionButton={actionButton}

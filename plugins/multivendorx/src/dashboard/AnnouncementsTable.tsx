@@ -7,6 +7,7 @@ import {
     RowSelectionState,
     PaginationState,
 } from '@tanstack/react-table';
+import { formatWcShortDate } from '@/services/commonFunction';
 
 type AnnouncementForm = {
 	title: string;
@@ -25,7 +26,6 @@ const AnnouncementsTable = (React.FC = () => {
         pageSize: 10,
     });
     const [pageCount, setPageCount] = useState(0);
-    const [error, setError] = useState<string | null>(null);
 
     // Fetch total rows on mount
     useEffect(() => {
@@ -35,6 +35,7 @@ const AnnouncementsTable = (React.FC = () => {
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
 				store_id: appLocalizer.store_id,
+                status:'publish',
 				count: true
 			},
         })
@@ -42,9 +43,6 @@ const AnnouncementsTable = (React.FC = () => {
                 setTotalRows(response.data || 0);
                 setPageCount(Math.ceil(response.data / pagination.pageSize));
             })
-            .catch(() => {
-                setError(__('Failed to load total rows', 'multivendorx'));
-            });
     }, []);
 
     useEffect(() => {
@@ -64,6 +62,7 @@ const AnnouncementsTable = (React.FC = () => {
             params: {
                 page: currentPage,
                 row: rowsPerPage,
+                status:'publish',
                 store_id: appLocalizer?.store_id,
             },
         })
@@ -71,23 +70,18 @@ const AnnouncementsTable = (React.FC = () => {
                 setData(response.data.items || []);
             })
             .catch(() => {
-                setError(__('Failed to load stores', 'multivendorx'));
                 setData([]);
             });
     }
-    console.log('data', data)
 
     // Handle pagination and filter changes
     const requestApiForData = (
         rowsPerPage: number,
         currentPage: number
-        // filterData: FilterData
     ) => {
-        setData(null);
         requestData(
             rowsPerPage,
             currentPage
-            // filterData?.typeCount,
         );
     };
 
@@ -110,7 +104,6 @@ const AnnouncementsTable = (React.FC = () => {
             ),
         },
         {
-            id: 'status',
             header: __('Status', 'multivendorx'),
             cell: ({ row }) => {
                 return (
@@ -124,39 +117,10 @@ const AnnouncementsTable = (React.FC = () => {
             },
         },
         {
-            header: __('Recipients', 'multivendorx'),
-            cell: ({ row }) => {
-                const storeString = row.original.store_name;
-
-                // 🔹 If store_name is empty, null, or undefined → show All Stores
-                if (!storeString) {
-                    return (
-                        <TableCell title={'stores'}>
-                            {__('All Stores', 'multivendorx')}
-                        </TableCell>
-                    );
-                }
-
-                // 🔹 Otherwise, split and format store names
-                const stores = storeString.split(',').map((s) => s.trim());
-                let displayStores = stores;
-
-                if (stores.length > 2) {
-                    displayStores = [...stores.slice(0, 2), '...'];
-                }
-
-                return (
-                    <TableCell title={stores.join(', ')}>
-                        {displayStores.join(', ')}
-                    </TableCell>
-                );
-            },
-        },
-        {
             header: __('Date', 'multivendorx'),
             cell: ({ row }) => (
                 <TableCell title={row.original.date || ''}>
-                    {row.original.date || ''}
+                    {formatWcShortDate(row.original.date)}
                 </TableCell>
             ),
         },
@@ -164,7 +128,6 @@ const AnnouncementsTable = (React.FC = () => {
 
     return (
         <>
-            {error && <div className="error-notice">{error}</div>}
             <Table
                 data={data}
                 columns={columns as ColumnDef<Record<string, any>, any>[]}
@@ -176,7 +139,6 @@ const AnnouncementsTable = (React.FC = () => {
                 onPaginationChange={setPagination}
                 handlePagination={requestApiForData}
                 perPageOption={[10, 25, 50]}
-                typeCounts={[]}
                 totalCounts={totalRows}
             />
         </>

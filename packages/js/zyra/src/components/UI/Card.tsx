@@ -5,6 +5,7 @@ import { Skeleton } from '@mui/material';
 export type CardProps = {
   title?: React.ReactNode;
   desc?: React.ReactNode;
+  className?: string;
   iconName?: string;
   onIconClick?: () => void;
   buttonLabel?: string;
@@ -25,6 +26,7 @@ export type CardProps = {
 const Card = ({
   title,
   desc,
+  className,
   iconName,
   onIconClick,
   buttonLabel,
@@ -41,7 +43,7 @@ const Card = ({
   const [bodyVisible, setBodyVisible] = useState(true);
 
   return (
-    <div className={`card-content ${transparent ? 'transparent' : ''} ${contentHeight ? 'content-height' : ''} ${contentWidth ? 'content-width' : ''}`}>
+    <div className={`card-content ${transparent ? 'transparent' : ''} ${contentHeight ? 'content-height' : ''} ${contentWidth ? 'content-width' : ''} ${className ? className : ''}`}>
       {loading ? (
         <>
           <div className="card-header">

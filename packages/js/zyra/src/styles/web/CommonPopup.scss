@@ -68,22 +68,22 @@
         gap: 1rem;
 
         .form-group-wrapper {
-            display: flex;
-            flex-direction: column;
+            // display: flex;
+            // flex-direction: column;
 
-            .form-group {
-                display: flex;
-                flex-direction: column;
+            // .form-group {
+            //     display: flex;
+            //     flex-direction: column;
 
-                label {
-                    font-size: 0.9rem;
-                }
+            //     label {
+            //         font-size: 0.9rem;
+            //     }
 
-                .tag-wrapper {
-                    display: flex;
-                    gap: 0.313rem;
-                }
-            }
+            //     .tag-wrapper {
+            //         display: flex;
+            //         gap: 0.313rem;
+            //     }
+            // }
 
             .space {
                 margin: 3.5rem;

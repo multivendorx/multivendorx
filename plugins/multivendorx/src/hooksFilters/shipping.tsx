@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { addFilter } from '@wordpress/hooks';
-import { BasicInput, Card, FormGroup, FormGroupWrapper, SelectInput } from 'zyra';
+import { addFilter, applyFilters } from '@wordpress/hooks';
+import { BasicInput, Card, FormGroup, FormGroupWrapper, SelectInput, ToggleSetting } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShippingCard = ({ product, handleChange }) => {
 	const [shippingClasses, setShippingClasses] = useState([]);
+	const [productType, setProductType] = useState('physical');
 
 	useEffect(() => {
 		axios
@@ -35,14 +36,40 @@ const ShippingCard = ({ product, handleChange }) => {
 	};
 
 	return (
-		<Card
+		<Card contentHeight
 			title={__('Shipping', 'multivendorx')}
-			iconName="adminfont-pagination-right-arrow icon"
+			iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 			toggle
 		>
-			{/* Weight & Shipping class */}
+			{/* Dimensions */}
 			<FormGroupWrapper>
-				<FormGroup label={__('Weight', 'multivendorx')} htmlFor="Weight">
+				<FormGroup>
+					<ToggleSetting
+						options={[
+							{
+								key: 'physical',
+								value: 'physical',
+								label: __('Physical product', 'multivendorx'),
+							},
+							{
+								key: 'downloadable',
+								value: 'downloadable',
+								label: __('Downloadable', 'multivendorx'),
+							},
+							{
+								key: 'others',
+								value: 'others',
+								label: __('Others', 'multivendorx'),
+							},
+						]}
+						value={productType}
+						onChange={(val) => setProductType(val)}
+					/>
+				</FormGroup>
+				{productType === 'physical' && (
+					<>
+						{/* Weight & Shipping class */}
+						{/* <FormGroup cols={2} label={__('Weight (kg)', 'multivendorx')} htmlFor="Weight">
 					<BasicInput
 						name="weight"
 						value={product.weight}
@@ -51,7 +78,7 @@ const ShippingCard = ({ product, handleChange }) => {
 						}
 					/>
 				</FormGroup>
-				<FormGroup label={__('Shipping classes', 'multivendorx')} htmlFor="shipping-classes">
+				<FormGroup cols={2} label={__('Shipping classes', 'multivendorx')} htmlFor="shipping-classes">
 					<SelectInput
 						name="shipping_class"
 						options={shippingClasses}
@@ -60,47 +87,51 @@ const ShippingCard = ({ product, handleChange }) => {
 							handleChange('shipping_class', selected.value)
 						}
 					/>
-				</FormGroup>
+				</FormGroup> */}
+						<FormGroup cols={3} label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`} >
+							<BasicInput
+								name="product_length"
+								value={product.product_length}
+								placeholder={__('Length', 'multivendorx')}
+								onChange={(e) =>
+									handleChange('product_length', e.target.value)
+								}
+							/>
+						</FormGroup>
+
+						<FormGroup cols={3} label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}>
+							<BasicInput
+								name="product_width"
+								value={product.product_width}
+								placeholder={__('Width', 'multivendorx')}
+								onChange={(e) =>
+									handleChange('product_width', e.target.value)
+								}
+							/>
+						</FormGroup>
+
+						<FormGroup cols={3} label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}>
+							<BasicInput
+								name="product_height"
+								value={product.product_height}
+								placeholder={__('Height', 'multivendorx')}
+								onChange={(e) =>
+									handleChange('product_height', e.target.value)
+								}
+							/>
+						</FormGroup>
+					</>
+				)}
+				{productType === 'downloadable' &&
+					applyFilters(
+						'product_downloadable',
+						null,
+						product,
+						// setProduct,
+						handleChange
+					)}
 			</FormGroupWrapper>
-
-			{/* Dimensions */}
-			<FormGroupWrapper>
-				<FormGroup cols={3} label={`${__('Dimensions', 'multivendorx')} (${appLocalizer.dimension_unit})`} >
-					<BasicInput
-						name="product_length"
-						value={product.product_length}
-						placeholder={__('Length', 'multivendorx')}
-						onChange={(e) =>
-							handleChange('product_length', e.target.value)
-						}
-					/>
-				</FormGroup>
-
-				<FormGroup cols={3}>
-					<BasicInput
-						name="product_width"
-						value={product.product_width}
-						placeholder={__('Width', 'multivendorx')}
-						onChange={(e) =>
-							handleChange('product_width', e.target.value)
-						}
-					/>
-				</FormGroup>
-
-				<FormGroup cols={3}>
-					<BasicInput
-						name="product_height"
-						value={product.product_height}
-						placeholder={__('Height', 'multivendorx')}
-						onChange={(e) =>
-							handleChange('product_height', e.target.value)
-						}
-					/>
-				</FormGroup>
-			</FormGroupWrapper>
-
 		</Card>
-
 	);
 };
 

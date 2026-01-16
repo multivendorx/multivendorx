@@ -744,9 +744,9 @@
 // dropdown menu style (table action, icon action)  remove
 .icon-wrapper {
     position: relative;
-    .dropdown-icon{
 
-    }
+    .dropdown-icon {}
+
     .count {
         position: absolute;
         font-size: 0.75rem;
@@ -778,7 +778,7 @@
         .dropdown-body {
             margin: 0;
 
-            .tabs-wrapper{
+            .tabs-wrapper {
                 padding: 0.75rem;
             }
         }
@@ -915,13 +915,43 @@
 // dropdown menu end
 
 // shipping by zone
-.shipping-method-wrapper{
+.shipping-method-wrapper {
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
-    
-    .shipping-method{
+
+    .shipping-method {
         display: flex;
         gap: 0.5rem;
     }
 }
+
+.card-wrapper:has(.checklist-wrapper.row) {
+    .checklist-icon {
+        position: absolute;
+        cursor: pointer;
+    }
+}
+
+.card-wrapper:has(.checklist-wrapper.row.show) {
+    top: 2.125rem;
+    transform: translate(0);
+    transition: transform 0.35s ease;
+
+    .checklist-icon {
+        right: 1rem;
+    }
+}
+
+.card-wrapper:has(.checklist-wrapper.row.hide) {
+    transform: translate(98%);
+    transition: transform 0.35s ease;
+    position: fixed !important;
+    right: 1.5rem;
+    top: 6rem;
+
+    .checklist-icon {
+        left: 0.5rem;
+    }
+}
+
