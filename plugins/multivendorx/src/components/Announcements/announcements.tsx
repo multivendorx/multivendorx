@@ -27,7 +27,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import './announcements.scss';
-import { formatLocalDate, truncateText } from '@/services/commonFunction';
+import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { Dialog } from '@mui/material';
 
 type AnnouncementRow = {
@@ -586,18 +586,8 @@ export const Announcements: React.FC = () => {
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => {
-				const rawDate = row.original.date;
-				let formattedDate = '-';
-				if (rawDate) {
-					const dateObj = new Date(rawDate);
-					formattedDate = new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(dateObj);
-				}
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
 				);
 			},
 		},
@@ -640,7 +630,7 @@ export const Announcements: React.FC = () => {
 				onChange={handleBulkAction}
 			>
 				<option value="">{__('Bulk actions')}</option>
-				<option value="publish">{__('Publish', 'multivendorx')}</option>
+				<option value="publish">{__('Published', 'multivendorx')}</option>
 				<option value="pending">{__('Pending', 'multivendorx')}</option>
 				<option value="delete">{__('Delete', 'multivendorx')}</option>
 			</select>
@@ -859,7 +849,7 @@ export const Announcements: React.FC = () => {
 									{
 										key: 'publish',
 										value: 'publish',
-										label: __('Publish', 'multivendorx'),
+										label: __('Published', 'multivendorx'),
 									},
 								]}
 								value={formData.status}

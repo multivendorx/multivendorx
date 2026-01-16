@@ -343,7 +343,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		pageSize: 10,
 	});
 	const [pageCount, setPageCount] = useState(0);
-	const [selectedStore, setSelectedStore] = useState<any>(null);
 	const [transactionStatus, setTransactionStatus] = useState<
 		TransactionStatus[] | null
 	>(null);
@@ -381,14 +380,14 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 
 	// 🔹 Fetch data from backend
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage: number,
+		currentPage: number,
 		categoryFilter = '',
 		transactionType = '',
 		transactionStatus = '',
 		orderBy = '',
 		order = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
 		if (!storeId) {
@@ -406,7 +405,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				row: rowsPerPage,
 				store_id: storeId,
 				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',	
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				status: categoryFilter == 'all' ? '' : categoryFilter,
 				transaction_status: transactionStatus,
 				transaction_type: transactionType,
@@ -465,6 +464,11 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		setCurrentFilterData(filterData);
 		requestData(
 			rowsPerPage,
@@ -474,8 +478,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			filterData?.transactionStatus,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -512,20 +516,18 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			header: __('Transaction Type', 'multivendorx'),
 			cell: ({ row }) => {
 				const type = row.original.transaction_type?.toLowerCase();
-				const commissionId = row.original.commission_id;
-				const paymentMethod = row.original.payment_method;
-				const orderId = row.original.order_details;
-				const formatText = (text: any) =>
+				const commissionId = row.original?.commission_id;
+				const formatText = (text: string) =>
 					text
 						?.replace(/-/g, ' ')
-						?.replace(/\b\w/g, (c: any) => c.toUpperCase()) || '-';
+						?.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-';
 
 				let displayValue = '-';
-				let content: any = displayValue;
+				let content: string = displayValue;
 
 				// Commission Transaction (clickable)
 				if (type === 'commission') {
-					displayValue = `Commission #${commissionId || '-'}`;
+					displayValue = `Commission #${commissionId}`;
 					content = commissionId ? (
 						<span
 							className="link-item"
@@ -539,39 +541,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 					) : (
 						displayValue
 					);
-				}
-
-				// Withdrawal
-				else if (type === 'withdrawal') {
-					const formattedMethod = formatText(paymentMethod);
-					const accNo = row.original.account_number;
-
-					let maskedAccount = '';
-					if (paymentMethod === 'bank-transfer' && accNo) {
-						const last2 = accNo.slice(-2);
-						maskedAccount = ` (A/C...${last2})`;
-					}
-
-					displayValue = `Withdrawal via ${formattedMethod}${maskedAccount}`;
-					content = displayValue;
-				} else if (type === 'refund') {
-					displayValue = `Refund for Order #${orderId || '-'}`;
-
-					const orderEditUrl = `${appLocalizer.site_url}/wp-admin/admin.php?page=wc-orders&action=edit&id=${orderId}`;
-					content = orderId ? (
-						<a
-							href={orderEditUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="link-item"
-						>
-							{displayValue}
-						</a>
-					) : (
-						displayValue
-					);
 				} else if (row.original.transaction_type) {
-					displayValue = formatText(row.original.transaction_type);
+					displayValue = formatText(row.original.narration);
 					content = displayValue;
 				}
 
@@ -755,6 +726,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				transaction_type: 'Withdrawal',
 				orderBy: 'created_at',
 				order: 'DESC',
+				status: 'Completed'
 			},
 		})
 			.then((response) => {
@@ -795,13 +767,13 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			method: 'PUT',
 			url: getApiLink(
 				appLocalizer,
-				`transaction/${selectedStore?.value}`
+				`transaction/${storeId}`
 			),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: {
 				disbursement: true,
 				amount,
-				store_id: selectedStore?.value,
+				store_id: storeId,
 				method: paymentMethod,
 				note,
 			},
@@ -861,7 +833,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 												.replace(/\b\w/g, (char) =>
 													char.toUpperCase()
 												) // capitalize each word
-											: __('N/A', 'multivendorx');
+											: __('No Payment Method Selected', 'multivendorx');
 
 									return (
 										<div key={txn.id} className="info-item">
@@ -964,8 +936,11 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 										title={__('Free Withdrawals', 'multivendorx')}
 										value={
 											<>
-												{(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-													(wallet?.free_withdrawal ?? 0)}{' '}
+												{Math.max(
+													0,
+													(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
+													(wallet?.free_withdrawal ?? 0)
+												)}{' '}
 												<span>{__('Left', 'multivendorx')}</span>
 											</>
 										}

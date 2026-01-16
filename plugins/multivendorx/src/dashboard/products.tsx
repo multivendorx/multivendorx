@@ -67,6 +67,16 @@ const productTypeOptions = [
 	{ key: 'grouped', name: 'Grouped Product' },
 	{ key: 'external', name: 'External/Affiliate Product' },
 ];
+
+const STATUS_LABELS: Record<string, string> = {
+	all: __('All', 'multivendorx'),
+	publish: __('Published', 'multivendorx'),
+	draft: __('Draft', 'multivendorx'),
+	pending: __('Pending', 'multivendorx'),
+	private: __('Private', 'multivendorx'),
+	trash: __('Trash', 'multivendorx'),
+};
+
 const AllProduct: React.FC = () => {
 	const [data, setData] = useState<ProductRow[]>([]);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -178,15 +188,8 @@ const AllProduct: React.FC = () => {
 
 	const fetchProductStatusCounts = async () => {
 		try {
-			const statuses = [
-				'all',
-				'publish',
-				'draft',
-				'pending',
-				'private',
-				'trash',
-			];
-
+			const statuses = ['all', 'publish', 'draft', 'pending', 'private', 'trash'];
+	
 			const counts: ProductStatus[] = await Promise.all(
 				statuses.map(async (status) => {
 					const params: any = {
@@ -194,11 +197,11 @@ const AllProduct: React.FC = () => {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
 					};
-
+	
 					if (status !== 'all') {
 						params.status = status;
 					}
-
+	
 					const res = await axios.get(
 						`${appLocalizer.apiUrl}/wc/v3/products`,
 						{
@@ -206,30 +209,25 @@ const AllProduct: React.FC = () => {
 							params,
 						}
 					);
-
+	
 					const total = parseInt(res.headers['x-wp-total'] || '0');
-
+	
 					return {
 						key: status,
-						name:
-							status === 'all'
-								? __('All', 'multivendorx')
-								: status.charAt(0).toUpperCase() +
-								status.slice(1),
+						name: STATUS_LABELS[status],
 						count: total,
 					};
 				})
 			);
-
-			const filteredCounts = counts.filter(
-				(status) => status.key === 'all' || status.count > 0
+	
+			setProductStatus(
+				counts.filter((s) => s.count > 0)
 			);
-
-			setProductStatus(filteredCounts);
 		} catch (error) {
-			console.error('Failed to fetch order status counts:', error);
+			console.error('Failed to fetch product status counts:', error);
 		}
 	};
+	
 
 	const fetchWpmlTranslations = async () => {
 		if (!modules.includes('wpml')) return;

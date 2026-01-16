@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BasicInput, SuccessNotice, getApiLink } from 'zyra';
+import { __ } from '@wordpress/i18n';
 
 const SocialMedia = () => {
 	const id = appLocalizer.store_id;

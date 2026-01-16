@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { Column, Container, getApiLink, MultiCalendarInput, Table, TableCell } from 'zyra';
-import { ColumnDef, PaginationState } from '@tanstack/react-table';
+import { ColumnDef, PaginationState, RowSelectionState } from '@tanstack/react-table';
 import TransactionDetailsModal from './TransactionDetailsModal';
 import { formatCurrency, formatLocalDate } from '../services/commonFunction';
 
@@ -30,6 +30,168 @@ type TransactionStatus = {
 	name: string;
 	count: number;
 };
+type FilterData = {
+	searchAction?: string;
+	searchField?: string;
+	categoryFilter?: string;
+	store?: string;
+	order?: string;
+	orderBy?: string;
+	date?: {
+		start_date: Date;
+		end_date: Date;
+	};
+	transactionType?: string;
+	transactionStatus?: string;
+};
+
+const DownloadTransactionCSVButton: React.FC<{
+	selectedRows: RowSelectionState;
+	data: StoreRow[] | null;
+	filterData: FilterData;
+	storeId: number | null;
+	isLoading?: boolean;
+}> = ({ selectedRows, data, filterData, storeId, isLoading = false }) => {
+	const [isDownloading, setIsDownloading] = useState(false);
+
+	const handleDownload = async () => {
+		if (!storeId) {
+			alert(__('Please select a store first.', 'multivendorx'));
+			return;
+		}
+
+		setIsDownloading(true);
+		try {
+			// Get selected row IDs
+			const selectedIds = Object.keys(selectedRows)
+				.filter((key) => selectedRows[key])
+				.map((key) => {
+					const rowIndex = parseInt(key);
+					return data?.[rowIndex]?.id;
+				})
+				.filter((id) => id !== undefined);
+
+			// Prepare parameters for CSV download
+			const params: any = {
+				format: 'csv',
+				store_id: storeId,
+			};
+
+			// Add date filters if present
+			if (filterData?.date?.start_date) {
+				params.start_date = filterData.date.start_date
+					.toISOString()
+					.split('T')[0];
+			}
+			if (filterData?.date?.end_date) {
+				params.end_date = filterData.date.end_date
+					.toISOString()
+					.split('T')[0];
+			}
+
+			// Add transaction type filter
+			if (filterData?.transactionType) {
+				params.transaction_type = filterData.transactionType;
+			}
+
+			// Add transaction status filter
+			if (filterData?.transactionStatus) {
+				params.transaction_status = filterData.transactionStatus;
+			}
+
+			// Add status filter (Cr/Dr)
+			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+				params.filter_status = filterData.categoryFilter;
+			}
+
+			// If specific rows are selected, send their IDs
+			if (selectedIds.length > 0) {
+				params.ids = selectedIds.join(',');
+			} else {
+				// If no rows selected, export current page data
+				params.page = 1; // You might want to get current page from props
+				params.row = 10; // You might want to get current page size from props
+			}
+
+			// Make API request for CSV
+			const response = await axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'transaction'),
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+					Accept: 'text/csv',
+				},
+				params: params,
+				responseType: 'blob',
+			});
+
+			// Create download link
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement('a');
+			link.href = url;
+
+			// Generate filename with timestamp and store ID
+			const timestamp = new Date().toISOString().split('T')[0];
+			const context = selectedIds.length > 0 ? 'selected' : 'page';
+			const filename = `transactions_${context}_store_${storeId}_${timestamp}.csv`;
+			link.setAttribute('download', filename);
+
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error('Error downloading CSV:', error);
+			alert(
+				__('Failed to download CSV. Please try again.', 'multivendorx')
+			);
+		} finally {
+			setIsDownloading(false);
+		}
+	};
+
+	const hasSelectedRows = Object.keys(selectedRows).some(
+		(key) => selectedRows[key]
+	);
+
+	return (
+		<div className="action-item">
+			<button
+				onClick={handleDownload}
+				disabled={
+					isDownloading ||
+					isLoading ||
+					!storeId ||
+					(!hasSelectedRows && !data)
+				}
+				className="admin-btn"
+			>
+				<i className="adminfont-download"></i>
+				{__('Download CSV', 'multivendorx')}
+			</button>
+		</div>
+	);
+};
+
+const TransactionBulkActions: React.FC<{
+	selectedRows: RowSelectionState;
+	data: StoreRow[] | null;
+	filterData: FilterData;
+	storeId: number | null;
+	onActionComplete?: () => void;
+}> = ({ selectedRows, data, filterData, storeId, onActionComplete }) => {
+	return (
+		<div>
+			<DownloadTransactionCSVButton
+				selectedRows={selectedRows}
+				data={data}
+				filterData={filterData}
+				storeId={storeId}
+			/>
+		</div>
+	);
+};
+
 const Transactions: React.FC = () => {
 	const [data, setData] = useState<TransactionRow[]>([]);
 	const [pagination, setPagination] = useState<PaginationState>({
@@ -38,6 +200,8 @@ const Transactions: React.FC = () => {
 	});
 	const [modalTransaction, setModalTransaction] =
 		useState<TransactionRow | null>(null);
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [currentFilterData, setCurrentFilterData] = useState<FilterData>({});
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [pageCount, setPageCount] = useState(0);
 	const [transactionStatus, setTransactionStatus] = useState<
@@ -85,12 +249,12 @@ const Transactions: React.FC = () => {
 
 	// 🔹 Fetch data from backend
 	function requestData(
-		rowsPerPage :number,
-		currentPage :number,
+		rowsPerPage: number,
+		currentPage: number,
 		categoryFilter = '',
 		transactionType = '',
 		transactionStatus = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
 		setData(null);
@@ -155,6 +319,7 @@ const Transactions: React.FC = () => {
 			end_date: new Date(),
 		};
 		setDateFilter(date);
+		setCurrentFilterData(filterData);
 		requestData(
 			rowsPerPage,
 			currentPage,
@@ -390,8 +555,8 @@ const Transactions: React.FC = () => {
 					<Table
 						data={data}
 						columns={columns as ColumnDef<Record<string, any>, any>[]}
-						rowSelection={{}}
-						onRowSelectionChange={() => { }}
+						rowSelection={rowSelection}
+						onRowSelectionChange={setRowSelection}
 						defaultRowsPerPage={10}
 						pageCount={pageCount}
 						pagination={pagination}
@@ -401,6 +566,14 @@ const Transactions: React.FC = () => {
 						perPageOption={[10, 25, 50]}
 						totalCounts={totalRows}
 						categoryFilter={transactionStatus as TransactionStatus[]}
+						bulkActionComp={() => (
+							<TransactionBulkActions
+								selectedRows={rowSelection}
+								data={data}
+								filterData={currentFilterData}
+								storeId={appLocalizer.store_id}
+							/>
+						)}
 					/>
 
 					{modalTransaction && (

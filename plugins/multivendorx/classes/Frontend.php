@@ -264,6 +264,10 @@ class Frontend {
      * @return string
      */
     public function store_dashboard_template( $template ) {
+        if (is_user_logged_in() && Utill::is_store_dashboard() && in_array( 'administrator', wp_get_current_user()->roles, true )) {
+            wp_safe_redirect( admin_url() );
+            exit;
+        }
         if ( is_user_logged_in() && is_page() && Utill::is_store_dashboard() ) {
             return MultiVendorX()->plugin_path . 'templates/store/store-dashboard.php';
         }

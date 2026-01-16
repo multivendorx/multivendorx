@@ -534,6 +534,12 @@ const Orders: React.FC = () => {
 			},
 		},
 		{
+			header: __('Total Earning', 'multivendorx'),
+			cell: ({ row }) => (
+				<TableCell>{formatCurrency(row.original.commission_total)}</TableCell>
+			),
+		},
+		{
 			id: 'total',
 			accessorKey: 'total',
 			accessorFn: (row) => parseFloat(row.total || '0'),

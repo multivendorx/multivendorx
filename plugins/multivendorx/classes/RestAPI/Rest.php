@@ -416,6 +416,26 @@ class Rest {
             array( 'order_id' => $object->get_id() )
         );
 
+        if ( ! empty( $response->data['refunds'] ) ) {
+
+            foreach ( $response->data['refunds'] as &$refund_data ) {
+        
+                $refund = wc_get_order( $refund_data['id'] );
+                if ( ! $refund ) {
+                    continue;
+                }
+                $username = get_the_author_meta( 'user_login', $refund->get_refunded_by() );
+        
+                $refund_data['label'] = sprintf(
+                    /* translators: 1: refund id, 2: date, 3: user */
+                    __( 'Refund #%1$s - %2$s by %3$s', 'multivendorx' ),
+                    $refund->get_id(),
+                    wc_format_datetime( $refund->get_date_created() ),
+                    $username ?: __( 'system', 'multivendorx' )
+                );
+            }
+        }
+        
         return $response;
     }
 

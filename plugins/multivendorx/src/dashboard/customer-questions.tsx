@@ -198,8 +198,7 @@ const CustomerQuestions: React.FC = () => {
 				{
 					question_text: qna,
 					answer_text: answer,
-					question_visibility:
-						selectedQna.question_visibility || 'public',
+					question_visibility: 'public',
 				},
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			);

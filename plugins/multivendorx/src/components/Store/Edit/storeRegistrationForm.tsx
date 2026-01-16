@@ -37,6 +37,25 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 		doc.save('registration-data.pdf');
 	};
 
+	const FileDisplay = ({ fileUrl, fileType }) => {
+		const renderFile = () => {
+			""
+			if (fileType.includes('image')) {
+				return <img src={fileUrl} alt="file" style={{ maxWidth: '100%' }} />;
+			} else {
+				return (
+					<div>
+						<a href={fileUrl} target="_blank" rel="noopener noreferrer" download>
+							{__('Download Attachment', 'catalogx-pro')}
+						</a>
+					</div>
+				);
+			}
+		};
+
+		return <div>{renderFile()}</div>;
+	};
+
 	const fetchStoreData = () => {
 		axios({
 			method: 'GET',
@@ -196,23 +215,40 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								Object.keys(formData.registration_data).length >
 								0 ? (
 								Object.entries(formData.registration_data).map(
-									([label, value]) => (
-										<div
-											className="form-details"
-											key={label}
-										>
-											<label className="label">
-												{label} :
-											</label>
-											<div className="value">
-												{value ||
-													__(
-														'[Not Provided]',
-														'multivendorx'
+									([label, value]) => {
+										const isAttachment =
+											value &&
+											typeof value === 'object' &&
+											value.attachment;
+
+										return (
+											<div className="form-details" key={label}>
+												<label className="label">
+													{label} :
+												</label>
+
+												<div className="value">
+													{isAttachment ? (
+														<a
+															href={value.attachment}
+															target="_blank"
+															rel="noopener noreferrer"
+														>
+															<FileDisplay
+																fileUrl={value.attachment}
+																fileType={value.attachment_type}
+															/>
+														</a>
+													) : (
+														value || __(
+															'[Not Provided]',
+															'multivendorx'
+														)
 													)}
+												</div>
 											</div>
-										</div>
-									)
+										);
+									}
 								)
 							) : (
 								<div className="no-data">

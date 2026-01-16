@@ -806,7 +806,7 @@ const AddProduct = () => {
 			return updated;
 		});
 	};
-
+// variation end
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -839,12 +839,12 @@ const AddProduct = () => {
 				</div> */}
 				<AdminButton
 					buttons={[
-						{
-							icon: 'form',
-							text: __('Draft', 'multivendorx'),
-							className: 'blue',
-							onClick: () => createProduct('draft'),
-						},
+						// {
+						// 	icon: 'form',
+						// 	text: __('Draft', 'multivendorx'),
+						// 	className: 'blue',
+						// 	onClick: () => createProduct('draft'),
+						// },
 						{
 							icon: 'save',
 							text: __('Publish', 'multivendorx'),
@@ -977,11 +977,331 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
+					<Card contentHeight
+						title={__('Variatations', 'multivendorx')}
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle
+					>
+						<div className="variation-title-wrapper">
+							{__('Attributes', 'multivendorx')}
+							<AdminButton
+								wrapperClass="right"
+								buttons={[
+									{
+										icon: 'plus',
+										text: 'Add variants Like size or color',
+										className: 'purple',
+										onClick: addVariation,
+									}
+								]}
+							/>
+						</div>
+						{variant.map((variation, vIndex) => (
+							<>
+								<div className="variant-wrapper" key={variation.id}>
+									{variation.isEditing && (
+										<div className="edit-wrapper">
+											<div className="edit buttons-wrapper">
+												<div
+													className="admin-btn btn-red"
+													onClick={() => deleteVariation(vIndex)}
+													>
+														<i className="adminfont-delete"></i> Delete
+												</div>
+												<div
+													className="admin-btn btn-green"
+													onClick={() => setEditMode(vIndex, false)}
+												>
+													<i className="adminfont-active"></i> Save
+												</div>
+											</div>
+											<div className="variant">
+												<div className="drag-icon">
+													<i className="adminfont-drag"></i>
+												</div>
+												<BasicInput
+													placeholder="Add variant"
+													value={variation.name}
+													onChange={(e) =>
+														updateVariation(vIndex, 'name', e.target.value)
+													}
+												/>
+											</div>
+
+											<div className="option-wrapper">
+												<FormGroupWrapper>
+													<FormGroup label={__('Option value', 'multivendorx')} />
+												</FormGroupWrapper>
+
+												{variation.options.map((opt, oIndex) => (
+													<div className="variant" key={oIndex}>
+														<div className="drag-icon">
+															<i className="adminfont-drag"></i>
+														</div>
+
+														<BasicInput
+															value={opt}
+															onChange={(e) => {
+																const updated = [...variation.options];
+																updated[oIndex] = e.target.value;
+																updateVariation(vIndex, 'options', updated);
+															}}
+														/>
+
+														<span
+															className="admin-badge red adminfont-delete"
+															onClick={() => deleteOption(vIndex, oIndex)}
+														/>
+													</div>
+												))}
+
+												<div className="add-new">
+													<div className="add-input"
+														onKeyPress={(e) => {
+															if (e.key === 'Enter') {
+																e.preventDefault();
+																handleAddNewOption(vIndex);
+															}
+														}}
+													>
+														<BasicInput
+															placeholder="Add another value"
+															value={tempOptions[vIndex] || ''}
+															onChange={(e) =>
+																handleTempOptionChange(vIndex, e.target.value)
+															}
+															onKeyDown={(e) => {
+																if (e.key === 'Enter') {
+																	e.preventDefault();
+																	handleAddNewOption(vIndex);
+																}
+															}}
+														/>
+													</div>
+
+													<AdminButton
+														buttons={
+															{
+																icon: 'plus',
+																text: "Add New",
+																className: 'purple',
+																onClick: () => handleAddNewOption(vIndex),
+															}
+														}
+													/>
+												</div>
+											</div>
+										</div>
+									)}
+
+									{!variation.isEditing && (
+										<div className="variant-show">
+											<div className="left-section">
+												<div className="attributes">
+													{variation.name || __('No variant name', 'multivendorx')}
+												</div>
+
+												<div className="variantion-wrapper">
+													{variation.options.map((opt, idx) => (
+														<div className="admin-badge blue" key={idx}>
+															{opt}
+														</div>
+													))}
+												</div>
+											</div>
+
+											<div className="right-section">
+												<div
+													className="admin-btn btn-purple"
+													onClick={() => setEditMode(vIndex, true)}
+												>
+													<i className="adminfont-edit"></i> Edit
+												</div>
+											</div>
+										</div>
+									)}
+								</div>
+							</>
+						))}
+
+						{combinations.length > 0 && (
+							<>
+								<div className="variation-title-wrapper">
+									{__('Variations', 'multivendorx')}
+									<AdminButton
+										wrapperClass="right"
+										buttons={[
+											{
+												icon: 'plus',
+												text: 'Generate variatations',
+												className: 'green',
+												onClick: addVariation,
+											},
+											{
+												icon: 'plus',
+												text: 'Add variant',
+												className: 'purple',
+												// onClick: props.onConfirm,
+											},
+										]}
+									/>
+								</div>
+								<div className="variant-list">
+									<div className="table-wrapper">
+										<table>
+											<thead>
+												<tr className="header">
+													<td>{__('Variant', 'multivendorx')}</td>
+													<td>{__('Price', 'multivendorx')}</td>
+													<td>{__('Quantity', 'multivendorx')}</td>
+													{/* <td>{__('SKU', 'multivendorx')}</td> */}
+													<td></td>
+												</tr>
+											</thead>
+											<tbody>
+												{combinations.map((combo) => (
+													<tr key={Object.values(combo).join('|')}>
+														<td>
+															<i className="adminfont-product admin-badge purple"></i>
+															{Object.values(combo).join(' / ')}
+														</td>
+
+														<td>
+															<BasicInput
+																name="price"
+																preInsideText={__('$', 'multivendorx')}
+																size="4rem"
+															/>
+														</td>
+
+														<td>100</td>
+														{/* 
+												<td>
+													<BasicInput name="sku" size="6rem" />
+												</td> */}
+
+														<td>
+															<div className="buttons-wrapper">
+																<span
+																	className="admin-badge purple adminfont-edit"
+																	onClick={() => setopenPopup(true)}
+																></span>
+																<span className="admin-badge red adminfont-delete"></span>
+															</div>
+														</td>
+													</tr>
+												))}
+											</tbody>
+
+										</table>
+									</div>
+								</div>
+							</>
+						)}
+					</Card>
+					<CommonPopup
+						open={openPopup}
+						onClose={() => setopenPopup(false)}
+						width="31rem"
+						height="70%"
+						header={{
+							icon: 'commission',
+							title: __('Edit Variant', 'multivendorx')
+						}}
+						footer={
+							<AdminButton
+								buttons={[
+									{
+										icon: 'close',
+										text: 'Cancel',
+										className: 'red',
+										// onClick: () => setDeleteModal(false),
+									},
+									{
+										icon: 'save',
+										text: 'Save',
+										className: 'purple-bg',
+										// onClick: () => {
+										// 	if (deleteOption) {
+										// 		deleteStoreApiCall(deleteOption);
+										// 	}
+										// },
+									},
+								]}
+							/>
+						}
+					>
+						<FormGroupWrapper>
+							<FormGroup cols={2} label={__('Regular price ($)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={2} label={__('Sale price ($)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup label={__('Stock status', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup label={__('SKU', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={3} label={__('Length (in)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={3} label={__('Width (in)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+							<FormGroup cols={3} label={__('Height (in)', 'multivendorx')}>
+								<BasicInput
+									type="text"
+									name="title"
+								// value={formData.title}
+								// onChange={handleChange}
+								// msg={error}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</CommonPopup>
 					{/* General information */}
 					<Card contentHeight
 						title={__('General information', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle
 					>
 						<FormGroupWrapper>
 							{/* Product Name */}
@@ -1019,15 +1339,16 @@ const AddProduct = () => {
 					</Card>
 
 					{/* Price and stock */}
-					<Card contentHeight
-						title={__('Price', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
-					>
-						<FormGroupWrapper>
-							{/* Regular & Sale Price (Simple Product) */}
-							{product?.type === 'simple' && (
-								<>
+					{product?.type === 'simple' && (
+						<>
+							<Card contentHeight
+								title={__('Price', 'multivendorx')}
+								// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+								// toggle
+							>
+								<FormGroupWrapper>
+									{/* Regular & Sale Price (Simple Product) */}
+
 									<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
 										<BasicInput
 											name="regular_price"
@@ -1049,36 +1370,35 @@ const AddProduct = () => {
 											}
 										/>
 									</FormGroup>
-								</>
-							)}
-						</FormGroupWrapper>
-					</Card>
-
+								</FormGroupWrapper>
+							</Card>
+						</>
+					)}
 					<Card contentHeight
 						title={__('Inventory', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle
 						action={
 							<>
 								<div className="field-wrapper">
 									{__('Stock management', 'multivendorx')}
 									<MultiCheckBox
-											wrapperClass="toggle-btn"
-											inputWrapperClass="toggle-checkbox-header"
-											inputInnerWrapperClass="toggle-checkbox"
-											idPrefix="toggle-switch-manage-stock"
-											type="checkbox"
-											value={product.manage_stock ? ['manage_stock'] : []}
-											onChange={(e) =>
-												handleChange(
-													'manage_stock',
-													(e as React.ChangeEvent<HTMLInputElement>).target.checked
-												)
-											}
-											options={[
-												{ key: 'manage_stock', value: 'manage_stock' },
-											]}
-										/>
+										wrapperClass="toggle-btn"
+										inputWrapperClass="toggle-checkbox-header"
+										inputInnerWrapperClass="toggle-checkbox"
+										idPrefix="toggle-switch-manage-stock"
+										type="checkbox"
+										value={product.manage_stock ? ['manage_stock'] : []}
+										onChange={(e) =>
+											handleChange(
+												'manage_stock',
+												(e as React.ChangeEvent<HTMLInputElement>).target.checked
+											)
+										}
+										options={[
+											{ key: 'manage_stock', value: 'manage_stock' },
+										]}
+									/>
 								</div>
 							</>
 						}
@@ -1214,8 +1534,8 @@ const AddProduct = () => {
 
 					<Card contentHeight
 						title={__('Linked Products', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle
 					>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
@@ -1263,299 +1583,13 @@ const AddProduct = () => {
 							handleChange
 						)}
 
-					{product?.type == 'variable' && 
+					{product?.type == 'variable' &&
 						applyFilters(
-						'product_variable',
-						null,
-						product,
-						setProduct
-					)}
-
-					<Card contentHeight
-						title={__('Variatations', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
-						action={
-							<>
-								<div className="admin-btn btn-purple-bg"><i className="adminfont-plus"></i> Add Attribute</div>
-								<div className="admin-btn btn-purple-bg"><i className="adminfont-plus"></i> Add variant</div>
-							</>
-						}
-					>
-						{variant.map((variation, vIndex) => (
-							<div className="variant-wrapper" key={variation.id}>
-
-								{variation.isEditing && (
-									<div className="edit-wrapper">
-										<div className="variant">
-											<div className="drag-icon">
-												<i className="adminfont-drag"></i>
-											</div>
-
-											<FormGroupWrapper>
-												<FormGroup label={__('Variant name', 'multivendorx')}>
-													<BasicInput
-														value={variation.name}
-														onChange={(e) =>
-															updateVariation(vIndex, 'name', e.target.value)
-														}
-													/>
-												</FormGroup>
-											</FormGroupWrapper>
-
-											<span
-												className="admin-badge red adminfont-delete"
-												onClick={() => deleteVariation(vIndex)}
-											/>
-										</div>
-
-										<div className="option-wrapper">
-											<FormGroupWrapper>
-												<FormGroup label={__('Option value', 'multivendorx')} />
-											</FormGroupWrapper>
-
-											{variation.options.map((opt, oIndex) => (
-												<div className="variant" key={oIndex}>
-													<div className="drag-icon">
-														<i className="adminfont-drag"></i>
-													</div>
-
-													<BasicInput
-														value={opt}
-														onChange={(e) => {
-															const updated = [...variation.options];
-															updated[oIndex] = e.target.value;
-															updateVariation(vIndex, 'options', updated);
-														}}
-													/>
-
-													<span
-														className="admin-badge red adminfont-delete"
-														onClick={() => deleteOption(vIndex, oIndex)}
-													/>
-												</div>
-											))}
-
-											<div className="add-new">
-												<FormGroupWrapper>
-													<FormGroup>
-														<BasicInput
-															placeholder="Add another value"
-															value={tempOptions[vIndex] || ''}
-															onChange={(e) =>
-																handleTempOptionChange(vIndex, e.target.value)
-															}
-															onKeyDown={(e) => {
-																if (e.key === 'Enter') {
-																	e.preventDefault();
-																	addOption(vIndex);
-																}
-															}}
-														/>
-													</FormGroup>
-												</FormGroupWrapper>
-											</div>
-
-											<div className="buttons-wrapper">
-												<div
-													className="admin-btn btn-green"
-													onClick={() => setEditMode(vIndex, false)}
-												>
-													<i className="adminfont-active"></i> Done
-												</div>
-
-												<div
-													className="admin-btn btn-purple"
-													onClick={() => handleAddNewOption(vIndex)}
-												>
-													<i className="adminfont-plus"></i> Add New
-												</div>
-											</div>
-										</div>
-									</div>
-								)}
-
-								{!variation.isEditing && (
-									<div className="variant-show">
-										<div className="left-section">
-											<div className="attributes">
-												{variation.name || __('No variant', 'multivendorx')}
-											</div>
-
-											<div className="variantion-wrapper">
-												{variation.options.map((opt, idx) => (
-													<div className="admin-badge blue" key={idx}>
-														{opt}
-													</div>
-												))}
-											</div>
-										</div>
-
-										<div className="right-section">
-											<div
-												className="admin-btn btn-purple"
-												onClick={() => setEditMode(vIndex, true)}
-											>
-												<i className="adminfont-edit"></i> Edit
-											</div>
-										</div>
-									</div>
-								)}
-							</div>
-						))}
-
-
-						<div className="admin-btn btn-purple" onClick={addVariation}><i className="adminfont-plus"></i> Add variants Like size or color</div>
-
-						{combinations.length > 0 && (
-							<div className="table-wrapper variant-list">
-								<table>
-									<thead>
-										<tr className="header">
-											<td>{__('Variant', 'multivendorx')}</td>
-											<td>{__('Price', 'multivendorx')}</td>
-											<td>{__('Quantity', 'multivendorx')}</td>
-											<td>{__('SKU', 'multivendorx')}</td>
-											<td></td>
-										</tr>
-									</thead>
-									<tbody>
-										{combinations.map((combo) => (
-											<tr key={Object.values(combo).join('|')}>
-												<td>
-													<i className="adminfont-product admin-badge purple"></i>
-													{Object.values(combo).join(' / ')}
-												</td>
-
-												<td>
-													<BasicInput
-														name="price"
-														preInsideText={__('$', 'multivendorx')}
-														size="8rem"
-													/>
-												</td>
-
-												<td>100</td>
-
-												<td>
-													<BasicInput name="sku" size="10rem" />
-												</td>
-
-												<td>
-													<div className="buttons-wrapper">
-														<span
-															className="admin-badge blue adminfont-edit"
-															onClick={() => setopenPopup(true)}
-														></span>
-														<span className="admin-badge red adminfont-delete"></span>
-													</div>
-												</td>
-											</tr>
-										))}
-									</tbody>
-
-								</table>
-							</div>
+							'product_variable',
+							null,
+							product,
+							setProduct
 						)}
-					</Card>
-					<CommonPopup
-						open={openPopup}
-						onClose={() => setopenPopup(false)}
-						width="31rem"
-						height="70%"
-						header={{
-							icon: 'commission',
-							title: __('Edit Variant', 'multivendorx')
-						}}
-						footer={
-							<AdminButton
-								buttons={[
-									{
-										icon: 'close',
-										text: 'Cancel',
-										className: 'red',
-										// onClick: () => setDeleteModal(false),
-									},
-									{
-										icon: 'save',
-										text: 'Save',
-										className: 'purple-bg',
-										// onClick: () => {
-										// 	if (deleteOption) {
-										// 		deleteStoreApiCall(deleteOption);
-										// 	}
-										// },
-									},
-								]}
-							/>
-						}
-					>
-						<FormGroupWrapper>
-							<FormGroup cols={2} label={__('Regular price ($)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={2} label={__('Sale price ($)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup label={__('Stock status', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup label={__('SKU', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={3} label={__('Length (in)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={3} label={__('Width (in)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={3} label={__('Height (in)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</CommonPopup>
 				</Column>
 
 				<Column grid={3}>
@@ -1570,11 +1604,8 @@ const AddProduct = () => {
 									style={{ cursor: 'pointer' }}
 									className="field-wrapper"
 								>
-									<i
-										className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'
-											}`}
-									/>
 									{__('Featured product', 'multivendorx')}
+									<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
 								</label>
 							</>
 						}
@@ -1727,27 +1758,33 @@ const AddProduct = () => {
 
 					<Card contentHeight
 						title={__('Category', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle
 					>
 						{appLocalizer.settings_databases_value['product-preferencess']
 							?.category_selection_method === 'yes' ? (
 							<>
 								{/* Breadcrumb */}
-								<div className="category-breadcrumb-wrapper">
-									<div className="category-breadcrumb">
-										{printPath()}
-									</div>
+								{(() => {
+									const breadcrumb = printPath();
+									if (!breadcrumb) return null;
+									return (
+										<div className="category-breadcrumb-wrapper">
+											<div className="category-breadcrumb">
+												{breadcrumb}
+											</div>
 
-									{(selectedCat || selectedSub || selectedChild) && (
-										<button
-											onClick={resetSelection}
-											className="admin-btn btn-red"
-										>
-											{__('Reset', 'multivendorx')}
-										</button>
-									)}
-								</div>
+											{(selectedCat || selectedSub || selectedChild) && (
+												<button
+													onClick={resetSelection}
+													className="admin-btn btn-red"
+												>
+													{__('Reset', 'multivendorx')}
+												</button>
+											)}
+										</div>
+									);
+								})()}
 
 								{/* Category tree (custom flow) */}
 								<FormGroupWrapper>
@@ -1894,13 +1931,13 @@ const AddProduct = () => {
 					)}
 					<Card contentHeight
 						title="Product tag"
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle={true} // enable collapse/expand
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle={true} // enable collapse/expand
 					>
 						<FormGroupWrapper>
 							{/* Selected tags */}
-							<div className="tag-list">
-								{product.tags?.map((tag) => (
+							{product.tags?.map((tag) => (
+								<div className="tag-list">
 									<span className="admin-badge blue" key={tag.id}>
 										{tag.name}
 										<span
@@ -1916,8 +1953,8 @@ const AddProduct = () => {
 											<i className="delete-icon adminfont-delete" />
 										</span>
 									</span>
-								))}
-							</div>
+								</div>
+							))}
 
 							{/* Tag input + dropdown */}
 							<div className="dropdown-field">
@@ -1962,8 +1999,8 @@ const AddProduct = () => {
 					{/* image upload */}
 					<Card contentHeight
 						title="Upload image"
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle
 					>
 						{/* Featured Image */}
 						<FormGroupWrapper>
@@ -2025,7 +2062,7 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
-{/* 
+					{/* 
 					 <Card
 						title={__('Visibility', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"

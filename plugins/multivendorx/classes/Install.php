@@ -1217,6 +1217,11 @@ By signing and submitting, the Seller accepts all terms above.
             }
         }
 
+        $coupon_settings = array(
+            'commission_include_coupon' => !empty($previous_disbursement_settings['commission_include_coupon']) ? 'store' : '',
+            'admin_coupon_excluded' => !empty($previous_disbursement_settings['admin_coupon_excluded']) ?? []
+        );
+
         update_option( Utill::MULTIVENDORX_SETTINGS['store-capability'], $store_permissions );
         update_option( Utill::MULTIVENDORX_SETTINGS['product-preferencess'], $product_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['general'], $general_settings );
@@ -1225,6 +1230,124 @@ By signing and submitting, the Seller accepts all terms above.
         update_option( Utill::MULTIVENDORX_SETTINGS['store-appearance'], $appearance_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['geolocation'], $map_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['store-commissions'], $commission_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['coupon'], $coupon_settings );
+
+    }
+
+    public function migrate_product_category_settings() {
+        $previous_commission_settings = get_option( 'mvx_commissions_tab_settings', [] );
+
+        $products = wc_get_products( [
+            'status' => 'any',
+            'return' => 'ids',
+        ] );
+
+        foreach($products as $product_id) {
+            
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed') {
+
+                $previous_value = get_post_meta( $product_id, '_commission_per_product', true );
+    
+                if ( empty( $previous_value ) ) {
+                    continue;
+                }
+    
+                update_post_meta( $product_id, Utill::POST_META_SETTINGS['fixed_commission'], $previous_value );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'percent') {
+
+                $previous_value = get_post_meta( $product_id, '_commission_per_product', true );
+    
+                if ( empty( $previous_value ) ) {
+                    continue;
+                }
+    
+                update_post_meta( $product_id, Utill::POST_META_SETTINGS['percentage_commission'], $previous_value );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed_with_percentage_qty') {
+
+                $previous_percentage_value = get_post_meta( $product_id, '_commission_percentage_per_product', true );
+                $previous_fixed_value = get_post_meta( $product_id, '_commission_fixed_with_percentage_qty', true );
+    
+                if ( empty( $previous_fixed_value ) || empty($previous_percentage_value) ) {
+                    continue;
+                }
+    
+                update_post_meta( $product_id, Utill::POST_META_SETTINGS['fixed_commission'], $previous_fixed_value );
+                update_post_meta( $product_id, Utill::POST_META_SETTINGS['percentage_commission'], $previous_percentage_value );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed_with_percentage') {
+
+                $previous_percentage_value = get_post_meta( $product_id, '_commission_percentage_per_product', true );
+                $previous_fixed_value = get_post_meta( $product_id, '_commission_fixed_with_percentage', true );
+    
+                if ( empty( $previous_fixed_value ) || empty($previous_percentage_value) ) {
+                    continue;
+                }
+    
+                update_post_meta( $product_id, Utill::POST_META_SETTINGS['fixed_commission'], $previous_fixed_value );
+                update_post_meta( $product_id, Utill::POST_META_SETTINGS['percentage_commission'], $previous_percentage_value );
+            }
+        }
+
+        $terms = get_terms( [
+            'taxonomy'   => 'product_cat',
+            'hide_empty' => false,
+            'fields'     => 'ids',
+        ] );
+
+        foreach($terms as $term_id) {
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed') {
+
+                $previous_value = get_term_meta( $term_id, 'commission', true );
+    
+                if ( empty( $previous_value ) ) {
+                    continue;
+                }
+    
+                update_term_meta( $term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], $previous_value );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'percent') {
+
+                $previous_value = get_term_meta( $term_id, 'commission', true );
+    
+                if ( empty( $previous_value ) ) {
+                    continue;
+                }
+    
+                update_term_meta( $term_id, Utill::WORDPRESS_SETTINGS['category_percentage_commission'], $previous_value );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed_with_percentage_qty') {
+
+                $previous_percentage_value = get_term_meta( $term_id, 'commission_percentage', true );
+                $previous_fixed_value = get_term_meta( $term_id, 'fixed_with_percentage_qty', true );
+    
+                if ( empty( $previous_fixed_value ) || empty($previous_percentage_value) ) {
+                    continue;
+                }
+    
+                update_term_meta( $term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], $previous_fixed_value );
+                update_term_meta( $term_id, Utill::WORDPRESS_SETTINGS['category_percentage_commission'], $previous_percentage_value );
+            }
+
+            if ($previous_commission_settings['commission_type']['value'] == 'fixed_with_percentage') {
+
+                $previous_percentage_value = get_term_meta( $term_id, 'commission_percentage', true );
+                $previous_fixed_value = get_term_meta( $term_id, 'fixed_with_percentage', true );
+    
+                if ( empty( $previous_fixed_value ) || empty($previous_percentage_value) ) {
+                    continue;
+                }
+    
+                update_term_meta( $term_id, Utill::WORDPRESS_SETTINGS['category_fixed_commission'], $previous_fixed_value );
+                update_term_meta( $term_id, Utill::WORDPRESS_SETTINGS['category_percentage_commission'], $previous_percentage_value );
+            }
+        }
 
     }
 }

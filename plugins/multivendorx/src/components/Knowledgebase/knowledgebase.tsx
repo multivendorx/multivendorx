@@ -501,7 +501,7 @@ export const KnowledgeBase: React.FC = () => {
 				onChange={handleBulkAction}
 			>
 				<option value="">{__('Bulk actions')}</option>
-				<option value="publish">{__('Publish', 'multivendorx')}</option>
+				<option value="publish">{__('Published', 'multivendorx')}</option>
 				<option value="pending">{__('Pending', 'multivendorx')}</option>
 				<option value="delete">{__('Delete', 'multivendorx')}</option>
 			</select>
@@ -637,7 +637,7 @@ export const KnowledgeBase: React.FC = () => {
 										},
 										{
 											label: __(
-												'Publish',
+												'Published',
 												'multivendorx'
 											),
 											value: 'publish',

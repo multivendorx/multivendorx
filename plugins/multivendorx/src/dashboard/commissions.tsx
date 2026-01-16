@@ -329,6 +329,7 @@ const StoreCommission: React.FC = () => {
 		try {
 			const params: any = {
 				format: 'csv',
+				store_id:appLocalizer.store_id,
 				startDate: currentFilterData?.date?.start_date
 					? currentFilterData.date.start_date
 							.toISOString()
@@ -340,10 +341,6 @@ const StoreCommission: React.FC = () => {
 							.split('T')[0]
 					: '',
 			};
-
-			if (currentFilterData?.store) {
-				params.store_id = currentFilterData.store;
-			}
 
 			if (
 				currentFilterData?.categoryFilter &&

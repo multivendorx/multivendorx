@@ -510,10 +510,12 @@ class Stores extends \WP_REST_Controller {
 
         $formatted_stores = array();
         foreach ( $stores as $store ) {
-            $formatted_stores[] = array(
-                'id'         => (int) $store['ID'],
-                'store_name' => $store['name'],
-            );
+            if ($store['status'] == 'active') {
+                $formatted_stores[] = array(
+                    'id'         => (int) $store['ID'],
+                    'store_name' => $store['name'],
+                );
+            }
         }
 
         return rest_ensure_response( $formatted_stores );
@@ -541,6 +543,7 @@ class Stores extends \WP_REST_Controller {
         try {
             $registrations = (bool) $request->get_header( 'registrations' );
             $store_data    = (array) $request->get_param( 'formData' );
+            $file_data   = $request->get_file_params();
             $current_user  = wp_get_current_user();
 
             $core_fields = array(
@@ -600,6 +603,19 @@ class Stores extends \WP_REST_Controller {
             );
 
             $non_core_fields = array();
+
+            foreach ( $file_data as $file ) {
+                $field_key = array_key_first( $file['name'] );
+                $normalized_file = [
+                    'name'     => $file['name'][ $field_key ],
+                    'type'     => $file['type'][ $field_key ],
+                    'tmp_name' => $file['tmp_name'][ $field_key ],
+                    'error'    => $file['error'][ $field_key ],
+                    'size'     => $file['size'][ $field_key ],
+                ];
+                $attachment_id = StoreUtil::create_attachment_from_files_array($normalized_file);
+                $store_data[$field_key] = $attachment_id;
+            }
 
             foreach ( $store_data as $key => $value ) {
                 if ( in_array( $key, $core_fields, true ) || 'store_owners' === $key ) {

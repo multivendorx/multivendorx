@@ -52,8 +52,42 @@ const productTypeOptions = [
 		label: 'Downloadable Product (Digital files / media)',
 	},
 ];
-
-
+const storeRole = [
+	{
+		value: 'simple',
+		label: 'Keep Products Visible',
+	},
+	{
+		value: 'variable',
+		label: 'After 2 cycles',
+	},
+	{
+		value: 'external',
+		label: 'Hide Products',
+	},
+	{
+		value: 'downloadable',
+		label: 'Set to Draft',
+	},
+];
+const duringThisPeriod = [
+	{
+		value: 'simple',
+		label: 'Visible',
+	},
+	{
+		value: 'variable',
+		label: 'Hidden',
+	},
+	{
+		value: 'external',
+		label: 'Hide Products',
+	},
+	{
+		value: 'downloadable',
+		label: 'Set to Draft',
+	},
+];
 const proFeatures = {
 	key: 'pro_features',
 	look: 'checkbox',
@@ -231,6 +265,7 @@ const Membership = ({ id }: { id: string }) => {
 	const visibilityRef = useRef<HTMLDivElement | null>(null);
 	const [product, setProduct] = useState({});
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
+	const [graceEnabled, setGraceEnabled] = useState<string[]>([]);
 	const [pricingType, setPricingType] = useState<'free' | 'paid'>('free');
 	const [selectedValues, setSelectedValues] = useState<string[]>([]);
 	const [starFill, setstarFill] = useState(false);
@@ -240,6 +275,7 @@ const Membership = ({ id }: { id: string }) => {
 	const [featuredEnabled, setFeaturedEnabled] = useState(false);
 	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
 	const [catalogVisibility, setCatalogVisibility] = useState<string>('draft');
+	const [trialEnabled, setTrialEnabled] = useState<string[]>([]);
 	useEffect(() => {
 		if (product?.catalog_visibility) {
 			setCatalogVisibility(product.catalog_visibility);
@@ -1323,51 +1359,193 @@ const Membership = ({ id }: { id: string }) => {
 											</div>
 										</div>
 									</div>
-									<div className="card-header">
+									{/* <div className="card-header">
 										<div className="left">
 											<div className="title">
 												Trial Period
 											</div>
 											<div className="des">Configure optional trial period for new members</div>
 										</div>
+									</div> */}
+								</>
+							)}
+						</Card>
+						<Card
+							contentHeight title={__('Trial Period', 'multivendorx')}
+							desc={__('Configure optional trial period for new members', 'multivendorx')}
+							action={
+								<>
+									<div className="field-wrapper">
+										{__('Offer a trial period', 'multivendorx')}
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-manage-stock"
+											type="checkbox"
+											value={trialEnabled}
+											onChange={(value) => {
+												if (Array.isArray(value)) {
+													setTrialEnabled(value);
+												} else if (value?.target) {
+													const { checked, value: v } = value.target as HTMLInputElement;
+													setTrialEnabled((prev) =>
+														checked
+															? [...prev, v]
+															: prev.filter((item) => item !== v)
+													);
+												}
+											}}
+											options={[
+												{ key: 'trial', value: 'trial', },
+											]}
+										/>
 									</div>
+								</>
+							}>
+							{trialEnabled.includes('trial') && (
+								<FormGroupWrapper>
+									{/* <FormGroup label="Offer a trial period" htmlFor="trial_period">
+									<NestedComponent
+										id="trial_period"
+										fields={subscription}
+										value={rules}
+										single={true}
+										addButtonLabel="Add Rule"
+										deleteButtonLabel="Remove"
+										onChange={(val) => setRules(val)}
+									/>
+								</FormGroup> */}
+									<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
+										<BasicInput
+											name="name"
+											value={formData.name}
+											onChange={handleChange}
+											postInsideText="days"
+										/>
+									</FormGroup>
+									<FormGroup cols={2}></FormGroup>
+								</FormGroupWrapper>
+							)}
+							{/* <div className="card-header">
+								<div className="left">
+									<div className="title">
+										After Expiry
+									</div>
+									<div className="des">Define what happens when subscription expires</div>
+								</div>
+							</div> */}
+							{/* <FormGroupWrapper>
+								<FormGroup
+									label="Offer grace period"
+									htmlFor="grace_period"
+								>
+									<NestedComponent
+										id="grace_period"
+										fields={gracePeriod}
+										value={rules}
+										single={true}
+										addButtonLabel="Add Rule"
+										deleteButtonLabel="Remove"
+										onChange={(val) => setRules(val)}
+									/>
+								</FormGroup>
+							</FormGroupWrapper> */}
+						</Card>
+						<Card
+							contentHeight title={__('After Expiry', 'multivendorx')}
+							desc={__('Define what happens when subscription expires', 'multivendorx')}
+							action={
+								<>
+									<div className="field-wrapper">
+										{__('Offer grace period', 'multivendorx')}
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-grace"
+											type="checkbox"
+											value={graceEnabled}
+											onChange={(value) => {
+												if (Array.isArray(value)) {
+													setGraceEnabled(value);
+												} else if (value?.target) {
+													const { checked, value: v } = value.target as HTMLInputElement;
+													setGraceEnabled((prev) =>
+														checked
+															? [...prev, v]
+															: prev.filter((item) => item !== v)
+													);
+												}
+											}}
+
+											options={[
+												{ key: 'grace', value: 'grace', },
+											]}
+										/>
+									</div>
+								</>
+							}>
+							{graceEnabled.includes('grace') && (
+								<>
 									<FormGroupWrapper>
-										<FormGroup
-											label="Offer a trial period"
-											htmlFor="trial_period"
-										>
-											<NestedComponent
-												id="trial_period"
-												fields={subscription}
-												value={rules}
-												single={true}
-												addButtonLabel="Add Rule"
-												deleteButtonLabel="Remove"
-												onChange={(val) => setRules(val)}
+										<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
+											<BasicInput
+												name="name"
+												value={formData.name}
+												onChange={handleChange}
+												postInsideText="days"
+												size="8rem"
 											/>
 										</FormGroup>
-									</FormGroupWrapper>
-									<div className="card-header">
-										<div className="left">
-											<div className="title">
-												After Expiry
-											</div>
-											<div className="des">Define what happens when subscription expires</div>
-										</div>
-									</div>
-									<FormGroupWrapper>
-										<FormGroup
-											label="Offer grace period"
-											htmlFor="grace_period"
-										>
-											<NestedComponent
-												id="grace_period"
-												fields={gracePeriod}
-												value={rules}
-												single={true}
-												addButtonLabel="Add Rule"
-												deleteButtonLabel="Remove"
-												onChange={(val) => setRules(val)}
+										<FormGroup cols={2} label="During this period, products are">
+											<SelectInput
+												name="product_type"
+												type="multi-select"
+												options={duringThisPeriod}
+												value={duringThisPeriod.filter(opt =>
+													selectedValues.includes(opt.value)
+												)}
+												onChange={(selected: any) => {
+													// selected is array of option objects
+													const values = selected?.map((opt: any) => opt.value) || [];
+													setSelectedValues(values);
+												}}
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="Product creation">
+											<ToggleSetting
+												options={[
+													{
+														key: 'allowed',
+														value: 'allowed',
+														label: __('Allowed', 'multivendorx'),
+													},
+													{
+														key: 'not-allowed',
+														value: 'not-allowed',
+														label: __('Not allowed', 'multivendorx'),
+													},
+												]}
+											// value={pricingType}
+											// onChange={(value: string) =>
+											// 	setPricingType(value as 'free' | 'paid')
+											// }
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="Change the store role to">
+											<SelectInput
+												name="product_type"
+												type="multi-select"
+												options={storeRole}
+												value={storeRole.filter(opt =>
+													selectedValues.includes(opt.value)
+												)}
+												onChange={(selected: any) => {
+													// selected is array of option objects
+													const values = selected?.map((opt: any) => opt.value) || [];
+													setSelectedValues(values);
+												}}
 											/>
 										</FormGroup>
 									</FormGroupWrapper>

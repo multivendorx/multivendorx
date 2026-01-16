@@ -205,8 +205,11 @@ const Withdrawls: React.FC = () => {
 										title={__('Free Withdrawals', 'multivendorx')}
 										value={
 											<>
-												{(data?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-													(data?.free_withdrawal ?? 0)}{' '}
+												{Math.max(
+													0,
+													(data?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
+													(data?.free_withdrawal ?? 0)
+												)}{' '}
 												<span>{__('Left', 'multivendorx')}</span>
 											</>
 										}

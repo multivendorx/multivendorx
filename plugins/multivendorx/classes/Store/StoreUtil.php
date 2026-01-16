@@ -363,6 +363,15 @@ class StoreUtil {
                 )
                 : ( $option_label_map[ $field_value ] ?? $field_value );
 
+            if ( strpos( $field_name, 'attachment' ) !== false ) {
+                $attachment_id = absint( $field_value );
+                $attachment_type = get_post_mime_type($attachment_id);
+                $value      =  [
+                    'attachment_type' => $attachment_type,
+                    'attachment' => wp_get_attachment_url( $attachment_id )
+                ];
+            }
+
             $response['all_registration_data'][ $field_name ] = $field_value;
             if ( in_array( $field_name, $meta_keys, true ) ) {
                 $response['core_data'][ $label ] = $field_value;
@@ -372,6 +381,48 @@ class StoreUtil {
         }
 
         return $response;
+    }
+
+    /**
+     * Create atachment from array of fiels.
+     * @param mixed $files_array
+     * @return int|\WP_Error
+     */
+    public static function create_attachment_from_files_array($files_array) {
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+   
+        // Handle the file upload
+        $upload = wp_handle_upload($files_array, array('test_form' => false));
+    
+        
+        // Prepare the attachment
+        $file_path = $upload['file'];
+        $file_name = basename($file_path);
+        $file_type = wp_check_filetype($file_name, null);
+
+        // Create attachment post
+        $attachment = array(
+            'guid' => $upload['url'],
+            'post_mime_type' => $file_type['type'],
+            'post_title' => preg_replace('/\.[^.]+$/', '', $file_name),
+            'post_content' => '',
+            'post_status' => 'inherit'
+        );
+
+        // Insert attachment into the media library
+        $attachment_id = wp_insert_attachment($attachment, $file_path);
+
+        if (!is_wp_error($attachment_id)) {
+            // Generate metadata for the attachment, and update the attachment
+            $attachment_data = wp_generate_attachment_metadata($attachment_id, $file_path);
+            wp_update_attachment_metadata($attachment_id, $attachment_data);
+
+            return $attachment_id; // Return the attachment ID
+        }
+
+        return 0;
     }
 
     /**

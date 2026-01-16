@@ -44,6 +44,13 @@ type FilterData = {
 	categoryFilter?: string;
 };
 
+const COUPON_STATUS_LABELS: Record<string, string> = {
+	all: __('All', 'multivendorx'),
+	publish: __('Published', 'multivendorx'),
+	draft: __('Draft', 'multivendorx'),
+	pending: __('Pending', 'multivendorx'),
+};
+
 const discountOptions = [
 	{ label: 'Percentage discount', value: 'percent' },
 	{ label: 'Fixed cart discount', value: 'fixed_cart' },
@@ -500,43 +507,42 @@ const AllCoupon: React.FC = () => {
 	];
 
 	const fetchCouponStatusCounts = async () => {
-		const statuses = ['all', 'publish', 'draft', 'pending'];
-		const counts = await Promise.all(
-			statuses.map(async (status) => {
-				const params: any = {
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-				};
-
-				if (status !== 'all') {
-					params.status = status;
-				} else {
-					params.status = 'any';
-				}
-
-				const res = await axios.get(
-					`${appLocalizer.apiUrl}/wc/v3/coupons`,
-					{
-						headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						params,
-					}
-				);
-
-				const total = parseInt(res.headers['x-wp-total'] || '0');
-
-				return {
-					key: status,
-					name:
-						status === 'all'
-							? __('All', 'multivendorx')
-							: status.charAt(0).toUpperCase() + status.slice(1),
-					count: total,
-				};
-			})
-		);
-		setCouponTypeCounts(
-			counts.filter((c) => c.key === 'all' || c.count > 0)
-		);
+		try {
+			const statuses = ['all', 'publish', 'draft', 'pending'];
+	
+			const counts = await Promise.all(
+				statuses.map(async (status) => {
+					const params: any = {
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+					};
+	
+					params.status = status === 'all' ? 'any' : status;
+	
+					const res = await axios.get(
+						`${appLocalizer.apiUrl}/wc/v3/coupons`,
+						{
+							headers: { 'X-WP-Nonce': appLocalizer.nonce },
+							params,
+						}
+					);
+	
+					const total = parseInt(res.headers['x-wp-total'] || '0');
+	
+					return {
+						key: status,
+						name: COUPON_STATUS_LABELS[status],
+						count: total,
+					};
+				})
+			);
+	
+			setCouponTypeCounts(
+				counts.filter((c) => c.count > 0)
+			);
+		} catch (error) {
+			console.error('Failed to fetch coupon status counts:', error);
+		}
 	};
 
 	// Fetch data from backend.

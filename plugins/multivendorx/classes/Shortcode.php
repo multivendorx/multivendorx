@@ -37,8 +37,7 @@ class Shortcode
     /**
      * Load frontend scripts
      */
-    public function frontend_scripts()
-    {
+    public function frontend_scripts() {
         FrontendScripts::load_scripts();
 
         FrontendScripts::enqueue_style('multivendorx-store-product-style');
@@ -74,8 +73,7 @@ class Shortcode
      *
      * @return void
      */
-    public static function dequeue_all_styles_on_page()
-    {
+    public static function dequeue_all_styles_on_page() {
         if (Utill::is_store_dashboard() && is_user_logged_in() && in_array('store_owner', wp_get_current_user()->roles, true)) {
             global $wp_styles;
             $wp_styles->queue = array('multivendorx-dashboard-style', 'multivendorx-store-product-style', 'media-views', 'imgareaselect');
@@ -85,8 +83,7 @@ class Shortcode
     /**
      * Display store dashboard
      */
-    public function display_store_dashboard()
-    {
+    public function display_store_dashboard() {
         ob_start();
         ?>
         <?php
@@ -107,8 +104,12 @@ class Shortcode
     /**
      * Display store registration form
      */
-    public function display_store_registration()
-    {
+    public function display_store_registration() {
+        if ( is_user_logged_in() && current_user_can( 'manage_options' ) && Utill::is_store_registration_page()) {
+            wp_safe_redirect( admin_url() );
+            exit;
+        }
+
         ob_start();
         if (is_user_logged_in()) {
             ?>
@@ -129,8 +130,7 @@ class Shortcode
     /**
      * Display stores list
      */
-    public function marketplace_stores($attributes)
-    {
+    public function marketplace_stores($attributes) {
         if (($attributes['orderby'] ?? null) === 'registered') {
             $attributes['orderby'] = 'create_time';
         }
@@ -146,8 +146,7 @@ class Shortcode
     /**
      * Display stores list
      */
-    public function marketplace_products($attributes)
-    {
+    public function marketplace_products($attributes) {
         $json_attrs = esc_attr(wp_json_encode($attributes));
         FrontendScripts::load_scripts();
 
@@ -160,8 +159,7 @@ class Shortcode
     /**
      * Display stores list
      */
-    public function marketplace_coupons($attributes)
-    {
+    public function marketplace_coupons($attributes) {
         $json_attrs = esc_attr(wp_json_encode($attributes));
         FrontendScripts::load_scripts();
 

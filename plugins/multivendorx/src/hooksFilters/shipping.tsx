@@ -38,8 +38,8 @@ const ShippingCard = ({ product, handleChange }) => {
 	return (
 		<Card contentHeight
 			title={__('Shipping', 'multivendorx')}
-			iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-			toggle
+			// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+			// toggle
 		>
 			{/* Dimensions */}
 			<FormGroupWrapper>
@@ -49,7 +49,7 @@ const ShippingCard = ({ product, handleChange }) => {
 							{
 								key: 'physical',
 								value: 'physical',
-								label: __('Physical product', 'multivendorx'),
+								label: __('Physical', 'multivendorx'),
 							},
 							{
 								key: 'downloadable',

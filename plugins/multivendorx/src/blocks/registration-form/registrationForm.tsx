@@ -111,6 +111,7 @@ const RegistrationForm = () => {
 			method: 'POST',
 			url: getApiLink(registrationForm, 'store'),
 			headers: {
+				'Content-Type': 'multipart/form-data',
 				'X-WP-Nonce': registrationForm.nonce,
 				registrations: 'registrations',
 			},
