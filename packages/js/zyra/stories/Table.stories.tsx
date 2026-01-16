@@ -420,7 +420,8 @@ const TableFree = () => {
         onPaginationChange: (updater) => {
             console.log('Pagination updated:', updater);
         },
-        typeCounts: [
+        totalCounts: data.length,
+        categoryFilter: [
             {
                 key: 'active',
                 name: 'Active',
@@ -447,3 +448,27 @@ export const TestTable: Story = {
         return <TableFree />;
     },
 };
+
+export const EmptyTable: Story = {
+    render: () => {
+        return (
+            <Table
+                data={[]}
+                columns={[]}
+                rowSelection={{}}
+                onRowSelectionChange={() => {}}
+                pageCount={0}
+                pagination={{
+                    pageIndex: 0,
+                    pageSize: 10,
+                }}
+                onPaginationChange={() => {}}
+                categoryFilter={[]}
+                languageFilter={[]}
+                perPageOption={[10]}
+                totalCounts={0}
+            />
+        );
+    },
+};
+

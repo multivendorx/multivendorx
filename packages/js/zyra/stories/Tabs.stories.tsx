@@ -90,9 +90,89 @@ export const Basic: Story = {
             settingName="Settings"
             supprot={[]}
             appLocalizer={{
-                khali_dabba: false,
+                khali_dabba: true,
                 shop_url: 'https://example.com',
             }}
+        />
+    ),
+};
+
+export const WithoutTitle: Story = {
+    render: () => (
+        <Tabs
+            tabData={tabData}
+            currentTab="advanced-one"
+            getForm={getForm}
+            prepareUrl={prepareUrl}
+            Link={RouterLink}
+            settingName=""
+            supprot={[]}
+            appLocalizer={{
+                khali_dabba: true,
+                shop_url: 'https://example.com',
+            }}
+            hideTitle={true}
+        />
+    ),
+};
+
+export const DeepNestedFolders: Story = {
+    render: () => (
+        <Tabs
+            tabData={[
+                {
+                    type: 'folder',
+                    name: 'Level 1',
+                    content: [
+                        {
+                            type: 'folder',
+                            name: 'Level 2',
+                            content: [
+                                {
+                                    type: 'file',
+                                    content: {
+                                        id: 'deep-tab',
+                                        name: 'Deep Tab',
+                                        desc: 'Deep nested tab',
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ]}
+            currentTab="deep-tab"
+            getForm={getForm}
+            prepareUrl={prepareUrl}
+            Link={RouterLink}
+            settingName="Settings"
+            supprot={[]}
+            appLocalizer={{}}
+        />
+    ),
+};
+
+export const HideTabHeader: Story = {
+    render: () => (
+        <Tabs
+            tabData={[
+                {
+                    type: 'file',
+                    content: {
+                        id: 'general',
+                        name: 'General',
+                        hideTabHeader: true,
+                        desc: 'This header should be hidden',
+                    },
+                },
+            ]}
+            currentTab="general"
+            getForm={getForm}
+            prepareUrl={prepareUrl}
+            Link={RouterLink}
+            settingName="Settings"
+            supprot={[]}
+            appLocalizer={{}}
         />
     ),
 };

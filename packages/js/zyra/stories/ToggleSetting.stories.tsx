@@ -220,3 +220,70 @@ export const WithPreAndPostText: Story = {
         ],
     },
 };
+
+export const CustomLayout: Story = {
+    render: (args) => {
+        const [value, setValue] = useState('left');
+
+        return (
+            <ToggleSetting
+                {...args}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    args: {
+        custom: true,
+        description: 'Custom styled toggle layout',
+        options: [
+            { key: 'left', value: 'left', label: 'Left' },
+            { key: 'right', value: 'right', label: 'Right' },
+        ],
+    },
+};
+
+export const OptionWithDescription: Story = {
+    render: (args) => {
+        const [value, setValue] = useState('standard');
+
+        return (
+            <ToggleSetting
+                {...args}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    args: {
+        description: 'Choose plan type',
+        options: [
+            {
+                key: 'standard',
+                value: 'standard',
+                label: 'Standard',
+                desc: 'Basic features included',
+            },
+            {
+                key: 'premium',
+                value: 'premium',
+                label: 'Premium',
+                desc: 'Advanced features + priority support',
+            },
+        ],
+    },
+};
+
+export const EmptyOptions: Story = {
+    render: () => (
+        <ToggleSetting
+            value=""
+            onChange={() => {}}
+            options={[]}
+            description="No options available"
+        />
+    ),
+};
+
+
+

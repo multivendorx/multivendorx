@@ -88,6 +88,13 @@ const initialValue = {
     },
 };
 
+const baseAppLocalizer = {
+    khali_dabba: true,
+    site_url: 'https://example.com',
+};
+
+const baseModules = ['analytics'];
+
 export const Default: Story = {
     render: (args) => {
         const [value, setValue] = useState(initialValue);
@@ -122,3 +129,176 @@ export const Default: Story = {
         },
     },
 };
+
+export const SinglePanel: Story = {
+    render: () => {
+        const [value, setValue] = useState({
+            general: {
+                enable: true,
+                enableFeature: false,
+            },
+        });
+
+        return (
+            <ExpandablePanelGroup
+                name="single"
+                methods={[methods[0]]}
+                value={value}
+                onChange={setValue}
+                appLocalizer={baseAppLocalizer}
+                modules={baseModules}
+                moduleEnabled
+                moduleChange={() => {}}
+            />
+        );
+    },
+};
+
+export const ProLockedPanel: Story = {
+    render: () => {
+        const [value] = useState(initialValue);
+
+        return (
+            <ExpandablePanelGroup
+                name="pro-locked"
+                methods={[
+                    {
+                        ...methods[0],
+                        proSetting: true,
+                    },
+                ]}
+                value={value}
+                onChange={() => {}}
+                appLocalizer={{ ...baseAppLocalizer, khali_dabba: false }}
+                modules={baseModules}
+                moduleEnabled
+                moduleChange={() => {}}
+                proChanged={() => {
+                    console.log('Upgrade to Pro popup triggered');
+                }}
+            />
+        );
+    },
+};
+
+export const ProUnlockedPanel: Story = {
+    render: () => {
+        const [value, setValue] = useState(initialValue);
+
+        return (
+            <ExpandablePanelGroup
+                name="pro-unlocked"
+                methods={[
+                    {
+                        ...methods[0],
+                        proSetting: false, 
+                    },
+                ]}
+                value={value}
+                onChange={(updated) => {
+                    console.log('Pro unlocked value changed:', updated);
+                    setValue(updated);
+                }}
+                appLocalizer={{
+                    ...baseAppLocalizer,
+                    khali_dabba: true,
+                }}
+                modules={baseModules}
+                moduleEnabled
+                moduleChange={() => {}}
+                proChanged={() => {
+                    console.log('This should NOT be triggered in Pro unlocked');
+                }}
+            />
+        );
+    },
+};
+
+
+export const AddNewCustomPanel: Story = {
+    render: () => {
+        const defaultMethodId = 'custom_method_1';
+
+        const [value, setValue] = useState({
+            [defaultMethodId]: {
+                title: 'Default Custom Method',
+                description: 'This is a default custom panel',
+                required: false,
+            },
+        });
+
+        return (
+            <ExpandablePanelGroup
+                name="custom"
+                methods={[
+                    {
+                        id: defaultMethodId,
+                        icon: 'adminfont-setting',
+                        label: 'Default Custom Method',
+                        desc: 'This is a default custom panel',
+                        connected: false,
+                        isCustom: true, // ✅ REQUIRED for Edit + Delete
+                        formFields: [
+                            {
+                                key: 'title',
+                                type: 'text',
+                                label: 'Title',
+                                placeholder: 'Enter panel title',
+                            },
+                            {
+                                key: 'description',
+                                type: 'textarea',
+                                label: 'Description',
+                                placeholder: 'Enter panel description',
+                                rowNumber: 3,
+                            },
+                            {
+                                key: 'required',
+                                type: 'checkbox',
+                                label: 'Required',
+                                desc: 'Mark this section as required',
+                            },
+                        ],
+                    },
+                ]}
+                value={value}
+                onChange={(updated) => {
+                    console.log('Custom panel value:', updated);
+                    setValue(updated);
+                }}
+                appLocalizer={baseAppLocalizer}
+                modules={baseModules}
+                moduleEnabled
+                moduleChange={() => {}}
+                addNewBtn
+                addNewTemplate={{
+                    icon: 'adminfont-setting',
+                    label: 'Custom Method',
+                    desc: 'Custom description',
+                    formFields: [
+                        {
+                            key: 'title',
+                            type: 'text',
+                            label: 'Title',
+                            placeholder: 'Enter panel title',
+                        },
+                        {
+                            key: 'description',
+                            type: 'textarea',
+                            label: 'Description',
+                            placeholder: 'Enter panel description',
+                            rowNumber: 3,
+                        },
+                        {
+                            key: 'required',
+                            type: 'checkbox',
+                            label: 'Required',
+                            desc: 'Mark this section as required',
+                        },
+                    ],
+                }}
+            />
+        );
+    },
+};
+

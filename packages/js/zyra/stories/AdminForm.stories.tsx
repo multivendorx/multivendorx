@@ -1,5 +1,6 @@
 import AdminForm, { InputField } from '../src/components/AdminForm';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import '../src/styles/common.scss';
 
 const meta: Meta<typeof AdminForm> = {
     title: 'Zyra/Components/AdminForm',
@@ -283,4 +284,59 @@ export const TestAdminForm: Story = {
     render: (args) => {
         return <AdminForm {...args} />;
     },
+};
+
+export const FreeModeEditable: Story = {
+    render: () => (
+        <AdminForm
+            settings={settingsData}
+            proSetting={settingsData}
+            setting={{
+                is_guest_subscriptions_enable: true,
+                display_lead_times: ['outofstock'],
+                lead_time_format: 'static',
+            }}
+            updateSetting={(key, value) =>
+                console.log('[FREE MODE] Update:', key, value)
+            }
+            modules={['inventory']}
+            appLocalizer={{
+                khali_dabba: true, // FREE MODE
+                nonce: 'test',
+                apiUrl: '',
+                restUrl: '',
+                tab_name: 'general',
+            }}
+            Popup={() => null}
+        />
+    ),
+};
+
+export const ProLockedFields: Story = {
+    render: () => (
+        <AdminForm
+            settings={settingsData}
+            proSetting={settingsData}
+            setting={{
+                is_double_optin: false,
+            }}
+            updateSetting={(key, value) =>
+                console.log('[PRO LOCKED] Update:', key, value)
+            }
+            modules={['inventory']}
+            appLocalizer={{
+                khali_dabba: false, // PRO LOCKED
+                nonce: 'test',
+                apiUrl: '',
+                restUrl: '',
+                tab_name: 'general',
+            }}
+            Popup={({ moduleName, settings }) => (
+                <div className='multivendorx-main-wrapper' >
+                    <strong>Pro Feature Locked</strong>
+                    <div>{moduleName || settings}</div>
+                </div>
+            )}
+        />
+    ),
 };

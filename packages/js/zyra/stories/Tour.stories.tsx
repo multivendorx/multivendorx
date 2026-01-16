@@ -1,18 +1,13 @@
-/**
- * External dependencies
- */
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import React from 'react';
 import { StepType } from '@reactour/tour';
+import "../src/styles/common.scss";
 
 /**
  * Internal dependencies
  */
 import TourSetup from '../src/components/TourSetup';
 
-/**
- * Dummy appLocalizer for Storybook
- */
 const mockAppLocalizer = {
     enquiry_form_settings_url: window.location.href,
     module_page_url: window.location.href,
@@ -23,9 +18,7 @@ const mockAppLocalizer = {
     nonce: 'storybook-nonce',
 };
 
-/**
- * Dummy steps
- */
+
 const steps: StepType[] = [
     {
         selector: '#tour-step-1',
@@ -48,8 +41,20 @@ const steps: StepType[] = [
     },
 ];
 
+const singleStep: StepType[] = [
+    {
+        selector: '#step-1',
+        content: () => (
+            <div>
+                <h4>Single Step Tour</h4>
+                <p>This is a tour with only one step.</p>
+            </div>
+        ),
+    },
+];
+
 const meta: Meta<typeof TourSetup> = {
-    title: 'Zyra/Components/Tour',
+    title: 'Zyra/Components/TourSetup',
     component: TourSetup,
     parameters: {
         layout: 'fullscreen',
@@ -60,6 +65,7 @@ const meta: Meta<typeof TourSetup> = {
             },
         },
     },
+    tags: ['autodocs'],
 };
 
 export default meta;
@@ -73,17 +79,15 @@ export const DefaultTour: Story = {
     },
     render: (args) => (
         <>
-            {/* Dummy UI targets */}
-            <div style={{ padding: 40 }}>
+            <div className = 'multivendorx-main-wrapper'>
                 <h2 id="tour-step-1">Module Dashboard</h2>
                 <p>This section is highlighted in step one.</p>
 
-                <button id="tour-step-2" style={{ marginTop: 20 }}>
+                <button id="tour-step-2">
                     Settings Button
                 </button>
             </div>
 
-            {/* Tour */}
             <TourSetup
                 {...args}
                 defaultOpen={true}
@@ -93,3 +97,51 @@ export const DefaultTour: Story = {
         </>
     ),
 };
+
+export const TourDisabled: Story = {
+    args: {
+        appLocalizer: mockAppLocalizer,
+        steps,
+    },
+    render: (args) => (
+        <>
+            <div className = 'multivendorx-main-wrapper'>
+                <h2 id="tour-step-1">Module Dashboard</h2>
+                <p>This section is highlighted in step one.</p>
+
+                <button id="tour-step-2">
+                    Settings Button
+                </button>
+            </div>
+
+            <TourSetup
+                {...args}
+                defaultOpen={false}
+                forceOpen={false}
+            />
+        </>
+    ),
+};
+
+export const SingleStepTour: Story = {
+    args: {
+        appLocalizer: mockAppLocalizer,
+        steps: singleStep,
+    },
+    render: (args) => (
+        <>
+            <div className = 'multivendorx-main-wrapper'>
+                <h2 id="step-1">Single Step Target</h2>
+                <p>This section is highlighted in the single step tour.</p>
+            </div>
+
+            <TourSetup
+                {...args}
+                defaultOpen={true}
+                showBadge={false}
+                forceOpen={true}
+            />
+        </>
+    ),
+};
+

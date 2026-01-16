@@ -44,3 +44,21 @@ export const Basic: Story = {
         );
     },
 };
+
+export const EmptyLabel: Story = {
+    render: () => {
+        const [formField, setFormField] = useState({
+            label: '',
+        });
+
+        return (
+            <TimePicker
+                formField={formField}
+                onChange={(field, value) =>
+                    setFormField({ ...formField, [field]: value })
+                }
+            />
+        );
+    },
+};
+
