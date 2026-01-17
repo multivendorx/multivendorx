@@ -33,6 +33,9 @@ export default function QuotesList() {
                 <AdminBreadcrumbs
                     activeTabIcon="adminlib-quote"
                     tabTitle="Quote Requests"
+                    premium={!appLocalizer.khali_dabba}
+                    goPremium={!appLocalizer.khali_dabba}
+                    goPremiumLink={appLocalizer.pro_url}
                 />
                 <div
                     className="quote-img image-wrapper"

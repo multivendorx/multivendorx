@@ -8,7 +8,7 @@ export default {
         'Drag-and-drop interface to tailor the wholesale registration form.',
         'catalogx'
     ),
-    icon: 'adminlib-contact-form',
+    icon: 'adminfont-contact-form',
     submitUrl: 'settings',
     modal: [
         {

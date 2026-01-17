@@ -232,7 +232,7 @@ const FreeForm = ( props: any ) => {
                                         className="attachment-label"
                                     >
                                         <div className="wrapper">
-                                            <i className="adminlib-cloud-upload"></i>
+                                            <i className="adminfont-cloud-upload"></i>
                                             <p className="heading">
                                                 { fileName === '' ? (
                                                     <>

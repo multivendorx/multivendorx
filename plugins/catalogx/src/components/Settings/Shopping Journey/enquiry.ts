@@ -7,7 +7,7 @@ export default {
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
     ),
-    icon: 'adminlib-cart',
+    icon: 'adminfont-cart',
     submitUrl: 'settings',
     modal: [
         {
