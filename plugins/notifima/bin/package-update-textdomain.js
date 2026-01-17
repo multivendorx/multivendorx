@@ -1,9 +1,9 @@
-const wpTextdomain = require( 'wp-textdomain' );
+const wpTextdomain = require('wp-textdomain');
 
-const paths = [ 'classes/**/*.php', 'templates/**/*.php' ];
+const paths = ['classes/**/*.php', 'templates/**/*.php'];
 
-paths.forEach( ( path ) => {
-    wpTextdomain( path, {
+paths.forEach((path) => {
+    wpTextdomain(path, {
         domain: 'notifima',
         fix: true,
         missingDomain: true,
@@ -25,5 +25,5 @@ paths.forEach( ( path ) => {
             '_nx_noop:1,2,3c,4d',
             'wp_set_script_translations:1,2d,3',
         ],
-    } );
-} );
+    });
+});

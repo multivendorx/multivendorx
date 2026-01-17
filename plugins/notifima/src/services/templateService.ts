@@ -1,6 +1,6 @@
 /// <reference types="webpack-env" />
 
-const context = require.context( '../components/Settings', true, /\.ts$/ );
+const context = require.context('../components/Settings', true, /\.ts$/);
 
 type SettingNode = {
     name: string;
@@ -13,46 +13,44 @@ const importAll = (
 ): SettingNode[] => {
     const folderStructure: SettingNode[] = [];
 
-    inpContext.keys().forEach( ( key ) => {
-        const path = key.substring( 2 );
-        const parts = path.split( '/' );
+    inpContext.keys().forEach((key) => {
+        const path = key.substring(2);
+        const parts = path.split('/');
         const fileName = parts.pop();
         let currentFolder = folderStructure;
 
-        parts.forEach( ( folder ) => {
+        parts.forEach((folder) => {
             let folderObject = currentFolder.find(
-                ( item ) => item.name === folder && item.type === 'folder'
+                (item) => item.name === folder && item.type === 'folder'
             ) as SettingNode | undefined;
 
-            if ( ! folderObject ) {
+            if (!folderObject) {
                 folderObject = { name: folder, type: 'folder', content: [] };
-                currentFolder.push( folderObject );
+                currentFolder.push(folderObject);
             }
 
             currentFolder = folderObject.content;
-        } );
+        });
 
-        currentFolder.push( {
-            name: fileName!.replace( '.js', '' ),
+        currentFolder.push({
+            name: fileName!.replace('.js', ''),
             type: 'file',
-            content: context( key ).default,
-        } );
-    } );
+            content: context(key).default,
+        });
+    });
 
     return folderStructure;
 };
 
 const getTemplateData = (): SettingNode[] => {
-    return importAll( context );
+    return importAll(context);
 };
 
 const getModuleData = (): any | null => {
     try {
-        const module = require( '../components/Modules/index.ts' ).default;
+        const module = require('../components/Modules/index.ts').default;
         return module;
-    } catch ( error ) {
-        // eslint-disable-next-line no-console
-        console.warn( 'Module not found, skipping...' );
+    } catch (_error) {
         return null;
     }
 };

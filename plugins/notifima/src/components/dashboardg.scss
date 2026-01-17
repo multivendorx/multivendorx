@@ -1,0 +1,151 @@
+@use './config.scss' as *;
+
+// payout page price section start
+.payout-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .price-wrapper{
+        width: 50%;
+    }
+    // .price-title {
+    //     font-size: 0.95rem;
+    //     line-height: 1rem;
+    //     padding-bottom: 0.625rem;
+    //     color: $sub-text-color;
+    // }
+
+    .price {
+        font-size: 3rem;
+        font-weight: 600;
+        line-height: 2.4rem;
+        margin: 0.813rem 0;
+        display: flex;
+        align-items: start;
+        gap: 0.5rem;
+        color: $text-color;
+    }
+
+    // .des {
+    //     margin-bottom: 1rem;
+    // }
+
+    // .small-text {
+    //     line-height: 1.25rem;
+    //     color: $text-color
+    // }
+
+    // .admin-btn {
+    //     margin-top: 1rem;
+    // }
+
+    // .right-section {
+    //     width: 50%;
+    // }
+
+    // .admin-badge {
+    //     display: inline-block;
+    // }
+
+    // .payout-card-wrapper {
+    //     display: flex;
+    //     gap: 1rem;
+    //     margin: 0.813rem 0;
+    //     flex-wrap: wrap;
+
+    //     .payout-card {
+    //         padding: 1rem;
+    //         border-radius: 0.313rem;
+    //         background: #e6e2e275;
+    //         width: 50%;
+
+    //         .card-title {
+    //             font-size: 1.125rem;
+    //         }
+
+    //         .card-price {
+    //             font-size: 1.813rem;
+    //             font-weight: 600;
+    //             line-height: 2rem;
+    //             margin: 0.5rem 0;
+    //         }
+
+    //         .card-des {
+    //             color: #0000009e;
+    //             font-size: 0.813rem;
+    //         }
+    //     }
+    // }
+}
+
+
+.withdrawal-wrapper {
+    background: $theme-background-color;
+    padding: 0.313rem;
+    border-radius: 0.313rem;
+    margin: 1rem 0;
+    color: $theme-color;
+    border: $border-light-small;
+
+    i {
+        color: $theme-color;
+    }
+
+    .title {
+        font-size: 1.45rem;
+        font-weight: 600;
+        line-height: 2rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .withdrawl-notice {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.313rem;
+
+        i {
+            color: $theme-color;
+        }
+    }
+}
+
+.recommended-wrapper {
+    position: relative;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: $border-light-small;
+    border-radius: 0.313rem;
+    font-size: 1.313rem;
+
+    .hover-text {
+        position: absolute;
+        top: -1.125rem;
+        left: -100%;
+        width: 12rem;
+        text-align: center;
+        display: none;
+        transition: all 0.4s ease;
+        color: #fff;
+    }
+
+    &:hover {
+        .hover-text {
+            display: block;
+            background-color: rgb(46 46 46);
+            color: #fff;
+            text-align: center;
+            padding: 0.313rem;
+            border-radius: 0.375rem;
+            position: absolute;
+            z-index: 1;
+            font-size: 0.8rem;
+            inset: 0 auto auto 0;
+            transform: translate(-2rem, -2.313rem);
+        }
+    }
+}

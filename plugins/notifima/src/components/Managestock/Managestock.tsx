@@ -4,28 +4,28 @@ import Popup from '../Popup/Popup';
 import './ManagestockTable.scss';
 
 const Managestock: React.FC = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openDialog, setOpenDialog] = useState(false);
     return (
         <>
             <div id="manage-stock-table">
                 <Dialog
                     className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
+                    open={openDialog}
+                    onClose={() => {
+                        setOpenDialog(false);
+                    }}
                     aria-labelledby="form-dialog-title"
                 >
                     <span
-                        className="admin-font adminlib-cross"
-                        onClick={ () => setOpenDialog( false ) }
+                        className="admin-font adminfont-cross"
+                        onClick={() => setOpenDialog(false)}
                     ></span>
                     <Popup />
                 </Dialog>
                 <div
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
+                    onClick={() => {
+                        setOpenDialog(true);
+                    }}
                     className="inventory-manager"
                 ></div>
             </div>
