@@ -145,6 +145,21 @@ export default {
             label: '',
         },
         {
+                    key: 'product_discontinued_text',
+                    type: 'text',
+                    label: __( "Product Discontinued Message", 'notifima' ),
+                    desc: __(
+                        'Modify the product discontinued text.',
+                        'notifima'
+                    ),
+                    placeholder: __( 'This product has been discontinued.', 'notifima' ),
+                },
+        {
+            key: 'separator_content',
+            type: 'section',
+            label: '',
+        },
+        {
             key: 'is_enable_no_interest',
             type: 'checkbox',
             label: __(
