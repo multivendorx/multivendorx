@@ -107,6 +107,20 @@ const MergeComponent: React.FC< MergeComponentProps > = ( {
                                 }
                             />
                         );
+                    } else if ( type === 'text' ) {
+                        return (
+                            <input
+                                className="basic-input"
+                                key={ name }
+                                type={ type }
+                                id={ name }
+                                placeholder={ placeholder }
+                                value={ data[ name ] }
+                                onChange={ ( e ) =>
+                                    handleOnChange( name, e.target.value )
+                                }
+                            />
+                        );
                     }
 
                     return null; // Return null for unsupported types

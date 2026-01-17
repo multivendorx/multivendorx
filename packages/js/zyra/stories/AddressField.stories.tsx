@@ -98,4 +98,65 @@ export const EmptyAddressField: Story = {
     },
 };
 
+export const SingleAddressField: Story = {
+    render: () => {
+        const [field] = useState<AddressFormField>({
+            id: 105,
+            type: 'address',
+            label: 'Single Field Address',
+            fields: [
+                {
+                    id: 1,
+                    key: 'street',
+                    label: 'Street',
+                    type: 'text',
+                    placeholder: 'Enter street',
+                },
+            ],
+        });
 
+        const [openedInput, setOpenedInput] = useState<any>(null);
+
+        return (
+            <AddressField
+                formField={field}
+                onChange={() => {}}
+                opendInput={openedInput}
+                setOpendInput={setOpenedInput}
+            />
+        );
+    },
+};
+
+export const ReorderableAddress: Story = {
+    render: () => {
+        const [field, setField] = useState<AddressFormField>({
+            id: 108,
+            type: 'address',
+            label: 'Reorderable Address',
+            fields: [
+                ...initialSubFields,
+                {
+                    id: 5,
+                    key: 'country',
+                    label: 'Country',
+                    type: 'select',
+                    options: ['USA', 'Canada'],
+                },
+            ],
+        });
+
+        const [openedInput, setOpenedInput] = useState<any>(null);
+
+        return (
+            <AddressField
+                formField={field}
+                onChange={(key, value) =>
+                    setField((prev) => ({ ...prev, [key]: value }))
+                }
+                opendInput={openedInput}
+                setOpendInput={setOpenedInput}
+            />
+        );
+    },
+};

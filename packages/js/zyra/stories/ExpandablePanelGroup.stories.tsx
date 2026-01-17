@@ -302,3 +302,139 @@ export const AddNewCustomPanel: Story = {
     },
 };
 
+export const SetupWizard: Story = {
+    render: () => {
+        const [value, setValue] = useState({
+            step_one: {
+                enable: true,
+                siteName: '',
+            },
+            step_two: {
+                enable: true,
+                email: '',
+            },
+            step_three: {
+                enable: true,
+                confirm: false,
+            },
+        });
+
+        return (
+            <ExpandablePanelGroup
+                name="setup-wizard"
+                isWizardMode
+                methods={[
+                    {
+                        id: 'step_one',
+                        icon: 'adminfont-setting',
+                        label: 'Step 1: Basic Info',
+                        desc: 'Configure basic settings',
+                        connected: true,
+                        isWizardMode: true,
+                        openForm: true,
+                        formFields: [
+                            {
+                                key: 'siteName',
+                                type: 'text',
+                                label: 'Site Name',
+                                placeholder: 'Enter site name',
+                            },
+                            {
+                                key: 'wizardButtons',
+                                type: 'buttons',
+                                options: [
+                                    {
+                                        label: 'Next',
+                                        action: 'next',
+                                        btnClass: 'admin-btn btn-purple',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+
+                    {
+                        id: 'step_two',
+                        icon: 'adminfont-setting',
+                        label: 'Step 2: Contact Info',
+                        desc: 'Set contact details',
+                        connected: false,
+                        isWizardMode: true,
+                        openForm: true,
+                        formFields: [
+                            {
+                                key: 'email',
+                                type: 'text',
+                                label: 'Admin Email',
+                                placeholder: 'Enter admin email',
+                            },
+                            {
+                                key: 'wizardButtons',
+                                type: 'buttons',
+                                options: [
+                                    {
+                                        label: 'Back',
+                                        action: 'back',
+                                        btnClass: 'admin-btn btn-secondary',
+                                    },
+                                    {
+                                        label: 'Next',
+                                        action: 'next',
+                                        btnClass: 'admin-btn btn-purple',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+
+                    {
+                        id: 'step_three',
+                        icon: 'adminfont-setting',
+                        label: 'Step 3: Finish',
+                        desc: 'Confirm setup',
+                        connected: false,
+                        isWizardMode: true,
+                        openForm: true,
+                        formFields: [
+                            {
+                                key: 'confirm',
+                                type: 'checkbox',
+                                label: 'Confirm Setup',
+                                desc: 'I confirm all details are correct',
+                            },
+                            {
+                                key: 'wizardButtons',
+                                type: 'buttons',
+                                options: [
+                                    {
+                                        label: 'Back',
+                                        action: 'back',
+                                        btnClass: 'admin-btn btn-secondary',
+                                    },
+                                    {
+                                        label: 'Finish',
+                                        action: 'next',
+                                        btnClass: 'admin-btn btn-purple',
+                                        redirect: 'https://example.com',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ]}
+                value={value}
+                onChange={(updated) => {
+                    console.log('Wizard value:', updated);
+                    setValue(updated);
+                }}
+                appLocalizer={{
+                    khali_dabba: true,
+                    site_url: 'https://example.com',
+                }}
+                modules={[]}
+                moduleEnabled
+                moduleChange={() => {}}
+            />
+        );
+    },
+};

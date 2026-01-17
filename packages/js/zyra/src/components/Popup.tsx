@@ -10,18 +10,18 @@ import { DialogContent, DialogContentText } from '@mui/material';
 import '../styles/web/Popup.scss';
 import AdminButton from './UI/AdminButton';
 
-export interface PopupMessage {
+interface PopupMessage {
     text: string;
     des?: string;
     icon?: string;
 }
-export interface BtnLink {
+interface BtnLink {
     site: string;
     price: string;
     link: string;
 }
 // Types
-export interface PopupProps {
+interface PopupProps {
     proUrl?: string;
     title?: string;
     messages?: PopupMessage[];
