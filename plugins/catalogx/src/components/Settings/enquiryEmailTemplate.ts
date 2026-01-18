@@ -8,6 +8,7 @@ export default {
         'Select your preferred enquiry details email template',
         'catalogx'
     ),
+    icon: 'adminfont-email-template',
     submitUrl: 'settings',
     modal: [
         {

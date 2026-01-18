@@ -7,7 +7,7 @@ export default {
         'Distribute courses through gifting and group enrollments.',
         'moowoodle'
     ),
-    icon: 'adminlib-contact-form',
+    icon: 'adminfont-contact-form',
     submitUrl: 'settings',
     proDependent: true,
     modal: [

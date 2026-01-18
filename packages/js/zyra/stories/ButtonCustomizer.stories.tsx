@@ -1,5 +1,6 @@
 import ButtonCustomizer from '../src/components/ButtonCustomiser';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import "../src/styles/common.scss";
 
 const meta: Meta<typeof ButtonCustomizer> = {
     title: 'Zyra/Components/ButtonCustomizer',
@@ -17,14 +18,13 @@ export const TestButtonCustomizer: Story = {
             console.log('Changed:', key, value, isRestoreDefaults);
         },
         setting: {
-            color: 'blue',
-            size: 'large',
+            
         },
         className: 'custom-button',
         text: 'Customize',
         proSetting: true,
     },
     render: (args) => {
-        return <ButtonCustomizer {...args} />;
+        return <div className='multivendorx-main-wrapper'><ButtonCustomizer {...args} /></div>;
     },
 };

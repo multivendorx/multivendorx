@@ -22,3 +22,25 @@ export const TestLabel: Story = {
         return <Label {...args} />;
     },
 };
+
+export const WithoutDescription: Story = {
+    args: {
+        wrapperClass: 'form-group-only-label',
+        descClass: 'settings-metabox-description',
+        value: 'Label Without Description',
+    },
+    render: (args) => {
+        return <Label {...args} />;
+    },
+};
+
+export const WithoutLabel: Story = {
+    args: {
+        wrapperClass: 'form-group-only-label',
+        descClass: 'settings-metabox-description',
+        description: 'This is a sample description without a label.',
+    },
+    render: (args) => {
+        return <Label {...args} />;
+    },
+};

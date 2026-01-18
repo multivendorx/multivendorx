@@ -31,6 +31,7 @@ const sampleProducts = [
 export const DefaultBanner: Story = {
     render: () => (
         <Banner
+            isPro={false}
             tag="Top Banner"
             buttonText="Upgrade Now"
             bgCode="#f5f5f5"
@@ -68,6 +69,22 @@ export const BannerWithoutProducts: Story = {
             textCode="#333333"
             btnCode="#ffffff"
             btnBgCode="#ff0000"
+        />
+    ),
+};
+
+export const BannerWithoutPro: Story = {
+    render: () => (
+        <Banner
+            isPro={false}
+            tag="Top Banner"
+            buttonText="Upgrade Now"
+            bgCode="#f5f5f5"
+            textCode="#333333"
+            btnCode="#ffffff"
+            btnBgCode="#ff0000"
+            products={sampleProducts}
+            proUrl="https://example.com/pro"
         />
     ),
 };

@@ -20,3 +20,29 @@ export const DefaultSection: Story = {
     },
     render: (args) => <Section {...args} />,
 };
+
+export const SectionWithoutHint: Story = {
+    args: {
+        wrapperClass: 'setting-section-divider',
+        value: 'Privacy Settings',
+        description: 'Manage your privacy settings in this section.',
+    },
+    render: (args) => <Section {...args} />,
+};
+
+export const SectionWithoutDescription: Story = {
+    args: {
+        wrapperClass: 'setting-section-divider',
+        hint: 'Configure the following settings carefully.',
+        value: 'Notification Settings',
+    },
+    render: (args) => <Section {...args} />,
+};
+
+export const SectionWithOnlyValue: Story = {
+    args: {
+        wrapperClass: 'setting-section-divider',
+        value: 'General Settings',
+    },
+    render: (args) => <Section {...args} />,
+};

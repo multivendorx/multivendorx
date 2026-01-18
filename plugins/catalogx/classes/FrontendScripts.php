@@ -470,6 +470,7 @@ class FrontendScripts {
 						'mvx_active'                 => Utill::is_active_plugin( 'multivendorx' ),
 						'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
 						'quote_base_url'             => $quote_base_url,
+						'freeVersion'               => CatalogX()->version,
 					),
 				),
 				'catalogx-enquiry-frontend-script'      => array(
