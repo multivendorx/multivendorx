@@ -7,6 +7,8 @@ import QuoteRequests from './components/QuoteRequests/quoteRequests';
 import EnquiryMessages from './components/EnquiryMessages/enquiryMessages';
 import WholesaleUser from './components/WholesaleUser/wholesaleUser';
 import Rules from './components/Rules/Rules';
+import HeaderNotification from './components/Notifications/HeaderNotifications';
+import { searchIndex, SearchItem } from './searchIndex';
 import gif from './assets/images/product-page-builder.gif';
 import { TourProvider } from '@reactour/tour';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
@@ -80,7 +82,6 @@ const App = () => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<any[]>([]);
     const [selectValue, setSelectValue] = useState('');
-    const dropdownOptions = [];
     const tourSteps = [];
 
     const currentTabParams = new URLSearchParams(useLocation().hash);
@@ -102,9 +103,85 @@ const App = () => {
             }
         });
 
-    const handleSelectChange = (val: string) => {
-        setSelectValue(val);
+    const handleSearchChange = (value: string) => {
+        setQuery(value);
+
+        if (!value.trim()) {
+            setResults([]);
+            return;
+        }
+
+        const lowerValue = value.toLowerCase();
+
+        const filtered = searchIndex.filter((item) => {
+            // Filter by dropdown selection
+            if (selectValue !== 'all' && item.tab !== selectValue) {
+                return false;
+            }
+
+            // Case-insensitive search
+            const name = item.name?.toLowerCase() || '';
+            const desc = item.desc?.toLowerCase() || '';
+            return name.includes(lowerValue) || desc.includes(lowerValue);
+        });
+
+        setResults(filtered);
     };
+
+    const handleSelectChange = (value: string) => {
+        setSelectValue(value);
+
+        if (query.trim()) {
+            handleSearchChange(query);
+        } else {
+            setResults([]);
+        }
+    };
+
+    const handleResultClick = (item: SearchItem) => {
+        window.location.hash = item.link;
+        setQuery('');
+        setResults([]);
+    };
+
+    const profileItems = [
+        {
+            title: "What's New",
+            icon: 'adminfont-new',
+            link: 'https://multivendorx.com/latest-release/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+            targetBlank: true,
+        },
+        {
+            title: 'Get Support',
+            icon: 'adminfont-customer-support',
+            link: 'https://multivendorx.com/support-forum/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+            targetBlank: true,
+        },
+        {
+            title: 'Community',
+            icon: 'adminfont-global-community',
+            link: 'https://multivendorx.com/community/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+            targetBlank: true,
+        },
+        {
+            title: 'Documentation',
+            icon: 'adminfont-book',
+            link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+            targetBlank: true,
+        },
+        {
+            title: 'Request a Feature',
+            icon: 'adminfont-blocks',
+            link: 'https://github.com/multivendorx/multivendorx/issues',
+            targetBlank: true,
+        },
+        {
+            title: 'Import Dummy Data',
+            icon: 'adminfont-import',
+            link: 'https://multivendorx.com/docs/knowledgebase/importing-dummy-data/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+            targetBlank: true,
+        },
+    ];
 
     // --- INIT MODULES ---
     useEffect(() => {
@@ -128,17 +205,25 @@ const App = () => {
                 brandImg={Brand}
                 query={query}
                 results={results}
-                onSearchChange={setQuery}
-                onResultClick={() => {}}
-                onSelectChange={setSelectValue}
+                onSearchChange={handleSearchChange}
+                onResultClick={handleResultClick}
+                onSelectChange={handleSelectChange}
                 selectValue={selectValue}
                 free={appLocalizer.freeVersion}
-                pro={appLocalizer.khali_dabba}
-                showDropdown={false}
-                dropdownOptions={dropdownOptions}
-                showNotifications={false}
+                pro={appLocalizer.pro_data}
+                showDropdown={true}
+                dropdownOptions={[
+                    { value: 'all', label: 'Modules & Settings' },
+                    { value: 'modules', label: 'Modules' },
+                    { value: 'settings', label: 'Settings' },
+                ]}
+                notifications={<HeaderNotification type="notification" />}
+                showNotifications={true}
+                activities={<HeaderNotification type="activity" />}
+                showActivities={true}
                 showMessages={false}
                 showProfile={false}
+                
             />
 
             {tourSteps.length > 0 && (

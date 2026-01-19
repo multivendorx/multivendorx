@@ -5,7 +5,7 @@ import ShowPopup from '../Popup/Popup';
 import { AdminBreadcrumbs } from 'zyra';
 
 const EnquiryMessages = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openDialog, setOpenDialog] = useState(false);
 
     return (
         <>
@@ -20,25 +20,27 @@ const EnquiryMessages = () => {
             <div id="enquiry-messages">
                 <Dialog
                     className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
+                    open={openDialog}
+                    onClose={() => {
+                        setOpenDialog(false);
+                    }}
                     aria-labelledby="form-dialog-title"
                 >
                     <span
                         className="admin-font adminlib-cross"
-                        onClick={ () => {
-                            setOpenDialog( false );
-                        } }
+                        onClick={() => {
+                            setOpenDialog(false);
+                        }}
                     ></span>
-                    { ! appLocalizer.khali_dabba && <ShowPopup moduleName="Enquiry" /> }
+                    {!appLocalizer.khali_dabba && (
+                        <ShowPopup moduleName="Enquiry" />
+                    )}
                 </Dialog>
                 <div
                     className="enquiry-img image-wrapper"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
+                    onClick={() => {
+                        setOpenDialog(true);
+                    }}
                 ></div>
             </div>
         </>

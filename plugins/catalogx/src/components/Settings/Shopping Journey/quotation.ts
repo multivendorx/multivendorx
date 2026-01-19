@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'quotation',
     priority: 3,
-    name: __( 'Quotation', 'catalogx' ),
+    name: __('Quotation', 'catalogx'),
     desc: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
@@ -34,12 +34,12 @@ export default {
         {
             key: 'set_expiry_time',
             type: 'text',
-            label: __( 'Quotation expiry duration', 'catalogx' ),
+            label: __('Quotation expiry duration', 'catalogx'),
             desc: __(
                 'Set the period after which a quotation will expire and no longer be valid for purchase.',
                 'catalogx'
             ),
-            parameter: __( 'days', 'catalogx' ),
+            parameter: __('days', 'catalogx'),
             proSetting: true,
             moduleEnabled: 'quote',
         },

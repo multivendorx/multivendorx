@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'enquiry',
     priority: 2,
-    name: __( 'Enquiry', 'catalogx' ),
+    name: __('Enquiry', 'catalogx'),
     desc: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
@@ -33,7 +33,7 @@ export default {
         {
             key: 'is_enable_out_of_stock',
             type: 'checkbox',
-            label: __( 'Enquiry for out-of-stock products only', 'catalogx' ),
+            label: __('Enquiry for out-of-stock products only', 'catalogx'),
             desc: __(
                 'Enquiry button is shown exclusively for products that are out of stock. For items that are in stock, the Add-to-Cart button will be displayed instead.',
                 'catalogx'
@@ -52,7 +52,7 @@ export default {
         {
             key: 'notify_me_button',
             type: 'checkbox',
-            label: __( 'In-Stock notify me button', 'catalogx' ),
+            label: __('In-Stock notify me button', 'catalogx'),
             desc: __(
                 'This option allows customers to subscribe for automatic stock notifications.',
                 'catalogx'
@@ -60,7 +60,7 @@ export default {
             options: [
                 {
                     key: 'notify_me_button',
-                    label: __( '', 'catalogx' ),
+                    label: __('', 'catalogx'),
                     value: 'notify_me_button',
                 },
             ],
@@ -73,7 +73,7 @@ export default {
         {
             key: 'is_disable_popup',
             type: 'setting-toggle',
-            label: __( 'Display enquiry form as', 'catalogx' ),
+            label: __('Display enquiry form as', 'catalogx'),
             desc: __(
                 'Select whether the form is displayed directly on the page or in a pop-up window.',
                 'catalogx'

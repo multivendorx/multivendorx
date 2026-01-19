@@ -92,6 +92,12 @@ declare global {
         no_more_product: string;
     }
 
+    const appLocalizer: AppLocalizer;
+    const enquiryFormData: EnquiryFormData;
+    const quoteCart: QuoteCart;
+    const quoteButton: QuoteButton;
+    const addToQuoteCart: AddToQuoteCart;
+
     declare module '*.png';
     declare module '*.jpg';
     declare module '*.jpeg';

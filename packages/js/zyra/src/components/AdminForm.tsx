@@ -309,6 +309,7 @@ interface InputField {
         value?: string;
         image?: string[];
     }[];
+    image?: string; // Single image URL for catalog-customizer and similar components
     customDefaults?: {
         colorPrimary?: string;
         colorSecondary?: string;
@@ -1869,8 +1870,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 settingChanged.current = true;
                                 updateSetting( key, data );
                             } }
-                            SampleProduct="#"
-                            proUrl="#"
+                            SampleProduct={ inputField.image ?? '#' }
+                            proUrl={ appLocalizer?.pro_url ?? '#' }
                         />
                     );
                     break;

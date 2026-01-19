@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'enquiry-email-temp',
     priority: 50,
-    name: __( 'Enquiry Email', 'catalogx' ),
+    name: __('Enquiry Email', 'catalogx'),
     desc: __(
         'Select your preferred enquiry details email template',
         'catalogx'
     ),
-    icon: 'adminfont-email-template',
+    icon: 'adminfont-mail',
     submitUrl: 'settings',
     modal: [
         {
@@ -19,7 +19,7 @@ export default {
                 "Set the email address to receive notifications when a user submits enquiry of a product. You can add multiple comma-separated emails.<br/> Default: The admin's email is set as the receiver. Exclude the admin's email from the list to exclude admin from receiving these notifications.",
                 'catalogx'
             ),
-            label: __( 'Recipient email for new subscriber', 'catalogx' ),
+            label: __('Recipient email for new subscriber', 'catalogx'),
             moduleEnabled: 'enquiry',
         },
         {

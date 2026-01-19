@@ -8,7 +8,7 @@ export default {
         'Fetch Moodle cohort on demand & generate products on demand.',
         'moowoodle'
     ),
-    icon: 'adminlib-book',
+    icon: 'adminfont-book',
     submitUrl: 'settings',
     proDependent: true,
     modal: [

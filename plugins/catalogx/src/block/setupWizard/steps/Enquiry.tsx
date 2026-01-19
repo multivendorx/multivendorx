@@ -3,42 +3,42 @@ import { getApiLink } from 'zyra';
 import axios from 'axios';
 import Loading from './Loading';
 
-const Enquiry = ( props: any ) => {
+const Enquiry = (props: any) => {
     const { onNext, onPrev } = props;
-    const [ loading, setLoading ] = useState( false );
-    const [ displayOption, setDisplayOption ] = useState( 'popup' );
-    const [ restrictUserEnquiry, setRestrictUserEnquiry ] = useState<
-        string[]
-    >( [] );
+    const [loading, setLoading] = useState(false);
+    const [displayOption, setDisplayOption] = useState('popup');
+    const [restrictUserEnquiry, setRestrictUserEnquiry] = useState<string[]>(
+        []
+    );
 
     const handleRestrictUserEnquiryChange = (
-        event: React.ChangeEvent< HTMLInputElement >
+        event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const { checked, name } = event.target;
-        setRestrictUserEnquiry( ( prevState ) =>
+        setRestrictUserEnquiry((prevState) =>
             checked
-                ? [ ...prevState, name ]
-                : prevState.filter( ( value ) => value !== name )
+                ? [...prevState, name]
+                : prevState.filter((value) => value !== name)
         );
     };
 
     const saveEnquirySettings = () => {
-        setLoading( true );
+        setLoading(true);
         const data = {
             action: 'enquiry',
             displayOption,
             restrictUserEnquiry,
         };
 
-        axios( {
+        axios({
             method: 'post',
-            url: getApiLink( appLocalizer, 'settings' ),
+            url: getApiLink(appLocalizer, 'settings'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
             data,
-        } ).then( () => {
-            setLoading( false );
+        }).then(() => {
+            setLoading(false);
             onNext();
-        } );
+        });
     };
 
     return (
@@ -61,12 +61,12 @@ const Enquiry = ( props: any ) => {
                                 id="popup"
                                 name="approve_vendor"
                                 value="popup"
-                                checked={ displayOption === 'popup' }
+                                checked={displayOption === 'popup'}
                             />
-                            { /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ }
+                            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
                             <label
                                 htmlFor="popup"
-                                onClick={ () => setDisplayOption( 'popup' ) }
+                                onClick={() => setDisplayOption('popup')}
                             >
                                 Popup
                             </label>
@@ -78,12 +78,12 @@ const Enquiry = ( props: any ) => {
                                 id="inline"
                                 name="approve_vendor"
                                 value="inline"
-                                checked={ displayOption === 'inline' }
+                                checked={displayOption === 'inline'}
                             />
-                            { /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ }
+                            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
                             <label
                                 htmlFor="inline"
-                                onClick={ () => setDisplayOption( 'inline' ) }
+                                onClick={() => setDisplayOption('inline')}
                             >
                                 Inline In-page
                             </label>
@@ -105,12 +105,12 @@ const Enquiry = ( props: any ) => {
                             type="checkbox"
                             id="enquiry-logged-out"
                             name="enquiry_logged_out"
-                            checked={ restrictUserEnquiry.includes(
+                            checked={restrictUserEnquiry.includes(
                                 'enquiry_logged_out'
-                            ) }
-                            onChange={ handleRestrictUserEnquiryChange }
+                            )}
+                            onChange={handleRestrictUserEnquiryChange}
                         />
-                        { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                         <label htmlFor="enquiry-logged-out"></label>
                     </div>
                 </div>
@@ -118,21 +118,21 @@ const Enquiry = ( props: any ) => {
 
             <footer className="setup-footer-btn-wrapper">
                 <div>
-                    <button className="footer-btn pre-btn" onClick={ onPrev }>
+                    <button className="footer-btn pre-btn" onClick={onPrev}>
                         Prev
                     </button>
-                    <button className="footer-btn " onClick={ onNext }>
+                    <button className="footer-btn " onClick={onNext}>
                         Skip
                     </button>
                 </div>
                 <button
                     className="footer-btn next-btn"
-                    onClick={ saveEnquirySettings }
+                    onClick={saveEnquirySettings}
                 >
                     Next
                 </button>
             </footer>
-            { loading && <Loading /> }
+            {loading && <Loading />}
         </section>
     );
 };

@@ -7,7 +7,7 @@ import { AdminBreadcrumbs } from 'zyra';
 
 const Rules = () => {
     // State variable declearation
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openDialog, setOpenDialog] = useState(false);
 
     return (
         <>
@@ -17,33 +17,33 @@ const Rules = () => {
             >
                 <Dialog
                     className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
+                    open={openDialog}
+                    onClose={() => {
+                        setOpenDialog(false);
+                    }}
                     aria-labelledby="form-dialog-title"
                 >
                     <span
                         className="admin-font adminlib-cross"
-                        onClick={ () => {
-                            setOpenDialog( false );
-                        } }
+                        onClick={() => {
+                            setOpenDialog(false);
+                        }}
                     ></span>
-                    { ! appLocalizer.khali_dabba ? (
+                    {!appLocalizer.khali_dabba ? (
                         <ShowPopup />
                     ) : (
                         <ShowPopup moduleName="Rules" />
-                    ) }
+                    )}
                 </Dialog>
                 <AdminBreadcrumbs
-                    activeTabIcon="adminlib-rules"
+                    activeTabIcon="adminfont-rules"
                     tabTitle="Rules"
                 />
                 <div
                     className="dynamic-rule-img image-wrapper"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
+                    onClick={() => {
+                        setOpenDialog(true);
+                    }}
                 ></div>
             </main>
         </>
