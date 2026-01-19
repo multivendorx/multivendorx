@@ -54,7 +54,7 @@ const InfoItem: React.FC<InfoItemProps> = ({
         ) : avatar.iconClass ? (
             <i className={avatar.iconClass} />
         ) : (
-            <span>{avatar.text}</span>
+            <span className={avatar.iconClass}>{avatar.text}</span>
         );
 
         return (

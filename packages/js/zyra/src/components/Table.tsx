@@ -614,6 +614,7 @@ const Table: React.FC<TableProps> = ({
 
     const typeCountActive = filterData.categoryFilter || defaultCounts;
     const typeLanguageCountActive = filterData.languageFilter || defaultCounts;
+    const isFilterLoading = categoryFilter === null;
     return (
         <>
             {(categoryFilter?.length > 0 ||
@@ -621,54 +622,35 @@ const Table: React.FC<TableProps> = ({
                 actionButton) && (
                     <div className="admin-top-filter">
                         <div className="filter-wrapper">
-                            {categoryFilter?.length > 0 && (
+                            {categoryFilter === null ? (
                                 <>
-                                    {categoryFilter ? (
-                                        categoryFilter.length > 0 ? (
-                                            <>
-                                                {categoryFilter.map(
-                                                    (countInfo, index) => (
-                                                        <div
-                                                            key={index}
-                                                            role="button"
-                                                            tabIndex={0}
-                                                            onClick={() =>
-                                                                setFilterData({
-                                                                    categoryFilter:
-                                                                        countInfo.key,
-                                                                })
-                                                            }
-                                                            className={
-                                                                countInfo.key ===
-                                                                    typeCountActive
-                                                                    ? 'filter-item active'
-                                                                    : 'filter-item'
-                                                            }
-                                                        >
-                                                            {`${countInfo.name} (${countInfo.count})`}
-                                                        </div>
-                                                    )
-                                                )}
-                                            </>
-                                        ) : (
-                                            <span>No types found</span>
-                                        )
-                                    ) : (
-                                        <>
-                                            <Skeleton
-                                                variant="text"
-                                                width={100}
-                                            />
-                                            <Skeleton
-                                                variant="text"
-                                                width={120}
-                                            />
-                                            <Skeleton variant="text" width={90} />
-                                        </>
-                                    )}
+                                  <div className="filter-item"> <Skeleton variant="text" width={20} /> </div>
+                                   <div className="filter-item"><Skeleton variant="text" width={30} /></div> 
+                                   <div className="filter-item"> <Skeleton variant="text" width={20} /></div>
                                 </>
+                            ) : (
+                                categoryFilter?.map((countInfo, index) => (
+                                    <div
+                                        key={index}
+                                        role="button"
+                                        tabIndex={0}
+                                        onClick={() =>
+                                            setFilterData({
+                                                categoryFilter: countInfo.key,
+                                            })
+                                        }
+                                        className={
+                                            countInfo.key === typeCountActive
+                                                ? 'filter-item active'
+                                                : 'filter-item'
+                                        }
+                                    >
+                                        {`${countInfo.name} (${countInfo.count})`}
+                                    </div>
+                                ))
                             )}
                         </div>
+
                         <div className="filter-wrapper">
                             {languageFilter?.length > 0 && (
                                 <>

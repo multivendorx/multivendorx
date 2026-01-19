@@ -38,6 +38,8 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 							file: attachment.url,
 							name: attachment.filename,
 						});
+						updateDownloadableFile(row.id, 'file', attachment.url);
+						updateDownloadableFile(row.id, 'name', attachment.filename);
 					});
 
 					frame.open();
@@ -56,40 +58,6 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 		}));
 	};
 
-	const removeDownloadableFile = (uniqueId) => {
-		setProduct((prev) => ({
-			...prev,
-			downloads: prev.downloads.filter((f) => f.id !== uniqueId),
-		}));
-	};
-
-	const openMediaUploader = (id) => {
-		const frame = wp.media({
-			title: 'Select or Upload File',
-			button: { text: 'Use this file' },
-			multiple: false,
-		});
-
-		frame.on('select', () => {
-			const attachment = frame.state().get('selection').first().toJSON();
-			updateDownloadableFile(id, 'file', attachment.url);
-			updateDownloadableFile(id, 'name', attachment.filename);
-		});
-
-		frame.open();
-	};
-
-	const toggleCard = (cardId) => {
-		const body = document.querySelector(`#${cardId} .card-body`);
-		const arrow = document.querySelector(`#${cardId} .arrow-icon`);
-
-		if (!body || !arrow) {
-			return;
-		}
-
-		body.classList.toggle('hide-body');
-		arrow.classList.toggle('rotate');
-	};
 
 	return (
 		// <Card contentHeight

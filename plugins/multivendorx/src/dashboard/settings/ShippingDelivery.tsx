@@ -395,6 +395,7 @@ const ShippingDelivery = () => {
 										{/* Distance–Cost Rules */}
 										<FormGroup
 											label={__('Distance–Cost Rules', 'multivendorx')}
+											desc= {__('Create custom shipping rates based on distance ranges. <br> For example, charge $5 for 0–10 km, $10 for 11–25 km, and $15 for 26–50 km. These rates replace the default fee so customers pay according to their delivery distance', 'multivendorx')}
 										>
 											<DynamicRowSetting
 												keyName="distance_rules"

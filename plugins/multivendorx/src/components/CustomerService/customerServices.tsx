@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, useModules, Tabs, Container } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, useModules, Tabs, Container, Column, MessageState } from 'zyra';
 import './customerServices.scss';
 import '../AdminDashboard/adminDashboard.scss';
 import Qna from './qnaTable';
@@ -96,21 +96,14 @@ const CustomerServices = () => {
 				/>
 			) : (
 				<Container>
-					<div className="permission-wrapper">
-						<i className="adminfont-info red"></i>
-						<div className="title">
-							{__(
-								'Looks like customer support isn’t set up yet! Turn on a support module to start assisting your customers.',
-								'multivendorx'
-							)}
-						</div>
-						<a
-							href={appLocalizer.module_page_url}
-							className="admin-btn btn-purple"
-						>
-							{__('Enable Now', 'multivendorx')}
-						</a>
-					</div>
+					<Column>
+						<MessageState
+							title={__('Looks like customer support isn’t set up yet!', 'multivendorx')}
+							desc={__('Turn on a support module to start assisting your customers.', 'multivendorx')}
+							buttonText={__('Enable Now', 'multivendorx')}
+							buttonLink={appLocalizer.module_page_url}
+						/>
+					</Column>
 				</Container>
 			)}
 		</>

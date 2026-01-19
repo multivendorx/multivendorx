@@ -297,6 +297,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											.replace(/\b\w/g, (c) =>
 												c.toUpperCase()
 											)}
+											<i className="adminfont-keyboard-arrow-down"></i>
 									</div>
 								)}
 								{statusSelect && (

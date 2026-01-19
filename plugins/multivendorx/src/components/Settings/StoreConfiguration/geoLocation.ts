@@ -5,7 +5,7 @@ export default {
 	priority: 8,
 	name: 'Geolocation',
 	desc: __(
-		'Help customers discover stores and products near them by enabling location-based search and maps.',
+		'Help customers discover stores and products/listings near them by enabling location-based search and maps.',
 		'multivendorx'
 	),
 	icon: 'adminfont-location',

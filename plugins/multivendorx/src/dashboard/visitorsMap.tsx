@@ -6,6 +6,7 @@ import {
     Geographies,
     Geography,
 } from 'react-simple-maps';
+import { formatLocalDate } from '@/services/commonFunction';
 
 const GEO_URL =
     'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
@@ -42,8 +43,8 @@ const VisitorsMap: React.FC<VisitorsMapProps> = ({ dateRange }) => {
             params: {
                 visitorMap: true,
                 id: appLocalizer.store_id,
-                start_date: dateRange.startDate,
-                end_date: dateRange.endDate,
+                start_date: formatLocalDate(dateRange.startDate),
+                end_date: formatLocalDate(dateRange.endDate),
             },
         })
             .then((response) => {

@@ -402,7 +402,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					open={addShipping}
 					width="31.25rem"
 					height="60%"
-					onClose= {setAddShipping(false)}
+					onClose={() => setAddShipping(false)}
 					header={{
 						icon: 'shipping',
 						title: `${isEditing

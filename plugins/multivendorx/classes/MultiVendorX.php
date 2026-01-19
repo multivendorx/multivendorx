@@ -146,6 +146,7 @@ final class MultiVendorX {
         $this->container['modules']         = new Modules();
         $this->container['status']          = new Status();
         $this->container['product']         = new Product();
+        $this->container['coupon']          = new Coupon();
         $this->container['cron']            = new Cron();
         $this->container['block']           = new Block();
         $this->container['notifications']   = new Notifications\Notifications();

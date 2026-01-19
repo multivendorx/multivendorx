@@ -21,28 +21,9 @@ import ShippingDelivery from './settings/ShippingDelivery';
 import LiveChat from './settings/LiveChat';
 
 const settings = () => {
-	const id = appLocalizer.store_id;
-	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
-	const [stateOptions, setStateOptions] = useState<
-		{ label: string; value: string }[]
-	>([]);
 	const { modules } = useModules();
-
-	useEffect(() => {
-		if (!id) {
-			return;
-		}
-
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, `store/${id}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((res) => {
-			const data = res.data || {};
-			setFormData((prev) => ({ ...prev, ...data }));
-		});
-	}, [id]);
+	const settings = appLocalizer.settings_databases_value || {};
 
 	useEffect(() => {
 		if (successMsg) {
@@ -50,43 +31,7 @@ const settings = () => {
 			return () => clearTimeout(timer);
 		}
 	}, [successMsg]);
-	useEffect(() => {
-		if (formData.country) {
-			fetchStatesByCountry(formData.country);
-		}
-	}, [formData.country]);
 
-	const fetchStatesByCountry = (countryCode: string) => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, `states/${countryCode}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((res) => {
-			setStateOptions(res.data || []);
-		});
-	};
-
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
-		setFormData(updated);
-		autoSave(updated);
-	};
-
-	const autoSave = (updatedData: { [key: string]: string }) => {
-		axios({
-			method: 'PUT',
-			url: getApiLink(appLocalizer, `store/${id}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: updatedData,
-		}).then((res) => {
-			if (res.data.success) {
-				setSuccessMsg('Store saved successfully!');
-			}
-		});
-	};
 
 	const SimpleLink = ({ to, children, onClick, className }: any) => (
 		<a href={to} onClick={onClick} className={className}>
@@ -123,6 +68,7 @@ const settings = () => {
 		},
 		{
 			type: 'file',
+			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_images'),
 			content: {
 				id: 'appearance',
 				name: 'Appearance',
@@ -132,6 +78,7 @@ const settings = () => {
 		},
 		{
 			type: 'file',
+			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_address'),
 			content: {
 				id: 'business-address',
 				name: 'Business Address',
@@ -141,6 +88,7 @@ const settings = () => {
 		},
 		{
 			type: 'file',
+			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_contact'),
 			content: {
 				id: 'contact-information',
 				name: 'Contact Information',
@@ -166,63 +114,52 @@ const settings = () => {
 				icon: 'wallet-open',
 			},
 		},
-		...(modules.includes('store-policy')
-			? [
-					{
-						type: 'file',
-						content: {
-							id: 'privacy',
-							name: 'Privacy',
-							desc: 'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
-							// hideTabHeader: true,
-							icon: 'privacy',
-						},
-					},
-				]
-			: []),
-		...(modules.includes('store-shipping')
-			? [
-					{
-						type: 'file',
-						content: {
-							id: 'shipping',
-							name: 'Shipping',
-							desc: 'Manage your store’s shipping method, pricing rules, and location-based rates.',
-							// hideTabHeader: true,
-							icon: 'shipping',
-						},
-					},
-				]
-			: []),
-		...(modules.includes('marketplace-compliance')
-			? [
-					{
-						type: 'file',
-						content: {
-							id: 'verification',
-							name: 'Verification',
-							desc: 'verification',
-							// hideTabHeader: true,
-							icon: 'verification5',
-						},
-					},
-				]
-			: []),
-		...(modules.includes('live-chat')
-			? [
-					{
-						type: 'file',
-						content: {
-							id: 'livechat',
-							name: 'Livechat',
-							desc: 'Connect your store with live chat platforms so customers can reach you instantly for support or inquiries.',
-							// hideTabHeader: true,
-							icon: 'live-chat',
-						},
-					},
-				]
-			: []),
-	];
+		{
+			type: 'file',
+			module: 'store-policy',
+			content: {
+				id: 'privacy',
+				name: 'Privacy',
+				desc: 'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
+				icon: 'privacy',
+			},
+		},
+		{
+			type: 'file',
+			module: 'store-shipping',
+			content: {
+				id: 'shipping',
+				name: 'Shipping',
+				desc: 'Manage your store’s shipping method, pricing rules, and location-based rates.',
+				icon: 'shipping',
+			},
+		},
+		{
+			type: 'file',
+			module: 'marketplace-complianceg',
+			content: {
+				id: 'verification',
+				name: 'Verification',
+				desc: 'verification',
+				icon: 'verification5',
+			},
+		},
+		{
+			type: 'file',
+			module: 'live-chat',
+			content: {
+				id: 'livechat',
+				name: 'Livechat',
+				desc: 'Connect your store with live chat platforms so customers can reach you instantly for support or inquiries.',
+				icon: 'live-chat',
+			},
+		},
+	].filter(
+		(tab) =>
+			//Show if:
+			(!tab.module || modules.includes(tab.module)) && 
+			(tab.condition === undefined || tab.condition)
+	);
 
 	const getForm = (tabId: string) => {
 		switch (tabId) {

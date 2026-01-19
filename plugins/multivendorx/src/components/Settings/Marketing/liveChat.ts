@@ -16,7 +16,7 @@ export default {
 			type: 'setting-toggle',
 			label: __('Chat button position', 'multivendorx'),
 			desc: __(
-				'Choose where the chat button will appear on product pages.',
+				'Choose where the chat button will appear on product/listing pages.',
 				'multivendorx'
 			),
 			moduleEnabled: 'live-chat',

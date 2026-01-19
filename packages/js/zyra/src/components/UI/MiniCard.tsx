@@ -1,5 +1,6 @@
 import React from 'react';
 import "../../styles/web/UI/MiniCard.scss";
+import { Skeleton } from '@mui/material';
 
 type MiniCardItem = {
 	iconClass?: string;
@@ -11,13 +12,15 @@ type MiniCardProps = {
 	className?: string;
 	header?: React.ReactNode;
 	title?: React.ReactNode;
-    background?: boolean;
-    border?: boolean;
+	background?: boolean;
+	border?: boolean;
 	width?: string;
 	value?: React.ReactNode;
 	description?: React.ReactNode;
 	items?: MiniCardItem[];
 	children?: React.ReactNode;
+	isLoading?: boolean;
+	cols?:number;
 };
 
 const MiniCard: React.FC<MiniCardProps> = ({
@@ -28,9 +31,10 @@ const MiniCard: React.FC<MiniCardProps> = ({
 	description,
 	items,
 	children,
-    background,
-    border,
+	background,
+	border,
 	cols,
+	isLoading = false,
 }) => {
 	return (
 		<div className={`mini-card ${className} ${background ? 'background' : ''} ${border ? 'border' : ''}`} data-cols={cols}>
@@ -38,7 +42,9 @@ const MiniCard: React.FC<MiniCardProps> = ({
 
 			{title && <h3 className="mini-card-title">{title}</h3>}
 
-			{value && <div className="mini-card-value">{value}</div>}
+			{value && <div className="mini-card-value">
+				{isLoading ? <Skeleton variant="text" width={100} /> : value}
+			</div>}
 
 			{description && (
 				<p className="mini-card-description">{description}</p>

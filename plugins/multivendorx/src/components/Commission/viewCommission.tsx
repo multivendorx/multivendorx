@@ -514,7 +514,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							</div>
 							<div className="value">
 								{formatCurrency(
-									parseFloat(commissionData?.amount ?? 0) +
+									parseFloat(commissionData?.total ?? 0) +
 									parseFloat(
 										commissionData?.commission_refunded ??
 										0

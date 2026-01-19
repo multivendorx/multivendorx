@@ -25,6 +25,7 @@ import {
 } from '@tanstack/react-table';
 import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commission/viewCommission';
+import { Skeleton } from '@mui/material';
 
 type StoreRow = {
 	id?: number;
@@ -351,6 +352,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 	const [selectedCommissionId, setSelectedCommissionId] = useState<
 		number | null
 	>(null);
+	const [walletLoading, setWalletLoading] = useState(true);
 	const [dateFilter, setDateFilter] = useState<{
 		start_date: Date;
 		end_date: Date;
@@ -720,7 +722,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		if (!storeId) {
 			return;
 		}
-
+		setWalletLoading(true);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `transaction/${storeId}`),
@@ -728,6 +730,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		}).then((response) => {
 			setWallet(response?.data || {});
 			setAmount(response?.data.available_balance);
+		}).finally(() => {
+			setWalletLoading(false);
 		});
 
 		axios({
@@ -736,6 +740,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 		}).then((response) => {
 			setStoreData(response.data || {});
+		}).finally(() => {
+			setWalletLoading(false);
 		});
 
 		axios({
@@ -755,6 +761,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		})
 			.then((response) => {
 				setRecentDebits(response.data.transaction || []);
+			}).finally(() => {
+				setWalletLoading(false);
 			})
 			.catch((error) => {
 				setRecentDebits([]);
@@ -923,15 +931,20 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 									)}
 								</div>
 								<div className="price">
-									{formatCurrency(
-										wallet.available_balance
-									)}{' '}
+									{walletLoading ? (
+										<Skeleton variant="text" width={140} height={60} />
+									) : (
+										formatCurrency(wallet.available_balance)
+									)}
 								</div>
 								<div className="desc">
-									<b>{formatCurrency(wallet?.thresold)} </b>{' '}
-									{__(
-										'minimum required to withdraw',
-										'multivendorx'
+									{walletLoading ? (
+										<Skeleton variant="text" width={250} height={20} />
+									) : (
+										<>
+											<b> {formatCurrency(wallet?.thresold)} </b>
+											{__('minimum required to withdraw', 'multivendorx')}
+										</>
 									)}
 								</div>
 							</div>
@@ -939,6 +952,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 								<MiniCard background
 									title={__('Upcoming Balance', 'multivendorx')}
 									value={formatCurrency(wallet.locking_balance)}
+									isLoading={walletLoading}
 									description={
 										<>
 											{__('This amount is being processed and will be released ', 'multivendorx')}
@@ -958,6 +972,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 								{wallet?.withdrawal_setting?.length > 0 && (
 									<MiniCard background
 										title={__('Free Withdrawals', 'multivendorx')}
+
 										value={
 											<>
 												{Math.max(

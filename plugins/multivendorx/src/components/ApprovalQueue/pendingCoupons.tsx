@@ -384,7 +384,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				</TableCell>
 			),
 		}
-
 	];
 
 	return (

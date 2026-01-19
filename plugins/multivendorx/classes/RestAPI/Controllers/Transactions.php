@@ -472,7 +472,7 @@ class Transactions extends \WP_REST_Controller
 
         if ($withdraw) {
             if ('approve' === $action && $threshold_amount < $amount) {
-                MultiVendorX()->payments->processor->process_payment($store_id, $amount);
+                MultiVendorX()->payments->processor->process_payment($store_id, $amount, null, null, null, true);
                 do_action(
                     'multivendorx_notify_withdrawal_released',
                     'withdrawal_released',
@@ -531,7 +531,7 @@ class Transactions extends \WP_REST_Controller
             }
         }
 
-        if ($should_update_meta) {
+        if ($should_update_meta && !empty($store->get_meta('payment_method'))) {
             $store->update_meta(Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'], $amount);
 
             do_action(

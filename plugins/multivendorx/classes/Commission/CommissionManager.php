@@ -392,12 +392,12 @@ class CommissionManager {
         $admin_coupon_amount = 0;
         $store_coupon        = false;
         $base_total          = $order->get_subtotal() - $order->get_discount_total();
-
-        if ( $order->get_coupon_codes() ) {
-            foreach ( $order->get_coupon_codes() as $coupon_code ) {
+        $parent_order = wc_get_order($order->get_parent_id());
+        
+        if ( $parent_order->get_coupon_codes() ) {
+            foreach ( $parent_order->get_coupon_codes() as $coupon_code ) {
                 $coupon   = new \WC_Coupon( $coupon_code );
                 $store_id = (int) get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
-
                 if ( $store_id && Store::get_store( $store_id ) ) {
                     $store_coupon = true;
                 }
@@ -408,14 +408,15 @@ class CommissionManager {
         // 2nd check the commission_include_coupon set to admin
         if ( ( ! empty( MultiVendorX()->setting->get_setting( 'admin_coupon_excluded' ) ) && ! $store_coupon ) || MultiVendorX()->setting->get_setting( 'commission_include_coupon' ) === 'admin' ) {
             $store_coupon_amount = sprintf( '%+0.2f', ( $order->get_discount_total() * ( $store_earning / $base_total ) ) );
+            $admin_coupon_amount = sprintf( '%+0.2f', - ( $order->get_discount_total() * ( $store_earning / $base_total ) ) );
         } elseif ( MultiVendorX()->setting->get_setting( 'commission_include_coupon' ) === 'store' ) {
             $store_coupon_amount = sprintf( '%+0.2f', - ( $order->get_discount_total() * ( $marketplace_commission / $base_total ) ) );
+            $admin_coupon_amount = sprintf( '%+0.2f', ( $order->get_discount_total() * ( $marketplace_commission / $base_total ) ) );
         }
 
-        $admin_coupon_amount = (float) ( $order->get_discount_total() - $store_coupon_amount );
         return array(
 			'store_coupon_amount' => (float) $store_coupon_amount,
-			'admin_coupon_amount' => $admin_coupon_amount,
+			'admin_coupon_amount' => (float) $admin_coupon_amount,
 		);
     }
 

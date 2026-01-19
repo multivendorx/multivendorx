@@ -94,11 +94,39 @@ class Frontend {
         $rules = $this->get_rules( $product_id, $context );
 
         if ( $rules['min'] && $value < $rules['min'] ) {
-            return $return_number ? $rules['min'] : __( 'Min ' . $context . ' ' . $rules['min'], 'multivendorx' );
+            if ($context == 'quantity') {
+                return $return_number ? $rules['min'] : __( 'Minimum product' . $context . ' is required ' . $rules['min'], 'multivendorx' );
+            }
+
+            if ($context == 'amount') {
+                return $return_number ? $rules['min'] : __( 'Minimum product' . $context . ' is required ' . $rules['min'], 'multivendorx' );
+            }
+
+            if ($context == 'order_quantity') {
+                return $return_number ? $rules['min'] : __( 'Minimum order quantity is required ' . $rules['min'], 'multivendorx' );
+            }
+
+            if ($context == 'order_amount') {
+                return $return_number ? $rules['min'] : __( 'Minimum order amount is required ' . $rules['min'], 'multivendorx' );
+            }
         }
 
         if ( $rules['max'] && $value > $rules['max'] ) {
-            return $return_number ? $rules['max'] : __( 'Max ' . $context . ' ' . $rules['max'], 'multivendorx' );
+            if ($context == 'quantity') {
+                return $return_number ? $rules['max'] : __( 'Maximum product ' . $context . ' is required ' . $rules['max'], 'multivendorx' );
+            }
+
+            if ($context == 'amount') {
+                return $return_number ? $rules['max'] : __( 'Maximum product' . $context . ' is required ' . $rules['max'], 'multivendorx' );
+            }
+
+            if ($context == 'order_quantity') {
+                return $return_number ? $rules['max'] : __( 'Maximum order quantity is required ' . $rules['max'], 'multivendorx' );
+            }
+
+            if ($context == 'order_amount') {
+                return $return_number ? $rules['max'] : __( 'Maximum order amount is required ' . $rules['max'], 'multivendorx' );
+            }
         }
 
         return '';

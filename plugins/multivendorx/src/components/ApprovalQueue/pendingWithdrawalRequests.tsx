@@ -157,14 +157,14 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 							handleSingleAction('approve', row.original);
 						}}
 					>
-						<i className="adminfont-check"></i> Approve
+						<i className="adminfont-check"></i> {__('Approve', 'multivendorx')}
 					</span>
 
 					<span
 						className="admin-btn btn-red"
 						onClick={() => handleSingleAction('reject', row.original)}
 					>
-						<i className="adminfont-close"></i> Reject
+						<i className="adminfont-close"></i> {__('Reject', 'multivendorx')}
 					</span>
 				</TableCell>
 			),

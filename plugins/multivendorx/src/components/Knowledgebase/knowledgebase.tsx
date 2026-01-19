@@ -651,6 +651,14 @@ export const KnowledgeBase: React.FC = () => {
 									}
 								/>
 							</FormGroup>
+							<FormGroup label={__('Add tag', 'multivendorx')} htmlFor="Title">
+								<BasicInput
+									type="text"
+									name="title"
+									// value={formData.title}
+									// onChange={handleChange}
+								/>
+							</FormGroup>
 						</FormGroupWrapper>
 					</>
 				</CommonPopup>

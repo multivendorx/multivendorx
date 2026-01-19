@@ -48,6 +48,7 @@ const Notifications = () => {
 			getForm={getForm}
 			prepareUrl={(tabid: string) => `?page=multivendorx#&tab=notifications&subtab=${tabid}`}
 			appLocalizer={appLocalizer}
+			template={'template-2'}
 			premium={false}
 			Link={Link}
 			hideTitle={true}

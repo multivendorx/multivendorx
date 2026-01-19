@@ -85,9 +85,9 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
     const [syncStatus, setSyncStatus] = useState<SyncStatus[]>([]);
     const [loading, setLoading] = useState(false);
     const [taskSequence, setTaskSequence] = useState<
-        { 
-            name: string; 
-            message: string; 
+        {
+            name: string;
+            message: string;
             status: TaskStatus;
             successMessage?: string;
             failureMessage?: string;
@@ -156,7 +156,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
         if (!response?.success) {
             status = 'failed';
             customMessage = currentTask.failureMessage || response?.message || 'Task failed';
-            
+
             // Call error callback if provided
             if (onError) {
                 onError({ task: currentTask, response, error: customMessage });
@@ -166,7 +166,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
             if (onTaskComplete) {
                 onTaskComplete(currentTask, response);
             }
-            
+
             // Use custom success message if provided
             if (currentTask.successMessage) {
                 customMessage = currentTask.successMessage;
@@ -184,7 +184,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
             setProcessResult(additionalData.current);
             setLoading(false);
             processStarted.current = false;
-            
+
             // Call completion callback
             if (onComplete) {
                 onComplete(additionalData.current);
@@ -193,7 +193,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
         }
 
         const currentTask = tasks[taskIndex.current];
-        
+
         // Add task to sequence
         setTaskSequence((prev) => [
             ...prev,
@@ -249,7 +249,7 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
             setProcessStatus('failed');
             setLoading(false);
             processStarted.current = false;
-            
+
             if (onError) {
                 onError({ task: currentTask, error });
             }
@@ -318,127 +318,127 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
 
     return (
         <>
-            <div className="loader-wrapper">
-                <button
-                    className="admin-btn btn-purple btn-effect"
-                    onClick={handleButtonClick}
-                    disabled={loading || syncStarted}
-                >
-                    {value}
-                </button>
-                {(loading || syncStarted) && (
-                    <div className="loader">
-                        <div className="three-body-dot" />
-                        <div className="three-body-dot" />
-                        <div className="three-body-dot" />
-                    </div>
-                )}
-                {proSetting && (
-                    <span className="admin-pro-tag">
-                        <i className="adminlib-pro-tag"></i>Pro
-                    </span>
-                )}
-            </div>
-
-            {syncStarted && (
-                <div className="fetch-display-output info">
-                    Process started, please wait...
-                </div>
-            )}
-
-            {fetchStatus.current === 'failed' && (
-                <div className="fetch-display-output failed">
-                    {failureMessage}
-                </div>
-            )}
-
-            <p
-                className="settings-metabox-description"
-                dangerouslySetInnerHTML={{ __html: description }}
-            />
-
-            {/* Task Progress Display */}
-            {taskSequence.map((task, idx) => (
-                <div
-                    key={idx}
-                    className={`${task.status} details-status-row`}
-                >
-                    <div className="task-message">
-                        <span className="task-text">{task.message}</span>
-                        {task.status !== 'running' && task.status === 'success' && task.successMessage && (
-                            <span className="task-custom-message success">
-                                {task.successMessage}
-                            </span>
-                        )}
-                        {task.status === 'failed' && task.failureMessage && (
-                            <span className="task-custom-message failed">
-                                {task.failureMessage}
-                            </span>
-                        )}
-                    </div>
-                    {task.status !== 'running' && (
-                        <div className="status-meta">
-                            <span className="status-icons">
-                                <i
-                                    className={`admin-font ${
-                                        task.status === 'failed'
-                                            ? 'adminlib-cross'
-                                            : 'adminlib-icon-yes'
-                                    }`}
-                                />
-                            </span>
+            <div className="do-action-wrapper">
+                <div className="loader-wrapper">
+                    <button
+                        className="admin-btn btn-purple btn-effect"
+                        onClick={handleButtonClick}
+                        disabled={loading || syncStarted}
+                    >
+                        {value}
+                    </button>
+                    {(loading || syncStarted) && (
+                        <div className="loader">
+                            <div className="three-body-dot" />
+                            <div className="three-body-dot" />
+                            <div className="three-body-dot" />
                         </div>
                     )}
-                </div>
-            ))}
-
-            {/* Process Completion Status */}
-            {processStatus && (
-                <div
-                    className={`fetch-display-output ${
-                        processStatus === 'failed' ? 'failed' : 'success'
-                    }`}
-                >
-                    {processStatus === 'failed' ? (
-                        <p>
-                            {failureMessage}
-                            {parameter === 'connection_test' && (
-                                <>
-                                    {' '}Check details in{' '}
-                                    <Link
-                                        className="errorlog-link"
-                                        to="?page=moowoodle#&tab=settings&subtab=log"
-                                    >
-                                        error log
-                                    </Link>
-                                    .
-                                </>
-                            )}
-                        </p>
-                    ) : (
-                        successMessage
+                    {proSetting && (
+                        <span className="admin-pro-tag">
+                            <i className="adminlib-pro-tag"></i>Pro
+                        </span>
                     )}
                 </div>
-            )}
 
-            {/* Sync Status Display */}
-            {syncStatus && syncStatus.length > 0 && (
-                <div className="sync-status-container">
-                    {syncStatus.map((status, idx) => (
-                        <div key={idx} className="details-status-row sync-status">
-                            <span className="sync-action">{status.action}</span>
+                {syncStarted && (
+                    <div className="fetch-display-output info">
+                        Process started, please wait...
+                    </div>
+                )}
+
+                {fetchStatus.current === 'failed' && (
+                    <div className="fetch-display-output failed">
+                        {failureMessage}
+                    </div>
+                )}
+
+                <p
+                    className="settings-metabox-description"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                />
+
+                {/* Task Progress Display */}
+                {taskSequence.map((task, idx) => (
+                    <div
+                        key={idx}
+                        className={`${task.status} details-status-row`}
+                    >
+                        <div className="task-message">
+                            <span className="task-text">{task.message}</span>
+                            {task.status !== 'running' && task.status === 'success' && task.successMessage && (
+                                <span className="task-custom-message success">
+                                    {task.successMessage}
+                                </span>
+                            )}
+                            {task.status === 'failed' && task.failureMessage && (
+                                <span className="task-custom-message failed">
+                                    {task.failureMessage}
+                                </span>
+                            )}
+                        </div>
+                        {task.status !== 'running' && (
                             <div className="status-meta">
                                 <span className="status-icons">
-                                    <i className="admin-font adminlib-icon-yes" />
-                                </span>
-                                <span className="sync-progress">
-                                    {status.current} / {status.total}
+                                    <i
+                                        className={`admin-font ${task.status === 'failed'
+                                                ? 'adminlib-cross'
+                                                : 'adminlib-icon-yes'
+                                            }`}
+                                    />
                                 </span>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                        )}
+                    </div>
+                ))}
+
+                {/* Process Completion Status */}
+                {processStatus && (
+                    <div
+                        className={`fetch-display-output ${processStatus === 'failed' ? 'failed' : 'success'
+                            }`}
+                    >
+                        {processStatus === 'failed' ? (
+                            <p>
+                                {failureMessage}
+                                {parameter === 'connection_test' && (
+                                    <>
+                                        {' '}Check details in{' '}
+                                        <Link
+                                            className="errorlog-link"
+                                            to="?page=moowoodle#&tab=settings&subtab=log"
+                                        >
+                                            error log
+                                        </Link>
+                                        .
+                                    </>
+                                )}
+                            </p>
+                        ) : (
+                            successMessage
+                        )}
+                    </div>
+                )}
+
+                {/* Sync Status Display */}
+                {syncStatus && syncStatus.length > 0 && (
+                    <div className="sync-status-container">
+                        {syncStatus.map((status, idx) => (
+                            <div key={idx} className="details-status-row sync-status">
+                                <span className="sync-action">{status.action}</span>
+                                <div className="status-meta">
+                                    <span className="status-icons">
+                                        <i className="admin-font adminlib-icon-yes" />
+                                    </span>
+                                    <span className="sync-progress">
+                                        {status.current} / {status.total}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </>
     );
 };

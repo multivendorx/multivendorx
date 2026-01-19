@@ -23,7 +23,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Admin {
 
-
     /**
      * Admin constructor.
      */

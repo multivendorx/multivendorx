@@ -102,7 +102,7 @@ class Dashboard extends \WP_REST_Controller {
                 'slug'       => 'products',
                 'icon'       => 'adminfont-single-product',
                 'submenu'    => array(),
-                'capability' => array( 'manage_products' ),
+                'capability' => array( 'read_products' ),
             ),
             'coupons'       => array(
                 'name'       => 'Coupons',

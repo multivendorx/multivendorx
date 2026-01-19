@@ -236,14 +236,6 @@ class StoreUtil {
                     'reply_store_reviews'      => 'Reply to store reviews',
                 ),
             ),
-            'reports'       => array(
-                'label'      => 'Reports & analytics',
-                'desc'       => 'Access store performance metrics, sales reports, and insights.',
-                'capability' => array(
-                    'view_store_reports'   => 'View reports',
-                    'export_store_reports' => 'Export reports',
-                ),
-            ),
             'resources'     => array(
                 'label'      => 'Learning & tools',
                 'desc'       => 'Access documentation, guides, and helpful tools for store growth.',

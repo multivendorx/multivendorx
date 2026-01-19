@@ -53,7 +53,7 @@ const COUPON_STATUS_LABELS: Record<string, string> = {
 
 const discountOptions = [
 	{ label: 'Percentage discount', value: 'percent' },
-	{ label: 'Fixed cart discount', value: 'fixed_cart' },
+	// { label: 'Fixed cart discount', value: 'fixed_cart' },
 	{ label: 'Fixed product discount', value: 'fixed_product' },
 ];
 

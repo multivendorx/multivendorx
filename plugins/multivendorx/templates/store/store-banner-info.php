@@ -22,8 +22,8 @@ if (!$store) {
 }
 
 $meta_data = $store->get_all_meta();
-$banner = $meta_data['banner'] ?? MultiVendorX()->plugin_url . 'assets/images/banner-placeholder.jpg';
-$profile = $meta_data['image'] ?? MultiVendorX()->plugin_url . 'assets/images/default-store.jpg';
+$banner = $meta_data['banner'] ?? '';
+$profile = $meta_data['image'] ?? '';
 $description = $store->get('description');
 $template = MultiVendorX()->setting->get_setting('store_banner_template', array());
 $selected_template = isset($template['selectedPalette']) ? $template['selectedPalette'] : 'template1';

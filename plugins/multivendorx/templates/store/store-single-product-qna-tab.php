@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Q&A tab container - all content loaded via AJAX
  */
@@ -23,7 +24,17 @@ $login_url = add_query_arg('redirect_to', $current_url, $myaccount_url);
 
     <!-- Questions List (populated via AJAX) -->
     <ul id="qna-list"></ul>
-
+    <div id="qna-no-results-container" class="qna-empty" style="display:none;">
+        <span id="qna-no-results-message">
+            <?php echo esc_html__('Have not discovered the information you seek', 'multivendorx'); ?>
+        </span>
+        <button
+            type="submit"
+            id="qna-direct-submit"
+            class="woocommerce-button button">
+            <?php echo esc_html__('Ask now', 'multivendorx'); ?>
+        </button>
+    </div>
     <!-- Success Message -->
     <div id="qna-success-message" class="qna-notice" style="display:none;">
         <?php echo esc_html__('Your question has been submitted successfully. It will appear once answered.', 'multivendorx'); ?>

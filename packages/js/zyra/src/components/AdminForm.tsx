@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { JSX, useEffect, useRef, useState, lazy, Suspense } from 'react';
+import React, { JSX, useEffect, useRef, useState, lazy, Suspense, ReactNode } from 'react';
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
 
@@ -41,13 +41,11 @@ import ColorSettingInput from './ColorSettingInput';
 import EndpointEditor from './EndpointEditor';
 import ExpandablePanelGroup from './ExpandablePanelGroup';
 import SystemInfo from './SystemInfo';
-import MultiInput from './MultiInput';
 import { useModules } from '../contexts/ModuleContext';
 import axios from 'axios';
 import MultiCalendarInput from './MultiCalendarInput';
 import CalendarInput from './CalendarInput';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
-import TemplateColorPdfBuilder from './TemplateColorPdfBuilder';
 
 interface WPMediaAttachment {
     url: string;
@@ -204,12 +202,12 @@ interface InputField {
     iconEnable?: boolean;
     custom?: boolean;
     size?: string;
-    preText?: string;
-    postText?: string;
+    preText?: string | ReactNode;
+    postText?: string | ReactNode;
     proSetting?: boolean;
     buttonColor?: string;
     moduleEnabled?: string;
-    postInsideText?: string;
+    postInsideText?: string | ReactNode;
     parameter?: string;
     generate?: string;
     dependent?: DependentCondition | DependentCondition[];
@@ -232,7 +230,7 @@ interface InputField {
     wrapperClass?: string;
     rowClass?: string;
     tour?: string;
-    preInsideText?: string;
+    preInsideText?: string | ReactNode;
     rightContent?: boolean;
     dependentPlugin?: boolean;
     dependentSetting?: string;

@@ -4,7 +4,7 @@ export default {
 	id: 'min-max',
 	priority: 6,
 	name: __('Min/Max', 'multivendorx'),
-	tabTitle: 'Per-Product purchase limits',
+	tabTitle: 'Per-product/listing purchase limits',
 	desc: __(
 		'Set purchase limits for individual products to prevent bulk buying or ensure minimum order quantities.',
 		'multivendorx'
@@ -18,7 +18,7 @@ export default {
 			label: __('Purchase quantity limits', 'multivendorx'),
 			single: true,
 			settingDescription: __(
-				'Set purchase limits for individual products to prevent bulk buying or ensure minimum order quantities.',
+				'Set purchase limits for individual products/listing to prevent bulk buying or ensure minimum order quantities.',
 				'multivendorx'
 			),
 			desc: __(
@@ -43,10 +43,10 @@ export default {
 		{
 			key: 'product_amount_rules',
 			type: 'nested',
-			label: __('Product purchase amount', 'multivendorx'),
+			label: __('Product/listing purchase amount', 'multivendorx'),
 			single: true,
 			settingDescription: __(
-				'Control how much a customer can spend on an individual product by defining minimum and maximum purchase values.',
+				'Control how much a customer can spend on an individual product/listing by defining minimum and maximum purchase values.',
 				'multivendorx'
 			),
 			desc: __(

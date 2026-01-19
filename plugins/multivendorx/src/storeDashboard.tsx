@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { getApiLink, Popover, useModules } from 'zyra';
+import { getApiLink, MessageState, Popover, useModules } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Notifications from './dashboard/notifications';
 import './hooksFilters';
@@ -440,8 +440,8 @@ const Dashboard = () => {
 												hasSubmenu
 													? '#'
 													: appLocalizer.permalink_structure
-														? `/${appLocalizer.dashboard_slug}/${key}`
-														: `/?page_id=${appLocalizer.dashboard_page_id}&segment=${key}`
+														? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${key}`
+														: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=${key}`
 											}
 											onClick={(e) => {
 												e.preventDefault();
@@ -486,8 +486,8 @@ const Dashboard = () => {
 																// href={`?segment=${sub.key}`}
 																href={
 																	appLocalizer.permalink_structure
-																		? `/${appLocalizer.dashboard_slug}/${sub.key}`
-																		: `/?page_id=${appLocalizer.dashboard_page_id}&segment=${sub.key}`
+																		? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${sub.key}`
+																		: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=${sub.key}`
 																}
 																onClick={(
 																	e
@@ -896,61 +896,48 @@ const Dashboard = () => {
 
 				<div className="content-wrapper">
 					{storeData && storeData.status !== 'active' ? (
-						<div className="permission-wrapper">
-							<i className="adminfont-info red"></i>
-
-							<div className="title">
-								{storeData.status === 'pending' ? (
-									appLocalizer.settings_databases_value?.pending?.pending_msg
-								) : storeData.status === 'suspended' ? (
-									appLocalizer.settings_databases_value?.suspended?.suspended_msg
-								) : storeData.status === 'under_review' ? (
-									appLocalizer.settings_databases_value?.['under-review']
-										?.under_review_msg
-								) : storeData.status === 'rejected' ? (
-									<>
-										{
-											appLocalizer.settings_databases_value?.rejected
-												?.rejected_msg
-										}{' '}
-										<a
-											href={appLocalizer.registration_page}
-											className="reapply-link"
-											target="__blank"
-										>
-											{__('Click here to reapply.', 'multivendorx')}
-										</a>
-									</>
-								) : (
-									__('You’re almost ready to sell To get started, you need to register your store on the marketplace.', 'multivendorx')
-								)}
-							</div>
-							<a
-								href={appLocalizer.registration_page}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="admin-btn btn-purple"
-							>
-								<div className="admin-btn btn-purple">
-									{__('Create your store', 'multivendorx')}
-								</div>
-							</a>
-						</div>
+						<MessageState
+							title={
+								<>
+									{storeData.status === 'pending' ? (
+										appLocalizer.settings_databases_value?.pending?.pending_msg
+									) : storeData.status === 'suspended' ? (
+										appLocalizer.settings_databases_value?.suspended?.suspended_msg
+									) : storeData.status === 'under_review' ? (
+										appLocalizer.settings_databases_value?.['under-review']
+											?.under_review_msg
+									) : storeData.status === 'rejected' ? (
+										<>
+											{
+												appLocalizer.settings_databases_value?.rejected
+													?.rejected_msg
+											}{' '}
+											<a
+												href={appLocalizer.registration_page}
+												className="reapply-link"
+												target="__blank"
+											>
+												{__('Click here to reapply.', 'multivendorx')}
+											</a>
+										</>
+									) : (
+										__('You’re almost ready to sell To get started, you need to register your store on the marketplace.', 'multivendorx')
+									)}
+								</>
+							}
+							buttonText={__('Create your store', 'multivendorx')}
+							buttonLink={appLocalizer.registration_page}
+							buttonTarget="_blank"
+						/>
 					) : noPermission ? (
-						<div className="permission-wrapper">
-							<i className="adminfont-info red"></i>
-
-							<div className="title">
-								{__(
-									'You do not have permission to access this page.',
-									'multivendorx'
-								)}
-							</div>
-
-							<div className="admin-btn btn-purple">
-								{__('Contact Admin', 'multivendorx')}
-							</div>
-						</div>
+						<MessageState
+							title={__(
+								'You do not have permission to access this page.',
+								'multivendorx'
+							)}
+							buttonText={__('Contact Admin', 'multivendorx')}
+							onButtonClick={() => {}}  
+						/>
 					) : (
 						loadComponent(currentTab)
 					)}

@@ -203,6 +203,16 @@ const exportedOrderInfoField = {
 
 	],
 };
+const whenLimitReached = {
+	key: 'exported_order_information',
+	look: 'checkbox',
+	selectDeselect: true,
+	class: 'basic-checkbox',
+	options: [
+		{ key: 'advanced_inventory', value: 'advanced_inventory', label: __('Block creation', 'multivendorx'), desc: __('Prevent vendors from adding more items', 'multivendorx') },
+		{ key: 'shipping_management', value: 'shipping_management', label: __('Allow but warn', 'multivendorx'), desc: __('Show warning but allow creation', 'multivendorx') },
+		{ key: 'import_export_tools', value: 'import_export_tools', label: __('Auto-upgrade suggestion', 'multivendorx'), desc: __('Prompt to upgrade plan', 'multivendorx') },],
+};
 const orderEmailInfoField = {
 	key: 'order_email_information',
 	look: 'checkbox',
@@ -543,6 +553,7 @@ const Membership = ({ id }: { id: string }) => {
 			],
 		},
 	];
+
 	const productUploadSettings = [
 		{
 			key: 'enable_product_limits',
@@ -752,59 +763,65 @@ const Membership = ({ id }: { id: string }) => {
 			<div className="general-wrapper">
 				<Container>
 					<Column>
-						<Card>
-							<div className={`checklist-wrapper row ${isChecklistOpen ? 'hide' : 'show'}`}>
-								<div className="checklist-title">Recommended</div>
-								<ul>
-									<li className="checked">
+						<div className={`checklist-process-wrapper row ${isChecklistOpen ? 'hide' : 'show'}`}>
+							<div className="checklist-title"><i className="adminfont-star"></i><span> Recommended </span></div>
+							<ul>
+								<li className="checked">
+									<div className="details-wrapper">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Plan Name</div>
-											{/* <div className="des">A clear, descriptive title</div> */}
+											<div className="des">A clear, descriptive title that helps stores identify your plan</div>
 										</div>
-									</li>
-									<li className="checked">
+									</div>
+								</li>
+								<li className="checked">
+									<div className="details-wrapper">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Description</div>
-											{/* <div className="des">Explain what this plan </div> */}
+											<div className="des">Explain what this plan offers to stores</div>
 										</div>
-									</li>
-									<li className="checked">
+									</div>
+								</li>
+								<li className="visite">
+									<div className="details-wrapper">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Features</div>
-											{/* <div className="des">Select premium features for this plan	</div> */}
+											<div className="des">Select premium features for this plan</div>
 										</div>
-									</li>
-									<li className="checked">
+									</div>
+								</li>
+								<li className="not-visite">
+									<div className="details-wrapper">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Pricing</div>
-											{/* <div className="des">Set competitive prices including</div> */}
+											<div className="des">Set competitive prices including any sale or discount options</div>
 										</div>
-									</li>
-									<li className="checked">
+									</div>
+								</li>
+								<li className="not-visite">
+									<div className="details-wrapper">
 										<div className="check-icon"><span></span></div>
 										<div className="details">
 											<div className="title">Permissions</div>
-											{/* <div className="des">A clear, descriptive title</div> */}
+											<div className="des">Configure store permissions and limits</div>
 										</div>
-									</li>
-								</ul>
-							</div>
-							<div className="checklist-icon" onClick={() => setIsChecklistOpen((prev) => !prev)}>
-								<i className={`adminfont-${isChecklistOpen ? 'cross' : 'cross'}`}></i>
-							</div>
-							{/* {isChecklistOpen && ( */}
-								{/* <> */}
-									<div className="side-ber">
-										<i className="adminfont-module"></i>
 									</div>
-								{/* </>
-							)} */}
-						</Card>
+								</li>
+							</ul>
+							<div className="right-arrow checklist-arrow absolute" onClick={() => setIsChecklistOpen((prev) => !prev)}>
+								<i className="adminfont-arrow-right"></i>
+							</div>
+						</div>
 					</Column>
+					{isChecklistOpen && (
+						<div className="right-arrow checklist-arrow fixed" onClick={() => setIsChecklistOpen((prev) => !prev)}>
+							<i className="adminfont-arrow-left"></i>
+						</div>
+					)}
 					<Column grid={8}>
 						<Card
 							title="Plan details"
@@ -907,12 +924,78 @@ const Membership = ({ id }: { id: string }) => {
 							</FormGroupWrapper>
 						</Card>
 
-
+						<Card title={__('Usage Limits', 'multivendorx')}
+						// desc={'Select which premium features stores can access with this plan.'}
+						>
+							<FormGroupWrapper>
+								<FormGroup cols={4} label="Max Products" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="days"
+									/>
+								</FormGroup>
+								<FormGroup cols={4} label="Max Categories" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="days"
+									/>
+								</FormGroup>
+								<FormGroup cols={4} label="Max Storage" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="days"
+									/>
+								</FormGroup>
+								<FormGroup cols={4} label="Max Staff Accounts" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="days"
+									/>
+								</FormGroup>
+								<FormGroup label="Max Coupons" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										size={"12rem"}
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="days"
+									/>
+								</FormGroup>
+								<FormGroup label="When limit reached" htmlFor="trial_period">
+									<MultiCheckBox
+										wrapperClass="checkbox-list-side-by-side"
+										// description={whenLimitReached.desc}
+										inputWrapperClass="toggle-checkbox-header"
+										inputInnerWrapperClass="default-checkbox"
+										inputClass={whenLimitReached.class}
+										idPrefix={whenLimitReached.key}
+										selectDeselect
+										options={whenLimitReached.options}
+										value={normalizeValue(whenLimitReached.key)}
+										onChange={handleMultiCheckboxChange(whenLimitReached.key)}
+										onMultiSelectDeselectChange={() =>
+											handleSelectDeselect(whenLimitReached)
+										}
+										proSetting={false}
+										moduleChange={() => { }}
+										modules={[]}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
 						<Card title={__('What stores can sell', 'multivendorx')}
 							desc={__('Decide what kind of items stores are allowed to list on your marketplace.', 'multivendorx')}
 						>
 							<FormGroupWrapper>
-								<FormGroup row label={__('Listing formats allowed', 'multivendorx')} desc={__('Choose the kinds of listings stores can create under this plan. Only selected types will be available when a store adds a new listing.', 'multivendorx')}>
+								<FormGroup cols={2} label={__('Listing formats allowed', 'multivendorx')} desc={__('Choose the kinds of listings stores can create under this plan. Only selected types will be available when a store adds a new listing.', 'multivendorx')}>
 									{/* <MultiCheckBox
 										khali_dabba={true}
 										wrapperClass="checkbox-list-side-by-side"
@@ -968,7 +1051,7 @@ const Membership = ({ id }: { id: string }) => {
 
 								</FormGroup>
 
-								<FormGroup row label={__('Categories stores can list in', 'multivendorx')} className="border-top" desc={__('Limit where stores can list their products. This helps you control what your marketplace focuses on.')}>
+								<FormGroup cols={2} label={__('Categories stores can list in', 'multivendorx')} desc={__('Limit where stores can list their products. This helps you control what your marketplace focuses on.')}>
 									{/* <MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
 										  
@@ -1073,7 +1156,7 @@ const Membership = ({ id }: { id: string }) => {
 									/>
 								</FormGroup>
 
-								<FormGroup row label="How many listings a store can add" className="border-top" desc={__('Control how many listings a store can have at the same time.', 'multivendorx')}>
+								<FormGroup cols={2} label="How many listings a store can add" desc={__('Control how many listings a store can have at the same time.', 'multivendorx')}>
 									<BasicInput
 										name="name"
 
@@ -1086,7 +1169,7 @@ const Membership = ({ id }: { id: string }) => {
 									/>
 								</FormGroup>
 
-								<FormGroup row label="Images per listing" className="border-top" desc={__('Control how many images a store can add for each listing.', 'multivendorx')}>
+								<FormGroup cols={2} label="Images per listing" desc={__('Control how many images a store can add for each listing.', 'multivendorx')}>
 									<BasicInput
 										name="name"
 
@@ -1245,24 +1328,19 @@ const Membership = ({ id }: { id: string }) => {
 						<Card title={__('AI tools available to stores', 'multivendorx')}
 							desc={'Decide whether stores can use AI tools and how much they can use them.'}
 						>
-
 							<FormGroupWrapper>
-								<FormGroup row label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
+								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
 									<BasicInput
 										name="name"
-
-
 										value={formData.name}
 										onChange={handleChange}
 										postText={'credits per month'}
 										size="8rem"
 									/>
 								</FormGroup>
-								<FormGroup row label="AI for writing product details" className="border-top" desc={__('AI for writing product details', 'multivendorx')}>
+								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
 									<BasicInput
 										name="name"
-
-
 										value={formData.name}
 										onChange={handleChange}
 										postText={'credits per month'}
@@ -1322,16 +1400,24 @@ const Membership = ({ id }: { id: string }) => {
 												key: 'free',
 												value: 'free',
 												label: __('Free', 'multivendorx'),
+												desc: __('No charges', 'multivendorx'),
 											},
 											{
 												key: 'paid',
 												value: 'paid',
-												label: __('Paid', 'multivendorx'),
+												label: __('One-time Payment', 'multivendorx'),
+												desc: __('Lifetime access', 'multivendorx'),
+											},
+											{
+												key: 'subscription',
+												value: 'subscription',
+												label: __('Subscription', 'multivendorx'),
+												desc: __('Recurring', 'multivendorx'),
 											},
 										]}
 										value={pricingType}
 										onChange={(value: string) =>
-											setPricingType(value as 'free' | 'paid')
+											setPricingType(value as 'free' | 'paid' | 'subscription')
 										}
 									/>
 								</FormGroup>
@@ -1341,14 +1427,12 @@ const Membership = ({ id }: { id: string }) => {
 								<>
 									<FormGroupWrapper>
 										<FormGroup
-											label="Sign up fee"
+											label="Price"
 											htmlFor="signup_fee"
 											cols={2}
 										>
 											<BasicInput
 												name="signup_fee"
-
-
 												value={formData.signup_fee}
 												onChange={handleChange}
 												pInsideText="$"
@@ -1356,27 +1440,27 @@ const Membership = ({ id }: { id: string }) => {
 										</FormGroup>
 
 										<FormGroup
-											label="Recurring price"
+											label="Currency"
 											htmlFor="recurring_price"
 											cols={2}
 										>
 											<BasicInput
 												name="recurring_price"
-												postInsideText="Month"
+												value={formData.recurring_price}
+												onChange={handleChange}
+											/>
+										</FormGroup>
+										<FormGroup
+											label="Signup Fee (Optional)"
+											htmlFor="recurring_price"
+										>
+											<BasicInput
+												name="recurring_price"
 												value={formData.recurring_price}
 												onChange={handleChange}
 											/>
 										</FormGroup>
 									</FormGroupWrapper>
-									<div className="settings-metabox-note">
-										<div className="metabox-note-wrapper">
-											<i className="adminfont-info"></i>
-											<div className="details">
-												<p>Activate Stripe Marketplace or PayPal Marketplace module to use recurring subscriptions.</p>
-												<p>Sign-up fee 0.05 or more is required to create subscriptions in Stripe/PayPal</p>
-											</div>
-										</div>
-									</div>
 									{/* <div className="card-header">
 										<div className="left">
 											<div className="title">
@@ -1386,6 +1470,71 @@ const Membership = ({ id }: { id: string }) => {
 										</div>
 									</div> */}
 								</>
+							)}
+
+							{pricingType === 'subscription' && (
+								<FormGroupWrapper>
+									<FormGroup
+										label="Price"
+										htmlFor="signup_fee"
+										cols={2}
+									>
+										<BasicInput
+											name="signup_fee"
+											value={formData.signup_fee}
+											onChange={handleChange}
+											pInsideText="$"
+										/>
+									</FormGroup>
+									<FormGroup
+										label="Currency"
+										htmlFor="recurring_price"
+										cols={2}
+									>
+										<BasicInput
+											name="recurring_price"
+											value={formData.recurring_price}
+											onChange={handleChange}
+										/>
+									</FormGroup>
+									<FormGroup
+										label="Billing Cycle"
+										htmlFor="recurring_price"
+									>
+										<BasicInput
+											name="recurring_price"
+											value={formData.recurring_price}
+											onChange={handleChange}
+										/>
+									</FormGroup>
+									<FormGroup
+										label="Signup Fee (Optional)"
+										htmlFor="recurring_price"
+									>
+										<BasicInput
+											name="recurring_price"
+											value={formData.recurring_price}
+											onChange={handleChange}
+										/>
+									</FormGroup>
+									<label
+										onClick={() => setstarFill((prev) => !prev)}
+										style={{ cursor: 'pointer' }}
+										className="field-wrapper"
+									>
+										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
+										{__('Apply tax to plan price', 'multivendorx')}
+									</label>
+									<div className="settings-metabox-note">
+										<div className="metabox-note-wrapper">
+											<i className="adminfont-info"></i>
+											<div className="details">
+												<p>Activate Stripe Marketplace or PayPal Marketplace module to use recurring subscriptions.</p>
+												<p>Sign-up fee 0.05 or more is required to create subscriptions in Stripe/PayPal</p>
+											</div>
+										</div>
+									</div>
+								</FormGroupWrapper>
 							)}
 						</Card>
 						<Card

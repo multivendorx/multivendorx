@@ -21,6 +21,7 @@ import {
 	CommonPopup,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
+import { formatWcShortDate } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
 
 const AddProduct = () => {
@@ -32,12 +33,12 @@ const AddProduct = () => {
 
 	const query = new URLSearchParams(location.search);
 	let productId = query.get('context_id');
+
 	if (!productId) {
 		const parts = location.pathname.split('/').filter(Boolean);
-		if (parts.length >= 4) {
-			productId = productId || parts[3];
-		}
+		productId = parts[parts.length - 1];
 	}
+
 	const [product, setProduct] = useState({});
 	const [translation, setTranslation] = useState([]);
 
@@ -65,23 +66,39 @@ const AddProduct = () => {
 
 				setGalleryImages(images.slice(1));
 				setProduct(res.data);
+				setstarFill(res.data.featured);
 			});
-		if (modules.includes('wpml')) {
-			axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'multivendorx-wpml'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { product_id: productId }
-			})
+			if (modules.includes('wpml')) {
+				axios({
+					method: 'GET',
+					url: getApiLink(appLocalizer, 'multivendorx-wpml'),
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: { product_id: productId }
+				})
 				.then((response) => {
 					setTranslation(response.data);
 				})
 				.catch(() => {
 					setTranslation([])
 				});
-		}
+			}
 
 	}, [productId]);
+
+	const getMetaValue = (meta, key) =>
+		meta?.find((m) => m.key === key)?.value || '';
+
+	useEffect(() => {
+		if (!product?.meta_data) return;
+
+		setProduct((prev) => ({
+			...prev,
+			shipping_policy: getMetaValue(product.meta_data, 'multivendorx_shipping_policy'),
+			refund_policy: getMetaValue(product.meta_data, 'multivendorx_refund_policy'),
+			cancellation_policy: getMetaValue(product.meta_data, 'multivendorx_cancellation_policy'),
+		}));
+	}, [product?.meta_data]);
+
 
 	const [categories, setCategories] = useState([]);
 	const [selectedCats, setSelectedCats] = useState([]);
@@ -109,7 +126,7 @@ const AddProduct = () => {
 	const STATUS_LABELS: Record<string, string> = {
 		draft: __('Draft', 'multivendorx'),
 		publish: __('Published', 'multivendorx'),
-		pending: __('Pending Review', 'multivendorx'),
+		pending: __('Submit', 'multivendorx'),
 	};
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -129,22 +146,22 @@ const AddProduct = () => {
 	}, []);
 
 	// Close on click outside
-	useEffect(() => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		const handleClickOutside = (event) => {
-			if (
-				wrapperRef.current &&
-				!wrapperRef.current.contains(event.target)
-			) {
-				resetSelection();
-			}
-		};
-		document.addEventListener('mousedown', handleClickOutside);
-		return () =>
-			document.removeEventListener('mousedown', handleClickOutside);
-	}, []);
+	// useEffect(() => {
+	// 	if (!isPyramidEnabled) {
+	// 		return;
+	// 	}
+	// 	const handleClickOutside = (event) => {
+	// 		if (
+	// 			wrapperRef.current &&
+	// 			!wrapperRef.current.contains(event.target)
+	// 		) {
+	// 			resetSelection();
+	// 		}
+	// 	};
+	// 	document.addEventListener('mousedown', handleClickOutside);
+	// 	return () =>
+	// 		document.removeEventListener('mousedown', handleClickOutside);
+	// }, []);
 
 	// Add this useEffect in AddProduct to listen for suggestion clicks
 	useEffect(() => {
@@ -462,7 +479,7 @@ const AddProduct = () => {
 		}));
 	};
 
-	const createProduct = (status) => {
+	const createProduct = () => {
 		const imagePayload = [];
 
 		if (featuredImage) {
@@ -488,7 +505,7 @@ const AddProduct = () => {
 		try {
 			const payload = {
 				...product,
-				status: status,
+				featured: starFill,
 				images: imagePayload,
 				categories: finalCategories,
 				meta_data: [
@@ -496,6 +513,18 @@ const AddProduct = () => {
 					{
 						key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
+					},
+					{
+					key: 'multivendorx_shipping_policy',
+					value: product.shipping_policy || '',
+					},
+					{
+					key: 'multivendorx_refund_policy',
+					value: product.refund_policy || '',
+					},
+					{
+					key: 'multivendorx_cancellation_policy',
+					value: product.cancellation_policy || '',
 					},
 				],
 			};
@@ -615,12 +644,16 @@ const AddProduct = () => {
 		image: false,
 		price: false,
 		stock: false,
+		categories: false,
+		policies: false,
 	});
 
 	useEffect(() => {
 		let baseChecklist = {
 			name: !!product.name,
 			image: !!featuredImage,
+			categories: !!product.categories,
+			policies: !!product.shipping_policy || !!product.refund_policy || product.cancellation_policy,
 		};
 
 		if (product.type === 'simple') {
@@ -637,7 +670,6 @@ const AddProduct = () => {
 		setChecklist(filteredChecklist);
 	}, [product, featuredImage]);
 
-	const isPublishDisabled = !Object.values(checklist).every(Boolean);
 	const handleTranslationClick = (lang) => {
 		if (lang.translated_product_id) {
 			if (appLocalizer.permalink_structure) {
@@ -676,137 +708,10 @@ const AddProduct = () => {
 		});
 	};
 
-	// variation start
-	const [tempOptions, setTempOptions] = useState<Record<number, string>>({});
-	const [openPopup, setopenPopup] = useState(false);
+	const checklistValues = Object.values(checklist);
+	const completedCount = checklistValues.filter(Boolean).length;
+	const totalCount = checklistValues.length;
 
-	const [variant, setVariant] = useState([
-		{
-			id: Date.now(),
-			name: '',
-			options: [],
-			isEditing: true,
-		},
-	]);
-	const addVariation = () => {
-		setVariant((prev) => [
-			...prev,
-			{
-				id: Date.now(),
-				name: '',
-				options: [],
-				isEditing: true,
-			},
-		]);
-	};
-	const updateVariation = (index: number, key: string, value: any) => {
-		const updated = [...variant];
-		updated[index][key] = value;
-		setVariant(updated);
-	};
-	// wrapper variation delete
-	const deleteVariation = (vIndex: number) => {
-		setVariant((prev) => prev.filter((_, i) => i !== vIndex));
-	};
-
-	// under variation delete
-	const deleteOption = (vIndex: number, oIndex: number) => {
-		const updated = [...variant];
-		updated[vIndex].options = updated[vIndex].options.filter(
-			(_, i) => i !== oIndex
-		);
-		setVariant(updated);
-	};
-
-	// add new when type
-	const handleAddNewOption = (vIndex: number) => {
-		const value = tempOptions[vIndex]?.trim();
-		if (!value) return;
-
-		setVariant((prev) => {
-			const updated = [...prev];
-			updated[vIndex].options = [
-				...updated[vIndex].options,
-				value,
-			];
-			return updated;
-		});
-
-		// clear input
-		setTempOptions((prev) => ({
-			...prev,
-			[vIndex]: '',
-		}));
-	};
-	const handleTempOptionChange = (vIndex: number, value: string) => {
-		setTempOptions((prev) => ({
-			...prev,
-			[vIndex]: value,
-		}));
-	};
-	const addOption = (vIndex: number) => {
-		handleAddNewOption(vIndex);
-	};
-
-	// toggle edit btn
-	const toggleEditMode = (vIndex: number, value: boolean) => {
-		setVariant((prev) => {
-			const updated = [...prev];
-			updated[vIndex].isEditing = value;
-			return updated;
-		});
-	};
-
-
-
-	// combination start
-	const generateCombinations = (variants) => {
-		if (!variants.length) return [];
-
-		return variants.reduce((acc, variant) => {
-			if (acc.length === 0) {
-				return variant.options.map(opt => ({
-					[variant.name]: opt,
-				}));
-			}
-
-			const result = [];
-			acc.forEach(prev => {
-				variant.options.forEach(opt => {
-					result.push({
-						...prev,
-						[variant.name]: opt,
-					});
-				});
-			});
-			return result;
-		}, []);
-	};
-
-	// varidation
-	const validvariant = variant.filter(
-		(variation) =>
-			variation.name?.trim() !== '' &&
-			variation.options.length > 0 &&
-			variation.options.every((opt) => opt.trim() !== '')
-	);
-	const combinations =
-		validvariant.length > 0
-			? generateCombinations(validvariant)
-			: [];
-
-	// edit and show toggle
-	const setEditMode = (vIndex: number, value: boolean) => {
-		setVariant((prev) => {
-			const updated = [...prev];
-			updated[vIndex] = {
-				...updated[vIndex],
-				isEditing: value,
-			};
-			return updated;
-		});
-	};
-	// variation end
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -847,9 +752,9 @@ const AddProduct = () => {
 						// },
 						{
 							icon: 'save',
-							text: __('Publish', 'multivendorx'),
+							text: __('Save', 'multivendorx'),
 							className: 'purple-bg',
-							onClick: () => createProduct('publish'),
+							onClick: () => createProduct(),
 						},
 					]}
 				/>
@@ -876,7 +781,9 @@ const AddProduct = () => {
 						// desc={__('Complete these fields to create a comprehensive product listing', 'multivendorx')}
 						action={
 							<>
-								<div className="admin-badge blue">1/6</div>
+								<div className="admin-badge blue">
+									{completedCount}/{totalCount}
+								</div>
 							</>
 						}
 					>
@@ -941,7 +848,7 @@ const AddProduct = () => {
 
 										<li
 											className={
-												checklist.image ? 'checked' : ''
+												checklist.categories ? 'checked' : ''
 											}
 										>
 											<div className="check-icon"><span></span></div>
@@ -953,7 +860,7 @@ const AddProduct = () => {
 
 										<li
 											className={
-												checklist.image ? 'checked' : ''
+												checklist.policies ? 'checked' : ''
 											}
 										>
 											<div className="check-icon"><span></span></div>
@@ -977,344 +884,6 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
-					<Card contentHeight
-						title={__('Variatations', 'multivendorx')}
-					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-					// toggle
-					>
-						<div className="variation-title-wrapper">
-							{__('Attributes', 'multivendorx')}
-							<div className="add-dropdown-wrapper">
-								<AdminButton
-									wrapperClass="right"
-									buttons={[
-										{
-											icon: 'plus',
-											text: 'Add variants Like size or color',
-											className: 'purple',
-											onClick: addVariation,
-										}
-									]}
-								/>
-								{/* <div className="add-dropdown">
-									<ul>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li>Color</li>
-										<li className="add-btn">Add new attribute</li>
-									</ul>
-								</div> */}
-							</div>
-						</div>
-						{variant.map((variation, vIndex) => (
-							<>
-								<div className="variant-wrapper" key={variation.id}>
-									{variation.isEditing && (
-										<div className="edit-wrapper">
-											<div className="edit buttons-wrapper">
-												<div
-													className="admin-btn btn-red"
-													onClick={() => deleteVariation(vIndex)}
-												>
-													<i className="adminfont-delete"></i> Delete
-												</div>
-												<div
-													className="admin-btn btn-green"
-													onClick={() => setEditMode(vIndex, false)}
-												>
-													<i className="adminfont-active"></i> Save
-												</div>
-											</div>
-											<div className="variant">
-												<div className="drag-icon">
-													<i className="adminfont-drag"></i>
-												</div>
-												<BasicInput
-													placeholder="Add variant"
-													value={variation.name}
-													onChange={(e) =>
-														updateVariation(vIndex, 'name', e.target.value)
-													}
-												/>
-											</div>
-
-											<div className="option-wrapper">
-												<FormGroupWrapper>
-													<FormGroup label={__('Option value', 'multivendorx')} />
-												</FormGroupWrapper>
-
-												{variation.options.map((opt, oIndex) => (
-													<div className="variant" key={oIndex}>
-														<div className="drag-icon">
-															<i className="adminfont-drag"></i>
-														</div>
-
-														<BasicInput
-															value={opt}
-															onChange={(e) => {
-																const updated = [...variation.options];
-																updated[oIndex] = e.target.value;
-																updateVariation(vIndex, 'options', updated);
-															}}
-														/>
-
-														<span
-															className="admin-badge red adminfont-delete"
-															onClick={() => deleteOption(vIndex, oIndex)}
-														/>
-													</div>
-												))}
-
-												<div className="add-new">
-													<div className="add-input"
-														onKeyPress={(e) => {
-															if (e.key === 'Enter') {
-																e.preventDefault();
-																handleAddNewOption(vIndex);
-															}
-														}}
-													>
-														<BasicInput
-															placeholder="Add another value"
-															value={tempOptions[vIndex] || ''}
-															onChange={(e) =>
-																handleTempOptionChange(vIndex, e.target.value)
-															}
-															onKeyDown={(e) => {
-																if (e.key === 'Enter') {
-																	e.preventDefault();
-																	handleAddNewOption(vIndex);
-																}
-															}}
-														/>
-													</div>
-
-													<AdminButton
-														buttons={
-															{
-																icon: 'plus',
-																text: "Add New",
-																className: 'purple',
-																onClick: () => handleAddNewOption(vIndex),
-															}
-														}
-													/>
-												</div>
-											</div>
-										</div>
-									)}
-
-									{!variation.isEditing && (
-										<div className="variant-show">
-											<div className="left-section">
-												<div className="attributes">
-													{variation.name || __('No variant name', 'multivendorx')}
-												</div>
-
-												<div className="variantion-wrapper">
-													{variation.options.map((opt, idx) => (
-														<div className="admin-badge blue" key={idx}>
-															{opt}
-														</div>
-													))}
-												</div>
-											</div>
-
-											<div className="right-section">
-												<div
-													className="admin-btn btn-purple"
-													onClick={() => setEditMode(vIndex, true)}
-												>
-													<i className="adminfont-edit"></i> Edit
-												</div>
-											</div>
-										</div>
-									)}
-								</div>
-							</>
-						))}
-
-						{combinations.length > 0 && (
-							<>
-								<div className="variation-title-wrapper">
-									{__('Variations', 'multivendorx')}
-									<AdminButton
-										wrapperClass="right"
-										buttons={[
-											{
-												icon: 'plus',
-												text: 'Generate variatations',
-												className: 'green',
-												onClick: addVariation,
-											},
-											{
-												icon: 'plus',
-												text: 'Add variant',
-												className: 'purple',
-												// onClick: props.onConfirm,
-											},
-										]}
-									/>
-								</div>
-								<div className="variant-list">
-									<div className="table-wrapper">
-										<table>
-											<thead>
-												<tr className="header">
-													<td>{__('Variant', 'multivendorx')}</td>
-													<td>{__('Price', 'multivendorx')}</td>
-													<td>{__('Quantity', 'multivendorx')}</td>
-													{/* <td>{__('SKU', 'multivendorx')}</td> */}
-													<td></td>
-												</tr>
-											</thead>
-											<tbody>
-												{combinations.map((combo) => (
-													<tr key={Object.values(combo).join('|')}>
-														<td>
-															<i className="adminfont-product admin-badge purple"></i>
-															{Object.values(combo).join(' / ')}
-														</td>
-
-														<td>
-															<BasicInput
-																name="price"
-																preInsideText={__('$', 'multivendorx')}
-																size="4rem"
-															/>
-														</td>
-
-														<td>100</td>
-														{/* 
-												<td>
-													<BasicInput name="sku" size="6rem" />
-												</td> */}
-
-														<td>
-															<div className="buttons-wrapper">
-																<span
-																	className="admin-badge purple adminfont-edit"
-																	onClick={() => setopenPopup(true)}
-																></span>
-																<span className="admin-badge red adminfont-delete"></span>
-															</div>
-														</td>
-													</tr>
-												))}
-											</tbody>
-
-										</table>
-									</div>
-								</div>
-							</>
-						)}
-					</Card>
-					<CommonPopup
-						open={openPopup}
-						onClose={() => setopenPopup(false)}
-						width="31rem"
-						height="70%"
-						header={{
-							icon: 'commission',
-							title: __('Edit Variant', 'multivendorx')
-						}}
-						footer={
-							<AdminButton
-								buttons={[
-									{
-										icon: 'close',
-										text: 'Cancel',
-										className: 'red',
-										// onClick: () => setDeleteModal(false),
-									},
-									{
-										icon: 'save',
-										text: 'Save',
-										className: 'purple-bg',
-										// onClick: () => {
-										// 	if (deleteOption) {
-										// 		deleteStoreApiCall(deleteOption);
-										// 	}
-										// },
-									},
-								]}
-							/>
-						}
-					>
-						<FormGroupWrapper>
-							<FormGroup cols={2} label={__('Regular price ($)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={2} label={__('Sale price ($)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup label={__('Stock status', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup label={__('SKU', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={3} label={__('Length (in)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={3} label={__('Width (in)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-							<FormGroup cols={3} label={__('Height (in)', 'multivendorx')}>
-								<BasicInput
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								// msg={error}
-								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</CommonPopup>
 					{/* General information */}
 					<Card contentHeight
 						title={__('General information', 'multivendorx')}
@@ -1574,6 +1143,44 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
+
+					<Card contentHeight
+						title={__('Policies', 'multivendorx')}
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
+					>
+						<FormGroupWrapper>
+							<FormGroup label={__('Shipping Policy', 'multivendorx')}>
+								<TextArea
+									name="shipping_policy"
+									value={product.shipping_policy}
+									onChange={(e) =>
+										handleChange('shipping_policy', e.target.value)
+									}
+								/>
+							</FormGroup>
+							<FormGroup label={__('Refund Policy', 'multivendorx')}>
+								<TextArea
+									name="refund_policy"
+									value={product.refund_policy}
+									onChange={(e) =>
+										handleChange('refund_policy', e.target.value)
+									}
+								/>
+							</FormGroup>
+
+							{/* Description */}
+							<FormGroup label={__('Cancellation Policy', 'multivendorx')}>
+								<TextArea
+									name="cancellation_policy"
+									value={product.cancellation_policy}
+									onChange={(e) =>
+										handleChange('cancellation_policy', e.target.value)
+									}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</Card>
 					{modules.includes('min-max') &&
 						product?.type == 'simple' &&
 						applyFilters(
@@ -1589,17 +1196,18 @@ const AddProduct = () => {
 							'product_shipping',
 							null,
 							product,
+							setProduct,
 							handleChange
 						)}
 
-					{product.downloadable &&
+					{/* {product.downloadable &&
 						applyFilters(
 							'product_downloadable',
 							null,
 							product,
 							setProduct,
 							handleChange
-						)}
+						)} */}
 
 					{product?.type == 'variable' &&
 						applyFilters(
@@ -1623,7 +1231,7 @@ const AddProduct = () => {
 									className="field-wrapper"
 								>
 									{__('Featured product', 'multivendorx')}
-									<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
+									<i className={`star-icon ${(starFill || product?.featured) ? 'adminfont-star' : 'adminfont-star-o'}`} />
 								</label>
 							</>
 						}
@@ -1649,25 +1257,17 @@ const AddProduct = () => {
 									{isEditingVisibility && (
 										<div className="setting-dropdown">
 											<FormGroup>
-												<RadioInput
+												<SelectInput
 													name="catalog_visibility"
-													idPrefix="catalog_visibility"
-													type="radio"
-													wrapperClass="settings-form-group-radio"
-													inputWrapperClass="radio-basic-input-wrap"
-													inputClass="setting-form-input"
-													descClass="settings-metabox-description"
-													activeClass="radio-select-active"
-													radiSelectLabelClass="radio-label"
 													options={[
-														{ key: 'vs1', value: 'visible', label: 'Shop and search results' },
-														{ key: 'vs2', value: 'catalog', label: 'Shop only' },
-														{ key: 'vs3', value: 'search', label: 'Search results only' },
-														{ key: 'vs4', value: 'hidden', label: 'Hidden' },
+														{ key: 'visible', value: 'visible', label: 'Shop and search results' },
+														{ key: 'catalog', value: 'catalog', label: 'Shop only' },
+														{ key: 'search', value: 'search', label: 'Search results only' },
+														{ key: 'hidden', value: 'hidden', label: 'Hidden' },
 													]}
 													value={product.catalog_visibility}
-													onChange={(e) => {
-														handleChange('catalog_visibility', e.target.value);
+													onChange={(selected) => {
+														handleChange('catalog_visibility', selected.value);
 														setIsEditingVisibility(false);
 													}}
 												/>
@@ -1678,10 +1278,10 @@ const AddProduct = () => {
 							</FormGroup>
 							<FormGroup
 								row
-								label={__('Product Page', 'multivendorx')}
+								label={__('Product Status', 'multivendorx')}
 								htmlFor="status"
 							>
-								<div ref={visibilityRef}>
+								<div>
 									<div className="catalog-visibility">
 										<span className="catalog-visibility-value">
 											{STATUS_LABELS[product.status]}
@@ -1698,10 +1298,11 @@ const AddProduct = () => {
 
 									{/* Edit Product Page Status */}
 									{isEditingStatus && (
+										
 										<div className="setting-dropdown">
 											<FormGroup>
-												<ToggleSetting
-													descClass="settings-metabox-description"
+												<SelectInput
+													name="status"
 													options={[
 														{
 															key: 'draft',
@@ -1716,48 +1317,14 @@ const AddProduct = () => {
 														{
 															key: 'pending',
 															value: 'pending',
-															label: __('Pending Review', 'multivendorx'),
+															label: __('Submit', 'multivendorx'),
 														},
 													]}
 													value={product.status}
-													onChange={(value) => {
-														handleChange('status', value);
-														setIsEditingStatus(false); // close popup
-													}}
-												/>
-												<RadioInput
-													name="catalog_visibility"
-													idPrefix="catalog_visibility"
-													type="radio"
-													wrapperClass="settings-form-group-radio"
-													inputWrapperClass="radio-basic-input-wrap"
-													inputClass="setting-form-input"
-													descClass="settings-metabox-description"
-													activeClass="radio-select-active"
-													radiSelectLabelClass="radio-label"
-													options={[
-														{
-															key: 'draft',
-															value: 'draft',
-															label: __('Draft', 'multivendorx'),
-														},
-														{
-															key: 'publish',
-															value: 'publish',
-															label: __('Published', 'multivendorx'),
-														},
-														{
-															key: 'pending',
-															value: 'pending',
-															label: __('Pending Review', 'multivendorx'),
-														},
-													]}
-													value={product.status}
-													onChange={(value) => {
-														handleChange('status', value);
-														setIsEditingStatus(false);
-													}}
-												/>
+													onChange={(selected) =>
+														handleChange('status', selected.value)
+													}
+												/>												
 											</FormGroup>
 										</div>
 									)}
@@ -1767,7 +1334,7 @@ const AddProduct = () => {
 							<FormGroup row label={__('Cataloged at', 'multivendorx')} htmlFor="status">
 								<div className="catalog-visibility">
 									<span className="catalog-visibility-value">
-										{__('Dec 16, 2025', 'multivendorx')}
+										{formatWcShortDate(product?.date_created)}
 									</span>
 								</div>
 							</FormGroup>
@@ -1783,13 +1350,9 @@ const AddProduct = () => {
 							?.category_selection_method === 'yes' ? (
 							<>
 								{/* Breadcrumb */}
-								{(() => {
-									const breadcrumb = printPath();
-									if (!breadcrumb) return null;
-									return (
 										<div className="category-breadcrumb-wrapper">
 											<div className="category-breadcrumb">
-												{breadcrumb}
+												{printPath()}
 											</div>
 
 											{(selectedCat || selectedSub || selectedChild) && (
@@ -1801,8 +1364,6 @@ const AddProduct = () => {
 												</button>
 											)}
 										</div>
-									);
-								})()}
 
 								{/* Category tree (custom flow) */}
 								<FormGroupWrapper>

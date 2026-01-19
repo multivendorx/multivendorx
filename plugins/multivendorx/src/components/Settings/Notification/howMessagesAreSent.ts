@@ -104,28 +104,32 @@ export default {
 				{
 					key: 'none',
 					label: __('None', 'multivendorx'),
+					icon: 'adminfont-rejecte',
 					value: '',
 				},
 				{
 					key: 'twilio',
 					label: __('Twilio', 'multivendorx'),
 					value: 'twilio',
-
+					icon: 'adminfont-twilio',
 				},
 				{
 					key: 'vonage',
 					label: __('Vonage', 'multivendorx'),
 					value: 'vonage',
+					icon: 'adminfont-vonage',
 				},
 				{
 					key: 'clickatell',
 					label: __('Clickatell', 'multivendorx'),
 					value: 'clickatell',
+					icon: 'adminfont-clickatell',
 				},
 				{
 					key: 'plivo',
 					label: __('Plivo', 'multivendorx'),
 					value: 'plivo',
+					icon: 'adminfont-plivo',
 				},
 			],
 		},

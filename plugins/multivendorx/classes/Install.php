@@ -546,7 +546,6 @@ By signing and submitting, the Seller accepts all terms above.
         $store_permissions = array(
 			'products' =>
 				array(
-					'manage_products',
 					'read_products',
 					'edit_products',
 					'delete_products',
@@ -567,7 +566,6 @@ By signing and submitting, the Seller accepts all terms above.
         $user_permissions = array(
             'store_owner' =>
                 array(
-                    'manage_products',
                     'read_products',
                     'edit_products',
                     'delete_products',
