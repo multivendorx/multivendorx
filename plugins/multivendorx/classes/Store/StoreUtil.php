@@ -208,8 +208,8 @@ class StoreUtil {
                 'label'      => 'Inventory management',
                 'desc'       => 'Let stores monitor stock levels, update quantities, and set alerts to prevent overselling or stockouts.',
                 'capability' => array(
-                    'read_shop_report'  => 'Manage inventory',
-                    'edit_shop_report'  => 'Track stock',
+                    'read_inventory'  => 'View inventory',
+                    'edit_inventory'  => 'Track stock',
                     'edit_stock_alerts' => 'Set stock alerts',
                 ),
             ),

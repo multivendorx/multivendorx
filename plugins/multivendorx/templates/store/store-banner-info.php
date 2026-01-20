@@ -33,17 +33,75 @@ $overall_reviews = Util::get_overall_rating($store->get_id());
 $reviews = Util::get_reviews_by_store($store->get_id());
 $rating_value = $overall_reviews ? number_format((float) $overall_reviews, 1) : 0;
 $review_count = is_array($reviews) ? count($reviews) : 0;
+$banner_type = $meta_data['banner_type'] ?? 'static_image';
+$banner_video = $meta_data['banner_video'] ?? '';
+$banner_slider = $meta_data['banner_slider'] ?? [];
+if (is_string($banner_slider)) {
+    $banner_slider = json_decode($banner_slider, true) ?: [];
+}
 
 ?>
 
 <div class="multivendorx-banner <?php echo esc_attr($selected_template); ?>">
-    <div class="banner-img">
-        <?php if (!empty($banner)): ?>
-            <img src="<?php echo esc_url($banner); ?>" alt="">
-        <?php else: ?>
-            <div class="no-banner">1500 X 900</div>
-        <?php endif; ?>
-    </div>
+    <?php if ($banner_type === 'static_image'): ?>
+        <div class="banner-img">
+            <?php if (!empty($banner)): ?>
+                <img src="<?php echo esc_url($banner); ?>" alt="">
+            <?php else: ?>
+                <div class="no-banner">1500 X 900</div>
+            <?php endif; ?>
+        </div>
+
+    <?php elseif ($banner_type === 'slider_image'): ?>
+        <div class="banner-slider">
+            <?php
+            if (!empty($banner_slider)):
+                foreach ($banner_slider as $slide):
+                    echo '<div class="slide"><img src="' . esc_url($slide) . '" alt=""></div>';
+                endforeach;
+            else: ?>
+                <div class="no-banner">1500 X 900</div>
+            <?php endif; ?>
+        </div>
+
+    <?php elseif ($banner_type === 'video'): ?>
+        <div class="banner-video">
+            <?php if (!empty($banner_video)): ?>
+                <?php
+                $url = trim($banner_video);
+
+                // YouTube URL
+                if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/', $url, $matches)) {
+                    $youtube_id = $matches[1];
+                ?>
+                    <iframe width="100%" height="500"
+                        src="https://www.youtube.com/embed/<?php echo esc_attr($youtube_id); ?>?autoplay=1&mute=1&loop=1&playlist=<?php echo esc_attr($youtube_id); ?>"
+                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+                    </iframe>
+                <?php
+                    // Vimeo URL
+                } elseif (preg_match('/vimeo\.com\/(\d+)/', $url, $matches)) {
+                    $vimeo_id = $matches[1];
+                ?>
+                    <iframe width="100%" height="500"
+                        src="https://player.vimeo.com/video/<?php echo esc_attr($vimeo_id); ?>?autoplay=1&loop=1&muted=1"
+                        frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                    </iframe>
+                <?php
+                    // Direct video file (mp4/webm/etc.)
+                } else { ?>
+                    <video autoplay muted loop controls style="width:100%; height:auto;">
+                        <source src="<?php echo esc_url($url); ?>" type="video/mp4">
+                        <?php esc_html_e('Your browser does not support the video tag.', 'multivendorx'); ?>
+                    </video>
+                <?php } ?>
+            <?php else: ?>
+                <div class="no-banner"><?php esc_html_e('Video not available', 'multivendorx'); ?></div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+
     <div class='banner-right'>
         <div class="social-profile">
             <?php if (!empty($meta_data['facebook'])): ?>
@@ -136,7 +194,7 @@ $review_count = is_array($reviews) ? count($reviews) : 0;
                         in_array('show_store_ratings', $branding_settings, true) &&
                         $rating_value > 0
                     ):
-                        ?>
+                    ?>
                         <div class="store-rating">
                             <i class="dashicons dashicons-star-filled"></i>
                             <i class="dashicons dashicons-star-filled"></i>

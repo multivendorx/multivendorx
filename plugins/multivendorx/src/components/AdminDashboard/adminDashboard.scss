@@ -858,6 +858,10 @@
     .shipping-method {
         display: flex;
         gap: 0.5rem;
+
+        .admin-badge{
+            cursor: pointer;
+        }
     }
 }
 

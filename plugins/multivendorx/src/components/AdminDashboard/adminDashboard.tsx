@@ -474,7 +474,7 @@ const AdminDashboard = () => {
 			content: (
 				<>
 					<Column grid={8}>
-						<Card>
+						<Card contentHeight>
 							<div className="pro-banner-wrapper">
 								<div className="content">
 									<div className="heading">
@@ -555,7 +555,7 @@ const AdminDashboard = () => {
 							</Card>
 
 						)}
-						<Card title="Modules" buttonLabel="View All" onButtonClick={() => (window.location.href = `?page=multivendorx#&tab=modules`)}>
+						<Card contentHeight title="Modules" buttonLabel="View All" onButtonClick={() => (window.location.href = `?page=multivendorx#&tab=modules`)}>
 							<div className="mini-module">
 								{Modules.map((module) => (
 									<div

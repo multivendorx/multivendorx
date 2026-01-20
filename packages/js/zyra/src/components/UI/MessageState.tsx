@@ -30,7 +30,7 @@ const MessageState: React.FC<MessageStateProps> = ({
 
 			<div className="title">{title}</div>
 
-			{desc && <div className="description">{desc}</div>}
+			{desc && <div className="desc">{desc}</div>}
 
 			{buttonText && (
 				buttonLink ? (

@@ -132,7 +132,6 @@ interface MultiStringItem {
 interface InputField {
     pdfEndpoint: string;
     showPdfButton: boolean | undefined;
-    showTemplates: boolean | undefined;
     presetThemes: never[];
     templates: never[];
     key: string;
@@ -295,7 +294,6 @@ interface InputField {
         name: string;
         parent: number; // 0 means top-level category
     }[];
-    showPreview?: boolean;
     predefinedOptions?: {
         key?: string;
         label?: string;
@@ -1339,10 +1337,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'color-setting':
                     input = (
                         <ColorSettingInput
-                            wrapperClass={inputField.wrapperClass}
-                            inputClass={ inputField.class }
+                            wrapperClass="form-group-color-setting"
+                            inputClass="setting-form-input"
                             description={ inputField.desc } // optional description displayed under the input
-                            showPreview={ inputField.showPreview ?? false } // whether to show a color preview box
                             predefinedOptions={
                                 inputField.predefinedOptions ?? []
                             } // array of predefined color options for quick selection
@@ -1352,8 +1349,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             onChange={ ( e ) =>
                                 handleChange( e, inputField.key )
                             }
+                            idPrefix="color-setting"
                             showPdfButton={ inputField.showPdfButton ?? false }
-                            showTemplates={ inputField.showTemplates ?? false }
                         />
                     );
                     break;

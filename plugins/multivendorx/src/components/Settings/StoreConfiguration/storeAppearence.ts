@@ -65,21 +65,29 @@ export default {
 		{
 			key: 'store_sidebar',
 			type: 'setting-toggle',
-			label: __('Store sidebar', 'multivendorx'),
+			label: __('Where to show sidebar on store page', 'multivendorx'),
 			desc: __(
-				'Choose where the sidebar show in shop pages.',
+				'Choose where the side content appears on the store page. This area can display widgets added from <b>Appearance → Widgets</b>.',
 				'multivendorx'
 			),
 			options: [
 				{
+					key: 'no-sidebar',
+					label: __('No Sidebar', 'multivendorx'),
+					value: 'No Sidebar',
+					icon: "adminfont-right-sidebar"
+				},
+				{
 					key: 'left',
-					label: __('At Left', 'multivendorx'),
-					value: 'At Left',
+					label: __('Left Sidebar', 'multivendorx'),
+					value: 'Left Sidebar',
+					icon: "adminfont-left-sidebar"
 				},
 				{
 					key: 'right',
-					label: __('At Right', 'multivendorx'),
-					value: 'At Right',
+					label: __('Right Sidebar', 'multivendorx'),
+					value: 'Right Sidebar',
+					icon: "adminfont-no-sidebar"
 				}
 			]
 		},
@@ -89,7 +97,6 @@ export default {
 			label: 'Dashboard color scheme',
 			settingDescription:
 				'Choose a dashboard color scheme from predefined sets or customize your own. Each scheme defines the button style, and hover effects for a consistent look.',
-			showPreview: true,
 			templates: [
 				{
 				  key: 'dashbord',

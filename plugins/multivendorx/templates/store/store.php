@@ -50,9 +50,22 @@ if (MultiVendorX()->setting->get_setting( 'store_sidebar' ) == 'left') {
 </div>
 
 <?php
-if (MultiVendorX()->setting->get_setting( 'store_sidebar' ) == 'right') {
-    get_sidebar();
+// if (MultiVendorX()->setting->get_setting( 'store_sidebar' ) == 'right') {
+//     get_sidebar();
+// }
+$sidebar_position = MultiVendorX()->setting->get_setting( 'store_sidebar', array() );
+if ( in_array( $sidebar_position, array( 'left', 'right' ), true ) ) {
+    ?>
+    <aside class="multivendorx-store-sidebar multivendorx-store-sidebar-<?php echo esc_attr( $sidebar_position ); ?>">
+        <?php
+        if ( is_active_sidebar( 'multivendorx-store-sidebar' ) ) {
+            dynamic_sidebar( 'multivendorx-store-sidebar' );
+        }
+        ?>
+    </aside>
+    <?php
 }
+
 do_action( 'woocommerce_after_main_content' );
 
 get_footer( 'shop' );

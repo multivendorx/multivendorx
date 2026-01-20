@@ -1,40 +1,35 @@
 interface DashboardTemplateProps {
-    themeVars: Record<string, string>;
+    colors: {
+        colorPrimary: string;
+        colorSecondary: string;
+        colorAccent: string;
+        colorSupport: string;
+    };
     isPreview?: boolean;
 }
 
 const DashboardTemplate: React.FC<DashboardTemplateProps> = ({
-    themeVars,
+    colors,
 }) => {
     function withAlpha(hex: string, alpha: number): string {
-        // convert hex to rgba
         const r = parseInt(hex.slice(1, 3), 16);
         const g = parseInt(hex.slice(3, 5), 16);
         const b = parseInt(hex.slice(5, 7), 16);
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
-    
-    const theme = {
-        accent: themeVars['--accent'],
-        accentSecondary: themeVars['--accent-secondary'],
-        support: themeVars['--support'],
-        cardBg: themeVars['--bg-card'],
 
-        accentSoft: withAlpha(themeVars['--accent'], 0.15),
-        supportSoft: withAlpha(themeVars['--support'], 0.15),
+    const theme = {
+        accent: colors.colorAccent,
+        accentSecondary: colors.colorSecondary,
+        support: colors.colorSupport,
+        cardBg: '#ffffff',
+        accentSoft: withAlpha(colors.colorAccent, 0.15),
+        supportSoft: withAlpha(colors.colorSupport, 0.15),
     };
     return (
         <div
-            className="preview-wrapper"
-            ref={(el) => {
-                if (el) {
-                Object.entries(themeVars).forEach(([key, value]) => {
-                    el.style.setProperty(key, value);
-                });
-                }
-            }}
+            className="dashboard-preview-wrapper"
         >
-        <div className="preview-wrapper">
             <div className="left-wrapper">
                 <div className="logo-wrapper">
                     <div
@@ -312,7 +307,6 @@ const DashboardTemplate: React.FC<DashboardTemplateProps> = ({
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     );
 };

@@ -3,7 +3,7 @@ import ShippingRatesByCountry from '@/dashboard/settings/ShippingRatesByCountry'
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { BasicInput, Card, Column, Container, DynamicRowSetting, FormGroup, FormGroupWrapper, getApiLink, SuccessNotice, ToggleSetting } from 'zyra';
+import { BasicInput, Card, Column, Container, DynamicRowSetting, FormGroup, FormGroupWrapper, getApiLink, MessageState, SuccessNotice, ToggleSetting } from 'zyra';
 
 const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 	const [formData, setFormData] = useState<{ [key: string]: any }>({}); // Use 'any' for simplicity here
@@ -513,15 +513,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 						</Card>
 					</Column>
 				) : (
-					<div className="settings-metabox-description">
-						{__(
-							'No shipping methods are available at the moment. Please enable or configure shipping methods to continue.',
-							'multivendorx'
-						)}
-					</div>
+					<MessageState 
+					title={__('No shipping methods are available at the moment.', 'multivendorx')} 
+					desc={__('Please enable or configure shipping methods to continue.', 'multivendorx')}/>
 				)}
-
-
 			</Container >
 		</>
 	);

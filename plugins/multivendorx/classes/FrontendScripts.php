@@ -245,6 +245,11 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
+                'multivendorx-store-shop-product-script'  => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/store-coupons/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
 			)
         );
         foreach ( $register_scripts as $name => $props ) {
@@ -719,6 +724,14 @@ class FrontendScripts {
                         'restUrl'                  => MultiVendorX()->rest_namespace,
                         'nonce'                    => wp_create_nonce( 'wp_rest' ),
                         'settings_databases_value' => $settings_databases_value,
+                    ),
+                ),
+                'multivendorx-store-shop-product-script'  => array(
+                    'object_name' => 'storeShopProductList',
+                    'data'        => array(
+                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
+                        'restUrl'                  => MultiVendorX()->rest_namespace,
+                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
                     ),
                 ),
 			)

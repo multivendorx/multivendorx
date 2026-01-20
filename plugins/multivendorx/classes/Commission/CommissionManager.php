@@ -192,11 +192,13 @@ class CommissionManager {
         }
 
         $tax_on_shipping = MultiVendorX()->setting->get_setting( 'taxable' );
-        if ( MultiVendorX()->setting->get_setting( 'give_tax' ) === 'no_tax' || empty( $tax_on_shipping ) ) {
+        if ( MultiVendorX()->setting->get_setting( 'give_tax' ) === 'no_tax' ) {
             $admin_tax          = $item_tax_total;
             $store_tax          = 0;
-            $admin_shipping_tax = $shipping_tax_total;
-            $store_shipping_tax = 0;
+            if ( empty( $tax_on_shipping ) ) {
+                $admin_shipping_tax = $shipping_tax_total;
+                $store_shipping_tax = 0;
+            }
         } elseif ( MultiVendorX()->setting->get_setting( 'give_tax' ) === 'full_tax' ) {
             $admin_tax = 0;
             $store_tax = $item_tax_total;

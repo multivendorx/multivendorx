@@ -19,7 +19,7 @@ import {
 import ShowProPopup from '../Popup/popup';
 import { useLocation, Link } from 'react-router-dom';
 import Notifications from './Notification/Notification';
-import StoreStatus from './StoreConfiguration/StoreStatus';
+import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 
 // Types
 type SettingItem = Record<string, any>;

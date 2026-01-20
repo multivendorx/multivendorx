@@ -230,6 +230,13 @@ class Dashboard extends \WP_REST_Controller {
                 ),
                 'capability' => array( 'view_documentation' ),
             ),
+            'setup-wizard'       => array(
+                'name'       => 'Setup Wizard',
+                'slug'       => '',
+                'icon'       => 'adminfont-report',
+                'submenu'    => array(),
+                'capability' => array( 'read_shop_coupons' ),
+            ),
             'settings'      => array(
                 'name'       => 'Settings',
                 'slug'       => 'settings',

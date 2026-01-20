@@ -462,6 +462,10 @@
         font-size: 0.813rem;
         cursor: pointer;
     }
+    .fit-content{
+        display: flex;
+        justify-content: end;
+    }
 }
 
 .setting-dropdown {

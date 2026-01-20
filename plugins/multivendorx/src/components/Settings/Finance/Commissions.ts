@@ -239,13 +239,43 @@ export default {
 			key: 'separator_content',
 			type: 'section',
 			hint: __(
-				'How shipping and tax be calculated with store earnings',
+				'Shipping & tax distribution in store earnings',
 				'multivendorx'
 			),
 			desc: __(
 				'Choose which order components are factored into commission calculations.',
 				'multivendorx'
 			),
+		},
+		{
+			key: 'give_tax',
+			type: 'setting-toggle',
+			label: __('Tax distribution options', 'multivendorx'),
+			wooCheck: 'taxes_enabled',
+			wooLink:
+				'page=wc-settings&tab=general#taxes_and_coupons_options-description',
+			settingDescription: __(
+				'Configure how taxes are treated in commission calculations.',
+				'multivendorx'
+			),
+			desc: __( '<strong>Example setup:</strong><br> Product price = ₹1,000<br> Tax rate = 10% → ₹100<br> Marketplace commission rate = 10%<ul> <li><strong>Marketplace Share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Marketplace receives tax = ₹100<br> Marketplace total earning = ₹200 (commission + tax)<br> Store payout = ₹900 (tax not included)</li> <li><strong>Store Share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Store earnings before tax = ₹900<br> Tax added to store earnings = ₹100<br> Final store payout = ₹1,000<br> Marketplace earning = ₹100 (commission only)</li> <li><strong>Proportional Split</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Tax on marketplace commission = ₹10<br> Tax on store earnings = ₹90<br> Marketplace total earning = ₹110 (commission + tax share)<br> Store payout = ₹990 (earnings + tax share)</li> </ul>', 'multivendorx' ),
+			options: [
+				{
+					key: 'no_tax',
+					label: __('Marketplace share', 'multivendorx'),
+					value: 'no_tax',
+				},
+				{
+					key: 'full_tax',
+					label: __('Store share', 'multivendorx'),
+					value: 'full_tax',
+				},
+				{
+					key: 'commision_based_tax',
+					label: __('Commission based tax', 'multivendorx'),
+					value: 'commision_based_tax',
+				},
+			],
 		},
 		{
 			key: 'store_rating_page',
@@ -260,7 +290,7 @@ export default {
 		},
 		{
 			key: 'taxable',
-			label: __('Tax on shipping', 'multivendorx'),
+			label: __('Charge tax on shipping cost', 'multivendorx'),
 			settingDescription: __(
 				'Shipping charges will be treated as taxable items during checkout. Otherwise shipping costs will be tax-free.',
 				'multivendorx'
@@ -275,39 +305,6 @@ export default {
 				},
 			],
 			look: 'toggle',
-		},
-		{
-			key: 'give_tax',
-			type: 'setting-toggle',
-			label: __('Tax amount', 'multivendorx'),
-			wooCheck: 'taxes_enabled',
-			wooLink:
-				'page=wc-settings&tab=general#taxes_and_coupons_options-description',
-			settingDescription: __(
-				'Configure how taxes are treated in commission calculations.',
-				'multivendorx'
-			),
-			desc: __(
-				'<ul><li>No tax - Calculate commission on pre-tax amount only.<li>Full tax - Include 100% tax in commission base.<li>Commission based tax - Calculate commission on total order value including taxes, not just product/listing price.</li> </ul>',
-				'multivendorx'
-			),
-			options: [
-				{
-					key: 'no_tax',
-					label: __('No tax', 'multivendorx'),
-					value: 'no_tax',
-				},
-				{
-					key: 'full_tax',
-					label: __('Full tax', 'multivendorx'),
-					value: 'full_tax',
-				},
-				{
-					key: 'commision_based_tax',
-					label: __('Commission based tax', 'multivendorx'),
-					value: 'commision_based_tax',
-				},
-			],
 		},
 		{
 			key: 'separator_content',

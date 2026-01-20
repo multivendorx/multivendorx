@@ -3,6 +3,22 @@ import DashboardTemplate from '../../../assets/template/Dashbord';
 import InvoiceDOM from '../../../assets/template/Invoice.dom';
 import InvoicePDF from '../../../assets/template/Invoice.pdf';
 
+import Invoice1 from '../../../assets/template/pdf/Invoice-1';
+import InvoiceHtml1 from '../../../assets/template/html/Invoice-1';
+
+import InvoicePdf2 from '../../../assets/template/pdf/Invoice-2';
+import InvoiceHtml2 from '../../../assets/template/html/Invoice-2';
+
+import InvoicePdf3 from '../../../assets/template/pdf/Invoice-3';
+import InvoiceHtml3 from '../../../assets/template/html/Invoice-3';
+
+import InvoicePdf4 from '../../../assets/template/pdf/Invoice-4';
+import InvoiceHtml4 from '../../../assets/template/html/Invoice-4';
+// import InvoicePdf4 from '../../../assets/template/pdf/Invoice-4';
+import InvoiceHtml5 from '../../../assets/template/html/Invoice-5';
+
+
+
 export default {
 	id: 'store-invoice',
 	priority: 6,
@@ -178,23 +194,42 @@ export default {
 			type: 'color-setting',
 			label: __('Invoice Template & PDF', 'mvx-pro'),
 			moduleEnabled: 'invoice',
-			showPreview: true,
 			showPdfButton: true,
-			showTemplates: true,
-			/* 🔹 HTML templates */
 			templates: [
 			  {
-				key: 'dashbord',
-				label: __('dashbord', 'mvx-pro'),
-				preview: DashboardTemplate,
-				component: DashboardTemplate,
+				key: 'invoice_1',
+				label: __('Invoice 1', 'mvx-pro'),
+				preview: InvoiceHtml1,
+				component: InvoiceHtml1,
+				pdf: Invoice1,
 			  },
 			  {
 				key: 'invoice_2',
-				label: 'Invoice Modern',
-				preview: InvoiceDOM,
-				component: InvoiceDOM,
-				pdf: InvoicePDF,
+				label: 'Invoice 2',
+				preview: InvoiceHtml2,
+				component: InvoiceHtml2,
+				pdf: InvoicePdf2,
+			  }	,
+			  {
+				key: 'invoice_3',
+				label: 'Invoice 3',
+				preview: InvoiceHtml3,
+				component: InvoiceHtml3,
+				pdf: InvoicePdf3,
+			  }	,
+			  {
+				key: 'invoice_4',
+				label: 'Invoice 4',
+				preview: InvoiceHtml4,
+				component: InvoiceHtml4,
+				pdf: InvoicePdf4,
+			  }	,
+			   {
+				key: 'invoice_5',
+				label: 'Invoice 5',
+				preview: InvoiceHtml5,
+				component: InvoiceHtml5,
+				pdf: InvoicePdf4,
 			  }			  
 			],
 			predefinedOptions: [

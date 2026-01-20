@@ -587,7 +587,7 @@ export default {
 		},
 		{
 			id: 'min-max',
-			name: __('Min Max Quantities', 'multivendorx'),
+			name: __('Min Max', 'multivendorx'),
 			desc: 'Defines the minimum or maximum number of items a customer can purchase in a single order.',
 			icon: 'adminfont-min-max',
 			doc_link:

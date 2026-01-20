@@ -68,20 +68,20 @@ const AddProduct = () => {
 				setProduct(res.data);
 				setstarFill(res.data.featured);
 			});
-			if (modules.includes('wpml')) {
-				axios({
-					method: 'GET',
-					url: getApiLink(appLocalizer, 'multivendorx-wpml'),
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: { product_id: productId }
-				})
+		if (modules.includes('wpml')) {
+			axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'multivendorx-wpml'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { product_id: productId }
+			})
 				.then((response) => {
 					setTranslation(response.data);
 				})
 				.catch(() => {
 					setTranslation([])
 				});
-			}
+		}
 
 	}, [productId]);
 
@@ -515,16 +515,16 @@ const AddProduct = () => {
 						value: appLocalizer.store_id,
 					},
 					{
-					key: 'multivendorx_shipping_policy',
-					value: product.shipping_policy || '',
+						key: 'multivendorx_shipping_policy',
+						value: product.shipping_policy || '',
 					},
 					{
-					key: 'multivendorx_refund_policy',
-					value: product.refund_policy || '',
+						key: 'multivendorx_refund_policy',
+						value: product.refund_policy || '',
 					},
 					{
-					key: 'multivendorx_cancellation_policy',
-					value: product.cancellation_policy || '',
+						key: 'multivendorx_cancellation_policy',
+						value: product.cancellation_policy || '',
 					},
 				],
 			};
@@ -1240,40 +1240,36 @@ const AddProduct = () => {
 							<FormGroup row label={__('Catalog Visibility', 'multivendorx')} htmlFor="catalog-visibility">
 								<div ref={visibilityRef}>
 									<div className="catalog-visibility">
-										<span className="catalog-visibility-value">
-											{VISIBILITY_LABELS[product.catalog_visibility]}
-										</span>
-										<span
-											onClick={() => {
+										{!isEditingVisibility && (
+											<div onClick={() => {
 												setIsEditingVisibility((prev) => !prev);
 												setIsEditingStatus(false);
-											}}
-
-										>
-											<i className="adminfont-keyboard-arrow-down" />
-										</span>
+											}}>
+												<span className="catalog-visibility-value">
+													{VISIBILITY_LABELS[product.catalog_visibility]}
+												</span>
+												<i className="adminfont-arrow-down-up" />
+											</div>
+										)}
+										{isEditingVisibility && (
+											<SelectInput
+												name="catalog_visibility"
+												// wrapperClass="fit-content"
+												size="14rem"
+												options={[
+													{ key: 'visible', value: 'visible', label: 'Shop and search results' },
+													{ key: 'catalog', value: 'catalog', label: 'Shop only' },
+													{ key: 'search', value: 'search', label: 'Search results only' },
+													{ key: 'hidden', value: 'hidden', label: 'Hidden' },
+												]}
+												value={product.catalog_visibility}
+												onChange={(selected) => {
+													handleChange('catalog_visibility', selected.value);
+													setIsEditingVisibility(false);
+												}}
+											/>
+										)}
 									</div>
-									{/* Edit catalog visibility */}
-									{isEditingVisibility && (
-										<div className="setting-dropdown">
-											<FormGroup>
-												<SelectInput
-													name="catalog_visibility"
-													options={[
-														{ key: 'visible', value: 'visible', label: 'Shop and search results' },
-														{ key: 'catalog', value: 'catalog', label: 'Shop only' },
-														{ key: 'search', value: 'search', label: 'Search results only' },
-														{ key: 'hidden', value: 'hidden', label: 'Hidden' },
-													]}
-													value={product.catalog_visibility}
-													onChange={(selected) => {
-														handleChange('catalog_visibility', selected.value);
-														setIsEditingVisibility(false);
-													}}
-												/>
-											</FormGroup>
-										</div>
-									)}
 								</div>
 							</FormGroup>
 							<FormGroup
@@ -1281,52 +1277,45 @@ const AddProduct = () => {
 								label={__('Product Status', 'multivendorx')}
 								htmlFor="status"
 							>
-								<div>
-									<div className="catalog-visibility">
-										<span className="catalog-visibility-value">
-											{STATUS_LABELS[product.status]}
-										</span>
-										<span
-											onClick={() => {
-												setIsEditingStatus((prev) => !prev);
-												setIsEditingVisibility(false);
-											}}
-										>
-											<i className="adminfont-keyboard-arrow-down" />
-										</span>
-									</div>
-
+								<div className="catalog-visibility">
+									{!isEditingStatus && (
+										<div onClick={() => {
+											setIsEditingStatus((prev) => !prev);
+											setIsEditingVisibility(false);
+										}}>
+											<span className="catalog-visibility-value">
+												{STATUS_LABELS[product.status]}
+											</span>
+											<i className="adminfont-arrow-down-up" />
+										</div>
+									)}
 									{/* Edit Product Page Status */}
 									{isEditingStatus && (
-										
-										<div className="setting-dropdown">
-											<FormGroup>
-												<SelectInput
-													name="status"
-													options={[
-														{
-															key: 'draft',
-															value: 'draft',
-															label: __('Draft', 'multivendorx'),
-														},
-														{
-															key: 'publish',
-															value: 'publish',
-															label: __('Published', 'multivendorx'),
-														},
-														{
-															key: 'pending',
-															value: 'pending',
-															label: __('Submit', 'multivendorx'),
-														},
-													]}
-													value={product.status}
-													onChange={(selected) =>
-														handleChange('status', selected.value)
-													}
-												/>												
-											</FormGroup>
-										</div>
+										<SelectInput
+											name="status"
+											wrapperClass="fit-content"
+											options={[
+												{
+													key: 'draft',
+													value: 'draft',
+													label: __('Draft', 'multivendorx'),
+												},
+												{
+													key: 'publish',
+													value: 'publish',
+													label: __('Published', 'multivendorx'),
+												},
+												{
+													key: 'pending',
+													value: 'pending',
+													label: __('Submit', 'multivendorx'),
+												},
+											]}
+											value={product.status}
+											onChange={(selected) =>
+												handleChange('status', selected.value)
+											}
+										/>
 									)}
 								</div>
 							</FormGroup>
@@ -1334,7 +1323,7 @@ const AddProduct = () => {
 							<FormGroup row label={__('Cataloged at', 'multivendorx')} htmlFor="status">
 								<div className="catalog-visibility">
 									<span className="catalog-visibility-value">
-										{formatWcShortDate(product?.date_created)}
+										{formatWcShortDate(product?.date_created)} <i className="adminfont-arrow-down-up" />
 									</span>
 								</div>
 							</FormGroup>
@@ -1350,20 +1339,20 @@ const AddProduct = () => {
 							?.category_selection_method === 'yes' ? (
 							<>
 								{/* Breadcrumb */}
-										<div className="category-breadcrumb-wrapper">
-											<div className="category-breadcrumb">
-												{printPath()}
-											</div>
+								<div className="category-breadcrumb-wrapper">
+									<div className="category-breadcrumb">
+										{printPath()}
+									</div>
 
-											{(selectedCat || selectedSub || selectedChild) && (
-												<button
-													onClick={resetSelection}
-													className="admin-btn btn-red"
-												>
-													{__('Reset', 'multivendorx')}
-												</button>
-											)}
-										</div>
+									{(selectedCat || selectedSub || selectedChild) && (
+										<button
+											onClick={resetSelection}
+											className="admin-btn btn-red"
+										>
+											{__('Reset', 'multivendorx')}
+										</button>
+									)}
+								</div>
 
 								{/* Category tree (custom flow) */}
 								<FormGroupWrapper>

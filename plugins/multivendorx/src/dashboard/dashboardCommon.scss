@@ -1086,6 +1086,7 @@ body.dark {
             font-weight: 500;
             padding-bottom: 0.125rem;
             border-bottom: 0.063rem solid $text-color;
+            cursor: pointer;
         }
     }
 
@@ -1373,3 +1374,7 @@ body.dark {
 // }
 
 // variant style end
+
+.search-dropdown{
+    width: 100% !important;
+}

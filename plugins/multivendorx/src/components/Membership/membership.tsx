@@ -928,47 +928,6 @@ const Membership = ({ id }: { id: string }) => {
 						// desc={'Select which premium features stores can access with this plan.'}
 						>
 							<FormGroupWrapper>
-								<FormGroup cols={4} label="Max Products" htmlFor="trial_period">
-									<BasicInput
-										name="name"
-										value={formData.name}
-										onChange={handleChange}
-										postInsideText="days"
-									/>
-								</FormGroup>
-								<FormGroup cols={4} label="Max Categories" htmlFor="trial_period">
-									<BasicInput
-										name="name"
-										value={formData.name}
-										onChange={handleChange}
-										postInsideText="days"
-									/>
-								</FormGroup>
-								<FormGroup cols={4} label="Max Storage" htmlFor="trial_period">
-									<BasicInput
-										name="name"
-										value={formData.name}
-										onChange={handleChange}
-										postInsideText="days"
-									/>
-								</FormGroup>
-								<FormGroup cols={4} label="Max Staff Accounts" htmlFor="trial_period">
-									<BasicInput
-										name="name"
-										value={formData.name}
-										onChange={handleChange}
-										postInsideText="days"
-									/>
-								</FormGroup>
-								<FormGroup label="Max Coupons" htmlFor="trial_period">
-									<BasicInput
-										name="name"
-										size={"12rem"}
-										value={formData.name}
-										onChange={handleChange}
-										postInsideText="days"
-									/>
-								</FormGroup>
 								<FormGroup label="When limit reached" htmlFor="trial_period">
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
@@ -1155,32 +1114,6 @@ const Membership = ({ id }: { id: string }) => {
 										modules={[]}
 									/>
 								</FormGroup>
-
-								<FormGroup cols={2} label="How many listings a store can add" desc={__('Control how many listings a store can have at the same time.', 'multivendorx')}>
-									<BasicInput
-										name="name"
-
-
-										value={formData.name}
-										onChange={handleChange}
-										// postInsideText={'credits per month'}
-										size="10rem"
-										postText={'listings maximum'}
-									/>
-								</FormGroup>
-
-								<FormGroup cols={2} label="Images per listing" desc={__('Control how many images a store can add for each listing.', 'multivendorx')}>
-									<BasicInput
-										name="name"
-
-
-										value={formData.name}
-										onChange={handleChange}
-										// postInsideText={'credits per month'}
-										size="10rem"
-										postText={'images maximum'}
-									/>
-								</FormGroup>
 							</FormGroupWrapper>
 						</Card>
 
@@ -1325,31 +1258,6 @@ const Membership = ({ id }: { id: string }) => {
 							</FormGroupWrapper>
 						</Card>
 
-						<Card title={__('AI tools available to stores', 'multivendorx')}
-							desc={'Decide whether stores can use AI tools and how much they can use them.'}
-						>
-							<FormGroupWrapper>
-								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
-									<BasicInput
-										name="name"
-										value={formData.name}
-										onChange={handleChange}
-										postText={'credits per month'}
-										size="8rem"
-									/>
-								</FormGroup>
-								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
-									<BasicInput
-										name="name"
-										value={formData.name}
-										onChange={handleChange}
-										postText={'credits per month'}
-										size="8rem"
-									/>
-								</FormGroup>
-							</FormGroupWrapper>
-						</Card>
-
 						{/* <Card title={__('Extra tools for running a store', 'multivendorx')}
 							desc={'Decide which additional tools stores get to manage their storefront and customers.'}
 						>
@@ -1427,20 +1335,7 @@ const Membership = ({ id }: { id: string }) => {
 								<>
 									<FormGroupWrapper>
 										<FormGroup
-											label="Price"
-											htmlFor="signup_fee"
-											cols={2}
-										>
-											<BasicInput
-												name="signup_fee"
-												value={formData.signup_fee}
-												onChange={handleChange}
-												pInsideText="$"
-											/>
-										</FormGroup>
-
-										<FormGroup
-											label="Currency"
+											label="Signup Fee (Optional)"
 											htmlFor="recurring_price"
 											cols={2}
 										>
@@ -1448,46 +1343,29 @@ const Membership = ({ id }: { id: string }) => {
 												name="recurring_price"
 												value={formData.recurring_price}
 												onChange={handleChange}
+												preInsideText="$"
 											/>
 										</FormGroup>
 										<FormGroup
-											label="Signup Fee (Optional)"
+											label="Billing Cycle"
 											htmlFor="recurring_price"
+											cols={2}
 										>
 											<BasicInput
 												name="recurring_price"
+												postInsideText="Monthly"
 												value={formData.recurring_price}
 												onChange={handleChange}
 											/>
 										</FormGroup>
 									</FormGroupWrapper>
-									{/* <div className="card-header">
-										<div className="left">
-											<div className="title">
-												Trial Period
-											</div>
-											<div className="des">Configure optional trial period for new members</div>
-										</div>
-									</div> */}
 								</>
 							)}
 
 							{pricingType === 'subscription' && (
 								<FormGroupWrapper>
 									<FormGroup
-										label="Price"
-										htmlFor="signup_fee"
-										cols={2}
-									>
-										<BasicInput
-											name="signup_fee"
-											value={formData.signup_fee}
-											onChange={handleChange}
-											pInsideText="$"
-										/>
-									</FormGroup>
-									<FormGroup
-										label="Currency"
+										label="Signup Fee (Optional)"
 										htmlFor="recurring_price"
 										cols={2}
 									>
@@ -1495,24 +1373,17 @@ const Membership = ({ id }: { id: string }) => {
 											name="recurring_price"
 											value={formData.recurring_price}
 											onChange={handleChange}
+											preInsideText="$"
 										/>
 									</FormGroup>
 									<FormGroup
 										label="Billing Cycle"
 										htmlFor="recurring_price"
+										cols={2}
 									>
 										<BasicInput
 											name="recurring_price"
-											value={formData.recurring_price}
-											onChange={handleChange}
-										/>
-									</FormGroup>
-									<FormGroup
-										label="Signup Fee (Optional)"
-										htmlFor="recurring_price"
-									>
-										<BasicInput
-											name="recurring_price"
+											postInsideText="Monthly"
 											value={formData.recurring_price}
 											onChange={handleChange}
 										/>
@@ -1737,6 +1608,84 @@ const Membership = ({ id }: { id: string }) => {
 							</FormGroupWrapper>
 						</Card>
 						<Card contentHeight title={__('Membership Perks', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup cols={2} label="Products" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="items"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="Categories" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="max"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="Storage" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="GB"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="Staff Accounts" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="users"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="Coupons" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="active"
+									/>
+								</FormGroup>
+
+								<FormGroup cols={2} label="Images per Listing">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText={'images'}
+									/>
+								</FormGroup>
+								<FormGroup cols={2}></FormGroup>
+							</FormGroupWrapper>
+						</Card>
+						<Card contentHeight title={__('AI tools available to stores', 'multivendorx')}
+							desc={'Decide whether stores can use AI tools and how much they can use them.'}
+						>
+							<FormGroupWrapper>
+								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postText={'credits per month'}
+										size="8rem"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postText={'credits per month'}
+										size="8rem"
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
+						<Card contentHeight title={__('Plan Highlights', 'multivendorx')}>
 							<div className="membership-features">
 								<AdminButton
 									buttons={[
