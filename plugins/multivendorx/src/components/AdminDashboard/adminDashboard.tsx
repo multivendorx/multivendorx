@@ -502,7 +502,7 @@ const AdminDashboard = () => {
 											className="admin-btn"
 											onClick={() =>
 											(window.location.href =
-												'?page=multivendorx#&tab=setup')
+												'?page=mmultivendorx-setup')
 											}
 										>
 											{__(
