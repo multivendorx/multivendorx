@@ -1,20 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
-declare global {
-    interface Window {
-        appLocalizer: {
-            khali_dabba: boolean;
-            pro_url: string;
-            freeVersion: string;
-            active_modules: any[];
-            pro_data?: {
-                version: string;
-                manage_plan_url: string;
-            };
-        };
-    }
-}
 import Settings from './components/Settings/Settings';
 import { ModuleProvider } from './contexts/ModuleContext';
 import SubscribersList from './components/SubscriberList/SubscribersList';
@@ -26,8 +12,7 @@ import { searchIndex, SearchItem } from './searchIndex';
 
 const Route = () => {
     const currentTab = new URLSearchParams(useLocation().hash);
-    // const tab = currentTab.get('tab') || 'dashboard';
-    // const tab = currentTab.get('tab') || 'dashboard';
+    
 
     return (
         <>

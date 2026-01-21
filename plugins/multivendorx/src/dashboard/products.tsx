@@ -354,31 +354,37 @@ const AllProduct: React.FC = () => {
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: params, // Use the dynamically built params object
 		})
-			.then((response) => {
-				const formattedProducts = response.data.map((p: any) => ({
-					id: p.id,
-					name: p.name,
-					sku: p.sku || '-',
-					price: p.price ? `${p.price}` : '-',
-					stock_status: p.stock_status,
-					categories: p.categories,
-					date_created: p.date_created,
-					status: p.status,
-					permalink: p.permalink,
-					image: p.images?.length ? p.images[0].src : null,
-				}));
-				setData(formattedProducts);
+			// .then((response) => {
+			// 	const formattedProducts = response.data.map((p: any) => ({
+			// 		id: p.id,
+			// 		name: p.name,
+			// 		sku: p.sku || '-',
+			// 		price: p.price ? `${p.price}` : '-',
+			// 		stock_status: p.stock_status,
+			// 		categories: p.categories,
+			// 		date_created: p.date_created,
+			// 		status: p.status,
+			// 		permalink: p.permalink,
+			// 		image: p.images?.length ? p.images[0].src : null,
+			// 	}));
+			// 	setData(formattedProducts);
 
-				const total = parseInt(response.headers['x-wp-total']);
-				setTotalRows(total);
-				setPageCount(Math.ceil(total / rowsPerPage));
-			})
-			.catch(() => {
-				setData([]);
-				setTotalRows(0);
-				setPageCount(0);
+			// 	const total = parseInt(response.headers['x-wp-total']);
+			// 	setTotalRows(total);
+			// 	setPageCount(Math.ceil(total / rowsPerPage));
+			// })
+			// .catch(() => {
+			// 	setData([]);
+			// 	setTotalRows(0);
+			// 	setPageCount(0);
+			// });
+			.then((res) => {
+				console.log('API Response:', res.data);
+				setData(res.data.products);
+				setTotalPages(Math.ceil(res.data.total_products / rowsPerPage));
 			});
-	}
+
+		}
 
 	// Handle pagination and filter changes
 	const requestApiForData = (
