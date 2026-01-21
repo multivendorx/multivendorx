@@ -5,7 +5,7 @@ export default {
 	priority: 5,
 	name: __('Migration', 'multivendorx'),
 	desc: __(
-		'Follow the step-by-step wizard to import products, vendors, and settings effortlessly from other multivendor solutions.',
+		'Follow the step-by-step wizard to import products, stores, and settings effortlessly from other multivendor solutions.',
 		'multivendorx'
 	),
 	icon: 'adminfont-migration',

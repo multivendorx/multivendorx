@@ -31,7 +31,8 @@ a {
     }
 
     .select-menu-content {
-     padding: 0.25rem 0.313rem 0;
+      padding: 0.25rem 0.313rem 0;
+
       .admin-btn {
         width: 100%;
       }
@@ -43,7 +44,7 @@ a {
       // width: 13rem;
     }
 
-    .no-options{
+    .no-options {
       font-size: 0.95rem;
     }
   }
@@ -151,46 +152,6 @@ body:has(.admin-main-wrapper) {
 
   input[type="checkbox"]:focus {
     box-shadow: none;
-  }
-}
-
-// button style start
-.buttons-wrapper {
-  display: flex;
-  justify-content: end;
-  align-items: end;
-  gap: 0.625rem;
-  flex-wrap: wrap;
-
-  &.center {
-    justify-content: center;
-  }
-
-  &.left {
-    justify-content: start;
-  }
-}
-
-.admin-btn {
-  outline: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  text-align: center;
-  padding: 0.5rem 1.5rem;
-  border-radius: $border-radius-small;
-  font-size: 0.85rem;
-  transition: all 0.3s linear;
-  width: fit-content;
-  gap: 0.5rem;
-  border: none;
-  font-weight: 500;
-  color: $text-color;
-
-  &.btn-preview {
-    padding: 0;
   }
 }
 
@@ -687,7 +648,7 @@ $index: 1;
   gap: 1rem;
   position: relative;
   width: fit-content;
-  margin: 0.5rem 0;
+  // margin: 0.5rem 0;
 
   .loader {
     --uib-size: 2.205rem;
@@ -823,139 +784,6 @@ $index: 1;
   align-items: center;
   border: none;
   cursor: pointer;
-}
-
-// admin save notice popup
-.admin-notice-wrapper {
-  display: flex;
-  justify-content: flex-start;
-  gap: 0.875rem;
-  padding: 0.85rem 6rem 0.85rem 0.85rem;
-  font-weight: 400;
-  position: fixed;
-  z-index: 99999;
-  background: $background-white;
-  box-shadow: $box-shadow;
-  right: 1.85rem;
-  top: 7rem;
-  animation: noticeslide 7s ease-in-out forwards;
-
-  &.notice-error {
-    i {
-      color: $accent-color;
-    }
-  }
-
-  .title {
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.313;
-  }
-
-  i {
-    color: #008000;
-    font-size: 1.4rem;
-  }
-}
-
-@keyframes noticeslide {
-  0% {
-    transform: translateX(120%);
-  }
-
-  10% {
-    transform: translateX(0);
-  }
-
-  80% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(120%);
-  }
-}
-
-// admin save notice popup end
-.settings-input-content {
-  width: 72%;
-
-  .after {
-    font-size: 0.95rem;
-    color: #0000009c;
-  }
-
-  // multi input style start
-  .settings-basic-child-wrap {
-    display: flex;
-    gap: 1rem;
-
-    .settings-basic-input-child-class {
-      width: 9rem;
-
-      &.prefix .input-unit {
-        border-right: 0.063rem solid #11141891;
-        padding-right: 0.5rem;
-      }
-
-      &.suffix .input-unit {
-        border-left: 0.063rem solid #11141891;
-        padding-left: 0.5rem;
-      }
-
-      .setting-form-input {
-        align-items: center;
-        position: relative;
-        border: $border-light-small;
-        border-radius: $border-radius-small;
-        padding: 0 0.5rem;
-        background: #fff;
-
-        .input-unit {
-          font-size: 1rem;
-        }
-
-        input {
-          width: 100%;
-          border: none !important;
-
-          /* overwrite common style */
-          padding: 0;
-
-          &:focus {
-            box-shadow: none !important;
-
-            /* overwrite common style */
-          }
-        }
-      }
-
-      .setting-form-input:has(.toggle-setting-wrapper) {
-        border: none;
-      }
-    }
-  }
-
-  // multi input style end  
-
-  // add new btn start
-  .add-new-option {
-    margin-top: 1rem;
-    display: flex;
-    width: 50%;
-    gap: 0.5rem;
-  }
-
-  // add new btn end
-}
-
-.settings-input-content:has(.grid-table),
-.settings-input-content:has(.registration-from-wrapper) {
-  width: 100%;
-}
-
-.settings-input-content:has(.payment-tabs-component) {
-  width: 60%;
 }
 
 .select-deselect-trigger {

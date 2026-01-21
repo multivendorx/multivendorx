@@ -609,10 +609,10 @@ export default {
 			reloadOnChange: true
 		},
 		{
-			id: 'knowladgebase',
+			id: 'knowledgebase',
 			name: __('Knowledgebase', 'multivendorx'),
 			desc: 'Guides, tutorials, and FAQs shared with stores by the admin.',
-			icon: 'adminfont-knowladgebase',
+			icon: 'adminfont-knowledgebase',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/knowledgebase/',
 			pro_module: false,

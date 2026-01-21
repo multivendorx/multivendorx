@@ -139,6 +139,22 @@ const SocialMedia = () => {
 				</div>
 			</div>
 
+			<div className="form-group-wrapper">
+				<div className="form-group">
+					<label htmlFor="pinterest">
+						<i className="adminfont-mail"></i>{' '}
+						{__('Pinterest', 'multivendorx')}
+					</label>
+					<BasicInput
+						name="pinterest"
+						 
+						descClass="settings-metabox-description"
+						value={formData.pinterest}
+						onChange={handleChange}
+					/>
+				</div>
+			</div>
+
 			<SuccessNotice message={successMsg} />
 		</>
 	);

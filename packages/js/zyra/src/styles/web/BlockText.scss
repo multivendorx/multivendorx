@@ -1,0 +1,78 @@
+@use '../../global.scss' as *;
+
+.settings-metabox-note {
+  background: #fff;
+//   padding: 1rem;
+  width: 100%;  
+
+  .metabox-note-wrapper {
+    background: #ece2f991;
+    padding: 0.5rem 0.8rem;
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+    border: 0.063rem solid $theme-color;
+    border-radius: 0.313rem;
+    box-sizing: border-box;
+    width: fit-content;
+  }
+
+    i {
+      font-size: 1.313rem;
+      color: $theme-color;
+    }
+
+    ul,
+    li {
+      margin: 0;
+    }
+
+    .title {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: $theme-color;
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    a {
+      color: $theme-color;
+    }
+
+    &.notice {
+      flex-direction: column;
+      align-items: start;
+      width: 100%;
+
+      .title {
+        display: flex;
+        gap: 0.5rem;
+
+        h3 {
+          margin: 0;
+        }
+      }
+    }
+
+    &.green {
+      background: #d9f5f0d8;
+      border-color: #06be9f;
+
+      i {
+        color: #06be9f;
+      }
+    }
+
+    &.yellow {
+      background: #fff0e1e3;
+      border-color: #ff9f43;
+
+      i {
+        color: #ff9f43;
+      }
+    }  
+}

@@ -7,11 +7,30 @@ import {
     ReactNode,
 } from 'react';
 import DisplayButton from './DisplayButton';
+import SelectInput from './SelectInput';
 
 interface InputFeedback {
     type: string;
     message: string;
 }
+
+interface SelectOption {
+    value: string;
+    label: string;
+}
+
+type Addon =
+    | string
+    | ReactNode
+    | {
+          type: 'select';
+          key: string;
+          options: SelectOption[];
+          value?: string;
+          size?: string;
+      };
+
+type InputValue = string | Record<string, string>;
 
 interface BasicInputProps {
     wrapperClass?: string;
@@ -34,7 +53,7 @@ interface BasicInputProps {
     placeholder?: string;
     min?: number;
     max?: number;
-    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (value: InputValue) => void;
     onClick?: (e: MouseEvent<HTMLInputElement>) => void;
     onMouseOver?: (e: MouseEvent<HTMLInputElement>) => void;
     onMouseOut?: (e: MouseEvent<HTMLInputElement>) => void;
@@ -138,14 +157,37 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
             }
         };
 
-        const renderNode = (content?: string | React.ReactNode) => {
-            if (!content) return null;
+        const renderAddon = (addon: Addon, parentValue: string | Record<string, string>) => {
+            if (!addon) return null;
 
-            if (typeof content === 'string') {
-                return <span dangerouslySetInnerHTML={{ __html: content }} />;
+            if (typeof addon === 'string' || typeof addon !== 'object') {
+                return typeof addon === 'string' ? <span dangerouslySetInnerHTML={{ __html: addon }} /> : addon;
             }
 
-            return <>{content}</>;
+            if (addon.type === 'select' && addon.options?.length) {
+                return (
+                    <SelectInput
+                        wrapperClass=""
+                        name={addon.key || ''}
+                        options={addon.options.map((opt: SelectOption) => ({
+                            value: opt.value,
+                            label: opt.label || opt.value,
+                        }))}
+                        value={parentValue?.[addon.key] || addon.value || ''}
+                        size={addon.size || undefined}
+                        onChange={(newValue) => {
+                            if (typeof onChange === 'function') {
+                                onChange({
+                                    ...parentValue,          // preserve other keys
+                                    [addon.key]: newValue.value // set selected key
+                                });
+                            }
+                        }}
+                    />
+                );
+            }
+
+            return null;
         };
 
         return (
@@ -164,7 +206,6 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                             wraperClass={
                                 inputClass || 'admin-btn default-btn'
                             }
-                            // onClick={(e) => onClick && onClick(e as any)}
                             onClick={(e) => {
                                 e.preventDefault();
 
@@ -186,7 +227,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                         <>
                             {preText && (
                                 <span className="before">
-                                    {renderNode(preText)}
+                                    {renderAddon(preText, value)}
                                 </span>
                             )}
                             <div
@@ -195,7 +236,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                             >
                                 {preInsideText && (
                                     <span className="pre">
-                                        {renderNode(preInsideText)}
+                                        {renderAddon(preInsideText, value)}
                                     </span>
                                 )}
                                 <input
@@ -208,7 +249,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                     type={type}
                                     name={name}
                                     placeholder={placeholder}
-                                    value={value ?? ''}
+                                    // value={value ?? ''}
                                     min={
                                         ['number', 'range'].includes(type)
                                             ? min
@@ -219,7 +260,27 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                             ? max
                                             : undefined
                                     }
-                                    onChange={onChange}
+                                    value={typeof value === 'object' ? value.value ?? '' : value ?? ''}
+                                    onChange={(e) => {
+                                        const newVal = e.target.value;
+
+                                        const hasObjectAddon =
+                                            (preText && typeof preText === 'object') ||
+                                            (postText && typeof postText === 'object') ||
+                                            (postInsideText && typeof postInsideText === 'object') ||
+                                            (preInsideText && typeof preInsideText === 'object');
+
+                                        if (hasObjectAddon) {
+                                            // Save as object with main value
+                                            const base = typeof value === 'object' ? value : { value: typeof value === 'string' ? value : '' };
+                                            onChange({
+                                                ...base,
+                                                value: newVal,
+                                            });
+                                        } else {
+                                            onChange(e);
+                                        }
+                                    }}
                                     onClick={onClick}
                                     onMouseOver={onMouseOver}
                                     onMouseOut={onMouseOut}
@@ -235,7 +296,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
 
                                 {postInsideText && (
                                     <span className="parameter">
-                                        {renderNode(postInsideText)}
+                                        {renderAddon(postInsideText, value)}
                                     </span>
                                 )}
 
@@ -298,7 +359,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                             </div>
                             {postText && (
                                 <span className="after">
-                                    {renderNode(postText)}
+                                    {renderAddon(postText, value)}
                                 </span>
                             )}
                         </>

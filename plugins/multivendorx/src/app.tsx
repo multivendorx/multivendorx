@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { AdminButton, AdminHeader, Banner, CommonPopup, DoActionBtn, TourSetup } from 'zyra';
+import { AdminButton, AdminHeader, Banner, CommonPopup, DoActionBtn, FormGroup, FormGroupWrapper, TourSetup } from 'zyra';
 
 import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/modules';
@@ -259,69 +259,74 @@ const App = () => {
 					title: __('Import Dummy Data', 'multivendorx')
 				}}
 			>
-				<DoActionBtn
-					buttonKey="import_dummy_data"
-					value={__('Import Dummy Data', 'multivendorx')}
-					// description={__(
-					// 	'Import dummy data for testing purpose. This will create store owners, stores, products, and orders.',
-					// 	'multivendorx'
-					// )}
-					apilink="import-dummy-data"
-					parameter="action"
-					interval={1000}
-					proSetting={false}
-					proSettingChanged={() => false}
-					appLocalizer={appLocalizer}
-					successMessage={__('Dummy data imported successfully!', 'multivendorx')}
-					failureMessage={__('Failed to import dummy data.', 'multivendorx')}
-					tasks={[
-						{
-							action: 'import_store_owners',
-							message: __('Importing store owners...', 'multivendorx'),
-							cacheKey: 'store_owners',
-							successMessage: __('Store owners imported', 'multivendorx'),
-							failureMessage: __('Failed to import store owners', 'multivendorx'),
-						},
-						{
-							action: 'import_stores',
-							message: __('Creating stores...', 'multivendorx'),
-							cacheKey: 'store_ids',
-							successMessage: __('Stores created', 'multivendorx'),
-							failureMessage: __('Failed to create stores', 'multivendorx'),
-						},
-						{
-							action: 'import_products',
-							message: __('Importing products...', 'multivendorx'),
-							cacheKey: 'product_ids',
-							successMessage: __('Products imported', 'multivendorx'),
-							failureMessage: __('Failed to import products', 'multivendorx'),
-						},
-						{
-							action: 'import_commissions',
-							message: __('Creating commissions...', 'multivendorx'),
-							successMessage: __('Commissions created', 'multivendorx'),
-							failureMessage: __('Failed to create commissions', 'multivendorx'),
-						},
-						{
-							action: 'import_orders',
-							message: __('Creating orders...', 'multivendorx'),
-							successMessage: __('Orders created', 'multivendorx'),
-							failureMessage: __('Failed to create orders', 'multivendorx'),
-						},
-						{
-							action: 'import_reviews',
-							message: __('Creating reviews...', 'multivendorx'),
-							successMessage: __('Reviews created', 'multivendorx'),
-							failureMessage: __('Failed to create reviews', 'multivendorx'),
-						},
-					]}
-					onComplete={(data) => {
-						console.log('Import completed', data);
-					}}
-					onError={(error) => {
-						console.error('Import failed', error);
-					}}
-				/>
+				<FormGroupWrapper>
+					<FormGroup label={__('Import Dummy Data', 'multivendorx')}>
+
+					</FormGroup>
+					<div className="desc">
+						Get a hands-on feel of your marketplace in minutes.
+						 Import demo stores, store owners, products, and commission data to see how everything works together.  
+						 <b>Important: </b>Delete all demo data before going live so your real marketplace data stays clean and reliable.</div>
+					<DoActionBtn
+						buttonKey="import_dummy_data"
+						value={__('Import Dummy Data', 'multivendorx')}
+						apilink="import-dummy-data"
+						parameter="action"
+						interval={1000}
+						proSetting={false}
+						proSettingChanged={() => false}
+						appLocalizer={appLocalizer}
+						successMessage={__('Dummy data imported successfully!', 'multivendorx')}
+						failureMessage={__('Failed to import dummy data.', 'multivendorx')}
+						tasks={[
+							{
+								action: 'import_store_owners',
+								message: __('Importing store owners...', 'multivendorx'),
+								cacheKey: 'store_owners',
+								successMessage: __('Store owners imported', 'multivendorx'),
+								failureMessage: __('Failed to import store owners', 'multivendorx'),
+							},
+							{
+								action: 'import_stores',
+								message: __('Creating stores...', 'multivendorx'),
+								cacheKey: 'store_ids',
+								successMessage: __('Stores created', 'multivendorx'),
+								failureMessage: __('Failed to create stores', 'multivendorx'),
+							},
+							{
+								action: 'import_products',
+								message: __('Importing products...', 'multivendorx'),
+								cacheKey: 'product_ids',
+								successMessage: __('Products imported', 'multivendorx'),
+								failureMessage: __('Failed to import products', 'multivendorx'),
+							},
+							{
+								action: 'import_commissions',
+								message: __('Creating commissions...', 'multivendorx'),
+								successMessage: __('Commissions created', 'multivendorx'),
+								failureMessage: __('Failed to create commissions', 'multivendorx'),
+							},
+							{
+								action: 'import_orders',
+								message: __('Creating orders...', 'multivendorx'),
+								successMessage: __('Orders created', 'multivendorx'),
+								failureMessage: __('Failed to create orders', 'multivendorx'),
+							},
+							{
+								action: 'import_reviews',
+								message: __('Creating reviews...', 'multivendorx'),
+								successMessage: __('Reviews created', 'multivendorx'),
+								failureMessage: __('Failed to create reviews', 'multivendorx'),
+							},
+						]}
+						onComplete={(data) => {
+							console.log('Import completed', data);
+						}}
+						onError={(error) => {
+							console.error('Import failed', error);
+						}}
+					/>
+				</FormGroupWrapper>
 			</CommonPopup>
 
 			<TourSetup

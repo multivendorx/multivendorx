@@ -1,0 +1,40 @@
+@use '../../../global.scss' as *;
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+
+  &.center {
+    justify-content: center;
+  }
+
+  &.left {
+    justify-content: start;
+  }
+}
+
+.admin-btn {
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  text-align: center;
+  padding: 0.5rem 1.5rem;
+  border-radius: $border-radius-small;
+  font-size: 0.85rem;
+  transition: all 0.3s linear;
+  width: fit-content;
+  gap: 0.5rem;
+  border: none;
+  font-weight: 500;
+//   color: $text-color;
+
+  &.btn-preview {
+    padding: 0;
+  }
+}

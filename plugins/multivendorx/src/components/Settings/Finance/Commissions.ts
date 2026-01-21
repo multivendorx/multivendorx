@@ -61,7 +61,6 @@ export default {
 		{
 			key: 'store_rating_page',
 			type: 'blocktext',
-			label: __(' ', 'multivendorx'),
 			blocktext: __(
 				'You are currently using the older vendor-specific commission system from previous versions of MultiVendorX. Because of that, the <b>Marketplace commission</b> and <b>Commission value</b> fields shown below will continue to work as vendor-specific until you update or modify this settings page.<br><br>Once you make any change, your marketplace will automatically switch to the new <b>Marketplace commission</b> model. From that point onward, all commissions will be calculated using the updated system, and this notice will no longer appear.',
 				'multivendorx'
@@ -258,7 +257,7 @@ export default {
 				'Configure how taxes are treated in commission calculations.',
 				'multivendorx'
 			),
-			desc: __( '<strong>Example setup:</strong><br> Product price = ₹1,000<br> Tax rate = 10% → ₹100<br> Marketplace commission rate = 10%<ul> <li><strong>Marketplace Share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Marketplace receives tax = ₹100<br> Marketplace total earning = ₹200 (commission + tax)<br> Store payout = ₹900 (tax not included)</li> <li><strong>Store Share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Store earnings before tax = ₹900<br> Tax added to store earnings = ₹100<br> Final store payout = ₹1,000<br> Marketplace earning = ₹100 (commission only)</li> <li><strong>Proportional Split</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Tax on marketplace commission = ₹10<br> Tax on store earnings = ₹90<br> Marketplace total earning = ₹110 (commission + tax share)<br> Store payout = ₹990 (earnings + tax share)</li> </ul>', 'multivendorx' ),
+			desc: __( '<strong>Example setup:</strong><br> Product price = ₹1,000<br> Tax rate = 10% → ₹100<br> Marketplace commission rate = 10%<ul> <li><strong>Marketplace share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Marketplace receives tax = ₹100<br> Marketplace total earning = ₹200 (commission + tax)<br> Store payout = ₹900 (tax not included)</li> <li><strong>Store share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Store earnings before tax = ₹900<br> Tax added to store earnings = ₹100<br> Final store payout = ₹1,000<br> Marketplace earning = ₹100 (commission only)</li> <li><strong>Commission based tax</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Tax on marketplace commission = ₹10<br> Tax on store earnings = ₹90<br> Marketplace total earning = ₹110 (commission + tax share)<br> Store payout = ₹990 (earnings + tax share)</li> </ul>', 'multivendorx' ),
 			options: [
 				{
 					key: 'no_tax',
@@ -280,9 +279,8 @@ export default {
 		{
 			key: 'store_rating_page',
 			type: 'blocktext',
-			label: __(' ', 'multivendorx'),
 			blocktext: __(
-				'To allow each store to set up and manage its own shipping methods, zones, and rates, please enable the <a href="' +
+				'Allow each store to manage its own shipping methods, zones, and rates, and to pass shipping amounts to stores, please enable the <a href="' +
 				appLocalizer.site_url +
 				'/wp-admin/admin.php?page=multivendorx#&tab=modules"> "Shipping module".</a></b>',
 				'multivendorx'

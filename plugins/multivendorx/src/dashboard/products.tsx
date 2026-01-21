@@ -232,34 +232,30 @@ const AllProduct: React.FC = () => {
 
 	const fetchWpmlTranslations = async () => {
 		if (!modules.includes('wpml')) return;
-
+	
 		try {
-			const response = await axios.get(getApiLink(appLocalizer, 'multivendorx-wpml'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			});
+			const response = await axios.get(
+				getApiLink(appLocalizer, 'multivendorx-wpml'),
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			);
+	
 			const langs = response.data || [];
-
-			// Initialize language counts with 0
-			const initialCounts = langs.map((lang: any) => ({
-				key: lang.code,
-				name: lang.name,
-				count: 0,
-			}));
-			setLanguageProductCounts(initialCounts);
-
-			// Then fetch actual counts asynchronously
+	
+			// Directly fetch and merge language-wise product counts
 			if (langs.length) {
 				fetchLanguageWiseProductCounts(langs);
 			}
 		} catch (err) {
-			setLanguageProductCounts([]);
 			console.error('Failed to fetch WPML translations', err);
 		}
 	};
+	
 
 	const fetchLanguageWiseProductCounts = async (langs: any[]) => {
 		if (!langs?.length) return;
-
+	
 		try {
 			const counts = await Promise.all(
 				langs.map(async (lang) => {
@@ -269,33 +265,48 @@ const AllProduct: React.FC = () => {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
 					};
-					const res = await axios.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
-						headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						params,
-					});
+	
+					const res = await axios.get(
+						`${appLocalizer.apiUrl}/wc/v3/products`,
+						{
+							headers: { 'X-WP-Nonce': appLocalizer.nonce },
+							params,
+						}
+					);
+	
 					const total = parseInt(res.headers['x-wp-total'] || '0');
-
+	
 					return {
-						key: lang.code,
+						key: lang.code, 
 						name: lang.name,
 						count: total,
 					};
 				})
 			);
-
-			// Merge counts with previous state so UI doesn't jump
-			setLanguageProductCounts((prev) =>
-				prev.map((lang) => {
-					const updated = counts.find((c) => c.key === lang.key);
-					return updated ? { ...lang, count: updated.count } : lang;
-				})
-			);
+	
+			const languageItems = counts.filter(c => c.count > 0);
+	
+			// Do nothing if no language has products
+			if (!languageItems.length) {
+				return;
+			}
+	
+			const allLangItem: ProductStatus = {
+				key: 'all_lang',
+				name: __('All Languages', 'multivendorx'),
+				count: languageItems.reduce((sum, l) => sum + l.count, 0),
+			};
+	
+			setProductStatus(prev => [
+				...prev,
+				allLangItem,
+				...languageItems,
+			]);
 		} catch (error) {
 			console.error('Failed to fetch language wise product counts:', error);
 		}
 	};
-
-
+	
 	useEffect(() => {
 		fetchCategories();
 		fetchProductStatusCounts();
@@ -319,7 +330,6 @@ const AllProduct: React.FC = () => {
 		startDate?: Date,
 		endDate?: Date,
 		categoryFilter?: string,
-		languageFilter?: string,
 	) {
 		category = category || '';
 		stockStatus = stockStatus || '';
@@ -328,7 +338,6 @@ const AllProduct: React.FC = () => {
 		startDate = startDate || new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
 		endDate = endDate || new Date();
 		categoryFilter = categoryFilter || '';
-		languageFilter = languageFilter || '';
 
 		setData(null);
 		const params: any = {
@@ -339,7 +348,6 @@ const AllProduct: React.FC = () => {
 			before: endDate,
 			meta_key: 'multivendorx_store_id',
 			value: appLocalizer.store_id,
-			lang: languageFilter,
 		};
 
 		if (stockStatus) {
@@ -352,9 +360,19 @@ const AllProduct: React.FC = () => {
 		if (productType) {
 			params.type = productType;
 		}
+
 		if (categoryFilter && categoryFilter !== 'all') {
-			params.status = categoryFilter;
+			const WC_STATUSES = ['publish', 'draft', 'pending', 'private', 'trash'];
+		
+			if (categoryFilter === 'all_lang') {
+				params.lang = 'all';
+			} else if (WC_STATUSES.includes(categoryFilter)) {
+				params.status = categoryFilter;
+			} else {
+				params.lang = categoryFilter;
+			}
 		}
+		
 		axios({
 			method: 'GET',
 			url: `${appLocalizer.apiUrl}/wc/v3/products`,
@@ -821,7 +839,6 @@ const AllProduct: React.FC = () => {
 							totalCounts={totalRows}
 							searchFilter={searchFilter}
 							categoryFilter={productStatus}
-							languageFilter={languageProductCounts}
 							bulkActionComp={() => <BulkAction />}
 						/>
 					</div>

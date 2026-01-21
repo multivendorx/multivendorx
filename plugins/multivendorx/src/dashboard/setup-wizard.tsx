@@ -14,7 +14,7 @@ const SetupWizard: React.FC = () => {
             'disbursement_order_status': ['completed']
         },
         'store_setup': {
-            'approve_store' : 'manually'
+            'approve_store': 'manually'
         }
     });
     const settingChanged = useRef(false);
@@ -40,203 +40,57 @@ const SetupWizard: React.FC = () => {
     const methods = [
         {
             id: 'marketplace_setup',
-            label: 'Choose what kind of marketplace you are building',
+            label: 'Store Profile',
             icon: 'adminfont-storefront',
-            desc: 'This helps us tailor features for your business.',
+            desc: 'Set up how your store appears',
             countBtn: true,
             isWizardMode: true,
-            openForm:true,
+            openForm: true,
             formFields: [
                 {
-                    key: 'marketplace_model',
-                    type: 'multi-select',
-                    selectType: 'single-select',
-                    label: __(
-                        'What kind of marketplace you are building',
+                    key: 'store_name',
+                    type: 'text',
+                    label: __('Store name', 'multivendorx'),
+                    desc: __(
+                        'The name shown on your store page and product listings.',
                         'multivendorx'
                     ),
-                    options: [
-                        {
-                            key: 'general',
-                            label: __('General marketplace', 'multivendorx'),
-                            value: 'general',
-                        },
-                        {
-                            key: 'product',
-                            label: __('Product marketplace', 'multivendorx'),
-                            value: 'product',
-                        },
-                        {
-                            key: 'rental',
-                            label: __('Rental marketplace', 'multivendorx'),
-                            value: 'rental',
-                        },
-                        {
-                            key: 'auction',
-                            label: __('Auction marketplace', 'multivendorx'),
-                            value: 'auction',
-                        },
-                        {
-                            key: 'subscription',
-                            label: __('Subscription marketplace', 'multivendorx'),
-                            value: 'subscription',
-                        },
-                        {
-                            key: 'service',
-                            label: __('Service marketplace', 'multivendorx'),
-                            value: 'service',
-                        },
-                        {
-                            key: 'mixed',
-                            label: __('Mixed marketplace', 'multivendorx'),
-                            value: 'mixed',
-                        }
-                    ],
                 },
                 {
-                    key: 'product_types',
-                    type: 'multi-select',
-                    selectType: 'multi-select',
-                    label: __(
-                        'What kind of listings stores can create',
+                    key: 'store_name',
+                    type: 'textarea',
+                    label: __('Store description', 'multivendorx'),
+                    desc: __(
+                        'The name shown on your store page and product listings.',
                         'multivendorx'
                     ),
-                    options: [
-                        {
-                            key: 'simple',
-                            label: __('Simple', 'multivendorx'),
-                            value: 'simple',
-                        },
-                        {
-                            key: 'variable',
-                            label: __('Variable', 'multivendorx'),
-                            value: 'variable',
-                        },
-                        {
-                            key: 'booking',
-                            label: __('Booking', 'multivendorx'),
-                            value: 'booking',
-                        },
-                        {
-                            key: 'subscription',
-                            label: __('Subscription', 'multivendorx'),
-                            value: 'subscription',
-                        },
-                        {
-                            key: 'rental',
-                            label: __('Rental', 'multivendorx'),
-                            value: 'rental',
-                        },
-                        {
-                            key: 'auction',
-                            label: __('Auction', 'multivendorx'),
-                            value: 'auction',
-                        },
-                        {
-                            key: 'accommodation',
-                            label: __('Accommodation', 'multivendorx'),
-                            value: 'accommodation',
-                        },
-                    ],
                 },
                 {
-                    key: 'notice',
-                    type: 'blocktext',
-                    label: __(' ', 'multivendorx'),
-                    blocktext: __(
-                        'Ready to unlock the full potential of your marketplace? Activate Woocommerce Rental with MultiVendorX Pro and start selling like a pro today!',
+                    key: 'store_dashboard_site_logo',
+                    type: 'file',
+                    label: __('Store logo', 'multivendorx'),
+                    size: 'small',
+                },
+                {
+                    key: 'store_dashboard_site_logo',
+                    type: 'file',
+                    label: __('Banner image (optional)', 'multivendorx'),
+                    size: 'small',
+                },
+                {
+                    key: 'store_name',
+                    type: 'text',
+                    label: __('Contact phone', 'multivendorx'),
+                    desc: __(
+                        'The name shown on your store page and product listings.',
                         'multivendorx'
                     ),
-                    dependent: {
-                        key: 'marketplace_model',
-                        value: 'rental',
-                    },
                 },
-                {
-                    key: 'notice',
-                    type: 'blocktext',
-                    label: __(' ', 'multivendorx'),
-                    blocktext: __(
-                        'Ready to unlock the full potential of your marketplace? Activate Woocommerce Simple Auction with MultiVendorX Pro and start selling like a pro today!',
-                        'multivendorx'
-                    ),
-                    dependent: {
-                        key: 'marketplace_model',
-                        value: 'auction',
-                    },
-                },
-                {
-                    key: 'notice',
-                    type: 'blocktext',
-                    label: __(' ', 'multivendorx'),
-                    blocktext: __(
-                        'Ready to unlock the full potential of your marketplace? Activate Woocommerce Subscription with MultiVendorX Pro and start selling like a pro today!',
-                        'multivendorx'
-                    ),
-                    dependent: {
-                        key: 'marketplace_model',
-                        value: 'subscription',
-                    },
-                },
-                {
-                    key: 'store_selling_mode',
-                    type: 'setting-toggle',
-                    label: __(
-                        'How stores sell on your marketplace',
-                        'multivendorx'
-                    ),
-                    desc: __('Choose how listings are created and sold by stores.', 'multivendorx'),
-                    options: [
-                        {
-                            key: 'default',
-                            label: __('Own listing', 'multivendorx'),
-                            value: 'default',
-                        },
-                        {
-                            key: 'single_product_multiple_vendor',
-                            label: __('Shared listing', 'multivendorx'),
-                            value: 'single_product_multiple_vendor',
-                        },
-                        {
-                            key: 'franchise',
-                            label: __('Franchise', 'multivendorx'),
-                            value: 'franchise',
-                            proSetting: true
-                        },
-                    ],
-                },
-                {
-                    key: 'wizardButtons',
-                    type: 'buttons',
-                    options: [
-                        {
-                            label: 'Back',
-                            action: 'back',
-                            btnClass: 'admin-btn btn-red',
-                        },
-                        {
-                            label: 'Next',
-                            action: 'next',
-                            btnClass: 'admin-btn btn-purple',
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            id: 'store_setup',
-            label: 'Configure Your Store',
-            icon: 'adminfont-storefront',
-            desc: 'How stores sell on your marketplace.',
-            countBtn: true,
-            isWizardMode: true,
-            openForm:true,
-            formFields: [
                 {
                     key: 'approve_store',
                     type: 'setting-toggle',
                     label: __(
-                        'Store registration approval',
+                        'Timezone',
                         'multivendorx'
                     ),
                     options: [
@@ -271,102 +125,125 @@ const SetupWizard: React.FC = () => {
             ],
         },
         {
-            id: 'commission_setup',
-            label: 'How marketplace commission is calculated',
+            id: 'store_setup',
+            label: 'Business Location',
             icon: 'adminfont-storefront',
-            desc: 'Decide how your marketplace earns money.',
+            desc: 'Confirm your operating address',
             countBtn: true,
             isWizardMode: true,
-            openForm:true,
+            openForm: true,
             formFields: [
                 {
-                    key: 'commission_type',
+                    key: 'approve_store',
                     type: 'setting-toggle',
-                    label: __('How commission is calculated', 'multivendorx'),
-                    settingDescription: __(
-                        'Choose how marketplace commission is applied.',
-                        'multivendorx'
-                    ),
-                    desc: __(
-                        '<ul><li>Store order based - Calculated on the full order amount of each store. Example: A customer buys from 3 stores → commission applies separately to each store’s order.</li><li>Per item based - Applied to each product in the order. Example: An order with 5 items → commission applies 5 times, once per item.</li></ul>',
-                        'multivendorx'
-                    ),
-                    options: [
-                        {
-                            key: 'store_order',
-                            label: __('Store order based', 'multivendorx'),
-                            value: 'store_order',
-                        },
-                        {
-                            key: 'item',
-                            label: __('Per item based', 'multivendorx'),
-                            value: 'item',
-                        },
-                    ],
-                },
-                {
-                    key: 'commission_value',
-                    type: 'nested',
-                    label: 'Commission value',
-                    single: true,
-                    desc: __(
-                        'Set global commission rates that apply to each individual item quantity. Commission will be calculated by multiplying the rate with the total number of items across all products in the order.',
-                        'multivendorx'
-                    ),
-                    nestedFields: [
-                        {
-                            key: 'commission_fixed',
-                            type: 'number',
-                            preInsideText: __('$', 'multivendorx'),
-                            size: '8rem',
-                            preText: 'Fixed',
-                            postText: '+',
-                        },
-                        {
-                            key: 'commission_percentage',
-                            type: 'number',
-                            postInsideText: __('%', 'multivendorx'),
-                            size: '8rem',
-                        },
-                    ],
-                },
-                {
-                    key: 'disbursement_order_status',
-                    type: 'multi-checkbox',
                     label: __(
-                        'When stores earn money',
+                        'Country',
                         'multivendorx'
                     ),
-                    settingDescription: __(
-                        'Choose when store earnings are added to their wallet.',
-                        'multivendorx'
-                    ),
-                     
                     options: [
                         {
-                            key: 'completed',
-                            label: __('Completed', 'multivendorx'),
-                            value: 'completed',
+                            key: 'manually',
+                            label: __('United States', 'multivendorx'),
+                            value: 'manually',
                         },
                         {
-                            key: 'delivered',
-                            label: __('Delivered', 'multivendorx'),
-                            value: 'delivered',
-                            proSetting: true,
+                            key: 'automatically',
+                            label: __('United Kingdom', 'multivendorx'),
+                            value: 'automatically',
                         },
                         {
-                            key: 'processing',
-                            label: __('Processing', 'multivendorx'),
-                            value: 'processing',
+                            key: 'automatically',
+                            label: __('Canada', 'multivendorx'),
+                            value: 'automatically',
                         },
                         {
-                            key: 'shipped',
-                            label: __('Shipped', 'multivendorx'),
-                            value: 'shipped',
-                            proSetting: true,
+                            key: 'automatically',
+                            label: __('Australia', 'multivendorx'),
+                            value: 'automatically',
                         },
                     ],
-                    selectDeselect: true,
+                },
+                {
+                    key: 'store_name',
+                    type: 'textarea',
+                    label: __('Address', 'multivendorx'),
+                },
+                {
+                    key: 'store_name',
+                    type: 'text',
+                    label: __('City', 'multivendorx'),
+                    desc: __(
+                        'The name shown on your store page and product listings.',
+                        'multivendorx'
+                    ),
+                },
+                {
+                    key: 'store_name',
+                    type: 'text',
+                    label: __('Postcode / ZIP ', 'multivendorx'),
+                    desc: __(
+                        'The name shown on your store page and product listings.',
+                        'multivendorx'
+                    ),
+                },
+                {
+                    key: 'wizardButtons',
+                    type: 'buttons',
+                    options: [
+                        {
+                            label: 'Back',
+                            action: 'back',
+                            btnClass: 'admin-btn btn-red',
+                        },
+                        {
+                            label: 'Next',
+                            action: 'next',
+                            btnClass: 'admin-btn btn-purple',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            id: 'commission_setup',
+            label: 'Payout Method',
+            icon: 'adminfont-storefront',
+            desc: 'Choose how you receive earnings',
+            countBtn: true,
+            isWizardMode: true,
+            openForm: true,
+            formFields: [
+                {
+                    key: 'commission_settings',
+                    type: 'setup',
+                    title: 'Bank Transfer',
+                    desc: 'Click to configure',
+                    hideCheckbox: true,
+                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+                },
+                {
+                    key: 'commission_settings',
+                    type: 'setup',
+                    title: 'PayPal',
+                    desc: 'Click to configure',
+                    hideCheckbox: true,
+                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+                },
+                {
+                    key: 'commission_settings',
+                    type: 'setup',
+                    title: 'Stripe',
+                    desc: 'Click to configure',
+                    hideCheckbox: true,
+                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+                },
+                {
+                    key: 'commission_settings',
+                    type: 'setup',
+                    title: 'Other Methods',
+                    desc: 'Click to configure',
+                    hideCheckbox: true,
+                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
                 },
                 {
                     key: 'wizardButtons',
@@ -388,44 +265,125 @@ const SetupWizard: React.FC = () => {
         },
         {
             id: 'more_settings',
-            label: 'Want to configure more settings?',
+            label: 'Store Policies',
             icon: 'adminfont-storefront',
-            desc: "You're all set with the basics! Use the quick links below to fine-tune your marketplace now — or come back later anytime.",
+            desc: "Set your selling rules",
             countBtn: true,
             isWizardMode: true,
-            openForm:true,
+            openForm: true,
             formFields: [
                 {
-                    key: 'commission_settings',
-                    type: 'setup',
-                    title: 'Commission settings',
-                    desc: 'Adjust commission rules and payout behavior.',
-                    hideCheckbox: true,
-                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+                    key: 'store_name',
+                    type: 'textarea',
+                    label: __('Refund & return policy', 'multivendorx'),
                 },
                 {
-                    key: 'commission_settings',
-                    type: 'setup',
-                    title: 'Commission settings',
-                    desc: 'Adjust commission rules and payout behavior.',
-                    hideCheckbox: true,
-                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+                    key: 'store_name',
+                    type: 'textarea',
+                    label: __('Shipping terms', 'multivendorx'),
                 },
                 {
-                    key: 'commission_settings',
-                    type: 'setup',
-                    title: 'Commission settings',
-                    desc: 'Adjust commission rules and payout behavior.',
-                    hideCheckbox: true,
-                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+                    key: 'store_name',
+                    type: 'textarea',
+                    label: __('Store terms and conditions', 'multivendorx'),
                 },
                 {
-                    key: 'commission_settings',
-                    type: 'setup',
-                    title: 'Commission settings',
-                    desc: 'Adjust commission rules and payout behavior.',
-                    hideCheckbox: true,
-                    link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=store-commissions`,
+                    key: 'wizardButtons',
+                    type: 'buttons',
+                    options: [
+                        {
+                            label: 'Back',
+                            action: 'back',
+                            btnClass: 'admin-btn btn-red',
+                        },
+                        {
+                            label: 'Next',
+                            action: 'next',
+                            btnClass: 'admin-btn btn-purple',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            id: 'identity_verification',
+            label: 'Identity Verification',
+            icon: 'adminfont-storefront',
+            desc: "Verify your store details",
+            countBtn: true,
+            isWizardMode: true,
+            openForm: true,
+            formFields: [
+                {
+                    key: 'store_dashboard_site_logo',
+                    type: 'file',
+                    label: __('Government-issued ID', 'multivendorx'),
+                    size: 'small',
+                },
+                {
+                    key: 'store_dashboard_site_logo',
+                    type: 'file',
+                    label: __('Business address proof', 'multivendorx'),
+                    size: 'small',
+                },
+                {
+                    key: 'Registration or tax documents',
+                    type: 'file',
+                    label: __('Government-issued ID', 'multivendorx'),
+                    size: 'small',
+                },
+                {
+                    key: 'wizardButtons',
+                    type: 'buttons',
+                    options: [
+                        {
+                            label: 'Back',
+                            action: 'back',
+                            btnClass: 'admin-btn btn-red',
+                        },
+                        {
+                            label: 'Next',
+                            action: 'next',
+                            btnClass: 'admin-btn btn-purple',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            id: 'first_product',
+            label: 'First Product',
+            icon: 'adminfont-storefront',
+            desc: "Add at least one item",
+            countBtn: true,
+            isWizardMode: true,
+            openForm: true,
+            formFields: [
+                {
+                    key: 'store_name',
+                    type: 'text',
+                    label: __('Product title', 'multivendorx'),
+                },
+                {
+                    key: 'store_name',
+                    type: 'textarea',
+                    label: __('Product description', 'multivendorx'),
+                },
+                {
+                    key: 'store_name',
+                    type: 'number',
+                    label: __('Price', 'multivendorx'),
+                },
+                {
+                    key: 'store_name',
+                    type: 'number',
+                    label: __('Inventory', 'multivendorx'),
+                },
+                {
+                    key: 'Registration or tax documents',
+                    type: 'file',
+                    label: __('Product images', 'multivendorx'),
+                    size: 'small',
                 },
                 {
                     key: 'wizardButtons',

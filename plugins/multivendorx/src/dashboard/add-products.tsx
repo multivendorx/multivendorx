@@ -718,6 +718,19 @@ const AddProduct = () => {
 				<div className="page-title">
 					<div className="title">
 						{__('Add Product', 'multivendorx')}
+						{translation
+							?.filter((lang) => lang.is_default) // only include default language
+							.map((lang) => (
+								<div key={lang.code} className="mvx-translation-row">
+									<div>
+										<img
+											src={lang.flag_url}
+											alt={lang.code}
+										/>
+										<strong>{lang.native_name}</strong>
+									</div>
+								</div>
+							))}
 					</div>
 
 					<div className="des">
@@ -1464,35 +1477,27 @@ const AddProduct = () => {
 						>
 							<FormGroupWrapper>
 								<div className="mvx-translation-list">
-									{translation?.map((lang) => (
-										<div
-											key={lang.code}
-											className="mvx-translation-row"
-										>
-											<div>
-												<img
-													src={lang.flag_url}
-													alt={lang.code}
-													style={{ width: 18, height: 18 }}
-												/>
-												<strong>{lang.native_name}</strong>
-												{lang.is_default && (
-													<span className="admin-badge gray">
-														{__('Default', 'multivendorx')}
-													</span>
-												)}
-											</div>
+									{translation
+										?.filter((lang) => !lang.is_default) // only non-default languages
+										.map((lang) => (
+											<div key={lang.code} className="mvx-translation-row">
+												<div>
+													<img
+														src={lang.flag_url}
+														alt={lang.code}
+													/>
+													<strong>{lang.native_name}</strong>
+												</div>
 
-											{!lang.is_default && (
 												<button
 													className="admin-btn btn-small btn-secondary"
 													onClick={() => handleTranslationClick(lang)}
 												>
 													<i className="adminfont-edit" />
 												</button>
-											)}
-										</div>
-									))}
+											</div>
+										))}
+
 								</div>
 							</FormGroupWrapper>
 						</Card>

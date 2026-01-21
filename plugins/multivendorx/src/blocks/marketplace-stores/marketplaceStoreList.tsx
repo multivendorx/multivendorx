@@ -53,7 +53,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	}, [settings]);
 
 	const [addressData, setAddressData] = useState({
-		location_address: '',
 		location_lat: '',
 		location_lng: '',
 		address: '',
@@ -167,7 +166,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		if (!locationData) return;
 
 		const updatedAddress = {
-			location_address: locationData.location_address || '',
 			location_lat: locationData.location_lat || '',
 			location_lng: locationData.location_lng || '',
 			address: locationData.address || '',
@@ -211,7 +209,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					...prev,
 					location_lat: lat,
 					location_lng: lng,
-					location_address: 'My Current Location',
+					address: 'My Current Location',
 				}));
 			}
 		);
@@ -224,7 +222,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 
 		const commonProps = {
 			apiKey,
-			locationAddress: addressData.location_address,
+			locationAddress: addressData.address,
 			locationLat: addressData.location_lat,
 			locationLng: addressData.location_lng,
 			isUserLocation,
@@ -366,7 +364,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 											{store.phone}
 										</span>
 										<span>
-											{store.address_1}
+											{store.address}
 										</span>
 									</div>
 								</div>

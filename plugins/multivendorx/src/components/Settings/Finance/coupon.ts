@@ -42,7 +42,7 @@ export default {
 			key: 'admin_coupon_excluded',
 			label: __('Exclude admin created coupons', 'multivendorx'),
 			desc: __(
-				'<li>Enabled - admin-created coupons will not reduce store commission.</li><li>Disabled - store commission adjusts according to the ‘Who will bear the coupon cost’ setting.</li>',
+				'<ul><li>Enabled - admin-created coupons will not reduce store commission.</li><li>Disabled - store commission adjusts according to the ‘Who will bear the coupon cost’ setting.</li></ul>',
 				'multivendorx'
 			),
 			type: 'checkbox',

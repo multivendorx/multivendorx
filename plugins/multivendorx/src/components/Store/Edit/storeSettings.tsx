@@ -103,7 +103,6 @@ const StoreSettings = ({
 	};
 
 	const [addressData, setAddressData] = useState({
-		location_address: '',
 		location_lat: '',
 		location_lng: '',
 		address: '',
@@ -138,10 +137,9 @@ const StoreSettings = ({
 
 		// Set address-specific data
 		setAddressData({
-			location_address: data.location_address || data.address || '',
 			location_lat: data.location_lat || '',
 			location_lng: data.location_lng || '',
-			address: data.address || data.location_address || '',
+			address: data.address || '',
 			city: data.city || '',
 			state: data.state || '',
 			country: data.country || '',
@@ -384,7 +382,7 @@ const StoreSettings = ({
 
 		const commonProps = {
 			apiKey,
-			locationAddress: addressData.location_address,
+			locationAddress: addressData.address,
 			locationLat: addressData.location_lat,
 			locationLng: addressData.location_lng,
 			onLocationUpdate: handleLocationUpdate,
@@ -467,8 +465,8 @@ const StoreSettings = ({
 						<FormGroupWrapper>
 							<FormGroup label={__('Address *', 'multivendorx')} htmlFor="address">
 								<BasicInput
-									name="location_address"
-									value={addressData.location_address}
+									name="address"
+									value={addressData.address}
 									 
 									descClass="settings-metabox-description"
 									onChange={handleAddressChange}
@@ -621,6 +619,7 @@ const StoreSettings = ({
 							'linkedin',
 							'youtube',
 							'instagram',
+							'pinterest',
 						].map((network) => {
 							const iconClass = `adminfont-${network} ${network}`;
 							const defaultUrl = `https://${network === 'twitter' ? 'x' : network}.com/`;

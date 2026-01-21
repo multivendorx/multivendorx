@@ -45,7 +45,12 @@ const MessageState: React.FC<MessageStateProps> = ({
 				) : (
 					<div
 						className="admin-btn btn-purple"
-						onClick={onButtonClick}
+						role="button"
+						onClick={() => {
+							if (onButtonClick) {
+								onButtonClick();
+							}
+						}}
 					>
 						{buttonText}
 					</div>

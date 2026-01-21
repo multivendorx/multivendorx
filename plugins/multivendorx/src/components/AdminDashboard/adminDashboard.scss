@@ -62,6 +62,7 @@
         padding-bottom: 0.813rem;
     }
 }
+
 // pro banner end
 
 // admin dashboard card design start
@@ -859,7 +860,7 @@
         display: flex;
         gap: 0.5rem;
 
-        .admin-badge{
+        .admin-badge {
             cursor: pointer;
         }
     }
@@ -881,6 +882,7 @@
     top: 2rem;
     z-index: 9;
 }
+
 .checklist-process-wrapper.show {
     top: 2.125rem;
     transform: translate(0);
@@ -907,12 +909,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
-    padding-right: 2rem;
+    padding: 0.5rem 2rem;
 
     .checklist-title {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
         color: $text-color;
+        display: flex;
+        align-items: center;
+        gap: 0.313rem;
     }
 
     ul {
@@ -985,6 +989,7 @@
                 .des {
                     font-size: 0.813rem;
                     color: $sub-text-color;
+                    line-height: 1.063;
                 }
             }
 
@@ -1075,4 +1080,42 @@
         right: 0.5rem;
     }
 }
+
 // membership checklist end
+
+
+
+// move to color settings
+.form-group-color-setting {
+    display: flex;
+    margin-bottom: 0.75rem;
+    justify-content: space-between;
+
+    .form-group-wrapper {
+        .form-group{
+            padding: 0;
+            gap: 0;
+            label{
+                width: 100%;
+            }
+        }
+    }
+    .form-group-setting-wrapper{
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        label{
+            font-size: 1rem;
+            padding-bottom: 0.625rem;
+        }
+    }
+    .admin-btn{
+        background: transparent;
+    }
+    .admin-btn:first-child{
+        border-radius: 0.313rem 0 0 0.313rem;
+    }
+    .admin-btn:last-child{
+        border-radius: 0.313rem 0 0 0.313rem;
+    }
+}

@@ -406,7 +406,7 @@ class Stores extends \WP_REST_Controller {
                         'applied_on'          => $store['create_time'],
                         'store_image'         => $store_meta->meta_data['image'] ?? '',
                         'store_banner'        => $store_meta->meta_data['banner'] ?? '',
-                        'address_1'           => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address_1'] ] ?? '',
+                        'address'           => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
                         'location_lat'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? '',
                         'location_lng'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? '',
                         'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),

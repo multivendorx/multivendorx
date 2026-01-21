@@ -2265,9 +2265,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         }` }
                         onClick={ ( e ) => handleGroupClick( e, inputField ) }
                     >
-                        { inputField.label &&
-                            inputField.type !== 'catalog-customizer' &&
-                            inputField.type !== 'form-customizer' && (
+                        { inputField.label && (
                                 <label
                                     className="settings-form-label"
                                     key={ 'l' + inputField.key }

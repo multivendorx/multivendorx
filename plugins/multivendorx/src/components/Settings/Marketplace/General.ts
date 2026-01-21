@@ -69,7 +69,7 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
+				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
 				'multivendorx'
 			),
 			options: [
@@ -80,16 +80,10 @@ export default {
 					icon: 'adminfont-cart',
 					value: 'mainorder',
 					customHtml: `<div class="toggle-notice">
-									<div class="title">What happens</div>
 									<ul>
 										<li>Customer gets one email about their purchase</li>
 										<li>One order shows in "My Account"</li>
 										<li>One receipt for everything</li>
-									</ul>
-								</div>
-								<div class="toggle-notice">
-									<div class="title">Receipts & tax info</div>
-									<ul>
 										<li>One receipt issued by Your Marketplace with Your business tax details</li>
 									</ul>
 								</div>`
@@ -101,16 +95,10 @@ export default {
 					desc: __('Customer receives separate emails and sees individual store orders', 'multivendorx'),
 					value: 'suborder',
 					customHtml: `<div class="toggle-notice">
-									<div class="title">What Happens</div>
 									<ul>
 										<li>Separate email from each store</li>
 										<li>Multiple orders show in "My Account" (one per store)</li>
 										<li>Separate receipt from each store</li>
-									</ul>
-								</div>
-								<div class="toggle-notice">
-									<div class="title">Receipts & tax info</div>
-									<ul>
 										<li>Multiple receipts (one from each store) issued by Each Store with Each store's tax details</li>
 									</ul>
 								</div>`					
@@ -122,16 +110,10 @@ export default {
 					desc: __('Customer receives multiple emails and sees all order versions', 'multivendorx'),
 					value: '',
 					customHtml: `<div class="toggle-notice">
-									<div class="title">What Happens</div>
 									<ul>
 										<li>One email for complete order + separate emails per store</li>
 										<li>Multiple orders in "My Account" (combined + individual)</li>
 										<li>Multiple receipts (one from you + one from each store)</li>
-									</ul>
-								</div>
-								<div class="toggle-notice">
-									<div class="title">Receipts & tax info</div>
-									<ul>
 										<li>Multiple receipts (yours + all stores) issued by Your Marketplace + All Stores with Your and each store's tax details</li>
 									</ul>
 								</div>`

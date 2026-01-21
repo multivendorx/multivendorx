@@ -199,8 +199,8 @@ export default {
 			  {
 				key: 'invoice_1',
 				label: __('Invoice 1', 'mvx-pro'),
-				preview: InvoiceHtml1,
-				component: InvoiceHtml1,
+				preview: Invoice1,
+				component: Invoice1,
 				pdf: Invoice1,
 			  },
 			  {

@@ -1241,15 +1241,6 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                 : 'Inactive'}
                                                         </div>
                                                     )}
-                                                    {!!(
-                                                        method.required ||
-                                                        value?.[method.id]
-                                                            ?.required
-                                                    ) && (
-                                                            <div className="admin-badge red">
-                                                                Required
-                                                            </div>
-                                                        )}
                                                 </div>
                                             </div>
                                             <div className="panel-description">
@@ -1608,18 +1599,18 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                         </div>
                     );
                 })}
-            </div>
-            { /* {addNewBtn && ( */}
-            {addNewBtn && (
-                <div className="buttons-wrapper">
-                    <div
-                        className="admin-btn btn-purple"
-                        onClick={handleAddNewMethod}
-                    >
-                        <i className="adminfont-plus"></i> Add New
+                { /* {addNewBtn && ( */}
+                {addNewBtn && (
+                    <div className="buttons-wrapper">
+                        <div
+                            className="admin-btn btn-purple"
+                            onClick={handleAddNewMethod}
+                        >
+                            <i className="adminfont-plus"></i> Add New
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {isWizardMode && (
                 <div className="buttons-wrapper">{renderWizardButtons()}</div>

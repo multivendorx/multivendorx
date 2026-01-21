@@ -44,6 +44,7 @@ const InvoiceDOM: React.FC<Props> = ({ colors = {}, invoiceRows }) => {
     header: {
       backgroundColor: "red",
       padding: 20,
+      display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
     },
@@ -61,7 +62,6 @@ const InvoiceDOM: React.FC<Props> = ({ colors = {}, invoiceRows }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>INVOICE</Text>
           <Text style={styles.headerInfo}>
@@ -70,8 +70,7 @@ const InvoiceDOM: React.FC<Props> = ({ colors = {}, invoiceRows }) => {
             New York, NY 10001{"\n"}
             contact@bluewave.co | +1 555-123-4567
           </Text>
-        </View>
-       
+        </View>       
       </Page>
     </Document>
   );

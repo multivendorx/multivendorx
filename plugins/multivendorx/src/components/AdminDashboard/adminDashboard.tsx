@@ -247,7 +247,7 @@ const AdminDashboard = () => {
 			title: 'Product & store tools',
 			features: [
 				{
-					name: 'Multiple vendors per product (SPMV)',
+					name: 'Multiple vendors per product',
 					free: true,
 					pro: true,
 				},
@@ -375,7 +375,7 @@ const AdminDashboard = () => {
 	const Modules: Module[] = [
 		{
 			id: 'spmv',
-			name: 'Single product multiple vendor',
+			name: 'Shared listing',
 			iconClass: 'adminfont-spmv',
 			pro: false,
 		},
@@ -502,7 +502,7 @@ const AdminDashboard = () => {
 											className="admin-btn"
 											onClick={() =>
 											(window.location.href =
-												'?page=mmultivendorx-setup')
+												'?page=multivendorx-setup')
 											}
 										>
 											{__(
@@ -946,7 +946,7 @@ const AdminDashboard = () => {
 
 									<div
 										onClick={() =>
-											(window.location.href = `?page=multivendorx#&tab=setup`)
+											(window.location.href = `?page=multivendorx-setup`)
 										}
 										className="admin-btn"
 									>

@@ -19,6 +19,7 @@ import {
 	FormGroup,
 	AdminButton,
 	RadioInput,
+	Section,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -172,7 +173,7 @@ const advancedFeaturesField = {
 	look: 'checkbox',
 	selectDeselect: true,
 	class: 'basic-checkbox',
-	desc: 'Enable advanced features for vendors',
+	desc: 'Enable advanced features for stores',
 	options: [
 		{
 			key: 'vendor-vacation',
@@ -209,7 +210,7 @@ const whenLimitReached = {
 	selectDeselect: true,
 	class: 'basic-checkbox',
 	options: [
-		{ key: 'advanced_inventory', value: 'advanced_inventory', label: __('Block creation', 'multivendorx'), desc: __('Prevent vendors from adding more items', 'multivendorx') },
+		{ key: 'advanced_inventory', value: 'advanced_inventory', label: __('Block creation', 'multivendorx'), desc: __('Prevent stores from adding more items', 'multivendorx') },
 		{ key: 'shipping_management', value: 'shipping_management', label: __('Allow but warn', 'multivendorx'), desc: __('Show warning but allow creation', 'multivendorx') },
 		{ key: 'import_export_tools', value: 'import_export_tools', label: __('Auto-upgrade suggestion', 'multivendorx'), desc: __('Prompt to upgrade plan', 'multivendorx') },],
 };
@@ -764,7 +765,7 @@ const Membership = ({ id }: { id: string }) => {
 				<Container>
 					<Column>
 						<div className={`checklist-process-wrapper row ${isChecklistOpen ? 'hide' : 'show'}`}>
-							<div className="checklist-title"><i className="adminfont-star"></i><span> Recommended </span></div>
+							{/* <div className="checklist-title"><i className="adminfont-star"></i><span> Recommended </span></div> */}
 							<ul>
 								<li className="checked">
 									<div className="details-wrapper">
@@ -923,7 +924,396 @@ const Membership = ({ id }: { id: string }) => {
 								</FormGroup>
 							</FormGroupWrapper>
 						</Card>
+						<Card contentHeight title={__('Plan Highlights', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup cols={3}>
+									<FileInput
+										// value={formData.image || ''}
+										inputClass="form-input"
+										name="image"
+										type="hidden"
+										// imageSrc={imagePreview || ''}
+										imageWidth={75}
+										imageHeight={75}
+									// openUploader={__(
+									// 	'Upload Image',
+									// 	'multivendorx'
+									// )}
+									// onButtonClick={() =>
+									// 	runUploader('image')
+									// }
+									// onRemove={() =>
+									// 	handleRemoveImage('image')
+									// }
+									// onReplace={() =>
+									// 	handleReplaceImage('image')
+									// }
+									/>
+								</FormGroup>
+								<FormGroup cols={2}>
+									<div className="membership-features">
+										<AdminButton
+											buttons={[
+												{
+													icon: 'delete',
+													text: 'Clear All',
+													className: 'red',
+													onClick: clearAll,
+												},
+												{
+													icon: 'plus',
+													text: 'Add Feature',
+													className: 'purple',
+													onClick: addFeature,
+												},
+											]}
+										/>
+										<div className="features-list">
+											{features.map((feature, index) => (
+												<div className="feature-row" key={index}>
+													<span className={`feature-number`}>
+														{index + 1}
+													</span>
+													<input
+														type="text"
+														className="basic-input"
+														placeholder="e.g., Unlimited access to premium content"
+														value={feature}
+														onChange={(e) =>
+															updateFeature(index, e.target.value)
+														}
+													/>
+												</div>
+											))}
+										</div>
+									</div>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
+					</Column>
 
+					<Column grid={4}>
+						<Card contentHeight title={__('Pricing', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup
+									label="Membership type"
+									htmlFor="membership_type"
+								>
+									<ToggleSetting
+										wrapperClass="full-width"
+										options={[
+											{
+												key: 'free',
+												value: 'free',
+												label: __('Free', 'multivendorx'),
+												desc: __('No charges', 'multivendorx'),
+											},
+											{
+												key: 'paid',
+												value: 'paid',
+												label: __('One-time Payment', 'multivendorx'),
+												desc: __('Lifetime access', 'multivendorx'),
+											},
+											{
+												key: 'subscription',
+												value: 'subscription',
+												label: __('Subscription', 'multivendorx'),
+												desc: __('Recurring', 'multivendorx'),
+											},
+										]}
+										value={pricingType}
+										onChange={(value: string) =>
+											setPricingType(value as 'free' | 'paid' | 'subscription')
+										}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+
+							{pricingType === 'paid' && (
+								<>
+									<FormGroupWrapper>
+										<FormGroup
+											label="Signup Fee (Optional)"
+											htmlFor="recurring_price"
+											cols={2}
+										>
+											<BasicInput
+												name="recurring_price"
+												value={formData.recurring_price}
+												onChange={handleChange}
+												preInsideText="$"
+											/>
+										</FormGroup>
+										<FormGroup
+											label="Billing Cycle"
+											htmlFor="recurring_price"
+											cols={2}
+										>
+											<BasicInput
+												name="recurring_price"
+												postInsideText="Monthly"
+												value={formData.recurring_price}
+												onChange={handleChange}
+											/>
+										</FormGroup>
+									</FormGroupWrapper>
+								</>
+							)}
+
+							{pricingType === 'subscription' && (
+								<FormGroupWrapper>
+									<FormGroup
+										label="Signup Fee (Optional)"
+										htmlFor="recurring_price"
+										cols={2}
+									>
+										<BasicInput
+											name="recurring_price"
+											value={formData.recurring_price}
+											onChange={handleChange}
+											preInsideText="$"
+										/>
+									</FormGroup>
+									<FormGroup
+										label="Billing Cycle"
+										htmlFor="recurring_price"
+										cols={2}
+									>
+										<BasicInput
+											name="recurring_price"
+											postInsideText="Monthly"
+											value={formData.recurring_price}
+											onChange={handleChange}
+										/>
+									</FormGroup>
+									<label
+										onClick={() => setstarFill((prev) => !prev)}
+										style={{ cursor: 'pointer' }}
+										className="field-wrapper"
+									>
+										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
+										{__('Apply tax to plan price', 'multivendorx')}
+									</label>
+									<div className="settings-metabox-note">
+										<div className="metabox-note-wrapper">
+											<i className="adminfont-info"></i>
+											<div className="details">
+												<p>Activate Stripe Marketplace or PayPal Marketplace module to use recurring subscriptions.</p>
+												<p>Sign-up fee 0.05 or more is required to create subscriptions in Stripe/PayPal</p>
+											</div>
+										</div>
+									</div>
+								</FormGroupWrapper>
+							)}
+						</Card>
+						<Card
+							contentHeight title={__('Trial Period', 'multivendorx')}
+							desc={__('Configure optional trial period for new members', 'multivendorx')}
+							action={
+								<>
+									<div className="field-wrapper">
+										{/* {__('Offer a trial period', 'multivendorx')} */}
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-manage-stock"
+											type="checkbox"
+											value={trialEnabled}
+											onChange={(value) => {
+												if (Array.isArray(value)) {
+													setTrialEnabled(value);
+												} else if (value?.target) {
+													const { checked, value: v } = value.target as HTMLInputElement;
+													setTrialEnabled((prev) =>
+														checked
+															? [...prev, v]
+															: prev.filter((item) => item !== v)
+													);
+												}
+											}}
+											options={[
+												{ key: 'trial', value: 'trial', },
+											]}
+										/>
+									</div>
+								</>
+							}>
+							{trialEnabled.includes('trial') && (
+								<FormGroupWrapper>
+									{/* <FormGroup label="Offer a trial period" htmlFor="trial_period">
+									<NestedComponent
+										id="trial_period"
+										fields={subscription}
+										value={rules}
+										single={true}
+										addButtonLabel="Add Rule"
+										deleteButtonLabel="Remove"
+										onChange={(val) => setRules(val)}
+									/>
+								</FormGroup> */}
+									<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
+										<BasicInput
+											name="name"
+											value={formData.name}
+											onChange={handleChange}
+											postInsideText="days"
+										/>
+									</FormGroup>
+								</FormGroupWrapper>
+							)}
+							{/* <div className="card-header">
+								<div className="left">
+									<div className="title">
+										After Expiry
+									</div>
+									<div className="des">Define what happens when subscription expires</div>
+								</div>
+							</div> */}
+							{/* <FormGroupWrapper>
+								<FormGroup
+									label="Offer grace period"
+									htmlFor="grace_period"
+								>
+									<NestedComponent
+										id="grace_period"
+										fields={gracePeriod}
+										value={rules}
+										single={true}
+										addButtonLabel="Add Rule"
+										deleteButtonLabel="Remove"
+										onChange={(val) => setRules(val)}
+									/>
+								</FormGroup>
+							</FormGroupWrapper> */}
+						</Card>
+						<Card
+							contentHeight title={__('After Expiry', 'multivendorx')}
+							desc={__('Define what happens when subscription expires', 'multivendorx')}
+							action={
+								<>
+									<div className="field-wrapper">
+										{/* {__('Offer grace period', 'multivendorx')} */}
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-grace"
+											type="checkbox"
+											value={graceEnabled}
+											onChange={(value) => {
+												if (Array.isArray(value)) {
+													setGraceEnabled(value);
+												} else if (value?.target) {
+													const { checked, value: v } = value.target as HTMLInputElement;
+													setGraceEnabled((prev) =>
+														checked
+															? [...prev, v]
+															: prev.filter((item) => item !== v)
+													);
+												}
+											}}
+
+											options={[
+												{ key: 'grace', value: 'grace', },
+											]}
+										/>
+									</div>
+								</>
+							}>
+							{graceEnabled.includes('grace') && (
+								<>
+									<FormGroupWrapper>
+										<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
+											<BasicInput
+												name="name"
+												value={formData.name}
+												onChange={handleChange}
+												postInsideText="days"
+												size="8rem"
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="During this period, products are">
+											<SelectInput
+												name="product_type"
+												type="multi-select"
+												options={duringThisPeriod}
+												value={duringThisPeriod.filter(opt =>
+													selectedValues.includes(opt.value)
+												)}
+												onChange={(selected: any) => {
+													// selected is array of option objects
+													const values = selected?.map((opt: any) => opt.value) || [];
+													setSelectedValues(values);
+												}}
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="Product creation">
+											<ToggleSetting
+												options={[
+													{
+														key: 'allowed',
+														value: 'allowed',
+														label: __('Allowed', 'multivendorx'),
+													},
+													{
+														key: 'not-allowed',
+														value: 'not-allowed',
+														label: __('Not allowed', 'multivendorx'),
+													},
+												]}
+											// value={pricingType}
+											// onChange={(value: string) =>
+											// 	setPricingType(value as 'free' | 'paid')
+											// }
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="Change the store role to">
+											<SelectInput
+												name="product_type"
+												type="multi-select"
+												options={storeRole}
+												value={storeRole.filter(opt =>
+													selectedValues.includes(opt.value)
+												)}
+												onChange={(selected: any) => {
+													// selected is array of option objects
+													const values = selected?.map((opt: any) => opt.value) || [];
+													setSelectedValues(values);
+												}}
+											/>
+										</FormGroup>
+									</FormGroupWrapper>
+								</>
+							)}
+						</Card>
+						<Card contentHeight title={__('Commission type', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup
+									label="Include All Add-ons"
+									htmlFor={advancedFeaturesField.key}
+								>
+									<NestedComponent
+										id="role_rules"
+										fields={nestedFields}
+										value={rules}
+										single={true}
+										addButtonLabel="Add Rule"
+										deleteButtonLabel="Remove"
+										onChange={(val) => setRules(val)}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
+					</Column>
+					<Column>
+						<Section
+						 wrapperClass='divider-wrapper'
+							hint={__('Commission type', 'multivendorx')}
+						// hint={ inputField.hint } 
+						/>
+					</Column>
+					<Column grid={8}>
 						<Card title={__('Usage Limits', 'multivendorx')}
 						// desc={'Select which premium features stores can access with this plan.'}
 						>
@@ -1257,356 +1647,8 @@ const Membership = ({ id }: { id: string }) => {
 								</FormGroup>
 							</FormGroupWrapper>
 						</Card>
-
-						{/* <Card title={__('Extra tools for running a store', 'multivendorx')}
-							desc={'Decide which additional tools stores get to manage their storefront and customers.'}
-						>
-							<FormGroupWrapper>
-								<FormGroup
-									label="Store management tools"
-									htmlFor={vendorStorefrontField.key}
-									desc={__('Choose whether stores can set store rules, communicate with buyers, pause sales, or offer customer support.', 'multivendorx')}
-								>
-									<MultiCheckBox
-										wrapperClass="checkbox-list-side-by-side"
-										  
-										description={vendorStorefrontField.desc}
-										inputWrapperClass="toggle-checkbox-header"
-										inputInnerWrapperClass="default-checkbox"
-										inputClass={vendorStorefrontField.class}
-										idPrefix={vendorStorefrontField.key}
-										selectDeselect
-										options={vendorStorefrontField.options}
-										value={normalizeValue(vendorStorefrontField.key)}
-										onChange={handleMultiCheckboxChange(
-											vendorStorefrontField.key
-										)}
-										onMultiSelectDeselectChange={() =>
-											handleSelectDeselect(vendorStorefrontField)
-										}
-										proSetting={false}
-										moduleChange={() => { }}
-										modules={[]}
-									/>
-								</FormGroup>
-							</FormGroupWrapper>
-
-						</Card> */}
 					</Column>
-
 					<Column grid={4}>
-						<Card contentHeight title={__('Pricing', 'multivendorx')}>
-							<FormGroupWrapper>
-								<FormGroup
-									label="Membership type"
-									htmlFor="membership_type"
-								>
-									<ToggleSetting
-										wrapperClass="full-width"
-										options={[
-											{
-												key: 'free',
-												value: 'free',
-												label: __('Free', 'multivendorx'),
-												desc: __('No charges', 'multivendorx'),
-											},
-											{
-												key: 'paid',
-												value: 'paid',
-												label: __('One-time Payment', 'multivendorx'),
-												desc: __('Lifetime access', 'multivendorx'),
-											},
-											{
-												key: 'subscription',
-												value: 'subscription',
-												label: __('Subscription', 'multivendorx'),
-												desc: __('Recurring', 'multivendorx'),
-											},
-										]}
-										value={pricingType}
-										onChange={(value: string) =>
-											setPricingType(value as 'free' | 'paid' | 'subscription')
-										}
-									/>
-								</FormGroup>
-							</FormGroupWrapper>
-
-							{pricingType === 'paid' && (
-								<>
-									<FormGroupWrapper>
-										<FormGroup
-											label="Signup Fee (Optional)"
-											htmlFor="recurring_price"
-											cols={2}
-										>
-											<BasicInput
-												name="recurring_price"
-												value={formData.recurring_price}
-												onChange={handleChange}
-												preInsideText="$"
-											/>
-										</FormGroup>
-										<FormGroup
-											label="Billing Cycle"
-											htmlFor="recurring_price"
-											cols={2}
-										>
-											<BasicInput
-												name="recurring_price"
-												postInsideText="Monthly"
-												value={formData.recurring_price}
-												onChange={handleChange}
-											/>
-										</FormGroup>
-									</FormGroupWrapper>
-								</>
-							)}
-
-							{pricingType === 'subscription' && (
-								<FormGroupWrapper>
-									<FormGroup
-										label="Signup Fee (Optional)"
-										htmlFor="recurring_price"
-										cols={2}
-									>
-										<BasicInput
-											name="recurring_price"
-											value={formData.recurring_price}
-											onChange={handleChange}
-											preInsideText="$"
-										/>
-									</FormGroup>
-									<FormGroup
-										label="Billing Cycle"
-										htmlFor="recurring_price"
-										cols={2}
-									>
-										<BasicInput
-											name="recurring_price"
-											postInsideText="Monthly"
-											value={formData.recurring_price}
-											onChange={handleChange}
-										/>
-									</FormGroup>
-									<label
-										onClick={() => setstarFill((prev) => !prev)}
-										style={{ cursor: 'pointer' }}
-										className="field-wrapper"
-									>
-										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
-										{__('Apply tax to plan price', 'multivendorx')}
-									</label>
-									<div className="settings-metabox-note">
-										<div className="metabox-note-wrapper">
-											<i className="adminfont-info"></i>
-											<div className="details">
-												<p>Activate Stripe Marketplace or PayPal Marketplace module to use recurring subscriptions.</p>
-												<p>Sign-up fee 0.05 or more is required to create subscriptions in Stripe/PayPal</p>
-											</div>
-										</div>
-									</div>
-								</FormGroupWrapper>
-							)}
-						</Card>
-						<Card
-							contentHeight title={__('Trial Period', 'multivendorx')}
-							desc={__('Configure optional trial period for new members', 'multivendorx')}
-							action={
-								<>
-									<div className="field-wrapper">
-										{/* {__('Offer a trial period', 'multivendorx')} */}
-										<MultiCheckBox
-											wrapperClass="toggle-btn"
-											inputWrapperClass="toggle-checkbox-header"
-											inputInnerWrapperClass="toggle-checkbox"
-											idPrefix="toggle-switch-manage-stock"
-											type="checkbox"
-											value={trialEnabled}
-											onChange={(value) => {
-												if (Array.isArray(value)) {
-													setTrialEnabled(value);
-												} else if (value?.target) {
-													const { checked, value: v } = value.target as HTMLInputElement;
-													setTrialEnabled((prev) =>
-														checked
-															? [...prev, v]
-															: prev.filter((item) => item !== v)
-													);
-												}
-											}}
-											options={[
-												{ key: 'trial', value: 'trial', },
-											]}
-										/>
-									</div>
-								</>
-							}>
-							{trialEnabled.includes('trial') && (
-								<FormGroupWrapper>
-									{/* <FormGroup label="Offer a trial period" htmlFor="trial_period">
-									<NestedComponent
-										id="trial_period"
-										fields={subscription}
-										value={rules}
-										single={true}
-										addButtonLabel="Add Rule"
-										deleteButtonLabel="Remove"
-										onChange={(val) => setRules(val)}
-									/>
-								</FormGroup> */}
-									<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
-										<BasicInput
-											name="name"
-											value={formData.name}
-											onChange={handleChange}
-											postInsideText="days"
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							)}
-							{/* <div className="card-header">
-								<div className="left">
-									<div className="title">
-										After Expiry
-									</div>
-									<div className="des">Define what happens when subscription expires</div>
-								</div>
-							</div> */}
-							{/* <FormGroupWrapper>
-								<FormGroup
-									label="Offer grace period"
-									htmlFor="grace_period"
-								>
-									<NestedComponent
-										id="grace_period"
-										fields={gracePeriod}
-										value={rules}
-										single={true}
-										addButtonLabel="Add Rule"
-										deleteButtonLabel="Remove"
-										onChange={(val) => setRules(val)}
-									/>
-								</FormGroup>
-							</FormGroupWrapper> */}
-						</Card>
-						<Card
-							contentHeight title={__('After Expiry', 'multivendorx')}
-							desc={__('Define what happens when subscription expires', 'multivendorx')}
-							action={
-								<>
-									<div className="field-wrapper">
-										{/* {__('Offer grace period', 'multivendorx')} */}
-										<MultiCheckBox
-											wrapperClass="toggle-btn"
-											inputWrapperClass="toggle-checkbox-header"
-											inputInnerWrapperClass="toggle-checkbox"
-											idPrefix="toggle-switch-grace"
-											type="checkbox"
-											value={graceEnabled}
-											onChange={(value) => {
-												if (Array.isArray(value)) {
-													setGraceEnabled(value);
-												} else if (value?.target) {
-													const { checked, value: v } = value.target as HTMLInputElement;
-													setGraceEnabled((prev) =>
-														checked
-															? [...prev, v]
-															: prev.filter((item) => item !== v)
-													);
-												}
-											}}
-
-											options={[
-												{ key: 'grace', value: 'grace', },
-											]}
-										/>
-									</div>
-								</>
-							}>
-							{graceEnabled.includes('grace') && (
-								<>
-									<FormGroupWrapper>
-										<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
-											<BasicInput
-												name="name"
-												value={formData.name}
-												onChange={handleChange}
-												postInsideText="days"
-												size="8rem"
-											/>
-										</FormGroup>
-										<FormGroup cols={2} label="During this period, products are">
-											<SelectInput
-												name="product_type"
-												type="multi-select"
-												options={duringThisPeriod}
-												value={duringThisPeriod.filter(opt =>
-													selectedValues.includes(opt.value)
-												)}
-												onChange={(selected: any) => {
-													// selected is array of option objects
-													const values = selected?.map((opt: any) => opt.value) || [];
-													setSelectedValues(values);
-												}}
-											/>
-										</FormGroup>
-										<FormGroup cols={2} label="Product creation">
-											<ToggleSetting
-												options={[
-													{
-														key: 'allowed',
-														value: 'allowed',
-														label: __('Allowed', 'multivendorx'),
-													},
-													{
-														key: 'not-allowed',
-														value: 'not-allowed',
-														label: __('Not allowed', 'multivendorx'),
-													},
-												]}
-											// value={pricingType}
-											// onChange={(value: string) =>
-											// 	setPricingType(value as 'free' | 'paid')
-											// }
-											/>
-										</FormGroup>
-										<FormGroup cols={2} label="Change the store role to">
-											<SelectInput
-												name="product_type"
-												type="multi-select"
-												options={storeRole}
-												value={storeRole.filter(opt =>
-													selectedValues.includes(opt.value)
-												)}
-												onChange={(selected: any) => {
-													// selected is array of option objects
-													const values = selected?.map((opt: any) => opt.value) || [];
-													setSelectedValues(values);
-												}}
-											/>
-										</FormGroup>
-									</FormGroupWrapper>
-								</>
-							)}
-						</Card>
-						<Card contentHeight title={__('Commission type', 'multivendorx')}>
-							<FormGroupWrapper>
-								<FormGroup
-									label="Include All Add-ons"
-									htmlFor={advancedFeaturesField.key}
-								>
-									<NestedComponent
-										id="role_rules"
-										fields={nestedFields}
-										value={rules}
-										single={true}
-										addButtonLabel="Add Rule"
-										deleteButtonLabel="Remove"
-										onChange={(val) => setRules(val)}
-									/>
-								</FormGroup>
-							</FormGroupWrapper>
-						</Card>
 						<Card contentHeight title={__('Membership Perks', 'multivendorx')}>
 							<FormGroupWrapper>
 								<FormGroup cols={2} label="Products" htmlFor="trial_period">
@@ -1665,63 +1707,23 @@ const Membership = ({ id }: { id: string }) => {
 							desc={'Decide whether stores can use AI tools and how much they can use them.'}
 						>
 							<FormGroupWrapper>
-								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
+								<FormGroup cols={2} label="AI for writing product details">
 									<BasicInput
 										name="name"
 										value={formData.name}
 										onChange={handleChange}
-										postText={'credits per month'}
-										size="8rem"
+										postInsideText={'/month'}
 									/>
 								</FormGroup>
-								<FormGroup cols={2} label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
+								<FormGroup cols={2} label="AI for writing product details">
 									<BasicInput
 										name="name"
 										value={formData.name}
 										onChange={handleChange}
-										postText={'credits per month'}
-										size="8rem"
+										postInsideText={'/month'}
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
-						</Card>
-						<Card contentHeight title={__('Plan Highlights', 'multivendorx')}>
-							<div className="membership-features">
-								<AdminButton
-									buttons={[
-										{
-											icon: 'delete',
-											text: 'Clear All',
-											className: 'red',
-											onClick: clearAll,
-										},
-										{
-											icon: 'plus',
-											text: 'Add Feature',
-											className: 'purple',
-											onClick: addFeature,
-										},
-									]}
-								/>
-								<div className="features-list">
-									{features.map((feature, index) => (
-										<div className="feature-row" key={index}>
-											<span className={`feature-number`}>
-												{index + 1}
-											</span>
-											<input
-												type="text"
-												className="basic-input"
-												placeholder="e.g., Unlimited access to premium content"
-												value={feature}
-												onChange={(e) =>
-													updateFeature(index, e.target.value)
-												}
-											/>
-										</div>
-									))}
-								</div>
-							</div>
 						</Card>
 					</Column>
 				</Container>

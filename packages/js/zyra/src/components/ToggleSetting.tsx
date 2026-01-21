@@ -126,7 +126,7 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
                                         ) }
                                     </span>
                                     {option.desc && (
-                                        <div className="desc">{option.desc}</div>
+                                        <div className="des">{option.desc}</div>
                                     )}
                                     {option.customHtml && (
                                         <div className="toggle-custom-wrapper" dangerouslySetInnerHTML={{ __html: option.customHtml }} />

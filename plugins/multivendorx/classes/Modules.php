@@ -144,8 +144,8 @@ class Modules
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/Announcement/Module.php',
                         'module_class' => 'MultiVendorX\Announcement\Module',
                     ),
-                    'knowladgebase'          => array(
-                        'id'           => 'knowladgebase',
+                    'knowledgebase'          => array(
+                        'id'           => 'knowledgebase',
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/Knowledgebase/Module.php',
                         'module_class' => 'MultiVendorX\Knowledgebase\Module',
                     ),

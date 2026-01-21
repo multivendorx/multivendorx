@@ -14,7 +14,6 @@ export default {
 		{
 			key: 'registration page',
 			type: 'blocktext',
-			label: __(' ', 'multivendorx'),
 			blocktext: __(
 				'Only store owners can apply for store registration. Applicants must log in or create an account before proceeding. So, Make sure WooCommerce’s Account & Privacy settings are configured to allow user registration.',
 				'multivendorx'

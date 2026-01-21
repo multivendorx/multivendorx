@@ -219,7 +219,7 @@ class Dashboard extends \WP_REST_Controller {
                         'name'       => 'Documentation',
                         'slug'       => 'documentation',
                         'capability' => array( 'view_documentation' ),
-                        'module'     => array('knowladgebase'),
+                        'module'     => array('knowledgebase'),
                     ),
                     array(
                         'key'        => 'tools',

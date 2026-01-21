@@ -106,6 +106,7 @@ class Utill
         'admin_email'         => 'admin_email',
         'default_role'        => 'default_role',
         'revenue_mode_store'  => 'revenue_mode_store',
+        'payment_gateway_charge'  => 'payment_gateway_charge',
     );
 
     const WOO_SETTINGS = array(
@@ -195,8 +196,6 @@ class Utill
         'shipping_policy'            => 'shipping_policy',
         'refund_policy'              => 'refund_policy',
         'cancellation_policy'        => 'cancellation_policy',
-        'return_policy'              => 'return_policy',
-        'exchange_policy'            => 'exchange_policy',
         'local_pickup_cost'          => 'local_pickup_cost',
         'shipping_rates'             => 'multivendorx_shipping_rates',
         'additional_qty'             => 'multivendorx_additional_qty',

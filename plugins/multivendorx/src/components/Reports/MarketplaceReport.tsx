@@ -355,11 +355,11 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 										cy="50%"
 										outerRadius={140}
 										innerRadius={80}
-										label={({ name, percent }) =>
-											`${name} ${(
-												percent * 100
-											).toFixed(1)}%`
-										}
+										// label={({ name, percent }) =>
+										// 	`${name} ${(
+										// 		percent * 100
+										// 	).toFixed(1)}%`
+										// }
 										labelLine={false}
 										isAnimationActive={true}
 									>
@@ -465,7 +465,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 														: formatCurrency(
 															coupon.amount
 														)
-													: '—'}
+													: '-'}
 											</span>
 										</div>
 									</div>
