@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { CountryCodes } from 'zyra';
 
 export default {
 	id: 'notification-configuration',
@@ -37,11 +38,7 @@ export default {
 				type: 'select',
 				key: 'store_base',
 				size: '90px',
-				options: [
-					{ label: '+91', value: 'store' },
-					{ label: '+92', value: 'shop' },
-					{ label: '+93', value: 'vendor' },
-				],
+				options: CountryCodes,
 			},
 		},
 		{
@@ -92,6 +89,12 @@ export default {
 			type: 'text',
 			label: __('Sender phone number', 'multivendorx'),
 			placeholder: __('+1 4151234567', 'multivendorx'),
+			preText: {
+				type: 'select',
+				key: 'store_base',
+				size: '90px',
+				options: CountryCodes,
+			},
 			settingDescription: __(
 				'The phone number SMS messages are sent from. Use country code followed by phone number. Example: +1 – 4151234567, +91 – 9876543210',
 				'multivendorx'
