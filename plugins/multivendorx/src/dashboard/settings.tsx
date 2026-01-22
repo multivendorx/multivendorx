@@ -68,7 +68,7 @@ const settings = () => {
 		},
 		{
 			type: 'file',
-			condition: settings?.['store-capability']?.edit_store_info_activation?.includes('store_images'),
+			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_images'),
 			content: {
 				id: 'appearance',
 				name: 'Appearance',
@@ -78,7 +78,7 @@ const settings = () => {
 		},
 		{
 			type: 'file',
-			condition: settings?.['store-capability']?.edit_store_info_activation?.includes('store_address'),
+			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_address'),
 			content: {
 				id: 'business-address',
 				name: 'Business Address',
@@ -88,7 +88,7 @@ const settings = () => {
 		},
 		{
 			type: 'file',
-			condition: settings?.['store-capability']?.edit_store_info_activation?.includes('store_contact'),
+			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_contact'),
 			content: {
 				id: 'contact-information',
 				name: 'Contact Information',

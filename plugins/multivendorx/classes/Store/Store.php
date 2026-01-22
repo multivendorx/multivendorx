@@ -244,7 +244,8 @@ class Store {
         $table = esc_sql( $wpdb->prefix . Utill::TABLES['store_meta'] );
 
         if ( is_array( $value ) || is_object( $value ) ) {
-            $value = wp_json_encode( $value );
+            // $value = wp_json_encode( $value );
+            $value = maybe_serialize( $value );
         }
 
         // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
