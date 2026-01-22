@@ -48,6 +48,52 @@ export const TestFileInput: Story = {
         },
     },
     render: (args) => {
-        return <FileInput key={'sample_file'} {...args} />;
+        return <div className='multivendorx-main-wrapper'><FileInput key={'sample_file'} {...args} /></div>;
+    },
+};
+
+export const DefaultEmptyState: Story = {
+    args: {
+        wrapperClass: 'setting-file-uploader-class',
+        openUploader: '',
+        imageSrc: '',
+        type: '',
+        name: '',
+        size: '',
+        multiple: false,
+    },
+    render: (args) => {
+        return (
+            // <div className='multivendorx-main-wrapper'>
+                <FileInput
+                    {...args}
+                    imageSrc={undefined}
+                    onChange={(value) => {
+                        console.log('Uploaded value:', value);
+                    }}
+                    onButtonClick={() => {
+                        console.log('Upload button clicked');
+                    }}
+                />
+            // </div>
+        );
+    },
+};
+
+export const MultipleFiles: Story = {
+    args: {
+        wrapperClass: 'setting-file-uploader-class',
+        multiple: true,
+        imageSrc: [
+            'https://picsum.photos/id/1011/200/200',
+            'https://picsum.photos/id/1012/200/200',
+            'https://picsum.photos/id/1013/200/200',
+        ],
+        imageWidth: 100,
+        imageHeight: 100,
+        buttonClass: 'btn btn-purple',
+        openUploader: 'Upload Images',
+        proSetting: true,
+        description: 'You can upload multiple images and select a main image.',
     },
 };

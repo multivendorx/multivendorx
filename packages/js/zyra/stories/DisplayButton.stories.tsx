@@ -1,5 +1,6 @@
 import DisplayButton from '../src/components/DisplayButton';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import "../src/styles/common.scss";
 
 const meta: Meta<typeof DisplayButton> = {
     title: 'Zyra/Components/DisplayButton',
@@ -34,6 +35,6 @@ export const TestDisplayButton: Story = {
         },
     },
     render: (args) => {
-        return <DisplayButton {...args} />;
+        return <div className="multivendorx-main-wrapper"><DisplayButton {...args} /></div>;
     },
 };

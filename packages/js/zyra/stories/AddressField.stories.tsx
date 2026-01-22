@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import AddressField, { AddressFormField } from '../src/components/AddressField';
+import '../src/styles/common.scss';
 
 const meta: Meta<typeof AddressField> = {
     title: 'Zyra/Components/AddressField',
@@ -32,7 +33,7 @@ export const DefaultAddressField: Story = {
         const [openedInput, setOpenedInput] = useState<any>(null);
 
         return (
-            <div style={{ maxWidth: '600px', margin: '20px auto' }}>
+            <div className='multivendorx-main-wrapper' >
                 <AddressField
                     formField={addressField}
                     onChange={(key, value) =>
@@ -59,7 +60,7 @@ export const ReadonlyAddressField: Story = {
         const [openedInput, setOpenedInput] = useState<any>(null);
 
         return (
-            <div style={{ maxWidth: '600px', margin: '20px auto' }}>
+            <div className='multivendorx-main-wrapper' >
                 <AddressField
                     formField={addressField}
                     onChange={() => {}}
@@ -83,7 +84,7 @@ export const EmptyAddressField: Story = {
         const [openedInput, setOpenedInput] = useState<any>(null);
 
         return (
-            <div style={{ maxWidth: '600px', margin: '20px auto' }}>
+            <div className= 'multivendorx-main-wrapper' >
                 <AddressField
                     formField={addressField}
                     onChange={(key, value) =>
@@ -93,6 +94,69 @@ export const EmptyAddressField: Story = {
                     setOpendInput={setOpenedInput}
                 />
             </div>
+        );
+    },
+};
+
+export const SingleAddressField: Story = {
+    render: () => {
+        const [field] = useState<AddressFormField>({
+            id: 105,
+            type: 'address',
+            label: 'Single Field Address',
+            fields: [
+                {
+                    id: 1,
+                    key: 'street',
+                    label: 'Street',
+                    type: 'text',
+                    placeholder: 'Enter street',
+                },
+            ],
+        });
+
+        const [openedInput, setOpenedInput] = useState<any>(null);
+
+        return (
+            <AddressField
+                formField={field}
+                onChange={() => {}}
+                opendInput={openedInput}
+                setOpendInput={setOpenedInput}
+            />
+        );
+    },
+};
+
+export const ReorderableAddress: Story = {
+    render: () => {
+        const [field, setField] = useState<AddressFormField>({
+            id: 108,
+            type: 'address',
+            label: 'Reorderable Address',
+            fields: [
+                ...initialSubFields,
+                {
+                    id: 5,
+                    key: 'country',
+                    label: 'Country',
+                    type: 'select',
+                    options: ['USA', 'Canada'],
+                },
+            ],
+        });
+
+        const [openedInput, setOpenedInput] = useState<any>(null);
+
+        return (
+            <AddressField
+                formField={field}
+                onChange={(key, value) =>
+                    setField((prev) => ({ ...prev, [key]: value }))
+                }
+                opendInput={openedInput}
+                setOpendInput={setOpenedInput}
+            />
         );
     },
 };

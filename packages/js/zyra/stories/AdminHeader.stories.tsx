@@ -64,7 +64,7 @@ export const DefaultHeader: Story = {
                 results={searchResults}
                 onSearchChange={(v) => setQuery(v)}
                 onResultClick={(res) => alert(`Clicked: ${res.name}`)}
-                showDropdown
+                showDropdown={true}
                 dropdownOptions={dropdownOptions}
                 selectValue={selectValue}
                 onSelectChange={(v) => setSelectValue(v)}
@@ -72,6 +72,7 @@ export const DefaultHeader: Story = {
                 pro="2.0.0"
                 showNotifications
                 showMessages
+                showActivities
                 messages={messages}
                 messagesLink="#"
                 showProfile
@@ -93,6 +94,7 @@ export const HeaderWithoutDropdown: Story = {
             onSelectChange={() => {}}
             free="1.0.0"
             pro="2.0.0"
+            showDropdown={false}
             showNotifications
             showMessages
             messages={messages}
@@ -121,6 +123,31 @@ export const HeaderWithEmptyMessages: Story = {
             messages={[]}
             showProfile
             profileItems={profileItems}
+            chatUrl="https://example.com/chat"
+        />
+    ),
+};
+
+export const HeaderWithoutProfile: Story = {
+    render: () => 
+    (
+        <AdminHeader
+            brandImg="https://via.placeholder.com/150x50?text=Logo"
+            query=""
+            results={[]}
+            onSearchChange={() => {}}
+            onResultClick={() => {}}
+            selectValue=""
+            onSelectChange={() => {}}
+            free="1.0.0"
+            pro="2.0.0"
+            showDropdown={true}
+            dropdownOptions={dropdownOptions}
+            showNotifications
+            showMessages
+            messages={messages}
+            messagesLink="#"
+            showProfile={false}
             chatUrl="https://example.com/chat"
         />
     ),

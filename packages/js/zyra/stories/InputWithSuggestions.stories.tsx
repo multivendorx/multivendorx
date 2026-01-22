@@ -94,3 +94,25 @@ export const FreeInputOnly: Story = {
     addButtonLabel: 'Add Item',
   },
 };
+
+export const PreventDuplicates: Story = {
+  render: (args) => {
+    const [items, setItems] = useState<string[]>(['Apple']);
+    return <InputWithSuggestions {...args} value={items} onChange={setItems} />;
+  },
+  args: {
+    suggestions: ['Apple', 'Banana', 'Cherry'],
+    placeholder: 'Try adding Apple again...',
+  },
+};
+
+export const CaseInsensitiveSearch: Story = {
+  render: (args) => {
+    const [items, setItems] = useState<string[]>([]);
+    return <InputWithSuggestions {...args} value={items} onChange={setItems} />;
+  },
+  args: {
+    suggestions: ['Apple', 'Banana', 'Mango'],
+    placeholder: 'Type "ap" or "AP"...',
+  },
+};

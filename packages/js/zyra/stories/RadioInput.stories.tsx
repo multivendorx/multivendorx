@@ -103,3 +103,17 @@ export const RadioColorInput: Story = {
     },
     render: (args) => <RadioInput key="sample_radio_color" {...args} />,
 };
+
+export const NoSelection: Story = {
+    args: {
+        inputWrapperClass: 'basic-radio',
+        name: 'themeColor',
+        type: 'default',
+        options: [
+            { key: 'light', name: 'themeColor', value: 'light', label: 'Light' },
+            { key: 'dark', name: 'themeColor', value: 'dark', label: 'Dark' },
+        ],
+        proSetting: true,
+        ...commonProps,
+    },
+};

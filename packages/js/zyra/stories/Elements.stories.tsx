@@ -71,11 +71,49 @@ const selectOptions = [
     },
 ];
 
-export const TestElements: Story = {
+// export const TestElements: Story = {
+//     args: {
+//         selectOptions,
+//         onClick: (value) => {
+//             console.log('Selected:', value);
+//         },
+//     },
+//     render: (args) => {
+//         return <Elements {...args} />;
+//     },
+// };
+
+export const WithLabel: Story = {
+    args: {
+        label: 'Form Elements',
+        selectOptions,
+        onClick: (value) => {
+            console.log('[WithLabel] Selected:', value);
+        },
+    },
+    render: (args) => {
+        return <Elements {...args} />;
+    },
+};
+
+export const WithoutLabel: Story = {
     args: {
         selectOptions,
         onClick: (value) => {
-            console.log('Selected:', value);
+            console.log('[WithoutLabel] Selected:', value);
+        },
+    },
+    render: (args) => {
+        return <Elements {...args} />;
+    },
+};
+
+export const EmptyList: Story = {
+    args: {
+        label: 'Empty Elements',
+        selectOptions: [],
+        onClick: (value) => {
+            console.log('[EmptyList] Selected:', value);
         },
     },
     render: (args) => {

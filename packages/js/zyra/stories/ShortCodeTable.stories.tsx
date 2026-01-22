@@ -55,3 +55,46 @@ export const WithHTMLDescription: Story = {
         optionLabel: ['Name', 'Description', 'Arguments'],
     },
 };
+
+export const NoArguments: Story = {
+    args: {
+        descClass: 'settings-metabox-description',
+        options: [
+            {
+                name: 'Vendor Dashboard',
+                label: '[vendor_dashboard]',
+                desc: 'Displays vendor dashboard.',
+                arguments: [],
+            },
+        ],
+    },
+};
+
+export const MultipleOptions: Story = {
+    args: {
+        descClass: 'settings-metabox-description',
+        description: 'Use the following shortcodes:',
+        icon: 'adminfont-vendor-form-copy',
+        options: [
+            {
+                name: 'Products',
+                label: '[products]',
+                desc: 'List products.',
+                arguments: [],
+            },
+            {
+                name: 'Vendors',
+                label: '[vendors]',
+                desc: 'List vendors.',
+                arguments: [
+                    {
+                        attribute: 'featured',
+                        description: 'Show featured vendors',
+                        accepted: 'yes | no',
+                        default: 'no',
+                    },
+                ],
+            },
+        ],
+    },
+};

@@ -7,5 +7,5 @@ render(
     <BrowserRouter>
         <SetupWizard />
     </BrowserRouter>,
-    document.getElementById( 'catalogx-setup-wizard' )
+    document.getElementById('catalogx-setup-wizard')
 );

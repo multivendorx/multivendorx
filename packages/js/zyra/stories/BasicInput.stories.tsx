@@ -12,6 +12,53 @@ const meta: Meta<typeof BasicInput> = {
 export default meta;
 type Story = StoryObj<typeof BasicInput>;
 
+export const BasicInputPreText: Story = {
+    render: () => {
+        const [textValue, setTextValue] = useState('');
+
+        return (
+            <div>
+                {/* Text Input with pre/post text */}
+                <BasicInput
+                    wrapperClass="input-wrapper"
+                    inputLabel="Text Input"
+                    value={textValue}
+                    placeholder="Enter text"
+                    preText="<b>PreText:</b>"
+                    preInsideText="@"
+                    size="20rem"
+                    onChange={(e) => setTextValue(e.target.value)}
+                    description="Text input demonstrating PreText and Inside Text"
+                    proSetting
+                />
+            </div>
+        );
+    },
+};
+
+export const BasicInputGeneratePassword: Story = {
+    render: () => {
+        const [passwordValue, setPasswordValue] = useState('');
+
+        return (
+            <div>
+                {/* Password with Generate / Copy / Clear */}
+                <BasicInput
+                    wrapperClass="input-wrapper"
+                    inputLabel="Password Input"
+                    type="text"
+                    value={passwordValue}
+                    generate="true"
+                    size="20rem"
+                    onChange={(e) => setPasswordValue(e.target.value)}
+                    description="Generate a random key and copy/clear functionality"
+                    proSetting
+                />
+            </div>
+        );
+    },
+};
+
 export const AllInteractiveProps: Story = {
     render: () => {
         const [textValue, setTextValue] = useState('');
@@ -19,7 +66,7 @@ export const AllInteractiveProps: Story = {
         const [rangeValue, setRangeValue] = useState(50);
 
         return (
-            <div style={{ display: 'grid', gap: '24px', maxWidth: '600px' }}>
+            <div>
                 {/* Text Input with pre/post text */}
                 <BasicInput
                     wrapperClass="input-wrapper"
@@ -30,7 +77,7 @@ export const AllInteractiveProps: Story = {
                     postText="<i>:PostText</i>"
                     preInsideText="@"
                     postInsideText=".com"
-                    size="100%"
+                    size="25rem"
                     onChange={(e) => setTextValue(e.target.value)}
                     description="Text input demonstrating preText, postText, and inside text"
                     proSetting
@@ -43,7 +90,7 @@ export const AllInteractiveProps: Story = {
                     type="text"
                     value={passwordValue}
                     generate="true"
-                    size="100%"
+                    size="20rem"
                     onChange={(e) => setPasswordValue(e.target.value)}
                     description="Generate a random key and copy/clear functionality"
                     proSetting
@@ -57,8 +104,7 @@ export const AllInteractiveProps: Story = {
                     value={rangeValue}
                     min={0}
                     max={100}
-                    rangeUnit="%"
-                    size="100%"
+                    size="20rem"
                     onChange={(e) => setRangeValue(Number(e.target.value))}
                     description="Range input with unit and live output"
                     proSetting

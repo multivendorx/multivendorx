@@ -46,3 +46,45 @@ export const TestSettingMetaBox: Story = {
         return <SettingMetaBox {...args} />;
     },
 };
+
+export const RecaptchaInvalidKey: Story = {
+    args: {
+        formField: {
+            type: 'recaptcha',
+            name: 'captcha',
+            sitekey: '',
+            disabled: true,
+        },
+        opened: { click: true },
+        onChange: console.log,
+    },
+};
+
+export const RecaptchaValidKey: Story = {
+    args: {
+        formField: {
+            type: 'recaptcha',
+            name: 'captcha',
+            sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+            disabled: false,
+        },
+        opened: { click: true },
+        onChange: console.log,
+    },
+};
+
+// export const DropdownOptions: Story = {
+//     args: {
+//         formField: {
+//             type: 'dropdown',
+//             name: 'country',
+//             label: 'Country',
+//             options: [
+//                 { id: '1', label: 'India', value: 'IN' },
+//                 { id: '2', label: 'USA', value: 'US' },
+//             ],
+//         },
+//         opened: { click: true },
+//         onChange: console.log,
+//     },
+// }; styling problem

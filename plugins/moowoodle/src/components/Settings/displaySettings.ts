@@ -9,7 +9,7 @@ export default {
         'Efficient course information handling for customers.',
         'moowoodle'
     ),
-    icon: 'adminlib-cart',
+    icon: 'adminfont-cart',
     submitUrl: 'settings',
     modal: [
         {
