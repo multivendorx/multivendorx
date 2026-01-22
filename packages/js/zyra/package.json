@@ -52,11 +52,18 @@
   "author": "MultiVendorX",
   "license": "GPL-2.0-or-later",
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.2",
     "@tanstack/react-table": "^8.21.3",
+    "@wordpress/components": "^30.9.0",
+    "@wordpress/compose": "^7.38.0",
+    "@wordpress/deprecated": "^4.38.0",
+    "@wordpress/i18n": "^6.11.0",
+    "@wordpress/icons": "^11.5.0",
     "axios": "^1.13.2",
+    "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
     "react-modal": "^3.16.3",
-    "zustand": "^5.0.9",
-    "@react-pdf/renderer": "^4.3.2"
+    "zustand": "^5.0.9"
   },
   "peerDependencies": {
     "@emotion/react": "^11.14.0",
@@ -86,6 +93,7 @@
     "@types/axios": "^0.14.4",
     "@types/google-map-react": "^2.1.10",
     "@types/google.maps": "^3.58.1",
+    "@types/lodash": "^4.17.23",
     "@types/node": "24.x.x",
     "@types/react": "19.2.x",
     "@types/react-date-range": "^1.4.10",
