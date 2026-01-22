@@ -36,7 +36,7 @@ export default {
 			),
 			preText: {
 				type: 'select',
-				key: 'store_base',
+				key: 'country_code',
 				size: '90px',
 				options: CountryCodes,
 			},
@@ -91,7 +91,7 @@ export default {
 			placeholder: __('+1 4151234567', 'multivendorx'),
 			preText: {
 				type: 'select',
-				key: 'store_base',
+				key: 'country_code',
 				size: '90px',
 				options: CountryCodes,
 			},
