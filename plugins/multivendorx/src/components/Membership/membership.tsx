@@ -173,7 +173,7 @@ const advancedFeaturesField = {
 	look: 'checkbox',
 	selectDeselect: true,
 	class: 'basic-checkbox',
-	desc: 'Enable advanced features for vendors',
+	desc: 'Enable advanced features for stores',
 	options: [
 		{
 			key: 'vendor-vacation',
@@ -210,7 +210,7 @@ const whenLimitReached = {
 	selectDeselect: true,
 	class: 'basic-checkbox',
 	options: [
-		{ key: 'advanced_inventory', value: 'advanced_inventory', label: __('Block creation', 'multivendorx'), desc: __('Prevent vendors from adding more items', 'multivendorx') },
+		{ key: 'advanced_inventory', value: 'advanced_inventory', label: __('Block creation', 'multivendorx'), desc: __('Prevent stores from adding more items', 'multivendorx') },
 		{ key: 'shipping_management', value: 'shipping_management', label: __('Allow but warn', 'multivendorx'), desc: __('Show warning but allow creation', 'multivendorx') },
 		{ key: 'import_export_tools', value: 'import_export_tools', label: __('Auto-upgrade suggestion', 'multivendorx'), desc: __('Prompt to upgrade plan', 'multivendorx') },],
 };

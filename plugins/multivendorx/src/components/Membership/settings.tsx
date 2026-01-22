@@ -138,7 +138,7 @@ const Settings = ({ id }: { id: string }) => {
 								/>
 								<div className="settings-metabox-description">
 									{__(
-										'This page shows all plan options to vendors when they sign up or upgrade their subscription.'
+										'This page shows all plan options to stores when they sign up or upgrade their subscription.'
 									)}
 								</div>
 							</FormGroup>

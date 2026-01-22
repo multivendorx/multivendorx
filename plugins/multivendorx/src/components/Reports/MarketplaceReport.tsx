@@ -465,7 +465,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 														: formatCurrency(
 															coupon.amount
 														)
-													: '—'}
+													: '-'}
 											</span>
 										</div>
 									</div>

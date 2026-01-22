@@ -617,6 +617,14 @@ class Install {
 				array(
 					'manage_store_settings',
 				),
+            'edit_store_info_activation' => 
+                array(
+                    'store_description',
+                    'store_images',
+                    'store_address',
+                    'store_contact',
+                    'store_name',
+                )
         );
 
         update_option( Utill::MULTIVENDORX_SETTINGS['store-capability'], $store_permissions );
@@ -1590,6 +1598,135 @@ class Install {
             'client_secret' => !empty($previous_paypal_settings['client_secret']) ?? '',
         ];
 
+        $oldFields = get_option('mvx_new_vendor_registration_form_data', []);
+
+        if (!empty($oldFields)) {
+            $newForm = [
+                'store_registration_from' => [
+                    'formfieldlist' => [],
+                    'butttonsetting' => array(),
+                ]
+            ];
+    
+            $idCounter = 1;
+            $addressFields = [];
+    
+            foreach ($oldFields as $field) {
+                // Skip parent title
+                if ($field['type'] === 'p_title') {
+                    $newForm['store_registration_from']['formfieldlist'][] = [
+                        'id' => $idCounter++,
+                        'type' => 'title',
+                        'label' => '',
+                        'chosen' => '',
+                        'selected' => ''
+                    ];
+                    continue;
+                }
+    
+                // Address fields collected separately
+                if (str_starts_with($field['type'], 'vendor_') &&
+                    in_array($field['type'], [
+                        'vendor_address_1',
+                        'vendor_address_2',
+                        'vendor_city',
+                        'vendor_state',
+                        'vendor_country',
+                        'vendor_postcode'
+                    ])) {
+    
+                    $addressMap = [
+                        'vendor_address_1' => 'address_1',
+                        'vendor_address_2' => 'address_2',
+                        'vendor_city'      => 'city',
+                        'vendor_state'     => 'state',
+                        'vendor_country'   => 'country',
+                        'vendor_postcode'  => 'postcode',
+                    ];
+    
+                    $addressFields[] = [
+                        'id' => $idCounter++,
+                        'key' => $addressMap[$field['type']],
+                        'label' => $field['label'],
+                        'type' => 'text',
+                        'placeholder' => $field['label'],
+                        'required' => $field['required'] ?? '',
+                        'chosen' => '',
+                        'selected' => ''
+                    ];
+                    continue;
+                }
+    
+                // Type conversion
+                $typeMap = [
+                    'textbox' => 'text',
+                    'multi-select' => 'multiselect',
+                    'vendor_description' => 'textarea',
+                    'vendor_page_title' => 'text',
+                    'vendor_paypal_email' => 'email'
+                ];
+    
+                $type = $typeMap[$field['type']] ?? $field['type'];
+    
+                $newField = [
+                    'id' => $idCounter++,
+                    'type' => $type,
+                    'label' => $field['label'],
+                    'required' => $field['required'] ?? '',
+                    'name' => strtolower($field['type'] . '-mknk' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 4)),
+                    'placeholder' => $field['placeholder'] ?? '',
+                    'chosen' => '',
+                    'selected' => ''
+                ];
+    
+                // Options
+                if (!empty($field['options'])) {
+                    $newField['options'] = [];
+                    $optId = 1;
+    
+                    foreach ($field['options'] as $option) {
+                        $newField['options'][] = [
+                            'id' => $optId++,
+                            'label' => $option['label'],
+                            'value' => $option['value'],
+                            'chosen' => '',
+                            'selected' => ''
+                        ];
+                    }
+                }
+    
+                // Recaptcha
+                if ($type === 'recaptcha') {
+                    $newField['name'] = 'recaptcha-mknk' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 4);
+                    $newField['placeholder'] = 'recaptcha';
+                }
+    
+                // Attachment
+                if ($type === 'attachment') {
+                    $newField['name'] = 'attachment-mknk' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 4);
+                    $newField['placeholder'] = 'attachment';
+                }
+    
+                $newForm['store_registration_from']['formfieldlist'][] = $newField;
+            }
+    
+            // Add address block if exists
+            if (!empty($addressFields)) {
+                $newForm['store_registration_from']['formfieldlist'][] = [
+                    'id' => $idCounter++,
+                    'type' => 'address',
+                    'label' => 'Address',
+                    'name' => 'address',
+                    'fields' => $addressFields,
+                    'value' => [],
+                    'readonly' => '',
+                    'chosen' => '',
+                    'selected' => ''
+                ];
+            }
+            update_option( Utill::MULTIVENDORX_SETTINGS['store-registration-form'], $newForm );
+        }
+
         update_option( Utill::MULTIVENDORX_SETTINGS['order-actions-refunds'], $refund_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['store-capability'], $store_permissions );
         update_option( Utill::MULTIVENDORX_SETTINGS['product-preferencess'], $product_settings );
@@ -1665,6 +1802,16 @@ class Install {
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['fixed_commission'], $previous_fixed_value );
                 update_post_meta( $product_id, Utill::POST_META_SETTINGS['percentage_commission'], $previous_percentage_value );
             }
+
+            // Migrate product vendor.
+            $author_id = (int) get_post_field( 'post_author', $product_id );
+            $user = get_user_by( 'id', $author_id );
+
+            // Check if user is a vendor and update post meta.
+            if ( in_array( 'dc_vendor', (array) $user->roles, true ) ) {
+                $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+                update_post_meta( $product_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
+            }
         }
 
         $terms = get_terms( [
@@ -1723,10 +1870,26 @@ class Install {
             }
         }
 
+        //Migrate coupon vendor.
+        $coupons = wc_get_coupons( array(
+            'return' => 'ids',
+        ) );
+
+        foreach ( $coupons as $coupon_id ) {
+            $author_id = (int) get_post_field( 'post_author', $coupon_id );
+            $user = get_user_by( 'id', $author_id );
+
+            if ( in_array( 'dc_vendor', (array) $user->roles, true ) ) {
+                $active_store = get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+                update_post_meta( $coupon_id, Utill::POST_META_SETTINGS['store_id'], $active_store );
+            }
+        }
+
     }
 
     public function old_new_meta_map() {
         $map_meta = [
+            'mvx_vendor_fields' => 'multivendorx_registration_data',
             '_vendor_address_1' => 'address',
             '_vendor_address_2' => 'address',
             '_vendor_city'      => 'city',
@@ -1734,6 +1897,10 @@ class Install {
             '_vendor_country_code'  => 'country',
             '_vendor_state_code'  => 'state',
             '_vendor_phone'  => 'phone',
+            '_vendor_hide_address'  => 'hide_address',
+            '_vendor_hide_phone'  => 'hide_phone',
+            '_vendor_hide_email'  => 'hide_email',
+            '_vendor_hide_description'  => 'hide_description',
             '_vendor_fb_profile'  => 'facebook',
             '_vendor_twitter_profile'  => 'twitter',
             '_vendor_linkdin_profile'  => 'linkedin',
@@ -1753,6 +1920,7 @@ class Install {
             'vendor_shipping_options'  => 'shipping_options',
             '_vendor_shipping_policy'   => 'shipping_policy',
             '_vendor_refund_policy'   => 'refund_policy',
+            'mvx_vendor_followed_by_customer'   => '',
             '_vendor_cancellation_policy'   => 'cancellation_policy',
             '_vendor_payment_mode'   => 'payment_method',
             '_vendor_bank_account_type'   => 'account_type',
@@ -1798,6 +1966,7 @@ class Install {
      * @return void
      */
     public function migrate_tables() {
+        global $wpdb;
         // Vendor migration.
         $vendors = get_users([
             'role__in' => ['dc_vendor', 'dc_pending_vendor', 'dc_rejected_vendor'],
@@ -1859,6 +2028,45 @@ class Install {
             $store->update_meta( 'emails', [$user->email] );
 
             foreach ($user_meta as $meta_key => $meta_values) {
+                // report abuse table data insert.
+                if ($meta_key == 'report_abuse_data') {
+                    $table = $wpdb->prefix . Utill::TABLES['report_abuse'];
+
+                    foreach ($meta_values as $value) {
+                        // Sanitize and prepare data.
+                        $insert_data = array(
+                            'store_id'   => $store_id,
+                            'product_id' => $value['product_id'],
+                            'name'       => $value['name'] ?? '',
+                            'email'      => $value['email'] ?? '',
+                            'message'    => $value['msg'] ?? '',
+                        );
+    
+                        // Insert data.
+                        $wpdb->insert(
+                            $table,
+                            $insert_data,
+                            array( '%d', '%d', '%s', '%s', '%s' )
+                        );
+                    }
+                    continue;
+                }
+
+                // follow-store store meta migration.
+                if ($meta_key == 'mvx_vendor_followed_by_customer') {
+                    $new_meta = [];
+
+                    foreach ( $meta_values as $item ) {
+                        $new_meta[] = [
+                            'id'   => (int) $item['user_id'],
+                            'date' => $item['timestamp'],
+                        ];
+                    }
+
+                    $store->update_meta( 'followers', $new_meta );
+                    continue;
+                }
+
                 // Skip meta keys that are not mapped.
                 if (!isset($map_meta[$meta_key])) {
                     continue;
@@ -1874,6 +2082,33 @@ class Install {
                 $store->update_meta( $new_meta_key, $meta_values );
             }
 
+        }
+
+        // follow store customer side migration.
+        $users = get_users([
+            'meta_key'     => 'mvx_customer_follow_vendor',
+            'meta_compare' => 'EXISTS',
+            'fields'       => 'ID',
+        ]);
+
+        foreach ( $users as $user_id ) {
+            $results = [];
+            $followed = get_user_meta( $user_id, 'mvx_customer_follow_vendor', true );
+
+            if ( is_array( $followed ) ) {
+                foreach ( $followed as $item ) {
+                    if ( ! empty( $item['user_id'] ) ) {
+                        $store_id = get_user_meta( $item['user_id'], Utill::USER_SETTINGS_KEYS['active_store'], true );
+
+                        if ( $store_id ) {
+                            $results[] = (int) $store_id;
+                        }
+                    }
+                }
+            }
+
+            update_user_meta( $user_id, 'multivendorx_following_stores', array_unique( $results ) );
+            delete_user_meta( $user_id, 'mvx_customer_follow_vendor' );
         }
 
         // Announcement table migrate.
@@ -1925,6 +2160,100 @@ class Install {
                 'ID'        => $post_id,
                 'post_type' => 'multivendorx_kb',
             ]);
+        }
+
+        // Commissions and orders meta and refund migration.
+        $table_name = $wpdb->prefix . Utill::TABLES['commission'];
+
+        $args = [
+            'post_type'      => 'dc_commission',
+            'fields'         => 'ids',
+        ];
+
+        $commission_ids = get_posts( $args );
+
+        foreach ( $commission_ids as $commission_id ) {
+
+            $commission_vendor   = get_post_meta( $commission_id, '_commission_vendor', true );
+            $commission_order_id = get_post_meta( $commission_id, '_commission_order_id', true );
+            $store_earning       = get_post_meta( $commission_id, '_commission_amount', true );
+            $store_shipping      = get_post_meta( $commission_id, '_shipping', true );
+            $store_tax           = get_post_meta( $commission_id, '_tax', true );
+            $store_payable       = get_post_meta( $commission_id, '_commission_total', true );
+            $status              = get_post_meta( $commission_id, '_paid_status', true );
+            $refunded            = abs( (float) get_post_meta( $commission_id, '_commission_refunded', true ) );
+            $created_at          = date('Y-m-d H:i:s', get_post_meta( $commission_id, '_paid_date', true ));
+
+            $vendor_id = get_term_meta( $commission_vendor, '_vendor_user_id', true );
+            $store_id = get_user_meta( $vendor_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+
+            $insert_id = $wpdb->insert(
+                $table_name,
+                [
+                    'order_id'         => (int) $commission_order_id,
+                    'store_id'         => (int) $store_id,
+                    'store_earning'    => $store_earning,
+                    'store_shipping'   => $store_shipping,
+                    'store_tax'        => $store_tax,
+                    'store_payable'    => $store_payable,
+                    'store_refunded'   => $refunded,
+                    'status'           => $status,
+                    'created_at'       => $created_at,
+                ],
+                [
+                    '%d',
+                    '%d',
+                    '%f',
+                    '%f',
+                    '%f',
+                    '%f',
+                    '%f',
+                    '%s',
+                    '%s',
+                ]
+            );
+
+            $order = wc_get_order($commission_order_id);
+
+            $meta_map = [
+                '_commission_id'                => 'multivendorx_commission_id',
+                '_commissions_processed'        => 'multivendorx_commissions_processed',
+                '_vendor_id'                    => 'multivendorx_store_id',
+                'order_items_commission_rates'  => 'multivendorx_order_items_commission_rates',
+            ];
+
+            foreach ( $meta_map as $old_key => $new_key ) {
+
+                if ($old_key == '_commission_id') {
+                    $value = $insert_id;
+                } elseif ($old_key == '_vendor_id') {
+                    $value = $store_id;
+                } else {
+                    $value = $order->get_meta($old_key);
+                }
+
+                $order->update_meta_data( $new_key, $value );
+                $order->delete_meta_data( $old_key );
+            }
+
+            $order->save();
+        }
+
+        // Fetch all refund orders.
+        $refund_ids = wc_get_orders( array(
+            'type'   => 'shop_order_refund',
+            'status' => array_keys( wc_get_order_statuses() ),
+            'return' => 'ids',
+        ) );
+
+        foreach ( $refund_ids as $refund_id ) {
+            $refund = wc_get_order($refund_id);
+            $parent_order_id = $refund->get_parent_id();
+            $parent_order = wc_get_order( $parent_order_id );
+
+            $store_id = $parent_order->get_meta( 'multivendorx_store_id', true );
+            $refund->update_meta_data( 'multivendorx_store_id', $store_id );
+            $refund->save();
         }
 
     }

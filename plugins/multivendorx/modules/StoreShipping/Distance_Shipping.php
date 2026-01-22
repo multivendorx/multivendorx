@@ -112,7 +112,7 @@ class Distance_Shipping extends \WC_Shipping_Method {
         $default_cost         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_default_cost'] ] ?? 0 );
         $max_distance         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_max'] ] ?? 0 );
         $local_pickup_cost    = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_local_pickup_cost'] ] ?? 0 );
-        $free_shipping_amount = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['free_shipping_amount'] ] ?? 0 );
+        $free_shipping_amount = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_free_shipping_amount'] ] ?? 0 );
         $distance_type        = ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_type'] ] ?? 'K' );
         $distance_rules       = ! empty( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ] )
             ? json_decode( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ], true )
@@ -207,7 +207,7 @@ class Distance_Shipping extends \WC_Shipping_Method {
     public static function is_shipping_enabled_for_seller( $store_id ) {
         $store            = new \MultiVendorX\Store\Store( $store_id );
         $shipping_options = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['shipping_options'] ] ?? '';
-        return 'shipping_by_distance' === $shipping_options;
+        return Utill::STORE_SETTINGS_KEYS['shipping_by_distance'] === $shipping_options;
     }
 
     /**

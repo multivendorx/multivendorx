@@ -249,7 +249,6 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                     type={type}
                                     name={name}
                                     placeholder={placeholder}
-                                    // value={value ?? ''}
                                     min={
                                         ['number', 'range'].includes(type)
                                             ? min
