@@ -94,6 +94,7 @@ class Utill
         'notification-configuration'    => 'multivendorx_notification_configuration_settings',
         'non-compliance'                => 'multivendorx_non_compliance_settings',
         'development-tools'             => 'multivendorx_development_tools_settings',
+        'live-chat'                     => 'multivendorx_live_chat_settings',
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
@@ -211,6 +212,8 @@ class Utill
         'distance_rules'             => 'distance_rules',
         'shipping_options'           => 'shipping_options',
         'distance_type'              => 'distance_type',
+        'whatsapp_number'            => 'whatsapp_number',
+        'facebook_page_id'           => 'facebook_page_id',
     );
 
     const USER_SETTINGS_KEYS = array(

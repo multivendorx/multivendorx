@@ -18,7 +18,7 @@ import Withdrawl from './settings/withdrawl';
 import Privacy from './settings/Privacy';
 import Verification from './settings/Verification';
 import ShippingDelivery from './settings/ShippingDelivery';
-import LiveChat from './settings/LiveChat';
+import { applyFilters } from '@wordpress/hooks';
 
 const settings = () => {
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -182,7 +182,7 @@ const settings = () => {
 			case 'verification':
 				return <Verification />;
 			case 'livechat':
-				return <LiveChat />;
+				return applyFilters('live_chat')
 			default:
 				return <div></div>;
 		}
