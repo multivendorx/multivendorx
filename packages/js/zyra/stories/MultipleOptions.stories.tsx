@@ -26,16 +26,45 @@ const formField = {
     options,
 };
 
-export const TestLog: Story = {
+export const TestDefault: Story = {
     args: {
         formField,
         onChange: (key, value) => {
             console.log(`Field ${key} changed to`, value);
         },
-        type: 'dropdown' as 'dropdown',
+        type: 'dropdown',
         selected: true,
     },
     render: (args) => {
         return <MultipleOptions {...args} />;
     },
 };
+
+export const TestRadio: Story = {
+    args: {
+        formField,
+        onChange: (key, value) => {
+            console.log(`Field ${key} changed to`, value);
+        },
+        type: 'radio',
+        selected: false,
+    },
+    render: (args) => {
+        return <MultipleOptions {...args} />;
+    },
+};
+
+export const TestCheckbox: Story = {
+    args: {
+        formField,
+        onChange: (key, value) => {
+            console.log(`Field ${key} changed to`, value);
+        },
+        type: 'checkboxes',
+        selected: false,
+    },
+    render: (args) => {
+        return <MultipleOptions {...args} />;
+    },
+};
+

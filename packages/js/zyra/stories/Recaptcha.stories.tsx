@@ -24,3 +24,17 @@ export const TestRecaptcha: Story = {
         return <Recaptcha {...args} />;
     },
 };
+
+export const MissingSiteKey: Story = {
+    args: {
+        formField: {
+            // sitekey is intentionally missing to simulate the error state
+        },
+        onChange: (field, value) => {
+            console.log(`Recaptcha response for field "${field}":`, value);
+        },
+    },
+    render: (args) => {
+        return <Recaptcha {...args} />;
+    },
+};

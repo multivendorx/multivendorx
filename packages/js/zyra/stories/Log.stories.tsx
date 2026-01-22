@@ -16,8 +16,10 @@ export const TestLog: Story = {
         apiLink: 'https://api.example.com/logs',
         downloadFileName: 'app-log.txt',
         appLocalizer: {
-            locale: 'en-US',
-            timezone: 'UTC',
+            nonce: 'example-nonce',
+            tab_name: 'log',
+            apiUrl: 'https://api.example.com',
+            restUrl: 'https://api.example.com/rest',
         },
     },
     render: (args) => {

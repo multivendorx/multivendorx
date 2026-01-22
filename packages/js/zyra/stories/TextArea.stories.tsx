@@ -70,3 +70,45 @@ export const TinyMCEEditor: Story = {
         );
     },
 };
+
+export const ReadOnly: Story = {
+    render: () => (
+        <TextArea
+            value="This content is read-only"
+            usePlainText
+            readOnly
+            description="Read-only textarea"
+        />
+    ),
+};
+
+export const WithPlaceholder: Story = {
+    render: () => {
+        const [value, setValue] = useState('');
+
+        return (
+            <TextArea
+                placeholder="Type your message here..."
+                value={value}
+                usePlainText
+                description="Textarea with placeholder"
+                onChange={(e) => setValue(e.target.value)}
+            />
+        );
+    },
+};
+
+export const WithoutDescription: Story = {
+    render: () => {
+        const [value, setValue] = useState('');
+        return (
+        <TextArea
+            placeholder="No description provided"
+            value={value}
+            usePlainText
+            onChange={(e) => setValue(e.target.value)}
+        />
+        );
+    },
+};
+

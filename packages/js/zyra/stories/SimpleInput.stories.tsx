@@ -26,3 +26,25 @@ export const TestSimpleInput: Story = {
     // No need to wrap in extra function; can pass args directly
     render: (args) => <SimpleInput {...args} />,
 };
+
+export const SimpleInputWithNoPlaceholder: Story = {
+    args: {
+        formField: {
+            label: 'Username',
+        },
+        onChange: (field, value) => {
+            console.log(`Field ${field} changed to`, value);
+        },
+    },
+    render: (args) => <SimpleInput {...args} />,
+};
+
+export const EmptyLabel: Story = {
+    args: {
+        formField: {
+            label: '',
+            placeholder: 'Enter value',
+        },
+        onChange: console.log,
+    },
+};
