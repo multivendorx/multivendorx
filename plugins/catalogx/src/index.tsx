@@ -7,5 +7,5 @@ render(
     <BrowserRouter>
         <App />
     </BrowserRouter>,
-    document.getElementById( 'admin-main-wrapper' )
+    document.getElementById('admin-main-wrapper')
 );

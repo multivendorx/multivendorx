@@ -5,40 +5,40 @@ import './wholesaleUser.scss';
 import { AdminBreadcrumbs } from 'zyra';
 
 const WholesaleUser = () => {
-    const [ openDialog, setOpenDialog ] = useState( false );
+    const [openDialog, setOpenDialog] = useState(false);
 
     return (
         <>
             <AdminBreadcrumbs
-                activeTabIcon="adminlib-wholesale"
+                activeTabIcon="adminfont-wholesale"
                 tabTitle="Wholesale User"
             />
             <div id="wholesale-list-table">
                 <Dialog
                     className="admin-module-popup"
-                    open={ openDialog }
-                    onClose={ () => {
-                        setOpenDialog( false );
-                    } }
+                    open={openDialog}
+                    onClose={() => {
+                        setOpenDialog(false);
+                    }}
                     aria-labelledby="form-dialog-title"
                 >
                     <span
                         className="admin-font adminlib-cross"
-                        onClick={ () => {
-                            setOpenDialog( false );
-                        } }
+                        onClick={() => {
+                            setOpenDialog(false);
+                        }}
                     ></span>
-                    { ! appLocalizer.khali_dabba ? (
+                    {!appLocalizer.khali_dabba ? (
                         <ShowPopup />
                     ) : (
                         <ShowPopup moduleName="wholesale" />
-                    ) }
+                    )}
                 </Dialog>
                 <div
                     className="image-wrapper wholesale-user-image"
-                    onClick={ () => {
-                        setOpenDialog( true );
-                    } }
+                    onClick={() => {
+                        setOpenDialog(true);
+                    }}
                 ></div>
             </div>
         </>
