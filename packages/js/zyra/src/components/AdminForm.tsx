@@ -25,6 +25,7 @@ import DropDownMapping from './DropDownMapping';
 import ToggleSetting from './ToggleSetting';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import BasicInput from './BasicInput';
+import Input from './input/Input';
 import TextArea from './TextArea';
 import FileInput from './FileInput';
 import RadioInput from './RadioInput';
@@ -307,6 +308,7 @@ interface InputField {
         value?: string;
         image?: string[];
     }[];
+    image?: string; // Single image URL for catalog-customizer and similar components
     customDefaults?: {
         colorPrimary?: string;
         colorSecondary?: string;
@@ -830,7 +832,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'range':
                 case 'time':
                     input = (
-                        <BasicInput
+                        <Input
                             wrapperClass={inputField.wrapperClass}
                             inputClass= {inputField.class}
                             description={ inputField.desc }
@@ -928,7 +930,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     break;
                 case 'normalfile':
                     input = (
-                        <BasicInput
+                        <Input
                             wrapperClass={inputField.wrapperClass}
                             type="file"
                             key={ inputField.key }
@@ -1027,7 +1029,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 // Check in MultiVendorX
                 case 'color':
                     input = (
-                        <BasicInput
+                        <Input
                             wrapperClass="settings-color-picker"
                             inputClass="setting-color-picker"
                             description={ inputField.desc } // optional description displayed under the input
@@ -1193,7 +1195,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <div className="form-button-group">
                             <div className="settings-input-content">
-                                <BasicInput
+                                <Input
                                     wrapperClass="settings-basic-input-class"
                                     inputClass="admin-btn btn-purple"
                                     description={ inputField.desc } // optional description displayed under the input
@@ -1866,8 +1868,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 settingChanged.current = true;
                                 updateSetting( key, data );
                             } }
-                            SampleProduct="#"
-                            proUrl="#"
+                            SampleProduct={ inputField.image ?? '#' }
+                            proUrl={ appLocalizer?.pro_url ?? '#' }
                         />
                     );
                     break;

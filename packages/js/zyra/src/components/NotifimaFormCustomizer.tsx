@@ -1,11 +1,4 @@
-/**
- * External dependencies
- */
 import React, { useEffect, useRef, useState } from 'react';
-
-/**
- * Internal dependencies
- */
 import ButtonCustomizer, { ButtonSettings } from './ButtonCustomiser';
 import '../styles/web/NotifimaFormCustomizer.scss';
 import BasicInput from './BasicInput';
