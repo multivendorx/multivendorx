@@ -36,7 +36,7 @@ const Memberships = () => {
 			content: {
 				id: 'payment-membership-design',
 				name: 'Subscribers',
-				desc: 'Track every subscription at a glance—identify expiring plans, monitor revenue.',
+				desc: 'Track every subscription at a glance-identify expiring plans, monitor revenue.',
 				icon: 'adminfont-credit-card',
 				hideTabHeader: true,
 			},

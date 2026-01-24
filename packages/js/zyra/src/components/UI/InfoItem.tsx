@@ -1,5 +1,6 @@
 import React from 'react';
 import "../../styles/web/UI/InfoItem.scss";
+import { Skeleton } from '@mui/material';
 
 type AvatarProps = {
     image?: string;
@@ -23,17 +24,13 @@ type BadgeProps = {
 type InfoItemProps = {
     title: string;
     titleLink?: string;
-
     avatar?: AvatarProps;
-
     descriptions?: DescriptionProps[];
-
     badges?: BadgeProps[];
-
     amount?: React.ReactNode;
     amountClassName?: string;
-
     className?: string;
+    isLoading?: boolean;
 };
 
 const InfoItem: React.FC<InfoItemProps> = ({
@@ -45,6 +42,7 @@ const InfoItem: React.FC<InfoItemProps> = ({
     amount,
     amountClassName = '',
     className = '',
+    isLoading = false
 }) => {
     const renderAvatar = () => {
         if (!avatar) return null;
@@ -81,44 +79,87 @@ const InfoItem: React.FC<InfoItemProps> = ({
     return (
         <div className="info-item-wrapper">
             <div className={`info-item ${className}`}>
-                <div className="details-wrapper">
-                    {renderAvatar()}
+                {isLoading ? (
+                    <>
+                        <div className="details-wrapper">
+                            {avatar && (
+                                <div className="avatar">
+                                    <Skeleton variant="circular" width={30} height={30} />
+                                </div>
+                            )}
 
-                    <div className="details">
-                        <div className="name">
-                            {Title}
-
-                            {badges.map((badge, index) => (
-                                <span
-                                    key={index}
-                                    className={`admin-badge ${badge.className}`}
-                                    onClick={badge.onClick}
-                                >
-                                    {badge.text}
-                                </span>
-                            ))}
-                        </div>
-
-                        {descriptions.map((desc, index) => (
-                            <div className="des" key={index}>
-                                {desc.label && (
-                                    <>
-                                        {desc.boldLabel ? <b>{desc.label}</b> : desc.label}
-                                        {': '}
-                                    </>
+                            <div className="details">
+                                <div className="name">
+                                    <Skeleton variant="text" width={180} height={24} />
+                                    {badges.length > 0 && (
+                                        <Skeleton
+                                            variant="rectangular"
+                                            width={60}
+                                            height={20}
+                                            style={{ marginLeft: 8, borderRadius: 10 }}
+                                        />
+                                    )}
+                                </div>
+                                {descriptions &&(
+                                    <div className="des">
+                                        <Skeleton variant="text" width="90%" />
+                                    </div>
                                 )}
-                                {desc.value}
+                                <div className="des">
+                                    <Skeleton variant="text" width="75%" />
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
-
-                {amount !== undefined && (
-                    <div className="right-details">
-                        <div className={`price ${amountClassName}`}>
-                            {amount}
                         </div>
-                    </div>
+                        {amount !== undefined && (
+                            <div className="right-details">
+                                <div className="price">
+                                    <Skeleton variant="text" width={70} />
+                                </div>
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        <div className="details-wrapper">
+                            {renderAvatar()}
+
+                            <div className="details">
+                                <div className="name">
+                                    {Title}
+
+                                    {badges.map((badge, index) => (
+                                        <span
+                                            key={index}
+                                            className={`admin-badge ${badge.className}`}
+                                            onClick={badge.onClick}
+                                        >
+                                            {badge.text}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {descriptions.map((desc, index) => (
+                                    <div className="des" key={index}>
+                                        {desc.label && (
+                                            <>
+                                                {desc.boldLabel ? <b>{desc.label}</b> : desc.label}
+                                                {': '}
+                                            </>
+                                        )}
+                                        {desc.value}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {amount !== undefined && (
+                            <div className="right-details">
+                                <div className={`price ${amountClassName}`}>
+                                    {amount}
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

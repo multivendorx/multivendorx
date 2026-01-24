@@ -187,25 +187,25 @@ const StoreReport: React.FC = () => {
 						id: 'all',
 						label: 'All Stores',
 						count: response.data.all || 0,
-						icon: 'adminfont-storefront blue',
+						icon: 'storefront blue',
 					},
 					{
 						id: 'active',
 						label: 'Active Stores',
 						count: response.data.active || 0,
-						icon: 'adminfont-store-policy green',
+						icon: 'store-policy green',
 					},
 					{
 						id: 'pending',
 						label: 'Pending Stores',
 						count: response.data.pending || 0,
-						icon: 'adminfont-pending yellow',
+						icon: 'pending yellow',
 					},
 					{
 						id: 'deactivated',
 						label: 'Deactivated Stores',
 						count: response.data.deactivated || 0,
-						icon: 'adminfont-close-delete red',
+						icon: 'close-delete red',
 					},
 				]);
 			})
@@ -471,7 +471,6 @@ const StoreReport: React.FC = () => {
 		<>
 			<Column>
 				<Analytics
-					template="template-2"
 					data={overviewData.map((item) => ({
 						icon: item.icon,
 						number: <Counter value={item.count} />,

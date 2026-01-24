@@ -247,7 +247,7 @@ const AdminDashboard = () => {
 			title: 'Product & store tools',
 			features: [
 				{
-					name: 'Multiple vendors per product',
+					name: 'Multiple stores per product',
 					free: true,
 					pro: true,
 				},
@@ -374,7 +374,7 @@ const AdminDashboard = () => {
 
 	const Modules: Module[] = [
 		{
-			id: 'spmv',
+			id: 'shared-listing',
 			name: 'Shared listing',
 			iconClass: 'adminfont-spmv',
 			pro: false,
@@ -405,7 +405,7 @@ const AdminDashboard = () => {
 		},
 		{
 			id: 'min-max-quantities',
-			name: 'Min/Max quantities',
+			name: 'Min max',
 			iconClass: 'adminfont-min-max',
 			pro: false,
 		},

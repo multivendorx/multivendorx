@@ -40,6 +40,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 	const [topCustomers, setTopCustomers] = useState<any[]>([]);
 	const [topStores, setTopStores] = useState<any[]>([]);
 	const { modules } = useModules();
+	const [isLoading, setIsLoading] = useState(true);
 
 	const Counter = ({ value, duration = 1200, format }) => {
 		const [count, setCount] = React.useState(0);
@@ -69,6 +70,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 	};
 
 	const fetchCommissionDetails = async () => {
+		setIsLoading(true);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'commission'),
@@ -90,14 +92,14 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						label: 'Total Order Amount',
 						count: Number(data.total_order_amount),
 						formatted: formatCurrency(data.total_order_amount),
-						icon: 'adminfont-order',
+						icon: 'order',
 					},
 					{
 						id: 'facilitator_fee',
 						label: 'Facilitator Fee',
 						count: Number(data.facilitator_fee),
 						formatted: formatCurrency(data.facilitator_fee),
-						icon: 'adminfont-facilitator',
+						icon: 'facilitator',
 						module: 'facilitator',
 					},
 					{
@@ -105,7 +107,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						label: 'Gateway Fee',
 						count: Number(data.gateway_fee),
 						formatted: formatCurrency(data.gateway_fee),
-						icon: 'adminfont-credit-card',
+						icon: 'credit-card',
 						condition: false,
 					},
 					{
@@ -113,7 +115,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						label: 'Shipping Amount',
 						count: Number(data.shipping_amount),
 						formatted: formatCurrency(data.shipping_amount),
-						icon: 'adminfont-shipping',
+						icon: 'shipping',
 						module: 'store-shipping',
 					},
 					{
@@ -121,7 +123,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						label: 'Tax Amount',
 						count: Number(data.tax_amount),
 						formatted: formatCurrency(data.tax_amount),
-						icon: 'adminfont-tax-compliance',
+						icon: 'tax-compliance',
 						module: 'store-shipping',
 					},
 					{
@@ -129,7 +131,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						label: 'Shipping Tax Amount',
 						count: Number(data.shipping_tax_amount),
 						formatted: formatCurrency(data.shipping_tax_amount),
-						icon: 'adminfont-per-product-shipping',
+						icon: 'per-product-shipping',
 						module: 'store-shipping',
 					},
 					{
@@ -137,14 +139,14 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						label: 'Commission Total',
 						count: Number(data.commission_total),
 						formatted: formatCurrency(data.commission_total),
-						icon: 'adminfont-commission',
+						icon: 'commission',
 					},
 					{
 						id: 'commission_refunded',
 						label: 'Commission Refunded',
 						count: Number(data.commission_refunded),
 						formatted: formatCurrency(data.commission_refunded),
-						icon: 'adminfont-marketplace-refund',
+						icon: 'marketplace-refund',
 						module: 'marketplace-refund'
 					},
 				].filter(
@@ -236,8 +238,9 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 				setCommissionDeatils(overviewData);
 				setEarningSummary(earningSummary);
 				setPieData(pieChartData);
-			})
-			.catch(() => {
+			}).finally(() => {
+				setIsLoading(false);
+			}).catch(() => {
 				// Handle error gracefully
 			});
 
@@ -249,6 +252,8 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 		})
 			.then((response) => {
 				setTopStores(response.data);
+			}).finally(() => {
+				setIsLoading(false);
 			})
 			.catch(() => {
 				// Handle error gracefully
@@ -256,6 +261,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 	};
 
 	useEffect(() => {
+		setIsLoading(true);
 		axios({
 			method: 'GET',
 			url: `${appLocalizer.apiUrl}/wc/v3/coupons`,
@@ -271,8 +277,9 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 					.slice(0, 3);
 
 				setTopCoupons(topSellingCoupons);
-			})
-			.catch((error) => {
+			}).finally(() => {
+				setIsLoading(false);
+			}).catch((error) => {
 				console.error('Error fetching top coupons:', error);
 			});
 
@@ -288,8 +295,9 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 		})
 			.then((response) => {
 				setTopCustomers(response.data);
-			})
-			.catch((error) => {
+			}).finally(() => {
+				setIsLoading(false);
+			}).catch((error) => {
 				console.error('Error fetching top customers:', error);
 			});
 
@@ -305,8 +313,8 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 			<Container>
 				<Column>
 					<Analytics
-						template="template-2"
-						col3
+						cols={4}
+						isLoading={isLoading}
 						data={commissionDetails.map((item, idx) => ({
 							icon: item.icon,
 							iconClass: `admin-color${idx + 2}`,
@@ -324,20 +332,12 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 				<Column grid={6}>
 					<Card title={__('Revenue breakdown', 'multivendorx')}>
 						{earningSummary.map((product) => (
-							<div className="info-item" key={product.id}>
-								<div className="details-wrapper">
-									<div className="details">
-										<div className="name">
-											{product.title}
-										</div>
-									</div>
-								</div>
-								<div className="right-details">
-									<div className="price">
-										{product.price}
-									</div>
-								</div>
-							</div>
+							<InfoItem
+								key={product.id}
+								title={product.title}
+								amount={product.price}
+								isLoading ={isLoading}
+							/>
 						))}
 					</Card>
 				</Column>
@@ -472,12 +472,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 								</div>
 							))
 						) : (
-							<p>
-								{__(
-									'No top coupons found.',
-									'multivendorx'
-								)}
-							</p>
+							<MessageState title={__('No top coupons found.', 'multivendorx')}/>
 						)}
 					</Card>
 				</Column>
@@ -646,6 +641,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 									<InfoItem
 										key={`store-${store.store_id}`}
 										title={store.store_name || ''}
+										isLoading={isLoading}
 										titleLink={`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`}
 										avatar={{
 											text: (store.store_name?.trim().charAt(0) || '').toUpperCase(),
@@ -668,7 +664,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 
 							))
 						) : (
-							<MessageState title={__('No top stores found.', 'multivendorx')}/>
+							<MessageState title={__('No top stores found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>

@@ -17,6 +17,7 @@ import {
 	AdminButton,
 	MiniCard,
 	MultiCalendarInput,
+	MessageState,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -908,14 +909,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 								})}
 							</>
 						) : (
-							<>
-								<div className="des">
-									{__(
-										'No recent payouts transactions found.',
-										'multivendorx'
-									)}
-								</div>
-							</>
+							<MessageState title={__('No recent payouts transactions found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>

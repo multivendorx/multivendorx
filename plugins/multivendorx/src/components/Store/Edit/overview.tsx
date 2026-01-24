@@ -96,19 +96,17 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 
 	const overviewData = [
 		{
-			icon: 'adminfont-wallet red',
+			icon: 'wallet red',
 			number: formatCurrency(storeData.transactions?.balance ?? 0),
 			text: 'Wallet balance',
 		},
 		{
-			icon: 'adminfont-dollar yellow',
-			number: formatCurrency(
-				storeData.transactions?.locking_balance ?? 0
-			),
+			icon: 'dollar yellow',
+			number: formatCurrency(storeData.transactions?.locking_balance ?? 0),
 			text: 'Upcoming balance',
 		},
 		{
-			icon: 'adminfont-wallet-in blue',
+			icon: 'wallet-in blue',
 			number: formatCurrency(storeData.request_withdrawal_amount ?? 0),
 			text: 'Requested payout',
 		},
@@ -119,7 +117,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 			<Container>
 				<Column grid={8}>
 					<Analytics
-						template="template-1"
+						variant='small'
 						data={overviewData.map((item) => ({
 							icon: item.icon,
 							number: item.number,

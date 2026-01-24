@@ -99,8 +99,8 @@ class Modules
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/Refund/Module.php',
                         'module_class' => 'MultiVendorX\Refund\Module',
                     ),
-                    'spmv'                   => array(
-                        'id'           => 'spmv',
+                    'shared-listing'         => array(
+                        'id'           => 'shared-listing',
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/SPMV/Module.php',
                         'module_class' => 'MultiVendorX\SPMV\Module',
                     ),

@@ -337,7 +337,7 @@ const Dashboard: React.FC = () => {
 
 	const analyticsData = [
 		{
-			icon: 'adminfont-dollar',
+			icon: 'dollar',
 			number: formatCurrency(store?.commission?.total_order_amount || 0),
 			text: 'Total Revenue',
 			color: 'primary',
@@ -345,7 +345,7 @@ const Dashboard: React.FC = () => {
 			prev30: formatCurrency(store?.commission?.previous_30_days.total || 0)
 		},
 		{
-			icon: 'adminfont-order',
+			icon: 'order',
 			number: totalOrder,
 			text: 'Total Orders',
 			color: 'secondary',
@@ -353,7 +353,7 @@ const Dashboard: React.FC = () => {
 			prev30: formatCurrency(store?.commission?.previous_30_days.orders || 0)
 		},
 		{
-			icon: 'adminfont-store-seo',
+			icon: 'store-seo',
 			number: store?.visitors?.total || 0,
 			text: 'Store Views',
 			color: 'accent',
@@ -361,7 +361,7 @@ const Dashboard: React.FC = () => {
 			prev30: store?.visitors?.previous_30_days || 0
 		},
 		{
-			icon: 'adminfont-commission',
+			icon: 'commission',
 			number: formatCurrency(store?.commission?.commission_total || 0),
 			text: 'Commission Earned',
 			color: 'support',
@@ -467,7 +467,7 @@ const Dashboard: React.FC = () => {
 			<Container >
 				<Column>
 					<Analytics
-						template="template-3"
+						variant="dashboard"
 						data={analyticsData.map((item) => ({
 							icon: item.icon,
 							iconClass: `${item.color}-bg`,

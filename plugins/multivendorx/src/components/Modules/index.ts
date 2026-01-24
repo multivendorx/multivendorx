@@ -3,7 +3,7 @@ export default {
 	category: true,
 	tab: 'modules',
 	description:
-		'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and vendors.',
+		'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.',
 	modules: [
 		{
 			type: 'separator',
@@ -201,13 +201,13 @@ export default {
 			label: 'Store Management',
 		},
 		{
-			id: 'spmv',
+			id: 'shared-listing',
 			name: __('Shared listing', 'multivendorx'),
 			desc: 'Allows more than one store to sell the same product with their own price and stock.',
 			icon: 'adminfont-spmv',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=single-product-multiple-store`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=general`,
 			pro_module: false,
 			category: 'store_management',
 		},
@@ -302,7 +302,7 @@ export default {
 		{
 			id: 'paypal-marketplace',
 			name: __('PayPal Marketplace', 'multivendorx'),
-			desc: 'Using split payment pay vendors instantly after a completed order',
+			desc: 'Using split payment pay stores instantly after a completed order',
 			icon: 'adminfont-paypal-marketplace',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/paypal-marketplace-real-time-split/',
@@ -334,7 +334,7 @@ export default {
 		{
 			id: 'razorpay',
 			name: __('Razorpay', 'multivendorx'),
-			desc: 'For clients looking to pay multiple Indian vendors instantly',
+			desc: 'For clients looking to pay multiple Indian stores instantly',
 			icon: 'adminfont-razorpay',
 			doc_link: 'https://multivendorx.com/docs/knowledgebase/payment/',
 			//settings_link: admin_url('admin.php?page=mvx-setting-admin'),
@@ -538,7 +538,7 @@ export default {
 			icon: 'adminfont-franchises-module',
 			doc_link: 'https://multivendorx.com/docs/knowledgebase/NA',
 			settings_link: `${appLocalizer.plugin_url}settings&subtab=franchises`,
-			pro_module: false,
+			pro_module: true,
 			category: ['store_management', 'marketplace_boosters'],
 		},
 
@@ -612,7 +612,7 @@ export default {
 			id: 'knowledgebase',
 			name: __('Knowledgebase', 'multivendorx'),
 			desc: 'Guides, tutorials, and FAQs shared with stores by the admin.',
-			icon: 'adminfont-knowledgebase',
+			icon: 'adminfont-book',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/knowledgebase/',
 			pro_module: false,

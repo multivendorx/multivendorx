@@ -20,7 +20,7 @@ export type CardProps = {
     color?: string;
   }[];
   children?: React.ReactNode;
-  loading?: true;
+  isLoading?: true;
 };
 
 const Card = ({
@@ -38,13 +38,13 @@ const Card = ({
   toggle = false,
   badges = [],
   children,
-  loading
+  isLoading
 }: CardProps) => {
   const [bodyVisible, setBodyVisible] = useState(true);
 
   return (
     <div className={`card-content ${transparent ? 'transparent' : ''} ${contentHeight ? 'content-height' : ''} ${contentWidth ? 'content-width' : ''} ${className ? className : ''}`}>
-      {loading ? (
+      {isLoading ? (
         <>
           <div className="card-header">
             <div className="left">

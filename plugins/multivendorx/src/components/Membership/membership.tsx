@@ -280,10 +280,8 @@ const Membership = ({ id }: { id: string }) => {
 	const [pricingType, setPricingType] = useState<'free' | 'paid'>('free');
 	const [selectedValues, setSelectedValues] = useState<string[]>([]);
 	const [starFill, setstarFill] = useState(false);
-	const [features, setFeatures] = useState<string[]>(['']);
 	const [rules, setRules] = useState<any[]>([]);
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-	const [featuredEnabled, setFeaturedEnabled] = useState(false);
 	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
 	const [catalogVisibility, setCatalogVisibility] = useState<string>('draft');
 	const [trialEnabled, setTrialEnabled] = useState<string[]>([]);
@@ -292,6 +290,12 @@ const Membership = ({ id }: { id: string }) => {
 			setCatalogVisibility(product.catalog_visibility);
 		}
 	}, [product]);
+	const [features, setFeatures] = useState([]);
+	const [editingIndex, setEditingIndex] = useState(null);
+	const [editingValue, setEditingValue] = useState('');
+	const [newValue, setNewValue] = useState('');
+
+
 
 	const VISIBILITY_LABELS: Record<string, string> = {
 		draft: __('Draft', 'multivendorx'),
@@ -411,19 +415,60 @@ const Membership = ({ id }: { id: string }) => {
 	});
 
 	// add membership start
+	const editRowRef = useRef(null);
+	useEffect(() => {
+		if (editingIndex === null) return;
+
+		const handleClickOutside = (e) => {
+			if (
+				editRowRef.current &&
+				!editRowRef.current.contains(e.target)
+			) {
+				cancelEdit();
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [editingIndex]);
+
 	const addFeature = () => {
-		setFeatures((prev) => [...prev, '']);
+		if (!newValue.trim()) return;
+		setFeatures(prev => [...prev, newValue]);
+		setNewValue('');
 	};
+	const startEdit = (index) => {
+		setEditingIndex(index);
+		setEditingValue(features[index]);
+	};
+	const saveEdit = () => {
+		if (!editingValue.trim()) return;
 
-	const updateFeature = (index: number, value: string) => {
-		setFeatures((prev) =>
-			prev.map((f, i) => (i === index ? value : f))
+		setFeatures(prev =>
+			prev.map((item, index) =>
+				index === editingIndex ? editingValue : item
+			)
 		);
+
+		setEditingIndex(null);
+		setEditingValue('');
+	};
+	const cancelEdit = () => {
+		setEditingIndex(null);
+		setEditingValue('');
 	};
 
-	const clearAll = () => {
-		setFeatures(['']);
+	const deleteFeature = (index) => {
+		setFeatures(prev => prev.filter((_, i) => i !== index));
+
+		if (editingIndex === index) {
+			cancelEdit();
+		}
 	};
+
 	// add membership end
 
 
@@ -485,266 +530,6 @@ const Membership = ({ id }: { id: string }) => {
 			type: 'number',
 			postInsideText: __('%', 'multivendorx'),
 			size: '7rem',
-		},
-	];
-	const subscription = [
-		{
-			key: 'disable_coupon_for_wholesale',
-			type: 'checkbox',
-			options: [
-				{
-					key: 'disable_coupon_for_wholesale',
-					label: __('', 'catalogx'),
-					value: 'disable_coupon_for_wholesale',
-				},
-			],
-			look: 'toggle',
-		},
-		{
-			key: 'facilitator_fixed',
-			type: 'number',
-			postInsideText: __('days', 'multivendorx'),
-			size: '8rem',
-			preText: 'for a duration of',
-			dependent: {
-				key: 'disable_coupon_for_wholesale',
-				set: true,
-				value: 'disable_coupon_for_wholesale',
-			},
-		},
-	];
-	const recurringPrice = [
-		{
-			key: 'recurring',
-			type: 'number',
-			postInsideText: __('days', 'multivendorx'),
-			size: '8rem',
-			preText: 'for a duration of',
-			dependent: {
-				key: 'disable_coupon_for_wholesale',
-				set: true,
-				value: 'disable_coupon_for_wholesale',
-			},
-		},
-		{
-			key: 'recurring_fixed',
-			type: 'dropdown',
-			size: '5rem',
-			options: [
-				{
-					key: 'monday',
-					label: __('Keep Products Visible', 'multivendorx'),
-					value: 'monday',
-				},
-				{
-					key: 'tuesday',
-					label: __('After 2 cycles', 'multivendorx'),
-					value: 'tuesday',
-				},
-				{
-					key: 'wednesday',
-					label: __('Hide Products', 'multivendorx'),
-					value: 'wednesday',
-				},
-				{
-					key: 'thursday',
-					label: __('Set to Draft', 'multivendorx'),
-					value: 'thursday',
-				},
-			],
-		},
-	];
-
-	const productUploadSettings = [
-		{
-			key: 'enable_product_limits',
-			type: 'checkbox',
-			options: [
-				{
-					key: 'enable_product_limits',
-					label: __('', 'multivendorx'),
-					value: 'enable_product_limits',
-				},
-			],
-			look: 'toggle',
-		},
-
-		{
-			key: 'max_products',
-			type: 'number',
-			size: '8rem',
-			preText: 'with a maximum of',
-			postInsideText: __('products', 'multivendorx'),
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-
-		{
-			key: 'extra_product_charge',
-			type: 'number',
-			size: '8rem',
-			preText: 'Beyond this limit,charge',
-			//postText: __('per product', 'multivendorx'),
-			postInsideText: __('/products', 'multivendorx'),
-			preInsideText: __('$', 'multivendorx'),
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-		{
-			key: 'images_per_product',
-			type: 'number',
-			size: '6rem',
-			preText: 'Stores can also upload images',
-			//postText: __('images per product', 'multivendorx'),
-			postInsideText: __('/products', 'multivendorx'),
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-
-
-		{
-			key: 'product_images',
-			type: 'checkbox',
-			label: 'lflkksjsjajaaj',
-			options: [
-				{
-					key: 'product_images',
-					value: 'product_images',
-				},
-			],
-			look: 'toggle',
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-		{
-			key: 'max_featured_products',
-			type: 'number',
-			size: '6rem',
-			preText: 'allowed upto',
-			dependent: {
-				key: 'product_images',
-				set: true,
-				value: 'product_images',
-			},
-		},
-	];
-
-	const gracePeriod = [
-		{
-			key: 'disable_coupon',
-			type: 'checkbox',
-			options: [
-				{
-					key: 'disable_coupon',
-					label: __('', 'catalogx'),
-					value: 'disable_coupon',
-				},
-			],
-			look: 'toggle',
-		},
-		{
-			key: 'facilita',
-			type: 'number',
-			postInsideText: __('days', 'multivendorx'),
-			size: '8rem',
-			preText: 'for a duration of',
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
-		},
-		{
-			key: 'facilitator',
-			type: 'dropdown',
-			size: '4rem',
-			options: [
-				{
-					key: 'monday',
-					label: __('Visible', 'multivendorx'),
-					value: 'monday',
-				},
-				{
-					key: 'tuesday',
-					label: __('Hidden', 'multivendorx'),
-					value: 'tuesday',
-				},
-				{
-					key: 'wednesday',
-					label: __('Hide Products', 'multivendorx'),
-					value: 'wednesday',
-				},
-				{
-					key: 'thursday',
-					label: __('Set to Draft', 'multivendorx'),
-					value: 'thursday',
-				},
-			],
-			preText: 'During this period, products are',
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
-		},
-		{
-			key: 'rule_type',
-			type: 'select',
-			options: [
-				{ value: 'price', label: 'allowed' },
-				{ value: 'quantity', label: 'Not allowed' }
-			],
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
-			preText: 'and product creation is',
-		},
-		{
-			key: 'facilitator_fixed',
-			type: 'dropdown',
-			size: '5rem',
-			options: [
-				{
-					key: 'monday',
-					label: __('Keep Products Visible', 'multivendorx'),
-					value: 'monday',
-				},
-				{
-					key: 'tuesday',
-					label: __('After 2 cycles', 'multivendorx'),
-					value: 'tuesday',
-				},
-				{
-					key: 'wednesday',
-					label: __('Hide Products', 'multivendorx'),
-					value: 'wednesday',
-				},
-				{
-					key: 'thursday',
-					label: __('Set to Draft', 'multivendorx'),
-					value: 'thursday',
-				},
-			],
-			preText: 'Change the store role to',
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
 		},
 	];
 
@@ -824,7 +609,7 @@ const Membership = ({ id }: { id: string }) => {
 						</div>
 					)}
 					<Column grid={8}>
-						<Card
+						<Card contentHeight
 							title="Plan details"
 							action={
 								<>
@@ -924,9 +709,9 @@ const Membership = ({ id }: { id: string }) => {
 								</FormGroup>
 							</FormGroupWrapper>
 						</Card>
-						<Card contentHeight title={__('Plan Highlights', 'multivendorx')}>
+						<Card contentHeight title={__('Plan highlights', 'multivendorx')}>
 							<FormGroupWrapper>
-								<FormGroup cols={3}>
+								<FormGroup cols={3} label={__('Upload image', 'multivendorx')}>
 									<FileInput
 										// value={formData.image || ''}
 										inputClass="form-input"
@@ -950,41 +735,76 @@ const Membership = ({ id }: { id: string }) => {
 									// }
 									/>
 								</FormGroup>
-								<FormGroup cols={2}>
+								<FormGroup cols={2} label={__('Features list', 'multivendorx')}>
 									<div className="membership-features">
-										<AdminButton
-											buttons={[
-												{
-													icon: 'delete',
-													text: 'Clear All',
-													className: 'red',
-													onClick: clearAll,
-												},
-												{
-													icon: 'plus',
-													text: 'Add Feature',
-													className: 'purple',
-													onClick: addFeature,
-												},
-											]}
-										/>
 										<div className="features-list">
 											{features.map((feature, index) => (
-												<div className="feature-row" key={index}>
-													<span className={`feature-number`}>
-														{index + 1}
-													</span>
-													<input
-														type="text"
-														className="basic-input"
-														placeholder="e.g., Unlimited access to premium content"
-														value={feature}
-														onChange={(e) =>
-															updateFeature(index, e.target.value)
-														}
-													/>
+												<div className="feature-row" key={index} ref={editingIndex === index ? editRowRef : null}>
+													{editingIndex === index ? (
+														<>
+															<TextArea
+																value={editingValue}
+																onChange={(e) => setEditingValue(e.target.value)}
+																onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
+																onKeyDown={(e) => {
+																	if (e.key === 'Enter' && !e.shiftKey) {
+																		e.preventDefault();
+																		saveEdit();
+																	}
+																}}
+																autoFocus
+																rowNumber={2}
+															/>
+															<span className="admin-badge green" onClick={() => saveEdit()}><i className="adminfont-edit"></i></span>
+														</>
+													) : (
+														<div className="feature-name">
+															<span className="feature-number">{index + 1}</span>
+															{feature}
+
+															<div className="edit-buttons">
+																<div
+																	className="admin-badge blue"
+																	onClick={() => startEdit(index)}
+																>
+																	<i className="adminfont-edit"></i>
+																</div>
+
+																<div
+																	className="admin-badge red"
+																	onClick={() => deleteFeature(index)}
+																>
+																	<i className="adminfont-delete"></i>
+																</div>
+															</div>
+														</div>
+													)}
+
 												</div>
 											))}
+
+											<div className="feature-row">
+												<TextArea
+													value={newValue}
+													onChange={(e) => setNewValue(e.target.value)}
+													onKeyDown={(e) => e.key === 'Enter' && addFeature()}
+													placeholder="Add new feature"
+													onKeyDown={() => console.log('KEYDOWN FIRED')}
+													rowNumber={2}
+												/>
+
+												<AdminButton
+													buttons={[
+														{
+															icon: 'plus',
+															text: __('Add new', 'multivendorx'),
+															className: 'purple',
+															onClick: addFeature,
+														},
+													]}
+												/>
+											</div>
+
 										</div>
 									</div>
 								</FormGroup>
@@ -1054,6 +874,15 @@ const Membership = ({ id }: { id: string }) => {
 												postInsideText="Monthly"
 												value={formData.recurring_price}
 												onChange={handleChange}
+												postInsideText={{
+													type: 'select',
+													key: 'store_base',
+													size: '7rem',
+													options: [
+														{ 'value': 'Monthly', 'label': 'Monthly' },
+														{ 'value': 'Day', 'label': 'Day' }
+													],
+												}}
 											/>
 										</FormGroup>
 									</FormGroupWrapper>
@@ -1084,6 +913,15 @@ const Membership = ({ id }: { id: string }) => {
 											postInsideText="Monthly"
 											value={formData.recurring_price}
 											onChange={handleChange}
+											postInsideText={{
+												type: 'select',
+												key: 'store_base',
+												size: '7rem',
+												options: [
+													{ 'value': 'Monthly', 'label': 'Monthly' },
+													{ 'value': 'Day', 'label': 'Day' }
+												],
+											}}
 										/>
 									</FormGroup>
 									<label
@@ -1091,8 +929,8 @@ const Membership = ({ id }: { id: string }) => {
 										style={{ cursor: 'pointer' }}
 										className="field-wrapper"
 									>
-										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
 										{__('Apply tax to plan price', 'multivendorx')}
+										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
 									</label>
 									<div className="settings-metabox-note">
 										<div className="metabox-note-wrapper">
@@ -1107,7 +945,7 @@ const Membership = ({ id }: { id: string }) => {
 							)}
 						</Card>
 						<Card
-							contentHeight title={__('Trial Period', 'multivendorx')}
+							contentHeight title={__('Trial period', 'multivendorx')}
 							desc={__('Configure optional trial period for new members', 'multivendorx')}
 							action={
 								<>
@@ -1141,17 +979,6 @@ const Membership = ({ id }: { id: string }) => {
 							}>
 							{trialEnabled.includes('trial') && (
 								<FormGroupWrapper>
-									{/* <FormGroup label="Offer a trial period" htmlFor="trial_period">
-									<NestedComponent
-										id="trial_period"
-										fields={subscription}
-										value={rules}
-										single={true}
-										addButtonLabel="Add Rule"
-										deleteButtonLabel="Remove"
-										onChange={(val) => setRules(val)}
-									/>
-								</FormGroup> */}
 									<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
 										<BasicInput
 											name="name"
@@ -1160,35 +987,12 @@ const Membership = ({ id }: { id: string }) => {
 											postInsideText="days"
 										/>
 									</FormGroup>
+									<FormGroup cols={2}></FormGroup>
 								</FormGroupWrapper>
 							)}
-							{/* <div className="card-header">
-								<div className="left">
-									<div className="title">
-										After Expiry
-									</div>
-									<div className="des">Define what happens when subscription expires</div>
-								</div>
-							</div> */}
-							{/* <FormGroupWrapper>
-								<FormGroup
-									label="Offer grace period"
-									htmlFor="grace_period"
-								>
-									<NestedComponent
-										id="grace_period"
-										fields={gracePeriod}
-										value={rules}
-										single={true}
-										addButtonLabel="Add Rule"
-										deleteButtonLabel="Remove"
-										onChange={(val) => setRules(val)}
-									/>
-								</FormGroup>
-							</FormGroupWrapper> */}
 						</Card>
 						<Card
-							contentHeight title={__('After Expiry', 'multivendorx')}
+							contentHeight title={__('After expiry', 'multivendorx')}
 							desc={__('Define what happens when subscription expires', 'multivendorx')}
 							action={
 								<>
@@ -1287,7 +1091,7 @@ const Membership = ({ id }: { id: string }) => {
 								</>
 							)}
 						</Card>
-						<Card contentHeight title={__('Commission type', 'multivendorx')}>
+						<Card contentHeight title={__('What this plan includes', 'multivendorx')}>
 							<FormGroupWrapper>
 								<FormGroup
 									label="Include All Add-ons"
@@ -1308,38 +1112,12 @@ const Membership = ({ id }: { id: string }) => {
 					</Column>
 					<Column>
 						<Section
-						 wrapperClass='divider-wrapper'
-							hint={__('Commission type', 'multivendorx')}
+							wrapperClass='divider-wrapper'
+							hint={__('What stores can do with this plan', 'multivendorx')}
 						// hint={ inputField.hint } 
 						/>
 					</Column>
 					<Column grid={8}>
-						<Card title={__('Usage Limits', 'multivendorx')}
-						// desc={'Select which premium features stores can access with this plan.'}
-						>
-							<FormGroupWrapper>
-								<FormGroup label="When limit reached" htmlFor="trial_period">
-									<MultiCheckBox
-										wrapperClass="checkbox-list-side-by-side"
-										// description={whenLimitReached.desc}
-										inputWrapperClass="toggle-checkbox-header"
-										inputInnerWrapperClass="default-checkbox"
-										inputClass={whenLimitReached.class}
-										idPrefix={whenLimitReached.key}
-										selectDeselect
-										options={whenLimitReached.options}
-										value={normalizeValue(whenLimitReached.key)}
-										onChange={handleMultiCheckboxChange(whenLimitReached.key)}
-										onMultiSelectDeselectChange={() =>
-											handleSelectDeselect(whenLimitReached)
-										}
-										proSetting={false}
-										moduleChange={() => { }}
-										modules={[]}
-									/>
-								</FormGroup>
-							</FormGroupWrapper>
-						</Card>
 						<Card title={__('What stores can sell', 'multivendorx')}
 							desc={__('Decide what kind of items stores are allowed to list on your marketplace.', 'multivendorx')}
 						>
@@ -1649,7 +1427,7 @@ const Membership = ({ id }: { id: string }) => {
 						</Card>
 					</Column>
 					<Column grid={4}>
-						<Card contentHeight title={__('Membership Perks', 'multivendorx')}>
+						<Card contentHeight title={__('Membership perks', 'multivendorx')}>
 							<FormGroupWrapper>
 								<FormGroup cols={2} label="Products" htmlFor="trial_period">
 									<BasicInput
@@ -1701,6 +1479,47 @@ const Membership = ({ id }: { id: string }) => {
 									/>
 								</FormGroup>
 								<FormGroup cols={2}></FormGroup>
+							</FormGroupWrapper>
+						</Card>
+						<Card contentHeight title={__('Usage Limits', 'multivendorx')}
+						// desc={'Select which premium features stores can access with this plan.'}
+						>
+							<FormGroupWrapper>
+								<FormGroup label="When limit reached" htmlFor="trial_period">
+									<MultiCheckBox
+										wrapperClass="checkbox-list-side-by-side"
+										// description={whenLimitReached.desc}
+										inputWrapperClass="toggle-checkbox-header"
+										inputInnerWrapperClass="default-checkbox"
+										inputClass={whenLimitReached.class}
+										idPrefix={whenLimitReached.key}
+										selectDeselect
+										options={whenLimitReached.options}
+										value={normalizeValue(whenLimitReached.key)}
+										onChange={handleMultiCheckboxChange(whenLimitReached.key)}
+										onMultiSelectDeselectChange={() =>
+											handleSelectDeselect(whenLimitReached)
+										}
+										proSetting={false}
+										moduleChange={() => { }}
+										modules={[]}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
+						<Card contentHeight title={__('Additional resource pricing', 'multivendorx')} desc={__('Define the cost per unit when stores want to add more resources beyond their limits', 'multivendorx')}
+						// desc={'Select which premium features stores can access with this plan.'}
+						>
+							<FormGroupWrapper>
+								<FormGroup cols={2} label="Additional Products" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										preInsideText="$"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} ></FormGroup>
 							</FormGroupWrapper>
 						</Card>
 						<Card contentHeight title={__('AI tools available to stores', 'multivendorx')}

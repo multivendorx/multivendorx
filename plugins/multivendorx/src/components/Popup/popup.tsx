@@ -70,7 +70,7 @@ export const proPopupContent = {
 			icon: 'adminfont-staff-manager',
 			text: __('Staff Manager', 'multivendorx'),
 			des: __(
-				'Empower vendors to manage their team with role-based access and permissions.',
+				'Empower stores to manage their team with role-based access and permissions.',
 				'multivendorx'
 			),
 		},
@@ -94,7 +94,7 @@ export const proPopupContent = {
 			icon: 'adminfont-paypal-marketplace',
 			text: __('PayPal Marketplace', 'multivendorx'),
 			des: __(
-				'Split payments automatically to vendors via PayPal - seamless payouts.',
+				'Split payments automatically to stores via PayPal - seamless payouts.',
 				'multivendorx'
 			),
 		},

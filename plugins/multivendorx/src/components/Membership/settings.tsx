@@ -121,27 +121,8 @@ const Settings = ({ id }: { id: string }) => {
 			<SuccessNotice message={successMsg} />
 			<Container>
 				<Column grid={8}>
-					<Card title="Webhook Configuration">
+					<Card title="Messages shown when a store’s plan is ending">
 						<FormGroupWrapper>
-							<FormGroup label={__('Membership plans showcase page', 'multivendorx')}>
-								<SelectInput
-									name="stock_status"
-									options={stockStatusOptions}
-									type="single-select"
-								// value={product.stock_status}
-								// onChange={(selected) =>
-								//     handleChange(
-								//         'stock_status',
-								//         selected.value
-								//     )
-								// }
-								/>
-								<div className="settings-metabox-description">
-									{__(
-										'This page shows all plan options to stores when they sign up or upgrade their subscription.'
-									)}
-								</div>
-							</FormGroup>
 							<FormGroup label={__('Payment Due Message', 'multivendorx')}>
 								<TextArea
 									name="short_description"
@@ -183,16 +164,26 @@ const Settings = ({ id }: { id: string }) => {
 				</Column>
 
 				<Column grid={4}>
-					<Card title="Webhook Configuration">
+					<Card title="Where stores choose their plans">
 						<FormGroupWrapper>
-							<FormGroup label={__('Primary Webhook URL', 'multivendorx')}>
-								<BasicInput
-									name="name"
-									 
-									descClass="settings-metabox-description"
-									value={formData.name}
-									onChange={handleChange}
+							<FormGroup label={__('Membership plans showcase page', 'multivendorx')}>
+								<SelectInput
+									name="stock_status"
+									options={stockStatusOptions}
+									type="single-select"
+								// value={product.stock_status}
+								// onChange={(selected) =>
+								//     handleChange(
+								//         'stock_status',
+								//         selected.value
+								//     )
+								// }
 								/>
+								<div className="settings-metabox-description">
+									{__(
+										'This page shows all plan options to stores when they sign up or upgrade their subscription.'
+									)}
+								</div>
 							</FormGroup>
 							<FormGroup label={__('Stripe Webhook URL', 'multivendorx')}>
 								<BasicInput
@@ -207,10 +198,10 @@ const Settings = ({ id }: { id: string }) => {
 					</Card>
 					<Card title="Notifications">
 						<FormGroupWrapper>
-							<FormGroup label={__('Reminder Days Before Expiration', 'multivendorx')}>
+							<FormGroup label={__('Send reminder', 'multivendorx')}>
 								<BasicInput
 									name="name"
-									postText="before expiration"
+									postText="before the plan ends"
 									size="8rem"
 									 
 									descClass="settings-metabox-description"

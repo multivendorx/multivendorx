@@ -15,18 +15,20 @@
         width: 100%;
         border-radius: 0.313rem;
         box-shadow: $box-shadow;
+        box-sizing: border-box;
 
         .analytics-icon {
             i {
-                padding: 0.5rem;
-                font-size: 1.625rem;
                 border-radius: 0.313rem;
+                font-size: 2.5rem;
+                padding: 0.625rem;
+                line-height: 1.5;
             }
         }
 
         .details {
             .number {
-                font-size: 1.25rem;
+                font-size: 2.063rem;
                 line-height: 0.9;
                 font-weight: 600;
                 color: $text-color;
@@ -40,43 +42,43 @@
     }
 
     // admin Wallet Transaction table(common)
-    &.wallet {
-        padding: 0 0 1rem;
-        margin-bottom: 1rem;
-        border-bottom: $border-light-small;
-    }
-
+    // &[data-template="wallet"] {
+    //     padding: 0 0 1rem;
+    //     margin-bottom: 1rem;
+    //     border-bottom: $border-light-small;
+    // }
     // Wallet Transaction table
 
     // report
-    &.report {
-        flex-wrap: wrap;
-
+    &[data-template="small"] {
         .analytics-item {
-            width: 48%;
             box-sizing: border-box;
 
             i {
-                font-size: 2.5rem;
-                padding: 0.625rem;
-                line-height: 1.5;
+                padding: 0.5rem;
+                font-size: 1.625rem;
             }
 
             .details {
                 .number {
-                    font-size: 2.063rem;
+                    font-size: 1.25rem;
                 }
             }
         }
     }
 
-    &.col-3 {
-        .analytics-item {
-            width: 24%;
-        }
+    &.flex-wrap{
+        flex-wrap: wrap;
+        
+    .col-6  {  flex: 1 1 calc(8.3333%  - 1rem); }
+    .col-5  {  flex: 1 1 calc(16.6667% - 1rem); }
+    .col-4  {  flex: 1 1 calc(25%      - 1rem); }
+    .col-3  {  flex: 1 1 calc(33.3333% - 1rem); }
+    .col-2  {  flex: 1 1 calc(41.6667% - 1rem); }
+    .col-1  {  flex: 1 1 calc(50%      - 1rem); }
     }
 
-    &.dashboard {
+    &[data-template="dashboard"] {
         .analytics-item {
             flex-direction: row-reverse;
             justify-content: space-between;

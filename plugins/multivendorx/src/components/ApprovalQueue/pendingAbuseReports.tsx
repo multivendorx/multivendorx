@@ -372,7 +372,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 
 	return (
 		<>
-			<Container general>
+			<Container>
 				<Column>
 					<Table
 						data={data}
