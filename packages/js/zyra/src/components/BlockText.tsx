@@ -9,25 +9,50 @@ interface BlockTextProps {
     blockTextClass: string;
     value: string;
     title?: string;
+    variant?: 'success' | 'error' | 'info' | 'warning' | 'default';
 }
 
-const BlockText: React.FC< BlockTextProps > = ( {
+const VARIANT_CONFIG = {
+    info: {
+        icon: 'adminfont-icon-info',
+        className: 'block-text--info',
+    },
+    success: {
+        icon: 'adminfont-icon-check',
+        className: 'block-text--success',
+    },
+    warning: {
+        icon: 'adminfont-icon-suspended',
+        className: 'block-text--warning',
+    },
+    error: {
+        icon: 'adminfont-icon-error',
+        className: 'block-text--error',
+    },
+    default: {
+        icon: 'adminfont-icon-help',
+        className: 'block-text--default',
+    },
+};
+
+const BlockText: React.FC<BlockTextProps> = ({
     blockTextClass,
     value,
     title,
-} ) => {
+    variant = 'default',
+}) => {
+    const { icon, className } = VARIANT_CONFIG[variant];
+
     return (
-        <>
-            <div className={ blockTextClass }>
-                <div className="metabox-note-wrapper">
-                    <i className="adminfont-info"></i>
-                    <div className="details">
-                        <div className="title">{ title }</div>
-                        <p dangerouslySetInnerHTML={ { __html: value } }></p>
-                    </div>
+        <div className={`${blockTextClass} ${className}`}>
+            <div className="metabox-note-wrapper">
+                {icon && <i className={icon} />}
+                <div className="details">
+                    {title && <div className="title">{title}</div>}
+                    <p dangerouslySetInnerHTML={{ __html: value }} />
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

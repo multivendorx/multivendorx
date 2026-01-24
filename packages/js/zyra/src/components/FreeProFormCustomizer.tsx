@@ -105,7 +105,7 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
         } );
     };
 
-    const formFields: FormField[] = [
+    const formFields = React.useMemo<FormField[]>(() => [
         { key: 'name', desc: 'Name' },
         { key: 'email', desc: 'Email' },
         { key: 'phone', desc: 'Phone' },
@@ -115,12 +115,12 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
         { key: 'fileupload', desc: 'File upload' },
         { key: 'filesize-limit', desc: 'File upload size limit (in MB)' },
         { key: 'captcha', desc: 'Captcha' },
-    ];
+    ], []);
 
-    const menu: MenuItem[] = [
+    const menu = React.useMemo<MenuItem[]>(() => [
         { name: 'Free', link: 'hi', id: '2', icon: 'adminfont-info' },
         { name: 'Pro', link: 'hi', id: '1', icon: 'adminfont-cart' },
-    ];
+    ], []);
 
     const [ currentTab, setCurrentTab ] = useState< MenuItem >( menu[ 0 ] );
 
