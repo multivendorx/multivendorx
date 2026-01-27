@@ -406,7 +406,7 @@ class Install {
         // Enable module by default
         $active_modules = get_option( Utill::ACTIVE_MODULES_DB_KEY, [] );
         $default_modules = array(
-            'announcement', 'knowledgebase', 'simple'
+            'announcement', 'knowledgebase', 'simple', 'question-answer', 'privacy'
         );
         update_option( Utill::ACTIVE_MODULES_DB_KEY, array_unique( array_merge( $active_modules, $default_modules ) ) );
     }
@@ -1104,6 +1104,17 @@ class Install {
         }
     }
 
+    public function old_new_map_module_id() {
+        $map_modules = [
+            'spmv'  =>  'shared-listing',
+            'store-support'  =>  'customer-support',
+            'report-abuse'  =>  'marketplace-compliance',
+            'identity-verification'  =>  'marketplace-compliance',
+            'store-location'  =>  'geo-location',
+        ];
+        return $map_modules;
+    }
+
     /**
      * Migrate old modules 
      * @return void
@@ -1165,17 +1176,41 @@ class Install {
         update_option(Utill::MULTIVENDORX_SETTINGS['payment-integration'], $payment_settings);
         update_option(Utill::MULTIVENDORX_SETTINGS['shipping'], $shipping_settings);
 
-        unset($previous_active_modules['zone-shipping']);
-        unset($previous_active_modules['country-shipping']);
-        unset($previous_active_modules['distance-shipping']);
-        unset($previous_active_modules['stripe-connect']);
-        unset($previous_active_modules['bank-payment']);
-        unset($previous_active_modules['paypal-masspay']);
-        unset($previous_active_modules['paypal-payout']);
+         $old_shipping_modules = [
+            'zone-shipping',
+            'country-shipping',
+            'distance-shipping',
+        ];
+
+        if ( ! empty( array_intersect( $old_shipping_modules, $previous_active_modules ) ) ) {
+            $previous_active_modules[] = 'store-shipping';
+        }
+
+        $modules_to_remove = [
+            'zone-shipping',
+            'country-shipping',
+            'distance-shipping',
+            'stripe-connect',
+            'bank-payment',
+            'paypal-masspay',
+            'paypal-payout',
+            'toolset-types',
+            'mvx-blocks',
+        ];
+
+        $previous_active_modules = array_diff( $previous_active_modules, $modules_to_remove );
+
+        $module_map = $this->old_new_map_module_id();
+
+        foreach ( $previous_active_modules as &$module ) {
+            if ( isset( $module_map[ $module ] ) ) {
+                $module = $module_map[ $module ];
+            }
+        }
+        unset( $module ); 
 
         $active_modules = get_option( Utill::ACTIVE_MODULES_DB_KEY, [] );
         update_option( Utill::ACTIVE_MODULES_DB_KEY, array_unique( array_merge( $active_modules, $previous_active_modules ) ) );
-
     }
 
     /**
@@ -1254,10 +1289,40 @@ class Install {
 
         if (!empty($previous_general_settings['registration_page'])) {
             $marketplace_settings['store_registration_page'] = $previous_general_settings['registration_page']['value'];
+             $post = get_post( $previous_general_settings['registration_page']['value'] );
+
+            $old_shortcode = '[vendor_registration]';
+            $new_shortcode = '[marketplace_registration]';
+
+            $updated_content = str_replace( $old_shortcode, $new_shortcode, $post->post_content );
+
+            wp_update_post(
+                [
+                    'ID'           => $previous_general_settings['registration_page']['value'],
+                    'post_content' => $updated_content,
+                ]
+            );
+
+            delete_option( 'mvx_product_vendor_registration_page_id' );
         }
 
         if (!empty($previous_general_settings['vendor_dashboard_page'])) {
             $marketplace_settings['store_dashboard_page'] = $previous_general_settings['vendor_dashboard_page']['value'];
+            $post = get_post( $previous_general_settings['vendor_dashboard_page']['value'] );
+
+            $old_shortcode = '[mvx_vendor]';
+            $new_shortcode = '[marketplace_dashboard]';
+
+            $updated_content = str_replace( $old_shortcode, $new_shortcode, $post->post_content );
+
+            wp_update_post(
+                [
+                    'ID'           => $previous_general_settings['vendor_dashboard_page']['value'],
+                    'post_content' => $updated_content,
+                ]
+            );
+
+            delete_option( 'mvx_product_vendor_vendor_page_id' );
         }
 
         $permalinks = get_option('dc_vendors_permalinks', []);
@@ -2256,5 +2321,185 @@ class Install {
             $refund->save();
         }
 
+        // Visitor stats table migrate.
+        $old_visitors_table = $wpdb->prefix . 'mvx_visitors_stats';
+        $new_visitors_table = $wpdb->prefix . Utill::TABLES['visitors_stats'];
+
+        $rows = $wpdb->get_results( "SELECT * FROM {$old_visitors_table}" );
+
+        $store_cache = [];
+
+        foreach ( $rows as $row ) {
+
+            $author_id = (int) $row->vendor_id;
+
+            if ( ! isset( $store_cache[ $author_id ] ) ) {
+                $store_cache[ $author_id ] = (int) get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+            }
+
+            $store_id = $store_cache[ $author_id ] ?: 0;
+
+            $wpdb->insert(
+                $new_visitors_table,
+                [
+                    'store_id'     => $store_id,
+                    'user_id'      => (int) $row->user_id,
+                    'user_cookie'  => $row->user_cookie,
+                    'session_id'   => $row->session_id,
+                    'ip'           => $row->ip,
+                    'lat'          => $row->lat,
+                    'lon'          => $row->lon,
+                    'city'         => $row->city,
+                    'zip'          => $row->zip,
+                    'regionCode'   => $row->regionCode,
+                    'region'       => $row->region,
+                    'countryCode'  => $row->countryCode,
+                    'country'      => $row->country,
+                    'isp'          => $row->isp,
+                    'timezone'     => $row->timezone,
+                    'created'      => $row->created,
+                ]
+            );
+        }
+
+        //Questions and answers table migration.
+        $questions_table = $wpdb->prefix . 'mvx_cust_questions';
+        $answers_table   = $wpdb->prefix . 'mvx_cust_answers';
+        $new_qna_table       = $wpdb->prefix . Utill::TABLES['product_qna'];
+
+        $questions = $wpdb->get_results( "SELECT * FROM {$questions_table}" );
+        foreach ( $questions as $question ) {
+            $answer = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$answers_table} WHERE ques_ID = %d ORDER BY ans_created ASC LIMIT 1",
+                    $question->ques_ID
+                )
+            );
+
+            $ques_votes = $question->ques_vote ? maybe_unserialize( $question->ques_vote ) : [];
+            $ans_votes  = $answer ? maybe_unserialize( $answer->ans_vote ) : [];
+
+            // Merge votes
+            $merged_votes = array_merge( $ques_votes, $ans_votes );
+            $total_votes = count( $merged_votes );
+
+            $store_id = get_post_meta( $question->product_ID, Utill::POST_META_SETTINGS['store_id'], true );
+            $wpdb->insert(
+                $new_qna_table,
+                [
+                    'id'                  => (int) $question->ques_ID,
+                    'product_id'          => (int) $question->product_ID,
+                    'store_id'            => $store_id,
+                    'question_text'       => $question->ques_details,
+                    'question_by'         => (int) $question->ques_by,
+                    'question_date'       => $question->ques_created,
+                    'answer_text'         => $answer ? $answer->ans_details : null,
+                    'answer_by'           => $answer ? (int) $answer->ans_by : null,
+                    'answer_date'         => $answer ? $answer->ans_created : null,
+                    'total_votes'         => $total_votes,
+                    'voters'              => maybe_serialize( $merged_votes ),
+                    'question_visibility' => 'public',
+                    'created_at'          => $question->ques_created,
+                    'updated_at'          => $answer ? $answer->ans_created : $question->ques_created,
+                ],
+                [
+                    '%d','%d','%d','%s','%d','%s',
+                    '%s','%d','%s','%d','%s','%s','%s'
+                ]
+            );
+        }
+
+        //SPMV table migration.
+        $old_spmv_table = $wpdb->prefix . 'mvx_products_map';
+        $new_spmv_table = $wpdb->prefix . Utill::TABLES['products_map'];
+
+        $spmv_products = $wpdb->get_results(
+            "SELECT product_map_id, product_id, created
+            FROM {$old_spmv_table}
+            ORDER BY product_map_id, ID"
+        );
+
+        $maps = [];
+        foreach ( $spmv_products as $row ) {
+            $map_id     = (int) $row->product_map_id;
+            $product_id = (int) $row->product_id;
+
+            if ( ! isset( $maps[ $map_id ] ) ) {
+                $maps[ $map_id ] = [
+                    'products' => [],
+                    'created'  => $row->created,
+                ];
+            }
+
+            $maps[ $map_id ]['products'][] = $product_id;
+        }
+
+        foreach ( $maps as $map_id => $data ) {
+            $wpdb->insert(
+                $new_spmv_table,
+                [
+                    'ID'          => $map_id,
+                    'product_map' => wp_json_encode( array_values( $data['products'] ) ),
+                    'created'     => $data['created'],
+                ],
+                [
+                    '%d',
+                    '%s',
+                    '%s',
+                ]
+            );
+
+            foreach ( $data['products'] as $product_id ) {
+                update_post_meta( $product_id, 'multivendorx_spmv_id', $map_id );
+                delete_post_meta( $product_id, '_mvx_spmv_map_id' );
+                delete_post_meta( $product_id, '_mvx_spmv_product' );
+            }
+        }
+
+        //Vendor ledger(Transactions) table migrate.
+        $old_ledger_table = $wpdb->prefix . 'mvx_vendor_ledger';
+        $new_ledger_table = $wpdb->prefix . Utill::TABLES['transaction'];
+
+        $transactions = $wpdb->get_results( "SELECT * FROM {$old_ledger_table}", ARRAY_A );
+
+        $store_cache = [];
+
+        foreach ( $transactions as $row ) {
+            $author_id = (int) $row['vendor_id'];
+
+            if ( ! isset( $store_cache[ $author_id ] ) ) {
+                $store_cache[ $author_id ] = (int) get_user_meta( $author_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+            }
+
+            $store_id = $store_cache[ $author_id ] ?: 0;
+
+            $is_credit = ! empty( $row['credit'] );
+            $entry_type = $is_credit ? 'Cr' : 'Dr';
+            $amount     = $is_credit ? (float) $row['credit'] : (float) $row['debit'];
+
+            $wpdb->insert(
+                $new_ledger_table,
+                [
+                    'store_id'         => $store_id,
+                    'order_id'         => (int) $row['order_id'],
+                    'commission_id'    => $row['ref_id'],
+                    'entry_type'       => $entry_type,
+                    'transaction_type' => $row['ref_type'],
+                    'amount'           => $amount,
+                    'balance'          => (float) $row['balance'],
+                    'locking_balance'  => 0,
+                    'currency'         => get_woocommerce_currency(),
+                    'narration'        => $row['ref_info'],
+                    'status'           => $row['ref_status'],
+                    'created_at'       => $row['created'],
+                    'updated_at'       => $row['created'],
+                ],
+                [
+                    '%d', '%d', '%s', '%s', '%s', '%f', '%f','%f', '%s', '%s', '%s', '%s', '%s',
+                ]
+            );
+        }
+
     }
+
 }

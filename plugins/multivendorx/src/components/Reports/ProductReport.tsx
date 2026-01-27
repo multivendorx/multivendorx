@@ -10,7 +10,7 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, MultiCalendarInput, Table, TableCell } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, MultiCalendarInput, Table, TableCell } from 'zyra';
 import axios from 'axios';
 import {
 	PaginationState,
@@ -66,6 +66,8 @@ const ProductReport: React.FC = () => {
 	const [inStockCount, setInStockCount] = useState(0);
 	const [outOfStockCount, setOutOfStockCount] = useState(0);
 	const [onBackorderCount, setOnBackorderCount] = useState(0);
+	const [isLoading, setIsLoading] = useState(true);
+	
 
 	const toggleReviewedCard = (key: string) => {
 		setOpenReviewedCards((prev) => ({
@@ -103,6 +105,7 @@ const ProductReport: React.FC = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setIsLoading(true);
 			try {
 				// 1. Fetch store list
 				axios
@@ -110,6 +113,7 @@ const ProductReport: React.FC = () => {
 						headers: { 'X-WP-Nonce': appLocalizer.nonce },
 					})
 					.then((response) => setStore(response.data.stores || []))
+					.finally(() => {setIsLoading(false);})
 					.catch(() => {
 						setError(__('Failed to load stores', 'multivendorx'));
 						setStore([]);
@@ -128,6 +132,7 @@ const ProductReport: React.FC = () => {
 						setTotalRows(total);
 						setPageCount(Math.ceil(total / pagination.pageSize));
 					})
+					.finally(() => {setIsLoading(false);})
 					.catch(() =>
 						setError(
 							__('Failed to load total rows', 'multivendorx')
@@ -154,6 +159,7 @@ const ProductReport: React.FC = () => {
 							}));
 						setChartData(data);
 					})
+					.finally(() => {setIsLoading(false);})
 					.catch(() => setError('Failed to load product sales data'));
 
 				// 4. Top reviewed products
@@ -176,6 +182,7 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
+					.finally(() => {setIsLoading(false);})
 					.catch((error) =>
 						console.error(
 							'Error fetching top reviewed products:',
@@ -203,6 +210,7 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
+					.finally(() => {setIsLoading(false);})
 					.catch((error) =>
 						console.error(
 							'Error fetching top selling products:',
@@ -234,6 +242,7 @@ const ProductReport: React.FC = () => {
 								setOnBackorderCount(count);
 							}
 						})
+					    .finally(() => {setIsLoading(false);})
 						.catch((error) =>
 							console.error(
 								`Error fetching ${status} count:`,
@@ -255,25 +264,25 @@ const ProductReport: React.FC = () => {
 			id: 'sales',
 			label: 'Total Products',
 			count: totalRows,
-			icon: 'adminfont-single-product',
+			icon: 'single-product',
 		},
 		{
 			id: 'earnings',
 			label: 'In Stock',
 			count: inStockCount,
-			icon: 'adminfont-per-product-shipping',
+			icon: 'per-product-shipping',
 		},
 		{
 			id: 'Vendors',
 			label: 'On backorder',
 			count: onBackorderCount,
-			icon: 'adminfont-multi-product',
+			icon: 'multi-product',
 		},
 		{
 			id: 'free',
 			label: 'Out of Stock',
 			count: outOfStockCount,
-			icon: 'adminfont-out-of-stock',
+			icon: 'out-of-stock',
 		},
 	];
 
@@ -563,16 +572,16 @@ const ProductReport: React.FC = () => {
 		<>
 			<Container>
 				{/* Keep entire top dashboard layout */}
-				<Column row>
-				
+				<Column row>				
 					<Analytics
-						template="template-2"
+						cols={2}
 						data={overview.map((item, idx) => ({
 							icon: item.icon,
 							iconClass: `admin-color${idx + 2}`,
 							number: <Counter value={item.count} />,
 							text: __(item.label, 'multivendorx'),
 						}))}
+						isLoading={isLoading}	
 					/>
 
 					<Card title="Revenue & Sales Comparison">
@@ -605,12 +614,7 @@ const ProductReport: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<p>
-								{__(
-									'No product sales data found.',
-									'multivendorx'
-								)}
-							</p>
+							<MessageState title={__('No product sales data found.', 'multivendorx')}/>
 						)}
 					</Card>
 				</Column>
@@ -698,7 +702,7 @@ const ProductReport: React.FC = () => {
 																	__html:
 																		product.price_html ||
 																		product.price ||
-																		'—',
+																		'-',
 																}}
 															/>
 														</div>
@@ -734,12 +738,7 @@ const ProductReport: React.FC = () => {
 								</div>
 							))
 						) : (
-							<p>
-								{__(
-									'No reviewed products found.',
-									'multivendorx'
-								)}
-							</p>
+							<MessageState title={__('No reviewed products found.', 'multivendorx')}/>
 						)}
 					</Card>
 					<Card title="Top Selling Products">
@@ -764,12 +763,7 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<p>
-								{__(
-									'No top selling products found.',
-									'multivendorx'
-								)}
-							</p>
+							<MessageState title={__('No top selling products found.', 'multivendorx')}/>
 						)}
 					</Card>
 				</Column>

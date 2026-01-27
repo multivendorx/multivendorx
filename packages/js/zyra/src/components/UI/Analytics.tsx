@@ -1,5 +1,6 @@
 import React from 'react';
 import "../../styles/web/UI/Analytics.scss";
+import Skeleton from './Skeleton';
 type AnalyticsItem = {
 	icon?: string;
 	iconClass?: string;
@@ -11,47 +12,62 @@ type AnalyticsItem = {
 
 type AnalyticsProps = {
 	data: AnalyticsItem[];
-	template?: 'template-1' | 'template-2' | 'template-3';
-	col3?: boolean;
+	variant?: 'default' | 'small' | 'dashboard';
+	cols?: number;
+	isLoading?: boolean;
 };
 
 const Analytics: React.FC<AnalyticsProps> = ({
 	data,
-	template = 'template-1',
-	col3 = false,
+	variant = 'default',
+	cols,
+	isLoading = false,
 }) => {
-	const containerClass =
-		template === 'template-3'
-			? 'analytics-container dashboard'
-			: template === 'template-2'
-			? 'analytics-container report'
-			: 'analytics-container';
+	const skeletonItems = Array.from({ length: data.length || 4 });
 
 	return (
 		<div
-			className={`${containerClass} ${
-				col3 && template === 'template-2' ? 'col-3' : ''
-			}`}
+			className={`analytics-container ${cols ? `flex-wrap` : ''}`}
+			data-template={variant}
 		>
 			{data.map((item, idx) => (
 				<div
 					key={idx}
-					className={`analytics-item ${item.colorClass || ''}`}
+					className={`analytics-item ${cols ? `col-${cols}` : ''} ${item.colorClass || ''}`}
 				>
-                    {item.icon && (
-						<div className="analytics-icon">
-							<i
-								className={`${item.icon} ${item.iconClass || ''}`}
-							/>
-						</div>
-					)}
-					<div className="details">
-						<div className="number">{item.number}</div>
-						<div className="text">{item.text}</div>
+					<div className="analytics-icon">
+						{isLoading ? (
+							<Skeleton width={60} height={60} />
+						) : (
+							item.icon && ( <i className={`adminfont-${item.icon} ${item.iconClass || ''}`} />)
+						)}
+					</div>
 
-						{/* dashboard only */}
-						{template === 'template-3' && item.extra && (
-							<div className="report">{item.extra}</div>
+					<div className="details">
+						<div className="number">
+							{isLoading ? (
+								<Skeleton width={80} />
+							) : (
+								item.number
+							)}
+						</div>
+
+						<div className="text">
+							{isLoading ? (
+								<Skeleton width={100} />
+							) : (
+								item.text
+							)}
+						</div>
+
+						{variant === 'dashboard' && (
+							<div className="report">
+								{isLoading ? (
+									<Skeleton width={60} />
+								) : (
+									item.extra
+								)}
+							</div>
 						)}
 					</div>
 				</div>

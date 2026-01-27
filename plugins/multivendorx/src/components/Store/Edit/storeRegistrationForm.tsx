@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, AdminButton } from 'zyra';
-import { Skeleton } from '@mui/material';
+import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, AdminButton, Skeleton } from 'zyra';
 import { jsPDF } from 'jspdf';
 import { __ } from '@wordpress/i18n';
 
@@ -282,10 +281,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											<div className="name">
 												{formData.primary_owner_info
 													?.data?.display_name ?? (
-														<Skeleton
-															variant="text"
-															width={150}
-														/>
+														<Skeleton width={150} />
 													)}
 											</div>
 										</div>
@@ -295,10 +291,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											<i className="adminfont-mail"></i>
 											{formData.primary_owner_info?.data
 												?.user_email ?? (
-													<Skeleton
-														variant="text"
-														width={150}
-													/>
+													<Skeleton width={150} />
 												)}
 										</li>
 									</ul>

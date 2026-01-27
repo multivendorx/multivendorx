@@ -144,7 +144,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			status: 'refund-requested',
 		};
 
-		//Add Date Filtering — only if both are valid Date objects
+		//Add Date Filtering - only if both are valid Date objects
 		if (startDate && endDate) {
 			// Convert to UTC ISO8601 format (WooCommerce expects this)
 			params.after = startDate.toISOString();

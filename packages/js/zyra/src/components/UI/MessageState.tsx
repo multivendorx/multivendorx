@@ -37,7 +37,7 @@ const MessageState: React.FC<MessageStateProps> = ({
 					<a
 						href={buttonLink}
 						target={buttonTarget}
-						rel={buttonTarget === '_blank' ? 'noopener noreferrer' : undefined}
+						rel={buttonTarget === '_blank' ? 'noopener noreferrer' : ''}
 						className="admin-btn btn-purple"
 					>
 						{buttonText}

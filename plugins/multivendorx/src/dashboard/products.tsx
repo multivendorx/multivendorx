@@ -802,7 +802,7 @@ const AllProduct: React.FC = () => {
 							<div
 								className="admin-btn btn-purple-bg"
 								onClick={() => {
-									if (modules.includes('spmv')) {
+									if (modules.includes('shared-listing')) {
 										if (appLocalizer.permalink_structure) {
 											navigate(
 												`${basePath}/${appLocalizer.dashboard_slug}/products/add/`

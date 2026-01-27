@@ -418,6 +418,15 @@ $index: 1;
         border-left: $border-light-small;
       }
     }
+
+    &:has(.select-wrapper){
+      .input-wrapper{
+        padding-right: 0;
+      }
+      .parameter{
+        padding-left: 0;
+      }
+    }
   }
 
   &.input-button {

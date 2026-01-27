@@ -176,6 +176,7 @@ export default {
 					key: 'franchise',
 					label: __('Franchise', 'multivendorx'),
 					value: 'franchise',
+					proSetting: true,
 				},
 			],
 		},

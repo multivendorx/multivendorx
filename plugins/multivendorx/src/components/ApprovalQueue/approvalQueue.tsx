@@ -18,12 +18,13 @@ const ApprovalQueue = () => {
 	const [reportAbuseCount, setReportAbuseCount] = useState<number>(0);
 	const [withdrawCount, setWithdrawCount] = useState<number>(0);
 	const [deactivateCount, setDeactivateCount] = useState<number>(0);
-
+	const [isLoading, setIsLoading] = useState(true);	
 	const { modules } = useModules();
 	const ranOnce = useRef(false);
 	const settings = appLocalizer.settings_databases_value || {};
 
 	const refreshCounts = async () => {
+		setIsLoading(true);
 		//Store Count (only if store approval is manual)
 		if (settings?.general?.approve_store === 'manually') {
 			axios({
@@ -33,6 +34,7 @@ const ApprovalQueue = () => {
 				params: { count: true, status: 'pending' },
 			})
 				.then((res) => setStoreCount(res.data || 0))
+				.finally(() => {setIsLoading(false);})
 				.catch(() => {});
 		}
 
@@ -54,6 +56,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setProductCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
+				.finally(() => {setIsLoading(false);})
 				.catch(() => {});
 		}
 
@@ -73,6 +76,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setCouponCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
+				.finally(() => {setIsLoading(false);})
 				.catch(() => {});
 		}
 
@@ -92,6 +96,7 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setRefundCount(Number(res.headers['x-wp-total']) || 0)
 				)
+				.finally(() => {setIsLoading(false);})
 				.catch(() => {});
 		}
 
@@ -103,6 +108,7 @@ const ApprovalQueue = () => {
 					params: { count: true },
 				})
 				.then((res) => setReportAbuseCount(res.data || 0))
+				.finally(() => {setIsLoading(false);})
 				.catch(() => {});
 		}
 
@@ -115,6 +121,7 @@ const ApprovalQueue = () => {
 				params: { count: true, pending_withdraw: true },
 			})
 				.then((res) => setWithdrawCount(res.data || 0))
+				.finally(() => {setIsLoading(false);})
 				.catch(() => {});
 		}
 
@@ -126,6 +133,7 @@ const ApprovalQueue = () => {
 			params: { count: true, deactivate: true },
 		})
 			.then((res) => setDeactivateCount(res.data || 0))
+			.finally(() => {setIsLoading(false);})
 			.catch(() => {});
 	};
 
@@ -317,6 +325,7 @@ const ApprovalQueue = () => {
 				premium={false}
 				menuIcon={true}
 				desc={true}
+				isLoading={isLoading}
 			/>
 		</>
 	);
