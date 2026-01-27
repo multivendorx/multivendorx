@@ -13,7 +13,6 @@ import { searchIndex, SearchItem } from './searchIndex';
 const Route = () => {
     const currentTab = new URLSearchParams(useLocation().hash);
     
-
     return (
         <>
             {currentTab.get('tab') === 'settings' && (
@@ -167,8 +166,6 @@ const App = () => {
                 brandImg={Brand}
                 query={query}
                 results={results}
-                // free={appLocalizer.freeVersion}
-                // pro={appLocalizer.pro_data.version}
                 free={appLocalizer.freeVersion}
                 pro={appLocalizer.pro_data?.version}
                 managePlanUrl={appLocalizer.pro_data?.manage_plan_url}
