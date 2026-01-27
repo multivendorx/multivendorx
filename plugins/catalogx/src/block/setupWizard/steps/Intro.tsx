@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Intro = ( props: any ) => {
+const Intro = (props: any) => {
     const { onNext } = props;
 
     return (
@@ -9,7 +9,7 @@ const Intro = ( props: any ) => {
             <p>
                 Thank you for choosing CatalogX! This quick setup wizard will
                 help you configure the basic settings and you will have your
-                marketplace ready in no time.{ ' ' }
+                marketplace ready in no time.{' '}
                 <strong>
                     It’s completely optional and shouldn’t take longer than five
                     minutes.
@@ -20,7 +20,7 @@ const Intro = ( props: any ) => {
                 can skip and return to the WordPress dashboard. Come back
                 anytime if you change your mind!
             </p>
-            <button className="footer-btn next-btn" onClick={ onNext }>
+            <button className="footer-btn next-btn" onClick={onNext}>
                 Next
             </button>
         </section>

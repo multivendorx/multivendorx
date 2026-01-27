@@ -67,7 +67,8 @@ class Session extends \WC_Session {
 
         $this->_cookie = 'catalogx_session_' . COOKIEHASH;
 
-        if ( $cookie = $this->get_session_cookie() ) {
+        $cookie = $this->get_session_cookie();
+        if ( false !== $cookie ) {
             $this->_customer_id        = $cookie[0];
             $this->_session_expiration = $cookie[1];
             $this->_session_expiring   = $cookie[2];
@@ -167,7 +168,8 @@ class Session extends \WC_Session {
             return false;
         }
 
-        list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', $_COOKIE[ $this->_cookie ] );
+        $cookie_value = isset( $_COOKIE[ $this->_cookie ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ $this->_cookie ] ) ) : '';
+        list( $customer_id, $session_expiration, $session_expiring, $cookie_hash ) = explode( '||', $cookie_value );
 
         // Validate hash.
         $to_hash = $customer_id . '|' . $session_expiration;

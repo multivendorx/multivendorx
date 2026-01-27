@@ -1,8 +1,9 @@
 /// <reference types="webpack-env" />
 
 // Predefined contexts
-const contexts: Record< string, __WebpackModuleApi.RequireContext > = {
-    settings: require.context( '../components/Settings', true, /\.ts$/ ),
+const contexts: Record<string, __WebpackModuleApi.RequireContext> = {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    settings: require.context('../components/Settings', true, /\.ts$/),
 };
 
 type SettingNode = {
@@ -16,46 +17,47 @@ const importAll = (
 ): SettingNode[] => {
     const folderStructure: SettingNode[] = [];
 
-    inpContext.keys().forEach( ( key ) => {
-        const path = key.substring( 2 );
-        const parts = path.split( '/' );
+    inpContext.keys().forEach((key) => {
+        const path = key.substring(2);
+        const parts = path.split('/');
         const fileName = parts.pop();
         let currentFolder = folderStructure;
 
-        parts.forEach( ( folder ) => {
+        parts.forEach((folder) => {
             let folderObject = currentFolder.find(
-                ( item ) => item.name === folder && item.type === 'folder'
+                (item) => item.name === folder && item.type === 'folder'
             ) as SettingNode | undefined;
 
-            if ( ! folderObject ) {
+            if (!folderObject) {
                 folderObject = { name: folder, type: 'folder', content: [] };
-                currentFolder.push( folderObject );
+                currentFolder.push(folderObject);
             }
 
             currentFolder = folderObject.content;
-        } );
+        });
 
-        currentFolder.push( {
-            name: fileName!.replace( '.js', '' ),
+        currentFolder.push({
+            name: fileName!.replace('.js', ''),
             type: 'file',
-            content: inpContext( key ).default,
-        } );
-    } );
+            content: inpContext(key).default,
+        });
+    });
 
     return folderStructure;
 };
 
 // Accept 'settings' or 'synchronizations' (defaults to 'settings')
-const getTemplateData = ( type: 'settings' = 'settings' ): SettingNode[] => {
-    const ctx = contexts[ type ];
-    return importAll( ctx );
+const getTemplateData = (type: 'settings' = 'settings'): SettingNode[] => {
+    const ctx = contexts[type];
+    return importAll(ctx);
 };
 
 const getModuleData = (): any | null => {
     try {
-        const module = require( '../components/Modules/index.ts' ).default;
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const module = require('../components/Modules/index.ts').default;
         return module;
-    } catch ( error ) {
+    } catch {
         return null;
     }
 };

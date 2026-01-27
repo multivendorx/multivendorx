@@ -5,7 +5,7 @@ import { FormViewer } from 'zyra';
 import axios from 'axios';
 
 const EnquiryForm = () => {
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const [toast, setToast] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
     const formData = enquiryFormData;
@@ -17,12 +17,11 @@ const EnquiryForm = () => {
         setLoading(true);
 
         const productId =
-            document.querySelector<HTMLInputElement>(
-                '#product-id-for-enquiry'
-            )?.value ?? '';
+            document.querySelector<HTMLInputElement>('#product-id-for-enquiry')
+                ?.value ?? '';
         const quantity =
-            document.querySelector<HTMLInputElement>('.quantity .qty')
-                ?.value ?? '1';
+            document.querySelector<HTMLInputElement>('.quantity .qty')?.value ??
+            '1';
 
         submittedFormData.append('productId', productId);
         submittedFormData.append('quantity', quantity);

@@ -13,51 +13,69 @@ export const proPopupContent = {
         'Unlock revenue-boosting features with CatalogX Pro today!',
         'catalogx'
     ),
+    upgradeBtnText: __('Yes, Upgrade Me!', 'catalogx'),
     messages: [
         {
             icon: 'popup-icon-personalized-pricing',
-            text: __( 'Send custom quotes', 'catalogx' ),
+            text: __('Send custom quotes', 'catalogx'),
         },
         {
             icon: 'popup-icon-multiple-products exclusive-forms',
-            text: __( 'Multi-product enquiry cart', 'catalogx' ),
+            text: __('Multi-product enquiry cart', 'catalogx'),
         },
         {
             icon: 'popup-icon-add-file-uploads',
-            text: __( 'File uploads & custom enquiry fields', 'catalogx' ),
+            text: __('File uploads & custom enquiry fields', 'catalogx'),
         },
         {
             icon: 'popup-icon-different-users',
-            text: __( 'Role-based pricing', 'catalogx' ),
+            text: __('Role-based pricing', 'catalogx'),
         },
         {
             icon: 'popup-icon-discounts',
-            text: __( 'Category-based discounts', 'catalogx' ),
+            text: __('Category-based discounts', 'catalogx'),
         },
         {
             icon: 'popup-icon-wholesale-order',
-            text: __( 'Wholesale order forms', 'catalogx' ),
+            text: __('Wholesale order forms', 'catalogx'),
         },
         {
             icon: 'popup-icon-out-of-stock',
-            text: __( 'Enquiry for hidden/out-of-stock products', 'catalogx' ),
+            text: __('Enquiry for hidden/out-of-stock products', 'catalogx'),
         },
         {
             icon: 'popup-icon-shortcode',
-            text: __( 'Enquiry button via shortcode', 'catalogx' ),
+            text: __('Enquiry button via shortcode', 'catalogx'),
         },
         {
             icon: 'popup-icon-emails',
-            text: __( 'Auto-send branded enquiry emails', 'catalogx' ),
+            text: __('Auto-send branded enquiry emails', 'catalogx'),
         },
         {
             icon: 'popup-icon-dashboard',
-            text: __( 'Track all enquiries in one dashboard', 'catalogx' ),
+            text: __('Track all enquiries in one dashboard', 'catalogx'),
+        },
+    ],
+    btnLink: [
+        {
+            site: '1',
+            price: '$129',
+            link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3380',
+        },
+        {
+            site: '3',
+            price: '$199',
+            link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3381',
+        },
+        {
+            site: '10',
+            price: '$299',
+            link: 'https://catalogx.com/cart/?add-to-cart=329&variation_id=3382',
         },
     ],
 };
 
-const ShowPopup: React.FC< PopupProps > = ( props ) => {
+const ShowPopup: React.FC<PopupProps> = (props) => {
     const modulePopupContent = {
         moduleName: props.moduleName,
         message: sprintf(
@@ -68,7 +86,7 @@ const ShowPopup: React.FC< PopupProps > = ( props ) => {
             ),
             props.moduleName
         ),
-        moduleButton: __( 'Enable Now', 'catalogx' ),
+        moduleButton: __('Enable Now', 'catalogx'),
         modulePageUrl:
             typeof appLocalizer !== 'undefined'
                 ? appLocalizer.module_page_url
@@ -77,11 +95,11 @@ const ShowPopup: React.FC< PopupProps > = ( props ) => {
 
     return (
         <>
-            { props.moduleName ? (
-                <ProPopup { ...modulePopupContent } />
+            {props.moduleName ? (
+                <ProPopup {...modulePopupContent} />
             ) : (
-                <ProPopup { ...proPopupContent } />
-            ) }
+                <ProPopup {...proPopupContent} />
+            )}
         </>
     );
 };

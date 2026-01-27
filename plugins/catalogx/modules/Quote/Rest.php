@@ -64,9 +64,9 @@ class Rest {
     /**
      * Get all the quote in cart
      *
-     * row string required
+     * Row string required
      * Retrieve the row parameter
-     * page string optional
+     * Page string optional
      * Retrieve the current page
      *
      * @param \WP_REST_Request $request The REST request object.
@@ -129,7 +129,7 @@ class Rest {
     /**
      * Update quote in cart
      *
-     * products array required
+     * Products array required
      * Retrieve the product which is in quote cart
      *
      * @param \WP_REST_Request $request The REST request object.
@@ -151,9 +151,9 @@ class Rest {
     /**
      * Remove quote in cart
      *
-     * productId string required
+     * ProductId string required
      * Retrieve the product id which is remove from quote cart
-     * key string required
+     * Key string required
      * Retrieve the key which generated from quote cart
      *
      * @param mixed \WP_REST_Request $request The REST request object.

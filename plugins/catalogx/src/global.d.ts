@@ -37,8 +37,10 @@ declare global {
         template5: string;
         template6: string;
         template7: string;
-        khali_dabba: boolean;
+        khali_dabba: any;
         pro_url: string;
+        freeVersion: any;
+        pro_data: any;
         order_edit: string;
         site_url: string;
         module_page_url: string;
@@ -89,6 +91,12 @@ declare global {
         loader: string;
         no_more_product: string;
     }
+
+    const appLocalizer: AppLocalizer;
+    const enquiryFormData: EnquiryFormData;
+    const quoteCart: QuoteCart;
+    const quoteButton: QuoteButton;
+    const addToQuoteCart: AddToQuoteCart;
 
     declare module '*.png';
     declare module '*.jpg';

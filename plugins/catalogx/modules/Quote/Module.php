@@ -116,7 +116,7 @@ class Module {
 						'post_status'    => 'publish',
 						'post_type'      => 'page',
 						'post_author'    => 1,
-						'post_name'      => pll_translate_string( 'my-quote', lang: $lang_code ),
+						'post_name'      => pll_translate_string( 'my-quote', $lang_code ),
 						'post_title'     => pll_translate_string( 'My Quote', $lang_code ),
 						'post_content'   => $this->request_quote_block() ? $this->request_quote_block() : '[catalogx_request_quote]',
 						'comment_status' => 'closed',
