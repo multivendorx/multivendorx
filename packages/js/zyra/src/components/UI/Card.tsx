@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/web/UI/Card.scss';
-import { Skeleton } from '@mui/material';
+import Skeleton from './Skeleton';
 
 export type CardProps = {
     title?: React.ReactNode;
@@ -54,8 +54,8 @@ const Card = ( {
                 <>
                     <div className="card-header">
                         <div className="left">
-                            <Skeleton variant="text" width={ 100 } />
-                            <Skeleton variant="text" width={ 160 } />
+                            <Skeleton width={ 100 } />
+                            <Skeleton width={ 160 } />
                         </div>
 
                         <div className="right">
@@ -69,9 +69,9 @@ const Card = ( {
 
                     { /* Body skeleton */ }
                     <div className="card-body">
-                        <Skeleton variant="text" width="90%" />
-                        <Skeleton variant="text" width="85%" />
-                        <Skeleton variant="text" width="60%" />
+                        <Skeleton width="90%" />
+                        <Skeleton width="85%" />
+                        <Skeleton width="60%" />
                     </div>
                 </>
             ) : (

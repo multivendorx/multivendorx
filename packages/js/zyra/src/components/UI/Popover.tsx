@@ -117,11 +117,9 @@ const Popover: React.FC< PopoverProps > = ( {
                                                 setOpen( false );
                                             } }
                                         >
-                                            { /* <div className="icon admin-badge green"> */ }
                                             { item.icon && (
                                                 <i className={ item.icon }></i>
                                             ) }
-                                            { /* </div> */ }
 
                                             <div className="details">
                                                 <div className="heading">
