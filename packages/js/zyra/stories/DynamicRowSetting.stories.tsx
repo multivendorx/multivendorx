@@ -33,7 +33,7 @@ const template = {
 
 export const Default: Story = {
     args: {
-        keyName: 'dynamic-row',
+        keyName: "dynamic-row",
         template,
         value: [],
         addLabel: 'Add New Row',
@@ -82,3 +82,92 @@ export const WithNestedRenderer: Story = {
         );
     },
 };
+
+export const PrefilledRows: Story = {
+    args: {
+        keyName: 'dynamic-row-prefilled',
+        template,
+        addLabel: 'Add Row',
+        description: 'Dynamic rows with prefilled data.',
+    },
+    render: (args) => {
+        const [rows, setRows] = useState([
+            {
+                name: 'John Doe',
+                age: 28,
+                role: 'admin',
+            },
+            {
+                name: 'Jane Smith',
+                age: 34,
+                role: 'editor',
+            },
+        ]);
+
+        return (
+            <DynamicRowSetting
+                {...args}
+                value={rows}
+                onChange={(updatedRows) => setRows(updatedRows)}
+            />
+        );
+    },
+};
+
+export const SingleRow: Story = {
+    args: {
+        keyName: 'dynamic-row-single',
+        template,
+        addLabel: 'Add Row',
+        description: 'Dynamic row with a single entry.',
+    },
+    render: (args) => {
+        const [rows, setRows] = useState([
+            {
+                name: 'Only User',
+                age: 22,
+                role: 'viewer',
+            },
+        ]);
+
+        return (
+            <DynamicRowSetting
+                {...args}
+                value={rows}
+                onChange={(updatedRows) => setRows(updatedRows)}
+            />
+        );
+    },
+};
+
+export const DeleteAllRows: Story = {
+    args: {
+        keyName: 'dynamic-row-delete-all',
+        template,
+        addLabel: 'Add Row',
+        description: 'Delete all rows and add again.',
+    },
+    render: (args) => {
+        const [rows, setRows] = useState([
+            {
+                name: 'User One',
+                age: 30,
+                role: 'admin',
+            },
+            {
+                name: 'User Two',
+                age: 26,
+                role: 'editor',
+            },
+        ]);
+
+        return (
+            <DynamicRowSetting
+                {...args}
+                value={rows}
+                onChange={(updatedRows) => setRows(updatedRows)}
+            />
+        );
+    },
+};
+

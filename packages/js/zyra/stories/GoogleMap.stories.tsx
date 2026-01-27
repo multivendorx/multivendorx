@@ -123,3 +123,73 @@ export const DynamicLocation: Story = {
         placeholderSearch: 'Enter address...',
     },
 };
+
+export const UserLocationMarker: Story = {
+    render: (args) => {
+        const [locationData, setLocationData] = useState({
+            location_address: 'New York, NY, USA',
+            location_lat: '40.7128',
+            location_lng: '-74.0060',
+        });
+
+        return (
+            <GoogleMap
+                {...args}
+                isUserLocation
+                locationAddress={locationData.location_address}
+                locationLat={locationData.location_lat}
+                locationLng={locationData.location_lng}
+                onLocationUpdate={setLocationData}
+            />
+        );
+    },
+    args: {
+        apiKey: 'YOUR_GOOGLE_MAPS_API_KEY',
+        labelSearch: 'User Location',
+        labelMap: 'Map',
+        placeholderSearch: 'Search address...',
+        stores: { data: [] },
+    },
+};
+
+export const WithStores: Story = {
+    render: (args) => {
+        const [locationData, setLocationData] = useState({
+            location_address: '',
+            location_lat: '',
+            location_lng: '',
+        });
+
+        return (
+            <GoogleMap
+                {...args}
+                locationAddress={locationData.location_address}
+                locationLat={locationData.location_lat}
+                locationLng={locationData.location_lng}
+                onLocationUpdate={setLocationData}
+            />
+        );
+    },
+    args: {
+        apiKey: 'YOUR_GOOGLE_MAPS_API_KEY',
+        labelSearch: 'Store Locations',
+        labelMap: 'Map',
+        placeholderSearch: 'Search...',
+        stores: {
+            data: [
+                {
+                    store_name: 'Store One',
+                    location_lat: '40.7128',
+                    location_lng: '-74.0060',
+                    address_1: 'New York',
+                },
+                {
+                    store_name: 'Store Two',
+                    location_lat: '34.0522',
+                    location_lng: '-118.2437',
+                    address_1: 'Los Angeles',
+                },
+            ],
+        },
+    },
+};

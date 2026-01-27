@@ -16,3 +16,13 @@ export const TestIconList: Story = {
         return <IconList />;
     },
 };
+
+export const Dark: Story = {
+    render: () => {
+        return (
+            <div style={{ backgroundColor: '#333', padding: '20px' }}>
+                <IconList theme="dark" />
+            </div>
+        );
+    },
+};

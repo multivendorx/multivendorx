@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import ColorSettingInput from '../src/components/ColorSettingInput';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import "../src/styles/common.scss";
 
 const meta: Meta<typeof ColorSettingInput> = {
     title: 'Zyra/Components/ColorSettingInput',
@@ -65,6 +66,7 @@ export const PredefinedPalette: Story = {
         const [value, setValue] = useState({ selectedPalette: 'palette1', colors: {} });
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <ColorSettingInput
                 wrapperClass="color-setting-wrapper"
                 predefinedOptions={predefinedPalettes}
@@ -72,6 +74,7 @@ export const PredefinedPalette: Story = {
                 value={value}
                 onChange={(e) => setValue(e.target.value as any)}
             />
+            </div>
         );
     },
 };
@@ -81,6 +84,7 @@ export const CustomPalette: Story = {
         const [value, setValue] = useState({ selectedPalette: 'custom', colors: {} });
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <ColorSettingInput
                 wrapperClass="color-setting-wrapper"
                 predefinedOptions={predefinedPalettes}
@@ -88,6 +92,7 @@ export const CustomPalette: Story = {
                 value={value}
                 onChange={(e) => setValue(e.target.value as any)}
             />
+            </div>
         );
     },
 };
@@ -97,6 +102,7 @@ export const ImagePalette: Story = {
         const [value, setValue] = useState({ selectedPalette: 'img1', colors: {} });
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <ColorSettingInput
                 wrapperClass="color-setting-wrapper"
                 predefinedOptions={predefinedPalettes}
@@ -105,6 +111,7 @@ export const ImagePalette: Story = {
                 onChange={(e) => setValue(e.target.value as any)}
                 showPreview
             />
+            </div>
         );
     },
 };
@@ -114,6 +121,7 @@ export const WithPreview: Story = {
         const [value, setValue] = useState({ selectedPalette: 'palette1', colors: {} });
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <ColorSettingInput
                 wrapperClass="color-setting-wrapper"
                 predefinedOptions={predefinedPalettes}
@@ -123,6 +131,7 @@ export const WithPreview: Story = {
                 showPreview
                 description="Select a color palette for your store. Preview updates live."
             />
+            </div>
         );
     },
 };

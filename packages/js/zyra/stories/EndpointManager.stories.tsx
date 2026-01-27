@@ -21,6 +21,7 @@ const mockAppLocalizer = {
 
 export const Default: Story = {
     args: {
+        name: 'default-endpoint-manager',
         apilink: '/mock-endpoints',
         appLocalizer: mockAppLocalizer,
     },
@@ -40,6 +41,7 @@ export const Default: Story = {
 
 export const WithProSettings: Story = {
     args: {
+        name: 'pro-endpoint-manager',
         apilink: '/mock-endpoints',
         appLocalizer: mockAppLocalizer,
         proSetting: true,

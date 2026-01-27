@@ -80,3 +80,64 @@ export const WithMaxLimit: Story = {
         );
     },
 };
+
+export const PrefilledWithPrimary: Story = {
+    args: {
+        mode: 'multiple',
+        enablePrimary: true,
+        placeholder: 'Enter emails...',
+    },
+    render: (args) => {
+        const [emails, setEmails] = useState<string[]>([
+            'john@example.com',
+            'jane@example.com',
+            'admin@example.com',
+        ]);
+        const [primary, setPrimary] = useState<string | null>(
+            'jane@example.com'
+        );
+
+        return (
+            <div style={{ width: '400px' }}>
+                <EmailsInput
+                    {...args}
+                    value={emails}
+                    primary={primary}
+                    onChange={(updated, newPrimary) => {
+                        console.log('Emails:', updated, 'Primary:', newPrimary);
+                        setEmails(updated);
+                        setPrimary(newPrimary);
+                    }}
+                />
+            </div>
+        );
+    },
+};
+
+export const PrimaryDisabled: Story = {
+    args: {
+        mode: 'multiple',
+        enablePrimary: false,
+        placeholder: 'Enter emails (no primary)',
+    },
+    render: (args) => {
+        const [emails, setEmails] = useState<string[]>([
+            'user1@example.com',
+            'user2@example.com',
+        ]);
+
+        return (
+            <div style={{ width: '400px' }}>
+                <EmailsInput
+                    {...args}
+                    value={emails}
+                    onChange={(updated, newPrimary) => {
+                        console.log('Emails:', updated, 'Primary:', newPrimary);
+                        setEmails(updated);
+                    }}
+                />
+            </div>
+        );
+    },
+};
+

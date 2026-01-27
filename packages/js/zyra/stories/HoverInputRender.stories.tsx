@@ -67,3 +67,60 @@ export const TestHoverInputRender: Story = {
         return <HoverInputRender {...args} />;
     },
 };
+
+export const TestHoverInputRenderWithoutLabel: Story = {
+    args: {
+        label: '',
+        placeholder: 'Enter your name',
+        onLabelChange: (newLabel) => {
+            console.log('Label changed to:', newLabel);
+        },
+        renderStaticContent: ({
+            label,
+            placeholder,
+        }: {
+            label: string;
+            placeholder?: string;
+        }) => {
+            return (
+                <div className="edit-form-wrapper">
+                    <p>{label}</p>
+                    <div className="settings-form-group-radio">
+                        <input
+                            className="basic-input"
+                            type="text"
+                            placeholder={placeholder}
+                        />
+                    </div>
+                </div>
+            );
+        },
+        renderEditableContent: ({
+            label,
+            onLabelChange,
+            placeholder,
+        }: {
+            label: string;
+            onLabelChange: (newLabel: string) => void;
+            placeholder?: string;
+        }) => (
+            <>
+                <input
+                    className="basic-input"
+                    type="text"
+                    value={label}
+                    onChange={(event) => onLabelChange(event.target.value)}
+                />
+                <input
+                    className="basic-input"
+                    type="text"
+                    readOnly
+                    placeholder={placeholder}
+                />
+            </>
+        ),
+    },
+    render: (args) => {
+        return <HoverInputRender {...args} />;
+    },
+};

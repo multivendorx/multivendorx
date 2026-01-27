@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Datepicker from '../src/components/DatePicker';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import "../src/styles/common.scss";
 
 const meta: Meta<typeof Datepicker> = {
     title: 'Zyra/Components/Form/DatePicker',
@@ -22,6 +23,20 @@ export const TestDatepicker: Story = {
         },
     },
     render: (args) => {
-        return <Datepicker {...args} />;
+        return <div className="multivendorx-main-wrapper"><Datepicker {...args} /></div>;
+    },
+};
+
+export const TestDatepickerwithoutLabel: Story = {
+    args: {
+        formField: {
+            label: ' ',
+        },
+        onChange: (field, value) => {
+            console.log(`Changed ${field} to ${value}`);
+        },
+    },
+    render: (args) => {
+        return <div className="multivendorx-main-wrapper"><Datepicker {...args} /></div>;
     },
 };

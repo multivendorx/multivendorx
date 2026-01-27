@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import CalendarInput from '../src/components/CalendarInput';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DateObject } from 'react-multi-date-picker';
+import "../src/styles/common.scss";
 
 const meta: Meta<typeof CalendarInput> = {
     title: 'Zyra/Components/CalendarInput',
@@ -18,6 +19,7 @@ export const DefaultDate: Story = {
         const [value, setValue] = useState('2025-12-19');
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <CalendarInput
                 wrapperClass="calendar-input-wrapper"
                 inputClass="calendar-input"
@@ -37,6 +39,7 @@ export const DefaultDate: Story = {
                     }
                 }}
             />
+            </div>
         );
     },
 };
@@ -46,6 +49,7 @@ export const MultipleDates: Story = {
         const [value, setValue] = useState('2025-12-19, 2025-12-20');
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <CalendarInput
                 wrapperClass="calendar-input-wrapper"
                 inputClass="calendar-input"
@@ -64,6 +68,7 @@ export const MultipleDates: Story = {
                     }
                 }}
             />
+            </div>
         );
     },
 };
@@ -73,6 +78,7 @@ export const RangeDates: Story = {
         const [value, setValue] = useState('2025-12-19 - 2025-12-25');
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <CalendarInput
                 wrapperClass="calendar-input-wrapper"
                 inputClass="calendar-input"
@@ -91,6 +97,7 @@ export const RangeDates: Story = {
                     }
                 }}
             />
+            </div>
         );
     },
 };
@@ -100,6 +107,7 @@ export const WithProTag: Story = {
         const [value, setValue] = useState('2025-12-19');
 
         return (
+            <div className='multivendorx-main-wrapper'>
             <CalendarInput
                 wrapperClass="calendar-input-wrapper"
                 inputClass="calendar-input"
@@ -120,6 +128,38 @@ export const WithProTag: Story = {
                     }
                 }}
             />
+            </div>
+        );
+    },
+};
+
+export const FormatCustomized: Story = {
+    render: () => {
+        const [value, setValue] = useState('19/12/2025');
+
+        return (
+            <div className='multivendorx-main-wrapper'>
+            <CalendarInput
+                wrapperClass="calendar-input-wrapper"
+                inputClass="calendar-input"
+                value={value}
+                format="DD/MM/YYYY"
+                onChange={(date) => {
+                    if (Array.isArray(date)) {
+                        const formatted = date
+                            .map((d) =>
+                                Array.isArray(d)
+                                    ? `${d[0].format('DD/MM/YYYY')} - ${d[1].format('DD/MM/YYYY')}`
+                                    : d.format('DD/MM/YYYY')
+                            )
+                            .join(', ');
+                        setValue(formatted);
+                    } else {
+                        setValue((date as DateObject).format('DD/MM/YYYY'));
+                    }
+                }}
+            />
+            </div>
         );
     },
 };
