@@ -441,9 +441,7 @@ const Tabs: React.FC< TabsProps > = ( {
                 <Link
                     key={ `folder-${ item.name || '' }-${ index }` }
                     to={ folderUrl }
-                    className={ `tab ${
-                        isActive ? 'active-tab' : ''
-                    }` }
+                    className={ `tab ${ isActive ? 'active-tab' : '' }` }
                     onClick={ ( e ) => {
                         if (
                             firstFile &&

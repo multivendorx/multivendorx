@@ -6,7 +6,6 @@ export { default as AdminForm } from './components/AdminForm';
 export { default as Attachment } from './components/Attachment';
 export { default as Banner } from './components/Banner';
 export { default as BasicInput } from './components/BasicInput';
-export { default as Input } from './components/input/Input';
 export { default as BlockText } from './components/BlockText';
 export { default as ButtonCustomizer } from './components/ButtonCustomiser';
 export { default as CalendarInput } from './components/CalendarInput';

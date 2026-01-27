@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import "../../styles/web/UI/Popover.scss";
+import '../../styles/web/UI/Popover.scss';
 
 interface PopoverTab {
     id: string;
@@ -31,10 +31,10 @@ interface PopoverProps {
     defaultActiveTab?: string;
     className?: string;
 
-    onTabChange?: (tabId: string) => void;
+    onTabChange?: ( tabId: string ) => void;
 }
 
-const Popover: React.FC<PopoverProps> = ({
+const Popover: React.FC< PopoverProps > = ( {
     toggleIcon,
     toggleContent,
     items = [],
@@ -45,122 +45,153 @@ const Popover: React.FC<PopoverProps> = ({
     tabs = [],
     defaultActiveTab,
     className = '',
-    onTabChange
-}) => {
-    const [open, setOpen] = useState(false);
-    const wrapperRef = useRef<HTMLDivElement>(null);
+    onTabChange,
+} ) => {
+    const [ open, setOpen ] = useState( false );
+    const wrapperRef = useRef< HTMLDivElement >( null );
 
-    const [activeTab, setActiveTab] = useState<string | undefined>(
-        defaultActiveTab || tabs[0]?.id
+    const [ activeTab, setActiveTab ] = useState< string | undefined >(
+        defaultActiveTab || tabs[ 0 ]?.id
     );
 
     // Reset tab when Popover opens
-    useEffect(() => {
-        if (open && template === 'tab') {
-            setActiveTab(defaultActiveTab || tabs[0]?.id);
+    useEffect( () => {
+        if ( open && template === 'tab' ) {
+            setActiveTab( defaultActiveTab || tabs[ 0 ]?.id );
         }
-    }, [open, template, tabs, defaultActiveTab]);
+    }, [ open, template, tabs, defaultActiveTab ] );
 
     // Close on outside click
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
+    useEffect( () => {
+        const handleClickOutside = ( e: MouseEvent ) => {
             if (
                 wrapperRef.current &&
-                !wrapperRef.current.contains(e.target as Node)
+                ! wrapperRef.current.contains( e.target as Node )
             ) {
-                setOpen(false);
+                setOpen( false );
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener( 'mousedown', handleClickOutside );
         return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+            document.removeEventListener( 'mousedown', handleClickOutside );
+    }, [] );
 
     return (
-        <div className={`popover-wrapper ${className}`} ref={wrapperRef}>
+        <div className={ `popover-wrapper ${ className }` } ref={ wrapperRef }>
             <div
                 className="popover-toggle"
-                onClick={(e) => {
+                onClick={ ( e ) => {
                     e.stopPropagation();
-                    setOpen((prev) => !prev);
-                }}
+                    setOpen( ( prev ) => ! prev );
+                } }
             >
-                {toggleIcon && <i className={`popover-icon ${toggleIcon}`}></i>}
-                {toggleContent}
+                { toggleIcon && (
+                    <i className={ `popover-icon ${ toggleIcon }` }></i>
+                ) }
+                { toggleContent }
             </div>
 
-            {open && (
+            { open && (
                 <div
-                    className={`popover popover-${template}`}
-                    style={{ minWidth: width }}
-                    onClick={(e) => e.stopPropagation()}
+                    className={ `popover popover-${ template }` }
+                    style={ { minWidth: width } }
+                    onClick={ ( e ) => e.stopPropagation() }
                 >
-                    {header && <div className="popover-header">{header}</div>}
+                    { header && (
+                        <div className="popover-header">{ header }</div>
+                    ) }
 
                     <div className="popover-body">
-                        {/* NOTIFICATION */}
-                        {template === 'notification' && (
+                        { /* NOTIFICATION */ }
+                        { template === 'notification' && (
                             <ul>
-                                {items.map((item, index) => (
-                                    <li key={index} className={item.className}>
+                                { items.map( ( item, index ) => (
+                                    <li
+                                        key={ index }
+                                        className={ item.className }
+                                    >
                                         <div
                                             className="item"
-                                            onClick={() => {
+                                            onClick={ () => {
                                                 item.action?.();
-                                                setOpen(false);
-                                            }}
+                                                setOpen( false );
+                                            } }
                                         >
-                                            {/* <div className="icon admin-badge green"> */}
-                                                {item.icon && <i className={item.icon}></i>}
-                                            {/* </div> */}
+                                            { /* <div className="icon admin-badge green"> */ }
+                                            { item.icon && (
+                                                <i className={ item.icon }></i>
+                                            ) }
+                                            { /* </div> */ }
 
                                             <div className="details">
-                                                <div className="heading">{item.title}</div>
-                                                <div className="message">{item.desc}</div>
-                                                <div className="time">{item.time}</div>
+                                                <div className="heading">
+                                                    { item.title }
+                                                </div>
+                                                <div className="message">
+                                                    { item.desc }
+                                                </div>
+                                                <div className="time">
+                                                    { item.time }
+                                                </div>
                                             </div>
                                         </div>
                                     </li>
-                                ))}
+                                ) ) }
                             </ul>
-                        )}
+                        ) }
 
-                        {/* TAB */}
-                        {template === 'tab' && tabs.length > 0 && (
+                        { /* TAB */ }
+                        { template === 'tab' && tabs.length > 0 && (
                             <div className="popover-tabs">
                                 <div className="tabs-wrapper">
                                     <div className="tabs-item">
-                                        {tabs.map((tab) => (
+                                        { tabs.map( ( tab ) => (
                                             <div
-                                                key={tab.id}
-                                                className={`tab ${activeTab === tab.id ? 'active-tab' : ''
-                                                    }`}
-                                                onClick={() => {
-                                                    setActiveTab(tab.id);
-                                                    onTabChange?.(tab.id);
-                                                }}
+                                                key={ tab.id }
+                                                className={ `tab ${
+                                                    activeTab === tab.id
+                                                        ? 'active-tab'
+                                                        : ''
+                                                }` }
+                                                onClick={ () => {
+                                                    setActiveTab( tab.id );
+                                                    onTabChange?.( tab.id );
+                                                } }
                                             >
-                                                <span className="tab-name">{tab.label}</span>
+                                                <span className="tab-name">
+                                                    { tab.label }
+                                                </span>
                                             </div>
-                                        ))}
+                                        ) ) }
                                     </div>
                                 </div>
 
                                 <div className="notification">
-                                    {tabs.find((tab) => tab.id === activeTab)?.content}
+                                    {
+                                        tabs.find(
+                                            ( tab ) => tab.id === activeTab
+                                        )?.content
+                                    }
                                 </div>
                             </div>
-                        )}
+                        ) }
 
-                        {/* DEFAULT */}
-                        {template !== 'notification' && template !== 'tab' && (
+                        { /* DEFAULT */ }
+                        { template !== 'notification' && template !== 'tab' && (
                             <ul>
-                                {items.map((item, index) => (
-                                    <li key={index} className={item.className}>
-                                        {item.link ? (
+                                { items.map( ( item, index ) => (
+                                    <li
+                                        key={ index }
+                                        className={ item.className }
+                                    >
+                                        { item.link ? (
                                             <a
-                                                href={item.link}
-                                                target={item.targetBlank ? '_blank' : '_self'}
+                                                href={ item.link }
+                                                target={
+                                                    item.targetBlank
+                                                        ? '_blank'
+                                                        : '_self'
+                                                }
                                                 rel={
                                                     item.targetBlank
                                                         ? 'noopener noreferrer'
@@ -168,30 +199,40 @@ const Popover: React.FC<PopoverProps> = ({
                                                 }
                                                 className="item"
                                             >
-                                                {item.icon && <i className={item.icon}></i>}
-                                                {item.title}
+                                                { item.icon && (
+                                                    <i
+                                                        className={ item.icon }
+                                                    ></i>
+                                                ) }
+                                                { item.title }
                                             </a>
                                         ) : (
                                             <div
                                                 className="item"
-                                                onClick={() => {
+                                                onClick={ () => {
                                                     item.action?.();
-                                                    setOpen(false);
-                                                }}
+                                                    setOpen( false );
+                                                } }
                                             >
-                                                {item.icon && <i className={item.icon}></i>}
-                                                {item.title}
+                                                { item.icon && (
+                                                    <i
+                                                        className={ item.icon }
+                                                    ></i>
+                                                ) }
+                                                { item.title }
                                             </div>
-                                        )}
+                                        ) }
                                     </li>
-                                ))}
+                                ) ) }
                             </ul>
-                        )}
+                        ) }
                     </div>
 
-                    {footer && <div className="popover-footer">{footer}</div>}
+                    { footer && (
+                        <div className="popover-footer">{ footer }</div>
+                    ) }
                 </div>
-            )}
+            ) }
         </div>
     );
 };

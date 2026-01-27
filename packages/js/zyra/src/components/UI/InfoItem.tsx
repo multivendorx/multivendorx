@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../styles/web/UI/InfoItem.scss";
+import '../../styles/web/UI/InfoItem.scss';
 import { Skeleton } from '@mui/material';
 
 type AvatarProps = {
@@ -33,7 +33,7 @@ type InfoItemProps = {
     isLoading?: boolean;
 };
 
-const InfoItem: React.FC<InfoItemProps> = ({
+const InfoItem: React.FC< InfoItemProps > = ( {
     title,
     titleLink,
     avatar,
@@ -42,35 +42,41 @@ const InfoItem: React.FC<InfoItemProps> = ({
     amount,
     amountClassName = '',
     className = '',
-    isLoading = false
-}) => {
+    isLoading = false,
+} ) => {
     const renderAvatar = () => {
-        if (!avatar) return null;
+        if ( ! avatar ) {
+            return null;
+        }
 
         const avatarContent = avatar.image ? (
-            <img src={avatar.image} alt={title} />
+            <img src={ avatar.image } alt={ title } />
         ) : avatar.iconClass ? (
-            <i className={avatar.iconClass} />
+            <i className={ avatar.iconClass } />
         ) : (
-            <span className={avatar.iconClass}>{avatar.text}</span>
+            <span className={ avatar.iconClass }>{ avatar.text }</span>
         );
 
         return (
             <div className="avatar">
-                {avatar.link ? (
-                    <a href={avatar.link} target="_blank" rel="noopener noreferrer">
-                        {avatarContent}
+                { avatar.link ? (
+                    <a
+                        href={ avatar.link }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        { avatarContent }
                     </a>
                 ) : (
                     avatarContent
-                )}
+                ) }
             </div>
         );
     };
 
     const Title = titleLink ? (
-        <a href={titleLink} target="_blank" rel="noopener noreferrer">
-            {title}
+        <a href={ titleLink } target="_blank" rel="noopener noreferrer">
+            { title }
         </a>
     ) : (
         title
@@ -78,89 +84,104 @@ const InfoItem: React.FC<InfoItemProps> = ({
 
     return (
         <div className="info-item-wrapper">
-            <div className={`info-item ${className}`}>
-                {isLoading ? (
+            <div className={ `info-item ${ className }` }>
+                { isLoading ? (
                     <>
                         <div className="details-wrapper">
-                            {avatar && (
+                            { avatar && (
                                 <div className="avatar">
-                                    <Skeleton variant="circular" width={30} height={30} />
+                                    <Skeleton
+                                        variant="circular"
+                                        width={ 30 }
+                                        height={ 30 }
+                                    />
                                 </div>
-                            )}
+                            ) }
 
                             <div className="details">
                                 <div className="name">
-                                    <Skeleton variant="text" width={180} height={24} />
-                                    {badges.length > 0 && (
+                                    <Skeleton
+                                        variant="text"
+                                        width={ 180 }
+                                        height={ 24 }
+                                    />
+                                    { badges.length > 0 && (
                                         <Skeleton
                                             variant="rectangular"
-                                            width={60}
-                                            height={20}
-                                            style={{ marginLeft: 8, borderRadius: 10 }}
+                                            width={ 60 }
+                                            height={ 20 }
+                                            style={ {
+                                                marginLeft: 8,
+                                                borderRadius: 10,
+                                            } }
                                         />
-                                    )}
+                                    ) }
                                 </div>
-                                {descriptions &&(
+                                { descriptions && (
                                     <div className="des">
                                         <Skeleton variant="text" width="90%" />
                                     </div>
-                                )}
+                                ) }
                                 <div className="des">
                                     <Skeleton variant="text" width="75%" />
                                 </div>
                             </div>
                         </div>
-                        {amount !== undefined && (
+                        { amount !== undefined && (
                             <div className="right-details">
                                 <div className="price">
-                                    <Skeleton variant="text" width={70} />
+                                    <Skeleton variant="text" width={ 70 } />
                                 </div>
                             </div>
-                        )}
+                        ) }
                     </>
                 ) : (
                     <>
                         <div className="details-wrapper">
-                            {renderAvatar()}
+                            { renderAvatar() }
 
                             <div className="details">
                                 <div className="name">
-                                    {Title}
+                                    { Title }
 
-                                    {badges.map((badge, index) => (
+                                    { badges.map( ( badge, index ) => (
                                         <span
-                                            key={index}
-                                            className={`admin-badge ${badge.className}`}
-                                            onClick={badge.onClick}
+                                            key={ index }
+                                            className={ `admin-badge ${ badge.className }` }
+                                            onClick={ badge.onClick }
                                         >
-                                            {badge.text}
+                                            { badge.text }
                                         </span>
-                                    ))}
+                                    ) ) }
                                 </div>
 
-                                {descriptions.map((desc, index) => (
-                                    <div className="des" key={index}>
-                                        {desc.label && (
+                                { descriptions.map( ( desc, index ) => (
+                                    <div className="des" key={ index }>
+                                        { desc.label && (
                                             <>
-                                                {desc.boldLabel ? <b>{desc.label}</b> : desc.label}
-                                                {': '}
+                                                { desc.boldLabel ? (
+                                                    <b>{ desc.label }</b>
+                                                ) : (
+                                                    desc.label
+                                                ) }
+                                                { ': ' }
                                             </>
-                                        )}
-                                        {desc.value}
+                                        ) }
+                                        { desc.value }
                                     </div>
-                                ))}
+                                ) ) }
                             </div>
                         </div>
 
-                        {amount !== undefined && (
+                        { amount !== undefined && (
                             <div className="right-details">
-                                <div className={`price ${amountClassName}`}>
-                                    {amount}
+                                <div className={ `price ${ amountClassName }` }>
+                                    { amount }
                                 </div>
                             </div>
-                        )}
+                        ) }
                     </>
-                )}
+                ) }
             </div>
         </div>
     );

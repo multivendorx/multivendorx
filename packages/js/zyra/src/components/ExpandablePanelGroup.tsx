@@ -39,24 +39,24 @@ interface FieldOption {
 interface PanelFormField {
     key: string;
     type:
-    | 'text'
-    | 'password'
-    | 'number'
-    | 'checkbox'
-    | 'textarea'
-    | 'expandable-panel'
-    | 'multi-checkbox'
-    | 'check-list'
-    | 'description'
-    | 'setup'
-    | 'setting-toggle'
-    | 'buttons'
-    | 'nested'
-    | 'clickable-list'
-    | 'iconlibrary'
-    | 'copy-text'
-    | 'blocktext'
-    | 'multi-select';
+        | 'text'
+        | 'password'
+        | 'number'
+        | 'checkbox'
+        | 'textarea'
+        | 'expandable-panel'
+        | 'multi-checkbox'
+        | 'check-list'
+        | 'description'
+        | 'setup'
+        | 'setting-toggle'
+        | 'buttons'
+        | 'nested'
+        | 'clickable-list'
+        | 'iconlibrary'
+        | 'copy-text'
+        | 'blocktext'
+        | 'multi-select';
 
     label: string;
     placeholder?: string;
@@ -123,20 +123,20 @@ interface ExpandablePanelGroupProps {
     apilink?: string;
     appLocalizer?: AppLocalizer;
     methods: ExpandablePanelMethod[];
-    value: Record<string, Record<string, unknown>>;
-    onChange: (data: Record<string, Record<string, unknown>>) => void;
+    value: Record< string, Record< string, unknown > >;
+    onChange: ( data: Record< string, Record< string, unknown > > ) => void;
     isWizardMode?: boolean;
-    setWizardIndex?: (index: number) => void;
+    setWizardIndex?: ( index: number ) => void;
     moduleEnabled?: boolean;
     proChanged?: () => void;
-    moduleChange: (module: string) => void;
+    moduleChange: ( module: string ) => void;
     modules: string[];
     addNewBtn?: boolean;
     addNewTemplate?: AddNewTemplate;
     requiredEnable?: boolean;
 }
 
-const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
+const ExpandablePanelGroup: React.FC< ExpandablePanelGroupProps > = ( {
     methods,
     value,
     onChange,
@@ -150,126 +150,133 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
     modules,
     addNewBtn,
     addNewTemplate,
-}) => {
-    const [activeTabs, setActiveTabs] = useState<string[]>([]);
-    const menuRef = useRef<HTMLDivElement>(null);
-    const [wizardIndex, setWizardIndex] = useState(0);
-    const [fieldProgress, setFieldProgress] = useState(
-        methods.map(() => 0)
+} ) => {
+    const [ activeTabs, setActiveTabs ] = useState< string[] >( [] );
+    const menuRef = useRef< HTMLDivElement >( null );
+    const [ wizardIndex, setWizardIndex ] = useState( 0 );
+    const [ fieldProgress, setFieldProgress ] = useState(
+        methods.map( () => 0 )
     );
-    const [openDropdownId, setOpenDropdownId] = useState<string | null>(
+    const [ openDropdownId, setOpenDropdownId ] = useState< string | null >(
         null
     );
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const [iconDropdownOpen, setIconDropdownOpen] = useState<string | null>(
+    const wrapperRef = useRef< HTMLDivElement >( null );
+    const [ iconDropdownOpen, setIconDropdownOpen ] = useState< string | null >(
         null
     );
 
-    const [ExpandablePanelMethods, setExpandablePanelMethods] = useState<
+    const [ ExpandablePanelMethods, setExpandablePanelMethods ] = useState<
         ExpandablePanelMethod[]
-    >(() =>
-        methods.map((method) => {
-            if (!method.isCustom) {
+    >( () =>
+        methods.map( ( method ) => {
+            if ( ! method.isCustom ) {
                 return method;
             }
 
             const templateFields = addNewTemplate?.formFields ?? [];
             const methodFields = method.formFields ?? [];
 
-            const existingKeys = new Set(methodFields.map((f) => f.key));
+            const existingKeys = new Set( methodFields.map( ( f ) => f.key ) );
 
             return {
                 ...method,
                 formFields: [
                     ...methodFields,
                     ...templateFields.filter(
-                        (f) => !existingKeys.has(f.key)
+                        ( f ) => ! existingKeys.has( f.key )
                     ),
                 ],
             };
-        })
+        } )
     );
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
+    useEffect( () => {
+        const handleClickOutside = ( event: MouseEvent ) => {
             if (
                 wrapperRef.current &&
-                !wrapperRef.current.contains(event.target as Node)
+                ! wrapperRef.current.contains( event.target as Node )
             ) {
-                setOpenDropdownId(null);
+                setOpenDropdownId( null );
             }
         };
 
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener( 'click', handleClickOutside );
 
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener( 'click', handleClickOutside );
         };
-    }, []);
+    }, [] );
 
-    const isFilled = (val: any): boolean => {
-        if (val === undefined || val === null) return false;
-        if (typeof val === 'string') return val.trim() !== '';
-        if (Array.isArray(val)) return val.length > 0;
+    const isFilled = ( val: any ): boolean => {
+        if ( val === undefined || val === null ) {
+            return false;
+        }
+        if ( typeof val === 'string' ) {
+            return val.trim() !== '';
+        }
+        if ( Array.isArray( val ) ) {
+            return val.length > 0;
+        }
         return true; // number | boolean
     };
 
-    useEffect(() => {
-        if (!isWizardMode && !methods?.length) return;
+    useEffect( () => {
+        if ( ! isWizardMode && ! methods?.length ) {
+            return;
+        }
 
-        const initialProgress = methods.map((method) => {
+        const initialProgress = methods.map( ( method ) => {
             const countableFields =
                 method.formFields?.filter(
-                    (f) => f.type !== 'buttons' && f.type !== 'blocktext'
+                    ( f ) => f.type !== 'buttons' && f.type !== 'blocktext'
                 ) || [];
 
             let filledCount = 0;
 
-            countableFields.forEach((field) => {
-                const fieldValue = value?.[method.id]?.[field.key];
-                if (isFilled(fieldValue)) {
+            countableFields.forEach( ( field ) => {
+                const fieldValue = value?.[ method.id ]?.[ field.key ];
+                if ( isFilled( fieldValue ) ) {
                     filledCount += 1;
                 }
-            });
+            } );
 
             return filledCount;
-        });
+        } );
 
-        setFieldProgress(initialProgress);
-    }, [methods, value, isWizardMode]);
+        setFieldProgress( initialProgress );
+    }, [ methods, value, isWizardMode ] );
 
-
-    useEffect(() => {
-        const updated: Record<string, Record<string, unknown>> = {
+    useEffect( () => {
+        const updated: Record< string, Record< string, unknown > > = {
             ...value,
         };
 
-        const valueMethods: ExpandablePanelMethod[] = Object.entries(updated).map(
-            ([id, method]) => ({
-                id,
-                ...(method as any),
-            })
-        );
+        const valueMethods: ExpandablePanelMethod[] = Object.entries(
+            updated
+        ).map( ( [ id, method ] ) => ( {
+            id,
+            ...( method as any ),
+        } ) );
 
-        setExpandablePanelMethods((prev) => {
-            const methodMap = new Map<string, ExpandablePanelMethod>();
+        setExpandablePanelMethods( ( prev ) => {
+            const methodMap = new Map< string, ExpandablePanelMethod >();
 
             // existing state
-            prev.forEach((method) => {
-                methodMap.set(method.id, method);
-            });
+            prev.forEach( ( method ) => {
+                methodMap.set( method.id, method );
+            } );
 
             // override / add from value
-            valueMethods.forEach((method) => {
-                methodMap.set(method.id, {
-                    ...methodMap.get(method.id),
+            valueMethods.forEach( ( method ) => {
+                methodMap.set( method.id, {
+                    ...methodMap.get( method.id ),
                     ...method,
-                });
-            });
+                } );
+            } );
 
             // merge formFields
-            return Array.from(methodMap.values()).map((method) => {
-                if (!method.isCustom) {
+            return Array.from( methodMap.values() ).map( ( method ) => {
+                if ( ! method.isCustom ) {
                     return method;
                 }
 
@@ -277,7 +284,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                 const methodFields = method.formFields ?? [];
 
                 const existingKeys = new Set(
-                    methodFields.map((f) => f.key)
+                    methodFields.map( ( f ) => f.key )
                 );
 
                 return {
@@ -285,27 +292,25 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     formFields: [
                         ...methodFields,
                         ...templateFields.filter(
-                            (f) => !existingKeys.has(f.key)
+                            ( f ) => ! existingKeys.has( f.key )
                         ),
                     ],
                 };
-            });
-        });
-    }, [value]);
+            } );
+        } );
+    }, [ value ] );
 
     // add new
     const createNewExpandablePanelMethod = (): ExpandablePanelMethod => {
-        if (!addNewTemplate) {
+        if ( ! addNewTemplate ) {
             throw new Error(
                 'addNewTemplate is required when addNewBtn is true'
             );
         }
 
-        const id = addNewTemplate.label
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, '_') +
-            Math.floor(Math.random() * 10000);
+        const id =
+            addNewTemplate.label.trim().toLowerCase().replace( /\s+/g, '_' ) +
+            Math.floor( Math.random() * 10000 );
 
         return {
             id,
@@ -314,58 +319,58 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             desc: addNewTemplate.desc || '',
             connected: false,
             isCustom: true,
-            formFields: addNewTemplate.formFields.map((field) => ({
+            formFields: addNewTemplate.formFields.map( ( field ) => ( {
                 ...field,
-            })),
+            } ) ),
         };
     };
 
     const handleAddNewMethod = () => {
         const newMethod = createNewExpandablePanelMethod();
 
-        setExpandablePanelMethods((prev) => [...prev, newMethod]);
+        setExpandablePanelMethods( ( prev ) => [ ...prev, newMethod ] );
 
-        const initialValues: Record<string, unknown> = {
+        const initialValues: Record< string, unknown > = {
             isCustom: true,
             label: newMethod.label,
             desc: newMethod.desc,
             required: newMethod.required ?? false,
         };
 
-        newMethod.formFields?.forEach((field) => {
-            if (field.type === 'iconlibrary') {
-                initialValues[field.key] = '';
+        newMethod.formFields?.forEach( ( field ) => {
+            if ( field.type === 'iconlibrary' ) {
+                initialValues[ field.key ] = '';
             }
-        });
+        } );
 
-        onChange({
+        onChange( {
             ...value,
-            [newMethod.id]: initialValues,
-        });
+            [ newMethod.id ]: initialValues,
+        } );
 
-        setActiveTabs((prev) => [...prev, newMethod.id]);
+        setActiveTabs( ( prev ) => [ ...prev, newMethod.id ] );
     };
 
-    const handleDeleteMethod = (methodId: string) => {
-        setExpandablePanelMethods((prev) =>
-            prev.filter((m) => m.id !== methodId)
+    const handleDeleteMethod = ( methodId: string ) => {
+        setExpandablePanelMethods( ( prev ) =>
+            prev.filter( ( m ) => m.id !== methodId )
         );
 
         const updatedValue = { ...value };
-        delete updatedValue[methodId];
+        delete updatedValue[ methodId ];
 
-        onChange(updatedValue);
+        onChange( updatedValue );
 
-        setActiveTabs((prev) => prev.filter((id) => id !== methodId));
+        setActiveTabs( ( prev ) => prev.filter( ( id ) => id !== methodId ) );
     };
 
     const canEdit = () => {
         // You cannot edit if Pro is enabled (locked) OR if module is disabled
-        return !proSetting && moduleEnabled;
+        return ! proSetting && moduleEnabled;
     };
 
-    const handleCopy = (text: string) => {
-        navigator.clipboard.writeText(text);
+    const handleCopy = ( text: string ) => {
+        navigator.clipboard.writeText( text );
     };
 
     const handleInputChange = (
@@ -373,77 +378,81 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         fieldKey: string,
         fieldValue: string | string[] | number | boolean | undefined
     ) => {
-        if (!canEdit()) {
+        if ( ! canEdit() ) {
             return;
         }
 
-        if (fieldKey === 'wizardButtons') return;
+        if ( fieldKey === 'wizardButtons' ) {
+            return;
+        }
 
         const updated = {
             ...value,
-            [methodKey]: {
-                ...(value[methodKey] as Record<string, unknown>),
-                [fieldKey]: fieldValue,
+            [ methodKey ]: {
+                ...( value[ methodKey ] as Record< string, unknown > ),
+                [ fieldKey ]: fieldValue,
             },
         };
 
-        if (isWizardMode) {
-            const prevValue = value?.[methodKey]?.[fieldKey];
-            const wasFilled = isFilled(prevValue);
-            const nowFilled = isFilled(fieldValue);
+        if ( isWizardMode ) {
+            const prevValue = value?.[ methodKey ]?.[ fieldKey ];
+            const wasFilled = isFilled( prevValue );
+            const nowFilled = isFilled( fieldValue );
 
             // Only update progress if fill-state changed
-            if (wasFilled !== nowFilled) {
+            if ( wasFilled !== nowFilled ) {
                 const methodIndex = methods.findIndex(
-                    (m) => m.id === methodKey
+                    ( m ) => m.id === methodKey
                 );
 
-                if (methodIndex !== -1) {
-                    setFieldProgress((prev) => {
-                        const updatedProgress = [...prev];
+                if ( methodIndex !== -1 ) {
+                    setFieldProgress( ( prev ) => {
+                        const updatedProgress = [ ...prev ];
 
                         // Count ONLY real fields (exclude buttons)
                         const countableFields =
-                            methods[methodIndex]?.formFields?.filter(
-                                (f) => f.type !== 'buttons' && f.type !== 'blocktext'
+                            methods[ methodIndex ]?.formFields?.filter(
+                                ( f ) =>
+                                    f.type !== 'buttons' &&
+                                    f.type !== 'blocktext'
                             ) || [];
 
                         const maxFields = countableFields.length;
 
-                        updatedProgress[methodIndex] += nowFilled ? 1 : -1;
+                        updatedProgress[ methodIndex ] += nowFilled ? 1 : -1;
 
                         // Clamp value safely
-                        if (updatedProgress[methodIndex] < 0) {
-                            updatedProgress[methodIndex] = 0;
+                        if ( updatedProgress[ methodIndex ] < 0 ) {
+                            updatedProgress[ methodIndex ] = 0;
                         }
 
-                        if (updatedProgress[methodIndex] > maxFields) {
-                            updatedProgress[methodIndex] = maxFields;
+                        if ( updatedProgress[ methodIndex ] > maxFields ) {
+                            updatedProgress[ methodIndex ] = maxFields;
                         }
 
                         return updatedProgress;
-                    });
+                    } );
                 }
             }
         }
 
-        onChange(updated);
+        onChange( updated );
     };
 
-    const toggleEnable = (methodId: string, enable: boolean) => {
-        if (!canEdit()) {
+    const toggleEnable = ( methodId: string, enable: boolean ) => {
+        if ( ! canEdit() ) {
             return;
         }
-        handleInputChange(methodId, 'enable', enable);
-        if (enable) {
-            setActiveTabs((prev) =>
-                prev.filter((id) => id !== methodId)
+        handleInputChange( methodId, 'enable', enable );
+        if ( enable ) {
+            setActiveTabs( ( prev ) =>
+                prev.filter( ( id ) => id !== methodId )
             );
         }
     };
 
-    const toggleActiveTab = (methodId: string) => {
-        if (!canEdit()) {
+    const toggleActiveTab = ( methodId: string ) => {
+        if ( ! canEdit() ) {
             return;
         }
         // setActiveTabs(
@@ -452,60 +461,60 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         //             ? prev.filter( ( id ) => id !== methodId ) // close
         //             : [ ...prev, methodId ] // open
         // );
-        setActiveTabs((prev) =>
-            prev[0] === methodId ? [] : [methodId]
+        setActiveTabs( ( prev ) =>
+            prev[ 0 ] === methodId ? [] : [ methodId ]
         );
     };
 
-    const isProSetting = (val: boolean) => val;
+    const isProSetting = ( val: boolean ) => val;
 
     const handleMultiSelectDeselect = (
         methodId: string,
         field: PanelFormField
     ) => {
-        const allValues = Array.isArray(field.options)
-            ? field.options.map((opt) => String(opt.value))
+        const allValues = Array.isArray( field.options )
+            ? field.options.map( ( opt ) => String( opt.value ) )
             : [];
 
-        const current = value?.[methodId]?.[field.key] || [];
+        const current = value?.[ methodId ]?.[ field.key ] || [];
 
-        const currentArray = Array.isArray(current)
+        const currentArray = Array.isArray( current )
             ? current
             : typeof current === 'string' && current.trim() !== ''
-                ? [current]
-                : [];
+            ? [ current ]
+            : [];
 
         const isAllSelected = currentArray.length === allValues.length;
 
         const result = isAllSelected ? [] : allValues;
 
-        handleInputChange(methodId, field.key, result);
+        handleInputChange( methodId, field.key, result );
     };
 
     const renderWizardButtons = () => {
-        const step = ExpandablePanelMethods[wizardIndex];
+        const step = ExpandablePanelMethods[ wizardIndex ];
         const buttonField = step?.formFields?.find(
-            (f) => f.type === 'buttons'
+            ( f ) => f.type === 'buttons'
         );
-        if (!buttonField) {
+        if ( ! buttonField ) {
             return null;
         }
 
-        return renderField(step.id, buttonField);
+        return renderField( step.id, buttonField );
     };
 
     const handleSaveSetupWizard = () => {
-        axios({
-            url: getApiLink(appLocalizer, apilink),
+        axios( {
+            url: getApiLink( appLocalizer, apilink ),
             method: 'POST',
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
             data: {
                 setupWizard: true,
-                value: value
+                value: value,
             },
-        }).then((res) => {
-            console.log(res)
-        });
+        } ).then( ( res ) => {
+            console.log( res );
+        } );
     };
 
     const isContain = (
@@ -513,62 +522,65 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         methodId: string,
         valuee: string | number | boolean | null = null
     ): boolean => {
-        const settingValue = value[methodId]?.[key];
+        const settingValue = value[ methodId ]?.[ key ];
 
         // If settingValue is an array
-        if (Array.isArray(settingValue)) {
+        if ( Array.isArray( settingValue ) ) {
             // If value is null and settingValue has elements, return true
-            if (valuee === null && settingValue.length > 0) {
+            if ( valuee === null && settingValue.length > 0 ) {
                 return true;
             }
 
-            return settingValue.includes(valuee);
+            return settingValue.includes( valuee );
         }
 
         // If settingValue is not an array
-        if (valuee === null && Boolean(settingValue)) {
+        if ( valuee === null && Boolean( settingValue ) ) {
             return true;
         }
 
         return settingValue === valuee;
     };
 
-    const shouldRender = (dependent: any, methodId: string): boolean => {
-        if (dependent.set === true && !isContain(dependent.key, methodId)) {
+    const shouldRender = ( dependent: any, methodId: string ): boolean => {
+        if (
+            dependent.set === true &&
+            ! isContain( dependent.key, methodId )
+        ) {
             return false;
         }
-        if (dependent.set === false && isContain(dependent.key, methodId)) {
+        if ( dependent.set === false && isContain( dependent.key, methodId ) ) {
             return false;
         }
         if (
             dependent.value !== undefined &&
-            !isContain(dependent.key, methodId, dependent.value)
+            ! isContain( dependent.key, methodId, dependent.value )
         ) {
             return false;
         }
         return true;
     };
 
-    const renderField = (methodId: string, field: PanelFormField) => {
-        const fieldValue = value[methodId]?.[field.key];
+    const renderField = ( methodId: string, field: PanelFormField ) => {
+        const fieldValue = value[ methodId ]?.[ field.key ];
 
-        switch (field.type) {
+        switch ( field.type ) {
             case 'setting-toggle':
                 return (
                     <ToggleSetting
-                        key={field.key}
-                        description={field.desc}
+                        key={ field.key }
+                        description={ field.desc }
                         options={
-                            Array.isArray(field.options)
-                                ? field.options.map((opt) => ({
-                                    ...opt,
-                                    value: String(opt.value),
-                                }))
+                            Array.isArray( field.options )
+                                ? field.options.map( ( opt ) => ( {
+                                      ...opt,
+                                      value: String( opt.value ),
+                                  } ) )
                                 : []
                         }
-                        value={fieldValue || ''}
-                        onChange={(val) =>
-                            handleInputChange(methodId, field.key, val)
+                        value={ fieldValue || '' }
+                        onChange={ ( val ) =>
+                            handleInputChange( methodId, field.key, val )
                         }
                     />
                 );
@@ -576,10 +588,10 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             case 'blocktext':
                 return (
                     <BlockText
-                        key={field.blocktext}
-                        blockTextClass={field.blockTextClass}
-                        title={field.title}
-                        value={String(field.blocktext)}
+                        key={ field.blocktext }
+                        blockTextClass={ field.blockTextClass }
+                        title={ field.title }
+                        value={ String( field.blocktext ) }
                     />
                 );
 
@@ -588,8 +600,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     <>
                         <input
                             type="checkbox"
-                            checked={!!fieldValue}
-                            onChange={(e) =>
+                            checked={ !! fieldValue }
+                            onChange={ ( e ) =>
                                 handleInputChange(
                                     methodId,
                                     field.key,
@@ -598,76 +610,80 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                             }
                         />
                         <div className="settings-metabox-description">
-                            {field.desc}
+                            { field.desc }
                         </div>
                     </>
                 );
             case 'clickable-list':
                 return (
                     <div className="clickable-list-wrapper">
-                        { /* Render items */}
+                        { /* Render items */ }
                         <ul className="clickable-items">
-                            {Array.isArray(field.items) &&
-                                field.items.map((item, idx) => (
+                            { Array.isArray( field.items ) &&
+                                field.items.map( ( item, idx ) => (
                                     <li
-                                        key={idx}
-                                        className={`clickable-item admin-badge blue ${item.url ? 'has-link' : ''
-                                            }`}
-                                        onClick={() => {
-                                            if (item.url) {
+                                        key={ idx }
+                                        className={ `clickable-item admin-badge blue ${
+                                            item.url ? 'has-link' : ''
+                                        }` }
+                                        onClick={ () => {
+                                            if ( item.url ) {
                                                 let url = item.url;
-                                                window.open(url, '_self');
+                                                window.open( url, '_self' );
                                             }
-                                        }}
+                                        } }
                                     >
-                                        {item.name}
+                                        { item.name }
                                     </li>
-                                ))}
+                                ) ) }
                         </ul>
 
-                        { /* Render bottom button */}
-                        {field.button?.label && (
+                        { /* Render bottom button */ }
+                        { field.button?.label && (
                             <AdminButton
-                            wrapperClass='left'
-                                buttons={[
+                                wrapperClass="left"
+                                buttons={ [
                                     {
                                         icon: 'plus',
                                         text: field.button.label,
                                         className: 'purple',
-                                        onClick: (e) => {
-                                            if (field.button.url) {
+                                        onClick: ( e ) => {
+                                            if ( field.button.url ) {
                                                 e.preventDefault();
-                                                window.open(field.button.url, '_blank');
+                                                window.open(
+                                                    field.button.url,
+                                                    '_blank'
+                                                );
                                             }
                                         },
                                     },
-                                ]}
+                                ] }
                             />
-                        )}
+                        ) }
 
-                        {field.desc && (
+                        { field.desc && (
                             <div className="settings-metabox-description">
-                                {field.desc}
+                                { field.desc }
                             </div>
-                        )}
+                        ) }
                     </div>
                 );
 
             case 'textarea':
                 return (
                     <TextArea
-                        inputClass={field.class}
-                        description={field.desc || ''}
-                        key={field.key}
-                        id={field.key}
-                        name={field.key}
-                        placeholder={field.placeholder}
-                        rowNumber={field.rowNumber}
-                        colNumber={field.colNumber}
-                        value={fieldValue || ''}
-                        proSetting={false}
-                        onChange={(
-                            e: React.ChangeEvent<HTMLTextAreaElement>
+                        inputClass={ field.class }
+                        description={ field.desc || '' }
+                        key={ field.key }
+                        id={ field.key }
+                        name={ field.key }
+                        placeholder={ field.placeholder }
+                        rowNumber={ field.rowNumber }
+                        colNumber={ field.colNumber }
+                        value={ fieldValue || '' }
+                        proSetting={ false }
+                        onChange={ (
+                            e: React.ChangeEvent< HTMLTextAreaElement >
                         ) =>
                             handleInputChange(
                                 methodId,
@@ -680,51 +696,64 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             case 'multi-select': {
                 return (
                     <SelectInput
-                        name={field.key}
-                        options={field.options || []}
-                        type={field.selectType}
-                        value={fieldValue || []}
-                        onChange={(newValue: any) => {
-                            if (Array.isArray(newValue)) {
+                        name={ field.key }
+                        options={ field.options || [] }
+                        type={ field.selectType }
+                        value={ fieldValue || [] }
+                        onChange={ ( newValue: any ) => {
+                            if ( Array.isArray( newValue ) ) {
                                 // Multi-select case
-                                const values = newValue.map((val) => val.value);
-                                handleInputChange(methodId, field.key, values);
+                                const values = newValue.map(
+                                    ( val ) => val.value
+                                );
+                                handleInputChange(
+                                    methodId,
+                                    field.key,
+                                    values
+                                );
                                 return;
-                            } else if (newValue !== null && 'value' in newValue) {
+                            } else if (
+                                newValue !== null &&
+                                'value' in newValue
+                            ) {
                                 // Single-select case (ensures 'newValue' is an object with 'value')
-                                handleInputChange(methodId, field.key, newValue.value);
+                                handleInputChange(
+                                    methodId,
+                                    field.key,
+                                    newValue.value
+                                );
                                 return;
                             }
-                        }}
+                        } }
                     />
                 );
             }
             case 'multi-checkbox': {
                 let normalizedValue: string[] = [];
 
-                if (Array.isArray(fieldValue)) {
+                if ( Array.isArray( fieldValue ) ) {
                     normalizedValue = fieldValue.filter(
-                        (v) => v && v.trim() !== ''
+                        ( v ) => v && v.trim() !== ''
                     );
                 } else if (
                     typeof fieldValue === 'string' &&
                     fieldValue.trim() !== ''
                 ) {
-                    normalizedValue = [fieldValue];
+                    normalizedValue = [ fieldValue ];
                 }
 
                 return (
                     <MultiCheckBox
-                        khali_dabba={appLocalizer?.khali_dabba ?? false}
+                        khali_dabba={ appLocalizer?.khali_dabba ?? false }
                         wrapperClass={
                             field.look === 'toggle'
                                 ? 'toggle-btn'
                                 : field.selectDeselect === true
-                                    ? 'checkbox-list-side-by-side'
-                                    : 'simple-checkbox'
+                                ? 'checkbox-list-side-by-side'
+                                : 'simple-checkbox'
                         }
                         descClass="settings-metabox-description"
-                        description={field.desc}
+                        description={ field.desc }
                         selectDeselectClass="admin-btn btn-purple select-deselect-trigger"
                         inputWrapperClass="toggle-checkbox-header"
                         inputInnerWrapperClass={
@@ -732,25 +761,25 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                 ? 'toggle-checkbox'
                                 : 'default-checkbox'
                         }
-                        inputClass={field.class}
+                        inputClass={ field.class }
                         idPrefix="toggle-switch"
-                        selectDeselect={field.selectDeselect}
+                        selectDeselect={ field.selectDeselect }
                         selectDeselectValue="Select / Deselect All"
                         rightContentClass="settings-metabox-description"
                         options={
-                            Array.isArray(field.options)
-                                ? field.options.map((opt) => ({
-                                    ...opt,
-                                    value: String(opt.value),
-                                }))
+                            Array.isArray( field.options )
+                                ? field.options.map( ( opt ) => ( {
+                                      ...opt,
+                                      value: String( opt.value ),
+                                  } ) )
                                 : []
                         }
                         /* THIS IS THE FIX */
-                        value={normalizedValue}
-                        onChange={(e: any) => {
+                        value={ normalizedValue }
+                        onChange={ ( e: any ) => {
                             // Case 1: MultiCheckBox gives an array of selected values (preferred)
-                            if (Array.isArray(e)) {
-                                handleInputChange(methodId, field.key, e);
+                            if ( Array.isArray( e ) ) {
+                                handleInputChange( methodId, field.key, e );
                                 return;
                             }
 
@@ -760,35 +789,35 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                 e.target &&
                                 typeof e.target.value !== 'undefined'
                             ) {
-                                const val = String(e.target.value);
-                                const checked = !!e.target.checked;
+                                const val = String( e.target.value );
+                                const checked = !! e.target.checked;
 
                                 // Current stored value for this field
                                 let current =
-                                    value?.[methodId]?.[field.key];
+                                    value?.[ methodId ]?.[ field.key ];
 
                                 // Normalize to array
-                                if (!Array.isArray(current)) {
+                                if ( ! Array.isArray( current ) ) {
                                     if (
                                         typeof current === 'string' &&
                                         current.trim() !== ''
                                     ) {
-                                        current = [current];
+                                        current = [ current ];
                                     } else {
                                         current = [];
                                     }
                                 } else {
                                     // clone to avoid mutating props/state directly
-                                    current = [...current];
+                                    current = [ ...current ];
                                 }
 
-                                if (checked) {
-                                    if (!current.includes(val)) {
-                                        current.push(val);
+                                if ( checked ) {
+                                    if ( ! current.includes( val ) ) {
+                                        current.push( val );
                                     }
                                 } else {
                                     current = current.filter(
-                                        (v: string) => v !== val
+                                        ( v: string ) => v !== val
                                     );
                                 }
 
@@ -801,44 +830,44 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                             }
 
                             // Fallback: pass simple values only
-                            handleInputChange(methodId, field.key, e);
-                        }}
-                        proSetting={isProSetting(field.proSetting ?? false)}
-                        onMultiSelectDeselectChange={() => {
-                            handleMultiSelectDeselect(methodId, field);
-                        }}
+                            handleInputChange( methodId, field.key, e );
+                        } }
+                        proSetting={ isProSetting( field.proSetting ?? false ) }
+                        onMultiSelectDeselectChange={ () => {
+                            handleMultiSelectDeselect( methodId, field );
+                        } }
                     />
                 );
             }
             case 'description':
                 return (
                     <>
-                        {field.title ? (
+                        { field.title ? (
                             <div className="description-wrapper">
                                 <div className="title">
                                     <i className="adminfont-error"></i>
-                                    {field.title}
+                                    { field.title }
                                 </div>
 
-                                {field.des && (
+                                { field.des && (
                                     <p
                                         className="panel-description"
-                                        dangerouslySetInnerHTML={{
+                                        dangerouslySetInnerHTML={ {
                                             __html: field.des,
-                                        }}
+                                        } }
                                     />
-                                )}
+                                ) }
                             </div>
                         ) : (
                             field.des && (
                                 <p
                                     className="panel-description"
-                                    dangerouslySetInnerHTML={{
+                                    dangerouslySetInnerHTML={ {
                                         __html: field.des,
-                                    }}
+                                    } }
                                 />
                             )
-                        )}
+                        ) }
                     </>
                 );
             case 'setup':
@@ -847,20 +876,20 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                         <div className="wizard-step">
                             <div
                                 className="step-info"
-                                onClick={() =>
+                                onClick={ () =>
                                     handleInputChange(
                                         methodId,
                                         field.key,
-                                        !fieldValue
+                                        ! fieldValue
                                     )
                                 }
                             >
-                                {!field.hideCheckbox && (
+                                { ! field.hideCheckbox && (
                                     <div className="default-checkbox">
                                         <input
                                             type="checkbox"
-                                            checked={!!fieldValue}
-                                            onChange={(e) =>
+                                            checked={ !! fieldValue }
+                                            onChange={ ( e ) =>
                                                 handleInputChange(
                                                     methodId,
                                                     field.key,
@@ -869,26 +898,26 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                             }
                                         />
                                         <label
-                                            htmlFor={`step-checkbox-${methodId}-${field.key}`}
+                                            htmlFor={ `step-checkbox-${ methodId }-${ field.key }` }
                                         ></label>
                                     </div>
-                                )}
+                                ) }
                                 <div className="step-text">
                                     <span className="step-title">
-                                        {field.title}
+                                        { field.title }
                                     </span>
-                                    <span className="desc">{field.desc}</span>
+                                    <span className="desc">{ field.desc }</span>
                                 </div>
                             </div>
-                            {field.link && (
+                            { field.link && (
                                 <a
-                                    href={field.link}
+                                    href={ field.link }
                                     className="admin-btn btn-purple"
                                 >
-                                    Set Up{' '}
-                                    <i className="adminfont-arrow-right"></i>{' '}
+                                    Set Up{ ' ' }
+                                    <i className="adminfont-arrow-right"></i>{ ' ' }
                                 </a>
-                            )}
+                            ) }
                         </div>
                     </>
                 );
@@ -896,19 +925,19 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                 return (
                     <>
                         <ul className="check-list">
-                            {Array.isArray(field.options) &&
+                            { Array.isArray( field.options ) &&
                                 field.options.map(
-                                    (item: FieldOption, index: number) => (
-                                        <li key={index}>
-                                            {item.check ? (
+                                    ( item: FieldOption, index: number ) => (
+                                        <li key={ index }>
+                                            { item.check ? (
                                                 <i className="check adminfont-icon-yes"></i>
                                             ) : (
                                                 <i className="close adminfont-cross"></i>
-                                            )}
-                                            {item.desc}
+                                            ) }
+                                            { item.desc }
                                         </li>
                                     )
-                                )}
+                                ) }
                         </ul>
                     </>
                 );
@@ -917,14 +946,14 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                 return (
                     <>
                         <div className="copy-text-wrapper">
-                            <code>{field.title}</code>
+                            <code>{ field.title }</code>
                             <i
                                 className="adminfont-vendor-form-copy"
-                                onClick={() => handleCopy(field.title)}
+                                onClick={ () => handleCopy( field.title ) }
                             ></i>
                         </div>
                         <div className="settings-metabox-description">
-                            {field.desc}
+                            { field.desc }
                         </div>
                     </>
                 );
@@ -932,119 +961,139 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             case 'buttons':
                 return (
                     <>
-                        {Array.isArray(field.options) &&
-                            field.options.map((item, index) => {
+                        { Array.isArray( field.options ) &&
+                            field.options.map( ( item, index ) => {
                                 const wizardSteps = methods
-                                    .map((m, i) => ({ ...m, index: i }))
-                                    .filter((m) => m.isWizardMode);
+                                    .map( ( m, i ) => ( { ...m, index: i } ) )
+                                    .filter( ( m ) => m.isWizardMode );
 
                                 const isLastMethod =
                                     wizardIndex === wizardSteps.length - 1;
                                 const isFirstMethod = wizardIndex === 0;
 
-                                const currentMethod = methods[wizardIndex];
+                                const currentMethod = methods[ wizardIndex ];
                                 const totalFields =
                                     currentMethod?.formFields?.length || 0;
 
                                 const currentFieldIndex =
-                                    fieldProgress[wizardIndex] || 0;
+                                    fieldProgress[ wizardIndex ] || 0;
 
                                 const isLastField =
                                     currentFieldIndex === totalFields - 1;
                                 const isFirstField = currentFieldIndex === 0;
 
-                                if (item.action === 'back') {
+                                if ( item.action === 'back' ) {
                                     return (
                                         <button
-                                            key={index}
-                                            className={item.btnClass}
-                                            disabled={isFirstMethod && isFirstField}
-                                            onClick={() => {
+                                            key={ index }
+                                            className={ item.btnClass }
+                                            disabled={
+                                                isFirstMethod && isFirstField
+                                            }
+                                            onClick={ () => {
                                                 // previous METHOD
-                                                if (!isFirstMethod) {
+                                                if ( ! isFirstMethod ) {
                                                     const prevStep =
-                                                        wizardSteps[wizardIndex - 1];
-                                                    setWizardIndex(prevStep.index);
-                                                    setActiveTabs([prevStep.id]);
+                                                        wizardSteps[
+                                                            wizardIndex - 1
+                                                        ];
+                                                    setWizardIndex(
+                                                        prevStep.index
+                                                    );
+                                                    setActiveTabs( [
+                                                        prevStep.id,
+                                                    ] );
                                                 }
-                                            }}
+                                            } }
                                         >
-                                            {item.label}
+                                            { item.label }
                                         </button>
                                     );
                                 }
 
-                                if (item.action === 'next') {
+                                if ( item.action === 'next' ) {
                                     return (
                                         <button
-                                            key={index}
-                                            className={item.btnClass}
-                                            onClick={() => {
+                                            key={ index }
+                                            className={ item.btnClass }
+                                            onClick={ () => {
                                                 handleSaveSetupWizard();
                                                 // next METHOD
-                                                if (!isLastMethod) {
+                                                if ( ! isLastMethod ) {
                                                     const nextStep =
-                                                        wizardSteps[wizardIndex + 1];
-                                                    setWizardIndex(nextStep.index);
-                                                    setActiveTabs([nextStep.id]);
+                                                        wizardSteps[
+                                                            wizardIndex + 1
+                                                        ];
+                                                    setWizardIndex(
+                                                        nextStep.index
+                                                    );
+                                                    setActiveTabs( [
+                                                        nextStep.id,
+                                                    ] );
                                                     return;
                                                 }
                                                 // FINISH
-                                                window.open(item.redirect,
+                                                window.open(
+                                                    item.redirect,
                                                     '_self'
                                                 );
-                                            }}
+                                            } }
                                         >
-                                            {isLastMethod && isLastField
+                                            { isLastMethod && isLastField
                                                 ? 'Finish'
-                                                : item.label}
+                                                : item.label }
                                         </button>
                                     );
                                 }
 
-                                if (item.action === 'skip') {
+                                if ( item.action === 'skip' ) {
                                     return (
                                         <button
-                                            key={index}
-                                            className={item.btnClass}
-                                            onClick={() => {
-                                                setWizardIndex(methods.length);
+                                            key={ index }
+                                            className={ item.btnClass }
+                                            onClick={ () => {
+                                                setWizardIndex(
+                                                    methods.length
+                                                );
                                                 window.open(
                                                     appLocalizer.site_url,
                                                     '_self'
                                                 );
-                                            }}
+                                            } }
                                         >
-                                            {item.label}
+                                            { item.label }
                                         </button>
                                     );
                                 }
 
                                 return (
-                                    <div key={index} className={item.btnClass}>
-                                        {item.label}
+                                    <div
+                                        key={ index }
+                                        className={ item.btnClass }
+                                    >
+                                        { item.label }
                                     </div>
                                 );
-                            })}
+                            } ) }
                     </>
                 );
 
             case 'nested':
                 return (
                     <NestedComponent
-                        key={field.key}
-                        id={field.key}
-                        label={field.label}
-                        description={field.desc}
-                        fields={field.nestedFields ?? []}
-                        value={fieldValue}
-                        wrapperClass={field.rowClass}
-                        addButtonLabel={field.addButtonLabel}
-                        deleteButtonLabel={field.deleteButtonLabel}
-                        single={field.single}
-                        onChange={(val: any) => {
-                            handleInputChange(methodId, field.key, val);
-                        }}
+                        key={ field.key }
+                        id={ field.key }
+                        label={ field.label }
+                        description={ field.desc }
+                        fields={ field.nestedFields ?? [] }
+                        value={ fieldValue }
+                        wrapperClass={ field.rowClass }
+                        addButtonLabel={ field.addButtonLabel }
+                        deleteButtonLabel={ field.deleteButtonLabel }
+                        single={ field.single }
+                        onChange={ ( val: any ) => {
+                            handleInputChange( methodId, field.key, val );
+                        } }
                     />
                 );
 
@@ -1053,10 +1102,10 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                 const iconOptions = field.iconOptions ?? [];
                 const selectedIcon = fieldValue as string;
 
-                const dropdownKey = `${methodId}_${field.key}`;
+                const dropdownKey = `${ methodId }_${ field.key }`;
                 const isOpen = iconDropdownOpen === dropdownKey;
 
-                if (!iconEnable || iconOptions.length === 0) {
+                if ( ! iconEnable || iconOptions.length === 0 ) {
                     return null;
                 }
 
@@ -1064,49 +1113,50 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     <div className="icon-library-wrapper">
                         <div
                             className="selected-icon"
-                            onClick={() =>
+                            onClick={ () =>
                                 setIconDropdownOpen(
                                     isOpen ? null : dropdownKey
                                 )
                             }
                         >
-                            {selectedIcon ? (
-                                <i className={selectedIcon}></i>
+                            { selectedIcon ? (
+                                <i className={ selectedIcon }></i>
                             ) : (
                                 <span>Select Icon</span>
-                            )}
+                            ) }
                             <span className="dropdown-arrow">▾</span>
                         </div>
 
-                        {isOpen && (
+                        { isOpen && (
                             <ul className="icon-options-list">
-                                {iconOptions.map((icon) => (
+                                { iconOptions.map( ( icon ) => (
                                     <li
-                                        key={icon}
-                                        className={`icon-option ${selectedIcon === icon
-                                            ? 'selected'
-                                            : ''
-                                            }`}
-                                        onClick={() => {
+                                        key={ icon }
+                                        className={ `icon-option ${
+                                            selectedIcon === icon
+                                                ? 'selected'
+                                                : ''
+                                        }` }
+                                        onClick={ () => {
                                             handleInputChange(
                                                 methodId,
                                                 field.key,
                                                 icon
                                             );
-                                            setIconDropdownOpen(null);
-                                        }}
+                                            setIconDropdownOpen( null );
+                                        } }
                                     >
-                                        <i className={icon}></i>
+                                        <i className={ icon }></i>
                                     </li>
-                                ))}
+                                ) ) }
                             </ul>
-                        )}
+                        ) }
 
-                        {field.desc && (
+                        { field.desc && (
                             <div className="settings-metabox-description">
-                                {field.desc}
+                                { field.desc }
                             </div>
-                        )}
+                        ) }
                     </div>
                 );
             }
@@ -1115,11 +1165,11 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                 return (
                     <>
                         <input
-                            type={field.type}
-                            placeholder={field.placeholder}
-                            value={fieldValue || ''}
+                            type={ field.type }
+                            placeholder={ field.placeholder }
+                            value={ fieldValue || '' }
                             className="basic-input"
-                            onChange={(e) =>
+                            onChange={ ( e ) =>
                                 handleInputChange(
                                     methodId,
                                     field.key,
@@ -1128,7 +1178,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                             }
                         />
                         <div className="settings-metabox-description">
-                            {field.desc}
+                            { field.desc }
                         </div>
                     </>
                 );
@@ -1138,71 +1188,79 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
     return (
         <>
             <div className="expandable-panel-group">
-                {ExpandablePanelMethods.map((method, index) => {
-                    const isEnabled = value?.[method.id]?.enable ?? false;
-                    const isActive = activeTabs.includes(method.id);
+                { ExpandablePanelMethods.map( ( method, index ) => {
+                    const isEnabled = value?.[ method.id ]?.enable ?? false;
+                    const isActive = activeTabs.includes( method.id );
                     const headerIcon =
-                        (value?.[method.id]?.icon as string) || method.icon;
+                        ( value?.[ method.id ]?.icon as string ) || method.icon;
 
-                    if (isWizardMode && index > wizardIndex) {
+                    if ( isWizardMode && index > wizardIndex ) {
                         return null;
                     }
 
                     return (
                         <div
-                            key={method.id}
-                            className={`expandable-item ${method.disableBtn && !isEnabled
-                                ? 'disable'
-                                : ''
-                                } ${method.openForm ? 'open' : ''} `}
+                            key={ method.id }
+                            className={ `expandable-item ${
+                                method.disableBtn && ! isEnabled
+                                    ? 'disable'
+                                    : ''
+                            } ${ method.openForm ? 'open' : '' } ` }
                         >
-                            { /* Header */}
+                            { /* Header */ }
                             <div className="expandable-header">
-                                {method.formFields &&
-                                    method.formFields.length > 0 &&
-                                    <div className="toggle-icon">
-                                        <i
-                                            className={`adminfont-${isActive && isEnabled ? 'keyboard-arrow-down' : ((isActive && method.isCustom && isWizardMode) ? 'keyboard-arrow-down' : 'pagination-right-arrow')
-                                                }`}
-                                            onClick={() => {
-                                                if (
-                                                    method.proSetting &&
-                                                    !appLocalizer?.khali_dabba
-                                                ) {
-                                                    proChanged?.();
-                                                    return;
-                                                } else if (
-                                                    method.moduleEnabled &&
-                                                    !modules.includes(
-                                                        method.moduleEnabled
-                                                    )
-                                                ) {
-                                                    moduleChange?.(
-                                                        method.moduleEnabled
-                                                    );
-                                                    return;
-                                                } else {
-                                                    toggleActiveTab(
-                                                        method.id
-                                                    );
-                                                }
-                                            }}
-                                        />
-                                    </div>
-                                }
+                                { method.formFields &&
+                                    method.formFields.length > 0 && (
+                                        <div className="toggle-icon">
+                                            <i
+                                                className={ `adminfont-${
+                                                    isActive && isEnabled
+                                                        ? 'keyboard-arrow-down'
+                                                        : isActive &&
+                                                          method.isCustom &&
+                                                          isWizardMode
+                                                        ? 'keyboard-arrow-down'
+                                                        : 'pagination-right-arrow'
+                                                }` }
+                                                onClick={ () => {
+                                                    if (
+                                                        method.proSetting &&
+                                                        ! appLocalizer?.khali_dabba
+                                                    ) {
+                                                        proChanged?.();
+                                                        return;
+                                                    } else if (
+                                                        method.moduleEnabled &&
+                                                        ! modules.includes(
+                                                            method.moduleEnabled
+                                                        )
+                                                    ) {
+                                                        moduleChange?.(
+                                                            method.moduleEnabled
+                                                        );
+                                                        return;
+                                                    } else {
+                                                        toggleActiveTab(
+                                                            method.id
+                                                        );
+                                                    }
+                                                } }
+                                            />
+                                        </div>
+                                    ) }
 
                                 <div
                                     className="details"
-                                    onClick={() => {
+                                    onClick={ () => {
                                         if (
                                             method.proSetting &&
-                                            !appLocalizer?.khali_dabba
+                                            ! appLocalizer?.khali_dabba
                                         ) {
                                             proChanged?.();
                                             return;
                                         } else if (
                                             method.moduleEnabled &&
-                                            !modules.includes(
+                                            ! modules.includes(
                                                 method.moduleEnabled
                                             )
                                         ) {
@@ -1211,73 +1269,74 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                             );
                                             return;
                                         } else {
-                                            toggleActiveTab(method.id);
+                                            toggleActiveTab( method.id );
                                         }
-                                    }}
+                                    } }
                                 >
                                     <div className="details-wrapper">
-                                        {headerIcon && (
+                                        { headerIcon && (
                                             <div className="expandable-header-icon">
-                                                <i className={headerIcon}></i>
+                                                <i className={ headerIcon }></i>
                                             </div>
-                                        )}
+                                        ) }
                                         <div className="expandable-header-info">
                                             <div className="title-wrapper">
                                                 <span className="title">
-                                                    {(value?.[method.id]
-                                                        ?.title as string) ||
-                                                        method.label}
+                                                    { ( value?.[ method.id ]
+                                                        ?.title as string ) ||
+                                                        method.label }
                                                 </span>
                                                 <div className="panel-badges">
-                                                    {method.disableBtn && (
+                                                    { method.disableBtn && (
                                                         <div
-                                                            className={`admin-badge ${isEnabled
-                                                                ? 'green'
-                                                                : 'red'
-                                                                }`}
+                                                            className={ `admin-badge ${
+                                                                isEnabled
+                                                                    ? 'green'
+                                                                    : 'red'
+                                                            }` }
                                                         >
-                                                            {isEnabled
+                                                            { isEnabled
                                                                 ? 'Active'
-                                                                : 'Inactive'}
+                                                                : 'Inactive' }
                                                         </div>
-                                                    )}
+                                                    ) }
                                                 </div>
                                             </div>
                                             <div className="panel-description">
                                                 <p
-                                                    dangerouslySetInnerHTML={{
+                                                    dangerouslySetInnerHTML={ {
                                                         __html:
-                                                            (value?.[
+                                                            ( value?.[
                                                                 method.id
                                                             ]
-                                                                ?.description as string) ||
+                                                                ?.description as string ) ||
                                                             method.desc,
-                                                    }}
+                                                    } }
                                                 />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="right-section" ref={menuRef}>
-                                    {method.disableBtn ? (
+                                <div className="right-section" ref={ menuRef }>
+                                    { method.disableBtn ? (
                                         <ul>
-                                            {isEnabled ? (
+                                            { isEnabled ? (
                                                 <>
-                                                    {method.formFields &&
+                                                    { method.formFields &&
                                                         method.formFields
                                                             .length > 0 && (
                                                             <li
-                                                                onClick={() => {
+                                                                onClick={ () => {
                                                                     if (
                                                                         method.proSetting &&
-                                                                        !appLocalizer?.khali_dabba
+                                                                        ! appLocalizer?.khali_dabba
                                                                     ) {
                                                                         proChanged?.();
                                                                         return;
                                                                     } else if (
                                                                         method.moduleEnabled &&
-                                                                        !modules.includes(
+                                                                        ! modules.includes(
                                                                             method.moduleEnabled
                                                                         )
                                                                     ) {
@@ -1290,27 +1349,27 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                             method.id
                                                                         );
                                                                     }
-                                                                }}
+                                                                } }
                                                             >
                                                                 <span className="admin-btn btn-purple">
                                                                     <i className="adminfont-setting"></i>
                                                                     Settings
                                                                 </span>
                                                             </li>
-                                                        )}
+                                                        ) }
                                                 </>
                                             ) : (
                                                 <li
-                                                    onClick={() => {
+                                                    onClick={ () => {
                                                         if (
                                                             method.proSetting &&
-                                                            !appLocalizer?.khali_dabba
+                                                            ! appLocalizer?.khali_dabba
                                                         ) {
                                                             proChanged?.();
                                                             return;
                                                         } else if (
                                                             method.moduleEnabled &&
-                                                            !modules.includes(
+                                                            ! modules.includes(
                                                                 method.moduleEnabled
                                                             )
                                                         ) {
@@ -1324,88 +1383,99 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                 true
                                                             );
                                                         }
-                                                    }}
+                                                    } }
                                                 >
                                                     <span className="admin-btn btn-purple-bg">
-                                                        <i className="adminfont-eye"></i>{' '}
+                                                        <i className="adminfont-eye"></i>{ ' ' }
                                                         Enable
                                                     </span>
                                                 </li>
-                                            )}
+                                            ) }
                                         </ul>
-                                    ) : method.countBtn && method.formFields?.length > 0 && (() => {
-                                        const countableFields = method.formFields.filter(
-                                            (field) => field.type !== 'buttons' && field.type !== 'blocktext'
-                                        );
+                                    ) : (
+                                        method.countBtn &&
+                                        method.formFields?.length > 0 &&
+                                        ( () => {
+                                            const countableFields =
+                                                method.formFields.filter(
+                                                    ( field ) =>
+                                                        field.type !==
+                                                            'buttons' &&
+                                                        field.type !==
+                                                            'blocktext'
+                                                );
 
-                                        return (
-                                            <div className="admin-badge red">
-                                                {fieldProgress[index] || 0}/{countableFields.length}
-                                            </div>
-                                        );
-                                    })()}
-                                    {method.isCustom && (
+                                            return (
+                                                <div className="admin-badge red">
+                                                    { fieldProgress[ index ] ||
+                                                        0 }
+                                                    /{ countableFields.length }
+                                                </div>
+                                            );
+                                        } )()
+                                    ) }
+                                    { method.isCustom && (
                                         <>
                                             <div
-                                                onClick={() => {
+                                                onClick={ () => {
                                                     toggleActiveTab(
                                                         method.id
                                                     );
-                                                }}
+                                                } }
                                                 className="admin-btn btn-purple"
                                             >
                                                 <i className="adminfont-edit"></i>
                                                 Edit
                                             </div>
                                         </>
-                                    )}
-                                    { /* show dropdown */}
-                                    {(isEnabled || method.isCustom) && (
+                                    ) }
+                                    { /* show dropdown */ }
+                                    { ( isEnabled || method.isCustom ) && (
                                         <div
                                             className="icon-wrapper"
-                                            ref={wrapperRef}
+                                            ref={ wrapperRef }
                                         >
                                             <i
-                                                onClick={(e) => {
+                                                onClick={ ( e ) => {
                                                     e.stopPropagation();
                                                     setOpenDropdownId(
-                                                        (prev) =>
+                                                        ( prev ) =>
                                                             prev === method.id
                                                                 ? null
                                                                 : method.id
                                                     );
-                                                }}
+                                                } }
                                                 className="admin-icon adminfont-more-vertical"
                                             ></i>
-                                            {openDropdownId === method.id && (
+                                            { openDropdownId === method.id && (
                                                 <div
                                                     className="dropdown"
-                                                    onClick={(e) =>
+                                                    onClick={ ( e ) =>
                                                         e.stopPropagation()
                                                     }
                                                 >
                                                     <div className="dropdown-body">
                                                         <ul>
-                                                            {method.disableBtn ? (
+                                                            { method.disableBtn ? (
                                                                 <>
-                                                                    {isEnabled ? (
+                                                                    { isEnabled ? (
                                                                         <>
-                                                                            {method.formFields &&
+                                                                            { method.formFields &&
                                                                                 method
                                                                                     .formFields
                                                                                     .length >
-                                                                                0 && (
+                                                                                    0 && (
                                                                                     <li
-                                                                                        onClick={() => {
+                                                                                        onClick={ () => {
                                                                                             if (
                                                                                                 method.proSetting &&
-                                                                                                !appLocalizer?.khali_dabba
+                                                                                                ! appLocalizer?.khali_dabba
                                                                                             ) {
                                                                                                 proChanged?.();
                                                                                                 return;
                                                                                             } else if (
                                                                                                 method.moduleEnabled &&
-                                                                                                !modules.includes(
+                                                                                                ! modules.includes(
                                                                                                     method.moduleEnabled
                                                                                                 )
                                                                                             ) {
@@ -1418,27 +1488,27 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                                                     method.id
                                                                                                 );
                                                                                             }
-                                                                                        }}
+                                                                                        } }
                                                                                     >
                                                                                         <span className="item">
                                                                                             <i className="adminfont-setting"></i>
                                                                                             Settings
                                                                                         </span>
                                                                                     </li>
-                                                                                )}
+                                                                                ) }
                                                                         </>
                                                                     ) : (
                                                                         <li
-                                                                            onClick={() => {
+                                                                            onClick={ () => {
                                                                                 if (
                                                                                     method.proSetting &&
-                                                                                    !appLocalizer?.khali_dabba
+                                                                                    ! appLocalizer?.khali_dabba
                                                                                 ) {
                                                                                     proChanged?.();
                                                                                     return;
                                                                                 } else if (
                                                                                     method.moduleEnabled &&
-                                                                                    !modules.includes(
+                                                                                    ! modules.includes(
                                                                                         method.moduleEnabled
                                                                                     )
                                                                                 ) {
@@ -1452,60 +1522,60 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                                         true
                                                                                     );
                                                                                 }
-                                                                            }}
+                                                                            } }
                                                                         >
                                                                             <span className="item">
-                                                                                <i className="adminfont-eye"></i>{' '}
+                                                                                <i className="adminfont-eye"></i>{ ' ' }
                                                                                 Enable
                                                                             </span>
                                                                         </li>
-                                                                    )}
+                                                                    ) }
                                                                 </>
-                                                            ) : null}
-                                                            {(method.isCustom ||
-                                                                method.required) && (
-                                                                    <>
-                                                                        <li
-                                                                            onClick={() => {
-                                                                                toggleActiveTab(
-                                                                                    method.id
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            <div className="item">
-                                                                                <i className="adminfont-edit"></i>
-                                                                                Edit
-                                                                            </div>
-                                                                        </li>
-                                                                        <li
-                                                                            onClick={() =>
-                                                                                handleDeleteMethod(
-                                                                                    method.id
-                                                                                )
-                                                                            }
-                                                                            className="delete"
-                                                                        >
-                                                                            <div className="item">
-                                                                                <i className="adminfont-delete"></i>
-                                                                                Delete
-                                                                            </div>
-                                                                        </li>
-                                                                    </>
-                                                                )}
-                                                            {isEnabled &&
-                                                                !method.isCustom && (
+                                                            ) : null }
+                                                            { ( method.isCustom ||
+                                                                method.required ) && (
+                                                                <>
+                                                                    <li
+                                                                        onClick={ () => {
+                                                                            toggleActiveTab(
+                                                                                method.id
+                                                                            );
+                                                                        } }
+                                                                    >
+                                                                        <div className="item">
+                                                                            <i className="adminfont-edit"></i>
+                                                                            Edit
+                                                                        </div>
+                                                                    </li>
+                                                                    <li
+                                                                        onClick={ () =>
+                                                                            handleDeleteMethod(
+                                                                                method.id
+                                                                            )
+                                                                        }
+                                                                        className="delete"
+                                                                    >
+                                                                        <div className="item">
+                                                                            <i className="adminfont-delete"></i>
+                                                                            Delete
+                                                                        </div>
+                                                                    </li>
+                                                                </>
+                                                            ) }
+                                                            { isEnabled &&
+                                                                ! method.isCustom && (
                                                                     <li
                                                                         className="delete"
-                                                                        onClick={() => {
+                                                                        onClick={ () => {
                                                                             if (
                                                                                 method.proSetting &&
-                                                                                !appLocalizer?.khali_dabba
+                                                                                ! appLocalizer?.khali_dabba
                                                                             ) {
                                                                                 proChanged?.();
                                                                                 return;
                                                                             } else if (
                                                                                 method.moduleEnabled &&
-                                                                                !modules.includes(
+                                                                                ! modules.includes(
                                                                                     method.moduleEnabled
                                                                                 )
                                                                             ) {
@@ -1519,31 +1589,39 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                                     false
                                                                                 );
                                                                             }
-                                                                        }}
+                                                                        } }
                                                                     >
                                                                         <div className="item">
                                                                             <i className="adminfont-eye-blocked"></i>
                                                                             Disable
                                                                         </div>
                                                                     </li>
-                                                                )}
+                                                                ) }
                                                         </ul>
                                                     </div>
                                                 </div>
-                                            )}
+                                            ) }
                                         </div>
-                                    )}
+                                    ) }
                                 </div>
                             </div>
 
-                            {method.formFields &&
+                            { method.formFields &&
                                 method.formFields.length > 0 && (
                                     <div
-                                        className={`${method.wrapperClass || ''
-                                            } expandable-panel ${isActive && isEnabled ? 'open' : ((isActive && (method.isCustom || method.openForm)) ? 'open' : '')
-                                            } ${method.openForm ? 'open' : ''}`}
+                                        className={ `${
+                                            method.wrapperClass || ''
+                                        } expandable-panel ${
+                                            isActive && isEnabled
+                                                ? 'open'
+                                                : isActive &&
+                                                  ( method.isCustom ||
+                                                      method.openForm )
+                                                ? 'open'
+                                                : ''
+                                        } ${ method.openForm ? 'open' : '' }` }
                                     >
-                                        {method.formFields.map((field) => {
+                                        { method.formFields.map( ( field ) => {
                                             // if (
                                             //     field.key === 'required' &&
                                             //     method.required === true
@@ -1557,64 +1635,77 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                 return null;
                                             }
 
-                                            const shouldShowField = (() => {
-                                                if (Array.isArray(field.dependent)) {
-                                                    return field.dependent.every((dependent) =>
-                                                        shouldRender(dependent, method.id)
+                                            const shouldShowField = ( () => {
+                                                if (
+                                                    Array.isArray(
+                                                        field.dependent
+                                                    )
+                                                ) {
+                                                    return field.dependent.every(
+                                                        ( dependent ) =>
+                                                            shouldRender(
+                                                                dependent,
+                                                                method.id
+                                                            )
                                                     );
                                                 }
 
-                                                if (field.dependent) {
-                                                    return shouldRender(field.dependent, method.id);
+                                                if ( field.dependent ) {
+                                                    return shouldRender(
+                                                        field.dependent,
+                                                        method.id
+                                                    );
                                                 }
 
                                                 return true;
-                                            })();
+                                            } )();
 
-                                            if (!shouldShowField) {
+                                            if ( ! shouldShowField ) {
                                                 return null;
                                             }
 
                                             return (
                                                 <div
-                                                    key={field.key}
+                                                    key={ field.key }
                                                     className="form-group"
                                                 >
-                                                    {field.type !== 'blocktext' && field.label && (
-                                                        <label>
-                                                            {field.label}
-                                                        </label>
-                                                    )}
+                                                    { field.type !==
+                                                        'blocktext' &&
+                                                        field.label && (
+                                                            <label>
+                                                                { field.label }
+                                                            </label>
+                                                        ) }
                                                     <div className="input-content">
-                                                        {renderField(
+                                                        { renderField(
                                                             method.id,
                                                             field
-                                                        )}
+                                                        ) }
                                                     </div>
                                                 </div>
                                             );
-                                        })}
+                                        } ) }
                                     </div>
-                                )}
+                                ) }
                         </div>
                     );
-                })}
-                { /* {addNewBtn && ( */}
-                {addNewBtn && (
+                } ) }
+                { /* {addNewBtn && ( */ }
+                { addNewBtn && (
                     <div className="buttons-wrapper">
                         <div
                             className="admin-btn btn-purple"
-                            onClick={handleAddNewMethod}
+                            onClick={ handleAddNewMethod }
                         >
                             <i className="adminfont-plus"></i> Add New
                         </div>
                     </div>
-                )}
+                ) }
             </div>
 
-            {isWizardMode && (
-                <div className="buttons-wrapper">{renderWizardButtons()}</div>
-            )}
+            { isWizardMode && (
+                <div className="buttons-wrapper">{ renderWizardButtons() }</div>
+            ) }
         </>
     );
 };

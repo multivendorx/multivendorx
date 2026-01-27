@@ -150,7 +150,9 @@ const FileInput: React.FC< FileInputProps > = ( props ) => {
                         <i className="upload-icon adminfont-cloud-upload"></i>
                         <input
                             ref={ inputRef }
-                            className={ `basic-input ${ props.inputClass || '' }`}
+                            className={ `basic-input ${
+                                props.inputClass || ''
+                            }` }
                             id={ props.id }
                             type={ props.type || 'file' }
                             name={ props.name || 'file-input' }

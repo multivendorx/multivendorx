@@ -6,19 +6,22 @@ import React from 'react';
 // Types
 interface RecaptchaProps {
     formField: { sitekey?: string };
-    onChange?: (field: string, value: string | boolean | number | null) => void;
+    onChange?: (
+        field: string,
+        value: string | boolean | number | null
+    ) => void;
 }
 
-const Recaptcha: React.FC<RecaptchaProps> = ({ formField }) => {
+const Recaptcha: React.FC< RecaptchaProps > = ( { formField } ) => {
     return (
         <div
-            className={`main-input-wrapper ${
-                !formField.sitekey ? 'recaptcha' : ''
-            }`}
+            className={ `main-input-wrapper ${
+                ! formField.sitekey ? 'recaptcha' : ''
+            }` }
         >
-            {formField.sitekey
+            { formField.sitekey
                 ? 'reCAPTCHA has been successfully added to the form.'
-                : 'reCAPTCHA is not configured.'}
+                : 'reCAPTCHA is not configured.' }
         </div>
     );
 };

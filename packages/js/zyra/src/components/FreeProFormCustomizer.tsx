@@ -105,22 +105,28 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
         } );
     };
 
-    const formFields = React.useMemo<FormField[]>(() => [
-        { key: 'name', desc: 'Name' },
-        { key: 'email', desc: 'Email' },
-        { key: 'phone', desc: 'Phone' },
-        { key: 'address', desc: 'Address' },
-        { key: 'subject', desc: 'Enquiry about' },
-        { key: 'comment', desc: 'Enquiry details' },
-        { key: 'fileupload', desc: 'File upload' },
-        { key: 'filesize-limit', desc: 'File upload size limit (in MB)' },
-        { key: 'captcha', desc: 'Captcha' },
-    ], []);
+    const formFields = React.useMemo< FormField[] >(
+        () => [
+            { key: 'name', desc: 'Name' },
+            { key: 'email', desc: 'Email' },
+            { key: 'phone', desc: 'Phone' },
+            { key: 'address', desc: 'Address' },
+            { key: 'subject', desc: 'Enquiry about' },
+            { key: 'comment', desc: 'Enquiry details' },
+            { key: 'fileupload', desc: 'File upload' },
+            { key: 'filesize-limit', desc: 'File upload size limit (in MB)' },
+            { key: 'captcha', desc: 'Captcha' },
+        ],
+        []
+    );
 
-    const menu = React.useMemo<MenuItem[]>(() => [
-        { name: 'Free', link: 'hi', id: '2', icon: 'adminfont-info' },
-        { name: 'Pro', link: 'hi', id: '1', icon: 'adminfont-cart' },
-    ], []);
+    const menu = React.useMemo< MenuItem[] >(
+        () => [
+            { name: 'Free', link: 'hi', id: '2', icon: 'adminfont-info' },
+            { name: 'Pro', link: 'hi', id: '1', icon: 'adminfont-cart' },
+        ],
+        []
+    );
 
     const [ currentTab, setCurrentTab ] = useState< MenuItem >( menu[ 0 ] );
 

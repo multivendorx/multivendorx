@@ -34,9 +34,9 @@ type AdminHeaderProps = {
     brandImg: string;
     query: string;
     results?: SearchItem[];
-    onSearchChange: (value: string) => void;
-    onResultClick: (res: SearchItem) => void;
-    onSelectChange: (value: string) => void;
+    onSearchChange: ( value: string ) => void;
+    onResultClick: ( res: SearchItem ) => void;
+    onSelectChange: ( value: string ) => void;
     selectValue: string;
     free?: string;
     pro?: string;
@@ -58,7 +58,7 @@ type AdminHeaderProps = {
     activities?: ReactNode;
 };
 
-const AdminHeader: React.FC<AdminHeaderProps> = ({
+const AdminHeader: React.FC< AdminHeaderProps > = ( {
     brandImg,
     query,
     results = [],
@@ -79,57 +79,57 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     chatUrl,
     profileItems,
     showActivities,
-    activities
-}) => {
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [notifOpen, setNotifOpen] = useState(false);
-    const [activityOpen, setActivityOpen] = useState(false);
-    const [profileOpen, setProfileOpen] = useState(false);
-    const [messageOpen, setMessageOpen] = useState(false);
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const [contactSupportPopup, setContactSupportPopup] = useState(false);
-    const [isMinimized, setIsMinimized] = useState(false);
+    activities,
+} ) => {
+    const [ dropdownOpen, setDropdownOpen ] = useState( false );
+    const [ notifOpen, setNotifOpen ] = useState( false );
+    const [ activityOpen, setActivityOpen ] = useState( false );
+    const [ profileOpen, setProfileOpen ] = useState( false );
+    const [ messageOpen, setMessageOpen ] = useState( false );
+    const wrapperRef = useRef< HTMLDivElement >( null );
+    const [ contactSupportPopup, setContactSupportPopup ] = useState( false );
+    const [ isMinimized, setIsMinimized ] = useState( false );
 
     // Close dropdown on click outside
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
+    useEffect( () => {
+        const handleClickOutside = ( event: MouseEvent ) => {
             if (
                 wrapperRef.current &&
-                !wrapperRef.current.contains(event.target as Node)
+                ! wrapperRef.current.contains( event.target as Node )
             ) {
-                setDropdownOpen(false);
-                setNotifOpen(false);
-                setActivityOpen(false);
-                setMessageOpen(false);
-                setProfileOpen(false);
+                setDropdownOpen( false );
+                setNotifOpen( false );
+                setActivityOpen( false );
+                setMessageOpen( false );
+                setProfileOpen( false );
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener( 'mousedown', handleClickOutside );
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener( 'mousedown', handleClickOutside );
         };
-    }, []);
+    }, [] );
 
     // Open dropdown automatically when there are results
-    useEffect(() => {
-        setDropdownOpen(results.length > 0);
-    }, [results]);
+    useEffect( () => {
+        setDropdownOpen( results.length > 0 );
+    }, [ results ] );
 
     return (
         <>
-            <div className="admin-header" ref={wrapperRef}>
+            <div className="admin-header" ref={ wrapperRef }>
                 <div className="left-section">
-                    <img className="brand-logo" src={brandImg} alt="Logo" />
+                    <img className="brand-logo" src={ brandImg } alt="Logo" />
 
                     <div className="version-tag">
                         <span className="admin-badge purple">
-                            <i className="adminfont-info"></i> <b>Free:</b>{' '}
-                            {free}
+                            <i className="adminfont-info"></i> <b>Free:</b>{ ' ' }
+                            { free }
                         </span>
                         <span className="admin-badge red">
-                            <i className="adminfont-pro-tag"></i> Pro:{' '}
-                            {pro ? pro : 'Not Installed'}
+                            <i className="adminfont-pro-tag"></i> Pro:{ ' ' }
+                            { pro ? pro : 'Not Installed' }
                         </span>
                     </div>
                 </div>
@@ -137,106 +137,107 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                 <div className="right-section">
                     <div className="search-field header-search">
                         <div className="search-action">
-                            {showDropdown &&
+                            { showDropdown &&
                                 dropdownOptions &&
                                 dropdownOptions.length > 0 && (
                                     <select
-                                        value={selectValue}
-                                        onChange={(e) =>
-                                            onSelectChange(e.target.value)
+                                        value={ selectValue }
+                                        onChange={ ( e ) =>
+                                            onSelectChange( e.target.value )
                                         }
                                     >
-                                        {dropdownOptions.map((opt) => (
+                                        { dropdownOptions.map( ( opt ) => (
                                             <option
-                                                key={opt.value}
-                                                value={opt.value}
+                                                key={ opt.value }
+                                                value={ opt.value }
                                             >
-                                                {opt.label}
+                                                { opt.label }
                                             </option>
-                                        ))}
+                                        ) ) }
                                     </select>
-                                )}
+                                ) }
                         </div>
 
                         <div className="search-section">
                             <input
                                 type="text"
                                 placeholder="Search Settings"
-                                value={query}
-                                onChange={(e) =>
-                                    onSearchChange(e.target.value)
+                                value={ query }
+                                onChange={ ( e ) =>
+                                    onSearchChange( e.target.value )
                                 }
                             />
                             <i className="adminfont-search"></i>
                         </div>
 
-                        { /* dropdown render */}
-                        {dropdownOpen && results.length > 0 && (
+                        { /* dropdown render */ }
+                        { dropdownOpen && results.length > 0 && (
                             <ul className="search-dropdown">
-                                {results.map((r, i) => {
+                                { results.map( ( r, i ) => {
                                     const name = r.name || '(No name)';
                                     const desc = r.desc || '';
 
                                     return (
                                         <li
-                                            key={i}
-                                            onClick={() => {
-                                                onResultClick(r);
-                                                setDropdownOpen(false); // close dropdown on click
-                                            }}
+                                            key={ i }
+                                            onClick={ () => {
+                                                onResultClick( r );
+                                                setDropdownOpen( false ); // close dropdown on click
+                                            } }
                                         >
                                             <div className="icon-wrapper">
-                                                {r.icon && (
-                                                    <i className={r.icon}></i>
-                                                )}
+                                                { r.icon && (
+                                                    <i className={ r.icon }></i>
+                                                ) }
                                             </div>
 
                                             <div className="details">
                                                 <div className="title">
-                                                    {name.length > 60
+                                                    { name.length > 60
                                                         ? name.substring(
-                                                            0,
-                                                            60
-                                                        ) + '...'
-                                                        : name}
+                                                              0,
+                                                              60
+                                                          ) + '...'
+                                                        : name }
                                                 </div>
-                                                {desc && (
+                                                { desc && (
                                                     <div className="desc">
-                                                        {desc.length > 80
+                                                        { desc.length > 80
                                                             ? desc.substring(
-                                                                0,
-                                                                80
-                                                            ) + '...'
-                                                            : desc}
+                                                                  0,
+                                                                  80
+                                                              ) + '...'
+                                                            : desc }
                                                     </div>
-                                                )}
+                                                ) }
                                             </div>
                                         </li>
                                     );
-                                })}
+                                } ) }
                             </ul>
-                        )}
+                        ) }
                     </div>
 
-                    { /* Notifications */}
-                    {showNotifications && (
-                        // <div className="icon-wrapper">
-                        //     <i
-                        //         className="admin-icon adminfont-notification"
-                        //         title="Notifications"
-                        //         onClick={() => {
-                        //             setNotifOpen(!notifOpen);
-                        //             setProfileOpen(false);
-                        //             setMessageOpen(false);
-                        //             setActivityOpen(false);
-                        //         }}
-                        //     ></i>
+                    { /* Notifications */ }
+                    {
+                        showNotifications &&
+                            // <div className="icon-wrapper">
+                            //     <i
+                            //         className="admin-icon adminfont-notification"
+                            //         title="Notifications"
+                            //         onClick={() => {
+                            //             setNotifOpen(!notifOpen);
+                            //             setProfileOpen(false);
+                            //             setMessageOpen(false);
+                            //             setActivityOpen(false);
+                            //         }}
+                            //     ></i>
                             notifications
                         // </div>
-                    )}
+                    }
 
-                    { /* Activities */}
-                    {/* {showActivities && (
+                    { /* Activities */ }
+                    { /* {showActivities && (
                         <div className="icon-wrapper">
                             <i
                                 className="admin-icon adminfont-notification"
@@ -250,40 +251,41 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             ></i>
                             {activityOpen && activities}
                         </div>
-                    )} */}
+                    )} */ }
 
-                    { /* Messages */}
-                    {showMessages && messages && messages.length > 0 && (
+                    { /* Messages */ }
+                    { showMessages && messages && messages.length > 0 && (
                         <div className="icon-wrapper">
                             <i
                                 className="admin-icon adminfont-enquiry"
                                 title="Messages"
-                                onClick={() => {
-                                    setMessageOpen(!messageOpen);
-                                    setProfileOpen(false);
-                                    setNotifOpen(false);
-                                    setActivityOpen(false);
-                                }}
+                                onClick={ () => {
+                                    setMessageOpen( ! messageOpen );
+                                    setProfileOpen( false );
+                                    setNotifOpen( false );
+                                    setActivityOpen( false );
+                                } }
                             ></i>
-                            <span className="count">{messages.length}</span>
+                            <span className="count">{ messages.length }</span>
 
-                            {messageOpen && (
+                            { messageOpen && (
                                 <div className="dropdown notification">
                                     <div className="title">
-                                        Messages{' '}
+                                        Messages{ ' ' }
                                         <span className="admin-badge green">
-                                            {messages.length} New
+                                            { messages.length } New
                                         </span>
                                     </div>
                                     <div className="notification">
                                         <ul>
-                                            {messages.map((msg, idx) => (
-                                                <li key={idx}>
-                                                    <a href={msg.link || '#'}>
+                                            { messages.map( ( msg, idx ) => (
+                                                <li key={ idx }>
+                                                    <a href={ msg.link || '#' }>
                                                         <div
-                                                            className={`icon admin-badge ${msg.color ||
+                                                            className={ `icon admin-badge ${
+                                                                msg.color ||
                                                                 'green'
-                                                                }`}
+                                                            }` }
                                                         >
                                                             <i
                                                                 className={
@@ -294,85 +296,85 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                                                         </div>
                                                         <div className="details">
                                                             <span className="heading">
-                                                                {msg.heading}
+                                                                { msg.heading }
                                                             </span>
                                                             <span className="message">
-                                                                {msg.message}
+                                                                { msg.message }
                                                             </span>
                                                             <span className="time">
-                                                                {msg.time}
+                                                                { msg.time }
                                                             </span>
                                                         </div>
                                                     </a>
                                                 </li>
-                                            ))}
+                                            ) ) }
                                         </ul>
                                     </div>
-                                    {messagesLink && (
+                                    { messagesLink && (
                                         <div className="footer">
                                             <a
-                                                href={messagesLink}
+                                                href={ messagesLink }
                                                 className="admin-btn btn-purple"
                                             >
-                                                <i className="adminfont-preview"></i>{' '}
+                                                <i className="adminfont-preview"></i>{ ' ' }
                                                 View all messages
                                             </a>
                                         </div>
-                                    )}
+                                    ) }
                                 </div>
-                            )}
+                            ) }
                         </div>
-                    )}
+                    ) }
 
-                    {showProfile && profileItems && (
+                    { showProfile && profileItems && (
                         <>
                             <Popover
                                 toggleIcon="admin-icon adminfont-user-circle"
                                 width="14rem"
                                 template="default"
-                                items={profileItems.map((item) => ({
+                                items={ profileItems.map( ( item ) => ( {
                                     title: item.title,
                                     icon: item.icon,
                                     link: item.link,
                                     targetBlank: item.targetBlank,
                                     action: item.action,
-                                }))}
+                                } ) ) }
                             />
                         </>
-                    )}
+                    ) }
                 </div>
             </div>
 
             <div
-                className={`live-chat-wrapper
-          ${contactSupportPopup ? 'open' : ''}
-          ${isMinimized ? 'minimized' : ''}`}
+                className={ `live-chat-wrapper
+          ${ contactSupportPopup ? 'open' : '' }
+          ${ isMinimized ? 'minimized' : '' }` }
             >
                 <i
                     className="adminfont-close"
-                    onClick={() => {
-                        setContactSupportPopup(false);
-                    }}
+                    onClick={ () => {
+                        setContactSupportPopup( false );
+                    } }
                 ></i>
                 <i
                     className="adminfont-minus icon"
-                    onClick={() => {
-                        setIsMinimized(!isMinimized);
-                        setContactSupportPopup(true);
-                    }}
+                    onClick={ () => {
+                        setIsMinimized( ! isMinimized );
+                        setContactSupportPopup( true );
+                    } }
                 ></i>
                 <iframe
-                    src={chatUrl}
+                    src={ chatUrl }
                     title="Support Chat"
                     allow="microphone; camera"
                 />
             </div>
-            {isMinimized && (
+            { isMinimized && (
                 <div
-                    onClick={() => {
-                        setContactSupportPopup(true);
-                        setIsMinimized(false);
-                    }}
+                    onClick={ () => {
+                        setContactSupportPopup( true );
+                        setIsMinimized( false );
+                    } }
                     className="minimized-icon"
                 >
                     <i
@@ -380,7 +382,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                         title="Messages"
                     ></i>
                 </div>
-            )}
+            ) }
         </>
     );
 };

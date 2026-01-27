@@ -25,8 +25,8 @@ interface MultiCheckBoxProps {
     selectDeselectValue?: string;
     onMultiSelectDeselectChange?: (
         e:
-            | ChangeEvent<HTMLInputElement>
-            | MouseEvent<HTMLButtonElement | HTMLInputElement>
+            | ChangeEvent< HTMLInputElement >
+            | MouseEvent< HTMLButtonElement | HTMLInputElement >
     ) => void;
     options: Option[];
     value?: string[];
@@ -38,10 +38,10 @@ interface MultiCheckBoxProps {
     inputClass?: string;
     idPrefix?: string;
     type?: 'checkbox' | 'radio' | 'checkbox-custom-img';
-    onChange?: (e: ChangeEvent<HTMLInputElement> | string[]) => void;
+    onChange?: ( e: ChangeEvent< HTMLInputElement > | string[] ) => void;
     proChanged?: () => void;
-    onOptionsChange?: (option: any) => void;
-    moduleChange: (module: string) => void;
+    onOptionsChange?: ( option: any ) => void;
+    moduleChange: ( module: string ) => void;
     modules: string[];
     module: string;
     proSetting?: boolean;
@@ -55,14 +55,14 @@ interface MultiCheckBoxProps {
     postText?: string;
 }
 
-const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
-    const [localOptions, setLocalOptions] = useState<Option[]>(
+const MultiCheckBox: React.FC< MultiCheckBoxProps > = ( props ) => {
+    const [ localOptions, setLocalOptions ] = useState< Option[] >(
         props.options
     );
-    const [showNewInput, setShowNewInput] = useState(false);
-    const [newOptionValue, setNewOptionValue] = useState('');
-    const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [editValue, setEditValue] = useState('');
+    const [ showNewInput, setShowNewInput ] = useState( false );
+    const [ newOptionValue, setNewOptionValue ] = useState( '' );
+    const [ editIndex, setEditIndex ] = useState< number | null >( null );
+    const [ editValue, setEditValue ] = useState( '' );
 
     const allSelected = props.value?.length === localOptions.length;
     const selectedCount = props.value?.length ?? 0;
@@ -71,33 +71,33 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
         directionValue: string,
         isChecked: boolean
     ) => {
-        let updatedValue = [...(props.value as string[])];
+        let updatedValue = [ ...( props.value as string[] ) ];
         updatedValue = updatedValue.filter(
-            (element) => element !== directionValue
+            ( element ) => element !== directionValue
         );
 
-        if (isChecked) {
-            updatedValue.push(directionValue);
+        if ( isChecked ) {
+            updatedValue.push( directionValue );
         }
 
-        if (props.onChange) {
-            props.onChange(updatedValue);
+        if ( props.onChange ) {
+            props.onChange( updatedValue );
         }
     };
 
     const handleAddNewClick = () => {
-        setShowNewInput(true);
+        setShowNewInput( true );
     };
 
     const handleSaveNewOption = () => {
-        if (!newOptionValue.trim()) {
+        if ( ! newOptionValue.trim() ) {
             return;
         }
 
         const value = newOptionValue
             .trim()
             .toLowerCase()
-            .replace(/\s+/g, '_');
+            .replace( /\s+/g, '_' );
         const newOption: Option = {
             key: value,
             value: value,
@@ -105,92 +105,91 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
             edit: true,
         };
 
-        const updatedOptions = [...localOptions, newOption];
-        props.onOptionsChange?.(updatedOptions);
+        const updatedOptions = [ ...localOptions, newOption ];
+        props.onOptionsChange?.( updatedOptions );
 
-        setLocalOptions(updatedOptions);
-        setNewOptionValue('');
-        setShowNewInput(false);
+        setLocalOptions( updatedOptions );
+        setNewOptionValue( '' );
+        setShowNewInput( false );
 
-        props.onChange?.({
+        props.onChange?.( {
             target: {
                 value,
                 checked: true,
             },
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as React.ChangeEvent< HTMLInputElement > );
     };
 
-    const saveEditedOption = (index: number) => {
-        if (!editValue.trim()) {
+    const saveEditedOption = ( index: number ) => {
+        if ( ! editValue.trim() ) {
             return;
         }
 
-        const updatedOptions = [...localOptions];
-        updatedOptions[index] = {
-            ...updatedOptions[index],
+        const updatedOptions = [ ...localOptions ];
+        updatedOptions[ index ] = {
+            ...updatedOptions[ index ],
             label: editValue.trim(),
         };
 
-        setLocalOptions(updatedOptions);
-        setEditIndex(null);
-        setEditValue('');
+        setLocalOptions( updatedOptions );
+        setEditIndex( null );
+        setEditValue( '' );
 
-        props.onOptionsChange?.(updatedOptions);
+        props.onOptionsChange?.( updatedOptions );
     };
 
-    const deleteOption = (index: number) => {
-        const option = localOptions[index];
+    const deleteOption = ( index: number ) => {
+        const option = localOptions[ index ];
         const shouldBlockForPro =
             props.proSetting !== undefined &&
             props.proSetting &&
-            !props.khali_dabba;
+            ! props.khali_dabba;
 
-        if (shouldBlockForPro) {
+        if ( shouldBlockForPro ) {
             props.proChanged?.();
             return;
         }
 
         const shouldBlockForModule =
-            props.moduleEnabled !== undefined &&
-            !props.moduleEnabled;
+            props.moduleEnabled !== undefined && ! props.moduleEnabled;
 
-        if (shouldBlockForModule) {
-            props.moduleChange?.(props.module || '');
+        if ( shouldBlockForModule ) {
+            props.moduleChange?.( props.module || '' );
             return;
         }
 
-        const updatedOptions = localOptions.filter((_, i) => i !== index);
-        setLocalOptions(updatedOptions);
+        const updatedOptions = localOptions.filter( ( _, i ) => i !== index );
+        setLocalOptions( updatedOptions );
 
-        props.onChange?.({
+        props.onChange?.( {
             target: {
                 value: option.value,
                 checked: false,
             },
-        } as React.ChangeEvent<HTMLInputElement>);
+        } as React.ChangeEvent< HTMLInputElement > );
 
-        props.onOptionsChange?.(updatedOptions);
+        props.onOptionsChange?.( updatedOptions );
     };
 
     return (
         <>
-            <div className={props.wrapperClass}>
-                {props.selectDeselect && (
+            <div className={ props.wrapperClass }>
+                { props.selectDeselect && (
                     <div className="checkbox-list-header">
                         <div className="checkbox">
                             <input
                                 type="checkbox"
-                                checked={allSelected}
-                                onChange={(e) => {
+                                checked={ allSelected }
+                                onChange={ ( e ) => {
                                     // If locked, show popup and stop
                                     const shouldBlockForPro =
                                         props.proSetting !== undefined &&
                                         props.proSetting &&
-                                        !props.khali_dabba;
+                                        ! props.khali_dabba;
 
                                     const shouldBlockForModule =
                                         props.moduleEnabled !== undefined &&
-                                        !props.moduleEnabled;
+                                        ! props.moduleEnabled;
 
                                     if (
                                         shouldBlockForPro ||
@@ -201,38 +200,38 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                         return;
                                     }
                                     // Otherwise, perform normal select/deselect behavior
-                                    props.onMultiSelectDeselectChange?.(e);
-                                }}
+                                    props.onMultiSelectDeselectChange?.( e );
+                                } }
                                 className={
-                                    !allSelected && selectedCount > 0
+                                    ! allSelected && selectedCount > 0
                                         ? 'minus-icon'
                                         : ''
                                 }
                             />
-                            <span>{selectedCount} items</span>
+                            <span>{ selectedCount } items</span>
                         </div>
                     </div>
-                )}
+                ) }
 
-                {localOptions.map((option, index) => {
+                { localOptions.map( ( option, index ) => {
                     const checked =
-                        props.value?.includes(option.value) ?? false;
+                        props.value?.includes( option.value ) ?? false;
 
                     return (
                         <>
-                            {props.preText && (
+                            { props.preText && (
                                 <span
                                     className="before"
-                                    dangerouslySetInnerHTML={{
+                                    dangerouslySetInnerHTML={ {
                                         __html: props.preText,
-                                    }}
+                                    } }
                                 />
-                            )}
+                            ) }
                             <div
-                                key={option.key}
-                                className={props.inputWrapperClass}
-                                onClick={(e) => {
-                                    const tag = (e.target as HTMLElement)
+                                key={ option.key }
+                                className={ props.inputWrapperClass }
+                                onClick={ ( e ) => {
+                                    const tag = ( e.target as HTMLElement )
                                         .tagName;
                                     if (
                                         tag === 'INPUT' ||
@@ -247,16 +246,16 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                     ) {
                                         handleCheckboxChange(
                                             option.value,
-                                            !checked
+                                            ! checked
                                         );
                                     } else if (
                                         option.proSetting &&
-                                        !props.khali_dabba
+                                        ! props.khali_dabba
                                     ) {
                                         props.proChanged?.();
                                     } else if (
                                         option.moduleEnabled &&
-                                        !props.modules.includes(
+                                        ! props.modules.includes(
                                             option.moduleEnabled
                                         )
                                     ) {
@@ -268,37 +267,37 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                         const syntheticEvent = {
                                             target: {
                                                 value: option.value,
-                                                checked: !checked,
+                                                checked: ! checked,
                                             },
-                                        } as ChangeEvent<HTMLInputElement>;
-                                        props.onChange?.(syntheticEvent);
+                                        } as ChangeEvent< HTMLInputElement >;
+                                        props.onChange?.( syntheticEvent );
                                     }
-                                }}
+                                } }
                             >
-                                {props.rightContent && (
+                                { props.rightContent && (
                                     <p
-                                        className={props.rightContentClass}
-                                        dangerouslySetInnerHTML={{
+                                        className={ props.rightContentClass }
+                                        dangerouslySetInnerHTML={ {
                                             __html: option.label ?? '',
-                                        }}
+                                        } }
                                     ></p>
-                                )}
+                                ) }
 
                                 <div
-                                    className={props.inputInnerWrapperClass}
-                                    data-tour={props.tour}
+                                    className={ props.inputInnerWrapperClass }
+                                    data-tour={ props.tour }
                                 >
                                     <input
-                                        className={props.inputClass}
-                                        id={`${props.idPrefix}-${option.key}`}
+                                        className={ props.inputClass }
+                                        id={ `${ props.idPrefix }-${ option.key }` }
                                         type={
-                                            props.type?.split('-')[0] ||
+                                            props.type?.split( '-' )[ 0 ] ||
                                             'checkbox'
                                         }
-                                        name={option.name || 'basic-input'}
-                                        value={option.value}
-                                        checked={checked}
-                                        onChange={(e) => {
+                                        name={ option.name || 'basic-input' }
+                                        value={ option.value }
+                                        checked={ checked }
+                                        onChange={ ( e ) => {
                                             if (
                                                 props.type ===
                                                 'checkbox-custom-img'
@@ -309,12 +308,12 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                 );
                                             } else if (
                                                 option.proSetting &&
-                                                !props.khali_dabba
+                                                ! props.khali_dabba
                                             ) {
                                                 props.proChanged?.();
                                             } else if (
                                                 option.moduleEnabled &&
-                                                !props.modules.includes(
+                                                ! props.modules.includes(
                                                     option.moduleEnabled
                                                 )
                                             ) {
@@ -323,23 +322,23 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                 );
                                                 return;
                                             } else {
-                                                props.onChange?.(e);
+                                                props.onChange?.( e );
                                             }
-                                        }}
+                                        } }
                                     />
 
-                                    {editIndex === index ? (
+                                    { editIndex === index ? (
                                         <div className="edit-option-wrapper">
                                             <div className="edit-option">
                                                 <input
                                                     type="text"
-                                                    value={editValue}
-                                                    onChange={(e) =>
+                                                    value={ editValue }
+                                                    onChange={ ( e ) =>
                                                         setEditValue(
                                                             e.target.value
                                                         )
                                                     }
-                                                    onKeyDown={(e) => {
+                                                    onKeyDown={ ( e ) => {
                                                         if (
                                                             e.key === 'Enter'
                                                         ) {
@@ -348,22 +347,24 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                                 index
                                                             );
                                                         }
-                                                    }}
+                                                    } }
                                                     className="basic-input"
                                                 />
                                                 <div className="edit-icon">
                                                     <span
                                                         className="admin-badge green border adminfont-check"
-                                                        onClick={(e) => {
+                                                        onClick={ ( e ) => {
                                                             e.stopPropagation();
                                                             const shouldBlockForPro =
-                                                                props.proSetting !== undefined &&
+                                                                props.proSetting !==
+                                                                    undefined &&
                                                                 props.proSetting &&
-                                                                !props.khali_dabba;
+                                                                ! props.khali_dabba;
 
                                                             const shouldBlockForModule =
-                                                                props.moduleEnabled !== undefined &&
-                                                                !props.moduleEnabled;
+                                                                props.moduleEnabled !==
+                                                                    undefined &&
+                                                                ! props.moduleEnabled;
 
                                                             if (
                                                                 shouldBlockForPro ||
@@ -376,7 +377,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                             saveEditedOption(
                                                                 index
                                                             );
-                                                        }}
+                                                        } }
                                                     ></span>
                                                 </div>
                                             </div>
@@ -385,31 +386,31 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                         <>
                                             <label
                                                 className="checkbox-label"
-                                                htmlFor={`${props.idPrefix}-${option.key}`}
+                                                htmlFor={ `${ props.idPrefix }-${ option.key }` }
                                             >
-                                                {option.label}
-                                                {option.proSetting &&
-                                                    !props.khali_dabba && (
+                                                { option.label }
+                                                { option.proSetting &&
+                                                    ! props.khali_dabba && (
                                                         <span className="admin-pro-tag">
                                                             <i className="adminfont-pro-tag"></i>
                                                             Pro
                                                         </span>
-                                                    )}
-                                                {((option.proSetting &&
-                                                    props?.khali_dabba) ||
-                                                    !option.proSetting) &&
+                                                    ) }
+                                                { ( ( option.proSetting &&
+                                                    props?.khali_dabba ) ||
+                                                    ! option.proSetting ) &&
                                                     option.moduleEnabled &&
-                                                    !props.modules.includes(
+                                                    ! props.modules.includes(
                                                         option.moduleEnabled
                                                     ) && (
                                                         <span className="admin-pro-tag module">
                                                             <i
-                                                                className={`adminfont-${option.moduleEnabled}`}
+                                                                className={ `adminfont-${ option.moduleEnabled }` }
                                                             ></i>
-                                                            {String(
+                                                            { String(
                                                                 option.moduleEnabled
                                                             )
-                                                                .split('-')
+                                                                .split( '-' )
                                                                 .map(
                                                                     (
                                                                         word: string
@@ -423,91 +424,91 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                                             1
                                                                         )
                                                                 )
-                                                                .join(' ')}
+                                                                .join( ' ' ) }
                                                             <i className="adminfont-lock"></i>
                                                         </span>
-                                                    )}
+                                                    ) }
                                                 <div className="label-des">
-                                                    {option.desc}
+                                                    { option.desc }
                                                 </div>
                                             </label>
-                                            {option.edit && (
+                                            { option.edit && (
                                                 <div className="edit-icon">
                                                     <span
-                                                        onClick={(e) => {
+                                                        onClick={ ( e ) => {
                                                             e.stopPropagation();
                                                             setEditIndex(
                                                                 index
                                                             );
                                                             setEditValue(
                                                                 option.label ||
-                                                                option.value
+                                                                    option.value
                                                             );
-                                                        }}
+                                                        } }
                                                         className="admin-badge blue border adminfont-edit"
                                                     ></span>
                                                     <span
-                                                        onClick={(e) => {
+                                                        onClick={ ( e ) => {
                                                             e.stopPropagation();
                                                             deleteOption(
                                                                 index
                                                             );
-                                                        }}
+                                                        } }
                                                         className="admin-badge red border adminfont-delete"
                                                     ></span>
                                                 </div>
-                                            )}
+                                            ) }
                                         </>
-                                    )}
+                                    ) }
                                 </div>
                             </div>
-                            {props.postText && (
+                            { props.postText && (
                                 <span
                                     className="after"
-                                    dangerouslySetInnerHTML={{
+                                    dangerouslySetInnerHTML={ {
                                         __html: props.postText,
-                                    }}
+                                    } }
                                 />
-                            )}
+                            ) }
                         </>
                     );
-                })}
+                } ) }
 
-                {props.description && (
+                { props.description && (
                     <p
-                        className={props.descClass}
-                        dangerouslySetInnerHTML={{
+                        className={ props.descClass }
+                        dangerouslySetInnerHTML={ {
                             __html: props.description,
-                        }}
+                        } }
                     ></p>
-                )}
+                ) }
             </div>
 
-            { /* Add New Section */}
-            {props.addNewBtn &&
-                (showNewInput ? (
+            { /* Add New Section */ }
+            { props.addNewBtn &&
+                ( showNewInput ? (
                     <div className="add-new-option">
                         <input
                             type="text"
-                            value={newOptionValue}
-                            onChange={(e) =>
-                                setNewOptionValue(e.target.value)
+                            value={ newOptionValue }
+                            onChange={ ( e ) =>
+                                setNewOptionValue( e.target.value )
                             }
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
+                            onKeyDown={ ( e ) => {
+                                if ( e.key === 'Enter' ) {
                                     e.preventDefault();
                                     handleSaveNewOption();
                                 }
-                            }}
+                            } }
                             placeholder="Enter new option"
                             className="basic-input"
                         />
                         <button
                             className="admin-btn btn-green"
-                            onClick={(e) => {
+                            onClick={ ( e ) => {
                                 e.preventDefault();
                                 handleSaveNewOption();
-                            }}
+                            } }
                         >
                             <i className="adminfont-active"></i> Save
                         </button>
@@ -516,13 +517,13 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                     <div className="add-new-option">
                         <div
                             className="admin-btn btn-purple"
-                            onClick={handleAddNewClick}
+                            onClick={ handleAddNewClick }
                         >
-                            <i className="adminfont-plus"></i>{' '}
-                            {props.addNewBtn}
+                            <i className="adminfont-plus"></i>{ ' ' }
+                            { props.addNewBtn }
                         </div>
                     </div>
-                ))}
+                ) ) }
         </>
     );
 };

@@ -172,10 +172,7 @@ const AdminBreadcrumbs = < T, >( {
                             { renderMenuItems( tabData ) }
                         </div>
                         { ! submenuRender && goPremium && premium && (
-                            <a
-                                href={ goPremiumLink }
-                                className="tab pro-btn"
-                            >
+                            <a href={ goPremiumLink } className="tab pro-btn">
                                 <i className="adminfont-pro-tag"></i> Upgrade
                                 <i className="adminfont-arrow-right"></i>
                             </a>
