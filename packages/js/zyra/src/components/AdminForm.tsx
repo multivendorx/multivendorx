@@ -1,7 +1,15 @@
 /**
  * External dependencies
  */
-import React, { JSX, useEffect, useRef, useState, lazy, Suspense, ReactNode } from 'react';
+import React, {
+    JSX,
+    useEffect,
+    useRef,
+    useState,
+    lazy,
+    Suspense,
+    ReactNode,
+} from 'react';
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
 
@@ -307,6 +315,7 @@ interface InputField {
         value?: string;
         image?: string[];
     }[];
+    image?: string; // Single image URL for catalog-customizer and similar components
     customDefaults?: {
         colorPrimary?: string;
         colorSecondary?: string;
@@ -831,8 +840,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'time':
                     input = (
                         <BasicInput
-                            wrapperClass={inputField.wrapperClass}
-                            inputClass= {inputField.class}
+                            wrapperClass={ inputField.wrapperClass }
+                            inputClass={ inputField.class }
                             description={ inputField.desc }
                             key={ inputField.key }
                             id={ inputField.id }
@@ -883,7 +892,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                      */
                     input = (
                         <TextArea
-                            inputClass={inputField.class}
+                            inputClass={ inputField.class }
                             description={ inputField.desc }
                             key={ inputField.key }
                             id={ inputField.id }
@@ -929,7 +938,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'normalfile':
                     input = (
                         <BasicInput
-                            wrapperClass={inputField.wrapperClass}
+                            wrapperClass={ inputField.wrapperClass }
                             type="file"
                             key={ inputField.key }
                             name={ inputField.name }
@@ -962,11 +971,11 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <FileInput
                             description={ inputField.desc }
-                            inputClass={ inputField.key}
+                            inputClass={ inputField.key }
                             imageSrc={ value ?? appLocalizer?.default_logo }
                             imageWidth={ inputField.width } // Width of the displayed image
                             imageHeight={ inputField.height } // Height of the displayed image
-                            buttonColor={ inputField.buttonColor }  // CSS class for the file upload button
+                            buttonColor={ inputField.buttonColor } // CSS class for the file upload button
                             openUploader={ appLocalizer?.open_uploader }
                             type="hidden" // Input type; in this case, hidden because the FileInput manages its own display
                             key={ inputField.key }
@@ -1063,7 +1072,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'multi-calender':
                     input = (
                         <MultiCalendarInput
-                            wrapperClass={inputField.wrapperClass}
+                            wrapperClass={ inputField.wrapperClass }
                             inputClass="teal"
                             multiple={ inputField.multiple || false } //for single or mutiple input (true/false)
                             range={ inputField.range || false } // for range select (true/false)
@@ -1111,8 +1120,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'calender':
                     input = (
                         <CalendarInput
-                            wrapperClass={inputField.wrapperClass}
-                            inputClass= {inputField.class}
+                            wrapperClass={ inputField.wrapperClass }
+                            inputClass={ inputField.class }
                             multiple={ inputField.multiple || false } //for single or mutiple input (true/false)
                             range={ inputField.range || false } // for range select (true/false)
                             value={ setting[ inputField.key ] || '' }
@@ -1344,7 +1353,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             } // array of predefined color options for quick selection
                             images={ inputField.images ?? [] } // optional array of images associated with colors
                             value={ value } // currently selected color value
-                            templates={ inputField.templates } 
+                            templates={ inputField.templates }
                             onChange={ ( e ) =>
                                 handleChange( e, inputField.key )
                             }
@@ -1358,7 +1367,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'select':
                     input = (
                         <SelectInput
-                            wrapperClass={inputField.wrapperClass}
+                            wrapperClass={ inputField.wrapperClass }
                             name={ inputField.key }
                             description={ inputField.desc } // optional description displayed below the select input
                             inputClass={ inputField.className }
@@ -1542,7 +1551,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             }
                             proChanged={ () => setModelOpen( true ) }
                             modules={ modules } //Active module list for dependency validation.
-                            module ={inputField.moduleEnabled??''}
+                            module={ inputField.moduleEnabled ?? '' }
                             moduleChange={ ( moduleEnabled ) => {
                                 moduleEnabledChanged(
                                     String( moduleEnabled ?? '' )
@@ -1866,8 +1875,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 settingChanged.current = true;
                                 updateSetting( key, data );
                             } }
-                            SampleProduct="#"
-                            proUrl="#"
+                            SampleProduct={ inputField.image ?? '#' }
+                            proUrl={ appLocalizer?.pro_url ?? '#' }
                         />
                     );
                     break;
@@ -2088,11 +2097,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     );
                     break;
                 case 'email-template':
-                    input = (
-                        <EmailTemplate 
-                             name={ inputField.key }
-                        />
-                    )
+                    input = <EmailTemplate name={ inputField.key } />;
                     break;
                 case 'form-builder':
                     input = (
@@ -2265,21 +2270,21 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         onClick={ ( e ) => handleGroupClick( e, inputField ) }
                     >
                         { inputField.label && (
-                                <label
-                                    className="settings-form-label"
-                                    key={ 'l' + inputField.key }
-                                    htmlFor={ inputField.key }
-                                >
-                                    <div className="title">
-                                        { inputField.label }
+                            <label
+                                className="settings-form-label"
+                                key={ 'l' + inputField.key }
+                                htmlFor={ inputField.key }
+                            >
+                                <div className="title">
+                                    { inputField.label }
+                                </div>
+                                { inputField.settingDescription && (
+                                    <div className="settings-metabox-description">
+                                        { inputField.settingDescription }
                                     </div>
-                                     { inputField.settingDescription && 
-                                        <div className="settings-metabox-description">
-                                            { inputField.settingDescription }
-                                        </div>
-                                    }
-                                </label>
-                            ) }
+                                ) }
+                            </label>
+                        ) }
                         <div className="settings-input-content">
                             { isLocked &&
                             React.isValidElement<

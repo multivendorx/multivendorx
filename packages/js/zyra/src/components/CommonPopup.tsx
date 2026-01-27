@@ -3,17 +3,17 @@ import { Dialog, DialogContent, DialogActions, Slide } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import '../styles/web/CommonPopup.scss';
 // Slide transition from the right
-const Transition = forwardRef(function Transition(
+const Transition = forwardRef( function Transition(
     props: TransitionProps & { children: React.ReactElement },
-    ref: React.Ref<HTMLElement>
+    ref: React.Ref< HTMLElement >
 ) {
-    return <Slide direction="left" ref={ref} {...props} />;
-});
+    return <Slide direction="left" ref={ ref } { ...props } />;
+} );
 
 type PopupHeaderConfig = {
-  title: string;
-  description?: string;
-  icon?: string;
+    title: string;
+    description?: string;
+    icon?: string;
 };
 type PopupProps = {
     open: boolean;
@@ -26,7 +26,7 @@ type PopupProps = {
     height?: number | string;
 };
 
-const CommonPopup = ({
+const CommonPopup = ( {
     open,
     onClose,
     children,
@@ -34,14 +34,14 @@ const CommonPopup = ({
     footer,
     width,
     height = 'fit-content',
-}: PopupProps) => {
+}: PopupProps ) => {
     return (
         <Dialog
-            open={open}
-            onClose={onClose}
-            TransitionComponent={Transition}
+            open={ open }
+            onClose={ onClose }
+            TransitionComponent={ Transition }
             keepMounted
-            PaperProps={{
+            PaperProps={ {
                 sx: {
                     margin: 0,
                     height: height,
@@ -52,38 +52,35 @@ const CommonPopup = ({
                     bottom: '1rem',
                     borderRadius: '0.313rem',
                 },
-            }}
-            hideBackdrop={false}
+            } }
+            hideBackdrop={ false }
         >
-            {header && (
+            { header && (
                 <div className="title-wrapper">
                     <div className="title">
-                        {header.icon && (
-                            <i className={`adminfont-${header.icon}`}></i>
-                        )}
-                        {header.title}
+                        { header.icon && (
+                            <i className={ `adminfont-${ header.icon }` }></i>
+                        ) }
+                        { header.title }
                     </div>
 
-                    {header.description && (
-                        <div className="des">{header.description}</div>
-                    )}
+                    { header.description && (
+                        <div className="des">{ header.description }</div>
+                    ) }
 
-                    <i
-                        className="icon adminfont-close"
-                        onClick={onClose}
-                    />
+                    <i className="icon adminfont-close" onClick={ onClose } />
                 </div>
-            )}
+            ) }
 
             <DialogContent>
-                <div className="content">{children}</div>
+                <div className="content">{ children }</div>
             </DialogContent>
 
-            {footer && (
+            { footer && (
                 <DialogActions className="popup-footer">
-                    {footer}
+                    { footer }
                 </DialogActions>
-            )}
+            ) }
         </Dialog>
     );
 };

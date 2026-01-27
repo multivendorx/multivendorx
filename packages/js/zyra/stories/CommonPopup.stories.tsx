@@ -69,7 +69,7 @@ export const WithFooter: Story = {
                 <CommonPopup
                     open={open}
                     onClose={() => setOpen(false)}
-                    header={<h3>Popup Header</h3>}
+                    header={{title: "Popup Header"}}
                     footer={
                         <>
                             <Button

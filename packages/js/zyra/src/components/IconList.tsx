@@ -168,7 +168,10 @@ const IconList: React.FC = () => {
                     </div>
                     <div className="icon-box">
                         <span className="adminfont-user-network-icon"></span>
-                        <span className="mls"> adminfont-user-network-icon</span>
+                        <span className="mls">
+                            { ' ' }
+                            adminfont-user-network-icon
+                        </span>
                         <span>(e907)</span>
                     </div>
                     <div className="icon-box">
@@ -329,7 +332,10 @@ const IconList: React.FC = () => {
                     </div>
                     <div className="icon-box">
                         <span className="adminfont-button-appearance"></span>
-                        <span className="mls"> adminfont-button-appearance</span>
+                        <span className="mls">
+                            { ' ' }
+                            adminfont-button-appearance
+                        </span>
                         <span>(e926)</span>
                     </div>
                     <div className="icon-box">
@@ -473,12 +479,18 @@ const IconList: React.FC = () => {
                     </div>
                     <div className="icon-box">
                         <span className="adminfont-form-multi-select"></span>
-                        <span className="mls"> adminfont-form-multi-select</span>
+                        <span className="mls">
+                            { ' ' }
+                            adminfont-form-multi-select
+                        </span>
                         <span>(e941)</span>
                     </div>
                     <div className="icon-box">
                         <span className="adminfont-form-paypal-email"></span>
-                        <span className="mls"> adminfont-form-paypal-email</span>
+                        <span className="mls">
+                            { ' ' }
+                            adminfont-form-paypal-email
+                        </span>
                         <span>(e942)</span>
                     </div>
                     <div className="icon-box">

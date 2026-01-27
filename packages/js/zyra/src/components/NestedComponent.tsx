@@ -308,7 +308,6 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                                     e.target.value
                                 );
                             } }
-                             
                         />
                     </>
                 );

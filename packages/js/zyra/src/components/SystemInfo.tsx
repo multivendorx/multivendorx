@@ -24,6 +24,7 @@ interface SystemInfoProps {
     appLocalizer: AppLocalizer;
     copyButtonLabel?: string;
     copiedLabel?: string;
+    initialData?: ApiResponse;
 }
 
 interface Field {
@@ -44,21 +45,32 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
     appLocalizer,
     copyButtonLabel = 'Copy System Info',
     copiedLabel = 'Copied!',
-}) => {
-    const [data, setData] = useState<ApiResponse | null>(null);
-    const [openKeys, setOpenKeys] = useState<string[]>([]);
-    const [copied, setCopied] = useState(false);
+    initialData,
+} ) => {
+    const [ data, setData ] = useState< ApiResponse | null >( null );
+    const [ openKeys, setOpenKeys ] = useState< string[] >( [] );
+    const [ copied, setCopied ] = useState( false );
 
     // Fetch everything at once
-    useEffect(() => {
-        axios({
-            url: getApiLink(appLocalizer, apiLink),
+    useEffect( () => {
+        if ( initialData ) {
+            setData( initialData );
+            return;
+        }
+
+        // ✅ Normal production API call
+        axios( {
+            url: getApiLink( appLocalizer, apiLink ),
             method: 'GET',
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
-        }).then((response) => {
-            setData(response.data);
-        });
-    }, [apiLink, appLocalizer]);
+        } )
+            .then( ( response ) => {
+                setData( response.data );
+            } )
+            .catch( () => {
+                setData( {} );
+            } );
+    }, [ apiLink, appLocalizer, initialData ] );
 
     const toggleSection = (key: string) => {
         setOpenKeys((prev) => (prev.includes(key) ? [] : [key]));
@@ -87,23 +99,23 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
         });
     };
 
-    if (!data) {
+    if ( ! data ) {
         return (
             <div className="system-info">
                 <div className="buttons-wrapper">
                     <div className="admin-btn btn-purple">
-                        <Skeleton width={6} />
+                        <Skeleton width={ 6 } />
                     </div>
                 </div>
 
-                {Array.from({ length: 10 }).map((_, idx) => (
-                    <div key={idx} className="system-item">
+                { Array.from( { length: 10 } ).map( ( _, idx ) => (
+                    <div key={ idx } className="system-item">
                         <div className="name">
-                            <Skeleton width={180} />
+                            <Skeleton width={ 180 } />
                             <i className="adminfont-pagination-right-arrow"></i>
                         </div>
                     </div>
-                ))}
+                ) ) }
             </div>
         );
     }

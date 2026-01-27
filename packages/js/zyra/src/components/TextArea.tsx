@@ -76,10 +76,10 @@ const TextArea: React.FC< TextAreaProps > = ( {
                 />
             ) : (
                 <textarea
-                    className={`textarea-input ${inputClass || ''}`}
+                    className={ `textarea-input ${ inputClass || '' }` }
                     id={ id }
                     name={ name }
-                    placeholder={placeholder}
+                    placeholder={ placeholder }
                     value={ value }
                     rows={ rowNumber }
                     cols={ colNumber }
@@ -94,7 +94,7 @@ const TextArea: React.FC< TextAreaProps > = ( {
             ) }
             { description && (
                 <p
-                    className= "settings-metabox-description"
+                    className="settings-metabox-description"
                     dangerouslySetInnerHTML={ { __html: description } }
                 ></p>
             ) }

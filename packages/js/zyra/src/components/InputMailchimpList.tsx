@@ -105,7 +105,6 @@ const InputMailchimpList: React.FC< InputMailchimpListProps > = ( {
     return (
         <div className="connect-main-wrapper">
             <BasicInput
-                 
                 type="text"
                 value={ setting[ mailchimpKey ] }
                 proSetting={ false }

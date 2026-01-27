@@ -100,7 +100,10 @@ const Checkboxes: React.FC< {
     return (
         <>
             { options.map( ( option ) => (
-                <label htmlFor={ option.value } className="woocommerce-form__label woocommerce-form__label-for-checkbox">
+                <label
+                    htmlFor={ option.value }
+                    className="woocommerce-form__label woocommerce-form__label-for-checkbox"
+                >
                     <input
                         type="checkbox"
                         className="woocommerce-form__input woocommerce-form__input-checkbox"
@@ -114,7 +117,7 @@ const Checkboxes: React.FC< {
                             handleChange( option, e.target.checked )
                         }
                     />
-                   <span>{ option.label }</span>
+                    <span>{ option.label }</span>
                 </label>
             ) ) }
         </>
@@ -184,7 +187,11 @@ const Radio: React.FC< RadioProps > = ( { options, onChange } ) => {
         <div className="multiselect-container items-wrapper">
             { options.map( ( option, index ) => {
                 return (
-                    <label className="woocommerce-form__label woocommerce-form__label-for-radio" data-index={ index } htmlFor={ option.value }>
+                    <label
+                        className="woocommerce-form__label woocommerce-form__label-for-radio"
+                        data-index={ index }
+                        htmlFor={ option.value }
+                    >
                         <input
                             type="radio"
                             className="woocommerce-form__input woocommerce-form__input-radio"
@@ -193,7 +200,7 @@ const Radio: React.FC< RadioProps > = ( { options, onChange } ) => {
                             checked={ selectdedItem === option.value }
                             onChange={ handleChange }
                         />
-                       <span>{ option.label }</span> 
+                        <span>{ option.label }</span>
                     </label>
                 );
             } ) }

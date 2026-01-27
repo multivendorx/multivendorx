@@ -19,13 +19,14 @@ interface CalendarInputProps {
 }
 
 const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
+    const dateFormat = props.format || 'YYYY-MM-DD';
     let formattedDate: CalendarValue | null = null;
     const dates = props.value.split( ',' );
 
     if ( dates.length === 1 && ! dates[ 0 ].includes( ' - ' ) ) {
         formattedDate = new DateObject( {
             date: dates[ 0 ].trim(),
-            format: props.format || 'YYYY-MM-DD',
+            format: dateFormat,
         } );
     } else {
         formattedDate = dates.map( ( date ) => {
@@ -34,17 +35,17 @@ const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
                 return [
                     new DateObject( {
                         date: start.trim(),
-                        format: props.format || 'YYYY-MM-DD',
+                        format: dateFormat,
                     } ),
                     new DateObject( {
                         date: end.trim(),
-                        format: props.format || 'YYYY-MM-DD',
+                        format: dateFormat,
                     } ),
                 ];
             }
             return new DateObject( {
                 date: date.trim(),
-                format: props.format || 'YYYY-MM-DD',
+                format: dateFormat,
             } );
         } ) as CalendarValue;
     }
@@ -64,14 +65,14 @@ const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
     };
 
     return (
-        <div className={ `settings-calender ${ props.wrapperClass || '' }`}>
+        <div className={ `settings-calender ${ props.wrapperClass || '' }` }>
             <DatePicker
-                className={`${ props.inputClass || 'teal' }`}
-                format={ props.format || 'YYYY-MM-DD' }
+                className={ `${ props.inputClass || 'teal' }` }
+                format={ dateFormat }
                 multiple={ props.multiple }
                 range={ props.range }
                 value={ selectedDate }
-                placeholder="YYYY-MM-DD"
+                placeholder={ dateFormat }
                 onChange={ handleDateChange }
             />
             { props.proSetting && <span className="admin-pro-tag">Pro</span> }
