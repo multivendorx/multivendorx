@@ -567,77 +567,6 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						{topStores.length > 0 ? (
 							topStores.map((store: any, index: number) => (
 								<>
-									<div
-										className="info-item"
-										key={`store-${store.store_id}`}
-									>
-										<div className="details-wrapper">
-											<a
-												href={`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												<div className="avatar">
-													<span
-														className={`admin-color${index + 1}`}
-													>
-														{(
-															store.store_name
-																?.trim()
-																?.charAt(
-																	0
-																) || ''
-														).toUpperCase()}
-													</span>
-												</div>
-											</a>
-
-											<div className="details">
-												<div className="name">
-													<a
-														href={`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`}
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														{store.store_name}
-													</a>
-												</div>
-												<div className="des">
-													{__(
-														'Commission',
-														'multivendorx'
-													)}
-													:{' '}
-													{formatCurrency(
-														store.commission_total ||
-														0
-													)}
-												</div>
-												<div className="des">
-													{__(
-														'Refunded',
-														'multivendorx'
-													)}
-													:{' '}
-													{formatCurrency(
-														store.commission_refunded ||
-														0
-													)}
-												</div>
-											</div>
-										</div>
-
-										<div className="right-details">
-											<div className="price">
-												<span>
-													{formatCurrency(
-														store.total_order_amount ||
-														0
-													)}
-												</span>
-											</div>
-										</div>
-									</div>
 									<InfoItem
 										key={`store-${store.store_id}`}
 										title={store.store_name || ''}
@@ -645,7 +574,6 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 										titleLink={`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`}
 										avatar={{
 											text: (store.store_name?.trim().charAt(0) || '').toUpperCase(),
-											// iconClass: `admin-color${index + 1}`,
 											link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`,
 										}}
 										descriptions={[
@@ -661,7 +589,6 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 										amount={formatCurrency(store.total_order_amount || 0)}
 									/>
 								</>
-
 							))
 						) : (
 							<MessageState title={__('No top stores found.', 'multivendorx')} />

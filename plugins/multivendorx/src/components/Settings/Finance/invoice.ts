@@ -2,6 +2,9 @@ import { __ } from '@wordpress/i18n';
 import Invoice1 from '../../../assets/template/invoicePdf/Invoice-1';
 import CustomerInvoice1 from '../../../assets/template/customerInvoice/Invoice-1';
 import MarketplaceInvoice1 from '../../../assets/template/marketplaceInvoice/Invoice-1';
+import subscriptionInvoice1 from '../../../assets/template/subscriptionInvoice/subscriptionInvoice1';
+import adminInvoice1 from '../../../assets/template/adminInvoice/adminInvoice1';
+import packingSlip1 from '../../../assets/template/packingSlip/packingSlip1';
 
 export default {
 	id: 'store-invoice',
@@ -21,6 +24,27 @@ export default {
 			moduleEnabled: 'invoice',
 			showPdfButton: true,
 			templates: [
+				{
+					key: 'packing_slip',
+					label: __('Packing Slip Invoice', 'multivendorx'),
+					preview: packingSlip1,
+					component: packingSlip1,
+					pdf: packingSlip1,
+				},
+				{
+					key: 'admin_invoice',
+					label: __('Admin Invoice', 'multivendorx'),
+					preview: adminInvoice1,
+					component: adminInvoice1,
+					pdf: adminInvoice1,
+				},
+				{
+					key: 'subscription_invoice',
+					label: __('Subscription Invoice', 'multivendorx'),
+					preview: subscriptionInvoice1,
+					component: subscriptionInvoice1,
+					pdf: subscriptionInvoice1,
+				},
 				{
 					key: 'marketplace_invoice',
 					label: __('Marketplace Invoice', 'multivendorx'),

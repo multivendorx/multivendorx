@@ -1,88 +1,41 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
-import { render } from '@wordpress/element';
 
 /**
- * Dummy React component
- * (Later you will replace this with real store data)
+ * Editor-only component
  */
-const StoreDescription = ({ context, blockProps }) => {
-	const description =
-		context === 'editor'
-			? 'This is a demo store description shown in the editor.'
-			: 'This is the live store description shown on the frontend.';
-
+const StoreDescriptionEditor = ({ blockProps }) => {
 	return (
 		<div {...blockProps} className="multivendorx-store-description">
-			<p>{description}</p>
+			<p>This is a demo store description shown in the editor.</p>
 		</div>
 	);
 };
 
 registerBlockType('multivendorx/store-description', {
-	apiVersion: 2,
-	title: 'Store Description',
-	icon: 'text-page',
-	category: 'multivendorx',
-
-	/**
-	 * Style support (same philosophy as WC blocks)
-	 */
-	supports: {
-		html: false,
-		color: {
-			text: true,
-			background: false,
-		},
-		typography: {
-			fontSize: true,
-			lineHeight: true,
-			fontFamily: true,
-			fontWeight: true,
-		},
-		spacing: {
-			margin: true,
-			padding: true,
-		},
-	},
-
 	edit() {
 		const blockProps = useBlockProps();
 
-		return <StoreDescription context="editor" blockProps={blockProps} />;
+		return <StoreDescriptionEditor blockProps={blockProps} />;
 	},
 
 	save() {
-		// Save styles only, React hydrates content
 		const blockProps = useBlockProps.save();
 
 		return (
 			<div
 				{...blockProps}
-				data-mvx-store-description
-			/>
+				className="multivendorx-store-description"
+				data-wp-interactive="multivendorx/store"
+			>
+				<h2>
+					<span data-wp-text="state.storeName" />
+				</h2>
+				<p className="store-description">
+					<span data-wp-text="state.storeDescription" />
+				</p>
+			</div>
 		);
-	},
-});
-
-/**
- * Frontend render
- */
-document.addEventListener('DOMContentLoaded', () => {
-	const element = document.querySelector('[data-mvx-store-description]');
-
-	if (!element) {
-		return;
 	}
 
-	render(
-		<StoreDescription
-			context="frontend"
-			blockProps={{
-				className: element.className,
-				style: element.style,
-			}}
-		/>,
-		element
-	);
 });

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, useModules } from 'zyra';
-import { Skeleton } from '@mui/material';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, useModules, Skeleton } from 'zyra';
 import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './latestReview';
 import LatestRefundRequest from './latestRefundRequest';
@@ -369,7 +368,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 						<InfoItem
 							title={
 								storeData.primary_owner_info?.data?.display_name ?? (
-									<Skeleton variant="text" width={150} />
+									<Skeleton width={150} />
 								)
 							}
 							avatar={{
@@ -380,7 +379,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									label: __('Email', 'multivendorx'),
 									value:
 										storeData.primary_owner_info?.data?.user_email ?? (
-											<Skeleton variant="text" width={150} />
+											<Skeleton width={150} />
 										),
 								},
 							]}

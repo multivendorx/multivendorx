@@ -12,8 +12,8 @@ import {
 	FormGroup,
 	AdminButton,
 	Popover,
+	Skeleton
 } from 'zyra';
-import { Skeleton } from '@mui/material';
 
 import StoreSettings from './storeSettings';
 import PaymentSettings from './paymentSettings';
@@ -649,10 +649,7 @@ const EditStore = () => {
 													) : data?.name ? (
 														data.name
 													) : (
-														<Skeleton
-															variant="text"
-															width={150}
-														/>
+														<Skeleton width={150}/>
 													)}
 
 													<span
@@ -742,10 +739,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : (
-													<Skeleton
-														variant="text"
-														width={100}
-													/>
+													<Skeleton width={100}/>
 												)}
 
 												{modules.includes(
@@ -802,10 +796,7 @@ const EditStore = () => {
 													/>
 												) : Object.keys(data).length ===
 													0 ? (
-													<Skeleton
-														variant="text"
-														width={150}
-													/>
+													<Skeleton width={150}/>
 												) : data?.description ? (
 													<div>
 														<span>
@@ -967,10 +958,7 @@ const EditStore = () => {
 															)}
 													</>
 												) : (
-													<Skeleton
-														variant="text"
-														width={100}
-													/>
+													<Skeleton width={100} />
 												)}
 											</div>
 										</div>

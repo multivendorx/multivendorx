@@ -99,8 +99,8 @@ const DownloadCSVButton: React.FC<{
 			// Prepare parameters for CSV download
 			const params: any = {
 				format: 'csv',
-				startDate:formatLocalDate(filterData.date.start_date ?? ''),
-				endDate:formatLocalDate(filterData.date.end_date??''),
+				startDate: formatLocalDate(filterData.date.start_date ?? ''),
+				endDate: formatLocalDate(filterData.date.end_date ?? ''),
 			};
 
 			// Add filters if present
@@ -244,8 +244,8 @@ const Commission: React.FC = () => {
 				// Prepare parameters for CSV download - NO pagination params
 				const params: any = {
 					format: 'csv',
-					startDate:formatLocalDate(filterData.date.start_date ?? ''),
-					endDate:formatLocalDate(filterData.date.end_date??''),
+					startDate: formatLocalDate(filterData.date.start_date ?? ''),
+					endDate: formatLocalDate(filterData.date.end_date ?? ''),
 				};
 
 				// Add filters if present
@@ -339,8 +339,8 @@ const Commission: React.FC = () => {
 		order = '',
 		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date(),
-		searchAction ='',
-		searchValue ='',
+		searchAction = '',
+		searchValue = '',
 	) {
 		setData(null);
 		axios({
@@ -355,9 +355,9 @@ const Commission: React.FC = () => {
 				orderBy,
 				order,
 				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',	
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				searchAction,
-				searchValue,			
+				searchValue,
 			},
 		})
 			.then((response) => {
@@ -855,6 +855,8 @@ const Commission: React.FC = () => {
 			),
 		},
 	];
+
+
 	return (
 		<>
 			<AdminBreadcrumbs

@@ -18,6 +18,7 @@ import {
 	MiniCard,
 	MultiCalendarInput,
 	MessageState,
+	Skeleton
 } from 'zyra';
 import {
 	ColumnDef,
@@ -26,7 +27,6 @@ import {
 } from '@tanstack/react-table';
 import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commission/viewCommission';
-import { Skeleton } from '@mui/material';
 
 type StoreRow = {
 	id?: number;
@@ -926,14 +926,14 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 								</div>
 								<div className="price">
 									{walletLoading ? (
-										<Skeleton variant="text" width={140} height={60} />
+										<Skeleton width={140} />
 									) : (
 										formatCurrency(wallet.available_balance)
 									)}
 								</div>
 								<div className="desc">
 									{walletLoading ? (
-										<Skeleton variant="text" width={250} height={20} />
+										<Skeleton width={250} />
 									) : (
 										<>
 											<b> {formatCurrency(wallet?.thresold)} </b>

@@ -90,6 +90,10 @@ class Admin {
                         'name'   => __( 'Dashboard', 'multivendorx' ),
                         'subtab' => '',
                     ),
+                    'table-card' => array(
+                        'name'   => __( 'Table Card', 'multivendorx' ),
+                        'subtab' => '',
+                    ),
                     'stores'              => array(
                         'name'   => __( 'Stores', 'multivendorx' ),
                         'subtab' => '',
