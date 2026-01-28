@@ -13,7 +13,6 @@ export default {
 	modal: [
 		{
 			key: 'menu_manager',
-			label: __( 'Menu manager', 'multivendorx' ),
 			type: 'endpoint-editor',
 			apiLink: 'endpoints',
 		},

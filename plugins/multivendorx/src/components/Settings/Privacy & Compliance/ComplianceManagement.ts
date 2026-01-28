@@ -3,10 +3,10 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'non-compliance',
 	priority: 2,
-	name: __('Compliance Management', 'mvx-pro'),
+	name: __('Compliance Management', 'multivendorx'),
 	desc: __(
 		'Control store access based on verification status. Ensure only compliant stores can operate fully on your marketplace.',
-		'mvx-pro'
+		'multivendorx'
 	),
 	icon: 'adminfont-compliance',
 	submitUrl: 'settings',

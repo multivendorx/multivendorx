@@ -421,8 +421,8 @@ export default {
 			category: 'customer_experience',
 		},
 		{
-			id: 'customer-support',
-			name: __('Customer Support', 'multivendorx'),
+			id: 'store-support',
+			name: __('Store Support', 'multivendorx'),
 			desc: 'Built-in ticketing system for customers to raise and track support requests.',
 			icon: 'adminfont-customer-support',
 			doc_link:
@@ -461,7 +461,7 @@ export default {
 			icon: 'adminfont-marketplace-refund',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/marketplace-refund',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=order-actions-refunds`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=refunds`,
 			pro_module: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -492,6 +492,15 @@ export default {
 			label: 'Marketplace Boosters',
 		},
 		{
+			id: 'marketplace-intelligence',
+			name: __('Intelligence', 'multivendorx'),
+			desc: 'Let stores create high-converting product descriptions and images instantly using AI.',
+			icon: 'adminfont-marketplace-intelligence',
+			doc_link:
+				'https://multivendorx.com/docs/knowledgebase/marketplace-intelligence',
+			category: 'marketplace_boosters',
+		},
+		{
 			id: 'marketplace-compliance',
 			name: __('Compliance', 'multivendorx'),
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
@@ -511,6 +520,7 @@ export default {
 			pro_module: true,
 			category: 'marketplace_boosters',
 		},
+		
 		{
 			id: 'facilitator',
 			name: __('Facilitator', 'multivendorx'),

@@ -34,6 +34,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const [total, setTotal] = useState(0);
 	const { modules } = useModules();
 	const [apiKey, setApiKey] = useState('');
+	const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
 
 	const storesList = (window as any).storesList;
 	const settings = storesList.settings_databases_value;
@@ -248,151 +249,162 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 
 	return (
 		<>
-			{renderMapComponent()}
-			<div className="">
+			<div className="multivendorx-store">
 				{/* Filter Bar */}
-				<form className="woocommerce-form woocommerce-form-login login">
-					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-						<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
-							Use My Current Location
-						</button>
-					</p>
-					<div className="clear"></div>
+				<form className="filter-wrapper woocommerce-form woocommerce-form-login login">
 
-					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-						<input
-							type="text"
-							name="address"
-							value={filters.address}
-							onChange={handleInputChange}
-							placeholder="Enter Address"
-							className="woocommerce-Input woocommerce-Input--text input-text"
-						/>
-					</p>
-					<div className="clear"></div>
-
-					<p className="form-row form-row-wide">
-						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-							<select
-								name="distance"
-								value={filters.distance}
-								onChange={handleInputChange}
-								className=""
-							>
-								<option value="">Within</option>
-								<option value="5">5</option>
-								<option value="10">10</option>
-								<option value="25">25</option>
-							</select>
-						</p>
-
-						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-							<select
-								name="miles"
-								value={filters.miles}
-								onChange={handleInputChange}
-								className=""
-							>
-								<option value="miles">Miles</option>
-								<option value="km">Kilometers</option>
-								<option value="nm">Nautical miles</option>
-							</select>
-						</p>
-
-						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-
-							<select
-								name="sort"
-								value={filters.sort}
-								onChange={handleInputChange}
-								className=""
-							>
-								<option value="name">Select</option>
-								<option value="category">By Category</option>
-								<option value="shipping">By Shipping</option>
-							</select>
-						</p>
-					</p>
-				</form>
-
-				{filters.sort == 'category' && (
+					<input
+						type="text"
+						name="address"
+						value={filters.address}
+						onChange={handleInputChange}
+						placeholder="Enter Address"
+						className="woocommerce-Input woocommerce-Input--text input-text"
+					/>
 					<select
-						name="category"
-						value={filters.category || ''}
+						name="distance"
+						value={filters.distance}
 						onChange={handleInputChange}
 						className=""
 					>
-						<option value="">Select Category</option>
-						{categoryList.map((cat) => (
-							<option key={cat.id} value={cat.id}>
-								{cat.name}
-							</option>
-						))}
+						<option value="">Within</option>
+						<option value="5">5</option>
+						<option value="10">10</option>
+						<option value="25">25</option>
 					</select>
-				)}
-				<Select
-					options={product.map((p) => ({
-						label: String(p.name),
-						value: p.id,
-					}))}
-					onInputChange={(value) => {
-						loadProducts(value);
-						return value;
-					}}
-					onChange={(selected) =>
-						setFilters((prev) => ({
-							...prev,
-							product: selected?.value ?? '',
-						}))
-					}
-					isClearable
-				/>
-				<div className="">Viewing all {data.length} stores</div>
+					<select
+						name="miles"
+						value={filters.miles}
+						onChange={handleInputChange}
+						className=""
+					>
+						<option value="miles">Miles</option>
+						<option value="km">Kilometers</option>
+						<option value="nm">Nautical miles</option>
+					</select>
+					<select
+						name="sort"
+						value={filters.sort}
+						onChange={handleInputChange}
+						className=""
+					>
+						<option value="name">Select</option>
+						<option value="category">By Category</option>
+						<option value="shipping">By Shipping</option>
+					</select>
+				</form>
 
-				{/* Store Cards */}
-				<div className="">
-					{data &&
-						data.map((store) => (
-							<div key={store.id} className="">
-								<div className="">
-									<div className="">
-										<img src={store.image} />
-									</div>
+				<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+					<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
+						Use My Current Location
+					</button>
+				</p>
+				<div className="filter-wrapper">
+					<div className="left-section">
+						<ul className="view-tabs">
+							<li
+								className={viewMode === 'list' ? 'active' : ''}
+								onClick={() => setViewMode('list')}
+							>
+								List
+							</li>
 
-									<div className="">
-										<span>
-											{store.phone}
-										</span>
-										<span>
-											{store.address}
-										</span>
-									</div>
-								</div>
+							<li
+								className={viewMode === 'split' ? 'active' : ''}
+								onClick={() => setViewMode('split')}
+							>
+								Split
+							</li>
+							<li
+								className={viewMode === 'map' ? 'active' : ''}
+								onClick={() => setViewMode('map')}
+							>
+								Map
+							</li>
+						</ul>
 
-								<h2 className="">{store.store_name}</h2>
+						<div className="">Viewing all {data.length} stores</div>
+					</div>
+					{filters.sort == 'category' && (
+						<select
+							name="category"
+							value={filters.category || ''}
+							onChange={handleInputChange}
+							className=""
+						>
+							<option value="">Select Category</option>
+							{categoryList.map((cat) => (
+								<option key={cat.id} value={cat.id}>
+									{cat.name}
+								</option>
+							))}
+						</select>
+					)}
 
-								<div className="">
-									<p className="">Top Products</p>
-									{/* <div className="">
-                {vendor.topProducts && vendor.topProducts.length > 0 ? (
-                  vendor.topProducts.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt="Product"
-                      className=""
-                    />
-                  ))
-                ) : (
-                  <p className="">No products</p>
-                )}
-              </div> */}
-								</div>
-							</div>
-						))}
+					<Select
+						options={product.map((p) => ({
+							label: String(p.name),
+							value: p.id,
+						}))}
+						onInputChange={(value) => {
+							loadProducts(value);
+							return value;
+						}}
+						onChange={(selected) =>
+							setFilters((prev) => ({
+								...prev,
+								product: selected?.value ?? '',
+							}))
+						}
+						isClearable
+					/>
 				</div>
 
+				<div className={`store-list-wrapper ${ viewMode === 'split' ? 'is-split' : 'is-list'}`}>
+					<div className="store-list">
+						{data &&
+							data.map((store) => (
+								<div key={store.id} className="store">
+									<div className="store-image">
+										<img src={store.image} />
+										A
+									</div>
 
+									<div className="store-details">
+										<h2>{store.store_name}</h2>
+										<div className="contact-wrapper">
+											{store.phone && (
+												<span> <i className="dashicons dashicons-phone" />	{store.phone}</span>
+											)}
+											{store.address && (
+												<span><i className="dashicons dashicons-location" />{store.address}</span>
+											)}
+										</div>
+
+										{/* <div className="">
+											<p className="">Top Products</p>
+											<div className="">
+												{vendor.topProducts && vendor.topProducts.length > 0 ? (
+													vendor.topProducts.map((img, idx) => (
+														<img
+															key={idx}
+															src={img}
+															alt="Product"
+															className=""
+														/>
+													))
+												) : (
+													<p className="">No products</p>
+												)}
+											</div>
+										</div> */}
+									</div>
+								</div>
+							))}
+					</div>
+
+					{renderMapComponent()}
+				</div>
 				<div className="pagination">
 					<button
 						disabled={page === 1}

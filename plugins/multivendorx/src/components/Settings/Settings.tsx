@@ -16,10 +16,11 @@ import {
 	Tabs,
 	useModules,
 } from 'zyra';
-import ShowProPopup from '../Popup/popup';
+import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 import Notifications from './Notification/Notification';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
+import Invoice from './Finance/invoice.tsx';
 
 // Types
 type SettingItem = Record<string, any>;
@@ -184,6 +185,9 @@ const Settings: React.FC<SettingsProps> = () => {
 		}
 		if (currentTab === 'store-status-control') {
 			return <StoreStatus />;
+		}
+		if (currentTab === 'store-invoice') {
+			return <Invoice />;
 		}
 
 		return (

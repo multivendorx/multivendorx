@@ -273,7 +273,6 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                             field.label && <label>{ field.label }</label> }
                         <BasicInput
                             type={ field.type }
-                            descClass="settings-metabox-description"
                             id={ `${ field.key }-${ rowIndex }` }
                             name={ field.key }
                             value={

@@ -73,23 +73,6 @@ export default {
 			proSetting: true,
 		},
 		{
-			key: 'messenger_color',
-			type: 'color',
-			label: __('Messenger theme color', 'multivendorx'),
-			// desc: __(
-			// 	'Pick a theme color for your Facebook Messenger chat window.',
-			// 	'multivendorx'
-			// ),
-			moduleEnabled: 'live-chat',
-			value: '#5007aa',
-			dependent: {
-				key: 'chat_provider',
-				set: true,
-				value: 'facebook',
-			},
-			proSetting: true,
-		},
-		{
 			key: 'whatsapp_opening_pattern',
 			type: 'setting-toggle',
 			label: __('WhatsApp opening pattern', 'multivendorx'),

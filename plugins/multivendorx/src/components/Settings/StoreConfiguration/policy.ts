@@ -3,10 +3,10 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'policy',
 	priority: 9,
-	name: __('Policies', 'mvx-pro'),
+	name: __('Policies', 'multivendorx'),
 	desc: __(
 		'Define and publish the rules and guidelines that apply to your marketplace.',
-		'mvx-pro'
+		'multivendorx'
 	),
 	icon: 'adminfont-store-policy',
 	submitUrl: 'settings',

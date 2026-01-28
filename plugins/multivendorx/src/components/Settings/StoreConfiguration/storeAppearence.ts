@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import template1 from '../../../assets/images/template/store/template1.jpg';
 import template2 from '../../../assets/images/template/store/template2.jpg';
 import template3 from '../../../assets/images/template/store/template3.jpg';
-import DashboardTemplate from '../../../assets/template/Dashbord';
+import DashboardTemplate from '../../../assets/template/Dashboard';
 
 export default {
 	id: 'store-appearance',
@@ -96,8 +96,8 @@ export default {
 				'Choose a dashboard color scheme from predefined sets or customize your own. Each scheme defines the button style, and hover effects for a consistent look.',
 			templates: [
 				{
-					key: 'dashbord',
-					label: __('dashbord', 'mvx-pro'),
+					key: 'dashboard',
+					label: __('dashboard', 'multivendorx'),
 					preview: DashboardTemplate,
 					component: DashboardTemplate,
 				}

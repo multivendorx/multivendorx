@@ -16,7 +16,7 @@ if ( class_exists( '\Elementor\Plugin' ) && did_action( 'elementor/loaded' ) ) {
         'meta_query' => [
             [
                 'key' => '_elementor_template_type',
-                'value' => 'mvx-store',
+                'value' => 'multivendorx-store',
             ]
         ]
     ];

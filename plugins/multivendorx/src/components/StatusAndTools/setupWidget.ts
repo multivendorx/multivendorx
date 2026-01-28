@@ -14,7 +14,7 @@ export default {
 		{
 			key: 'setup_wizard',
 			type: 'button',
-			name: __('Setup wizard', 'multivendorx'),
+			name: __('Setup Wizard', 'multivendorx'),
 			label: __('Run setup wizard', 'multivendorx'),
 			desc: __(
 				'Launch the step-by-step wizard to configure your marketplace quickly and effortlessly.',
