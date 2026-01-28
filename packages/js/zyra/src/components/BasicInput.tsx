@@ -28,6 +28,13 @@ type Addon =
           options: SelectOption[];
           value?: string;
           size?: string;
+      }
+    | {
+          type: 'text';
+          key: string;
+          placeholder?: string;
+          value?: string;
+          size?: string;
       };
 
 type InputValue = string | Record< string, string >;
@@ -196,6 +203,28 @@ const BasicInput = forwardRef< HTMLInputElement, BasicInputProps >(
                                 } );
                             }
                         } }
+                    />
+                );
+            }
+
+            if (addon.type === 'text') {
+                return (
+                    <input
+                        type="text"
+                        className="addon-text-input"
+                        style={{ width: addon.size || '80px' }}
+                        placeholder={addon.placeholder || ''}
+                        value={parentValue?.[addon.key] || addon.value || ''}
+                        onChange={(e) => {
+                            if (typeof onChange === 'function') {
+                                onChange({
+                                    ...(typeof parentValue === 'object'
+                                        ? parentValue
+                                        : { value: parentValue || '' }),
+                                    [addon.key]: e.target.value,
+                                });
+                            }
+                        }}
                     />
                 );
             }
