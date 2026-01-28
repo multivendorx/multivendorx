@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { formatCurrency } from '../services/commonFunction';
+import { formatCurrency, formatTimeAgo } from '../services/commonFunction';
 
 // Type declarations
 type OrderStatus = {
@@ -47,25 +47,65 @@ const Orders: React.FC = () => {
 	const [pageCount, setPageCount] = useState(0);
 	const [orderStatus, setOrderStatus] = useState<OrderStatus[]>([]);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 	const bulkSelectRef = React.useRef<HTMLSelectElement>(null);
 	const hash = location.hash.replace(/^#/, '') || '';
 
 	const isViewOrder = hash.includes('view');
 	const isAddOrder = hash.includes('add');
 
-	useEffect(() => {
-		if (isViewOrder) {
-			const orderId = hash.split('view/')[1];
-			if (orderId) {
-				const foundOrder = data.find(
-					(o) => o.id.toString() === orderId
-				);
-				setSelectedOrder(foundOrder || null);
-			}
-		} else {
+	const fetchOrderById = async (orderId: string | number) => {
+		try {
+			const res = await axios.get(
+				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+					}
+				}
+			);
+
+			const order = res.data;
+
+			setSelectedOrder(order);
+
+		} catch (error) {
 			setSelectedOrder(null);
 		}
+	};
+
+	useEffect(() => {
+		if (!isViewOrder) {
+			setSelectedOrder(null);
+			return;
+		}
+
+		const orderId = hash.split('view/')[1];
+		if (!orderId) return;
+
+		const foundOrder = data?.find(
+			(o) => o.id.toString() === orderId.toString()
+		);
+
+		if (foundOrder) {
+			setSelectedOrder(foundOrder);
+		} else {
+			fetchOrderById(orderId);
+		}
 	}, [hash, data]);
+
 
 	const selectedOrderIds = Object.keys(rowSelection)
 		.map((key) => {
@@ -378,16 +418,18 @@ const Orders: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData([]);
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
 
-		let startDate = filterData?.date?.start_date || new Date(0);
-		let endDate = filterData?.date?.end_date || new Date();
+		setDateFilter(date);
 
 		const params: any = {
 			page: currentPage,
 			row: rowsPerPage,
-			after: startDate.toISOString(),
-			before: endDate.toISOString(),
+			after: date.start_date.toISOString(),
+			before: date.end_date.toISOString(),
 			meta_key: 'multivendorx_store_id',
 			value: appLocalizer.store_id,
 		};
@@ -406,7 +448,7 @@ const Orders: React.FC = () => {
 		if (filterData.categoryFilter && filterData.categoryFilter !== 'all') {
 			params.status = filterData.categoryFilter;
 		}
-		requestData(rowsPerPage, currentPage, startDate, endDate, params);
+		requestData(rowsPerPage, currentPage,  date.start_dat,  date.end_date, params);
 	};
 
 	// Fetch orders
@@ -482,42 +524,20 @@ const Orders: React.FC = () => {
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => {
-				const date = new Date(row.original.date_created);
-				const now = new Date();
-				const diff = now.getTime() - date.getTime();
-
-				const seconds = Math.floor(diff / 1000);
-				const minutes = Math.floor(seconds / 60);
-				const hours = Math.floor(minutes / 60);
-				const days = Math.floor(hours / 24);
-				const months = Math.floor(days / 30);
-				const years = Math.floor(days / 365);
-
-				let timeAgo = '';
-				if (years > 0) {
-					timeAgo = `${years} year${years > 1 ? 's' : ''} ago`;
-				} else if (months > 0) {
-					timeAgo = `${months} month${months > 1 ? 's' : ''} ago`;
-				} else if (days > 0) {
-					timeAgo = `${days} day${days > 1 ? 's' : ''} ago`;
-				} else if (hours > 0) {
-					timeAgo = `${hours} hour${hours > 1 ? 's' : ''} ago`;
-				} else if (minutes > 0) {
-					timeAgo = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-				} else {
-					timeAgo = `${seconds} second${seconds !== 1 ? 's' : ''
-						} ago`;
-				}
-
-				return <TableCell>{timeAgo}</TableCell>;
+				return <TableCell>{formatTimeAgo(row.original.date_created)}</TableCell>;
 			},
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
 			},
+		},
+		{
+			header: __('Total Earning', 'multivendorx'),
+			cell: ({ row }) => (
+				<TableCell>{formatCurrency(row.original.commission_total)}</TableCell>
+			),
 		},
 		{
 			id: 'total',
@@ -530,7 +550,6 @@ const Orders: React.FC = () => {
 			),
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -594,16 +613,21 @@ const Orders: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];

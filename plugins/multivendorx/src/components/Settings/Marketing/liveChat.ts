@@ -16,7 +16,7 @@ export default {
 			type: 'setting-toggle',
 			label: __('Chat button position', 'multivendorx'),
 			desc: __(
-				'Choose where the chat button will appear on product pages.',
+				'Choose where the chat button will appear on product/listing pages.',
 				'multivendorx'
 			),
 			moduleEnabled: 'live-chat',
@@ -70,23 +70,6 @@ export default {
 					value: 'whatsapp',
 				},
 			],
-			proSetting: true,
-		},
-		{
-			key: 'messenger_color',
-			type: 'color',
-			label: __('Messenger theme color', 'multivendorx'),
-			// desc: __(
-			// 	'Pick a theme color for your Facebook Messenger chat window.',
-			// 	'multivendorx'
-			// ),
-			moduleEnabled: 'live-chat',
-			value: '#5007aa',
-			dependent: {
-				key: 'chat_provider',
-				set: true,
-				value: 'facebook',
-			},
 			proSetting: true,
 		},
 		{

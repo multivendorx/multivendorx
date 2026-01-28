@@ -92,6 +92,8 @@ class Utill
         'min-max'                       => 'multivendorx_min_max_settings',
         'delivery'                      => 'multivendorx_delivery_settings',
         'notification-configuration'    => 'multivendorx_notification_configuration_settings',
+        'non-compliance'                => 'multivendorx_non_compliance_settings',
+        'development-tools'             => 'multivendorx_development_tools_settings',
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
@@ -103,6 +105,8 @@ class Utill
         'tour_active'         => 'multivendorx_tour_active',
         'admin_email'         => 'admin_email',
         'default_role'        => 'default_role',
+        'revenue_mode_store'  => 'revenue_mode_store',
+        'payment_gateway_charge'  => 'payment_gateway_charge',
     );
 
     const WOO_SETTINGS = array(
@@ -192,14 +196,12 @@ class Utill
         'shipping_policy'            => 'shipping_policy',
         'refund_policy'              => 'refund_policy',
         'cancellation_policy'        => 'cancellation_policy',
-        'return_policy'              => 'return_policy',
-        'exchange_policy'            => 'exchange_policy',
-        'local_pickup_cost'          => 'local_pickup_cost',
-        'shipping_rates'             => 'multivendorx_shipping_rates',
-        'additional_qty'             => 'multivendorx_additional_qty',
-        'additional_product'         => 'multivendorx_additional_product',
-        'shipping_type_price'        => 'multivendorx_shipping_type_price',
-        'free_shipping_amount'       => 'free_shipping_amount',
+        'country_local_pickup_cost'          => 'local_pickup_cost',
+        'country_shipping_rates'             => 'multivendorx_shipping_rates',
+        'country_additional_qty'             => 'multivendorx_additional_qty',
+        'country_additional_product'         => 'multivendorx_additional_product',
+        'country_shipping_type_price'        => 'multivendorx_shipping_type_price',
+        'country_free_shipping_amount'       => 'free_shipping_amount',
         'location_lat'               => 'location_lat',
         'location_lng'               => 'location_lng',
         'distance_default_cost'      => 'distance_default_cost',
@@ -458,4 +460,29 @@ class Utill
 
         add_filter('icl_ls_languages', '__return_empty_array');
     }
+
+    public static function normalize_date_range( $start_raw, $end_raw ) {
+        $start_raw = sanitize_text_field( $start_raw );
+        $end_raw   = sanitize_text_field( $end_raw );
+    
+        $start_date = '';
+        $end_date   = '';
+    
+        if ( $start_raw && $end_raw ) {
+            // Site timezone (WordPress standard)
+            $timezone = wp_timezone();
+    
+            $start_dt = new \DateTime( $start_raw . ' 00:00:00', $timezone );
+            $end_dt   = new \DateTime( $end_raw . ' 23:59:59', $timezone );
+    
+            $start_date = $start_dt->format( 'Y-m-d H:i:s' );
+            $end_date   = $end_dt->format( 'Y-m-d H:i:s' );
+        }
+    
+        return [
+            'start_date' => $start_date,
+            'end_date'   => $end_date,
+        ];
+    }
+    
 }

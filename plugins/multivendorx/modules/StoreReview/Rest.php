@@ -8,7 +8,7 @@
 namespace MultiVendorX\StoreReview;
 
 use MultiVendorX\StoreReview\Util;
-
+use MultiVendorX\Utill;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -138,14 +138,17 @@ class Rest extends \WP_REST_Controller {
             $limit          = max( intval( $request->get_param( 'row' ) ), 10 );
             $page           = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset         = ( $page - 1 ) * $limit;
-            $start_date     = sanitize_text_field( $request->get_param( 'startDate' ) );
-            $end_date       = sanitize_text_field( $request->get_param( 'endDate' ) );
             $count          = $request->get_param( 'count' );
             $status         = sanitize_text_field( $request->get_param( 'status' ) );
             $orderBy        = sanitize_text_field( $request->get_param( 'orderBy' ) );
             $order          = sanitize_text_field( $request->get_param( 'order' ) );
             $overall_rating = $request->get_param( 'overall_rating' );
             $dashboard      = $request->get_param( 'dashboard' );
+            
+            $range = Utill::normalize_date_range(
+                $request->get_param('startDate'),
+                $request->get_param('endDate')
+            );
             $args           = array();
 
             // --- Step 3: Apply Store Filter ---.
@@ -168,12 +171,12 @@ class Rest extends \WP_REST_Controller {
             $args['limit']  = $limit;
             $args['offset'] = $offset;
 
-            if ( $start_date ) {
-                $args['start_date'] = $start_date;
+            if (! empty($range['start_date'])) {
+                $args['start_date'] = $range['start_date'];
             }
-
-            if ( $end_date ) {
-                $args['end_date'] = $end_date;
+            
+            if (! empty($range['end_date'])) {
+                $args['end_date'] = $range['end_date'];
             }
 
             // --- Step 5.2: Filter by Overall Rating (like "4 stars & up") ---.

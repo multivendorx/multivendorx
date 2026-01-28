@@ -14,9 +14,8 @@ export default {
 		{
 			key: 'store_rating_page',
 			type: 'blocktext',
-			label: __(' ', 'multivendorx'),
 			blocktext: __(
-				'<b>Store reviews are managed separately from product reviews. You can configure product reviews directly from your <a href="/wp-admin/admin.php?page=wc-settings&tab=products" target="_blank">WooCommerce settings</a>.</b>',
+				'<b>Store reviews are managed separately from product/listing reviews. You can configure product/listing reviews directly from your <a href="/wp-admin/admin.php?page=wc-settings&tab=products" target="_blank">WooCommerce settings</a>.</b>',
 				'multivendorx'
 			),
 		},
@@ -25,7 +24,7 @@ export default {
 			type: 'checkbox',
 			label: __('Verified buyer reviews only', 'multivendorx'),
 			desc: __(
-				'Accept reviews only from verified buyers who purchased a product.',
+				'Accept reviews only from verified buyers who purchased a product/listing.',
 				'multivendorx'
 			),
 			options: [
@@ -46,7 +45,7 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'Give customers a fair way to share feedback! Define what they rate, like product quality, delivery, or service. You’ll start with five default parameters that can be edited or removed, but make sure at least three stay active for balanced, detailed reviews.',
+				'Give customers a fair way to share feedback! Define what they rate, like product/listing quality, delivery, or service. You’ll start with five default parameters that can be edited or removed, but make sure at least three stay active for balanced, detailed reviews.',
 				'multivendorx'
 			),
 			addNewBtn: true,
@@ -58,11 +57,6 @@ export default {
 						type: 'text',
 						label: 'Parameters',
 						placeholder: 'Enter parameters',
-					},
-					{
-						key: 'required',
-						type: 'checkbox',
-						label: 'Required',
 					},
 				],
 			},

@@ -23,7 +23,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class Admin {
 
-
     /**
      * Admin constructor.
      */
@@ -89,6 +88,10 @@ class Admin {
                 array(
                     'dashboard'           => array(
                         'name'   => __( 'Dashboard', 'multivendorx' ),
+                        'subtab' => '',
+                    ),
+                    'table-card' => array(
+                        'name'   => __( 'Table Card', 'multivendorx' ),
                         'subtab' => '',
                     ),
                     'stores'              => array(

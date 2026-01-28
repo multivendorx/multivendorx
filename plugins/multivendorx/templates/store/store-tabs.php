@@ -50,7 +50,7 @@ foreach ( $store_tabs as $key => $tab ) {
 </ul>
 
 
-<div class="multivendorx-store-tab-content">
+<div class="multivendorx-policies-accordion">
 <?php
 switch ( $current_tab ) {
     case 'reviews':

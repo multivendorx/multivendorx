@@ -1,16 +1,9 @@
 {
-	"apiVersion": 2,
+    "apiVersion": 2,
 	"name": "multivendorx/store-products",
-	"title": "Product List(w)",
+	"title": "Store Products(widgets)",
 	"category": "widgets",
 	"icon": "products",
-	"description": "A block that displays stores list using React.",
-	"supports": {
-		"html": false
-	},
-	"textdomain": "multivendorx",
-	"editorScript": "file:./index.js",
-	"script": "file:./index.js",
-	"editorStyle": "",
-	"style": ""
+    "editorScript": "file:./index.js",
+    "viewScriptModule": "file:./view.js"
 }

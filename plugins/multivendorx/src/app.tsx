@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { AdminHeader, Banner, TourSetup } from 'zyra';
+import { AdminButton, AdminHeader, Banner, CommonPopup, DoActionBtn, FormGroup, FormGroupWrapper, TourSetup } from 'zyra';
 
 import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/modules';
@@ -25,41 +25,9 @@ import Notifications from './components/Notifications/Notifications';
 import TransactionHistory from './components/TransactionHistory/transactionHistory';
 import { getTourSteps } from './components/Tour/tourSteps';
 import AddMemberships from './components/Membership/add-membership';
+import TableCardDemo from './components/table/TableCardDemo';
 
 localStorage.setItem('force_multivendorx_context_reload', 'true');
-
-const profileItems = [
-	{
-		title: "What's New",
-		icon: 'adminfont-new',
-		link: 'https://multivendorx.com/latest-release/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
-		targetBlank: true,
-	},
-	{
-		title: 'Get Support',
-		icon: 'adminfont-customer-support',
-		link: 'https://multivendorx.com/support-forum/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
-		targetBlank: true,
-	},
-	{
-		title: 'Community',
-		icon: 'adminfont-global-community',
-		link: 'https://multivendorx.com/community/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
-		targetBlank: true,
-	},
-	{
-		title: 'Documentation',
-		icon: 'adminfont-book',
-		link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
-		targetBlank: true,
-	},
-	{
-		title: 'Request a Feature',
-		icon: 'adminfont-blocks',
-		link: 'https://github.com/multivendorx/multivendorx/issues',
-		targetBlank: true,
-	},
-];
 
 interface Products {
 	title: string;
@@ -68,17 +36,17 @@ interface Products {
 
 const products: Products[] = [
 	{
-		title: __('Double Opt-In', 'notifima'),
+		title: __('Double Opt-In', 'multivendorx'),
 		description: __(
 			'Experience the power of Double Opt-In for our Stock Alert Form!',
-			'notifima'
+			'multivendorx'
 		),
 	},
 	{
-		title: __('Your Subscription Hub', 'notifima'),
+		title: __('Your Subscription Hub', 'multivendorx'),
 		description: __(
 			'Easily monitor and download lists of out-of-stock subscribers.',
-			'notifima'
+			'multivendorx'
 		),
 	},
 ];
@@ -105,16 +73,24 @@ const Route = () => {
 			{tab === 'advertisement' && <Advertisement />}
 			{tab === 'help-support' && <HelpSupport />}
 			{tab === 'notifications' && <Notifications />}
+			{tab === 'table-card' && <TableCardDemo />}
 		</>
 	);
 };
 
 const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);
-
 	const [query, setQuery] = useState('');
 	const [results, setResults] = useState<SearchItem[]>([]);
 	const [selectValue, setSelectValue] = useState('all');
+	const [openFeaturePopup, setOpenFeaturePopup] = useState(false);
+
+	const handleOpenFeaturePopup = () => {
+		setOpenFeaturePopup(true);
+	};
+	const handleCloseFeaturePopup = () => {
+		setOpenFeaturePopup(false);
+	};
 
 	// Highlight active tab in sidebar
 	useEffect(() => {
@@ -187,6 +163,44 @@ const App = () => {
 		setResults([]);
 	};
 
+	const profileItems = [
+		{
+			title: "What's New",
+			icon: 'adminfont-new',
+			link: 'https://multivendorx.com/latest-release/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			targetBlank: true,
+		},
+		{
+			title: 'Get Support',
+			icon: 'adminfont-customer-support',
+			link: 'https://multivendorx.com/support-forum/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			targetBlank: true,
+		},
+		{
+			title: 'Community',
+			icon: 'adminfont-global-community',
+			link: 'https://multivendorx.com/community/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			targetBlank: true,
+		},
+		{
+			title: 'Documentation',
+			icon: 'adminfont-book',
+			link: 'https://multivendorx.com/docs/knowledgebase/?utm_source=settings&utm_medium=plugin&utm_campaign=promotion',
+			targetBlank: true,
+		},
+		{
+			title: 'Request a Feature',
+			icon: 'adminfont-blocks',
+			link: 'https://github.com/multivendorx/multivendorx/issues',
+			targetBlank: true,
+		},
+		{
+			title: 'Import Dummy Data',
+			icon: 'adminfont-import',
+			action: handleOpenFeaturePopup,
+		},
+	];
+
 	return (
 		<>
 			<Banner
@@ -236,6 +250,86 @@ const App = () => {
 				]}
 				messagesLink="/messages"
 			/>
+
+			<CommonPopup
+				open={openFeaturePopup}
+				onClose={handleCloseFeaturePopup}
+				width="31.25rem"
+				height="70%"
+				header={{
+					icon: 'import',
+					title: __('Import Dummy Data', 'multivendorx')
+				}}
+			>
+				<FormGroupWrapper>
+					<FormGroup label={__('Import Dummy Data', 'multivendorx')}>
+
+					</FormGroup>
+					<div className="desc">
+						Get a hands-on feel of your marketplace in minutes.
+						 Import demo stores, store owners, products, and commission data to see how everything works together.  
+						 <b>Important: </b>Delete all demo data before going live so your real marketplace data stays clean and reliable.</div>
+					<DoActionBtn
+						buttonKey="import_dummy_data"
+						value={__('Import Dummy Data', 'multivendorx')}
+						apilink="import-dummy-data"
+						parameter="action"
+						interval={1000}
+						proSetting={false}
+						proSettingChanged={() => false}
+						appLocalizer={appLocalizer}
+						successMessage={__('Dummy data imported successfully!', 'multivendorx')}
+						failureMessage={__('Failed to import dummy data.', 'multivendorx')}
+						tasks={[
+							{
+								action: 'import_store_owners',
+								message: __('Importing store owners...', 'multivendorx'),
+								cacheKey: 'store_owners',
+								successMessage: __('Store owners imported', 'multivendorx'),
+								failureMessage: __('Failed to import store owners', 'multivendorx'),
+							},
+							{
+								action: 'import_stores',
+								message: __('Creating stores...', 'multivendorx'),
+								cacheKey: 'store_ids',
+								successMessage: __('Stores created', 'multivendorx'),
+								failureMessage: __('Failed to create stores', 'multivendorx'),
+							},
+							{
+								action: 'import_products',
+								message: __('Importing products...', 'multivendorx'),
+								cacheKey: 'product_ids',
+								successMessage: __('Products imported', 'multivendorx'),
+								failureMessage: __('Failed to import products', 'multivendorx'),
+							},
+							{
+								action: 'import_commissions',
+								message: __('Creating commissions...', 'multivendorx'),
+								successMessage: __('Commissions created', 'multivendorx'),
+								failureMessage: __('Failed to create commissions', 'multivendorx'),
+							},
+							{
+								action: 'import_orders',
+								message: __('Creating orders...', 'multivendorx'),
+								successMessage: __('Orders created', 'multivendorx'),
+								failureMessage: __('Failed to create orders', 'multivendorx'),
+							},
+							{
+								action: 'import_reviews',
+								message: __('Creating reviews...', 'multivendorx'),
+								successMessage: __('Reviews created', 'multivendorx'),
+								failureMessage: __('Failed to create reviews', 'multivendorx'),
+							},
+						]}
+						onComplete={(data) => {
+							console.log('Import completed', data);
+						}}
+						onError={(error) => {
+							console.error('Import failed', error);
+						}}
+					/>
+				</FormGroupWrapper>
+			</CommonPopup>
 
 			<TourSetup
 				appLocalizer={appLocalizer}

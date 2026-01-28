@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, TextArea, getApiLink, useModules } from 'zyra';
+import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -10,6 +10,8 @@ interface OrderDetailsProps {
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
+	const [isRefundLoading, setIsRefundLoading] = useState(false);
+	const [refundError, setRefundError] = useState('');
 	const [orderData, setOrderData] = useState<any>(order || null);
 	const [customerData, setCustomerData] = useState<any>();
 	const orderId = order?.id;
@@ -92,6 +94,25 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		});
 	};
 	const handleRefundSubmit = () => {
+		if (isRefundLoading) {
+			return;
+		}
+
+		setRefundError('');
+
+		if (
+			!refundDetails.refundAmount ||
+			Number(refundDetails.refundAmount) <= 0
+		) {
+			setRefundError(
+				__('Invalid refund amount', 'multivendorx')
+			);
+			return;
+		}
+
+		// Set loading state
+		setIsRefundLoading(true);
+
 		const payload = {
 			orderId: orderId,
 			items: refundItems,
@@ -99,6 +120,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 			restock: refundDetails.restock,
 			reason: refundDetails.reason,
 		};
+
 		axios({
 			method: 'POST',
 			url: getApiLink(appLocalizer, 'refund'),
@@ -108,8 +130,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 			if (response.data.success) {
 				window.location.reload();
 			}
+		}).catch((err) => {
+			const message =
+				err?.response?.data?.message ||
+				__('Refund failed. Please try again.', 'multivendorx');
+
+			setRefundError(message);
+		}).finally(() => {
+			setIsRefundLoading(false);
 		});
-		// onRefund(payload); // send to your API here
 	};
 
 	const [values, setValues] = useState({
@@ -247,6 +276,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 	return (
 		<>
+			<SuccessNotice message={refundError} />
 			{!appLocalizer.edit_order_capability ? (
 				<p>No access to view the order</p>
 			) : (
@@ -267,6 +297,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											.replace(/\b\w/g, (c) =>
 												c.toUpperCase()
 											)}
+											<i className="adminfont-keyboard-arrow-down"></i>
 									</div>
 								)}
 								{statusSelect && (
@@ -673,16 +704,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																	<div className="icon">
 																		<i className="adminfont-cart green"></i>
 																	</div>
-																	<div className="detail">
-																		<div className="name">
-																			Refunds
-																			#
-																			{
-																				item.id
-																			}
-																		</div>
-																	</div>
+																	{item.label}
+																	
 																</div>
+																<div>{item.reason}</div>
 															</td>
 															<td className="admin-column"></td>
 															<td className="admin-column"></td>
@@ -699,35 +724,39 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 
 								<div className="coupons-calculation-wrapper">
 									<div className="left">
-										{!isRefund ? (
-											<AdminButton
-												buttons={[
-													{
-														text: __('Refund', 'multivendorx'),
-														className: 'purple',
-														onClick: () => setIsRefund(true),
-													},
-												]}
-											/>
-										) : (
-											<AdminButton
-												wrapperClass="left"
-												buttons={[
-													{
-														text: `${__('Refund', 'multivendorx')} $${refundDetails.refundAmount.toFixed(2)} ${__('manually', 'multivendorx')}`,
-														className: 'green',
-														onClick: handleRefundSubmit,
-													},
-													{
-														text: __('Cancel', 'multivendorx'),
-														className: 'red',
-														onClick: () => setIsRefund(false),
-													},
-												]}
-											/>
+										{modules.includes('marketplace-refund') && (
+											!isRefund ? (
+												<AdminButton
+													buttons={[
+														{
+															text: __('Refund', 'multivendorx'),
+															className: 'purple',
+															onClick: () => setIsRefund(true),
+														},
+													]}
+												/>
+											) : (
+												<AdminButton
+													wrapperClass="left"
+													buttons={[
+														{
+															text: `${__('Refund', 'multivendorx')} $${refundDetails.refundAmount.toFixed(2)} ${__('manually', 'multivendorx')}`,
+															className: 'green',
+															onClick: handleRefundSubmit,
+															disabled: isRefundLoading,
+														},
+														{
+															text: __('Cancel', 'multivendorx'),
+															className: 'red',
+															onClick: () => setIsRefund(false),
+														},
+													]}
+												/>
+											)
 										)}
-
 									</div>
+
+
 
 									{isRefund && (
 										<div className="right">
@@ -735,91 +764,74 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 												<tbody>
 													<tr>
 														<td>
-															Restock refunded
-															items:
+															{__('Restock refunded items:', 'multivendorx')}
 														</td>
 														<td>
 															<input
 																type="checkbox"
-																checked={
-																	refundDetails.restock
-																}
+																checked={refundDetails.restock}
 																onChange={(e) =>
-																	setRefundDetails(
-																		{
-																			...refundDetails,
-																			restock:
-																				e
-																					.target
-																					.checked,
-																		}
-																	)
+																	setRefundDetails({
+																		...refundDetails,
+																		restock: e.target.checked,
+																	})
 																}
 															/>
 														</td>
 													</tr>
+
 													<tr>
 														<td>
-															Amount already
-															refunded:
+															{__('Amount already refunded:', 'multivendorx')}
 														</td>
 														<td>
-															-{' '}
-															{formatCurrency(
-																totalRefunded
-															)}
+															- {formatCurrency(totalRefunded)}
 														</td>
 													</tr>
+
 													<tr>
 														<td>
-															Total available to
-															refund:
+															{__('Total available to refund:', 'multivendorx')}
 														</td>
 														<td>
 															{formatCurrency(
-																orderData.commission_total -
-																totalRefunded
+																orderData.commission_total - totalRefunded
 															)}
 														</td>
 													</tr>
+
 													<tr>
-														<td>Refund amount:</td>
+														<td>
+															{__('Refund amount:', 'multivendorx')}
+														</td>
 														<td>
 															<BasicInput
 																name="refund-amount"
 																type="number"
 																value={refundDetails.refundAmount}
 																onChange={(e) =>
-																	setRefundDetails(
-																		{
-																			...refundDetails,
-																			refundAmount:
-																				+e
-																					.target
-																					.value,
-																		}
-																	)
+																	setRefundDetails({
+																		...refundDetails,
+																		refundAmount: +e.target.value,
+																	})
 																}
 															/>
 														</td>
 													</tr>
+
 													<tr>
 														<td>
-															Reason for refund (optional):
+															{__('Reason for refund (optional):', 'multivendorx')}
 														</td>
 														<td>
 															<TextArea
 																value={refundDetails.reason}
-																placeholder="Reason for refund"
+																placeholder={__('Reason for refund', 'multivendorx')}
 																onChange={(e) =>
-																	setRefundDetails(
-																		{
-																			...refundDetails,
-																			reason: e
-																				.target
-																				.value,
-																		}
-																	)
+																	setRefundDetails({
+																		...refundDetails,
+																		reason: e.target.value,
+																	})
 																}
 															/>
 														</td>
@@ -834,40 +846,38 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											<table>
 												<tbody>
 													<tr>
-														<td>Commission:</td>
+														<td>{__('Commission:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(
-																orderData?.commission_amount
-															)}
+															{formatCurrency(orderData?.commission_amount)}
 														</td>
 													</tr>
+
+													{modules.includes('store-shipping') && (
+														<tr>
+															<td>{__('Shipping:', 'multivendorx')}</td>
+															<td>
+																{formatCurrency(orderData?.shipping_total)}
+															</td>
+														</tr>
+													)}
+
 													<tr>
-														<td>Shipping:</td>
+														<td>{__('Total:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(
-																orderData?.shipping_total
-															)}
+															{formatCurrency(orderData?.total)}
 														</td>
 													</tr>
+
 													<tr>
-														<td>Total:</td>
+														<td>{__('Total Earned:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(
-																orderData?.total
-															)}
-														</td>
-													</tr>
-													<tr>
-														<td>Total Earned:</td>
-														<td>
-															{formatCurrency(
-																orderData?.commission_total
-															)}
+															{formatCurrency(orderData?.commission_total)}
 														</td>
 													</tr>
 												</tbody>
 											</table>
 										</div>
+
 									) : (
 										<></>
 										// <table className="refund-table">

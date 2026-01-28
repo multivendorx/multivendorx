@@ -24,9 +24,9 @@
      display: flex;
      justify-content: center;
      align-items: center;
-     
-     .multivendorx-popup-content{
-        width: 50%;
+
+     .multivendorx-popup-content {
+         width: 50%;
          background: #fff;
          max-height: 70%;
          overflow: auto;
@@ -326,14 +326,14 @@
 
              .qna-votes {
                  display: flex;
-                 align-items: start;
+                 align-items: center;
                  gap: 0.625rem;
                  justify-content: end;
 
-                 span {
-                     font-size: 1.25rem;
-                     padding: 0.5rem;
-                 }
+                 //  span {
+                 //      font-size: 1.25rem;
+                 //      padding: 0.5rem;
+                 //  }
 
                  p {
                      margin: 0;
@@ -703,3 +703,101 @@
          width: 3rem;
      }
  }
+
+ //  store list page start
+ #marketplace-stores {
+     .filter-wrapper {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         gap: 0.5rem;
+         margin-bottom: 1rem;
+
+         .left-section {
+             display: flex;
+             gap: 0.5rem;
+
+             .view-tabs {
+                 display: flex;
+                 gap: 1rem;
+                 list-style-type: none;
+                 margin: 0;
+                 padding: 0.5rem;
+                 border-radius: 0.313rem;
+                 background: var(--primary);
+
+                 li {
+                     cursor: pointer;
+                     padding: 0 0.45rem;
+                     color: #fff;
+
+                     &.active {
+                         background: #fff;
+                         color: var(--primary);
+                         border-radius: 0.313rem;
+                     }
+                 }
+             }
+         }
+     }
+
+     .store-list-wrapper {
+         display: flex;
+         gap: 1rem;
+         transition: all 0.3s ease-in-out;
+
+         .store-list {
+             width: 100%;
+
+             .store {
+                 border: 0.063rem solid #eee;
+                 border-radius: 0.313rem;
+                 display: flex;
+                 gap: 0.5rem;
+                 padding: 0.5rem;
+                 align-items: start;
+                 box-shadow: 0 0.125rem 0.5rem 0 #c9c7cd6e;
+                 box-sizing: border-box;
+
+                 .store-image {
+                     width: 2.5rem;
+                     height: 2.5rem;
+                     background: var(--primary);
+                     display: flex;
+                     justify-content: center;
+                     align-items: center;
+                     font-size: 1.813rem;
+                     border-radius: 0.313rem;
+                     color: #fff;
+                 }
+
+                 .store-details {
+                     h2 {
+                         margin: 0;
+                     }
+                 }
+             }
+         }
+
+         .form-group {
+             width: 100%;
+         }
+
+         &.is-list {
+             flex-direction: column;
+
+             .store-list{
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 1rem;
+
+                .store{
+                    width: calc(50% - 0.5rem);
+                }
+             }
+         }
+     }
+ }
+
+ //  store list page end

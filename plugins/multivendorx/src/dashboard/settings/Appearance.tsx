@@ -17,13 +17,11 @@ interface FormData {
 
 const Appearance = () => {
 	const [formData, setFormData] = useState<FormData>({});
-	const [imagePreviews, setImagePreviews] = useState<{
-		[key: string]: string;
-	}>({});
+	const [imagePreviews, setImagePreviews] = useState<{ [key: string]: string | string[] }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']
-			?.edit_store_info_activation || [];
+		appLocalizer.settings_databases_value['store-capability']?.edit_store_info_activation || [];
 
 	const storeOptions = [
 		{ value: 'static_image', label: 'Static Image' },
@@ -31,12 +29,10 @@ const Appearance = () => {
 		{ value: 'video', label: 'Video' },
 	];
 
+	// Load store data
 	useEffect(() => {
-		if (!appLocalizer.store_id) {
-			console.error('Missing store ID or appLocalizer');
-			return;
-		}
-
+		if (!appLocalizer.store_id) return console.error('Missing store ID or appLocalizer');
+	
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
@@ -44,45 +40,34 @@ const Appearance = () => {
 		})
 			.then((res) => {
 				const data = res.data || {};
-
-				// Set all form data
-				setFormData((prev) => ({ ...prev, ...data }));
-
+	
+				// If banner_slider comes as a JSON string, parse it
+				let bannerSliderData: string[] = [];
+				if (typeof data.banner_slider === 'string') {
+					try {
+						bannerSliderData = JSON.parse(data.banner_slider);
+					} catch (e) {
+						bannerSliderData = [];
+					}
+				} else if (Array.isArray(data.banner_slider)) {
+					bannerSliderData = data.banner_slider;
+				}
+	
+				setFormData({
+					...data,
+					banner_slider: bannerSliderData,
+				});
+	
 				setImagePreviews({
 					image: data.image || '',
 					banner: data.banner || '',
+					banner_slider: bannerSliderData,
 				});
 			})
-			.catch((error) => {
-				console.error('Error loading store data:', error);
-			});
-	}, [appLocalizer.store_id]);
-
-	const runUploader = (key: string) => {
-		if (settings.includes('store_images')) {
-			return;
-		}
-		const frame = (window as any).wp.media({
-			title: 'Select or Upload Image',
-			button: { text: 'Use this image' },
-			multiple: false,
-		});
-
-		frame.on('select', function () {
-			const attachment = frame.state().get('selection').first().toJSON();
-			const updated = { ...formData, [key]: attachment.url };
-
-			setFormData(updated);
-			setImagePreviews((prev) => ({
-				...prev,
-				[key]: attachment.url,
-			}));
-			autoSave(updated);
-		});
-
-		frame.open();
-	};
-
+			.catch((error) => console.error('Error loading store data:', error));
+	}, []);
+	
+	// Auto save store data
 	const autoSave = (updatedData: any) => {
 		axios({
 			method: 'PUT',
@@ -92,23 +77,46 @@ const Appearance = () => {
 		})
 			.then((res) => {
 				if (res.data.success) {
-					setSuccessMsg('Store saved successfully!');
+					setSuccessMsg(__('Store saved successfully!', 'multivendorx'));
 					setTimeout(() => setSuccessMsg(null), 2500);
 				}
 			})
-			.catch((error) => {
-				console.error('Save error:', error);
-			});
+			.catch((error) => console.error('Save error:', error));
 	};
 
-	// Helper to convert stored banner_type string to SelectInput value shape
-	const bannerTypeValue = () => {
-		const v = formData.banner_type || formData.stores || ''; // support legacy `stores` if present
-		if (!v) {
-			return [];
-		}
-		const found = storeOptions.find((o) => o.value === v);
-		return found ? [found] : [];
+	// Open WordPress media uploader
+	const runUploader = (key: string, allowMultiple = false) => {
+		if (!settings.includes('store_images')) return;
+
+		const frame = (window as any).wp.media({
+			title: __('Select or Upload Image', 'multivendorx'),
+			button: { text: __('Use this image', 'multivendorx') },
+			multiple: allowMultiple,
+		});
+
+		frame.on('select', function () {
+			const selection = frame.state().get('selection').toJSON();
+			const urls = selection.map((att: any) => att.url);
+
+			setFormData((prev) => {
+				const prevImages = Array.isArray(prev[key]) ? prev[key] : [];
+				const updatedImages = allowMultiple ? [...prevImages, ...urls] : urls[0];
+				return { ...prev, [key]: updatedImages };
+			});
+
+			setImagePreviews((prev) => {
+				const prevImages = Array.isArray(prev[key]) ? prev[key] : [];
+				const updatedImages = allowMultiple ? [...prevImages, ...urls] : urls[0];
+				return { ...prev, [key]: updatedImages };
+			});
+
+			autoSave({
+				...formData,
+				[key]: allowMultiple ? [...(formData[key] || []), ...urls] : urls[0],
+			});
+		});
+
+		frame.open();
 	};
 
 	return (
@@ -129,8 +137,6 @@ const Appearance = () => {
 						openUploader={__('Upload Image', 'multivendorx')}
 						imageSrc={imagePreviews.image}
 						onRemove={() => {
-							if (settings.includes('store_images')) return;
-
 							const updated = { ...formData, image: '' };
 							setFormData(updated);
 							setImagePreviews((prev) => ({ ...prev, image: '' }));
@@ -148,12 +154,7 @@ const Appearance = () => {
 						options={storeOptions}
 						value={formData.banner_type || ''}
 						onChange={(newValue: any) => {
-							if (settings.includes('store_images')) return;
-
-							const updated = {
-								...formData,
-								banner_type: newValue?.value || '',
-							};
+							const updated = { ...formData, banner_type: newValue?.value || '' };
 							setFormData(updated);
 							autoSave(updated);
 						}}
@@ -162,10 +163,7 @@ const Appearance = () => {
 
 				{/* Static Banner Image */}
 				{formData.banner_type === 'static_image' && (
-					<FormGroup
-						label={__('Static Banner Image', 'multivendorx')}
-						htmlFor="banner"
-					>
+					<FormGroup label={__('Static Banner Image', 'multivendorx')} htmlFor="banner">
 						<FileInput
 							value={formData.banner}
 							inputClass="form-input"
@@ -177,8 +175,6 @@ const Appearance = () => {
 							openUploader={__('Upload Banner', 'multivendorx')}
 							imageSrc={imagePreviews.banner}
 							onRemove={() => {
-								if (settings.includes('store_images')) return;
-
 								const updated = { ...formData, banner: '' };
 								setFormData(updated);
 								setImagePreviews((prev) => ({ ...prev, banner: '' }));
@@ -189,37 +185,53 @@ const Appearance = () => {
 					</FormGroup>
 				)}
 
-				{/* Slider (Coming soon) */}
+				{/* Slider Images */}
 				{formData.banner_type === 'slider_image' && (
-					<FormGroup>
-						{__('Slider upload feature coming soon...', 'multivendorx')}
+					<FormGroup label={__('Slider Images', 'multivendorx')} htmlFor="banner_slider">
+						<FileInput
+							multiple={true}
+							value={formData.banner_slider || []}
+							inputClass="form-input"
+							name="banner_slider"
+							type="hidden"
+							onButtonClick={() => runUploader('banner_slider', true)}
+							imageWidth={150}
+							imageHeight={100}
+							openUploader={__('Upload Slider Images', 'multivendorx')}
+							imageSrc={imagePreviews.banner_slider || []}
+							onChange={(images: string[]) => {
+								const updated = { ...formData, banner_slider: images };
+								setFormData(updated);
+								setImagePreviews((prev) => ({ ...prev, banner_slider: images }));
+								autoSave(updated);
+							}}
+							onRemove={() => {
+								const updated = { ...formData, banner_slider: [] };
+								setFormData(updated);
+								setImagePreviews((prev) => ({ ...prev, banner_slider: [] }));
+								autoSave(updated);
+							}}
+						/>
 					</FormGroup>
 				)}
 
 				{/* Video Banner */}
 				{formData.banner_type === 'video' && (
-					<FormGroup
-						label={__('Banner Video URL', 'multivendorx')}
-						htmlFor="banner_video"
-					>
+					<FormGroup label={__('Banner Video URL', 'multivendorx')} htmlFor="banner_video">
 						<BasicInput
 							name="banner_video"
 							type="text"
 							value={formData.banner_video || ''}
 							onChange={(e: any) => {
-								const updated = {
-									...formData,
-									banner_video: e.target.value,
-								};
+								const updated = { ...formData, banner_video: e.target.value };
 								setFormData(updated);
 								autoSave(updated);
 							}}
-							readOnly={settings.includes('store_images')}
+							readOnly={!settings.includes('store_images')}
 						/>
 					</FormGroup>
 				)}
 			</FormGroupWrapper>
-
 		</>
 	);
 };

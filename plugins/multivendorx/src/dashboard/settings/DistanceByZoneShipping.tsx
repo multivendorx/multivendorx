@@ -349,9 +349,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									<div className="admin-badge yellow">
 										{method.title}
 									</div>
-									<div className="icon-wrapper">
 										<i
-											onClick={() => handleEdit(method)} className="adminfont-edit"
+											onClick={() => handleEdit(method)} className="admin-badge blue adminfont-edit"
 										></i>
 										<i
 											onClick={() =>
@@ -360,9 +359,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 													row.original
 												)
 											}
-											className="adminfont-delete"
+											className="admin-badge red adminfont-delete"
 										></i>
-									</div>
 								</div>
 							))}
 
@@ -402,7 +400,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					open={addShipping}
 					width="31.25rem"
 					height="60%"
-					onClose= {setAddShipping(false)}
+					onClose={() => setAddShipping(false)}
 					header={{
 						icon: 'shipping',
 						title: `${isEditing

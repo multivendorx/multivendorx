@@ -44,7 +44,7 @@ class PaymentProcessor {
      *
      * @return void
      */
-    public function process_payment( $store_id, $amount, $order_id = null, $method = null, $note = null ) {
+    public function process_payment( $store_id, $amount, $order_id = null, $method = null, $note = null, $disbursement = false ) {
         global $wpdb;
         $store = new Store( $store_id );
 
@@ -54,7 +54,7 @@ class PaymentProcessor {
             $payment_method = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) ?? '';
         }
 
-        if ( $payment_method === 'bank-transfer' || $payment_method === 'cash' || $payment_method === 'custom-gateway' ) {
+        if ( !$disbursement && ($payment_method === 'bank-transfer' || $payment_method === 'cash' || $payment_method === 'custom-gateway') ) {
             return;
         }
 

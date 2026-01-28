@@ -63,20 +63,45 @@ export default {
 			],
 		},
 		{
+			key: 'store_sidebar',
+			type: 'setting-toggle',
+			label: __('Where to show sidebar on store page', 'multivendorx'),
+			desc: `Choose where the side content appears on the store page, on the left or right, based on your needs.<br>Selecting <b>No sidebar</b> will remove the side content completely.<br>This area can display helpful tools such as category filters, store location details, and product search, making it easier for customers to browse.<br>You can add or manage this content from <a href="${appLocalizer.admin_url}widgets.php" target="_blank"><b>WordPress → Appearance → Widgets</b></a>.`,
+			options: [
+				{
+					key: 'no-sidebar',
+					label: __('No Sidebar', 'multivendorx'),
+					value: 'No Sidebar',
+					icon: "adminfont-right-sidebar"
+				},
+				{
+					key: 'left',
+					label: __('Left Sidebar', 'multivendorx'),
+					value: 'Left Sidebar',
+					icon: "adminfont-left-sidebar"
+				},
+				{
+					key: 'right',
+					label: __('Right Sidebar', 'multivendorx'),
+					value: 'Right Sidebar',
+					icon: "adminfont-no-sidebar"
+				}
+			]
+		},
+		{
 			key: 'store_color_settings',
 			type: 'color-setting',
 			label: 'Dashboard color scheme',
 			settingDescription:
 				'Choose a dashboard color scheme from predefined sets or customize your own. Each scheme defines the button style, and hover effects for a consistent look.',
-			showPreview: true,
 			templates: [
 				{
-				  key: 'dashbord',
-				  label: __('dashbord', 'mvx-pro'),
-				  preview: DashboardTemplate,
-				  component: DashboardTemplate,
-				}			  
-			  ],
+					key: 'dashbord',
+					label: __('dashbord', 'mvx-pro'),
+					preview: DashboardTemplate,
+					component: DashboardTemplate,
+				}
+			],
 			predefinedOptions: [
 				{
 					key: 'orchid_bloom',

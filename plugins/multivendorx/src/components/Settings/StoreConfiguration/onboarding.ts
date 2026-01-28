@@ -17,7 +17,7 @@ export default {
 			type: 'setting-toggle',
 			label: __('New store registration approval', 'multivendorx'),
 			desc: __(
-				'Decide how you want to approve new stores for your marketplace:<ul><li>Manual approval - Admin reviews each store request and decides whether to approve or reject it before granting access to the marketplace.</li><li>Automatic approval - Stores are instantly approved, gaining dashboard access right away to upload and sell products.</li></ul>',
+				'Decide how you want to approve new stores for your marketplace:<ul><li>Manual approval - Admin reviews each store request and decides whether to approve or reject it before granting access to the marketplace.</li><li>Automatic approval - Stores are instantly approved, gaining dashboard access right away to upload and sell products/listings.</li></ul>',
 				'multivendorx'
 			),
 			options: [
@@ -94,9 +94,9 @@ export default {
 				},
 				{
 					key: 'first_product_upload',
-					label: __('First product', 'multivendorx'),
+					label: __('First product/listings', 'multivendorx'),
 					desc: __(
-						'Mandates that store to upload at least one product listing, complete product details before going live, ensures the store is not empty when launched.',
+						'Mandates that store to upload at least one product/listing, complete product/listing details before going live, ensures the store is not empty when launched.',
 						'multivendorx'
 					),
 					value: 'first_product_upload',
@@ -151,14 +151,14 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('How stores sell products', 'multivendorx'),
+			hint: __('How stores sell products/listings', 'multivendorx'),
 		},
 		{
 			key: 'store_selling_mode',
 			type: 'setting-toggle',
 			label: __('Product listing model', 'multivendorx'),
 			desc: __(
-				'Decide how stores are allowed to sell products in your marketplace:<ul><li><strong>Own listing</strong> - Stores can sell only their own products, following standard marketplace rules.</li><li><strong>Shared listing</strong> - Stores can copy existing products and sell them alongside new products they create.</li><li><strong>Franchise</strong> - Franchise stores can sell only their own products and products created by the admin.</li>',
+				'Decide how stores are allowed to sell products/listings in your marketplace:<ul><li><strong>Own listing</strong> - Stores can sell only their own products, following standard marketplace rules.</li><li><strong>Shared listing</strong> - Stores can copy existing products and sell them alongside new products they create.</li><li><strong>Franchise</strong> - Franchise stores can sell only their own products and products created by the admin.</li>',
 				'multivendorx'
 			),
 			options: [
@@ -176,6 +176,7 @@ export default {
 					key: 'franchise',
 					label: __('Franchise', 'multivendorx'),
 					value: 'franchise',
+					proSetting: true,
 				},
 			],
 		},
@@ -183,7 +184,7 @@ export default {
 			key: 'spmv_show_order',
 			type: 'setting-toggle',
 			label: __(
-				'Co-listed product display priority',
+				'Co-listed product/listings display priority',
 				'multivendorx'
 			),
 			dependent: {
@@ -223,7 +224,7 @@ export default {
 			type: 'setting-toggle',
 			label: __('More offers display position', 'multivendorx'),
 			desc: __(
-				'Decide where additional offers by other stores should be displayed on the single product page to make them visible to customers.',
+				'Decide where additional offers by other stores should be displayed on the single product/listings page to make them visible to customers.',
 				'multivendorx'
 			),
 			dependent: {
@@ -231,7 +232,7 @@ export default {
 				set: true,
 				value: 'single_product_multiple_vendor',
 			},
-			postText: __(' single page product tabs.', 'multivendorx'),
+			postText: __(' single page product/listings tabs.', 'multivendorx'),
 			options: [
 				{
 					key: 'none',
@@ -316,7 +317,7 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'Decide what franchise stores can do and how it affects marketplace operations:<ul><li><strong>Store Order Creation</strong> – Franchise stores can create orders manually (phone sales, walk-ins, offline transactions). These orders follow marketplace commission rules.</li><li><strong>Admin Product Access</strong> – Franchise stores can order products from the admin catalog for resale or restocking. </li></ul>',
+				'Decide what franchise stores can do and how it affects marketplace operations:<ul><li><strong>Store Order Creation</strong> – Franchise stores can create orders manually (phone sales, walk-ins, offline transactions). These orders follow marketplace commission rules.</li><li><strong>Admin Product/listings Access</strong> – Franchise stores can order products/listings from the admin catalog for resale or restocking. </li></ul>',
 				'multivendorx'
 			),
 			dependent: {
@@ -327,12 +328,12 @@ export default {
 			options: [
 				{
 					key: 'store_products_only',
-					label: __('Store products only', 'multivendorx'),
+					label: __('Store products/listings only', 'multivendorx'),
 					value: 'store_products_only',
 				},
 				{
 					key: 'store_and_admin_products',
-					label: __('Store and admin products', 'multivendorx'),
+					label: __('Store and admin products/listings', 'multivendorx'),
 					value: 'store_and_admin_products',
 				},
 			],

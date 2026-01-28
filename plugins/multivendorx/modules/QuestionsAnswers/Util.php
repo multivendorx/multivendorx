@@ -78,15 +78,12 @@ class Util
             $where[] = "question_visibility = '" . esc_sql($args['question_visibility']) . "'";
         }
 
-        // Only apply start/end date filters when NOT ordering manually.
-        if (empty($args['orderBy']) && empty($args['order'])) {
-            if (! empty($args['start_date'])) {
-                $where[] = "question_date >= '" . esc_sql($args['start_date']) . "'";
-            }
+        if (! empty($args['start_date'])) {
+            $where[] = "question_date >= '" . esc_sql($args['start_date']) . "'";
+        }
 
-            if (! empty($args['end_date'])) {
-                $where[] = "question_date <= '" . esc_sql($args['end_date']) . "'";
-            }
+        if (! empty($args['end_date'])) {
+            $where[] = "question_date <= '" . esc_sql($args['end_date']) . "'";
         }
 
         // Filter by answered (has answer).
@@ -250,7 +247,7 @@ class Util
             $update_data['voters'] = maybe_serialize($data['voters']);
             $update_format[] = '%s';
         }
-        
+
         if (empty($update_data)) {
             return false;
         }

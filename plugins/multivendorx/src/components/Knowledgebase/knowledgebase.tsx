@@ -26,6 +26,7 @@ import {
 } from '@tanstack/react-table';
 import '../Announcements/announcements.scss';
 import { Dialog } from '@mui/material';
+import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 
 type KBRow = {
 	date: any;
@@ -47,8 +48,8 @@ type AnnouncementStatus = {
 	count: number;
 };
 type FilterData = {
-	categoryFilter?: any;
-	searchField?: any;
+	categoryFilter?: string;
+	searchField?: string;
 };
 export interface RealtimeFilter {
 	name: string;
@@ -72,7 +73,6 @@ export const KnowledgeBase: React.FC = () => {
 	>(null);
 	const [pageCount, setPageCount] = useState(0);
 	const [editId, setEditId] = useState<number | null>(null);
-	const [error, setError] = useState<string | null>(null);
 	const [formData, setFormData] = useState<KBForm>({
 		title: '',
 		content: '',
@@ -87,6 +87,14 @@ export const KnowledgeBase: React.FC = () => {
 		id: number;
 	} | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	const handleDeleteClick = (rowData) => {
 		setSelectedKb({
@@ -141,7 +149,6 @@ export const KnowledgeBase: React.FC = () => {
 		setAddEntry(false);
 		setFormData({ title: '', content: '', status: 'pending' }); // reset form
 		setEditId(null); // reset edit mode
-		setError(null); // clear any error
 		setValidationErrors({});
 	};
 	// Handle input changes
@@ -190,7 +197,7 @@ export const KnowledgeBase: React.FC = () => {
 			requestData(pagination.pageSize, pagination.pageIndex + 1);
 			setRowSelection({});
 		} catch (err) {
-			setError(__('Failed to perform bulk action', 'multivendorx'));
+			console.log(__('Failed to perform bulk action', 'multivendorx'));
 		}
 	};
 
@@ -213,7 +220,7 @@ export const KnowledgeBase: React.FC = () => {
 				setAddEntry(true);
 			}
 		} catch {
-			setError(__('Failed to load entry', 'multivendorx'));
+			console.log(__('Failed to load entry', 'multivendorx'));
 		}
 	};
 
@@ -246,11 +253,9 @@ export const KnowledgeBase: React.FC = () => {
 				handleCloseForm();
 				await fetchTotalRows();
 				requestData(pagination.pageSize, pagination.pageIndex + 1);
-			} else {
-				setError(__('Failed to save entry', 'multivendorx'));
 			}
 		} catch {
-			setError(__('Failed to save entry', 'multivendorx'));
+			console.log(__('Failed to save entry', 'multivendorx'));
 		} finally {
 			setSubmitting(false);
 		}
@@ -269,7 +274,7 @@ export const KnowledgeBase: React.FC = () => {
 			setTotalRows(total);
 			setPageCount(Math.ceil(total / pagination.pageSize));
 		} catch {
-			setError(__('Failed to load total rows', 'multivendorx'));
+			console.log(__('Failed to load total rows', 'multivendorx'));
 		}
 	};
 
@@ -287,11 +292,11 @@ export const KnowledgeBase: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage: number,
+		currentPage: number,
 		categoryFilter = '',
 		searchField = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
 		setData(null);
@@ -303,8 +308,8 @@ export const KnowledgeBase: React.FC = () => {
 				page: currentPage,
 				row: rowsPerPage,
 				status: categoryFilter === 'all' ? '' : categoryFilter,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				searchField,
 			},
 		})
@@ -334,7 +339,6 @@ export const KnowledgeBase: React.FC = () => {
 				setAnnouncementStatus(statuses.filter((s) => s.count > 0));
 			})
 			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
 				setData([]);
 			});
 	}
@@ -345,14 +349,18 @@ export const KnowledgeBase: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData(null);
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.categoryFilter,
 			filterData?.searchField,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -362,11 +370,18 @@ export const KnowledgeBase: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
+						onChange={(range: DateRange) => {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							});
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
 						}}
 					/>
 				</div>
@@ -374,14 +389,6 @@ export const KnowledgeBase: React.FC = () => {
 		},
 	];
 
-	const truncateText = (text: string, maxLength: number) => {
-		if (!text) {
-			return '-';
-		}
-		return text.length > maxLength
-			? text.slice(0, maxLength) + '...'
-			: text;
-	};
 	// Columns
 	const columns: ColumnDef<KBRow>[] = [
 		{
@@ -406,7 +413,6 @@ export const KnowledgeBase: React.FC = () => {
 			cell: ({ row }) => (
 				<TableCell title={row.original.title || ''}>
 					{truncateText(row.original.title || '', 30)}{' '}
-					{/* truncate to 30 chars */}
 				</TableCell>
 			),
 		},
@@ -415,7 +421,6 @@ export const KnowledgeBase: React.FC = () => {
 			cell: ({ row }) => (
 				<TableCell title={row.original.content || ''}>
 					{truncateText(row.original.content || '', 50)}{' '}
-					{/* truncate to 50 chars */}
 				</TableCell>
 			),
 		},
@@ -425,30 +430,18 @@ export const KnowledgeBase: React.FC = () => {
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => {
-				const rawDate = row.original.date;
-				let formattedDate = '-';
-				if (rawDate) {
-					const dateObj = new Date(rawDate);
-					formattedDate = new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(dateObj);
-				}
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
 				);
 			},
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -508,7 +501,7 @@ export const KnowledgeBase: React.FC = () => {
 				onChange={handleBulkAction}
 			>
 				<option value="">{__('Bulk actions')}</option>
-				<option value="publish">{__('Publish', 'multivendorx')}</option>
+				<option value="publish">{__('Published', 'multivendorx')}</option>
 				<option value="pending">{__('Pending', 'multivendorx')}</option>
 				<option value="delete">{__('Delete', 'multivendorx')}</option>
 			</select>
@@ -644,7 +637,7 @@ export const KnowledgeBase: React.FC = () => {
 										},
 										{
 											label: __(
-												'Publish',
+												'Published',
 												'multivendorx'
 											),
 											value: 'publish',
@@ -656,6 +649,14 @@ export const KnowledgeBase: React.FC = () => {
 											status: value,
 										}))
 									}
+								/>
+							</FormGroup>
+							<FormGroup label={__('Add tag', 'multivendorx')} htmlFor="Title">
+								<BasicInput
+									type="text"
+									name="title"
+									// value={formData.title}
+									// onChange={handleChange}
 								/>
 							</FormGroup>
 						</FormGroupWrapper>

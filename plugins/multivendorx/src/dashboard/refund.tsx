@@ -13,7 +13,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { formatCurrency } from '@/services/commonFunction';
+import { formatCurrency, formatWcShortDate } from '@/services/commonFunction';
 
 type RefundRow = {
 	id: number;
@@ -46,7 +46,17 @@ const Refund: React.FC = () => {
 	});
 	const [pageCount, setPageCount] = useState(0);
 	const [totalRows, setTotalRows] = useState<number>(0);
-
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 	// Fetch store list and total refunds on mount
 	useEffect(() => {
 
@@ -76,7 +86,6 @@ const Refund: React.FC = () => {
 		currentPage: number,
 		searchAction: string = 'order_id',
 		searchField: string = '',
-		store_id: string = '',
 		orderBy: string = '',
 		order: string = '',
 		startDate: Date = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
@@ -92,7 +101,7 @@ const Refund: React.FC = () => {
 				row: rowsPerPage,
 				searchField,
 				searchAction,
-				store_id,
+				store_id: appLocalizer.store_id,
 				orderBy,
 				order,
 				startDate,
@@ -113,16 +122,20 @@ const Refund: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.searchAction,
 			filterData?.searchField,
-			filterData?.store_id,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -185,7 +198,6 @@ const Refund: React.FC = () => {
 			),
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
@@ -197,22 +209,8 @@ const Refund: React.FC = () => {
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }: any) => {
-				const date = row.original.date;
-				if (!date) {
-					return <TableCell>-</TableCell>;
-				}
-
-				const formattedDate = new Date(date).toLocaleDateString(
-					'en-US',
-					{
-						year: 'numeric',
-						month: 'short',
-						day: 'numeric',
-					}
-				);
-
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
 				);
 			},
 		},
@@ -263,16 +261,21 @@ const Refund: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];

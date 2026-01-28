@@ -9,7 +9,6 @@ const Withdrawls: React.FC = () => {
 	const [amount, setAmount] = useState<number>();
 	const [error, setError] = useState<string>('');
 	const [message, setMessage] = useState<string>('');
-	const [store, setStore] = useState<any>([]);
 	const [lastWithdraws, setLastWithdraws] = useState<any>([]);
 
 	const [requestWithdrawal, setRequestWithdrawal] = useState(false);
@@ -25,14 +24,7 @@ const Withdrawls: React.FC = () => {
 			params: { id: appLocalizer.store_id },
 		}).then((response) => {
 			setData(response.data || []);
-		});
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { id: appLocalizer.store_id },
-		}).then((response) => {
-			setStore(response.data);
+			setAmount(response.data.available_balance);
 		});
 
 		axios({
@@ -162,7 +154,7 @@ const Withdrawls: React.FC = () => {
 							buttons={{
 								icon: 'eye',
 								text: __('View transaction history', 'multivendorx'),
-								onClick: () => (window.location.href = `${appLocalizer.site_url}/dashboard/wallet/transactions/`),
+								onClick: () => (window.location.href = `${appLocalizer.site_url}/dashboard/transactions/`),
 								className: 'purple-bg',
 							}}
 						/>
@@ -182,7 +174,7 @@ const Withdrawls: React.FC = () => {
 									{formatCurrency(data.available_balance)}{' '}
 								</div>
 								<div className="desc">
-									<b>$25 (p)</b>{' '}
+									<b>{formatCurrency(data?.thresold)} </b>{' '}
 									{__(
 										'minimum required to withdraw',
 										'multivendorx'
@@ -190,43 +182,59 @@ const Withdrawls: React.FC = () => {
 								</div>
 							</div>
 							<Column row>
-								<MiniCard
-									background
+								<MiniCard background
 									title={__('Upcoming Balance', 'multivendorx')}
-									value={formatCurrency(data.reserve_balance)}
-									description={__(
-										'Pending settlement. Released soon',
-										'multivendorx'
-									)}
-								/>
-								<MiniCard
-									background
-									title={__('Free Withdrawals', 'multivendorx')}
-									value={
-										<>
-											{data.locking_day} {__('Days', 'multivendorx')}{' '}
-											<span>{__('Left', 'multivendorx')}</span>
-										</>
-									}
+									value={formatCurrency(data.locking_balance)}
 									description={
 										<>
-											{__('Then', 'multivendorx')} $5% (p) + $6(p) {__('fee', 'multivendorx')}
+											{__('This amount is being processed and will be released ', 'multivendorx')}
+											{data?.payment_schedules ? (
+												<>
+													{data.payment_schedules} {__(' by the admin.', 'multivendorx')}
+												</>
+											) : (
+												<>
+													{__('automatically every hour.', 'multivendorx')}
+												</>
+											)}
 										</>
 									}
 								/>
+								{data?.withdrawal_setting?.length > 0 && (
+									<MiniCard background
+										title={__('Free Withdrawals', 'multivendorx')}
+										value={
+											<>
+												{Math.max(
+													0,
+													(data?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
+													(data?.free_withdrawal ?? 0)
+												)}{' '}
+												<span>{__('Left', 'multivendorx')}</span>
+											</>
+										}
+										description={
+											<>
+												{__('Then', 'multivendorx')}{' '}
+												{Number(
+													data?.withdrawal_setting?.[0]
+														?.withdrawal_percentage
+												) || 0}
+												% +{' '}
+												{formatCurrency(
+													Number(
+														data?.withdrawal_setting?.[0]
+															?.withdrawal_fixed
+													) || 0
+												)}{' '}
+												{__('fee', 'multivendorx')}
+											</>
+										}
+									/>
+
+								)}
 
 							</Column>
-
-							<div className="desc">
-								{__(
-									'Some funds locked during settlement',
-									'multivendorx'
-								)}
-							</div>
-							<div className="desc">
-								{__('Auto payouts run', 'multivendorx')} 2-12-25
-								(p)
-							</div>
 
 							<AdminButton
 								buttons={{
@@ -264,25 +272,25 @@ const Withdrawls: React.FC = () => {
 						</>
 					}
 				>
-					<>
-						<FormGroupWrapper>
-							<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
-								<BasicInput
-									type="number"
-									name="amount"
-									value={amount}
-									onChange={(e) =>
-										handleAmountChange(
-											Number(e.target.value)
-										)
-									}
-								/>
-								{error && (
-									<p className="error-message">{error}</p>
-								)}
-							</FormGroup>
-						</FormGroupWrapper>
-					</>
+					<FormGroupWrapper>
+						<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
+							<BasicInput
+								type="number"
+								name="amount"
+								value={amount}
+								min={0}
+								max={data.available_balance}
+								onChange={(e) =>
+									handleAmountChange(
+										Number(e.target.value)
+									)
+								}
+							/>
+							{error && (
+								<p className="error-message">{error}</p>
+							)}
+						</FormGroup>
+					</FormGroupWrapper>
 				</CommonPopup>
 			)}
 		</>

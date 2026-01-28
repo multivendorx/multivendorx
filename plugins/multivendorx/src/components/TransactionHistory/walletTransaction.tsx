@@ -16,13 +16,16 @@ import {
 	FormGroup,
 	AdminButton,
 	MiniCard,
+	MultiCalendarInput,
+	MessageState,
+	Skeleton
 } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { formatCurrency } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commission/viewCommission';
 
 type StoreRow = {
@@ -61,10 +64,10 @@ type TransactionStatus = {
 type FilterData = {
 	searchAction?: string;
 	searchField?: string;
-	typeCount?: any;
+	categoryFilter?: string;
 	store?: string;
-	order?: any;
-	orderBy?: any;
+	order?: string;
+	orderBy?: string;
 	date?: {
 		start_date: Date;
 		end_date: Date;
@@ -129,8 +132,8 @@ const DownloadTransactionCSVButton: React.FC<{
 			}
 
 			// Add status filter (Cr/Dr)
-			if (filterData?.typeCount && filterData.typeCount !== 'all') {
-				params.filter_status = filterData.typeCount;
+			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+				params.filter_status = filterData.categoryFilter;
 			}
 
 			// If specific rows are selected, send their IDs
@@ -246,8 +249,8 @@ const ExportAllTransactionCSVButton: React.FC<{
 			}
 
 			// Add status filter (Cr/Dr)
-			if (filterData?.typeCount && filterData.typeCount !== 'all') {
-				params.filter_status = filterData.typeCount;
+			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+				params.filter_status = filterData.categoryFilter;
 			}
 
 			// Make API request for CSV
@@ -314,7 +317,6 @@ const TransactionBulkActions: React.FC<{
 				filterData={filterData}
 				storeId={storeId}
 			/>
-			{/* Add other bulk actions here if needed */}
 		</div>
 	);
 };
@@ -343,7 +345,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		pageSize: 10,
 	});
 	const [pageCount, setPageCount] = useState(0);
-	const [selectedStore, setSelectedStore] = useState<any>(null);
 	const [transactionStatus, setTransactionStatus] = useState<
 		TransactionStatus[] | null
 	>(null);
@@ -352,6 +353,18 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 	const [selectedCommissionId, setSelectedCommissionId] = useState<
 		number | null
 	>(null);
+	const [walletLoading, setWalletLoading] = useState(true);
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	// Add search filter with export button
 	const actionButton: RealtimeFilter[] = [
@@ -367,69 +380,25 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			),
 		},
 	];
-	// 🔹 Helper: get effective date range
-	const getEffectiveDateRange = () => {
-		if (dateRange.startDate && dateRange.endDate) {
-			return dateRange;
-		}
-		const now = new Date();
-		const start = new Date(now.getFullYear(), now.getMonth(), 1); // first day of current month
-		const end = new Date(
-			now.getFullYear(),
-			now.getMonth() + 1,
-			0,
-			23,
-			59,
-			59
-		); // last day of current month
-		return { startDate: start, endDate: end };
-	};
-
-	// 🔹 Fetch total rows on mount or date change
-	useEffect(() => {
-		if (!storeId) {
-			return;
-		}
-
-		const { startDate, endDate } = getEffectiveDateRange();
-
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'transaction'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				count: true,
-				store_id: storeId,
-				start_date: startDate.toISOString().split('T')[0],
-				end_date: endDate.toISOString().split('T')[0],
-			},
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(
-					Math.ceil((response.data || 0) / pagination.pageSize)
-				);
-			})
-			.catch(() => setData([]));
-	}, [storeId, dateRange, pagination.pageSize]);
 
 	// 🔹 Fetch data from backend
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
+		rowsPerPage: number,
+		currentPage: number,
+		categoryFilter = '',
 		transactionType = '',
 		transactionStatus = '',
 		orderBy = '',
-		order = ''
+		order = '',
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		endDate = new Date(),
+		searchFiled = ''
 	) {
 		if (!storeId) {
 			return;
 		}
 
 		setData(null);
-
-		const { startDate, endDate } = getEffectiveDateRange();
 
 		axios({
 			method: 'GET',
@@ -439,17 +408,20 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				page: currentPage,
 				row: rowsPerPage,
 				store_id: storeId,
-				start_date: startDate.toISOString().split('T')[0],
-				end_date: endDate.toISOString().split('T')[0],
-				status: typeCount == 'all' ? '' : typeCount,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
+				status: categoryFilter == 'all' ? '' : categoryFilter,
 				transaction_status: transactionStatus,
 				transaction_type: transactionType,
 				orderBy,
 				order,
+				searchFiled
 			},
 		})
 			.then((response) => {
 				setData(response.data.transaction || []);
+				setTotalRows(response.data.all || 0);
+				setPageCount(Math.ceil(response.data.all / pagination.pageSize));
 
 				const statuses = [
 					{ key: 'all', name: 'All', count: response.data.all || 0 },
@@ -497,15 +469,23 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		setCurrentFilterData(filterData);
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
+			filterData?.categoryFilter,
 			filterData?.transactionType,
 			filterData?.transactionStatus,
 			filterData?.orderBy,
-			filterData?.order
+			filterData?.order,
+			date?.start_date,
+			date?.end_date,
+			filterData.searchField,
 		);
 	};
 
@@ -533,7 +513,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			cell: ({ row }) => <TableCell>#{row.original.id}</TableCell>,
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
@@ -543,20 +522,18 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			header: __('Transaction Type', 'multivendorx'),
 			cell: ({ row }) => {
 				const type = row.original.transaction_type?.toLowerCase();
-				const commissionId = row.original.commission_id;
-				const paymentMethod = row.original.payment_method;
-				const orderId = row.original.order_details;
-				const formatText = (text: any) =>
+				const commissionId = row.original?.commission_id;
+				const formatText = (text: string) =>
 					text
 						?.replace(/-/g, ' ')
-						?.replace(/\b\w/g, (c: any) => c.toUpperCase()) || '-';
+						?.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-';
 
 				let displayValue = '-';
-				let content: any = displayValue;
+				let content: string = displayValue;
 
 				// Commission Transaction (clickable)
 				if (type === 'commission') {
-					displayValue = `Commission #${commissionId || '-'}`;
+					displayValue = `Commission #${commissionId}`;
 					content = commissionId ? (
 						<span
 							className="link-item"
@@ -570,39 +547,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 					) : (
 						displayValue
 					);
-				}
-
-				// Withdrawal
-				else if (type === 'withdrawal') {
-					const formattedMethod = formatText(paymentMethod);
-					const accNo = row.original.account_number;
-
-					let maskedAccount = '';
-					if (paymentMethod === 'bank-transfer' && accNo) {
-						const last2 = accNo.slice(-2);
-						maskedAccount = ` (A/C...${last2})`;
-					}
-
-					displayValue = `Withdrawal via ${formattedMethod}${maskedAccount}`;
-					content = displayValue;
-				} else if (type === 'refund') {
-					displayValue = `Refund for Order #${orderId || '-'}`;
-
-					const orderEditUrl = `${appLocalizer.site_url}/wp-admin/admin.php?page=wc-orders&action=edit&id=${orderId}`;
-					content = orderId ? (
-						<a
-							href={orderEditUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="link-item"
-						>
-							{displayValue}
-						</a>
-					) : (
-						displayValue
-					);
 				} else if (row.original.transaction_type) {
-					displayValue = formatText(row.original.transaction_type);
+					displayValue = formatText(row.original.narration);
 					content = displayValue;
 				}
 
@@ -610,6 +556,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			},
 		},
 		{
+			id: 'date',
+			accessorKey: 'date',
+			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => {
 				const rawDate = row.original.date;
@@ -726,14 +675,55 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				</div>
 			),
 		},
-	];
+		{
+			name: 'date',
+			render: (updateFilter) => (
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
 
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
+			),
+		},
+	];
+	const searchFilter: RealtimeFilter[] = [
+		{
+			name: 'searchField',
+			render: (updateFilter, filterValue) => (
+				<>
+					<div className="search-section">
+						<input
+							name="searchField"
+							type="text"
+							placeholder={__('Search', 'multivendorx')}
+							onChange={(e) => {
+								updateFilter(e.target.name, e.target.value);
+							}}
+							value={filterValue || ''}
+							className="basic-input"
+						/>
+						<i className="adminfont-search"></i>
+					</div>
+				</>
+			),
+		},
+	];
 	// 🔹 Fetch wallet/transaction overview whenever store changes
 	useEffect(() => {
 		if (!storeId) {
 			return;
 		}
-
+		setWalletLoading(true);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `transaction/${storeId}`),
@@ -741,6 +731,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 		}).then((response) => {
 			setWallet(response?.data || {});
 			setAmount(response?.data.available_balance);
+		}).finally(() => {
+			setWalletLoading(false);
 		});
 
 		axios({
@@ -749,6 +741,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 		}).then((response) => {
 			setStoreData(response.data || {});
+		}).finally(() => {
+			setWalletLoading(false);
 		});
 
 		axios({
@@ -763,10 +757,13 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				transaction_type: 'Withdrawal',
 				orderBy: 'created_at',
 				order: 'DESC',
+				status: 'Completed'
 			},
 		})
 			.then((response) => {
 				setRecentDebits(response.data.transaction || []);
+			}).finally(() => {
+				setWalletLoading(false);
 			})
 			.catch((error) => {
 				setRecentDebits([]);
@@ -803,13 +800,13 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 			method: 'PUT',
 			url: getApiLink(
 				appLocalizer,
-				`transaction/${selectedStore?.value}`
+				`transaction/${storeId}`
 			),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: {
 				disbursement: true,
 				amount,
-				store_id: selectedStore?.value,
+				store_id: storeId,
 				method: paymentMethod,
 				note,
 			},
@@ -869,7 +866,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 												.replace(/\b\w/g, (char) =>
 													char.toUpperCase()
 												) // capitalize each word
-											: __('N/A', 'multivendorx');
+											: __('No Payment Method Selected', 'multivendorx');
 
 									return (
 										<div key={txn.id} className="info-item">
@@ -912,14 +909,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 								})}
 							</>
 						) : (
-							<>
-								<div className="des">
-									{__(
-										'No recent payouts transactions found.',
-										'multivendorx'
-									)}
-								</div>
-							</>
+							<MessageState title={__('No recent payouts transactions found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>
@@ -935,15 +925,20 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 									)}
 								</div>
 								<div className="price">
-									{formatCurrency(
-										wallet.available_balance
-									)}{' '}
+									{walletLoading ? (
+										<Skeleton width={140} />
+									) : (
+										formatCurrency(wallet.available_balance)
+									)}
 								</div>
 								<div className="desc">
-									<b>{formatCurrency(wallet?.thresold)} </b>{' '}
-									{__(
-										'minimum required to withdraw',
-										'multivendorx'
+									{walletLoading ? (
+										<Skeleton width={250} />
+									) : (
+										<>
+											<b> {formatCurrency(wallet?.thresold)} </b>
+											{__('minimum required to withdraw', 'multivendorx')}
+										</>
 									)}
 								</div>
 							</div>
@@ -951,6 +946,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 								<MiniCard background
 									title={__('Upcoming Balance', 'multivendorx')}
 									value={formatCurrency(wallet.locking_balance)}
+									isLoading={walletLoading}
 									description={
 										<>
 											{__('This amount is being processed and will be released ', 'multivendorx')}
@@ -963,17 +959,21 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 													{__('automatically every hour.', 'multivendorx')}
 												</>
 											)}
-											</>
+										</>
 									}
 								/>
 
 								{wallet?.withdrawal_setting?.length > 0 && (
 									<MiniCard background
 										title={__('Free Withdrawals', 'multivendorx')}
+
 										value={
 											<>
-												{(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-													(wallet?.free_withdrawal ?? 0)}{' '}
+												{Math.max(
+													0,
+													(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
+													(wallet?.free_withdrawal ?? 0)
+												)}{' '}
 												<span>{__('Left', 'multivendorx')}</span>
 											</>
 										}
@@ -1150,8 +1150,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 							onPaginationChange={setPagination}
 							handlePagination={requestApiForData}
 							perPageOption={[10, 25, 50]}
-							typeCounts={transactionStatus as TransactionStatus[]}
+							categoryFilter={transactionStatus as TransactionStatus[]}
 							totalCounts={totalRows}
+							searchFilter={searchFilter}
 							realtimeFilter={realtimeFilter}
 							actionButton={actionButton}
 							bulkActionComp={() => (

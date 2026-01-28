@@ -43,6 +43,7 @@ interface MapboxGeocoderResult {
 declare global {
     interface Window {
         mapboxgl: {
+            LngLatBounds: any;
             Map: new (options: {
                 container: HTMLDivElement;
                 style: string;
@@ -78,6 +79,7 @@ interface MapboxComponentProps {
     locationAddress: string;
     locationLat: string;
     locationLng: string;
+    isUserLocation?: boolean;
     onLocationUpdate: (data: {
         location_address: string;
         location_lat: string;
@@ -92,23 +94,60 @@ interface MapboxComponentProps {
     labelMap: string;
     instructionText: string;
     placeholderSearch: string;
+    stores: { data: any[] };
 }
 
 const Mapbox = ({
     apiKey,
     locationLat,
     locationLng,
+    isUserLocation,
     onLocationUpdate,
     labelSearch,
     labelMap,
     instructionText,
     placeholderSearch,
+    stores,
 }: MapboxComponentProps) => {
     const [map, setMap] = useState<MapboxMap | null>(null);
     const [marker, setMarker] = useState<MapboxMarker | null>(null);
     const [mapboxLoaded, setMapboxLoaded] = useState<boolean>(false);
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!map || !stores?.data?.length) return;
+    
+        const storeMarkers: any[] = [];
+        const bounds = new window.mapboxgl.LngLatBounds();
+    
+        stores.data.forEach((store) => {
+            if (!store.location_lat || !store.location_lng) return;
+    
+            const lng = parseFloat(store.location_lng);
+            const lat = parseFloat(store.location_lat);
+    
+            const popup = new window.mapboxgl.Popup({ offset: 25 }).setHTML(
+                `<strong>${store.store_name}</strong><br/>${store.address_1 || ''}`
+            );
+    
+            const m = new window.mapboxgl.Marker()
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(map);
+    
+            bounds.extend([lng, lat]);
+            storeMarkers.push(m);
+        });
+    
+        if (storeMarkers.length) {
+            map.fitBounds(bounds, { padding: 50 });
+        }
+    
+        return () => {
+            storeMarkers.forEach(m => m.remove());
+        };
+    }, [map, stores]);    
 
     // Load Mapbox script
     useEffect(() => {
@@ -201,7 +240,7 @@ const Mapbox = ({
 
         const markerInstance = new window.mapboxgl.Marker({
             draggable: true,
-            color: '#4264FB',
+            color: isUserLocation ? '#1E90FF' : '#4264FB',
         })
             .setLngLat([initialLng, initialLat])
             .addTo(mapInstance);

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { JSX, useEffect, useRef, useState, lazy, Suspense } from 'react';
+import React, { JSX, useEffect, useRef, useState, lazy, Suspense, ReactNode } from 'react';
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
 
@@ -9,7 +9,6 @@ import { Dialog } from '@mui/material';
  * Internal dependencies
  */
 import SelectInput, { SelectOptions } from './SelectInput';
-import Label from './Label';
 import Section from './Section';
 import BlockText from './BlockText';
 import ButtonCustomizer from './ButtonCustomiser';
@@ -29,11 +28,8 @@ import TextArea from './TextArea';
 import FileInput from './FileInput';
 import RadioInput from './RadioInput';
 import MultiCheckBox from './MultiCheckbox';
-import WpEditor from './WpEditor';
 import Log from './Log';
 import InputMailchimpList from './InputMailchimpList';
-const LazyMapsInput = lazy( () => import( './Mapbox' ) );
-import GoogleMap from './GoogleMap';
 import Popup, { PopupProps } from './Popup';
 import '../styles/web/AdminForm.scss';
 import NestedComponent from './NestedComponent';
@@ -41,13 +37,11 @@ import ColorSettingInput from './ColorSettingInput';
 import EndpointEditor from './EndpointEditor';
 import ExpandablePanelGroup from './ExpandablePanelGroup';
 import SystemInfo from './SystemInfo';
-import MultiInput from './MultiInput';
 import { useModules } from '../contexts/ModuleContext';
 import axios from 'axios';
 import MultiCalendarInput from './MultiCalendarInput';
 import CalendarInput from './CalendarInput';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
-import TemplateColorPdfBuilder from './TemplateColorPdfBuilder';
 
 interface WPMediaAttachment {
     url: string;
@@ -104,7 +98,6 @@ interface MultiNumOption {
     name?: string;
     type?: string;
     desc?: string;
-    labelAfterInput?: boolean;
     arguments?: ShortcodeArgument[];
 }
 interface Field {
@@ -120,22 +113,8 @@ interface Task {
     cache?: 'course_id' | 'user_id';
 }
 
-interface MultiStringItem {
-    value: string;
-    locked?: boolean;
-    iconClass?: string;
-    description?: string;
-    required?: boolean;
-    tag?: string;
-    editDisabled?: boolean;
-    deleteDisabled?: boolean;
-}
-
 interface InputField {
-    pdfEndpoint: string;
-    showPdfButton: boolean | undefined;
-    showTemplates: boolean | undefined;
-    presetThemes: never[];
+    showPdfButton: boolean;
     templates: never[];
     key: string;
     id?: string;
@@ -145,18 +124,11 @@ interface InputField {
         | 'text'
         | 'select'
         | 'multi-select'
-        | 'map'
-        | 'google-map'
         | 'checkbox'
-        | 'radio-color'
         | 'color-setting'
-        | 'template-color-pdf-builder'
-        | 'radio-select'
         | 'radio'
         | 'button'
         | 'password'
-        | 'calender'
-        | 'color'
         | 'email'
         | 'number'
         | 'range'
@@ -164,13 +136,9 @@ interface InputField {
         | 'file'
         | 'url'
         | 'textarea'
-        | 'normalfile'
         | 'setting-toggle'
-        | 'wpeditor'
-        | 'label'
         | 'section'
         | 'blocktext'
-        | 'button-customizer'
         | 'notifima-form-customizer'
         | 'form-customizer'
         | 'catalog-customizer'
@@ -185,13 +153,8 @@ interface InputField {
         | 'api-connect'
         | 'nested'
         | 'expandable-panel'
-        | 'verification-methods'
-        | 'description'
-        | 'treeselect'
         | 'form-builder'
         | 'email-template'
-        | 'setting-time'
-        | 'multi-calender'
         | 'endpoint-editor';
     settingDescription?: string;
     desc?: string;
@@ -204,12 +167,12 @@ interface InputField {
     iconEnable?: boolean;
     custom?: boolean;
     size?: string;
-    preText?: string;
-    postText?: string;
+    preText?: string | ReactNode;
+    postText?: string | ReactNode;
     proSetting?: boolean;
     buttonColor?: string;
     moduleEnabled?: string;
-    postInsideText?: string;
+    postInsideText?: string | ReactNode;
     parameter?: string;
     generate?: string;
     dependent?: DependentCondition | DependentCondition[];
@@ -221,7 +184,6 @@ interface InputField {
     copiedLabel?: string;
     width?: number;
     height?: number;
-    mapboxApi: string;
     multiple?: boolean;
     usePlainText?: boolean;
     range?: boolean;
@@ -232,20 +194,17 @@ interface InputField {
     wrapperClass?: string;
     rowClass?: string;
     tour?: string;
-    preInsideText?: string;
+    preInsideText?: string | ReactNode;
     rightContent?: boolean;
     dependentPlugin?: boolean;
     dependentSetting?: string;
     defaultValue?: string;
     valuename?: string;
-    descEnable?: boolean;
-    requiredEnable?: boolean;
     iconOptions?: string[];
     hint?: string;
     addNewBtnText?: string;
     addNewBtn?: boolean;
     blocktext?: string;
-    defaultValues?: MultiStringItem[];
     title?: string;
     rows?: {
         key: string;
@@ -277,11 +236,7 @@ interface InputField {
     selectKey?: string;
     label?: string;
     classes?: string;
-    Lat?: number;
-    Lng?: number;
-    labelAfterInput?: boolean;
     single?: boolean;
-    center?: Center;
     buttonEnable?: boolean;
     nestedFields?: {
         key: string;
@@ -292,12 +247,6 @@ interface InputField {
     }[];
     addButtonLabel?: string;
     deleteButtonLabel?: string;
-    categories?: {
-        id: number;
-        name: string;
-        parent: number; // 0 means top-level category
-    }[];
-    showPreview?: boolean;
     predefinedOptions?: {
         key?: string;
         label?: string;
@@ -311,12 +260,6 @@ interface InputField {
         value?: string;
         image?: string[];
     }[];
-    customDefaults?: {
-        colorPrimary?: string;
-        colorSecondary?: string;
-        colorAccent?: string;
-        colorSupport?: string;
-    };
     modal?: {
         icon: string;
         id: string;
@@ -344,11 +287,6 @@ interface InputField {
     link?: string;
 }
 
-type Center = {
-    lat: number;
-    lng: number;
-};
-
 interface SettingsType {
     modal: InputField[];
     submitUrl: string;
@@ -370,8 +308,7 @@ type SettingValue =
     | string[]
     | number[]
     | Record< string, unknown >
-    | null
-    | undefined;
+    | null;
 
 type Settings = Record< string, SettingValue >;
 
@@ -413,6 +350,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         plugin: '',
     } );
     const { modules } = useModules();
+
     useEffect( () => {
         if ( settingChanged.current ) {
             settingChanged.current = false;
@@ -457,6 +395,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             counterId.current = intervalId;
         }
     }, [ setting, appLocalizer, submitUrl, id ] );
+
     useEffect( () => {
         if ( modelOpen === false ) {
             const timeout = setTimeout( () => {
@@ -474,6 +413,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
     const isProSetting = ( proDependent: boolean ): boolean => {
         return proDependent && ! appLocalizer?.khali_dabba;
     };
+
     const proSettingChanged = ( isProSettingVal: boolean ): boolean => {
         if ( isProSettingVal && ! appLocalizer?.khali_dabba ) {
             setModelOpen( true );
@@ -580,17 +520,15 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         type: 'single' | 'multiple' = 'single',
         fromType:
             | 'simple'
-            | 'calender'
             | 'select'
-            | 'multi-select'
-            | 'wpeditor' = 'simple',
+            | 'multi-select',
         arrayValue: string[] | number[] = []
     ) => {
         settingChanged.current = true;
 
         if ( type === 'single' ) {
             // normal single value
-            if ( fromType === 'simple' || fromType === 'wpeditor' ) {
+            if ( fromType === 'simple' ) {
                 const val =
                     (
                         event as React.ChangeEvent<
@@ -598,30 +536,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         >
                      )?.target?.value ?? event;
                 updateSetting( key, val );
-            } else if ( fromType === 'calender' ) {
-                let formattedDate: string;
-                if ( Array.isArray( event ) ) {
-                    if (
-                        ( event as unknown[] ).every(
-                            ( item: unknown ) =>
-                                Array.isArray( item ) && item.length === 2
-                        )
-                    ) {
-                        formattedDate = ( event as unknown as unknown[][] )
-                            .map(
-                                ( range: unknown[] ) =>
-                                    `${ range[ 0 ]?.toString() } - ${ range[ 1 ]?.toString() }`
-                            )
-                            .join( ', ' );
-                    } else {
-                        formattedDate = ( event as unknown[] )
-                            .map( ( item: unknown ) => item.toString() )
-                            .join( ',' );
-                    }
-                } else {
-                    formattedDate = event.toString();
-                }
-                updateSetting( key, formattedDate );
             } else if ( fromType === 'select' ) {
                 const selectEvent = event as { index: number };
                 updateSetting( key, arrayValue[ selectEvent.index ] );
@@ -761,7 +675,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         }
         return true;
     };
-    // NEW: Click handler for the entire .form-group
+
+    // Click handler for the entire .form-group that is entire settings row
     const handleGroupClick = (
         e: React.MouseEvent< HTMLDivElement >,
         field: InputField
@@ -807,6 +722,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             return;
         }
     };
+
     const renderForm = () => {
         return modal.map( ( inputField: InputField ) => {
             const value: unknown = setting[ inputField.key ] ?? '';
@@ -930,38 +846,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-                case 'normalfile':
-                    input = (
-                        <BasicInput
-                            wrapperClass={inputField.wrapperClass}
-                            type="file"
-                            key={ inputField.key }
-                            name={ inputField.name }
-                            value={ value } // current value of the file input (usually a file path or File object)
-                            proSetting={ isProSetting(
-                                inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e ) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange( e, inputField.key );
-                                }
-                            } }
-                        />
-                    );
-                    break;
+
                 case 'file':
                     input = (
                         <FileInput
@@ -1027,171 +912,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-
-                // Check in MultiVendorX
-                case 'color':
-                    input = (
-                        <BasicInput
-                            wrapperClass="settings-color-picker"
-                            inputClass="setting-color-picker"
-                            description={ inputField.desc } // optional description displayed under the input
-                            key={ inputField.key }
-                            id={ inputField.id }
-                            name={ inputField.name }
-                            type={ inputField.type }
-                            value={ value || '#000000' } // current value of the input; defaults to black if empty
-                            proSetting={ isProSetting(
-                                inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e ) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange( e, inputField.key );
-                                }
-                            } }
-                        />
-                    );
-                    break;
-                case 'multi-calender':
-                    input = (
-                        <MultiCalendarInput
-                            wrapperClass={inputField.wrapperClass}
-                            inputClass="teal"
-                            multiple={ inputField.multiple || false } //for single or mutiple input (true/false)
-                            range={ inputField.range || false } // for range select (true/false)
-                            value={ setting[ inputField.key ] || '' }
-                            proSetting={ isProSetting(
-                                inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e ) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange(
-                                        e,
-                                        inputField.key,
-                                        'single',
-                                        [
-                                            'calender',
-                                            'select',
-                                            'multi-select',
-                                            'wpeditor',
-                                        ].includes( inputField.type ?? '' )
-                                            ? ( inputField.type as
-                                                  | 'calender'
-                                                  | 'select'
-                                                  | 'multi-select'
-                                                  | 'wpeditor' )
-                                            : 'simple' // Default for unsupported types
-                                    );
-                                }
-                            } }
-                        />
-                    );
-                    break;
-                case 'calender':
-                    input = (
-                        <CalendarInput
-                            wrapperClass={inputField.wrapperClass}
-                            inputClass= {inputField.class}
-                            multiple={ inputField.multiple || false } //for single or mutiple input (true/false)
-                            range={ inputField.range || false } // for range select (true/false)
-                            value={ setting[ inputField.key ] || '' }
-                            proSetting={ isProSetting(
-                                inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e ) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange(
-                                        e,
-                                        inputField.key,
-                                        'single',
-                                        [
-                                            'calender',
-                                            'select',
-                                            'multi-select',
-                                            'wpeditor',
-                                        ].includes( inputField.type ?? '' )
-                                            ? ( inputField.type as
-                                                  | 'calender'
-                                                  | 'select'
-                                                  | 'multi-select'
-                                                  | 'wpeditor' )
-                                            : 'simple' // Default for unsupported types
-                                    );
-                                }
-                            } }
-                        />
-                    );
-                    break;
-                // Check in MultiVendorX
-                case 'map':
-                    input = (
-                        <Suspense fallback={ <div>Loading map...</div> }>
-                            <LazyMapsInput
-                                wrapperClass="settings-basic-input-class"
-                                descClass="settings-metabox-description"
-                                description={ inputField.desc } // optional description displayed under the map input
-                                mapboxApi={ inputField.mapboxApi }
-                                containerId="store-maps"
-                                containerClass="store-maps gmap"
-                                proSetting={ isProSetting(
-                                    inputField.proSetting ?? false
-                                ) }
-                                Lat={ inputField.Lat } //for latitude
-                                Lng={ inputField.Lng } // for longitude
-                            />
-                        </Suspense>
-                    );
-                    break;
-                // Check in MultiVendorX
-                case 'google-map':
-                    input = (
-                        <GoogleMap
-                            wrapperClass="settings-basic-input-class"
-                            placeholder="Enter location" // placeholder text displayed in the search input
-                            center={
-                                inputField.center ?? { lat: -22.0, lng: 22.5 }
-                            } // for default location
-                        />
-                    );
-                    break;
+                
                 // Check in MultiVendorX
                 case 'button':
                     input = (
@@ -1283,67 +1004,13 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         />
                     );
                     break;
-                // for radio select button with image hover
-                case 'radio-select':
-                    input = (
-                        <RadioInput
-                            wrapperClass="form-group-radio-select"
-                            inputWrapperClass="radioselect-class"
-                            inputClass="setting-form-input"
-                            radiSelectLabelClass="radio-select-under-label-class"
-                            labelImgClass="section-img-fluid"
-                            labelOverlayClass="radioselect-overlay-text"
-                            labelOverlayText="Select your Store"
-                            idPrefix="radio-select-under"
-                            descClass="settings-metabox-description"
-                            activeClass="radio-select-active"
-                            description={ inputField.desc } // optional description displayed under the radio group
-                            type="radio-select" // input type indicating this is a custom radio select
-                            value={
-                                typeof value === 'number'
-                                    ? value.toString()
-                                    : value
-                            }
-                            name={ inputField.name }
-                            keyName={ inputField.key }
-                            options={
-                                Array.isArray( inputField.options )
-                                    ? inputField.options
-                                    : []
-                            } // array of radio options
-                            proSetting={ isProSetting(
-                                inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e ) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange( e, inputField.key );
-                                }
-                            } }
-                        />
-                    );
-                    break;
 
-                // Check in MultiVendorX
                 case 'color-setting':
                     input = (
                         <ColorSettingInput
-                            wrapperClass={inputField.wrapperClass}
-                            inputClass={ inputField.class }
+                            wrapperClass="form-group-color-setting"
+                            inputClass="setting-form-input"
                             description={ inputField.desc } // optional description displayed under the input
-                            showPreview={ inputField.showPreview ?? false } // whether to show a color preview box
                             predefinedOptions={
                                 inputField.predefinedOptions ?? []
                             } // array of predefined color options for quick selection
@@ -1353,8 +1020,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             onChange={ ( e ) =>
                                 handleChange( e, inputField.key )
                             }
+                            idPrefix="color-setting"
                             showPdfButton={ inputField.showPdfButton ?? false }
-                            showTemplates={ inputField.showTemplates ?? false }
                         />
                     );
                     break;
@@ -1621,8 +1288,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <ToggleSetting
                             khali_dabba={ appLocalizer?.khali_dabba ?? false }
-                            wrapperClass={ `setting-form-input` }
-                            descClass="settings-metabox-description"
+                            wrapperClass={ inputField.wrapperClass }
                             description={ inputField.desc }
                             key={ inputField.key }
                             iconEnable={ inputField.iconEnable } // If true, will display the toggle value as an icon
@@ -1680,53 +1346,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     );
                     break;
 
-                /**
-                 * Renders the TinyMCE-based `WpEditor` for rich-text / HTML input fields.
-                 */
-                case 'wpeditor':
-                    input = (
-                        <WpEditor
-                            apiKey={ String(
-                                appLocalizer?.mvx_tinymce_key || ''
-                            ) } //TinyMCE api key
-                            value={ String( value ) }
-                            onEditorChange={ ( e ) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    handleChange(
-                                        e,
-                                        inputField.key,
-                                        'single',
-                                        'wpeditor'
-                                    );
-                                }
-                            } }
-                        />
-                    );
-                    break;
-                // Check in MultiVendorX
-                case 'label':
-                    input = (
-                        <Label
-                            wrapperClass="form-group-only-label"
-                            descClass="settings-metabox-description"
-                            value={ String( inputField.valuename ) } //The actual text of the label.
-                            description={ inputField.desc } //Optional descriptive text, often used for guidance or help text.
-                        />
-                    );
-                    break;
                 // For separation (if you want heading in line then put desc or add some description then add hint)
                 case 'section':
                     input = (
@@ -1756,51 +1375,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     );
                     break;
                 // Special input type project specific
-                // customize button
-                case 'button-customizer':
-                    input = (
-                        <ButtonCustomizer
-                            text={
-                                setting[ inputField.key ]?.button_text ||
-                                'Button Text'
-                            } // The label shown on the button (fallback to "Button Text" if not set).
-                            proSetting={ isProSetting(
-                                inputField.proSetting ?? false
-                            ) }
-                            setting={ setting[ inputField.key ] }
-                            onChange={ (
-                                key,
-                                data,
-                                isRestoreDefaults = false
-                            ) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
-                                    )
-                                ) {
-                                    settingChanged.current = true;
-                                    if ( isRestoreDefaults ) {
-                                        updateSetting( inputField.key, data );
-                                    } else {
-                                        updateSetting( inputField.key, {
-                                            ...setting[ inputField.key ],
-                                            [ key ]: data,
-                                        } );
-                                    }
-                                }
-                            } }
-                        />
-                    );
-                    break;
                 case 'notifima-form-customizer':
                     input = (
                         <FormCustomizer
@@ -2253,13 +1827,14 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     ! appLocalizer[
                         `${ inputField.dependentPlugin }_active`
                     ] );
+
             const fieldContent =
                 inputField.type === 'section' ||
                 inputField.label === 'no_label' ? (
                     <>{ input }</>
                 ) : (
                     <div
-                        key={ 'g' + inputField.key }
+                        key={ inputField.key }
                         className={ `form-group ${
                             inputField.classes ? inputField.classes : ''
                         } ${ inputField.proSetting ? 'pro-setting' : '' } ${
@@ -2270,12 +1845,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         }` }
                         onClick={ ( e ) => handleGroupClick( e, inputField ) }
                     >
-                        { inputField.label &&
-                            inputField.type !== 'catalog-customizer' &&
-                            inputField.type !== 'form-customizer' && (
+                        { inputField.label && (
                                 <label
                                     className="settings-form-label"
-                                    key={ 'l' + inputField.key }
+                                    key={ inputField.key }
                                     htmlFor={ inputField.key }
                                 >
                                     <div className="title">
@@ -2354,8 +1927,6 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     {
                         <Popup
                             moduleName={ String( modulePopupData.moduleName ) }
-                            // wooSetting={String(modulePopupData.wooSetting)}
-                            // wooLink={String(modulePopupData.wooLink)}
                             settings={ modulePopupData.settings }
                             plugin={ modulePopupData.plugin }
                             message={ modulePopupFields?.message }

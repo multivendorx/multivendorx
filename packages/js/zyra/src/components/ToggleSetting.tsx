@@ -41,6 +41,7 @@ interface ToggleSettingProps {
 const ToggleSetting: React.FC< ToggleSettingProps > = ( {
     description,
     options,
+    wrapperClass,
     value,
     key,
     onChange,
@@ -74,7 +75,7 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
 
     return (
         <>
-            <div className="toggle-setting-container">
+            <div className={`toggle-setting-container ${wrapperClass ? wrapperClass : ''}`}>
                 { preText && <span className="before">{ preText }</span> }
 
                 <div className={`toggle-setting-wrapper ${custom ? 'custom' : ''}`}>
@@ -125,17 +126,17 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
                                         ) }
                                     </span>
                                     {option.desc && (
-                                        <div className="desc">{option.desc}</div>
+                                        <div className="des">{option.desc}</div>
                                     )}
                                     {option.customHtml && (
                                         <div className="toggle-custom-wrapper" dangerouslySetInnerHTML={{ __html: option.customHtml }} />
-                                    )} 
+                                    )}
                                 </label>
-                                { option.proSetting && ! khali_dabba && (
+                                {option.proSetting && ! khali_dabba && (
                                     <span className="admin-pro-tag">
                                         <i className="adminfont-pro-tag"></i>Pro
                                     </span>
-                                ) }
+                                )}
                             </div>
                         );
                     } ) }

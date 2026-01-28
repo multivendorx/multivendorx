@@ -1,0 +1,54 @@
+@use '../../../global.scss' as *;
+
+.permission-wrapper {
+    height: 12rem;
+    width: 100%;
+    background: $background-white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.625rem;
+
+    i {
+        padding: 0.5rem;
+        font-size: 1.45rem;
+        border-radius: 0.313rem;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+
+    .des {
+        margin-bottom: 1rem;
+    }
+}
+
+// no data found start
+// .no-data-found {
+//     text-align: center;
+//     width: 70%;
+//     margin: auto;
+
+//     .icon {
+//         padding: 0.5rem;
+//         font-size: 1.625rem;
+//         border-radius: 0.313rem;
+//     }
+
+//     .title {
+//         font-size: 1.313rem;
+//         font-weight: 600;
+//         line-height: 1.5rem;
+//         margin-top: 1rem;
+//         padding-bottom: 0.75rem;
+//     }
+// }
+
+.no-data {
+    padding: 3rem;
+    background: $background-white;
+    text-align: center;
+    color: $sub-text-color;
+}

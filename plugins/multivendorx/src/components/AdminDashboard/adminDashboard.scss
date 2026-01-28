@@ -65,70 +65,6 @@
 
 // pro banner end
 
-// .tab-titles {
-//     display: flex;
-//     gap: 1.313rem;
-//     // margin-bottom: 2.5rem;
-//     // padding-bottom: 0.5rem;
-//     // border-bottom: $border-light-small;
-
-//     .title {
-//         cursor: pointer;
-//         text-align: center;
-//         display: flex;
-//         flex-direction: column;
-//         gap: 0.313rem;
-//         align-items: center;
-//         background: #fff;
-//         padding: 1rem 1rem 0.313rem 1rem;
-//         min-width: 10%;
-
-
-//         .icon {
-//             font-size: 1.625rem;
-//         }
-
-//         p {
-//             font-size: .938rem;
-//             line-height: 1.5;
-//             color: #707070;
-//             font-weight: 500;
-
-//             i {
-//                 padding-right: 0.313rem;
-//                 font-size: 1.125rem;
-//             }
-//         }
-
-//         &.active {
-//             color: $theme-color;
-//             border-bottom: 0.126rem solid $theme-color;
-
-//             p {
-//                 color: $theme-color;
-//             }
-//         }
-//     }
-
-//     &.hover {
-//         .title {
-
-//             &:hover {
-//                 background: $theme-color;
-
-//                 i {
-//                     color: #fff;
-//                 }
-
-//                 p {
-//                     color: #fff;
-//                 }
-//             }
-//         }
-//     }
-// }
-
-
 // admin dashboard card design start
 .header {
     padding: 1rem;
@@ -715,27 +651,57 @@
 // membership-features start
 .membership-features {
     .features-list {
-        padding-top: 0.313rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
 
         .feature-row {
             display: flex;
             gap: 0.5rem;
-            margin: 0.625rem 0;
-            padding: 0.5rem;
-            background: #efefefec;
             border-radius: 0.313rem;
+            align-items: start;
+            padding: 0.5rem;
+            border: $border-light-small;
+            position: relative;
+
+            .feature-name {
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.625rem;
+            }
 
             .feature-number {
                 padding: 0.313rem;
-                width: 1.25rem;
-                height: 1.25rem;
+                min-width: 1rem;
+                height: 1rem;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 border-radius: 50%;
-                font-size: 1.25rem;
+                font-size: 1.063rem;
                 background: $theme-color;
                 color: #fff;
+            }
+
+            .edit-buttons {
+                display: flex;
+                gap: 0.5rem;
+                position: absolute;
+                right: 0.5rem;
+                cursor: pointer;
+                opacity: 0;
+                transition: all 0.4s ease;
+            }
+
+            .textarea-input {
+                width: 70%;
+            }
+
+            &:hover{
+                .edit-buttons {
+                    opacity: 1;
+                }
             }
         }
     }
@@ -744,9 +710,9 @@
 // dropdown menu style (table action, icon action)  remove
 .icon-wrapper {
     position: relative;
-    .dropdown-icon{
 
-    }
+    .dropdown-icon {}
+
     .count {
         position: absolute;
         font-size: 0.75rem;
@@ -778,7 +744,7 @@
         .dropdown-body {
             margin: 0;
 
-            .tabs-wrapper{
+            .tabs-wrapper {
                 padding: 0.75rem;
             }
         }
@@ -915,13 +881,244 @@
 // dropdown menu end
 
 // shipping by zone
-.shipping-method-wrapper{
+.shipping-method-wrapper {
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
-    
-    .shipping-method{
+
+    .shipping-method {
         display: flex;
         gap: 0.5rem;
+
+        .admin-badge {
+            cursor: pointer;
+        }
     }
 }
+
+.checklist-process-wrapper:has(.checklist-wrapper.row) {
+    .checklist-icon {
+        position: absolute;
+        cursor: pointer;
+    }
+}
+
+// membership checklist start
+.card-wrapper:has(.checklist-process-wrapper.show) {
+    background: $background-white;
+    height: fit-content;
+    position: sticky !important;
+    top: 2rem;
+    z-index: 9;
+}
+
+.checklist-process-wrapper.show {
+    top: 2.125rem;
+    transform: translate(0);
+    transition: transform 0.35s ease;
+
+    .checklist-icon {
+        right: 1rem;
+    }
+}
+
+.checklist-process-wrapper.hide {
+    transform: translate(100%);
+    transition: transform 0.35s ease;
+    position: fixed !important;
+    right: 0;
+    top: 6rem;
+
+    .checklist-icon {
+        left: 0.5rem;
+    }
+}
+
+.checklist-process-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 2rem;
+
+    .checklist-title {
+        font-size: 1.125rem;
+        color: $text-color;
+        display: flex;
+        align-items: center;
+        gap: 0.313rem;
+    }
+
+    ul {
+        margin: 0;
+        list-style-type: none;
+        display: flex;
+        gap: 0.625rem;
+        justify-content: space-around;
+        width: 100%;
+
+        li {
+            margin: 1.125rem 0;
+            font-size: 1rem;
+            font-weight: 500;
+            gap: 0.45rem;
+            color: $text-color;
+            margin: 0;
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .details-wrapper {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                z-index: 2;
+                padding: 0 1rem;
+            }
+
+            &:before {
+                position: absolute;
+                content: "";
+                width: 100%;
+                left: -50%;
+                top: 13%;
+                height: 0.125rem;
+                background-color: $background-color;
+                z-index: 1;
+            }
+
+            .check-icon {
+                width: 1.5rem;
+
+                span {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                    display: inline-block;
+                    background: $background-color;
+                    border-radius: 0.313rem;
+                    position: relative;
+                    font-family: adminfonts, sans-serif;
+                    padding: 0.063rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+
+            .details {
+                text-align: center;
+
+                .title {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin-bottom: 0.313rem;
+                }
+
+                .des {
+                    font-size: 0.813rem;
+                    color: $sub-text-color;
+                    line-height: 1.063;
+                }
+            }
+
+            &.checked {
+
+                &:before {
+                    background: $theme-color;
+                }
+
+                span {
+                    background: $theme-color;
+
+                    &::before {
+                        position: absolute;
+                        content: "\e809";
+                        color: #fff;
+                        font-size: 0.95rem;
+                    }
+                }
+            }
+
+            &.visite {
+                &:before {
+                    background: $theme-color;
+                }
+
+                span {
+                    background: $theme-color;
+
+                    &::before {
+                        position: absolute;
+                        content: "";
+                        width: 0.5rem;
+                        height: 0.5rem;
+                        background: #fff;
+                    }
+                }
+            }
+
+            &.not-visite {
+                span {
+                    &::before {
+                        position: absolute;
+                        content: "";
+                        width: 0.5rem;
+                        height: 0.5rem;
+                        background: #b6b5b5f3;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        li:first-child {
+            &:before {
+                height: 0;
+            }
+        }
+    }
+
+    .checklist-title {
+        text-align: center;
+        margin-bottom: 0.625rem;
+    }
+
+
+}
+
+.checklist-arrow {
+    background: $theme-color;
+    color: #fff;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.313rem;
+    cursor: pointer;
+    z-index: 99;
+    width: 1rem;
+    height: 1rem;
+
+    &.fixed {
+        position: fixed;
+        right: 0;
+        top: 50%;
+    }
+
+    &.absolute {
+        position: absolute;
+        right: 0.5rem;
+    }
+}
+
+// membership checklist end
+
+// invoice styles start
+#invoice-table-wrapper {
+
+    #invoice-table-header,
+    #invoice-table-row {
+        padding: 0.813rem 1rem;
+    }
+}
+
+// invoice styles end

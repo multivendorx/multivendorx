@@ -1,0 +1,51 @@
+@use '../../../global.scss' as *;
+
+.admin-notice-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.875rem;
+  padding: 0.85rem 6rem 0.85rem 0.85rem;
+  font-weight: 400;
+  position: fixed;
+  z-index: 99999;
+  background: $background-white;
+  box-shadow: $box-shadow;
+  right: 1.85rem;
+  top: 7rem;
+  animation: noticeslide 7s ease-in-out forwards;
+
+  &.notice-error {
+    i {
+      color: $accent-color;
+    }
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.313;
+  }
+
+  i {
+    color: #008000;
+    font-size: 1.4rem;
+  }
+}
+
+@keyframes noticeslide {
+  0% {
+    transform: translateX(120%);
+  }
+
+  10% {
+    transform: translateX(0);
+  }
+
+  80% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(120%);
+  }
+}

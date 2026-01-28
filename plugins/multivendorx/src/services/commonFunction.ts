@@ -55,18 +55,22 @@ export const formatWcShortDate = (dateString: any) => {
 	});
 };
 
-export function formatTimeAgo(dateString: any) {
-	const date = new Date(dateString.replace(' ', 'T'));
-	const diff = (Date.now() - date.getTime()) / 1000;
+export function formatTimeAgo(dateString: string) {
+	// Force UTC
+	const date = new Date(dateString + 'Z');
 
-	if (diff < 60) {
-		return 'Just now';
-	}
-	if (diff < 3600) {
-		return Math.floor(diff / 60) + 'min ago';
-	}
-	if (diff < 86400) {
-		return Math.floor(diff / 3600) + 'hour ago';
-	}
-	return Math.floor(diff / 86400) + 'day ago';
+	const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+
+	if (diff < 60) return 'Just now';
+	if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+	if (diff < 86400) return `${Math.floor(diff / 3600)} hour ago`;
+	return `${Math.floor(diff / 86400)} day ago`;
 }
+
+
+export const formatLocalDate = (date: Date): string => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+};

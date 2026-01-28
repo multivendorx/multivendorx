@@ -7,7 +7,7 @@
 
 namespace MultiVendorX\StorePolicy;
 
-use MultiVendorX\Store\StoreUtil;
+use MultiVendorX\FrontendScripts;
 
 /**
  * MultiVendorX Store Policy Frontend class
@@ -26,8 +26,18 @@ class Frontend {
         add_filter( 'multivendorx_store_tabs', array( $this, 'add_store_policy_tab' ), 10, 2 );
 
         add_filter( 'woocommerce_product_tabs', array( $this, 'product_policy_tab' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 
         // add_filter( 'template_include', [ $this, 'store_policy_template' ] );
+    }
+
+    /**
+     * Load follow store JS scripts
+     */
+    public function load_scripts() {
+        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_script( 'multivendorx-store-policy-frontend-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-store-policy-frontend-script' );
     }
 
     /**

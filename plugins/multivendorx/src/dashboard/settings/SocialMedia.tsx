@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BasicInput, SuccessNotice, getApiLink } from 'zyra';
+import { __ } from '@wordpress/i18n';
 
 const SocialMedia = () => {
 	const id = appLocalizer.store_id;
@@ -133,6 +134,22 @@ const SocialMedia = () => {
 						 
 						descClass="settings-metabox-description"
 						value={formData.instagram}
+						onChange={handleChange}
+					/>
+				</div>
+			</div>
+
+			<div className="form-group-wrapper">
+				<div className="form-group">
+					<label htmlFor="pinterest">
+						<i className="adminfont-mail"></i>{' '}
+						{__('Pinterest', 'multivendorx')}
+					</label>
+					<BasicInput
+						name="pinterest"
+						 
+						descClass="settings-metabox-description"
+						value={formData.pinterest}
 						onChange={handleChange}
 					/>
 				</div>

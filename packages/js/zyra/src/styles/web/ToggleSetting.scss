@@ -50,8 +50,8 @@
 }
 
 .toggle-btn {
-    display: flex;
-    gap: 0.5rem;
+    // display: flex;
+    // gap: 0.5rem;
 
     .before {
         font-size: 0.95rem;
@@ -111,7 +111,17 @@
             }
 
             i {
-                font-size: 1.5rem;
+                font-size: 1.813rem;
+            }
+
+            span {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.625rem;
+            }
+            .des{
+                font-size: 0.813rem;
             }
         }
 
@@ -152,12 +162,10 @@
 
         span {
             font-size: 1.125rem;
-            padding-left: 1.125rem;
+            flex-direction: row !important;
+            color: $text-color;
         }
 
-        i {
-            padding-right: 0.5rem;
-        }
 
         label {
             border: $border-light-medium;
@@ -166,13 +174,7 @@
             gap: 0.313rem;
         }
 
-        input {
-            display: block;
-            position: absolute;
-            top: 1rem;
-            left: 0.5rem;
-        }
-        input[type=radio]:checked::before{
+        input[type=radio]:checked::before {
             color: $theme-color;
         }
 
@@ -180,24 +182,24 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 0.625rem;
 
             .toggle-notice {
-                border: $border-light-small;
-                border-radius: 0.313rem;
-                padding: 1rem;
-
                 .title {
                     font-size: 1rem;
                     color: $sub-text-color;
                 }
 
                 ul {
-                    margin-bottom: 0;
+                    margin: 0 2.5rem;
+                    list-style: number;
+                    font-size: 0.813rem;
+                    padding-top: 0.25rem;
+                    color: $sub-text-color;
                 }
             }
         }
-        div:has(input:checked)+div label{
+
+        div:has(input:checked)+div label {
             border: $border-light-medium;
         }
     }
@@ -208,6 +210,16 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    // for full width 
+    &.full-width {
+        width: 100%;
+
+        .toggle-option,
+        .toggle-setting-wrapper {
+            width: 100%;
+        }
+    }
 }
 
 .toggle-setting-container:has(.custom) {

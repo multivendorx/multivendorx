@@ -38,6 +38,8 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 							file: attachment.url,
 							name: attachment.filename,
 						});
+						updateDownloadableFile(row.id, 'file', attachment.url);
+						updateDownloadableFile(row.id, 'name', attachment.filename);
 					});
 
 					frame.open();
@@ -56,95 +58,62 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 		}));
 	};
 
-	const removeDownloadableFile = (uniqueId) => {
-		setProduct((prev) => ({
-			...prev,
-			downloads: prev.downloads.filter((f) => f.id !== uniqueId),
-		}));
-	};
-
-	const openMediaUploader = (id) => {
-		const frame = wp.media({
-			title: 'Select or Upload File',
-			button: { text: 'Use this file' },
-			multiple: false,
-		});
-
-		frame.on('select', () => {
-			const attachment = frame.state().get('selection').first().toJSON();
-			updateDownloadableFile(id, 'file', attachment.url);
-			updateDownloadableFile(id, 'name', attachment.filename);
-		});
-
-		frame.open();
-	};
-
-	const toggleCard = (cardId) => {
-		const body = document.querySelector(`#${cardId} .card-body`);
-		const arrow = document.querySelector(`#${cardId} .arrow-icon`);
-
-		if (!body || !arrow) {
-			return;
-		}
-
-		body.classList.toggle('hide-body');
-		arrow.classList.toggle('rotate');
-	};
 
 	return (
-		<Card
-			title={__('Downloadable', 'multivendorx')}
-			iconName="adminfont-pagination-right-arrow arrow-icon"
-			toggle
-		>
-			<DynamicRowSetting
-				keyName="downloads"
-				template={downloadTemplate}
-				value={product.downloads}
-				addLabel={__('Add new', 'multivendorx')}
-				onChange={(rows) => {
-					const cleanedRows = rows.map(({ upload, ...rest }) => rest);
+		// <Card contentHeight
+		// 	title={__('Downloadable', 'multivendorx')}
+		// 	iconName="adminfont-pagination-right-arrow arrow-icon"
+		// 	toggle
+		// >
+		<>
+			<FormGroup>
+				<DynamicRowSetting
+					keyName="downloads"
+					template={downloadTemplate}
+					value={product.downloads}
+					addLabel={__('Add new', 'multivendorx')}
+					onChange={(rows) => {
+						const cleanedRows = rows.map(({ upload, ...rest }) => rest);
 
-					setProduct((prev) => ({
-						...prev,
-						downloads: cleanedRows,
-					}));
-				}}
-			/>
+						setProduct((prev) => ({
+							...prev,
+							downloads: cleanedRows,
+						}));
+					}}
+				/>
+			</FormGroup>
 
-			<FormGroupWrapper>
-				<FormGroup label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
-					<BasicInput
-						name="download_limit"
-						type="number"
-						 
-						value={product.download_limit}
-						onChange={(e) =>
-							handleChange(
-								'download_limit',
-								e.target.value
-							)
-						}
-					/>
-				</FormGroup>
+			<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
+				<BasicInput
+					name="download_limit"
+					type="number"
 
-				<FormGroup label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
-					<BasicInput
-						name="download_expiry"
-						type="number"
-						 
-						value={product.download_expiry}
-						onChange={(e) =>
-							handleChange(
-								'download_expiry',
-								e.target.value
-							)
-						}
-					/>
-				</FormGroup>
-			</FormGroupWrapper>
-		</Card >
+					value={product.download_limit}
+					onChange={(e) =>
+						handleChange(
+							'download_limit',
+							e.target.value
+						)
+					}
+				/>
+			</FormGroup>
 
+			<FormGroup cols={2} label={__('Download limit', 'multivendorx')} htmlFor="download_limit">
+				<BasicInput
+					name="download_expiry"
+					type="number"
+
+					value={product.download_expiry}
+					onChange={(e) =>
+						handleChange(
+							'download_expiry',
+							e.target.value
+						)
+					}
+				/>
+			</FormGroup>
+		</>
+		// </Card >
 	);
 };
 

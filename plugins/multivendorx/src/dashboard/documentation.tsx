@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButton, Card, Column, CommonPopup, getApiLink, MiniCard } from 'zyra';
+import { AdminButton, Card, Column, CommonPopup, getApiLink, MessageState, MiniCard } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -128,17 +128,11 @@ const Documentation: React.FC = () => {
 				</div>
 				<div className="documentation-wrapper">
 					{filteredDocuments.length === 0 && (
-						<div className="permission-wrapper">
-							<i className="adminfont-info red"></i>
-							<div className="title">
-								{__('No documents found.', 'multivendorx')}
-							</div>
-						</div>
+						<MessageState title={__('No documents found.', 'multivendorx')}/>
 					)}
-					<Column row>
-						{filteredDocuments.map((doc) => (
-							<>
-								{/* <div key={doc.id} className="document">
+					{filteredDocuments.map((doc) => (
+						<>
+							{/* <div key={doc.id} className="document">
 									<div className="document-icon">
 										<i className="adminfont-contact-form"></i>
 									</div>
@@ -160,6 +154,7 @@ const Documentation: React.FC = () => {
 										</div>
 									</div>
 								</div> */}
+							
 								<MiniCard
 									background
 									cols={3}
@@ -187,10 +182,9 @@ const Documentation: React.FC = () => {
 											</a>
 										</>
 									}
-								/>
-							</>
-						))}
-					</Column>
+								/>						
+						</>
+					))}
 				</div>
 			</Card>
 

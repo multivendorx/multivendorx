@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, useModules } from 'zyra';
-import { Skeleton } from '@mui/material';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, useModules, Skeleton } from 'zyra';
 import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './latestReview';
 import LatestRefundRequest from './latestRefundRequest';
@@ -96,19 +95,17 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 
 	const overviewData = [
 		{
-			icon: 'adminfont-wallet red',
+			icon: 'wallet red',
 			number: formatCurrency(storeData.transactions?.balance ?? 0),
 			text: 'Wallet balance',
 		},
 		{
-			icon: 'adminfont-dollar yellow',
-			number: formatCurrency(
-				storeData.transactions?.locking_balance ?? 0
-			),
+			icon: 'dollar yellow',
+			number: formatCurrency(storeData.transactions?.locking_balance ?? 0),
 			text: 'Upcoming balance',
 		},
 		{
-			icon: 'adminfont-wallet-in blue',
+			icon: 'wallet-in blue',
 			number: formatCurrency(storeData.request_withdrawal_amount ?? 0),
 			text: 'Requested payout',
 		},
@@ -119,7 +116,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 			<Container>
 				<Column grid={8}>
 					<Analytics
-						template="template-1"
+						variant='small'
 						data={overviewData.map((item) => ({
 							icon: item.icon,
 							number: item.number,
@@ -371,7 +368,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 						<InfoItem
 							title={
 								storeData.primary_owner_info?.data?.display_name ?? (
-									<Skeleton variant="text" width={150} />
+									<Skeleton width={150} />
 								)
 							}
 							avatar={{
@@ -382,7 +379,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									label: __('Email', 'multivendorx'),
 									value:
 										storeData.primary_owner_info?.data?.user_email ?? (
-											<Skeleton variant="text" width={150} />
+											<Skeleton width={150} />
 										),
 								},
 							]}

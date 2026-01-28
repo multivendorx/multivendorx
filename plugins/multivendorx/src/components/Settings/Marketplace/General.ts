@@ -60,7 +60,7 @@ export default {
 			hint: __('Customer-facing order presentation & invoicing', 'multivendorx'),
 		},
 		{
-			key: 'sms_gateway_selector',
+			key: 'display_customer_order',
 			type: 'setting-toggle',
 			label: __('Customers will see information for', 'multivendorx'),
 			custom: true,
@@ -69,7 +69,7 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
+				'In a multivendor setup, a <b>Main Order</b> is the parent order placed by the customer, while <b>Sub-orders</b> are created for each store.<br/><b>Enabling the Main Order is recommended</b>, as it allows you to send a single email that includes the Main Order and all related Sub-orders. Alternatively, you can send separate emails for the Main Order and each Sub-order.',
 				'multivendorx'
 			),
 			options: [
@@ -80,16 +80,10 @@ export default {
 					icon: 'adminfont-cart',
 					value: 'mainorder',
 					customHtml: `<div class="toggle-notice">
-									<div class="title">What happens</div>
 									<ul>
 										<li>Customer gets one email about their purchase</li>
 										<li>One order shows in "My Account"</li>
 										<li>One receipt for everything</li>
-									</ul>
-								</div>
-								<div class="toggle-notice">
-									<div class="title">Receipts & tax info</div>
-									<ul>
 										<li>One receipt issued by Your Marketplace with Your business tax details</li>
 									</ul>
 								</div>`
@@ -101,16 +95,10 @@ export default {
 					desc: __('Customer receives separate emails and sees individual store orders', 'multivendorx'),
 					value: 'suborder',
 					customHtml: `<div class="toggle-notice">
-									<div class="title">What Happens</div>
 									<ul>
 										<li>Separate email from each store</li>
 										<li>Multiple orders show in "My Account" (one per store)</li>
 										<li>Separate receipt from each store</li>
-									</ul>
-								</div>
-								<div class="toggle-notice">
-									<div class="title">Receipts & tax info</div>
-									<ul>
 										<li>Multiple receipts (one from each store) issued by Each Store with Each store's tax details</li>
 									</ul>
 								</div>`					
@@ -122,16 +110,10 @@ export default {
 					desc: __('Customer receives multiple emails and sees all order versions', 'multivendorx'),
 					value: '',
 					customHtml: `<div class="toggle-notice">
-									<div class="title">What Happens</div>
 									<ul>
 										<li>One email for complete order + separate emails per store</li>
 										<li>Multiple orders in "My Account" (combined + individual)</li>
 										<li>Multiple receipts (one from you + one from each store)</li>
-									</ul>
-								</div>
-								<div class="toggle-notice">
-									<div class="title">Receipts & tax info</div>
-									<ul>
 										<li>Multiple receipts (yours + all stores) issued by Your Marketplace + All Stores with Your and each store's tax details</li>
 									</ul>
 								</div>`
@@ -148,7 +130,7 @@ export default {
 			type: 'text',
 			label: __('Tinymce API', 'multivendorx'),
 			desc: __(
-				'Get your <a href= "https://www.tiny.cloud/blog/how-to-get-tinymce-cloud-up-in-less-than-5-minutes/" target= "_blank">TinyMCE API key</a> and paste it here, to unlock visual editing tools across the marketplace. Admin and stores can easily format text, add links, lists, and other styling to their store descriptions, announcements, knowledge base posts, and product details-no coding needed.',
+				'Get your <a href= "https://www.tiny.cloud/blog/how-to-get-tinymce-cloud-up-in-less-than-5-minutes/" target= "_blank">TinyMCE API key</a> and paste it here, to unlock visual editing tools across the marketplace. Admin and stores can easily format text, add links, lists, and other styling to their store descriptions, announcements, knowledge base posts, and product/listing details-no coding needed.',
 				'multivendorx'
 			),
 		},
@@ -179,7 +161,7 @@ export default {
 					label: '[marketplace_dashboard]',
 					name: 'Marketplace dashboard',
 					desc: __(
-						'Displays the store dashboard where stores manage products, orders, earnings, and store settings.',
+						'Displays the store dashboard where stores manage products/listings, orders, earnings, and store settings.',
 						'multivendorx'
 					),
 				},
@@ -214,31 +196,31 @@ export default {
 				},
 				{
 					key: 'marketplace_products',
-					label: '[marketplace_products]',
-					name: 'Show store products',
+					label: '[marketplace_listings]',
+					name: 'Show store listings',
 					desc: __(
-						'Displays all products added by a store. Use this to create store-specific product listing pages.',
+						'Displays all listings added by a store. Use this to create store-specific listings listing pages.',
 						'multivendorx'
 					),
 					arguments: [
 						{
 							attribute: 'store',
 							description:
-								'Display products from a specific store using Store ID or Store Slug.',
+								'Display products/listings from a specific store using Store ID or Store Slug.',
 							accepted: 'store_id, store_slug',
 							default: '[marketplace_products store_id="1"]',
 						},
 
 						{
 							attribute: 'perpage',
-							description: 'Set how many products appear per page.',
+							description: 'Set how many products/listings appear per page.',
 							accepted: 'Any number (Default = 12)',
 							default: '[marketplace_products perPage="12"]',
 						},
 
 						{
 							attribute: 'columns',
-							description: 'Decide how many products appear in one row.',
+							description: 'Decide how many products/listings appear in one row.',
 							accepted: 'Any number (Default = 4)',
 							default: '[marketplace_products columns="4"]',
 						},
@@ -246,7 +228,7 @@ export default {
 						{
 							attribute: 'orderby',
 							description:
-								'Choose the field used for sorting products.',
+								'Choose the field used for sorting products/listings.',
 							accepted:
 								'title, date, price, popularity, rating, menu_order (Default = title)',
 							default: '[marketplace_products orderby="title"]',
@@ -262,7 +244,7 @@ export default {
 						{
 							attribute: 'category',
 							description:
-								'Show products from specific categories. Use category slugs separated by commas.',
+								'Show products/listings from specific categories. Use category slugs separated by commas.',
 							accepted: 'Comma-separated category slugs',
 							default: '[marketplace_products category="clothing,shoes"]',
 						},
@@ -279,7 +261,7 @@ export default {
 						{
 							attribute: 'product_visibility',
 							description:
-								'Filter products based on visibility status.',
+								'Filter products/listings based on visibility status.',
 							accepted: 'visible, catalog, search, hidden',
 							default:
 								'[marketplace_products product_visibility="visible"]',

@@ -39,7 +39,6 @@ if (adminWrapper) {
 // }
 
 const vendorWrapper = document.getElementById('multivendorx-vendor-dashboard');
-// console.log(appLocalizer.color);
 if (vendorWrapper) {
 	document.documentElement.style.setProperty(
 		'--colorPrimary',

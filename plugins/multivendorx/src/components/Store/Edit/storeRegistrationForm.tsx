@@ -1,10 +1,44 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, AdminButton } from 'zyra';
-import { Skeleton } from '@mui/material';
-import { jsPDF } from 'jspdf';
+import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, AdminButton, Skeleton, PdfDownloadButton } from 'zyra';
 import { __ } from '@wordpress/i18n';
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
+
+const styles = StyleSheet.create({
+    page: { padding: 24, fontSize: 12 },
+    title: { fontSize: 16, marginBottom: 12 },
+    row: { marginBottom: 6 },
+    label: { fontWeight: 'bold' },
+});
+
+const RegistrationPdf: React.FC<{ registrationData: any }> = ({ registrationData }) => {
+    const data = registrationData || {};
+
+    return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                <Text style={styles.title}>Registration Data</Text>
+
+                {Object.keys(data).length === 0 ? (
+                    <Text>
+                        Store submitted application without filling out registration form.
+                    </Text>
+                ) : (
+                    Object.entries(data).map(([label, value], index) => (
+                        <View key={index} style={styles.row}>
+                            <Text>
+                                <Text style={styles.label}>{label}: </Text>
+                                {String(value || '[Not Provided]')}
+                            </Text>
+                        </View>
+                    ))
+                )}
+            </Page>
+        </Document>
+    );
+};
 const StoreRegistration = ({ id }: { id: string | null }) => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -12,29 +46,23 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 		{ note: string; date: string }[]
 	>([]);
 
-	const handleDownloadPDF = () => {
-		const doc = new jsPDF();
-		doc.setFontSize(16);
-		doc.text('Registration Data', 10, 15);
-		doc.setFontSize(12);
+	const FileDisplay = ({ fileUrl, fileType }) => {
+		const renderFile = () => {
+			""
+			if (fileType.includes('image')) {
+				return <img src={fileUrl} alt="file" style={{ maxWidth: '100%' }} />;
+			} else {
+				return (
+					<div>
+						<a href={fileUrl} target="_blank" rel="noopener noreferrer" download>
+							{__('Download Attachment', 'catalogx-pro')}
+						</a>
+					</div>
+				);
+			}
+		};
 
-		const registrationData = formData.registration_data || {};
-
-		if (Object.keys(registrationData).length === 0) {
-			doc.text(
-				'Store submitted application without filling out registration form.',
-				10,
-				30
-			);
-		} else {
-			let y = 30;
-			Object.entries(registrationData).forEach(([label, value]) => {
-				doc.text(`${label}: ${value || '[Not Provided]'}`, 10, y);
-				y += 10;
-			});
-		}
-
-		doc.save('registration-data.pdf');
+		return <div>{renderFile()}</div>;
 	};
 
 	const fetchStoreData = () => {
@@ -180,14 +208,16 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								{formData.registration_data &&
 									Object.keys(formData.registration_data)
 										.length > 0 && (
-										<div
-											onClick={() => handleDownloadPDF()}
-											className="admin-btn btn-purple"
-										>
-											<i className="adminfont-download"></i>{' '}
-											{__('Download', 'multivendorx')}
-										</div>
-									)}
+											<div className="admin-btn btn-purple">
+											<i className="adminfont-download"></i>
+											<PdfDownloadButton
+												PdfComponent={RegistrationPdf}
+												fileName="registration-data.pdf"
+												data={{ registrationData: formData.registration_data }}
+											/>
+										</div>										
+									)
+								}
 							</div>
 						</div>
 						<div className="card-body">
@@ -196,23 +226,40 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								Object.keys(formData.registration_data).length >
 								0 ? (
 								Object.entries(formData.registration_data).map(
-									([label, value]) => (
-										<div
-											className="form-details"
-											key={label}
-										>
-											<label className="label">
-												{label} :
-											</label>
-											<div className="value">
-												{value ||
-													__(
-														'[Not Provided]',
-														'multivendorx'
+									([label, value]) => {
+										const isAttachment =
+											value &&
+											typeof value === 'object' &&
+											value.attachment;
+
+										return (
+											<div className="form-details" key={label}>
+												<label className="label">
+													{label} :
+												</label>
+
+												<div className="value">
+													{isAttachment ? (
+														<a
+															href={value.attachment}
+															target="_blank"
+															rel="noopener noreferrer"
+														>
+															<FileDisplay
+																fileUrl={value.attachment}
+																fileType={value.attachment_type}
+															/>
+														</a>
+													) : (
+														value || __(
+															'[Not Provided]',
+															'multivendorx'
+														)
 													)}
+												</div>
 											</div>
-										</div>
-									)
+										);
+									}
 								)
 							) : (
 								<div className="no-data">
@@ -246,10 +293,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											<div className="name">
 												{formData.primary_owner_info
 													?.data?.display_name ?? (
-														<Skeleton
-															variant="text"
-															width={150}
-														/>
+														<Skeleton width={150} />
 													)}
 											</div>
 										</div>
@@ -259,10 +303,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 											<i className="adminfont-mail"></i>
 											{formData.primary_owner_info?.data
 												?.user_email ?? (
-													<Skeleton
-														variant="text"
-														width={150}
-													/>
+													<Skeleton width={150} />
 												)}
 										</li>
 									</ul>

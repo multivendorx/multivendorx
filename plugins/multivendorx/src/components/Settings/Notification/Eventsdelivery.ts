@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'notification-configuration',
 	priority: 1,
-	name: 'How messages are sent',
+	name: 'Events delivery',
 	tabTitle: 'Email & SMS delivery',
 	desc: __(
 		'Define who receives notification messages from the marketplace.',
@@ -33,6 +33,16 @@ export default {
 				'The phone number that will receive SMS notifications. Use country code followed by phone number. Example: +44 – 7123456789, +91 – 9000012345',
 				'multivendorx'
 			),
+			preText: {
+				type: 'select',
+				key: 'store_base',
+				size: '90px',
+				options: [
+					{ label: '+91', value: 'store' },
+					{ label: '+92', value: 'shop' },
+					{ label: '+93', value: 'vendor' },
+				],
+			},
 		},
 		{
 			key: 'sms_section',
@@ -104,28 +114,32 @@ export default {
 				{
 					key: 'none',
 					label: __('None', 'multivendorx'),
+					icon: 'adminfont-rejecte',
 					value: '',
 				},
 				{
 					key: 'twilio',
 					label: __('Twilio', 'multivendorx'),
 					value: 'twilio',
-
+					icon: 'adminfont-twilio',
 				},
 				{
 					key: 'vonage',
 					label: __('Vonage', 'multivendorx'),
 					value: 'vonage',
+					icon: 'adminfont-vonage',
 				},
 				{
 					key: 'clickatell',
 					label: __('Clickatell', 'multivendorx'),
 					value: 'clickatell',
+					icon: 'adminfont-clickatell',
 				},
 				{
 					key: 'plivo',
 					label: __('Plivo', 'multivendorx'),
 					value: 'plivo',
+					icon: 'adminfont-plivo',
 				},
 			],
 		},

@@ -9,7 +9,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import { useNavigate } from 'react-router-dom';
-import { formatCurrency } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 
 type StoreRow = {
 	id?: number;
@@ -31,10 +31,10 @@ type StoreStatus = {
 };
 
 type FilterData = {
-	typeCount?: any;
-	searchField?: any;
-	orderBy?: any;
-	order?: any;
+	categoryFilter?: string;
+	searchField?: string;
+	orderBy?: string;
+	order?: string;
 };
 
 export interface RealtimeFilter {
@@ -55,8 +55,18 @@ const StoreTable: React.FC = () => {
 		pageSize: 10,
 	});
 	const [pageCount, setPageCount] = useState(0);
-	const [error, setError] = useState<string | null>(null);
 	const navigate = useNavigate();
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	// Fetch total rows on mount
 	useEffect(() => {
@@ -82,9 +92,9 @@ const StoreTable: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
+		rowsPerPage :number,
+		currentPage :number,
+		categoryFilter = '',
 		searchField = '',
 		orderBy = '',
 		order = '',
@@ -103,16 +113,18 @@ const StoreTable: React.FC = () => {
 			params: {
 				page: currentPage,
 				row: rowsPerPage,
-				filter_status: typeCount === 'all' ? '' : typeCount,
+				filter_status: categoryFilter === 'all' ? '' : categoryFilter,
 				searchField,
 				orderBy,
 				order,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 			},
 		})
 			.then((response) => {
 				setData(response.data.stores || []);
+				setTotalRows(response.data.all || 0);
+				setPageCount(Math.ceil(response.data.all / pagination.pageSize));
 
 				const statuses = [
 					{ key: 'all', name: 'All', count: response.data.all || 0 },
@@ -142,7 +154,6 @@ const StoreTable: React.FC = () => {
 				setStoreStatus(statuses.filter((status) => status.count > 0));
 			})
 			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
 				setData([]);
 			});
 	}
@@ -157,7 +168,7 @@ const StoreTable: React.FC = () => {
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
+			filterData?.categoryFilter,
 			filterData?.searchField,
 			filterData?.orderBy,
 			filterData?.order,
@@ -270,13 +281,6 @@ const StoreTable: React.FC = () => {
 			),
 		},
 		{
-			id: 'primary_owner',
-			accessorKey: 'primary_owner',
-			enableSorting: true,
-			accessorFn: (row) =>
-				row.primary_owner?.data.display_name ||
-				row.primary_owner?.data.user_email ||
-				'',
 			header: __('Primary Owner', 'multivendorx'),
 			cell: ({ row }) => {
 				const primaryOwner = row.original.primary_owner;
@@ -320,14 +324,12 @@ const StoreTable: React.FC = () => {
 			},
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -397,16 +399,21 @@ const StoreTable: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
@@ -414,7 +421,6 @@ const StoreTable: React.FC = () => {
 	return (
 		<div className="general-wrapper">
 			<div className="admin-table-wrapper">
-				{error && <div className="error-notice">{error}</div>}
 				<Table
 					data={data}
 					columns={columns as ColumnDef<Record<string, any>, any>[]}
@@ -426,7 +432,7 @@ const StoreTable: React.FC = () => {
 					onPaginationChange={setPagination}
 					handlePagination={requestApiForData}
 					perPageOption={[10, 25, 50]}
-					typeCounts={storeStatus as StoreStatus[]}
+					categoryFilter={storeStatus as StoreStatus[]}
 					totalCounts={totalRows}
 					searchFilter={searchFilter}
 					realtimeFilter={realtimeFilter}

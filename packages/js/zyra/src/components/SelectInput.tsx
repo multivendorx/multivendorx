@@ -2,7 +2,7 @@
  * External dependencies
  */
 import React from 'react';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import type {
     MultiValue,
     SingleValue,
@@ -24,26 +24,71 @@ interface SelectInputProps {
     selectDeselectValue?: string;
     name?: string;
     onMultiSelectDeselectChange?: (
-        e: React.MouseEvent< HTMLButtonElement >
+        e: React.MouseEvent<HTMLButtonElement>
     ) => void;
     options: SelectOptions[];
     value?: string | string[];
     inputClass?: string;
     type?: 'single-select' | 'multi-select';
     onChange?: (
-        newValue: SingleValue< SelectOptions > | MultiValue< SelectOptions >,
-        actionMeta: ActionMeta< SelectOptions >
+        newValue: SingleValue<SelectOptions> | MultiValue<SelectOptions>,
+        actionMeta: ActionMeta<SelectOptions>
     ) => void;
-    onClick?: ( e: React.MouseEvent< HTMLInputElement > ) => void;
+    onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
     proSetting?: boolean;
     description?: string;
     descClass?: string;
-    preText?: string;
-    postText?: string;
+    preText?: React.ReactNode;
+    postText?: React.ReactNode;
     size?: string;
+    menuContent?: React.ReactNode;
+    keepMenuOpenOnMenuContentClick?: boolean;
+    noOptionsText?: string;
 }
+const CustomMenuList = (props: any) => {
+    const {
+        selectProps: {
+            menuContent,
+            keepMenuOpenOnMenuContentClick,
+        },
+    } = props;
 
-const SelectInput: React.FC< SelectInputProps > = ( {
+    return (
+        <components.MenuList {...props}>
+            {props.children}
+
+            {menuContent && (
+                <div
+                    onMouseDown={(e) => {
+                        if (keepMenuOpenOnMenuContentClick) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }}
+                    className="select-menu-content"
+                >
+                    {menuContent}
+                </div>
+            )}
+        </components.MenuList>
+    );
+};
+
+const CustomNoOptionsMessage = (props: any) => {
+    const {
+        selectProps: { noOptionsText, noOptionsFontSize },
+    } = props;
+
+    return (
+        <components.NoOptionsMessage {...props}>
+            <span className="no-options">
+                {noOptionsText || 'No options available'}
+            </span>
+        </components.NoOptionsMessage>
+    );
+};
+
+const SelectInput: React.FC<SelectInputProps> = ({
     wrapperClass,
     selectDeselect,
     selectDeselectClass,
@@ -60,12 +105,14 @@ const SelectInput: React.FC< SelectInputProps > = ( {
     preText,
     postText,
     size,
-} ) => {
-    const customStyles: StylesConfig< SelectOptions, boolean > = {
-        control: ( provided, state ) => ( {
+    menuContent,
+    keepMenuOpenOnMenuContentClick,
+}) => {
+    const customStyles: StylesConfig<SelectOptions, boolean> = {
+        control: (provided, state) => ({
             ...provided,
             borderColor: state.isFocused
-                ? 'var(--colorPrimary)'
+                ? 'var(--borderColor)'
                 : 'var(--borderColor)',
             boxShadow: state.isFocused ? 'var(--box-shadow-theme)' : '',
             backgroundColor: 'transparent',
@@ -80,95 +127,101 @@ const SelectInput: React.FC< SelectInputProps > = ( {
             '&:active': {
                 color: 'var(--colorPrimary)',
             },
-        } ),
-        valueContainer: ( provided ) => ( {
+        }),
+        valueContainer: (provided) => ({
             ...provided,
             margin: 0,
             paddingTop: 0,
             paddingBottom: 0,
             backgroundColor: 'transparent',
-        } ),
-        option: ( provided, state ) => ( {
+        }),
+        option: (provided, state) => ({
             ...provided,
+            fontSize: '0.95rem',
             backgroundColor: state.isSelected
                 ? 'var(--backgroundPrimary)'
                 : state.isFocused
-                ? 'var(--backgroundColor)'
-                : 'var(--backgroundWhite)',
+                    ? 'var(--backgroundColor)'
+                    : 'var(--backgroundWhite)',
             color: state.isSelected ? 'var(--textColor)' : 'var(--themeColor)',
             cursor: 'pointer',
-        } ),
-        menu: ( provided ) => ( {
+        }),
+        menu: (provided) => ({
             ...provided,
             borderRadius: 4,
             marginTop: 0,
-        } ),
-        multiValue: ( provided ) => ( {
+        }),
+        multiValue: (provided) => ({
             ...provided,
             backgroundColor: 'var(--backgroundPrimary)',
             marginTop: 0,
             marginBottom: 0,
             paddingTop: 0,
             paddingBottom: 0,
-        } ),
-        multiValueLabel: ( provided ) => ( {
+        }),
+        multiValueLabel: (provided) => ({
             ...provided,
             color: 'var(--colorPrimary)',
             marginTop: 0,
             marginBottom: 0,
             paddingTop: 0,
             paddingBottom: 0,
-        } ),
+        }),
     };
 
     // Convert options to react-select format
-    const optionsData: SelectOptions[] = options.map( ( option, index ) => ( {
+    const optionsData: SelectOptions[] = options.map((option, index) => ({
         value: option.value,
         label: option.label,
         index,
-    } ) );
+    }));
 
     // Find default selected value
-    const defaultValue = Array.isArray( value )
-        ? optionsData.filter( ( opt ) => new Set( value ).has( opt.value ) ) // If it's an array (multi-select), return null or handle differently
-        : optionsData.find( ( opt ) => opt.value === value ) || null;
+    const defaultValue = Array.isArray(value)
+        ? optionsData.filter((opt) => new Set(value).has(opt.value)) // If it's an array (multi-select), return null or handle differently
+        : optionsData.find((opt) => opt.value === value) || null;
 
     return (
-        <div className={ `form-select-field-wrapper ${wrapperClass || '' }`} style={ { width: size || '100%' } }>
-            { selectDeselect && (
+        <div className={`form-select-field-wrapper ${wrapperClass || ''}`} style={{ width: size || '100%' }}>
+            {selectDeselect && (
                 <button
-                    className={ selectDeselectClass }
-                    onClick={ ( e ) => {
+                    className={selectDeselectClass}
+                    onClick={(e) => {
                         e.preventDefault();
-                        onMultiSelectDeselectChange?.( e );
-                    } }
+                        onMultiSelectDeselectChange?.(e);
+                    }}
                 >
-                    { selectDeselectValue }
+                    {selectDeselectValue}
                 </button>
-            ) }
+            )}
 
             <div className="select-wrapper">
-                { preText && <div className="before">{ preText }</div> }
+                {preText && <div className="before">{preText}</div>}
                 <Select
-                    name={ name }
-                    className={ `${ inputClass } react-select` }
-                    value={ defaultValue }
-                    options={ optionsData }
-                    onChange={ ( newValue, actionMeta ) => {
-                        onChange?.( newValue, actionMeta );
-                    } }
-                    styles={ customStyles }
-                    closeMenuOnSelect={ true }
-                    isMulti={ type === 'multi-select' }
+                    name={name}
+                    className={`${inputClass} react-select`}
+                    value={defaultValue}
+                    options={optionsData}
+                    onChange={(newValue, actionMeta) => {
+                        onChange?.(newValue, actionMeta);
+                    }}
+                    styles={customStyles}
+                    // closeMenuOnSelect={true}
+                    isMulti={type === 'multi-select'}
+                    components={{ MenuList: CustomMenuList, NoOptionsMessage: CustomNoOptionsMessage, }}
+                    menuContent={menuContent}
+                    keepMenuOpenOnMenuContentClick={
+                        keepMenuOpenOnMenuContentClick
+                    }
                 />
-                { postText && <div className="after">{ postText }</div> }
+                {postText && <div className="after">{postText}</div>}
             </div>
-            { description && (
+            {description && (
                 <p
                     className="settings-metabox-description"
-                    dangerouslySetInnerHTML={ { __html: description } }
+                    dangerouslySetInnerHTML={{ __html: description }}
                 ></p>
-            ) }
+            )}
         </div>
     );
 };

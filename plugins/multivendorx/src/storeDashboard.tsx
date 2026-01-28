@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { getApiLink, Popover, useModules } from 'zyra';
+import { getApiLink, MessageState, Popover, useModules } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Notifications from './dashboard/notifications';
 import './hooksFilters';
@@ -112,6 +112,14 @@ const Dashboard = () => {
 		}
 
 		return userCaps[capability] === true;
+	};
+
+	const isModuleActive = (requiredModules: any) => {
+		if (!requiredModules) {
+			return true;
+		}
+
+		return requiredModules.some((m) => modules.includes(m));
 	};
 
 	useEffect(() => {
@@ -346,13 +354,19 @@ const Dashboard = () => {
 				return;
 			}
 
+			if (!isModuleActive(item.module)) {
+				return;
+			}
+
 			let filteredSubmenu = undefined;
 
 			if (item.submenu?.length) {
-				filteredSubmenu = item.submenu.filter((sub) =>
-					hasCapability(sub.capability)
-				);
-
+				filteredSubmenu = item.submenu.filter((sub) => {
+					return (
+						hasCapability(sub.capability) &&
+						isModuleActive(sub.module)
+					);
+				});
 				if (filteredSubmenu.length === 0) {
 					return;
 				}
@@ -365,7 +379,8 @@ const Dashboard = () => {
 		});
 
 		return result;
-	}, [menu]);
+	}, [menu, modules]);
+
 	const announcementItems = (announcement || []).map((item, index) => ({
 		title: item.title,
 		icon: 'adminfont-user-network-icon',
@@ -425,8 +440,8 @@ const Dashboard = () => {
 												hasSubmenu
 													? '#'
 													: appLocalizer.permalink_structure
-														? `/${appLocalizer.dashboard_slug}/${key}`
-														: `/?page_id=${appLocalizer.dashboard_page_id}&segment=${key}`
+														? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${key}`
+														: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=${key}`
 											}
 											onClick={(e) => {
 												e.preventDefault();
@@ -471,8 +486,8 @@ const Dashboard = () => {
 																// href={`?segment=${sub.key}`}
 																href={
 																	appLocalizer.permalink_structure
-																		? `/${appLocalizer.dashboard_slug}/${sub.key}`
-																		: `/?page_id=${appLocalizer.dashboard_page_id}&segment=${sub.key}`
+																		? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/${sub.key}`
+																		: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=${sub.key}`
 																}
 																onClick={(
 																	e
@@ -550,52 +565,52 @@ const Dashboard = () => {
 									{showNotifications && <Notifications type="notification" />}
 								</li> */}
 								<li className="tooltip-wrapper bottom">
-								<Popover
-									template="tab"
-									width="24rem"
-									toggleIcon="adminfont-notification"
-									toggleContent={<><span className="count">0</span> <span className="tooltip-name">Notification</span></>}
-									onTabChange={(tabId) => {
-										setActiveType(
-											tabId === 'activities' ? 'activity' : 'notification'
-										);
-									}}
-									header={
-										<div className="title">
-											{__('Notifications', 'multivendorx')}
-											{/* {notifications?.length > 0 && (
+									<Popover
+										template="tab"
+										width="24rem"
+										toggleIcon="adminfont-notification"
+										toggleContent={<><span className="count">0</span> <span className="tooltip-name">Notification</span></>}
+										onTabChange={(tabId) => {
+											setActiveType(
+												tabId === 'activities' ? 'activity' : 'notification'
+											);
+										}}
+										header={
+											<div className="title">
+												{__('Notifications', 'multivendorx')}
+												{/* {notifications?.length > 0 && (
 												<span className="admin-badge yellow">
 													{notifications?.length} {__('New', 'multivendorx')}
 												</span>
 											)} */}
-										</div>
-									}
-									tabs={[
-										{
-											id: 'notifications',
-											label: __("Notifications", 'multivendorx'),
-											icon: 'adminfont-notification',
-											content: (
+											</div>
+										}
+										tabs={[
+											{
+												id: 'notifications',
+												label: __("Notifications", 'multivendorx'),
+												icon: 'adminfont-notification',
+												content: (
 
-												<ul className="notification-list">
-													{/* {renderContent()} */}
-												</ul>
-											)
-										},
-										{
-											id: 'activities',
-											label: __("Activities", 'multivendorx'),
-											icon: 'adminfont-activity',
-											content: (
-												<ul className="notification-list">
-													{/* {renderContent()} */}
-												</ul>
-											)
-										},
-									]}
-									footer={
-										<div className="footer">
-											{/* {activeType == 'notification' ? (
+													<ul className="notification-list">
+														{/* {renderContent()} */}
+													</ul>
+												)
+											},
+											{
+												id: 'activities',
+												label: __("Activities", 'multivendorx'),
+												icon: 'adminfont-activity',
+												content: (
+													<ul className="notification-list">
+														{/* {renderContent()} */}
+													</ul>
+												)
+											},
+										]}
+										footer={
+											<div className="footer">
+												{/* {activeType == 'notification' ? (
 
 												<a
 													href={`?page=multivendorx#&tab=notifications&subtab=notifications`}
@@ -615,61 +630,61 @@ const Dashboard = () => {
 													{__('View all activities', 'multivendorx')}
 												</a>
 											)} */}
-											<a
+												<a
 													href={`?page=multivendorx#&tab=notifications&subtab=activities`}
 													className="admin-btn btn-purple"
-													// onClick={() => setIsDropdownOpen(false)}
+												// onClick={() => setIsDropdownOpen(false)}
 												>
 													<i className="adminfont-eye"></i>
 													{__('View all activities', 'multivendorx')}
 												</a>
-										</div>
-									}
-								/>
+											</div>
+										}
+									/>
 								</li>
 								<li className="tooltip-wrapper bottom">
-								<Popover
-									toggleIcon="adminfont-announcement"
-									toggleContent={<span className="tooltip-name">Announcements</span>}
-									template="notification"
-									width="20rem"
-									className="tooltip-wrapper bottom"
-									items={announcement?.length
-										? announcement.map((item, index) => ({
-											title: item.title,
-											desc: item.content,
-											time: formatTimeAgo(item.date),
-											icon: `adminfont-user-network-icon admin-color${index + 1}`,
-											action: () => {
-												// optional: handle click on individual announcement
-												// handleNotificationClick(item.id)
-											},
-										}))
-										: []}
-									header={
-										<div className="title">
-											{__('Announcements', 'multivendorx')}
-											{announcement && announcement.length > 0 && (
-												<span className="admin-badge green">
-													{announcement.length} {__('New', 'multivendorx')}
-												</span>
-											)}
-										</div>
-									}
-									footer={
-										<a
-											href={
-												appLocalizer.permalink_structure
-													? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=announcements`
-													: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=view-notifications#subtab=announcements`
-											}
-											className="admin-btn btn-purple"
-										>
-											<i className="adminfont-eye"></i>
-											{__('View all announcements', 'multivendorx')}
-										</a>
-									}
-								/>
+									<Popover
+										toggleIcon="adminfont-announcement"
+										toggleContent={<span className="tooltip-name">Announcements</span>}
+										template="notification"
+										width="20rem"
+										className="tooltip-wrapper bottom"
+										items={announcement?.length
+											? announcement.map((item, index) => ({
+												title: item.title,
+												desc: item.content,
+												time: formatTimeAgo(item.date),
+												icon: `adminfont-user-network-icon admin-color${index + 1}`,
+												action: () => {
+													// optional: handle click on individual announcement
+													// handleNotificationClick(item.id)
+												},
+											}))
+											: []}
+										header={
+											<div className="title">
+												{__('Announcements', 'multivendorx')}
+												{announcement && announcement.length > 0 && (
+													<span className="admin-badge green">
+														{announcement.length} {__('New', 'multivendorx')}
+													</span>
+												)}
+											</div>
+										}
+										footer={
+											<a
+												href={
+													appLocalizer.permalink_structure
+														? `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=announcements`
+														: `${appLocalizer.site_url.replace(/\/$/, '')}/?page_id=${appLocalizer.dashboard_page_id}&segment=view-notifications#subtab=announcements`
+												}
+												className="admin-btn btn-purple"
+											>
+												<i className="adminfont-eye"></i>
+												{__('View all announcements', 'multivendorx')}
+											</a>
+										}
+									/>
 								</li>
 
 								<li
@@ -878,63 +893,56 @@ const Dashboard = () => {
 					</div>
 				</div>
 
+
 				<div className="content-wrapper">
 					{storeData && storeData.status !== 'active' ? (
-						<div className="permission-wrapper">
-							<i className="adminfont-info red"></i>
-							<div className="title">
-								{storeData.status === 'pending' ? (
-									appLocalizer.settings_databases_value[
-										'pending'
-									]?.pending_msg
-								) : storeData.status === 'suspended' ? (
-									appLocalizer.settings_databases_value[
-										'suspended'
-									]?.suspended_msg
-								) : storeData.status === 'under_review' ? (
-									appLocalizer.settings_databases_value[
-										'under-review'
-									]?.under_review_msg
-								) : storeData.status === 'rejected' ? (
-									<>
-										{
-											appLocalizer
-												.settings_databases_value[
-												'rejected'
-											]?.rejected_msg
-										}{' '}
-										<a
-											href={
-												appLocalizer.registration_page
-											}
-											className="reapply-link"
-											target="__blank"
-										>
-											Click here to reapply.
-										</a>
-									</>
-								) : (
-									'No active store select for this user.'
-								)}
-							</div>
-							<div className="admin-btn btn-purple">
-								Contact Admin
-							</div>
-						</div>
+						<MessageState
+							title={
+								<>
+									{storeData.status === 'pending' ? (
+										appLocalizer.settings_databases_value?.pending?.pending_msg
+									) : storeData.status === 'suspended' ? (
+										appLocalizer.settings_databases_value?.suspended?.suspended_msg
+									) : storeData.status === 'under_review' ? (
+										appLocalizer.settings_databases_value?.['under-review']
+											?.under_review_msg
+									) : storeData.status === 'rejected' ? (
+										<>
+											{
+												appLocalizer.settings_databases_value?.rejected
+													?.rejected_msg
+											}{' '}
+											<a
+												href={appLocalizer.registration_page}
+												className="reapply-link"
+												target="__blank"
+											>
+												{__('Click here to reapply.', 'multivendorx')}
+											</a>
+										</>
+									) : (
+										__('You’re almost ready to sell To get started, you need to register your store on the marketplace.', 'multivendorx')
+									)}
+								</>
+							}
+							buttonText={__('Create your store', 'multivendorx')}
+							buttonLink={appLocalizer.registration_page}
+							buttonTarget="_blank"
+						/>
 					) : noPermission ? (
-						<div className="permission-wrapper">
-							<i className="adminfont-info red"></i>
-							<div className="title">
-								You do not have permission to access this page.
-							</div>
-							<div className="admin-btn btn-purple">
-								Contact Admin
-							</div>
-						</div>
+						<MessageState
+							title={__(
+								'You do not have permission to access this page.',
+								'multivendorx'
+							)}
+							buttonText={__('Contact Admin', 'multivendorx')}
+							onButtonClick={() => {}}  
+						/>
 					) : (
 						loadComponent(currentTab)
 					)}
 				</div>
+
 			</div>
 		</div>
 	);

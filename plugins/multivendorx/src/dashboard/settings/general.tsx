@@ -7,9 +7,6 @@ const GeneralSettings = () => {
 	const id = appLocalizer.store_id;
 	const [formData, setFormData] = useState<{ [key: string]: any }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
-	const [stateOptions, setStateOptions] = useState<
-		{ label: string; value: string }[]
-	>([]);
 	const settings =
 		appLocalizer.settings_databases_value['store-capability']
 			?.edit_store_info_activation || [];
@@ -34,22 +31,6 @@ const GeneralSettings = () => {
 			return () => clearTimeout(timer);
 		}
 	}, [successMsg]);
-
-	useEffect(() => {
-		if (formData.country) {
-			fetchStatesByCountry(formData.country);
-		}
-	}, [formData.country]);
-
-	const fetchStatesByCountry = (countryCode: string) => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, `states/${countryCode}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((res) => {
-			setStateOptions(res.data || []);
-		});
-	};
 
 	//Fixed: Corrected name and dynamic binding
 	const handleChange = (
@@ -77,6 +58,7 @@ const GeneralSettings = () => {
 	return (
 		<>
 			<FormGroupWrapper>
+
 				<FormGroup
 					label={__('Name', 'multivendorx')}
 					htmlFor="name"
@@ -87,7 +69,7 @@ const GeneralSettings = () => {
 						descClass="settings-metabox-description"
 						value={formData.name || ''}
 						onChange={handleChange}
-						readOnly={settings.includes('store_name')}
+						readOnly={!settings.includes('store_name')}
 					/>
 				</FormGroup>
 
@@ -112,7 +94,7 @@ const GeneralSettings = () => {
 						name="description"
 						value={formData.description || ''}
 						onChange={handleChange}
-						readOnly={settings.includes('store_description')}
+						readOnly={!settings.includes('store_description')}
 					/>
 				</FormGroup>
 

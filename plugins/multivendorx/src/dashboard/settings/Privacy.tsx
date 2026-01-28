@@ -8,9 +8,6 @@ import {
 	MultiCheckBox,
 	FormGroupWrapper,
 	FormGroup,
-	Container,
-	Column,
-	Card,
 	useModules,
 	AdminButton,
 } from 'zyra';
@@ -186,9 +183,13 @@ const Privacy = () => {
 								]}
 								value={formData.enable_deactivation || []}
 								onChange={(selected: any) => {
+									const currentValue = formData.enable_deactivation;
+									const newValue = currentValue ? '' : selected.target.value;
+								
 									const updated = {
 										...formData,
-										enable_deactivation: selected.target.value,
+										enable_deactivation: newValue,
+										deactivation_reason: newValue ? formData.deactivation_reason : '',
 									};
 									setFormData(updated);
 									autoSave(updated);
@@ -214,6 +215,8 @@ const Privacy = () => {
 											icon: 'save',
 											text: 'Submit',
 											className: 'purple-bg',
+											// disableMultipleClick: true,
+											onClick: () => autoSave(updateData),
 										},
 									]}
 								/>

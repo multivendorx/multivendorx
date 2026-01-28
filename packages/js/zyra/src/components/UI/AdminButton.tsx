@@ -1,3 +1,4 @@
+import "../../styles/web/UI/AdminButton.scss";
 type ButtonConfig = {
   icon?: string;
   text: string;

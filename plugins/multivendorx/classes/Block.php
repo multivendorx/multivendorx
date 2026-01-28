@@ -46,68 +46,36 @@ class Block {
      */
     public function initialize_blocks() {
         $blocks = array();
-
-        $blocks[] = array(
-            'name'       => 'marketplace-stores', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
+    
+        $block_names = array(
+            'marketplace-stores',
+            'marketplace-products',
+            'marketplace-coupons',
+            'registration-form',
+            'store-coupons',
+            'store-products',
+            'stores',
+            'contact-info',
+            'store-name',
+            'store-description',
         );
-        $blocks[] = array(
-            'name'       => 'marketplace-products', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'marketplace-coupons', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'registration-form', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'store-coupons', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'store-products', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'stores', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'contact-info', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'store-name', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
-        $blocks[] = array(
-            'name'       => 'store-description', // block name.
-            'textdomain' => 'multivendorx',
-            'block_path' => MultiVendorX()->plugin_path . FrontendScripts::get_build_path_name() . 'js/block/',
-        );
-
+    
+        $textdomain = 'multivendorx';
+        $block_path = MultiVendorX()->plugin_path
+            . FrontendScripts::get_build_path_name()
+            . 'js/block/';
+    
+        foreach ( $block_names as $block_name ) {
+            $blocks[] = array(
+                'name'       => $block_name,
+                'textdomain' => $textdomain,
+                'block_path' => $block_path,
+            );
+        }
+    
         return apply_filters( 'multivendorx_initialize_blocks', $blocks );
     }
+    
 
     /**
      * Enqueue assets and localize scripts for all registered blocks.

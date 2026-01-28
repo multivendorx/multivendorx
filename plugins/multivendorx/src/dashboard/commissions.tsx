@@ -15,7 +15,7 @@ import {
 	RowSelectionState,
 } from '@tanstack/react-table';
 import ViewCommission from './viewCommission';
-import { formatCurrency } from '../services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
 
 export interface RealtimeFilter {
 	name: string;
@@ -35,10 +35,16 @@ type CommissionRow = {
 	status: 'paid' | 'unpaid' | string;
 };
 
+type CommissionStatus = {
+	key: string;
+	name: string;
+	count: number;
+};
+
 type FilterData = {
 	searchAction?: string;
 	searchField?: string;
-	typeCount?: any;
+	categoryFilter?: string;
 	store?: string;
 	order?: any;
 	orderBy?: any;
@@ -63,6 +69,20 @@ const StoreCommission: React.FC = () => {
 	}>({});
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 	const [currentFilterData, setCurrentFilterData] = useState<FilterData>({});
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
+	const [commissionStatus, setCommissionStatus] = useState<
+		CommissionStatus[] | null
+	>(null);
 
 	// Fetch total rows on mount
 	useEffect(() => {
@@ -88,16 +108,17 @@ const StoreCommission: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
-		store = '',
+		rowsPerPage :number,
+		currentPage :number,
+		categoryFilter = '',
 		orderBy = '',
 		order = '',
 		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
+		endDate = new Date(),
+		searchAction ='',
+		searchValue ='',
 	) {
-		setData([]);
+		setData(null);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'commission'),
@@ -106,15 +127,53 @@ const StoreCommission: React.FC = () => {
 				store_id: appLocalizer.store_id,
 				page: currentPage,
 				row: rowsPerPage,
-				status: typeCount === 'all' ? '' : typeCount,
+				status: categoryFilter === 'all' ? '' : categoryFilter,
 				orderBy,
 				order,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',	
+				searchAction,
+				searchValue,
 			},
 		})
 			.then((response) => {
 				setData(response.data.commissions || []);
+				setTotalRows(response.data.all || 0);
+				setPageCount(Math.ceil(response.data.all / pagination.pageSize));
+
+				const statuses = [
+					{ key: 'all', name: 'All', count: response.data.all || 0 },
+					{
+						key: 'paid',
+						name: 'Paid',
+						count: response.data.paid || 0,
+					},
+					{
+						key: 'unpaid',
+						name: 'Unpaid',
+						count: response.data.unpaid || 0,
+					},
+					{
+						key: 'refunded',
+						name: 'Refunded',
+						count: response.data.refunded || 0,
+					},
+					{
+						key: 'partially_refunded',
+						name: 'Partially Refunded',
+						count: response.data.partially_refunded || 0,
+					},
+					{
+						key: 'cancelled',
+						name: 'Cancelled',
+						count: response.data.cancelled || 0,
+					},
+				];
+
+				// Remove items where count === 0
+				setCommissionStatus(
+					statuses.filter((status) => status.count > 0)
+				);
 			})
 			.catch(() => {
 				setData([]);
@@ -127,18 +186,202 @@ const StoreCommission: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		setCurrentFilterData(filterData);
-		setData([]);
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
-			filterData?.store,
+			filterData?.categoryFilter,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date,
+			filterData.searchAction,
+			filterData.searchField
 		);
+	};
+
+	// CSV Download Button Component
+	const DownloadCSVButton: React.FC<{
+		selectedRows: RowSelectionState;
+		data: CommissionRow[] | null;
+		filterData: FilterData;
+		isLoading?: boolean;
+	}> = ({ selectedRows, data, filterData, isLoading = false }) => {
+		const [isDownloading, setIsDownloading] = useState(false);
+
+		const handleDownload = async () => {
+			setIsDownloading(true);
+			try {
+				// Get selected row IDs
+				const selectedIds = Object.keys(selectedRows)
+					.filter((key) => selectedRows[key])
+					.map((key) => {
+						const rowIndex = parseInt(key);
+						return data?.[rowIndex]?.id;
+					})
+					.filter((id) => id !== undefined);
+
+				// Prepare parameters for CSV download
+				const params: any = {
+					format: 'csv',
+					startDate: filterData?.date?.start_date
+						? filterData.date.start_date.toISOString().split('T')[0]
+						: '',
+					endDate: filterData?.date?.end_date
+						? filterData.date.end_date.toISOString().split('T')[0]
+						: '',
+				};
+
+				// Add filters if present
+				if (filterData?.store) {
+					params.store_id = filterData.store;
+				}
+				if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
+					params.status = filterData.categoryFilter;
+				}
+
+				// If specific rows are selected, send their IDs
+				if (selectedIds.length > 0) {
+					params.ids = selectedIds.join(',');
+				}
+
+				// Make API request for CSV
+				const response = await axios({
+					method: 'GET',
+					url: getApiLink(appLocalizer, 'commission'),
+					headers: {
+						'X-WP-Nonce': appLocalizer.nonce,
+						Accept: 'text/csv',
+					},
+					params: params,
+					responseType: 'blob',
+				});
+
+				// Create download link
+				const url = window.URL.createObjectURL(
+					new Blob([response.data])
+				);
+				const link = document.createElement('a');
+				link.href = url;
+
+				// Generate filename with timestamp
+				const timestamp = new Date().toISOString().split('T')[0];
+				const filename = `commissions_${timestamp}.csv`;
+				link.setAttribute('download', filename);
+
+				document.body.appendChild(link);
+				link.click();
+				link.remove();
+				window.URL.revokeObjectURL(url);
+			} catch (error) {
+				console.error('Error downloading CSV:', error);
+				alert(
+					__(
+						'Failed to download CSV. Please try again.',
+						'multivendorx'
+					)
+				);
+			} finally {
+				setIsDownloading(false);
+			}
+		};
+
+		const hasSelectedRows = Object.keys(selectedRows).some(
+			(key) => selectedRows[key]
+		);
+
+		return (
+			<div className="action-item">
+				<button
+					onClick={handleDownload}
+					disabled={
+						isDownloading ||
+						isLoading ||
+						(!hasSelectedRows && !data)
+					}
+					className="admin-btn"
+				>
+					<i className="adminfont-download"></i>
+					{__('Download CSV', 'multivendorx')}
+				</button>
+			</div>
+		);
+	};
+
+	// Bulk Actions Component
+	const BulkActions: React.FC<{
+		selectedRows: RowSelectionState;
+		data: CommissionRow[] | null;
+		filterData: FilterData;
+		onActionComplete?: () => void;
+	}> = ({ selectedRows, data, filterData, onActionComplete }) => {
+		return (
+			<div>
+				<DownloadCSVButton
+					selectedRows={selectedRows}
+					data={data}
+					filterData={filterData}
+				/>
+				{/* Add other bulk actions here if needed */}
+			</div>
+		);
+	};
+	const handleExportAll = async () => {
+		try {
+			const params: any = {
+				format: 'csv',
+				store_id:appLocalizer.store_id,
+				startDate: currentFilterData?.date?.start_date
+					? currentFilterData.date.start_date
+							.toISOString()
+							.split('T')[0]
+					: '',
+				endDate: currentFilterData?.date?.end_date
+					? currentFilterData.date.end_date
+							.toISOString()
+							.split('T')[0]
+					: '',
+			};
+
+			if (
+				currentFilterData?.categoryFilter &&
+				currentFilterData.categoryFilter !== 'all'
+			) {
+				params.status = currentFilterData.categoryFilter;
+			}
+
+			const response = await axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'commission'),
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+					Accept: 'text/csv',
+				},
+				params,
+				responseType: 'blob',
+			});
+
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement('a');
+			link.href = url;
+
+			const timestamp = new Date().toISOString().split('T')[0];
+			link.setAttribute('download', `commissions_${timestamp}.csv`);
+
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			alert(
+				__('Failed to export CSV. Please try again.', 'multivendorx')
+			);
+		}
 	};
 
 	const columns: ColumnDef<CommissionRow>[] = [
@@ -160,9 +403,6 @@ const StoreCommission: React.FC = () => {
 			),
 		},
 		{
-			id: 'id',
-			accessorKey: 'id',
-			enableSorting: true,
 			header: __('ID', 'multivendorx'),
 			cell: ({ row }) => <TableCell>#{row.original.id}</TableCell>,
 		},
@@ -183,9 +423,6 @@ const StoreCommission: React.FC = () => {
 			},
 		},
 		{
-			id: 'totalOrderAmount',
-			accessorKey: 'totalOrderAmount',
-			enableSorting: true,
 			header: __('Order Amount', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -202,8 +439,6 @@ const StoreCommission: React.FC = () => {
 			),
 		},
 		{
-			id: 'commission-summary',
-			enableSorting: true,
 			header: __('Commission Summary', 'multivendorx'),
 			cell: ({ row }) => {
 				const isExpanded = expandedRows[row.original.id!];
@@ -364,9 +599,6 @@ const StoreCommission: React.FC = () => {
 			},
 		},
 		{
-			id: 'totalEarned',
-			accessorKey: 'totalEarned',
-			enableSorting: true,
 			header: __('Total Earned ', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -387,38 +619,19 @@ const StoreCommission: React.FC = () => {
 			accessorKey: 'created_at',
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
-			cell: ({ row }) => {
-				const date = row.original.createdAt;
-				if (!date) {
-					return <TableCell>-</TableCell>;
-				}
-
-				// Format the date for display
-				const formattedDate = new Date(date).toLocaleDateString(
-					'en-US',
-					{
-						year: 'numeric',
-						month: 'short',
-						day: 'numeric',
-					}
-				);
-
-				return (
-					<TableCell title={`${formattedDate}`}>
-						{formattedDate}
-					</TableCell>
-				);
-			},
+			cell: ({ row }) => (
+				<TableCell title={''}>
+					{formatWcShortDate(row.original.createdAt)}
+				</TableCell>
+			),
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => {
 				const isPaid = row.original.status === 'paid';
@@ -454,203 +667,67 @@ const StoreCommission: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
-
-	// CSV Download Button Component
-	const DownloadCSVButton: React.FC<{
-		selectedRows: RowSelectionState;
-		data: CommissionRow[] | null;
-		filterData: FilterData;
-		isLoading?: boolean;
-	}> = ({ selectedRows, data, filterData, isLoading = false }) => {
-		const [isDownloading, setIsDownloading] = useState(false);
-
-		const handleDownload = async () => {
-			setIsDownloading(true);
-			try {
-				// Get selected row IDs
-				const selectedIds = Object.keys(selectedRows)
-					.filter((key) => selectedRows[key])
-					.map((key) => {
-						const rowIndex = parseInt(key);
-						return data?.[rowIndex]?.id;
-					})
-					.filter((id) => id !== undefined);
-
-				// Prepare parameters for CSV download
-				const params: any = {
-					format: 'csv',
-					startDate: filterData?.date?.start_date
-						? filterData.date.start_date.toISOString().split('T')[0]
-						: '',
-					endDate: filterData?.date?.end_date
-						? filterData.date.end_date.toISOString().split('T')[0]
-						: '',
-				};
-
-				// Add filters if present
-				if (filterData?.store) {
-					params.store_id = filterData.store;
-				}
-				if (filterData?.typeCount && filterData.typeCount !== 'all') {
-					params.status = filterData.typeCount;
-				}
-
-				// If specific rows are selected, send their IDs
-				if (selectedIds.length > 0) {
-					params.ids = selectedIds.join(',');
-				}
-
-				// Make API request for CSV
-				const response = await axios({
-					method: 'GET',
-					url: getApiLink(appLocalizer, 'commission'),
-					headers: {
-						'X-WP-Nonce': appLocalizer.nonce,
-						Accept: 'text/csv',
-					},
-					params: params,
-					responseType: 'blob',
-				});
-
-				// Create download link
-				const url = window.URL.createObjectURL(
-					new Blob([response.data])
-				);
-				const link = document.createElement('a');
-				link.href = url;
-
-				// Generate filename with timestamp
-				const timestamp = new Date().toISOString().split('T')[0];
-				const filename = `commissions_${timestamp}.csv`;
-				link.setAttribute('download', filename);
-
-				document.body.appendChild(link);
-				link.click();
-				link.remove();
-				window.URL.revokeObjectURL(url);
-			} catch (error) {
-				console.error('Error downloading CSV:', error);
-				alert(
-					__(
-						'Failed to download CSV. Please try again.',
-						'multivendorx'
-					)
-				);
-			} finally {
-				setIsDownloading(false);
-			}
-		};
-
-		const hasSelectedRows = Object.keys(selectedRows).some(
-			(key) => selectedRows[key]
-		);
-
-		return (
-			<div className="action-item">
-				<button
-					onClick={handleDownload}
-					disabled={
-						isDownloading ||
-						isLoading ||
-						(!hasSelectedRows && !data)
-					}
-					className="admin-btn"
-				>
-					<i className="adminfont-download"></i>
-					{__('Download CSV', 'multivendorx')}
-				</button>
-			</div>
-		);
-	};
-
-	// Bulk Actions Component
-	const BulkActions: React.FC<{
-		selectedRows: RowSelectionState;
-		data: CommissionRow[] | null;
-		filterData: FilterData;
-		onActionComplete?: () => void;
-	}> = ({ selectedRows, data, filterData, onActionComplete }) => {
-		return (
-			<div>
-				<DownloadCSVButton
-					selectedRows={selectedRows}
-					data={data}
-					filterData={filterData}
-				/>
-				{/* Add other bulk actions here if needed */}
-			</div>
-		);
-	};
-	const handleExportAll = async () => {
-		try {
-			const params: any = {
-				format: 'csv',
-				startDate: currentFilterData?.date?.start_date
-					? currentFilterData.date.start_date
-							.toISOString()
-							.split('T')[0]
-					: '',
-				endDate: currentFilterData?.date?.end_date
-					? currentFilterData.date.end_date
-							.toISOString()
-							.split('T')[0]
-					: '',
-			};
-
-			if (currentFilterData?.store) {
-				params.store_id = currentFilterData.store;
-			}
-
-			if (
-				currentFilterData?.typeCount &&
-				currentFilterData.typeCount !== 'all'
-			) {
-				params.status = currentFilterData.typeCount;
-			}
-
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'commission'),
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-					Accept: 'text/csv',
-				},
-				params,
-				responseType: 'blob',
-			});
-
-			const url = window.URL.createObjectURL(new Blob([response.data]));
-			const link = document.createElement('a');
-			link.href = url;
-
-			const timestamp = new Date().toISOString().split('T')[0];
-			link.setAttribute('download', `commissions_${timestamp}.csv`);
-
-			document.body.appendChild(link);
-			link.click();
-			link.remove();
-			window.URL.revokeObjectURL(url);
-		} catch (error) {
-			console.error('Error exporting CSV:', error);
-			alert(
-				__('Failed to export CSV. Please try again.', 'multivendorx')
-			);
-		}
-	};
-
+	const searchFilter: RealtimeFilter[] = [
+		{
+			name: 'searchAction',
+			render: (updateFilter, filterValue) => (
+				<div className="search-action">
+					<select
+						value={filterValue || ''}
+						onChange={(e) => {
+							updateFilter('searchAction', e.target.value || '');
+						}}
+					>
+						<option value="all">{__('All', 'multivendorx')}</option>
+						<option value="commission_id">
+							{__('Commission Id', 'multivendorx')}
+						</option>
+						<option value="order_id">
+							{__('Order Id', 'multivendorx')}
+						</option>
+					</select>
+				</div>
+			),
+		},
+		{
+			name: 'searchField',
+			render: (updateFilter, filterValue) => (
+				<>
+					<div className="search-section">
+						<input
+							name="searchField"
+							type="text"
+							placeholder={__('Search', 'multivendorx')}
+							onChange={(e) => {
+								updateFilter(e.target.name, e.target.value);
+							}}
+							value={filterValue || ''}
+							className="basic-input"
+						/>
+						<i className="adminfont-search"></i>
+					</div>
+				</>
+			),
+		},
+	];
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -686,10 +763,11 @@ const StoreCommission: React.FC = () => {
 				handlePagination={requestApiForData}
 				defaultRowsPerPage={10}
 				perPageOption={[10, 25, 50]}
-				typeCounts={[]}
+				categoryFilter={commissionStatus as CommissionStatus}
 				totalCounts={totalRows}
 				pageCount={pageCount}
 				realtimeFilter={realtimeFilter}
+				searchFilter={searchFilter}
 				bulkActionComp={() => (
 					<BulkActions
 						selectedRows={rowSelection}

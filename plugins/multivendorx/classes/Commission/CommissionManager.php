@@ -83,7 +83,7 @@ class CommissionManager {
             $store_earning          = (float) ( $order->get_subtotal() - $order->get_discount_total() - $commission_amount );
 
             // For migrate users.
-            if ( $store->get_meta( 'revenue_mode_store' ) ) {
+            if ( get_option(Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store']) ) {
                 $marketplace_commission = (float) ( $order->get_subtotal() - $order->get_discount_total() - $commission_amount );
                 $store_earning          = $commission_amount;
             }
@@ -192,11 +192,13 @@ class CommissionManager {
         }
 
         $tax_on_shipping = MultiVendorX()->setting->get_setting( 'taxable' );
-        if ( MultiVendorX()->setting->get_setting( 'give_tax' ) === 'no_tax' || empty( $tax_on_shipping ) ) {
+        if ( MultiVendorX()->setting->get_setting( 'give_tax' ) === 'no_tax' ) {
             $admin_tax          = $item_tax_total;
             $store_tax          = 0;
-            $admin_shipping_tax = $shipping_tax_total;
-            $store_shipping_tax = 0;
+            if ( empty( $tax_on_shipping ) ) {
+                $admin_shipping_tax = $shipping_tax_total;
+                $store_shipping_tax = 0;
+            }
         } elseif ( MultiVendorX()->setting->get_setting( 'give_tax' ) === 'full_tax' ) {
             $admin_tax = 0;
             $store_tax = $item_tax_total;
@@ -392,12 +394,12 @@ class CommissionManager {
         $admin_coupon_amount = 0;
         $store_coupon        = false;
         $base_total          = $order->get_subtotal() - $order->get_discount_total();
-
-        if ( $order->get_coupon_codes() ) {
-            foreach ( $order->get_coupon_codes() as $coupon_code ) {
+        $parent_order = wc_get_order($order->get_parent_id());
+        
+        if ( $parent_order->get_coupon_codes() ) {
+            foreach ( $parent_order->get_coupon_codes() as $coupon_code ) {
                 $coupon   = new \WC_Coupon( $coupon_code );
                 $store_id = (int) get_post_meta( $coupon->get_id(), Utill::POST_META_SETTINGS['store_id'], true );
-
                 if ( $store_id && Store::get_store( $store_id ) ) {
                     $store_coupon = true;
                 }
@@ -408,14 +410,15 @@ class CommissionManager {
         // 2nd check the commission_include_coupon set to admin
         if ( ( ! empty( MultiVendorX()->setting->get_setting( 'admin_coupon_excluded' ) ) && ! $store_coupon ) || MultiVendorX()->setting->get_setting( 'commission_include_coupon' ) === 'admin' ) {
             $store_coupon_amount = sprintf( '%+0.2f', ( $order->get_discount_total() * ( $store_earning / $base_total ) ) );
+            $admin_coupon_amount = sprintf( '%+0.2f', - ( $order->get_discount_total() * ( $store_earning / $base_total ) ) );
         } elseif ( MultiVendorX()->setting->get_setting( 'commission_include_coupon' ) === 'store' ) {
             $store_coupon_amount = sprintf( '%+0.2f', - ( $order->get_discount_total() * ( $marketplace_commission / $base_total ) ) );
+            $admin_coupon_amount = sprintf( '%+0.2f', ( $order->get_discount_total() * ( $marketplace_commission / $base_total ) ) );
         }
 
-        $admin_coupon_amount = (float) ( $order->get_discount_total() - $store_coupon_amount );
         return array(
 			'store_coupon_amount' => (float) $store_coupon_amount,
-			'admin_coupon_amount' => $admin_coupon_amount,
+			'admin_coupon_amount' => (float) $admin_coupon_amount,
 		);
     }
 

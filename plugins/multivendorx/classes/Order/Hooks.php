@@ -178,10 +178,6 @@ class Hooks {
 			return;
         }
 
-        if ( empty( $new_status ) ) {
-            $new_status = $order->get_status( 'edit' );
-        }
-
         // If order is not a main order or sync before then return.
         if ( $order->get_parent_id() || $order->get_meta( Utill::ORDER_META_SETTINGS['order_status_synchronized'], true ) ) {
             return;
@@ -189,20 +185,21 @@ class Hooks {
 
         remove_action( 'woocommerce_order_status_completed', 'wc_paying_customer' );
 
-        // Check if order have suborder then sync.
-        $suborders = MultiVendorX()->order->get_suborders( $order );
-        if ( $suborders ) {
-            foreach ( $suborders as $suborder ) {
-                if ( $suborder && $suborder->get_status() !== $new_status ) {
-                    $suborder->update_status( $new_status, _x( 'Update via parent order: ', 'Order note', 'multivendorx' ) );
-
-                    $updated = true;
+        if ($new_status == 'completed') {
+            // Check if order have suborder then sync.
+            $suborders = MultiVendorX()->order->get_suborders( $order );
+            if ( $suborders ) {
+                foreach ( $suborders as $suborder ) {
+                    if ( $suborder && $suborder->get_status() !== $new_status ) {
+                        $suborder->update_status( $new_status, _x( 'Update via parent order: ', 'Order note', 'multivendorx' ) );
+                        $updated = true;
+                    }
                 }
-            }
-
-            if ( $updated ) {
-                $order->update_meta_data( Utill::ORDER_META_SETTINGS['order_status_synchronized'], true );
-                $order->save();
+    
+                if ( $updated ) {
+                    $order->update_meta_data( Utill::ORDER_META_SETTINGS['order_status_synchronized'], true );
+                    $order->save();
+                }
             }
         }
 
@@ -223,7 +220,11 @@ class Hooks {
 
         $store_id = $order ? absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true ) ) : 0;
 
-        if ( get_current_user_id() === $store_id ) {
+        if ($new_status != 'completed') {
+            return;
+        }
+
+        if ( $store_id ) {
             $parent_order_id = $order->get_parent_id();
             if ( $parent_order_id ) {
                 // Remove the action to prevent recursion call.

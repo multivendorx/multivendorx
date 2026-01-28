@@ -16,9 +16,6 @@ $policies = Util::get_store_policies( $store_id );
 if ( empty( $policies ) ) {
     echo 'No policy found.';
 }
-?>
-<div class="multivendorx-policies-accordion">
-    <?php
     $policies_list = array(
         'store_policy'        => __( 'Store Policy', 'multivendorx' ),
         'shipping_policy'     => __( 'Shipping Policy', 'multivendorx' ),
@@ -36,5 +33,4 @@ if ( empty( $policies ) ) {
 			<?php
         endif;
     endforeach;
-    ?>
-</div>
+?>

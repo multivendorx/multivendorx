@@ -247,7 +247,7 @@ const AdminDashboard = () => {
 			title: 'Product & store tools',
 			features: [
 				{
-					name: 'Multiple vendors per product (SPMV)',
+					name: 'Multiple stores per product',
 					free: true,
 					pro: true,
 				},
@@ -374,8 +374,8 @@ const AdminDashboard = () => {
 
 	const Modules: Module[] = [
 		{
-			id: 'spmv',
-			name: 'Single product multiple vendor',
+			id: 'shared-listing',
+			name: 'Shared listing',
 			iconClass: 'adminfont-spmv',
 			pro: false,
 		},
@@ -405,7 +405,7 @@ const AdminDashboard = () => {
 		},
 		{
 			id: 'min-max-quantities',
-			name: 'Min/Max quantities',
+			name: 'Min max',
 			iconClass: 'adminfont-min-max',
 			pro: false,
 		},
@@ -474,7 +474,7 @@ const AdminDashboard = () => {
 			content: (
 				<>
 					<Column grid={8}>
-						<Card>
+						<Card contentHeight>
 							<div className="pro-banner-wrapper">
 								<div className="content">
 									<div className="heading">
@@ -502,7 +502,7 @@ const AdminDashboard = () => {
 											className="admin-btn"
 											onClick={() =>
 											(window.location.href =
-												'?page=multivendorx#&tab=setup')
+												'?page=multivendorx-setup')
 											}
 										>
 											{__(
@@ -555,7 +555,7 @@ const AdminDashboard = () => {
 							</Card>
 
 						)}
-						<Card title="Modules" buttonLabel="View All" onButtonClick={() => (window.location.href = `?page=multivendorx#&tab=modules`)}>
+						<Card contentHeight title="Modules" buttonLabel="View All" onButtonClick={() => (window.location.href = `?page=multivendorx#&tab=modules`)}>
 							<div className="mini-module">
 								{Modules.map((module) => (
 									<div
@@ -946,7 +946,7 @@ const AdminDashboard = () => {
 
 									<div
 										onClick={() =>
-											(window.location.href = `?page=multivendorx#&tab=setup`)
+											(window.location.href = `?page=multivendorx-setup`)
 										}
 										className="admin-btn"
 									>

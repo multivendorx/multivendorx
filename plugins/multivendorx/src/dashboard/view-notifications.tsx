@@ -37,7 +37,7 @@ const ViewNotifications = (React.FC = () => {
 				name: 'Notifications',
 				desc: 'general',
 				hideTabHeader: true,
-				icon: 'tools',
+				icon: 'notification',
 			},
 		},
 		{
@@ -57,7 +57,7 @@ const ViewNotifications = (React.FC = () => {
 				name: 'Announcements',
 				desc: 'Store Info',
 				hideTabHeader: true,
-				icon: 'tools',
+				icon: 'announcement',
 			},
 		},
 	];
@@ -83,11 +83,13 @@ const ViewNotifications = (React.FC = () => {
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
 				settingName="Settings"
+				template={'template-2'}
 				supprot={[]}
 				premium={false}
 				Link={SimpleLink}
 				hideTitle={true}
 				hideBreadcrumb={true}
+				menuIcon={true}
 			/>
 		</>
 	);

@@ -112,8 +112,8 @@ const ShopPolicies = () => {
 					<Card title={__('Cancellation / Return / Exchange Policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextArea
-								name="exchange_policy"
-								value={formData.exchange_policy}
+								name="cancellation_policy"
+								value={formData.cancellation_policy}
 								onChange={handleChange}
 							/>
 						</FormGroupWrapper>

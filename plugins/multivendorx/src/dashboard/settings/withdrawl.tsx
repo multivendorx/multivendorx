@@ -75,29 +75,18 @@ const Withdrawl: React.FC = () => {
 		useState<any>(null);
 
 	useEffect(() => {
-		if (!containerRef.current) {
-			return;
-		}
-
-		const field = selectedProvider?.fields?.find(
-			(f) => f.type === 'embedded'
-		);
-		if (!field) {
-			return;
-		}
-
-		const clientSecret = field.client_secret;
-		const publishableKey = field.publish;
-
-		if (clientSecret && publishableKey) {
-			(async () => {
-				const instance = await loadConnectAndInitialize({
-					publishableKey,
-					fetchClientSecret: async () => clientSecret,
-				});
-				setStripeConnectInstance(instance);
-			})();
-		}
+		if (!containerRef.current || !selectedProvider?.fields) return;
+	
+		const field = selectedProvider.fields.find(f => f.type === 'embedded');
+		if (!field?.client_secret || !field?.publish) return;
+	
+		(async () => {
+			const instance = await loadConnectAndInitialize({
+				publishableKey: field.publish,
+				fetchClientSecret: async () => field.client_secret,
+			});
+			setStripeConnectInstance(instance);
+		})();
 	}, [selectedProvider]);
 
 	const handleChange = (

@@ -138,9 +138,13 @@ class Stores extends \WP_REST_Controller {
                     return $cached;
                 }
 
-                $start = gmdate( 'Y-m-d H:i:s', strtotime( $request->get_param( 'start_date' ) ) );
-                $end   = gmdate( 'Y-m-d H:i:s', strtotime( $request->get_param( 'end_date' ) ) );
-
+                $dates = Utill::normalize_date_range(
+                    $request->get_param( 'start_date' ),
+                    $request->get_param( 'end_date' )
+                );
+                
+                $start = $dates['start_date'];
+                $end   = $dates['end_date'];
                 global $wpdb;
 
                  $rows = $wpdb->get_results(
@@ -252,31 +256,33 @@ class Stores extends \WP_REST_Controller {
             }
 
             // Pagination & filters.
-            $limit  = max( (int) $request->get_param( 'row' ), 10 );
-            $page   = max( (int) $request->get_param( 'page' ), 1 );
+            $limit  = $request->get_param( 'row' );
+            $page   = $request->get_param( 'page' );
             $offset = ( $page - 1 ) * $limit;
+            $args = array();
 
-            $args = array(
-                'limit'  => $limit,
-                'offset' => $offset,
-            );
+            if ( ! empty( $limit ) ) {
+                $args['limit'] = $limit;
+            }
+            if ( ! empty( $offset ) ) {
+                $args['offset'] = $offset;
+            }
 
             $search = sanitize_text_field( $request->get_param( 'searchField' ) );
             if ( ! empty( $search ) ) {
                 $args['searchField'] = $search;
             } else {
-                $start = sanitize_text_field( $request->get_param( 'startDate' ) );
-                $end   = sanitize_text_field( $request->get_param( 'endDate' ) );
-
-                if ( $start && $end ) {
-                    $args['start_date'] = gmdate(
-                        'Y-m-d 00:00:00',
-                        strtotime( preg_replace( '/\.\d+Z?$/', '', str_replace( 'T', ' ', $start ) ) )
-                    );
-                    $args['end_date']   = gmdate(
-                        'Y-m-d 23:59:59',
-                        strtotime( preg_replace( '/\.\d+Z?$/', '', str_replace( 'T', ' ', $end ) ) )
-                    );
+                $dates = Utill::normalize_date_range(
+                    $request->get_param( 'startDate' ),
+                    $request->get_param( 'endDate' )
+                );
+                
+                if ( ! empty( $dates['start_date'] ) ) {
+                    $args['start_date'] = $dates['start_date'];
+                }
+                
+                if ( ! empty( $dates['end_date'] ) ) {
+                    $args['end_date'] = $dates['end_date'];
                 }
             }
 
@@ -296,12 +302,27 @@ class Stores extends \WP_REST_Controller {
             if ( ! empty( $filters ) ) {
                 $args['orderBy'] = $filters['sort'] ?? $args['orderBy'] ?? '';
                 $args['order']   = $filters['order'] ?? '';
+                $lat    = !empty($filters['location_lat']) ? $filters['location_lat'] : 0;
+                $lng    = !empty($filters['location_lng']) ? $filters['location_lng'] : 0;
+                $radius = !empty($filters['distance']) ? $filters['distance'] : 0;
+                $unit   = $filters['miles'] ?? 'km';
 
-                if ( isset( $filters['limit'] ) && is_numeric( $filters['limit'] ) ) {
+                switch ($unit) {
+                    case 'miles':
+                        $earth_radius = 3959;
+                        break;
+                    case 'nm':
+                        $earth_radius = 3440;
+                        break;
+                    default:
+                        $earth_radius = 6371;
+                }                
+
+                if ( !empty( $filters['limit'] ) && $filters['limit'] ) {
                     $args['limit'] = absint( $filters['limit'] );
                 }
 
-                if ( isset( $filters['offset'] ) && is_numeric( $filters['offset'] ) ) {
+                if ( !empty( $filters['offset'] ) && $filters['offset'] ) {
                     $args['offset'] = absint( $filters['offset'] );
                 }
 
@@ -344,18 +365,33 @@ class Stores extends \WP_REST_Controller {
                     );
                 }
             }
-
             // Fetch & format stores.
-            $stores           = StoreUtil::get_store_information( $args );
+            $stores = StoreUtil::get_store_information( $args );
+            if ( $lat && $lng && $radius ) {
+                $stores = array_filter( $stores, function ( $store ) use ( $lat, $lng, $radius, $earth_radius ) {
+                    $store_id   = (int) $store['ID'];
+                    $store_meta = Store::get_store( $store_id );
+                    $store_lat = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? 0.00 ;
+                    $store_lng = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? 0.00 ;
+                    if ( ! $store_lat || ! $store_lng ) {
+                        return false;
+                    }
+                    $delta_latitude = deg2rad( $store_lat - $lat );
+                    $delta_longitude = deg2rad( $store_lng - $lng );
+                    $haversine = sin($delta_latitude / 2) ** 2 +
+                         cos(deg2rad($lat)) * cos(deg2rad($store_lat)) *
+                         sin($delta_longitude / 2) ** 2;
+                    $distance = $earth_radius * ( 2 * atan2( sqrt($haversine), sqrt(1 - $haversine) ) );
+                    return $distance <= $radius;
+                });
+                $stores = array_values( $stores );
+            }            
             $formatted_stores = array();
-
             foreach ( $stores as $store ) {
                 $store_id   = (int) $store['ID'];
                 $store_meta = Store::get_store( $store_id );
-
                 $owner_id = StoreUtil::get_primary_owner( $store_id );
                 $owner    = get_userdata( $owner_id );
-
                 $formatted_stores[] = apply_filters(
                     'multivendorx_stores',
                     array(
@@ -370,7 +406,9 @@ class Stores extends \WP_REST_Controller {
                         'applied_on'          => $store['create_time'],
                         'store_image'         => $store_meta->meta_data['image'] ?? '',
                         'store_banner'        => $store_meta->meta_data['banner'] ?? '',
-                        'address_1'           => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address_1'] ] ?? '',
+                        'address'           => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
+                        'location_lat'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? '',
+                        'location_lng'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? '',
                         'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),
                     )
                 );
@@ -472,10 +510,12 @@ class Stores extends \WP_REST_Controller {
 
         $formatted_stores = array();
         foreach ( $stores as $store ) {
-            $formatted_stores[] = array(
-                'id'         => (int) $store['ID'],
-                'store_name' => $store['name'],
-            );
+            if ($store['status'] == 'active') {
+                $formatted_stores[] = array(
+                    'id'         => (int) $store['ID'],
+                    'store_name' => $store['name'],
+                );
+            }
         }
 
         return rest_ensure_response( $formatted_stores );
@@ -503,6 +543,7 @@ class Stores extends \WP_REST_Controller {
         try {
             $registrations = (bool) $request->get_header( 'registrations' );
             $store_data    = (array) $request->get_param( 'formData' );
+            $file_data   = $request->get_file_params();
             $current_user  = wp_get_current_user();
 
             $core_fields = array(
@@ -562,6 +603,19 @@ class Stores extends \WP_REST_Controller {
             );
 
             $non_core_fields = array();
+
+            foreach ( $file_data as $file ) {
+                $field_key = array_key_first( $file['name'] );
+                $normalized_file = [
+                    'name'     => $file['name'][ $field_key ],
+                    'type'     => $file['type'][ $field_key ],
+                    'tmp_name' => $file['tmp_name'][ $field_key ],
+                    'error'    => $file['error'][ $field_key ],
+                    'size'     => $file['size'][ $field_key ],
+                ];
+                $attachment_id = StoreUtil::create_attachment_from_files_array($normalized_file);
+                $store_data[$field_key] = $attachment_id;
+            }
 
             foreach ( $store_data as $key => $value ) {
                 if ( in_array( $key, $core_fields, true ) || 'store_owners' === $key ) {

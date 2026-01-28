@@ -99,8 +99,8 @@ class Modules
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/Refund/Module.php',
                         'module_class' => 'MultiVendorX\Refund\Module',
                     ),
-                    'spmv'                   => array(
-                        'id'           => 'spmv',
+                    'shared-listing'         => array(
+                        'id'           => 'shared-listing',
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/SPMV/Module.php',
                         'module_class' => 'MultiVendorX\SPMV\Module',
                     ),
@@ -144,8 +144,8 @@ class Modules
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/Announcement/Module.php',
                         'module_class' => 'MultiVendorX\Announcement\Module',
                     ),
-                    'knowladgebase'          => array(
-                        'id'           => 'knowladgebase',
+                    'knowledgebase'          => array(
+                        'id'           => 'knowledgebase',
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/Knowledgebase/Module.php',
                         'module_class' => 'MultiVendorX\Knowledgebase\Module',
                     ),
@@ -163,6 +163,11 @@ class Modules
                         'id'           => 'min-max',
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/MinMax/Module.php',
                         'module_class' => 'MultiVendorX\MinMax\Module',
+                    ),
+                    'elementor'                => array(
+                        'id'           => 'elementor',
+                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Elementor/Module.php',
+                        'module_class' => 'MultiVendorX\Elementor\Module',
                     ),
                     'invoice'                => array(
                         'id'           => 'invoice',

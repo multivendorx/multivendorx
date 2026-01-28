@@ -1,6 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { CommonPopup, FormGroup, FormGroupWrapper } from 'zyra';
+import { formatCurrency, formatWcShortDate } from '@/services/commonFunction';
 
 type TransactionRow = {
 	id: number;
@@ -44,13 +45,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Date', 'multivendorx')}
 							</div>
 							<div className="value">
-								{new Date(
-									transaction.date.replace(' ', 'T')
-								).toLocaleDateString('en-US', {
-									month: 'short',
-									day: '2-digit',
-									year: 'numeric',
-								})}
+								{formatWcShortDate(transaction.date)}
 							</div>
 						</div>
 						<div className="items">
@@ -58,7 +53,13 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Order Details', 'multivendorx')}
 							</div>
 							<div className="value">
-								{transaction.order_details}
+								{transaction.order_details ? (
+									<a href={`/dashboard/orders/#view/${transaction.order_details}`}>
+										#{transaction.order_details}
+									</a>
+								) : (
+									'-'
+								)}
 							</div>
 						</div>
 						<div className="items">
@@ -82,7 +83,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Credit', 'multivendorx')}
 							</div>
 							<div className="value">
-								{Number(transaction.credit || 0).toFixed(2)}
+								{formatCurrency(transaction.credit)}
 							</div>
 						</div>
 						<div className="items">
@@ -90,7 +91,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Debit', 'multivendorx')}
 							</div>
 							<div className="value">
-								{Number(transaction.debit || 0).toFixed(2)}
+								{formatCurrency(transaction.debit)}
 							</div>
 						</div>
 						<div className="items">
@@ -98,9 +99,8 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Balance', 'multivendorx')}
 							</div>
 							<div className="value">
-								{Number(transaction.balance || 0).toFixed(
-									2
-								)}
+								{formatCurrency(transaction.balance)}
+
 							</div>
 						</div>
 						<div className="items">

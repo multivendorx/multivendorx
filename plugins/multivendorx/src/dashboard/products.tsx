@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, act } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
 	useModules,
@@ -59,11 +59,7 @@ const stockStatusOptions = [
 	{ key: 'outofstock', name: 'Out of Stock' },
 	{ key: 'onbackorder', name: 'On Backorder' },
 ];
-const StatusOptions = [
-	{ key: '', name: 'Status' },
-	{ key: 'instock', name: 'Published' },
-	{ key: 'outofstock', name: 'Draft' },
-];
+
 const productTypeOptions = [
 	{ key: '', name: 'Product Type' },
 	{ key: 'simple', name: 'Simple Product' },
@@ -71,6 +67,16 @@ const productTypeOptions = [
 	{ key: 'grouped', name: 'Grouped Product' },
 	{ key: 'external', name: 'External/Affiliate Product' },
 ];
+
+const STATUS_LABELS: Record<string, string> = {
+	all: __('All', 'multivendorx'),
+	publish: __('Published', 'multivendorx'),
+	draft: __('Draft', 'multivendorx'),
+	pending: __('Pending', 'multivendorx'),
+	private: __('Private', 'multivendorx'),
+	trash: __('Trash', 'multivendorx'),
+};
+
 const AllProduct: React.FC = () => {
 	const [data, setData] = useState<ProductRow[]>([]);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -92,6 +98,18 @@ const AllProduct: React.FC = () => {
 	const navigate = useNavigate();
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
 	const basePath = siteUrl.replace(window.location.origin, '');
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
+	const bulkSelectRef = useRef<HTMLSelectElement>(null);
 
 	const params = new URLSearchParams(location.search);
 
@@ -171,14 +189,7 @@ const AllProduct: React.FC = () => {
 
 	const fetchProductStatusCounts = async () => {
 		try {
-			const statuses = [
-				'all',
-				'publish',
-				'draft',
-				'pending',
-				'private',
-				'trash',
-			];
+			const statuses = ['all', 'publish', 'draft', 'pending', 'private', 'trash'];
 
 			const counts: ProductStatus[] = await Promise.all(
 				statuses.map(async (status) => {
@@ -204,56 +215,47 @@ const AllProduct: React.FC = () => {
 
 					return {
 						key: status,
-						name:
-							status === 'all'
-								? __('All', 'multivendorx')
-								: status.charAt(0).toUpperCase() +
-								status.slice(1),
+						name: STATUS_LABELS[status],
 						count: total,
 					};
 				})
 			);
 
-			const filteredCounts = counts.filter(
-				(status) => status.key === 'all' || status.count > 0
+			setProductStatus(
+				counts.filter((s) => s.count > 0)
 			);
-
-			setProductStatus(filteredCounts);
 		} catch (error) {
-			console.error('Failed to fetch order status counts:', error);
+			console.error('Failed to fetch product status counts:', error);
 		}
 	};
 
+
 	const fetchWpmlTranslations = async () => {
 		if (!modules.includes('wpml')) return;
-
+	
 		try {
-			const response = await axios.get(getApiLink(appLocalizer, 'multivendorx-wpml'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			});
+			const response = await axios.get(
+				getApiLink(appLocalizer, 'multivendorx-wpml'),
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			);
+	
 			const langs = response.data || [];
-
-			// Initialize language counts with 0
-			const initialCounts = langs.map((lang: any) => ({
-				key: lang.code,
-				name: lang.name,
-				count: 0,
-			}));
-			setLanguageProductCounts(initialCounts);
-
-			// Then fetch actual counts asynchronously
+	
+			// Directly fetch and merge language-wise product counts
 			if (langs.length) {
 				fetchLanguageWiseProductCounts(langs);
 			}
 		} catch (err) {
-			setLanguageProductCounts([]);
 			console.error('Failed to fetch WPML translations', err);
 		}
 	};
+	
 
 	const fetchLanguageWiseProductCounts = async (langs: any[]) => {
 		if (!langs?.length) return;
-
+	
 		try {
 			const counts = await Promise.all(
 				langs.map(async (lang) => {
@@ -263,32 +265,48 @@ const AllProduct: React.FC = () => {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
 					};
-					const res = await axios.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
-						headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						params,
-					});
+	
+					const res = await axios.get(
+						`${appLocalizer.apiUrl}/wc/v3/products`,
+						{
+							headers: { 'X-WP-Nonce': appLocalizer.nonce },
+							params,
+						}
+					);
+	
 					const total = parseInt(res.headers['x-wp-total'] || '0');
-
+	
 					return {
-						key: lang.code,
+						key: lang.code, 
 						name: lang.name,
 						count: total,
 					};
 				})
 			);
-
-			// Merge counts with previous state so UI doesn't jump
-			setLanguageProductCounts((prev) =>
-				prev.map((lang) => {
-					const updated = counts.find((c) => c.key === lang.key);
-					return updated ? { ...lang, count: updated.count } : lang;
-				})
-			);
+	
+			const languageItems = counts.filter(c => c.count > 0);
+	
+			// Do nothing if no language has products
+			if (!languageItems.length) {
+				return;
+			}
+	
+			const allLangItem: ProductStatus = {
+				key: 'all_lang',
+				name: __('All Languages', 'multivendorx'),
+				count: languageItems.reduce((sum, l) => sum + l.count, 0),
+			};
+	
+			setProductStatus(prev => [
+				...prev,
+				allLangItem,
+				...languageItems,
+			]);
 		} catch (error) {
 			console.error('Failed to fetch language wise product counts:', error);
 		}
 	};
-
+	
 	useEffect(() => {
 		fetchCategories();
 		fetchProductStatusCounts();
@@ -312,7 +330,6 @@ const AllProduct: React.FC = () => {
 		startDate?: Date,
 		endDate?: Date,
 		categoryFilter?: string,
-		languageFilter?: string,
 	) {
 		category = category || '';
 		stockStatus = stockStatus || '';
@@ -321,7 +338,6 @@ const AllProduct: React.FC = () => {
 		startDate = startDate || new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
 		endDate = endDate || new Date();
 		categoryFilter = categoryFilter || '';
-		languageFilter = languageFilter || '';
 
 		setData(null);
 		const params: any = {
@@ -332,7 +348,6 @@ const AllProduct: React.FC = () => {
 			before: endDate,
 			meta_key: 'multivendorx_store_id',
 			value: appLocalizer.store_id,
-			lang: languageFilter,
 		};
 
 		if (stockStatus) {
@@ -345,9 +360,19 @@ const AllProduct: React.FC = () => {
 		if (productType) {
 			params.type = productType;
 		}
+
 		if (categoryFilter && categoryFilter !== 'all') {
-			params.status = categoryFilter;
+			const WC_STATUSES = ['publish', 'draft', 'pending', 'private', 'trash'];
+		
+			if (categoryFilter === 'all_lang') {
+				params.lang = 'all';
+			} else if (WC_STATUSES.includes(categoryFilter)) {
+				params.status = categoryFilter;
+			} else {
+				params.lang = categoryFilter;
+			}
 		}
+		
 		axios({
 			method: 'GET',
 			url: `${appLocalizer.apiUrl}/wc/v3/products`,
@@ -392,23 +417,44 @@ const AllProduct: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData([]);
-		// Arguments must be passed in the exact order requestData expects them.
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
+
 		requestData(
-			rowsPerPage, // 1: rowsPerPage
-			currentPage, // 2: currentPage
-			filterData?.category, // 3: category
-			filterData?.stock_status, // 4: stockStatus
-			filterData?.searchField, // 5: searchField (Assuming filterData uses searchField for the search box value)
-			filterData?.productType, // 6: productType
-			filterData?.date?.start_date, // 7: startDate
-			filterData?.date?.end_date, // 8: endDate
+			rowsPerPage,
+			currentPage,
+			filterData?.category,
+			filterData?.stock_status,
+			filterData?.searchField,
+			filterData?.productType,
+			date.start_date,
+			date.end_date,
 			filterData?.categoryFilter,
 			filterData?.languageFilter,
 		);
 	};
 
 	const columns: ColumnDef<ProductRow>[] = [
+		{
+			id: 'select',
+			header: ({ table }) => (
+				<input
+					type="checkbox"
+					checked={table.getIsAllRowsSelected()}
+					onChange={table.getToggleAllRowsSelectedHandler()}
+				/>
+			),
+			cell: ({ row }) => (
+				<input
+					type="checkbox"
+					checked={row.getIsSelected()}
+					onChange={row.getToggleSelectedHandler()}
+				/>
+			),
+		},
 		{
 			header: __('Product Name', 'multivendorx'),
 			cell: ({ row }) => (
@@ -452,17 +498,17 @@ const AllProduct: React.FC = () => {
 				<TableCell>
 					{row.original.stock_status === 'instock' && (
 						<span className="admin-badge green-color">
-							In Stock
+							{__('In Stock', 'multivendorx')}
 						</span>
 					)}
 					{row.original.stock_status === 'outofstock' && (
 						<span className="admin-badge red-color">
-							Out of Stock
+							{__('Out of Stock', 'multivendorx')}
 						</span>
 					)}
 					{row.original.stock_status === 'onbackorder' && (
 						<span className="admin-badge yellow-color">
-							On Backorder
+							{__('On Backorder', 'multivendorx')}
 						</span>
 					)}
 					{!row.original.stock_status && '-'}
@@ -491,7 +537,6 @@ const AllProduct: React.FC = () => {
 			),
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				const statusMap: Record<string, string> = {
@@ -508,7 +553,6 @@ const AllProduct: React.FC = () => {
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -663,45 +707,82 @@ const AllProduct: React.FC = () => {
 			),
 		},
 		{
-			name: 'status',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="group-field">
-					<select
-						name="status"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						{StatusOptions?.map((s: any) => (
-							<option key={s.key} value={s.key}>
-								{s.name}
-							</option>
-						))}
-					</select>
-				</div>
-			),
-		},
-		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
+
+
+	const handleBulkAction = async () => {
+		const action = bulkSelectRef.current?.value;
+		const selectedIds = Object.keys(rowSelection)
+			.map((key) => {
+				const index = Number(key);
+				return data && data[index] ? data[index].id : null;
+			})
+			.filter((id): id is number => id !== null);
+
+		if (!selectedIds.length) {
+			return;
+		}
+
+		if (!action) {
+			return;
+		}
+		setData(null);
+
+		try {
+			if (action === 'delete') {
+				await axios({
+					method: 'POST', // WooCommerce bulk endpoint uses POST
+					url: `${appLocalizer.apiUrl}/wc/v3/products/batch`,
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					data: {
+						delete: selectedIds, // array of product IDs to delete
+					},
+				});
+			}
+
+			// Refresh the data after action
+			fetchCategories();
+			fetchProductStatusCounts();
+			fetchWpmlTranslations();
+			requestData(pagination.pageSize, pagination.pageIndex + 1);
+			setRowSelection({});
+		} catch (err: unknown) {
+			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
+		}
+	};
+
+	const BulkAction: React.FC = () => (
+		<div className="action">
+			<i className="adminfont-form"></i>
+			<select
+				name="action"
+				ref={bulkSelectRef}
+				onChange={handleBulkAction}
+			>
+				<option value="">{__('Bulk actions')}</option>
+				<option value="delete">{__('Delete', 'multivendorx')}</option>
+			</select>
+		</div>
+	);
 
 	return (
 		<>
@@ -727,7 +808,7 @@ const AllProduct: React.FC = () => {
 							<div
 								className="admin-btn btn-purple-bg"
 								onClick={() => {
-									if (modules.includes('spmv')) {
+									if (modules.includes('shared-listing')) {
 										if (appLocalizer.permalink_structure) {
 											navigate(
 												`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
@@ -764,7 +845,7 @@ const AllProduct: React.FC = () => {
 							totalCounts={totalRows}
 							searchFilter={searchFilter}
 							categoryFilter={productStatus}
-							languageFilter={languageProductCounts}
+							bulkActionComp={() => <BulkAction />}
 						/>
 					</div>
 				</>

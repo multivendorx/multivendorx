@@ -14,16 +14,16 @@ export default {
 		{
 			key: 'store_compliance_management',
 			type: 'expandable-panel',
+			proSetting: true,
 			modal: [
 				{
 					id: 'seller-verification',
 					icon: 'adminfont-seller-verification',
 					label: 'Seller verification',
 					connected: true,
-					disableBtn: true,					 
+					disableBtn: true,
 					desc: 'Verify store identity and business legitimacy',
 					moduleEnabled: 'marketplace-compliance',
-					proSetting: true,
 					formFields: [
 						{
 							key: 'enable_advertisement_in_subscription',
@@ -50,7 +50,7 @@ export default {
 							key: 'required_tasks',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							 
+
 							options: [
 								{
 									key: 'block_dashboard_access',
@@ -134,7 +134,7 @@ export default {
 							key: 'non_compliance_action',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							 
+
 							options: [
 								{
 									key: 'disable_product',
@@ -190,14 +190,14 @@ export default {
 							key: 'terms_conditions',
 							type: 'setup',
 							title: 'Terms & Conditions',
-							des: 'Require vendors to accept platform terms and conditions before proceeding.',
+							des: 'Require stores to accept platform terms and conditions before proceeding.',
 							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance`,
 						},
 						{
 							key: 'privacy_policy_consent',
 							type: 'setup',
 							title: 'Privacy policy consent',
-							des: 'Ensure vendors acknowledge and agree to your platform’s data handling policies.',
+							des: 'Ensure stores acknowledge and agree to your platform’s data handling policies.',
 							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance`,
 						},
 						{
@@ -211,14 +211,14 @@ export default {
 							key: 'return_policy_compliance',
 							type: 'setup',
 							title: 'Return policy compliance',
-							des: 'Ensure vendors follow the marketplace’s standard refund and return guidelines.',
+							des: 'Ensure stores follow the marketplace’s standard refund and return guidelines.',
 							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=legal-compliance`,
 						},
 						{
 							key: 'non_compliance_action',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							 
+
 							options: [
 								{
 									key: 'block_store_access',
@@ -274,7 +274,7 @@ export default {
 							key: 'tax_information',
 							type: 'setup',
 							title: 'Tax information',
-							des: 'Require vendors to provide valid TIN, VAT, GST, EIN, or other tax identification.',
+							des: 'Require stores to provide valid TIN, VAT, GST, EIN, or other tax identification.',
 							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=tax-compliance`,
 						},
 						{
@@ -288,7 +288,7 @@ export default {
 							key: 'non_compliance_action',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-							 
+
 							options: [
 								{
 									key: 'disable_payouts',

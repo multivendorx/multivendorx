@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'product-preferencess',
 	priority: 2,
-	name: __('Product preferences', 'multivendorx'),
+	name: __('Product/listing preferences', 'multivendorx'),
 	desc: __(
-		'Decide which product types, fields, and features stores can access when creating or managing products in their store.',
+		'Decide which product/listing types, fields, and features stores can access when creating or managing products/listings in their store.',
 		'multivendorx'
 	),
 	icon: 'adminfont-single-product',
@@ -14,14 +14,14 @@ export default {
 		{
 			key: 'type_options',
 			type: 'checkbox',
-			label: __('Allowed product options', 'multivendorx'),
+			label: __('Allowed product/listing options', 'multivendorx'),
 			settingDescription: __(
-				'Select the product fields stores can configure when adding or managing their products.',
+				'Select the product/listing fields stores can configure when adding or managing their products/listings.',
 				'multivendorx'
 			),
 			 
 			desc: __(
-				'<ul><li>Virtual - Choose this option for products that don’t have a physical form (e.g., services, memberships). <li>Downloadable - Use this option for products that customers can download (e.g., software, eBooks).</li><ul>',
+				'<ul><li>Virtual - Choose this option for products/listing that don’t have a physical form (e.g., services, memberships). <li>Downloadable - Use this option for products/listing that customers can download (e.g., software, eBooks).</li><ul>',
 				'multivendorx'
 			),
 			options: [
@@ -41,9 +41,9 @@ export default {
 		{
 			key: 'products_fields',
 			type: 'checkbox',
-			label: __('Edit product page blocks', 'multivendorx'),
+			label: __('Edit product/listing page blocks', 'multivendorx'),
 			settingDescription: __(
-				'Control which product data fields are available to stores when creating or editing products.',
+				'Control which product/listing data fields are available to stores when creating or editing products/listing.',
 				'multivendorx'
 			),
 			 
@@ -52,7 +52,7 @@ export default {
 					key: 'general',
 					label: __('General', 'multivendorx'),
 					desc: __(
-						'Store can add description, and price of the product.',
+						'Store can add description, and price of the product/listing.',
 						'multivendorx'
 					),
 					value: 'general',
@@ -79,7 +79,7 @@ export default {
 					key: 'attribute',
 					label: __('Attribute', 'multivendorx'),
 					desc: __(
-						'Give stores the option to add product features such as size, color, or material.',
+						'Give stores the option to add product/listing features such as size, color, or material.',
 						'multivendorx'
 					),
 					value: 'attribute',
@@ -97,7 +97,7 @@ export default {
 					key: 'policies',
 					label: __('Policies', 'multivendorx'),
 					desc: __(
-						'Allow stores to add return, refund, or warranty policies to products.',
+						'Allow stores to add return, refund, or warranty policies to products/listings.',
 						'multivendorx'
 					),
 					value: 'policies',
@@ -106,7 +106,7 @@ export default {
 					key: 'product_tag',
 					label: __('Product tag', 'multivendorx'),
 					desc: __(
-						'Enable tagging so stores can categorize products for easier search and filtering.',
+						'Enable tagging so stores can categorize products/listing for easier search and filtering.',
 						'multivendorx'
 					),
 					value: 'product_tag',
@@ -115,7 +115,7 @@ export default {
 					key: 'GTIN',
 					label: __('GTIN', 'multivendorx'),
 					desc: __(
-						'Global Trade Item Number (barcode/identifier) can be assigned for product tracking.',
+						'Global Trade Item Number (barcode/identifier) can be assigned for product/listing tracking.',
 						'multivendorx'
 					),
 					value: 'GTIN',
@@ -127,15 +127,15 @@ export default {
 			key: 'separator_category_specific',
 			type: 'section',
 			desc: __(
-				'Control how stores select categories while adding products.',
+				'Control how stores select categories while adding products/listing.',
 				'multivendorx'
 			),
-			hint: __('How stores choose product categories', 'multivendorx'),
+			hint: __('How stores choose product/listing categories', 'multivendorx'),
 		},
 		{
 			key: 'category_selection_method',
 			type: 'setting-toggle',
-			label: __('Product category selection', 'multivendorx'),
+			label: __('Product/listing category selection', 'multivendorx'),
 			settingDescription: __(
 				'Choose whether stores follow a guided category selection flow or freely choose multiple categories.',
 				'multivendorx'
@@ -162,7 +162,7 @@ export default {
 			key: 'separator_content',
 			type: 'section',
 			desc: __(
-				'Control how SKUs are handled for products.',
+				'Control how SKUs are handled for products/listing.',
 				'multivendorx'
 			),
 			hint: __('SKU generation', 'multivendorx'),
@@ -170,9 +170,9 @@ export default {
 		{
 			key: 'sku_generator',
 			type: 'setting-toggle',
-			label: __('SKU management for products', 'multivendorx'),
+			label: __('SKU management for products/listing', 'multivendorx'),
 			settingDescription: __(
-				'Choose how SKUs for simple, external, or parent products are generated.',
+				'Choose how SKUs for simple, external, or parent products/listing are generated.',
 				'multivendorx'
 			),
 			options: [
@@ -183,12 +183,12 @@ export default {
 				},
 				{
 					key: 'slugs',
-					label: __('Using the product slug (name)', 'multivendorx'),
+					label: __('Using the product/listing slug (name)', 'multivendorx'),
 					value: 'slugs',
 				},
 				{
 					key: 'ids',
-					label: __('Using the product ID', 'multivendorx'),
+					label: __('Using the product/listing ID', 'multivendorx'),
 					value: 'ids',
 				},
 			],
@@ -223,21 +223,21 @@ export default {
 			key: 'separator_content',
 			type: 'section',
 			desc: __(
-				'Products similar in type, category, or stores are displayed as related items to guide customers toward additional purchases.',
+				'Products/listings similar in type, category, or stores are displayed as related items to guide customers toward additional purchases.',
 				'multivendorx'
 			),
-			hint: __('Related products source', 'multivendorx'),
+			hint: __('Related products/listings source', 'multivendorx'),
 		},
 		{
 			key: 'recommendation_source',
 			type: 'setting-toggle',
 			label: __('Recommendation source', 'multivendorx'),
 			settingDescription: __(
-				'Choose whether related products are shown from the same store only or from the entire marketplace.',
+				'Choose whether related products/listings are shown from the same store only or from the entire marketplace.',
 				'multivendorx'
 			),
 			desc: __(
-				'<ul><li>Same store - Show related products only from the current store.</li><li>All stores - Show related products from across the marketplace.</li><li>Do not display - Hide related products completely.</li><ul>',
+				'<ul><li>Same store - Show related products/listing only from the current store.</li><li>All stores - Show related products/listings from across the marketplace.</li><li>Do not display - Hide related products/listings completely.</li><ul>',
 				'multivendorx'
 			),
 			options: [

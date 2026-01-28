@@ -5,16 +5,18 @@ ul {
     padding: 0;
 }
 
-input[type="checkbox"]:checked {
-    width: 0 !important;
-}
+
+// input[type="checkbox"]:checked {
+//     width: 0 !important;
+// }
 
 input[type="checkbox"]:checked::before {
     background: $theme-color !important;
     padding: 0.063rem !important;
 }
 
-body:has(#store-dashboard) {
+body:has(#store-dashboard),
+body:has(#store-dashboard) input {
     background: #f3f5f7;
     font-family: Figtree, sans-serif;
     font-weight: 400;

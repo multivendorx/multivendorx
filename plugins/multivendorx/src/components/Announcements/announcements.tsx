@@ -27,7 +27,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import './announcements.scss';
-import { truncateText } from '@/services/commonFunction';
+import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { Dialog } from '@mui/material';
 
 type AnnouncementRow = {
@@ -96,6 +96,15 @@ export const Announcements: React.FC = () => {
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
+	});
+
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
 	});
 
 	const [pageCount, setPageCount] = useState(0);
@@ -391,11 +400,11 @@ export const Announcements: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage :number,
+		currentPage :number,
 		categoryFilter = '',
 		searchField = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
 		setData(null);
@@ -407,8 +416,8 @@ export const Announcements: React.FC = () => {
 				page: currentPage,
 				row: rowsPerPage,
 				status: categoryFilter === 'all' ? '' : categoryFilter,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 				searchField,
 			},
 		})
@@ -450,20 +459,24 @@ export const Announcements: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		const selectedStatus = announcementStatus?.find(
 			(status) => status.key === filterData?.categoryFilter
 		);
 
 		setTotalRows(selectedStatus ? selectedStatus.count : announcementStatus?.find(s => s.key === 'all')?.count || 0);
 
-		setData(null);
 		requestData(
 			rowsPerPage,
 			currentPage,
 			filterData?.categoryFilter,
 			filterData?.searchField,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -526,7 +539,6 @@ export const Announcements: React.FC = () => {
 			),
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return (
@@ -574,23 +586,12 @@ export const Announcements: React.FC = () => {
 			enableSorting: true,
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => {
-				const rawDate = row.original.date;
-				let formattedDate = '-';
-				if (rawDate) {
-					const dateObj = new Date(rawDate);
-					formattedDate = new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(dateObj);
-				}
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
 				);
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -615,7 +616,6 @@ export const Announcements: React.FC = () => {
 							},
 						],
 					}}
-					children={undefined}
 				/>
 			),
 		},
@@ -630,7 +630,7 @@ export const Announcements: React.FC = () => {
 				onChange={handleBulkAction}
 			>
 				<option value="">{__('Bulk actions')}</option>
-				<option value="publish">{__('Publish', 'multivendorx')}</option>
+				<option value="publish">{__('Published', 'multivendorx')}</option>
 				<option value="pending">{__('Pending', 'multivendorx')}</option>
 				<option value="delete">{__('Delete', 'multivendorx')}</option>
 			</select>
@@ -643,18 +643,26 @@ export const Announcements: React.FC = () => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
 						onChange={(range: DateRange) => {
-							updateFilter('date', {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							});
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
 						}}
 					/>
 				</div>
 			),
 		},
 	];
-	
+
+
 	return (
 		<>
 			<Dialog
@@ -821,7 +829,7 @@ export const Announcements: React.FC = () => {
 						</FormGroup>
 						<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 							<ToggleSetting
-								 
+
 								descClass="settings-metabox-description"
 								description={__(
 									'Select the status of the announcement.',
@@ -841,7 +849,7 @@ export const Announcements: React.FC = () => {
 									{
 										key: 'publish',
 										value: 'publish',
-										label: __('Publish', 'multivendorx'),
+										label: __('Published', 'multivendorx'),
 									},
 								]}
 								value={formData.status}

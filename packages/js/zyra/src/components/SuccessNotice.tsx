@@ -1,3 +1,4 @@
+import "../styles/web/UI/SuccessNotice.scss";
 import React from 'react';
 
 interface SuccessNoticeProps {

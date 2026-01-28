@@ -67,12 +67,18 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [pageCount, setPageCount] = useState<number>(0);
 	const [store, setStore] = useState<any[]>([]);
-	const [error, setError] = useState<string | null>(null);
 	const [popupOpen, setPopupOpen] = useState(false);
 	const [formData, setFormData] = useState({ content: '' });
 	const [viewOrder, setViewOrder] = useState<StoreRow | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-
+	const [dateFilter, setDateFilter] = useState<FilterDate>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 	/**
 	 * Fetch store list on mount
 	 */
@@ -84,7 +90,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			})
 			.then((response) => setStore(response.data.stores || []))
 			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
 				setStore([]);
 			});
 
@@ -105,9 +110,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				setTotalRows(total);
 				setPageCount(Math.ceil(total / pagination.pageSize));
 			})
-			.catch(() => {
-				setError(__('Failed to load total rows', 'multivendorx'));
-			});
 	}, []);
 
 	useEffect(() => {
@@ -121,8 +123,8 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	 * Fetch data from backend (WooCommerce Orders)
 	 */
 	const requestData = (
-		rowsPerPage = 10,
-		currentPage = 1,
+		rowsPerPage :number,
+		currentPage :number,
 		searchField = '',
 		store_id = '',
 		orderBy = '',
@@ -130,7 +132,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) => {
-		setData([]);
+		setData(null);
 
 		//Base WooCommerce query params
 		const params: any = {
@@ -142,7 +144,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			status: 'refund-requested',
 		};
 
-		//Add Date Filtering — only if both are valid Date objects
+		//Add Date Filtering - only if both are valid Date objects
 		if (startDate && endDate) {
 			// Convert to UTC ISO8601 format (WooCommerce expects this)
 			params.after = startDate.toISOString();
@@ -214,7 +216,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				setData(orders);
 			})
 			.catch((error) => {
-				setError(__('Failed to load order data', 'multivendorx'));
 				setData([]);
 			});
 	};
@@ -227,6 +228,11 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
@@ -234,8 +240,8 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			filterData?.store_id,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -273,11 +279,18 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			render: (updateFilter) => (
 				<div className="right">
 					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
+						value={{
+							startDate: dateFilter.start_date!,
+							endDate: dateFilter.end_date!,
+						}}
+						onChange={(range: DateRange) => {
+							const next = {
 								start_date: range.startDate,
 								end_date: range.endDate,
-							});
+							};
+
+							setDateFilter(next);
+							updateFilter('date', next);
 						}}
 					/>
 				</div>
@@ -356,7 +369,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			requestData(pagination.pageSize, pagination.pageIndex + 1);
 			onUpdated?.();
 		} catch (err) {
-			setError(__('Failed to reject order', 'multivendorx'));
+			console.log(err)
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -372,7 +385,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	 */
 	const columns: ColumnDef<StoreRow>[] = [
 		{
-			id: 'order_id',
 			header: __('Order', 'multivendorx'),
 			cell: ({ row }) => {
 				const id = row.original.id;
@@ -505,7 +517,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						searchFilter={searchFilter}
 						totalCounts={totalRows}
 					/>
-					{error && <div className="error-message">{error}</div>}
 					<CommonPopup
 						open={popupOpen}
 						onClose={handleCloseForm}

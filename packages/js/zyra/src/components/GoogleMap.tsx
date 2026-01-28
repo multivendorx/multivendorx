@@ -9,6 +9,7 @@ interface GoogleMapComponentProps {
     locationAddress: string;
     locationLat: string;
     locationLng: string;
+    isUserLocation?: boolean;
     onLocationUpdate: (data: {
         location_address: string;
         location_lat: string;
@@ -22,6 +23,15 @@ interface GoogleMapComponentProps {
     labelSearch: string;
     labelMap: string;
     placeholderSearch: string;
+    stores: { data: Store[] } | null;
+}
+
+interface Store {
+    id: number;
+    store_name: string;
+    address_1?: string;
+    location_lat?: string;
+    location_lng?: string;
 }
 
 interface ExtractedAddress {
@@ -37,10 +47,12 @@ const GoogleMap = ({
     locationAddress,
     locationLat,
     locationLng,
+    isUserLocation,
     onLocationUpdate,
     labelSearch,
     labelMap,
     placeholderSearch,
+    stores,
 }: GoogleMapComponentProps) => {
     const [map, setMap] = useState<google.maps.Map | null>(null);
     const [marker, setMarker] = useState<google.maps.Marker | null>(null);
@@ -48,6 +60,43 @@ const GoogleMap = ({
 
     const autocompleteInputRef = useRef<HTMLInputElement>(null);
     const mapContainerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!map || !stores?.data?.length) return;
+    
+        const markers: google.maps.Marker[] = [];
+    
+        stores.data.forEach((store) => {
+            if (!store.location_lat || !store.location_lng) return;
+    
+            const marker = new google.maps.Marker({
+                map,
+                position: {
+                    lat: parseFloat(store.location_lat),
+                    lng: parseFloat(store.location_lng),
+                },
+                title: store.store_name,
+            });
+    
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<strong>${store.store_name}</strong><br/>${store.address_1 || ''}`,
+            });
+    
+            marker.addListener('click', () => {
+                infoWindow.open(map, marker);
+            });
+    
+            markers.push(marker);
+        });
+    
+        if (markers.length) {
+            const bounds = new google.maps.LatLngBounds();
+            markers.forEach(m => bounds.extend(m.getPosition()!));
+            map.fitBounds(bounds);
+        }
+    
+        return () => markers.forEach(m => m.setMap(null));
+    }, [map, stores]);
 
     // Load Google Maps script
     useEffect(() => {
@@ -106,6 +155,9 @@ const GoogleMap = ({
                 draggable: true,
                 position: { lat: initialLat, lng: initialLng },
                 title: 'Store Location',
+                icon: isUserLocation
+                    ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                    : undefined,
             });
 
             markerInstance.addListener('dragend', () => {
@@ -256,24 +308,23 @@ const GoogleMap = ({
     };
 
     return (
-        <>
-            <FormGroup label={labelSearch}>
-                <div
-                    ref={mapContainerRef}
-                    id="location-map"
-                >
-                    <input
-                        ref={autocompleteInputRef}
-                        id="store-location-autocomplete"
-                        type="text"
-                        className="basic-input"
-                        placeholder={placeholderSearch}
-                        defaultValue={locationAddress}
-                    />
-                </div>
-            </FormGroup>
-        </>
-    );
+        <FormGroup label={labelSearch}>
+            <input
+                ref={autocompleteInputRef}
+                id="store-location-autocomplete"
+                type="text"
+                className="basic-input"
+                placeholder={placeholderSearch}
+                defaultValue={locationAddress}
+                style={{ width: '100%', height: '3rem', marginBottom: '8px' }}
+            />
+            <div
+                ref={mapContainerRef}
+                id="location-map"
+                style={{ height: '400px', width: '100%' }}
+            />
+        </FormGroup>
+    );    
 };
 
 export default GoogleMap;

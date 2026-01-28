@@ -12,8 +12,8 @@ import {
 	FormGroup,
 	AdminButton,
 	Popover,
+	Skeleton
 } from 'zyra';
-import { Skeleton } from '@mui/material';
 
 import StoreSettings from './storeSettings';
 import PaymentSettings from './paymentSettings';
@@ -31,11 +31,9 @@ const EditStore = () => {
 	const [data, setData] = useState<any>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const [bannerMenu, setBannerMenu] = useState(false);
-	// const [actionMenu, setActionMenu] = useState(false);
 	const [logoMenu, setLogoMenu] = useState(false);
 	const [deleteModal, setDeleteModal] = useState(false);
 	const [deleteOption, setDeleteOption] = useState('');
-	const wrapperRef = useRef<HTMLDivElement>(null);
 	const [editName, setEditName] = useState(false);
 	const [editDesc, setEditDesc] = useState(false);
 	const [selectedOwner, setSelectedOwner] = useState<any>(null);
@@ -83,7 +81,6 @@ const EditStore = () => {
 				return;
 			}
 			setBannerMenu(false);
-			setActionMenu(false);
 			setLogoMenu(false);
 		};
 
@@ -372,7 +369,7 @@ const EditStore = () => {
 			link: `${appLocalizer.store_page_url}${data.slug}`,
 			targetBlank: true,
 		},
-		{
+		data.status != 'pending' && {
 			title: __('Manage status', 'multivendorx'),
 			icon: 'adminfont-form-multi-select',
 			action: () => {
@@ -391,12 +388,12 @@ const EditStore = () => {
 				}, 5000);
 			},
 		},
-		{
+		data.status != 'pending' && {
 			title: __('Products', 'multivendorx'),
 			icon: 'adminfont-single-product',
 			link: `${appLocalizer.admin_url}edit.php?post_type=product&multivendorx_store_id=${data.id}`,
 		},
-		{
+		data.status != 'pending' && {
 			title: __('Orders', 'multivendorx'),
 			icon: 'adminfont-order',
 			action: () => {
@@ -652,10 +649,7 @@ const EditStore = () => {
 													) : data?.name ? (
 														data.name
 													) : (
-														<Skeleton
-															variant="text"
-															width={150}
-														/>
+														<Skeleton width={150}/>
 													)}
 
 													<span
@@ -745,10 +739,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : (
-													<Skeleton
-														variant="text"
-														width={100}
-													/>
+													<Skeleton width={100}/>
 												)}
 
 												{modules.includes(
@@ -805,10 +796,7 @@ const EditStore = () => {
 													/>
 												) : Object.keys(data).length ===
 													0 ? (
-													<Skeleton
-														variant="text"
-														width={150}
-													/>
+													<Skeleton width={150}/>
 												) : data?.description ? (
 													<div>
 														<span>
@@ -970,10 +958,7 @@ const EditStore = () => {
 															)}
 													</>
 												) : (
-													<Skeleton
-														variant="text"
-														width={100}
-													/>
+													<Skeleton width={100} />
 												)}
 											</div>
 										</div>

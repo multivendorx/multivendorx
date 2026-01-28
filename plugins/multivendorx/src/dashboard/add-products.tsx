@@ -18,8 +18,10 @@ import {
 	FormGroup,
 	AdminButton,
 	getApiLink,
+	CommonPopup,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
+import { formatWcShortDate } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
 
 const AddProduct = () => {
@@ -31,12 +33,12 @@ const AddProduct = () => {
 
 	const query = new URLSearchParams(location.search);
 	let productId = query.get('context_id');
+
 	if (!productId) {
 		const parts = location.pathname.split('/').filter(Boolean);
-		if (parts.length >= 4) {
-			productId = productId || parts[3];
-		}
+		productId = parts[parts.length - 1];
 	}
+
 	const [product, setProduct] = useState({});
 	const [translation, setTranslation] = useState([]);
 
@@ -44,6 +46,7 @@ const AddProduct = () => {
 	const [galleryImages, setGalleryImages] = useState([]);
 
 	const [starFill, setstarFill] = useState(false);
+	const visibilityRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
 		if (!productId) {
@@ -63,6 +66,7 @@ const AddProduct = () => {
 
 				setGalleryImages(images.slice(1));
 				setProduct(res.data);
+				setstarFill(res.data.featured);
 			});
 		if (modules.includes('wpml')) {
 			axios({
@@ -81,6 +85,21 @@ const AddProduct = () => {
 
 	}, [productId]);
 
+	const getMetaValue = (meta, key) =>
+		meta?.find((m) => m.key === key)?.value || '';
+
+	useEffect(() => {
+		if (!product?.meta_data) return;
+
+		setProduct((prev) => ({
+			...prev,
+			shipping_policy: getMetaValue(product.meta_data, 'multivendorx_shipping_policy'),
+			refund_policy: getMetaValue(product.meta_data, 'multivendorx_refund_policy'),
+			cancellation_policy: getMetaValue(product.meta_data, 'multivendorx_cancellation_policy'),
+		}));
+	}, [product?.meta_data]);
+
+
 	const [categories, setCategories] = useState([]);
 	const [selectedCats, setSelectedCats] = useState([]);
 
@@ -95,6 +114,7 @@ const AddProduct = () => {
 	const [selectedChild, setSelectedChild] = useState(null);
 
 	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
+	const [isEditingStatus, setIsEditingStatus] = useState(false);
 
 	const VISIBILITY_LABELS: Record<string, string> = {
 		visible: 'Shop and search results',
@@ -103,23 +123,45 @@ const AddProduct = () => {
 		hidden: 'Hidden',
 	};
 
-	// Close on click outside
+	const STATUS_LABELS: Record<string, string> = {
+		draft: __('Draft', 'multivendorx'),
+		publish: __('Published', 'multivendorx'),
+		pending: __('Submit', 'multivendorx'),
+	};
 	useEffect(() => {
-		if (!isPyramidEnabled) {
-			return;
-		}
-		const handleClickOutside = (event) => {
+		const handleClickOutside = (event: MouseEvent) => {
 			if (
-				wrapperRef.current &&
-				!wrapperRef.current.contains(event.target)
+				visibilityRef.current &&
+				!visibilityRef.current.contains(event.target as Node)
 			) {
-				resetSelection();
+				setIsEditingVisibility(false);
 			}
 		};
+
 		document.addEventListener('mousedown', handleClickOutside);
-		return () =>
+
+		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
+		};
 	}, []);
+
+	// Close on click outside
+	// useEffect(() => {
+	// 	if (!isPyramidEnabled) {
+	// 		return;
+	// 	}
+	// 	const handleClickOutside = (event) => {
+	// 		if (
+	// 			wrapperRef.current &&
+	// 			!wrapperRef.current.contains(event.target)
+	// 		) {
+	// 			resetSelection();
+	// 		}
+	// 	};
+	// 	document.addEventListener('mousedown', handleClickOutside);
+	// 	return () =>
+	// 		document.removeEventListener('mousedown', handleClickOutside);
+	// }, []);
 
 	// Add this useEffect in AddProduct to listen for suggestion clicks
 	useEffect(() => {
@@ -437,7 +479,7 @@ const AddProduct = () => {
 		}));
 	};
 
-	const createProduct = (status) => {
+	const createProduct = () => {
 		const imagePayload = [];
 
 		if (featuredImage) {
@@ -463,7 +505,7 @@ const AddProduct = () => {
 		try {
 			const payload = {
 				...product,
-				status: status,
+				featured: starFill,
 				images: imagePayload,
 				categories: finalCategories,
 				meta_data: [
@@ -471,6 +513,18 @@ const AddProduct = () => {
 					{
 						key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
+					},
+					{
+						key: 'multivendorx_shipping_policy',
+						value: product.shipping_policy || '',
+					},
+					{
+						key: 'multivendorx_refund_policy',
+						value: product.refund_policy || '',
+					},
+					{
+						key: 'multivendorx_cancellation_policy',
+						value: product.cancellation_policy || '',
 					},
 				],
 			};
@@ -590,12 +644,16 @@ const AddProduct = () => {
 		image: false,
 		price: false,
 		stock: false,
+		categories: false,
+		policies: false,
 	});
 
 	useEffect(() => {
 		let baseChecklist = {
 			name: !!product.name,
 			image: !!featuredImage,
+			categories: !!product.categories,
+			policies: !!product.shipping_policy || !!product.refund_policy || product.cancellation_policy,
 		};
 
 		if (product.type === 'simple') {
@@ -612,7 +670,6 @@ const AddProduct = () => {
 		setChecklist(filteredChecklist);
 	}, [product, featuredImage]);
 
-	const isPublishDisabled = !Object.values(checklist).every(Boolean);
 	const handleTranslationClick = (lang) => {
 		if (lang.translated_product_id) {
 			if (appLocalizer.permalink_structure) {
@@ -651,6 +708,9 @@ const AddProduct = () => {
 		});
 	};
 
+	const checklistValues = Object.values(checklist);
+	const completedCount = checklistValues.filter(Boolean).length;
+	const totalCount = checklistValues.length;
 
 	return (
 		<>
@@ -658,6 +718,19 @@ const AddProduct = () => {
 				<div className="page-title">
 					<div className="title">
 						{__('Add Product', 'multivendorx')}
+						{translation
+							?.filter((lang) => lang.is_default) // only include default language
+							.map((lang) => (
+								<div key={lang.code} className="mvx-translation-row">
+									<div>
+										<img
+											src={lang.flag_url}
+											alt={lang.code}
+										/>
+										<strong>{lang.native_name}</strong>
+									</div>
+								</div>
+							))}
 					</div>
 
 					<div className="des">
@@ -667,7 +740,7 @@ const AddProduct = () => {
 						)}
 					</div>
 				</div>
-				<div className="buttons-wrapper">
+				{/* <div className="buttons-wrapper">
 					<button
 						className="admin-btn btn-blue"
 						onClick={() => createProduct('draft')}
@@ -681,107 +754,168 @@ const AddProduct = () => {
 					>
 						{__('Publish', 'multivendorx')}
 					</button>
-				</div>
+				</div> */}
+				<AdminButton
+					buttons={[
+						// {
+						// 	icon: 'form',
+						// 	text: __('Draft', 'multivendorx'),
+						// 	className: 'blue',
+						// 	onClick: () => createProduct('draft'),
+						// },
+						{
+							icon: 'save',
+							text: __('Save', 'multivendorx'),
+							className: 'purple-bg',
+							onClick: () => createProduct(),
+						},
+					]}
+				/>
 			</div>
 
 			<Container>
-				<Column grid={2}>
-					<div className="card-content">
-						<div className="card-body">
-							<div className="checklist-wrapper">
-								<div className="checklist-title">
-									{__('Checklist', 'multivendorx')}
+				<Column grid={3}>
+					<Card title={__('Product type', 'multivendorx')}>
+						<FormGroupWrapper>
+							<FormGroup desc={__('A standalone product with no variant', 'multivendorx')}>
+								<SelectInput
+									name="type"
+									options={typeOptions}
+									value={product.type}
+									onChange={(selected) =>
+										handleChange('type', selected.value)
+									}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</Card>
+					<Card
+						title={__('Recommended', 'multivendorx')}
+						// desc={__('Complete these fields to create a comprehensive product listing', 'multivendorx')}
+						action={
+							<>
+								<div className="admin-badge blue">
+									{completedCount}/{totalCount}
 								</div>
+							</>
+						}
+					>
+						<FormGroupWrapper>
+							<FormGroup>
+								<div className="checklist-wrapper">
+									<ul>
+										<li
+											className={
+												checklist.name ? 'checked' : ''
+											}
+										>
+											<div className="check-icon"><span></span></div>
+											<div className="details">
+												<div className="title">Product Name</div>
+												<div className="des">A clear, descriptive title that helps customers find your product</div>
+											</div>
+										</li>
+										{/* SIMPLE PRODUCT FIELDS */}
+										{product.type === 'simple' && (
+											<>
+												<li
+													className={
+														checklist.price
+															? 'checked'
+															: ''
+													}
+												>
+													<div className="check-icon"><span></span></div>
+													<div className="details">
+														<div className="title">Price</div>
+														<div className="des">Set competitive prices including any sale or discount options</div>
+													</div>
+												</li>
 
-								<ul>
-									<li
-										className={
-											checklist.name ? 'checked' : ''
-										}
-									>
-										<span></span> Name
-									</li>
-									{/* SIMPLE PRODUCT FIELDS */}
-									{product.type === 'simple' && (
-										<>
-											<li
-												className={
-													checklist.price
-														? 'checked'
-														: ''
-												}
-											>
-												<span></span> Price
-											</li>
+												<li
+													className={
+														checklist.stock
+															? 'checked'
+															: ''
+													}
+												>
+													<div className="check-icon"><span></span></div>
+													<div className="details">
+														<div className="title">Stock</div>
+														<div className="des">A clear, descriptive title that helps customers find your product</div>
+													</div>
+												</li>
+											</>
+										)}
+										<li
+											className={
+												checklist.image ? 'checked' : ''
+											}
+										>
+											<div className="check-icon"><span></span></div>
+											<div className="details">
+												<div className="title">Product Images</div>
+												<div className="des">High-quality photos showing your product from multiple angles</div>
+											</div>
+										</li>
 
-											<li
-												className={
-													checklist.stock
-														? 'checked'
-														: ''
-												}
-											>
-												<span></span> Stock
-											</li>
-										</>
-									)}
-									<li
-										className={
-											checklist.image ? 'checked' : ''
-										}
-									>
-										<span></span> Image
-									</li>
+										<li
+											className={
+												checklist.categories ? 'checked' : ''
+											}
+										>
+											<div className="check-icon"><span></span></div>
+											<div className="details">
+												<div className="title">Category</div>
+												<div className="des">Organize your product to help customers browse your store</div>
+											</div>
+										</li>
 
-									<li
-										className={
-											checklist.image ? 'checked' : ''
-										}
-									>
-										<span></span> Category
-									</li>
+										<li
+											className={
+												checklist.policies ? 'checked' : ''
+											}
+										>
+											<div className="check-icon"><span></span></div>
+											<div className="details">
+												<div className="title">Policies</div>
+												<div className="des">A clear, descriptive title that helps customers find your product</div>
+											</div>
+										</li>
 
-									<li
-										className={
-											checklist.image ? 'checked' : ''
-										}
-									>
-										<span></span> Policies
-									</li>
-
-
-									{applyFilters(
-										'product_checklist_items_render',
-										null,
-										checklist,
-										product
-									)}
-								</ul>
-							</div>
-						</div>
-					</div>
+										{applyFilters(
+											'product_checklist_items_render',
+											null,
+											checklist,
+											product
+										)}
+									</ul>
+								</div>
+							</FormGroup>
+						</FormGroupWrapper>
+					</Card>
 				</Column>
 
 				<Column grid={6}>
 					{/* General information */}
-					<Card
+					<Card contentHeight
 						title={__('General information', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						<FormGroupWrapper>
 							{/* Product Name */}
-							<FormGroup label={__('Product name', 'multivendorx')}>
+							<FormGroup label={__('Product name', 'multivendorx')} desc={__('A unique name for your product', 'multivendorx')}>
 								<BasicInput
 									name="name"
-									 
+
 									value={product.name}
 									onChange={(e) => handleChange('name', e.target.value)}
 								/>
 							</FormGroup>
 
 							{/* Short Description */}
-							<FormGroup label={__('Product short description', 'multivendorx')}>
+							<FormGroup label={__('Product short description', 'multivendorx')} desc={__('A short description displayed on product and checkout pages', 'multivendorx')}>
 								<TextArea
 									name="short_description"
 									value={product.short_description}
@@ -805,19 +939,20 @@ const AddProduct = () => {
 					</Card>
 
 					{/* Price and stock */}
-					<Card
-						title={__('Price and stock', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
-					>
-						<FormGroupWrapper>
-							{/* Regular & Sale Price (Simple Product) */}
-							{product?.type === 'simple' && (
-								<>
+					{product?.type === 'simple' && (
+						<>
+							<Card contentHeight
+								title={__('Price', 'multivendorx')}
+							// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+							// toggle
+							>
+								<FormGroupWrapper>
+									{/* Regular & Sale Price (Simple Product) */}
+
 									<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
 										<BasicInput
 											name="regular_price"
-											 
+
 											value={product.regular_price}
 											onChange={(e) =>
 												handleChange('regular_price', e.target.value)
@@ -828,27 +963,48 @@ const AddProduct = () => {
 									<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
 										<BasicInput
 											name="sale_price"
-											 
+
 											value={product.sale_price}
 											onChange={(e) =>
 												handleChange('sale_price', e.target.value)
 											}
 										/>
 									</FormGroup>
-								</>
-							)}
-
-							{/* SKU + Sold Individually */}
-							<FormGroup cols={2} label={__('SKU', 'multivendorx')}>
-								<BasicInput
-									name="sku"
-									 
-									value={product.sku}
-									onChange={(e) => handleChange('sku', e.target.value)}
-								/>
-							</FormGroup>
-
-							<FormGroup cols={2} label={__('Sold individually', 'multivendorx')}>
+								</FormGroupWrapper>
+							</Card>
+						</>
+					)}
+					<Card contentHeight
+						title={__('Inventory', 'multivendorx')}
+						// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						// toggle
+						action={
+							<>
+								<div className="field-wrapper">
+									{__('Stock management', 'multivendorx')}
+									<MultiCheckBox
+										wrapperClass="toggle-btn"
+										inputWrapperClass="toggle-checkbox-header"
+										inputInnerWrapperClass="toggle-checkbox"
+										idPrefix="toggle-switch-manage-stock"
+										type="checkbox"
+										value={product.manage_stock ? ['manage_stock'] : []}
+										onChange={(e) =>
+											handleChange(
+												'manage_stock',
+												(e as React.ChangeEvent<HTMLInputElement>).target.checked
+											)
+										}
+										options={[
+											{ key: 'manage_stock', value: 'manage_stock' },
+										]}
+									/>
+								</div>
+							</>
+						}
+					>
+						<FormGroupWrapper>
+							{/* <FormGroup cols={2} label={__('Track Quantity', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
 									inputWrapperClass="toggle-checkbox-header"
@@ -868,10 +1024,8 @@ const AddProduct = () => {
 										{ key: 'sold_individually', value: 'sold_individually' },
 									]}
 								/>
-							</FormGroup>
-
-							{/* Stock Management */}
-							<FormGroup cols={2} label={__('Stock management', 'multivendorx')}>
+							</FormGroup> */}
+							{/* <FormGroup cols={2} label={__('Sold Individually', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
 									inputWrapperClass="toggle-checkbox-header"
@@ -889,31 +1043,61 @@ const AddProduct = () => {
 										{ key: 'manage_stock', value: 'manage_stock' },
 									]}
 								/>
+							</FormGroup> */}
+							{/* SKU + Sold Individually */}
+							<FormGroup cols={2} label={__('SKU', 'multivendorx')}>
+								<BasicInput
+									name="sku"
+
+									value={product.sku}
+									onChange={(e) => handleChange('sku', e.target.value)}
+								/>
 							</FormGroup>
 
-							{!product.manage_stock && (
-								<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
-									<SelectInput
-										name="stock_status"
-										options={stockStatusOptions}
-										type="single-select"
-										value={product.stock_status}
-										onChange={(selected) =>
-											handleChange('stock_status', selected.value)
-										}
-									/>
-								</FormGroup>
-							)}
-						</FormGroupWrapper>
+							{/* Stock Management */}
+							{/* <FormGroup cols={2} label={__('Stock management', 'multivendorx')}>
+								<MultiCheckBox
+									wrapperClass="toggle-btn"
+									inputWrapperClass="toggle-checkbox-header"
+									inputInnerWrapperClass="toggle-checkbox"
+									idPrefix="toggle-switch-manage-stock"
+									type="checkbox"
+									value={product.manage_stock ? ['manage_stock'] : []}
+									onChange={(e) =>
+										handleChange(
+											'manage_stock',
+											(e as React.ChangeEvent<HTMLInputElement>).target.checked
+										)
+									}
+									options={[
+										{ key: 'manage_stock', value: 'manage_stock' },
+									]}
+								/>
+							</FormGroup> */}
 
-						<FormGroupWrapper>
+							{!product.manage_stock && (
+								<>
+									<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
+										<SelectInput
+											name="stock_status"
+											options={stockStatusOptions}
+											type="single-select"
+											value={product.stock_status}
+											onChange={(selected) =>
+												handleChange('stock_status', selected.value)
+											}
+										/>
+									</FormGroup>
+								</>
+							)}
+
 							{/* Managed Stock Fields */}
 							{product.manage_stock && (
 								<>
-									<FormGroup cols={3} label={__('Quantity', 'multivendorx')}>
+									<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
 										<BasicInput
 											name="stock"
-											 
+
 											value={product.stock}
 											onChange={(e) =>
 												handleChange('stock', e.target.value)
@@ -921,7 +1105,7 @@ const AddProduct = () => {
 										/>
 									</FormGroup>
 
-									<FormGroup cols={3} label={__('Allow backorders?', 'multivendorx')}>
+									<FormGroup cols={2} label={__('Allow backorders?', 'multivendorx')}>
 										<SelectInput
 											name="backorders"
 											options={backorderOptions}
@@ -933,10 +1117,10 @@ const AddProduct = () => {
 										/>
 									</FormGroup>
 
-									<FormGroup cols={3} label={__('Low stock threshold', 'multivendorx')}>
+									<FormGroup cols={2} label={__('Low stock threshold', 'multivendorx')}>
 										<BasicInput
 											name="low_stock_amount"
-											 
+
 											value={product.low_stock_amount}
 											onChange={(e) =>
 												handleChange('low_stock_amount', e.target.value)
@@ -948,6 +1132,68 @@ const AddProduct = () => {
 						</FormGroupWrapper>
 					</Card>
 
+					<Card contentHeight
+						title={__('Related listings', 'multivendorx')}
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
+					>
+						<FormGroupWrapper>
+							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
+								<BasicInput
+									name="name"
+
+								// value={product.name}
+								// onChange={(e) => handleChange('name', e.target.value)}
+								/>
+							</FormGroup>
+							<FormGroup cols={2} label={__('Cross-sells', 'multivendorx')}>
+								<BasicInput
+									name="name"
+
+								// value={product.name}
+								// onChange={(e) => handleChange('name', e.target.value)}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</Card>
+
+					<Card contentHeight
+						title={__('Policies', 'multivendorx')}
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
+					>
+						<FormGroupWrapper>
+							<FormGroup label={__('Shipping Policy', 'multivendorx')}>
+								<TextArea
+									name="shipping_policy"
+									value={product.shipping_policy}
+									onChange={(e) =>
+										handleChange('shipping_policy', e.target.value)
+									}
+								/>
+							</FormGroup>
+							<FormGroup label={__('Refund Policy', 'multivendorx')}>
+								<TextArea
+									name="refund_policy"
+									value={product.refund_policy}
+									onChange={(e) =>
+										handleChange('refund_policy', e.target.value)
+									}
+								/>
+							</FormGroup>
+
+							{/* Description */}
+							<FormGroup label={__('Cancellation Policy', 'multivendorx')}>
+								<TextArea
+									name="cancellation_policy"
+									value={product.cancellation_policy}
+									onChange={(e) =>
+										handleChange('cancellation_policy', e.target.value)
+									}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</Card>
 					{modules.includes('min-max') &&
 						product?.type == 'simple' &&
 						applyFilters(
@@ -963,17 +1209,18 @@ const AddProduct = () => {
 							'product_shipping',
 							null,
 							product,
+							setProduct,
 							handleChange
 						)}
 
-					{product.downloadable &&
+					{/* {product.downloadable &&
 						applyFilters(
 							'product_downloadable',
 							null,
 							product,
 							setProduct,
 							handleChange
-						)}
+						)} */}
 
 					{product?.type == 'variable' &&
 						applyFilters(
@@ -984,178 +1231,122 @@ const AddProduct = () => {
 						)}
 				</Column>
 
-				<Column grid={4}>
+				<Column grid={3}>
 					{/* ai assist */}
 					{applyFilters('product_ai_assist', null, product)}
-
-					<Card
-						title={__('Visibility', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+					<Card contentHeight
+						title={__('Publishing', 'multivendorx')}
+						action={
+							<>
+								<label
+									onClick={() => setstarFill((prev) => !prev)}
+									style={{ cursor: 'pointer' }}
+									className="field-wrapper"
+								>
+									{__('Featured product', 'multivendorx')}
+									<i className={`star-icon ${(starFill || product?.featured) ? 'adminfont-star' : 'adminfont-star-o'}`} />
+								</label>
+							</>
+						}
 					>
-						{/* Product type */}
 						<FormGroupWrapper>
-							<FormGroup label={__('Product type', 'multivendorx')} htmlFor="product-type">
-								<SelectInput
-									name="type"
-									options={typeOptions}
-									value={product.type}
-									onChange={(selected) =>
-										handleChange('type', selected.value)
-									}
-								/>
-							</FormGroup>
-
-							{/* Virtual / Downloadable */}
-							<FormGroup>
-								<div className="checkbox-wrapper">
-									<div className="item">
-										<input
-											type="checkbox"
-											checked={product.virtual}
-											onChange={(e) =>
-												handleChange('virtual', e.target.checked)
-											}
-										/>
-										{__('Virtual', 'multivendorx')}
-									</div>
-
-									<div className="item">
-										<input
-											type="checkbox"
-											checked={product.downloadable}
-											onChange={(e) =>
-												handleChange('downloadable', e.target.checked)
-											}
-										/>
-										{__('Download', 'multivendorx')}
-									</div>
-								</div>
-							</FormGroup>
-
-							{/* Catalog visibility summary */}
-							<FormGroup>
-								<div className="catalog-visibility">
-									{__('Catalog Visibility:', 'multivendorx')}
-									<span className="catalog-visibility-value">
-										<b>{VISIBILITY_LABELS[product.catalog_visibility]}</b>
-									</span>
-									<span
-										className="admin-badge blue"
-										onClick={() => setIsEditingVisibility(true)}
-									>
-										<i className="adminfont-edit" />
-									</span>
-								</div>
-							</FormGroup>
-
-							{/* Edit catalog visibility */}
-							{isEditingVisibility && (
-								<>
-									<FormGroup>
-										<RadioInput
-											name="catalog_visibility"
-											idPrefix="catalog_visibility"
-											type="radio"
-											wrapperClass="settings-form-group-radio"
-											inputWrapperClass="radio-basic-input-wrap"
-											inputClass="setting-form-input"
-											descClass="settings-metabox-description"
-											activeClass="radio-select-active"
-											radiSelectLabelClass="radio-label"
-											options={[
-												{ key: 'vs1', value: 'visible', label: 'Shop and search results' },
-												{ key: 'vs2', value: 'catalog', label: 'Shop only' },
-												{ key: 'vs3', value: 'search', label: 'Search results only' },
-												{ key: 'vs4', value: 'hidden', label: 'Hidden' },
-											]}
-											value={product.catalog_visibility}
-											onChange={(e) => {
-												handleChange('catalog_visibility', e.target.value);
-												setIsEditingVisibility(false);
-											}}
-										/>
-									</FormGroup>
-									<FormGroup>
-										<label
-											onClick={() => setstarFill((prev) => !prev)}
-											style={{ cursor: 'pointer' }}
-										>
-											<i
-												className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'
-													}`}
+							<FormGroup row label={__('Catalog Visibility', 'multivendorx')} htmlFor="catalog-visibility">
+								<div ref={visibilityRef}>
+									<div className="catalog-visibility">
+										{!isEditingVisibility && (
+											<div onClick={() => {
+												setIsEditingVisibility((prev) => !prev);
+												setIsEditingStatus(false);
+											}}>
+												<span className="catalog-visibility-value">
+													{VISIBILITY_LABELS[product.catalog_visibility]}
+												</span>
+												<i className="adminfont-arrow-down-up" />
+											</div>
+										)}
+										{isEditingVisibility && (
+											<SelectInput
+												name="catalog_visibility"
+												// wrapperClass="fit-content"
+												size="14rem"
+												options={[
+													{ key: 'visible', value: 'visible', label: 'Shop and search results' },
+													{ key: 'catalog', value: 'catalog', label: 'Shop only' },
+													{ key: 'search', value: 'search', label: 'Search results only' },
+													{ key: 'hidden', value: 'hidden', label: 'Hidden' },
+												]}
+												value={product.catalog_visibility}
+												onChange={(selected) => {
+													handleChange('catalog_visibility', selected.value);
+													setIsEditingVisibility(false);
+												}}
 											/>
-											{__('This is a featured product', 'multivendorx')}
-										</label>
-									</FormGroup>
-								</>
-							)}
-
-							{/* Status */}
-							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-								<ToggleSetting
-									 
-									descClass="settings-metabox-description"
-									options={[
-										{ key: 'draft', value: 'draft', label: __('Draft', 'multivendorx') },
-										{ key: 'publish', value: 'publish', label: __('Published', 'multivendorx') },
-										{ key: 'pending', value: 'pending', label: __('Pending Review', 'multivendorx') },
-									]}
-									value={product.status}
-									onChange={(value) => handleChange('status', value)}
-								/>
-							</FormGroup>
-
-							{/* Publish date */}
-							{product.status === 'publish' && (
-								<label>{__('Published on Dec 16, 2025', 'multivendorx')}</label>
-							)}
-
-							{product.status === 'pending' && (
-								<FormGroup label={__('Published on', 'multivendorx')} htmlFor="published-on">
-									<div className="date-field-wrapper">
-										{product.date_created && (
-											<>
-												<CalendarInput
-													wrapperClass="calendar-wrapper"
-													inputClass="calendar-input"
-													value={product.date_created.split('T')[0]}
-													onChange={(date: any) => {
-														const dateStr = date?.toString();
-														setProduct((prev) => ({
-															...prev,
-															date_created: `${dateStr}T${prev.date_created?.split('T')[1] || '00:00:00'
-																}`,
-														}));
-													}}
-													format="YYYY-MM-DD"
-												/>
-
-												<BasicInput
-													type="time"
-													value={
-														product.date_created.split('T')[1]?.slice(0, 5) || ''
-													}
-													onChange={(e: any) => {
-														const newTime = e.target.value;
-														setProduct((prev) => ({
-															...prev,
-															date_created: `${prev.date_created?.split('T')[0]}T${newTime}:00`,
-														}));
-													}}
-												/>
-											</>
 										)}
 									</div>
-								</FormGroup>
-							)}
+								</div>
+							</FormGroup>
+							<FormGroup
+								row
+								label={__('Product Status', 'multivendorx')}
+								htmlFor="status"
+							>
+								<div className="catalog-visibility">
+									{!isEditingStatus && (
+										<div onClick={() => {
+											setIsEditingStatus((prev) => !prev);
+											setIsEditingVisibility(false);
+										}}>
+											<span className="catalog-visibility-value">
+												{STATUS_LABELS[product.status]}
+											</span>
+											<i className="adminfont-arrow-down-up" />
+										</div>
+									)}
+									{/* Edit Product Page Status */}
+									{isEditingStatus && (
+										<SelectInput
+											name="status"
+											wrapperClass="fit-content"
+											options={[
+												{
+													key: 'draft',
+													value: 'draft',
+													label: __('Draft', 'multivendorx'),
+												},
+												{
+													key: 'publish',
+													value: 'publish',
+													label: __('Published', 'multivendorx'),
+												},
+												{
+													key: 'pending',
+													value: 'pending',
+													label: __('Submit', 'multivendorx'),
+												},
+											]}
+											value={product.status}
+											onChange={(selected) =>
+												handleChange('status', selected.value)
+											}
+										/>
+									)}
+								</div>
+							</FormGroup>
+
+							<FormGroup row label={__('Cataloged at', 'multivendorx')} htmlFor="status">
+								<div className="catalog-visibility">
+									<span className="catalog-visibility-value">
+										{formatWcShortDate(product?.date_created)} <i className="adminfont-arrow-down-up" />
+									</span>
+								</div>
+							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
 
-					<Card
+					<Card contentHeight
 						title={__('Category', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						{appLocalizer.settings_databases_value['product-preferencess']
 							?.category_selection_method === 'yes' ? (
@@ -1286,48 +1477,40 @@ const AddProduct = () => {
 						>
 							<FormGroupWrapper>
 								<div className="mvx-translation-list">
-									{translation?.map((lang) => (
-										<div
-											key={lang.code}
-											className="mvx-translation-row"
-										>
-											<div>
-												<img
-													src={lang.flag_url}
-													alt={lang.code}
-													style={{ width: 18, height: 18 }}
-												/>
-												<strong>{lang.native_name}</strong>
-												{lang.is_default && (
-													<span className="admin-badge gray">
-														{__('Default', 'multivendorx')}
-													</span>
-												)}
-											</div>
+									{translation
+										?.filter((lang) => !lang.is_default) // only non-default languages
+										.map((lang) => (
+											<div key={lang.code} className="mvx-translation-row">
+												<div>
+													<img
+														src={lang.flag_url}
+														alt={lang.code}
+													/>
+													<strong>{lang.native_name}</strong>
+												</div>
 
-											{!lang.is_default && (
 												<button
 													className="admin-btn btn-small btn-secondary"
 													onClick={() => handleTranslationClick(lang)}
 												>
 													<i className="adminfont-edit" />
 												</button>
-											)}
-										</div>
-									))}
+											</div>
+										))}
+
 								</div>
 							</FormGroupWrapper>
 						</Card>
 					)}
-					<Card
+					<Card contentHeight
 						title="Product tag"
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle={true} // enable collapse/expand
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle={true} // enable collapse/expand
 					>
 						<FormGroupWrapper>
 							{/* Selected tags */}
-							<div className="tag-list">
-								{product.tags?.map((tag) => (
+							{product.tags?.map((tag) => (
+								<div className="tag-list">
 									<span className="admin-badge blue" key={tag.id}>
 										{tag.name}
 										<span
@@ -1343,8 +1526,8 @@ const AddProduct = () => {
 											<i className="delete-icon adminfont-delete" />
 										</span>
 									</span>
-								))}
-							</div>
+								</div>
+							))}
 
 							{/* Tag input + dropdown */}
 							<div className="dropdown-field">
@@ -1387,10 +1570,10 @@ const AddProduct = () => {
 					</Card>
 
 					{/* image upload */}
-					<Card
+					<Card contentHeight
 						title="Upload image"
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
+					// iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+					// toggle
 					>
 						{/* Featured Image */}
 						<FormGroupWrapper>
@@ -1452,9 +1635,159 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
+					{/* 
+					 <Card
+						title={__('Visibility', 'multivendorx')}
+						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						toggle
+					> 
+					 <FormGroupWrapper> 
+					 <FormGroup>
+								<div className="checkbox-wrapper">
+									<div className="item">
+										<input
+											type="checkbox"
+											checked={product.virtual}
+											onChange={(e) =>
+												handleChange('virtual', e.target.checked)
+											}
+										/>
+										{__('Virtual', 'multivendorx')}
+									</div>
 
+									<div className="item">
+										<input
+											type="checkbox"
+											checked={product.downloadable}
+											onChange={(e) =>
+												handleChange('downloadable', e.target.checked)
+											}
+										/>
+										{__('Download', 'multivendorx')}
+									</div>
+								</div>
+							</FormGroup> 
+
+					 <FormGroup>
+								<div className="catalog-visibility">
+									{__('Catalog Visibility:', 'multivendorx')}
+									<span className="catalog-visibility-value">
+										{VISIBILITY_LABELS[product.catalog_visibility]}
+									</span>
+									<span
+										className="admin-badge blue"
+										onClick={() => {
+											setIsEditingVisibility((prev) => !prev);
+											setIsEditingStatus(false);
+										}}
+
+									>
+										<i className="adminfont-edit" />
+									</span>
+								</div>
+							</FormGroup> 
+
+					{isEditingVisibility && (
+								<>
+									<FormGroup>
+										<RadioInput
+											name="catalog_visibility"
+											idPrefix="catalog_visibility"
+											type="radio"
+											wrapperClass="settings-form-group-radio"
+											inputWrapperClass="radio-basic-input-wrap"
+											inputClass="setting-form-input"
+											descClass="settings-metabox-description"
+											activeClass="radio-select-active"
+											radiSelectLabelClass="radio-label"
+											options={[
+												{ key: 'vs1', value: 'visible', label: 'Shop and search results' },
+												{ key: 'vs2', value: 'catalog', label: 'Shop only' },
+												{ key: 'vs3', value: 'search', label: 'Search results only' },
+												{ key: 'vs4', value: 'hidden', label: 'Hidden' },
+											]}
+											value={product.catalog_visibility}
+											onChange={(e) => {
+												handleChange('catalog_visibility', e.target.value);
+												setIsEditingVisibility(false);
+											}}
+										/>
+									</FormGroup>
+									<FormGroup>
+										<label
+											onClick={() => setstarFill((prev) => !prev)}
+											style={{ cursor: 'pointer' }}
+										>
+											<i
+												className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'
+													}`}
+											/>
+											{__('This is a featured product', 'multivendorx')}
+										</label>
+									</FormGroup>
+								</>
+							)} 
+
+					 <FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
+								<ToggleSetting
+
+									descClass="settings-metabox-description"
+									options={[
+										{ key: 'draft', value: 'draft', label: __('Draft', 'multivendorx') },
+										{ key: 'publish', value: 'publish', label: __('Published', 'multivendorx') },
+										{ key: 'pending', value: 'pending', label: __('Pending Review', 'multivendorx') },
+									]}
+									value={product.status}
+									onChange={(value) => handleChange('status', value)}
+								/>
+							</FormGroup> 
+
+					 {product.status === 'publish' && (
+								<label>{__('Published on Dec 16, 2025', 'multivendorx')}</label>
+							)}
+
+							{product.status === 'pending' && (
+								<FormGroup label={__('Published on', 'multivendorx')} htmlFor="published-on">
+									<div className="date-field-wrapper">
+										{product.date_created && (
+											<>
+												<CalendarInput
+													wrapperClass="calendar-wrapper"
+													inputClass="calendar-input"
+													value={product.date_created.split('T')[0]}
+													onChange={(date: any) => {
+														const dateStr = date?.toString();
+														setProduct((prev) => ({
+															...prev,
+															date_created: `${dateStr}T${prev.date_created?.split('T')[1] || '00:00:00'
+																}`,
+														}));
+													}}
+													format="YYYY-MM-DD"
+												/>
+
+												<BasicInput
+													type="time"
+													value={
+														product.date_created.split('T')[1]?.slice(0, 5) || ''
+													}
+													onChange={(e: any) => {
+														const newTime = e.target.value;
+														setProduct((prev) => ({
+															...prev,
+															date_created: `${prev.date_created?.split('T')[0]}T${newTime}:00`,
+														}));
+													}}
+												/>
+											</>
+										)}
+									</div>
+								</FormGroup>
+							)} 
+					</FormGroupWrapper>
+					 </Card>  */}
 				</Column>
-			</Container>
+			</Container >
 		</>
 	);
 };

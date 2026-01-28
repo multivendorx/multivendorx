@@ -29,7 +29,6 @@ const BusinessAddress = () => {
 	const settings = appLocalizer.settings_databases_value;
 
 	const [addressData, setAddressData] = useState({
-		location_address: '',
 		location_lat: '',
 		location_lng: '',
 		address: '',
@@ -117,11 +116,9 @@ const BusinessAddress = () => {
 
 				// Use the same structure as admin side
 				const formattedData = {
-					location_address:
-						data.location_address || data.address || '',
 					location_lat: data.location_lat || '',
 					location_lng: data.location_lng || '',
-					address: data.address || data.location_address || '',
+					address: data.address || '',
 					city: data.city || '',
 					state: data.state || '',
 					country: data.country || '',
@@ -141,7 +138,6 @@ const BusinessAddress = () => {
 				setErrorMsg('Failed to load store data');
 				// Initialize with empty structure
 				setAddressData({
-					location_address: '',
 					location_lat: '',
 					location_lng: '',
 					address: '',
@@ -270,7 +266,7 @@ const BusinessAddress = () => {
 
 		const commonProps = {
 			apiKey,
-			locationAddress: addressData.location_address,
+			locationAddress: addressData.address,
 			locationLat: addressData.location_lat,
 			locationLng: addressData.location_lng,
 			onLocationUpdate: handleLocationUpdate,
@@ -302,11 +298,11 @@ const BusinessAddress = () => {
 				{/* Address */}
 				<FormGroup
 					label={__('Address *', 'multivendorx')}
-					htmlFor="location_address"
+					htmlFor="address"
 				>
 					<BasicInput
-						name="location_address"
-						value={addressData.location_address}
+						name="address"
+						value={addressData.address}
 
 						descClass="settings-metabox-description"
 						onChange={handleAddressChange}

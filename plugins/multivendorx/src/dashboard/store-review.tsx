@@ -18,6 +18,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
+import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 
 type Review = {
 	review_id: number;
@@ -47,11 +48,11 @@ type Status = {
 
 type FilterData = {
 	searchField: string;
-	typeCount?: any;
+	categoryFilter?: string;
 	store?: string;
 	rating?: string;
-	orderBy?: any;
-	order?: any;
+	orderBy?: string;
+	order?: string;
 };
 
 export interface RealtimeFilter {
@@ -75,6 +76,17 @@ const StoreReview: React.FC = () => {
 		pageIndex: 0,
 		pageSize: 10,
 	});
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
 
 	// Fetch total rows on mount
 	useEffect(() => {
@@ -82,7 +94,7 @@ const StoreReview: React.FC = () => {
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'review'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { count: true,store_id: appLocalizer.store_id },
+			params: { count: true, store_id: appLocalizer.store_id },
 		})
 			.then((response) => {
 				setTotalRows(response.data || 0);
@@ -99,17 +111,17 @@ const StoreReview: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage = 10,
-		currentPage = 1,
-		typeCount = '',
+		rowsPerPage: number,
+		currentPage: number,
+		categoryFilter = '',
 		rating = '',
 		searchField = '',
 		orderBy = '',
 		order = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date()
 	) {
-		setData([]);
+		setData(null);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'review'),
@@ -117,19 +129,19 @@ const StoreReview: React.FC = () => {
 			params: {
 				page: currentPage,
 				row: rowsPerPage,
-				status: typeCount === 'all' ? '' : typeCount,
+				status: categoryFilter === 'all' ? '' : categoryFilter,
 				store_id: appLocalizer.store_id,
 				overall_rating: rating,
 				searchField,
 				orderBy,
 				order,
-				startDate,
-				endDate,
+				startDate: startDate ? formatLocalDate(startDate) : '',
+				endDate: endDate ? formatLocalDate(endDate) : '',
 			},
 		})
 			.then((response) => {
 				setData(response.data.items || []);
-				setStatus([
+				const statuses = [
 					{
 						key: 'all',
 						name: 'All',
@@ -150,7 +162,9 @@ const StoreReview: React.FC = () => {
 						name: 'Rejected',
 						count: response.data.rejected || 0,
 					},
-				]);
+				];
+
+				setStatus(statuses.filter((status) => status.count > 0));
 			})
 			.catch(() => {
 				setData([]);
@@ -163,18 +177,21 @@ const StoreReview: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
-		setData([]);
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage,
 			currentPage,
-			filterData?.typeCount,
-			filterData?.store,
+			filterData?.categoryFilter,
 			filterData?.rating,
 			filterData?.searchField,
 			filterData?.orderBy,
 			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
+			date?.start_date,
+			date?.end_date
 		);
 	};
 
@@ -207,36 +224,21 @@ const StoreReview: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) =>
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							})
-						}
-					/>
-				</div>
-			),
-		},
-	];
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
 
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<div className="search-section">
-					<input
-						name="searchField"
-						type="text"
-						placeholder={__('Search', 'multivendorx')}
-						onChange={(e) => {
-							updateFilter(e.target.name, e.target.value);
-						}}
-						value={filterValue || ''}
-					/>
-					<i className="adminfont-search"></i>
-				</div>
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
@@ -304,7 +306,6 @@ const StoreReview: React.FC = () => {
 			),
 		},
 		{
-			id: 'customer',
 			header: __('Customer', 'multivendorx'),
 			cell: ({ row }) => {
 				const { customer_name } = row.original;
@@ -317,7 +318,6 @@ const StoreReview: React.FC = () => {
 			},
 		},
 		{
-			id: 'rating-details',
 			header: __('Details', 'multivendorx'),
 			cell: ({ row }) => {
 				const rating = row.original.overall_rating ?? 0;
@@ -368,7 +368,6 @@ const StoreReview: React.FC = () => {
 			},
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				return <TableCell type="status" status={row.original.status} />;
@@ -381,21 +380,12 @@ const StoreReview: React.FC = () => {
 				row.date_created ? new Date(row.date_created).getTime() : 0, // numeric timestamp for sorting
 			enableSorting: true,
 			cell: ({ row }) => {
-				const rawDate = row.original.date_created;
-				const formattedDate = rawDate
-					? new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(new Date(rawDate))
-					: '-';
 				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
+					<TableCell title={formattedDate}>{formatWcShortDate(row.original.date_created)}</TableCell>
 				);
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -422,9 +412,9 @@ const StoreReview: React.FC = () => {
 		<>
 			<div className="page-title-wrapper">
 				<div className="page-title">
-					<div className="title">Store Review</div>
+					<div className="title">{__('Store Review', 'multivendorx')}</div>
 					<div className="des">
-						See all customer reviews and ratings submitted for your store in one centralized list.
+						{__('See all customer reviews and ratings submitted for your store in one centralized list.', 'multivendorx')}
 					</div>
 				</div>
 			</div>
@@ -440,7 +430,7 @@ const StoreReview: React.FC = () => {
 				handlePagination={requestApiForData}
 				perPageOption={[10, 25, 50]}
 				totalCounts={totalRows}
-				typeCounts={status as Status[]}
+				categoryFilter={status as Status[]}
 				realtimeFilter={realtimeFilter}
 			/>
 			{selectedReview && (

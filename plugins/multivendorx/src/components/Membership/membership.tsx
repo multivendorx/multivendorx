@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import {
 	BasicInput,
@@ -18,6 +18,8 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	AdminButton,
+	RadioInput,
+	Section,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -51,8 +53,42 @@ const productTypeOptions = [
 		label: 'Downloadable Product (Digital files / media)',
 	},
 ];
-
-
+const storeRole = [
+	{
+		value: 'simple',
+		label: 'Keep Products Visible',
+	},
+	{
+		value: 'variable',
+		label: 'After 2 cycles',
+	},
+	{
+		value: 'external',
+		label: 'Hide Products',
+	},
+	{
+		value: 'downloadable',
+		label: 'Set to Draft',
+	},
+];
+const duringThisPeriod = [
+	{
+		value: 'simple',
+		label: 'Visible',
+	},
+	{
+		value: 'variable',
+		label: 'Hidden',
+	},
+	{
+		value: 'external',
+		label: 'Hide Products',
+	},
+	{
+		value: 'downloadable',
+		label: 'Set to Draft',
+	},
+];
 const proFeatures = {
 	key: 'pro_features',
 	look: 'checkbox',
@@ -137,7 +173,7 @@ const advancedFeaturesField = {
 	look: 'checkbox',
 	selectDeselect: true,
 	class: 'basic-checkbox',
-	desc: 'Enable advanced features for vendors',
+	desc: 'Enable advanced features for stores',
 	options: [
 		{
 			key: 'vendor-vacation',
@@ -167,6 +203,58 @@ const exportedOrderInfoField = {
 		{ key: 'analytics_dashboard', value: 'analytics_dashboard', label: __('Store analytics', 'multivendorx'), desc: __('View store sales, earnings, and performance insights', 'multivendorx') },
 
 	],
+};
+const whenLimitReached = {
+	key: 'exported_order_information',
+	look: 'checkbox',
+	selectDeselect: true,
+	class: 'basic-checkbox',
+	options: [
+		{ key: 'advanced_inventory', value: 'advanced_inventory', label: __('Block creation', 'multivendorx'), desc: __('Prevent stores from adding more items', 'multivendorx') },
+		{ key: 'shipping_management', value: 'shipping_management', label: __('Allow but warn', 'multivendorx'), desc: __('Show warning but allow creation', 'multivendorx') },
+		{ key: 'import_export_tools', value: 'import_export_tools', label: __('Auto-upgrade suggestion', 'multivendorx'), desc: __('Prompt to upgrade plan', 'multivendorx') },],
+};
+const addonIncludes = {
+	key: 'addon_includes',
+	look: 'checkbox',
+	selectDeselect: true,
+	options: [
+	{
+		key: 'products',
+		value: 'products',
+		label: __('Products (+50 items)', 'multivendorx'),
+	},
+	{
+		key: 'categories',
+		value: 'categories',
+		label: __('Categories (+10 max)', 'multivendorx'),
+	},
+	{
+		key: 'storage',
+		value: 'storage',
+		label: __('Storage (+5 GB)', 'multivendorx'),
+	},
+	{
+		key: 'staff_accounts',
+		value: 'staff_accounts',
+		label: __('Staff Accounts (+2 users)', 'multivendorx'),
+	},
+	{
+		key: 'coupons',
+		value: 'coupons',
+		label: __('Coupons (+10 active)', 'multivendorx'),
+	},
+	{
+		key: 'images_per_listing',
+		value: 'images_per_listing',
+		label: __('Images per Listing (+5 images)', 'multivendorx'),
+	},
+	{
+		key: 'ai_credits',
+		value: 'ai_credits',
+		label: __('AI Credits (+100 credits)', 'multivendorx'),
+	},
+]
 };
 const orderEmailInfoField = {
 	key: 'order_email_information',
@@ -227,14 +315,51 @@ const field = {
 };
 
 const Membership = ({ id }: { id: string }) => {
+	const visibilityRef = useRef<HTMLDivElement | null>(null);
+	const [product, setProduct] = useState({});
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
+	const [graceEnabled, setGraceEnabled] = useState<string[]>([]);
 	const [pricingType, setPricingType] = useState<'free' | 'paid'>('free');
 	const [selectedValues, setSelectedValues] = useState<string[]>([]);
 	const [starFill, setstarFill] = useState(false);
-	const [features, setFeatures] = useState<string[]>(['']);
 	const [rules, setRules] = useState<any[]>([]);
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-	const [featuredEnabled, setFeaturedEnabled] = useState(false);
+	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
+	const [catalogVisibility, setCatalogVisibility] = useState<string>('draft');
+	const [trialEnabled, setTrialEnabled] = useState<string[]>([]);
+	useEffect(() => {
+		if (product?.catalog_visibility) {
+			setCatalogVisibility(product.catalog_visibility);
+		}
+	}, [product]);
+	const [features, setFeatures] = useState([]);
+	const [editingIndex, setEditingIndex] = useState(null);
+	const [editingValue, setEditingValue] = useState('');
+	const [newValue, setNewValue] = useState('');
+
+
+
+	const VISIBILITY_LABELS: Record<string, string> = {
+		draft: __('Draft', 'multivendorx'),
+		publish: __('Published', 'multivendorx'),
+		pending: __('Pending Review', 'multivendorx'),
+	};
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				visibilityRef.current &&
+				!visibilityRef.current.contains(event.target as Node)
+			) {
+				setIsEditingVisibility(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
 
 	const [imagePreviews, setImagePreviews] = useState<{
 		[key: string]: string;
@@ -332,19 +457,60 @@ const Membership = ({ id }: { id: string }) => {
 	});
 
 	// add membership start
+	const editRowRef = useRef(null);
+	useEffect(() => {
+		if (editingIndex === null) return;
+
+		const handleClickOutside = (e) => {
+			if (
+				editRowRef.current &&
+				!editRowRef.current.contains(e.target)
+			) {
+				cancelEdit();
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [editingIndex]);
+
 	const addFeature = () => {
-		setFeatures((prev) => [...prev, '']);
+		if (!newValue.trim()) return;
+		setFeatures(prev => [...prev, newValue]);
+		setNewValue('');
 	};
+	const startEdit = (index) => {
+		setEditingIndex(index);
+		setEditingValue(features[index]);
+	};
+	const saveEdit = () => {
+		if (!editingValue.trim()) return;
 
-	const updateFeature = (index: number, value: string) => {
-		setFeatures((prev) =>
-			prev.map((f, i) => (i === index ? value : f))
+		setFeatures(prev =>
+			prev.map((item, index) =>
+				index === editingIndex ? editingValue : item
+			)
 		);
+
+		setEditingIndex(null);
+		setEditingValue('');
+	};
+	const cancelEdit = () => {
+		setEditingIndex(null);
+		setEditingValue('');
 	};
 
-	const clearAll = () => {
-		setFeatures(['']);
+	const deleteFeature = (index) => {
+		setFeatures(prev => prev.filter((_, i) => i !== index));
+
+		if (editingIndex === index) {
+			cancelEdit();
+		}
 	};
+
 	// add membership end
 
 
@@ -391,8 +557,6 @@ const Membership = ({ id }: { id: string }) => {
 	};
 	//  multicheckbox end
 
-
-
 	// nastes component start
 	const nestedFields = [
 		{
@@ -410,266 +574,9 @@ const Membership = ({ id }: { id: string }) => {
 			size: '7rem',
 		},
 	];
-	const subscription = [
-		{
-			key: 'disable_coupon_for_wholesale',
-			type: 'checkbox',
-			options: [
-				{
-					key: 'disable_coupon_for_wholesale',
-					label: __('', 'catalogx'),
-					value: 'disable_coupon_for_wholesale',
-				},
-			],
-			look: 'toggle',
-		},
-		{
-			key: 'facilitator_fixed',
-			type: 'number',
-			postInsideText: __('days', 'multivendorx'),
-			size: '8rem',
-			preText: 'for a duration of',
-			dependent: {
-				key: 'disable_coupon_for_wholesale',
-				set: true,
-				value: 'disable_coupon_for_wholesale',
-			},
-		},
-	];
-	const recurringPrice = [
-		{
-			key: 'recurring',
-			type: 'number',
-			postInsideText: __('days', 'multivendorx'),
-			size: '8rem',
-			preText: 'for a duration of',
-			dependent: {
-				key: 'disable_coupon_for_wholesale',
-				set: true,
-				value: 'disable_coupon_for_wholesale',
-			},
-		},
-		{
-			key: 'recurring_fixed',
-			type: 'dropdown',
-			size: '5rem',
-			options: [
-				{
-					key: 'monday',
-					label: __('Keep Products Visible', 'multivendorx'),
-					value: 'monday',
-				},
-				{
-					key: 'tuesday',
-					label: __('After 2 cycles', 'multivendorx'),
-					value: 'tuesday',
-				},
-				{
-					key: 'wednesday',
-					label: __('Hide Products', 'multivendorx'),
-					value: 'wednesday',
-				},
-				{
-					key: 'thursday',
-					label: __('Set to Draft', 'multivendorx'),
-					value: 'thursday',
-				},
-			],
-		},
-	];
-	const productUploadSettings = [
-		{
-			key: 'enable_product_limits',
-			type: 'checkbox',
-			options: [
-				{
-					key: 'enable_product_limits',
-					label: __('', 'multivendorx'),
-					value: 'enable_product_limits',
-				},
-			],
-			look: 'toggle',
-		},
 
-		{
-			key: 'max_products',
-			type: 'number',
-			size: '8rem',
-			preText: 'with a maximum of',
-			postInsideText: __('products', 'multivendorx'),
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-
-		{
-			key: 'extra_product_charge',
-			type: 'number',
-			size: '8rem',
-			preText: 'Beyond this limit,charge',
-			//postText: __('per product', 'multivendorx'),
-			postInsideText: __('/products', 'multivendorx'),
-			preInsideText: __('$', 'multivendorx'),
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-		{
-			key: 'images_per_product',
-			type: 'number',
-			size: '6rem',
-			preText: 'Stores can also upload images',
-			//postText: __('images per product', 'multivendorx'),
-			postInsideText: __('/products', 'multivendorx'),
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-
-
-		{
-			key: 'product_images',
-			type: 'checkbox',
-			label: 'lflkksjsjajaaj',
-			options: [
-				{
-					key: 'product_images',
-					value: 'product_images',
-				},
-			],
-			look: 'toggle',
-			dependent: {
-				key: 'enable_product_limits',
-				set: true,
-				value: 'enable_product_limits',
-			},
-		},
-		{
-			key: 'max_featured_products',
-			type: 'number',
-			size: '6rem',
-			preText: 'allowed upto',
-			dependent: {
-				key: 'product_images',
-				set: true,
-				value: 'product_images',
-			},
-		},
-	];
-
-	const gracePeriod = [
-		{
-			key: 'disable_coupon',
-			type: 'checkbox',
-			options: [
-				{
-					key: 'disable_coupon',
-					label: __('', 'catalogx'),
-					value: 'disable_coupon',
-				},
-			],
-			look: 'toggle',
-		},
-		{
-			key: 'facilita',
-			type: 'number',
-			postInsideText: __('days', 'multivendorx'),
-			size: '8rem',
-			preText: 'for a duration of',
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
-		},
-		{
-			key: 'facilitator',
-			type: 'dropdown',
-			size: '4rem',
-			options: [
-				{
-					key: 'monday',
-					label: __('Visible', 'multivendorx'),
-					value: 'monday',
-				},
-				{
-					key: 'tuesday',
-					label: __('Hidden', 'multivendorx'),
-					value: 'tuesday',
-				},
-				{
-					key: 'wednesday',
-					label: __('Hide Products', 'multivendorx'),
-					value: 'wednesday',
-				},
-				{
-					key: 'thursday',
-					label: __('Set to Draft', 'multivendorx'),
-					value: 'thursday',
-				},
-			],
-			preText: 'During this period, products are',
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
-		},
-		{
-			key: 'rule_type',
-			type: 'select',
-			options: [
-				{ value: 'price', label: 'allowed' },
-				{ value: 'quantity', label: 'Not allowed' }
-			],
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
-			preText: 'and product creation is',
-		},
-		{
-			key: 'facilitator_fixed',
-			type: 'dropdown',
-			size: '5rem',
-			options: [
-				{
-					key: 'monday',
-					label: __('Keep Products Visible', 'multivendorx'),
-					value: 'monday',
-				},
-				{
-					key: 'tuesday',
-					label: __('After 2 cycles', 'multivendorx'),
-					value: 'tuesday',
-				},
-				{
-					key: 'wednesday',
-					label: __('Hide Products', 'multivendorx'),
-					value: 'wednesday',
-				},
-				{
-					key: 'thursday',
-					label: __('Set to Draft', 'multivendorx'),
-					value: 'thursday',
-				},
-			],
-			preText: 'Change the store role to',
-			dependent: {
-				key: 'disable_coupon',
-				set: true,
-				value: 'disable_coupon',
-			},
-		},
-	];
-
+	// checklish hide show 
+	const [isChecklistOpen, setIsChecklistOpen] = useState(false);
 
 	return (
 		<>
@@ -683,29 +590,129 @@ const Membership = ({ id }: { id: string }) => {
 			<SuccessNotice message={successMsg} />
 			<div className="general-wrapper">
 				<Container>
+					<Column>
+						<div className={`checklist-process-wrapper row ${isChecklistOpen ? 'hide' : 'show'}`}>
+							{/* <div className="checklist-title"><i className="adminfont-star"></i><span> Recommended </span></div> */}
+							<ul>
+								<li className="checked">
+									<div className="details-wrapper">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Plan Name</div>
+											<div className="des">A clear, descriptive title that helps stores identify your plan</div>
+										</div>
+									</div>
+								</li>
+								<li className="checked">
+									<div className="details-wrapper">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Description</div>
+											<div className="des">Explain what this plan offers to stores</div>
+										</div>
+									</div>
+								</li>
+								<li className="visite">
+									<div className="details-wrapper">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Features</div>
+											<div className="des">Select premium features for this plan</div>
+										</div>
+									</div>
+								</li>
+								<li className="not-visite">
+									<div className="details-wrapper">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Pricing</div>
+											<div className="des">Set competitive prices including any sale or discount options</div>
+										</div>
+									</div>
+								</li>
+								<li className="not-visite">
+									<div className="details-wrapper">
+										<div className="check-icon"><span></span></div>
+										<div className="details">
+											<div className="title">Permissions</div>
+											<div className="des">Configure store permissions and limits</div>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<div className="right-arrow checklist-arrow absolute" onClick={() => setIsChecklistOpen((prev) => !prev)}>
+								<i className="adminfont-arrow-right"></i>
+							</div>
+						</div>
+					</Column>
+					{isChecklistOpen && (
+						<div className="right-arrow checklist-arrow fixed" onClick={() => setIsChecklistOpen((prev) => !prev)}>
+							<i className="adminfont-arrow-left"></i>
+						</div>
+					)}
 					<Column grid={8}>
-						<Card
+						<Card contentHeight
 							title="Plan details"
 							action={
-								<div className="field-wrapper">
-									<ToggleSetting
+								<>
+									<div className="field-wrapper">
+										<div className="catalog-visibility">
+											<span className="catalog-visibility-value">
+												{VISIBILITY_LABELS[catalogVisibility]}
+											</span>
 
+											<span
+												onClick={() => {
+													setIsEditingVisibility((prev) => !prev);
+												}}
 
-										options={[
-											{
-												key: 'draft',
-												value: 'draft',
-												label: __('Draft', 'multivendorx'),
-											},
-											{
-												key: 'published',
-												value: 'Published',
-												label: __('Published', 'multivendorx'),
-											},
-										]}
-									/>
+											>
+												<i className="adminfont-keyboard-arrow-down" />
+											</span>
+										</div>
+										{isEditingVisibility && (
+											<div className="setting-dropdown">
+												<FormGroup>
+													<RadioInput
+														name="catalog_visibility"
+														idPrefix="catalog_visibility"
+														type="radio"
+														wrapperClass="settings-form-group-radio"
+														inputWrapperClass="radio-basic-input-wrap"
+														inputClass="setting-form-input"
+														descClass="settings-metabox-description"
+														activeClass="radio-select-active"
+														radiSelectLabelClass="radio-label"
+														options={[
+															{
+																key: 'draft',
+																value: 'draft',
+																label: __('Draft', 'multivendorx'),
+															},
+															{
+																key: 'publish',
+																value: 'publish',
+																label: __('Published', 'multivendorx'),
+															},
+															{
+																key: 'pending',
+																value: 'pending',
+																label: __('Pending Review', 'multivendorx'),
+															},
+														]}
+														value={catalogVisibility}
+														onChange={(e) => {
+															const value = e.target.value;
+															setCatalogVisibility(value);
+															handleChange('catalog_visibility', value);
+															setIsEditingVisibility(false);
+														}}
+													/>
 
-									<div
+												</FormGroup>
+											</div>
+										)}
+										{/* <div
 										className="recommended-wrapper"
 										onClick={() => setstarFill((prev) => !prev)}
 									>
@@ -716,34 +723,448 @@ const Membership = ({ id }: { id: string }) => {
 										<div className="hover-text">
 											Mark as recommended plan
 										</div>
+									</div> */}
 									</div>
-								</div>
+									<label
+										onClick={() => setstarFill((prev) => !prev)}
+										style={{ cursor: 'pointer' }}
+										className="field-wrapper"
+									>
+										{__('Mark as recommended plan', 'multivendorx')}
+										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
+									</label>
+								</>
 							}
 						>
 							<FormGroupWrapper>
-								<FormGroup label="Name" htmlFor="product-name">
+								<FormGroup label="Name" htmlFor="product-name" desc={__('A unique name for your membership plan', 'multivendorx')}>
 									<BasicInput
 										name="name"
-
-
 										value={formData.name}
 										onChange={handleChange}
 									/>
 								</FormGroup>
-								<FormGroup label="Description" htmlFor="short_description">
+								<FormGroup label="Description" htmlFor="short_description" desc={__('A short description displayed on product and checkout pages', 'multivendorx')}>
 									<TextArea
 										name="short_description"
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
 						</Card>
+						<Card contentHeight title={__('Plan highlights', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup cols={3} label={__('Upload image', 'multivendorx')}>
+									<FileInput
+										// value={formData.image || ''}
+										inputClass="form-input"
+										name="image"
+										type="hidden"
+										// imageSrc={imagePreview || ''}
+										imageWidth={75}
+										imageHeight={75}
+									// openUploader={__(
+									// 	'Upload Image',
+									// 	'multivendorx'
+									// )}
+									// onButtonClick={() =>
+									// 	runUploader('image')
+									// }
+									// onRemove={() =>
+									// 	handleRemoveImage('image')
+									// }
+									// onReplace={() =>
+									// 	handleReplaceImage('image')
+									// }
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label={__('Features list', 'multivendorx')}>
+									<div className="membership-features">
+										<div className="features-list">
+											{features.map((feature, index) => (
+												<div className="feature-row" key={index} ref={editingIndex === index ? editRowRef : null}>
+													{editingIndex === index ? (
+														<>
+															<TextArea
+																value={editingValue}
+																onChange={(e) => setEditingValue(e.target.value)}
+																onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
+																onKeyDown={(e) => {
+																	if (e.key === 'Enter' && !e.shiftKey) {
+																		e.preventDefault();
+																		saveEdit();
+																	}
+																}}
+																autoFocus
+																rowNumber={2}
+															/>
+															<span className="admin-badge green" onClick={() => saveEdit()}><i className="adminfont-edit"></i></span>
+														</>
+													) : (
+														<div className="feature-name">
+															<span className="feature-number">{index + 1}</span>
+															{feature}
 
+															<div className="edit-buttons">
+																<div
+																	className="admin-badge blue"
+																	onClick={() => startEdit(index)}
+																>
+																	<i className="adminfont-edit"></i>
+																</div>
 
+																<div
+																	className="admin-badge red"
+																	onClick={() => deleteFeature(index)}
+																>
+																	<i className="adminfont-delete"></i>
+																</div>
+															</div>
+														</div>
+													)}
+
+												</div>
+											))}
+
+											<div className="feature-row">
+												<TextArea
+													value={newValue}
+													onChange={(e) => setNewValue(e.target.value)}
+													onKeyDown={(e) => e.key === 'Enter' && addFeature()}
+													placeholder="Add new feature"
+													onKeyDown={() => console.log('KEYDOWN FIRED')}
+													rowNumber={2}
+												/>
+
+												<AdminButton
+													buttons={[
+														{
+															icon: 'plus',
+															text: __('Add new', 'multivendorx'),
+															className: 'purple',
+															onClick: addFeature,
+														},
+													]}
+												/>
+											</div>
+
+										</div>
+									</div>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
+					</Column>
+
+					<Column grid={4}>
+						<Card contentHeight title={__('Pricing', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup
+									label="Membership type"
+									htmlFor="membership_type"
+								>
+									<ToggleSetting
+										wrapperClass="full-width"
+										options={[
+											{
+												key: 'free',
+												value: 'free',
+												label: __('Free', 'multivendorx'),
+												desc: __('No charges', 'multivendorx'),
+											},
+											{
+												key: 'paid',
+												value: 'paid',
+												label: __('One-time Payment', 'multivendorx'),
+												desc: __('Lifetime access', 'multivendorx'),
+											},
+											{
+												key: 'subscription',
+												value: 'subscription',
+												label: __('Subscription', 'multivendorx'),
+												desc: __('Recurring', 'multivendorx'),
+											},
+										]}
+										value={pricingType}
+										onChange={(value: string) =>
+											setPricingType(value as 'free' | 'paid' | 'subscription')
+										}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+
+							{pricingType === 'paid' && (
+								<>
+									<FormGroupWrapper>
+										<FormGroup
+											label="Signup Fee (Optional)"
+											htmlFor="recurring_price"
+											cols={2}
+										>
+											<BasicInput
+												name="recurring_price"
+												value={formData.recurring_price}
+												onChange={handleChange}
+												preInsideText="$"
+											/>
+										</FormGroup>
+										<FormGroup
+											label="Billing Cycle"
+											htmlFor="recurring_price"
+											cols={2}
+										>
+											<BasicInput
+												name="recurring_price"
+												postInsideText="Monthly"
+												value={formData.recurring_price}
+												onChange={handleChange}
+												postInsideText={{
+													type: 'select',
+													key: 'store_base',
+													size: '7rem',
+													options: [
+														{ 'value': 'Monthly', 'label': 'Monthly' },
+														{ 'value': 'Day', 'label': 'Day' }
+													],
+												}}
+											/>
+										</FormGroup>
+									</FormGroupWrapper>
+								</>
+							)}
+
+							{pricingType === 'subscription' && (
+								<FormGroupWrapper>
+									<FormGroup
+										label="Signup Fee (Optional)"
+										htmlFor="recurring_price"
+										cols={2}
+									>
+										<BasicInput
+											name="recurring_price"
+											value={formData.recurring_price}
+											onChange={handleChange}
+											preInsideText="$"
+										/>
+									</FormGroup>
+									<FormGroup
+										label="Billing Cycle"
+										htmlFor="recurring_price"
+										cols={2}
+									>
+										<BasicInput
+											name="recurring_price"
+											postInsideText="Monthly"
+											value={formData.recurring_price}
+											onChange={handleChange}
+											postInsideText={{
+												type: 'select',
+												key: 'store_base',
+												size: '7rem',
+												options: [
+													{ 'value': 'Monthly', 'label': 'Monthly' },
+													{ 'value': 'Day', 'label': 'Day' }
+												],
+											}}
+										/>
+									</FormGroup>
+									<label
+										onClick={() => setstarFill((prev) => !prev)}
+										style={{ cursor: 'pointer' }}
+										className="field-wrapper"
+									>
+										{__('Apply tax to plan price', 'multivendorx')}
+										<i className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'}`} />
+									</label>
+									<div className="settings-metabox-note">
+										<div className="metabox-note-wrapper">
+											<i className="adminfont-info"></i>
+											<div className="details">
+												<p>Activate Stripe Marketplace or PayPal Marketplace module to use recurring subscriptions.</p>
+												<p>Sign-up fee 0.05 or more is required to create subscriptions in Stripe/PayPal</p>
+											</div>
+										</div>
+									</div>
+								</FormGroupWrapper>
+							)}
+						</Card>
+						<Card
+							contentHeight title={__('Trial period', 'multivendorx')}
+							desc={__('Configure optional trial period for new members', 'multivendorx')}
+							action={
+								<>
+									<div className="field-wrapper">
+										{/* {__('Offer a trial period', 'multivendorx')} */}
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-manage-stock"
+											type="checkbox"
+											value={trialEnabled}
+											onChange={(value) => {
+												if (Array.isArray(value)) {
+													setTrialEnabled(value);
+												} else if (value?.target) {
+													const { checked, value: v } = value.target as HTMLInputElement;
+													setTrialEnabled((prev) =>
+														checked
+															? [...prev, v]
+															: prev.filter((item) => item !== v)
+													);
+												}
+											}}
+											options={[
+												{ key: 'trial', value: 'trial', },
+											]}
+										/>
+									</div>
+								</>
+							}>
+							{trialEnabled.includes('trial') && (
+								<FormGroupWrapper>
+									<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
+										<BasicInput
+											name="name"
+											value={formData.name}
+											onChange={handleChange}
+											postInsideText="days"
+										/>
+									</FormGroup>
+									<FormGroup cols={2}></FormGroup>
+								</FormGroupWrapper>
+							)}
+						</Card>
+						<Card
+							contentHeight title={__('After expiry', 'multivendorx')}
+							desc={__('Define what happens when subscription expires', 'multivendorx')}
+							action={
+								<>
+									<div className="field-wrapper">
+										{/* {__('Offer grace period', 'multivendorx')} */}
+										<MultiCheckBox
+											wrapperClass="toggle-btn"
+											inputWrapperClass="toggle-checkbox-header"
+											inputInnerWrapperClass="toggle-checkbox"
+											idPrefix="toggle-switch-grace"
+											type="checkbox"
+											value={graceEnabled}
+											onChange={(value) => {
+												if (Array.isArray(value)) {
+													setGraceEnabled(value);
+												} else if (value?.target) {
+													const { checked, value: v } = value.target as HTMLInputElement;
+													setGraceEnabled((prev) =>
+														checked
+															? [...prev, v]
+															: prev.filter((item) => item !== v)
+													);
+												}
+											}}
+
+											options={[
+												{ key: 'grace', value: 'grace', },
+											]}
+										/>
+									</div>
+								</>
+							}>
+							{graceEnabled.includes('grace') && (
+								<>
+									<FormGroupWrapper>
+										<FormGroup cols={2} label="For a duration of" htmlFor="trial_period">
+											<BasicInput
+												name="name"
+												value={formData.name}
+												onChange={handleChange}
+												postInsideText="days"
+												size="8rem"
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="During this period, products are">
+											<SelectInput
+												name="product_type"
+												type="multi-select"
+												options={duringThisPeriod}
+												value={duringThisPeriod.filter(opt =>
+													selectedValues.includes(opt.value)
+												)}
+												onChange={(selected: any) => {
+													// selected is array of option objects
+													const values = selected?.map((opt: any) => opt.value) || [];
+													setSelectedValues(values);
+												}}
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="Product creation">
+											<ToggleSetting
+												options={[
+													{
+														key: 'allowed',
+														value: 'allowed',
+														label: __('Allowed', 'multivendorx'),
+													},
+													{
+														key: 'not-allowed',
+														value: 'not-allowed',
+														label: __('Not allowed', 'multivendorx'),
+													},
+												]}
+											// value={pricingType}
+											// onChange={(value: string) =>
+											// 	setPricingType(value as 'free' | 'paid')
+											// }
+											/>
+										</FormGroup>
+										<FormGroup cols={2} label="Change the store role to">
+											<SelectInput
+												name="product_type"
+												type="multi-select"
+												options={storeRole}
+												value={storeRole.filter(opt =>
+													selectedValues.includes(opt.value)
+												)}
+												onChange={(selected: any) => {
+													// selected is array of option objects
+													const values = selected?.map((opt: any) => opt.value) || [];
+													setSelectedValues(values);
+												}}
+											/>
+										</FormGroup>
+									</FormGroupWrapper>
+								</>
+							)}
+						</Card>
+						<Card contentHeight title={__('What this plan includes', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup
+									label="Include All Add-ons"
+									htmlFor={advancedFeaturesField.key}
+								>
+									<NestedComponent
+										id="role_rules"
+										fields={nestedFields}
+										value={rules}
+										single={true}
+										addButtonLabel="Add Rule"
+										deleteButtonLabel="Remove"
+										onChange={(val) => setRules(val)}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
+					</Column>
+					<Column>
+						<Section
+							wrapperClass='divider-wrapper'
+							hint={__('Plan access & permissions', 'multivendorx')}
+						// hint={ inputField.hint } 
+						/>
+					</Column>
+					<Column grid={8}>
 						<Card title={__('What stores can sell', 'multivendorx')}
 							desc={__('Decide what kind of items stores are allowed to list on your marketplace.', 'multivendorx')}
 						>
 							<FormGroupWrapper>
-								<FormGroup row label={__('Listing formats allowed', 'multivendorx')} desc={__('Choose the kinds of listings stores can create under this plan. Only selected types will be available when a store adds a new listing.', 'multivendorx')}>
+								<FormGroup cols={2} label={__('Listing formats allowed', 'multivendorx')} desc={__('Choose the kinds of listings stores can create under this plan. Only selected types will be available when a store adds a new listing.', 'multivendorx')}>
 									{/* <MultiCheckBox
 										khali_dabba={true}
 										wrapperClass="checkbox-list-side-by-side"
@@ -799,7 +1220,7 @@ const Membership = ({ id }: { id: string }) => {
 
 								</FormGroup>
 
-								<FormGroup row label={__('Categories stores can list in', 'multivendorx')} className="border-top" desc={__('Limit where stores can list their products. This helps you control what your marketplace focuses on.')}>
+								<FormGroup cols={2} label={__('Categories stores can list in', 'multivendorx')} desc={__('Limit where stores can list their products. This helps you control what your marketplace focuses on.')}>
 									{/* <MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
 										  
@@ -840,7 +1261,7 @@ const Membership = ({ id }: { id: string }) => {
 										name="categories"
 										type="multi-select"
 										options={categoryOptions}
-										size={"10rem"}
+										size={"18rem"}
 										value={categoryOptions.filter(opt =>
 											selectedCategories.includes(opt.value)
 										)}
@@ -901,32 +1322,6 @@ const Membership = ({ id }: { id: string }) => {
 										proSetting={false}
 										moduleChange={() => { }}
 										modules={[]}
-									/>
-								</FormGroup>
-
-								<FormGroup row label="How many listings a store can add" className="border-top" desc={__('Control how many listings a store can have at the same time.', 'multivendorx')}>
-									<BasicInput
-										name="name"
-
-
-										value={formData.name}
-										onChange={handleChange}
-										// postInsideText={'credits per month'}
-										size="10rem"
-										postText={'listings maximum'}
-									/>
-								</FormGroup>
-
-								<FormGroup row label="Images per listing" className="border-top" desc={__('Control how many images a store can add for each listing.', 'multivendorx')}>
-									<BasicInput
-										name="name"
-
-
-										value={formData.name}
-										onChange={handleChange}
-										// postInsideText={'credits per month'}
-										size="10rem"
-										postText={'images maximum'}
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
@@ -1072,62 +1467,87 @@ const Membership = ({ id }: { id: string }) => {
 								</FormGroup>
 							</FormGroupWrapper>
 						</Card>
-
-						<Card title={__('AI tools available to stores', 'multivendorx')}
-							desc={'Decide whether stores can use AI tools and how much they can use them.'}
-						>
-
+					</Column>
+					<Column grid={4}>
+						<Card contentHeight title={__('Membership perks', 'multivendorx')}>
 							<FormGroupWrapper>
-								<FormGroup row label="AI for writing product details" desc={__('AI for writing product details', 'multivendorx')}>
+								<FormGroup cols={2} label="Products" htmlFor="trial_period">
 									<BasicInput
 										name="name"
-
-
 										value={formData.name}
 										onChange={handleChange}
-										postText={'credits per month'}
-										size="8rem"
+										postInsideText="items"
 									/>
 								</FormGroup>
-								<FormGroup row label="AI for writing product details" className="border-top" desc={__('AI for writing product details', 'multivendorx')}>
+								<FormGroup cols={2} label="Categories" htmlFor="trial_period">
 									<BasicInput
 										name="name"
-
-
 										value={formData.name}
 										onChange={handleChange}
-										postText={'credits per month'}
-										size="8rem"
+										postInsideText="max"
 									/>
 								</FormGroup>
+								<FormGroup cols={2} label="Storage" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="GB"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="Staff Accounts" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="users"
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="Coupons" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText="active"
+									/>
+								</FormGroup>
+
+								<FormGroup cols={2} label="Images per Listing">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText={'images'}
+									/>
+								</FormGroup>
+								<FormGroup cols={2}></FormGroup>
 							</FormGroupWrapper>
 						</Card>
-
-						{/* <Card title={__('Extra tools for running a store', 'multivendorx')}
-							desc={'Decide which additional tools stores get to manage their storefront and customers.'}
+						<Card contentHeight title={__('Plan top-up', 'multivendorx')}
+						desc={__('Stores can purchase extra products, storage, or staff if plan limits are reached.', 'multivendorx')}
 						>
 							<FormGroupWrapper>
-								<FormGroup
-									label="Store management tools"
-									htmlFor={vendorStorefrontField.key}
-									desc={__('Choose whether stores can set store rules, communicate with buyers, pause sales, or offer customer support.', 'multivendorx')}
-								>
+								<FormGroup cols={2} label="Fixed top-up price" htmlFor="trial_period">
+									<BasicInput
+										name="name"
+										// value={formData.name}
+										// onChange={handleChange}
+										preInsideText="$"
+										size="10rem"
+									/>
+								</FormGroup>
+								<FormGroup label="What this top-up includes" htmlFor="trial_period">
 									<MultiCheckBox
 										wrapperClass="checkbox-list-side-by-side"
-										  
-										description={vendorStorefrontField.desc}
 										inputWrapperClass="toggle-checkbox-header"
 										inputInnerWrapperClass="default-checkbox"
-										inputClass={vendorStorefrontField.class}
-										idPrefix={vendorStorefrontField.key}
+										idPrefix={addonIncludes.key}
 										selectDeselect
-										options={vendorStorefrontField.options}
-										value={normalizeValue(vendorStorefrontField.key)}
-										onChange={handleMultiCheckboxChange(
-											vendorStorefrontField.key
-										)}
+										options={addonIncludes.options}
+										value={normalizeValue(addonIncludes.key)}
+										onChange={handleMultiCheckboxChange(addonIncludes.key)}
 										onMultiSelectDeselectChange={() =>
-											handleSelectDeselect(vendorStorefrontField)
+											handleSelectDeselect(addonIncludes)
 										}
 										proSetting={false}
 										moduleChange={() => { }}
@@ -1135,184 +1555,54 @@ const Membership = ({ id }: { id: string }) => {
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
-
-						</Card> */}
-					</Column>
-
-					<Column grid={4}>
-						<Card contentHeight title={__('Pricing', 'multivendorx')}>
+						</Card>
+						<Card contentHeight title={__('Usage Limits', 'multivendorx')}
+						// desc={'Select which premium features stores can access with this plan.'}
+						>
 							<FormGroupWrapper>
-								<FormGroup
-									label="Membership type"
-									htmlFor="membership_type"
-								>
-									<ToggleSetting
-										options={[
-											{
-												key: 'free',
-												value: 'free',
-												label: __('Free', 'multivendorx'),
-											},
-											{
-												key: 'paid',
-												value: 'paid',
-												label: __('Paid', 'multivendorx'),
-											},
-										]}
-										value={pricingType}
-										onChange={(value: string) =>
-											setPricingType(value as 'free' | 'paid')
+								<FormGroup label="When limit reached" htmlFor="trial_period">
+									<MultiCheckBox
+										wrapperClass="checkbox-list-side-by-side"
+										// description={whenLimitReached.desc}
+										inputWrapperClass="toggle-checkbox-header"
+										inputInnerWrapperClass="default-checkbox"
+										inputClass={whenLimitReached.class}
+										idPrefix={whenLimitReached.key}
+										selectDeselect
+										options={whenLimitReached.options}
+										value={normalizeValue(whenLimitReached.key)}
+										onChange={handleMultiCheckboxChange(whenLimitReached.key)}
+										onMultiSelectDeselectChange={() =>
+											handleSelectDeselect(whenLimitReached)
 										}
+										proSetting={false}
+										moduleChange={() => { }}
+										modules={[]}
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
-
-							{pricingType === 'paid' && (
-								<>
-									<FormGroupWrapper>
-										<FormGroup
-											label="Sign up fee"
-											htmlFor="signup_fee"
-											cols={2}
-										>
-											<BasicInput
-												name="signup_fee"
-
-
-												value={formData.signup_fee}
-												onChange={handleChange}
-												pInsideText="$"
-											/>
-										</FormGroup>
-
-										<FormGroup
-											label="Recurring price"
-											htmlFor="recurring_price"
-											cols={2}
-										>
-											<BasicInput
-												name="recurring_price"
-												postInsideText="Month"
-												value={formData.recurring_price}
-												onChange={handleChange}
-											/>
-										</FormGroup>
-									</FormGroupWrapper>
-									<div className="settings-metabox-note">
-										<div className="metabox-note-wrapper">
-											<i className="adminfont-info"></i>
-											<div className="details">
-												<p>Activate Stripe Marketplace or PayPal Marketplace module to use recurring subscriptions.</p>
-												<p>Sign-up fee 0.05 or more is required to create subscriptions in Stripe/PayPal</p>
-											</div>
-										</div>
-									</div>
-									<div className="card-header">
-										<div className="left">
-											<div className="title">
-												Trial Period
-											</div>
-											<div className="des">Configure optional trial period for new members</div>
-										</div>
-									</div>
-									<FormGroupWrapper>
-										<FormGroup
-											label="Offer a trial period"
-											htmlFor="trial_period"
-										>
-											<NestedComponent
-												id="trial_period"
-												fields={subscription}
-												value={rules}
-												single={true}
-												addButtonLabel="Add Rule"
-												deleteButtonLabel="Remove"
-												onChange={(val) => setRules(val)}
-											/>
-										</FormGroup>
-									</FormGroupWrapper>
-									<div className="card-header">
-										<div className="left">
-											<div className="title">
-												After Expiry
-											</div>
-											<div className="des">Define what happens when subscription expires</div>
-										</div>
-									</div>
-									<FormGroupWrapper>
-										<FormGroup
-											label="Offer grace period"
-											htmlFor="grace_period"
-										>
-											<NestedComponent
-												id="grace_period"
-												fields={gracePeriod}
-												value={rules}
-												single={true}
-												addButtonLabel="Add Rule"
-												deleteButtonLabel="Remove"
-												onChange={(val) => setRules(val)}
-											/>
-										</FormGroup>
-									</FormGroupWrapper>
-								</>
-							)}
 						</Card>
-						<Card contentHeight title={__('Commission type', 'multivendorx')}>
+						<Card contentHeight title={__('AI tools available to stores', 'multivendorx')}
+							desc={'Decide whether stores can use AI tools and how much they can use them.'}
+						>
 							<FormGroupWrapper>
-								<FormGroup
-									label="Include All Add-ons"
-									htmlFor={advancedFeaturesField.key}
-								>
-									<NestedComponent
-										id="role_rules"
-										fields={nestedFields}
-										value={rules}
-										single={true}
-										addButtonLabel="Add Rule"
-										deleteButtonLabel="Remove"
-										onChange={(val) => setRules(val)}
+								<FormGroup cols={2} label="AI for writing product details">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText={'/month'}
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label="AI for writing product details">
+									<BasicInput
+										name="name"
+										value={formData.name}
+										onChange={handleChange}
+										postInsideText={'/month'}
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
-						</Card>
-						<Card contentHeight title={__('Membership Perks', 'multivendorx')}>
-							<div className="membership-features">
-								<AdminButton
-									buttons={[
-										{
-											icon: 'delete',
-											text: 'Clear All',
-											className: 'red',
-											onClick: clearAll,
-										},
-										{
-											icon: 'plus',
-											text: 'Add Feature',
-											className: 'purple',
-											onClick: addFeature,
-										},
-									]}
-								/>
-								<div className="features-list">
-									{features.map((feature, index) => (
-										<div className="feature-row" key={index}>
-											<span className={`feature-number`}>
-												{index + 1}
-											</span>
-											<input
-												type="text"
-												className="basic-input"
-												placeholder="e.g., Unlimited access to premium content"
-												value={feature}
-												onChange={(e) =>
-													updateFeature(index, e.target.value)
-												}
-											/>
-										</div>
-									))}
-								</div>
-							</div>
 						</Card>
 					</Column>
 				</Container>

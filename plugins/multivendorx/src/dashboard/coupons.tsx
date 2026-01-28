@@ -44,9 +44,16 @@ type FilterData = {
 	categoryFilter?: string;
 };
 
+const COUPON_STATUS_LABELS: Record<string, string> = {
+	all: __('All', 'multivendorx'),
+	publish: __('Published', 'multivendorx'),
+	draft: __('Draft', 'multivendorx'),
+	pending: __('Pending', 'multivendorx'),
+};
+
 const discountOptions = [
 	{ label: 'Percentage discount', value: 'percent' },
-	{ label: 'Fixed cart discount', value: 'fixed_cart' },
+	// { label: 'Fixed cart discount', value: 'fixed_cart' },
 	{ label: 'Fixed product discount', value: 'fixed_product' },
 ];
 
@@ -77,7 +84,18 @@ const AllCoupon: React.FC = () => {
 		id: number;
 		code: string;
 	} | null>(null);
-
+	const [dateFilter, setDateFilter] = useState<{
+		start_date: Date;
+		end_date: Date;
+	}>({
+		start_date: new Date(
+			new Date().getFullYear(),
+			new Date().getMonth() - 1,
+			1
+		),
+		end_date: new Date(),
+	});
+	const bulkSelectRef = useRef<HTMLSelectElement>(null);
 	// delete popup 
 	const handleDeleteClick = (rowData: CouponRow) => {
 		setSelectedCoupon({
@@ -490,43 +508,42 @@ const AllCoupon: React.FC = () => {
 	];
 
 	const fetchCouponStatusCounts = async () => {
-		const statuses = ['all', 'publish', 'draft', 'pending'];
-		const counts = await Promise.all(
-			statuses.map(async (status) => {
-				const params: any = {
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-				};
+		try {
+			const statuses = ['all', 'publish', 'draft', 'pending'];
 
-				if (status !== 'all') {
-					params.status = status;
-				} else {
-					params.status = 'any';
-				}
+			const counts = await Promise.all(
+				statuses.map(async (status) => {
+					const params: any = {
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+					};
 
-				const res = await axios.get(
-					`${appLocalizer.apiUrl}/wc/v3/coupons`,
-					{
-						headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						params,
-					}
-				);
+					params.status = status === 'all' ? 'any' : status;
 
-				const total = parseInt(res.headers['x-wp-total'] || '0');
+					const res = await axios.get(
+						`${appLocalizer.apiUrl}/wc/v3/coupons`,
+						{
+							headers: { 'X-WP-Nonce': appLocalizer.nonce },
+							params,
+						}
+					);
 
-				return {
-					key: status,
-					name:
-						status === 'all'
-							? __('All', 'multivendorx')
-							: status.charAt(0).toUpperCase() + status.slice(1),
-					count: total,
-				};
-			})
-		);
-		setCouponTypeCounts(
-			counts.filter((c) => c.key === 'all' || c.count > 0)
-		);
+					const total = parseInt(res.headers['x-wp-total'] || '0');
+
+					return {
+						key: status,
+						name: COUPON_STATUS_LABELS[status],
+						count: total,
+					};
+				})
+			);
+
+			setCouponTypeCounts(
+				counts.filter((c) => c.count > 0)
+			);
+		} catch (error) {
+			console.error('Failed to fetch coupon status counts:', error);
+		}
 	};
 
 	// Fetch data from backend.
@@ -614,6 +631,11 @@ const AllCoupon: React.FC = () => {
 		currentPage: number,
 		filterData: FilterData
 	) => {
+		const date = filterData?.date || {
+			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
+			end_date: new Date(),
+		};
+		setDateFilter(date);
 		requestData(
 			rowsPerPage, // 1: rowsPerPage
 			currentPage, // 2: currentPage
@@ -621,11 +643,48 @@ const AllCoupon: React.FC = () => {
 			filterData?.searchField, // 5: searchField (Assuming filterData uses searchField for the search box value)
 			filterData?.couponType,
 			filterData?.categoryFilter, // 6: couponType
-			filterData?.date?.start_date, // 7: startDate
-			filterData?.date?.end_date // 8: endDate
+			date.start_date,
+			date.end_date,
 		);
 	};
+	const handleBulkAction = async () => {
+		const action = bulkSelectRef.current?.value;
+		const selectedIds = Object.keys(rowSelection)
+			.map((key) => {
+				const index = Number(key);
+				return data && data[index] ? data[index].id : null;
+			})
+			.filter((id): id is number => id !== null);
 
+		if (!selectedIds.length) {
+			return;
+		}
+
+		if (!action) {
+			return;
+		}
+		setData(null);
+
+		try {
+			if (action === 'delete') {
+				await axios({
+					method: 'POST', // WooCommerce bulk endpoint uses POST
+					url: `${appLocalizer.apiUrl}/wc/v3/coupons/batch`,
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					data: {
+						delete: selectedIds, // array of product IDs to delete
+					},
+				});
+			}
+
+			// Refresh the data after action
+			fetchCouponStatusCounts();
+			requestData(pagination.pageSize, pagination.pageIndex + 1);
+			setRowSelection({});
+		} catch (err: unknown) {
+			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
+		}
+	};
 	useEffect(() => {
 		fetchCouponStatusCounts();
 		const currentPage = pagination.pageIndex + 1;
@@ -674,10 +733,6 @@ const AllCoupon: React.FC = () => {
 			),
 		},
 		{
-			id: 'amount',
-			accessorKey: 'amount',
-			accessorFn: (row) => parseFloat(row.amount || '0'),
-			enableSorting: true,
 			header: __('Amount', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell title={row.original.amount}>
@@ -716,7 +771,6 @@ const AllCoupon: React.FC = () => {
 			),
 		},
 		{
-			id: 'status',
 			header: __('Status', 'multivendorx'),
 			cell: ({ row }) => {
 				const statusMap: Record<string, string> = {
@@ -732,7 +786,6 @@ const AllCoupon: React.FC = () => {
 			},
 		},
 		{
-			id: 'action',
 			header: __('Action', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell
@@ -817,20 +870,37 @@ const AllCoupon: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
+				<MultiCalendarInput
+					value={{
+						startDate: dateFilter.start_date,
+						endDate: dateFilter.end_date,
+					}}
+					onChange={(range: { startDate: Date; endDate: Date }) => {
+						const next = {
+							start_date: range.startDate,
+							end_date: range.endDate,
+						};
+
+						setDateFilter(next);
+						updateFilter('date', next);
+					}}
+				/>
 			),
 		},
 	];
-
+	const BulkAction: React.FC = () => (
+		<div className="action">
+			<i className="adminfont-form"></i>
+			<select
+				name="action"
+				ref={bulkSelectRef}
+				onChange={handleBulkAction}
+			>
+				<option value="">{__('Bulk actions')}</option>
+				<option value="delete">{__('Delete', 'multivendorx')}</option>
+			</select>
+		</div>
+	);
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -998,6 +1068,7 @@ const AllCoupon: React.FC = () => {
 				totalCounts={totalRows}
 				categoryFilter={couponTypeCounts}
 				searchFilter={searchFilter}
+				bulkActionComp={() => <BulkAction />}
 			/>
 		</>
 	);

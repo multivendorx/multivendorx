@@ -185,6 +185,11 @@ class FrontendScripts {
 					'deps'    => array( 'jquery' ),
 					'version' => $version,
 				),
+                'multivendorx-store-policy-frontend-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/StorePolicy/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
+					'deps'    => array( 'jquery' ),
+					'version' => $version,
+				),
                 'multivendorx-store-shipping-frontend-script' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'modules/StoreShipping/js/' . MULTIVENDORX_PLUGIN_SLUG . '-frontend.min.js',
 					'deps'    => array( 'jquery' ),
@@ -237,6 +242,11 @@ class FrontendScripts {
 				),
                 'multivendorx-store-description-script'  => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/store-description/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-store-shop-product-script'  => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/store-coupons/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
@@ -355,6 +365,13 @@ class FrontendScripts {
 	 * @param string $handle Script handle the data will be attached to.
 	 */
     public static function localize_scripts( $handle ) {
+        if ( isset( $localized[ $handle ] ) ) {
+            return;
+        }
+        
+        if ( ! wp_script_is( $handle, 'enqueued' ) ) {
+            return;
+        }
         // Get all tab setting's database value.
         $settings_databases_value = array();
 
@@ -707,6 +724,14 @@ class FrontendScripts {
                         'restUrl'                  => MultiVendorX()->rest_namespace,
                         'nonce'                    => wp_create_nonce( 'wp_rest' ),
                         'settings_databases_value' => $settings_databases_value,
+                    ),
+                ),
+                'multivendorx-store-shop-product-script'  => array(
+                    'object_name' => 'storeShopProductList',
+                    'data'        => array(
+                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
+                        'restUrl'                  => MultiVendorX()->rest_namespace,
+                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
                     ),
                 ),
 			)
