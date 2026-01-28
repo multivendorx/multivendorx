@@ -1,0 +1,140 @@
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 12px;
+
+	@media (max-width: 782px) {
+		flex-direction: column;
+	}
+}
+
+/* ---------------- Page arrows ---------------- */
+
+.pagination-page-arrows {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.pagination-page-arrows-label {
+	font-size: 13px;
+	color: #50575e;
+	margin-right: 8px;
+}
+
+/* Button group */
+.pagination-buttons {
+	display: inline-flex;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #fff;
+}
+
+.pagination-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 30px;
+	background: #f6f7f7;
+	border: none;
+	cursor: pointer;
+	color: #50575e;
+
+	&:hover:not(:disabled) {
+		background: #e5e5e5;
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	&.is-active {
+		color: #1d2327;
+	}
+
+	i {
+		font-size: 14px;
+	}
+}
+
+/* ---------------- Page arrows with picker ---------------- */
+
+.pagination-input {
+	width: 60px;
+	height: 30px;
+	padding: 0 6px;
+	text-align: center;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-shadow: none;
+
+	&:focus {
+		outline: none;
+		border-color: #2271b1;
+	}
+
+	&.has-error {
+		border-color: #cc1818;
+		box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.4);
+	}
+}
+
+.pagination-total {
+	font-size: 13px;
+	color: #50575e;
+}
+
+/* ---------------- Page picker ---------------- */
+
+.pagination-page-picker {
+	display: flex;
+	align-items: center;
+}
+
+.pagination-page-picker-label {
+	font-size: 13px;
+	color: #50575e;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.pagination-page-picker-input {
+	width: 60px;
+	height: 30px;
+	padding: 0 6px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-shadow: none;
+	text-align: center;
+
+	&:focus {
+		outline: none;
+		border-color: #2271b1;
+	}
+
+	&.has-error {
+		border-color: #cc1818;
+		box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.4);
+	}
+}
+
+/* ---------------- Remove number spinners ---------------- */
+
+.pagination-input,
+.pagination-page-picker-input {
+	&::-webkit-inner-spin-button,
+	&::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	&[type='number'] {
+		-moz-appearance: textfield;
+	}
+}

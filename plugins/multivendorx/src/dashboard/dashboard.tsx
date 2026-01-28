@@ -54,6 +54,7 @@ const Dashboard: React.FC = () => {
 	const [customers, setCustomers] = useState<any>([]);
 	const [lastWithdraws, setLastWithdraws] = useState<any>([]);
 	const [activities, setActivities] = useState<any>([]);
+	const [isLoading, setIsLoading] = useState(true);	
 	const [dateRange, setDateRange] = useState<DateRange>({
 		startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
 		endDate: new Date(),
@@ -62,6 +63,7 @@ const Dashboard: React.FC = () => {
 	const { modules } = useModules();
 
 	useEffect(() => {
+		setIsLoading(true);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'review'),
@@ -80,6 +82,8 @@ const Dashboard: React.FC = () => {
 			.then((response) => {
 				const items = response.data.items || [];
 				setReview(items);
+			}).finally(() => {
+				setIsLoading(false);
 			})
 			.catch(() => {
 				setReview([]);
@@ -124,6 +128,9 @@ const Dashboard: React.FC = () => {
 
 				setPendingRefund(formatData);
 			})
+			.finally(() => {
+				setIsLoading(false);
+			})
 			.catch(() => {
 				setPendingRefund([]);
 			});
@@ -145,7 +152,9 @@ const Dashboard: React.FC = () => {
 			})
 				.then((response) => {
 					setAnnouncement(response.data.items || []);
-				});
+				}).finally(() => {
+				setIsLoading(false);
+			});
 		}
 		axios({
 			method: 'GET',
@@ -181,6 +190,8 @@ const Dashboard: React.FC = () => {
 					};
 				});
 				setTopProducts(processed);
+			}).finally(() => {
+				setIsLoading(false);
 			})
 			.catch((error) => {
 				console.error('Error fetching top selling products:', error);
@@ -224,6 +235,8 @@ const Dashboard: React.FC = () => {
 				});
 
 				setRecentOrders(orders);
+			}).finally(() => {
+				setIsLoading(false);
 			});
 
 		axios({
@@ -234,7 +247,9 @@ const Dashboard: React.FC = () => {
 		}).then((res: any) => {
 			const data = res.data || {};
 			setStore(data);
-		});
+		}).finally(() => {
+				setIsLoading(false);
+			});
 
 		axios({
 			method: 'GET',
@@ -254,7 +269,10 @@ const Dashboard: React.FC = () => {
 					parseInt(response.headers['x-wp-total']) || 0;
 				setTotalOrder(totalOrders);
 			})
-			.catch(() => { });
+			.catch(() => { })
+			.finally(() => {
+				setIsLoading(false);
+			});
 
 		axios({
 			method: 'GET',
@@ -275,6 +293,8 @@ const Dashboard: React.FC = () => {
 		})
 			.then((response) => {
 				setLastWithdraws(response.data.transaction || []);
+			}).finally(() => {
+				setIsLoading(false);
 			})
 			.catch(() => setLastWithdraws([]));
 
@@ -315,7 +335,9 @@ const Dashboard: React.FC = () => {
 				.slice(0, 5);
 
 			setCustomers(topCustomers)
-		});
+		}).finally(() => {
+				setIsLoading(false);
+			});
 
 		axios({
 			method: 'GET',
@@ -331,7 +353,9 @@ const Dashboard: React.FC = () => {
 		})
 			.then((response) => {
 				setActivities(response.data || []);
-			})
+			}).finally(() => {
+				setIsLoading(false);
+			});
 
 	}, [dateRange]);
 
@@ -471,6 +495,7 @@ const Dashboard: React.FC = () => {
 						data={analyticsData.map((item) => ({
 							icon: item.icon,
 							iconClass: `${item.color}-bg`,
+							isLoading: {isLoading},
 							colorClass: item.color,
 							number: item.number,
 							text: __(item.text, 'multivendorx'),
@@ -571,6 +596,7 @@ const Dashboard: React.FC = () => {
 														? __('PayPal', 'multivendorx')
 														: ''
 										}
+										isLoading={isLoading}
 										descriptions={[
 											{ value: formatWcShortDate(item.date) },
 										]}
@@ -898,6 +924,7 @@ const Dashboard: React.FC = () => {
 											text: customer.name?.charAt(0).toUpperCase(),
 											iconClass: 'red-color',
 										}}
+										isLoading={isLoading}
 										descriptions={[
 											{
 												value: `${customer.order_count} ${__('orders', 'multivendorx')}`,
@@ -1001,7 +1028,6 @@ const Dashboard: React.FC = () => {
 						</Card>
 					</Column>
 				)}
-
 			</Container>
 		</>
 	);

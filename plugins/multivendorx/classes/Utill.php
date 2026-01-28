@@ -202,7 +202,6 @@ class Utill
         'country_additional_product'         => 'multivendorx_additional_product',
         'country_shipping_type_price'        => 'multivendorx_shipping_type_price',
         'country_free_shipping_amount'       => 'free_shipping_amount',
-        'distance_free_shipping_amount'       => 'free_shipping_amount',
         'location_lat'               => 'location_lat',
         'location_lng'               => 'location_lng',
         'distance_default_cost'      => 'distance_default_cost',

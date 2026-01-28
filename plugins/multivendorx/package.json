@@ -98,6 +98,7 @@
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.1",
 		"@mui/material": "^7.3.6",
+		"@react-pdf/renderer": "^4.3.2",
 		"@stripe/connect-js": "^3.3.31",
 		"@stripe/react-connect-js": "^3.3.31",
 		"@tanstack/react-table": "^8.21.3",
@@ -109,6 +110,7 @@
 		"@wordpress/i18n": "wp-6.6",
 		"@wordpress/react-i18n": "wp-6.6",
 		"@wordpress/scripts": "^31.1.0",
+		"clsx": "^2.1.1",
 		"d3-geo": "^3.1.1",
 		"d3-scale": "^4.0.2",
 		"d3-zoom": "^3.0.0",
@@ -127,13 +129,13 @@
 		"recharts": "^3.5.1",
 		"ts-loader": "9.5.4",
 		"wp-textdomain": "^1.0.1",
-		"zyra": "workspace:*",
-		"@react-pdf/renderer": "^4.3.2"
+		"zyra": "workspace:*"
 	},
 	"devDependencies": {
 		"@babel/preset-react": "^7.28.5",
 		"@eslint/js": "^9.39.1",
 		"@types/leaflet": "^1.9.21",
+		"@types/lodash": "^4.17.23",
 		"@types/mark.js": "^8.11.12",
 		"@types/react": "19.2.7",
 		"@types/react-csv": "^1.1.10",

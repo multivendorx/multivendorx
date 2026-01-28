@@ -112,7 +112,6 @@ class Distance_Shipping extends \WC_Shipping_Method {
         $default_cost         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_default_cost'] ] ?? 0 );
         $max_distance         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_max'] ] ?? 0 );
         $local_pickup_cost    = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_local_pickup_cost'] ] ?? 0 );
-        $free_shipping_amount = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_free_shipping_amount'] ] ?? 0 );
         $distance_type        = ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_type'] ] ?? 'K' );
         $distance_rules       = ! empty( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ] )
             ? json_decode( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ], true )
@@ -153,7 +152,6 @@ class Distance_Shipping extends \WC_Shipping_Method {
             $distance,
             $default_cost,
             $distance_rules,
-            $free_shipping_amount,
             true
         );
 
@@ -252,11 +250,10 @@ class Distance_Shipping extends \WC_Shipping_Method {
      * @param float $total_distance Total distance.
      * @param float $default_cost Default cost.
      * @param array $distance_rules Array of distance rules.
-     * @param float $free_shipping_amount Free shipping amount.
      * @param bool  $is_consider_free_threshold Whether to consider free shipping threshold.
      * @return float
      */
-    public function calculate_per_seller( $products = array(), $total_distance = 0, $default_cost = 0, $distance_rules = array(), $free_shipping_amount = 0, $is_consider_free_threshold = false ) {
+    public function calculate_per_seller( $products = array(), $total_distance = 0, $default_cost = 0, $distance_rules = array(), $is_consider_free_threshold = false ) {
         $amount = floatval( $default_cost );
 
         $products_total_cost = 0;
@@ -273,10 +270,6 @@ class Distance_Shipping extends \WC_Shipping_Method {
             $products_total_cost += WC()->cart->display_prices_including_tax()
                 ? round( $total - ( $discount_total + $discount_tax_total ), wc_get_price_decimals() )
                 : round( $total - $discount_total, wc_get_price_decimals() );
-        }
-
-        if ( $is_consider_free_threshold && $free_shipping_amount > 0 && $products_total_cost >= $free_shipping_amount ) {
-            return apply_filters( 'multivendorx_shipping_distance_calculate_amount', 0, $products, $total_distance, $default_cost, $distance_rules );
         }
 
         if ( ! empty( $distance_rules ) ) {

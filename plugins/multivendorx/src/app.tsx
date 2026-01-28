@@ -25,6 +25,7 @@ import Notifications from './components/Notifications/Notifications';
 import TransactionHistory from './components/TransactionHistory/transactionHistory';
 import { getTourSteps } from './components/Tour/tourSteps';
 import AddMemberships from './components/Membership/add-membership';
+import TableCardDemo from './components/table/TableCardDemo';
 
 localStorage.setItem('force_multivendorx_context_reload', 'true');
 
@@ -72,6 +73,7 @@ const Route = () => {
 			{tab === 'advertisement' && <Advertisement />}
 			{tab === 'help-support' && <HelpSupport />}
 			{tab === 'notifications' && <Notifications />}
+			{tab === 'table-card' && <TableCardDemo />}
 		</>
 	);
 };

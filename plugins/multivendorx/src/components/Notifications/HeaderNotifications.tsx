@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Popover, getApiLink } from 'zyra';
+import { Popover, getApiLink, Skeleton} from 'zyra';
 import axios from 'axios';
-import { Skeleton } from '@mui/material';
 import { __ } from '@wordpress/i18n';
 
 type NotificationItem = {
@@ -59,16 +58,16 @@ const HeaderNotifications: React.FC = () => {
 				<>
 					<li>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 					</li>
 				</>

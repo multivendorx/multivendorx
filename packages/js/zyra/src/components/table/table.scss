@@ -1,0 +1,312 @@
+/* =====================================
+   Variables
+===================================== */
+$border-color: #e5e7eb;
+$text-color: #111827;
+$muted-text: #6b7280;
+$bg-muted: #f9fafb;
+$bg-hover: #f3f4f6;
+$accent: #2563eb;
+
+$radius: 6px;
+$transition: 0.2s ease;
+
+/* Placeholder animation */
+@keyframes shimmer {
+	0% {
+		background-position: -400px 0;
+	}
+	100% {
+		background-position: 400px 0;
+	}
+}
+
+/* =====================================
+   Table Card
+===================================== */
+.table-card {
+	border: 1px solid $border-color;
+	border-radius: $radius;
+	background: #fff;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+
+	&.has-actions .table-card__header {
+		justify-content: space-between;
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem;
+		border-bottom: 1px solid $border-color;
+	}
+
+	&__title {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: $text-color;
+		margin: 0;
+	}
+
+	&__actions {
+		margin-left: auto;
+	}
+
+	&__column-menu {
+		margin-left: auto;
+		font-size: 0.875rem;
+
+		strong {
+			display: block;
+			margin-bottom: 0.25rem;
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		li {
+			margin: 0.25rem 0;
+		}
+
+		label {
+			cursor: pointer;
+		}
+	}
+
+	&__body {
+		padding: 0 1rem 1rem;
+	}
+
+	&__preface {
+		margin-bottom: 0.75rem;
+		color: $muted-text;
+		font-size: 0.875rem;
+	}
+
+	&__footer {
+		padding: 0.75rem 1rem;
+		border-top: 1px solid $border-color;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+}
+
+/* =====================================
+   Table Container
+===================================== */
+.table-container {
+	overflow-x: auto;
+	position: relative;
+	border: 1px solid $border-color;
+	border-radius: $radius;
+
+	&.scroll-left::before,
+	&.scroll-right::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 12px;
+		pointer-events: none;
+	}
+
+	&.scroll-left::before {
+		left: 0;
+		background: linear-gradient(to right, rgba(0, 0, 0, 0.08), transparent);
+	}
+
+	&.scroll-right::after {
+		right: 0;
+		background: linear-gradient(to left, rgba(0, 0, 0, 0.08), transparent);
+	}
+}
+
+/* =====================================
+   Table
+===================================== */
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+
+	th,
+	td {
+		padding: 0.75rem;
+		border-bottom: 1px solid $border-color;
+		vertical-align: middle;
+	}
+
+	th {
+		background: $bg-muted;
+		font-weight: 600;
+		color: $text-color;
+		text-align: left;
+		white-space: nowrap;
+
+		&.numeric {
+			text-align: right;
+		}
+
+		&.sortable {
+			cursor: pointer;
+
+			.sort-button {
+				all: unset;
+				cursor: pointer;
+				color: inherit;
+
+				&:hover {
+					color: $accent;
+				}
+			}
+		}
+
+		&.sorted {
+			color: $accent;
+		}
+	}
+
+	td {
+		color: $text-color;
+
+		&.numeric {
+			text-align: right;
+		}
+
+		&.sorted {
+			background-color: rgba($accent, 0.05);
+		}
+	}
+
+	tr:hover td {
+		background: $bg-hover;
+	}
+}
+
+/* =====================================
+   Empty State
+===================================== */
+.table-empty {
+	text-align: center;
+	padding: 2rem;
+	color: $muted-text;
+	font-style: italic;
+}
+
+/* =====================================
+   Screen Reader
+===================================== */
+.screen-reader-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* =====================================
+   Loading / Placeholder
+===================================== */
+.is-loading {
+	.table {
+		pointer-events: none;
+	}
+}
+
+.is-placeholder {
+	display: block;
+	width: 100%;
+	height: 1rem;
+	border-radius: 4px;
+	background: linear-gradient(
+		90deg,
+		#e5e7eb 25%,
+		#f3f4f6 37%,
+		#e5e7eb 63%
+	);
+	background-size: 400px 100%;
+	animation: shimmer 1.4s ease infinite;
+}
+
+/* =====================================
+   Table Summary
+===================================== */
+.table-summary {
+	display: flex;
+	gap: 1.5rem;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	font-size: 0.875rem;
+
+	&.is-loading {
+		.table-summary-item {
+			width: 120px;
+		}
+	}
+}
+
+.table-summary-item {
+	display: flex;
+	flex-direction: column;
+}
+
+.table-summary-value {
+	font-weight: 600;
+	color: $text-color;
+}
+
+.table-summary-label {
+	color: $muted-text;
+	font-size: 0.75rem;
+}
+.realtime-filter {
+	display: flex;
+	gap: 16px;
+	padding: 12px 0;
+	flex-wrap: wrap;
+}
+
+.realtime-filter__item {
+	display: flex;
+	flex-direction: column;
+	min-width: 180px;
+}
+
+.realtime-filter__item label {
+	font-size: 12px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+.category-filter-bar {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .category-item {
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #ccc;
+        background: #f7f7f7;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+
+        &.active {
+            background: #007cba;
+            color: white;
+            border-color: #007cba;
+        }
+    }
+}
