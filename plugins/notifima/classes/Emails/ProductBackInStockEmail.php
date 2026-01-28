@@ -79,7 +79,7 @@ if ( ! class_exists( 'ProductBackInStockEmail' ) ) :
                 $product_language = apply_filters( 'wpml_post_language_details', null, $product->get_id() )['language_code'] ?? '';
                 if ( $product_language ) {
                     do_action( 'wpml_switch_language', $product_language );
-                    switch_to_locale($product_language);
+                    switch_to_locale( $product_language );
                 }
             }
 
@@ -92,7 +92,7 @@ if ( ! class_exists( 'ProductBackInStockEmail' ) ) :
             }
 
             $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
-            
+
             restore_previous_locale();
         }
 

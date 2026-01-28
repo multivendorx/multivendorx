@@ -11,8 +11,8 @@ type ModuleState = string[];
 // Define context type
 type ModuleContextType = {
     modules: ModuleState;
-    insertModule: ( moduleName: string ) => void;
-    removeModule: ( moduleName: string ) => void;
+    insertModule: (moduleName: string) => void;
+    removeModule: (moduleName: string) => void;
 };
 
 // Props type for the provider
@@ -22,54 +22,52 @@ type ModuleProviderProps = {
 };
 
 // Create context
-const ModuleContext = createContext< ModuleContextType | undefined >(
-    undefined
-);
+const ModuleContext = createContext<ModuleContextType | undefined>(undefined);
 
 // Reducer function
 const ModuleReducer = (
     state: ModuleState,
     action: ModuleAction
 ): ModuleState => {
-    switch ( action.type ) {
+    switch (action.type) {
         case 'INSERT_MODULE':
-            return [ ...state, action.payload ];
+            return [...state, action.payload];
         case 'DELETE_MODULE':
-            return state.filter( ( module ) => module !== action.payload );
+            return state.filter((module) => module !== action.payload);
         default:
             return state;
     }
 };
 
 // Context provider component
-const ModuleProvider: React.FC< ModuleProviderProps > = ( {
+const ModuleProvider: React.FC<ModuleProviderProps> = ({
     children,
     modules,
-} ) => {
-    const [ state, dispatch ] = useReducer( ModuleReducer, modules );
+}) => {
+    const [state, dispatch] = useReducer(ModuleReducer, modules);
 
-    const insertModule = ( moduleName: string ) => {
-        dispatch( { type: 'INSERT_MODULE', payload: moduleName } );
+    const insertModule = (moduleName: string) => {
+        dispatch({ type: 'INSERT_MODULE', payload: moduleName });
     };
 
-    const removeModule = ( moduleName: string ) => {
-        dispatch( { type: 'DELETE_MODULE', payload: moduleName } );
+    const removeModule = (moduleName: string) => {
+        dispatch({ type: 'DELETE_MODULE', payload: moduleName });
     };
 
     return (
         <ModuleContext.Provider
-            value={ { modules: state, insertModule, removeModule } }
+            value={{ modules: state, insertModule, removeModule }}
         >
-            { children }
+            {children}
         </ModuleContext.Provider>
     );
 };
 
 // Custom hook to access the module context
 const useModules = (): ModuleContextType => {
-    const context = useContext( ModuleContext );
-    if ( ! context ) {
-        throw new Error( 'useModules must be used within a ModuleProvider' );
+    const context = useContext(ModuleContext);
+    if (!context) {
+        throw new Error('useModules must be used within a ModuleProvider');
     }
     return context;
 };
