@@ -95,7 +95,7 @@ interface ExpandablePanelMethod {
     id: string;
     label: string;
     connected: boolean;
-    disableBtn?: boolean;
+    disableBtn?: boolean; // for enabled and disable show with settings btn 
     countBtn?: boolean;
     desc: string;
     formFields?: PanelFormField[];
@@ -107,7 +107,7 @@ interface ExpandablePanelMethod {
     proSetting?: boolean;
     moduleEnabled?: string;
     edit?: boolean;
-    isCustom?: boolean;
+    isCustom?: boolean;  // for show edit and delete btn 
     required?: boolean;
 }
 interface AddNewTemplate {
@@ -1386,7 +1386,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                 >
                                                     <div className="dropdown-body">
                                                         <ul>
-                                                            {method.disableBtn ? (
+                                                            {method.disableBtn && !method.isCustom ? (
                                                                 <>
                                                                     {isEnabled ? (
                                                                         <>

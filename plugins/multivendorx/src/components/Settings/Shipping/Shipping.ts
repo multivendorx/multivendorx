@@ -31,7 +31,6 @@ export default {
 					icon: 'adminfont-zone-wise-shipping',
 					label: 'Zone based shipping',
 					disableBtn: true,
-					enableOption: true,
 					moduleEnabled: 'store-shipping',
 					desc: 'Stores can configure multiple shipping zones.',
 					formFields: [
@@ -54,7 +53,6 @@ export default {
 					label: 'Country-wise shipping',
 					moduleEnabled: 'store-shipping',
 					disableBtn: true,
-					enableOption: true,
 					desc: 'Let store set specific shipping rates based on destination countries.',
 					formFields: [
 						{
@@ -70,7 +68,6 @@ export default {
 					icon: 'adminfont-store-shipping',
 					label: 'Distance-based shipping',
 					disableBtn: true,
-					enableOption: true,
 					moduleEnabled: 'store-shipping',
 					desc: 'Calculate shipping costs based on actual distance between locations.',
 					formFields: [

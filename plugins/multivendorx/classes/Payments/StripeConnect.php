@@ -55,7 +55,6 @@ class StripeConnect {
             'icon'         => 'adminfont-stripe-connect',
             'id'           => $this->get_id(),
             'label'        => 'Stripe Connect',
-            'enableOption' => true,
             'desc'         => __( 'Marketplace payouts via Stripe Connect (OAuth).', 'multivendorx' ),
             'disableBtn'   => true,
             'formFields'   => array(

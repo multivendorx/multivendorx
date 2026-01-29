@@ -39,7 +39,6 @@ class PaypalPayout {
             'icon'         => 'adminfont-form-paypal-email',
             'id'           => $this->get_id(),
             'label'        => 'Paypal Payout',
-            'enableOption' => true,
             'disableBtn'   => true,
             'desc'         => 'Full marketplace solution with instant payouts, comprehensive dispute handling, and global coverage. Best for established marketplaces.',
             'formFields'   => array(

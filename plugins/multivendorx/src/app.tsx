@@ -7,7 +7,7 @@ import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/Modules';
 import Stores from './components/Stores/Stores';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import StatusAndTools from './components/StatusAndTools/statusAndTools';
+import StatusAndTools from './components/StatusAndTools/StatusAndTools';
 import CustomerSupport from './components/CustomerSupport/CustomerSupport';
 import Brand from './assets/images/multivendorx-logo.png';
 import { searchIndex, SearchItem } from './searchIndex';

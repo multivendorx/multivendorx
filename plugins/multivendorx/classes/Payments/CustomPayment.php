@@ -41,7 +41,6 @@ class CustomPayment {
             'id'           => $this->get_id(),
             'label'        => 'Custom Gateway',
             'disableBtn'   => true,
-            'enableOption' => true,
             'desc'         => 'Connect a custom or third-party payout method tailored to your marketplace needs.',
             'formFields'   => array(
                 array(

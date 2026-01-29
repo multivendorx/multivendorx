@@ -46,7 +46,6 @@ class BankTransfer {
             'icon'         => 'adminfont-bank',
             'id'           => $this->get_id(),
             'label'        => 'Bank Transfer',
-            'enableOption' => true,
             'disableBtn'   => true,
             'desc'         => 'Transfer payouts directly to store’s bank accounts.',
             'formFields'   => array(
