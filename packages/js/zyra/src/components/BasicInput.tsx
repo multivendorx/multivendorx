@@ -37,8 +37,6 @@ type Addon =
           size?: string;
       };
 
-type InputValue = string | Record<string, string>;
-
 interface BasicInputProps {
     wrapperClass?: string;
     inputLabel?: string;

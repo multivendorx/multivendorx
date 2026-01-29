@@ -6,8 +6,6 @@ import React, {
     useEffect,
     useRef,
     useState,
-    lazy,
-    Suspense,
     ReactNode,
 } from 'react';
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
@@ -19,7 +17,6 @@ import { Dialog } from '@mui/material';
 import SelectInput, { SelectOptions } from './SelectInput';
 import Section from './Section';
 import BlockText from './BlockText';
-import ButtonCustomizer from './ButtonCustomiser';
 import FormCustomizer from './NotifimaFormCustomizer';
 import FreeProFormCustomizer from './FreeProFormCustomizer';
 import FromBuilder from './RegistrationForm';
@@ -47,8 +44,6 @@ import ExpandablePanelGroup from './ExpandablePanelGroup';
 import SystemInfo from './SystemInfo';
 import { useModules } from '../contexts/ModuleContext';
 import axios from 'axios';
-import MultiCalendarInput from './MultiCalendarInput';
-import CalendarInput from './CalendarInput';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
 
 interface WPMediaAttachment {

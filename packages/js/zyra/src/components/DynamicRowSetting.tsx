@@ -2,7 +2,6 @@
  * External dependencies
  */
 import React from 'react';
-import Select from 'react-select';
 import '../styles/web/DynamicRowSetting.scss';
 
 /**
@@ -122,9 +121,6 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
 
             // Inside renderField:
             case 'select':
-                const selectedOption =
-                    field.options?.find( ( opt ) => opt.value === val ) || null;
-
                 // Transform options to SelectInput format
                 const selectOptions: SelectOptions[] = (
                     field.options || []

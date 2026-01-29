@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import FormGroupWrapper from './UI/FormGroupWrapper';
 import FormGroup from './UI/FormGroup';
 
 interface MapboxControl {
