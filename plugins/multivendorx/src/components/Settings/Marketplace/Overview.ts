@@ -21,28 +21,6 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-				key: 'store_registration_pretest_page',
-				type: 'select',
-				options: [
-                        {
-                            value: 'fixed_amount',
-                            label: 'Fixed Amount',
-                        },
-                        {
-                            value: 'percentage_amount',
-                            label: 'Percentage Amount',
-                        },
-                    ],
-			},
-			postText:{
-				key: 'store_registration_posttest_page',
-				placeholder: 'Enter minimum quatity',
-				type: 'text',
-				size: '50px'
-
-			},
-        },
-		{
 			key: 'store_registration_page',
 			type: 'select',
 			label: __('Store registration page', 'multivendorx'),
