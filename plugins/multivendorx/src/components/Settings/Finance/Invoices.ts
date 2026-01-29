@@ -11,44 +11,18 @@ export default {
 	id: 'invoices',
 	priority: 6,
 	name: __('Invoices', 'multivendorx'),
+    tabTitle: 'Automatic invoice generation',
 	desc: __(
-		'Set up when and how invoices are generated in your marketplace.',
+		'Choose at which order stages invoices should be generated automatically.',
 		'multivendorx'
 	),
 	icon: 'adminfont-invoice',
 	submitUrl: 'settings',
 	modal: [
-        {
-            key: 'company_logo',
-            classes: 'vertical w-50',
-            type: 'file',
-            label: __('Company logo', 'multivendorx'),
-            desc: __('Upload your company logo for invoices', 'multivendorx'),
-            proSetting: true,
-            moduleEnabled: 'invoice',
-        },
-        {
-            key: 'company_logo',
-            classes: 'vertical w-50',
-            type: 'file',
-            label: __('Invoice signature', 'multivendorx'),
-            desc: __('Optional signature image that adds authenticity to your invoices.', 'multivendorx'),
-            proSetting: true,
-            moduleEnabled: 'invoice',
-        },
-        {
-            key: 'separator_content',
-            type: 'section',
-            desc: __(
-                'Control when invoices are automatically created based on order status.',
-                'multivendorx'
-            ),
-            hint: __('Automatic invoice generation', 'multivendorx'),
-        },
-        {
+         {
             key: 'type_options',
             type: 'checkbox',
-            label: __('Who receives invoices?', 'multivendorx'),
+            label: __('Order stages', 'multivendorx'),
             classes: 'vertical w-50',
             // desc: __(
             //     'Select which invoices your marketplace should generate. Most stores only need the first option.',
@@ -88,6 +62,16 @@ export default {
             ],
             selectDeselect: true,
         },
+        {
+            key: 'separator_content',
+            type: 'section',
+            desc: __(
+                'Control when invoices are automatically created based on order status.',
+                'multivendorx'
+            ),
+            hint: __('Automatic invoice generation', 'multivendorx'),
+        },
+       
         // {
         //     key: 'display_customer_order',
         //     type: 'setting-toggle',
@@ -206,59 +190,6 @@ export default {
             moduleEnabled: 'invoice',
             proSetting: true,
         },
-
-        {
-            key: 'separator_content',
-            type: 'section',
-            desc: __(
-                'A4 is standard internationally, Letter is standard in North America',
-                'multivendorx'
-            ),
-            hint: __('PDF format', 'multivendorx'),
-        },
-        {
-            key: 'commission_type',
-            type: 'setting-toggle',
-            classes: 'vertical w-50',
-            label: __('Page size', 'multivendorx'),
-            moduleEnabled: 'invoice',
-            options: [
-                {
-                    key: 'per_transaction',
-                    label: __('A4 (210 × 297 mm)', 'multivendorx'),
-                    value: 'per_transaction',
-                },
-                {
-                    key: 'per_unit',
-                    label: __('Letter (8.5 × 11 in)', 'multivendorx'),
-                    value: 'per_unit',
-                },
-                {
-                    key: 'per_unit',
-                    label: __('Legal (8.5 × 14 in)', 'multivendorx'),
-                    value: 'per_unit',
-                }
-            ],
-        },
-        {
-            key: 'commission_type',
-            type: 'setting-toggle',
-            classes: 'vertical w-50',
-            label: __('Orientation', 'multivendorx'),
-            moduleEnabled: 'invoice',
-            options: [
-                {
-                    key: 'per_transaction',
-                    label: __('Portrait (Vertical)', 'multivendorx'),
-                    value: 'per_transaction',
-                },
-                {
-                    key: 'per_unit',
-                    label: __('Landscape (Horizontal)', 'multivendorx'),
-                    value: 'per_unit',
-                }
-            ],
-        },
         {
             key: 'separator_content',
             type: 'section',
@@ -317,32 +248,19 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            // desc: __(
-            // 	'Add legal details and tax information to invoices',
-            // 	'multivendorx'
-            // ),
-            hint: __('Invoice Content Controls', 'multivendorx'),
+            desc: __(
+                'This controls where customers can find invoices later.',
+                'multivendorx'
+            ),
+            hint: __('Customer access to invoices', 'multivendorx'),
         },
-        {
-            key: 'seller_agreement',
-            type: 'textarea',
-            classes: 'vertical w-50',
-            label: __('Invoice footer text', 'multivendorx'),
-        },
-        {
-            key: 'seller_agreement',
-            type: 'textarea',
-            classes: 'vertical w-50',
-            label: __('Terms and conditions', 'multivendorx'),
-        },
-
         {
             key: 'customer_access',
             type: 'checkbox',
             classes: 'vertical w-50',
             label: __('Customer Access', 'multivendorx'),
             desc: __(
-                'Control how customers can access their invoices',
+                'Control how customers can access their invoices.',
                 'multivendorx'
             ),
             options: [
@@ -362,34 +280,6 @@ export default {
             proSetting: true,
             selectDeselect: true,
         },
-
-        {
-            key: 'packing_slips',
-            type: 'checkbox',
-            classes: 'vertical w-50',
-            label: __('Packing Slips', 'multivendorx'),
-            desc: __(
-                'Configure packing slip display options',
-                'multivendorx'
-            ),
-            options: [
-                {
-                    key: 'include_prices',
-                    label: __('Include prices on packing slips', 'multivendorx'),
-                    desc: __('Show item prices on packing slips', 'multivendorx'),
-                    value: 'include_prices',
-                },
-                {
-                    key: 'use_store_address',
-                    label: __('Use store address', 'multivendorx'),
-                    desc: __('Use store address instead of marketplace address', 'multivendorx'),
-                    value: 'use_store_address',
-                },
-            ],
-            proSetting: true,
-            selectDeselect: true,
-        },
-
         {
             key: 'separator_content',
             type: 'section',
@@ -464,8 +354,143 @@ export default {
             desc: __('Business license or permit number (if required).', 'multivendorx'),
             moduleEnabled: 'invoice',
             proSetting: true,
+        },  
+        {
+            key: 'separator_content',
+            type: 'section',
+            desc: __(
+                'Add your business registration numbers and tax IDs that must appear on invoices.',
+                'multivendorx'
+            ),
+            hint: __('Legal and tax information', 'multivendorx'),
         },
-		{
+         {
+            key: 'company_logo',
+            classes: 'vertical w-50',
+            type: 'file',
+            label: __('Company logo', 'multivendorx'),
+            desc: __('Upload your company logo for invoices', 'multivendorx'),
+            proSetting: true,
+            moduleEnabled: 'invoice',
+        },
+        {
+            key: 'company_logo',
+            classes: 'vertical w-50',
+            type: 'file',
+            label: __('Invoice signature', 'multivendorx'),
+            desc: __('Optional signature image that adds authenticity to your invoices.', 'multivendorx'),
+            proSetting: true,
+            moduleEnabled: 'invoice',
+        },        
+        {
+            key: 'separator_content',
+            type: 'section',
+            // desc: __(
+            // 	'Add legal details and tax information to invoices',
+            // 	'multivendorx'
+            // ),
+            hint: __('Invoice Content Controls', 'multivendorx'),
+        },
+        {
+            key: 'seller_agreement',
+            type: 'textarea',
+            classes: 'vertical w-50',
+            label: __('Invoice footer text', 'multivendorx'),
+        },
+        {
+            key: 'seller_agreement',
+            type: 'textarea',
+            classes: 'vertical w-50',
+            label: __('Terms and conditions', 'multivendorx'),
+        },
+        {
+            key: 'separator_content',
+            type: 'section',
+            desc: __(
+                'A4 is standard internationally, Letter is standard in North America',
+                'multivendorx'
+            ),
+            hint: __('PDF format', 'multivendorx'),
+        },
+        {
+            key: 'commission_type',
+            type: 'setting-toggle',
+            classes: 'vertical w-50',
+            label: __('Page size', 'multivendorx'),
+            moduleEnabled: 'invoice',
+            options: [
+                {
+                    key: 'per_transaction',
+                    label: __('A4 (210 × 297 mm)', 'multivendorx'),
+                    value: 'per_transaction',
+                },
+                {
+                    key: 'per_unit',
+                    label: __('Letter (8.5 × 11 in)', 'multivendorx'),
+                    value: 'per_unit',
+                },
+                {
+                    key: 'per_unit',
+                    label: __('Legal (8.5 × 14 in)', 'multivendorx'),
+                    value: 'per_unit',
+                }
+            ],
+        },
+        {
+            key: 'commission_type',
+            type: 'setting-toggle',
+            classes: 'vertical w-50',
+            label: __('Orientation', 'multivendorx'),
+            moduleEnabled: 'invoice',
+            options: [
+                {
+                    key: 'per_transaction',
+                    label: __('Portrait (Vertical)', 'multivendorx'),
+                    value: 'per_transaction',
+                },
+                {
+                    key: 'per_unit',
+                    label: __('Landscape (Horizontal)', 'multivendorx'),
+                    value: 'per_unit',
+                }
+            ],
+        },
+        {
+            key: 'separator_content',
+            type: 'section',
+            desc: __(
+                'Used only during order fulfillment.',
+                'multivendorx'
+            ),
+            hint: __('Packing slips', 'multivendorx'),
+        },
+        {
+            key: 'packing_slips',
+            type: 'checkbox',
+            classes: 'vertical w-50',
+            label: __('Packing slip settings', 'multivendorx'),
+            desc: __(
+                'Configure packing slip display options',
+                'multivendorx'
+            ),
+            options: [
+                {
+                    key: 'include_prices',
+                    label: __('Include prices on packing slips', 'multivendorx'),
+                    desc: __('Show item prices on packing slips', 'multivendorx'),
+                    value: 'include_prices',
+                },
+                {
+                    key: 'use_store_address',
+                    label: __('Use store address', 'multivendorx'),
+                    desc: __('Use store address instead of marketplace address', 'multivendorx'),
+                    value: 'use_store_address',
+                },
+            ],
+            proSetting: true,
+            selectDeselect: true,
+        },
+        {
             key: 'separator_content',
             type: 'section',
 			wrapperClass: 'bg-color',
