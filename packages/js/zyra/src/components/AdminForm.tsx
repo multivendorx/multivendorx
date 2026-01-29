@@ -1,7 +1,15 @@
 /**
  * External dependencies
  */
-import React, { JSX, useEffect, useRef, useState, lazy, Suspense, ReactNode } from 'react';
+import React, {
+    JSX,
+    useEffect,
+    useRef,
+    useState,
+    lazy,
+    Suspense,
+    ReactNode,
+} from 'react';
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
 
@@ -54,21 +62,21 @@ interface WPMediaSelection {
 }
 
 interface WPMediaState {
-    get( key: 'selection' ): WPMediaSelection;
+    get(key: 'selection'): WPMediaSelection;
 }
 
 interface WPMediaFrame {
-    on( event: 'select', callback: () => void ): void;
+    on(event: 'select', callback: () => void): void;
     state(): WPMediaState;
     open(): void;
 }
 
 interface WPGlobal {
-    media( options: {
+    media(options: {
         title: string;
         button: { text: string };
         multiple: boolean;
-    } ): WPMediaFrame;
+    }): WPMediaFrame;
 }
 
 declare const wp: WPGlobal;
@@ -76,7 +84,7 @@ declare const wp: WPGlobal;
 const PENALTY = 10;
 const COOLDOWN = 1;
 
-type RowType = Record< string, string | number | boolean | string[] >;
+type RowType = Record<string, string | number | boolean | string[]>;
 
 interface DependentCondition {
     key: string;
@@ -220,7 +228,7 @@ interface InputField {
     interval?: number;
     syncFieldsMap?: Record<
         string,
-        { heading: string; fields: Record< string, string > }
+        { heading: string; fields: Record<string, string> }
     >;
     apiLink?: string;
     method?: string;
@@ -299,7 +307,7 @@ interface AppLocalizer {
     apiUrl: string;
     restUrl: string;
     tab_name: string;
-    [ key: string ]: string | number | boolean;
+    [key: string]: string | number | boolean;
 }
 type SettingValue =
     | string
@@ -307,10 +315,10 @@ type SettingValue =
     | boolean
     | string[]
     | number[]
-    | Record< string, unknown >
+    | Record<string, unknown>
     | null;
 
-type Settings = Record< string, SettingValue >;
+type Settings = Record<string, SettingValue>;
 
 interface ApiResponse {
     error?: string;
@@ -321,15 +329,15 @@ interface AdminFormProps {
     settings: SettingsType;
     proSetting: SettingsType;
     setting: Settings;
-    updateSetting: ( key: string, value: SettingValue ) => void;
+    updateSetting: (key: string, value: SettingValue) => void;
     modules: string[];
-    storeTabSetting?: Record< string, string[] >;
+    storeTabSetting?: Record<string, string[]>;
     appLocalizer: AppLocalizer; // Allows any structure
     Popup: typeof Popup;
     modulePopupFields?: PopupProps;
 }
 
-const AdminForm: React.FC< AdminFormProps > = ( {
+const AdminForm: React.FC<AdminFormProps> = ({
     setting,
     updateSetting,
     appLocalizer,
@@ -337,86 +345,86 @@ const AdminForm: React.FC< AdminFormProps > = ( {
     storeTabSetting,
     Popup,
     modulePopupFields,
-} ) => {
+}) => {
     const { modal, submitUrl, id } = settings;
-    const settingChanged = useRef< boolean >( false );
-    const counter = useRef< number >( 0 );
-    const counterId = useRef< ReturnType< typeof setInterval > | null >( null );
-    const [ successMsg, setSuccessMsg ] = useState< string >( '' );
-    const [ modelOpen, setModelOpen ] = useState< boolean >( false );
-    const [ modulePopupData, setModulePopupData ] = useState< PopupProps >( {
+    const settingChanged = useRef<boolean>(false);
+    const counter = useRef<number>(0);
+    const counterId = useRef<ReturnType<typeof setInterval> | null>(null);
+    const [successMsg, setSuccessMsg] = useState<string>('');
+    const [modelOpen, setModelOpen] = useState<boolean>(false);
+    const [modulePopupData, setModulePopupData] = useState<PopupProps>({
         moduleName: '',
         settings: '',
         plugin: '',
-    } );
+    });
     const { modules } = useModules();
 
-    useEffect( () => {
-        if ( settingChanged.current ) {
+    useEffect(() => {
+        if (settingChanged.current) {
             settingChanged.current = false;
 
             // Set counter by penalty
             counter.current = PENALTY;
 
             // Clear previous counter
-            if ( counterId.current ) {
-                clearInterval( counterId.current );
+            if (counterId.current) {
+                clearInterval(counterId.current);
             }
 
             // Create new interval
-            const intervalId = setInterval( () => {
+            const intervalId = setInterval(() => {
                 counter.current -= COOLDOWN;
 
                 // Cooldown complete, time for DB request
-                if ( counter.current < 0 ) {
+                if (counter.current < 0) {
                     sendApiResponse(
                         appLocalizer,
-                        getApiLink( appLocalizer, submitUrl ),
+                        getApiLink(appLocalizer, submitUrl),
                         {
                             setting,
                             settingName: id,
                         }
-                    ).then( ( response: unknown ) => {
+                    ).then((response: unknown) => {
                         const apiResponse = response as ApiResponse;
-                        setSuccessMsg( apiResponse.error || '' );
-                        setTimeout( () => setSuccessMsg( '' ), 2000 );
+                        setSuccessMsg(apiResponse.error || '');
+                        setTimeout(() => setSuccessMsg(''), 2000);
 
-                        if ( apiResponse.redirect_link ) {
-                            window.open( apiResponse.redirect_link, '_self' );
+                        if (apiResponse.redirect_link) {
+                            window.open(apiResponse.redirect_link, '_self');
                         }
-                    } );
+                    });
 
-                    clearInterval( intervalId );
+                    clearInterval(intervalId);
                     counterId.current = null;
                 }
-            }, 50 );
+            }, 50);
 
             // Store the interval ID
             counterId.current = intervalId;
         }
-    }, [ setting, appLocalizer, submitUrl, id ] );
+    }, [setting, appLocalizer, submitUrl, id]);
 
-    useEffect( () => {
-        if ( modelOpen === false ) {
-            const timeout = setTimeout( () => {
-                setModulePopupData( {
+    useEffect(() => {
+        if (modelOpen === false) {
+            const timeout = setTimeout(() => {
+                setModulePopupData({
                     moduleName: '',
                     settings: '',
                     plugin: '',
-                } );
-            }, 100 );
+                });
+            }, 100);
 
-            return () => clearTimeout( timeout );
+            return () => clearTimeout(timeout);
         }
-    }, [ modelOpen ] );
+    }, [modelOpen]);
 
-    const isProSetting = ( proDependent: boolean ): boolean => {
-        return proDependent && ! appLocalizer?.khali_dabba;
+    const isProSetting = (proDependent: boolean): boolean => {
+        return proDependent && !appLocalizer?.khali_dabba;
     };
 
-    const proSettingChanged = ( isProSettingVal: boolean ): boolean => {
-        if ( isProSettingVal && ! appLocalizer?.khali_dabba ) {
-            setModelOpen( true );
+    const proSettingChanged = (isProSettingVal: boolean): boolean => {
+        if (isProSettingVal && !appLocalizer?.khali_dabba) {
+            setModelOpen(true);
             return true;
         }
         return false;
@@ -434,25 +442,25 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             plugin: '',
         };
 
-        if ( moduleEnabled && ! modules.includes( moduleEnabled ) ) {
+        if (moduleEnabled && !modules.includes(moduleEnabled)) {
             popupData.moduleName = moduleEnabled;
         }
 
         if (
             dependentSetting &&
-            Array.isArray( setting[ dependentSetting ] ) &&
-            setting[ dependentSetting ].length === 0
+            Array.isArray(setting[dependentSetting]) &&
+            setting[dependentSetting].length === 0
         ) {
             popupData.settings = dependentSetting;
         }
 
-        if ( ! dependentPlugin ) {
+        if (!dependentPlugin) {
             popupData.plugin = dependentPluginName;
         }
 
-        if ( popupData.moduleName || popupData.settings || popupData.plugin ) {
-            setModulePopupData( popupData );
-            setModelOpen( true );
+        if (popupData.moduleName || popupData.settings || popupData.plugin) {
+            setModulePopupData(popupData);
+            setModelOpen(true);
             return true;
         }
 
@@ -471,36 +479,36 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             plugin: '',
         };
 
-        if ( proFeaturesEnabled && ! appLocalizer?.khali_dabba ) {
-            setModelOpen( true );
+        if (proFeaturesEnabled && !appLocalizer?.khali_dabba) {
+            setModelOpen(true);
             return false;
         }
 
-        if ( hasDependentModule && ! modules.includes( hasDependentModule ) ) {
+        if (hasDependentModule && !modules.includes(hasDependentModule)) {
             popupData.moduleName = hasDependentModule;
-            setModulePopupData( popupData );
-            setModelOpen( true );
+            setModulePopupData(popupData);
+            setModelOpen(true);
             return false;
         }
 
         if (
             hasDependentSetting &&
-            Array.isArray( setting[ hasDependentSetting ] ) &&
-            setting[ hasDependentSetting ].length === 0
+            Array.isArray(setting[hasDependentSetting]) &&
+            setting[hasDependentSetting].length === 0
         ) {
             popupData.settings = hasDependentSetting;
-            setModulePopupData( popupData );
-            setModelOpen( true );
+            setModulePopupData(popupData);
+            setModelOpen(true);
             return false;
         }
 
         if (
             hasDependentPlugin &&
-            ! appLocalizer[ `${ hasDependentPlugin }_active` ]
+            !appLocalizer[`${hasDependentPlugin}_active`]
         ) {
             popupData.plugin = hasDependentPlugin;
-            setModulePopupData( popupData );
-            setModelOpen( true );
+            setModulePopupData(popupData);
+            setModelOpen(true);
             return false;
         }
         return true;
@@ -518,46 +526,41 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             | { index: number },
         key: string,
         type: 'single' | 'multiple' = 'single',
-        fromType:
-            | 'simple'
-            | 'select'
-            | 'multi-select',
+        fromType: 'simple' | 'select' | 'multi-select' = 'simple',
         arrayValue: string[] | number[] = []
     ) => {
         settingChanged.current = true;
 
-        if ( type === 'single' ) {
+        if (type === 'single') {
             // normal single value
-            if ( fromType === 'simple' ) {
+            if (fromType === 'simple') {
                 const val =
-                    (
-                        event as React.ChangeEvent<
-                            HTMLInputElement | HTMLTextAreaElement
-                        >
-                     )?.target?.value ?? event;
-                updateSetting( key, val );
-            } else if ( fromType === 'select' ) {
+                    typeof event === 'object' && 'target' in event
+                        ? (event as React.ChangeEvent<HTMLInputElement>).target
+                              .value
+                        : event;
+                updateSetting(key, val);
+            } else if (fromType === 'select') {
                 const selectEvent = event as { index: number };
-                updateSetting( key, arrayValue[ selectEvent.index ] );
-            } else if ( fromType === 'multi-select' ) {
-                updateSetting( key, event as string[] );
+                updateSetting(key, arrayValue[selectEvent.index]);
+            } else if (fromType === 'multi-select') {
+                updateSetting(key, event as string[]);
             }
         } else {
             // multiple checkbox type
-            const checkboxEvent =
-                event as React.ChangeEvent< HTMLInputElement >;
-            let prevData: string[] = setting[ key ] || [];
-            if ( ! Array.isArray( prevData ) ) {
-                prevData = [ String( prevData ) ];
+            const checkboxEvent = event as React.ChangeEvent<HTMLInputElement>;
+            let prevData: string[] = setting[key] || [];
+            if (!Array.isArray(prevData)) {
+                prevData = [String(prevData)];
             }
 
             prevData = prevData.filter(
-                ( data ) => data !== checkboxEvent.target.value
+                (data) => data !== checkboxEvent.target.value
             );
-            if ( checkboxEvent.target.checked ) {
-                prevData.push( checkboxEvent.target.value );
+            if (checkboxEvent.target.checked) {
+                prevData.push(checkboxEvent.target.value);
             }
-            updateSetting( key, prevData );
+            updateSetting(key, prevData);
         }
     };
 
@@ -568,18 +571,18 @@ const AdminForm: React.FC< AdminFormProps > = ( {
     ) => {
         settingChanged.current = true;
 
-        if ( Array.isArray( setting[ key ] ) && setting[ key ].length > 0 ) {
-            updateSetting( key, [] );
+        if (Array.isArray(setting[key]) && setting[key].length > 0) {
+            updateSetting(key, []);
         } else {
             const newValue: string[] = options
                 .filter(
-                    ( option ) =>
+                    (option) =>
                         type === 'multi-select' ||
-                        ! isProSetting( option.proSetting ?? false )
+                        !isProSetting(option.proSetting ?? false)
                 )
-                .map( ( { value } ) => value );
+                .map(({ value }) => value);
 
-            updateSetting( key, newValue );
+            updateSetting(key, newValue);
         }
     };
 
@@ -591,48 +594,48 @@ const AdminForm: React.FC< AdminFormProps > = ( {
     ): void => {
         settingChanged.current = true;
 
-        const frame = wp.media( {
+        const frame = wp.media({
             title: 'Select Media',
             button: { text: 'Use media' },
             multiple,
-        } );
+        });
 
-        frame.on( 'select', () => {
-            const selection = frame.state().get( 'selection' ).toJSON();
-            const selectedUrl = selection[ 0 ]?.url;
+        frame.on('select', () => {
+            const selection = frame.state().get('selection').toJSON();
+            const selectedUrl = selection[0]?.url;
 
-            if ( multiple && replaceIndex !== -1 ) {
-                const next = [ ...existingUrls ];
-                next[ replaceIndex ] = selectedUrl;
-                updateSetting( key, next );
+            if (multiple && replaceIndex !== -1) {
+                const next = [...existingUrls];
+                next[replaceIndex] = selectedUrl;
+                updateSetting(key, next);
                 return;
             }
 
-            if ( multiple ) {
-                const urls = ( selection as WPMediaAttachment[] ).map(
-                    ( item ) => item.url
+            if (multiple) {
+                const urls = (selection as WPMediaAttachment[]).map(
+                    (item) => item.url
                 );
-                updateSetting( key, urls );
+                updateSetting(key, urls);
             } else {
-                updateSetting( key, selectedUrl || '' );
+                updateSetting(key, selectedUrl || '');
             }
-        } );
+        });
 
         frame.open();
     };
 
     const onSelectChange = (
-        newValue: SingleValue< SelectOptions > | MultiValue< SelectOptions >,
-        actionMeta: ActionMeta< SelectOptions >
+        newValue: SingleValue<SelectOptions> | MultiValue<SelectOptions>,
+        actionMeta: ActionMeta<SelectOptions>
     ) => {
         settingChanged.current = true;
-        if ( Array.isArray( newValue ) ) {
+        if (Array.isArray(newValue)) {
             // Multi-select case
-            const values = newValue.map( ( val ) => val.value );
-            updateSetting( actionMeta.name as string, values );
-        } else if ( newValue !== null && 'value' in newValue ) {
+            const values = newValue.map((val) => val.value);
+            updateSetting(actionMeta.name as string, values);
+        } else if (newValue !== null && 'value' in newValue) {
             // Single-select case (ensures 'newValue' is an object with 'value')
-            updateSetting( actionMeta.name as string, newValue.value );
+            updateSetting(actionMeta.name as string, newValue.value);
         }
     };
 
@@ -640,36 +643,36 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         key: string,
         value: string | number | boolean | null = null
     ): boolean => {
-        const settingValue = setting[ key ];
+        const settingValue = setting[key];
 
         // If settingValue is an array
-        if ( Array.isArray( settingValue ) ) {
+        if (Array.isArray(settingValue)) {
             // If value is null and settingValue has elements, return true
-            if ( value === null && settingValue.length > 0 ) {
+            if (value === null && settingValue.length > 0) {
                 return true;
             }
 
-            return settingValue.includes( value );
+            return settingValue.includes(value);
         }
 
         // If settingValue is not an array
-        if ( value === null && Boolean( settingValue ) ) {
+        if (value === null && Boolean(settingValue)) {
             return true;
         }
 
         return settingValue === value;
     };
 
-    const shouldRender = ( dependent: DependentCondition ): boolean => {
-        if ( dependent.set === true && ! isContain( dependent.key ) ) {
+    const shouldRender = (dependent: DependentCondition): boolean => {
+        if (dependent.set === true && !isContain(dependent.key)) {
             return false;
         }
-        if ( dependent.set === false && isContain( dependent.key ) ) {
+        if (dependent.set === false && isContain(dependent.key)) {
             return false;
         }
         if (
             dependent.value !== undefined &&
-            ! isContain( dependent.key, dependent.value )
+            !isContain(dependent.key, dependent.value)
         ) {
             return false;
         }
@@ -678,30 +681,27 @@ const AdminForm: React.FC< AdminFormProps > = ( {
 
     // Click handler for the entire .form-group that is entire settings row
     const handleGroupClick = (
-        e: React.MouseEvent< HTMLDivElement >,
+        e: React.MouseEvent<HTMLDivElement>,
         field: InputField
     ) => {
         // Stop if already handled by inner elements (optional)
         // But we want to trigger popup on ANY click inside the group
 
         // 1. Pro Setting
-        if ( field.proSetting && ! appLocalizer?.khali_dabba ) {
-            setModelOpen( true );
+        if (field.proSetting && !appLocalizer?.khali_dabba) {
+            setModelOpen(true);
             e.stopPropagation();
             return;
         }
 
         // 2. Module Enabled but not active
-        if (
-            field.moduleEnabled &&
-            ! modules.includes( field.moduleEnabled )
-        ) {
-            setModulePopupData( {
+        if (field.moduleEnabled && !modules.includes(field.moduleEnabled)) {
+            setModulePopupData({
                 moduleName: field.moduleEnabled,
                 settings: '',
                 plugin: '',
-            } );
-            setModelOpen( true );
+            });
+            setModelOpen(true);
             e.stopPropagation();
             return;
         }
@@ -709,39 +709,39 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         // 3. Dependent Setting (empty array)
         if (
             field.dependentSetting &&
-            Array.isArray( setting[ field.dependentSetting ] ) &&
-            setting[ field.dependentSetting ].length === 0
+            Array.isArray(setting[field.dependentSetting]) &&
+            setting[field.dependentSetting].length === 0
         ) {
-            setModulePopupData( {
+            setModulePopupData({
                 moduleName: '',
                 settings: field.dependentSetting,
                 plugin: '',
-            } );
-            setModelOpen( true );
+            });
+            setModelOpen(true);
             e.stopPropagation();
             return;
         }
     };
 
     const renderForm = () => {
-        return modal.map( ( inputField: InputField ) => {
-            const value: unknown = setting[ inputField.key ] ?? '';
+        return modal.map((inputField: InputField) => {
+            const value: unknown = setting[inputField.key] ?? '';
             let input: JSX.Element | null = null;
             // Filter dependent conditions
-            if ( Array.isArray( inputField.dependent ) ) {
-                for ( const dependent of inputField.dependent ) {
-                    if ( ! shouldRender( dependent ) ) {
+            if (Array.isArray(inputField.dependent)) {
+                for (const dependent of inputField.dependent) {
+                    if (!shouldRender(dependent)) {
                         return null;
                     }
                 }
-            } else if ( inputField.dependent ) {
-                if ( ! shouldRender( inputField.dependent ) ) {
+            } else if (inputField.dependent) {
+                if (!shouldRender(inputField.dependent)) {
                     return null;
                 }
             }
 
             // Set input field based on type
-            switch ( inputField.type ) {
+            switch (inputField.type) {
                 case 'text':
                 case 'url':
                 case 'password':
@@ -752,47 +752,46 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <BasicInput
                             wrapperClass={inputField.wrapperClass}
-                            inputClass= {inputField.class}
-                            description={ inputField.desc }
-                            key={ inputField.key }
-                            id={ inputField.id }
-                            name={ inputField.name }
-                            type={ inputField.type }
-                            placeholder={ inputField.placeholder }
-                            inputLabel={ inputField.inputLabel } // for range input label
-                            rangeUnit={ inputField.rangeUnit } // for range parameter
-                            min={ inputField.min ?? 0 } // for range min value
-                            max={ inputField.max ?? 50 } // for range max value
-                            value={ value || inputField.value }
-                            size={ inputField.size } //Width of the input container.
-                            preText={ inputField.preText } //Content displayed before input (icon/text).
-                            postText={ inputField.postText } //Content displayed after input (icon/text).
-                            proSetting={ isProSetting(
+                            inputClass={inputField.class}
+                            description={inputField.desc}
+                            key={inputField.key}
+                            id={inputField.id}
+                            name={inputField.name}
+                            type={inputField.type}
+                            placeholder={inputField.placeholder}
+                            inputLabel={inputField.inputLabel} // for range input label
+                            rangeUnit={inputField.rangeUnit} // for range parameter
+                            min={inputField.min ?? 0} // for range min value
+                            max={inputField.max ?? 50} // for range max value
+                            value={value || inputField.value}
+                            size={inputField.size} //Width of the input container.
+                            preText={inputField.preText} //Content displayed before input (icon/text).
+                            postText={inputField.postText} //Content displayed after input (icon/text).
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            onChange={ (
-                                e: React.ChangeEvent< HTMLInputElement >
-                            ) => {
+                            )}
+                            onChange={(value) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
-                                    handleChange( e, inputField.key );
+                                    handleChange(
+                                        value,
+                                        inputField.key,
+                                        'single',
+                                        'simple'
+                                    );
                                 }
-                            } }
-                            preInsideText={ inputField.preInsideText } //Symbol/unit shown inside input at start.
-                            postInsideText={ inputField.postInsideText } // for showing text beside the text box
-                            generate={ inputField.generate } //Enables generate button for random/auto value generation.
+                            }}
+                            preInsideText={inputField.preInsideText} //Symbol/unit shown inside input at start.
+                            postInsideText={inputField.postInsideText} // for showing text beside the text box
+                            generate={inputField.generate} //Enables generate button for random/auto value generation.
                         />
                     );
                     break;
@@ -804,45 +803,41 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <TextArea
                             inputClass={inputField.class}
-                            description={ inputField.desc }
-                            key={ inputField.key }
-                            id={ inputField.id }
-                            name={ inputField.name }
-                            placeholder={ inputField.placeholder }
-                            rowNumber={ inputField.rowNumber } // for row number value
-                            colNumber={ inputField.colNumber } // for column number value
+                            description={inputField.desc}
+                            key={inputField.key}
+                            id={inputField.id}
+                            name={inputField.name}
+                            placeholder={inputField.placeholder}
+                            rowNumber={inputField.rowNumber} // for row number value
+                            colNumber={inputField.colNumber} // for column number value
                             value={
                                 value !== undefined && value !== null
                                     ? value
                                     : ''
                             }
-                            usePlainText={ inputField.usePlainText } // Toggle between textarea and TinyMCE
-                            proSetting={ isProSetting(
+                            usePlainText={inputField.usePlainText} // Toggle between textarea and TinyMCE
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
+                            )}
                             tinymceApiKey={
                                 appLocalizer.tinymceApiKey
                                     ? appLocalizer.tinymceApiKey
                                     : ''
                             }
-                            onChange={ ( e ) => {
+                            onChange={(e) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
-                                    handleChange( e, inputField.key );
+                                    handleChange(e, inputField.key);
                                 }
-                            } }
+                            }}
                         />
                     );
                     break;
@@ -850,69 +845,65 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'file':
                     input = (
                         <FileInput
-                            description={ inputField.desc }
-                            inputClass={ inputField.key}
-                            imageSrc={ value ?? appLocalizer?.default_logo }
-                            imageWidth={ inputField.width } // Width of the displayed image
-                            imageHeight={ inputField.height } // Height of the displayed image
-                            buttonColor={ inputField.buttonColor }  // CSS class for the file upload button
-                            openUploader={ appLocalizer?.open_uploader }
+                            description={inputField.desc}
+                            inputClass={inputField.key}
+                            imageSrc={value ?? appLocalizer?.default_logo}
+                            imageWidth={inputField.width} // Width of the displayed image
+                            imageHeight={inputField.height} // Height of the displayed image
+                            buttonColor={inputField.buttonColor} // CSS class for the file upload button
+                            openUploader={appLocalizer?.open_uploader}
                             type="hidden" // Input type; in this case, hidden because the FileInput manages its own display
-                            key={ inputField.key }
-                            name={ inputField.name }
-                            value={ value ?? [] }
-                            proSetting={ isProSetting(
+                            key={inputField.key}
+                            name={inputField.name}
+                            value={value ?? []}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            multiple={ inputField.multiple } //to add multiple image pass true or false
-                            size={ inputField.size } // Size of the input (if used by FileInput for styling)
-                            onChange={ ( value ) => {
+                            )}
+                            multiple={inputField.multiple} //to add multiple image pass true or false
+                            size={inputField.size} // Size of the input (if used by FileInput for styling)
+                            onChange={(value) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, value );
+                                    updateSetting(inputField.key, value);
                                 }
-                            } }
+                            }}
                             // Function triggered when the "Upload" button is clicked
-                            onButtonClick={ () => {
+                            onButtonClick={() => {
                                 runUploader(
                                     inputField.key,
                                     inputField.multiple
                                 );
-                            } }
+                            }}
                             // Function triggered when the "Remove" action is performed
-                            onRemove={ () => {
+                            onRemove={() => {
                                 settingChanged.current = true;
                                 updateSetting(
                                     inputField.key,
                                     inputField.multiple ? [] : ''
                                 );
-                            } }
+                            }}
                             // Function triggered when the "Replace" action is performed
-                            onReplace={ ( index, images ) => {
+                            onReplace={(index, images) => {
                                 runUploader(
                                     inputField.key,
                                     inputField.multiple,
                                     index,
                                     images
                                 );
-                            } }
+                            }}
                         />
                     );
                     break;
-                
+
                 // Check in MultiVendorX
                 case 'button':
                     input = (
@@ -921,24 +912,21 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 <BasicInput
                                     wrapperClass="settings-basic-input-class"
                                     inputClass="admin-btn btn-purple"
-                                    description={ inputField.desc } // optional description displayed under the input
-                                    name={ inputField.name } // name attribute for the input
-                                    type={ inputField.type } // input type (text, number, password, etc.)
-                                    placeholder={ inputField.placeholder } // placeholder text inside the input
-                                    proSetting={ isProSetting(
+                                    description={inputField.desc} // optional description displayed under the input
+                                    name={inputField.name} // name attribute for the input
+                                    type={inputField.type} // input type (text, number, password, etc.)
+                                    placeholder={inputField.placeholder} // placeholder text inside the input
+                                    proSetting={isProSetting(
                                         inputField.proSetting ?? false
-                                    ) }
-                                    onClick={ ( e ) => {
+                                    )}
+                                    onClick={(e) => {
                                         e.preventDefault();
-                                        window.open(
-                                            inputField.link,
-                                            '_blank'
-                                        );
-                                    } }
-                                    { ...( inputField.apilink
+                                        window.open(inputField.link, '_blank');
+                                    }}
+                                    {...(inputField.apilink
                                         ? {
                                               onclickCallback: () => {
-                                                  axios( {
+                                                  axios({
                                                       url: getApiLink(
                                                           appLocalizer,
                                                           String(
@@ -953,10 +941,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                                       params: {
                                                           key: inputField.key,
                                                       },
-                                                  } ).then( ( res ) => {} );
+                                                  }).then((res) => {});
                                               },
                                           }
-                                        : {} ) }
+                                        : {})}
                                 />
                             </div>
                         </div>
@@ -971,36 +959,32 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             inputClass="setting-form-input"
                             descClass="settings-metabox-description"
                             activeClass="radio-select-active"
-                            description={ inputField.desc } // optional description displayed below the radio group
+                            description={inputField.desc} // optional description displayed below the radio group
                             value={
                                 typeof value === 'number'
                                     ? value.toString()
                                     : value
                             }
-                            name={ inputField.name }
-                            keyName={ inputField.key }
-                            options={ Array.isArray( value ) ? value : [] } // array of radio options (ensure it's an array)
-                            proSetting={ isProSetting(
+                            name={inputField.name}
+                            keyName={inputField.key}
+                            options={Array.isArray(value) ? value : []} // array of radio options (ensure it's an array)
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e ) => {
+                            )}
+                            onChange={(e) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
-                                    handleChange( e, inputField.key );
+                                    handleChange(e, inputField.key);
                                 }
-                            } }
+                            }}
                         />
                     );
                     break;
@@ -1010,18 +994,16 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                         <ColorSettingInput
                             wrapperClass="form-group-color-setting"
                             inputClass="setting-form-input"
-                            description={ inputField.desc } // optional description displayed under the input
+                            description={inputField.desc} // optional description displayed under the input
                             predefinedOptions={
                                 inputField.predefinedOptions ?? []
                             } // array of predefined color options for quick selection
-                            images={ inputField.images ?? [] } // optional array of images associated with colors
-                            value={ value } // currently selected color value
-                            templates={ inputField.templates } 
-                            onChange={ ( e ) =>
-                                handleChange( e, inputField.key )
-                            }
+                            images={inputField.images ?? []} // optional array of images associated with colors
+                            value={value} // currently selected color value
+                            templates={inputField.templates}
+                            onChange={(e) => handleChange(e, inputField.key)}
                             idPrefix="color-setting"
-                            showPdfButton={ inputField.showPdfButton ?? false }
+                            showPdfButton={inputField.showPdfButton ?? false}
                         />
                     );
                     break;
@@ -1031,17 +1013,16 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <SelectInput
                             wrapperClass={inputField.wrapperClass}
-                            name={ inputField.key }
-                            description={ inputField.desc } // optional description displayed below the select input
-                            inputClass={ inputField.className }
-                            size={ inputField.size }
+                            name={inputField.key}
+                            description={inputField.desc} // optional description displayed below the select input
+                            inputClass={inputField.className}
+                            size={inputField.size}
                             options={
-                                Array.isArray( inputField.options )
-                                    ? inputField.options.map( ( opt ) => ( {
-                                          value: String( opt.value ),
-                                          label:
-                                              opt.label ?? String( opt.value ),
-                                      } ) )
+                                Array.isArray(inputField.options)
+                                    ? inputField.options.map((opt) => ({
+                                          value: String(opt.value),
+                                          label: opt.label ?? String(opt.value),
+                                      }))
                                     : []
                             }
                             value={
@@ -1049,10 +1030,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     ? value.toString()
                                     : value
                             }
-                            proSetting={ isProSetting(
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            onChange={ onSelectChange }
+                            )}
+                            onChange={onSelectChange}
                         />
                     );
                     break;
@@ -1061,21 +1042,20 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'multi-select':
                     input = (
                         <SelectInput
-                            name={ inputField.key }
+                            name={inputField.key}
                             wrapperClass="settings-from-multi-select"
                             descClass="settings-metabox-description"
                             selectDeselectClass="btn-purple select-deselect-trigger"
-                            selectDeselect={ inputField.selectDeselect }
+                            selectDeselect={inputField.selectDeselect}
                             selectDeselectValue="Select / Deselect All" // text for select/deselect all button
-                            description={ inputField.desc } // optional description displayed below the select
-                            inputClass={ inputField.key }
+                            description={inputField.desc} // optional description displayed below the select
+                            inputClass={inputField.key}
                             options={
-                                Array.isArray( inputField.options )
-                                    ? inputField.options.map( ( opt ) => ( {
-                                          value: String( opt.value ),
-                                          label:
-                                              opt.label ?? String( opt.value ),
-                                      } ) )
+                                Array.isArray(inputField.options)
+                                    ? inputField.options.map((opt) => ({
+                                          value: String(opt.value),
+                                          label: opt.label ?? String(opt.value),
+                                      }))
                                     : []
                             }
                             type="multi-select" // input type; allows multiple selections
@@ -1084,20 +1064,20 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     ? value.toString()
                                     : value
                             }
-                            proSetting={ isProSetting(
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            onChange={ onSelectChange }
-                            onMultiSelectDeselectChange={ () =>
+                            )}
+                            onChange={onSelectChange}
+                            onMultiSelectDeselectChange={() =>
                                 handlMultiSelectDeselectChange(
                                     inputField.key,
-                                    Array.isArray( inputField.options )
-                                        ? inputField.options.map( ( opt ) => ( {
-                                              value: String( opt.value ),
+                                    Array.isArray(inputField.options)
+                                        ? inputField.options.map((opt) => ({
+                                              value: String(opt.value),
                                               label:
                                                   opt.label ??
-                                                  String( opt.value ),
-                                          } ) )
+                                                  String(opt.value),
+                                          }))
                                         : [], // Ensure options is always an array
                                     'multi-select'
                                 )
@@ -1109,52 +1089,48 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'checkbox': {
                     let normalizedValue: string[] = [];
 
-                    if ( Array.isArray( value ) ) {
+                    if (Array.isArray(value)) {
                         normalizedValue = value.filter(
-                            ( v ) => v && v.trim() !== ''
+                            (v) => v && v.trim() !== ''
                         );
                     } else if (
                         typeof value === 'string' &&
                         value.trim() !== ''
                     ) {
-                        normalizedValue = [ value ];
+                        normalizedValue = [value];
                     }
 
                     const normalizedOptions = Array.isArray(
-                        setting[ `${ inputField.key }_options` ]
+                        setting[`${inputField.key}_options`]
                     )
-                        ? setting[ `${ inputField.key }_options` ].map(
-                              ( opt ) => ( {
-                                  ...opt,
-                                  value: String( opt.value ),
-                              } )
-                          )
-                        : Array.isArray( inputField.options )
-                        ? inputField.options.map( ( opt ) => ( {
+                        ? setting[`${inputField.key}_options`].map((opt) => ({
                               ...opt,
-                              value: String( opt.value ),
-                          } ) )
-                        : [];
+                              value: String(opt.value),
+                          }))
+                        : Array.isArray(inputField.options)
+                          ? inputField.options.map((opt) => ({
+                                ...opt,
+                                value: String(opt.value),
+                            }))
+                          : [];
 
                     input = (
                         <MultiCheckBox
-                            khali_dabba={ appLocalizer?.khali_dabba }
+                            khali_dabba={appLocalizer?.khali_dabba}
                             wrapperClass={
                                 inputField.look === 'toggle'
                                     ? 'toggle-btn'
                                     : inputField.selectDeselect === true
-                                    ? 'checkbox-list-side-by-side'
-                                    : 'simple-checkbox'
+                                      ? 'checkbox-list-side-by-side'
+                                      : 'simple-checkbox'
                             }
                             moduleEnabled={
                                 inputField.moduleEnabled
-                                    ? modules.includes(
-                                          inputField.moduleEnabled
-                                      )
+                                    ? modules.includes(inputField.moduleEnabled)
                                     : true
                             }
                             descClass="settings-metabox-description"
-                            description={ inputField.desc }
+                            description={inputField.desc}
                             selectDeselectClass="admin-btn btn-purple select-deselect-trigger"
                             inputWrapperClass="toggle-checkbox-header"
                             inputInnerWrapperClass={
@@ -1162,71 +1138,63 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     ? 'toggle-checkbox'
                                     : 'default-checkbox'
                             } // this props for change classes default/ Toggle
-                            inputClass={ inputField.class }
-                            tour={ inputField.tour } // optional guided tour tooltip
+                            inputClass={inputField.class}
+                            tour={inputField.tour} // optional guided tour tooltip
                             hintOuterClass="settings-metabox-description"
                             hintInnerClass="hover-tooltip"
                             idPrefix="toggle-switch"
-                            selectDeselect={ inputField.selectDeselect } // enable "Select / Deselect All"
+                            selectDeselect={inputField.selectDeselect} // enable "Select / Deselect All"
                             selectDeselectValue="Select / Deselect All" // text for select/deselect all
                             rightContentClass="settings-metabox-description"
-                            rightContent={ inputField.rightContent } // for place checkbox right
-                            addNewBtn={ inputField.addNewBtnText }
-                            options={ normalizedOptions }
-                            value={ normalizedValue }
-                            proSetting={ isProSetting(
+                            rightContent={inputField.rightContent} // for place checkbox right
+                            addNewBtn={inputField.addNewBtnText}
+                            options={normalizedOptions}
+                            value={normalizedValue}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            preText={ inputField.preText }
-                            postText={ inputField.postText }
-                            onChange={ ( e ) => {
+                            )}
+                            preText={inputField.preText}
+                            postText={inputField.postText}
+                            onChange={(e) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
-                                    handleChange(
-                                        e,
-                                        inputField.key,
-                                        'multiple'
-                                    );
+                                    handleChange(e, inputField.key, 'multiple');
                                 }
-                            } }
-                            onMultiSelectDeselectChange={ () =>
+                            }}
+                            onMultiSelectDeselectChange={() =>
                                 handlMultiSelectDeselectChange(
                                     inputField.key,
-                                    Array.isArray( inputField.options )
-                                        ? inputField.options.map( ( opt ) => ( {
+                                    Array.isArray(inputField.options)
+                                        ? inputField.options.map((opt) => ({
                                               ...opt,
-                                              value: String( opt.value ),
-                                          } ) )
+                                              value: String(opt.value),
+                                          }))
                                         : []
                                 )
                             }
-                            proChanged={ () => setModelOpen( true ) }
-                            modules={ modules } //Active module list for dependency validation.
-                            module ={inputField.moduleEnabled??''}
-                            moduleChange={ ( moduleEnabled ) => {
+                            proChanged={() => setModelOpen(true)}
+                            modules={modules} //Active module list for dependency validation.
+                            module={inputField.moduleEnabled ?? ''}
+                            moduleChange={(moduleEnabled) => {
                                 moduleEnabledChanged(
-                                    String( moduleEnabled ?? '' )
+                                    String(moduleEnabled ?? '')
                                 );
-                            } }
-                            onOptionsChange={ ( options ) => {
+                            }}
+                            onOptionsChange={(options) => {
                                 settingChanged.current = true;
                                 updateSetting(
-                                    `${ inputField.key }_options`,
+                                    `${inputField.key}_options`,
                                     options
                                 );
-                            } }
+                            }}
                         />
                     );
                     break;
@@ -1235,9 +1203,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'checkbox-custom-img':
                     input = (
                         <MultiCheckBox
-                            khali_dabba={ appLocalizer?.khali_dabba ?? false }
-                            wrapperClass={ inputField.wrapperClass }
-                            inputWrapperClass={ inputField.inputWrapperClass }
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
+                            wrapperClass={inputField.wrapperClass}
+                            inputWrapperClass={inputField.inputWrapperClass}
                             type="checkbox-custom-img"
                             inputInnerWrapperClass={
                                 inputField.look === 'toggle'
@@ -1245,36 +1213,30 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     : 'default-checkbox'
                             } // this props for change classes default/ Toggle
                             idPrefix="toggle-switch"
-                            proSetting={ isProSetting(
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            description={ inputField.desc }
+                            )}
+                            description={inputField.desc}
                             descClass="settings-metabox-description"
                             value={
-                                Array.isArray( value )
-                                    ? value
-                                    : [ String( value ) ]
+                                Array.isArray(value) ? value : [String(value)]
                             }
-                            options={ inputField.syncDirections ?? [] } // array includes label, value, img1, img2
-                            onChange={ ( data ) => {
+                            options={inputField.syncDirections ?? []} // array includes label, value, img1, img2
+                            onChange={(data) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, data );
+                                    updateSetting(inputField.key, data);
                                 }
-                            } }
+                            }}
                         />
                     );
 
@@ -1287,26 +1249,26 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'setting-toggle':
                     input = (
                         <ToggleSetting
-                            khali_dabba={ appLocalizer?.khali_dabba ?? false }
-                            wrapperClass={ inputField.wrapperClass }
-                            description={ inputField.desc }
-                            key={ inputField.key }
-                            iconEnable={ inputField.iconEnable } // If true, will display the toggle value as an icon
-                            custom={ inputField.custom }
-                            multiSelect={ inputField.multiSelect } // If true, allows selecting multiple options (checkboxes), else single select (radio)
-                            preText={ inputField.preText } // Optional content displayed before the toggle group
-                            postText={ inputField.postText } // Optional content displayed after the toggle group
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
+                            wrapperClass={inputField.wrapperClass}
+                            description={inputField.desc}
+                            key={inputField.key}
+                            iconEnable={inputField.iconEnable} // If true, will display the toggle value as an icon
+                            custom={inputField.custom}
+                            multiSelect={inputField.multiSelect} // If true, allows selecting multiple options (checkboxes), else single select (radio)
+                            preText={inputField.preText} // Optional content displayed before the toggle group
+                            postText={inputField.postText} // Optional content displayed after the toggle group
                             options={
-                                Array.isArray( inputField.options )
-                                    ? inputField.options.map( ( opt ) => ( {
+                                Array.isArray(inputField.options)
+                                    ? inputField.options.map((opt) => ({
                                           ...opt,
-                                          value: String( opt.value ), // this can be an icon class
-                                      } ) )
+                                          value: String(opt.value), // this can be an icon class
+                                      }))
                                     : []
                             }
                             value={
                                 inputField.multiSelect
-                                    ? Array.isArray( value )
+                                    ? Array.isArray(value)
                                         ? value
                                         : [
                                               String(
@@ -1319,29 +1281,25 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                           value ?? inputField.defaultValue ?? ''
                                       )
                             }
-                            proSetting={ isProSetting(
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( data ) => {
+                            )}
+                            onChange={(data) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, data );
+                                    updateSetting(inputField.key, data);
                                 }
-                            } }
-                            proChanged={ () => setModelOpen( true ) }
+                            }}
+                            proChanged={() => setModelOpen(true)}
                         />
                     );
                     break;
@@ -1350,11 +1308,13 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'section':
                     input = (
                         <Section
-                            key={ `${ inputField.key }` }
-                            wrapperClass={ inputField.wrapperClass}
-                            value={ inputField.label } //Optional main heading/title of the section.
-                            hint={ inputField.hint } //Optional hint or subtext below the title, can include HTML.
-                            description={ inputField.desc } //Optional descriptive text displayed below the hint.
+                            key={`${inputField.key}`}
+                            wrapperClass={
+                                inputField.wrapperClass || 'divider-wrapper'
+                            }
+                            value={inputField.label} //Optional main heading/title of the section.
+                            hint={inputField.hint} //Optional hint or subtext below the title, can include HTML.
+                            description={inputField.desc} //Optional descriptive text displayed below the hint.
                         />
                     );
                     break;
@@ -1362,13 +1322,13 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'blocktext':
                     input = (
                         <BlockText
-                            key={ inputField.blocktext }
+                            key={inputField.blocktext}
                             blockTextClass={
                                 inputField.blockTextClass ||
                                 'settings-metabox-note'
                             }
-                            title={ inputField.title }
-                            value={ String( inputField.blocktext ) } // Text or HTML content to display inside the block (safe HTML injected).
+                            title={inputField.title}
+                            value={String(inputField.blocktext)} // Text or HTML content to display inside the block (safe HTML injected).
                         />
                     );
                     break;
@@ -1376,35 +1336,31 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'notifima-form-customizer':
                     input = (
                         <FormCustomizer
-                            value={ String( value ) }
+                            value={String(value)}
                             buttonText={
-                                ( setting.customize_btn &&
-                                    setting.customize_btn.button_text ) ||
+                                (setting.customize_btn &&
+                                    setting.customize_btn.button_text) ||
                                 'Submit'
                             } //Text displayed on the submit/customize button; defaults to 'Submit' if not provided.
-                            setting={ setting }
-                            proSetting={ isProSetting(
+                            setting={setting}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( e, key ) => {
+                            )}
+                            onChange={(e, key) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( e, key );
+                                    updateSetting(e, key);
                                 }
-                            } }
+                            }}
                         />
                     );
                     break;
@@ -1412,25 +1368,25 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'form-customizer':
                     input = (
                         <FreeProFormCustomizer
-                            key={ inputField.key }
-                            setting={ setting }
-                            proSetting={ isProSetting(
+                            key={inputField.key}
+                            setting={setting}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            proSettingChange={ () =>
+                            )}
+                            proSettingChange={() =>
                                 proSettingChanged(
                                     inputField.proSetting ?? false
                                 )
                             }
-                            moduleEnabledChange={ () =>
+                            moduleEnabledChange={() =>
                                 moduleEnabledChanged(
-                                    String( inputField.moduleEnabled ?? '' )
+                                    String(inputField.moduleEnabled ?? '')
                                 )
                             }
-                            onChange={ ( key, data ) => {
+                            onChange={(key, data) => {
                                 settingChanged.current = true;
-                                updateSetting( key, data );
-                            } }
+                                updateSetting(key, data);
+                            }}
                         />
                     );
                     break;
@@ -1438,12 +1394,12 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'catalog-customizer':
                     input = (
                         <CatalogCustomizer
-                            setting={ setting }
-                            proSetting={ appLocalizer?.khali_dabba ?? false }
-                            onChange={ ( key, data ) => {
+                            setting={setting}
+                            proSetting={appLocalizer?.khali_dabba ?? false}
+                            onChange={(key, data) => {
                                 settingChanged.current = true;
-                                updateSetting( key, data );
-                            } }
+                                updateSetting(key, data);
+                            }}
                             SampleProduct="#"
                             proUrl="#"
                         />
@@ -1453,43 +1409,39 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'multi-checkbox-table':
                     input = (
                         <MultiCheckboxTable
-                            khali_dabba={ appLocalizer?.khali_dabba ?? false }
-                            rows={ inputField.rows ?? [] } // row array
-                            columns={ inputField.columns ?? [] } // columns array
-                            enable={ inputField.enable }
-                            description={ String( inputField.desc ) }
-                            setting={ setting }
-                            storeTabSetting={ storeTabSetting }
-                            proSetting={ isProSetting(
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
+                            rows={inputField.rows ?? []} // row array
+                            columns={inputField.columns ?? []} // columns array
+                            enable={inputField.enable}
+                            description={String(inputField.desc)}
+                            setting={setting}
+                            storeTabSetting={storeTabSetting}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            modules={ modules } //Active module list for dependency validation.
-                            onChange={ ( key, data ) => {
+                            )}
+                            modules={modules} //Active module list for dependency validation.
+                            onChange={(key, data) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( key, data );
+                                    updateSetting(key, data);
                                 }
-                            } }
-                            moduleChange={ ( moduleEnabled ) => {
+                            }}
+                            moduleChange={(moduleEnabled) => {
                                 moduleEnabledChanged(
-                                    String( moduleEnabled ?? '' )
+                                    String(moduleEnabled ?? '')
                                 );
                                 // setModelOpen(true);
-                            } }
-                            proChanged={ () => setModelOpen( true ) }
+                            }}
+                            proChanged={() => setModelOpen(true)}
                         />
                     );
                     break;
@@ -1497,41 +1449,37 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'merge-component':
                     input = (
                         <MergeComponent
-                            wrapperClass={ `setting-form-input` }
+                            wrapperClass={`setting-form-input`}
                             descClass="settings-metabox-description"
-                            description={ inputField.desc } // Help text / description displayed below the component
+                            description={inputField.desc} // Help text / description displayed below the component
                             value={
                                 typeof value === 'object' && value !== null
                                     ? value
                                     : {} // Current value (ensures it’s an object, else fallback to empty object)
                             }
                             fields={
-                                Array.isArray( inputField.fields )
+                                Array.isArray(inputField.fields)
                                     ? inputField.fields
                                     : [] // List of field definitions (each has name, type, options, etc.)
                             }
-                            proSetting={ isProSetting(
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            onChange={ ( data ) => {
+                            )}
+                            onChange={(data) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, data );
+                                    updateSetting(inputField.key, data);
                                 }
-                            } }
+                            }}
                         />
                     );
                     break;
@@ -1540,15 +1488,15 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                     input = (
                         <ShortCodeTable
                             descClass="settings-metabox-description"
-                            description={ inputField.desc } // Help text / description shown under the table
-                            key={ inputField.key }
-                            icon={ inputField.icon }
+                            description={inputField.desc} // Help text / description shown under the table
+                            key={inputField.key}
+                            icon={inputField.icon}
                             options={
-                                Array.isArray( inputField.options )
+                                Array.isArray(inputField.options)
                                     ? inputField.options
                                     : []
                             } // array includes label and description
-                            optionLabel={ inputField.optionLabel } // Label header for the options column
+                            optionLabel={inputField.optionLabel} // Label header for the options column
                         />
                     );
                     break;
@@ -1556,22 +1504,22 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'do-action-btn':
                     input = (
                         <DoActionBtn
-                            appLocalizer={ appLocalizer }
-                            buttonKey={ inputField.key }
-                            apilink={ String( inputField.apilink ) } // API endpoint to trigger the action
-                            value={ String( inputField.value ) }
-                            description={ String( inputField.desc ) }
-                            proSetting={ isProSetting(
+                            appLocalizer={appLocalizer}
+                            buttonKey={inputField.key}
+                            apilink={String(inputField.apilink)} // API endpoint to trigger the action
+                            value={String(inputField.value)}
+                            description={String(inputField.desc)}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            proSettingChanged={ () =>
+                            )}
+                            proSettingChanged={() =>
                                 proSettingChanged(
                                     inputField.proSetting ?? false
                                 )
                             }
-                            interval={ Number( inputField.interval ) } // Time interval (e.g., for polling or scheduling tasks)
-                            tasks={ inputField.tasks ?? [] } // List of tasks/actions handled by this button
-                            parameter={ String( inputField.parameter ) } // api for each status of synchronization
+                            interval={Number(inputField.interval)} // Time interval (e.g., for polling or scheduling tasks)
+                            tasks={inputField.tasks ?? []} // List of tasks/actions handled by this button
+                            parameter={String(inputField.parameter)} // api for each status of synchronization
                         />
                     );
                     break;
@@ -1579,40 +1527,36 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'dropdown-mapping':
                     input = (
                         <DropDownMapping
-                            description={ inputField.desc }
-                            proSetting={ isProSetting(
+                            description={inputField.desc}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            proSettingChanged={ () =>
+                            )}
+                            proSettingChanged={() =>
                                 proSettingChanged(
                                     inputField.proSetting ?? false
                                 )
                             }
                             value={
-                                Array.isArray( value )
-                                    ? ( value as [ string, string ][] )
-                                    : [ [ 'key', String( value ) ] ]
+                                Array.isArray(value)
+                                    ? (value as [string, string][])
+                                    : [['key', String(value)]]
                             }
-                            syncFieldsMap={ inputField.syncFieldsMap ?? {} } // Map of available sync fields for systems (default to empty object if not provided)
-                            onChange={ ( data ) => {
+                            syncFieldsMap={inputField.syncFieldsMap ?? {}} // Map of available sync fields for systems (default to empty object if not provided)
+                            onChange={(data) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, data );
+                                    updateSetting(inputField.key, data);
                                 }
-                            } }
+                            }}
                         />
                     );
                     break;
@@ -1620,9 +1564,9 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'log':
                     input = (
                         <Log
-                            appLocalizer={ appLocalizer }
-                            apiLink={ String( inputField.apiLink ) } // api to fetch and download the log content
-                            downloadFileName={ String( inputField.fileName ) }
+                            appLocalizer={appLocalizer}
+                            apiLink={String(inputField.apiLink)} // api to fetch and download the log content
+                            downloadFileName={String(inputField.fileName)}
                         />
                     ); // log file name
                     break;
@@ -1636,10 +1580,10 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                      */
                     input = (
                         <SystemInfo
-                            appLocalizer={ appLocalizer }
-                            apiLink={ String( inputField.apiLink ) }
-                            copyButtonLabel={ inputField.copyButtonLabel } //The button text before copying (e.g., “Copy Info”).
-                            copiedLabel={ inputField.copiedLabel } //The text shown after copying (e.g., “Copied!”).
+                            appLocalizer={appLocalizer}
+                            apiLink={String(inputField.apiLink)}
+                            copyButtonLabel={inputField.copyButtonLabel} //The button text before copying (e.g., “Copy Info”).
+                            copiedLabel={inputField.copiedLabel} //The text shown after copying (e.g., “Copied!”).
                         />
                     );
                     break;
@@ -1648,81 +1592,73 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'api-connect':
                     input = (
                         <InputMailchimpList
-                            appLocalizer={ appLocalizer }
-                            setting={ setting }
-                            updateSetting={ updateSetting }
-                            mailchimpKey={ inputField.key }
-                            selectKey={ String( inputField.selectKey ) } //Stores which Mailchimp list is chosen.
-                            optionKey={ String( inputField.optionKey ) } //Stores all available lists fetched from Mailchimp.
-                            onChange={ handleChange }
-                            proSettingChanged={ () =>
+                            appLocalizer={appLocalizer}
+                            setting={setting}
+                            updateSetting={updateSetting}
+                            mailchimpKey={inputField.key}
+                            selectKey={String(inputField.selectKey)} //Stores which Mailchimp list is chosen.
+                            optionKey={String(inputField.optionKey)} //Stores all available lists fetched from Mailchimp.
+                            onChange={handleChange}
+                            proSettingChanged={() =>
                                 proSettingChanged(
                                     inputField.proSetting ?? false
                                 )
                             }
-                            settingChanged={ settingChanged }
-                            apiLink={ String( inputField.apiLink ) } //The API URL to fetch Mailchimp lists from.
+                            settingChanged={settingChanged}
+                            apiLink={String(inputField.apiLink)} //The API URL to fetch Mailchimp lists from.
                         />
                     );
                     break;
                 case 'email-template':
-                    input = (
-                        <EmailTemplate 
-                             name={ inputField.key }
-                        />
-                    )
+                    input = <EmailTemplate name={inputField.key} />;
                     break;
                 case 'form-builder':
                     input = (
                         <FromBuilder
-                            name={ inputField.key }
-                            proSettingChange={ () =>
+                            name={inputField.key}
+                            proSettingChange={() =>
                                 proSettingChanged(
                                     inputField.proSetting ?? false
                                 )
                             }
-                            onChange={ ( value ) => {
+                            onChange={(value) => {
                                 settingChanged.current = true;
-                                updateSetting( inputField.key, value );
-                            } }
-                            setting={ setting }
+                                updateSetting(inputField.key, value);
+                            }}
+                            setting={setting}
                         />
                     );
                     break;
                 case 'nested':
                     input = (
                         <NestedComponent
-                            khali_dabba={ appLocalizer?.khali_dabba }
-                            modules={ modules }
-                            key={ inputField.key }
-                            id={ inputField.key }
-                            label={ inputField.label }
-                            description={ inputField.desc }
-                            fields={ inputField.nestedFields ?? [] } //The list of inner fields that belong to this section.
-                            value={ value }
-                            wrapperClass={ inputField.rowClass }
-                            addButtonLabel={ inputField.addButtonLabel } //The text shown on the button to add a new item.
-                            deleteButtonLabel={ inputField.deleteButtonLabel } //The text shown on the button to remove an item.
-                            single={ inputField.single } //If set to true, only one item is allowed.
-                            onChange={ ( val: RowType[] ) => {
+                            khali_dabba={appLocalizer?.khali_dabba}
+                            modules={modules}
+                            key={inputField.key}
+                            id={inputField.key}
+                            label={inputField.label}
+                            description={inputField.desc}
+                            fields={inputField.nestedFields ?? []} //The list of inner fields that belong to this section.
+                            value={value}
+                            wrapperClass={inputField.rowClass}
+                            addButtonLabel={inputField.addButtonLabel} //The text shown on the button to add a new item.
+                            deleteButtonLabel={inputField.deleteButtonLabel} //The text shown on the button to remove an item.
+                            single={inputField.single} //If set to true, only one item is allowed.
+                            onChange={(val: RowType[]) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
-                                    updateSetting( inputField.key, val );
+                                    updateSetting(inputField.key, val);
                                     settingChanged.current = true;
                                 }
-                            } }
+                            }}
                         />
                     );
                     break;
@@ -1730,180 +1666,169 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                 case 'endpoint-editor':
                     input = (
                         <EndpointEditor
-                            name={ inputField.key }
-                            proSetting={ isProSetting(
+                            name={inputField.key}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            proSettingChanged={ () =>
+                            )}
+                            proSettingChanged={() =>
                                 proSettingChanged(
                                     inputField.proSetting ?? false
                                 )
                             }
-                            apilink={ String( inputField.apiLink ) } //API URL for backend communication.
-                            appLocalizer={ appLocalizer }
-                            onChange={ ( data ) => {
+                            apilink={String(inputField.apiLink)} //API URL for backend communication.
+                            appLocalizer={appLocalizer}
+                            onChange={(data) => {
                                 settingChanged.current = true;
-                                updateSetting( inputField.key, data );
-                            } }
+                                updateSetting(inputField.key, data);
+                            }}
                         />
                     );
                     break;
                 case 'expandable-panel':
                     input = (
                         <ExpandablePanelGroup
-                            key={ inputField.key }
-                            name={ inputField.key }
-                            proSetting={ isProSetting(
+                            key={inputField.key}
+                            name={inputField.key}
+                            proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            ) }
-                            proSettingChanged={ () =>
+                            )}
+                            proSettingChanged={() =>
                                 proSettingChanged(
                                     inputField.proSetting ?? false
                                 )
                             }
                             moduleEnabled={
                                 inputField.moduleEnabled
-                                    ? modules.includes(
-                                          inputField.moduleEnabled
-                                      )
+                                    ? modules.includes(inputField.moduleEnabled)
                                     : true
                             }
-                            apilink={ String( inputField.apiLink ) } //API endpoint used for communication with backend.
-                            appLocalizer={ appLocalizer }
-                            methods={ inputField.modal ?? [] } //Array of available payment methods/options.
-                            buttonEnable={ inputField.buttonEnable } //Flag to enable/disable action buttons in the UI.
-                            addNewBtn={ inputField.addNewBtn }
-                            addNewTemplate={ inputField.addNewTemplate ?? [] }
-                            iconEnable={ inputField.iconEnable }
-                            iconOptions={ inputField.iconOptions || [] }
-                            value={ value || {} }
-                            onChange={ ( data ) => {
+                            apilink={String(inputField.apiLink)} //API endpoint used for communication with backend.
+                            appLocalizer={appLocalizer}
+                            methods={inputField.modal ?? []} //Array of available payment methods/options.
+                            buttonEnable={inputField.buttonEnable} //Flag to enable/disable action buttons in the UI.
+                            addNewBtn={inputField.addNewBtn}
+                            addNewTemplate={inputField.addNewTemplate ?? []}
+                            iconEnable={inputField.iconEnable}
+                            iconOptions={inputField.iconOptions || []}
+                            value={value || {}}
+                            onChange={(data) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
-                                        String(
-                                            inputField.moduleEnabled ?? ''
-                                        ),
+                                        String(inputField.moduleEnabled ?? ''),
                                         String(
                                             inputField.dependentSetting ?? ''
                                         ),
-                                        String(
-                                            inputField.dependentPlugin ?? ''
-                                        )
+                                        String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
                                     settingChanged.current = true;
-                                    updateSetting( inputField.key, data );
+                                    updateSetting(inputField.key, data);
                                 }
-                            } }
-                            modules={ modules }
-                            moduleChange={ ( moduleEnabled ) => {
+                            }}
+                            modules={modules}
+                            moduleChange={(moduleEnabled) => {
                                 moduleEnabledChanged(
-                                    String( moduleEnabled ?? '' )
+                                    String(moduleEnabled ?? '')
                                 );
                                 // setModelOpen(true);
-                            } }
-                            proChanged={ () => setModelOpen( true ) }
+                            }}
+                            proChanged={() => setModelOpen(true)}
                         />
                     );
                     break;
             }
             const isLocked =
-                ( inputField.proSetting && ! appLocalizer?.khali_dabba ) ||
-                ( inputField.moduleEnabled &&
-                    ! modules.includes( inputField.moduleEnabled ) ) ||
-                ( inputField.dependentSetting &&
-                    ( () => {
+                (inputField.proSetting && !appLocalizer?.khali_dabba) ||
+                (inputField.moduleEnabled &&
+                    !modules.includes(inputField.moduleEnabled)) ||
+                (inputField.dependentSetting &&
+                    (() => {
                         const dependentValue =
-                            setting[ inputField.dependentSetting ];
+                            setting[inputField.dependentSetting];
                         return (
-                            Array.isArray( dependentValue ) &&
+                            Array.isArray(dependentValue) &&
                             dependentValue.length === 0
                         );
-                    } )() ) ||
-                ( inputField.dependentPlugin &&
-                    ! appLocalizer[
-                        `${ inputField.dependentPlugin }_active`
-                    ] );
+                    })()) ||
+                (inputField.dependentPlugin &&
+                    !appLocalizer[`${inputField.dependentPlugin}_active`]);
 
             const fieldContent =
                 inputField.type === 'section' ? (
-                    <>{ input }</>
+                    <>{input}</>
                 ) : (
                     <div
-                        key={ inputField.key }
-                        className={ `form-group ${
+                        key={inputField.key}
+                        className={`form-group ${
                             inputField.classes ? inputField.classes : ''
-                        } ${ inputField.proSetting ? 'pro-setting' : '' } ${
+                        } ${inputField.proSetting ? 'pro-setting' : ''} ${
                             inputField.moduleEnabled &&
-                            ! modules.includes( inputField.moduleEnabled )
+                            !modules.includes(inputField.moduleEnabled)
                                 ? 'module-enabled'
                                 : ''
-                        }` }
-                        onClick={ ( e ) => handleGroupClick( e, inputField ) }
+                        }`}
+                        onClick={(e) => handleGroupClick(e, inputField)}
                     >
-                        { inputField.label && (
-                                <label
-                                    className="settings-form-label"
-                                    key={ inputField.key }
-                                    htmlFor={ inputField.key }
-                                >
-                                    <div className="title">
-                                        { inputField.label }
+                        {inputField.label && (
+                            <label
+                                className="settings-form-label"
+                                key={inputField.key}
+                                htmlFor={inputField.key}
+                            >
+                                <div className="title">{inputField.label}</div>
+                                {inputField.settingDescription && (
+                                    <div className="settings-metabox-description">
+                                        {inputField.settingDescription}
                                     </div>
-                                     { inputField.settingDescription && 
-                                        <div className="settings-metabox-description">
-                                            { inputField.settingDescription }
-                                        </div>
-                                    }
-                                </label>
-                            ) }
+                                )}
+                            </label>
+                        )}
                         <div className="settings-input-content">
-                            { isLocked &&
+                            {isLocked &&
                             React.isValidElement<
-                                React.HTMLAttributes< HTMLElement >
-                            >( input )
-                                ? React.cloneElement( input, {
-                                      onClick: ( e ) => {
+                                React.HTMLAttributes<HTMLElement>
+                            >(input)
+                                ? React.cloneElement(input, {
+                                      onClick: (e) => {
                                           e.stopPropagation();
                                       },
-                                  } )
-                                : input }
+                                  })
+                                : input}
                         </div>
-                        { ( ( inputField.proSetting &&
-                            appLocalizer?.khali_dabba ) ||
-                            ! inputField.proSetting ) &&
+                        {((inputField.proSetting &&
+                            appLocalizer?.khali_dabba) ||
+                            !inputField.proSetting) &&
                             inputField.moduleEnabled &&
-                            ! modules.includes( inputField.moduleEnabled ) && (
+                            !modules.includes(inputField.moduleEnabled) && (
                                 <span className="admin-pro-tag module">
                                     <i
-                                        className={ `adminfont-${ inputField.moduleEnabled }` }
+                                        className={`adminfont-${inputField.moduleEnabled}`}
                                     ></i>
-                                    { String( inputField.moduleEnabled )
-                                        .split( '-' )
+                                    {String(inputField.moduleEnabled)
+                                        .split('-')
                                         .map(
-                                            ( word: string ) =>
-                                                word.charAt( 0 ).toUpperCase() +
-                                                word.slice( 1 )
+                                            (word: string) =>
+                                                word.charAt(0).toUpperCase() +
+                                                word.slice(1)
                                         )
-                                        .join( ' ' ) }
+                                        .join(' ')}
                                     <i className="adminfont-lock"></i>
                                 </span>
-                            ) }
-                        { inputField.proSetting &&
-                            ! appLocalizer.khali_dabba && (
-                                <span className="admin-pro-tag">
-                                    <i className="adminfont-pro-tag"></i>Pro
-                                </span>
-                            ) }
+                            )}
+                        {inputField.proSetting && !appLocalizer.khali_dabba && (
+                            <span className="admin-pro-tag">
+                                <i className="adminfont-pro-tag"></i>Pro
+                            </span>
+                        )}
                     </div>
                 );
             return fieldContent;
-        } );
+        });
     };
 
     const handleModelClose = () => {
-        setModelOpen( false );
+        setModelOpen(false);
     };
 
     return (
@@ -1911,54 +1836,54 @@ const AdminForm: React.FC< AdminFormProps > = ( {
             <div className="dynamic-fields-wrapper">
                 <Dialog
                     className="admin-module-popup"
-                    open={ modelOpen }
-                    onClose={ handleModelClose }
+                    open={modelOpen}
+                    onClose={handleModelClose}
                     aria-labelledby="form-dialog-title"
                 >
                     <span
                         className="admin-font adminfont-cross"
                         role="button"
-                        tabIndex={ 0 }
-                        onClick={ handleModelClose }
+                        tabIndex={0}
+                        onClick={handleModelClose}
                     ></span>
                     {
                         <Popup
-                            moduleName={ String( modulePopupData.moduleName ) }
-                            settings={ modulePopupData.settings }
-                            plugin={ modulePopupData.plugin }
-                            message={ modulePopupFields?.message }
-                            moduleButton={ modulePopupFields?.moduleButton }
+                            moduleName={String(modulePopupData.moduleName)}
+                            settings={modulePopupData.settings}
+                            plugin={modulePopupData.plugin}
+                            message={modulePopupFields?.message}
+                            moduleButton={modulePopupFields?.moduleButton}
                             pluginDescription={
                                 modulePopupFields?.pluginDescription
                             }
-                            pluginButton={ modulePopupFields?.pluginButton }
+                            pluginButton={modulePopupFields?.pluginButton}
                             SettingDescription={
                                 modulePopupFields?.SettingDescription
                             }
-                            pluginUrl={ modulePopupFields?.pluginUrl }
-                            modulePageUrl={ modulePopupFields?.modulePageUrl }
+                            pluginUrl={modulePopupFields?.pluginUrl}
+                            modulePageUrl={modulePopupFields?.modulePageUrl}
                         />
                     }
                 </Dialog>
-                { successMsg && (
+                {successMsg && (
                     <>
                         <div className="admin-notice-wrapper notice-error">
                             <i className="admin-font adminfont-info"></i>
                             <div className="notice-details">
                                 <div className="title">Sorry!</div>
-                                <div className="desc">{ successMsg }</div>
+                                <div className="desc">{successMsg}</div>
                             </div>
                         </div>
                         <div className="admin-notice-wrapper">
                             <i className="admin-font adminfont-icon-yes"></i>
                             <div className="notice-details">
                                 <div className="title">Success</div>
-                                <div className="desc">{ successMsg }</div>
+                                <div className="desc">{successMsg}</div>
                             </div>
                         </div>
                     </>
-                ) }
-                <form className="dynamic-form">{ renderForm() }</form>
+                )}
+                <form className="dynamic-form">{renderForm()}</form>
             </div>
         </>
     );

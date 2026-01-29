@@ -28,6 +28,13 @@ type Addon =
           options: SelectOption[];
           value?: string;
           size?: string;
+      }
+    | {
+          type: 'text';
+          key: string;
+          placeholder?: string;
+          value?: string;
+          size?: string;
       };
 
 type InputValue = string | Record<string, string>;
@@ -38,21 +45,22 @@ interface BasicInputProps {
     inputClass?: string;
     id?: string;
     type?:
-    | 'text'
-    | 'button'
-    | 'number'
-    | 'password'
-    | 'email'
-    | 'file'
-    | 'range'
-    | 'time'
-    | 'url';
+        | 'text'
+        | 'button'
+        | 'number'
+        | 'color'
+        | 'password'
+        | 'email'
+        | 'file'
+        | 'range'
+        | 'time'
+        | 'url';
     name?: string;
     value?: string | number;
     placeholder?: string;
     min?: number;
     max?: number;
-    onChange?: (value: InputValue) => void;
+    onChange?: (value: string | number | Record<string, string>) => void;
     onClick?: (e: MouseEvent<HTMLInputElement>) => void;
     onMouseOver?: (e: MouseEvent<HTMLInputElement>) => void;
     onMouseOut?: (e: MouseEvent<HTMLInputElement>) => void;
@@ -60,7 +68,7 @@ interface BasicInputProps {
     onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
     generate?: string;
     clickBtnName?: string;
-    msg?: InputFeedback;
+    feedback?: InputFeedback;
     onclickCallback?: (e: MouseEvent<HTMLButtonElement>) => void;
     proSetting?: boolean;
     description?: string;
@@ -101,7 +109,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
             generate,
             clickBtnName,
             onclickCallback,
-            msg,
+            feedback,
             description,
             rangeUnit,
             disabled = false,
@@ -156,11 +164,20 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
             }
         };
 
-        const renderAddon = (addon: Addon, parentValue: string | Record<string, string>) => {
-            if (!addon) return null;
+        const renderAddon = (
+            addon: Addon,
+            parentValue: string | Record<string, string>
+        ) => {
+            if (!addon) {
+                return null;
+            }
 
             if (typeof addon === 'string' || typeof addon !== 'object') {
-                return typeof addon === 'string' ? <span dangerouslySetInnerHTML={{ __html: addon }} /> : addon;
+                return typeof addon === 'string' ? (
+                    <span dangerouslySetInnerHTML={{ __html: addon }} />
+                ) : (
+                    addon
+                );
             }
 
             if (addon.type === 'select' && addon.options?.length) {
@@ -177,10 +194,41 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                         onChange={(newValue) => {
                             if (typeof onChange === 'function') {
                                 onChange({
-                                    ...parentValue,          // preserve other keys
-                                    [addon.key]: newValue.value // set selected key
+                                    ...parentValue, // preserve other keys
+                                    [addon.key]: newValue.value, // set selected key
                                 });
                             }
+                        }}
+                    />
+                );
+            }
+
+            if (addon.type === 'text') {
+                return (
+                    <input
+                        type="text"
+                        className="addon-text-input"
+                        style={{ width: addon.size || '80px' }}
+                        placeholder={addon.placeholder || ''}
+                        value={parentValue?.[addon.key] || addon.value || ''}
+                        onChange={(e) => {
+                            if (!onChange) {
+                                return;
+                            }
+
+                            const newVal = e.target.value;
+
+                            if (
+                                typeof parentValue === 'object' &&
+                                parentValue !== null
+                            ) {
+                                onChange({
+                                    ...parentValue,
+                                    [addon.key]: newVal,
+                                });
+                                return;
+                            }
+                            onChange(newVal);
                         }}
                     />
                 );
@@ -192,19 +240,15 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
         return (
             <>
                 <div
-                    className={`setting-form-input ${wrapperClass || ''} ${clickBtnName || generate ? 'input-button' : ''
-                        } ${preInsideText || postInsideText ? 'inner-input' : ''
-                        }`}
+                    className={`setting-form-input ${wrapperClass || ''} ${
+                        clickBtnName || generate ? 'input-button' : ''
+                    } ${preInsideText || postInsideText ? 'inner-input' : ''}`}
                 >
-                    {inputLabel && (
-                        <label htmlFor={id}>{inputLabel}</label>
-                    )}
+                    {inputLabel && <label htmlFor={id}>{inputLabel}</label>}
 
                     {type === 'button' ? (
                         <DisplayButton
-                            wraperClass={
-                                inputClass || 'admin-btn default-btn'
-                            }
+                            wraperClass={inputClass || 'admin-btn default-btn'}
                             onClick={(e) => {
                                 e.preventDefault();
 
@@ -214,9 +258,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                 }
 
                                 if (onClick) {
-                                    onClick(
-                                        e as MouseEvent<HTMLInputElement>
-                                    );
+                                    onClick(e as MouseEvent<HTMLInputElement>);
                                 }
                             }}
                         >
@@ -240,10 +282,9 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                 )}
                                 <input
                                     ref={ref}
-                                    className={[
-                                        'basic-input',
-                                        inputClass,
-                                    ].join(' ')}
+                                    className={['basic-input', inputClass].join(
+                                        ' '
+                                    )}
                                     id={id}
                                     type={type}
                                     name={name}
@@ -258,19 +299,38 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                             ? max
                                             : undefined
                                     }
-                                    value={typeof value === 'object' ? value.value ?? '' : value ?? ''}
+                                    value={
+                                        typeof value === 'object'
+                                            ? (value.value ?? '')
+                                            : (value ?? '')
+                                    }
                                     onChange={(e) => {
                                         const newVal = e.target.value;
 
                                         const hasObjectAddon =
-                                            (preText && typeof preText === 'object') ||
-                                            (postText && typeof postText === 'object') ||
-                                            (postInsideText && typeof postInsideText === 'object') ||
-                                            (preInsideText && typeof preInsideText === 'object');
+                                            (preText &&
+                                                typeof preText === 'object') ||
+                                            (postText &&
+                                                typeof postText === 'object') ||
+                                            (postInsideText &&
+                                                typeof postInsideText ===
+                                                    'object') ||
+                                            (preInsideText &&
+                                                typeof preInsideText ===
+                                                    'object');
 
                                         if (hasObjectAddon) {
                                             // Save as object with main value
-                                            const base = typeof value === 'object' ? value : { value: typeof value === 'string' ? value : '' };
+                                            const base =
+                                                typeof value === 'object'
+                                                    ? value
+                                                    : {
+                                                          value:
+                                                              typeof value ===
+                                                              'string'
+                                                                  ? value
+                                                                  : '',
+                                                      };
                                             onChange({
                                                 ...base,
                                                 value: newVal,
@@ -288,6 +348,10 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                     readOnly={readOnly}
                                     required={required}
                                 />
+                                {type === 'color' && (
+                                    <div className="color-value">{value}</div>
+                                )}
+
                                 {postInsideText && (
                                     <span className="parameter">
                                         {renderAddon(postInsideText, value)}
@@ -372,8 +436,8 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                         dangerouslySetInnerHTML={{ __html: description }}
                     />
                 )}
-                {msg && (
-                    <div className={msg.type}>{msg.message}</div>
+                {feedback && (
+                    <div className={feedback.type}>{feedback.message}</div>
                 )}
             </>
         );
