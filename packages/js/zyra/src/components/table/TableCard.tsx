@@ -40,7 +40,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	rowKey,
 	emptyMessage,
 	categoryCounts,
-	activeCategory,
+	activeCategory = 'all',
 	filters = [],
 	showColumnToggleIcon = true,
 	rowActions,

@@ -21,10 +21,11 @@ interface Feature {
 	pro: boolean | string;
 }
 
-interface WPPlugin {
-	plugin?: string;
-	status?: string;
-}
+type WPPlugin = {
+	plugin: string;
+	status: 'active' | 'inactive';
+	name: string;
+};
 
 import './AdminDashboard.scss';
 import '../dashboard.scss';
@@ -37,97 +38,101 @@ const AdminDashboard = () => {
 	const { modules, insertModule, removeModule } = useModules();
 	const [installing, setInstalling] = useState<string>('');
 	const [pluginStatus, setPluginStatus] = useState<{
-		[key: string]: boolean;
+		[key: string]: string;
 	}>({});
 	const [successMsg, setSuccessMsg] = useState<string>('');
 
 	// Check plugin installation status on component mount
 	useEffect(() => {
-		checkPluginStatus('woocommerce-catalog-enquiry');
-		checkPluginStatus('woocommerce-product-stock-alert');
+		const pluginSlugs = [
+			'woocommerce-catalog-enquiry',
+			'woocommerce-product-stock-alert',
+		];
+	
+		checkPluginsStatus(pluginSlugs);
 	}, []);
 
-	// Function to check if plugin is installed and active
-	const checkPluginStatus = async (slug: string) => {
+
+	const checkPluginsStatus = async (slugs: string[]) => {
 		try {
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wp/v2/plugins`,
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-				},
+			const response = await axios.get(`${appLocalizer.apiUrl}/wp/v2/plugins`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			});
-
-			// Check if our plugin exists and is active
-			const plugins = response.data;
-			const pluginExists = plugins.some(
-				(plugin: WPPlugin) =>
-					plugin.plugin.includes(slug) && plugin.status === 'active'
-			);
-
-			setPluginStatus((prev) => ({
-				...prev,
-				[slug]: pluginExists,
-			}));
+	
+			const plugins: WPPlugin[] = response.data;
+	
+			// Map slugs to their real status
+			const statusMap: Record<string, 'active' | 'inactive' | 'not-installed'> = {};
+			slugs.forEach((slug) => {
+				const found = plugins.find((p) => p.plugin.includes(slug));
+				if (!found) {
+					statusMap[slug] = 'not-installed';
+				} else {
+					statusMap[slug] = found.status === 'active' ? 'active' : 'inactive';
+				}
+			});
+	
+			setPluginStatus((prev) => ({ ...prev, ...statusMap }));
+	
+			return statusMap;
 		} catch (error) {
-			console.error(`Failed to check plugin status "${slug}":`, error);
-			setPluginStatus((prev) => ({
-				...prev,
-				[slug]: false,
-			}));
+			console.error('Failed to fetch plugins:', error);
+	
+			// fallback: all not installed
+			const fallback: Record<string, 'active' | 'inactive' | 'not-installed'> = {};
+			slugs.forEach((slug) => (fallback[slug] = 'not-installed'));
+			setPluginStatus((prev) => ({ ...prev, ...fallback }));
+	
+			return fallback;
 		}
 	};
+	
+
 
 	const installOrActivatePlugin = async (slug: string) => {
-		if (!slug || installing) {
-			return;
-		} // prevent multiple clicks
+		if (!slug || installing) return; // prevent multiple clicks
 		setInstalling(slug);
-
+	
 		try {
-			// Step 1: Get current plugins
-			const { data: plugins } = await axios.get(
+			// Step 1: Fetch current plugins once
+			const { data: plugins }: { data: WPPlugin[] } = await axios.get(
 				`${appLocalizer.apiUrl}/wp/v2/plugins`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			);
-
-			// Step 2: Find if plugin exists
-			const existingPlugin = plugins.find((plugin: WPPlugin) =>
+	
+			// Step 2: Check if plugin exists
+			const existingPlugin = plugins.find((plugin) =>
 				plugin.plugin.includes(slug)
 			);
-			const pluginFilePath =
-				existingPlugin?.plugin || `${slug}/${slug}.php`;
-
+	
 			// Step 3: Determine action
 			let apiUrl = `${appLocalizer.apiUrl}/wp/v2/plugins`;
-			let requestData: WPPlugin = { status: 'active' }; // default request for activation
-
+			let requestData: Partial<WPPlugin> = { status: 'active' };
+	
 			if (!existingPlugin) {
-				// Plugin not installed → install & activate
+				// Not installed → install & activate
 				requestData.slug = slug;
 			} else if (existingPlugin.status === 'active') {
+				// Already active → nothing to do
 				setSuccessMsg(`Plugin "${slug}" is already active.`);
-				await checkPluginStatus(slug);
+				setPluginStatus((prev) => ({ ...prev, [slug]: true }));
 				return;
 			} else {
-				// Plugin installed but inactive → just activate
-				const encodedFile = encodeURIComponent(pluginFilePath);
-				apiUrl += `/${encodedFile}`;
+				// Installed but inactive → activate
+				const pluginFile = encodeURIComponent(existingPlugin.plugin);
+				apiUrl += `/${pluginFile}`;
 			}
-
+	
 			// Step 4: Call API
 			await axios.post(apiUrl, requestData, {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			});
-
-			// Step 5: Refresh status
-			await checkPluginStatus(slug);
-
+	
+			// Step 5: Update pluginStatus locally instead of re-fetch
+			setPluginStatus((prev) => ({ ...prev, [slug]: true }));
+	
 			setSuccessMsg(
-				`Plugin "${slug}" ${existingPlugin ? 'activated' : 'installed & activated'
-				} successfully!`
+				`Plugin "${slug}" ${existingPlugin ? 'activated' : 'installed & activated'} successfully!`
 			);
 		} catch (error) {
 			console.error(error);
@@ -136,7 +141,7 @@ const AdminDashboard = () => {
 			setTimeout(() => setSuccessMsg(''), 3000);
 			setInstalling('');
 		}
-	};
+	};	
 
 	const handleOnChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -165,7 +170,7 @@ const AdminDashboard = () => {
 			setTimeout(() => setSuccessMsg(''), 2000);
 		}
 	};
-
+console.log(pluginStatus)
 	const resources = [
 		{
 			title: 'Documentation',

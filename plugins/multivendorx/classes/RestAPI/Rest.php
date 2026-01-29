@@ -57,8 +57,8 @@ class Rest {
         add_filter( 'woocommerce_rest_pre_insert_shop_coupon_object', array( $this, 'pre_insert_shop_coupon_fix_status' ), 10, 3 );
         add_filter( 'woocommerce_analytics_products_query_args', array( $this, 'analytics_products_filter_low_stock_meta' ), 10, 1 );
         add_action( 'woocommerce_rest_insert_product_object', array( $this, 'generate_sku_data_in_product' ), 10, 3 );
-    }
 
+    }
 
     /**
      * Add store data to WooCommerce product API response
@@ -657,7 +657,6 @@ class Rest {
      * Register REST API routes.
      */
     public function register_rest_api_routes() {
-
         register_meta(
             'comment',
             'store_rating',
