@@ -59,7 +59,6 @@ class Pattern {
         }
 
         foreach ( glob( $pattern_dir . '*.php' ) as $file ) {
-
             $pattern = include $file;
 
             if ( ! is_array( $pattern ) ) {

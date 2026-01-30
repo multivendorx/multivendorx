@@ -36,8 +36,8 @@ class Ajax {
         }
 
         $user_id    = get_current_user_id();
-        $question   = sanitize_textarea_field( filter_input(INPUT_POST, 'question', FILTER_UNSAFE_RAW) );
-        $product_id = filter_input(INPUT_POST, 'product_id', FILTER_VALIDATE_INT);
+        $question   = sanitize_textarea_field( filter_input( INPUT_POST, 'question', FILTER_UNSAFE_RAW ) );
+        $product_id = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT );
 
         if ( empty( $question ) || ! $product_id ) {
             wp_send_json_error( array( 'message' => 'Invalid question or product ID.' ) );
@@ -55,7 +55,7 @@ class Ajax {
             'answer_text'   => '',
         );
         // Insert question using Util class
-        $inserted = Util::insert_question($data);
+        $inserted = Util::insert_question( $data );
         if ( $inserted ) {
             wp_send_json_success( array( 'message' => 'Question submitted successfully.' ) );
         } else {
@@ -69,22 +69,24 @@ class Ajax {
     public function search_questions() {
         check_ajax_referer( 'qna_ajax_nonce', 'nonce' );
 
-        $product_id = filter_input(INPUT_POST, 'product_id', FILTER_VALIDATE_INT);
-        $search_raw = filter_input(INPUT_POST, 'search', FILTER_UNSAFE_RAW);
+        $product_id = filter_input( INPUT_POST, 'product_id', FILTER_VALIDATE_INT );
+        $search_raw = filter_input( INPUT_POST, 'search', FILTER_UNSAFE_RAW );
         $search     = sanitize_text_field( $search_raw );
 
         if ( ! $product_id ) {
             wp_send_json_error( array( 'html' => '<li>Invalid product ID.</li>' ) );
         }
 
-        $questions = Util::get_question_information( array(
-            'product_ids'         => array( $product_id ),
-            'has_answer'          => true,
-            'question_visibility' => 'public',
-            'orderBy'             => 'question_date',
-            'order'               => 'DESC',
-            'search'              => $search,
-        ) );
+        $questions = Util::get_question_information(
+            array(
+				'product_ids'         => array( $product_id ),
+				'has_answer'          => true,
+				'question_visibility' => 'public',
+				'orderBy'             => 'question_date',
+				'order'               => 'DESC',
+				'search'              => $search,
+            )
+        );
 
         ob_start();
 
@@ -109,11 +111,12 @@ class Ajax {
         }
 
         $html = ob_get_clean();
-        wp_send_json_success( array(
-            'html'      => $html,
-            'has_items' => ! empty( $questions ),
-        ) );
-        
+        wp_send_json_success(
+            array(
+				'html'      => $html,
+				'has_items' => ! empty( $questions ),
+            )
+        );
     }
 
     /**
@@ -127,8 +130,8 @@ class Ajax {
         }
 
         $user_id = get_current_user_id();
-        $qna_id  = filter_input(INPUT_POST, 'qna_id', FILTER_VALIDATE_INT);
-        $type    = ( filter_input(INPUT_POST, 'type', FILTER_UNSAFE_RAW) === 'up' ) ? 1 : -1;
+        $qna_id  = filter_input( INPUT_POST, 'qna_id', FILTER_VALIDATE_INT );
+        $type    = ( filter_input( INPUT_POST, 'type', FILTER_UNSAFE_RAW ) === 'up' ) ? 1 : -1;
 
         if ( ! $qna_id ) {
             wp_send_json_error( array( 'message' => 'Invalid question ID.' ) );
@@ -149,13 +152,16 @@ class Ajax {
             wp_send_json_success( array( 'total_votes' => $total_votes ) );
         }
 
-        $total_votes = $total_votes - $prev_vote + $type;
+        $total_votes        = $total_votes - $prev_vote + $type;
         $voters[ $user_id ] = $type;
 
-        Util::update_question( $qna_id, array(
-            'total_votes' => $total_votes,
-            'voters'      => $voters,
-        ) );
+        Util::update_question(
+            $qna_id,
+            array(
+				'total_votes' => $total_votes,
+				'voters'      => $voters,
+            )
+        );
         wp_send_json_success( array( 'total_votes' => $total_votes ) );
     }
 }

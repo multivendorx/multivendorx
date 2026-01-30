@@ -94,37 +94,37 @@ class Frontend {
         $rules = $this->get_rules( $product_id, $context );
 
         if ( $rules['min'] && $value < $rules['min'] ) {
-            if ($context == 'quantity') {
+            if ( $context == 'quantity' ) {
                 return $return_number ? $rules['min'] : __( 'Minimum product' . $context . ' is required ' . $rules['min'], 'multivendorx' );
             }
 
-            if ($context == 'amount') {
+            if ( $context == 'amount' ) {
                 return $return_number ? $rules['min'] : __( 'Minimum product' . $context . ' is required ' . $rules['min'], 'multivendorx' );
             }
 
-            if ($context == 'order_quantity') {
+            if ( $context == 'order_quantity' ) {
                 return $return_number ? $rules['min'] : __( 'Minimum order quantity is required ' . $rules['min'], 'multivendorx' );
             }
 
-            if ($context == 'order_amount') {
+            if ( $context == 'order_amount' ) {
                 return $return_number ? $rules['min'] : __( 'Minimum order amount is required ' . $rules['min'], 'multivendorx' );
             }
         }
 
         if ( $rules['max'] && $value > $rules['max'] ) {
-            if ($context == 'quantity') {
+            if ( $context == 'quantity' ) {
                 return $return_number ? $rules['max'] : __( 'Maximum product ' . $context . ' is required ' . $rules['max'], 'multivendorx' );
             }
 
-            if ($context == 'amount') {
+            if ( $context == 'amount' ) {
                 return $return_number ? $rules['max'] : __( 'Maximum product' . $context . ' is required ' . $rules['max'], 'multivendorx' );
             }
 
-            if ($context == 'order_quantity') {
+            if ( $context == 'order_quantity' ) {
                 return $return_number ? $rules['max'] : __( 'Maximum order quantity is required ' . $rules['max'], 'multivendorx' );
             }
 
-            if ($context == 'order_amount') {
+            if ( $context == 'order_amount' ) {
                 return $return_number ? $rules['max'] : __( 'Maximum order amount is required ' . $rules['max'], 'multivendorx' );
             }
         }

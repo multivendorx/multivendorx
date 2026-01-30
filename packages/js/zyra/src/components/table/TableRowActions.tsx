@@ -5,6 +5,7 @@ export interface ActionItem {
   icon?: React.ReactNode;
   onClick: (rowId?: string | number) => void;
   className?: string;
+  type?:string;
 }
 
 interface TableRowActionsProps {

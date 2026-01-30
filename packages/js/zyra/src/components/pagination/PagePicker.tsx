@@ -48,34 +48,45 @@ const PagePicker: React.FC<PagePickerProps> = ({
   // Determine visible page numbers with ellipsis
   const getVisiblePages = () => {
     const pages: (number | string)[] = [];
-    const totalNumbers = maxPageButtons;
-    const totalBlocks = totalNumbers + 2; // first + last pages
-
-    if (pageCount <= totalBlocks) {
-      // Show all pages if total pages are less than limit
+  
+    if (pageCount <= 6) {
       for (let i = 1; i <= pageCount; i++) pages.push(i);
-    } else {
-      const left = Math.max(currentPage - Math.floor(totalNumbers / 2), 2);
-      const right = Math.min(currentPage + Math.floor(totalNumbers / 2), pageCount - 1);
-
-      pages.push(1); // First page
-
-      if (left > 2) pages.push('...'); // Left ellipsis
-
-      for (let i = left; i <= right; i++) pages.push(i);
-
-      if (right < pageCount - 1) pages.push('...'); // Right ellipsis
-
-      pages.push(pageCount); // Last page
+      return pages;
     }
-
+  
+    // Always first two
+    pages.push(1, 2);
+  
+    let middleStart = currentPage - 1;
+    let middleEnd = currentPage + 1;
+  
+    middleStart = Math.max(middleStart, 3);
+    middleEnd = Math.min(middleEnd, pageCount - 2);
+  
+    // Left ellipsis
+    if (middleStart > 3) {
+      pages.push('...');
+    }
+  
+    // Middle pages (dynamic)
+    for (let i = middleStart; i <= middleEnd; i++) {
+      pages.push(i);
+    }
+  
+    // Right ellipsis
+    if (middleEnd < pageCount - 2) {
+      pages.push('...');
+    }
+  
+    // Always last two
+    pages.push(pageCount - 1, pageCount);
+  
     return pages;
   };
 
   if (pageCount <= 1) return null;
 
   const pages = getVisiblePages();
-
   return (
     <div className="pagination-number-wrapper">
       <label className="show-section">

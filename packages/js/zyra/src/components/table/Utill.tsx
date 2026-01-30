@@ -23,6 +23,48 @@ export const renderCell = (cell: TableRow) => {
 				</a>
 			);
 		}
+		case 'card': {
+			const {
+				link,
+				name,
+				description,
+				image,
+				icon,
+			} = cell.data || {};
+
+			const Wrapper: React.ElementType = link ? 'a' : 'div';
+
+			return (
+				<Wrapper
+					{...(link ? { href: link } : {})}
+					className="card-cell"
+				>
+					<div className="card-cell-content">
+						{name && (
+							<div className="card-cell-name">{name}</div>
+						)}
+
+						{description && (
+							<div className="card-cell-description">
+								{description}
+							</div>
+						)}
+					</div>
+
+					{image ? (
+						<img
+							src={image}
+							alt={name || ''}
+							className="card-cell-image"
+						/>
+					) : icon ? (
+						<i className={`item-icon ${icon}`} />
+					) : null}
+				</Wrapper>
+			);
+		}
+
+
 
 		default:
 			return cell.display ?? null;

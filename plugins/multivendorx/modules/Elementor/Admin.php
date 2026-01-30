@@ -21,11 +21,11 @@ class Admin {
      */
     public function __construct() {
         // Elementor support - Register custom document type
-        add_action( 'elementor/documents/register', [ $this, 'register_elementor_document_type' ] );
-        add_filter( 'multivendorx_store_elementor_template', [ $this, 'elementor_template_filter' ], 10 );
+        add_action( 'elementor/documents/register', array( $this, 'register_elementor_document_type' ) );
+        add_filter( 'multivendorx_store_elementor_template', array( $this, 'elementor_template_filter' ), 10 );
     }
 
-     /**
+    /**
      * Register custom Elementor document type
      */
     public function register_elementor_document_type( $documents_manager ) {
@@ -44,12 +44,15 @@ class Admin {
             return $template;
         }
 
-        add_filter( 'body_class', function ( $classes ) {
-            $classes[] = 'elementor-page';
-            return $classes;
-        });
+        add_filter(
+            'body_class',
+            function ( $classes ) {
+				$classes[] = 'elementor-page';
+				return $classes;
+			}
+        );
 
-        $canvas = MultiVendorX()->util->get_template('elementor-canvas.php');
+        $canvas = MultiVendorX()->util->get_template( 'elementor-canvas.php' );
 
         return file_exists( $canvas ) ? $canvas : $template;
     }
@@ -61,23 +64,21 @@ class Admin {
         if ( ! did_action( 'elementor/loaded' ) ) {
             return false;
         }
-        
+
         // Find template with our custom document type
-        $args = [
-            'post_type' => 'elementor_library',
+        $args = array(
+            'post_type'      => 'elementor_library',
             'posts_per_page' => 1,
-            'post_status' => 'publish',
-            'meta_query' => [
-                [
-                    'key' => '_elementor_template_type',
+            'post_status'    => 'publish',
+            'meta_query'     => array(
+                array(
+                    'key'   => '_elementor_template_type',
                     'value' => 'multivendorx-store',
-                ]
-            ]
-        ];
-        
+                ),
+            ),
+        );
+
         $templates = get_posts( $args );
         return ! empty( $templates ) ? $templates[0]->ID : false;
     }
-
-
 }

@@ -2,25 +2,27 @@
 /**
  * Elementor Template for Store with Header and Footer
  */
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-$store_slug = get_query_var( 'store' );
+$store_slug            = get_query_var( 'store' );
 $elementor_template_id = false;
 
 // Get template ID
 if ( class_exists( '\Elementor\Plugin' ) && did_action( 'elementor/loaded' ) ) {
-    $args = [
-        'post_type' => 'elementor_library',
+    $args = array(
+        'post_type'      => 'elementor_library',
         'posts_per_page' => 1,
-        'post_status' => 'publish',
-        'meta_query' => [
-            [
-                'key' => '_elementor_template_type',
+        'post_status'    => 'publish',
+        'meta_query'     => array(
+            array(
+                'key'   => '_elementor_template_type',
                 'value' => 'multivendorx-store',
-            ]
-        ]
-    ];
-    
+            ),
+        ),
+    );
+
     $templates = get_posts( $args );
     if ( ! empty( $templates ) ) {
         $elementor_template_id = $templates[0]->ID;

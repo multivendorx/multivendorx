@@ -1,441 +1,207 @@
 /* global appLocalizer */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Table, getApiLink, TableCell, MultiCalendarInput } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
+import { getApiLink, TableCard } from 'zyra';
 import { useNavigate } from 'react-router-dom';
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
-
-type StoreRow = {
-	id?: number;
-	store_name?: string;
-	store_slug?: string;
-	status?: string;
-	email?: string;
-	phone?: string;
-	primary_owner?: any;
-	applied_on?: string;
-	store_image?: string;
-	date?: string; // Add date field
-};
-
-type StoreStatus = {
-	key: string;
-	name: string;
-	count: number;
-};
-
-type FilterData = {
-	categoryFilter?: string;
-	searchField?: string;
-	orderBy?: string;
-	order?: string;
-};
-
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => ReactNode;
-}
+import { formatCurrency, formatDate, formatLocalDate } from '../../services/commonFunction';
+import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const StoreTable: React.FC = () => {
-	const [data, setData] = useState<StoreRow[] | null>(null);
-	const [storeStatus, setStoreStatus] = useState<StoreStatus[] | null>(null);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [isLoading, setIsLoading] = useState(false);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [pageCount, setPageCount] = useState(0);
+	const [storeSlugMap, setStoreSlugMap] = useState<Record<number, string>>({});
+	const [categoryCounts, setCategoryCounts] = useState<
+		categoryCounts[] | null
+	>(null);
+
 	const navigate = useNavigate();
-	const [dateFilter, setDateFilter] = useState<{
-		start_date: Date;
-		end_date: Date;
-	}>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
 
-	// Fetch total rows on mount
-	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { count: true },
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(Math.ceil(response.data / pagination.pageSize));
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					filterStatus: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+					searchValue: query.searchValue || '',
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+					orderBy: query.orderby,
+					order: query.order,
+				},
 			})
-			.catch(() => {});
-	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, [pagination]);
-
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage :number,
-		currentPage :number,
-		categoryFilter = '',
-		searchField = '',
-		orderBy = '',
-		order = '',
-		startDate = new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		endDate = new Date()
-	) {
-		setData(null);
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				filter_status: categoryFilter === 'all' ? '' : categoryFilter,
-				searchField,
-				orderBy,
-				order,
-				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',
-			},
-		})
 			.then((response) => {
-				setData(response.data.stores || []);
-				setTotalRows(response.data.all || 0);
-				setPageCount(Math.ceil(response.data.all / pagination.pageSize));
+				const items = response.data || [];
+				const slugMap: Record<number, string> = {};
 
-				const statuses = [
-					{ key: 'all', name: 'All', count: response.data.all || 0 },
-					{
-						key: 'active',
-						name: 'Active',
-						count: response.data.active || 0,
-					},
-					{
-						key: 'under_review',
-						name: 'Under Review',
-						count: response.data.under_review || 0,
-					},
-					{
-						key: 'suspended',
-						name: 'Suspended',
-						count: response.data.suspended || 0,
-					},
-					{
-						key: 'deactivated',
-						name: 'Deactivated',
-						count: response.data.deactivated || 0,
-					},
-				];
+				items.forEach((store: any) => {
+					if (store?.id && store?.store_slug) {
+						slugMap[store.id] = store.store_slug;
+					}
+				});
 
-				// Only keep items where count > 0
-				setStoreStatus(statuses.filter((status) => status.count > 0));
+				setStoreSlugMap(slugMap);
+
+				const ids = items
+					.filter((ann: any) => ann?.id != null)
+					.map((ann: any) => ann.id);
+
+				setRowIds(ids);
+				const mappedRows: any[][] = items.map((store: any) => [
+					{
+						display: store.store_name,
+						value: store.id,
+						type: 'card',
+						data: {
+							name: store.store_name,
+							image: store.image,
+							description: `Since ${formatDate(store.applied_on)}`,
+							link: `?page=multivendorx#&tab=stores&edit/${store.id}`,
+							icon: 'adminfont-store-inventory'
+						},
+					},
+					{
+						display: store.email,
+						value: store.email,
+						type: 'card',
+						data: {
+							name: store.email,
+							icon: 'adminfont-mail',
+						}
+					},
+					{
+						display: formatCurrency(store.commission?.commission_total),
+						value: store.commission?.commission_total ?? 0,
+					},
+					{
+						display: store.primary_owner?.data?.display_name || '—',
+						value: store.primary_owner?.ID || null,
+						type: 'card',
+						data: {
+							name: store.primary_owner?.data?.display_name,
+							image: store.primary_owner?.data?.primary_owner_image,
+							icon: 'adminfont-person',
+							description: store.primary_owner?.data?.user_email
+						}
+					},
+					{
+						display: store.status,
+						value: store.status,
+					},
+				]);
+
+
+				setRows(mappedRows);
+
+				setCategoryCounts([
+					{
+						value: 'all',
+						label: 'All',
+						count: Number(response.headers['x-wp-total']) || 0,
+					},
+					{
+						value: 'active',
+						label: 'Active',
+						count: Number(response.headers['x-wp-status-active']) || 0,
+					},
+					{
+						value: 'under_review',
+						label: 'Under Review',
+						count: Number(response.headers['x-wp-status-under-review']) || 0,
+					},
+					{
+						value: 'suspended',
+						label: 'Suspended',
+						count: Number(response.headers['x-wp-status-suspended']) || 0,
+					},
+					{
+						value: 'deactivated',
+						label: 'Deactivated',
+						count: Number(response.headers['x-wp-status-deactivated']) || 0,
+					},
+				]);
+
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
 			})
-			.catch(() => {
-				setData([]);
+			.catch((error) => {
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
 			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		setData(null);
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.categoryFilter,
-			filterData?.searchField,
-			filterData?.orderBy,
-			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
-		);
 	};
 
-	// Column definitions with sorting enabled
-	const columns: ColumnDef<StoreRow>[] = [
+	const headers = [
+		{ key: 'store_name', label: 'Store', isSortable: true, },
+		{ key: 'contact', label: 'Contact' },
+		{ key: 'lifetime_earning', label: 'Lifetime Earning' },
+		{ key: 'primary_owner', label: 'Primary Owner' },
+		{ key: 'status', label: 'Status' },
 		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			id: 'store_name',
-			accessorKey: 'store_name',
-			enableSorting: true,
-			header: __('Store', 'multivendorx'),
-			cell: ({ row }) => {
-				const rawDate = row.original.applied_on;
-				let formattedDate = '-';
-				if (rawDate) {
-					const dateObj = new Date(rawDate);
-					formattedDate = new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(dateObj);
-				}
-
-				return (
-					<TableCell title={row.original.store_name || ''}>
-						<a
-							onClick={() => {
-								navigate(
-									`?page=multivendorx#&tab=stores&edit/${row.original.id}`
-								);
-							}}
-							className="product-wrapper"
-						>
-							{row.original.image ? (
-								<img
-									src={row.original.image}
-									alt={row.original.store_name}
-								/>
-							) : (
-								<i className="item-icon adminfont-store-inventory"></i>
-							)}
-
-							<div className="details">
-								<span className="title">
-									{row.original.store_name || '-'}
-								</span>
-								<span className="des">
-									Since {formattedDate}
-								</span>
-							</div>
-						</a>
-					</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Contact', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.email || ''}>
-					<div className="table-content">
-						{row.original.email && (
-							<div>
-								<i className="adminfont-mail"></i>{' '}
-								{row.original.email?.split('\n')[0].trim()}
-							</div>
-						)}
-						{row.original.phone && (
-							<div>
-								<i className="adminfont-form-phone"></i>
-								{row.original.phone ? row.original.phone : '-'}
-							</div>
-						)}
-					</div>
-				</TableCell>
-			),
-		},
-		{
-			header: __('Lifetime Earning', 'multivendorx'),
-			cell: ({ row }: any) => (
-				<TableCell
-					title={row.original.commission.commission_total || ''}
-				>
-					{row.original.commission?.commission_total
-						? formatCurrency(
-								row.original.commission.commission_total
-							)
-						: '-'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Primary Owner', 'multivendorx'),
-			cell: ({ row }) => {
-				const primaryOwner = row.original.primary_owner;
-				return (
-					<TableCell
-						title={
-							primaryOwner?.data?.display_name ||
-							primaryOwner?.data?.user_email ||
-							''
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Settings', 'multivendorx'),
+					icon: 'setting',
+					onClick: (id: number) => {
+						navigate(
+							`?page=multivendorx#&tab=stores&edit/${id}`
+						);
+					},
+				},
+				{
+					label: __(
+						'Storefront',
+						'multivendorx'
+					),
+					icon: 'storefront',
+					onClick: (id: number) => {
+						const slug = storeSlugMap[id];
+				
+						if (!slug) {
+							return;
 						}
-					>
-						{primaryOwner ? (
-							<a
-								href={`${appLocalizer.admin_url}user-edit.php?user_id=${primaryOwner.ID}`}
-								className="product-wrapper"
-							>
-								{row.original.primary_owner_image ? (
-									<span
-										dangerouslySetInnerHTML={{
-											__html: row.original
-												.primary_owner_image,
-										}}
-									/>
-								) : (
-									<i className="item-icon adminfont-person"></i>
-								)}
-								<div className="details">
-									<div className="title">
-										{primaryOwner.data?.display_name}
-									</div>
-									<div className="des">
-										{primaryOwner.data?.user_email}
-									</div>
-								</div>
-							</a>
-						) : (
-							<span>-</span>
-						)}
-					</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Status', 'multivendorx'),
-			cell: ({ row }) => {
-				return <TableCell type="status" status={row.original.status} />;
-			},
-		},
-		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					type="action-dropdown"
-					rowData={row.original}
-					header={{
-						actions: [
-							{
-								label: __('Settings', 'multivendorx'),
-								icon: 'adminfont-setting',
-								onClick: () => {
-									navigate(
-										`?page=multivendorx#&tab=stores&edit/${row.original.id}`
-									);
-								},
-								hover: true,
-							},
-							...(row.original.status === 'active'
-								? [
-										{
-											label: __(
-												'Storefront',
-												'multivendorx'
-											),
-											icon: 'adminfont-storefront',
-											onClick: () => {
-												if (!row.original.store_slug) {
-													return;
-												}
-												window.open(
-													`${appLocalizer.store_page_url}${row.original.store_slug}`,
-													'_blank'
-												);
-											},
-											hover: true,
-										},
-									]
-								: []),
-						],
-					}}
-				/>
-			),
+				
+						window.open(
+							`${appLocalizer.store_page_url}${slug}`,
+							'_blank'
+						);
+					},
+				},
+			],
 		},
 	];
-
-	const searchFilter: RealtimeFilter[] = [
+	const filters = [
 		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<div className="search-section">
-					<input
-						name="searchField"
-						type="text"
-						placeholder={__('Search', 'multivendorx')}
-						onChange={(e) => {
-							updateFilter(e.target.name, e.target.value);
-						}}
-						value={filterValue || ''}
-					/>
-					<i className="adminfont-search"></i>
-				</div>
-			),
-		},
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		}
 	];
-
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<MultiCalendarInput
-					value={{
-						startDate: dateFilter.start_date,
-						endDate: dateFilter.end_date,
-					}}
-					onChange={(range: { startDate: Date; endDate: Date }) => {
-						const next = {
-							start_date: range.startDate,
-							end_date: range.endDate,
-						};
-
-						setDateFilter(next);
-						updateFilter('date', next);
-					}}
-				/>
-			),
-		},
-	];
-
 	return (
 		<div className="general-wrapper">
 			<div className="admin-table-wrapper">
-				<Table
-					data={data}
-					columns={columns as ColumnDef<Record<string, any>, any>[]}
-					rowSelection={rowSelection}
-					onRowSelectionChange={setRowSelection}
-					defaultRowsPerPage={10}
-					pageCount={pageCount}
-					pagination={pagination}
-					onPaginationChange={setPagination}
-					handlePagination={requestApiForData}
-					perPageOption={[10, 25, 50]}
-					categoryFilter={storeStatus as StoreStatus[]}
-					totalCounts={totalRows}
-					searchFilter={searchFilter}
-					realtimeFilter={realtimeFilter}
+				<TableCard
+					headers={headers}
+					rows={rows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={fetchData}
+					ids={rowIds}
+					categoryCounts={categoryCounts}
+					search={{}}
+					filters={filters}
 				/>
 			</div>
 		</div>

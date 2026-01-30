@@ -43,12 +43,12 @@ class BankTransfer {
      */
     public function get_settings() {
         return array(
-            'icon'         => 'adminfont-bank',
-            'id'           => $this->get_id(),
-            'label'        => 'Bank Transfer',
-            'disableBtn'   => true,
-            'desc'         => 'Transfer payouts directly to store’s bank accounts.',
-            'formFields'   => array(
+            'icon'       => 'adminfont-bank',
+            'id'         => $this->get_id(),
+            'label'      => 'Bank Transfer',
+            'disableBtn' => true,
+            'desc'       => 'Transfer payouts directly to store’s bank accounts.',
+            'formFields' => array(
                 array(
                     'key'            => 'bank_details',
                     'type'           => 'multi-checkbox',

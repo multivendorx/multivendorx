@@ -46,7 +46,7 @@ class Block {
      */
     public function initialize_blocks() {
         $blocks = array();
-    
+
         $block_names = array(
             'marketplace-stores',
             'marketplace-products',
@@ -59,12 +59,12 @@ class Block {
             'store-name',
             'store-description',
         );
-    
+
         $textdomain = 'multivendorx';
         $block_path = MultiVendorX()->plugin_path
             . FrontendScripts::get_build_path_name()
             . 'js/block/';
-    
+
         foreach ( $block_names as $block_name ) {
             $blocks[] = array(
                 'name'       => $block_name,
@@ -72,10 +72,10 @@ class Block {
                 'block_path' => $block_path,
             );
         }
-    
+
         return apply_filters( 'multivendorx_initialize_blocks', $blocks );
     }
-    
+
 
     /**
      * Enqueue assets and localize scripts for all registered blocks.

@@ -32,9 +32,9 @@ class Frontend {
     public function add_announcement_menu( $submenus ) {
         $new_item = array(
             'announcements' => array(
-                'name'   => __( 'Announcements', 'multivendorx' ),
-                'subtab' => '',
-                'priority' => 105
+                'name'     => __( 'Announcements', 'multivendorx' ),
+                'subtab'   => '',
+                'priority' => 105,
             ),
         );
 

@@ -3,7 +3,6 @@ import Table from './table';
 import TableSummary, { TableSummaryPlaceholder } from './summary';
 import Pagination from '../pagination/Pagination';
 import { QueryProps, TableCardProps, TableRow } from './types';
-import TablePlaceholder from './TablePlaceholder';
 import BulkActionDropdown from './BulkActionDropdown';
 import TableSearch from './TableSearch';
 import RealtimeFilters from './RealtimeFilter';
@@ -40,10 +39,9 @@ const TableCard: React.FC<TableCardProps> = ({
 	rowKey,
 	emptyMessage,
 	categoryCounts,
-	activeCategory,
+	activeCategory = 'all',
 	filters = [],
 	showColumnToggleIcon = true,
-	rowActions,
 	onSelectCsvDownloadApply,
 	onCellEdit,
 	buttonActions,
@@ -243,9 +241,9 @@ const TableCard: React.FC<TableCardProps> = ({
 								placeholder={search.placeholder}
 								options={search.options}
 								onSearch={(text, option) => {
-									onQueryChange('searchvalue')(text);
+									onQueryChange('searchValue')(text);
 									if (option !== undefined) {
-										onQueryChange('searchaction')(String(option));
+										onQueryChange('searchAction')(String(option));
 									}
 								}}
 							/>
@@ -286,41 +284,28 @@ const TableCard: React.FC<TableCardProps> = ({
 				</div>
 			</div>
 
-			{isLoading ? (
-				<Fragment>
-					<TablePlaceholder
-						numberOfRows={rowsPerPage}
-						headers={visibleHeaders}
-						caption={title}
-						query={query}
-					/>
-				</Fragment>
-			) : (
-				<>
-					<Table
-						rows={visibleRows}
-						headers={visibleHeaders}
-						caption={title}
-						query={query}
-						onSort={
-							onSort ||
-							(onQueryChange('sort') as (
-								key: string,
-								direction: string
-							) => void)
-						}
-						rowKey={rowKey}
-						emptyMessage={emptyMessage}
-						ids={ids}
-						selectedIds={selectedIds}
-						onSelectRow={handleSelectRow}
-						onSelectAll={handleSelectAll}
-						rowActions={rowActions}
-						onCellEdit={onCellEdit}
-					/>
-				</>
-
-			)}
+			<Table
+				rows={visibleRows}
+				headers={visibleHeaders}
+				caption={title}
+				query={query}
+				onSort={
+					onSort ||
+					(onQueryChange('sort') as (
+						key: string,
+						direction: string
+					) => void)
+				}
+				rowKey={rowKey}
+				emptyMessage={emptyMessage}
+				ids={ids}
+				selectedIds={selectedIds}
+				onSelectRow={handleSelectRow}
+				onSelectAll={handleSelectAll}
+				onCellEdit={onCellEdit}
+				enableBulkSelect={bulkActions.length > 0}
+				isLoading={isLoading}
+			/>
 			{/* pagination */}
 			<div className="admin-pagination">
 				{isLoading ? (

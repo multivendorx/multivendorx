@@ -8,6 +8,7 @@ import { TableProps, TableRow } from './types';
 import TableRowActions from './TableRowActions';
 import { renderCell } from './Utill';
 import { renderEditableCell } from './renderEditableCell';
+import Skeleton from '../UI/Skeleton';
 
 const ASC = 'asc';
 const DESC = 'desc';
@@ -28,8 +29,9 @@ const Table: React.FC<TableProps> = ({
 	onSelectAll,
 	emptyMessage,
 	classNames,
-	rowActions,
 	onCellEdit,
+	isLoading,
+	enableBulkSelect = false,
 }) => {
 	const allSelected = ids.length > 0 && ids.every((id) => selectedIds.includes(id));
 	const [tabIndex, setTabIndex] = useState<number | undefined>();
@@ -119,6 +121,10 @@ const Table: React.FC<TableProps> = ({
 		const isSelected = selectedIds.includes(id);
 		onSelectRow?.(id, !isSelected);
 	};
+	const getSortIcon = (isSorted: boolean) => {
+		if (!isSorted) return '↕';
+		return sortDir === ASC ? '↑' : '↓';
+	};
 	return (
 		<div
 			ref={containerRef}
@@ -140,13 +146,13 @@ const Table: React.FC<TableProps> = ({
 				</caption>
 				<thead className="admin-table-header">
 					<tr className="header-row">
-						{selectedIds.length > 0 || allSelected ? (
+						{enableBulkSelect && (
 							<th className="header-col select">
-								<input type="checkbox" checked={allSelected} onChange={toggleAllRows} />
-							</th>
-						) : (
-							<th className="header-col select">
-								<input type="checkbox" checked={allSelected} onChange={toggleAllRows} />
+								<input
+									type="checkbox"
+									checked={allSelected}
+									onChange={toggleAllRows}
+								/>
 							</th>
 						)}
 						{headers.map((header, i) => {
@@ -192,7 +198,10 @@ const Table: React.FC<TableProps> = ({
 											onClick={hasData ? sortBy(key) : undefined}
 											className="sort-button"
 										>
-											{label}
+											<span className="sort-label">{label}</span>
+											<span className="sort-icon">
+												{getSortIcon(isSorted)}
+											</span>
 										</span>
 									) : (
 										<Fragment>
@@ -209,105 +218,94 @@ const Table: React.FC<TableProps> = ({
 								</th>
 							);
 						})}
-						{rowActions && (
-							<th className=" header-col admin-column actions">Action</th>
-						)}
 					</tr>
 				</thead>
+
 				<tbody className="admin-table-body">
-					{hasData ? (
-						rows.map((row, rowIndex) => (
-							<tr className="admin-row" key={getRowKey(row, rowIndex)}>
-								<td className="admin-column select">
-									<input
-										type="checkbox"
-										checked={selectedIds.includes(ids[rowIndex])}
-										onChange={() => toggleRow(rowIndex)}
-									/>
-								</td>
-								{row.map((cell, colIndex) => {
-									const header = headers[colIndex];
-									const displayValue = renderCell(cell);
-									const columnClass =
-										header.key === 'status'
-											? String(displayValue)
-											: '';
+					{isLoading
+						?
+						Array.from({ length: Number(query.per_page) || 5 }).map((_, rowIndex) => (
+							<tr className="admin-row" key={`skeleton-${rowIndex}`}>
+								{enableBulkSelect && (
+									<td className="admin-column select">
+										<Skeleton width="20px" height="20px" />
+									</td>
+								)}
 
-									const cellClass = [
-										'admin-column',
-										header.cellClassName,
-										header.isNumeric ? 'numeric' : '',
-										header.isLeftAligned || !header.isNumeric
-											? 'left'
-											: '',
-										sortedBy === header.key ? 'sorted' : '',
-									]
-										.filter(Boolean)
-										.join(' ');
-									const rowId = ids[rowIndex];
-									const isEditing =
-										editingCell?.id === rowId &&
-										editingCell?.key === header.key;
+								{headers.map((header, colIndex) => (
+									<td key={`skeleton-${rowIndex}-${colIndex}`} className="admin-column">
+										<Skeleton width="100%" />
+									</td>
+								))}
+							</tr>
+						))
+						: hasData
+							? rows.map((row, rowIndex) => (
+								<tr className="admin-row" key={getRowKey(row, rowIndex)}>
+									{enableBulkSelect && (
+										<td className="admin-column select">
+											<input
+												type="checkbox"
+												checked={selectedIds.includes(ids[rowIndex])}
+												onChange={() => toggleRow(rowIndex)}
+											/>
+										</td>
+									)}
 
-									const handleSave = (value: string) => {
-										setEditingCell(null);
-										onCellEdit?.({
-											id: rowId,
-											key: header.key,
-											value,
-										});
-									};
-									return (
-										<td
-											key={`${getRowKey(row, rowIndex)}-${colIndex}`}
-											className={cellClass}
-										>
-											<span
-												className={columnClass ? `admin-badge badge-${columnClass}` : ''}
-												onClick={
-													header.isEditable && !isEditing
-														? () => setEditingCell({ id: rowId, key: header.key })
-														: undefined
-												}
-											>
-												{header.isEditable ? (
+									{row.map((cell, colIndex) => {
+										const header = headers[colIndex];
+										const rowId = ids[rowIndex];
+
+										if (header.type === 'action') {
+											return (
+												<td key={`action-${rowId}`} className="admin-column actions">
+													<TableRowActions rowId={rowId} rowActions={header.actions} />
+												</td>
+											);
+										}
+
+										const displayValue = renderCell(cell);
+
+										const isStatusColumn = header.key === 'status';
+
+										const statusClass =
+											isStatusColumn && cell?.value
+												? `admin-badge badge-${String(cell.value).toLowerCase()}`
+												: '';
+
+										return (
+											<td key={`${getRowKey(row, rowIndex)}-${colIndex}`} className="admin-column">
+												{isStatusColumn ? (
+													<span className={statusClass}>
+														{displayValue}
+													</span>
+												) : header.isEditable ? (
 													renderEditableCell({
 														header,
 														cell,
-														isEditing,
-														onEditStart: () =>
-															setEditingCell({ id: rowId, key: header.key }),
-														onSave: handleSave,
+														isEditing: false,
+														onSave: () => { },
 													})
 												) : (
-													renderCell(cell)
+													displayValue
 												)}
-											</span>
-										</td>
-									);
-								})}
-								{rowActions && (
-									<td className="admin-column actions">
-										<TableRowActions
-											rowId={ids[rowIndex]}
-											rowData={row}
-											rowActions={rowActions}
-										/>
+											</td>
+										);
+									})}
+								</tr>
+							))
+							: (
+								<tr className="admin-row">
+									<td
+										colSpan={headers.length + (enableBulkSelect ? 1 : 0)}
+										className="table-empty"
+									>
+										{emptyMessage ?? 'No data to display'}
 									</td>
-								)}
-							</tr>
-						))
-					) : (
-						<tr className="admin-row">
-							<td
-								colSpan={headers.length}
-								className="table-empty"
-							>
-								{emptyMessage ?? 'No data to display'}
-							</td>
-						</tr>
-					)}
+								</tr>
+							)}
 				</tbody>
+
 			</table>
 		</div>
 	);

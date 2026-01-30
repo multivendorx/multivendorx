@@ -119,7 +119,7 @@ class Roles {
 
             if ( $user && in_array( 'store_owner', (array) $user->roles, true ) ) {
                 if ( 'edit_posts' === $cap ) {
-                    $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+                    $request_uri  = $_SERVER['REQUEST_URI'] ?? '';
                     $is_edit_page = strpos( $request_uri, 'element=edit' ) !== false || strpos( $request_uri, '/edit/' ) !== false;
 
                     if ( defined( 'DOING_AJAX' ) && DOING_AJAX || $is_edit_page ) {

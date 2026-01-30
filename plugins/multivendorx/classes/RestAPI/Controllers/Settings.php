@@ -100,33 +100,33 @@ class Settings extends \WP_REST_Controller {
             $setupWizard = $request->get_param( 'setupWizard' );
             if ( $setupWizard ) {
                 $value = $request->get_param( 'value' );
-                if (!empty($value)) {
+                if ( ! empty( $value ) ) {
                     $general_settings = array(
-                        'approve_store' => $value['store_setup']['approve_store'] ?? 'manually',
+                        'approve_store'      => $value['store_setup']['approve_store'] ?? 'manually',
                         'store_selling_mode' => $value['marketplace_setup']['store_selling_mode'] ?? 'default',
                     );
-    
+
                     $commission_type = $value['commission_setup']['commission_type'] ?? '';
-    
+
                     $commission_settings = array(
                         'commission_type' => $commission_type,
                         'commission_per_' . $commission_type => array(
                             array(
-                                'commission_fixed' => $value['commission_setup']['commission_value'][0]['commission_fixed'] ?? '',
+                                'commission_fixed'      => $value['commission_setup']['commission_value'][0]['commission_fixed'] ?? '',
                                 'commission_percentage' => $value['commission_setup']['commission_value'][0]['commission_percentage'] ?? '',
-                            )
+                            ),
                         ),
                     );
-    
+
                     $disbursment_settings = array(
                         'disbursement_order_status' => $value['commission_setup']['disbursement_order_status'] ?? array( 'completed' ),
                     );
-    
+
                     MultiVendorX()->setting->update_setting( Utill::MULTIVENDORX_SETTINGS['onboarding'], $general_settings );
                     MultiVendorX()->setting->update_setting( Utill::MULTIVENDORX_SETTINGS['commissions'], $commission_settings );
                     MultiVendorX()->setting->update_setting( Utill::MULTIVENDORX_SETTINGS['payouts'], $disbursment_settings );
                 }
-                
+
                 return;
             }
             $all_details       = array();
@@ -182,8 +182,8 @@ class Settings extends \WP_REST_Controller {
             }
 
             if ( 'commissions' === $settingsname ) {
-                if ( get_option(Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store']) ) {
-                    delete_option(Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store']);
+                if ( get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store'] ) ) {
+                    delete_option( Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store'] );
                 }
             }
 
