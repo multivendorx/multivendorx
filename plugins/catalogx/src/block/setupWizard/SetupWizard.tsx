@@ -7,13 +7,13 @@ import './SetupWizard.scss';
 import Logo from '../../assets/images/Brand.png';
 
 const SetupWizard = () => {
-    const [ currentStep, setCurrentStep ] = useState( 0 );
+    const [currentStep, setCurrentStep] = useState(0);
     const onPrev = () => {
-        setCurrentStep( Math.max( 0, currentStep - 1 ) );
+        setCurrentStep(Math.max(0, currentStep - 1));
     };
 
     const onNext = () => {
-        setCurrentStep( currentStep + 1 );
+        setCurrentStep(currentStep + 1);
     };
 
     const onFinish = () => {
@@ -21,17 +21,17 @@ const SetupWizard = () => {
     };
 
     const steps = [
-        { component: <Intro onNext={ onNext } />, title: 'Intro' },
+        { component: <Intro onNext={onNext} />, title: 'Intro' },
         {
-            component: <Modules onPrev={ onPrev } onNext={ onNext } />,
+            component: <Modules onPrev={onPrev} onNext={onNext} />,
             title: 'Modules',
         },
         {
-            component: <Enquiry onPrev={ onPrev } onNext={ onNext } />,
+            component: <Enquiry onPrev={onPrev} onNext={onNext} />,
             title: 'Enquiry',
         },
         {
-            component: <Quote onPrev={ onPrev } onFinish={ onFinish } />,
+            component: <Quote onPrev={onPrev} onFinish={onFinish} />,
             title: 'Quote',
         },
     ];
@@ -39,25 +39,25 @@ const SetupWizard = () => {
     return (
         <>
             <main className="catalogx-setup-wizard-main-wrapper">
-                <img src={ Logo } alt="Logo" />
+                <img src={Logo} alt="Logo" />
                 <nav className="step-count">
                     <ul>
-                        { steps.map( ( step, index ) => {
+                        {steps.map((step, index) => {
                             return (
                                 <li
-                                    key={ index }
+                                    key={index}
                                     className={
                                         currentStep >= index ? 'active' : ''
                                     }
                                 >
-                                    { step.title }
+                                    {step.title}
                                 </li>
                             );
-                        } ) }
+                        })}
                     </ul>
                 </nav>
                 <main className="setup-container">
-                    { steps[ currentStep ].component }
+                    {steps[currentStep].component}
                 </main>
             </main>
         </>

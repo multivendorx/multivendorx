@@ -2,18 +2,18 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'all-settings',
     priority: 1,
-    name: __( 'Shopping', 'catalogx' ),
+    name: __('Shopping', 'catalogx'),
     desc: __(
         'Set up sales flow and catalog mode with integrated enquiry and quotation management.',
         'catalogx'
     ),
-    icon: 'adminlib-cart',
+    icon: 'adminfont-cart',
     submitUrl: 'settings',
     modal: [
         {
             key: 'enable_cart_checkout',
             type: 'checkbox',
-            label: __( 'Sitewide buy mode', 'catalogx' ),
+            label: __('Sitewide buy mode', 'catalogx'),
             desc: sprintf(
                 /* translators: %s will be replaced with a link to CatalogX Pro */
                 __(
@@ -37,7 +37,7 @@ export default {
         {
             key: 'redirect_cart_page',
             type: 'select',
-            label: __( 'Cart / Checkout Redirect Page', 'catalogx' ),
+            label: __('Cart / Checkout Redirect Page', 'catalogx'),
             options: [
                 {
                     value: '',

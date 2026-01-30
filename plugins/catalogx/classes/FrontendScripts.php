@@ -470,6 +470,7 @@ class FrontendScripts {
 						'mvx_active'                 => Utill::is_active_plugin( 'multivendorx' ),
 						'quote_module_active'        => CatalogX()->modules->is_active( 'quote' ),
 						'quote_base_url'             => $quote_base_url,
+						'freeVersion'                => CatalogX()->version,
 					),
 				),
 				'catalogx-enquiry-frontend-script'      => array(
@@ -579,7 +580,7 @@ class FrontendScripts {
 	 * @param string $name   JavaScript object name.
 	 * @param array  $data   Data to be made available in JavaScript.
 	 */
-    public static function localize_script( $handle, $name, $data = array(), ) {
+    public static function localize_script( $handle, $name, $data = array() ) {
 		wp_localize_script( $handle, $name, $data );
 	}
 
