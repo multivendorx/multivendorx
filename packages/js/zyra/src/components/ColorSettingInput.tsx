@@ -1,4 +1,7 @@
+// External Dependencies
 import React, { ChangeEvent, useState, useEffect, useMemo } from 'react';
+
+// Internal Dependencies
 import '../styles/web/ColorSettingInput.scss';
 import ToggleSetting from './ToggleSetting';
 import SelectInput from './SelectInput';

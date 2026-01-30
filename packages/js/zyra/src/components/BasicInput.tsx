@@ -1,11 +1,7 @@
-import {
-    ChangeEvent,
-    MouseEvent,
-    FocusEvent,
-    useState,
-    forwardRef,
-    ReactNode,
-} from 'react';
+// External Dependencies
+import { ChangeEvent, MouseEvent, FocusEvent, useState, forwardRef, ReactNode } from 'react';
+
+// Internal Dependencies
 import DisplayButton from './DisplayButton';
 import SelectInput from './SelectInput';
 
@@ -107,7 +103,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
             generate,
             clickBtnName,
             onclickCallback,
-            feedback,
+            msg,
             description,
             rangeUnit,
             disabled = false,
@@ -170,7 +166,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                 return null;
             }
 
-            if (typeof addon === 'string' || typeof addon !== 'object') {
+            if (typeof addon !== 'object') {
                 return typeof addon === 'string' ? (
                     <span dangerouslySetInnerHTML={{ __html: addon }} />
                 ) : (

@@ -1,6 +1,4 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, {
     JSX,
     useEffect,
@@ -11,9 +9,7 @@ import React, {
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
 
-/**
- * Internal dependencies
- */
+// Internal Dependencies
 import SelectInput, { SelectOptions } from './SelectInput';
 import Section from './Section';
 import BlockText from './BlockText';
@@ -22,7 +18,6 @@ import FreeProFormCustomizer from './FreeProFormCustomizer';
 import FromBuilder from './RegistrationForm';
 import CatalogCustomizer from './CatalogCustomizer';
 import MultiCheckboxTable from './MultiCheckboxTable';
-import MergeComponent from './MergeComponent';
 import ShortCodeTable from './ShortCodeTable';
 import DoActionBtn from './DoActionBtn';
 import DropDownMapping from './DropDownMapping';
@@ -146,7 +141,6 @@ interface InputField {
         | 'form-customizer'
         | 'catalog-customizer'
         | 'multi-checkbox-table'
-        | 'merge-component'
         | 'shortcode-table'
         | 'do-action-btn'
         | 'dropdown-mapping'
@@ -657,21 +651,11 @@ const AdminForm: React.FC<AdminFormProps> = ({
         return settingValue === value;
     };
 
-    const shouldRender = (dependent: DependentCondition): boolean => {
-        if (dependent.set === true && !isContain(dependent.key)) {
-            return false;
-        }
-        if (dependent.set === false && isContain(dependent.key)) {
-            return false;
-        }
-        if (
-            dependent.value !== undefined &&
-            !isContain(dependent.key, dependent.value)
-        ) {
-            return false;
-        }
-        return true;
-    };
+    const shouldRender = (dependent: DependentCondition): boolean => !(
+        (dependent.set === true && !isContain(dependent.key)) ||
+        (dependent.set === false && isContain(dependent.key)) ||
+        (dependent.value !== undefined && !isContain(dependent.key, dependent.value))
+    );
 
     // Click handler for the entire .form-group that is entire settings row
     const handleGroupClick = (
@@ -1436,44 +1420,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                 // setModelOpen(true);
                             }}
                             proChanged={() => setModelOpen(true)}
-                        />
-                    );
-                    break;
-                // Check in MultiVendorX
-                case 'merge-component':
-                    input = (
-                        <MergeComponent
-                            wrapperClass={`setting-form-input`}
-                            descClass="settings-metabox-description"
-                            description={inputField.desc} // Help text / description displayed below the component
-                            value={
-                                typeof value === 'object' && value !== null
-                                    ? value
-                                    : {} // Current value (ensures it’s an object, else fallback to empty object)
-                            }
-                            fields={
-                                Array.isArray(inputField.fields)
-                                    ? inputField.fields
-                                    : [] // List of field definitions (each has name, type, options, etc.)
-                            }
-                            proSetting={isProSetting(
-                                inputField.proSetting ?? false
-                            )}
-                            onChange={(data) => {
-                                if (
-                                    hasAccess(
-                                        inputField.proSetting ?? false,
-                                        String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
-                                        String(inputField.dependentPlugin ?? '')
-                                    )
-                                ) {
-                                    settingChanged.current = true;
-                                    updateSetting(inputField.key, data);
-                                }
-                            }}
                         />
                     );
                     break;

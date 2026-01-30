@@ -1,12 +1,8 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
-import '../styles/web/DynamicRowSetting.scss';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
+import '../styles/web/DynamicRowSetting.scss';
 import '../styles/web/ToggleSetting.scss';
 import SelectInput from './SelectInput';
 
