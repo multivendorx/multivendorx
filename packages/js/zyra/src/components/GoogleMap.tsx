@@ -1,6 +1,9 @@
+// External Dependencies
 /* global google */
 /// <reference types="google.maps" />
 import { useEffect, useRef, useState } from 'react';
+
+// Internal Dependencies
 import FormGroup from './UI/FormGroup';
 
 interface GoogleMapComponentProps {
