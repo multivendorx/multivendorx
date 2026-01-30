@@ -203,8 +203,8 @@ class Rest extends \WP_REST_Controller {
             }
 
             if ( $dashboard ) {
-                if ( get_transient( 'multivendorx_review_data_' . $store_id ) ) {
-                    return get_transient( 'multivendorx_review_data_' . $store_id );
+                if ( get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id ) ) {
+                    return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id );
                 }
             }
 
@@ -265,7 +265,7 @@ class Rest extends \WP_REST_Controller {
             $rejected_count          = Util::get_review_information( $rejected_args );
 
             if ( $dashboard ) {
-                set_transient( 'multivendorx_review_data_' . $store_id, array( 'items' => $formatted ), DAY_IN_SECONDS );
+                set_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id, array( 'items' => $formatted ), DAY_IN_SECONDS );
             }
 
             // --- Step 9: Return Final Response ---.

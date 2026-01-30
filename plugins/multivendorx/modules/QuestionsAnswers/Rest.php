@@ -140,7 +140,7 @@ class Rest extends \WP_REST_Controller {
             $count               = $request->get_param( 'count' );
             $status              = sanitize_text_field( $request->get_param( 'status' ) );
             $search              = sanitize_text_field( $request->get_param( 'searchField' ) );
-            $orderBy             = sanitize_text_field( $request->get_param( 'orderBy' ) );
+            $order_by             = sanitize_text_field( $request->get_param( 'orderBy' ) );
             $order               = sanitize_text_field( $request->get_param( 'order' ) );
             $question_visibility = sanitize_text_field( $request->get_param( 'question_visibility' ) );
             $range               = Utill::normalize_date_range(
@@ -205,11 +205,11 @@ class Rest extends \WP_REST_Controller {
             } elseif ( 'no_answer' === $status ) {
                 $args['no_answer'] = true;
             }
-            if ( $orderBy && $order ) {
-                $args['orderBy'] = $orderBy;
+            if ( $order_by && $order ) {
+                $args['order_by'] = $order_by;
                 $args['order']   = $order;
             } else {
-                $args['orderBy'] = 'question_date';
+                $args['order_by'] = 'question_date';
                 $args['order']   = 'DESC';
             }
             if ( ! empty( $question_visibility ) ) {
