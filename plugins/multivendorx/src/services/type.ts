@@ -9,6 +9,8 @@ export type QueryProps = {
     filter?: Record<string, FilterValue>;
     categoryFilter?: string;
     searchValue?: string;
+    searchAction?:string;
+    store_id?:string;
 };
 
 export type TableHeader = {
