@@ -69,7 +69,7 @@ export default {
 			moduleEnabled: 'marketplace-compliance',
 			proSetting: true,
 			label: __('Verification methods', 'multivendorx'),
-			buttonEnable: true,
+			// buttonEnable: true,
 			addNewBtn: true,
 			addNewTemplate: {
 				label: 'New Verification Method',

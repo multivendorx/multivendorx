@@ -30,17 +30,6 @@ export default {
 				icon: 'adminfont-rejecte',
 				formFields: [
 					{
-						key: 'label',
-						type: 'text',
-						label: 'Progress Stages',
-						placeholder: 'Enter progress stages',
-					},
-					{
-						key: 'desc',
-						type: 'textarea',
-						label: 'Description',
-					},
-					{
 						key: 'icon',
 						type: 'iconlibrary',
 						label: 'Select Icon',

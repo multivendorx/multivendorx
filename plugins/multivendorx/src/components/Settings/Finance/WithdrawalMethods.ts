@@ -19,7 +19,7 @@ export default {
 		{
 			key: 'payment_methods',
 			type: 'expandable-panel',
-			buttonEnable: true,
+			// buttonEnable: true,
 			modal: methods,
 		},
 	],

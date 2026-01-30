@@ -240,7 +240,6 @@ interface InputField {
     label?: string;
     classes?: string;
     single?: boolean;
-    buttonEnable?: boolean;
     nestedFields?: {
         key: string;
         type: 'number' | 'select';
@@ -1697,16 +1696,15 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     ? modules.includes(inputField.moduleEnabled)
                                     : true
                             }
-                            apilink={String(inputField.apiLink)} //API endpoint used for communication with backend.
-                            appLocalizer={appLocalizer}
-                            methods={inputField.modal ?? []} //Array of available payment methods/options.
-                            buttonEnable={inputField.buttonEnable} //Flag to enable/disable action buttons in the UI.
-                            addNewBtn={inputField.addNewBtn}
-                            addNewTemplate={inputField.addNewTemplate ?? []}
-                            iconEnable={inputField.iconEnable}
-                            iconOptions={inputField.iconOptions || []}
-                            value={value || {}}
-                            onChange={(data) => {
+                            apilink={ String( inputField.apiLink ) } //API endpoint used for communication with backend.
+                            appLocalizer={ appLocalizer }
+                            methods={ inputField.modal ?? [] } //Array of available payment methods/options.
+                            addNewBtn={ inputField.addNewBtn }
+                            addNewTemplate={ inputField.addNewTemplate ?? [] }
+                            iconEnable={ inputField.iconEnable }
+                            iconOptions={ inputField.iconOptions || [] }
+                            value={ value || {} }
+                            onChange={ ( data ) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,
