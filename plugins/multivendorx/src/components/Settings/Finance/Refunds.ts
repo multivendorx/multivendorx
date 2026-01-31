@@ -72,14 +72,6 @@ export default {
 			addNewBtn: true,
 			addNewTemplate: {
 				label: 'New Reasons',
-				formFields: [
-					{
-						key: 'label',
-						type: 'text',
-						label: 'Reason',
-						placeholder: 'Enter title',
-					},
-				],
 			},
 			modal: [],
 			moduleEnabled: 'marketplace-refund',
