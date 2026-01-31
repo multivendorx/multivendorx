@@ -4,9 +4,6 @@ import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import MarketplaceStoreList from './marketplaceStoreList';
 import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
-import { initializeModules } from 'zyra';
-
-initializeModules(storesList, 'multivendorx', 'free', 'modules');
 
 const EditBlock = (props) => {
 	const { attributes, setAttributes } = props;

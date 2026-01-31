@@ -713,15 +713,6 @@ class FrontendScripts {
                         'settings_databases_value' => $settings_databases_value,
                     ),
                 ),
-                'multivendorx-store-coupons-script'        => array(
-                    'object_name' => 'couponList',
-                    'data'        => array(
-                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
-                        'restUrl'                  => MultiVendorX()->rest_namespace,
-                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
-                        'settings_databases_value' => $settings_databases_value,
-                    ),
-                ),
                 'multivendorx-stores-script'               => array(
                     'object_name' => 'storesList',
                     'data'        => array(
@@ -737,7 +728,8 @@ class FrontendScripts {
                         'apiUrl'                   => untrailingslashit( get_rest_url() ),
                         'restUrl'                  => MultiVendorX()->rest_namespace,
                         'nonce'                    => wp_create_nonce( 'wp_rest' ),
-                        'storeDetails'             => StoreUtil::get_specific_store_info()
+                        'storeDetails'             => StoreUtil::get_specific_store_info(),
+                        'settings_databases_value' => $settings_databases_value,
                     ),
                 ),
 			)
