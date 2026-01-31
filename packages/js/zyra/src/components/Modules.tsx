@@ -1,12 +1,8 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
@@ -61,8 +57,7 @@ const Modules: React.FC<ModuleProps> = ({
 }) => {
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [successMsg, setSuccessMsg] = useState<string>('');
-    const [selectedCategory, setSelectedCategory] =
-        useState<string>('All');
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedFilter] = useState<string>('Total');
     const [searchQuery] = useState<string>('');
 
@@ -151,10 +146,15 @@ const Modules: React.FC<ModuleProps> = ({
             return false;
         }
         // Apply status filter
-        if (selectedFilter === 'Active' && !modules.includes(module.id)) {
+        if (
+            selectedFilter === 'Active' && 
+            !modules.includes(module.id)
+        ) {
             return false;
         }
-        if (selectedFilter === 'Inactive' && modules.includes(module.id)) {
+        if (selectedFilter === 'Inactive' && 
+            modules.includes(module.id)
+        ) {
             return false;
         }
         // Apply search filter
@@ -378,9 +378,7 @@ const Modules: React.FC<ModuleProps> = ({
                                         </div>
                                         <p
                                             className="meta-description"
-                                            dangerouslySetInnerHTML={{
-                                                __html: module.desc,
-                                            }}
+                                            dangerouslySetInnerHTML={{ __html: module.desc }}
                                         ></p>
                                     </div>
                                 </div>

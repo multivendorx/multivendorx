@@ -1,10 +1,10 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useState, useRef, useEffect } from 'react';
 import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+
+// Internal dependencies
 import '../styles/web/CalendarInput.scss';
 
 interface CalendarInputProps {
@@ -107,11 +107,13 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         const end = selectedRange[ 0 ].endDate!;
         const today = new Date();
         today.setHours( 0, 0, 0, 0 );
+        const isSameDay = (a:Date, b:Date) =>
+            a.toDateString() === b.toDateString();
 
         // Today
         if (
-            start.toDateString() === today.toDateString() &&
-            end.toDateString() === today.toDateString()
+            isSameDay( start, today ) && 
+            isSameDay( end, today )
         ) {
             return 'Today';
         }
@@ -120,8 +122,8 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         const yesterday = new Date( today );
         yesterday.setDate( today.getDate() - 1 );
         if (
-            start.toDateString() === yesterday.toDateString() &&
-            end.toDateString() === yesterday.toDateString()
+            isSameDay( start, yesterday ) &&
+            isSameDay( end, yesterday )
         ) {
             return 'Yesterday';
         }
@@ -136,8 +138,8 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         sundayThisWeek.setDate( mondayThisWeek.getDate() + 6 );
 
         if (
-            start.toDateString() === mondayThisWeek.toDateString() &&
-            end.toDateString() === sundayThisWeek.toDateString()
+            isSameDay( start, mondayThisWeek ) &&
+            isSameDay( end, sundayThisWeek )
         ) {
             return 'This Week';
         }
@@ -149,8 +151,8 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         sundayLastWeek.setDate( mondayLastWeek.getDate() + 6 );
 
         if (
-            start.toDateString() === mondayLastWeek.toDateString() &&
-            end.toDateString() === sundayLastWeek.toDateString()
+            isSameDay( start, mondayLastWeek ) &&
+            isSameDay( end, sundayLastWeek )
         ) {
             return 'Last Week';
         }
@@ -168,8 +170,8 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         );
 
         if (
-            start.toDateString() === firstOfMonth.toDateString() &&
-            end.toDateString() === lastOfMonth.toDateString()
+            isSameDay( start, firstOfMonth ) &&
+            isSameDay( end, lastOfMonth )
         ) {
             return 'This Month';
         }
@@ -187,8 +189,8 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         );
 
         if (
-            start.toDateString() === firstOfLastMonth.toDateString() &&
-            end.toDateString() === lastOfLastMonth.toDateString()
+            isSameDay( start, firstOfLastMonth ) &&
+            isSameDay( end, lastOfLastMonth )
         ) {
             return 'Last Month';
         }

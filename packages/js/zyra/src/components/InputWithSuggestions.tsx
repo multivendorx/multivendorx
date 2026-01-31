@@ -16,9 +16,6 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
     addButtonLabel = 'Add',
 } ) => {
     const [ inputValue, setInputValue ] = useState( '' );
-    const [ filteredSuggestions, setFilteredSuggestions ] = useState<
-        string[]
-    >( [] );
     const [ items, setItems ] = useState< string[] >( value );
     const wrapperRef = useRef< HTMLDivElement >( null );
 
@@ -27,21 +24,15 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
         setItems( value );
     }, [ value ] );
 
-    // Filter suggestions as user types
-    useEffect( () => {
-        if ( inputValue.trim() === '' ) {
-            setFilteredSuggestions( [] );
-        } else {
-            const filtered = suggestions.filter(
-                ( s ) =>
-                    s.toLowerCase().includes( inputValue.toLowerCase() ) &&
-                    ! items.includes( s )
-            );
-            setFilteredSuggestions( filtered );
-        }
-    }, [ inputValue, suggestions, items ] );
+     const filteredSuggestions =
+        inputValue.trim() === ''
+            ? []
+            : suggestions.filter(
+                  (s) =>
+                      s.toLowerCase().includes(inputValue.toLowerCase()) &&
+                      !items.includes(s)
+              );
 
-    // Close suggestions if clicked outside
     useEffect( () => {
         const handleClickOutside = ( e: MouseEvent ) => {
             if (
@@ -64,7 +55,6 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
         const newList = [ ...items, trimmed ];
         setItems( newList );
         setInputValue( '' );
-        setFilteredSuggestions( [] );
         if ( onChange ) {
             onChange( newList );
         }
@@ -79,7 +69,6 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
             }
         }
         setInputValue( '' );
-        setFilteredSuggestions( [] );
     };
 
     const handleRemove = ( item: string ) => {
@@ -107,9 +96,9 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
             { /* Suggestions dropdown */ }
             { filteredSuggestions.length > 0 && (
                 <ul className="suggestions-list">
-                    { filteredSuggestions.map( ( s, i ) => (
+                    { filteredSuggestions.map( ( s ) => (
                         <li
-                            key={ i }
+                            key={ s }
                             onClick={ () => handleSelectSuggestion( s ) }
                         >
                             { s }
@@ -120,8 +109,8 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
 
             { /* Added items list */ }
             <div className="added-list">
-                { items.map( ( item, i ) => (
-                    <span key={ i } className="added-item">
+                { items.map( ( item ) => (
+                    <span key={ item } className="added-item">
                         { item }
                         <span
                             className="remove-item"

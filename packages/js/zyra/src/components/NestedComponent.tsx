@@ -1,4 +1,7 @@
+// External dependencies
 import React, { useState, useEffect } from 'react';
+
+// Internal dependencies
 import '../styles/web/NestedComponent.scss';
 import ToggleSetting from './ToggleSetting';
 import BasicInput from './BasicInput';
@@ -168,10 +171,16 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
         }
 
         return fields.every( ( f ) => {
-            if ( f.skipFirstRow && lastRowIndex === 0 ) {
+            if ( 
+                f.skipFirstRow && 
+                lastRowIndex === 0 
+            ) {
                 return true;
             }
-            if ( f.firstRowOnly && lastRowIndex > 0 ) {
+            if ( 
+                f.firstRowOnly && 
+                lastRowIndex > 0 
+            ) {
                 return true;
             }
 
@@ -213,10 +222,16 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
     }
 
     function renderField( field: NestedField, row: RowType, rowIndex: number ) {
-        if ( rowIndex === 0 && field.skipFirstRow ) {
+        if (
+            rowIndex === 0 && 
+            field.skipFirstRow
+        ) {
             return null;
         }
-        if ( rowIndex > 0 && field.firstRowOnly ) {
+        if ( 
+            rowIndex > 0 && 
+            field.firstRowOnly 
+        ) {
             return null;
         }
 
@@ -398,7 +413,10 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                     normalizedValue = val.filter(
                         ( v: string ) => v && v.trim() !== ''
                     );
-                } else if ( typeof val === 'string' && val.trim() !== '' ) {
+                } else if ( 
+                    typeof val === 'string' && 
+                    val.trim() !== '' 
+                ) {
                     normalizedValue = [ val ];
                 } else {
                     normalizedValue = [];

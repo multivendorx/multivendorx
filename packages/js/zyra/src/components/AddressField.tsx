@@ -54,10 +54,7 @@ const AddressField: React.FC< AddressFieldProps > = ( {
         onChange( 'fields', updated );
     };
 
-    const FIELD_RENDERERS: Record<
-        SubField['type'],
-        (f: SubField) => JSX.Element
-    > = {
+    const FieldRenderers = {
         text: (f: SubField) => (
             <SimpleInput
                 formField={{ label: f.label, placeholder: f.placeholder }}
@@ -110,7 +107,7 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                             </span>
                         </div>
 
-                        {FIELD_RENDERERS[f.type]?.(f)}
+                        {FieldRenderers[f.type]?.(f)}
 
                     </div>
                 ) ) }

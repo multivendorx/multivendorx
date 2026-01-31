@@ -1,18 +1,14 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useState, useRef, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import HoverInputRender from './HoverInputRender';
 import SettingMetaBox from './SettingMetaBox';
 
 // Types
 interface Option {
-    id: string;
+    id: string; 
     label: string;
     value: string;
     isdefault?: boolean;
@@ -221,9 +217,7 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
                                                 | null = null;
                                             options.forEach(
                                                 ( eachOption, idx ) => {
-                                                    if (
-                                                        eachOption.isdefault
-                                                    ) {
+                                                    if ( eachOption.isdefault ) {
                                                         defaultValueIndex = idx;
                                                     }
                                                 }
