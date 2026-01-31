@@ -115,7 +115,7 @@ class Util {
         }
 
         // Add ORDER BY support safely.
-        if ( ! isset( $args['count'] ) && ! empty( $args['orderBy'] ) && ! empty( $args['order'] ) ) {
+        if ( ! isset( $args['count'] ) && ! empty( $args['order_by'] ) && ! empty( $args['order'] ) ) {
             $allowed_columns = array(
                 'question_date' => 'question_date',
                 'total_votes'   => 'total_votes',
@@ -123,7 +123,7 @@ class Util {
                 'store_id'      => 'store_id',
             );
 
-            $column    = sanitize_text_field( $args['orderBy'] );
+            $column    = sanitize_text_field( $args['order_by'] );
             $direction = strtolower( $args['order'] ) === 'desc' ? 'DESC' : 'ASC';
 
             if ( isset( $allowed_columns[ $column ] ) ) {

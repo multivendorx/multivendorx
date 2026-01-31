@@ -98,7 +98,7 @@ export const Announcements: React.FC = () => {
 		}));
 	};
 
-	const [announcementStatus, setAnnouncementStatus] = useState<
+	const [categoryCounts, setCategoryCounts] = useState<
 		categoryCounts[] | null
 	>(null);
 	const [storeOptions, setStoreOptions] = useState<
@@ -367,7 +367,7 @@ export const Announcements: React.FC = () => {
 
 				setRows(mappedRows);
 
-				setAnnouncementStatus([
+				setCategoryCounts([
 					{
 						value: 'all',
 						label: 'All',
@@ -618,7 +618,7 @@ export const Announcements: React.FC = () => {
 						isLoading={isLoading}
 						onQueryUpdate={fetchData}
 						ids={rowIds}
-						categoryCounts={announcementStatus}
+						categoryCounts={categoryCounts}
 						search={{}}
 						filters={filters}
 						bulkActions={bulkActions}

@@ -12,6 +12,7 @@ import {
 	AdminButton,
 	Container,
 	Column,
+	TableCard,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -20,6 +21,7 @@ import {
 } from '@tanstack/react-table';
 import ViewCommission from './ViewCommission';
 import { formatCurrency, formatLocalDate, formatWcShortDate, } from '../../services/commonFunction';
+import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 export interface RealtimeFilter {
 	name: string;
@@ -188,10 +190,20 @@ const BulkActions: React.FC<{
 };
 
 const Commission: React.FC = () => {
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalRows, setTotalRows] = useState<number>(0);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [categoryCounts, setCategoryCounts] = useState<
+		categoryCounts[] | null
+	>(null);
+
+
+
+
 	const [data, setData] = useState<CommissionRow[] | null>(null);
 	const [store, setStore] = useState<any[] | null>(null);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	const [totalRows, setTotalRows] = useState<number>(0);
 	const [viewCommission, setViewCommission] = useState(false);
 	const [selectedCommissionId, setSelectedCommissionId] = useState<
 		number | null
@@ -752,8 +764,8 @@ const Commission: React.FC = () => {
 									'multivendorx'
 								),
 								icon: 'adminfont-refresh refresh-icon',
-								onClick: (rowData: any) => {
-									handleSingleAction('regenerate', rowData);
+								onClick: (id: number) => {
+									// handleSingleAction('regenerate', rowData);
 								},
 							},
 						],
@@ -857,6 +869,163 @@ const Commission: React.FC = () => {
 	];
 
 
+	const headers = [
+		{ key: 'id', label: 'ID' },
+		{ key: 'order_id', label: 'Order' },
+		{ key: 'order_amount', label: 'Order Amount' },
+		{ key: 'commission_summary', label: 'Commission Summary' },
+		{ key: 'store_earning', label: 'Store Earning' },
+		{ key: 'marketplace_earning', label: 'Marketplace Earning' },
+		{ key: 'status', label: 'Status' },
+		{ key: 'created_at', label: 'Date', isSorting: true },
+		{
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('View Commission', 'multivendorx'),
+					icon: 'adminfont-eye',
+					onClick: (id: number) => {
+						setSelectedCommissionId(id);
+						setViewCommission(true);
+					},
+				},
+				{
+					label: __(
+						'Regenerate Commission',
+						'multivendorx'
+					),
+					icon: 'adminfont-refresh refresh-icon',
+					onClick: (id: number) => {
+						// handleSingleAction('regenerate', rowData);
+					},
+				},
+			],
+		},
+	];
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+
+		axios
+			.get(getApiLink(appLocalizer, 'commission'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+					searchValue: query.searchValue || '',
+					searchAction: query.searchAction || '',
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+					store_id: query.store_id,
+					orderBy: query.orderby,
+					order: query.order,
+				},
+			})
+			.then((response) => {
+				const items = response.data || [];
+				const ids = items
+					.filter((ann: any) => ann?.id != null)
+					.map((ann: any) => ann.id);
+
+				setRowIds(ids);
+
+				const mappedRows: any[][] = items.map((ann: any) => [
+					{ display: ann.id, value: ann.id },
+					{
+						display: ann.orderId,
+						value: ann.orderId,
+						type: 'card',
+						data: {
+							// link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${ann.orderId}&action=edit`,
+							name: `#${ann.orderId} - ${ann.storeName}`,
+						}
+					},
+					{ display: formatCurrency(ann.totalOrderAmount), value: ann.totalOrderAmount },
+					{
+						display: 1,  
+						value: 1,  
+						type: 'commission',
+						data: {
+							items: [
+								ann.storeEarning
+									? { label: 'Store Earning', value: formatCurrency(ann.storeEarning), isPositive: true }
+									: null,
+								ann.shippingAmount && modules.includes('store-shipping')
+									? { label: 'Shipping', value: formatCurrency(ann.shippingAmount), isPositive: true }
+									: null,
+								ann.taxAmount && appLocalizer.settings_databases_value['commissions']?.give_tax !== 'no_tax'
+									? { label: 'Tax', value: formatCurrency(ann.taxAmount), isPositive: true }
+									: null,
+								ann.shippingTaxAmount
+									? { label: 'Shipping Tax', value: formatCurrency(ann.shippingTaxAmount), isPositive: true }
+									: null,
+								ann.gatewayFee && modules.includes('marketplace-gateway')
+									? { label: 'Gateway Fee', value: formatCurrency(ann.gatewayFee), isPositive: false }
+									: null,
+								ann.facilitatorFee && modules.includes('facilitator')
+									? { label: 'Facilitator Fee', value: formatCurrency(ann.facilitatorFee), isPositive: false }
+									: null,
+								ann.platformFee && modules.includes('marketplace-fee')
+									? { label: 'Platform Fee', value: formatCurrency(ann.platformFee), isPositive: false }
+									: null,
+							].filter(Boolean),
+						},
+					},	
+					{ display: formatCurrency(ann.storePayable), value: ann.storePayable },	
+					// { display: formatCurrency(ann.marketplacePayable), value: ann.marketplacePayable },
+					// { display: ann.status, value: ann.status },
+					// { display: formatWcShortDate(ann.createdAt), value: ann.createdAt },
+				]);
+
+				setRows(mappedRows);
+
+				setCategoryCounts([
+					{
+						value: 'all',
+						label: 'All',
+						count: Number(response.headers['x-wp-total']) || 0,
+					},
+					{
+						value: 'paid',
+						label: 'Paid',
+						count: Number(response.headers['x-wp-status-paid']) || 0,
+					},
+					{
+						value: 'unpaid',
+						label: 'Unpaid',
+						count: Number(response.headers['x-wp-status-unpaid']) || 0,
+					},
+					{
+						value: 'refunded',
+						label: 'Refunded',
+						count: Number(response.headers['x-wp-status-refunded']) || 0,
+					},
+					{
+						value: 'partially_refunded',
+						label: 'Partially Refunded',
+						count: Number(response.headers['x-wp-status-partially-refunded']) || 0,
+					},
+					{
+						value: 'cancelled',
+						label: 'Cancelled',
+						count: Number(response.headers['x-wp-status-cancelled']) || 0,
+					},
+				]);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
+	};
 	return (
 		<>
 			<AdminBreadcrumbs
@@ -869,7 +1038,7 @@ const Commission: React.FC = () => {
 			/>
 			<Container general>
 				<Column>
-					<Table
+					{/* <Table
 						data={data}
 						columns={
 							columns as ColumnDef<Record<string, any>, any>[]
@@ -894,6 +1063,22 @@ const Commission: React.FC = () => {
 						)}
 						totalCounts={totalRows}
 						actionButton={actionButton}
+					/> */}
+
+					<TableCard
+						headers={headers}
+						rows={rows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={fetchData}
+						ids={rowIds}
+						categoryCounts={categoryCounts}
+						search={{}}
+						// filters={filters}
+						// bulkActions={bulkActions}
+						// onBulkActionApply={(action: string, selectedIds: []) => {
+						// 	handleBulkAction(action, selectedIds)
+						// }}
 					/>
 				</Column>
 			</Container>
