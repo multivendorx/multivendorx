@@ -1,4 +1,5 @@
-import React, { ChangeEvent, MouseEvent, useRef, useState } from 'react';
+// External dependencies
+import React, { ChangeEvent, MouseEvent, useRef, useState, useEffect } from 'react';
 
 interface FileInputProps {
     wrapperClass?: string;
@@ -45,11 +46,10 @@ const FileInput: React.FC< FileInputProps > = ( props ) => {
     );
 
     // When parent changes imageSrc prop, update local image state accordingly
-    React.useEffect( () => {
-        const images = normalizeImages( props.imageSrc );
-        setLocalImages( images );
+    useEffect( () => {
+        setLocalImages( normalizeImages( props.imageSrc ) );
         setActiveIndex( 0 );
-    }, [ props.imageSrc ] );
+    }, [ props.imageSrc, normalizeImages ] );
 
     // Handle file input change (upload new file)
     const handleChange = ( e: ChangeEvent< HTMLInputElement > ) => {

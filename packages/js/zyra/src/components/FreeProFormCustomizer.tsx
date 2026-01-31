@@ -1,11 +1,7 @@
-/**
- * External dependencies
- */
-import React, { useState, useEffect, useRef } from 'react';
+// External dependencies
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import SubTabSection, { MenuItem } from './SubTabSection';
 import ProForm from './RegistrationForm';
 import '../styles/web/FreeProFormCustomizer.scss';
@@ -54,8 +50,8 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
         return formFieldsData.find( ( { key } ) => key === fieldKey );
     };
 
-    const activeDeactiveFields = (
-        fieldKey: string,
+    const activeDeactiveFields = useCallback(
+        (fieldKey: string,
         activeStatus: boolean
     ) => {
         if ( moduleEnabledChange() ) {
@@ -79,7 +75,7 @@ const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
                 { key: fieldKey, label: '', active: activeStatus },
             ];
         } );
-    };
+    });
 
     const updateFieldLabel = ( fieldKey: string, labelValue: string ) => {
         if ( moduleEnabledChange() ) {

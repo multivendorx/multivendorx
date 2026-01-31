@@ -1,7 +1,5 @@
-/**
- * External dependencies
- */
-import React, { useState } from 'react';
+// External dependencies
+import React, { useState, useCallback } from 'react';
 
 // Types
 interface Option {
@@ -23,11 +21,15 @@ const Elements: React.FC< ElementsProps > = ( {
 } ) => {
     const [ isOpen, setIsOpen ] = useState( true );
 
+     const toggleOpen = useCallback(() => {
+        setIsOpen((prev) => !prev);
+    }, []);
+
     return (
         <aside className="elements-section">
             <div
                 className="section-meta"
-                onClick={ () => setIsOpen( ( prev ) => ! prev ) }
+                onClick={toggleOpen}
                 role="button"
                 tabIndex={ 0 }
             >

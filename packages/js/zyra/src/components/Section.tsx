@@ -1,6 +1,4 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
 
 // Types
@@ -18,7 +16,6 @@ const Section: React.FC< SectionProps > = ( {
     description,
 } ) => {
     return (
-        <>
             <div className={`divider-wrapper ${wrapperClass}`}>
                 <div className="divider-section">
                     { hint && (
@@ -36,7 +33,6 @@ const Section: React.FC< SectionProps > = ( {
                     { value && <span>{ value }</span> }
                 </div>
             </div>
-        </>
     );
 };
 

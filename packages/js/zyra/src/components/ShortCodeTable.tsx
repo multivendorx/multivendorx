@@ -1,11 +1,7 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import '../styles/web/ShortCodeTable.scss';
 
 // Types

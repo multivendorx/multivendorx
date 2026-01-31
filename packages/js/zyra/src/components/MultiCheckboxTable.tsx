@@ -1,12 +1,8 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import '../styles/web/MultiCheckboxTable.scss';
 
 // Types

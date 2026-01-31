@@ -1,5 +1,8 @@
-import "../styles/web/UI/SuccessNotice.scss";
+// External dependencies
 import React from 'react';
+
+// Internal dependencies
+import "../styles/web/UI/SuccessNotice.scss";
 
 interface SuccessNoticeProps {
     message?: string; // message to display

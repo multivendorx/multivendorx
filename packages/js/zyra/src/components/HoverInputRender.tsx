@@ -1,7 +1,5 @@
-/**
- * External dependencies
- */
-import React, { JSX, useEffect, useRef } from 'react';
+// External Dependencies
+import React, { useEffect, useRef } from 'react';
 
 // Types
 interface HoverInputRenderProps {

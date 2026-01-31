@@ -1,3 +1,4 @@
+// External dependencies
 import React, { ChangeEvent, MouseEvent, FocusEvent } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 

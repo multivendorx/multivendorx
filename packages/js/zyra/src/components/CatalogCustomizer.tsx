@@ -1,17 +1,12 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useState, useEffect, ReactNode, useMemo } from 'react';
 import ReactDragListView from 'react-drag-listview';
 
-/**
- * Internal dependencies
- */
+// Internal Dependencies
 import SubTabSection from './SubTabSection';
 import ButtonCustomizer from './ButtonCustomiser';
 import '../styles/web/CatalogCustomizer.scss';
 
-// Types
 // Types
 type SettingValue =
     | string

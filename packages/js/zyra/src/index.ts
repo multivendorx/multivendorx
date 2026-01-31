@@ -25,7 +25,6 @@ export { default as IconList } from './components/IconList';
 export { default as InputMailchimpList } from './components/InputMailchimpList';
 export { default as Log } from './components/Log';
 export { default as Mapbox } from './components/Mapbox';
-export { default as MergeComponent } from './components/MergeComponent';
 export { default as SettingMetaBox } from './components/SettingMetaBox';
 export { default as Modules } from './components/Modules';
 export { default as MultiCheckBox } from './components/MultiCheckbox';

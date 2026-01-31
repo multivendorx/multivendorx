@@ -1,14 +1,9 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+// Internal dependencies
 import '../styles/web/SystemInfoAccordion.scss';
-
-/**
- * Internal dependencies
- */
 import { getApiLink } from '../utils/apiService';
 import Skeleton from './UI/Skeleton';
 
@@ -116,58 +111,57 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
                     onClick={copyToClipboard}
                 >
                     <i className="adminfont-vendor-form-copy"></i>
-                    {!copied && (
-                        <span className="copy-success">
-                            {copyButtonLabel}
-                        </span>
-                    )}
-                    {copied && (
-                        <span className="copy-success">{copiedLabel}</span>
-                    )}
+
+                    <span className="copy-success">
+                            {copied ? copiedLabel : copyButtonLabel}
+                    </span>
                 </div>
             </div>
 
-            {Object.entries(data).map(([key, section]) => (
-                <div key={key} className="system-item">
-                    <div
-                        onClick={() => toggleSection(key)}
-                        className="name"
-                    >
-                        <span>{section.label}</span>
-                        <i
-                            className={
-                                openKeys.includes(key)
-                                    ? 'adminfont-keyboard-arrow-down'
-                                    : 'adminfont-pagination-right-arrow '
-                            }
-                        ></i>
-                    </div>
-
-                    {openKeys.includes(key) && (
-                        <div className="content">
-                            {section.description && (
-                                <p className="des">{section.description}</p>
-                            )}
-                            <table>
-                                <tbody>
-                                    {Object.entries(section.fields).map(
-                                        ([fieldKey, field]) => (
-                                            <tr key={fieldKey}>
-                                                <td className="field-label">
-                                                    {field.label}
-                                                </td>
-                                                <td className="field-value">
-                                                    {field.value}
-                                                </td>
-                                            </tr>
-                                        )
-                                    )}
-                                </tbody>
-                            </table>
+            {Object.entries(data).map(([key, section]) => {
+                const isOpen = openKeys.includes(key);
+                return(
+                    <div key={key} className="system-item">
+                        <div
+                            onClick={() => toggleSection(key)}
+                            className="name"
+                        >
+                            <span>{section.label}</span>
+                            <i
+                                className={
+                                    isOpen
+                                        ? 'adminfont-keyboard-arrow-down'
+                                        : 'adminfont-pagination-right-arrow '
+                                }
+                            ></i>
                         </div>
-                    )}
-                </div>
-            ))}
+
+                        {isOpen && (
+                            <div className="content">
+                                {section.description && (
+                                    <p className="des">{section.description}</p>
+                                )}
+                                <table>
+                                    <tbody>
+                                        {Object.entries(section.fields).map(
+                                            ([fieldKey, field]) => (
+                                                <tr key={fieldKey}>
+                                                    <td className="field-label">
+                                                        {field.label}
+                                                    </td>
+                                                    <td className="field-value">
+                                                        {field.value}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
         </div>
     )   ;
 };

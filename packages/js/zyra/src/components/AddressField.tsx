@@ -1,5 +1,8 @@
+//External Dependencies
 import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+
+// Internal Dependencies
 import SimpleInput from './SimpleInput';
 import MultipleOptions from './MultipleOption';
 
@@ -51,6 +54,30 @@ const AddressField: React.FC< AddressFieldProps > = ( {
         onChange( 'fields', updated );
     };
 
+    const FieldRenderers = {
+        text: (f: SubField) => (
+            <SimpleInput
+                formField={{ label: f.label, placeholder: f.placeholder }}
+            />
+        ),
+        select: (f: SubField) => (
+            <MultipleOptions
+                formField={{
+                    label: f.label,
+                    type: 'dropdown',
+                    options: f.options?.map((opt) => ({
+                        id: opt,
+                        value: opt,
+                        label: opt,
+                    })) || [],
+                }}
+                type="dropdown"
+                selected={false}
+                onChange={() => {}}
+            />
+        ),
+    };
+
     return (
         <div className="address-field-wrapper">
             <ReactSortable
@@ -80,32 +107,8 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                             </span>
                         </div>
 
-                        { f.type === 'text' && (
-                            <SimpleInput
-                                formField={ {
-                                    label: f.label,
-                                    placeholder: f.placeholder,
-                                } }
-                            />
-                        ) }
+                        {FieldRenderers[f.type]?.(f)}
 
-                        { f.type === 'select' && (
-                            <MultipleOptions
-                                formField={ {
-                                    label: f.label,
-                                    type: 'dropdown',
-                                    options:
-                                        f.options?.map( ( opt ) => ( {
-                                            id: opt,
-                                            value: opt,
-                                            label: opt,
-                                        } ) ) || [],
-                                } }
-                                type="dropdown"
-                                selected={ false }
-                                onChange={ () => {} }
-                            />
-                        ) }
                     </div>
                 ) ) }
             </ReactSortable>

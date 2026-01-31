@@ -1,11 +1,7 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import '../styles/web/DropDownMapping.scss';
 
 // Types

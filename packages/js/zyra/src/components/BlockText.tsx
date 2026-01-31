@@ -1,7 +1,7 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
+
+// Internal Dependencies
 import '../styles/web/BlockText.scss';
 
 // Types
@@ -17,7 +17,6 @@ const BlockText: React.FC< BlockTextProps > = ( {
     title,
 } ) => {
     return (
-        <>
             <div className={ blockTextClass }>
                 <div className="metabox-note-wrapper">
                     <i className="adminfont-info"></i>
@@ -27,7 +26,6 @@ const BlockText: React.FC< BlockTextProps > = ( {
                     </div>
                 </div>
             </div>
-        </>
     );
 };
 
