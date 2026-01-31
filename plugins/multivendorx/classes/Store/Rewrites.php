@@ -233,6 +233,7 @@ class Rewrites {
         FrontendScripts::enqueue_script('multivendorx-store-name-script');
         FrontendScripts::enqueue_script('multivendorx-store-description-script');
         FrontendScripts::enqueue_script('multivendorx-store-provider-script');
+        FrontendScripts::enqueue_script('multivendorx-store-coupons-script');
         FrontendScripts::localize_scripts('multivendorx-store-provider-script');
     }
 

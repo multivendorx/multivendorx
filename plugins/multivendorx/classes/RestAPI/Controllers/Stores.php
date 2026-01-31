@@ -364,6 +364,7 @@ class Stores extends \WP_REST_Controller {
             }
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
+
             if ( $lat && $lng && $radius ) {
                 $stores = array_filter(
                     $stores,
