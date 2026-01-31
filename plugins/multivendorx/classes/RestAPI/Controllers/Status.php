@@ -119,24 +119,24 @@ class Status extends \WP_REST_Controller {
             $key = $request->get_param( 'key' );
             if ( 'transients' === $key ) {
                 $deleted = false;
-                $stores = StoreUtil::get_stores(); 
+                $stores  = StoreUtil::get_stores();
 
                 foreach ( $stores as $store ) {
                     $store_id = $store['ID'] ?? 0;
 
-                    $transients_to_clear = [];
+                    $transients_to_clear = array();
 
                     // Transient prefixes that include vendor ID
                     $store_transient_names = apply_filters(
                         'mvx_clear_all_transients_included_vendor_id',
-                        [
+                        array(
                             'multivendorx_visitor_stats_data_',
                             'multivendorx_report_data_',
                             'multivendorx_withdrawal_data_',
                             'multivendorx_review_data_',
                             'multivendorx_announcement_data_',
-                            'multivendorx_dashboard_data_'
-                        ]
+                            'multivendorx_dashboard_data_',
+                        )
                     );
 
                     foreach ( $store_transient_names as $transient ) {
@@ -162,7 +162,7 @@ class Status extends \WP_REST_Controller {
             }
 
             if ( 'visitor' === $key ) {
-                $table = $wpdb->prefix . Utill::TABLES['visitors_stats'];
+                $table  = $wpdb->prefix . Utill::TABLES['visitors_stats'];
                 $result = $wpdb->query( "TRUNCATE TABLE `$table`" );
 
                 if ( $result ) {

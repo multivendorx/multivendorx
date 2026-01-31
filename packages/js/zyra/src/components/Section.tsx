@@ -5,7 +5,7 @@ import React from 'react';
 
 // Types
 interface SectionProps {
-    wrapperClass: string;
+    wrapperClass?: string;
     hint?: string;
     value?: string;
     description?: string;
@@ -19,7 +19,7 @@ const Section: React.FC< SectionProps > = ( {
 } ) => {
     return (
         <>
-            <div className={ wrapperClass }>
+            <div className={`divider-wrapper ${wrapperClass}`}>
                 <div className="divider-section">
                     { hint && (
                         <p

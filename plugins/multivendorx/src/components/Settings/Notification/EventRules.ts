@@ -1,0 +1,14 @@
+import { __ } from '@wordpress/i18n';
+
+export default {
+	id: 'event-rules',
+	priority: 2,
+	name: 'Event Rules',
+	desc: __(
+		'Help customers discover stores and products near them by enabling location-based search and maps.',
+		'multivendorx'
+	),
+	icon: 'adminfont-notification',
+	submitUrl: 'settings',
+	modal: [],
+};

@@ -21,7 +21,7 @@ const Appearance = () => {
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']?.edit_store_info_activation || [];
+		appLocalizer.settings_databases_value['store-permissions']?.edit_store_info_activation || [];
 
 	const storeOptions = [
 		{ value: 'static_image', label: 'Static Image' },

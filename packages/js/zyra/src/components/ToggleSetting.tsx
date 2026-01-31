@@ -130,13 +130,13 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
                                     )}
                                     {option.customHtml && (
                                         <div className="toggle-custom-wrapper" dangerouslySetInnerHTML={{ __html: option.customHtml }} />
-                                    )} 
+                                    )}
                                 </label>
-                                { option.proSetting && ! khali_dabba && (
+                                {option.proSetting && ! khali_dabba && (
                                     <span className="admin-pro-tag">
                                         <i className="adminfont-pro-tag"></i>Pro
                                     </span>
-                                ) }
+                                )}
                             </div>
                         );
                     } ) }

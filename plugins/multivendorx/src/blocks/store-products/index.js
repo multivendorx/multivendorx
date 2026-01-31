@@ -1,27 +1,17 @@
 import { registerBlockType } from '@wordpress/blocks';
-import { useBlockProps } from '@wordpress/block-editor';
 import { render } from '@wordpress/element';
 import { BrowserRouter } from 'react-router-dom';
 import ProductList from './productList';
 
-const getStoreSlugFromUrl = () => {
-	const parts = window.location.pathname.split('/').filter(Boolean);
-	const index = parts.indexOf('store');
-	return index !== -1 ? parts[index + 1] : null;
-};
-
 const Edit = () => {
-	const blockProps = useBlockProps();
-
 	return (
-		<div {...blockProps}>
+		<div>
 			<ProductList
 				isEditor={true}
 			/>
 		</div>
 	);
 };
-
 
 registerBlockType('multivendorx/store-products', {
 	apiVersion: 2,
@@ -42,9 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	render(
 		<BrowserRouter>
-			<ProductList
-				storeSlug={getStoreSlugFromUrl()}
-			/>
+			<ProductList/>
 		</BrowserRouter>,
 		el
 	);

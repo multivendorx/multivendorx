@@ -56,6 +56,10 @@
       .divider-section {
         margin: 0 1rem;
       }
+
+      &.bg-color{
+        background: #f7f7f7;
+      }
     }
   }
 
@@ -709,14 +713,13 @@
     }
 
     .tab-content {
-      padding: 1.5rem;
+      padding: 0.5rem;
       box-sizing: border-box;
 
       .divider-wrapper:first-child {
         .divider-section {
           margin: 0;
-          padding-top: 0;
-          padding-bottom: .5rem;
+          padding: 0 1rem 1rem;
           margin-bottom: 1rem;
         }
       }

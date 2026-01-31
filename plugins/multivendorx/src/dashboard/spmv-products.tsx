@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../services/commonFunction';
-import { AdminButton } from 'zyra';
-import { Skeleton } from '@mui/material';
+import {  Skeleton } from 'zyra';
 
 const SpmvProducts: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(true);

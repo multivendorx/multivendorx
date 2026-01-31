@@ -3,7 +3,7 @@ export default {
 	category: true,
 	tab: 'modules',
 	description:
-		'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and vendors.',
+		'Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.',
 	modules: [
 		{
 			type: 'separator',
@@ -201,13 +201,13 @@ export default {
 			label: 'Store Management',
 		},
 		{
-			id: 'spmv',
+			id: 'shared-listing',
 			name: __('Shared listing', 'multivendorx'),
 			desc: 'Allows more than one store to sell the same product with their own price and stock.',
 			icon: 'adminfont-spmv',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/single-product-multiple-vendors-spmv',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=single-product-multiple-store`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=general`,
 			pro_module: false,
 			category: 'store_management',
 		},
@@ -249,7 +249,7 @@ export default {
 			icon: 'adminfont-store-review',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/store-review',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=review-management`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=store-reviews`,
 			pro_module: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -279,7 +279,7 @@ export default {
 			icon: 'adminfont-staff-manager',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/staff-manager',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=user-capability`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=user-permissions`,
 			pro_module: true,
 			category: 'store_management',
 		},
@@ -302,7 +302,7 @@ export default {
 		{
 			id: 'paypal-marketplace',
 			name: __('PayPal Marketplace', 'multivendorx'),
-			desc: 'Using split payment pay vendors instantly after a completed order',
+			desc: 'Using split payment pay stores instantly after a completed order',
 			icon: 'adminfont-paypal-marketplace',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/paypal-marketplace-real-time-split/',
@@ -334,7 +334,7 @@ export default {
 		{
 			id: 'razorpay',
 			name: __('Razorpay', 'multivendorx'),
-			desc: 'For clients looking to pay multiple Indian vendors instantly',
+			desc: 'For clients looking to pay multiple Indian stores instantly',
 			icon: 'adminfont-razorpay',
 			doc_link: 'https://multivendorx.com/docs/knowledgebase/payment/',
 			//settings_link: admin_url('admin.php?page=mvx-setting-admin'),
@@ -406,7 +406,7 @@ export default {
 			icon: 'adminfont-invoice',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/invoice-packing-slip',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=store-invoice`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=invoices`,
 			pro_module: true,
 			category: 'customer_experience',
 		},
@@ -421,8 +421,8 @@ export default {
 			category: 'customer_experience',
 		},
 		{
-			id: 'customer-support',
-			name: __('Customer Support', 'multivendorx'),
+			id: 'store-support',
+			name: __('Store Support', 'multivendorx'),
 			desc: 'Built-in ticketing system for customers to raise and track support requests.',
 			icon: 'adminfont-customer-support',
 			doc_link:
@@ -461,7 +461,7 @@ export default {
 			icon: 'adminfont-marketplace-refund',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/marketplace-refund',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=order-actions-refunds`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=refunds`,
 			pro_module: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -492,12 +492,21 @@ export default {
 			label: 'Marketplace Boosters',
 		},
 		{
+			id: 'marketplace-intelligence',
+			name: __('Intelligence', 'multivendorx'),
+			desc: 'Let stores create high-converting product descriptions and images instantly using AI.',
+			icon: 'adminfont-marketplace-intelligence',
+			doc_link:
+				'https://multivendorx.com/docs/knowledgebase/marketplace-intelligence',
+			category: 'marketplace_boosters',
+		},
+		{
 			id: 'marketplace-compliance',
 			name: __('Compliance', 'multivendorx'),
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
 			icon: 'adminfont-compliance',
 			doc_link: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=non-compliance`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=compliance`,
 			// pro_module: true,
 			category: 'marketplace_boosters',
 		},
@@ -511,6 +520,7 @@ export default {
 			pro_module: true,
 			category: 'marketplace_boosters',
 		},
+		
 		{
 			id: 'facilitator',
 			name: __('Facilitator', 'multivendorx'),
@@ -538,7 +548,7 @@ export default {
 			icon: 'adminfont-franchises-module',
 			doc_link: 'https://multivendorx.com/docs/knowledgebase/NA',
 			settings_link: `${appLocalizer.plugin_url}settings&subtab=franchises`,
-			pro_module: false,
+			pro_module: true,
 			category: ['store_management', 'marketplace_boosters'],
 		},
 
@@ -560,7 +570,7 @@ export default {
 			icon: 'adminfont-advertisement',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/advertise-product/',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=advertising`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=product-advertising`,
 			pro_module: true,
 			category: 'marketplace_boosters',
 		},
@@ -581,7 +591,7 @@ export default {
 			icon: 'adminfont-store-inventory',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/store-inventory',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=store-inventory`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=inventory`,
 			pro_module: true,
 			category: 'marketplace_boosters',
 		},
@@ -612,7 +622,7 @@ export default {
 			id: 'knowledgebase',
 			name: __('Knowledgebase', 'multivendorx'),
 			desc: 'Guides, tutorials, and FAQs shared with stores by the admin.',
-			icon: 'adminfont-knowledgebase',
+			icon: 'adminfont-book',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/knowledgebase/',
 			pro_module: false,

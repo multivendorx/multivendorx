@@ -144,12 +144,12 @@ class Rest extends \WP_REST_Controller {
             $order          = sanitize_text_field( $request->get_param( 'order' ) );
             $overall_rating = $request->get_param( 'overall_rating' );
             $dashboard      = $request->get_param( 'dashboard' );
-            
+
             $range = Utill::normalize_date_range(
-                $request->get_param('startDate'),
-                $request->get_param('endDate')
+                $request->get_param( 'startDate' ),
+                $request->get_param( 'endDate' )
             );
-            $args           = array();
+            $args  = array();
 
             // --- Step 3: Apply Store Filter ---.
             if ( $store_id ) {
@@ -171,11 +171,11 @@ class Rest extends \WP_REST_Controller {
             $args['limit']  = $limit;
             $args['offset'] = $offset;
 
-            if (! empty($range['start_date'])) {
+            if ( ! empty( $range['start_date'] ) ) {
                 $args['start_date'] = $range['start_date'];
             }
-            
-            if (! empty($range['end_date'])) {
+
+            if ( ! empty( $range['end_date'] ) ) {
                 $args['end_date'] = $range['end_date'];
             }
 
@@ -202,9 +202,9 @@ class Rest extends \WP_REST_Controller {
                 $args['order_dir'] = 'DESC';
             }
 
-            if ($dashboard) {
-                if (get_transient('multivendorx_review_data_' . $store_id)) {
-                    return get_transient('multivendorx_review_data_' . $store_id);
+            if ( $dashboard ) {
+                if ( get_transient( 'multivendorx_review_data_' . $store_id ) ) {
+                    return get_transient( 'multivendorx_review_data_' . $store_id );
                 }
             }
 
@@ -264,8 +264,8 @@ class Rest extends \WP_REST_Controller {
             $rejected_args['status'] = 'rejected';
             $rejected_count          = Util::get_review_information( $rejected_args );
 
-            if ($dashboard) {
-                set_transient('multivendorx_review_data_' . $store_id, array( 'items' => $formatted ), DAY_IN_SECONDS);
+            if ( $dashboard ) {
+                set_transient( 'multivendorx_review_data_' . $store_id, array( 'items' => $formatted ), DAY_IN_SECONDS );
             }
 
             // --- Step 9: Return Final Response ---.

@@ -36,13 +36,12 @@ class PaypalPayout {
      */
     public function get_settings() {
         return array(
-            'icon'         => 'adminfont-form-paypal-email',
-            'id'           => $this->get_id(),
-            'label'        => 'Paypal Payout',
-            'enableOption' => true,
-            'disableBtn'   => true,
-            'desc'         => 'Full marketplace solution with instant payouts, comprehensive dispute handling, and global coverage. Best for established marketplaces.',
-            'formFields'   => array(
+            'icon'       => 'adminfont-form-paypal-email',
+            'id'         => $this->get_id(),
+            'label'      => 'Paypal Payout',
+            'disableBtn' => true,
+            'desc'       => 'Full marketplace solution with instant payouts, comprehensive dispute handling, and global coverage. Best for established marketplaces.',
+            'formFields' => array(
                 array(
                     'key'     => 'payment_mode',
                     'type'    => 'setting-toggle',
@@ -110,32 +109,32 @@ class PaypalPayout {
     public function process_payment( $store_id, $amount, $order_id = null, $transaction_id = null, $note = null ) {
         $payment_settings = MultiVendorX()->setting->get_setting( 'payment_methods', array() );
         $paypal_settings  = $payment_settings['paypal-payout'] ?? null;
-    
+
         if ( ! $paypal_settings ) {
             return;
         }
-    
+
         $status = 'failed';
-    
+
         $store          = new Store( $store_id );
         $receiver_email = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) === 'paypal-payout'
             ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['paypal_email'] )
             : '';
-    
+
         $client_id     = $paypal_settings['client_id'] ?? '';
         $client_secret = $paypal_settings['client_secret'] ?? '';
         $sandbox       = ( 'sandbox' === $paypal_settings['payment_mode'] );
-    
+
         if ( ! $receiver_email || ! $client_id || ! $client_secret ) {
             return;
         }
-    
+
         $access_token = $this->get_paypal_access_token( $client_id, $client_secret, $sandbox );
-    
+
         if ( ! $access_token ) {
             return;
         }
-    
+
         $payout_response = $this->create_paypal_payout(
             $access_token,
             $receiver_email,
@@ -144,11 +143,11 @@ class PaypalPayout {
             $store_id,
             $sandbox
         );
-    
+
         if ( ! empty( $payout_response['batch_header']['payout_batch_id'] ) ) {
             $status = 'success';
         }
-    
+
         do_action(
             'multivendorx_after_payment_complete',
             $store_id,
@@ -159,9 +158,8 @@ class PaypalPayout {
             $note,
             $amount
         );
-    
     }
-    
+
     /**
      * Get PayPal access token using client credentials
      *
@@ -176,7 +174,7 @@ class PaypalPayout {
         $url = $sandbox
             ? 'https://api.sandbox.paypal.com/v1/oauth2/token'
             : 'https://api.paypal.com/v1/oauth2/token';
-    
+
         $args = array(
             'method'  => 'POST',
             'timeout' => 30,
@@ -187,20 +185,20 @@ class PaypalPayout {
             ),
             'body'    => 'grant_type=client_credentials',
         );
-    
+
         $response = wp_remote_post( $url, $args );
-    
+
         if ( is_wp_error( $response ) ) {
             return false;
         }
-    
+
         $code = wp_remote_retrieve_response_code( $response );
         $body = wp_remote_retrieve_body( $response );
-    
+
         $data = json_decode( $body, true );
 
         return ! empty( $data['access_token'] ) ? $data['access_token'] : false;
-    }    
+    }
 
     /**
      * Create PayPal payout

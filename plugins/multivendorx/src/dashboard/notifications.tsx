@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { CommonPopup, getApiLink } from 'zyra';
+import {getApiLink, Skeleton } from 'zyra';
 import axios from 'axios';
-import { Skeleton } from '@mui/material';
 import { __ } from '@wordpress/i18n';
 
 type NotificationsProps = {
@@ -62,16 +61,16 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 				<>
 					<li>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 						<div className="item">
-							<Skeleton variant="text" width={400} height={70} />
+							<Skeleton width={400} height={70} />
 						</div>
 					</li>
 				</>

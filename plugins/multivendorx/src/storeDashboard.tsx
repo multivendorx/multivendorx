@@ -91,7 +91,7 @@ const Dashboard = () => {
 
 	// dark mode
 	useEffect(() => {
-		document.body.classList.add(appLocalizer.settings_databases_value['store-appearance']
+		document.body.classList.add(appLocalizer.settings_databases_value['appearance']
 			?.store_color_settings?.selectedPalette);
 		document.body.classList.toggle('dark', isDarkMode);
 
@@ -274,7 +274,7 @@ const Dashboard = () => {
 	};
 
 	const store_dashboard_logo =
-		appLocalizer.settings_databases_value['store-appearance']
+		appLocalizer.settings_databases_value['appearance']
 			?.store_dashboard_site_logo || '';
 
 	const availableStores = appLocalizer.store_ids.filter((store) => {

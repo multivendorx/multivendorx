@@ -5,7 +5,7 @@ const methods = appLocalizer?.all_payments
 	: [];
 
 export default {
-	id: 'payment-integration',
+	id: 'withdrawal-methods',
 	priority: 3,
 	name: __('Withdrawal Methods', 'multivendorx'),
 	desc: __(
@@ -19,7 +19,7 @@ export default {
 		{
 			key: 'payment_methods',
 			type: 'expandable-panel',
-			buttonEnable: true,
+			// buttonEnable: true,
 			modal: methods,
 		},
 	],

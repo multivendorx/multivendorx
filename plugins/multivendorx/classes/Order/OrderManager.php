@@ -146,20 +146,20 @@ class OrderManager {
             }
 
             $store_order->save();
-            $store = new Store($store_id);
+            $store = new Store( $store_id );
 
             do_action(
-            'multivendorx_notify_new_order',
+                'multivendorx_notify_new_order',
                 'new_order',
                 array(
-                    'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                    'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+                    'admin_email'    => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
+                    'admin_phn'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'store_phn'      => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                     'customer_email' => $store_order->get_billing_email(),
-                    'customer_phn' => $store_order->get_billing_phone(),
-                    'order_id'    => $store_order->get_id(),
-                    'category'    => 'activity',
+                    'customer_phn'   => $store_order->get_billing_phone(),
+                    'order_id'       => $store_order->get_id(),
+                    'category'       => 'activity',
                 )
             );
         }
@@ -361,12 +361,12 @@ class OrderManager {
      * @return  void
      */
     public static function create_shipping_item( $order, $items ) {
-        $store_id     = $items['store_id'];
-        $parent_order = $items['parent_order'];
+        $store_id       = $items['store_id'];
+        $parent_order   = $items['parent_order'];
         $shipping_items = $parent_order->get_items( 'shipping' );
 
         foreach ( $shipping_items as $item_id => $item ) {
-            $shipping_store_id = (int)$item->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
+            $shipping_store_id = (int) $item->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
             if ( $shipping_store_id === $store_id ) {
                 $shipping = new \WC_Order_Item_Shipping();
                 $shipping->set_props(

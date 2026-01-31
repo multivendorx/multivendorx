@@ -702,7 +702,7 @@ const ProductReport: React.FC = () => {
 																	__html:
 																		product.price_html ||
 																		product.price ||
-																		'—',
+																		'-',
 																}}
 															/>
 														</div>

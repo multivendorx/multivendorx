@@ -20,7 +20,7 @@ const ContactInformation = () => {
 		{ label: string; value: string }[]
 	>([]);
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']
+		appLocalizer.settings_databases_value['store-permissions']
 			?.edit_store_info_activation || [];
 	const { modules } = useModules();
 
@@ -94,8 +94,6 @@ const ContactInformation = () => {
 					<BasicInput
 						name="phone"
 						value={formData.phone}
-						 
-						descClass="settings-metabox-description"
 						onChange={handleChange}
 						readOnly={settings.includes('store_contact')}
 					/>
@@ -109,8 +107,6 @@ const ContactInformation = () => {
 						type="email"
 						name="email"
 						value={formData.email}
-						 
-						descClass="settings-metabox-description"
 						onChange={handleChange}
 						readOnly={settings.includes('store_contact')}
 					/>
@@ -126,8 +122,6 @@ const ContactInformation = () => {
 					>
 						<BasicInput
 							name="live_chat"
-							 
-							descClass="settings-metabox-description"
 						/>
 					</FormGroup>
 				)}

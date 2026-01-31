@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "multivendorx/contact-info",
 	"title": "Contact Info (w)",
-	"category": "widgets",
+	"category": "multivendorx-store-shop",
 	"icon": "email",
 	"description": "A contact form block to send email.",
 	"supports": {

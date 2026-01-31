@@ -256,7 +256,7 @@ const HelpSupport: React.FC = () => {
 								</div>
 								<div className="des">
 									{__(
-										'Watch our top tutorial videos and learn how to set up your marketplace, manage vendors, and enable subscriptions - all in just a few easy steps.',
+										'Watch our top tutorial videos and learn how to set up your marketplace, manage stores, and enable subscriptions - all in just a few easy steps.',
 										'multivendorx'
 									)}
 								</div>

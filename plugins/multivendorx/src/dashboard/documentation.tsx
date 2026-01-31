@@ -32,8 +32,7 @@ const Documentation: React.FC = () => {
 			},
 		})
 			.then((response) => {
-				// response.data.items = array of docs from API
-				const apiData = response.data.items || [];
+				const apiData = response.data || [];
 				setData(apiData);
 			})
 			.catch(() => {

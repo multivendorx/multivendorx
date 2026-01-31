@@ -38,19 +38,16 @@
         }
       }
 
-      .expandable-panel-group {
-        width: 60%;
-      }
-    }
-
-    .form-group:has(.settings-form-label) {
-      .settings-input-content {
-        width: 72%;
+      &.full-width,
+      &:has(.settings-metabox-note){
+        .settings-input-content{
+          width: 100%;
+        }
       }
     }
 
     .settings-input-content {
-      width: 100%;
+      width: 72%;
 
       .after {
         font-size: 0.95rem;

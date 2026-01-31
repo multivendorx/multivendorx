@@ -13,11 +13,13 @@ if ( ! $store_name ) {
 }
 
 // Optionally, get WP template
-$block_template = get_posts( array(
-    'post_type' => 'wp_template',
-    'name'      => 'multivendorx-store',
-    'posts_per_page' => 1,
-) );
+$block_template = get_posts(
+    array(
+		'post_type'      => 'wp_template',
+		'name'           => 'multivendorx-store',
+		'posts_per_page' => 1,
+    )
+);
 
 get_header();
 

@@ -6,7 +6,7 @@ body:has(.admin-main-wrapper) {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  background: rgb(246 248 260 / 50%) !important;
+  // background: rgb(246 248 260 / 50%) !important;
 }
 
 .sb-show-main {
@@ -62,15 +62,15 @@ a {
   outline: none;
 }
 
-body:has(.admin-main-wrapper) {
-  background: #f2f5fd8f;
-}
+// body:has(.admin-main-wrapper) {
+//   background: #f2f5fd8f;
+// }
 
 #admin-main-wrapper {
   margin-left: -1.25rem;
 }
 
-.multivendorx-main-wrapper,
+.admin-main-wrapper,
 #multivendorx-setup-wizard {
   font-family: Figtree, sans-serif;
 
@@ -622,7 +622,7 @@ $index: 1;
   padding: .125rem .438rem;
   position: absolute;
   right: 1rem;
-  top: 0.5rem;
+  top: 1rem;
   transform: translateY(-50%);
   width: fit-content;
   display: flex;
@@ -1117,7 +1117,7 @@ $index: 1;
     display: flex;
     gap: 0.125rem;
 
-    .inline-action-btn:has(.delete) {
+    .inline-action-btn:has(-delete) {
       color: $accent-color;
     }
   }

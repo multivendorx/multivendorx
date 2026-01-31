@@ -8,7 +8,7 @@ const GeneralSettings = () => {
 	const [formData, setFormData] = useState<{ [key: string]: any }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']
+		appLocalizer.settings_databases_value['store-permissions']
 			?.edit_store_info_activation || [];
 	useEffect(() => {
 		if (!id) {
@@ -65,8 +65,6 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="name"
-						 
-						descClass="settings-metabox-description"
 						value={formData.name || ''}
 						onChange={handleChange}
 						readOnly={!settings.includes('store_name')}
@@ -79,8 +77,6 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="slug"
-						 
-						descClass="settings-metabox-description"
 						value={formData.slug || ''}
 						onChange={handleChange}
 					/>
@@ -107,8 +103,6 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="messageToBuyer"
-						 
-						descClass="settings-metabox-description"
 						value={formData.messageToBuyer || ''}
 						onChange={handleChange}
 					/>

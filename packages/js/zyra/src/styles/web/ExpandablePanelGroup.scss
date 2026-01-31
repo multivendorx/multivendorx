@@ -116,6 +116,23 @@
             .right-section {
                 display: flex;
                 align-items: center;
+                gap: 0.5rem;
+
+                .price-field {
+                    font-size: 1.25rem;
+                    font-weight: 500;
+                    display: flex;
+                    flex-direction: column;
+
+                    .desc {
+                        padding-left: 0.5rem;
+                    }
+                }
+
+                .settings-btn {
+                    display: flex;
+                    gap: 0.5rem;
+                }
 
                 .disable-icon {
                     color: gray;
@@ -237,7 +254,7 @@
                 .clickable-items {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 0.5rem;    
+                    gap: 0.5rem;
                 }
             }
         }

@@ -121,11 +121,11 @@ class Notifications extends \WP_REST_Controller {
 
             if ( $header_notifications ) {
                 $store_id = $request->get_param( 'store_id' );
-                $count = $request->get_param( 'count' );
-                
-                if ($count) {
-                    $results = MultiVendorX()->notifications->get_all_notifications( ['count' => true] );
-                    return rest_ensure_response($results);
+                $count    = $request->get_param( 'count' );
+
+                if ( $count ) {
+                    $results = MultiVendorX()->notifications->get_all_notifications( array( 'count' => true ) );
+                    return rest_ensure_response( $results );
                 }
                 $args = array(
                     'limit'    => 10,
@@ -225,19 +225,19 @@ class Notifications extends \WP_REST_Controller {
                 );
             }
 
-            $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
-            $page   = max( intval( $request->get_param( 'page' ) ), 1 );
-            $offset = ( $page - 1 ) * $limit;
+            $limit      = max( intval( $request->get_param( 'row' ) ), 10 );
+            $page       = max( intval( $request->get_param( 'page' ) ), 1 );
+            $offset     = ( $page - 1 ) * $limit;
             $start_date = $request->get_param( 'start_date' );
             $end_date   = $request->get_param( 'end_date' );
             $start_date = $start_date ? gmdate( 'Y-m-d H:i:s', strtotime( $start_date ) ) : '';
             $end_date   = $end_date ? gmdate( 'Y-m-d H:i:s', strtotime( $end_date ) ) : '';
 
             $args = array(
-                'limit'    => $limit,
-                'offset'   => $offset,
-                'category' => $request->get_param( 'notification' ) ? 'notification' : 'activity',
-                'store_id' => $request->get_param( 'store_id' ) ? $request->get_param( 'store_id' ) : '',
+                'limit'      => $limit,
+                'offset'     => $offset,
+                'category'   => $request->get_param( 'notification' ) ? 'notification' : 'activity',
+                'store_id'   => $request->get_param( 'store_id' ) ? $request->get_param( 'store_id' ) : '',
                 'start_date' => $start_date ?: null,
 				'end_date'   => $end_date ?: null,
             );

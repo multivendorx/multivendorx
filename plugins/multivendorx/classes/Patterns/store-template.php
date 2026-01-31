@@ -1,10 +1,10 @@
 <?php
 return array(
-    'name' => 'basic-store-template',
-    'title' => __('Basic Store Template', 'multivendorx'),
-    'description' => __('A simple starter layout for a store page.', 'multivendorx'),
-    'keywords' => array('store', 'basic', 'layout'),
-    'content' => '
+    'name'        => 'basic-store-template',
+    'title'       => __( 'Basic Store Template', 'multivendorx' ),
+    'description' => __( 'A simple starter layout for a store page.', 'multivendorx' ),
+    'keywords'    => array( 'store', 'basic', 'layout' ),
+    'content'     => '
     <!-- wp:group {"tagName":"main","layout":{"inherit":true,"type":"constrained"}} -->
 <main class="wp-block-group"><!-- wp:columns {"align":"wide"} -->
 <div class="wp-block-columns alignwide"><!-- wp:column -->

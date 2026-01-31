@@ -153,7 +153,7 @@ const StoreStatus: React.FC = () => {
 					currentTab={initialTab}
 					getForm={GetForm}
 					prepareUrl={(tabid: string) =>
-						`?page=multivendorx#&tab=settings&subtab=store-status-control&tabId=${tabid}`
+						`?page=multivendorx#&tab=settings&subtab=store-status&tabId=${tabid}`
 					}
 					appLocalizer={appLocalizer}
 					settingName="Settings"

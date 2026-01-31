@@ -1,6 +1,6 @@
 import React from 'react';
 import "../../styles/web/UI/InfoItem.scss";
-import { Skeleton } from '@mui/material';
+import Skeleton from './Skeleton';
 
 type AvatarProps = {
     image?: string;
@@ -90,30 +90,29 @@ const InfoItem: React.FC<InfoItemProps> = ({
 
                             <div className="details">
                                 <div className="name">
-                                    <Skeleton variant="text" width={180} height={24} />
+                                    <Skeleton width={180} height={24} />
                                     {badges.length > 0 && (
                                         <Skeleton
                                             variant="rectangular"
                                             width={60}
                                             height={20}
-                                            style={{ marginLeft: 8, borderRadius: 10 }}
                                         />
                                     )}
                                 </div>
                                 {descriptions &&(
                                     <div className="des">
-                                        <Skeleton variant="text" width="90%" />
+                                        <Skeleton width="90%" />
                                     </div>
                                 )}
                                 <div className="des">
-                                    <Skeleton variant="text" width="75%" />
+                                    <Skeleton width="75%" />
                                 </div>
                             </div>
                         </div>
                         {amount !== undefined && (
                             <div className="right-details">
                                 <div className="price">
-                                    <Skeleton variant="text" width={70} />
+                                    <Skeleton   width={70} />
                                 </div>
                             </div>
                         )}

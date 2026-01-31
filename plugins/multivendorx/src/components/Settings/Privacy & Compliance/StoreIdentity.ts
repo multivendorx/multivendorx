@@ -1,12 +1,12 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'identity-verification',
+	id: 'store-identity',
 	priority: 3,
-	name: __('Store Identity', 'mvx-pro'),
+	name: __('Store Identity', 'multivendorx'),
 	desc: __(
 		'Seller verification confirms a store identity with address, contact, and social profiles-building trust and boosting buyer confidence.',
-		'mvx-pro'
+		'multivendorx'
 	),
 	icon: 'adminfont-identity-verification',
 	submitUrl: 'settings',
@@ -69,7 +69,7 @@ export default {
 			moduleEnabled: 'marketplace-compliance',
 			proSetting: true,
 			label: __('Verification methods', 'multivendorx'),
-			buttonEnable: true,
+			// buttonEnable: true,
 			addNewBtn: true,
 			addNewTemplate: {
 				label: 'New Verification Method',

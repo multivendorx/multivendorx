@@ -121,7 +121,7 @@ class Payments {
 
         return new \WP_Error( sprintf( 'Call to unknown class %s.', $class ) );
     }
-	//this a hack need to fix later
+	// this a hack need to fix later
     private static $store_payment_settings = null;
     /**
      * Get all store payment settings.

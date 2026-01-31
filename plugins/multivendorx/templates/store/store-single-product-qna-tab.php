@@ -3,21 +3,21 @@
 /**
  * Q&A tab container - all content loaded via AJAX
  */
-$product_id = $args['product_id'];
-$current_url = get_permalink($product_id);
-$myaccount_url = wc_get_page_permalink('myaccount');
-$login_url = add_query_arg('redirect_to', $current_url, $myaccount_url);
+$product_id    = $args['product_id'];
+$current_url   = get_permalink( $product_id );
+$myaccount_url = wc_get_page_permalink( 'myaccount' );
+$login_url     = add_query_arg( 'redirect_to', $current_url, $myaccount_url );
 ?>
 
-<div id="product-qna" data-product="<?php echo esc_attr($product_id); ?>">
+<div id="product-qna" data-product="<?php echo esc_attr( $product_id ); ?>">
 
     <div class="header">
-        <h3><?php echo esc_html__('Questions about this product', 'multivendorx'); ?></h3>
+        <h3><?php echo esc_html__( 'Questions about this product', 'multivendorx' ); ?></h3>
 
         <form class="woocommerce-form qna-search">
             <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
                 <input type="text" id="qna-search" class="woocommerce-Input woocommerce-Input--text input-text"
-                    placeholder="<?php echo esc_attr__('Have a question? Search for an answer.', 'multivendorx'); ?>">
+                    placeholder="<?php echo esc_attr__( 'Have a question? Search for an answer.', 'multivendorx' ); ?>">
             </p>
         </form>
     </div>
@@ -26,27 +26,27 @@ $login_url = add_query_arg('redirect_to', $current_url, $myaccount_url);
     <ul id="qna-list"></ul>
     <div id="qna-no-results-container" class="qna-empty" style="display:none;">
         <span id="qna-no-results-message">
-            <?php echo esc_html__('Have not discovered the information you seek', 'multivendorx'); ?>
+            <?php echo esc_html__( 'Have not discovered the information you seek', 'multivendorx' ); ?>
         </span>
         <button
             type="submit"
             id="qna-direct-submit"
             class="woocommerce-button button">
-            <?php echo esc_html__('Ask now', 'multivendorx'); ?>
+            <?php echo esc_html__( 'Ask now', 'multivendorx' ); ?>
         </button>
     </div>
     <!-- Success Message -->
     <div id="qna-success-message" class="qna-notice" style="display:none;">
-        <?php echo esc_html__('Your question has been submitted successfully. It will appear once answered.', 'multivendorx'); ?>
+        <?php echo esc_html__( 'Your question has been submitted successfully. It will appear once answered.', 'multivendorx' ); ?>
     </div>
 
     <!-- Login Prompt Only -->
-    <?php if (!is_user_logged_in()): ?>
+    <?php if ( ! is_user_logged_in() ) : ?>
         <div class="login-wrapper">
-            <div class="description"><?php echo esc_html__('Can’t find your answer?', 'multivendorx'); ?></div>
+            <div class="description"><?php echo esc_html__( 'Can’t find your answer?', 'multivendorx' ); ?></div>
             <a class="button"
-                href="<?php echo esc_url($login_url); ?>"><?php echo esc_html__('Log in', 'multivendorx'); ?></a>
-            <span><?php echo esc_html__('to share your question with us.', 'multivendorx'); ?></span>
+                href="<?php echo esc_url( $login_url ); ?>"><?php echo esc_html__( 'Log in', 'multivendorx' ); ?></a>
+            <span><?php echo esc_html__( 'to share your question with us.', 'multivendorx' ); ?></span>
         </div>
     <?php endif; ?>
 

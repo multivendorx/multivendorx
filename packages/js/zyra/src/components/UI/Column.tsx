@@ -14,8 +14,6 @@ const Column: React.FC<ColumnProps> = ({
   children,
   row = false,
 }) => {
-  // const columnClass = `card-wrapper column-${grid}`;
-  // const columnClasses = `${columnClass} ${className}`.trim();
 
   return <div className={`card-wrapper ${row ? 'row' : ''} ${className}`}
               data-cols={grid}

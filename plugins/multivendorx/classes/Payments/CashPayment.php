@@ -37,13 +37,12 @@ class CashPayment {
      */
     public function get_settings() {
         return array(
-            'icon'         => 'adminfont-cash',
-            'id'           => $this->get_id(),
-            'label'        => 'Cash',
-            'enableOption' => true,
-            'disableBtn'   => true,
-            'desc'         => 'Confirm and record payouts made directly to stores via cash.',
-            'formFields'   => array(),
+            'icon'       => 'adminfont-cash',
+            'id'         => $this->get_id(),
+            'label'      => 'Cash',
+            'disableBtn' => true,
+            'desc'       => 'Confirm and record payouts made directly to stores via cash.',
+            'formFields' => array(),
         );
     }
 

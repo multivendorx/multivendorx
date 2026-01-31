@@ -6,6 +6,7 @@
  */
 
 namespace MultiVendorX\Privacy;
+
 use MultiVendorX\Store\Store;
 use MultiVendorX\Store\StoreUtil;
 use MultiVendorX\Utill;
@@ -19,7 +20,7 @@ use MultiVendorX\StoreReview\Util as Rating;
  * @author      MultiVendorX
  */
 class Util {
-    
+
     /**
      * Get store info
      *
@@ -49,7 +50,7 @@ class Util {
                         break;
                     }
                 }
-            }    
+            }
             $name        = $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
             $description = $store->get( Utill::STORE_SETTINGS_KEYS['description'] );
             $phone       = $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ) ?? '';
@@ -68,24 +69,22 @@ class Util {
                 }
             }
 
-
             $overall_reviews = Rating::get_overall_rating( $store->get_id() );
             $reviews         = Rating::get_reviews_by_store( $store->get_id() );
 
             return array(
-                'id'          => $store->get_id(),
-                'name'        => $name,
-                'description' => $description,
-                'logo_html'   => $logo_html,
-                'owner_id'    => $store_owner_id,
-                'owner_name'  => $store_owner_name,
-                'phone'       => $phone,
-                'email'       => $email,
-                'address'     => $address,
-                'overall_reviews'    => $overall_reviews,
-                'total_reviews'      => is_array( $reviews ) ? count( $reviews ) : 0,
+                'id'              => $store->get_id(),
+                'name'            => $name,
+                'description'     => $description,
+                'logo_html'       => $logo_html,
+                'owner_id'        => $store_owner_id,
+                'owner_name'      => $store_owner_name,
+                'phone'           => $phone,
+                'email'           => $email,
+                'address'         => $address,
+                'overall_reviews' => $overall_reviews,
+                'total_reviews'   => is_array( $reviews ) ? count( $reviews ) : 0,
             );
         }
     }
-
 }

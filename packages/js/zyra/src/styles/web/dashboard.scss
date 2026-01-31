@@ -13,7 +13,7 @@
     padding: 0;
 }
 
-.multivendorx-main-wrapper {
+.admin-main-wrapper {
     .col {
         width: 100%;
     }
@@ -476,5 +476,6 @@
     border: $border-light-small;
     z-index: 9;
     width: 100%;
+    min-width: 8rem;
     padding: 0.625rem;
 }

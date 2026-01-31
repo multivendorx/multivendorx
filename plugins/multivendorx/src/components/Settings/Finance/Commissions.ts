@@ -47,10 +47,10 @@ const nestedFields = [
 ];
 
 export default {
-	id: 'store-commissions',
+	id: 'commissions',
 	priority: 1,
 	name: __('Commissions', 'multivendorx'),
-	tabTitle: 'Commission share from the seller’s product/listing:',
+	tabTitle: 'Commission share from the seller’s product/listing',
 	desc: __(
 		'Decide how your marketplace takes commission from sales.',
 		'multivendorx'
@@ -66,6 +66,7 @@ export default {
 				'multivendorx'
 			),
 		},
+
 		{
 			key: 'commission_type',
 			type: 'setting-toggle',
@@ -257,7 +258,7 @@ export default {
 				'Configure how taxes are treated in commission calculations.',
 				'multivendorx'
 			),
-			desc: __( '<strong>Example setup:</strong><br> Product price = ₹1,000<br> Tax rate = 10% → ₹100<br> Marketplace commission rate = 10%<ul> <li><strong>Marketplace share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Marketplace receives tax = ₹100<br> Marketplace total earning = ₹200 (commission + tax)<br> Store payout = ₹900 (tax not included)</li> <li><strong>Store share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Store earnings before tax = ₹900<br> Tax added to store earnings = ₹100<br> Final store payout = ₹1,000<br> Marketplace earning = ₹100 (commission only)</li> <li><strong>Commission based tax</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Tax on marketplace commission = ₹10<br> Tax on store earnings = ₹90<br> Marketplace total earning = ₹110 (commission + tax share)<br> Store payout = ₹990 (earnings + tax share)</li> </ul>', 'multivendorx' ),
+			desc: __('<strong>Example setup:</strong><br> Product price = ₹1,000<br> Tax rate = 10% → ₹100<br> Marketplace commission rate = 10%<ul> <li><strong>Marketplace share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Marketplace receives tax = ₹100<br> Marketplace total earning = ₹200 (commission + tax)<br> Store payout = ₹900 (tax not included)</li> <li><strong>Store share</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Store earnings before tax = ₹900<br> Tax added to store earnings = ₹100<br> Final store payout = ₹1,000<br> Marketplace earning = ₹100 (commission only)</li> <li><strong>Commission based tax</strong><br> Customer pays = ₹1,100 (₹1,000 + ₹100 tax)<br> Marketplace commission = 10% of ₹1,000 = ₹100<br> Tax on marketplace commission = ₹10<br> Tax on store earnings = ₹90<br> Marketplace total earning = ₹110 (commission + tax share)<br> Store payout = ₹990 (earnings + tax share)</li> </ul>', 'multivendorx'),
 			options: [
 				{
 					key: 'no_tax',
@@ -323,7 +324,7 @@ export default {
 				'Set a platform fee as a fixed, percentage, or combined rate calculated on the product/listing price. Choose whether the fee is paid by the customer at checkout or deducted from the store’s commission.',
 				'multivendorx'
 			),
-			desc: __('<strong>Example setup:</strong><br>' + 'Total product/listing price = $100<br>' + 'Marketplace commission = $2 + 10%<br>' + 'Platform fee = 5%<br>' + '<em>(Platform fee is calculated on the total product/listing price)</em>' + '<ul>' + '<li><strong>Option 1 – Added to the customer’s order total:</strong><br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Customer pays = $100 + $5 = $105<br>' + 'Store receives = $100 − $12 = $88</li>' + '<li><strong>Option 2 – Deducted from the store’s commission:</strong><br>' + 'Customer pays = $100<br>' + 'Marketplace commission = $2 + 10% of $100 = $12<br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Store receives = $100 − (12 + 5) = $83</li>' + '</ul>', 'multivendorx'),
+			desc: __('<strong>Example setup:</strong><br>' + 'Total product/listing price = $100<br>' + 'Marketplace commission = $2 + 10%<br>' + 'Platform fee = 5%<br>' + '<em>(Platform fee is calculated on the total product/listing price)</em><br>' + '<ul>' + '<li><strong>Option 1 – Added to the customer’s order total:</strong><br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Customer pays = $100 + $5 = $105<br>' + 'Store receives = $100 − $12 = $88</li>' + '<li><strong>Option 2 – Deducted from the store’s commission:</strong><br>' + 'Customer pays = $100<br>' + 'Marketplace commission = $2 + 10% of $100 = $12<br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Store receives = $100 − (12 + 5) = $83</li>' + '</ul>', 'multivendorx'),
 			nestedFields: [
 				{
 					key: 'commission_fixed',
@@ -331,7 +332,7 @@ export default {
 					preInsideText: __('$', 'multivendorx'),
 					size: '8rem',
 					preText: 'Charge a fixed',
-					postText: '+',
+					postText: '+'
 				},
 				{
 					key: 'commission_percentage',
@@ -405,7 +406,7 @@ export default {
 			moduleEnabled: 'marketplace-gateway',
 			single: true,
 			desc: __(
-				'<strong>Use this setting</strong> to manage transaction fees for different payment methods. You can set a default fee or define specific fees for each payment mode, such as bank transfer or cash on delivery.<br><strong>Example setup:</strong><br> Total order price = $100<br> Marketplace commission rate = 20%<br> Gateway fees = $10 + 5% <ul> <li>Customer pays = $100</li> <li>Marketplace commission = 20% of $100 = $20</li> <li>Gateway fees = $10 + 5% of $100 = $15</li> <li>Total marketplace earning = $20 + $15 = $35</li> <li>Store receives = $100 - $35 = $65</li> </ul>',			
+				'<strong>Use this setting</strong> to manage transaction fees for different payment methods. You can set a default fee or define specific fees for each payment mode, such as bank transfer or cash on delivery.<br><strong>Example setup:</strong><br> Total order price = $100<br> Marketplace commission rate = 20%<br> Gateway fees = $10 + 5% <ul> <li>Customer pays = $100</li> <li>Marketplace commission = 20% of $100 = $20</li> <li>Gateway fees = $10 + 5% of $100 = $15</li> <li>Total marketplace earning = $20 + $15 = $35</li> <li>Store receives = $100 - $35 = $65</li> </ul>',
 				'multivendorx'
 			),
 			nestedFields,

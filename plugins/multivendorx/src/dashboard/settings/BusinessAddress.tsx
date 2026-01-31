@@ -236,7 +236,7 @@ const BusinessAddress = () => {
 
 	// Then update your autoSave function:
 	const autoSave = (updatedData: any) => {
-		if (settings['store-capability']
+		if (settings['store-permissions']
 			?.edit_store_info_activation || [].includes('store_address')) {
 			return;
 		}
@@ -313,8 +313,6 @@ const BusinessAddress = () => {
 					<BasicInput
 						name="city"
 						value={addressData.city}
-
-						descClass="settings-metabox-description"
 						onChange={handleAddressChange}
 					/>
 				</FormGroup>

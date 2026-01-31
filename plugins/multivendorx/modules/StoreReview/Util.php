@@ -279,7 +279,7 @@ class Util {
         if ( $overall === null ) {
             return 0.00;
         }
-        
+
         return round( (float) $overall, 2 );
     }
 
