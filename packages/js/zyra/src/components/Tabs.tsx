@@ -1,5 +1,8 @@
+// External Dependencies
 import React, { useState, useEffect, ReactNode, JSX } from 'react';
 import { LinkProps } from 'react-router-dom';
+
+// Internal Dependencies
 import '../styles/web/Tabs.scss';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 
