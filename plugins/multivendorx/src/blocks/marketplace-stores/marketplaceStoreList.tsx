@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getApiLink, GoogleMap, Mapbox, useModules } from 'zyra';
+import { getApiLink, GoogleMap, Mapbox } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import Select from 'react-select';
 
@@ -33,11 +33,30 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const [product, setProduct] = useState<[]>([]);
 	const [page, setPage] = useState(1);
 	const [total, setTotal] = useState(0);
-	const { modules } = useModules();
 	const [apiKey, setApiKey] = useState('');
 	const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
+	const [addressData, setAddressData] = useState({
+		location_lat: '',
+		location_lng: '',
+		address: '',
+		city: '',
+		state: '',
+		country: '',
+		zip: '',
+		timezone: '',
+	});
+	const [filters, setFilters] = useState({
+		address: '',
+		distance: '',
+		miles: '',
+		sort: orderby,
+		order: order,
+		category: category,
+		product: '',
+		location_lat: '',
+		location_lng: '',
+	});
 
-	const storesList = (window as any).storesList;
 	const settings = storesList.settings_databases_value;
 
 	const [isUserLocation, setIsUserLocation] = useState(false);
@@ -54,30 +73,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		}
 	}, [settings]);
 
-	const [addressData, setAddressData] = useState({
-		location_lat: '',
-		location_lng: '',
-		address: '',
-		city: '',
-		state: '',
-		country: '',
-		zip: '',
-		timezone: '',
-	});
-
 	const totalPages = Math.ceil(total / perPage);
-
-	const [filters, setFilters] = useState({
-		address: '',
-		distance: '',
-		miles: '',
-		sort: orderby,
-		order: order,
-		category: category,
-		product: '',
-		location_lat: '',
-		location_lng: '',
-	});
 
 	useEffect(() => {
 		axios
@@ -212,7 +208,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 
 	const renderMapComponent = () => {
-		if (!modules.includes('geo-location') || !apiKey) {
+		if (!apiKey) {
 			return null;
 		}
 
