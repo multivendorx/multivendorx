@@ -70,6 +70,7 @@ export default {
 				'multivendorx'
 			),
 			addNewBtn: true,
+			min: 1,
 			addNewTemplate: {
 				label: 'New Reasons',
 			},

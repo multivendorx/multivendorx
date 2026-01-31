@@ -17,13 +17,14 @@ export default {
 		{
 			key: 'shipping_stage',
 			type: 'expandable-panel',
-			label: __('Delivery progress stages', 'multivendorx'),
+			label: __('Delivery progress stages', 'multivendorx'),	
 			settingDescription: __(
 				'Steps customers see as their order moves toward delivery. These stages show up in order tracking so customers know where their package is.',
 				'multivendorx'
 			),
 			name: 'abuse_report_reasons',
 			addNewBtn: true,
+			min: 2,
 			addNewTemplate: {
 				label: 'New progress stages',
 				desc: 'dummy desc',
