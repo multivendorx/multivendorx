@@ -24,7 +24,6 @@ export default {
 				'Control which shipping options stores can use to calculate and manage delivery costs for their products. Enable or disable specific shipping methods to decide how stores define shipping charges across different locations.',
 				'multivendorx'
 			),
-			// buttonEnable: true,
 			modal: [
 				{
 					id: 'zone-wise-shipping',

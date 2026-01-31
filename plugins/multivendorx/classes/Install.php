@@ -946,9 +946,9 @@ class Install {
 					'required' => true,
 					'isCustom' => true,
                 ),
-                'cancelled' => array(
-                    'label'    => 'Cancelled',
-                    'desc'     => 'Order is cancelled',
+                'shipped' => array(
+                    'label'    => 'shipped',
+                    'desc'     => 'Order is shipped',
 					'icon'     => 'adminfont-rejecte',
 					'required' => true,
 					'isCustom' => true,
