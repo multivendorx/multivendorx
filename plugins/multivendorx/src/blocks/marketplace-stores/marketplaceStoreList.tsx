@@ -140,15 +140,15 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				},
 			},
 		})
-		.then((response) => {
-			setData(response.data || []);
-			setTotal(
-				Number(response?.headers?.['x-wp-total']) || 0
+			.then((response) => {
+				setData(response.data || []);
+				setTotal(
+					Number(response?.headers?.['x-wp-total']) || 0
+				);
+			})
+			.catch((error) =>
+				console.error('Error fetching filtered stores:', error)
 			);
-		})
-		.catch((error) =>
-			console.error('Error fetching filtered stores:', error)
-		);
 	}, [filters, page, perPage]);
 
 	const handleInputChange = (
@@ -287,7 +287,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 						</p>
 					</>
 				)}
-				
+
 				<div className="filter-wrapper">
 					<div className="left-section">
 						<ul className="view-tabs">
@@ -359,48 +359,60 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					/>
 				</div>
 
-				<div className={`store-list-wrapper ${ viewMode === 'split' ? 'is-split' : 'is-list'}`}>
-					<div className="store-list">
-						{data &&
-							data.map((store) => (
-								<div key={store.id} className="store">
-									<div className="store-image">
-										<img src={store.image} />
-										A
-									</div>
+				<div className={`store-list-wrapper ${viewMode === 'split' ? 'is-split' : 'is-list'}`}>
+					<div className="store-list woocommerce">
+						<table className="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table">
+							<thead>
+								<tr>
+									<th className="woocommerce-orders-table__header woocommerce-orders-table__header-order-number">Store name </th>
+									<th className="woocommerce-orders-table__header woocommerce-orders-table__header-order-number">Phone Number</th>
+									<th className="woocommerce-orders-table__header woocommerce-orders-table__header-order-number">Address</th>
+								</tr>
+							</thead>
+							<tbody>
+								{data &&
+									data.map((store) => (
+										<tr key={store.id} className="woocommerce-orders-table__row woocommerce-orders-table__row--status-completed order">
 
-									<div className="store-details">
-										<h2>{store.store_name}</h2>
-										<div className="contact-wrapper">
-											{store.phone && (
-												<span> <i className="dashicons dashicons-phone" />	{store.phone}</span>
-											)}
-											{store.address && (
-												<span><i className="dashicons dashicons-location" />{store.address}</span>
-											)}
-										</div>
+											<td className="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-date">
+												{/* <img src={store.image} /> */}
+												{store.store_name}
+											</td>
 
-										{/* <div className="">
-											<p className="">Top Products</p>
-											<div className="">
-												{vendor.topProducts && vendor.topProducts.length > 0 ? (
-													vendor.topProducts.map((img, idx) => (
-														<img
-															key={idx}
-															src={img}
-															alt="Product"
-															className=""
-														/>
-													))
-												) : (
-													<p className="">No products</p>
+											<td className="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-date">
+												{store.phone && (
+													<span> <i className="dashicons dashicons-phone" />	{store.phone}</span>
 												)}
-											</div>
-										</div> */}
-									</div>
-								</div>
-							))
-						}
+
+
+												{/* <div className="">
+													<p className="">Top Products</p>
+													<div className="">
+														{vendor.topProducts && vendor.topProducts.length > 0 ? (
+															vendor.topProducts.map((img, idx) => (
+																<img
+																	key={idx}
+																	src={img}
+																	alt="Product"
+																	className=""
+																/>
+															))
+														) : (
+															<p className="">No products</p>
+														)}
+													</div>
+												</div> */}
+											</td>
+											<td className="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-date">
+												{store.address && (
+													<span><i className="dashicons dashicons-location" />{store.address}</span>
+												)}
+											</td>
+										</tr>
+									))
+								}
+							</tbody>
+						</table>
 					</div>
 
 					{renderMapComponent()}
