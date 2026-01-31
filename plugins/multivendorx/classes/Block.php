@@ -37,6 +37,9 @@ class Block {
         add_action( 'init', array( $this, 'register_blocks' ) );
         // Localize the script for block.
         add_action( 'enqueue_block_assets', array( $this, 'enqueue_all_block_assets' ) );
+        // Localize in frontend.
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        // Restrict store shop blocks.
         add_filter( 'allowed_block_types_all', array( $this, 'restrict_block_types' ) );
     }
 
@@ -88,6 +91,21 @@ class Block {
         foreach ( $this->blocks as $block_script ) {
             FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-editor-script' );
             FrontendScripts::localize_scripts( $block_script['textdomain'] . '-' . $block_script['name'] . '-script' );
+        }
+    }
+
+    public function enqueue_scripts() {
+        global $post;
+        FrontendScripts::load_scripts();
+        foreach ( $this->blocks as $block_script ) {
+            $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
+            
+            if ( has_block( $block_name, $post ) ) {
+                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-script';
+
+                FrontendScripts::enqueue_script( $handle );
+                FrontendScripts::localize_scripts( $handle );
+            }
         }
     }
 
