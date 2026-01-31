@@ -14,6 +14,7 @@ type Category = {
 	id: number;
 	name: string;
 };
+
 interface StoresListProps {
 	orderby?: string;
 	order?: string;
@@ -110,7 +111,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					headers: { 'X-WP-Nonce': storesList.nonce },
 					params: {
 						per_page: 10,
-						search: inputValue || undefined,
+						search: inputValue,
 						meta_key: 'multivendorx_store_id',
 					},
 				}
@@ -127,21 +128,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 
 	useEffect(() => {
-		handleSubmit();
-	}, [filters, page, perPage]);
-
-	useEffect(() => {
-		setPage(1);
-	}, [filters.product]);
-
-	const handleInputChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-	) => {
-		const { name, value } = e.target;
-		setFilters((prev) => ({ ...prev, [name]: value }));
-	};
-
-	const handleSubmit = () => {
 		axios({
 			method: 'GET',
 			url: getApiLink(storesList, 'store'),
@@ -154,13 +140,22 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				},
 			},
 		})
-			.then((response) => {
-				setData(response.data.stores || []);
-				setTotal(response.data.all || 0);
-			})
-			.catch((error) =>
-				console.error('Error fetching filtered stores:', error)
+		.then((response) => {
+			setData(response.data || []);
+			setTotal(
+				Number(response?.headers?.['x-wp-total']) || 0
 			);
+		})
+		.catch((error) =>
+			console.error('Error fetching filtered stores:', error)
+		);
+	}, [filters, page, perPage]);
+
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		setFilters((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleLocationUpdate = (locationData: any) => {
@@ -250,55 +245,49 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	return (
 		<>
 			<div className="multivendorx-store">
-				{/* Filter Bar */}
-				<form className="filter-wrapper woocommerce-form woocommerce-form-login login">
+				{apiKey != '' && (
+					<>
+						<form className="filter-wrapper woocommerce-form woocommerce-form-login login">
 
-					<input
-						type="text"
-						name="address"
-						value={filters.address}
-						onChange={handleInputChange}
-						placeholder="Enter Address"
-						className="woocommerce-Input woocommerce-Input--text input-text"
-					/>
-					<select
-						name="distance"
-						value={filters.distance}
-						onChange={handleInputChange}
-						className=""
-					>
-						<option value="">Within</option>
-						<option value="5">5</option>
-						<option value="10">10</option>
-						<option value="25">25</option>
-					</select>
-					<select
-						name="miles"
-						value={filters.miles}
-						onChange={handleInputChange}
-						className=""
-					>
-						<option value="miles">Miles</option>
-						<option value="km">Kilometers</option>
-						<option value="nm">Nautical miles</option>
-					</select>
-					<select
-						name="sort"
-						value={filters.sort}
-						onChange={handleInputChange}
-						className=""
-					>
-						<option value="name">Select</option>
-						<option value="category">By Category</option>
-						<option value="shipping">By Shipping</option>
-					</select>
-				</form>
+							<input
+								type="text"
+								name="address"
+								value={filters.address}
+								onChange={handleInputChange}
+								placeholder="Enter Address"
+								className="woocommerce-Input woocommerce-Input--text input-text"
+							/>
+							<select
+								name="distance"
+								value={filters.distance}
+								onChange={handleInputChange}
+								className=""
+							>
+								<option value="">Within</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="25">25</option>
+							</select>
+							<select
+								name="miles"
+								value={filters.miles}
+								onChange={handleInputChange}
+								className=""
+							>
+								<option value="miles">Miles</option>
+								<option value="km">Kilometers</option>
+								<option value="nm">Nautical miles</option>
+							</select>
+						</form>
 
-				<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-					<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
-						Use My Current Location
-					</button>
-				</p>
+						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+							<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
+								Use My Current Location
+							</button>
+						</p>
+					</>
+				)}
+				
 				<div className="filter-wrapper">
 					<div className="left-section">
 						<ul className="view-tabs">
@@ -325,6 +314,16 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 
 						<div className="">Viewing all {data.length} stores</div>
 					</div>
+					<select
+						name="sort"
+						value={filters.sort}
+						onChange={handleInputChange}
+						className=""
+					>
+						<option value="name">Select</option>
+						<option value="category">By Category</option>
+						<option value="shipping">By Shipping</option>
+					</select>
 					{filters.sort == 'category' && (
 						<select
 							name="category"
@@ -400,31 +399,32 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 										</div> */}
 									</div>
 								</div>
-							))}
+							))
+						}
 					</div>
 
 					{renderMapComponent()}
-				</div>
-				<div className="pagination">
-					<button
-						disabled={page === 1}
-						onClick={() => setPage((p) => p - 1)}
-						className="woocommerce-button button wp-element-button"
-					>
-						Previous
-					</button>
+					<div className="pagination">
+						<button
+							disabled={page === 1}
+							onClick={() => setPage((p) => p - 1)}
+							className="woocommerce-button button wp-element-button"
+						>
+							Previous
+						</button>
 
-					<span>
-						Page {page} of {totalPages}
-					</span>
+						<span>
+							Page {page} of {totalPages}
+						</span>
 
-					<button
-						disabled={page >= totalPages}
-						onClick={() => setPage((p) => p + 1)}
-						className="woocommerce-button button wp-element-button"
-					>
-						Next
-					</button>
+						<button
+							disabled={page >= totalPages}
+							onClick={() => setPage((p) => p + 1)}
+							className="woocommerce-button button wp-element-button"
+						>
+							Next
+						</button>
+					</div>
 				</div>
 			</div>
 		</>

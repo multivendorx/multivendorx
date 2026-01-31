@@ -8,6 +8,7 @@
 namespace MultiVendorX\Store;
 
 use MultiVendorX\Utill;
+use MultiVendorX\FrontendScripts;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -228,10 +229,12 @@ class Rewrites {
             return;
         }
 
-        wp_interactivity_state(
-            'multivendorx/store',
-            StoreUtil::get_specific_store_info()
-        );
+        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_script('multivendorx-store-name-script');
+        FrontendScripts::enqueue_script('multivendorx-store-description-script');
+        FrontendScripts::enqueue_script('multivendorx-store-provider-script');
+        FrontendScripts::enqueue_script('multivendorx-store-coupons-script');
+        FrontendScripts::localize_scripts('multivendorx-store-provider-script');
     }
 
     public function template_loader( $template ) {

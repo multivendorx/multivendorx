@@ -1,25 +1,20 @@
 import { registerBlockType } from '@wordpress/blocks';
-import { useBlockProps } from '@wordpress/block-editor';
 
 registerBlockType('multivendorx/store-name', {
-    edit({ context }) {
-        const blockProps = useBlockProps();
-
-        const storeName =
-            context?.['multivendorx/storeName'] ?? 'Demo Store';
-
-        return <h2 {...blockProps}>{storeName}</h2>;
+    edit() {
+        return <h2>Store Name</h2>;
     },
 
     save() {
-        const blockProps = useBlockProps.save();
-
-        return (
-            <h2
-                {...blockProps}
-                data-wp-interactive="multivendorx/store"
-                data-wp-text="state.storeName"
-            />
-        );
+        return <h2 className="multivendorx-store-name"></h2>;
     },
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    document
+        .querySelectorAll('.multivendorx-store-name')
+        .forEach(el => {
+            el.textContent = StoreInfo.storeDetails.storeName;
+        });
+});
+

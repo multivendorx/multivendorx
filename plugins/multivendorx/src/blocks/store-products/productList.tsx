@@ -9,32 +9,36 @@ interface Product {
 }
 
 interface ProductListProps {
-	storeSlug: string;
+	isEditor: boolean;
 	limit?: number;
 }
 
 const ProductList: React.FC<ProductListProps> = ({
-	storeSlug = '',
+	isEditor = false,
 	limit = 4,
 }) => {
 	const [products, setProducts] = useState<Product[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		if (isEditor) {
+			return;
+		}
+
 		const fetchProductList = async () => {
 			try {
 				const response = await axios.get(
-					`${storeShopProductList.apiUrl}/wc/v3/products`,
+					`${StoreInfo.apiUrl}/wc/v3/products`,
 					{
 						headers: {
-							'X-WP-Nonce': storeShopProductList.nonce,
+							'X-WP-Nonce': StoreInfo.nonce,
 						},
 						params: {
 							per_page: limit,
 							orderby: 'date',
 							order: 'desc',
 							meta_key: 'multivendorx_store_id',
-							store_slug : storeSlug,
+							store_slug : StoreInfo?.storeDetails.storeSlug,
 						},
 					}
 				);

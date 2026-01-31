@@ -67,7 +67,7 @@ registerBlockType('multivendorx/stores', {
 	apiVersion: 2,
 	title: 'Stores List(w)',
 	icon: 'store',
-	category: 'widgets',
+	category: 'multivendorx-store-shop',
 	supports: { html: false },
 
 	attributes: {

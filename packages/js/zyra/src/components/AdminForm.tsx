@@ -747,8 +747,10 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             postText={inputField.postText} //Content displayed after input (icon/text).
                             proSetting={isProSetting(
                                 inputField.proSetting ?? false
-                            )}
-                            onChange={(value) => {
+                            ) }
+                            onChange={ (
+                                value: React.ChangeEvent< HTMLInputElement >
+                            ) => {
                                 if (
                                     hasAccess(
                                         inputField.proSetting ?? false,

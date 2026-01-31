@@ -35,7 +35,7 @@ registerBlockType('multivendorx/contact-info', {
 	apiVersion: 2,
 	title: 'Contact Info (w)',
 	icon: 'email',
-	category: 'widgets',
+	category: 'multivendorx-store-shop',
 	supports: { html: false },
 
 	attributes: {
