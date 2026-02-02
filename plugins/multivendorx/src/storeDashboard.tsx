@@ -921,10 +921,11 @@ const Dashboard = () => {
 											</a>
 										</>
 									) : (
-										__('You’re almost ready to sell To get started, you need to register your store on the marketplace.', 'multivendorx')
+										__('You’re almost ready to sell.', 'multivendorx')
 									)}
 								</>
 							}
+							desc={__('To get started, you need to register your store on the marketplace.', 'multivendorx')}
 							buttonText={__('Create your store', 'multivendorx')}
 							buttonLink={appLocalizer.registration_page}
 							buttonTarget="_blank"
