@@ -31,6 +31,7 @@ export const renderCell = (cell: TableRow) => {
 				description,
 				image,
 				icon,
+				subDescription
 			} = cell.data || {};
 
 			const Wrapper: React.ElementType = link ? 'a' : 'div';
@@ -50,6 +51,11 @@ export const renderCell = (cell: TableRow) => {
 								{description}
 							</div>
 						)}
+						{subDescription && (
+							<div className="card-cell-description">
+								{subDescription}
+							</div>
+						)}
 					</div>
 
 					{image ? (
@@ -67,9 +73,9 @@ export const renderCell = (cell: TableRow) => {
 		case 'commission': {
 			const { items = [] } = cell.data || {};
 			const [isExpanded, setIsExpanded] = React.useState(false);
-		
+
 			if (!items.length) return null;
-		
+
 			return (
 				<ul className={`commission-details ${isExpanded ? '' : 'overflow'}`}>
 					{items.map((item, idx) => (
@@ -82,7 +88,7 @@ export const renderCell = (cell: TableRow) => {
 							</div>
 						</li>
 					))}
-		
+
 					{items.length > 2 && (
 						<span
 							className="more-btn"
@@ -102,8 +108,8 @@ export const renderCell = (cell: TableRow) => {
 				</ul>
 			);
 		}
-		
-		
+
+
 
 		default:
 			return cell.display ?? null;
