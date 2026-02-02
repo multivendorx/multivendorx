@@ -247,23 +247,23 @@ class Rewrites {
         }
 
         // Check for Elementor template first
-        $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
+        // $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
 
-        if ( $filtered_template && file_exists( $filtered_template ) ) {
-            return $filtered_template;
-        }
+        // if ( $filtered_template && file_exists( $filtered_template ) ) {
+        //     return $filtered_template;
+        // }
 
-        $store_name = get_query_var( $this->custom_store_url );
+        // $store_name = get_query_var( $this->custom_store_url );
 
-        if ( ! empty( $store_name ) ) {
-            $store = Store::get_store( $store_name, 'slug' );
-        }
+        // if ( ! empty( $store_name ) ) {
+        //     $store = Store::get_store( $store_name, 'slug' );
+        // }
 
         // Classic theme fallback
-        $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
-        if ( file_exists( $classic_template ) ) {
-			return $classic_template;
-        }
+        // $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
+        // if ( file_exists( $classic_template ) ) {
+		// 	return $classic_template;
+        // }
 
         return $template;
     }

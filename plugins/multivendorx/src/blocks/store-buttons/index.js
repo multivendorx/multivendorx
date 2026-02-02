@@ -118,7 +118,10 @@ registerBlockType('multivendorx/store-buttons', {
             fontWeight: 'normal',
             marginTop: '2px'
         };
-
+        const ButtonStyle ={
+            display: 'flex',
+            gap: '0.5rem'
+        }
         return (
             <>
                 <BlockControls>
@@ -134,25 +137,22 @@ registerBlockType('multivendorx/store-buttons', {
                             label={__('Show Followers Count', 'multivendorx')}
                             checked={showFollowersCount}
                             onChange={(value) => setAttributes({ showFollowersCount: value })}
+                        />                        
+                        <ToggleControl
+                            label={__('Show Follow Button', 'multivendorx')}
+                            checked={showFollowButton}
+                            onChange={(value) => setAttributes({ showFollowButton: value })}
                         />
-                        
-                        <PanelBody title={__('Display Buttons', 'multivendorx')} initialOpen={false}>
-                            <ToggleControl
-                                label={__('Show Follow Button', 'multivendorx')}
-                                checked={showFollowButton}
-                                onChange={(value) => setAttributes({ showFollowButton: value })}
-                            />
-                            <ToggleControl
-                                label={__('Show Live Chat', 'multivendorx')}
-                                checked={showChatButton}
-                                onChange={(value) => setAttributes({ showChatButton: value })}
-                            />
-                            <ToggleControl
-                                label={__('Show Support', 'multivendorx')}
-                                checked={showSupportButton}
-                                onChange={(value) => setAttributes({ showSupportButton: value })}
-                            />
-                        </PanelBody>
+                        <ToggleControl
+                            label={__('Show Live Chat', 'multivendorx')}
+                            checked={showChatButton}
+                            onChange={(value) => setAttributes({ showChatButton: value })}
+                        />
+                        <ToggleControl
+                            label={__('Show Support', 'multivendorx')}
+                            checked={showSupportButton}
+                            onChange={(value) => setAttributes({ showSupportButton: value })}
+                        />
                     </PanelBody>
                 </InspectorControls>
 
@@ -160,7 +160,7 @@ registerBlockType('multivendorx/store-buttons', {
                     {/* Follow Store Button with Count */}
                     {showFollowButton && (
                         <div style={followButtonWrapperStyle}>
-                            <button 
+                            <button  style={ButtonStyle}
                                 className={`wp-block-button__link has-border-color has-accent-1-border-color wp-element-button multivendorx-store-follow-btn`}
                             >
                                 <FollowIcon />
@@ -176,7 +176,7 @@ registerBlockType('multivendorx/store-buttons', {
                     
                     {/* Live Chat Button */}
                     {showChatButton && (
-                        <button 
+                        <button style={ButtonStyle}
                             className={`wp-block-button__link has-border-color has-accent-1-border-color wp-element-button multivendorx-store-chat-btn`}
                         >
                             <ChatIcon />
@@ -186,7 +186,7 @@ registerBlockType('multivendorx/store-buttons', {
                     
                     {/* Support Button */}
                     {showSupportButton && (
-                        <button 
+                        <button style={ButtonStyle}
                             className={`wp-block-button__link has-border-color has-accent-1-border-color wp-element-button multivendorx-store-support-btn`}
                         >
                             <SupportIcon />
