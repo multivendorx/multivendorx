@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import '../styles/web/ExpandablePanelGroup.scss';
 import TextArea from './TextArea';
 import BlockText from './BlockText';
@@ -577,12 +577,6 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         if (!canEdit()) {
             return;
         }
-        // setActiveTabs(
-        //     ( prev ) =>
-        //         prev.includes( methodId )
-        //             ? prev.filter( ( id ) => id !== methodId ) // close
-        //             : [ ...prev, methodId ] // open
-        // );
         setActiveTabs((prev) =>
             prev[0] === methodId ? [] : [methodId]
         );
@@ -1284,6 +1278,41 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         }
     };
 
+    const canProceed = useCallback(
+        (method: ExpandablePanelMethod): boolean => {
+            if (method.proSetting && !appLocalizer?.khali_dabba) {
+                proChanged?.();
+                return false;
+            }
+
+            if (
+                method.moduleEnabled &&
+                !modules.includes(method.moduleEnabled)
+            ) {
+                moduleChange?.(method.moduleEnabled);
+                return false;
+            }
+
+            return true;
+        },
+        [appLocalizer?.khali_dabba, modules, proChanged, moduleChange]
+    );
+
+    const enableMethod = useCallback(
+        (id: string) => toggleEnable(id, true),
+        [toggleEnable]
+    );
+
+    const disableMethod = useCallback(
+        (id: string) => toggleEnable(id, false),
+        [toggleEnable]
+    );
+
+    const setTabActive = useCallback(
+        (id: string) => toggleActiveTab(id),
+        [toggleActiveTab]
+    );
+
     return (
         <>
             <div className="expandable-panel-group">
@@ -1328,27 +1357,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                             className={`adminfont-${isActive && isEnabled ? 'keyboard-arrow-down' : ((isActive && method.isCustom && isWizardMode) ? 'keyboard-arrow-down' : 'pagination-right-arrow')
                                                 }`}
                                             onClick={() => {
-                                                if (
-                                                    method.proSetting &&
-                                                    !appLocalizer?.khali_dabba
-                                                ) {
-                                                    proChanged?.();
-                                                    return;
-                                                } else if (
-                                                    method.moduleEnabled &&
-                                                    !modules.includes(
-                                                        method.moduleEnabled
-                                                    )
-                                                ) {
-                                                    moduleChange?.(
-                                                        method.moduleEnabled
-                                                    );
-                                                    return;
-                                                } else {
-                                                    toggleActiveTab(
-                                                        method.id
-                                                    );
-                                                }
+                                                canProceed(method) &&
+                                                setTabActive(method.id)
                                             }}
                                         />
                                     </div>
@@ -1357,25 +1367,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                 <div
                                     className="details"
                                     onClick={() => {
-                                        if (
-                                            method.proSetting &&
-                                            !appLocalizer?.khali_dabba
-                                        ) {
-                                            proChanged?.();
-                                            return;
-                                        } else if (
-                                            method.moduleEnabled &&
-                                            !modules.includes(
-                                                method.moduleEnabled
-                                            )
-                                        ) {
-                                            moduleChange?.(
-                                                method.moduleEnabled
-                                            );
-                                            return;
-                                        } else {
-                                            toggleActiveTab(method.id);
-                                        }
+                                        canProceed(method) &&
+                                        setTabActive(method.id)
                                     }}
                                 >
                                     <div className="details-wrapper">
@@ -1417,7 +1410,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                         </span>
                                                     )}
                                                     <div className="panel-badges">
-                                                        {method.disableBtn && (
+                                                        {method.disableBtn && !method.isCustom && (
                                                             <div
                                                                 className={`admin-badge ${isEnabled
                                                                     ? 'green'
@@ -1506,27 +1499,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                 .length > 0 && (
                                                                 <li
                                                                     onClick={() => {
-                                                                        if (
-                                                                            method.proSetting &&
-                                                                            !appLocalizer?.khali_dabba
-                                                                        ) {
-                                                                            proChanged?.();
-                                                                            return;
-                                                                        } else if (
-                                                                            method.moduleEnabled &&
-                                                                            !modules.includes(
-                                                                                method.moduleEnabled
-                                                                            )
-                                                                        ) {
-                                                                            moduleChange?.(
-                                                                                method.moduleEnabled
-                                                                            );
-                                                                            return;
-                                                                        } else {
-                                                                            toggleActiveTab(
-                                                                                method.id
-                                                                            );
-                                                                        }
+                                                                        canProceed(method) &&
+                                                                        setTabActive(method.id)
                                                                     }}
                                                                 >
                                                                     <span className="admin-btn btn-purple">
@@ -1539,28 +1513,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                 ) : (
                                                     <li
                                                         onClick={() => {
-                                                            if (
-                                                                method.proSetting &&
-                                                                !appLocalizer?.khali_dabba
-                                                            ) {
-                                                                proChanged?.();
-                                                                return;
-                                                            } else if (
-                                                                method.moduleEnabled &&
-                                                                !modules.includes(
-                                                                    method.moduleEnabled
-                                                                )
-                                                            ) {
-                                                                moduleChange?.(
-                                                                    method.moduleEnabled
-                                                                );
-                                                                return;
-                                                            } else {
-                                                                toggleEnable(
-                                                                    method.id,
-                                                                    true
-                                                                );
-                                                            }
+                                                            canProceed(method) &&
+                                                            enableMethod(method.id)
                                                         }}
                                                     >
                                                         <span className="admin-btn btn-purple-bg">
@@ -1585,28 +1539,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                             method.isCustom && (
                                                 <li
                                                     onClick={() => {
-                                                        if (
-                                                            method.proSetting &&
-                                                            !appLocalizer?.khali_dabba
-                                                        ) {
-                                                            proChanged?.();
-                                                            return;
-                                                        } else if (
-                                                            method.moduleEnabled &&
-                                                            !modules.includes(
-                                                                method.moduleEnabled
-                                                            )
-                                                        ) {
-                                                            moduleChange?.(
-                                                                method.moduleEnabled
-                                                            );
-                                                            return;
-                                                        } else {
-                                                            toggleEnable(
-                                                                method.id,
-                                                                false
-                                                            );
-                                                        }
+                                                        canProceed(method) &&
+                                                        disableMethod(method.id)
                                                     }}
                                                 >
                                                     <div className="admin-btn btn-purple">
@@ -1654,27 +1588,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                                 0 && (
                                                                                     <li
                                                                                         onClick={() => {
-                                                                                            if (
-                                                                                                method.proSetting &&
-                                                                                                !appLocalizer?.khali_dabba
-                                                                                            ) {
-                                                                                                proChanged?.();
-                                                                                                return;
-                                                                                            } else if (
-                                                                                                method.moduleEnabled &&
-                                                                                                !modules.includes(
-                                                                                                    method.moduleEnabled
-                                                                                                )
-                                                                                            ) {
-                                                                                                moduleChange?.(
-                                                                                                    method.moduleEnabled
-                                                                                                );
-                                                                                                return;
-                                                                                            } else {
-                                                                                                toggleActiveTab(
-                                                                                                    method.id
-                                                                                                );
-                                                                                            }
+                                                                                            canProceed(method) &&
+                                                                                            setTabActive(method.id)
                                                                                         }}
                                                                                     >
                                                                                         <span className="item">
@@ -1687,28 +1602,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                     ) : (
                                                                         <li
                                                                             onClick={() => {
-                                                                                if (
-                                                                                    method.proSetting &&
-                                                                                    !appLocalizer?.khali_dabba
-                                                                                ) {
-                                                                                    proChanged?.();
-                                                                                    return;
-                                                                                } else if (
-                                                                                    method.moduleEnabled &&
-                                                                                    !modules.includes(
-                                                                                        method.moduleEnabled
-                                                                                    )
-                                                                                ) {
-                                                                                    moduleChange?.(
-                                                                                        method.moduleEnabled
-                                                                                    );
-                                                                                    return;
-                                                                                } else {
-                                                                                    toggleEnable(
-                                                                                        method.id,
-                                                                                        true
-                                                                                    );
-                                                                                }
+                                                                                canProceed(method) &&
+                                                                                enableMethod(method.id)
                                                                             }}
                                                                         >
                                                                             <span className="item">
@@ -1719,63 +1614,13 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {/* {(method.isCustom ||
-                                                                method.required) && (
-                                                                    <>
-                                                                        <li
-                                                                            onClick={() => {
-                                                                                toggleActiveTab(
-                                                                                    method.id
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            <div className="item">
-                                                                                <i className="adminfont-edit"></i>
-                                                                                Edit
-                                                                            </div>
-                                                                        </li>
-                                                                        <li
-                                                                            onClick={() =>
-                                                                                handleDeleteMethod(
-                                                                                    method.id
-                                                                                )
-                                                                            }
-                                                                            className="delete"
-                                                                        >
-                                                                            <div className="item">
-                                                                                <i className="adminfont-delete"></i>
-                                                                                Delete
-                                                                            </div>
-                                                                        </li>
-                                                                    </>
-                                                                )} */}
                                                             {isEnabled &&
                                                                 !method.isCustom && (
                                                                     <li
                                                                         className="delete"
                                                                         onClick={() => {
-                                                                            if (
-                                                                                method.proSetting &&
-                                                                                !appLocalizer?.khali_dabba
-                                                                            ) {
-                                                                                proChanged?.();
-                                                                                return;
-                                                                            } else if (
-                                                                                method.moduleEnabled &&
-                                                                                !modules.includes(
-                                                                                    method.moduleEnabled
-                                                                                )
-                                                                            ) {
-                                                                                moduleChange?.(
-                                                                                    method.moduleEnabled
-                                                                                );
-                                                                                return;
-                                                                            } else {
-                                                                                toggleEnable(
-                                                                                    method.id,
-                                                                                    false
-                                                                                );
-                                                                            }
+                                                                            canProceed(method) &&
+                                                                            disableMethod(method.id)
                                                                         }}
                                                                     >
                                                                         <div className="item">
@@ -1801,12 +1646,6 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                             } ${method.openForm ? 'open' : ''}`}
                                     >
                                         {method.formFields.map((field) => {
-                                            // if (
-                                            //     field.key === 'required' &&
-                                            //     method.required === true
-                                            // ) {
-                                            //     return null;
-                                            // }
                                             if (
                                                 isWizardMode &&
                                                 field.type === 'buttons'
