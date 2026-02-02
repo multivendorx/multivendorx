@@ -69,6 +69,7 @@ module.exports = {
 		'block/store-phone/index': './src/blocks/store-phone/index.js',
 		'block/store-logo/index': './src/blocks/store-logo/index.js',
 		'block/store-social-icons/index': './src/blocks/store-social-icons/index.js',
+		'block/store-banner/index': './src/blocks/store-banner/index.js',
 		'block/store-description/index': './src/blocks/store-description/index.js',
 	},
 

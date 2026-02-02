@@ -113,14 +113,15 @@ registerBlockType('multivendorx/store-buttons', {
 
         // Followers count style
         const followersCountStyle = {
-            fontSize: '12px',
-            color: '#666',
+            fontSize: '16px',
+            color: '#fff',
             fontWeight: 'normal',
             marginTop: '2px'
         };
         const ButtonStyle ={
             display: 'flex',
-            gap: '0.5rem'
+            gap: '0.5rem',
+            alignItems: 'center'
         }
         return (
             <>

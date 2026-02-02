@@ -182,7 +182,7 @@ registerBlockType('multivendorx/store-logo', {
                         backgroundColor: '#5007aa',
                         margin: '0 auto'
                     }}>
-                        <span style={{ color: '#fff', fontSize: '12px' }}>
+                        <span style={{ color: '#666', fontSize: '12px' }}>
                             {__('Logo', 'multivendorx')}
                         </span>
                         {dimRatio > 0 && (overlayColor || customOverlayColor) && (

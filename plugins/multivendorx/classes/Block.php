@@ -62,6 +62,7 @@ class Block {
             'contact-info',
             'store-name',
             'store-email',
+            'store-banner',
             'store-buttons',
             'store-logo',
             'store-social-icons',

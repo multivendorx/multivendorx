@@ -1,0 +1,50 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-banner",
+  "title": "Store Banner",
+  "category": "multivendorx-store-shop",
+  "icon": "cover-image",
+  "description": "Display store banner with static image and customizable content overlay",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "height": {
+      "type": "string",
+      "default": "400px"
+    },
+    "minHeight": {
+      "type": "string",
+      "default": "300px"
+    },
+    "overlayColor": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "overlayOpacity": {
+      "type": "number",
+      "default": 30
+    },
+    "contentColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "align": {
+      "type": "string"
+    },
+    "backgroundPosition": {
+      "type": "string",
+      "default": "center"
+    },
+    "contentPosition": {
+      "type": "string",
+      "default": "center center"
+    }
+  },
+  "supports": {
+    "align": ["wide", "full"],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  }
+}

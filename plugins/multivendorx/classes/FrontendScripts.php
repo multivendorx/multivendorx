@@ -255,6 +255,11 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
+                'multivendorx-store-banner-script'  => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-banner/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
                 'multivendorx-store-buttons-script'  => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-buttons/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
