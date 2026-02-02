@@ -1,11 +1,7 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useState } from 'react';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import '../styles/web/Support.scss';
 
 // Types
@@ -74,9 +70,7 @@ const Support: React.FC< SupprotProps > = ( {
                                     </div>
                                     <p
                                         className="faq-answer"
-                                        dangerouslySetInnerHTML={ {
-                                            __html: faq.answer,
-                                        } }
+                                        dangerouslySetInnerHTML={ { __html: faq.answer } }
                                     />
                                 </div>
                             ) ) }

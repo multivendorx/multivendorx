@@ -1,11 +1,7 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import '../styles/web/ToggleSetting.scss';
 
 // Types
@@ -54,7 +50,10 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
     multiSelect = false,
 } ) => {
     const handleChange = ( optionValue: string, isPro: boolean ) => {
-        if ( isPro && ! khali_dabba ) {
+        if ( 
+            isPro && 
+            ! khali_dabba 
+        ) {
             proChanged?.();
             return;
         }

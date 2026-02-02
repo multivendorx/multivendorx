@@ -1,13 +1,8 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
-import '../styles/web/RegistrationForm.scss';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import ButtonCustomizer from './ButtonCustomiser';
 import Elements from './Elements';
 import SettingMetaBox from './SettingMetaBox';
@@ -22,6 +17,7 @@ import BlockLayout from './EmailTemplate/BlockLayout';
 import ImageGallery from './EmailTemplate/ImageGallery';
 import AddressField, { AddressFormField } from './AddressField';
 import TemplateTextArea from './EmailTemplate/TemplateTextArea';
+import '../styles/web/RegistrationForm.scss';
 
 // Types
 export type FieldValue =
@@ -357,7 +353,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                         'Karnataka',
                         'Maharashtra',
                         'Delhi',
-                        'Tamil Nadu',
+                        'Tamil Nadu'
                     ],
                 },
                 {
@@ -365,7 +361,12 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     key: 'country',
                     label: 'Country',
                     type: 'select',
-                    options: ['India', 'USA', 'UK', 'Canada'],
+                    options: [
+                        'India', 
+                        'USA', 
+                        'UK', 
+                        'Canada'
+                    ],
                 },
                 {
                     id: randMaxId + 6,

@@ -1,6 +1,9 @@
+// External Dependencies
 import React, { ReactNode, forwardRef } from 'react';
 import { Dialog, DialogContent, DialogActions, Slide } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
+
+// Internal Dependencies
 import '../styles/web/CommonPopup.scss';
 // Slide transition from the right
 const Transition = forwardRef(function Transition(
@@ -26,7 +29,7 @@ type PopupProps = {
     height?: number | string;
 };
 
-const CommonPopup = ({
+const CommonPopup: React.FC< PopupProps > = ({
     open,
     onClose,
     children,
@@ -34,7 +37,7 @@ const CommonPopup = ({
     footer,
     width,
     height = 'fit-content',
-}: PopupProps) => {
+}) => {
     return (
         <Dialog
             open={open}

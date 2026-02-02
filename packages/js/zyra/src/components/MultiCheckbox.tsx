@@ -1,3 +1,4 @@
+// External dependencies
 import React, { useState, ChangeEvent, MouseEvent } from 'react';
 
 // Types
@@ -66,6 +67,14 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
 
     const allSelected = props.value?.length === localOptions.length;
     const selectedCount = props.value?.length ?? 0;
+
+    const shouldBlockForPro = () =>
+            props.proSetting !== undefined &&
+            props.proSetting &&
+            !props.khali_dabba;
+    const shouldBlockForModule = () =>
+            props.moduleEnabled !== undefined &&
+            !props.moduleEnabled;
 
     const handleCheckboxChange = (
         directionValue: string,
@@ -140,21 +149,13 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
 
     const deleteOption = (index: number) => {
         const option = localOptions[index];
-        const shouldBlockForPro =
-            props.proSetting !== undefined &&
-            props.proSetting &&
-            !props.khali_dabba;
 
-        if (shouldBlockForPro) {
+        if (shouldBlockForPro()) {
             props.proChanged?.();
             return;
         }
 
-        const shouldBlockForModule =
-            props.moduleEnabled !== undefined &&
-            !props.moduleEnabled;
-
-        if (shouldBlockForModule) {
+        if (shouldBlockForModule()) {
             props.moduleChange?.(props.module || '');
             return;
         }
@@ -183,18 +184,10 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                 checked={allSelected}
                                 onChange={(e) => {
                                     // If locked, show popup and stop
-                                    const shouldBlockForPro =
-                                        props.proSetting !== undefined &&
-                                        props.proSetting &&
-                                        !props.khali_dabba;
-
-                                    const shouldBlockForModule =
-                                        props.moduleEnabled !== undefined &&
-                                        !props.moduleEnabled;
 
                                     if (
-                                        shouldBlockForPro ||
-                                        shouldBlockForModule
+                                        shouldBlockForPro() ||
+                                        shouldBlockForModule()
                                     ) {
                                         e.preventDefault();
                                         props.proChanged?.();
@@ -223,9 +216,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                             {props.preText && (
                                 <span
                                     className="before"
-                                    dangerouslySetInnerHTML={{
-                                        __html: props.preText,
-                                    }}
+                                    dangerouslySetInnerHTML={{ __html: props.preText }}
                                 />
                             )}
                             <div
@@ -242,9 +233,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                         return;
                                     }
 
-                                    if (
-                                        props.type === 'checkbox-custom-img'
-                                    ) {
+                                    if (props.type === 'checkbox-custom-img') {
                                         handleCheckboxChange(
                                             option.value,
                                             !checked
@@ -278,9 +267,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                 {props.rightContent && (
                                     <p
                                         className={props.rightContentClass}
-                                        dangerouslySetInnerHTML={{
-                                            __html: option.label ?? '',
-                                        }}
+                                        dangerouslySetInnerHTML={{ __html: option.label ?? '' }}
                                     ></p>
                                 )}
 
@@ -299,10 +286,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                         value={option.value}
                                         checked={checked}
                                         onChange={(e) => {
-                                            if (
-                                                props.type ===
-                                                'checkbox-custom-img'
-                                            ) {
+                                            if ( props.type === 'checkbox-custom-img' ) {
                                                 handleCheckboxChange(
                                                     option.value,
                                                     e.target.checked
@@ -340,9 +324,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                         )
                                                     }
                                                     onKeyDown={(e) => {
-                                                        if (
-                                                            e.key === 'Enter'
-                                                        ) {
+                                                        if ( e.key === 'Enter' ) {
                                                             e.preventDefault();
                                                             saveEditedOption(
                                                                 index
@@ -464,9 +446,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                             {props.postText && (
                                 <span
                                     className="after"
-                                    dangerouslySetInnerHTML={{
-                                        __html: props.postText,
-                                    }}
+                                    dangerouslySetInnerHTML={{ __html: props.postText }}
                                 />
                             )}
                         </>
@@ -476,9 +456,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                 {props.description && (
                     <p
                         className={props.descClass}
-                        dangerouslySetInnerHTML={{
-                            __html: props.description,
-                        }}
+                        dangerouslySetInnerHTML={{ __html: props.description }}
                     ></p>
                 )}
             </div>

@@ -1,11 +1,7 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
 
-/**
- * Internal dependencies
- */
+// Internal Dependencies
 import HoverInputRender from './HoverInputRender';
 
 // Types
