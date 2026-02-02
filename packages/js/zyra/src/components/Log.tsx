@@ -1,12 +1,8 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import { getApiLink } from '../utils/apiService';
 import '../styles/web/Log.scss';
 
@@ -32,12 +28,16 @@ const Log: React.FC< LogProps > = ( {
 } ) => {
     const [ logData, setLogData ] = useState< string[] >( [] );
     const [ copied, setCopied ] = useState< boolean >( false );
+    const apiConfig = {
+        url: getApiLink( appLocalizer, apiLink ),
+        method: 'GET',
+        headers: { 'X-WP-Nonce': appLocalizer.nonce },
+    };
+    const logRegex = /^([^:]+:[^:]+:[^:]+):(.*)$/;
 
     useEffect( () => {
         axios( {
-            url: getApiLink( appLocalizer, apiLink ),
-            method: 'GET',
-            headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            ...apiConfig,
             params: {
                 logcount: 100,
             },
@@ -52,9 +52,7 @@ const Log: React.FC< LogProps > = ( {
         event.preventDefault();
         const fileName = downloadFileName;
         axios( {
-            url: getApiLink( appLocalizer, apiLink ),
-            method: 'GET',
-            headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            ...apiConfig,
             params: {
                 action: 'download',
                 file: fileName,
@@ -81,9 +79,7 @@ const Log: React.FC< LogProps > = ( {
     const handleClearLog = ( event: React.MouseEvent< HTMLButtonElement > ) => {
         event.preventDefault();
         axios( {
-            url: getApiLink( appLocalizer, apiLink ),
-            method: 'GET',
-            headers: { 'X-WP-Nonce': appLocalizer.nonce },
+            ...apiConfig,
             params: {
                 logcount: 100,
                 action: 'clear',
@@ -99,8 +95,7 @@ const Log: React.FC< LogProps > = ( {
         event.preventDefault();
         const logText = logData
             .map( ( log ) => {
-                const regex = /^([^:]+:[^:]+:[^:]+):(.*)$/;
-                const match = log.match( regex );
+                const match = log.match( logRegex );
                 return match
                     ? `${ match[ 1 ].trim() } : ${ match[ 2 ].trim() }`
                     : log;
@@ -163,8 +158,7 @@ const Log: React.FC< LogProps > = ( {
                 </div>
                 <div className="wrapper-body">
                     { logData.map( ( log, index ) => {
-                        const regex = /^([^:]+:[^:]+:[^:]+):(.*)$/;
-                        const match = log.match( regex );
+                        const match = log.match( logRegex );
                         if ( match ) {
                             return (
                                 <div className="log-row" key={ index }>

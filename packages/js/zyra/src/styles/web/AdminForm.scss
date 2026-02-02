@@ -37,6 +37,13 @@
           width: 100%;
         }
       }
+
+      &.full-width,
+      &:has(.settings-metabox-note){
+        .settings-input-content{
+          width: 100%;
+        }
+      }
     }
 
     .settings-input-content {

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'advertising',
+	id: 'product-advertising',
 	priority: 1,
 	name: __('Product Advertising', 'multivendorx'),
 	desc: __(

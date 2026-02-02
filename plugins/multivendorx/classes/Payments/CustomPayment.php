@@ -37,13 +37,12 @@ class CustomPayment {
      */
     public function get_settings() {
         return array(
-            'icon'         => 'adminfont-cogs-on-wheels',
-            'id'           => $this->get_id(),
-            'label'        => 'Custom Gateway',
-            'disableBtn'   => true,
-            'enableOption' => true,
-            'desc'         => 'Connect a custom or third-party payout method tailored to your marketplace needs.',
-            'formFields'   => array(
+            'icon'       => 'adminfont-cogs-on-wheels',
+            'id'         => $this->get_id(),
+            'label'      => 'Custom Gateway',
+            'disableBtn' => true,
+            'desc'       => 'Connect a custom or third-party payout method tailored to your marketplace needs.',
+            'formFields' => array(
                 array(
                     'key'         => 'custom_gateway_name',
                     'type'        => 'text',

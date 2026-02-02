@@ -44,9 +44,9 @@ class Module {
      * @return void
      */
     public function init_classes() {
-        $this->container['admin'] = new Admin();
+        $this->container['admin']          = new Admin();
         $this->container['store_document'] = new StoreDocument();
-        $this->container['loader'] = new WidgetLoader();
+        $this->container['loader']         = new WidgetLoader();
     }
 
     /**

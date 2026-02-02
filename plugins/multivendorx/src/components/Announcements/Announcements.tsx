@@ -1,18 +1,15 @@
 /* global appLocalizer */
-import React, { useState, useEffect, useRef, ReactNode } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	Table,
 	getApiLink,
-	TableCell,
 	AdminBreadcrumbs,
 	BasicInput,
 	TextArea,
 	CommonPopup,
 	SelectInput,
 	ToggleSetting,
-	MultiCalendarInput,
 	Container,
 	Column,
 	FormGroupWrapper,
@@ -22,36 +19,12 @@ import {
 	TableCard,
 } from 'zyra';
 
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
+
 import './Announcements.scss';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { Dialog } from '@mui/material';
+import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
-type AnnouncementRow = {
-	stores: number[] | null;
-	date: string;
-	title: string;
-	content: string;
-	id?: number;
-	store_name?: string;
-	store_slug?: string;
-	status?: 'publish' | 'pending' | string;
-};
-type AnnouncementStatus = {
-	key: string;
-	name: string;
-	count: number;
-};
-
-type FilterData = {
-	searchField: string;
-	categoryFilter?: string;
-	date?: FilterDate;
-};
 
 type AnnouncementForm = {
 	title: string;
@@ -70,47 +43,17 @@ interface StoreOption {
 	label: string;
 }
 
-interface DateRange {
-	startDate: Date;
-	endDate: Date;
-}
 
-interface FilterDate {
-	start_date?: Date;
-	end_date?: Date;
-}
-
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: unknown) => void,
-		filterValue: unknown
-	) => ReactNode;
-}
 
 export const Announcements: React.FC = () => {
-	const [submitting, setSubmitting] = useState(false);
-	const [data, setData] = useState<AnnouncementRow[] | null>(null);
-	const [addAnnouncements, setAddAnnouncements] = useState(false);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
+	const [submitting, setSubmitting] = useState(false);
+	const [addAnnouncements, setAddAnnouncements] = useState(false);
+	const [rowIds, setRowIds] = useState<number[]>([]);
 
-	const [dateFilter, setDateFilter] = useState<FilterDate>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
-
-	const [pageCount, setPageCount] = useState(0);
 	const [error, setError] = useState<string | null>(null);
-	const bulkSelectRef = useRef<HTMLSelectElement>(null);
 
 	const [editId, setEditId] = useState<number | null>(null);
 
@@ -123,28 +66,30 @@ export const Announcements: React.FC = () => {
 		status: 'draft',
 	});
 
-	const fetchStoreOptions = async () => {
-		try {
-			const response = await axios.get(
-				getApiLink(appLocalizer, 'store'),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: { filter_status: 'active' },
-				}
-			);
-			const stores = response.data?.stores || [];
-			const options: StoreOption[] = [
-				{ value: 0, label: __('All Stores', 'multivendorx') },
-				...stores.map((store: Store) => ({
-					value: store.id,
-					label: store.store_name,
-				})),
-			];
-			setStoreOptions(options);
-		} catch {
-			setError(__('Failed to load stores', 'multivendorx'));
-		}
+	const fetchStoreOptions = () => {
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { filter_status: 'active' },
+			})
+			.then((response) => {
+				const stores = response.data?.stores || [];
+
+				const options: StoreOption[] = [
+					{ value: 0, label: __('All Stores', 'multivendorx') },
+					...stores.map((store: Store) => ({
+						value: store.id,
+						label: store.store_name,
+					})),
+				];
+
+				setStoreOptions(options);
+			})
+			.catch(() => {
+				setError(__('Failed to load stores', 'multivendorx'));
+			});
 	};
+
 
 	const handleToggleChange = (value: string) => {
 		setFormData((prev) => ({
@@ -153,8 +98,8 @@ export const Announcements: React.FC = () => {
 		}));
 	};
 
-	const [announcementStatus, setAnnouncementStatus] = useState<
-		AnnouncementStatus[] | null
+	const [categoryCounts, setCategoryCounts] = useState<
+		categoryCounts[] | null
 	>(null);
 	const [storeOptions, setStoreOptions] = useState<
 		{ value: string; label: string }[]
@@ -167,43 +112,30 @@ export const Announcements: React.FC = () => {
 	} | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
 
-	const handleDeleteClick = (rowData) => {
-		setSelectedAn({
-			id: rowData.id,
-		});
-		setConfirmOpen(true);
-	};
-	const handleConfirmDelete = async () => {
+	const handleConfirmDelete = () => {
 		if (!selectedAn) {
 			return;
 		}
 
-		try {
-			await axios({
-				method: 'DELETE',
-				url: getApiLink(
-					appLocalizer,
-					`announcement/${selectedAn.id}`
-				),
-				headers: {
-					'X-WP-Nonce':
-						appLocalizer.nonce,
-				},
+		axios({
+			method: 'DELETE',
+			url: getApiLink(
+				appLocalizer,
+				`announcement/${selectedAn.id}`
+			),
+			headers: {
+				'X-WP-Nonce': appLocalizer.nonce,
+			},
+		})
+			.then(() => {
+				fetchData({});
+			})
+			.finally(() => {
+				setConfirmOpen(false);
+				setSelectedAn(null);
 			});
-
-			// Refresh data after deletion
-			await fetchTotalRows();
-			requestData(
-				pagination.pageSize,
-				pagination.pageIndex + 1,
-				'',
-				''
-			);
-		} finally {
-			setConfirmOpen(false);
-			setSelectedAn(null);
-		}
 	};
+
 
 	const validateForm = () => {
 		const errors: { [key: string]: string } = {};
@@ -258,15 +190,7 @@ export const Announcements: React.FC = () => {
 		}
 	};
 
-	const handleBulkAction = async () => {
-		const action = bulkSelectRef.current?.value;
-		const selectedIds = Object.keys(rowSelection)
-			.map((key) => {
-				const index = Number(key);
-				return data && data[index] ? data[index].id : null;
-			})
-			.filter((id): id is number => id !== null);
-
+	const handleBulkAction = (action: string, selectedIds: []) => {
 		if (!selectedIds.length) {
 			return;
 		}
@@ -275,394 +199,217 @@ export const Announcements: React.FC = () => {
 			return;
 		}
 
-		setData(null);
-
-		try {
-			await axios({
-				method: 'PUT',
-				url: getApiLink(appLocalizer, 'announcement'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				data: { bulk: true, action, ids: selectedIds },
-			});
-			await fetchTotalRows();
-			requestData(pagination.pageSize, pagination.pageIndex + 1);
-			setRowSelection({});
-		} catch (err: unknown) {
-			setError(__(`Failed to perform bulk action${err}`, 'multivendorx'));
-		}
-	};
-
-	const handleEdit = async (id: number) => {
-		try {
-			const response = await axios.get(
-				getApiLink(appLocalizer, `announcement/${id}`),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
-
-			if (response.data) {
-				await fetchStoreOptions();
-
-				setFormData({
-					title: response.data.title || '',
-					url: response.data.url || '',
-					content: response.data.content || '',
-					stores: response.data.stores ?? [],
-					status: response.data.status || 'draft',
-				});
-
-				setEditId(id);
-				setAddAnnouncements(true);
-			}
-		} catch (err: unknown) {
-			setError(__(`Failed to load announcement${err}`, 'multivendorx'));
-		}
-	};
-
-	const handleSubmit = async () => {
-		if (submitting) {
-			return;
-		}
-
-		if (!validateForm()) {
-			return; // Stop submission if errors exist
-		}
-
-		setSubmitting(true);
-		try {
-			const endpoint = editId
-				? getApiLink(appLocalizer, `announcement/${editId}`)
-				: getApiLink(appLocalizer, 'announcement');
-			const method = editId ? 'PUT' : 'POST';
-
-			const payload = {
-				...formData,
-				stores: formData.stores, // already an array of numbers
-			};
-
-			const response = await axios({
-				method,
-				url: endpoint,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				data: payload,
-			});
-
-			if (response.data.success) {
-				setAddAnnouncements(false);
-				setFormData({
-					title: '',
-					url: '',
-					content: '',
-					stores: [],
-					status: 'draft',
-				});
-				setEditId(null);
-				await fetchTotalRows();
-				requestData(pagination.pageSize, pagination.pageIndex + 1);
-			} else {
-				setError(__('Failed to save announcement', 'multivendorx'));
-			}
-		} catch (err: unknown) {
-			setError(__(`Failed to save announcement${err}`, 'multivendorx'));
-		} finally {
-			setSubmitting(false);
-		}
-	};
-
-	const fetchTotalRows = async () => {
-		try {
-			const response = await axios.get(
-				getApiLink(appLocalizer, 'announcement'),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: { count: true },
-				}
-			);
-			const total = response.data || 0;
-			setTotalRows(total);
-			setPageCount(Math.ceil(total / pagination.pageSize));
-		} catch {
-			setError(__('Failed to load total rows', 'multivendorx'));
-		}
-	};
-
-	// Fetch total rows on mount
-	useEffect(() => {
-		fetchTotalRows();
-	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, [pagination]);
-
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage: number,
-		currentPage: number,
-		categoryFilter = '',
-		searchField = '',
-		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
-	) {
-		setData(null);
 		axios({
-			method: 'GET',
+			method: 'PUT',
 			url: getApiLink(appLocalizer, 'announcement'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				status: categoryFilter === 'all' ? '' : categoryFilter,
-				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',
-				searchField,
-			},
+			data: { bulk: true, action, ids: selectedIds },
 		})
-			.then((response) => {
-				setData(response.data.items || []);
-				const statuses = [
-					{ key: 'all', name: 'All', count: response.data.all || 0 },
-					{
-						key: 'publish',
-						name: 'Published',
-						count: response.data.publish || 0,
-					},
-					{
-						key: 'pending',
-						name: 'Pending',
-						count: response.data.pending || 0,
-					},
-					{
-						key: 'draft',
-						name: 'Draft',
-						count: response.data.draft || 0,
-					},
-				];
-
-				// Remove items where count === 0
-				setAnnouncementStatus(
-					statuses.filter((status) => status.count > 0)
-				);
+			.then(() => {
+				fetchData({});
 			})
-			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
-				setData([]);
+			.catch((err) => {
+				setError(
+					__(`Failed to perform bulk action${err}`, 'multivendorx')
+				);
 			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		const date = filterData?.date || {
-			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-			end_date: new Date(),
-		};
-		setDateFilter(date);
-		const selectedStatus = announcementStatus?.find(
-			(status) => status.key === filterData?.categoryFilter
-		);
-
-		setTotalRows(selectedStatus ? selectedStatus.count : announcementStatus?.find(s => s.key === 'all')?.count || 0);
-
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.categoryFilter,
-			filterData?.searchField,
-			date?.start_date,
-			date?.end_date
-		);
 	};
 
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<>
-					<div className="search-section">
-						<input
-							name="searchField"
-							type="text"
-							placeholder={__('Search', 'multivendorx')}
-							onChange={(e) => {
-								updateFilter(e.target.name, e.target.value);
-							}}
-							value={filterValue || ''}
-						/>
-						<i className="adminfont-search"></i>
-					</div>
-				</>
-			),
-		},
-	];
+	const handleEdit = (id: number) => {
+		axios.get(
+			getApiLink(appLocalizer, `announcement/${id}`),
+			{
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			}
+		).then((response) => {
+			fetchStoreOptions();
+			setFormData({
+				title: response.data.title || '',
+				url: response.data.url || '',
+				content: response.data.content || '',
+				stores: response.data.stores ?? [],
+				status: response.data.status || 'draft',
+			});
+			setEditId(id);
+			setAddAnnouncements(true);
+		})
+	};
 
-	// Columns
-	const columns: ColumnDef<AnnouncementRow>[] = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('Title', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.title || ''}>
-					{truncateText(row.original.title || '', 30)}{' '}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Content', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.content || ''}>
-					{truncateText(row.original.content || '', 50)}{' '}
-					{/* truncate to 50 chars */}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Status', 'multivendorx'),
-			cell: ({ row }) => {
-				return (
-					<TableCell
-						title={'status'}
-						type="status"
-						status={row.original.status}
-						children={undefined}
-					/>
-				);
-			},
-		},
-		{
-			header: __('Recipients', 'multivendorx'),
-			cell: ({ row }) => {
-				const storeString = row.original.store_name;
+	const handleSubmit = () => {
+		if (submitting) return;
+		if (!validateForm()) return;
 
-				// 🔹 If store_name is empty, null, or undefined → show All Stores
-				if (!storeString) {
-					return (
-						<TableCell title={'stores'}>
-							{__('All Stores', 'multivendorx')}
-						</TableCell>
-					);
+		setSubmitting(true);
+
+		const endpoint = editId
+			? getApiLink(appLocalizer, `announcement/${editId}`)
+			: getApiLink(appLocalizer, 'announcement');
+
+		const method = editId ? 'PUT' : 'POST';
+
+		const payload = {
+			...formData,
+			stores: formData.stores,
+		};
+
+		axios({
+			method,
+			url: endpoint,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			data: payload,
+		})
+			.then((response) => {
+				if (response.data?.success) {
+					setAddAnnouncements(false);
+					setFormData({
+						title: '',
+						url: '',
+						content: '',
+						stores: [],
+						status: 'draft',
+					});
+					setEditId(null);
+					fetchData({});
+				} else {
+					setError(__('Failed to save announcement', 'multivendorx'));
 				}
 
-				// 🔹 Otherwise, split and format store names
-				const stores = storeString.split(',').map((s) => s.trim());
-				let displayStores = stores;
-
-				if (stores.length > 2) {
-					displayStores = [...stores.slice(0, 2), '...'];
-				}
-
-				return (
-					<TableCell title={stores.join(', ')}>
-						{displayStores.join(', ')}
-					</TableCell>
+				// cleanup on success
+				setSubmitting(false);
+			})
+			.catch((err) => {
+				setError(
+					__(`Failed to save announcement${err}`, 'multivendorx')
 				);
-			},
-		},
+
+				// cleanup on error
+				setSubmitting(false);
+			});
+	};
+
+	const bulkActions = [
+		{ label: 'Published', value: 'publish' },
+		{ label: 'Pending', value: 'pending' },
+		{ label: 'Delete', value: 'delete' },
+	];
+
+	const headers = [
+		{ key: 'title', label: 'Title' },
+		{ key: 'content', label: 'Content' },
+		{ key: 'status', label: 'Status' },
+		{ key: 'recipients', label: 'Recipients' },
+		{ key: 'date', label: 'Date' },
 		{
-			id: 'date',
-			accessorKey: 'date',
-			enableSorting: true,
-			header: __('Date', 'multivendorx'),
-			cell: ({ row }) => {
-				return (
-					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					title={'action'}
-					type="action-dropdown"
-					rowData={row.original}
-					header={{
-						actions: [
-							{
-								label: __('Edit', 'multivendorx'),
-								icon: 'adminfont-edit',
-								onClick: (rowData: AnnouncementRow) => {
-									handleEdit(rowData.id);
-								},
-							},
-							{
-								label: __('Delete', 'multivendorx'),
-								icon: 'adminfont-delete delete',
-								onClick: (rowData: AnnouncementRow) => {
-									handleDeleteClick(rowData);
-								},
-							},
-						],
-					}}
-				/>
-			),
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Edit', 'multivendorx'),
+					icon: 'edit',
+					onClick: (id: number) => handleEdit(id),
+				},
+				{
+					label: __('Delete', 'multivendorx'),
+					icon: 'delete',
+					onClick: (id: number) => {
+						setSelectedAn({ id: id });
+						setConfirmOpen(true);
+					},
+					className: 'danger',
+				},
+			],
 		},
 	];
 
-	const BulkAction: React.FC = () => (
-		<div className="action">
-			<i className="adminfont-form"></i>
-			<select
-				name="action"
-				ref={bulkSelectRef}
-				onChange={handleBulkAction}
-			>
-				<option value="">{__('Bulk actions')}</option>
-				<option value="publish">{__('Published', 'multivendorx')}</option>
-				<option value="pending">{__('Pending', 'multivendorx')}</option>
-				<option value="delete">{__('Delete', 'multivendorx')}</option>
-			</select>
-		</div>
-	);
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
 
-	const realtimeFilter: RealtimeFilter[] = [
+		axios
+			.get(getApiLink(appLocalizer, 'announcement'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce, withCredentials: true },
+				params: {
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					status: query.categoryFilter || '',
+					searchValue: query.searchValue || '',
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+				},
+			})
+			.then((response) => {
+				const items = response.data || [];
+				const ids = items
+					.filter((ann: any) => ann?.id != null)
+					.map((ann: any) => ann.id);
+
+				setRowIds(ids);
+				const mappedRows: any[][] = items.map((ann: any) => [
+					{ display: ann.title, value: ann.id },
+					{
+						display: truncateText(ann.content || '', 50),
+						value: ann.content || '',
+					},
+					{ display: ann.status, value: ann.status },
+					{
+						display: ann.store_name
+							? ann.store_name.split(',').slice(0, 2).join(',') +
+							(ann.store_name.split(',').length > 2 ? ', ...' : '')
+							: 'All Stores',
+						value: ann.store_name || '',
+					},
+					{ display: formatWcShortDate(ann.date), value: ann.date },
+				]);
+
+				setRows(mappedRows);
+
+				setCategoryCounts([
+					{
+						value: 'all',
+						label: 'All',
+						count: Number(response.headers['x-wp-total']) || 0,
+					},
+					{
+						value: 'publish',
+						label: 'Published',
+						count: Number(response.headers['x-wp-status-publish']) || 0,
+					},
+					{
+						value: 'pending',
+						label: 'Pending',
+						count: Number(response.headers['x-wp-status-pending']) || 0,
+					},
+					{
+						value: 'draft',
+						label: 'Draft',
+						count: Number(response.headers['x-wp-status-draft']) || 0,
+					},
+				]);
+
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('Failed to fetch announcements', error);
+				setError(__('Failed to load announcements', 'multivendorx'));
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
+	};
+
+
+	const filters = [
 		{
-			name: 'date',
-			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						value={{
-							startDate: dateFilter.start_date!,
-							endDate: dateFilter.end_date!,
-						}}
-						onChange={(range: DateRange) => {
-							const next = {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							};
-
-							setDateFilter(next);
-							updateFilter('date', next);
-						}}
-					/>
-				</div>
-			),
-		},
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		}
 	];
-
 
 	return (
 		<>
@@ -766,7 +513,7 @@ export const Announcements: React.FC = () => {
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer.settings_databases_value[
-									'marketplace'
+									'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
@@ -863,37 +610,21 @@ export const Announcements: React.FC = () => {
 			</CommonPopup>
 
 			<Container general>
-				{/* <Column>
+				<Column>
 					<TableCard
-						// title="Revenue Report"
 						headers={headers}
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
 						onQueryUpdate={fetchData}
-					/>
-				</Column> */}
-				<Column>
-					<Table
-						data={data}
-						columns={
-							columns as ColumnDef<AnnouncementRow, unknown>[]
-						}
-						rowSelection={rowSelection}
-						onRowSelectionChange={setRowSelection}
-						defaultRowsPerPage={10}
-						searchFilter={searchFilter}
-						pageCount={pageCount}
-						pagination={pagination}
-						onPaginationChange={setPagination}
-						handlePagination={requestApiForData}
-						perPageOption={[10, 25, 50]}
-						categoryFilter={
-							announcementStatus as AnnouncementStatus[]
-						}
-						bulkActionComp={() => <BulkAction />}
-						totalCounts={totalRows}
-						realtimeFilter={realtimeFilter}
+						ids={rowIds}
+						categoryCounts={categoryCounts}
+						search={{}}
+						filters={filters}
+						bulkActions={bulkActions}
+						onBulkActionApply={(action: string, selectedIds: []) => {
+							handleBulkAction(action, selectedIds)
+						}}
 					/>
 				</Column>
 			</Container>

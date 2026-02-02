@@ -12,10 +12,10 @@ class StoreDocument extends \Elementor\Core\Base\Document {
      * Get document properties
      */
     public static function get_properties() {
-        $properties = parent::get_properties();
-        $properties['support_kit'] = true;
+        $properties                    = parent::get_properties();
+        $properties['support_kit']     = true;
         $properties['show_in_library'] = true;
-        $properties['cpt'] = [ 'elementor_library' ];
+        $properties['cpt']             = array( 'elementor_library' );
         return $properties;
     }
 

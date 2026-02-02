@@ -2,7 +2,7 @@
 	"apiVersion": 2,
 	"name": "multivendorx/stores",
 	"title": "Stores List(w)",
-	"category": "widgets",
+	"category": "multivendorx-store-shop",
 	"icon": "store",
 	"description": "A block that displays stores list using React.",
 	"supports": {

@@ -37,6 +37,10 @@ class Block {
         add_action( 'init', array( $this, 'register_blocks' ) );
         // Localize the script for block.
         add_action( 'enqueue_block_assets', array( $this, 'enqueue_all_block_assets' ) );
+        // Localize in frontend.
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        // Restrict store shop blocks.
+        add_filter( 'allowed_block_types_all', array( $this, 'restrict_block_types' ) );
     }
 
     /**
@@ -46,7 +50,7 @@ class Block {
      */
     public function initialize_blocks() {
         $blocks = array();
-    
+
         $block_names = array(
             'marketplace-stores',
             'marketplace-products',
@@ -57,14 +61,15 @@ class Block {
             'stores',
             'contact-info',
             'store-name',
+            'store-email',
             'store-description',
         );
-    
+
         $textdomain = 'multivendorx';
         $block_path = MultiVendorX()->plugin_path
             . FrontendScripts::get_build_path_name()
             . 'js/block/';
-    
+
         foreach ( $block_names as $block_name ) {
             $blocks[] = array(
                 'name'       => $block_name,
@@ -72,10 +77,10 @@ class Block {
                 'block_path' => $block_path,
             );
         }
-    
+
         return apply_filters( 'multivendorx_initialize_blocks', $blocks );
     }
-    
+
 
     /**
      * Enqueue assets and localize scripts for all registered blocks.
@@ -90,6 +95,50 @@ class Block {
         }
     }
 
+    public function enqueue_scripts() {
+        global $post;
+        FrontendScripts::load_scripts();
+        foreach ( $this->blocks as $block_script ) {
+            $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
+
+            if ( has_block( $block_name, $post ) ) {
+                $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-script';
+
+                FrontendScripts::enqueue_script( $handle );
+                FrontendScripts::localize_scripts( $handle );
+            }
+        }
+    }
+
+    public function restrict_block_types() {
+        $restricted_category   = 'multivendorx-store-shop';
+        $allowed_template_slug = 'multivendorx-store';
+        $template_slug         = '';
+
+        $p = filter_input( INPUT_GET, 'p', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+        if ( $p !== '' ) {
+            $template_slug = basename( $p );
+        }
+
+        $is_allowed_context = ( $template_slug === $allowed_template_slug );
+
+        $registry   = \WP_Block_Type_Registry::get_instance();
+        $all_blocks = $registry->get_all_registered();
+        $allowed    = array();
+
+        foreach ( $all_blocks as $block_name => $block_type ) {
+            $category = $block_type->category ?? '';
+            if ( $category === $restricted_category && ! $is_allowed_context ) {
+                continue;
+            }
+
+            $allowed[] = $block_name;
+        }
+
+        return $allowed;
+    }
+
     /**
      * Register MultiVendorX block category in the block editor.
      *
@@ -101,6 +150,11 @@ class Block {
         $categories[] = array(
             'slug'  => 'multivendorx',
             'title' => 'MultiVendorX',
+        );
+
+        $categories[] = array(
+            'slug'  => 'multivendorx-store-shop',
+            'title' => 'MultiVendorX Store Shop Blocks',
         );
         return $categories;
     }

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'identity-verification',
+	id: 'store-identity',
 	priority: 3,
 	name: __('Store Identity', 'multivendorx'),
 	desc: __(
@@ -69,103 +69,29 @@ export default {
 			moduleEnabled: 'marketplace-compliance',
 			proSetting: true,
 			label: __('Verification methods', 'multivendorx'),
-			buttonEnable: true,
 			addNewBtn: true,
 			addNewTemplate: {
 				label: 'New Verification Method',
 				desc: 'Configure your custom verification methods',
-
-				formFields: [
-					{
-						key: 'title',
-						type: 'text',
-						label: 'Method title',
-						placeholder: 'Enter title',
-					},
-					{
-						key: 'description',
-						type: 'textarea',
-						label: 'Description',
-					},
-					{
-						key: 'required',
-						type: 'checkbox',
-						label: 'Required',
-					},
-				],
 			},
 			modal: [
 				{
 					id: 'business-registration',
 					label: 'Business registration certificate',
-					required: true,
+					isCustom: true,
 					desc: 'Confirms the store is legally registered as a business entity.',
-					formFields: [
-					{
-						key: 'title',
-						type: 'text',
-						label: 'Method title',
-						placeholder: 'Enter title',
-					},
-					{
-						key: 'description',
-						type: 'textarea',
-						label: 'Description',
-					},
-					{
-						key: 'required',
-						type: 'checkbox',
-						label: 'Required',
-					},
-				],
 				},
 				{	
 					id: 'trade-license',
 					label: 'Trade license or permit',
-					required: true,
-					desc: 'Validates that the store is authorized to operate and conduct business legally.',
-					formFields: [
-					{
-						key: 'title',
-						type: 'text',
-						label: 'Method title',
-						placeholder: 'Enter title',
-					},
-					{
-						key: 'description',
-						type: 'textarea',
-						label: 'Description',
-					},
-					{
-						key: 'required',
-						type: 'checkbox',
-						label: 'Required',
-					},
-				]
+					isCustom: true,
+					desc: 'Validates that the store is authorized to operate and conduct business legally.'
 				},
 				{
 					id: 'address-proof',
 					label: 'Address proof of business location',
-					required: true,
+					isCustom: true,
 					desc: 'Confirms the store’s physical or operational business address.',
-					formFields: [
-					{
-						key: 'title',
-						type: 'text',
-						label: 'Method title',
-						placeholder: 'Enter title',
-					},
-					{
-						key: 'description',
-						type: 'textarea',
-						label: 'Description',
-					},
-					{
-						key: 'required',
-						type: 'checkbox',
-						label: 'Required',
-					},
-				]
 				},
 			],
 		},

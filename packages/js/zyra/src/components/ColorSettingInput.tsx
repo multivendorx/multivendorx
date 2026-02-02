@@ -1,8 +1,9 @@
+// External Dependencies
 import React, { ChangeEvent, useState, useEffect, useMemo } from 'react';
+
+// Internal Dependencies
 import '../styles/web/ColorSettingInput.scss';
 import ToggleSetting from './ToggleSetting';
-import FormGroupWrapper from './UI/FormGroupWrapper';
-import FormGroup from './UI/FormGroup';
 import SelectInput from './SelectInput';
 import PdfDownloadButton from './PdfDownloadButton';
 
@@ -41,10 +42,6 @@ interface Template {
     pdf?: React.FC<{ colors: CustomColors }>;
 }
 
-interface PresetTheme {
-    name: string;
-    vars: Partial<ThemeVars>;
-}
 
 interface ColorSettingProps {
     wrapperClass?: string;
@@ -59,7 +56,6 @@ interface ColorSettingProps {
         selectedPalette: string;
         colors: Partial<CustomColors>;
         templateKey?: string;
-        themeVars?: ThemeVars;
     };
 
     onChange?: (e: {
@@ -67,7 +63,7 @@ interface ColorSettingProps {
             name: string;
             value:
             | ColorSettingValue
-            | { templateKey: string; themeVars: ThemeVars };
+            | { templateKey: string; };
         };
     }) => void;
     idPrefix?: string;
@@ -240,7 +236,6 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                     <div className="color-palette-wrapper">
                         { /* Toggle Mode */}
                         {!selectedImage && (
-                            <>
                                 <div className="form-group-setting-wrapper">
                                     <label>Color Palette</label>
                                     <ToggleSetting
@@ -288,6 +283,13 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                                 });
                                             }
 
+                                            if (selectedVal === 'templates') {
+                                                setMode('templates');
+                                                setSelectedPalette('templates');
+                                                setSelectedColors(customColors);
+                                                emitTemplateChange(customColors, templateKey);
+                                            }
+
                                             if (selectedVal === 'custom') {
                                                 setMode('custom');
                                                 setSelectedPalette('custom');
@@ -303,17 +305,10 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                                     },
                                                 });
                                             }
-                                            if (selectedVal === 'templates') {
-                                                setMode('templates');
-                                                setSelectedPalette('templates');
-                                                setSelectedColors(customColors);
-
-                                                emitTemplateChange(customColors, templateKey);
-                                            }
+                                            
                                         }}
                                     />
                                 </div>
-                            </>
                         )}
                         {/* Predefined Palettes */}
                         {mode === 'predefined' && (

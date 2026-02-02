@@ -1,9 +1,7 @@
-import React, {
-    useState,
-    useRef,
-    forwardRef,
-    useImperativeHandle,
-} from 'react';
+// External dependencies
+import React, { useState, useRef, forwardRef, useImperativeHandle, useCallback, useEffect } from 'react';
+
+// Internal dependencies
 import '../styles/web/EmailsInput.scss';
 
 export interface EmailsInputProps {
@@ -39,31 +37,29 @@ const EmailsInput = forwardRef< HTMLInputElement, EmailsInputProps >(
         const inputRef = useRef< HTMLInputElement >( null );
 
         // Sync when parent updates props
-        React.useEffect( () => {
+        useEffect( () => {
             setEmails( value );
         }, [ value ] );
 
-        React.useEffect( () => {
-            if ( enablePrimary ) {
-                setPrimaryEmail( primary );
-            }
+        useEffect( () => {
+            setPrimaryEmail( enablePrimary ? primary : null );
         }, [ primary, enablePrimary ] );
 
         // expose inputRef externally
         useImperativeHandle( ref, () => inputRef.current as HTMLInputElement );
 
-        const isValidEmail = ( email: string ) =>
-            /^\S+@\S+\.\S+$/.test( email );
+        const isValidEmail = useCallback(( email: string ) =>
+            /^\S+@\S+\.\S+$/.test( email ),[]);
 
-        const addEmail = ( email: string ) => {
+        const addEmail = useCallback(
+            ( email: string ) => {
             email = email.trim();
-            if ( ! email || ! isValidEmail( email ) ) {
-                return;
-            }
-            if ( emails.includes( email ) ) {
-                return;
-            }
-            if ( max && emails.length >= max ) {
+            if ( 
+                ! email || 
+                ! isValidEmail( email ) || 
+                emails.includes( email ) || 
+                ( max && emails.length >= max )
+            ) {
                 return;
             }
 
@@ -77,7 +73,7 @@ const EmailsInput = forwardRef< HTMLInputElement, EmailsInputProps >(
 
             setInputValue( '' );
             onChange?.( updated, newPrimary );
-        };
+        });
 
         const removeEmail = ( email: string ) => {
             const updated = emails.filter( ( e ) => e !== email );

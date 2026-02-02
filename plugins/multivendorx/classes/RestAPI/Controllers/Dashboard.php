@@ -69,7 +69,7 @@ class Dashboard extends \WP_REST_Controller {
                     'icon'       => '',
                     'slug'       => 'view-notifications',
                     'submenu'    => array(),
-                    'capability' => array( 'edit_products' ),
+                    'capability' => array( 'read_products' ),
                     'filename'   => 'view-notifications',
                 ),
             )
@@ -126,7 +126,7 @@ class Dashboard extends \WP_REST_Controller {
                         'name'       => 'Refund',
                         'slug'       => 'refund',
                         'capability' => array( 'view_shop_orders', 'edit_shop_orders' ),
-                        'module'     => array('marketplace-refund'),
+                        'module'     => array( 'marketplace-refund' ),
                     ),
                     array(
                         'key'        => 'commissions',
@@ -169,28 +169,28 @@ class Dashboard extends \WP_REST_Controller {
                         'name'       => 'Support Tickets',
                         'slug'       => 'support-tickets',
                         'capability' => array( 'view_support_tickets', 'reply_support_tickets' ),
-                        'module'     => array('store-support'),
+                        'module'     => array( 'store-support' ),
                     ),
                     array(
                         'key'        => 'customer-questions',
                         'name'       => 'Customer Questions',
                         'slug'       => 'customer-questions',
                         'capability' => array( 'view_customer_questions', 'reply_customer_questions' ),
-                        'module'     => array('question-answer'),
+                        'module'     => array( 'question-answer' ),
                     ),
                     array(
                         'key'        => 'store-followers',
                         'name'       => 'Store Followers',
                         'slug'       => 'store-followers',
                         'capability' => array( 'view_store_followers' ),
-                        'module'     => array('follow-store'),
+                        'module'     => array( 'follow-store' ),
                     ),
                     array(
                         'key'        => 'store-review',
                         'name'       => 'Store Review',
                         'slug'       => 'store-review',
                         'capability' => array( 'view_store_reviews', 'reply_store_reviews' ),
-                        'module'     => array('store-review'),
+                        'module'     => array( 'store-review' ),
                     ),
                 ),
                 'capability' => array( 'view_support_tickets' ),
@@ -219,7 +219,7 @@ class Dashboard extends \WP_REST_Controller {
                         'name'       => 'Documentation',
                         'slug'       => 'documentation',
                         'capability' => array( 'view_documentation' ),
-                        'module'     => array('knowledgebase'),
+                        'module'     => array( 'knowledgebase' ),
                     ),
                     array(
                         'key'        => 'tools',
@@ -230,7 +230,7 @@ class Dashboard extends \WP_REST_Controller {
                 ),
                 'capability' => array( 'view_documentation' ),
             ),
-            'setup-wizard'       => array(
+            'setup-wizard'  => array(
                 'name'       => 'Setup Wizard',
                 'slug'       => '',
                 'icon'       => 'adminfont-report',

@@ -1,6 +1,4 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
 import Select, { components } from 'react-select';
 import type {
@@ -59,13 +57,13 @@ const CustomMenuList = (props: any) => {
 
             {menuContent && (
                 <div
+                    className="select-menu-content"
                     onMouseDown={(e) => {
                         if (keepMenuOpenOnMenuContentClick) {
                             e.preventDefault();
                             e.stopPropagation();
                         }
                     }}
-                    className="select-menu-content"
                 >
                     {menuContent}
                 </div>
@@ -143,7 +141,9 @@ const SelectInput: React.FC<SelectInputProps> = ({
                 : state.isFocused
                     ? 'var(--backgroundColor)'
                     : 'var(--backgroundWhite)',
-            color: state.isSelected ? 'var(--textColor)' : 'var(--themeColor)',
+            color: state.isSelected 
+            ? 'var(--textColor)' 
+            : 'var(--themeColor)',
             cursor: 'pointer',
         }),
         menu: (provided) => ({

@@ -47,7 +47,7 @@ const nestedFields = [
 ];
 
 export default {
-	id: 'store-commissions',
+	id: 'commissions',
 	priority: 1,
 	name: __('Commissions', 'multivendorx'),
 	tabTitle: 'Commission share from the seller’s product/listing',
@@ -324,7 +324,7 @@ export default {
 				'Set a platform fee as a fixed, percentage, or combined rate calculated on the product/listing price. Choose whether the fee is paid by the customer at checkout or deducted from the store’s commission.',
 				'multivendorx'
 			),
-			desc: __('<strong>Example setup:</strong><br>' + 'Total product/listing price = $100<br>' + 'Marketplace commission = $2 + 10%<br>' + 'Platform fee = 5%<br>' + '<em>(Platform fee is calculated on the total product/listing price)</em>' + '<ul>' + '<li><strong>Option 1 – Added to the customer’s order total:</strong><br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Customer pays = $100 + $5 = $105<br>' + 'Store receives = $100 − $12 = $88</li>' + '<li><strong>Option 2 – Deducted from the store’s commission:</strong><br>' + 'Customer pays = $100<br>' + 'Marketplace commission = $2 + 10% of $100 = $12<br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Store receives = $100 − (12 + 5) = $83</li>' + '</ul>', 'multivendorx'),
+			desc: __('<strong>Example setup:</strong><br>' + 'Total product/listing price = $100<br>' + 'Marketplace commission = $2 + 10%<br>' + 'Platform fee = 5%<br>' + '<em>(Platform fee is calculated on the total product/listing price)</em><br>' + '<ul>' + '<li><strong>Option 1 – Added to the customer’s order total:</strong><br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Customer pays = $100 + $5 = $105<br>' + 'Store receives = $100 − $12 = $88</li>' + '<li><strong>Option 2 – Deducted from the store’s commission:</strong><br>' + 'Customer pays = $100<br>' + 'Marketplace commission = $2 + 10% of $100 = $12<br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Store receives = $100 − (12 + 5) = $83</li>' + '</ul>', 'multivendorx'),
 			nestedFields: [
 				{
 					key: 'commission_fixed',

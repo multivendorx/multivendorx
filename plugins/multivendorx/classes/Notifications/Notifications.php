@@ -227,7 +227,7 @@ class Notifications {
 				),
 
 				// ========== PAYMENT ==========
-				'payout_received'              => array(
+				'payout_received'               => array(
 					'name'           => 'Payout received',
 					'desc'           => 'A payment is received for an order.',
 					'store_enabled'  => true,
@@ -410,16 +410,16 @@ class Notifications {
 
 				// ========== ANNOUNCEMENTS ==========
 				'system_announcement'           => array(
-					'name'             => 'System announcement',
-					'desc'             => 'A system-wide announcement is published by the admin.',
-					'store_enabled'    => true,
-					'admin_enabled' => true,
-					'email_subject'    => 'New announcement',
-					'email_body'       => '[announcement_message]',
-					'sms_content'      => '[announcement_message]',
-					'system_message'   => 'New announcement: [announcement_message]',
-					'tag'              => 'System',
-					'category'         => 'notification',
+					'name'           => 'System announcement',
+					'desc'           => 'A system-wide announcement is published by the admin.',
+					'store_enabled'  => true,
+					'admin_enabled'  => true,
+					'email_subject'  => 'New announcement',
+					'email_body'     => '[announcement_message]',
+					'sms_content'    => '[announcement_message]',
+					'system_message' => 'New announcement: [announcement_message]',
+					'tag'            => 'System',
+					'category'       => 'notification',
 				),
 
 				'policy_update'                 => array(
@@ -596,8 +596,8 @@ class Notifications {
             $subject = $event->email_subject;
             $message = $event->email_body;
             foreach ( $parameters as $key => $value ) {
-				$message = str_replace('[' . $key . ']', $value, $message);
-			}			
+				$message = str_replace( '[' . $key . ']', $value, $message );
+			}
             $headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
             wp_mail( $to, $subject, $message, $headers );
@@ -620,8 +620,8 @@ class Notifications {
 
             $message = $event->sms_content;
 			foreach ( $parameters as $key => $value ) {
-				$message = str_replace('[' . $key . ']', $value, $message);
-			}			
+				$message = str_replace( '[' . $key . ']', $value, $message );
+			}
 
             $gateway = $this->active_gateway();
             if ( $gateway ) {
@@ -827,8 +827,8 @@ class Notifications {
             $table = $wpdb->prefix . Utill::TABLES['notifications'];
 
             if ( isset( $args['count'] ) ) {
-                $query = "SELECT COUNT(*) FROM {$table}";
-				$where[] = "is_dismissed = 0 AND is_read = 0";
+                $query   = "SELECT COUNT(*) FROM {$table}";
+				$where[] = 'is_dismissed = 0 AND is_read = 0';
             } else {
                 $query = "SELECT * FROM {$table}";
             }

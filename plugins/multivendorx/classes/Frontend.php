@@ -44,8 +44,8 @@ class Frontend {
         add_action( 'woocommerce_checkout_process', array( $this, 'restrict_products_from_checkout' ) );
 
         // Store visitors stats data.
-        add_action('template_redirect', array($this, 'set_multivendorx_user_cookies'), 10);
-        add_action('template_redirect', array($this, 'multivendorx_store_visitors_stats'), 20);
+        add_action( 'template_redirect', array( $this, 'set_multivendorx_user_cookies' ), 10 );
+        add_action( 'template_redirect', array( $this, 'multivendorx_store_visitors_stats' ), 20 );
     }
 
     /**
@@ -264,7 +264,7 @@ class Frontend {
      * @return string
      */
     public function store_dashboard_template( $template ) {
-        if (is_user_logged_in() && Utill::is_store_dashboard() && in_array( 'administrator', wp_get_current_user()->roles, true )) {
+        if ( is_user_logged_in() && Utill::is_store_dashboard() && in_array( 'administrator', wp_get_current_user()->roles, true ) ) {
             wp_safe_redirect( admin_url() );
             exit;
         }
@@ -282,8 +282,8 @@ class Frontend {
      * @return string
      */
     public function redirect_store_dashboard( $redirect ) {
-        if ( in_array('store_owner', wp_get_current_user()->roles, true) && get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true ) ) {
-            return get_permalink(MultiVendorX()->setting->get_setting( 'store_dashboard_page' ));
+        if ( in_array( 'store_owner', wp_get_current_user()->roles, true ) && get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true ) ) {
+            return get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
         }
         return $redirect;
     }
@@ -294,10 +294,10 @@ class Frontend {
     public function set_multivendorx_user_cookies() {
         if ( is_product() || Utill::is_store_page() ) {
             $current_user_id = get_current_user_id();
-            $cookie_id = '_multivendorx_user_cookie_' . $current_user_id;
+            $cookie_id       = '_multivendorx_user_cookie_' . $current_user_id;
 
             if ( ! headers_sent() ) {
-                $secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
+                $secure       = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
                 $cookie_value = filter_input( INPUT_COOKIE, $cookie_id );
 
                 if ( ! $cookie_value ) {
@@ -327,7 +327,7 @@ class Frontend {
             $product_store = Utill::is_store_page();
         }
 
-        $user_id    = get_current_user_id();
+        $user_id     = get_current_user_id();
         $user_cookie = filter_input( INPUT_COOKIE, '_multivendorx_user_cookie_' . $user_id );
 
         if ( $product_store && $user_cookie ) {
@@ -347,26 +347,27 @@ class Frontend {
     }
 
     public function get_visitor_ip_data() {
-        if (!class_exists('WC_Geolocation', false)) {
-            include_once( WC_ABSPATH . 'includes/class-wc-geolocation.php' );
+        if ( ! class_exists( 'WC_Geolocation', false ) ) {
+            include_once WC_ABSPATH . 'includes/class-wc-geolocation.php';
         }
-        $e = new \WC_Geolocation();
+        $e          = new \WC_Geolocation();
         $ip_address = $e->get_ip_address();
-        if ($ip_address) {
-            if (get_transient('multivendorx_' . $ip_address)) {
-                $data = get_transient('multivendorx_' . $ip_address);
-                if ($data->status != 'error')
+        if ( $ip_address ) {
+            if ( get_transient( 'multivendorx_' . $ip_address ) ) {
+                $data = get_transient( 'multivendorx_' . $ip_address );
+                if ( $data->status != 'error' ) {
                     return $data;
+                }
             }
             $service_endpoint = 'http://ip-api.com/json/%s';
-            $response = wp_safe_remote_get(sprintf($service_endpoint, $ip_address), array('timeout' => 2));
-            if (!is_wp_error($response) && $response['body']) {
-                set_transient('multivendorx_' . $ip_address, json_decode($response['body']), 2 * MONTH_IN_SECONDS);
-                return json_decode($response['body']);
+            $response         = wp_safe_remote_get( sprintf( $service_endpoint, $ip_address ), array( 'timeout' => 2 ) );
+            if ( ! is_wp_error( $response ) && $response['body'] ) {
+                set_transient( 'multivendorx_' . $ip_address, json_decode( $response['body'] ), 2 * MONTH_IN_SECONDS );
+                return json_decode( $response['body'] );
             } else {
-                $data = new \stdClass();
+                $data         = new \stdClass();
                 $data->status = 'error';
-                set_transient('multivendorx_' . $ip_address, $data, 2 * MONTH_IN_SECONDS);
+                set_transient( 'multivendorx_' . $ip_address, $data, 2 * MONTH_IN_SECONDS );
                 return $data;
             }
         }
@@ -374,16 +375,16 @@ class Frontend {
 
     /**
      * Save vistor stats for store.
-     * 
+     *
      * @since 3.0.0
-     * @param int $store_id
+     * @param int   $store_id
      * @param array $data
      */
-    public function multivendorx_save_visitor_stats($store_id, $data) {
+    public function multivendorx_save_visitor_stats( $store_id, $data ) {
         global $wpdb;
         $wpdb->query(
-                $wpdb->prepare(
-                        "INSERT INTO `{$wpdb->prefix}" . Utill::TABLES['visitors_stats'] . "` 
+            $wpdb->prepare(
+                "INSERT INTO `{$wpdb->prefix}" . Utill::TABLES['visitors_stats'] . '` 
                         ( store_id
                         , user_id
                         , user_cookie
@@ -414,23 +415,23 @@ class Frontend {
                         , %s
                         , %s
                         , %s
-                        ) ON DUPLICATE KEY UPDATE `created` = now()"
-                        , $store_id
-                        , $data->user_id
-                        , $data->user_cookie
-                        , $data->session_id
-                        , $data->query
-                        , $data->lat
-                        , $data->lon
-                        , $data->city
-                        , $data->zip
-                        , $data->region
-                        , $data->regionName
-                        , $data->countryCode
-                        , $data->country
-                        , $data->isp
-                        , $data->timezone
-                )
+                        ) ON DUPLICATE KEY UPDATE `created` = now()',
+                $store_id,
+                $data->user_id,
+                $data->user_cookie,
+                $data->session_id,
+                $data->query,
+                $data->lat,
+                $data->lon,
+                $data->city,
+                $data->zip,
+                $data->region,
+                $data->regionName,
+                $data->countryCode,
+                $data->country,
+                $data->isp,
+                $data->timezone
+            )
         );
     }
 }

@@ -1,47 +1,52 @@
-.email-columns {
+.email-builder {
+  .email-columns {
     display: grid;
     gap: 12px;
     width: 100%;
     box-sizing: border-box;
   }
-  
-.email-columns.layout-1 {
-  grid-template-columns: 1fr;
-}
 
-.email-columns.layout-2-50 {
-  grid-template-columns: 1fr 1fr;
-}
+  .email-columns.layout-1 {
+    grid-template-columns: 1fr;
+  }
 
-.email-columns.layout-2-66 {
-  grid-template-columns: 2fr 1fr;
-}
+  .email-columns.layout-2-50 {
+    grid-template-columns: 1fr 1fr;
+  }
 
-.email-columns.layout-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
+  .email-columns.layout-2-66 {
+    grid-template-columns: 2fr 1fr;
+  }
 
-.email-columns.layout-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
+  .email-columns.layout-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-.email-column-wrapper {
+  .email-columns.layout-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .email-column-wrapper {
     display: flex;
     flex-direction: column;
-    min-height: 120px;
     border: 1px dashed #cfd4dc;
     background: #fafafa;
-    padding: 8px;
     border-radius: 6px;
+    position: relative;
   }
-  
-  .column-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #6b7280;
-    margin-bottom: 6px;
+
+  .column-icon {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
   }
-  
+
   .email-column {
     flex: 1;
     min-height: 80px;
@@ -49,7 +54,7 @@
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .column-placeholder {
     flex: 1;
     min-height: 80px;
@@ -63,7 +68,7 @@
     background: #fff;
     pointer-events: none;
   }
-  
+
   .child-block {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -73,24 +78,24 @@
     align-items: center;
     gap: 6px;
   }
-  
+
   .drag-handle {
     cursor: grab;
     user-select: none;
     color: #6b7280;
     font-size: 14px;
   }
-  
+
 
   .drag-root {
     cursor: grab;
   }
-  
+
   .drag-child {
     cursor: grab;
   }
-  
+
   .block-content {
     width: 100%;
   }
-  
+}

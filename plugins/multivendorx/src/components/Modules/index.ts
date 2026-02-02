@@ -249,7 +249,7 @@ export default {
 			icon: 'adminfont-store-review',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/store-review',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=review-management`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=store-reviews`,
 			pro_module: false,
 			category: ['store_management', 'customer_experience'],
 		},
@@ -279,7 +279,7 @@ export default {
 			icon: 'adminfont-staff-manager',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/staff-manager',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=user-capability`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=user-permissions`,
 			pro_module: true,
 			category: 'store_management',
 		},
@@ -406,7 +406,7 @@ export default {
 			icon: 'adminfont-invoice',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/invoice-packing-slip',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=store-invoice`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=invoices`,
 			pro_module: true,
 			category: 'customer_experience',
 		},
@@ -506,7 +506,7 @@ export default {
 			desc: 'Ensure stores meet marketplace requirements with automated policy checks.',
 			icon: 'adminfont-compliance',
 			doc_link: 'https://multivendorx.com/docs/knowledgebase/NA',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=non-compliance`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=compliance`,
 			// pro_module: true,
 			category: 'marketplace_boosters',
 		},
@@ -570,7 +570,7 @@ export default {
 			icon: 'adminfont-advertisement',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/advertise-product/',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=advertising`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=product-advertising`,
 			pro_module: true,
 			category: 'marketplace_boosters',
 		},
@@ -591,7 +591,7 @@ export default {
 			icon: 'adminfont-store-inventory',
 			doc_link:
 				'https://multivendorx.com/docs/knowledgebase/store-inventory',
-			settings_link: `${appLocalizer.plugin_url}settings&subtab=store-inventory`,
+			settings_link: `${appLocalizer.plugin_url}settings&subtab=inventory`,
 			pro_module: true,
 			category: 'marketplace_boosters',
 		},

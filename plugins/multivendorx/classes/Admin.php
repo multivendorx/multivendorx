@@ -87,72 +87,75 @@ class Admin {
                 'multivendorx_submenus',
                 array(
                     'dashboard'           => array(
-                        'name'   => __( 'Dashboard', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Dashboard', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 10,
                     ),
                     'stores'              => array(
-                        'name'   => __( 'Stores', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Stores', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 20,
                     ),
                     'commissions'         => array(
-                        'name'   => __( 'Commissions', 'multivendorx' ),
-                        'subtab' => '',
-                        'count'  => $commission_count,
+                        'name'     => __( 'Commissions', 'multivendorx' ),
+                        'subtab'   => '',
+                        'count'    => $commission_count,
                         'priority' => 30,
                     ),
                     'transaction-history' => array(
-                        'name'   => __( 'Transaction History', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Transaction History', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 40,
                     ),
                     'approval-queue'      => array(
-                        'name'   => __( 'Approval Queue', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Approval Queue', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 50,
                     ),
                     'customer-support'    => array(
-                        'name'   => __( 'Customer Support', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Customer Support', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 60,
                     ),
                     'reports'             => array(
-                        'name'   => __( 'Reports', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Reports', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 70,
                     ),
                     'settings'            => array(
-                        'name'   => __( 'Settings', 'multivendorx' ),
-                        'subtab' => 'marketplace',
+                        'name'     => __( 'Settings', 'multivendorx' ),
+                        'subtab'   => 'overview',
                         'priority' => 80,
                     ),
                     'modules'             => array(
-                        'name'   => __( 'Modules', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Modules', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 90,
                     ),
                     'status-tools'        => array(
-                        'name'   => __( 'Status & Tools', 'multivendorx' ),
-                        'subtab' => 'system-status',
+                        'name'     => __( 'Status & Tools', 'multivendorx' ),
+                        'subtab'   => 'system-status',
                         'priority' => 100,
                     ),
                     'help-support'        => array(
-                        'name'   => __( 'Help & Support', 'multivendorx' ),
-                        'subtab' => '',
+                        'name'     => __( 'Help & Support', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 110,
                     ),
-                    'table-card' => array(
-                        'name'   => __( 'Table Card', 'multivendorx' ),
-                        'subtab' => '',
+                    'table-card'          => array(
+                        'name'     => __( 'Table Card', 'multivendorx' ),
+                        'subtab'   => '',
                         'priority' => 120,
                     ),
                 )
             );
 
-            uasort( $submenus, function ( $a, $b ) {
-                return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
-            });
+            uasort(
+                $submenus,
+                function ( $a, $b ) {
+					return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
+				}
+            );
 
             foreach ( $submenus as $slug => $submenu ) {
                 // prepare subtab if subtab is exist.
@@ -210,7 +213,7 @@ class Admin {
      * @return void
      */
     public function create_setting_page() {
-        echo '<div id="admin-main-wrapper" class="multivendorx-main-wrapper"></div>';
+        echo '<div id="admin-main-wrapper" class="admin-main-wrapper"></div>';
     }
 
     /**

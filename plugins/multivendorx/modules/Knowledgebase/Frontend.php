@@ -7,7 +7,6 @@
 
 namespace MultiVendorX\Knowledgebase;
 
-
 /**
  * Class Frontend for knowledgebase.
  */
@@ -29,12 +28,12 @@ class Frontend {
     public function add_knowledgebase_menu( $submenus ) {
         $new_item = array(
             'knowledgebase' => array(
-                'name'   => __( 'Knowledgebase', 'multivendorx' ),
-                'subtab' => '',
-                'priority' => 95
+                'name'     => __( 'Knowledgebase', 'multivendorx' ),
+                'subtab'   => '',
+                'priority' => 95,
             ),
         );
 
-        return array_merge( $submenus, $new_item );;
+        return array_merge( $submenus, $new_item );
     }
 }

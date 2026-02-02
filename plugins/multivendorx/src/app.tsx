@@ -5,16 +5,16 @@ import { AdminHeader, Banner, CommonPopup, DoActionBtn, FormGroup, FormGroupWrap
 
 import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/Modules';
-import Store from './components/Store/store';
+import Stores from './components/Stores/Stores';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import StatusAndTools from './components/StatusAndTools/statusAndTools';
+import StatusAndTools from './components/StatusAndTools/StatusAndTools';
 import CustomerSupport from './components/CustomerSupport/CustomerSupport';
 import Brand from './assets/images/multivendorx-logo.png';
 import { searchIndex, SearchItem } from './searchIndex';
 import { __ } from '@wordpress/i18n';
 import Announcements from './components/Announcements/Announcements';
 import Knowledgebase from './components/Knowledgebase/Knowledgebase';
-import Commission from './components/Commission/Commission';
+import Commissions from './components/Commissions/Commissions';
 import Analytics from './components/Reports/Reports';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 import ApprovalQueue from './components/ApprovalQueue/ApprovalQueue';
@@ -103,8 +103,8 @@ const Route = () => {
 			{tab === 'settings' && <Settings id="settings" />}
 			{tab === 'status-tools' && <StatusAndTools id="status-tools" />}
 			{tab === 'modules' && <Modules />}
-			{tab === 'stores' && <Store />}
-			{tab === 'commissions' && <Commission />}
+			{tab === 'stores' && <Stores />}
+			{tab === 'commissions' && <Commissions />}
 			{tab === 'customer-support' && <CustomerSupport />}
 			{tab === 'approval-queue' && <ApprovalQueue />}
 			{tab === 'dashboard' && <AdminDashboard />}

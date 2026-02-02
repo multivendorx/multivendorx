@@ -26,7 +26,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
-import ViewCommission from '../Commission/ViewCommission';
+import ViewCommission from '../Commissions/ViewCommission';
 
 type StoreRow = {
 	id?: number;

@@ -1,13 +1,8 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
-import Select from 'react-select';
-import '../styles/web/DynamicRowSetting.scss';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
+import '../styles/web/DynamicRowSetting.scss';
 import '../styles/web/ToggleSetting.scss';
 import SelectInput from './SelectInput';
 
@@ -122,9 +117,6 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
 
             // Inside renderField:
             case 'select':
-                const selectedOption =
-                    field.options?.find( ( opt ) => opt.value === val ) || null;
-
                 // Transform options to SelectInput format
                 const selectOptions: SelectOptions[] = (
                     field.options || []
@@ -196,11 +188,10 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
         <>
             <div className={ `repeater-field-wrapper ${ wrapperClass }` }>
                 { value.map( ( row, rowIndex ) => (
-                    <>
                         <div key={ rowIndex } className="repeater-field">
                             <div className="field">
                                 { template.fields.map( ( field ) => (
-                                    <>{ renderField( row, field, rowIndex ) }</>
+                                    { renderField( row, field, rowIndex ) }
                                 ) ) }
 
                                 <span
@@ -220,7 +211,6 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
                                 ) : null;
                             } )() }
                         </div>
-                    </>
                 ) ) }
 
                 <button

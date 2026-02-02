@@ -107,13 +107,13 @@ class Distance_Shipping extends \WC_Shipping_Method {
         $store = new \MultiVendorX\Store\Store( $store_id );
         $meta  = $store->meta_data;
 
-        $store_lat            = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? 0 );
-        $store_lng            = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? 0 );
-        $default_cost         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_default_cost'] ] ?? 0 );
-        $max_distance         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_max'] ] ?? 0 );
-        $local_pickup_cost    = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_local_pickup_cost'] ] ?? 0 );
-        $distance_type        = ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_type'] ] ?? 'K' );
-        $distance_rules       = ! empty( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ] )
+        $store_lat         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? 0 );
+        $store_lng         = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? 0 );
+        $default_cost      = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_default_cost'] ] ?? 0 );
+        $max_distance      = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_max'] ] ?? 0 );
+        $local_pickup_cost = (float) ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_local_pickup_cost'] ] ?? 0 );
+        $distance_type     = ( $meta[ Utill::STORE_SETTINGS_KEYS['distance_type'] ] ?? 'K' );
+        $distance_rules    = ! empty( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ] )
             ? json_decode( $meta[ Utill::STORE_SETTINGS_KEYS['distance_rules'] ], true )
             : array();
 

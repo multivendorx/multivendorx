@@ -24,10 +24,10 @@ const importAll = (
 	const folderPriorityMap: Record<string, number> = {};
 
 	inpContext.keys().forEach((key) => {
-		if (key.endsWith('folderPriority.ts')) {
+		if (key.endsWith('FolderPriority.ts')) {
 			const folderPath = key
 				.replace('./', '')
-				.replace('/folderPriority.ts', '');
+				.replace('/FolderPriority.ts', '');
 			const priorityData = inpContext(key)?.default;
 			if (priorityData && typeof priorityData.priority === 'number') {
 				folderPriorityMap[folderPath] = priorityData.priority;
@@ -77,7 +77,7 @@ const importAll = (
 		});
 
 		// Step 3: Skip folderPriority.ts
-		if (fileName !== 'folderPriority.ts') {
+		if (fileName !== 'FolderPriority.ts') {
 			currentFolder.push({
 				name: fileName!.replace('.ts', ''), // keep raw file name
 				type: 'file',

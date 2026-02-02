@@ -1,5 +1,7 @@
+// External dependencies
 import { useEffect, useRef, useState } from 'react';
-import FormGroupWrapper from './UI/FormGroupWrapper';
+
+// Internal dependencies
 import FormGroup from './UI/FormGroup';
 
 interface MapboxControl {

@@ -8,7 +8,7 @@ const GeneralSettings = () => {
 	const [formData, setFormData] = useState<{ [key: string]: any }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']
+		appLocalizer.settings_databases_value['store-permissions']
 			?.edit_store_info_activation || [];
 	useEffect(() => {
 		if (!id) {

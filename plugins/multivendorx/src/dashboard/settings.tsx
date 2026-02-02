@@ -19,6 +19,7 @@ import Privacy from './settings/Privacy';
 import Verification from './settings/Verification';
 import ShippingDelivery from './settings/ShippingDelivery';
 import LiveChat from './settings/LiveChat';
+import { applyFilters } from '@wordpress/hooks';
 
 const settings = () => {
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -56,137 +57,147 @@ const settings = () => {
 	// Build hash URL for a given tab
 	const prepareUrl = (tabId: string) => `#subtab=${tabId}`;
 
-	const tabData = [
-		{
-			type: 'file',
-			content: {
-				id: 'general',
-				name: 'General',
-				desc: 'Update your store’s core information - name, slug, description, and buyer message',
-				icon: 'tools',
+	const tabData = applyFilters(
+		'multivendorx_store_settings_tabs',
+		[
+			{
+				type: 'file',
+				content: {
+					id: 'general',
+					name: 'General',
+					desc: 'Update your store’s core information - name, slug, description, and buyer message',
+					icon: 'tools',
+				},
 			},
-		},
-		{
-			type: 'file',
-			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_images'),
-			content: {
-				id: 'appearance',
-				name: 'Appearance',
-				desc: 'Manage your store’s profile image, banner, and video.',
-				icon: 'appearance',
+			{
+				type: 'file',
+				condition: settings?.['store-permissions'].edit_store_info_activation.includes('store_images'),
+				content: {
+					id: 'appearance',
+					name: 'Appearance',
+					desc: 'Manage your store’s profile image, banner, and video.',
+					icon: 'appearance',
+				},
 			},
-		},
-		{
-			type: 'file',
-			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_address'),
-			content: {
-				id: 'business-address',
-				name: 'Business Address',
-				desc: 'Provide your business address, city, zip code, country, state, and timezone to ensure accurate order and location settings.',
-				icon: 'form-address',
+			{
+				type: 'file',
+				condition: settings?.['store-permissions'].edit_store_info_activation.includes('store_address'),
+				content: {
+					id: 'business-address',
+					name: 'Business Address',
+					desc: 'Provide your business address, city, zip code, country, state, and timezone to ensure accurate order and location settings.',
+					icon: 'form-address',
+				},
 			},
-		},
-		{
-			type: 'file',
-			condition: settings?.['store-capability'].edit_store_info_activation.includes('store_contact'),
-			content: {
-				id: 'contact-information',
-				name: 'Contact Information',
-				desc: 'Add your store’s contact details so customers can reach you easily through phone, email.',
-				icon: 'form-phone',
+			{
+				type: 'file',
+				condition: settings?.['store-permissions'].edit_store_info_activation.includes('store_contact'),
+				content: {
+					id: 'contact-information',
+					name: 'Contact Information',
+					desc: 'Add your store’s contact details so customers can reach you easily through phone, email.',
+					icon: 'form-phone',
+				},
 			},
-		},
-		{
-			type: 'file',
-			content: {
-				id: 'social-media',
-				name: 'Social Media',
-				desc: 'Add your store’s social media links to help buyers connect with you across platforms.',
-				icon: 'cohort',
+			{
+				type: 'file',
+				content: {
+					id: 'social-media',
+					name: 'Social Media',
+					desc: 'Add your store’s social media links to help buyers connect with you across platforms.',
+					icon: 'cohort',
+				},
 			},
-		},
-		{
-			type: 'file',
-			content: {
-				id: 'payout',
-				name: 'Payout',
-				desc: 'Enter your payment information and select the method you’d like to use for receiving store payouts.',
-				icon: 'wallet-open',
+			{
+				type: 'file',
+				content: {
+					id: 'payout',
+					name: 'Payout',
+					desc: 'Enter your payment information and select the method you’d like to use for receiving store payouts.',
+					icon: 'wallet-open',
+				},
 			},
-		},
-		{
-			type: 'file',
-			module: 'store-policy',
-			content: {
-				id: 'privacy',
-				name: 'Privacy',
-				desc: 'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
-				icon: 'privacy',
+			{
+				type: 'file',
+				module: 'store-policy',
+				content: {
+					id: 'privacy',
+					name: 'Privacy',
+					desc: 'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
+					icon: 'privacy',
+				},
 			},
-		},
-		{
-			type: 'file',
-			module: 'store-shipping',
-			content: {
-				id: 'shipping',
-				name: 'Shipping',
-				desc: 'Manage your store’s shipping method, pricing rules, and location-based rates.',
-				icon: 'shipping',
+			{
+				type: 'file',
+				module: 'store-shipping',
+				content: {
+					id: 'shipping',
+					name: 'Shipping',
+					desc: 'Manage your store’s shipping method, pricing rules, and location-based rates.',
+					icon: 'shipping',
+				},
 			},
-		},
-		{
-			type: 'file',
-			module: 'marketplace-complianceg',
-			content: {
-				id: 'verification',
-				name: 'Verification',
-				desc: 'verification',
-				icon: 'verification5',
+			{
+				type: 'file',
+				module: 'marketplace-compliance',
+				content: {
+					id: 'verification',
+					name: 'Verification',
+					desc: 'verification',
+					icon: 'verification5',
+				},
 			},
-		},
-		{
-			type: 'file',
-			module: 'live-chat',
-			content: {
-				id: 'livechat',
-				name: 'Livechat',
-				desc: 'Connect your store with live chat platforms so customers can reach you instantly for support or inquiries.',
-				icon: 'live-chat',
-			},
-		},
-	].filter(
-		(tab) =>
-			//Show if:
-			(!tab.module || modules.includes(tab.module)) && 
-			(tab.condition === undefined || tab.condition)
+		].filter(
+			(tab) =>
+				(!tab.module || modules.includes(tab.module)) &&
+				(tab.condition === undefined || tab.condition)
+		)
 	);
 
 	const getForm = (tabId: string) => {
+		let form: React.ReactNode;
+
 		switch (tabId) {
 			case 'general':
-				return <GeneralSettings />;
+				form = <GeneralSettings />;
+				break;
 			case 'appearance':
-				return <Appearance />;
+				form = <Appearance />;
+				break;
 			case 'business-address':
-				return <BusinessAddress />;
+				form = <BusinessAddress />;
+				break;
 			case 'contact-information':
-				return <ContactInformation />;
+				form = <ContactInformation />;
+				break;
 			case 'social-media':
-				return <SocialMedia />;
+				form = <SocialMedia />;
+				break;
 			case 'payout':
-				return <Withdrawl />;
+				form = <Withdrawl />;
+				break;
 			case 'privacy':
-				return <Privacy />;
+				form = <Privacy />;
+				break;
 			case 'shipping':
-				return <ShippingDelivery />;
+				form = <ShippingDelivery />;
+				break;
 			case 'verification':
-				return <Verification />;
-			case 'livechat':
-				return <LiveChat />;
+				form = <Verification />;
+				break;
 			default:
-				return <div></div>;
+				form = null;
 		}
+
+		return (
+			applyFilters(
+				'multivendorx_store_settings_tab_content',
+				form,
+				tabId
+			) ?? <div />
+		);
 	};
+
 	return (
 		<>
 			<div className="horizontal-tabs">

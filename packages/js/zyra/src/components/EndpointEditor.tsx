@@ -353,21 +353,14 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                                         k,
                                                                         item,
                                                                     ] ) => {
-                                                                        if (
-                                                                            k ===
-                                                                            key
-                                                                        ) {
+                                                                        if (k ===key) {
                                                                             const submenuUpdated =
                                                                                 [
                                                                                     ...item.submenu,
                                                                                 ];
-                                                                            submenuUpdated[
-                                                                                i
-                                                                            ] =
+                                                                            submenuUpdated[i] =
                                                                                 {
-                                                                                    ...submenuUpdated[
-                                                                                        i
-                                                                                    ],
+                                                                                    ...submenuUpdated[i],
                                                                                     name: newName,
                                                                                 };
                                                                             return [
@@ -379,10 +372,7 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                                                 },
                                                                             ];
                                                                         }
-                                                                        return [
-                                                                            k,
-                                                                            item,
-                                                                        ];
+                                                                        return [k,item,];
                                                                     }
                                                                 ) as [
                                                                     string,

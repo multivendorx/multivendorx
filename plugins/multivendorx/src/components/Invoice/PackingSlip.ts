@@ -14,7 +14,8 @@ export default {
         {
             key: 'invoice_template_builder',
             type: 'color-setting',
-            label: __('Templates and design', 'multivendorx'),
+            // label: __('Templates and design', 'multivendorx'),
+            classes: 'full-width',
             moduleEnabled: 'invoice',
             showPdfButton: true,
             templates: [

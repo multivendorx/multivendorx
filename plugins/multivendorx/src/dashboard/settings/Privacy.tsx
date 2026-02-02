@@ -96,7 +96,7 @@ const Privacy = () => {
 								tinymceApiKey={
 									appLocalizer
 										.settings_databases_value[
-									'marketplace'
+									'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
@@ -113,7 +113,7 @@ const Privacy = () => {
 								tinymceApiKey={
 									appLocalizer
 										.settings_databases_value[
-									'marketplace'
+									'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
@@ -130,7 +130,7 @@ const Privacy = () => {
 								tinymceApiKey={
 									appLocalizer
 										.settings_databases_value[
-									'marketplace'
+									'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>
@@ -147,7 +147,7 @@ const Privacy = () => {
 								tinymceApiKey={
 									appLocalizer
 										.settings_databases_value[
-									'marketplace'
+									'overview'
 									]['tinymce_api_section'] ?? ''
 								}
 							/>

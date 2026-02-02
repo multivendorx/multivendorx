@@ -10,7 +10,7 @@ namespace MultiVendorX;
 
 use MultiVendorX\Store\Store;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * MultiVendorX Utill class
@@ -19,13 +19,13 @@ defined('ABSPATH') || exit;
  * @version     PRODUCT_VERSION
  * @author      MultiVendorX
  */
-class Utill
-{
+class Utill {
+
     /**
      * Utill class construct function
      */
     public function __construct() {
-        add_action('wp', array($this, 'disable_wpml_switcher_on_dashboard'), 99);
+        add_action( 'wp', array( $this, 'disable_wpml_switcher_on_dashboard' ), 99 );
     }
 
     /**
@@ -51,29 +51,28 @@ class Utill
     );
 
     const MULTIVENDORX_SETTINGS = array(
-        'general'                       => 'multivendorx_general_settings',
-        'store-registration-form'       => 'multivendorx_store_registration_form_settings',
-        'menu-manager'                  => 'multivendorx_menu_manager_settings',
+        'onboarding'                    => 'multivendorx_onboarding_settings',
+        'registration'                  => 'multivendorx_registration_settings',
+        'dashboard-menu'                => 'multivendorx_dashboard_menu_settings',
         'privacy'                       => 'multivendorx_privacy_settings',
-        'coupon'                        => 'multivendorx_coupon_settings',
+        'coupons-discounts'             => 'multivendorx_coupons_discounts_settings',
         'store'                         => 'multivendorx_store_settings',
         'products'                      => 'multivendorx_products_settings',
-        'policy'                        => 'multivendorx_policy_settings',
-        'disbursement'                  => 'multivendorx_disbursement_settings',
-        'commissions'                   => 'multivendorx_commissions_settings',
-        'marketplace'                   => 'multivendorx_marketplace_settings',
-        'user-capability'               => 'multivendorx_user_capability_settings',
-        'store-capability'              => 'multivendorx_store_capability_settings',
-        'identity-verification'         => 'multivendorx_identity_verification_settings',
+        'policies'                      => 'multivendorx_policies_settings',
+        'payouts'                       => 'multivendorx_payouts_settings',
+        'overview'                      => 'multivendorx_overview_settings',
+        'user-permissions'              => 'multivendorx_user_permissions_settings',
+        'store-permissions'             => 'multivendorx_store_permissions_settings',
+        'store-identity'                => 'multivendorx_store_identity_settings',
         'commission-rule'               => 'multivendorx_commission_rule_settings',
-        'payment-integration'           => 'multivendorx_payment_integration_settings',
-        'store-appearance'              => 'multivendorx_store_appearance_settings',
+        'withdrawal-methods'            => 'multivendorx_withdrawal_methods_settings',
+        'appearance'                    => 'multivendorx_appearance_settings',
         'product-report-abuse'          => 'multivendorx_product_report_abuse_settings',
-        'store-commissions'             => 'multivendorx_store_commissions_settings',
-        'store-inventory'               => 'multivendorx_store_inventory_settings',
-        'review-management'             => 'multivendorx_review_management_settings',
+        'commissions'                   => 'multivendorx_commissions_settings',
+        'inventory'                     => 'multivendorx_inventory_settings',
+        'store-reviews'                 => 'multivendorx_store_reviews_settings',
         'refunds'                       => 'multivendorx_refunds_settings',
-        'advertising'                   => 'multivendorx_advertising_settings',
+        'product-advertising'           => 'multivendorx_product_advertising_settings',
         'product-preferencess'          => 'multivendorx_product_preferencess_settings',
         'geolocation'                   => 'multivendorx_geolocation_settings',
         'shipping'                      => 'multivendorx_shipping_settings',
@@ -91,22 +90,28 @@ class Utill
         'log'                           => 'multivendorx_log_settings',
         'min-max'                       => 'multivendorx_min_max_settings',
         'delivery'                      => 'multivendorx_delivery_settings',
-        'notification-configuration'    => 'multivendorx_notification_configuration_settings',
-        'non-compliance'                => 'multivendorx_non_compliance_settings',
-        'development-tools'             => 'multivendorx_development_tools_settings',
+        'events-delivery'               => 'multivendorx_events-delivery_settings',
+        'compliance'                    => 'multivendorx_compliance_settings',
+        'developer-tools'               => 'multivendorx_developer_tools_settings',
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
-        'installed'           => 'multivendorx_installed',
-        'plugin_activated'    => 'multivendorx_plugin_activated',
-        'plugin_db_version'   => 'dc_product_vendor_plugin_db_version',
-        'plugin_page_install' => 'dc_product_vendor_plugin_page_install',
-        'log_file'            => 'multivendorx_log_file',
-        'tour_active'         => 'multivendorx_tour_active',
-        'admin_email'         => 'admin_email',
-        'default_role'        => 'default_role',
-        'revenue_mode_store'  => 'revenue_mode_store',
-        'payment_gateway_charge'  => 'payment_gateway_charge',
+        'installed'              => 'multivendorx_installed',
+        'plugin_activated'       => 'multivendorx_plugin_activated',
+        'plugin_db_version'      => 'dc_product_vendor_plugin_db_version',
+        'plugin_page_install'    => 'dc_product_vendor_plugin_page_install',
+        'log_file'               => 'multivendorx_log_file',
+        'tour_active'            => 'multivendorx_tour_active',
+        'admin_email'            => 'admin_email',
+        'default_role'           => 'default_role',
+        'revenue_mode_store'     => 'revenue_mode_store',
+        'payment_gateway_charge' => 'payment_gateway_charge',
+    );
+
+    const MULTIVENDORX_TRANSIENT_KEYS = array(
+        'announcement_transient' => 'multivendorx_announcement_data_',
+        'review_transient'       => 'multivendorx_review_data_',
+        'report_transient'       => 'multivendorx_report_data_',
     );
 
     const WOO_SETTINGS = array(
@@ -162,54 +167,54 @@ class Utill
     );
 
     const STORE_SETTINGS_KEYS = array(
-        'name'                       => 'name',
-        'slug'                       => 'slug',
-        'description'                => 'description',
-        'who_created'                => 'who_created',
-        'status'                     => 'status',
-        'withdrawals_count'          => 'withdrawals_count',
-        'payment_method'             => 'payment_method',
-        'paypal_email'               => 'paypal_email',
-        'stripe_account_id'          => 'stripe_connect_account_id',
-        'stripe_account_type'        => 'stripe_account_type',
-        'stripe_oauth_state'         => 'stripe_oauth_state',
-        'registration_data'          => 'multivendorx_registration_data',
-        'request_withdrawal_amount'  => 'request_withdrawal_amount',
-        'store_reject_note'          => 'store_reject_note',
-        'primary_email'              => 'primary_email',
-        'phone'                      => 'phone',
-        'address'                    => 'address',
-        'address_1'                  => 'address_1',
-        'address_2'                  => 'address_2',
-        'image'                      => 'image',
-        'city'                       => 'city',
-        'state'                      => 'state',
-        'country'                    => 'country',
-        'postcode'                   => 'postcode',
-        'create_time'                => 'create_time',
-        'deactivation_reason'        => 'deactivation_reason',
-        'deactivation_request_date'  => 'deactivation_request_date',
-        'followers'                  => 'followers',
-        'account_number'             => 'account_number',
-        'shipping_class_id'          => 'shipping_class_id',
-        'store_policy'               => 'store_policy',
-        'shipping_policy'            => 'shipping_policy',
-        'refund_policy'              => 'refund_policy',
-        'cancellation_policy'        => 'cancellation_policy',
-        'country_local_pickup_cost'          => 'local_pickup_cost',
-        'country_shipping_rates'             => 'multivendorx_shipping_rates',
-        'country_additional_qty'             => 'multivendorx_additional_qty',
-        'country_additional_product'         => 'multivendorx_additional_product',
-        'country_shipping_type_price'        => 'multivendorx_shipping_type_price',
-        'country_free_shipping_amount'       => 'free_shipping_amount',
-        'location_lat'               => 'location_lat',
-        'location_lng'               => 'location_lng',
-        'distance_default_cost'      => 'distance_default_cost',
-        'distance_max'               => 'distance_max',
-        'distance_local_pickup_cost' => 'distance_local_pickup_cost',
-        'distance_rules'             => 'distance_rules',
-        'shipping_options'           => 'shipping_options',
-        'distance_type'              => 'distance_type',
+        'name'                         => 'name',
+        'slug'                         => 'slug',
+        'description'                  => 'description',
+        'who_created'                  => 'who_created',
+        'status'                       => 'status',
+        'withdrawals_count'            => 'withdrawals_count',
+        'payment_method'               => 'payment_method',
+        'paypal_email'                 => 'paypal_email',
+        'stripe_account_id'            => 'stripe_connect_account_id',
+        'stripe_account_type'          => 'stripe_account_type',
+        'stripe_oauth_state'           => 'stripe_oauth_state',
+        'registration_data'            => 'multivendorx_registration_data',
+        'request_withdrawal_amount'    => 'request_withdrawal_amount',
+        'store_reject_note'            => 'store_reject_note',
+        'primary_email'                => 'primary_email',
+        'phone'                        => 'phone',
+        'address'                      => 'address',
+        'address_1'                    => 'address_1',
+        'address_2'                    => 'address_2',
+        'image'                        => 'image',
+        'city'                         => 'city',
+        'state'                        => 'state',
+        'country'                      => 'country',
+        'postcode'                     => 'postcode',
+        'create_time'                  => 'create_time',
+        'deactivation_reason'          => 'deactivation_reason',
+        'deactivation_request_date'    => 'deactivation_request_date',
+        'followers'                    => 'followers',
+        'account_number'               => 'account_number',
+        'shipping_class_id'            => 'shipping_class_id',
+        'store_policy'                 => 'store_policy',
+        'shipping_policy'              => 'shipping_policy',
+        'refund_policy'                => 'refund_policy',
+        'cancellation_policy'          => 'cancellation_policy',
+        'country_local_pickup_cost'    => 'local_pickup_cost',
+        'country_shipping_rates'       => 'multivendorx_shipping_rates',
+        'country_additional_qty'       => 'multivendorx_additional_qty',
+        'country_additional_product'   => 'multivendorx_additional_product',
+        'country_shipping_type_price'  => 'multivendorx_shipping_type_price',
+        'country_free_shipping_amount' => 'free_shipping_amount',
+        'location_lat'                 => 'location_lat',
+        'location_lng'                 => 'location_lng',
+        'distance_default_cost'        => 'distance_default_cost',
+        'distance_max'                 => 'distance_max',
+        'distance_local_pickup_cost'   => 'distance_local_pickup_cost',
+        'distance_rules'               => 'distance_rules',
+        'shipping_options'             => 'shipping_options',
+        'distance_type'                => 'distance_type',
     );
 
     const USER_SETTINGS_KEYS = array(
@@ -243,19 +248,18 @@ class Utill
      * @param array  $extra   Additional metadata to include.
      * @return bool           True on success, false on failure.
      */
-    public static function log($message = '', $type = 'INFO', $extra = array())
-    {
+    public static function log( $message = '', $type = 'INFO', $extra = array() ) {
         global $wp_filesystem, $wpdb;
 
         // Initialize the WordPress filesystem API.
-        if (empty($wp_filesystem)) {
+        if ( empty( $wp_filesystem ) ) {
             require_once ABSPATH . '/wp-admin/includes/file.php';
             WP_Filesystem();
         }
 
         // Create the logs directory and protect it with .htaccess.
-        if (! file_exists(MultiVendorX()->multivendorx_logs_dir . '/.htaccess')) {
-            wp_mkdir_p(MultiVendorX()->multivendorx_logs_dir);
+        if ( ! file_exists( MultiVendorX()->multivendorx_logs_dir . '/.htaccess' ) ) {
+            wp_mkdir_p( MultiVendorX()->multivendorx_logs_dir );
             try {
                 $wp_filesystem->put_contents(
                     MultiVendorX()->multivendorx_logs_dir . '/.htaccess',
@@ -265,13 +269,13 @@ class Utill
                     MultiVendorX()->multivendorx_logs_dir . '/index.html',
                     ''
                 );
-            } catch (Exception $e) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+            } catch ( Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
                 // Directory creation failed but logging should continue.
             }
         }
 
         // Convert Exception into structured metadata.
-        if ($message instanceof \Exception) {
+        if ( $message instanceof \Exception ) {
             $type             = 'EXCEPTION';
             $extra['Message'] = $message->getMessage();
             $extra['Code']    = $message->getCode();
@@ -282,7 +286,7 @@ class Utill
             $message        = 'Exception occurred';
         }
         // Convert Throwable into structured metadata.
-        if ($message instanceof \Throwable) {
+        if ( $message instanceof \Throwable ) {
             $type             = 'EXCEPTION';
             $extra['Message'] = $message->getMessage();
             $extra['Code']    = $message->getCode();
@@ -293,7 +297,7 @@ class Utill
         }
 
         // Convert WP_Error into structured metadata.
-        if ($message instanceof \WP_Error) {
+        if ( $message instanceof \WP_Error ) {
             $type             = 'WP_ERROR';
             $extra['Code']    = $message->get_error_code();
             $extra['Message'] = $message->get_error_message();
@@ -303,7 +307,7 @@ class Utill
         }
 
         // Automatically capture database errors.
-        if (isset($wpdb) && ! empty($wpdb->last_error)) {
+        if ( isset( $wpdb ) && ! empty( $wpdb->last_error ) ) {
             $extra['DB Error']   = $wpdb->last_error;
             $extra['Last Query'] = $wpdb->last_query;
         }
@@ -312,7 +316,7 @@ class Utill
         $meta = array_merge(
             array(
                 'Type'      => $type,
-                'Timestamp' => current_time('mysql'),
+                'Timestamp' => current_time( 'mysql' ),
                 // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
                 'File'      => debug_backtrace()[1]['file'] ?? '',
                 // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
@@ -326,21 +330,21 @@ class Utill
         $timestamp = $meta['Timestamp'];
         $log_lines = array();
 
-        foreach ($meta as $key => $val) {
+        foreach ( $meta as $key => $val ) {
             // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-            $val         = trim(print_r($val, true));
+            $val         = trim( print_r( $val, true ) );
             $log_lines[] = "{$timestamp} : {$key}: {$val}";
         }
 
         // Add the main message.
         // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-        $log_lines[] = "{$timestamp} : Message: " . trim(print_r($message, true));
+        $log_lines[] = "{$timestamp} : Message: " . trim( print_r( $message, true ) );
 
         // Build final entry block.
-        $log_entry = implode("\n", $log_lines) . "\n";
+        $log_entry = implode( "\n", $log_lines ) . "\n";
 
-        $existing = $wp_filesystem->get_contents(MultiVendorX()->log_file);
-        if (! empty($existing)) {
+        $existing = $wp_filesystem->get_contents( MultiVendorX()->log_file );
+        if ( ! empty( $existing ) ) {
             $log_entry = "\n" . $log_entry; // Add spacing.
         }
 
@@ -355,9 +359,8 @@ class Utill
      *
      * @return bool
      */
-    public static function is_khali_dabba()
-    {
-        return apply_filters('kothay_dabba', false);
+    public static function is_khali_dabba() {
+        return apply_filters( 'kothay_dabba', false );
     }
     /**
      * Check if a WordPress plugin is active
@@ -365,17 +368,16 @@ class Utill
      * @param string $plugin_slug Plugin folder/filename, e.g., 'woocommerce/woocommerce.php'
      * @return bool
      */
-    public static function is_active_plugin($plugin_slug = '')
-    {
-        if (empty($plugin_slug)) {
+    public static function is_active_plugin( $plugin_slug = '' ) {
+        if ( empty( $plugin_slug ) ) {
             return false;
         }
 
-        if (! function_exists('is_plugin_active')) {
+        if ( ! function_exists( 'is_plugin_active' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
-        return is_plugin_active($plugin_slug);
+        return is_plugin_active( $plugin_slug );
     }
 
     /**
@@ -386,17 +388,16 @@ class Utill
      * @param  array $args          ( default: array() ).
      * @return void
      */
-    public static function get_template($template_name, $args = array())
-    {
+    public static function get_template( $template_name, $args = array() ) {
 
         // Check if the template exists in the theme.
         $theme_template = get_stylesheet_directory() . '/dc-woocommerce-product-vendor/' . $template_name;
 
         // Use the theme template if it exists, otherwise use the plugin template.
-        $located = file_exists($theme_template) ? $theme_template : MultiVendorX()->plugin_path . 'templates/' . $template_name;
+        $located = file_exists( $theme_template ) ? $theme_template : MultiVendorX()->plugin_path . 'templates/' . $template_name;
 
         // Load the template.
-        load_template($located, false, $args);
+        load_template( $located, false, $args );
     }
 
 
@@ -407,9 +408,8 @@ class Utill
      *
      * @return string The string wrapped in single quotes, or the original value if not a string.
      */
-    public static function add_single_quotes($value)
-    {
-        if (is_string($value)) {
+    public static function add_single_quotes( $value ) {
+        if ( is_string( $value ) ) {
             return "'" . $value . "'";
         }
 
@@ -421,10 +421,9 @@ class Utill
      *
      * @return bool
      */
-    public static function is_store_dashboard()
-    {
-        $dashboard_page = (int) MultiVendorX()->setting->get_setting('store_dashboard_page');
-        return is_page($dashboard_page);
+    public static function is_store_dashboard() {
+        $dashboard_page = (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' );
+        return is_page( $dashboard_page );
     }
 
     /**
@@ -432,57 +431,53 @@ class Utill
      *
      * @return bool
      */
-    public static function is_store_registration_page()
-    {
-        $registration_page = (int) MultiVendorX()->setting->get_setting('store_registration_page');
-        return is_page($registration_page);
+    public static function is_store_registration_page() {
+        $registration_page = (int) MultiVendorX()->setting->get_setting( 'store_registration_page' );
+        return is_page( $registration_page );
     }
 
-    public static function is_store_page()
-    {
-        $store_name = get_query_var(MultiVendorX()->setting->get_setting('store_url', 'store'));
+    public static function is_store_page() {
+        $store_name = get_query_var( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) );
 
-        if (! empty($store_name)) {
-            $store = Store::get_store($store_name, 'slug');
+        if ( ! empty( $store_name ) ) {
+            $store = Store::get_store( $store_name, 'slug' );
         }
         return $store ?? false;
     }
-    
+
     /**
      * Disable WPML language switcher on multivendorx React store dashboard
      */
-    public function disable_wpml_switcher_on_dashboard()
-    {
+    public function disable_wpml_switcher_on_dashboard() {
 
-        if (! Utill::is_store_dashboard()) {
+        if ( ! self::is_store_dashboard() ) {
             return;
         }
 
-        add_filter('icl_ls_languages', '__return_empty_array');
+        add_filter( 'icl_ls_languages', '__return_empty_array' );
     }
 
     public static function normalize_date_range( $start_raw, $end_raw ) {
         $start_raw = sanitize_text_field( $start_raw );
         $end_raw   = sanitize_text_field( $end_raw );
-    
+
         $start_date = '';
         $end_date   = '';
-    
+
         if ( $start_raw && $end_raw ) {
             // Site timezone (WordPress standard)
             $timezone = wp_timezone();
-    
+
             $start_dt = new \DateTime( $start_raw . ' 00:00:00', $timezone );
             $end_dt   = new \DateTime( $end_raw . ' 23:59:59', $timezone );
-    
+
             $start_date = $start_dt->format( 'Y-m-d H:i:s' );
             $end_date   = $end_dt->format( 'Y-m-d H:i:s' );
         }
-    
-        return [
+
+        return array(
             'start_date' => $start_date,
             'end_date'   => $end_date,
-        ];
+        );
     }
-    
 }

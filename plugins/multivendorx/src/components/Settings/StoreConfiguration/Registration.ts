@@ -1,0 +1,29 @@
+import { __ } from '@wordpress/i18n';
+
+export default {
+	id: 'registration',
+	priority: 2,
+	name: 'Registration',
+	desc: __(
+		'Customise personalised store registration form for marketplace.',
+		'multivendorx'
+	),
+	icon: 'adminfont-contact-form',
+	submitUrl: 'settings',
+	modal: [
+		{
+			key: 'registration page',
+			type: 'blocktext',
+			blocktext: __(
+				'Only store owners can apply for store registration. Applicants must log in or create an account before proceeding. So, Make sure WooCommerce’s Account & Privacy settings are configured to allow user registration.',
+				'multivendorx'
+			),
+		},
+		{
+			key: 'store_registration_from',
+			type: 'form-builder',
+			classes: 'full-width',
+			desc: 'Customise personalised store registration form for marketplace.',
+		},
+	],
+};

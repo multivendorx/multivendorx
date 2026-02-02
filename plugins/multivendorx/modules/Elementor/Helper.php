@@ -1,5 +1,6 @@
 <?php
 namespace MultiVendorX\Elementor;
+
 use MultiVendorX\Store\StoreUtil;
 
 trait StoreHelper {
@@ -11,10 +12,10 @@ trait StoreHelper {
 	protected function get_store_data() {
 
 		if ( $this->is_editor() ) {
-			return [
+			return array(
 				'storeName'        => __( 'Demo Store', 'multivendorx' ),
 				'storeDescription' => __( 'This is a sample store description shown only in Elementor editor preview.', 'multivendorx' ),
-			];
+			);
 		}
 
 		$slug = get_query_var( 'store' );

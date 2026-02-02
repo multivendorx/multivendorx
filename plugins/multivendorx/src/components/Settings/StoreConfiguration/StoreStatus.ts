@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'store-status-control',
+	id: 'store-status',
 	priority: 3,
 	name: __('Store Status', 'multivendorx'),
 	desc: __(

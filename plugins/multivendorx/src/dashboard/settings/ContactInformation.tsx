@@ -20,7 +20,7 @@ const ContactInformation = () => {
 		{ label: string; value: string }[]
 	>([]);
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']
+		appLocalizer.settings_databases_value['store-permissions']
 			?.edit_store_info_activation || [];
 	const { modules } = useModules();
 

@@ -2,8 +2,8 @@
   "apiVersion": 2,
   "name": "multivendorx/store-name",
   "title": "Store Name",
-  "category": "multivendorx",
+  "category": "multivendorx-store-shop",
   "icon": "store",
   "editorScript": "file:./index.js",
-  "viewScriptModule": "file:./view.js"
+  "script": "file:./index.js"
 }

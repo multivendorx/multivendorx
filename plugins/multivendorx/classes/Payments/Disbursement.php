@@ -101,7 +101,7 @@ class Disbursement {
                 return;
             }
             if ( ( $threshold_amount + $minimum_wallet_amount ) < $row->balance ) {
-                MultiVendorX()->payments->processor->process_payment( $row->store_id, ($row->balance - $minimum_wallet_amount) );
+                MultiVendorX()->payments->processor->process_payment( $row->store_id, ( $row->balance - $minimum_wallet_amount ) );
             }
         }
     }

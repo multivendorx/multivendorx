@@ -8,6 +8,7 @@
 namespace MultiVendorX\Store;
 
 use MultiVendorX\Utill;
+use MultiVendorX\FrontendScripts;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,7 +27,7 @@ class Rewrites {
      * @var string
      */
     public $custom_store_url = '';
-    private $slug = 'multivendorx-store';
+    private $slug            = 'multivendorx-store';
 
     /**
      * Hook into the functions
@@ -40,10 +41,10 @@ class Rewrites {
         // For PHP template query of products.
         add_action( 'pre_get_posts', array( $this, 'store_query_filter' ) );
 
-        add_filter( 'get_block_templates', [ $this, 'register_block_template' ], 10, 3 );
-        add_filter( 'pre_get_block_file_template', [ $this, 'resolve_template_by_id' ], 10, 3 );
-        add_filter( 'template_include', [ $this, 'template_loader' ], 10 );
-        add_action( 'wp_enqueue_scripts', [ $this, 'register_store_state' ] );       
+        add_filter( 'get_block_templates', array( $this, 'register_block_template' ), 10, 3 );
+        add_filter( 'pre_get_block_file_template', array( $this, 'resolve_template_by_id' ), 10, 3 );
+        add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
+        add_action( 'wp_enqueue_scripts', array( $this, 'register_store_state' ) );
     }
 
     /**
@@ -144,41 +145,57 @@ class Rewrites {
     }
 
     private function should_load_template() {
-        if ( get_query_var( $this->custom_store_url ) ) return true;
+        if ( get_query_var( $this->custom_store_url ) ) {
+			return true;
+        }
         if ( is_admin() && function_exists( 'get_current_screen' ) ) {
             $screen = get_current_screen();
-            if ( $screen && $screen->id === 'site-editor' ) return true;
+            if ( $screen && $screen->id === 'site-editor' ) {
+				return true;
+            }
         }
         return false;
     }
-    
+
     public function register_block_template( $templates, $query, $type ) {
-        if ( 'wp_template' !== $type ) return $templates;
-        if ( ! $this->should_load_template() && ! is_admin() ) return $templates;
-        
-        $id = get_stylesheet() . '//' . $this->slug;
-        foreach ( $templates as $template ) { 
-            if ( $template instanceof \WP_Block_Template && $template->id === $id ) return $templates; 
+        if ( 'wp_template' !== $type ) {
+			return $templates;
         }
-        
+        if ( ! $this->should_load_template() && ! is_admin() ) {
+			return $templates;
+        }
+
+        $id = get_stylesheet() . '//' . $this->slug;
+        foreach ( $templates as $template ) {
+            if ( $template instanceof \WP_Block_Template && $template->id === $id ) {
+				return $templates;
+            }
+        }
+
         $templates[] = $this->build_template_object();
         return $templates;
     }
-    
+
     public function resolve_template_by_id( $template, $id, $type ) {
-        if ( 'wp_template' !== $type ) return $template;
-        if ( $id !== get_stylesheet() . '//' . $this->slug ) return $template;
+        if ( 'wp_template' !== $type ) {
+			return $template;
+        }
+        if ( $id !== get_stylesheet() . '//' . $this->slug ) {
+			return $template;
+        }
 
         return $this->build_template_object();
     }
 
     private function build_template_object() {
-        $saved = get_posts( [
-            'post_type'      => 'wp_template',
-            'name'           => $this->slug,
-            'posts_per_page' => 1,
-            'post_status'    => 'publish',
-        ] );
+        $saved = get_posts(
+            array(
+				'post_type'      => 'wp_template',
+				'name'           => $this->slug,
+				'posts_per_page' => 1,
+				'post_status'    => 'publish',
+            )
+        );
 
         if ( ! empty( $saved ) ) {
             $content = $saved[0]->post_content;
@@ -189,17 +206,17 @@ class Rewrites {
             }
         }
 
-        $template = new \WP_Block_Template();
-        $template->id = get_stylesheet() . '//' . $this->slug;
-        $template->theme = get_stylesheet();
-        $template->slug = $this->slug;
-        $template->type = 'wp_template';
-        $template->title = __( 'MultiVendorX Store', 'multivendorx' );
-        $template->source = 'plugin';
-        $template->origin = 'plugin';
-        $template->status = 'publish';
-        $template->content = $content;
-        $template->is_custom = true;
+        $template                 = new \WP_Block_Template();
+        $template->id             = get_stylesheet() . '//' . $this->slug;
+        $template->theme          = get_stylesheet();
+        $template->slug           = $this->slug;
+        $template->type           = 'wp_template';
+        $template->title          = __( 'MultiVendorX Store', 'multivendorx' );
+        $template->source         = 'plugin';
+        $template->origin         = 'plugin';
+        $template->status         = 'publish';
+        $template->content        = $content;
+        $template->is_custom      = true;
         $template->has_theme_file = false;
 
         return $template;
@@ -212,14 +229,18 @@ class Rewrites {
             return;
         }
 
-        wp_interactivity_state(
-            'multivendorx/store',
-            StoreUtil::get_specific_store_info()
-        );
+        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
     }
 
     public function template_loader( $template ) {
-        if ( ! get_query_var( $this->custom_store_url ) ) return $template;
+        if ( ! get_query_var( $this->custom_store_url ) ) {
+			return $template;
+        }
         // Block theme support
         if ( wp_is_block_theme() ) {
             return $template;
@@ -240,11 +261,13 @@ class Rewrites {
 
         // Classic theme fallback
         $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
-        if ( file_exists( $classic_template ) ) return $classic_template;
+        if ( file_exists( $classic_template ) ) {
+			return $classic_template;
+        }
 
         return $template;
     }
-    
+
     /**
      * Flush rewrite rules
      */

@@ -22,7 +22,7 @@ export default {
 						'Control what dashboard sections and tools are available to active stores.',
 						'multivendorx'
 					),
-					link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-capability`,
+					link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-permissions`,
 				},
 			],
 		},

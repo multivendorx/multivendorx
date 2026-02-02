@@ -12,7 +12,7 @@ class Store_Description extends Widget_Base {
 	use StoreHelper;
 
 	public function get_name() {
-		return 'mvx_store_description';
+		return 'multivendorx_store_description';
 	}
 
 	public function get_title() {
@@ -24,24 +24,24 @@ class Store_Description extends Widget_Base {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	protected function register_controls() {
 		$this->start_controls_section(
 			'content',
-			[
+			array(
 				'label' => __( 'Content', 'multivendorx' ),
-			]
+			)
 		);
 
 		$this->add_control(
 			'empty_text',
-			[
-				'label' => __( 'Empty Description Text', 'multivendorx' ),
-				'type' => Controls_Manager::TEXT,
+			array(
+				'label'   => __( 'Empty Description Text', 'multivendorx' ),
+				'type'    => Controls_Manager::TEXT,
 				'default' => __( 'No store description available.', 'multivendorx' ),
-			]
+			)
 		);
 
 		$this->end_controls_section();
@@ -50,7 +50,9 @@ class Store_Description extends Widget_Base {
 	protected function render() {
 
 		$store = $this->get_store_data();
-		if ( ! $store ) return;
+		if ( ! $store ) {
+			return;
+        }
 
 		$description = $store['storeDescription'] ?: $this->get_settings_for_display()['empty_text'];
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MultiVendorX REST API Store Controller.
  *
@@ -25,12 +26,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class Stores extends \WP_REST_Controller {
 
-	/**
-	 * Route base.
-	 *
-	 * @var string
-	 */
-	protected $rest_base = 'store';
+
+    /**
+     * Route base.
+     *
+     * @var string
+     */
+    protected $rest_base = 'store';
 
     /**
      * Register the routes for the objects of the controller.
@@ -40,47 +42,47 @@ class Stores extends \WP_REST_Controller {
             MultiVendorX()->rest_namespace,
             '/' . $this->rest_base,
             array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				),
-				array(
-					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'create_item' ),
-					'permission_callback' => array( $this, 'create_item_permissions_check' ),
-				),
-			)
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'get_items' ),
+                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => array( $this, 'create_item' ),
+                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
+                ),
+            )
         );
 
         register_rest_route(
             MultiVendorX()->rest_namespace,
             '/' . $this->rest_base . '/(?P<id>[\d]+)',
             array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-					'args'                => array(
-						'id' => array( 'required' => true ),
-					),
-				),
-				array(
-					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				),
-			)
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'get_item' ),
+                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'args'                => array(
+                        'id' => array( 'required' => true ),
+                    ),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array( $this, 'update_item' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                ),
+            )
         );
 
         register_rest_route(
             MultiVendorX()->rest_namespace,
             '/states/(?P<country>[A-Z]{2})',
             array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_states_by_country' ),
-				'permission_callback' => array( $this, 'get_items_permissions_check' ),
-			)
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array( $this, 'get_states_by_country' ),
+                'permission_callback' => array( $this, 'get_items_permissions_check' ),
+            )
         );
     }
 
@@ -142,53 +144,53 @@ class Stores extends \WP_REST_Controller {
                     $request->get_param( 'start_date' ),
                     $request->get_param( 'end_date' )
                 );
-                
+
                 $start = $dates['start_date'];
                 $end   = $dates['end_date'];
                 global $wpdb;
 
-                 $rows = $wpdb->get_results(
+                $rows = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT country
-                        FROM {$wpdb->prefix}" . Utill::TABLES['visitors_stats'] . "
+                        FROM {$wpdb->prefix}" . Utill::TABLES['visitors_stats'] . '
                         WHERE store_id = %d
                         AND created >= %s
-                        AND created <= %s",
+                        AND created <= %s',
                         $store_id,
                         $start,
                         $end
                     )
                 );
 
-                $mapStats = [];
+                $mapStats = array();
 
                 foreach ( $rows as $row ) {
-                    $code = strtolower( $row->country ?: '' );
+                    $code              = strtolower( $row->country ?: '' );
                     $mapStats[ $code ] = ( $mapStats[ $code ] ?? 0 ) + 1;
                 }
 
                 arsort( $mapStats );
 
-                $colors = [];
-                $scale  = [ '#316fa8', '#3f7fb5', '#4c8fc1', '#5b9fcd', '#6bb0d9' ];
-                $i = 0;
+                $colors = array();
+                $scale  = array( '#316fa8', '#3f7fb5', '#4c8fc1', '#5b9fcd', '#6bb0d9' );
+                $i      = 0;
 
                 foreach ( array_slice( $mapStats, 0, 5, true ) as $code => $count ) {
                     $colors[ $code ] = $scale[ $i ] ?? '#316fa8';
-                    $i++;
+                    ++$i;
                 }
 
-                $data = [
+                $data = array(
                     'map_stats' => array_map(
-                        fn( $count ) => [ 'hits_count' => $count ],
+                        fn( $count ) => array( 'hits_count' => $count ),
                         $mapStats
                     ),
-                    'colors' => $colors,
-                ];
+                    'colors'    => $colors,
+                );
 
                 set_transient( $cache_key, $data, DAY_IN_SECONDS );
 
-                return rest_ensure_response($data);
+                return rest_ensure_response( $data );
             }
 
             // Store registration (rejected stores).
@@ -229,11 +231,11 @@ class Stores extends \WP_REST_Controller {
 
             // Slug existence check.
             $slug = $request->get_param( 'slug' );
-			if ( ! empty( $slug ) ) {
-				$id     = (int) $request->get_param( 'id' );
-				$exists = Store::store_slug_exists( $slug, $id );
-				return rest_ensure_response( array( 'exists' => $exists > 0 ) );
-			}
+            if ( ! empty( $slug ) ) {
+                $id     = (int) $request->get_param( 'id' );
+                $exists = Store::store_slug_exists( $slug, $id );
+                return rest_ensure_response( array( 'exists' => $exists > 0 ) );
+            }
 
             // Early-return flags.
             $flag_map = array(
@@ -250,16 +252,11 @@ class Stores extends \WP_REST_Controller {
                 }
             }
 
-            // Count only.
-            if ( $request->get_param( 'count' ) ) {
-                return StoreUtil::get_store_information( array( 'count' => true ) );
-            }
-
             // Pagination & filters.
             $limit  = $request->get_param( 'row' );
             $page   = $request->get_param( 'page' );
             $offset = ( $page - 1 ) * $limit;
-            $args = array();
+            $args   = array();
 
             if ( ! empty( $limit ) ) {
                 $args['limit'] = $limit;
@@ -268,7 +265,7 @@ class Stores extends \WP_REST_Controller {
                 $args['offset'] = $offset;
             }
 
-            $search = sanitize_text_field( $request->get_param( 'searchField' ) );
+            $search = sanitize_text_field( $request->get_param( 'searchValue' ) );
             if ( ! empty( $search ) ) {
                 $args['searchField'] = $search;
             } else {
@@ -276,17 +273,17 @@ class Stores extends \WP_REST_Controller {
                     $request->get_param( 'startDate' ),
                     $request->get_param( 'endDate' )
                 );
-                
+
                 if ( ! empty( $dates['start_date'] ) ) {
                     $args['start_date'] = $dates['start_date'];
                 }
-                
+
                 if ( ! empty( $dates['end_date'] ) ) {
                     $args['end_date'] = $dates['end_date'];
                 }
             }
 
-            $status = $request->get_param( 'filter_status' );
+            $status = $request->get_param( 'filterStatus' );
             if ( ! empty( $status ) ) {
                 $args['status'] = $status;
             }
@@ -302,12 +299,12 @@ class Stores extends \WP_REST_Controller {
             if ( ! empty( $filters ) ) {
                 $args['orderBy'] = $filters['sort'] ?? $args['orderBy'] ?? '';
                 $args['order']   = $filters['order'] ?? '';
-                $lat    = !empty($filters['location_lat']) ? $filters['location_lat'] : 0;
-                $lng    = !empty($filters['location_lng']) ? $filters['location_lng'] : 0;
-                $radius = !empty($filters['distance']) ? $filters['distance'] : 0;
-                $unit   = $filters['miles'] ?? 'km';
+                $lat             = ! empty( $filters['location_lat'] ) ? $filters['location_lat'] : 0;
+                $lng             = ! empty( $filters['location_lng'] ) ? $filters['location_lng'] : 0;
+                $radius          = ! empty( $filters['distance'] ) ? $filters['distance'] : 0;
+                $unit            = $filters['miles'] ?? 'km';
 
-                switch ($unit) {
+                switch ( $unit ) {
                     case 'miles':
                         $earth_radius = 3959;
                         break;
@@ -316,13 +313,13 @@ class Stores extends \WP_REST_Controller {
                         break;
                     default:
                         $earth_radius = 6371;
-                }                
+                }
 
-                if ( !empty( $filters['limit'] ) && $filters['limit'] ) {
+                if ( ! empty( $filters['limit'] ) && $filters['limit'] ) {
                     $args['limit'] = absint( $filters['limit'] );
                 }
 
-                if ( !empty( $filters['offset'] ) && $filters['offset'] ) {
+                if ( ! empty( $filters['offset'] ) && $filters['offset'] ) {
                     $args['offset'] = absint( $filters['offset'] );
                 }
 
@@ -367,31 +364,35 @@ class Stores extends \WP_REST_Controller {
             }
             // Fetch & format stores.
             $stores = StoreUtil::get_store_information( $args );
+
             if ( $lat && $lng && $radius ) {
-                $stores = array_filter( $stores, function ( $store ) use ( $lat, $lng, $radius, $earth_radius ) {
-                    $store_id   = (int) $store['ID'];
-                    $store_meta = Store::get_store( $store_id );
-                    $store_lat = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? 0.00 ;
-                    $store_lng = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? 0.00 ;
-                    if ( ! $store_lat || ! $store_lng ) {
-                        return false;
-                    }
-                    $delta_latitude = deg2rad( $store_lat - $lat );
-                    $delta_longitude = deg2rad( $store_lng - $lng );
-                    $haversine = sin($delta_latitude / 2) ** 2 +
-                         cos(deg2rad($lat)) * cos(deg2rad($store_lat)) *
-                         sin($delta_longitude / 2) ** 2;
-                    $distance = $earth_radius * ( 2 * atan2( sqrt($haversine), sqrt(1 - $haversine) ) );
-                    return $distance <= $radius;
-                });
+                $stores = array_filter(
+                    $stores,
+                    function ( $store ) use ( $lat, $lng, $radius, $earth_radius ) {
+						$store_id   = (int) $store['ID'];
+						$store_meta = Store::get_store( $store_id );
+						$store_lat  = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? 0.00;
+						$store_lng  = $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? 0.00;
+						if ( ! $store_lat || ! $store_lng ) {
+							return false;
+						}
+						$delta_latitude  = deg2rad( $store_lat - $lat );
+						$delta_longitude = deg2rad( $store_lng - $lng );
+						$haversine       = sin( $delta_latitude / 2 ) ** 2 +
+                        cos( deg2rad( $lat ) ) * cos( deg2rad( $store_lat ) ) *
+                        sin( $delta_longitude / 2 ) ** 2;
+						$distance        = $earth_radius * ( 2 * atan2( sqrt( $haversine ), sqrt( 1 - $haversine ) ) );
+						return $distance <= $radius;
+					}
+                );
                 $stores = array_values( $stores );
-            }            
+            }
             $formatted_stores = array();
             foreach ( $stores as $store ) {
-                $store_id   = (int) $store['ID'];
-                $store_meta = Store::get_store( $store_id );
-                $owner_id = StoreUtil::get_primary_owner( $store_id );
-                $owner    = get_userdata( $owner_id );
+                $store_id           = (int) $store['ID'];
+                $store_meta         = Store::get_store( $store_id );
+                $owner_id           = StoreUtil::get_primary_owner( $store_id );
+                $owner              = get_userdata( $owner_id );
                 $formatted_stores[] = apply_filters(
                     'multivendorx_stores',
                     array(
@@ -406,7 +407,7 @@ class Stores extends \WP_REST_Controller {
                         'applied_on'          => $store['create_time'],
                         'store_image'         => $store_meta->meta_data['image'] ?? '',
                         'store_banner'        => $store_meta->meta_data['banner'] ?? '',
-                        'address'           => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
+                        'address'             => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
                         'location_lat'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lat'] ] ?? '',
                         'location_lng'        => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['location_lng'] ] ?? '',
                         'commission'          => CommissionUtil::get_commission_summary_for_store( $store_id ),
@@ -414,8 +415,8 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            // Status counters.
-            $counts = array(
+            // Prepare status filters.
+            $status_filters = array(
                 'all'          => array(),
                 'active'       => array( 'status' => 'active' ),
                 'pending'      => array( 'status' => 'pending' ),
@@ -424,18 +425,25 @@ class Stores extends \WP_REST_Controller {
                 'deactivated'  => array( 'status' => 'deactivated' ),
             );
 
-            foreach ( $counts as $key => $filter ) {
-                $counts[ $key ] = StoreUtil::get_store_information(
+            $response = rest_ensure_response( $formatted_stores );
+
+            // Status counters in headers.
+            foreach ( $status_filters as $key => $filter ) {
+                $count = StoreUtil::get_store_information(
                     array_merge( $filter, array( 'count' => true ) )
                 );
+
+                if ( 'all' === $key ) {
+                    $response->header( 'X-WP-Total', (int) $count );
+                } else {
+                    $response->header(
+                        'X-WP-Status-' . ucfirst( str_replace( '_', '-', $key ) ),
+                        (int) $count
+                    );
+                }
             }
 
-            return rest_ensure_response(
-                array_merge(
-                    array( 'stores' => $formatted_stores ),
-                    $counts
-                )
-            );
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
             return new \WP_Error(
@@ -510,7 +518,7 @@ class Stores extends \WP_REST_Controller {
 
         $formatted_stores = array();
         foreach ( $stores as $store ) {
-            if ($store['status'] == 'active') {
+            if ( $store['status'] == 'active' ) {
                 $formatted_stores[] = array(
                     'id'         => (int) $store['ID'],
                     'store_name' => $store['name'],
@@ -543,7 +551,7 @@ class Stores extends \WP_REST_Controller {
         try {
             $registrations = (bool) $request->get_header( 'registrations' );
             $store_data    = (array) $request->get_param( 'formData' );
-            $file_data   = $request->get_file_params();
+            $file_data     = $request->get_file_params();
             $current_user  = wp_get_current_user();
 
             $core_fields = array(
@@ -575,9 +583,9 @@ class Stores extends \WP_REST_Controller {
 
             if ( $registrations ) {
                 $raw_slug = $store_data['slug']
-				?? sanitize_title( $store_data['name'] ?? '' );
+                    ?? sanitize_title( $store_data['name'] ?? '' );
 
-				$store_data['slug'] = Store::generate_unique_store_slug( $raw_slug );
+                $store_data['slug'] = Store::generate_unique_store_slug( $raw_slug );
             }
 
             foreach ( $core_fields as $field ) {
@@ -605,16 +613,16 @@ class Stores extends \WP_REST_Controller {
             $non_core_fields = array();
 
             foreach ( $file_data as $file ) {
-                $field_key = array_key_first( $file['name'] );
-                $normalized_file = [
+                $field_key                = array_key_first( $file['name'] );
+                $normalized_file          = array(
                     'name'     => $file['name'][ $field_key ],
                     'type'     => $file['type'][ $field_key ],
                     'tmp_name' => $file['tmp_name'][ $field_key ],
                     'error'    => $file['error'][ $field_key ],
                     'size'     => $file['size'][ $field_key ],
-                ];
-                $attachment_id = StoreUtil::create_attachment_from_files_array($normalized_file);
-                $store_data[$field_key] = $attachment_id;
+                );
+                $attachment_id            = StoreUtil::create_attachment_from_files_array( $normalized_file );
+                $store_data[ $field_key ] = $attachment_id;
             }
 
             foreach ( $store_data as $key => $value ) {
@@ -678,10 +686,10 @@ class Stores extends \WP_REST_Controller {
                     'store_activated',
                     array(
                         'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                         'store_id'    => $store_id,
                         'category'    => 'activity',
                     )
@@ -694,10 +702,10 @@ class Stores extends \WP_REST_Controller {
                     'store_pending_approval',
                     array(
                         'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                         'store_id'    => $store_id,
                         'category'    => 'activity',
                     )
@@ -793,34 +801,34 @@ class Stores extends \WP_REST_Controller {
                 );
             }
 
-            $commission   = CommissionUtil::get_commission_summary_for_store( $id );
-            
+            $commission = CommissionUtil::get_commission_summary_for_store( $id );
+
             $primary_owner_id   = StoreUtil::get_primary_owner( $id );
             $primary_owner_info = $primary_owner_id
                 ? get_userdata( $primary_owner_id )
                 : null;
 
-            if ($dashboard) {
-                if (get_transient('multivendorx_dashboard_data_' . $id)) {
-                    return get_transient('multivendorx_dashboard_data_' . $id);
+            if ( $dashboard ) {
+                if ( get_transient( 'multivendorx_dashboard_data_' . $id ) ) {
+                    return get_transient( 'multivendorx_dashboard_data_' . $id );
                 }
 
-                $visitors  = StoreUtil::get_store_visitors( $id );
+                $visitors = StoreUtil::get_store_visitors( $id );
 
-                $response = [
-                    'id'  => $store->get_id(),
-                    'name'  => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
+                $response = array(
+                    'id'                 => $store->get_id(),
+                    'name'               => $store->get( Utill::STORE_SETTINGS_KEYS['name'] ),
                     'commission'         => $commission,
                     'primary_owner_info' => $primary_owner_info,
                     'visitors'           => $visitors,
-                ];
+                );
 
-                set_transient('multivendorx_dashboard_data_' . $id, $response, DAY_IN_SECONDS);
-                
+                set_transient( 'multivendorx_dashboard_data_' . $id, $response, DAY_IN_SECONDS );
+
                 return rest_ensure_response( $response );
             }
-            
-            $transactions = Transaction::get_balances_for_store( $id );
+
+            $transactions    = Transaction::get_balances_for_store( $id );
             $overall_reviews = Util::get_overall_rating( $id );
             $reviews         = Util::get_reviews_by_store( $id );
 
@@ -897,10 +905,10 @@ class Stores extends \WP_REST_Controller {
                         'store_permanently_deactivated',
                         array(
                             'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                            'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                            'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                            'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                            'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                             'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                            'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                            'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                             'store_id'    => $id,
                             'category'    => 'activity',
                         )
@@ -1010,10 +1018,10 @@ class Stores extends \WP_REST_Controller {
                             'store_activated',
                             array(
                                 'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                                'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                                'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                                'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                                'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                                 'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                                'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                                'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                                 'store_id'    => $id,
                                 'category'    => 'activity',
                             )
@@ -1058,32 +1066,32 @@ class Stores extends \WP_REST_Controller {
 
                     $store->save();
 
-                    if ($status == 'permanently_rejected') {
+                    if ( $status == 'permanently_rejected' ) {
                         do_action(
                             'multivendorx_notify_store_permanently_rejected',
                             'store_permanently_rejected',
                             array(
                                 'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                                'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                                'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                                'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                                'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                                 'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                                'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                                'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                                 'store_id'    => $id,
                                 'category'    => 'activity',
                             )
                         );
                     }
 
-                    if ($status == 'rejected') {
+                    if ( $status == 'rejected' ) {
                         do_action(
                             'multivendorx_notify_store_rejected',
                             'store_rejected',
                             array(
                                 'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                                'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                                'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                                'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                                'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                                 'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                                'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                                'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                                 'store_id'    => $id,
                                 'category'    => 'activity',
                             )
@@ -1160,65 +1168,65 @@ class Stores extends \WP_REST_Controller {
                     'store_activated',
                     array(
                         'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                         'store_id'    => $id,
                         'category'    => 'activity',
                     )
                 );
             }
 
-            if ('rejected' == ($data['status'] ?? '')) {
+            if ( 'rejected' == ( $data['status'] ?? '' ) ) {
                 do_action(
                     'multivendorx_notify_store_rejected',
                     'store_rejected',
                     array(
                         'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                         'store_id'    => $id,
                         'category'    => 'activity',
                     )
                 );
             }
 
-            if ('under_review' == ($data['status'] ?? '')) {
+            if ( 'under_review' == ( $data['status'] ?? '' ) ) {
                 do_action(
                     'multivendorx_notify_store_under_review',
                     'store_under_review',
                     array(
                         'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                         'store_id'    => $id,
                         'category'    => 'activity',
                     )
                 );
             }
 
-            if ('suspended' == ($data['status'] ?? '')) {
+            if ( 'suspended' == ( $data['status'] ?? '' ) ) {
                 do_action(
                     'multivendorx_notify_store_suspended',
                     'store_suspended',
                     array(
                         'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                         'store_id'    => $id,
                         'category'    => 'activity',
                     )
                 );
             }
 
-            if ('deactivated' == ($data['status'] ?? '')) {
+            if ( 'deactivated' == ( $data['status'] ?? '' ) ) {
                 delete_metadata(
                     'user',
                     0,
@@ -1232,10 +1240,10 @@ class Stores extends \WP_REST_Controller {
                     'store_permanently_deactivated',
                     array(
                         'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                        'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                        'store_name' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
+                        'store_name'  => $store->get_meta( Utill::STORE_SETTINGS_KEYS['name'] ),
                         'store_id'    => $id,
                         'category'    => 'activity',
                     )
@@ -1301,11 +1309,11 @@ class Stores extends \WP_REST_Controller {
         // Fetch products for this store.
         $products = wc_get_products(
             array(
-				'status'     => 'publish', // or use your $status variable if dynamic.
-				'limit'      => -1,
-				'return'     => 'ids',
-				'meta_key'   => Utill::POST_META_SETTINGS['store_id'],
-				'meta_value' => $id,
+                'status'     => 'publish', // or use your $status variable if dynamic.
+                'limit'      => -1,
+                'return'     => 'ids',
+                'meta_key'   => Utill::POST_META_SETTINGS['store_id'],
+                'meta_value' => $id,
             )
         );
 
@@ -1325,8 +1333,8 @@ class Stores extends \WP_REST_Controller {
         // Fetch categories.
         $categories = get_terms(
             array(
-				'taxonomy'   => 'product_cat',
-				'hide_empty' => false,
+                'taxonomy'   => 'product_cat',
+                'hide_empty' => false,
             )
         );
 
@@ -1342,8 +1350,8 @@ class Stores extends \WP_REST_Controller {
 
         return rest_ensure_response(
             array(
-				'products'   => $product_data,
-				'categories' => $category_data,
+                'products'   => $product_data,
+                'categories' => $category_data,
             )
         );
     }
@@ -1377,8 +1385,8 @@ class Stores extends \WP_REST_Controller {
         if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
             $followers = array_map(
                 fn( $uid ) => array(
-					'id'   => $uid,
-					'date' => '',
+                    'id'   => $uid,
+                    'date' => '',
                 ),
                 $followers
             );
@@ -1391,10 +1399,10 @@ class Stores extends \WP_REST_Controller {
         usort(
             $followers,
             function ( $a, $b ) {
-				$date_a = ! empty( $a['date'] ) ? strtotime( $a['date'] ) : 0;
-				$date_b = ! empty( $b['date'] ) ? strtotime( $b['date'] ) : 0;
-				return $date_b <=> $date_a;
-			}
+                $date_a = ! empty( $a['date'] ) ? strtotime( $a['date'] ) : 0;
+                $date_b = ! empty( $b['date'] ) ? strtotime( $b['date'] ) : 0;
+                return $date_b <=> $date_a;
+            }
         );
 
         // Pagination.

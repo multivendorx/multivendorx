@@ -1,10 +1,4 @@
 import { __ } from '@wordpress/i18n';
-// import Invoice1 from '../../../assets/template/invoicePdf/Invoice-1';
-// import CustomerInvoice1 from '../../../assets/template/customerInvoice/Invoice-1';
-// import MarketplaceInvoice1 from '../../../assets/template/marketplaceInvoice/Invoice-1';
-// import subscriptionInvoice1 from '../../../assets/template/subscriptionInvoice/subscriptionInvoice1';
-// import adminInvoice1 from '../../../assets/template/adminInvoice/adminInvoice1';
-// import packingSlip1 from '../../../assets/template/packingSlip/packingSlip1';
 
 export default {
     id: 'general',
@@ -17,173 +11,21 @@ export default {
     icon: 'adminfont-invoice',
     submitUrl: 'settings',
     modal: [
-        // {
-        //     key: 'invoice_template_builder',
-        //     type: 'color-setting',
-        //     label: __('Templates and design', 'multivendorx'),
-        //     moduleEnabled: 'invoice',
-        //     showPdfButton: true,
-        //     templates: [
-        //         {
-        //             key: 'packing_slip',
-        //             label: __('Packing Slip Invoice', 'multivendorx'),
-        //             preview: packingSlip1,
-        //             component: packingSlip1,
-        //             pdf: packingSlip1,
-        //         },
-        //         {
-        //             key: 'admin_invoice',
-        //             label: __('Admin Invoice', 'multivendorx'),
-        //             preview: adminInvoice1,
-        //             component: adminInvoice1,
-        //             pdf: adminInvoice1,
-        //         },
-        //         {
-        //             key: 'subscription_invoice',
-        //             label: __('Subscription Invoice', 'multivendorx'),
-        //             preview: subscriptionInvoice1,
-        //             component: subscriptionInvoice1,
-        //             pdf: subscriptionInvoice1,
-        //         },
-        //         {
-        //             key: 'marketplace_invoice',
-        //             label: __('Marketplace Invoice', 'multivendorx'),
-        //             preview: MarketplaceInvoice1,
-        //             component: MarketplaceInvoice1,
-        //             pdf: MarketplaceInvoice1,
-        //         },
-        //         {
-        //             key: 'customer_invoice1',
-        //             label: __('Customer Invoice', 'multivendorx'),
-        //             preview: CustomerInvoice1,
-        //             component: CustomerInvoice1,
-        //             pdf: CustomerInvoice1,
-        //         },
-        //         {
-        //             key: 'invoice_1',
-        //             label: __('Invoice 1', 'multivendorx'),
-        //             preview: Invoice1,
-        //             component: Invoice1,
-        //             pdf: Invoice1,
-        //         }
-        //     ],
-        //     predefinedOptions: [
-        //         {
-        //             key: 'orchid_bloom',
-        //             label: 'Orchid Bloom',
-        //             value: 'orchid_bloom',
-        //             colors: {
-        //                 colorPrimary: '#FF5959',
-        //                 colorSecondary: '#FADD3A',
-        //                 colorAccent: '#49BEB6',
-        //                 colorSupport: '#075F63',
-        //             },
-        //         },
-        //         {
-        //             key: 'emerald_edge',
-        //             label: 'Emerald Edge',
-        //             value: 'emerald_edge',
-        //             colors: {
-        //                 colorPrimary: '#e6b924',
-        //                 colorSecondary: '#d888c1',
-        //                 colorAccent: '#6b7923',
-        //                 colorSupport: '#6e97d0',
-        //             },
-        //         },
-        //         {
-        //             key: 'solar_ember',
-        //             label: 'Solar Ember',
-        //             value: 'solar_ember',
-        //             colors: {
-        //                 colorPrimary: '#fe900d',
-        //                 colorSecondary: '#6030db',
-        //                 colorAccent: '#17cadb',
-        //                 colorSupport: '#a52fff',
-        //             },
-        //         },
-        //         {
-        //             key: 'crimson_blaze',
-        //             label: 'Crimson Blaze',
-        //             value: 'crimson_blaze',
-        //             colors: {
-        //                 colorPrimary: '#04e762',
-        //                 colorSecondary: '#f5b700',
-        //                 colorAccent: '#dc0073',
-        //                 colorSupport: '#008bf8',
-        //             },
-        //         },
-        //         {
-        //             key: 'golden_ray',
-        //             label: 'Golden Ray',
-        //             value: 'golden_ray',
-        //             colors: {
-        //                 colorPrimary: '#0E117A',
-        //                 colorSecondary: '#399169',
-        //                 colorAccent: '#12E2A4',
-        //                 colorSupport: '#DCF516',
-        //             },
-        //         },
-        //         {
-        //             key: 'obsidian_night',
-        //             label: 'Obsidian Night',
-        //             value: 'obsidian_night',
-        //             colors: {
-        //                 colorPrimary: '#00eed0',
-        //                 colorSecondary: '#0197af',
-        //                 colorAccent: '#4b227a',
-        //                 colorSupport: '#02153d',
-        //             },
-        //         },
-        //         {
-        //             key: 'obsidian',
-        //             label: 'Obsidian',
-        //             value: 'obsidian',
-        //             colors: {
-        //                 colorPrimary: '#7ccc63',
-        //                 colorSecondary: '#f39c12',
-        //                 colorAccent: '#e74c3c',
-        //                 colorSupport: '#2c3e50',
-        //             },
-        //         },
-        //         {
-        //             key: 'black',
-        //             label: 'black',
-        //             value: 'black',
-        //             colors: {
-        //                 colorPrimary: '#2c3e50',
-        //                 colorSecondary: '#2c3e50',
-        //                 colorAccent: '#2c3e50',
-        //                 colorSupport: '#2c3e50',
-        //             },
-        //         },
-        //     ],
-        // },
-        // {
-        //     key: 'separator_content',
-        //     type: 'section',
-        //     desc: __(
-        //         'Customize invoice design with your branding and business details',
-        //         'multivendorx'
-        //     ),
-        //     hint: __('Branding and information', 'multivendorx'),
-        // },
         {
             key: 'company_logo',
-            classes: 'vertical',
+            classes: 'vertical w-50',
             type: 'file',
             label: __('Company logo', 'multivendorx'),
             desc: __('Upload your company logo for invoices', 'multivendorx'),
-            size: 'small',
             proSetting: true,
             moduleEnabled: 'invoice',
         },
         {
             key: 'company_logo',
-            classes: 'vertical',
+            classes: 'vertical w-50',
             type: 'file',
             label: __('Invoice signature', 'multivendorx'),
             desc: __('Optional signature image that adds authenticity to your invoices.', 'multivendorx'),
-            size: 'small',
             proSetting: true,
             moduleEnabled: 'invoice',
         },
@@ -197,95 +39,112 @@ export default {
             hint: __('Automatic invoice generation', 'multivendorx'),
         },
         {
-            key: 'commission_type',
-            type: 'setting-toggle',
-            classes: 'vertical w-50',
-            label: __('Create invoices when order status is', 'multivendorx'),
-            desc: __(
-                'Select one or more order statuses that should trigger automatic invoice creation. Most stores use "Processing" or "Completed".',
-                'multivendorx'
-            ),
-            moduleEnabled: 'invoice',
-            options: [
-                {
-                    key: 'per_transaction',
-                    label: __('Completed', 'multivendorx'),
-                    value: 'per_transaction',
-                    desc: __(
-						'Order is delivered and customer has received all items.',
-						'multivendorx'
-					),
-                },
-                {
-                    key: 'per_unit',
-                    label: __('Processing', 'multivendorx'),
-                    desc: __(
-						'Payment received and order is being prepared for shipment.',
-						'multivendorx'
-					),
-                    value: 'per_unit',
-                },
-                {
-                    key: 'per_store',
-                    label: __('Paid', 'multivendorx'),
-                    desc: __(
-						'Payment has been confirmed.',
-						'multivendorx'
-					),
-                    value: 'per_store',
-                },
-                {
-                    key: 'per_store',
-                    label: __('On Hold', 'multivendorx'),
-                    desc: __(
-						'Order placed on hold pending verification.',
-						'multivendorx'
-					),
-                    value: 'per_store',
-                },
-                {
-                    key: 'per_store',
-                    label: __('Pending Payment', 'multivendorx'),
-                    desc: __(
-						'Order created but awaiting payment (useful for bank transfers, checks)',
-						'multivendorx'
-					),
-                    value: 'per_store',
-                },
-            ],
-        },
-        {
             key: 'type_options',
             type: 'checkbox',
             label: __('Who receives invoices?', 'multivendorx'),
-            classes: 'vertical w-50',
-            // settingDescription: __(
-            // 	'Select the product/listing fields stores can configure when adding or managing their products/listings.',
-            // 	'multivendorx'
+            classes: 'vertical',
+            // desc: __(
+            //     'Select which invoices your marketplace should generate. Most stores only need the first option.',
+            //     'multivendorx'
             // ),
-
-            desc: __(
-            	'Select which invoices your marketplace should generate. Most stores only need the first option.',
-            	'multivendorx'
-            ),
             options: [
                 {
-                    key: 'virtual',
-                    label: __('Customers (sales invoices)', 'multivendorx'),
-                    value: 'virtual',
+                    key: 'completed',
+                    label: __('Completed', 'multivendorx'),
+                    value: 'completed',
+                    desc: __('Order is delivered and customer has received all items.', 'multivendorx')
                 },
                 {
-                    key: 'downloadable',
-                    label: __('Stores (payout statements)', 'multivendorx'),
-                    value: 'downloadable',
+                    key: 'processing',
+                    label: __('Processing', 'multivendorx'),
+                    value: 'processing',
+                    desc: __('Payment received and order is being prepared for shipment.', 'multivendorx')
                 },
                 {
-                    key: 'downloadable',
-                    label: __('Admin to Store commission invoices', 'multivendorx'),
-                    value: 'downloadable',
+                    key: 'paid',
+                    label: __('Paid', 'multivendorx'),
+                    value: 'paid',
+                    desc: __('Payment has been confirmed.', 'multivendorx')
+                },
+                {
+                    key: 'on-hold',
+                    label: __('On Hold', 'multivendorx'),
+                    value: 'on-hold',
+                    desc: __('Order placed on hold pending verification.', 'multivendorx')
+                },
+                {
+                    key: 'pending-payment',
+                    label: __('Pending Payment', 'multivendorx'),
+                    value: 'pending-payment',
+                    desc: __('Order created but awaiting payment (useful for bank transfers, checks)', 'multivendorx')
                 },
             ],
             selectDeselect: true,
+        },
+        {
+            key: 'display_customer_order',
+            type: 'setting-toggle',
+            classes: 'vertical full-width',
+            label: __('Customers will see information for', 'multivendorx'),
+            custom: true,
+            options: [
+                {
+                    key: 'mainorder',
+                    label: __('Customer Purchase Invoices (Recommended)', 'multivendorx'),
+                    // desc: __('Customer receives separate emails and sees individual store orders', 'multivendorx'),
+                    icon: 'adminfont-cart',
+                    value: 'mainorder',
+                    customHtml: `<div class="toggle-notice">
+									<ul>
+										<li><b> What it does: </b>  Creates invoices for customers when they buy products</li>
+										<li><b> Example: </b> Customer Jane buys a product → She receives invoice #INV-001</li>
+										<li><b> Use this if:</b> You want customers to get invoices for their purchases (most common) </li>
+									</ul>
+								</div>`
+                },
+                {
+                    key: 'suborder',
+                    icon: 'adminfont-cart',
+                    label: __('Vendor Payout Statements', 'multivendorx'),
+                    desc: __('Customer receives separate emails and sees individual store orders', 'multivendorx'),
+                    value: 'suborder',
+                    customHtml: `<div class="toggle-notice">
+									<ul>
+										<li><b> What it does: </b>  Creates payment statements when you pay vendors their earnings</li>
+										<li><b> Example: </b> Vendor John earned $500, you take $50 commission → John receives statement showing $450 payout</li>
+										<li><b> Use this if:</b> You want to document vendor payments and commissions </li>
+									</ul>
+								</div>`
+                },
+                {
+                    key: 'mainnsub',
+                    icon: 'adminfont-cart',
+                    label: __('Marketplace Fee Invoices (Admin to Vendor)', 'multivendorx'),
+                    desc: __('Customer receives multiple emails and sees all order versions', 'multivendorx'),
+                    value: 'mainnsub',
+                    customHtml: `<div class="toggle-notice">
+									<ul>
+										<li><b> What it does: </b> Creates invoices you send TO vendors for marketplace fees</li>
+										<li><b> Example: </b>  You charge vendors a monthly $20 listing fee → They receive invoice for $20</li>
+										<li><b> Use this if:</b> You charge vendors subscription fees, listing fees, or other platform charges </li>
+									</ul>
+								</div>`
+                },
+                {
+                    key: 'wholesale',
+                    icon: 'adminfont-cart',
+                    label: __('Wholesale / B2B Invoices', 'multivendorx'),
+                    desc: __('Customer receives multiple emails and sees all order versions', 'multivendorx'),
+                    value: 'wholesale',
+                    customHtml: `<div class="toggle-notice">
+									<ul>
+										<li><b> What it does: </b> Creates special invoices for bulk business orders</li>
+										<li><b> Example: </b>  A company orders 100 units at wholesale price → They receive B2B invoice</li>
+										<li><b> You have wholesale customers who buy in bulk with special terms </li>
+									</ul>
+								</div>`
+                },
+            ],
         },
         {
             key: 'separator_content',
@@ -349,13 +208,13 @@ export default {
         //         }
         //     ],
         // },
-        
+
         {
             key: 'separator_content',
             type: 'section',
             desc: __(
-            	'A4 is standard internationally, Letter is standard in North America',
-            	'multivendorx'
+                'A4 is standard internationally, Letter is standard in North America',
+                'multivendorx'
             ),
             hint: __('PDF format', 'multivendorx'),
         },
@@ -406,8 +265,8 @@ export default {
             key: 'separator_content',
             type: 'section',
             desc: __(
-            	'Choose when and how invoices are automatically emailed to customers and vendors.',
-            	'multivendorx'
+                'Choose when and how invoices are automatically emailed to customers and vendors.',
+                'multivendorx'
             ),
             hint: __('Invoice delivery via email', 'multivendorx'),
         },
@@ -478,10 +337,11 @@ export default {
             classes: 'vertical w-50',
             label: __('Terms and conditions', 'multivendorx'),
         },
-       
+
         {
             key: 'customer_access',
             type: 'checkbox',
+            classes: 'vertical w-50',
             label: __('Customer Access', 'multivendorx'),
             desc: __(
                 'Control how customers can access their invoices',
@@ -504,10 +364,11 @@ export default {
             proSetting: true,
             selectDeselect: true,
         },
-        
+
         {
             key: 'packing_slips',
             type: 'checkbox',
+            classes: 'vertical w-50',
             label: __('Packing Slips', 'multivendorx'),
             desc: __(
                 'Configure packing slip display options',
@@ -530,7 +391,7 @@ export default {
             proSetting: true,
             selectDeselect: true,
         },
-        
+
 
         {
             key: 'separator_content',
@@ -540,6 +401,32 @@ export default {
                 'multivendorx'
             ),
             hint: __('Legal and tax information', 'multivendorx'),
+        },
+        {
+            key: 'tax_information',
+            type: 'expandable-panel',
+            label: __('Legal and tax information', 'multivendorx'),
+            // settingDescription: __(
+            //     'Define the key factors customers will use to evaluate each store.',
+            //     'multivendorx'
+            // ),
+            // desc: __(
+            //     'Give customers a fair way to share feedback! Define what they rate, like product/listing quality, delivery, or service. You’ll start with five default parameters that can be edited or removed, but make sure at least three stay active for balanced, detailed reviews.',
+            //     'multivendorx'
+            // ),
+            addNewBtn: true,
+            addNewTemplate: {
+                label: 'New Tax information',
+                formFields: [
+                    {
+                        key: 'label',
+                        type: 'text',
+                        label: 'Tax information',
+                        placeholder: 'Enter tax information',
+                    },
+                ],
+            },
+            modal: [],
         },
         {
             key: 'multivendorx_tinymce_api_section',
@@ -561,7 +448,7 @@ export default {
             moduleEnabled: 'invoice',
             proSetting: true,
         },
-         {
+        {
             key: 'multivendorx_tinymce_api_section',
             type: 'number',
             classes: 'vertical w-50',
@@ -571,7 +458,7 @@ export default {
             moduleEnabled: 'invoice',
             proSetting: true,
         },
-         {
+        {
             key: 'multivendorx_tinymce_api_section',
             type: 'number',
             classes: 'vertical w-50',

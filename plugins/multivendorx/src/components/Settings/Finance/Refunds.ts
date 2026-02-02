@@ -70,16 +70,9 @@ export default {
 				'multivendorx'
 			),
 			addNewBtn: true,
+			min: 1,
 			addNewTemplate: {
 				label: 'New Reasons',
-				formFields: [
-					{
-						key: 'label',
-						type: 'text',
-						label: 'Reason',
-						placeholder: 'Enter title',
-					},
-				],
 			},
 			modal: [],
 			moduleEnabled: 'marketplace-refund',

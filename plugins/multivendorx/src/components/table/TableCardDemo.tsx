@@ -2,40 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 import { Column, Container, TableCard } from 'zyra';
+import { QueryProps, TableHeader, TableRow } from '@/services/type';
 
-type FilterValue = string | string[] | { startDate: Date; endDate: Date };
 
-type QueryProps = {
-	orderby?: string;
-	order?: string;
-	page?: string;
-	per_page?: number;
-	paged?: number | string;
-	filter?: Record<string, FilterValue>;
-	categoryFilter?: string;
-};
 
-type TableHeader = {
-	defaultSort?: boolean;
-	defaultOrder?: string;
-	isLeftAligned?: boolean;
-	isNumeric?: boolean;
-	isSortable?: boolean;
-	key: string;
-	label?: React.ReactNode;
-	required?: boolean;
-	screenReaderLabel?: string;
-	cellClassName?: string;
-	visible?: boolean;
-	isEditable?: boolean;
-	editType?: string;
-	options?: { label: string; value: string | number }[];
-};
-
-type TableRow = {
-	display?: React.ReactNode;
-	value?: string | number | boolean;
-};
 /**
  * Table headers
  */
@@ -204,7 +174,7 @@ const TableCardDemo: React.FC = () => {
 		{
 			label: 'Import',
 			icon: 'download',
-			onClickWithQuery: (query) => {
+			onClickWithQuery: (query:QueryProps) => {
 				console.log('Import clicked',query);
 			},
 		},

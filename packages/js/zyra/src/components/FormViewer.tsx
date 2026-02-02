@@ -1,10 +1,13 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import type { MultiValue, SingleValue } from 'react-select';
 
+// Internal dependencies
+import Button from './DisplayButton';
+
+
+// Types
 type InputValue =
     | string
     | number
@@ -14,12 +17,6 @@ type InputValue =
     | null
     | undefined;
 
-/**
- * Internal dependencies
- */
-import Button from './DisplayButton';
-
-// Types
 declare global {
     interface Window {
         grecaptcha?: {
@@ -217,6 +214,13 @@ const enquiryCartTable: FormDataType = {
     default_placeholder: { name: '', email: '' },
 };
 
+const getDefaultPlaceholder = (
+    key: 'name' | 'email'
+): string | undefined =>
+    enquiryFormData?.default_placeholder?.[key] ??
+    wholesaleFormData?.default_placeholder?.[key] ??
+    enquiryCartTable?.default_placeholder?.[key];
+
 const FormViewer: React.FC< FormViewerProps > = ( {
     formFields,
     response,
@@ -405,27 +409,8 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                                     className="input-text"
                                     value={
                                         ( field.name === 'name'
-                                            ? ( typeof enquiryFormData !==
-                                                  'undefined' &&
-                                                  enquiryFormData
-                                                      ?.default_placeholder
-                                                      ?.name ) ||
-                                              ( typeof wholesaleFormData !==
-                                                  'undefined' &&
-                                                  wholesaleFormData
-                                                      ?.default_placeholder
-                                                      ?.name ) ||
-                                              ( typeof enquiryCartTable !==
-                                                  'undefined' &&
-                                                  enquiryCartTable
-                                                      ?.default_placeholder
-                                                      ?.name ) ||
-                                              ( inputs[
-                                                  field.name ?? ''
-                                              ] as string )
-                                            : ( inputs[
-                                                  field.name ?? ''
-                                              ] as string ) ) || ''
+                                            ? getDefaultPlaceholder('name') ?? inputs[field.name ?? '']
+                                            : inputs[field.name ?? '']) || ''
                                     }
                                     placeholder={ field.placeholder }
                                     onChange={ ( e ) =>
@@ -455,23 +440,8 @@ const FormViewer: React.FC< FormViewerProps > = ( {
                                     name={ field.name }
                                     className="input-text"
                                     value={
-                                        ( typeof enquiryFormData !==
-                                            'undefined' &&
-                                            enquiryFormData?.default_placeholder
-                                                ?.email ) ||
-                                        ( typeof wholesaleFormData !==
-                                            'undefined' &&
-                                            wholesaleFormData
-                                                ?.default_placeholder
-                                                ?.email ) ||
-                                        ( typeof enquiryCartTable !==
-                                            'undefined' &&
-                                            enquiryCartTable
-                                                ?.default_placeholder
-                                                ?.email ) ||
-                                        ( inputs[
-                                            field.name ?? ''
-                                        ] as string ) ||
+                                        getDefaultPlaceholder('email') ??
+                                        (inputs[field.name ?? ''] as string) ??
                                         ''
                                     }
                                     placeholder={ field.placeholder }

@@ -21,11 +21,13 @@ class Admin {
      */
     public function __construct() {
         // Elementor support - Register custom document type
-        add_action( 'elementor/documents/register', [ $this, 'register_elementor_document_type' ] );
-        add_filter( 'multivendorx_store_elementor_template', [ $this, 'elementor_template_filter' ], 10 );
+        add_action( 'elementor/documents/register', array( $this, 'register_elementor_document_type' ) );
+        add_filter( 'multivendorx_store_elementor_template', array( $this, 'elementor_template_filter' ), 10 );
+        // Add content in elementor template.
+        add_action( 'save_post_elementor_library', array( $this, 'default_store_template' ), 10, 3 );
     }
 
-     /**
+    /**
      * Register custom Elementor document type
      */
     public function register_elementor_document_type( $documents_manager ) {
@@ -44,12 +46,15 @@ class Admin {
             return $template;
         }
 
-        add_filter( 'body_class', function ( $classes ) {
-            $classes[] = 'elementor-page';
-            return $classes;
-        });
+        add_filter(
+            'body_class',
+            function ( $classes ) {
+				$classes[] = 'elementor-page';
+				return $classes;
+			}
+        );
 
-        $canvas = MultiVendorX()->util->get_template('elementor-canvas.php');
+        $canvas = MultiVendorX()->util->get_template( 'elementor-canvas.php' );
 
         return file_exists( $canvas ) ? $canvas : $template;
     }
@@ -61,23 +66,85 @@ class Admin {
         if ( ! did_action( 'elementor/loaded' ) ) {
             return false;
         }
-        
+
         // Find template with our custom document type
-        $args = [
-            'post_type' => 'elementor_library',
+        $args = array(
+            'post_type'      => 'elementor_library',
             'posts_per_page' => 1,
-            'post_status' => 'publish',
-            'meta_query' => [
-                [
-                    'key' => '_elementor_template_type',
+            'post_status'    => 'publish',
+            'meta_query'     => array(
+                array(
+                    'key'   => '_elementor_template_type',
                     'value' => 'multivendorx-store',
-                ]
-            ]
-        ];
-        
+                ),
+            ),
+        );
+
         $templates = get_posts( $args );
         return ! empty( $templates ) ? $templates[0]->ID : false;
     }
 
+    public function default_store_template( $post_id, $post, $update ) {
 
+        // Only for new templates
+        if ( $update ) {
+            return;
+        }
+
+        $template_type = get_post_meta( $post_id, '_elementor_template_type', true );
+        if ( $template_type !== 'multivendorx-store' ) {
+            return;
+        }
+
+        // Do not overwrite if already exists
+        if ( get_post_meta( $post_id, '_elementor_data', true ) ) {
+            return;
+        }
+
+        update_post_meta(
+            $post_id,
+            '_elementor_data',
+            wp_slash( $this->get_default_store_elementor_data() )
+        );
+
+        update_post_meta( $post_id, '_elementor_edit_mode', 'builder' );
+    }
+
+    private function get_default_store_elementor_data() {
+
+        $data = array(
+            array(
+                'id'       => 'store-header',
+                'elType'   => 'container',
+                'settings' => array(
+                    'content_width'  => 'boxed',
+                    'flex_direction' => 'column',
+                    'gap'            => '10',
+                ),
+                'elements' => array(
+                    array(
+                        'id'         => 'store-name',
+                        'elType'     => 'widget',
+                        'widgetType' => 'multivendorx_store_name',
+                        'settings'   => array(
+                            'html_tag' => 'h1',
+                        ),
+                        'elements'   => array(),
+                    ),
+                    array(
+                        'id'         => 'store-description',
+                        'elType'     => 'widget',
+                        'widgetType' => 'multivendorx_store_description',
+                        'settings'   => array(
+                            'empty_text' => 'This store has not added a description yet.',
+                        ),
+                        'elements'   => array(),
+                    ),
+
+                ),
+            ),
+        );
+
+        return wp_json_encode( $data );
+    }
 }

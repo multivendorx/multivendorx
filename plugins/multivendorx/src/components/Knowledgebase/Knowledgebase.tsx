@@ -1,40 +1,28 @@
 /* global appLocalizer */
-import React, { useState, useEffect, useRef, ReactNode } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	Table,
 	getApiLink,
-	TableCell,
 	AdminBreadcrumbs,
 	BasicInput,
 	TextArea,
 	CommonPopup,
 	ToggleSetting,
-	MultiCalendarInput,
 	Container,
 	Column,
 	FormGroupWrapper,
 	FormGroup,
 	AdminButton,
 	ProPopup,
+	TableCard,
 } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
+
 import '../Announcements/Announcements.scss';
 import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
+import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
-type KBRow = {
-	date: any;
-	id?: number;
-	title?: string;
-	content?: string;
-	status?: 'publish' | 'pending' | string;
-};
 
 type KBForm = {
 	title: string;
@@ -42,44 +30,24 @@ type KBForm = {
 	status?: 'publish' | 'pending' | 'draft';
 };
 
-type AnnouncementStatus = {
-	key: string;
-	name: string;
-	count: number;
-};
-type FilterData = {
-	categoryFilter?: string;
-	searchField?: string;
-};
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => ReactNode;
-}
-
 export const KnowledgeBase: React.FC = () => {
-	const [submitting, setSubmitting] = useState(false);
-	const [data, setData] = useState<KBRow[] | null>(null);
-	const [addEntry, setAddEntry] = useState(false);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [announcementStatus, setAnnouncementStatus] = useState<
-		AnnouncementStatus[] | null
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalRows, setTotalRows] = useState<number>(0);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [categoryCounts, setCategoryCounts] = useState<
+		categoryCounts[] | null
 	>(null);
-	const [pageCount, setPageCount] = useState(0);
+
+	const [submitting, setSubmitting] = useState(false);
+	const [addEntry, setAddEntry] = useState(false);
+
 	const [editId, setEditId] = useState<number | null>(null);
 	const [formData, setFormData] = useState<KBForm>({
 		title: '',
 		content: '',
 		status: 'draft',
 	});
-	const bulkSelectRef = useRef<HTMLSelectElement>(null);
-	const [totalRows, setTotalRows] = useState<number>(0);
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
 	}>({});
@@ -87,47 +55,28 @@ export const KnowledgeBase: React.FC = () => {
 		id: number;
 	} | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [dateFilter, setDateFilter] = useState<FilterDate>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
 
-	const handleDeleteClick = (rowData) => {
-		setSelectedKb({
-			id: rowData.id,
-		});
-		setConfirmOpen(true);
-	};
-	const handleConfirmDelete = async () => {
-		if (!selectedKb) {
-			return;
-		}
 
-		try {
-			await axios({
-				method: 'DELETE',
-				url: getApiLink(
-					appLocalizer,
-					`knowledge/${selectedKb.id}`
-				),
-				headers: {
-					'X-WP-Nonce':
-						appLocalizer.nonce,
-				},
-			});
-			await fetchTotalRows();
-			requestData(
-				pagination.pageSize,
-				pagination.pageIndex + 1
-			);
-		} finally {
+	const handleConfirmDelete = () => {
+		if (!selectedKb) return;
+
+		const closeConfirm = () => {
 			setConfirmOpen(false);
 			setSelectedKb(null);
-		}
+		};
+
+		axios({
+			method: 'DELETE',
+			url: getApiLink(appLocalizer, `knowledge/${selectedKb.id}`),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+		})
+			.then(() => {
+				fetchData({});
+				closeConfirm();
+			})
+			.catch(() => {
+				closeConfirm();
+			});
 	};
 
 	const validateForm = () => {
@@ -167,15 +116,7 @@ export const KnowledgeBase: React.FC = () => {
 		}
 	};
 
-	const handleBulkAction = async () => {
-		const action = bulkSelectRef.current?.value;
-		const selectedIds = Object.keys(rowSelection)
-			.map((key) => {
-				const index = Number(key);
-				return data && data[index] ? data[index].id : null;
-			})
-			.filter((id): id is number => id !== null);
-
+	const handleBulkAction = (action: string, selectedIds: any[] = []) => {
 		if (!selectedIds.length) {
 			return;
 		}
@@ -184,33 +125,30 @@ export const KnowledgeBase: React.FC = () => {
 			return;
 		}
 
-		setData(null);
-
-		try {
-			await axios({
-				method: 'PUT',
-				url: getApiLink(appLocalizer, 'knowledge'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				data: { bulk: true, action, ids: selectedIds },
+		axios({
+			method: 'PUT',
+			url: getApiLink(appLocalizer, 'knowledge'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			data: { bulk: true, action, ids: selectedIds },
+		})
+			.then(() => {
+				fetchData({});
+			})
+			.catch(() => {
+				console.log(__('Failed to perform bulk action', 'multivendorx'));
 			});
-			await fetchTotalRows();
-			requestData(pagination.pageSize, pagination.pageIndex + 1);
-			setRowSelection({});
-		} catch (err) {
-			console.log(__('Failed to perform bulk action', 'multivendorx'));
-		}
 	};
 
-	// Open edit modal
-	const handleEdit = async (id: number) => {
-		try {
-			const response = await axios.get(
+
+	const handleEdit = (id: number) => {
+		axios
+			.get(
 				getApiLink(appLocalizer, `knowledge/${id}`),
 				{
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				}
-			);
-			if (response.data) {
+			)
+			.then((response) => {
 				setFormData({
 					title: response.data.title || '',
 					content: response.data.content || '',
@@ -218,295 +156,158 @@ export const KnowledgeBase: React.FC = () => {
 				});
 				setEditId(id);
 				setAddEntry(true);
-			}
-		} catch {
-			console.log(__('Failed to load entry', 'multivendorx'));
-		}
-	};
-
-	// Submit form
-	const handleSubmit = async (status: 'publish' | 'pending' | 'draft') => {
-		if (submitting) {
-			return;
-		}
-		if (!validateForm()) {
-			return; // Stop submission if errors exist
-		}
-		setSubmitting(true);
-
-		try {
-			const endpoint = editId
-				? getApiLink(appLocalizer, `knowledge/${editId}`)
-				: getApiLink(appLocalizer, 'knowledge');
-
-			const method = editId ? 'PUT' : 'POST';
-			const payload = { ...formData, status };
-
-			const response = await axios({
-				method,
-				url: endpoint,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				data: payload,
-			});
-
-			if (response.data.success) {
-				handleCloseForm();
-				await fetchTotalRows();
-				requestData(pagination.pageSize, pagination.pageIndex + 1);
-			}
-		} catch {
-			console.log(__('Failed to save entry', 'multivendorx'));
-		} finally {
-			setSubmitting(false);
-		}
-	};
-
-	const fetchTotalRows = async () => {
-		try {
-			const response = await axios.get(
-				getApiLink(appLocalizer, 'knowledge'),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: { count: true },
-				}
-			);
-			const total = response.data || 0;
-			setTotalRows(total);
-			setPageCount(Math.ceil(total / pagination.pageSize));
-		} catch {
-			console.log(__('Failed to load total rows', 'multivendorx'));
-		}
-	};
-
-	// Fetch total rows on mount
-	useEffect(() => {
-		fetchTotalRows();
-	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, [pagination]);
-
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage: number,
-		currentPage: number,
-		categoryFilter = '',
-		searchField = '',
-		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
-	) {
-		setData(null);
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'knowledge'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				status: categoryFilter === 'all' ? '' : categoryFilter,
-				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',
-				searchField,
-			},
-		})
-			.then((response) => {
-				setData(response.data.items || []);
-
-				const statuses = [
-					{ key: 'all', name: 'All', count: response.data.all || 0 },
-					{
-						key: 'publish',
-						name: 'Published',
-						count: response.data.publish || 0,
-					},
-					{
-						key: 'pending',
-						name: 'Pending',
-						count: response.data.pending || 0,
-					},
-					{
-						key: 'draft',
-						name: 'Draft',
-						count: response.data.draft || 0,
-					},
-				];
-
-				// Only keep count > 0
-				setAnnouncementStatus(statuses.filter((s) => s.count > 0));
 			})
 			.catch(() => {
-				setData([]);
+				console.log(__('Failed to load entry', 'multivendorx'));
 			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		const date = filterData?.date || {
-			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-			end_date: new Date(),
-		};
-		setDateFilter(date);
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.categoryFilter,
-			filterData?.searchField,
-			date?.start_date,
-			date?.end_date
-		);
 	};
 
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						value={{
-							startDate: dateFilter.start_date!,
-							endDate: dateFilter.end_date!,
-						}}
-						onChange={(range: DateRange) => {
-							const next = {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							};
 
-							setDateFilter(next);
-							updateFilter('date', next);
-						}}
-					/>
-				</div>
-			),
+	// Submit form
+	const handleSubmit = (status: 'publish' | 'pending' | 'draft') => {
+		if (submitting) return;
+		if (!validateForm()) return;
+
+		setSubmitting(true);
+
+		const endpoint = editId
+			? getApiLink(appLocalizer, `knowledge/${editId}`)
+			: getApiLink(appLocalizer, 'knowledge');
+
+		const method = editId ? 'PUT' : 'POST';
+		const payload = { ...formData, status };
+
+		axios({
+			method,
+			url: endpoint,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			data: payload,
+		})
+			.then((response) => {
+				if (response.data?.success) {
+					handleCloseForm();
+					fetchData({});
+				}
+				setSubmitting(false);
+			})
+			.catch(() => {
+				console.log(__('Failed to save entry', 'multivendorx'));
+				setSubmitting(false);
+			});
+	};
+
+
+	const headers = [
+		{
+			key: 'title',
+			label: __('Name your article', 'multivendorx'),
+		},
+		{
+			key: 'content',
+			label: __('Write your explanation or tutorial', 'multivendorx'),
+		},
+		{
+			key: 'date',
+			label: __('Date', 'multivendorx'),
+		},
+		{
+			key: 'status',
+			label: __('Status', 'multivendorx'),
+		},
+		{
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Edit', 'multivendorx'),
+					icon: 'edit',
+					onClick: (id: number) => handleEdit(id),
+				},
+				{
+					label: __('Delete', 'multivendorx'),
+					icon: 'delete',
+					onClick: (id: number) => {
+						setSelectedKb({
+							id: id,
+						});
+						setConfirmOpen(true);
+					},
+					className: 'danger',
+				},
+			],
 		},
 	];
 
-	// Columns
-	const columns: ColumnDef<KBRow>[] = [
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+
+		axios
+			.get(getApiLink(appLocalizer, 'knowledge'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				withCredentials: true,
+				params: {
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					status: query.categoryFilter || '',
+					searchValue: query.searchValue || '',
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+				},
+			})
+			.then((response) => {
+				const items = response.data || [];
+
+				const ids = items
+					.filter((kb: any) => kb?.id != null)
+					.map((kb: any) => kb.id);
+
+				setRowIds(ids);
+
+				const mappedRows = items.map((kb: any) => [
+					{ display: kb.title, value: kb.id },
+					{ display: truncateText(kb.content || '', 50), value: kb.content || '' },
+					{ display: formatWcShortDate(kb.date), value: kb.date },
+					{ display: kb.status, value: kb.status },
+				]);
+
+				setRows(mappedRows);
+
+				setCategoryCounts([
+					{ value: 'all', label: 'All', count: Number(response.headers['x-wp-total']) || 0 },
+					{ value: 'publish', label: 'Published', count: Number(response.headers['x-wp-status-publish']) || 0 },
+					{ value: 'pending', label: 'Pending', count: Number(response.headers['x-wp-status-pending']) || 0 },
+					{ value: 'draft', label: 'Draft', count: Number(response.headers['x-wp-status-draft']) || 0 },
+				]);
+
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+			})
+			.catch(() => {
+				setRows([]);
+				setTotalRows(0);
+			})
+			.then(() => {
+				setIsLoading(false);
+			});
+	};
+
+	const filters = [
 		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('Name your article', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.title || ''}>
-					{truncateText(row.original.title || '', 30)}{' '}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Write your explanation or tutorial', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.content || ''}>
-					{truncateText(row.original.content || '', 50)}{' '}
-				</TableCell>
-			),
-		},
-		{
-			id: 'date',
-			accessorKey: 'date',
-			enableSorting: true,
-			header: __('Date', 'multivendorx'),
-			cell: ({ row }) => {
-				return (
-					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Status', 'multivendorx'),
-			cell: ({ row }) => {
-				return <TableCell type="status" status={row.original.status} />;
-			},
-		},
-		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					type="action-dropdown"
-					rowData={row.original}
-					header={{
-						actions: [
-							{
-								label: __('Edit', 'multivendorx'),
-								icon: 'adminfont-edit',
-								onClick: (rowData) => handleEdit(rowData.id),
-								hover: true,
-							},
-							{
-								label: __('Delete', 'multivendorx'),
-								icon: 'adminfont-delete delete',
-								onClick: (rowData: any) => {
-									handleDeleteClick(rowData);
-								},
-								hover: true,
-							},
-						],
-					}}
-				/>
-			),
-		},
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		}
 	];
 
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<>
-					<div className="search-section">
-						<input
-							name="searchField"
-							type="text"
-							placeholder={__('Search', 'multivendorx')}
-							onChange={(e) => {
-								updateFilter(e.target.name, e.target.value);
-							}}
-							value={filterValue || ''}
-						/>
-						<i className="adminfont-search"></i>
-					</div>
-				</>
-			),
-		},
+	const bulkActions = [
+		{ label: 'Published', value: 'publish' },
+		{ label: 'Pending', value: 'pending' },
+		{ label: 'Delete', value: 'delete' },
 	];
-
-	const BulkAction: React.FC = () => (
-		<div className="action">
-			<i className="adminfont-form"></i>
-			<select
-				name="action"
-				ref={bulkSelectRef}
-				onChange={handleBulkAction}
-			>
-				<option value="">{__('Bulk actions')}</option>
-				<option value="publish">{__('Published', 'multivendorx')}</option>
-				<option value="pending">{__('Pending', 'multivendorx')}</option>
-				<option value="delete">{__('Delete', 'multivendorx')}</option>
-			</select>
-		</div>
-	);
 
 	return (
 		<>
@@ -610,7 +411,7 @@ export const KnowledgeBase: React.FC = () => {
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[
-										'marketplace'
+										'overview'
 										]['tinymce_api_section'] ?? ''
 									}
 								/>
@@ -655,8 +456,8 @@ export const KnowledgeBase: React.FC = () => {
 								<BasicInput
 									type="text"
 									name="title"
-									// value={formData.title}
-									// onChange={handleChange}
+								// value={formData.title}
+								// onChange={handleChange}
 								/>
 							</FormGroup>
 						</FormGroupWrapper>
@@ -665,24 +466,20 @@ export const KnowledgeBase: React.FC = () => {
 			)}
 			<Container general>
 				<Column>
-					<Table
-						data={data}
-						columns={
-							columns as ColumnDef<Record<string, any>, any>[]
-						}
-						rowSelection={rowSelection}
-						onRowSelectionChange={setRowSelection}
-						defaultRowsPerPage={10}
-						pageCount={pageCount}
-						pagination={pagination}
-						onPaginationChange={setPagination}
-						handlePagination={requestApiForData}
-						perPageOption={[10, 25, 50]}
-						categoryFilter={announcementStatus as AnnouncementStatus[]}
-						bulkActionComp={() => <BulkAction />}
-						totalCounts={totalRows}
-						realtimeFilter={realtimeFilter}
-						searchFilter={searchFilter}
+					<TableCard
+						headers={headers}
+						rows={rows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={fetchData}
+						ids={rowIds}
+						categoryCounts={categoryCounts}
+						search={{}}
+						filters={filters}
+						bulkActions={bulkActions}
+						onBulkActionApply={(action: string, selectedIds: []) => {
+							handleBulkAction(action, selectedIds)
+						}}
 					/>
 				</Column>
 			</Container>
