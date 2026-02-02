@@ -52,6 +52,7 @@ export default {
 			addNewBtn: true,
 			addNewTemplate: {
 				label: 'New Rating Parameters',
+				disableBtn: true,
 				editableFields: {
 					title: true,
 					description: false,
