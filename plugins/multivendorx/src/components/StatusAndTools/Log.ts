@@ -14,7 +14,7 @@ export default {
 		{
 			key: 'multivendorx_log',
 			type: 'log',
-			classes: 'log-section',
+			classes: 'log-section full-width',
 			apiLink: 'logs',
 			fileName: 'error.txt',
 		},
