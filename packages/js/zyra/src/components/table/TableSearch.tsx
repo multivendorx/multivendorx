@@ -53,7 +53,6 @@ const TableSearch: React.FC<TableSearchProps> = ({
       {options && options.length > 0 && (
         <div className="search-action">
           <select value={selectedOption} onChange={handleOptionChange}>
-            <option value="">All</option>
             {options.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}

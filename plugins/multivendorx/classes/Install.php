@@ -879,28 +879,28 @@ class Install {
             'refund_days'            => 7,
             'refund_reasons'         => array(
                 'damaged-or-defective-product' => array(
-                    'label'    => 'Damaged or defective product',
-					'isCustom' => true,
+                    'label'      => 'Damaged or defective product',
+					'isCustom'   => true,
                     'disableBtn' => true,
                 ),
                 'wrong-item'                   => array(
-                    'label'    => 'Wrong item delivered',
-					'isCustom' => true,
+                    'label'      => 'Wrong item delivered',
+					'isCustom'   => true,
                     'disableBtn' => true,
                 ),
                 'product-not-as-described'     => array(
-                    'label'    => 'Product not as described',
-					'isCustom' => true,
+                    'label'      => 'Product not as described',
+					'isCustom'   => true,
                     'disableBtn' => true,
                 ),
                 'late-delivery'                => array(
-                    'label'    => 'Late delivery',
-					'isCustom' => true,
+                    'label'      => 'Late delivery',
+					'isCustom'   => true,
                     'disableBtn' => true,
                 ),
                 'changed-mind'                 => array(
-                    'label'    => 'Changed mind',
-					'isCustom' => true,
+                    'label'      => 'Changed mind',
+					'isCustom'   => true,
                     'disableBtn' => true,
                 ),
             ),
@@ -951,7 +951,7 @@ class Install {
 					'required' => true,
 					'isCustom' => true,
                 ),
-                'shipped' => array(
+                'shipped'   => array(
                     'label'    => 'shipped',
                     'desc'     => 'Order is shipped',
 					'icon'     => 'adminfont-rejecte',
@@ -964,67 +964,67 @@ class Install {
         $review_settings                                     = array(
             'ratings_parameters' => array(
                 'quality-of-product'    => array(
-                    'label'    => 'Quality of product',
-					'required' => true,
-					'isCustom' => true,
+                    'label'      => 'Quality of product',
+					'required'   => true,
+					'isCustom'   => true,
 					'disableBtn' => true,
                 ),
                 'communication-support' => array(
-                    'label'    => 'Communication Support',
-					'required' => true,
-					'isCustom' => true,
+                    'label'      => 'Communication Support',
+					'required'   => true,
+					'isCustom'   => true,
                     'disableBtn' => true,
                 ),
                 'delivery-experience'   => array(
-                    'label'    => 'Delivery experience',
-					'required' => true,
-					'isCustom' => true,
+                    'label'      => 'Delivery experience',
+					'required'   => true,
+					'isCustom'   => true,
                     'disableBtn' => true,
                 ),
             ),
         );
         $product_compliance_settings['abuse_report_reasons'] = array(
             'product-not-received'      => array(
-                'label'    => 'Product not received',
-                'isCustom' => true,
+                'label'      => 'Product not received',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
             'product-not-described'     => array(
-                'label'    => 'Product not as described',
-                'isCustom' => true,
+                'label'      => 'Product not as described',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
             'product-damaged-defective' => array(
-                'label'    => 'Product damaged / defective',
-                'isCustom' => true,
+                'label'      => 'Product damaged / defective',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
             'wrong-item-received'       => array(
-                'label'    => 'Wrong item received',
-                'isCustom' => true,
+                'label'      => 'Wrong item received',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
             'order-arrived-late'        => array(
-                'label'    => 'Order arrived late',
-                'isCustom' => true,
+                'label'      => 'Order arrived late',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
         );
         $product_compliance_settings['who_can_report']       = 'logged_in';
         $product_compliance_settings['prohibited_product_categories'] = array(
             'weapons-&-ammunition' => array(
-                'label'    => 'Weapons & ammunition',
-                'isCustom' => true,
+                'label'      => 'Weapons & ammunition',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
             'drugs-&-substances'   => array(
-                'label'    => 'Illegal drugs & substances',
-                'isCustom' => true,
+                'label'      => 'Illegal drugs & substances',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
             'counterfeit-products' => array(
-                'label'    => 'Counterfeit products',
-                'isCustom' => true,
+                'label'      => 'Counterfeit products',
+                'isCustom'   => true,
                 'disableBtn' => true,
             ),
         );

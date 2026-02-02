@@ -100,7 +100,7 @@ class Block {
         FrontendScripts::load_scripts();
         foreach ( $this->blocks as $block_script ) {
             $block_name = $block_script['textdomain'] . '/' . $block_script['name'];
-            
+
             if ( has_block( $block_name, $post ) ) {
                 $handle = $block_script['textdomain'] . '-' . $block_script['name'] . '-script';
 
@@ -113,19 +113,19 @@ class Block {
     public function restrict_block_types() {
         $restricted_category   = 'multivendorx-store-shop';
         $allowed_template_slug = 'multivendorx-store';
-        $template_slug = '';
+        $template_slug         = '';
 
         $p = filter_input( INPUT_GET, 'p', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
         if ( $p !== '' ) {
             $template_slug = basename( $p );
         }
-       
+
         $is_allowed_context = ( $template_slug === $allowed_template_slug );
 
         $registry   = \WP_Block_Type_Registry::get_instance();
         $all_blocks = $registry->get_all_registered();
-        $allowed    = [];
+        $allowed    = array();
 
         foreach ( $all_blocks as $block_name => $block_type ) {
             $category = $block_type->category ?? '';

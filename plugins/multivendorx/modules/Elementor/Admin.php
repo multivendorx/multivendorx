@@ -24,8 +24,7 @@ class Admin {
         add_action( 'elementor/documents/register', array( $this, 'register_elementor_document_type' ) );
         add_filter( 'multivendorx_store_elementor_template', array( $this, 'elementor_template_filter' ), 10 );
         // Add content in elementor template.
-        add_action( 'save_post_elementor_library', [ $this, 'default_store_template' ], 10, 3 );
-
+        add_action( 'save_post_elementor_library', array( $this, 'default_store_template' ), 10, 3 );
     }
 
     /**
@@ -113,40 +112,39 @@ class Admin {
 
     private function get_default_store_elementor_data() {
 
-        $data = [
-            [
-                'id'      => 'store-header',
-                'elType'  => 'container',
-                'settings'=> [
-                    'content_width' => 'boxed',
+        $data = array(
+            array(
+                'id'       => 'store-header',
+                'elType'   => 'container',
+                'settings' => array(
+                    'content_width'  => 'boxed',
                     'flex_direction' => 'column',
-                    'gap' => '10',
-                ],
-                'elements'=> [
-                    [
+                    'gap'            => '10',
+                ),
+                'elements' => array(
+                    array(
                         'id'         => 'store-name',
                         'elType'     => 'widget',
                         'widgetType' => 'multivendorx_store_name',
-                        'settings'   => [
+                        'settings'   => array(
                             'html_tag' => 'h1',
-                        ],
-                        'elements' => [],
-                    ],
-                    [
+                        ),
+                        'elements'   => array(),
+                    ),
+                    array(
                         'id'         => 'store-description',
                         'elType'     => 'widget',
                         'widgetType' => 'multivendorx_store_description',
-                        'settings'   => [
+                        'settings'   => array(
                             'empty_text' => 'This store has not added a description yet.',
-                        ],
-                        'elements' => [],
-                    ],
+                        ),
+                        'elements'   => array(),
+                    ),
 
-                ],
-            ],
-        ];
+                ),
+            ),
+        );
 
         return wp_json_encode( $data );
     }
-
 }

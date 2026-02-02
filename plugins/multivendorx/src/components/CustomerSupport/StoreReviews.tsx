@@ -3,25 +3,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	Table,
-	TableCell,
 	CommonPopup,
 	getApiLink,
 	ToggleSetting,
-	MultiCalendarInput,
 	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
 	ProPopup,
+	TableCard,
 } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
 import { Dialog } from '@mui/material';
-import { formatLocalDate } from '@/services/commonFunction';
+import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
+import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type Review = {
 	review_id: number;
@@ -43,515 +37,274 @@ type Review = {
 	store_name?: string;
 };
 
-type Status = {
-	key: string;
-	name: string;
-	count: number;
-};
-
-type FilterData = {
-	searchField: string;
-	categoryFilter?: string;
-	store?: string;
-	rating?: string;
-	orderBy?: string;
-	order?: string;
-};
-
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => React.ReactNode;
-}
-
 const StoreReviews: React.FC = () => {
-	const [data, setData] = useState<Review[]>([]);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pageCount, setPageCount] = useState<number>(0);
-	const [status, setStatus] = useState<Status[] | null>(null);
+	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState<any[] | null>(null);
+	const [categoryCounts, setCategoryCounts] = useState<
+		categoryCounts[] | null
+	>(null);
+
 	const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 	const [replyText, setReplyText] = useState<string>('');
 
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
 	const [selectedRv, setSelectedRv] = useState<{
 		id: number;
 	} | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [dateFilter, setDateFilter] = useState<{
-		start_date: Date;
-		end_date: Date;
-	}>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
 
-	const handleDeleteClick = (rowData) => {
-		setSelectedRv({
-			id: rowData.review_id,
-		});
-		setConfirmOpen(true);
-	};
+	const handleConfirmDelete = () => {
+		if (!selectedRv) return;
 
-	const handleConfirmDelete = async () => {
-		if (!selectedRv) {
-			return;
-		}
-
-		try {
-			await axios({
-				method: 'DELETE',
-				url: getApiLink(
-					appLocalizer,
-					`review/${selectedRv.id}`
-				),
-				headers: {
-					'X-WP-Nonce':
-						appLocalizer.nonce,
-				},
-			});
-
-			requestData(
-				pagination.pageSize,
-				pagination.pageIndex + 1
-			);
-		} finally {
-			setConfirmOpen(false);
-			setSelectedRv(null);
-		}
-	};
-
-	// Fetch total rows on mount
-	useEffect(() => {
 		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
+			method: 'DELETE',
+			url: getApiLink(appLocalizer, `review/${selectedRv.id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 		})
+			.then(() => {
+				// refresh table after deletion
+				fetchData({});
+			})
+			.finally(() => {
+				setConfirmOpen(false);
+				setSelectedRv(null);
+			});
+	};
+
+	useEffect(() => {
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
 			.then((response) => {
-				setStore(response.data.stores);
+				const options =
+					(response.data || []).map((store: any) => ({
+						label: store.store_name,
+						value: store.id,
+					}));
+
+				setStore(options);
+				setIsLoading(false);
 			})
 			.catch(() => {
 				setStore([]);
+				setIsLoading(false);
 			});
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'review'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { count: true },
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(Math.ceil(response.data / pagination.pageSize));
-			})
 	}, []);
 
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, [pagination]);
+	// 🔹 Handle reply saving
+	const handleSaveReply = () => {
+		if (!selectedReview) return;
 
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage: number,
-		currentPage: number,
-		categoryFilter = '',
-		store = '',
-		rating = '',
-		searchField = '',
-		orderBy = '',
-		order = '',
-		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
-	) {
-		setData(null);
 		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'review'),
+			method: 'PUT',
+			url: getApiLink(appLocalizer, `review/${selectedReview.review_id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				status: categoryFilter === 'all' ? '' : categoryFilter,
-				store_id: store,
-				overall_rating: rating,
-				searchField,
-				orderBy,
-				order,
-				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',
+			data: {
+				reply: replyText,
+				status: selectedReview.status,
 			},
 		})
-			.then((response) => {
-				setData(response.data.items || []);
-				const statuses = [
-					{ key: 'all', name: 'All', count: response.data.all || 0 },
-					{
-						key: 'approved',
-						name: 'Approved',
-						count: response.data.approved || 0,
-					},
-					{
-						key: 'pending',
-						name: 'Pending',
-						count: response.data.pending || 0,
-					},
-					{
-						key: 'rejected',
-						name: 'Rejected',
-						count: response.data.rejected || 0,
-					},
-				];
-
-				setStatus(statuses.filter((status) => status.count > 0));
+			.then(() => {
+				// Refresh table data after saving
+				fetchData({});
+				setSelectedReview(null);
+				setReplyText('');
 			})
 			.catch(() => {
-				setData([]);
+				alert(__('Failed to save reply', 'multivendorx'));
 			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		const date = filterData?.date || {
-			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-			end_date: new Date(),
-		};
-		setDateFilter(date);
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.categoryFilter,
-			filterData?.store,
-			filterData?.rating,
-			filterData?.searchField,
-			filterData?.orderBy,
-			filterData?.order,
-			date?.start_date,
-			date?.end_date
-		);
 	};
 
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'store',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="   group-field">
-					<select
-						name="store"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">All Store</option>
-						{store?.map((s: any) => (
-							<option key={s.id} value={s.id}>
-								{s.store_name.charAt(0).toUpperCase() +
-									s.store_name.slice(1)}
-							</option>
-						))}
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'rating',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="   group-field">
-					<select
-						name="rating"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">
-							{__('All ratings', 'multivendorx')}
-						</option>
-						<option value="5">
-							{__('5 Stars & Up', 'multivendorx')}
-						</option>
-						<option value="4">
-							{__('4 Stars & Up', 'multivendorx')}
-						</option>
-						<option value="3">
-							{__('3 Stars & Up', 'multivendorx')}
-						</option>
-						<option value="2">
-							{__('2 Stars & Up', 'multivendorx')}
-						</option>
-						<option value="1">
-							{__('1 Star & Up', 'multivendorx')}
-						</option>
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<MultiCalendarInput
-					value={{
-						startDate: dateFilter.start_date,
-						endDate: dateFilter.end_date,
-					}}
-					onChange={(range: { startDate: Date; endDate: Date }) => {
-						const next = {
-							start_date: range.startDate,
-							end_date: range.endDate,
-						};
 
-						setDateFilter(next);
-						updateFilter('date', next);
-					}}
-				/>
-			),
-		},
-	];
+	const fetchReviewById = (id: number) => {
+		setIsLoading(true);
+		axios
+			.get(getApiLink(appLocalizer, `review/${id}`), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((response) => {
+				const item = response.data;
+				if (item) {
+					setSelectedReview(item);
+					setReplyText(item.reply || '');
+				}
+			})
+			.catch(() => {
+				alert(__('Failed to fetch review data', 'multivendorx'));
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
+	};
 
-	// 🔹 Handle reply saving
-	const handleSaveReply = async () => {
-		if (!selectedReview) {
-			return;
-		}
-		try {
-			await axios
-				.put(
-					getApiLink(
-						appLocalizer,
-						`review/${selectedReview.review_id}`
-					),
-					{
-						reply: replyText,
-						status: selectedReview.status,
+	const headers = [
+		{ key: 'customer', label: __('Customer', 'multivendorx') },
+		{ key: 'store', label: __('Store', 'multivendorx') },
+		{ key: 'details', label: __('Details', 'multivendorx'), type: 'card' },
+		{ key: 'status', label: __('Status', 'multivendorx'), type: 'status' },
+		{ key: 'date_created', label: __('Date', 'multivendorx'), sortable: true },
+		{
+			key: 'action',
+			label: __('Action', 'multivendorx'),
+			type: 'action',
+			actions: [
+				{
+					label: __('Reply / Edit', 'multivendorx'),
+					icon: 'adminfont-edit',
+					onClick: (id: number) => fetchReviewById(id), // Only returns ID for fetching
+				},
+				{
+					label: __('Delete', 'multivendorx'),
+					icon: 'adminfont-delete delete',
+					onClick: (id: number) => {
+						setSelectedRv({ id });
+						setConfirmOpen(true);
 					},
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				)
-				.then(() => {
-					requestData(pagination.pageSize, pagination.pageIndex + 1);
-				});
-
-			setData((prev) =>
-				prev.map((r) =>
-					r.review_id === selectedReview.review_id
-						? {
-							...r,
-							reply: replyText,
-							status: selectedReview.status,
-						}
-						: r
-				)
-			);
-
-			setSelectedReview(null);
-			setReplyText('');
-		} catch {
-			alert(__('Failed to save reply', 'multivendorx'));
-		} finally {
-			// setSaving(false);
-		}
-	};
-
-	// 🔹 Table Columns
-	const columns: ColumnDef<Review>[] = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('Customer', 'multivendorx'),
-			cell: ({ row }) => {
-				const { customer_id, customer_name } = row.original;
-				const editLink = `${window.location.origin}/wp-admin/user-edit.php?user_id=${customer_id}`;
-
-				return (
-					<TableCell title={customer_name}>
-						{customer_id ? (
-							<a
-								href={editLink}
-								target="_blank"
-								rel="noreferrer"
-								className="customer-link"
-							>
-								{customer_name}
-							</a>
-						) : (
-							'-'
-						)}
-					</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Store', 'multivendorx'),
-			cell: ({ row }) => {
-				const { store_id, store_name } = row.original;
-				const baseUrl = `${window.location.origin}/wp-admin/admin.php?page=multivendorx#&tab=stores`;
-				const storeLink = store_id
-					? `${baseUrl}&edit/${store_id}/&subtab=application-details`
-					: '#';
-
-				return (
-					<TableCell title={store_name || ''}>
-						{store_id ? (
-							<a
-								href={storeLink}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								{store_name || '-'}
-							</a>
-						) : (
-							store_name || '-'
-						)}
-					</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Details', 'multivendorx'),
-			cell: ({ row }) => {
-				const rating = row.original.overall_rating ?? 0;
-				const content = row.original.review_content || '';
-				const shortText =
-					content.length > 40
-						? content.substring(0, 40) + '...'
-						: content;
-				return (
-					<TableCell title={rating.toString()}>
-						<div className="rating-details-wrapper">
-							<div className="title-wrapper">
-								<div className="rating-wrapper">
-									{rating > 0 ? (
-										<>
-											{[...Array(Math.round(rating))].map(
-												(_, i) => (
-													<i
-														key={`filled-${i}`}
-														className="star-icon adminfont-star"
-													></i>
-												)
-											)}
-											{[
-												...Array(
-													5 - Math.round(rating)
-												),
-											].map((_, i) => (
-												<i
-													key={`empty-${i}`}
-													className="star-icon adminfont-star-o"
-												></i>
-											))}
-										</>
-									) : (
-										'-'
-									)}
-								</div>
-								<div className="title">
-									{row.original.review_title || '-'}
-								</div>
-							</div>
-
-							<div className="review">{shortText || '-'}</div>
-						</div>
-					</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Status', 'multivendorx'),
-			cell: ({ row }) => {
-				return <TableCell type="status" status={row.original.status} />;
-			},
-		},
-		{
-			id: 'date_created',
-			header: __('Date', 'multivendorx'),
-			accessorFn: (row) =>
-				row.date_created ? new Date(row.date_created).getTime() : 0, // numeric timestamp for sorting
-			enableSorting: true,
-			cell: ({ row }) => {
-				const rawDate = row.original.date_created;
-				const formattedDate = rawDate
-					? new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(new Date(rawDate))
-					: '-';
-				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					type="action-dropdown"
-					rowData={row.original}
-					header={{
-						actions: [
-							{
-								label: __('Reply / Edit', 'multivendorx'),
-								icon: 'adminfont-edit',
-								onClick: () => {
-									setSelectedReview(row.original);
-									setReplyText(row.original.reply || '');
-								},
-								hover: true,
-							},
-							{
-								label: __('Delete', 'multivendorx'),
-								icon: 'adminfont-delete delete',
-								onClick: () => {
-									handleDeleteClick(row.original);
-								},
-								hover: true,
-							},
-						],
-					}}
-				/>
-			),
+				},
+			],
 		},
 	];
+
+
+	const filters = [
+		{
+			key: 'storeId',
+			label: 'Stores',
+			type: 'select',
+			options: store,
+		},
+		{
+			key: 'rating',
+			label: 'Status',
+			type: 'select',
+			options: [
+				{ label: 'All', value: '' },
+				{ label: '5 Stars & Up', value: '5' },
+				{ label: '4 Stars & Up', value: '4' },
+				{ label: '3 Stars & Up', value: '3' },
+				{ label: '2 Stars & Up', value: '2' },
+				{ label: '1 Stars & Up', value: '1' },
+			],
+		},
+		{
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		},
+	];
+
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+
+		axios
+			.get(getApiLink(appLocalizer, 'review'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					status: query.categoryFilter || '',
+					searchValue: query.searchValue || '',
+					storeId: query?.filter?.storeId,
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+					overallRating: query?.filter?.rating,
+					orderBy: query.orderby,
+					order: query.order,
+				},
+			})
+			.then((response) => {
+				const items = response.data || [];
+				const ids = items
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
+
+				setRowIds(ids);
+
+				const mappedRows: any[][] = items.map((item: any) => [
+					{
+						value: item.customer_id,
+						display: item.customer_name || '-',
+						type: 'card',
+						data: {
+							name: item.customer_name,
+							link: item.customer_id
+								? `${window.location.origin}/wp-admin/user-edit.php?user_id=${item.customer_id}`
+								: null,
+						},
+					},
+					{
+						type: 'card',
+						value: item.store_id,
+						display: item.store_name || '-',
+						data: {
+							name: item.store_name,
+							link: item.store_id
+								? `${window.location.origin}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${item.store_id}/&subtab=application-details`
+								: null,
+						},
+					},
+					{
+						type: 'card',
+						value: item.id,
+						display: item.id || '-',
+						data: {
+							name: item.overall_rating || 0,
+							description: item.review_title || '-',
+							subDescription: item.review_content || '',
+						},
+					},
+					{
+						value: item.status,
+						display: item.status,
+					},
+					{
+						value: item.date_created,
+						display: formatWcShortDate(item.date_created),
+					}
+				]);
+
+				setRows(mappedRows);
+
+				setCategoryCounts([
+					{
+						value: 'all',
+						label: 'All',
+						count: Number(response.headers['x-wp-total']) || 0,
+					},
+					{
+						value: 'approved',
+						label: 'Approved',
+						count: Number(response.headers['x-wp-status-approved']) || 0,
+					},
+					{
+						value: 'pending',
+						label: 'Pending',
+						count: Number(response.headers['x-wp-status-pending']) || 0,
+					},
+					{
+						value: 'rejected',
+						label: 'Rejected',
+						count: Number(response.headers['x-wp-status-rejected']) || 0,
+					},
+				]);
+
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
+			})
+			.catch(() => {
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
+	};
+
 	return (
 		<>
 			<Dialog
@@ -575,21 +328,19 @@ const StoreReviews: React.FC = () => {
 					}}
 				/>
 			</Dialog>
-			<Table
-				data={data || []}
-				columns={columns as ColumnDef<Record<string, any>, any>[]}
-				rowSelection={rowSelection}
-				onRowSelectionChange={setRowSelection}
-				defaultRowsPerPage={10}
-				pageCount={pageCount}
-				pagination={pagination}
-				onPaginationChange={setPagination}
-				handlePagination={requestApiForData}
-				perPageOption={[10, 25, 50]}
-				totalCounts={totalRows}
-				categoryFilter={status as Status[]}
-				realtimeFilter={realtimeFilter}
+
+			<TableCard
+				headers={headers}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={fetchData}
+				ids={rowIds}
+				categoryCounts={categoryCounts}
+				search={{}}
+				filters={filters}
 			/>
+
 			{selectedReview && (
 				<CommonPopup
 					open={!!selectedReview}
