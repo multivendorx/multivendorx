@@ -254,11 +254,11 @@ class Rest extends \WP_REST_Controller {
             $rejected_args['status'] = 'rejected';
             $rejected_count          = Util::get_review_information( $rejected_args );
 
-            $response = rest_ensure_response($formatted);
-            $response->header('X-WP-Total', $all_count);
-            $response->header('X-WP-Status-Pending', $pending_count);
-            $response->header('X-WP-Status-Approved', $approved_count);
-            $response->header('X-WP-Status-Rejected', $rejected_count);
+            $response = rest_ensure_response( $formatted );
+            $response->header( 'X-WP-Total', $all_count );
+            $response->header( 'X-WP-Status-Pending', $pending_count );
+            $response->header( 'X-WP-Status-Approved', $approved_count );
+            $response->header( 'X-WP-Status-Rejected', $rejected_count );
 
             if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) ) {
                 set_transient(

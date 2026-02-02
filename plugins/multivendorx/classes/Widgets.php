@@ -26,8 +26,7 @@ class Widgets {
         );
     }
 
-    public function frontend_scripts()
-    {
+    public function frontend_scripts() {
         // FrontendScripts::load_scripts();
         // FrontendScripts::enqueue_script('multivendorx-store-products-script');
         // FrontendScripts::enqueue_script('multivendorx-store-provider-script');

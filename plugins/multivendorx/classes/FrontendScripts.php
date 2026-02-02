@@ -240,22 +240,22 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-description-script'  => array(
+                'multivendorx-store-description-script'    => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-description/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-products-script'  => array(
+                'multivendorx-store-products-script'       => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-products/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-email-script'  => array(
+                'multivendorx-store-email-script'          => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-email/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-provider-script'  => array(
+                'multivendorx-store-provider-script'       => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-provider/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
@@ -727,7 +727,7 @@ class FrontendScripts {
                         'settings_databases_value' => $settings_databases_value,
                     ),
                 ),
-                'multivendorx-store-provider-script'  => array(
+                'multivendorx-store-provider-script'       => array(
                     'object_name' => 'StoreInfo',
                     'data'        => array(
                         'apiUrl'                   => untrailingslashit( get_rest_url() ),

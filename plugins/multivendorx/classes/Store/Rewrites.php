@@ -230,11 +230,11 @@ class Rewrites {
         }
 
         FrontendScripts::load_scripts();
-        FrontendScripts::enqueue_script('multivendorx-store-name-script');
-        FrontendScripts::enqueue_script('multivendorx-store-description-script');
-        FrontendScripts::enqueue_script('multivendorx-store-provider-script');
-        FrontendScripts::enqueue_script('multivendorx-store-coupons-script');
-        FrontendScripts::localize_scripts('multivendorx-store-provider-script');
+        FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
     }
 
     public function template_loader( $template ) {
