@@ -520,7 +520,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
         fromType:
             | 'simple'
             | 'select'
-            | 'multi-select',
+            | 'multi-select' = 'simple',
         arrayValue: string[] | number[] = []
     ) => {
         settingChanged.current = true;
@@ -753,7 +753,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                             wrapperClass={inputField.wrapperClass}
                             inputClass= {inputField.class}
                             description={ inputField.desc }
-                            key={ inputField.key }
+                            fieldKey={ inputField.key }
                             id={ inputField.id }
                             name={ inputField.name }
                             type={ inputField.type }
@@ -770,7 +770,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 inputField.proSetting ?? false
                             ) }
                             onChange={ (
-                                value: React.ChangeEvent< HTMLInputElement >
+                                e: React.ChangeEvent< HTMLInputElement >
                             ) => {
                                 if (
                                     hasAccess(
@@ -787,10 +787,8 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                     )
                                 ) {
                                     handleChange(
-                                        value,
-                                        inputField.key,
-                                        'single',
-                                        'simple'
+                                        e,
+                                        inputField.key
                                     );
                                 }
                             } }
