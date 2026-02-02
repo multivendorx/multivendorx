@@ -90,10 +90,9 @@ class Utill {
         'log'                           => 'multivendorx_log_settings',
         'min-max'                       => 'multivendorx_min_max_settings',
         'delivery'                      => 'multivendorx_delivery_settings',
-        'development-tools'             => 'multivendorx_development_tools_settings',
-        'live-chat'                     => 'multivendorx_live_chat_settings',
         'events-delivery'               => 'multivendorx_events-delivery_settings',
         'compliance'                    => 'multivendorx_compliance_settings',
+        'development-tools'             => 'multivendorx_development_tools_settings',
     );
 
     const MULTIVENDORX_OTHER_SETTINGS = array(
@@ -214,8 +213,6 @@ class Utill {
         'distance_rules'               => 'distance_rules',
         'shipping_options'             => 'shipping_options',
         'distance_type'                => 'distance_type',
-        'whatsapp_number'            => 'whatsapp_number',
-        'facebook_page_id'           => 'facebook_page_id',
     );
 
     const USER_SETTINGS_KEYS = array(
