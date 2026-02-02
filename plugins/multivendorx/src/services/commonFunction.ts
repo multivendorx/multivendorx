@@ -1,3 +1,5 @@
+import { DownloadCSVOptions } from "./type";
+
 export function truncateText(text: string, maxLength: number) {
 	if (!text) {
 		return '-';
@@ -99,4 +101,75 @@ export const formatDate = (date?: string): string => {
 		day: 'numeric',
 		year: 'numeric',
 	}).format(d);
+};
+
+export const toWcIsoDate = (
+	date: Date,
+	type: 'start' | 'end'
+): string => {
+	const d = new Date(date);
+
+	if (type === 'start') {
+		d.setHours(0, 0, 0, 0);
+	} else {
+		d.setHours(23, 59, 59, 999);
+	}
+
+	return d.toISOString();
+};
+
+export const downloadCSV = <T extends Record<string, Primitive>>({
+	data,
+	filename = 'data.csv',
+	headers,
+}: DownloadCSVOptions<T>) => {
+	if (!data.length) return;
+
+	const keys = headers
+		? (Object.keys(headers) as (keyof T)[])
+		: (Object.keys(data[0]) as (keyof T)[]);
+
+	const csvRows: string[] = [];
+
+	// Header row
+	csvRows.push(
+		keys
+			.map((key) => `"${headers?.[key] ?? String(key)}"`)
+			.join(',')
+	);
+
+	// Data rows
+	data.forEach((row) => {
+		csvRows.push(
+			keys
+				.map((key) => {
+					const value = row[key];
+
+					const normalized =
+						value instanceof Date
+							? value.toISOString()
+							: value ?? '';
+
+					const escaped = String(normalized).replace(/"/g, '""');
+					return `"${escaped}"`;
+				})
+				.join(',')
+		);
+	});
+
+	const blob = new Blob([csvRows.join('\n')], {
+		type: 'text/csv;charset=utf-8;',
+	});
+
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement('a');
+
+	link.href = url;
+	link.download = filename;
+
+	document.body.appendChild(link);
+	link.click();
+
+	document.body.removeChild(link);
+	URL.revokeObjectURL(url);
 };

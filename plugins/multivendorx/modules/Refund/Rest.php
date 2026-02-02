@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Modules class file
  *
@@ -9,7 +10,8 @@ namespace MultiVendorX\Refund;
 
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
-defined( 'ABSPATH' ) || exit;
+
+defined('ABSPATH') || exit;
 
 /**
  * MultiVendorX REST API Refund controller.
@@ -18,7 +20,8 @@ defined( 'ABSPATH' ) || exit;
  * @version     PRODUCT_VERSION
  * @author      MultiVendorX
  */
-class Rest extends \WP_REST_Controller {
+class Rest extends \WP_REST_Controller
+{
 
     /**
      * Route base.
@@ -30,29 +33,31 @@ class Rest extends \WP_REST_Controller {
     /**
      * Constructor.
      */
-    public function __construct() {
-        add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
+    public function __construct()
+    {
+        add_action('rest_api_init', array($this, 'register_routes'), 10);
     }
 
     /**
      * Register the routes for the objects of the controller.
      */
-    public function register_routes() {
+    public function register_routes()
+    {
         register_rest_route(
             MultiVendorX()->rest_namespace,
             '/' . $this->rest_base,
             array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				),
-				array(
-					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				),
-			)
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array($this, 'get_items'),
+                    'permission_callback' => array($this, 'get_items_permissions_check'),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array($this, 'update_item'),
+                    'permission_callback' => array($this, 'update_item_permissions_check'),
+                ),
+            )
         );
     }
 
@@ -61,8 +66,9 @@ class Rest extends \WP_REST_Controller {
      *
      * @param object $request Full details about the request.
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'read_shop_orders' ) || current_user_can( 'edit_shop_orders' );
+    public function get_items_permissions_check($request)
+    {
+        return current_user_can('read_shop_orders') || current_user_can('edit_shop_orders');
     }
 
     /**
@@ -70,8 +76,9 @@ class Rest extends \WP_REST_Controller {
      *
      * @param object $request Full details about the request.
      */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_shop_orders' );
+    public function update_item_permissions_check($request)
+    {
+        return current_user_can('edit_shop_orders');
     }
 
 
@@ -82,28 +89,34 @@ class Rest extends \WP_REST_Controller {
     public function get_items( $request ) {
         $nonce = $request->get_header( 'X-WP-Nonce' );
         if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            // Log the error.
+            $error = new \WP_Error(
+                'invalid_nonce',
+                __( 'Invalid nonce', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+    
             if ( is_wp_error( $error ) ) {
                 MultiVendorX()->util->log( $error );
             }
-
+    
             return $error;
         }
+    
         try {
             // Parameters.
-            $limit         = max( 1, intval( $request->get_param( 'row' ) ) );
-            $page          = max( 1, intval( $request->get_param( 'page' ) ) );
-            $count_only    = filter_var( $request->get_param( 'count' ), FILTER_VALIDATE_BOOLEAN );
+            $limit         = max( 1, (int) $request->get_param( 'row' ) );
+            $page          = max( 1, (int) $request->get_param( 'page' ) );
             $store_id      = $request->get_param( 'store_id' );
             $search_action = strtolower( $request->get_param( 'searchAction' ) );
-            $search_field  = strtolower( trim( $request->get_param( 'searchField' ) ) );
+            $search_value  = strtolower( trim( $request->get_param( 'searchValue' ) ) );
             $order_by      = $request->get_param( 'orderBy' );
             $order         = strtolower( $request->get_param( 'order' ) ) === 'asc' ? 'ASC' : 'DESC';
             $start_date    = $request->get_param( 'startDate' );
             $end_date      = $request->get_param( 'endDate' );
-
+    
+            // Pagination offset (Woo requires this).
+            $offset = ( $page - 1 ) * $limit;
+    
             // Build meta query.
             $meta_query = array();
             if ( ! empty( $store_id ) ) {
@@ -118,101 +131,89 @@ class Rest extends \WP_REST_Controller {
                     'compare' => 'EXISTS',
                 );
             }
-
-            // Date filter.
+    
+            // Date filter (BETWEEN only, site timezone aware).
             $date_filter = '';
-            if ( $start_date || $end_date ) {
-                $start = $start_date ? gmdate( 'Y-m-d 00:00:00', strtotime( $start_date ) ) : '';
-                $end   = $end_date ? gmdate( 'Y-m-d 23:59:59', strtotime( $end_date ) ) : '';
-                if ( $start && $end ) {
-                    $date_filter = $start . '...' . $end;
-                } elseif ( $start ) {
-                    $date_filter = '>' . $start;
-                } elseif ( $end ) {
-                    $date_filter = '<' . $end;
-                }
+            $normalized  = Utill::normalize_date_range( $start_date, $end_date );
+    
+            if ( $normalized['start_date'] && $normalized['end_date'] ) {
+                $date_filter = $normalized['start_date'] . '...' . $normalized['end_date'];
             }
-
-            // If count only — return minimal data (fast).
-            if ( $count_only ) {
-                $count_args = array(
-                    'type'       => 'shop_order_refund',
-                    'meta_query' => $meta_query,
-                    'return'     => 'ids',
-                );
-
-                $refund_ids = wc_get_orders( $count_args );
-                return rest_ensure_response( count( $refund_ids ) );
+    
+            // Count query (for correct totals).
+            $count_args = array(
+                'type'       => 'shop_order_refund',
+                'meta_query' => $meta_query,
+                'return'     => 'ids',
+            );
+    
+            if ( $date_filter ) {
+                $count_args['date_created'] = $date_filter;
             }
-
-            // Build full query (for listing).
+    
+            $total = count( wc_get_orders( $count_args ) );
+    
+            // Build main query.
             $args = array(
                 'type'       => 'shop_order_refund',
                 'meta_query' => $meta_query,
                 'limit'      => $limit,
-                'paged'      => $page,
+                'offset'     => $offset,
                 'return'     => 'objects',
                 'paginate'   => false,
             );
-
+    
             if ( $date_filter ) {
                 $args['date_created'] = $date_filter;
             }
-
+    
             if ( in_array( $order_by, array( 'date', 'order_id' ), true ) ) {
                 $args['orderby'] = 'order_id' === $order_by ? 'ID' : 'date';
                 $args['order']   = $order;
             }
-
+    
             // Fetch refunds.
             $refunds = wc_get_orders( $args );
-
-            // Search filtering (only after fetching).
-            if ( $search_action && $search_field ) {
+    
+            // Search filtering (after fetch).
+            if ( $search_action && $search_value ) {
                 $refunds = array_filter(
                     $refunds,
-                    function ( $refund ) use ( $search_action, $search_field ) {
-                        /** @var WC_Order_Refund $refund Refund. */
+                    function ( $refund ) use ( $search_action, $search_value ) {
                         $order = wc_get_order( $refund->get_parent_id() );
                         if ( ! $order ) {
                             return false;
                         }
-
+    
                         switch ( $search_action ) {
                             case 'order_id':
-                                return (string) $order->get_id() === $search_field;
-
+                                return (string) $order->get_id() === $search_value;
+    
                             case 'customer':
                                 $name  = strtolower( $order->get_formatted_billing_full_name() );
                                 $email = strtolower( $order->get_billing_email() );
-                                return str_contains( $name, $search_field ) || str_contains( $email, $search_field );
-
+                                return str_contains( $name, $search_value ) || str_contains( $email, $search_field );
+    
                             default:
                                 return true;
                         }
                     }
                 );
             }
-
-            // Build response.
+    
+            // Build response data.
             $refund_list = array_map(
                 function ( $refund ) {
-                    /** @var WC_Order_Refund $refund Refund. */
                     $store_id   = $refund->get_meta( Utill::POST_META_SETTINGS['store_id'] );
                     $store      = new Store( $store_id );
                     $store_name = $store ? $store->get( 'name' ) : '';
-
+    
                     $order = wc_get_order( $refund->get_parent_id() );
-
+    
                     $customer_id    = $order ? $order->get_customer_id() : 0;
                     $customer_name  = $order ? $order->get_formatted_billing_full_name() : '';
                     $customer_email = $order ? $order->get_billing_email() : '';
-
-                    // Build admin edit link if the customer exists.
-                    $customer_edit_link = $customer_id
-                    ? admin_url( 'user-edit.php?user_id=' . $customer_id )
-                    : '';
-
+    
                     return array(
                         'refund_id'          => $refund->get_id(),
                         'store_id'           => $store_id,
@@ -223,75 +224,94 @@ class Rest extends \WP_REST_Controller {
                         'customer_reason'    => $order ? $order->get_meta( Utill::ORDER_META_SETTINGS['customer_refund_reason'], true ) : '',
                         'currency'           => $refund->get_currency(),
                         'date'               => $refund->get_date_created()
-                                                    ? $refund->get_date_created()->date_i18n( 'Y-m-d H:i:s' )
-                                                    : '',
+                            ? $refund->get_date_created()->date_i18n( 'Y-m-d H:i:s' )
+                            : '',
                         'status'             => $refund->get_status(),
                         'customer_id'        => $customer_id,
                         'customer_name'      => $customer_name,
                         'customer_email'     => $customer_email,
-                        'customer_edit_link' => $customer_edit_link,
+                        'customer_edit_link' => $customer_id
+                            ? admin_url( 'user-edit.php?user_id=' . $customer_id )
+                            : '',
                     );
                 },
                 $refunds
             );
-
-            // Sort by order_id manually if needed.
+    
+            // Manual sort for order_id if needed.
             if ( 'order_id' === $order_by ) {
-                usort( $refund_list, fn( $a, $b ) => ( 'ASC' === $order ? $a['order_id'] <=> $b['order_id'] : $b['order_id'] <=> $a['order_id'] ) );
+                usort(
+                    $refund_list,
+                    fn ( $a, $b ) =>
+                        ( 'ASC' === $order )
+                            ? $a['order_id'] <=> $b['order_id']
+                            : $b['order_id'] <=> $a['order_id']
+                );
             }
-
-            return rest_ensure_response( array_values( $refund_list ) );
+    
+            $response = rest_ensure_response( $refund_list );
+            $response->header( 'X-WP-Total', $total );
+            $response->header( 'X-WP-TotalPages', (int) ceil( $total / $limit ) );
+    
+            return $response;
+    
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
-
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+    
+            return new \WP_Error(
+                'server_error',
+                __( 'Unexpected server error', 'multivendorx' ),
+                array( 'status' => 500 )
+            );
         }
     }
+    
 
     /**
      * Create a new refund.
      *
      * @param object $request Full data about the request.
      */
-    public function update_item( $request ) {
-        $refund_info = $request->get_param( 'payload' );
+    public function update_item($request)
+    {
+        $refund_info = $request->get_param('payload');
 
-        $order_id               = $refund_info['orderId'] ? absint( $refund_info['orderId'] ) : 0;
-        $refund_amount          = wc_format_decimal( $refund_info['refundAmount'], wc_get_price_decimals() );
+        $order_id               = $refund_info['orderId'] ? absint($refund_info['orderId']) : 0;
+        $refund_amount          = wc_format_decimal($refund_info['refundAmount'], wc_get_price_decimals());
         $items                  = $refund_info['items'] ?? array();
-        $refund_reason          = sanitize_text_field( $refund_info['reason'] );
+        $refund_reason          = sanitize_text_field($refund_info['reason']);
         $restock_refunded_items = 'true' === $refund_info['restock'];
         $refund                 = false;
         $response_data          = array();
 
         try {
-            $order = wc_get_order( $order_id );
+            $order = wc_get_order($order_id);
 
             $parent_order_id  = $order->get_parent_id();
-            $parent_order     = wc_get_order( $parent_order_id );
-            $parent_items_ids = array_keys( $parent_order->get_items( array( 'line_item', 'fee', 'shipping' ) ) );
+            $parent_order     = wc_get_order($parent_order_id);
+            $parent_items_ids = array_keys($parent_order->get_items(array('line_item', 'fee', 'shipping')));
 
-            $max_refund = wc_format_decimal( $order->get_total() - $order->get_total_refunded(), wc_get_price_decimals() );
+            $max_refund = wc_format_decimal($order->get_total() - $order->get_total_refunded(), wc_get_price_decimals());
 
-            if ( ! $refund_amount || $max_refund < $refund_amount || $refund_amount < 0 ) {
-                return new \WP_Error( 'invalid_amount', __( 'Invalid refund amount.', 'multivendorx' ), array( 'status' => 400 ) );
+            if (! $refund_amount || $max_refund < $refund_amount || $refund_amount < 0) {
+                return new \WP_Error('invalid_amount', __('Invalid refund amount.', 'multivendorx'), array('status' => 400));
             }
 
             // Prepare line items which we are refunding.
             $line_items        = array();
             $parent_line_items = array();
 
-            $item_keys = array_keys( $items );
+            $item_keys = array_keys($items);
 
-            foreach ( $item_keys as $item_id ) {
-                $line_items[ $item_id ] = array(
+            foreach ($item_keys as $item_id) {
+                $line_items[$item_id] = array(
                     'qty'          => 0,
                     'refund_total' => 0,
                     'refund_tax'   => array(),
                 );
-                $parent_item_id         = $this->get_store_parent_order_item_id( $item_id );
-                if ( $parent_item_id && in_array( $parent_item_id, $parent_items_ids, true ) ) {
-                    $parent_line_items[ $parent_item_id ] = array(
+                $parent_item_id         = $this->get_store_parent_order_item_id($item_id);
+                if ($parent_item_id && in_array($parent_item_id, $parent_items_ids, true)) {
+                    $parent_line_items[$parent_item_id] = array(
                         'qty'          => 0,
                         'refund_total' => 0,
                         'refund_tax'   => array(),
@@ -299,74 +319,74 @@ class Rest extends \WP_REST_Controller {
                 }
             }
 
-            foreach ( $items as $item_id => $value ) {
-                $qty   = isset( $value['qty'] ) ? max( $value['qty'], 0 ) : 0;
-                $total = isset( $value['total'] ) ? $value['total'] : 0;
-                $tax   = isset( $value['tax'] ) ? $value['tax'] : 0;
+            foreach ($items as $item_id => $value) {
+                $qty   = isset($value['qty']) ? max($value['qty'], 0) : 0;
+                $total = isset($value['total']) ? $value['total'] : 0;
+                $tax   = isset($value['tax']) ? $value['tax'] : 0;
 
-                $line_items[ $item_id ]['qty']          = $qty;
-                $line_items[ $item_id ]['refund_total'] = wc_format_decimal( $total );
-                $line_items[ $item_id ]['refund_tax']   = wc_format_decimal( $tax );
+                $line_items[$item_id]['qty']          = $qty;
+                $line_items[$item_id]['refund_total'] = wc_format_decimal($total);
+                $line_items[$item_id]['refund_tax']   = wc_format_decimal($tax);
 
-                $parent_item_id = $this->get_store_parent_order_item_id( $item_id );
+                $parent_item_id = $this->get_store_parent_order_item_id($item_id);
 
-                if ( $parent_item_id && in_array( $parent_item_id, $parent_items_ids, true ) ) {
-                    $parent_line_items[ $parent_item_id ]['qty']          = $qty;
-                    $parent_line_items[ $parent_item_id ]['refund_total'] = wc_format_decimal( $total );
-                    $parent_line_items[ $parent_item_id ]['refund_tax']   = wc_format_decimal( $tax );
+                if ($parent_item_id && in_array($parent_item_id, $parent_items_ids, true)) {
+                    $parent_line_items[$parent_item_id]['qty']          = $qty;
+                    $parent_line_items[$parent_item_id]['refund_total'] = wc_format_decimal($total);
+                    $parent_line_items[$parent_item_id]['refund_tax']   = wc_format_decimal($tax);
                 }
             }
 
-            if ( $line_items ) {
+            if ($line_items) {
                 // Create the refund object.
                 $refund = wc_create_refund(
                     array(
-						'amount'         => $refund_amount,
-						'reason'         => $refund_reason,
-						'order_id'       => $order_id,
-						'line_items'     => $line_items,
-						'refund_payment' => false,
-						'restock_items'  => $restock_refunded_items,
-					)
+                        'amount'         => $refund_amount,
+                        'reason'         => $refund_reason,
+                        'order_id'       => $order_id,
+                        'line_items'     => $line_items,
+                        'refund_payment' => false,
+                        'restock_items'  => $restock_refunded_items,
+                    )
                 );
             }
 
-            if ( ! empty( $parent_line_items ) ) {
-                if ( apply_filters( 'mvx_allow_refund_parent_order', true ) ) {
+            if (! empty($parent_line_items)) {
+                if (apply_filters('mvx_allow_refund_parent_order', true)) {
                     $parent_refund = wc_create_refund(
                         array(
-							'amount'         => $refund_amount,
-							'reason'         => $refund_reason,
-							'order_id'       => $parent_order_id,
-							'line_items'     => $parent_line_items,
-							'refund_payment' => false,
-							'restock_items'  => $restock_refunded_items,
-						)
+                            'amount'         => $refund_amount,
+                            'reason'         => $refund_reason,
+                            'order_id'       => $parent_order_id,
+                            'line_items'     => $parent_line_items,
+                            'refund_payment' => false,
+                            'restock_items'  => $restock_refunded_items,
+                        )
                     );
                 }
             }
 
-            if ( is_wp_error( $refund ) ) {
-                return new \WP_Error( 'refund_failed', $refund->get_error_message(), array( 'status' => 400 ) );
+            if (is_wp_error($refund)) {
+                return new \WP_Error('refund_failed', $refund->get_error_message(), array('status' => 400));
             }
-            if ( is_wp_error( $parent_refund ) ) {
-                return new \WP_Error( 'refund_failed', $parent_refund->get_error_message(), array( 'status' => 400 ) );
+            if (is_wp_error($parent_refund)) {
+                return new \WP_Error('refund_failed', $parent_refund->get_error_message(), array('status' => 400));
             }
 
-            do_action( 'mvx_order_refunded', $order_id, $refund->get_id() );
+            do_action('mvx_order_refunded', $order_id, $refund->get_id());
 
-            if ( did_action( 'woocommerce_order_fully_refunded' ) ) {
+            if (did_action('woocommerce_order_fully_refunded')) {
                 $response_data['status'] = 'fully_refunded';
             }
 
             return rest_ensure_response(
                 array(
-					'success'       => true,
-					'response_data' => $response_data,
+                    'success'       => true,
+                    'response_data' => $response_data,
                 )
             );
-        } catch ( Exception $e ) {
-            return new \WP_Error( 'refund_failed', __( 'Refund Failed', 'multivendorx' ), array( 'status' => 400 ) );
+        } catch (Exception $e) {
+            return new \WP_Error('refund_failed', __('Refund Failed', 'multivendorx'), array('status' => 400));
         }
     }
 
@@ -376,13 +396,14 @@ class Rest extends \WP_REST_Controller {
      * @param int $item_id Store order item id.
      * @return int
      */
-    public function get_store_parent_order_item_id( $item_id ) {
+    public function get_store_parent_order_item_id($item_id)
+    {
         global $wpdb;
-        $store_item_id = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->order_itemmeta} WHERE meta_key=%s AND order_item_id=%d", 'store_order_item_id', absint( $item_id ) ) );
+        $store_item_id = $wpdb->get_var($wpdb->prepare("SELECT meta_value FROM {$wpdb->order_itemmeta} WHERE meta_key=%s AND order_item_id=%d", 'store_order_item_id', absint($item_id)));
 
-        if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
-            MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
-		}
+        if (! empty($wpdb->last_error) && MultivendorX()->show_advanced_log) {
+            MultiVendorX()->util->log('Database operation failed', 'ERROR');
+        }
 
         return $store_item_id;
     }

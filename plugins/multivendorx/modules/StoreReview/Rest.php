@@ -134,16 +134,16 @@ class Rest extends \WP_REST_Controller {
         }
         try {
             // --- Step 2: Collect Request Parameters ---.
-            $store_id       = $request->get_param( 'store_id' );
+            $store_id       = $request->get_param( 'storeId' );
             $limit          = max( intval( $request->get_param( 'row' ) ), 10 );
             $page           = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset         = ( $page - 1 ) * $limit;
-            $count          = $request->get_param( 'count' );
             $status         = sanitize_text_field( $request->get_param( 'status' ) );
             $orderBy        = sanitize_text_field( $request->get_param( 'orderBy' ) );
             $order          = sanitize_text_field( $request->get_param( 'order' ) );
-            $overall_rating = $request->get_param( 'overall_rating' );
-            $dashboard      = $request->get_param( 'dashboard' );
+            $overall_rating = $request->get_param( 'overallRating' );
+            $sec_fetch_site = $request->get_header( 'sec_fetch_site' );
+            $referer        = $request->get_header( 'referer' );
 
             $range = Utill::normalize_date_range(
                 $request->get_param( 'startDate' ),
@@ -154,13 +154,6 @@ class Rest extends \WP_REST_Controller {
             // --- Step 3: Apply Store Filter ---.
             if ( $store_id ) {
                 $args['store_id'] = intval( $store_id );
-            }
-
-            // --- Step 4: Handle Count-Only Request ---.
-            if ( $count ) {
-                $args['count'] = true;
-                $total_count   = Util::get_review_information( $args );
-                return rest_ensure_response( (int) $total_count );
             }
 
             // --- Step 5: Add Filters (status, date, pagination) ---.
@@ -202,12 +195,9 @@ class Rest extends \WP_REST_Controller {
                 $args['order_dir'] = 'DESC';
             }
 
-            if ( $dashboard ) {
-                if ( get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id ) ) {
-                    return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id );
-                }
+            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id ) ) {
+                return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id );
             }
-
             // --- Step 6: Fetch Review Data ---.
             $reviews = Util::get_review_information( $args );
 
@@ -264,20 +254,21 @@ class Rest extends \WP_REST_Controller {
             $rejected_args['status'] = 'rejected';
             $rejected_count          = Util::get_review_information( $rejected_args );
 
-            if ( $dashboard ) {
-                set_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id, array( 'items' => $formatted ), DAY_IN_SECONDS );
+            $response = rest_ensure_response($formatted);
+            $response->header('X-WP-Total', $all_count);
+            $response->header('X-WP-Status-Pending', $pending_count);
+            $response->header('X-WP-Status-Approved', $approved_count);
+            $response->header('X-WP-Status-Rejected', $rejected_count);
+
+            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) ) {
+                set_transient(
+                    Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id,
+                    $response,
+                    DAY_IN_SECONDS
+                );
             }
 
-            // --- Step 9: Return Final Response ---.
-            return rest_ensure_response(
-                array(
-                    'items'    => $formatted,
-                    'all'      => (int) $all_count,
-                    'pending'  => (int) $pending_count,
-                    'approved' => (int) $approved_count,
-                    'rejected' => (int) $rejected_count,
-                )
-            );
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 

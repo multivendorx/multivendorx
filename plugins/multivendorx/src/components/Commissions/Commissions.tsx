@@ -936,51 +936,51 @@ const Commission: React.FC = () => {
 				setRowIds(ids);
 
 				const mappedRows: any[][] = items.map((ann: any) => [
-					{ display: ann.id, value: ann.id },
-					{
-						display: ann.orderId,
-						value: ann.orderId,
-						type: 'card',
-						data: {
-							// link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${ann.orderId}&action=edit`,
-							name: `#${ann.orderId} - ${ann.storeName}`,
-						}
-					},
-					{ display: formatCurrency(ann.totalOrderAmount), value: ann.totalOrderAmount },
-					{
-						display: 1,  
-						value: 1,  
-						type: 'commission',
-						data: {
-							items: [
-								ann.storeEarning
-									? { label: 'Store Earning', value: formatCurrency(ann.storeEarning), isPositive: true }
-									: null,
-								ann.shippingAmount && modules.includes('store-shipping')
-									? { label: 'Shipping', value: formatCurrency(ann.shippingAmount), isPositive: true }
-									: null,
-								ann.taxAmount && appLocalizer.settings_databases_value['commissions']?.give_tax !== 'no_tax'
-									? { label: 'Tax', value: formatCurrency(ann.taxAmount), isPositive: true }
-									: null,
-								ann.shippingTaxAmount
-									? { label: 'Shipping Tax', value: formatCurrency(ann.shippingTaxAmount), isPositive: true }
-									: null,
-								ann.gatewayFee && modules.includes('marketplace-gateway')
-									? { label: 'Gateway Fee', value: formatCurrency(ann.gatewayFee), isPositive: false }
-									: null,
-								ann.facilitatorFee && modules.includes('facilitator')
-									? { label: 'Facilitator Fee', value: formatCurrency(ann.facilitatorFee), isPositive: false }
-									: null,
-								ann.platformFee && modules.includes('marketplace-fee')
-									? { label: 'Platform Fee', value: formatCurrency(ann.platformFee), isPositive: false }
-									: null,
-							].filter(Boolean),
-						},
-					},	
-					{ display: formatCurrency(ann.storePayable), value: ann.storePayable },	
-					// { display: formatCurrency(ann.marketplacePayable), value: ann.marketplacePayable },
-					// { display: ann.status, value: ann.status },
-					// { display: formatWcShortDate(ann.createdAt), value: ann.createdAt },
+					// { display: ann.id, value: ann.id },
+					// {
+					// 	display: ann.orderId,
+					// 	value: ann.orderId,
+					// 	type: 'card',
+					// 	data: {
+					// 		// link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${ann.orderId}&action=edit`,
+					// 		name: `#${ann.orderId} - ${ann.storeName}`,
+					// 	}
+					// },
+					// { display: formatCurrency(ann.totalOrderAmount), value: ann.totalOrderAmount },
+					// {
+					// 	display: 1,  
+					// 	value: 1,  
+					// 	type: 'commission',
+					// 	data: {
+					// 		items: [
+					// 			ann.storeEarning
+					// 				? { label: 'Store Earning', value: formatCurrency(ann.storeEarning), isPositive: true }
+					// 				: null,
+					// 			ann.shippingAmount && modules.includes('store-shipping')
+					// 				? { label: 'Shipping', value: formatCurrency(ann.shippingAmount), isPositive: true }
+					// 				: null,
+					// 			ann.taxAmount && appLocalizer.settings_databases_value['commissions']?.give_tax !== 'no_tax'
+					// 				? { label: 'Tax', value: formatCurrency(ann.taxAmount), isPositive: true }
+					// 				: null,
+					// 			ann.shippingTaxAmount
+					// 				? { label: 'Shipping Tax', value: formatCurrency(ann.shippingTaxAmount), isPositive: true }
+					// 				: null,
+					// 			ann.gatewayFee && modules.includes('marketplace-gateway')
+					// 				? { label: 'Gateway Fee', value: formatCurrency(ann.gatewayFee), isPositive: false }
+					// 				: null,
+					// 			ann.facilitatorFee && modules.includes('facilitator')
+					// 				? { label: 'Facilitator Fee', value: formatCurrency(ann.facilitatorFee), isPositive: false }
+					// 				: null,
+					// 			ann.platformFee && modules.includes('marketplace-fee')
+					// 				? { label: 'Platform Fee', value: formatCurrency(ann.platformFee), isPositive: false }
+					// 				: null,
+					// 		].filter(Boolean),
+					// 	},
+					// },	
+					// { display: formatCurrency(ann.storePayable), value: ann.storePayable },	
+					// // { display: formatCurrency(ann.marketplacePayable), value: ann.marketplacePayable },
+					// // { display: ann.status, value: ann.status },
+					// // { display: formatWcShortDate(ann.createdAt), value: ann.createdAt },
 				]);
 
 				setRows(mappedRows);
