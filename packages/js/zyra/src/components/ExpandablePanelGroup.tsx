@@ -139,7 +139,7 @@ interface ExpandablePanelGroupProps {
     modules: string[];
     addNewBtn?: boolean;
     addNewTemplate?: AddNewTemplate;
-    requiredEnable?: boolean;
+    min?: number;
 }
 
 const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
@@ -156,6 +156,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
     modules,
     addNewBtn,
     addNewTemplate,
+    min
 }) => {
     const [activeTabs, setActiveTabs] = useState<string[]>([]);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -213,7 +214,6 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             descTextareaRef.current.select();
         }
     }, [editingMethodId, editingField]);
-
     // Effect to handle click outside for inline editing
     useEffect(() => {
         const handleClickOutsideEdit = (event: MouseEvent) => {
@@ -410,7 +410,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
             id,
             icon: addNewTemplate.icon || '',
             label: addNewTemplate.label || 'New Item',
-            desc: addNewTemplate.desc || 'Enter ',
+            desc: addNewTemplate.desc || '',
             connected: false,
             isCustom: true,
             disableBtn: addNewTemplate.disableBtn || false, // Add disableBtn
@@ -461,6 +461,15 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         setActiveTabs((prev) => [...prev, newMethod.id]);
     };
     const handleDeleteMethod = (methodId: string) => {
+        if (min !== undefined) {
+            const customMethods = ExpandablePanelMethods.filter(m => m.isCustom);
+            const currentCount = customMethods.length;
+
+            if (currentCount <= min) {
+                return;
+            }
+        }
+
         setExpandablePanelMethods((prev) =>
             prev.filter((m) => m.id !== methodId)
         );
@@ -472,7 +481,15 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
 
         setActiveTabs((prev) => prev.filter((id) => id !== methodId));
     };
+    const canDeleteMethod = (methodId: string): boolean => {
+        if (min === undefined) {
+            return true;
+        }
 
+        const customMethods = ExpandablePanelMethods.filter(m => m.isCustom);
+        const currentCount = customMethods.length;
+        return currentCount > min;
+    };
     const canEdit = () => {
         // You cannot edit if Pro is enabled (locked) OR if module is disabled
         return !proSetting && moduleEnabled;
@@ -1458,12 +1475,10 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                     <ul className="settings-btn">
                                         {method.isCustom && (
                                             <>
-                                                {!method.hideDeleteBtn && (
+                                                {!method.hideDeleteBtn && canDeleteMethod(method.id) ? (
                                                     <li
                                                         onClick={() => {
-                                                            handleDeleteMethod(
-                                                                method.id
-                                                            );
+                                                            handleDeleteMethod(method.id);
                                                         }}
                                                     >
                                                         <span className="admin-btn red-color">
@@ -1471,8 +1486,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                             Delete
                                                         </span>
                                                     </li>
-                                                )}
-                                                {method.hideDeleteBtn && (
+                                                ) : (
                                                     <span className="delete-text red-color">Not Deletable</span>
                                                 )}
                                             </>
@@ -1594,7 +1608,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                         Hide
                                                     </div>
                                                 </li>
-                                        )}
+                                            )}
                                     </ul>
                                     { /* show dropdown */}
                                     {isEnabled && !method.isCustom && (

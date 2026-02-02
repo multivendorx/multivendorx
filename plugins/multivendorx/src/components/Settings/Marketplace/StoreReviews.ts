@@ -44,6 +44,7 @@ export default {
 				'Define the key factors customers will use to evaluate each store.',
 				'multivendorx'
 			),
+			min: 3,
 			desc: __(
 				'Give customers a fair way to share feedback! Define what they rate, like product/listing quality, delivery, or service. You’ll start with five default parameters that can be edited or removed, but make sure at least three stay active for balanced, detailed reviews.',
 				'multivendorx'
