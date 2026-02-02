@@ -514,7 +514,10 @@ const AdminForm: React.FC<AdminFormProps> = ({
             | { index: number },
         key: string,
         type: 'single' | 'multiple' = 'single',
-        fromType: 'simple' | 'select' | 'multi-select' = 'simple',
+        fromType:
+            | 'simple'
+            | 'select'
+            | 'multi-select' = 'simple',
         arrayValue: string[] | number[] = []
     ) => {
         settingChanged.current = true;
@@ -730,26 +733,26 @@ const AdminForm: React.FC<AdminFormProps> = ({
                     input = (
                         <BasicInput
                             wrapperClass={inputField.wrapperClass}
-                            inputClass={inputField.class}
-                            description={inputField.desc}
-                            key={inputField.key}
-                            id={inputField.id}
-                            name={inputField.name}
-                            type={inputField.type}
-                            placeholder={inputField.placeholder}
-                            inputLabel={inputField.inputLabel} // for range input label
-                            rangeUnit={inputField.rangeUnit} // for range parameter
-                            min={inputField.min ?? 0} // for range min value
-                            max={inputField.max ?? 50} // for range max value
-                            value={value || inputField.value}
-                            size={inputField.size} //Width of the input container.
-                            preText={inputField.preText} //Content displayed before input (icon/text).
-                            postText={inputField.postText} //Content displayed after input (icon/text).
-                            proSetting={isProSetting(
+                            inputClass= {inputField.class}
+                            description={ inputField.desc }
+                            fieldKey={ inputField.key }
+                            id={ inputField.id }
+                            name={ inputField.name }
+                            type={ inputField.type }
+                            placeholder={ inputField.placeholder }
+                            inputLabel={ inputField.inputLabel } // for range input label
+                            rangeUnit={ inputField.rangeUnit } // for range parameter
+                            min={ inputField.min ?? 0 } // for range min value
+                            max={ inputField.max ?? 50 } // for range max value
+                            value={ value || inputField.value }
+                            size={ inputField.size } //Width of the input container.
+                            preText={ inputField.preText } //Content displayed before input (icon/text).
+                            postText={ inputField.postText } //Content displayed after input (icon/text).
+                            proSetting={ isProSetting(
                                 inputField.proSetting ?? false
                             ) }
                             onChange={ (
-                                value: React.ChangeEvent< HTMLInputElement >
+                                e: React.ChangeEvent< HTMLInputElement >
                             ) => {
                                 if (
                                     hasAccess(
@@ -760,10 +763,8 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     )
                                 ) {
                                     handleChange(
-                                        value,
-                                        inputField.key,
-                                        'single',
-                                        'simple'
+                                        e,
+                                        inputField.key
                                     );
                                 }
                             }}
