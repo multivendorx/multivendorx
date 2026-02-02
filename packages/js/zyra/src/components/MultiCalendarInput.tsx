@@ -108,7 +108,7 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
         const today = new Date();
         today.setHours( 0, 0, 0, 0 );
         const isSameDay = (a:Date, b:Date) =>
-            a.toDateString() === b.toDateString();
+            targetDate.toDateString() === referenceDate.toDateString();
 
         // Today
         if (

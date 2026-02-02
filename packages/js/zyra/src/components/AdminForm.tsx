@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
+import axios from 'axios';
 
 // Internal Dependencies
 import SelectInput, { SelectOptions } from './SelectInput';
@@ -31,15 +32,14 @@ import MultiCheckBox from './MultiCheckbox';
 import Log from './Log';
 import InputMailchimpList from './InputMailchimpList';
 import Popup, { PopupProps } from './Popup';
-import '../styles/web/AdminForm.scss';
 import NestedComponent from './NestedComponent';
 import ColorSettingInput from './ColorSettingInput';
 import EndpointEditor from './EndpointEditor';
 import ExpandablePanelGroup from './ExpandablePanelGroup';
 import SystemInfo from './SystemInfo';
 import { useModules } from '../contexts/ModuleContext';
-import axios from 'axios';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
+import '../styles/web/AdminForm.scss';
 
 interface WPMediaAttachment {
     url: string;
@@ -755,9 +755,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -809,9 +807,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -846,9 +842,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -956,9 +950,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -975,9 +967,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             wrapperClass="form-group-color-setting"
                             inputClass="setting-form-input"
                             description={inputField.desc} // optional description displayed under the input
-                            predefinedOptions={
-                                inputField.predefinedOptions ?? []
-                            } // array of predefined color options for quick selection
+                            predefinedOptions={nputField.predefinedOptions ?? []} // array of predefined color options for quick selection
                             images={inputField.images ?? []} // optional array of images associated with colors
                             value={value} // currently selected color value
                             templates={inputField.templates}
@@ -1140,9 +1130,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1207,9 +1195,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1269,9 +1255,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1331,9 +1315,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1405,9 +1387,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1489,9 +1469,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1591,9 +1569,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1657,9 +1633,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     hasAccess(
                                         inputField.proSetting ?? false,
                                         String(inputField.moduleEnabled ?? ''),
-                                        String(
-                                            inputField.dependentSetting ?? ''
-                                        ),
+                                        String(inputField.dependentSetting ?? ''),
                                         String(inputField.dependentPlugin ?? '')
                                     )
                                 ) {
@@ -1794,13 +1768,9 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             plugin={modulePopupData.plugin}
                             message={modulePopupFields?.message}
                             moduleButton={modulePopupFields?.moduleButton}
-                            pluginDescription={
-                                modulePopupFields?.pluginDescription
-                            }
+                            pluginDescription={modulePopupFields?.pluginDescription}
                             pluginButton={modulePopupFields?.pluginButton}
-                            SettingDescription={
-                                modulePopupFields?.SettingDescription
-                            }
+                            SettingDescription={modulePopupFields?.SettingDescription}
                             pluginUrl={modulePopupFields?.pluginUrl}
                             modulePageUrl={modulePopupFields?.modulePageUrl}
                         />

@@ -236,7 +236,6 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                     <div className="color-palette-wrapper">
                         { /* Toggle Mode */}
                         {!selectedImage && (
-                            <>
                                 <div className="form-group-setting-wrapper">
                                     <label>Color Palette</label>
                                     <ToggleSetting
@@ -284,6 +283,13 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                                 });
                                             }
 
+                                            if (selectedVal === 'templates') {
+                                                setMode('templates');
+                                                setSelectedPalette('templates');
+                                                setSelectedColors(customColors);
+                                                emitTemplateChange(customColors, templateKey);
+                                            }
+
                                             if (selectedVal === 'custom') {
                                                 setMode('custom');
                                                 setSelectedPalette('custom');
@@ -299,17 +305,10 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                                     },
                                                 });
                                             }
-                                            if (selectedVal === 'templates') {
-                                                setMode('templates');
-                                                setSelectedPalette('templates');
-                                                setSelectedColors(customColors);
-
-                                                emitTemplateChange(customColors, templateKey);
-                                            }
+                                            
                                         }}
                                     />
                                 </div>
-                            </>
                         )}
                         {/* Predefined Palettes */}
                         {mode === 'predefined' && (

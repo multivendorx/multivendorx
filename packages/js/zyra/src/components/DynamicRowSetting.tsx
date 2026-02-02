@@ -188,11 +188,10 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
         <>
             <div className={ `repeater-field-wrapper ${ wrapperClass }` }>
                 { value.map( ( row, rowIndex ) => (
-                    <>
                         <div key={ rowIndex } className="repeater-field">
                             <div className="field">
                                 { template.fields.map( ( field ) => (
-                                    <>{ renderField( row, field, rowIndex ) }</>
+                                    { renderField( row, field, rowIndex ) }
                                 ) ) }
 
                                 <span
@@ -212,7 +211,6 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
                                 ) : null;
                             } )() }
                         </div>
-                    </>
                 ) ) }
 
                 <button

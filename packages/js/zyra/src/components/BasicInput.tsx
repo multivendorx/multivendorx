@@ -307,11 +307,9 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                             (postText &&
                                                 typeof postText === 'object') ||
                                             (postInsideText &&
-                                                typeof postInsideText ===
-                                                    'object') ||
+                                                typeof postInsideText === 'object') ||
                                             (preInsideText &&
-                                                typeof preInsideText ===
-                                                    'object');
+                                                typeof preInsideText === 'object');
 
                                         if (hasObjectAddon) {
                                             // Save as object with main value
@@ -320,8 +318,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                                     ? value
                                                     : {
                                                           value:
-                                                              typeof value ===
-                                                              'string'
+                                                              typeof value === 'string'
                                                                   ? value
                                                                   : '',
                                                       };

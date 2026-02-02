@@ -39,7 +39,7 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
                 wrapperRef.current &&
                 ! wrapperRef.current.contains( e.target as Node )
             ) {
-                setFilteredSuggestions( [] );
+                [] ;
             }
         };
         document.addEventListener( 'mousedown', handleClickOutside );
