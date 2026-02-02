@@ -74,16 +74,3 @@ export const formatLocalDate = (date: Date): string => {
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
 };
-
-export function printContent(divId: string) {
-	const source = document.getElementById(divId) as HTMLElement;
-	const printWindow = window.open('', '_blank');
-	if (!printWindow) {
-		return;
-	}
-	const cloned = source.cloneNode(true) as HTMLElement;
-	printWindow.document.write(cloned.innerHTML);
-	printWindow.focus();
-	printWindow.print();
-	printWindow.close();
-}

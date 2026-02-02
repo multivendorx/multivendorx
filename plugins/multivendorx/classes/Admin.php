@@ -30,7 +30,7 @@ class Admin {
         // admin pages manu and submenu.
         add_action( 'admin_menu', array( $this, 'add_menus' ), 10 );
         // admin script and style.
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ), 20 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_script' ) );
 
         // Allow URL.
         add_filter( 'allowed_redirect_hosts', array( $this, 'allow_multivendorx_redirect_host' ) );
@@ -89,70 +89,58 @@ class Admin {
                     'dashboard'           => array(
                         'name'   => __( 'Dashboard', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 10,
                     ),
                     'stores'              => array(
                         'name'   => __( 'Stores', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 20,
                     ),
                     'commissions'         => array(
                         'name'   => __( 'Commissions', 'multivendorx' ),
                         'subtab' => '',
                         'count'  => $commission_count,
-                        'priority' => 30,
                     ),
                     'transaction-history' => array(
                         'name'   => __( 'Transaction History', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 40,
                     ),
                     'approval-queue'      => array(
                         'name'   => __( 'Approval Queue', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 50,
                     ),
                     'customer-support'    => array(
                         'name'   => __( 'Customer Support', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 60,
                     ),
                     'reports'             => array(
                         'name'   => __( 'Reports', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 70,
+                    ),
+                    'memberships'         => array(
+                        'name'   => __( 'Memberships', 'multivendorx' ),
+                        'subtab' => 'payment-membership-plans',
                     ),
                     'settings'            => array(
                         'name'   => __( 'Settings', 'multivendorx' ),
                         'subtab' => 'marketplace',
-                        'priority' => 80,
                     ),
                     'modules'             => array(
                         'name'   => __( 'Modules', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 90,
                     ),
                     'status-tools'        => array(
                         'name'   => __( 'Status & Tools', 'multivendorx' ),
                         'subtab' => 'system-status',
-                        'priority' => 100,
                     ),
                     'help-support'        => array(
                         'name'   => __( 'Help & Support', 'multivendorx' ),
                         'subtab' => '',
-                        'priority' => 110,
                     ),
-                    'table-card' => array(
-                        'name'   => __( 'Table Card', 'multivendorx' ),
-                        'subtab' => '',
-                        'priority' => 120,
-                    ),
+                    // 'notifications'       => array(
+                    // 'name'   => '',
+                    // 'subtab' => '',
+                    // ),
                 )
             );
-
-            uasort( $submenus, function ( $a, $b ) {
-                return ( $a['priority'] ?? 0 ) <=> ( $b['priority'] ?? 0 );
-            });
 
             foreach ( $submenus as $slug => $submenu ) {
                 // prepare subtab if subtab is exist.

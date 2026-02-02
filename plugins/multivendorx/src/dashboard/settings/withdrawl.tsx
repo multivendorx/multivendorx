@@ -299,6 +299,8 @@ const Withdrawl: React.FC = () => {
 									key={field.key || ''}
 									name={field.key}
 									type={field.type || 'text'}
+									 
+									descClass="settings-metabox-description"
 									placeholder={
 										field.placeholder
 											? __(

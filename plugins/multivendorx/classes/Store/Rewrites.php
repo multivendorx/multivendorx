@@ -43,7 +43,11 @@ class Rewrites {
         add_filter( 'get_block_templates', [ $this, 'register_block_template' ], 10, 3 );
         add_filter( 'pre_get_block_file_template', [ $this, 'resolve_template_by_id' ], 10, 3 );
         add_filter( 'template_include', [ $this, 'template_loader' ], 10 );
-        add_action( 'wp_enqueue_scripts', [ $this, 'register_store_state' ] );       
+        add_action( 'wp_enqueue_scripts', [ $this, 'register_store_state' ] );
+
+        // Elementor support - Register custom document type
+        add_action( 'elementor/documents/register', [ $this, 'register_elementor_document_type' ] );
+       
     }
 
     /**
@@ -55,7 +59,7 @@ class Rewrites {
         if ( is_admin() || ! $query->is_main_query() ) {
             return;
         }
-
+        
         if ( wp_is_block_theme() ) {
             return;
         }
@@ -206,7 +210,7 @@ class Rewrites {
     }
 
     public function register_store_state() {
-        $store_slug = get_query_var( $this->custom_store_url );
+        $store_slug = get_query_var( 'store' );
 
         if ( ! $store_slug ) {
             return;
@@ -214,7 +218,12 @@ class Rewrites {
 
         wp_interactivity_state(
             'multivendorx/store',
-            StoreUtil::get_specific_store_info()
+            [
+                'storeName' => 'Store 1',
+                'storeDescription' => 'This is the live store description shown on the frontend.',
+                'storeSlug' => $store_slug,
+                'storeId'   => 1,
+            ]
         );
     }
 
@@ -226,10 +235,20 @@ class Rewrites {
         }
 
         // Check for Elementor template first
-        $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
-
-        if ( $filtered_template && file_exists( $filtered_template ) ) {
-            return $filtered_template;
+        if ( did_action( 'elementor/loaded' ) ) {
+            $elementor_template_id = $this->get_elementor_template();
+            
+            if ( $elementor_template_id ) {
+                add_filter( 'body_class', function( $classes ) {
+                    $classes[] = 'elementor-page';
+                    return $classes;
+                });
+                
+                $elementor_canvas = plugin_dir_path( __FILE__ ) . 'templates/elementor-canvas.php';
+                if ( file_exists( $elementor_canvas ) ) {
+                    return $elementor_canvas;
+                }
+            }
         }
 
         $store_name = get_query_var( $this->custom_store_url );
@@ -244,7 +263,41 @@ class Rewrites {
 
         return $template;
     }
+
+    /**
+     * Register custom Elementor document type
+     */
+    public function register_elementor_document_type( $documents_manager ) {
+        require_once plugin_dir_path( __FILE__ ) . 'includes/elementor-store-document.php';
+        $documents_manager->register_document_type( 'mvx-store', 'MVX_Store_Document' );
+    }
+
     
+    /**
+     * Get active Elementor template for store
+     */
+    private function get_elementor_template() {
+        if ( ! did_action( 'elementor/loaded' ) ) {
+            return false;
+        }
+        
+        // Find template with our custom document type
+        $args = [
+            'post_type' => 'elementor_library',
+            'posts_per_page' => 1,
+            'post_status' => 'publish',
+            'meta_query' => [
+                [
+                    'key' => '_elementor_template_type',
+                    'value' => 'mvx-store',
+                ]
+            ]
+        ];
+        
+        $templates = get_posts( $args );
+        return ! empty( $templates ) ? $templates[0]->ID : false;
+    }
+
     /**
      * Flush rewrite rules
      */

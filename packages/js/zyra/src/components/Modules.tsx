@@ -341,7 +341,7 @@ const Modules: React.FC<ModuleProps> = ({
                             [];
                         return (
                             <div
-                                data-index={index}
+                                data-inedx={index}
                                 className="module-list-item"
                                 key={module.id}
                                 id={module.id}

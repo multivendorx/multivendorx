@@ -20,10 +20,6 @@ export default {
 				'See which shipping options your stores can offer to customers. Each method determines how shipping costs are calculated.',
 				'multivendorx'
 			),
-			settingDescription: __(
-				'Control which shipping options stores can use to calculate and manage delivery costs for their products. Enable or disable specific shipping methods to decide how stores define shipping charges across different locations.',
-				'multivendorx'
-			),
 			buttonEnable: true,
 			modal: [
 				{

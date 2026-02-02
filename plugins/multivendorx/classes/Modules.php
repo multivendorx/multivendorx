@@ -101,8 +101,8 @@ class Modules
                     ),
                     'shared-listing'         => array(
                         'id'           => 'shared-listing',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/SharedListing/Module.php',
-                        'module_class' => 'MultiVendorX\SharedListing\Module',
+                        'module_file'  => MultiVendorX()->plugin_path . 'modules/SPMV/Module.php',
+                        'module_class' => 'MultiVendorX\SPMV\Module',
                     ),
                     'follow-store'           => array(
                         'id'           => 'follow-store',
@@ -118,6 +118,21 @@ class Modules
                         'id'           => 'geo-location',
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/GeoLocation/Module.php',
                         'module_class' => 'MultiVendorX\GeoLocation\Module',
+                    ),
+                    'zone-shipping'          => array(
+                        'id'           => 'zone-shipping',
+                        'module_file'  => MultiVendorX()->plugin_path . 'modules/ZoneShipping/Module.php',
+                        'module_class' => 'MultiVendorX\ZoneShipping\Module',
+                    ),
+                    'country-shipping'       => array(
+                        'id'           => 'zone-shipping',
+                        'module_file'  => MultiVendorX()->plugin_path . 'modules/CountryShipping/Module.php',
+                        'module_class' => 'MultiVendorX\CountryShipping\Module',
+                    ),
+                    'distance-shipping'      => array(
+                        'id'           => 'zone-shipping',
+                        'module_file'  => MultiVendorX()->plugin_path . 'modules/DistanceShipping/Module.php',
+                        'module_class' => 'MultiVendorX\DistanceShipping\Module',
                     ),
                     'store-shipping'         => array(
                         'id'           => 'store-shipping',
@@ -141,24 +156,18 @@ class Modules
                     ),
                     'marketplace-gateway'    => array(
                         'id'           => 'marketplace-gateway',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/MarketplaceGateway/Module.php',
-                        'module_class' => 'MultiVendorX\MarketplaceGateway\Module',
+                        'module_file'  => MultiVendorX()->plugin_path . 'modules/GatewayFee/Module.php',
+                        'module_class' => 'MultiVendorX\GatewayFee\Module',
                     ),
                     'min-max'                => array(
                         'id'           => 'min-max',
                         'module_file'  => MultiVendorX()->plugin_path . 'modules/MinMax/Module.php',
                         'module_class' => 'MultiVendorX\MinMax\Module',
                     ),
-                    'elementor'                => array(
-                        'id'           => 'elementor',
-                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Elementor/Module.php',
-                        'module_class' => 'MultiVendorX\Elementor\Module',
-                        'requires'     => array(
-                            'plugin' => array(
-                                'elementor/elementor.php',
-                                'elementor-pro/elementor-pro.php',
-                            ),
-                        ),
+                    'invoice'                => array(
+                        'id'           => 'invoice',
+                        'module_file'  => MultiVendorX()->plugin_path . 'modules/Invoice/Module.php',
+                        'module_class' => 'MultiVendorX\Invoice\Module',
                     ),
                     'wpml'                => array(
                         'id'           => 'wpml',

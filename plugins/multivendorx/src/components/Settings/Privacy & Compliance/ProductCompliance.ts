@@ -3,10 +3,10 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'product-compliance',
 	priority: 5,
-	name: __('Product Compliance', 'multivendorx'),
+	name: __('Product Compliance', 'mvx-pro'),
 	desc: __(
 		'All product listings must follow platform content guidelines and avoid prohibited categories. Branded or regulated products must include authenticity certificates. Optional safety certifications may be uploaded for regulated items.',
-		'multivendorx'
+		'mvx-pro'
 	),
 	icon: 'adminfont-per-product-shipping',
 	submitUrl: 'settings',
@@ -43,27 +43,27 @@ export default {
 		{
 			key: 'required_store_uploads',
 			type: 'checkbox',
-			label: __('Required store uploads', 'multivendorx'),
-			settingDescription: __(
-				'Specify the documents or files stores must provide to ensure their products comply with marketplace rules.',
-				'multivendorx'
+			label: __('Required store uploads', 'mvx-pro'),
+			desc: __(
+				'Select which documents or files stores must upload for compliance verification.',
+				'mvx-pro'
 			),
 			moduleEnabled: 'marketplace-compliance',
 			proSetting: true,
 			options: [
 				{
 					key: 'product_authenticity_certificates',
-					label: __('Product authenticity certificates', 'multivendorx'),
+					label: __('Product authenticity certificates', 'mvx-pro'),
 					value: 'product_authenticity_certificates',
 				},
 				{
 					key: 'product_images_descriptions',
-					label: __('Product images & descriptions', 'multivendorx'),
+					label: __('Product images & descriptions', 'mvx-pro'),
 					value: 'product_images_descriptions',
 				},
 				{
 					key: 'safety_certifications',
-					label: __('Safety certifications', 'multivendorx'),
+					label: __('Safety certifications', 'mvx-pro'),
 					value: 'safety_certifications',
 				},
 			],

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Popover, getApiLink, Skeleton } from 'zyra';
+import { Popover, getApiLink, Skeleton} from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -91,7 +91,7 @@ const HeaderNotifications: React.FC = () => {
 					onClick={() => handleNotificationClick(item.id)}
 				>
 					{/* <div className="icon admin-badge green"> */}
-					<i className={item.icon || 'adminfont-user-network-icon green'} />
+						<i className={item.icon || 'adminfont-user-network-icon green'} />
 					{/* </div> */}
 					<div className="details">
 						<span className="heading">{item.title}</span>
@@ -115,80 +115,76 @@ const HeaderNotifications: React.FC = () => {
 
 	return (
 		<>
-			{isDropdownOpen && (
-				<Popover
-					template="tab"
-					width="24rem"
-					toggleIcon="adminfont-notification"
-					toggleContent={
-						notifications?.length > 0 && (
-							<span className="count">{notifications.length}</span>
+		{isDropdownOpen && (
+			<Popover
+				template="tab"
+				width="24rem"
+				toggleIcon="adminfont-notification"
+				toggleContent={<span className="count">{notifications?.length ?? 0}</span>}
+				onTabChange={(tabId) => {
+					setActiveType(
+						tabId === 'activities' ? 'activity' : 'notification'
+					);
+				}}
+				header={
+					<div className="title">
+						{__('Notifications', 'multivendorx')}
+						{notifications?.length > 0 && (
+							<span className="admin-badge yellow">
+								{notifications?.length} {__('New', 'multivendorx')}
+							</span>
+						)}
+					</div>
+				}
+				tabs={[
+					{
+						id: 'notifications',
+						label: __("Notifications", 'multivendorx'),
+						icon: 'adminfont-notification',
+						content: (
+							
+							<ul className="notification-list">
+								{renderContent()}
+							</ul>
 						)
-					}
-					onTabChange={(tabId) => {
-						setActiveType(
-							tabId === 'activities' ? 'activity' : 'notification'
-						);
-					}}
-					header={
-						<div className="title">
-							{__('Notifications', 'multivendorx')}
-							{notifications?.length > 0 && (
-								<span className="admin-badge yellow">
-									{notifications?.length} {__('New', 'multivendorx')}
-								</span>
-							)}
-						</div>
-					}
-					tabs={[
-						{
-							id: 'notifications',
-							label: __("Notifications", 'multivendorx'),
-							icon: 'adminfont-notification',
-							content: (
+					},
+					{
+						id: 'activities',
+						label: __("Activities", 'multivendorx'),
+						icon: 'adminfont-activity',
+						content: (
+							<ul className="notification-list">
+								{renderContent()}
+							</ul>
+						)
+					},
+				]}
+				footer={
+					<div className="footer">
+						{activeType == 'notification' ? (
 
-								<ul className="notification-list">
-									{renderContent()}
-								</ul>
-							)
-						},
-						{
-							id: 'activities',
-							label: __("Activities", 'multivendorx'),
-							icon: 'adminfont-activity',
-							content: (
-								<ul className="notification-list">
-									{renderContent()}
-								</ul>
-							)
-						},
-					]}
-					footer={
-						<div className="footer">
-							{activeType == 'notification' ? (
-
-								<a
-									href={`?page=multivendorx#&tab=notifications&subtab=notifications`}
-									className="admin-btn btn-purple"
-									onClick={() => setIsDropdownOpen(false)}
-								>
-									<i className="adminfont-eye"></i>
-									{__('View all notifications', 'multivendorx')}
-								</a>
-							) : (
-								<a
-									href={`?page=multivendorx#&tab=notifications&subtab=activities`}
-									className="admin-btn btn-purple"
-									onClick={() => setIsDropdownOpen(false)}
-								>
-									<i className="adminfont-eye"></i>
-									{__('View all activities', 'multivendorx')}
-								</a>
-							)}
-						</div>
-					}
-				/>
-			)}
+							<a
+								href={`?page=multivendorx#&tab=notifications&subtab=notifications`}
+								className="admin-btn btn-purple"
+								onClick={() => setIsDropdownOpen(false)}
+							>
+								<i className="adminfont-eye"></i>
+								{__('View all notifications', 'multivendorx')}
+							</a>
+						) : (
+							<a
+								href={`?page=multivendorx#&tab=notifications&subtab=activities`}
+								className="admin-btn btn-purple"
+								onClick={() => setIsDropdownOpen(false)}
+							>
+								<i className="adminfont-eye"></i>
+								{__('View all activities', 'multivendorx')}
+							</a>
+						)}
+					</div>
+				}
+			/>
+		)}
 		</>
 	);
 };

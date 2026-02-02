@@ -1124,6 +1124,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking Url ', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInput
+
+											descClass="settings-metabox-description"
 											value={shipmentData.tracking_url}
 											onChange={(e) =>
 												setShipmentData((prev) => ({
@@ -1135,6 +1137,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking ID', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInput
+
+											descClass="settings-metabox-description"
 											value={shipmentData.tracking_id}
 											onChange={(e) =>
 												setShipmentData((prev) => ({

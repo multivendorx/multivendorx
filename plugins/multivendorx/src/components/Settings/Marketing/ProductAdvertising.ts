@@ -3,10 +3,10 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'advertising',
 	priority: 1,
-	name: __('Product Advertising', 'multivendorx'),
+	name: __('Product Advertising', 'mvx-pro'),
 	desc: __(
 		'Let stores promote their top products or unique offerings in site-wide placements.',
-		'multivendorx'
+		'mvx-pro'
 	),
 	icon: 'adminfont-advertise-product',
 	submitUrl: 'settings',
@@ -52,7 +52,7 @@ export default {
 		{
 			key: 'expire_after_days',
 			type: 'number',
-			label: __('Promotion duration', 'multivendorx'),
+			label: __('Promotion duration', 'mvx-pro'),
 			settingDescription: __(
 				'Set the maximum number of days a product can be promoted.',
 				'multivendorx'
@@ -67,7 +67,7 @@ export default {
 			key: 'store_advertisement_advanced_settings',
 			type: 'checkbox',
 			label: __('Advanced advertising settings', 'multivendorx'),
-			settingDescription: __( 'Manage how promoted products appear. Control featured status, catalog placement, subscription inclusion, and out-of-stock visibility for advertised items.', 'multivendorx' ),
+			 
 			options: [
 				{
 					key: 'enable_advertisement_in_subscription',

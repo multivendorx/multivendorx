@@ -48,8 +48,7 @@
         select,
         input {
             background: transparent;
-            border: none !important;
-            /* hide border for search field */
+            border: none !important; /* hide border for search field */
             background-repeat: no-repeat;
             background-position: right 0.75rem center;
             background-size: 1rem;
@@ -61,8 +60,7 @@
 
             &:focus {
                 outline: none;
-                box-shadow: none !important;
-                /* for overwrite common style */
+                box-shadow: none !important; /* for overwrite common style */
             }
         }
 
@@ -76,34 +74,30 @@
             font-size: 1rem;
             padding: 0.5rem;
 
-            .action-item {
+            .action-item{
                 padding: 0.45rem;
                 transition: all 0.3s ease;
                 border-radius: 0.313rem;
                 display: flex;
 
-                .admin-btn {
+                .admin-btn{
                     background: transparent;
                     font-size: 0.95rem;
                     color: #fff;
                     padding: 0;
                 }
-
-                .adminfont-form {
+                .adminfont-form{
                     font-size: 1.125rem;
                 }
-
-                &:hover {
+                &:hover{
                     background: #fff2;
                 }
-
-                &.count {
+                &.count{
                     border: 0.063rem solid #fff2;
                 }
-
-                &.delete {
-                    .admin-btn {
-                        color: $accent-color;
+                &.delete{
+                    .admin-btn{
+                        color:  $accent-color;
                     }
                 }
             }
@@ -123,11 +117,9 @@
                 background: $theme-color;
             }
         }
-
-        .date-picker-section-wrapper {
+        .date-picker-section-wrapper{
             background: transparent;
         }
-
         .reset-btn {
             cursor: pointer;
             display: flex;
@@ -433,7 +425,7 @@
                         min-width: 18rem;
                     }
 
-                    .refresh-icon {
+                    .refresh-icon{
                         font-size: 1rem;
                     }
                 }
@@ -540,51 +532,51 @@
     }
 }
 
-// .load-table {
-//     border-collapse: collapse;
-//     border-spacing: 0;
-//     border-color: $border-light-small;
-//     width: 100%;
+.load-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-color: $border-light-small;
+    width: 100%;
 
-//     td {
-//         padding: 0.4rem;
-//         overflow: hidden;
-//         word-break: normal;
-//         color: $sub-text-color;
-//         background-color: $background-white;
-//         flex-grow: 1;
+    td {
+        padding: 0.4rem;
+        overflow: hidden;
+        word-break: normal;
+        color: $sub-text-color;
+        background-color: $background-white;
+        flex-grow: 1;
 
-//         &:first-child {
-//             display: block;
-//         }
-//     }
+        &:first-child {
+            display: block;
+        }
+    }
 
-//     tr:first-child .load-table-td {
-//         font-weight: normal;
-//         padding: 0.4rem;
-//         border-style: solid;
-//         border-width: 0;
-//         overflow: hidden;
-//         word-break: normal;
-//         border-color: rgb(0 0 0 / 20%);
-//         color: #333;
-//         background-color: #e7e7e7;
-//     }
-// }
+    tr:first-child .load-table-td {
+        font-weight: normal;
+        padding: 0.4rem;
+        border-style: solid;
+        border-width: 0;
+        overflow: hidden;
+        word-break: normal;
+        border-color: rgb(0 0 0 / 20%);
+        color: #333;
+        background-color: #e7e7e7;
+    }
+}
 
-// .line {
-//     float: left;
-//     width: 100%;
-//     height: 1rem;
-//     margin-top: 0.4rem;
-//     border-radius: 0.438rem;
-//     background-image: linear-gradient(90deg,
-//             #f4f4f4 0,
-//             #e5e5e5cc 2.5rem,
-//             #f4f4f4 5.04rem);
-//     background-size: 37.5rem;
-//     animation: shine-lines 2s infinite ease-out;
-// }
+.line {
+    float: left;
+    width: 100%;
+    height: 1rem;
+    margin-top: 0.4rem;
+    border-radius: 0.438rem;
+    background-image: linear-gradient(90deg,
+            #f4f4f4 0,
+            #e5e5e5cc 2.5rem,
+            #f4f4f4 5.04rem);
+    background-size: 37.5rem;
+    animation: shine-lines 2s infinite ease-out;
+}
 
 // action btn style start
 .action-section {
@@ -651,21 +643,19 @@
                     transform: translate(-2rem, -2.313rem);
                 }
             }
-
+            
             // &:not(.hover) {
             //     display: none;
             // }
 
             // &.hover {
-            li {
-                display: block;
-            }
-
+                li {
+                    display: block;
+                }
             // }
         }
     }
 }
-
 // action btn style end
 
 // pro tag
@@ -673,54 +663,13 @@
     position: relative;
 }
 
-// status color start
-.badge-completed,
-.badge-active,
-.badge-approved,
-.badge-paid,
-.badge-public,
-.badge-publish,
-.badge-published {
-    color: map-get(map-get($color-palette, green), color);
-    background: map-get(map-get($color-palette, green), light-color);
-}
+@keyframes shine-lines {
+    0% {
+        background-position: -1rem;
+    }
 
-.badge-pending,
-.badge-on-hold,
-.badge-partially_refunded {
-    color: map-get(map-get($color-palette, yellow), color);
-    background: map-get(map-get($color-palette, yellow), light-color);
+    40%,
+    100% {
+        background-position: 8.813rem;
+    }
 }
-
-.badge-under_review,
-.badge-private,
-.badge-upcoming,
-.badge-draft {
-    color: map-get(map-get($color-palette, blue), color);
-    background: map-get(map-get($color-palette, blue), light-color);
-}
-.badge-rejected, .badge-unpaid, .badge-cancelled, .badge-failed, .badge-expired{
-    color: map-get(map-get($color-palette, red), color);
-    background: map-get(map-get($color-palette, red), light-color);
-}
-.badge-suspended{
-    color: map-get(map-get($color-palette, teal), color);
-    background: map-get(map-get($color-palette, teal), light-color);
-}
-.badge-refunded, .badge-processed, .badge-processing{
-    color: map-get(map-get($color-palette, orange), color);
-    background: map-get(map-get($color-palette, orange), light-color);
-}
-.badge-locked{
-    color: map-get(map-get($color-palette, purple), color);
-    background: map-get(map-get($color-palette, purple), light-color);
-}
-.badge-deactivated{
-    color: map-get(map-get($color-palette, indigo), color);
-    background: map-get(map-get($color-palette, indigo), light-color);
-}
-.badge-permanently_rejected, .badge-inactive{
-    color: map-get(map-get($color-palette, pink), color);
-    background: map-get(map-get($color-palette, pink), light-color);
-}
-// status color end

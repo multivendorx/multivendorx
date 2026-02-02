@@ -107,17 +107,17 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            hint: __('Store dashboard styling', 'multivendorx'),
+            hint: __('Custom CSS', 'multivendorx'),
             desc: __('', 'multivendorx'),
         },
         {
             key: 'custom_css_product_page',
             type: 'textarea',
             desc: __(
-                'Add additional styling CSS to customize the store dashboard’s layoutand and adjust how it looks for sellers.',
+                'Add your own CSS here to modify and style the dashboard to match your preferences.',
                 'multivendorx'
             ),
-            label: __('Store dashboard custom CSS', 'multivendorx'),
+            label: __('Addional CSS', 'multivendorx'),
         },
         {
             key: 'separator_content',

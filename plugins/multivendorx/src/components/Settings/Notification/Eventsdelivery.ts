@@ -4,10 +4,10 @@ import { CountryCodes } from 'zyra';
 export default {
 	id: 'notification-configuration',
 	priority: 1,
-	name: 'Events Delivery',
+	name: 'Events delivery',
 	tabTitle: 'Email & SMS delivery',
 	desc: __(
-		'Get notified about important updates. Choose how you want to receive notifications from your marketplace - by email, text message, or both.',
+		'Define who receives notification messages from the marketplace.',
 		'multivendorx'
 	),
 	icon: 'adminfont-notification',

@@ -20,7 +20,7 @@ interface RadioInputProps {
     activeClass?: string;
     inputClass?: string;
     idPrefix?: string;
-    type?: 'default';
+    type?: 'radio-select' | 'radio-color' | 'default';
     options: RadioOption[];
     value?: string;
     onChange?: ( e: ChangeEvent< HTMLInputElement > ) => void;
@@ -58,8 +58,51 @@ const RadioInput: React.FC< RadioInputProps > = ( props ) => {
                             />
                             <label
                                 htmlFor={ `${ props.idPrefix }-${ option.key }` }
+                                className={
+                                    props.type === 'radio-select'
+                                        ? props.radiSelectLabelClass
+                                        : ''
+                                }
                             >
                                 { option.label }
+                                { props.type === 'radio-color' && (
+                                    <p className="color-palette">
+                                        { Array.isArray( option.color ) &&
+                                            option.color.map(
+                                                ( color, index ) => (
+                                                    <div
+                                                        key={ index }
+                                                        style={ {
+                                                            backgroundColor:
+                                                                color,
+                                                        } }
+                                                    >
+                                                        { ' ' }
+                                                        &nbsp;{ ' ' }
+                                                    </div>
+                                                )
+                                            ) }
+                                    </p>
+                                ) }
+                                { props.type === 'radio-select' &&
+                                    typeof option.color === 'string' && (
+                                        <>
+                                            <img
+                                                src={ option.color }
+                                                alt={ option.label }
+                                                className={
+                                                    props.labelImgClass
+                                                }
+                                            />
+                                            <div
+                                                className={
+                                                    props.labelOverlayClass
+                                                }
+                                            >
+                                                { props.labelOverlayText }
+                                            </div>
+                                        </>
+                                    ) }
                             </label>
                         </div>
                     );

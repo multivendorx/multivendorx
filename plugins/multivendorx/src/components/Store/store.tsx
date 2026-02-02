@@ -308,8 +308,12 @@ const Store = () => {
 										value={formData.name || ''}
 										onChange={handleChange}
 										required={true}
-										msg={error.name}
 									/>
+									{error?.name?.message && (
+										<div className="invalid-massage">
+											{error?.name?.message}
+										</div>
+									)}
 								</FormGroup>
 
 								<FormGroup label={__('Store slug', 'multivendorx')} htmlFor="store-slug">
@@ -327,6 +331,11 @@ const Store = () => {
 										onclickCallback={handleNameBlur}
 										msg={error.slug}
 									/>
+									{error?.slug?.message && (
+										<div className={error?.slug?.type}>
+											{error?.slug?.message}
+										</div>
+									)}
 								</FormGroup>
 
 								<FormGroup label={__('Store Email', 'multivendorx')}>

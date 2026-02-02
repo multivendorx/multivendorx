@@ -310,6 +310,7 @@ const ShippingDelivery = () => {
 												value={formData.distance_default_cost || ''}
 												onChange={handleChange}
 												min="0"
+												step="0.01"
 											/>
 											<div className="settings-metabox-description">
 												{__(
@@ -355,6 +356,7 @@ const ShippingDelivery = () => {
 												value={formData.distance_max || ''}
 												onChange={handleChange}
 												min="0"
+												step="0.1"
 											/>
 											<div className="settings-metabox-description">
 											{__(
@@ -380,6 +382,7 @@ const ShippingDelivery = () => {
 												value={formData.distance_local_pickup_cost || ''}
 												onChange={handleChange}
 												min="0"
+												step="0.01"
 											/>
 											<div className="settings-metabox-description">
 											{__(

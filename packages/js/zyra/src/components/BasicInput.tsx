@@ -41,6 +41,7 @@ interface BasicInputProps {
     | 'text'
     | 'button'
     | 'number'
+    | 'color'
     | 'password'
     | 'email'
     | 'file'
@@ -60,7 +61,7 @@ interface BasicInputProps {
     onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
     generate?: string;
     clickBtnName?: string;
-    msg?: InputFeedback;
+    feedback?: InputFeedback;
     onclickCallback?: (e: MouseEvent<HTMLButtonElement>) => void;
     proSetting?: boolean;
     description?: string;
@@ -101,7 +102,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
             generate,
             clickBtnName,
             onclickCallback,
-            msg,
+            feedback,
             description,
             rangeUnit,
             disabled = false,
@@ -288,6 +289,10 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                     readOnly={readOnly}
                                     required={required}
                                 />
+                                {type === 'color' && (
+                                    <div className="color-value">{value}</div>
+                                )}
+
                                 {postInsideText && (
                                     <span className="parameter">
                                         {renderAddon(postInsideText, value)}
@@ -372,8 +377,8 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                         dangerouslySetInnerHTML={{ __html: description }}
                     />
                 )}
-                {msg && (
-                    <div className={msg.type}>{msg.message}</div>
+                {feedback && (
+                    <div className={feedback.type}>{feedback.message}</div>
                 )}
             </>
         );

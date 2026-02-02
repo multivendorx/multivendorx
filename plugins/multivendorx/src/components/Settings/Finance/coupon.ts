@@ -3,10 +3,10 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'coupon',
 	priority: 4,
-	name: __('Coupons & Discounts', 'multivendorx'),
+	name: __('Coupons & Discounts', 'mvx-pro'),
 	desc: __(
 		'Manage how discounts and coupons affect commission calculations.',
-		'multivendorx'
+		'mvx-pro'
 	),
 	icon: 'adminfont-coupon',
 	submitUrl: 'settings',

@@ -313,6 +313,8 @@ const BusinessAddress = () => {
 					<BasicInput
 						name="city"
 						value={addressData.city}
+
+						descClass="settings-metabox-description"
 						onChange={handleAddressChange}
 					/>
 				</FormGroup>

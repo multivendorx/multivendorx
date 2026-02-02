@@ -3,10 +3,10 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'identity-verification',
 	priority: 3,
-	name: __('Store Identity', 'multivendorx'),
+	name: __('Store Identity', 'mvx-pro'),
 	desc: __(
 		'Seller verification confirms a store identity with address, contact, and social profiles-building trust and boosting buyer confidence.',
-		'multivendorx'
+		'mvx-pro'
 	),
 	icon: 'adminfont-identity-verification',
 	submitUrl: 'settings',

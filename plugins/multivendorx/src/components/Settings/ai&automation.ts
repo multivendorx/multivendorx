@@ -1,11 +1,10 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'intelligence',
+	id: 'ai-automation',
 	priority: 10,
-	name: 'Intelligence',
+	name: 'AI & Automation',
 	tabTitle: 'API Keys',
-	moduleEnabled: 'marketplace-intelligence',
 	desc: __(
 		'AI services can be enabled to assist with creating product details and enhancing images automatically. These settings can be configured to control which AI services are used.',
 		'multivendorx'
@@ -63,7 +62,6 @@ export default {
 				'AI can be used to suggest product titles, descriptions, and other details automatically. The AI provider and model can be selected here.',
 				'multivendorx'
 			),
-			moduleEnabled: 'marketplace-intelligence',
 		},
 		{
 			key: 'choose_ai_provider',
@@ -139,7 +137,6 @@ export default {
 			key: 'section',
 			type: 'section',
 			hint: __('Image AI', 'multivendorx'),
-			moduleEnabled: 'marketplace-intelligence',
 			desc: __(
 				'Product images can be enhanced automatically to look professional, improving visual appeal and customer engagement.',
 				'multivendorx'
@@ -151,10 +148,6 @@ export default {
 			label: __('Image Enhancement Provider', 'multivendorx'),
 			desc: __(
 				'Choose which AI provider to use for image enhancement.',
-				'multivendorx'
-			),
-			settingDescription: __(
-				'Select the AI service that will enhance and improve images across your marketplace.',
 				'multivendorx'
 			),
 

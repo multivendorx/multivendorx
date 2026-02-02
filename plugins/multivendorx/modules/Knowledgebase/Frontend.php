@@ -31,10 +31,20 @@ class Frontend {
             'knowledgebase' => array(
                 'name'   => __( 'Knowledgebase', 'multivendorx' ),
                 'subtab' => '',
-                'priority' => 95
             ),
         );
 
-        return array_merge( $submenus, $new_item );;
+        $ordered = array();
+        foreach ( $submenus as $key => $menu ) {
+            // Copy existing menu.
+            $ordered[ $key ] = $menu;
+
+            // Insert advertisement right after "status-tools".
+            if ( 'announcement' === $key || 'status-tools' === $key ) {
+                $ordered = array_merge( $ordered, $new_item );
+            }
+        }
+
+        return $ordered;
     }
 }
