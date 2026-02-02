@@ -770,7 +770,7 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                 inputField.proSetting ?? false
                             ) }
                             onChange={ (
-                                e: React.ChangeEvent< HTMLInputElement >
+                                value: React.ChangeEvent< HTMLInputElement >
                             ) => {
                                 if (
                                     hasAccess(
@@ -786,7 +786,12 @@ const AdminForm: React.FC< AdminFormProps > = ( {
                                         )
                                     )
                                 ) {
-                                    handleChange( e, inputField.key );
+                                    handleChange(
+                                        value,
+                                        inputField.key,
+                                        'single',
+                                        'simple'
+                                    );
                                 }
                             } }
                             preInsideText={ inputField.preInsideText } //Symbol/unit shown inside input at start.

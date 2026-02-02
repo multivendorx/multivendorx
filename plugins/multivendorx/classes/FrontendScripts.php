@@ -240,13 +240,23 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-description-script'    => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/store-description/index.js',
+                'multivendorx-store-description-script'  => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-description/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-shop-product-script'   => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/store-coupons/index.js',
+                'multivendorx-store-products-script'  => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-products/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-store-email-script'  => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-email/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-store-provider-script'  => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-provider/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
@@ -708,15 +718,6 @@ class FrontendScripts {
                         'settings_databases_value' => $settings_databases_value,
                     ),
                 ),
-                'multivendorx-store-coupons-script'        => array(
-                    'object_name' => 'couponList',
-                    'data'        => array(
-                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
-                        'restUrl'                  => MultiVendorX()->rest_namespace,
-                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
-                        'settings_databases_value' => $settings_databases_value,
-                    ),
-                ),
                 'multivendorx-stores-script'               => array(
                     'object_name' => 'storesList',
                     'data'        => array(
@@ -726,12 +727,14 @@ class FrontendScripts {
                         'settings_databases_value' => $settings_databases_value,
                     ),
                 ),
-                'multivendorx-store-shop-product-script'   => array(
-                    'object_name' => 'storeShopProductList',
+                'multivendorx-store-provider-script'  => array(
+                    'object_name' => 'StoreInfo',
                     'data'        => array(
-                        'apiUrl'  => untrailingslashit( get_rest_url() ),
-                        'restUrl' => MultiVendorX()->rest_namespace,
-                        'nonce'   => wp_create_nonce( 'wp_rest' ),
+                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
+                        'restUrl'                  => MultiVendorX()->rest_namespace,
+                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
+                        'storeDetails'             => StoreUtil::get_specific_store_info(),
+                        'settings_databases_value' => $settings_databases_value,
                     ),
                 ),
 			)

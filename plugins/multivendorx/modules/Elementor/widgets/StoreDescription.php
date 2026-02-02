@@ -12,7 +12,7 @@ class Store_Description extends Widget_Base {
 	use StoreHelper;
 
 	public function get_name() {
-		return 'mvx_store_description';
+		return 'multivendorx_store_description';
 	}
 
 	public function get_title() {

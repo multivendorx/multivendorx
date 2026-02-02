@@ -1,7 +1,7 @@
 {
   "apiVersion": 2,
-  "name": "multivendorx/store-name",
-  "title": "Store Name",
+  "name": "multivendorx/store-email",
+  "title": "Store Email",
   "category": "multivendorx-store-shop",
   "icon": "store",
   "editorScript": "file:./index.js",
