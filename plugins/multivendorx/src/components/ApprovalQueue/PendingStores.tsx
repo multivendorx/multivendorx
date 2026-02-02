@@ -130,7 +130,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 		setIsLoading(true);
 	
 		axios
-			.get(getApiLink(appLocalizer, 'qna'), {
+			.get(getApiLink(appLocalizer, 'store'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
 					page: query.paged || 1,
