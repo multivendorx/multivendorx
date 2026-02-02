@@ -24,6 +24,7 @@ defined( 'ABSPATH' ) || exit;
 class Commissions extends \WP_REST_Controller {
 
 
+
     /**
      * Route base.
      *
@@ -129,12 +130,12 @@ class Commissions extends \WP_REST_Controller {
                 );
 
                 if ( $dashboard ) {
-                    if ( get_transient( 'multivendorx_report_data_' . $store_id ) ) {
-                        return get_transient( 'multivendorx_report_data_' . $store_id );
+                    if ( get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['report_transient'] . $store_id ) ) {
+                        return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['report_transient'] . $store_id );
                     }
                     $results = CommissionUtil::get_commission_summary_for_store( $store_id, $dashboard, false, null, $args );
                     if ( ! empty( $results ) ) {
-                        set_transient( 'multivendorx_report_data_' . $store_id, $results, DAY_IN_SECONDS );
+                        set_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['report_transient'] . $store_id, $results, DAY_IN_SECONDS );
                     }
                     return $results;
                 }
@@ -152,7 +153,6 @@ class Commissions extends \WP_REST_Controller {
 
             $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
             $page   = max( intval( $request->get_param( 'page' ) ), 1 );
-            $count  = $request->get_param( 'count' );
             $status = $request->get_param( 'status' );
 
             $range = Utill::normalize_date_range(
@@ -205,14 +205,6 @@ class Commissions extends \WP_REST_Controller {
             $filter['orderBy'] = $order_by ?: 'created_at';
             $filter['order']   = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
 
-            // Handle count only.
-            if ( $count ) {
-                $filter['count'] = true;
-
-                return rest_ensure_response(
-                    CommissionUtil::get_commission_information( $filter )
-                );
-            }
             // Fetch commissions.
             $commissions = CommissionUtil::get_commission_information(
                 array_merge(
@@ -278,9 +270,7 @@ class Commissions extends \WP_REST_Controller {
             );
 
             // Build response.
-            $response = array(
-                'commissions' => $formatted_commissions,
-            );
+            $response = rest_ensure_response( $formatted_commissions );
 
             foreach ( $statuses as $key => $status ) {
                 $filter = $base_filter;
@@ -289,11 +279,20 @@ class Commissions extends \WP_REST_Controller {
                     $filter['status'] = $status;
                 }
 
-                $filter['count']  = true;
-                $response[ $key ] = CommissionUtil::get_commission_information( $filter );
-            }
+                $filter['count'] = true;
 
-            return rest_ensure_response( $response );
+                $count = CommissionUtil::get_commission_information( $filter );
+
+                if ( 'all' === $key ) {
+                    $response->header( 'X-WP-Total', (int) $count );
+                } else {
+                    $response->header(
+                        'X-WP-Status-' . ucfirst( str_replace( '_', '-', $key ) ),
+                        (int) $count
+                    );
+                }
+            }
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 

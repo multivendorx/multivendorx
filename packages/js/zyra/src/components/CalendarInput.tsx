@@ -1,6 +1,4 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useState } from 'react';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 

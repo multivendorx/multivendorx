@@ -1,12 +1,8 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useEffect, useState } from 'react';
 import { DialogContent, DialogContentText } from '@mui/material';
 
-/**
- * Internal dependencies
- */
+// Internal dependencies
 import '../styles/web/Popup.scss';
 import AdminButton from './UI/AdminButton';
 

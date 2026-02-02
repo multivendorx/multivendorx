@@ -110,6 +110,8 @@ class Utill {
 
     const MULTIVENDORX_TRANSIENT_KEYS = array(
         'announcement_transient' => 'multivendorx_announcement_data_',
+        'review_transient'       => 'multivendorx_review_data_',
+        'report_transient'       => 'multivendorx_report_data_',
     );
 
     const WOO_SETTINGS = array(

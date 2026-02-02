@@ -157,7 +157,7 @@ const ApprovalQueue = () => {
 	const tabData = [
 		{
 			type: 'file',
-			condition: settings?.general?.approve_store === 'manually',
+			// condition: settings?.general?.approve_store === 'manually',
 			content: {
 				id: 'stores',
 				name: 'Stores',
@@ -170,10 +170,10 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			condition:
-				!settings?.['store-permissions']?.products?.includes(
-					'publish_products'
-				),
+			// condition:
+			// 	!settings?.['store-permissions']?.products?.includes(
+			// 		'publish_products'
+			// 	),
 			content: {
 				id: 'products',
 				name: 'Products',
@@ -186,10 +186,10 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			condition:
-				settings?.['store-permissions']?.coupons?.includes(
-					'publish_coupons'
-				),
+			// condition:
+			// 	settings?.['store-permissions']?.coupons?.includes(
+			// 		'publish_coupons'
+			// 	),
 			content: {
 				id: 'coupons',
 				name: 'Coupons',
@@ -202,7 +202,7 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			module: 'wholesale',
+			// module: 'wholesale',
 			content: {
 				id: 'wholesale-customer',
 				name: 'Customers',
@@ -213,7 +213,7 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			module: 'marketplace-refund',
+			// module: 'marketplace-refund',
 			content: {
 				id: 'refund-requests',
 				name: 'Refunds',
@@ -226,7 +226,7 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			module: 'marketplace-compliance',
+			// module: 'marketplace-compliance',
 			content: {
 				id: 'report-abuse',
 				name: 'Flagged',
@@ -239,7 +239,7 @@ const ApprovalQueue = () => {
 		},
 		{
 			type: 'file',
-			condition: settings?.disbursement?.withdraw_type === 'manual',
+			// condition: settings?.disbursement?.withdraw_type === 'manual',
 			content: {
 				id: 'withdrawal',
 				name: 'Withdrawals',

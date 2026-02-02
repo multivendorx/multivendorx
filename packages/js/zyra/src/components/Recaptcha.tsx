@@ -1,6 +1,4 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
 
 // Types
@@ -19,7 +17,9 @@ const Recaptcha: React.FC< RecaptchaProps > = ( { formField } ) => {
                 ! formField.sitekey ? 'recaptcha' : ''
             }` }
         >
-            <p>reCAPTCHA has been successfully added to the form.</p>
+            { formField.sitekey
+                ? 'reCAPTCHA has been successfully added to the form.'
+                : 'reCAPTCHA is not configured.' }
         </div>
     );
 };

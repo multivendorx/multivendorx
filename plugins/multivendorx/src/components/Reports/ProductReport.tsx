@@ -10,54 +10,22 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, MultiCalendarInput, Table, TableCell } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, MultiCalendarInput, Table, TableCard, TableCell } from 'zyra';
 import axios from 'axios';
-import {
-	PaginationState,
-	RowSelectionState,
-	ColumnDef,
-} from '@tanstack/react-table';
-import { formatCurrency } from '../../services/commonFunction';
-type ProductRow = {
-	id: number;
-	title: string;
-	sku: string;
-	itemsSold: number;
-	netSales: string;
-	orders: number;
-	category: string;
-	stock: string;
-	dateCreated: string;
-};
+import { downloadCSV, formatCurrency, formatWcShortDate, toWcIsoDate } from '../../services/commonFunction';
+import { QueryProps, TableRow } from '@/services/type';
 
-type FilterData = {
-	searchField?: string;
-	store_id?: string;
-	orderBy?: string;
-	order?: string;
-	date?: { start_date?: Date; end_date?: Date };
-};
+
 
 type ToggleState = { [key: string]: boolean };
 
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => React.ReactNode;
-}
-
 const ProductReport: React.FC = () => {
-	const [data, setData] = useState<ProductRow[]>([]);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pageCount, setPageCount] = useState<number>(0);
-	const [store, setStore] = useState<any[]>([]);
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [totalRows, setTotalRows] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [store, setStore] = useState([]);
+
 	const [error, setError] = useState<string | null>(null);
 	const [toReviewedProduct, setToReviewedProduct] = useState<any[]>([]);
 	const [toSellingProduct, setToSellingProduct] = useState<any[]>([]);
@@ -66,8 +34,7 @@ const ProductReport: React.FC = () => {
 	const [inStockCount, setInStockCount] = useState(0);
 	const [outOfStockCount, setOutOfStockCount] = useState(0);
 	const [onBackorderCount, setOnBackorderCount] = useState(0);
-	const [isLoading, setIsLoading] = useState(true);
-	
+
 
 	const toggleReviewedCard = (key: string) => {
 		setOpenReviewedCards((prev) => ({
@@ -107,37 +74,25 @@ const ProductReport: React.FC = () => {
 		const fetchData = async () => {
 			setIsLoading(true);
 			try {
-				// 1. Fetch store list
 				axios
 					.get(getApiLink(appLocalizer, 'store'), {
 						headers: { 'X-WP-Nonce': appLocalizer.nonce },
 					})
-					.then((response) => setStore(response.data.stores || []))
-					.finally(() => {setIsLoading(false);})
+					.then((response) => {
+						const options =
+							(response.data || []).map((store: any) => ({
+								label: store.store_name,
+								value: store.id,
+							}));
+
+						setStore(options);
+						setIsLoading(false);
+					})
 					.catch(() => {
 						setError(__('Failed to load stores', 'multivendorx'));
 						setStore([]);
+						setIsLoading(false);
 					});
-
-				// 2. Total rows
-				axios({
-					method: 'GET',
-					url: `${appLocalizer.apiUrl}/wc/v3/products`,
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: { meta_key: 'multivendorx_store_id', per_page: 1 },
-				})
-					.then((response) => {
-						const total =
-							Number(response.headers['x-wp-total']) || 0;
-						setTotalRows(total);
-						setPageCount(Math.ceil(total / pagination.pageSize));
-					})
-					.finally(() => {setIsLoading(false);})
-					.catch(() =>
-						setError(
-							__('Failed to load total rows', 'multivendorx')
-						)
-					);
 
 				// 3. Chart data
 				axios({
@@ -159,7 +114,7 @@ const ProductReport: React.FC = () => {
 							}));
 						setChartData(data);
 					})
-					.finally(() => {setIsLoading(false);})
+					.finally(() => { setIsLoading(false); })
 					.catch(() => setError('Failed to load product sales data'));
 
 				// 4. Top reviewed products
@@ -182,7 +137,7 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
-					.finally(() => {setIsLoading(false);})
+					.finally(() => { setIsLoading(false); })
 					.catch((error) =>
 						console.error(
 							'Error fetching top reviewed products:',
@@ -210,7 +165,7 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
-					.finally(() => {setIsLoading(false);})
+					.finally(() => { setIsLoading(false); })
 					.catch((error) =>
 						console.error(
 							'Error fetching top selling products:',
@@ -242,7 +197,7 @@ const ProductReport: React.FC = () => {
 								setOnBackorderCount(count);
 							}
 						})
-					    .finally(() => {setIsLoading(false);})
+						.finally(() => { setIsLoading(false); })
 						.catch((error) =>
 							console.error(
 								`Error fetching ${status} count:`,
@@ -286,293 +241,200 @@ const ProductReport: React.FC = () => {
 		},
 	];
 
-	//Fixed table columns for WooCommerce products
-	const columns: ColumnDef<ProductRow>[] = [
-		{
-			header: __('Product', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell>
-					<a
-						href={`${appLocalizer.site_url}/wp-admin/post.php?post=${row.original.id}&action=edit`}
-						target="_blank"
-						className="product-wrapper"
-					>
-						{row.original.image ? (
-							<img
-								src={row.original.image}
-								alt={row.original.store_name}
-							/>
-						) : (
-							<i className="item-icon adminfont-store-inventory"></i>
-						)}
-						<div className="details">
-							<span className="title">{row.original.title}</span>
-							<div className="des">{row.original.sku}</div>
-						</div>
-					</a>
-				</TableCell>
-			),
-		},
-		{
-			header: __('Store', 'multivendorx'),
-			cell: ({ row }) => <TableCell>{row.original.store_name}</TableCell>,
-		},
-		{
-			header: __('Items sold', 'multivendorx'),
-			cell: ({ row }) => <TableCell>{row.original.itemsSold}</TableCell>,
-		},
-		{
-			header: __('Net sales', 'multivendorx'),
-			cell: ({ row }) => <TableCell>{row.original.netSales}</TableCell>,
-		},
-		{
-			header: __('Category', 'multivendorx'),
-			cell: ({ row }) => <TableCell>{row.original.category}</TableCell>,
-		},
-		{
-			id: 'date',
-			accessorKey: 'date',
-			enableSorting: true,
-			header: __('Date Created', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell>{row.original.dateCreated}</TableCell>
-			),
-		},
+	const headers = [
+		{ key: 'product', label: __('Product', 'multivendorx') },
+		{ key: 'store', label: __('Store', 'multivendorx') },
+		{ key: 'itemsSold', label: __('Items sold', 'multivendorx') },
+		{ key: 'netSales', label: __('Net sales', 'multivendorx') },
+		{ key: 'category', label: __('Category', 'multivendorx') },
+		{ key: 'date', label: __('Date Created', 'multivendorx'), isSortable: true, },
 	];
 
-	const requestData = async (
-		rowsPerPage = 10,
-		currentPage = 1,
-		searchField = '',
-		store_id = '',
-		orderBy = '',
-		order = '',
-		startDate?: Date,
-		endDate?: Date
-	) => {
-		try {
-			setData([]);
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: {
+					page: query.page,
+					per_page: query.per_page,
+					search: query.searchValue,
+					orderby: query.orderby,
+					order: query.order,
+					meta_key: 'multivendorx_store_id',
+					value: query?.filter?.store_id,
+					after: query.filter?.created_at?.startDate
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: undefined,
 
-			const params: any = {
-				page: currentPage,
-				per_page: rowsPerPage,
-				meta_key: 'multivendorx_store_id',
-				value: store_id,
-				search: searchField,
-			};
+					before: query.filter?.created_at?.endDate
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: undefined,
+				},
+			})
+			.then((response) => {
+				const products = Array.isArray(response.data)
+					? response.data
+					: [];
 
-			//Add Date Filtering (only if both are valid Date objects)
-			if (startDate instanceof Date && endDate instanceof Date) {
-				if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-					// --- Date Construction and UTC Offset Logic ---
+				const ids = products.map((p: any) => p.id);
+				setRowIds(ids);
 
-					// 1. Create Start Date (Start of Day in BROWSER's local time)
-					const startLocal = new Date(
-						startDate.getFullYear(),
-						startDate.getMonth(),
-						startDate.getDate(),
-						0,
-						0,
-						0 // Time set to 00:00:00
-					);
-
-					// 2. Create End Date (End of Day in BROWSER's local time)
-					const endLocal = new Date(
-						endDate.getFullYear(),
-						endDate.getMonth(),
-						endDate.getDate() + 1, // Go to the next day
-						0,
-						0,
-						0,
-						0
-					);
-					endLocal.setMilliseconds(endLocal.getMilliseconds() - 1); // Back to 23:59:59.999
-
-					// 3. Apply UTC+05:30 offset adjustment (5 hours, 30 minutes)
-					// This is a common requirement when the server is in IST but the API only accepts UTC/Z-time.
-					const offsetMinutes = 330; // 5 hours * 60 minutes + 30 minutes = 330
-
-					// Calculate UTC equivalent of the server's 00:00:00 boundary.
-					const afterDate = new Date(
-						startLocal.getTime() -
-						(startLocal.getTimezoneOffset() + offsetMinutes) *
-						60000
-					);
-
-					// Calculate UTC equivalent of the server's 23:59:59 boundary.
-					const beforeDate = new Date(
-						endLocal.getTime() -
-						(endLocal.getTimezoneOffset() + offsetMinutes) *
-						60000
-					);
-
-					// 4. Convert to ISO String (UTC/Z-time)
-					// Using the adjusted Date objects to produce the correct UTC string.
-					params.after = afterDate.toISOString();
-					params.before = beforeDate.toISOString();
-				}
-			}
-
-			//Sorting
-			if (orderBy) {
-				params.orderby = orderBy;
-				params.order = order || 'asc';
-			}
-
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wc/v3/products`,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params,
-			});
-
-			// ... (rest of the code remains the same)
-			const formattedData: ProductRow[] = response.data.map(
-				(product: any) => ({
-					id: product.id,
-					title: product.name,
-					sku: product.sku || '-',
-					image: product.images?.[0]?.src || '',
-					store_name: product.store_name,
-					itemsSold: product.total_sales
-						? parseInt(product.total_sales)
-						: 0,
-					netSales: product.price
-						? formatCurrency(product.price)
-						: '-',
-					category:
-						product.categories
+				const mappedRows: any[][] = products.map((product: any) => [
+					{
+						type: 'product',
+						value: product.id,
+						display: product.name,
+						data: {
+							id: product.id,
+							name: product.name,
+							sku: product.sku,
+							image: product.images?.[0]?.src || '',
+							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${product.id}&action=edit`,
+						},
+					},
+					{
+						display: product.store_name,
+						value: product.store_name,
+					},
+					{
+						display: product.total_sales || 0,
+						value: product.total_sales,
+					},
+					{
+						display: product.price
+							? formatCurrency(product.price)
+							: '-',
+						value: product.price,
+					},
+					{
+						display: product.categories
 							?.map((c: any) => c.name)
 							.join(', ') || '-',
-					dateCreated: product.date_created
-						? new Date(product.date_created).toLocaleDateString(
-							undefined,
-							{
-								year: 'numeric',
-								month: 'short',
-								day: '2-digit',
-							}
-						)
-						: '-',
-				})
-			);
+						value: product.id,
 
-			setData(formattedData);
-		} catch (error) {
-			console.error('Product fetch failed:', error);
-			const errorMessage =
-				(error as any).response?.data?.message ||
-				__('Failed to load product data', 'multivendorx');
-			setError(errorMessage);
-			setData([]);
-		}
+					},
+					{
+						display: product.date_created
+							? formatWcShortDate(product.date_created)
+							: '-',
+						value: product.date_created,
+					},
+				]);
+
+				setRows(mappedRows);
+				setTotalRows(
+					Number(response.headers['x-wp-total']) || 0
+				);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('Product fetch failed:', error);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
 	};
 
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, []);
-
-	/**
-	 * Realtime filter logic
-	 */
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.searchField,
-			filterData?.store_id,
-			filterData?.orderBy,
-			filterData?.order,
-			filterData?.date?.start_date,
-			filterData?.date?.end_date
-		);
+	const filters = [
+		{
+			key: 'store_id',
+			label: 'Stores',
+			type: 'select',
+			options: store,
+		},
+		{
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		},
+	];
+	const buttonActions = [
+		{
+			label: 'Download CSV',
+			icon: 'download',
+			onClickWithQuery: (query:QueryProps) => {
+				downloadProductsCSV(query);
+			},
+		},
+	];
+	const downloadProductsCSV = (query: QueryProps) => {
+		setIsLoading(true);
+	
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: {
+					per_page: 100, // WooCommerce max per page
+					page: 1,
+					search: query.searchValue,
+					orderby: query.orderby,
+					order: query.order,
+					meta_key: 'multivendorx_store_id',
+					value: query?.filter?.store_id,
+					after: query.filter?.created_at?.startDate
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: undefined,
+					before: query.filter?.created_at?.endDate
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: undefined,
+				},
+			})
+			.then((response) => {
+				const products = Array.isArray(response.data)
+					? response.data
+					: [];
+	
+				const csvData = products.map((product) => ({
+					ID: product.id,
+					Product: product.name,
+					SKU: product.sku || '',
+					Store: product.store_name || '',
+					Items_Sold: Number(product.total_sales || 0),
+					Net_Sales: product.price
+						? formatCurrency(product.price)
+						: '',
+					Category:
+						product.categories
+							?.map((c: { name: string }) => c.name)
+							.join(', ') || '',
+					Date_Created: product.date_created
+						? formatWcShortDate(product.date_created)
+						: '',
+				}));
+	
+				downloadCSV({
+					data: csvData,
+					filename: 'products-report.csv',
+					headers: {
+						ID: 'Product ID',
+						Product: 'Product Name',
+						SKU: 'SKU',
+						Store: 'Store',
+						Items_Sold: 'Items Sold',
+						Net_Sales: 'Net Sales',
+						Category: 'Category',
+						Date_Created: 'Date Created',
+					},
+				});
+	
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('CSV download failed:', error);
+				setIsLoading(false);
+			});
 	};
-
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'store_id',
-			render: (updateFilter, filterValue) => (
-				<div className="group-field">
-					<select
-						name="store_id"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">
-							{__('All Stores', 'multivendorx')}
-						</option>
-						{store.map((s: any) => (
-							<option key={s.id} value={s.id}>
-								{s.store_name.charAt(0).toUpperCase() +
-									s.store_name.slice(1)}
-							</option>
-						))}
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						onChange={(range: any) => {
-							updateFilter('date', {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							});
-						}}
-					/>
-				</div>
-			),
-		},
-	];
-
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<div className="search-section">
-					<input
-						name="searchField"
-						type="text"
-						placeholder={__('Search', 'multivendorx')}
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					/>
-					<i className="adminfont-search"></i>
-				</div>
-			),
-		},
-	];
-	const actionButton: RealtimeFilter[] = [
-		{
-			name: 'actionButton',
-			render: () => (
-				<>
-					<div className="admin-btn btn-purple-bg"><i className="adminfont-download"></i> Download CSV</div>
-				</>
-			),
-		},
-	];
+	
 	return (
 		<>
 			<Container>
 				{/* Keep entire top dashboard layout */}
-				<Column row>				
+				<Column row>
 					<Analytics
 						cols={2}
 						data={overview.map((item, idx) => ({
@@ -581,7 +443,7 @@ const ProductReport: React.FC = () => {
 							number: <Counter value={item.count} />,
 							text: __(item.label, 'multivendorx'),
 						}))}
-						isLoading={isLoading}	
+						isLoading={isLoading}
 					/>
 
 					<Card title="Revenue & Sales Comparison">
@@ -614,7 +476,7 @@ const ProductReport: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<MessageState title={__('No product sales data found.', 'multivendorx')}/>
+							<MessageState title={__('No product sales data found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>
@@ -738,7 +600,7 @@ const ProductReport: React.FC = () => {
 								</div>
 							))
 						) : (
-							<MessageState title={__('No reviewed products found.', 'multivendorx')}/>
+							<MessageState title={__('No reviewed products found.', 'multivendorx')} />
 						)}
 					</Card>
 					<Card title="Top Selling Products">
@@ -763,7 +625,7 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<MessageState title={__('No top selling products found.', 'multivendorx')}/>
+							<MessageState title={__('No top selling products found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>
@@ -776,21 +638,16 @@ const ProductReport: React.FC = () => {
 					</div>
 				</div>
 			</div>
-			<Table
-				data={data}
-				columns={columns as ColumnDef<Record<string, any>, any>[]}
-				rowSelection={rowSelection}
-				onRowSelectionChange={setRowSelection}
-				defaultRowsPerPage={pagination.pageSize}
-				pageCount={pageCount}
-				pagination={pagination}
-				onPaginationChange={setPagination}
-				handlePagination={requestApiForData}
-				perPageOption={[10, 25, 50]}
-				realtimeFilter={realtimeFilter}
-				searchFilter={searchFilter}
-				totalCounts={totalRows}
-				actionButton={actionButton}
+			<TableCard
+				headers={headers}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={fetchData}
+				search={{ placeholder: 'Search Products...' }}
+				filters={filters}
+				buttonActions={buttonActions}
+				rowIds={rowIds}
 			/>
 		</>
 	);

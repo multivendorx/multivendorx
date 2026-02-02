@@ -1,4 +1,7 @@
+// External Dependencies
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
+
+// Internal Dependencies
 import Popover from './UI/Popover';
 
 // Accepts searchIndex-style items directly
@@ -29,6 +32,14 @@ interface NotificationItem {
     color?: string;
     link?: string;
 }
+
+type OpenPanel =
+    | 'search'
+    | 'notifications'
+    | 'messages'
+    | 'profile'
+    | 'activities'
+    | null;
 
 type AdminHeaderProps = {
     brandImg: string;
@@ -81,14 +92,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     showActivities,
     activities
 }) => {
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [notifOpen, setNotifOpen] = useState(false);
-    const [activityOpen, setActivityOpen] = useState(false);
-    const [profileOpen, setProfileOpen] = useState(false);
-    const [messageOpen, setMessageOpen] = useState(false);
+    const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [contactSupportPopup, setContactSupportPopup] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
+    const closeAll = () => setOpenPanel(null);
 
     // Close dropdown on click outside
     useEffect(() => {
@@ -97,11 +105,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                 wrapperRef.current &&
                 !wrapperRef.current.contains(event.target as Node)
             ) {
-                setDropdownOpen(false);
-                setNotifOpen(false);
-                setActivityOpen(false);
-                setMessageOpen(false);
-                setProfileOpen(false);
+                closeAll();
             }
         };
 
@@ -112,9 +116,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     }, []);
 
     // Open dropdown automatically when there are results
-    useEffect(() => {
-        setDropdownOpen(results.length > 0);
-    }, [results]);
+    const showSearchDropdown = openPanel === 'search' && results.length > 0;
 
     return (
         <>
@@ -163,15 +165,16 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                                 type="text"
                                 placeholder="Search Settings"
                                 value={query}
-                                onChange={(e) =>
+                                onChange={(e) =>{
                                     onSearchChange(e.target.value)
-                                }
+                                    setOpenPanel('search');
+                                }}
                             />
                             <i className="adminfont-search"></i>
                         </div>
 
                         { /* dropdown render */}
-                        {dropdownOpen && results.length > 0 && (
+                        {showSearchDropdown && (
                             <ul className="search-dropdown">
                                 {results.map((r, i) => {
                                     const name = r.name || '(No name)';
@@ -182,7 +185,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                                             key={i}
                                             onClick={() => {
                                                 onResultClick(r);
-                                                setDropdownOpen(false); // close dropdown on click
+                                                closeAll(); // close dropdown on click
                                             }}
                                         >
                                             <div className="icon-wrapper">
@@ -258,16 +261,17 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             <i
                                 className="admin-icon adminfont-enquiry"
                                 title="Messages"
-                                onClick={() => {
-                                    setMessageOpen(!messageOpen);
-                                    setProfileOpen(false);
-                                    setNotifOpen(false);
-                                    setActivityOpen(false);
-                                }}
+                                onClick={() => 
+                                    setOpenPanel(
+                                        openPanel === 'messages'
+                                            ? null
+                                            : 'messages'
+                                    )
+                                }
                             ></i>
                             <span className="count">{messages.length}</span>
 
-                            {messageOpen && (
+                            {openPanel === 'messages' && (
                                 <div className="dropdown notification">
                                     <div className="title">
                                         Messages{' '}

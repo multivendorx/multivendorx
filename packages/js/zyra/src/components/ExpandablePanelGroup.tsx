@@ -967,9 +967,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                 {field.des && (
                                     <p
                                         className="panel-description"
-                                        dangerouslySetInnerHTML={{
-                                            __html: field.des,
-                                        }}
+                                        dangerouslySetInnerHTML={{ __html: field.des }}
                                     />
                                 )}
                             </div>
@@ -977,9 +975,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                             field.des && (
                                 <p
                                     className="panel-description"
-                                    dangerouslySetInnerHTML={{
-                                        __html: field.des,
-                                    }}
+                                    dangerouslySetInnerHTML={{ __html: field.des }}
                                 />
                             )
                         )}
@@ -1451,9 +1447,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                         }}
                                                         title={getIsEditable('description') ? "Click to edit" : ""}
                                                     >
-                                                        <span dangerouslySetInnerHTML={{
-                                                            __html: currentDescription,
-                                                        }} />
+                                                        <span dangerouslySetInnerHTML={{ __html: currentDescription }} />
                                                         {getIsEditable('description') && <i className="adminfont-edit inline-edit-icon"></i>}
                                                     </p>
                                                 )}

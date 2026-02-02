@@ -23,6 +23,7 @@ defined( 'ABSPATH' ) || exit;
 class Rest extends \WP_REST_Controller {
 
 
+
     /**
      * Route base.
      *
@@ -133,16 +134,15 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id            = $request->get_param( 'store_id' );
+            $store_id            = $request->get_param( 'storeId' );
             $limit               = max( intval( $request->get_param( 'row' ) ), 10 );
             $page                = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset              = ( $page - 1 ) * $limit;
-            $count               = $request->get_param( 'count' );
             $status              = sanitize_text_field( $request->get_param( 'status' ) );
-            $search              = sanitize_text_field( $request->get_param( 'searchField' ) );
-            $orderBy             = sanitize_text_field( $request->get_param( 'orderBy' ) );
+            $search              = sanitize_text_field( $request->get_param( 'searchVield' ) );
+            $order_by            = sanitize_text_field( $request->get_param( 'orderBy' ) );
             $order               = sanitize_text_field( $request->get_param( 'order' ) );
-            $question_visibility = sanitize_text_field( $request->get_param( 'question_visibility' ) );
+            $question_visibility = sanitize_text_field( $request->get_param( 'questionVisibility' ) );
             $range               = Utill::normalize_date_range(
                 $request->get_param( 'startDate' ),
                 $request->get_param( 'endDate' )
@@ -179,14 +179,6 @@ class Rest extends \WP_REST_Controller {
                     $args['search'] = $search;
                 }
             }
-
-            // --- Step 4: Count Only Request ---
-            if ( $count ) {
-                $args['count'] = true;
-                $total_count   = Util::get_question_information( $args );
-                return rest_ensure_response( (int) $total_count );
-            }
-
             // --- Step 5: Build Base Query Args ---
             $args['limit']  = $limit;
             $args['offset'] = $offset;
@@ -205,12 +197,12 @@ class Rest extends \WP_REST_Controller {
             } elseif ( 'no_answer' === $status ) {
                 $args['no_answer'] = true;
             }
-            if ( $orderBy && $order ) {
-                $args['orderBy'] = $orderBy;
-                $args['order']   = $order;
+            if ( $order_by && $order ) {
+                $args['order_by'] = $order_by;
+                $args['order']    = $order;
             } else {
-                $args['orderBy'] = 'question_date';
-                $args['order']   = 'DESC';
+                $args['order_by'] = 'question_date';
+                $args['order']    = 'DESC';
             }
             if ( ! empty( $question_visibility ) ) {
                 $args['question_visibility'] = $question_visibility;
@@ -265,27 +257,28 @@ class Rest extends \WP_REST_Controller {
             // --- Step 9: Get Counters ---
             $base_args = $args;
             unset( $base_args['limit'], $base_args['offset'], $base_args['has_answer'], $base_args['no_answer'] );
+            $response = rest_ensure_response( $formatted );
+
+            // Prepare counts
             $base_args['count'] = true;
+            $all_count          = (int) Util::get_question_information( $base_args );
 
-            $all_count = Util::get_question_information( $base_args );
-
+            // Answered count
             $answered_args               = $base_args;
             $answered_args['has_answer'] = true;
-            $answered_count              = Util::get_question_information( $answered_args );
+            $answered_count              = (int) Util::get_question_information( $answered_args );
 
+            // Unanswered count
             $unanswered_args              = $base_args;
             $unanswered_args['no_answer'] = true;
-            $unanswered_count             = Util::get_question_information( $unanswered_args );
+            $unanswered_count             = (int) Util::get_question_information( $unanswered_args );
 
-            // --- Step 10: Return Final Response ---
-            return rest_ensure_response(
-                array(
-                    'items'      => $formatted,
-                    'all'        => (int) $all_count,
-                    'answered'   => (int) $answered_count,
-                    'unanswered' => (int) $unanswered_count,
-                )
-            );
+            // Set headers
+            $response->header( 'X-WP-Total', $all_count );
+            $response->header( 'X-WP-Status-Answered', $answered_count );
+            $response->header( 'X-WP-Status-Unanswered', $unanswered_count );
+
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 

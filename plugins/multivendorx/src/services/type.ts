@@ -9,6 +9,8 @@ export type QueryProps = {
     filter?: Record<string, FilterValue>;
     categoryFilter?: string;
     searchValue?: string;
+    searchAction?:string;
+    store_id?:string;
 };
 
 export type TableHeader = {
@@ -37,4 +39,12 @@ export type categoryCounts = {
 	value: string;
 	label: string;
 	count: number;
+};
+
+type Primitive = string | number | boolean | null | undefined | Date;
+
+export type DownloadCSVOptions<T extends Record<string, Primitive>> = {
+	data: T[];
+	filename?: string;
+	headers?: Partial<Record<keyof T, string>>;
 };

@@ -1,6 +1,4 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { ChangeEvent } from 'react';
 
 // Types

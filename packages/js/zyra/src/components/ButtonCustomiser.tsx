@@ -1,11 +1,7 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React, { useState, useEffect, useRef } from 'react';
 
-/**
- * Internal dependencies
- */
+// Internal Dependencies
 import '../styles/web/ButtonCustomizer.scss';
 
 export interface ButtonSettings {
