@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'notification-configuration',
+	id: 'events-delivery',
 	priority: 1,
 	name: 'Events Delivery',
 	tabTitle: 'Email & SMS delivery',
@@ -217,5 +217,6 @@ export default {
 				value: 'plivo',
 			},
 		},
+		
 	],
 };
