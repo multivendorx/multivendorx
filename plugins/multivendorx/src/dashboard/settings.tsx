@@ -139,22 +139,12 @@ const settings = () => {
 			},
 			{
 				type: 'file',
-				module: 'marketplace-complianceg',
+				module: 'marketplace-compliance',
 				content: {
 					id: 'verification',
 					name: 'Verification',
 					desc: 'verification',
 					icon: 'verification5',
-				},
-			},
-			{
-				type: 'file',
-				module: 'live-chat',
-				content: {
-					id: 'livechat',
-					name: 'Livechat',
-					desc: 'Connect your store with live chat platforms so customers can reach you instantly for support or inquiries.',
-					icon: 'live-chat',
 				},
 			},
 		].filter(
@@ -194,9 +184,6 @@ const settings = () => {
 				break;
 			case 'verification':
 				form = <Verification />;
-				break;
-			case 'livechat':
-				form = <LiveChat />;
 				break;
 			default:
 				form = null;
