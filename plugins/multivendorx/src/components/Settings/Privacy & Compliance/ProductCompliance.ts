@@ -28,15 +28,7 @@ export default {
 			proSetting: true,
 			addNewBtn: true,
 			addNewTemplate: {
-				label: 'New Product Categories',
-				formFields: [
-					{
-						key: 'label',
-						type: 'text',
-						label: 'Categories Name',
-						placeholder: 'Enter title',
-					},
-				],
+				label: 'New Product Categories'
 			},
 			modal: [],
 		},

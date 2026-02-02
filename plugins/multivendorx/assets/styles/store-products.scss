@@ -70,12 +70,11 @@
          width: 5rem;
          height: 5rem;
          color: #0000007d;
-         font-size: 0.7rem;
          display: flex;
          justify-content: center;
          background: #6a696959;
          align-items: center;
-         font-size: 0.95rem;
+         font-size: 3rem;
          width: 5rem;
          height: 5rem;
          box-shadow: 0 0.125rem 0.5rem 0 rgba(66, 62, 78, 0.12);
@@ -485,15 +484,15 @@
                      font-size: 0.95rem;
                      color: #00000091;
                  }
+             }
 
-                 .stars {
-                     display: flex;
-                     gap: 0.313rem;
-                     padding: 0.125rem;
+             .stars {
+                 display: flex;
+                 gap: 0.313rem;
+                 padding: 0.125rem;
 
-                     i {
-                         color: $star-color;
-                     }
+                 i {
+                     color: $star-color;
                  }
              }
 
@@ -786,18 +785,27 @@
          &.is-list {
              flex-direction: column;
 
-             .store-list{
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                gap: 1rem;
+             .store-list {
+                 display: flex;
+                 flex-wrap: wrap;
+                 justify-content: space-between;
+                 gap: 1rem;
 
-                .store{
-                    width: calc(50% - 0.5rem);
-                }
+                 .store {
+                     width: calc(50% - 0.5rem);
+                 }
              }
          }
      }
  }
 
  //  store list page end
+
+
+
+ //  store product list blocks
+
+ #multivendorx-store-shop-products .products.columns-4 {
+     display: flex;
+     flex-wrap: wrap;
+ }
