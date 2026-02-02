@@ -6,11 +6,11 @@ import {
     AlignmentToolbar
 } from '@wordpress/block-editor';
 
-registerBlockType('multivendorx/store-email', {
+registerBlockType('multivendorx/store-phone', {
 
     edit: ({ attributes, setAttributes }) => {
         const blockProps = useBlockProps({
-            className: 'multivendorx-store-email-block',
+            className: 'multivendorx-store-phone-block',
             style: {
                 display: 'flex',
                 alignItems: 'center',
@@ -30,8 +30,8 @@ registerBlockType('multivendorx/store-email', {
                 </BlockControls>
 
                 <div {...blockProps}>
-                    <span className="dashicons dashicons-email"></span>
-                    <span>store@gmail.com</span>
+                    <span className="dashicons dashicons-phone"></span>
+                    <span>+91 9874563210</span>
                 </div>
             </>
         );
@@ -48,8 +48,8 @@ registerBlockType('multivendorx/store-email', {
 
         return (
             <div {...blockProps}>
-                <span className="dashicons dashicons-email"></span>
-                <div className="multivendorx-store-email-block">store@gmail.com</div>
+                <span className="dashicons dashicons-phone"></span>
+                <div className="multivendorx-store-phone-block">+91 9874563210</div>
             </div>
         );
     }

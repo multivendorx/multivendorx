@@ -65,6 +65,7 @@ module.exports = {
 		'block/contact-info/index': './src/blocks/contact-info/index.js',
 		'block/store-name/index': './src/blocks/store-name/index.js',
 		'block/store-email/index': './src/blocks/store-email/index.js',
+		'block/store-phone/index': './src/blocks/store-phone/index.js',
 		'block/store-description/index': './src/blocks/store-description/index.js',
 	},
 

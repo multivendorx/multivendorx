@@ -1,11 +1,10 @@
 {
   "apiVersion": 2,
-  "name": "multivendorx/store-email",
-  "title": "Store Email",
+  "name": "multivendorx/store-phone",
+  "title": "Store Phone",
   "category": "multivendorx-store-shop",
-  "icon": "email",
-  "description": "Display store email address",
-  "keywords": ["email", "contact", "store"],
+  "icon": "phone",
+  "description": "Display store phone number",
   "editorScript": "file:./index.js",
   "supports": {
     "align": true,
@@ -47,24 +46,15 @@
     {
       "name": "default",
       "label": "Default",
-      "isDefault": true,
-      "attributes": {
-        "showIcon": true
-      }
+      "isDefault": true
     },
     {
-      "name": "no-icon",
-      "label": "No Icon",
-      "attributes": {
-        "showIcon": false
-      }
+      "name": "outline",
+      "label": "Outline"
     },
     {
       "name": "link",
-      "label": "Link Style",
-      "attributes": {
-        "showIcon": true
-      }
+      "label": "Link Style"
     }
   ]
 }

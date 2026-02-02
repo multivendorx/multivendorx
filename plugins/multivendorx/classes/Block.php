@@ -62,6 +62,7 @@ class Block {
             'contact-info',
             'store-name',
             'store-email',
+            'store-phone',
             'store-description',
         );
 
