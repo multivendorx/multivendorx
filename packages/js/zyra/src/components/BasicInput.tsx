@@ -271,38 +271,6 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                     onChange={(e) =>
                                         updateValue(e.target.value)
                                     }
-                                    onChange={(e) => {
-                                        const newVal = e.target.value;
-
-                                        const hasObjectAddon =
-                                            (preText &&
-                                                typeof preText === 'object') ||
-                                            (postText &&
-                                                typeof postText === 'object') ||
-                                            (postInsideText &&
-                                                typeof postInsideText === 'object') ||
-                                            (preInsideText &&
-                                                typeof preInsideText === 'object');
-
-                                        if (hasObjectAddon) {
-                                            // Save as object with main value
-                                            const base =
-                                                typeof value === 'object'
-                                                    ? value
-                                                    : {
-                                                          value:
-                                                              typeof value === 'string'
-                                                                  ? value
-                                                                  : '',
-                                                      };
-                                            onChange({
-                                                ...base,
-                                                value: newVal,
-                                            });
-                                        } else {
-                                            onChange(e);
-                                        }
-                                    }}
                                     onClick={onClick}
                                     onMouseOver={onMouseOver}
                                     onMouseOut={onMouseOut}
