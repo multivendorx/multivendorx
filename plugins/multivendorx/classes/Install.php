@@ -895,7 +895,7 @@ class Install {
                 ),
             ),
         );
-        update_option( Utill::MULTIVENDORX_SETTINGS['order-actions-refunds'], $refund_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['refunds'], $refund_settings );
 
         $privacy_settings = array(
             'store_branding_details' => array('show_store_name', 'show_store_description', 'show_store_logo_next_to_products', 'show_store_ratings'),
@@ -1107,7 +1107,6 @@ class Install {
     public function old_new_map_module_id() {
         $map_modules = [
             'spmv'  =>  'shared-listing',
-            'store-support'  =>  'customer-support',
             'report-abuse'  =>  'marketplace-compliance',
             'identity-verification'  =>  'marketplace-compliance',
             'store-location'  =>  'geo-location',
@@ -1792,7 +1791,7 @@ class Install {
             update_option( Utill::MULTIVENDORX_SETTINGS['store-registration-form'], $newForm );
         }
 
-        update_option( Utill::MULTIVENDORX_SETTINGS['order-actions-refunds'], $refund_settings );
+        update_option( Utill::MULTIVENDORX_SETTINGS['refunds'], $refund_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['store-capability'], $store_permissions );
         update_option( Utill::MULTIVENDORX_SETTINGS['product-preferencess'], $product_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['general'], $general_settings );

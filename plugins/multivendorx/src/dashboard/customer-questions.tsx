@@ -507,8 +507,6 @@ const CustomerQuestions: React.FC = () => {
 							<BasicInput
 								name="question"
 								value={qna}
-								 
-								descClass="settings-metabox-description"
 								onChange={(e) => setQna(e.target.value)}
 							/>
 						</FormGroup>

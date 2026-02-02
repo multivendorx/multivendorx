@@ -169,7 +169,7 @@ class Dashboard extends \WP_REST_Controller {
                         'name'       => 'Support Tickets',
                         'slug'       => 'support-tickets',
                         'capability' => array( 'view_support_tickets', 'reply_support_tickets' ),
-                        'module'     => array('customer-support'),
+                        'module'     => array('store-support'),
                     ),
                     array(
                         'key'        => 'customer-questions',

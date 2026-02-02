@@ -313,7 +313,6 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 													value={formData.distance_default_cost || ''}
 													onChange={handleChange}
 													min="0"
-													step="0.01"
 												/>
 											</FormGroup>
 
@@ -347,7 +346,6 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 													value={formData.distance_max || ''}
 													onChange={handleChange}
 													min="0"
-													step="0.1"
 												/>
 											</FormGroup>
 
@@ -368,7 +366,6 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 													value={formData.distance_local_pickup_cost || ''}
 													onChange={handleChange}
 													min="0"
-													step="0.01"
 												/>
 											</FormGroup>
 

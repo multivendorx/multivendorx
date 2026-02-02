@@ -65,8 +65,6 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="name"
-						 
-						descClass="settings-metabox-description"
 						value={formData.name || ''}
 						onChange={handleChange}
 						readOnly={!settings.includes('store_name')}
@@ -79,8 +77,6 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="slug"
-						 
-						descClass="settings-metabox-description"
 						value={formData.slug || ''}
 						onChange={handleChange}
 					/>
@@ -107,8 +103,6 @@ const GeneralSettings = () => {
 				>
 					<BasicInput
 						name="messageToBuyer"
-						 
-						descClass="settings-metabox-description"
 						value={formData.messageToBuyer || ''}
 						onChange={handleChange}
 					/>

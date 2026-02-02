@@ -438,8 +438,6 @@ const StoreSettings = ({
 								name="phone"
 								type="number"
 								value={formData.phone}
-								 
-								descClass="settings-metabox-description"
 								onChange={handleChange}
 							/>
 							{errorMsg.phone && (
@@ -467,8 +465,6 @@ const StoreSettings = ({
 								<BasicInput
 									name="address"
 									value={addressData.address}
-									 
-									descClass="settings-metabox-description"
 									onChange={handleAddressChange}
 								/>
 							</FormGroup>
@@ -477,8 +473,6 @@ const StoreSettings = ({
 								<BasicInput
 									name="city"
 									value={addressData.city}
-									 
-									descClass="settings-metabox-description"
 									onChange={handleAddressChange}
 								/>
 							</FormGroup>
@@ -486,8 +480,6 @@ const StoreSettings = ({
 								<BasicInput
 									name="zip"
 									value={addressData.zip}
-									 
-									descClass="settings-metabox-description"
 									onChange={handleAddressChange}
 								/>
 							</FormGroup>
@@ -584,8 +576,6 @@ const StoreSettings = ({
 								<FormGroup label={__('Current storefront link', 'multivendorx')}>
 									<BasicInput
 										name="slug"
-										 
-										descClass="settings-metabox-description"
 										value={formData.slug}
 										onChange={handleChange}
 									/>
@@ -638,8 +628,6 @@ const StoreSettings = ({
 										</label>
 										<BasicInput
 											name={network}
-											 
-											descClass="settings-metabox-description"
 											value={
 												formData[network]?.trim() ||
 												defaultUrl

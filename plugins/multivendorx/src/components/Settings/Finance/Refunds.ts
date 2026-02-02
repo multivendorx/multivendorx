@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'order-actions-refunds',
+	id: 'refunds',
 	priority: 5,
 	name: __('Refunds', 'multivendorx'),
 	desc: __(

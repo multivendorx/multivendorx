@@ -664,4 +664,17 @@ class StoreUtil {
         ];
     }
 
+    public static function get_specific_store_info() {
+        $store_slug = get_query_var( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) );
+        $store_obj = Store::get_store( $store_slug, 'slug' );
+        $info = [
+            'storeName' => $store_obj->get('name'),
+            'storeDescription' => $store_obj->get('description'),
+            'storeSlug' => $store_slug,
+            'storeId'   => $store_obj->get_id(),
+        ];
+
+        return $info;
+    }
+
 }
