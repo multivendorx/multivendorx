@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
 // Internal Dependencies
-import SimpleInput from './SimpleInput';
 import MultipleOptions from './MultipleOption';
+import BasicInput from './BasicInput';
 
 interface SubField {
     id: number;
@@ -56,9 +56,13 @@ const AddressField: React.FC< AddressFieldProps > = ( {
 
     const FieldRenderers = {
         text: (f: SubField) => (
-            <SimpleInput
-                formField={{ label: f.label, placeholder: f.placeholder }}
-            />
+            <>
+                <p>{f.label}</p>
+                <BasicInput
+                    type= "text"
+                    placeholder= {f.placeholder}
+                />
+            </>
         ),
         select: (f: SubField) => (
             <MultipleOptions

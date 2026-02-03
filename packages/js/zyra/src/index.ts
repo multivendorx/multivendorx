@@ -32,7 +32,6 @@ export { default as CustomFrom } from './components/RegistrationForm';
 export { default as Section } from './components/Section';
 export { default as SelectInput } from './components/SelectInput';
 export { default as ShortCodeTable } from './components/ShortCodeTable';
-export { default as SimpleInput } from './components/SimpleInput';
 export { default as SubTabSection } from './components/SubTabSection';
 export { default as Support } from './components/Support';
 export { default as DropDownMapping } from './components/DropDownMapping';

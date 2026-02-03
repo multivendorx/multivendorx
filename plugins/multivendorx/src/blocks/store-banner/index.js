@@ -11,7 +11,6 @@ import {
     ColorPalette,
     SelectControl
 } from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
 
 // Template 1: Store Header
 const TEMPLATE_1 = [
@@ -195,7 +194,7 @@ registerBlockType('multivendorx/store-banner', {
             color: contentColor
         };
 
-        // Get template
+        // Get current template
         const currentTemplate = TEMPLATES[template] || TEMPLATE_1;
 
         // Function to handle template change
