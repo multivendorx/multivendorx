@@ -55,17 +55,17 @@ const AddressField: React.FC< AddressFieldProps > = ( {
     };
 
     const FieldRenderers = {
-        text: (f: SubField) => (
+        text: (field: SubField) => (
             <SimpleInput
-                formField={{ label: f.label, placeholder: f.placeholder }}
+                formField={{ label: field.label, placeholder: field.placeholder }}
             />
         ),
-        select: (f: SubField) => (
+        select: (field: SubField) => (
             <MultipleOptions
                 formField={{
-                    label: f.label,
+                    label: field.label,
                     type: 'dropdown',
-                    options: f.options?.map((opt) => ({
+                    options: field.options?.map((opt) => ({
                         id: opt,
                         value: opt,
                         label: opt,
@@ -86,16 +86,16 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                 handle=".drag-handle"
                 animation={ 150 }
             >
-                { subFields.map( ( f ) => (
+                { subFields.map( ( field ) => (
                     <div
-                        key={ f.id }
+                        key={ field.id }
                         className={ `form-field ${
-                            opendInput?.id === f.id ? 'active' : ''
+                            opendInput?.id === field.id ? 'active' : ''
                         }` }
                         onClick={ ( e ) => {
                             e.stopPropagation();
                             setOpendInput( {
-                                ...f,
+                                ...field,
                                 readonly: formField.readonly,
                                 parentId: formField.id,
                             } );
@@ -107,7 +107,7 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                             </span>
                         </div>
 
-                        {FieldRenderers[f.type]?.(f)}
+                        {FieldRenderers[field.type]?.(field)}
 
                     </div>
                 ) ) }

@@ -83,7 +83,7 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
     );
 
     const activeTemplate = useMemo(
-        () => props.templates?.find(t => t.key === templateKey),
+        () => props.templates?.find(template => template.key === templateKey),
         [props.templates, templateKey]
     );
     const ActivePdf = activeTemplate?.pdf;
@@ -330,10 +330,10 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                             <label htmlFor={`${props.idPrefix}-${option.key}`}>
                                                 {option.colors && (
                                                     <div className="color">
-                                                        {Object.values(option.colors).map((c, i) => (
+                                                        {Object.values(option.colors).map((color, i) => (
                                                             <div
                                                                 key={i}
-                                                                style={{ backgroundColor: c }}
+                                                                style={{ backgroundColor: color }}
                                                             />
                                                         ))}
                                                     </div>
