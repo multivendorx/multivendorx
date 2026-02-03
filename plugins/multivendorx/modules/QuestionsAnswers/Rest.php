@@ -274,9 +274,9 @@ class Rest extends \WP_REST_Controller {
             $unanswered_count             = Util::get_question_information( $unanswered_args );
 
             // Set headers
-            $response->header( 'X-WP-Total',(int) $all_count );
-            $response->header( 'X-WP-Status-Answered',(int) $answered_count );
-            $response->header( 'X-WP-Status-Unanswered',(int) $unanswered_count );
+            $response->header( 'X-WP-Total', (int) $all_count );
+            $response->header( 'X-WP-Status-Answered', (int) $answered_count );
+            $response->header( 'X-WP-Status-Unanswered', (int) $unanswered_count );
 
             return $response;
         } catch ( \Exception $e ) {

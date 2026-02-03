@@ -119,9 +119,9 @@ class Transactions extends \WP_REST_Controller {
                 $request->get_param( 'startDate' ),
                 $request->get_param( 'endDate' )
             );
-            $ids   = $request->get_param( 'ids' );
-            $sec_fetch_site = $request->get_header( 'sec_fetch_site' );
-            $referer        = $request->get_header( 'referer' );
+            $ids                = $request->get_param( 'ids' );
+            $sec_fetch_site     = $request->get_header( 'sec_fetch_site' );
+            $referer            = $request->get_header( 'referer' );
 
             // Build args
             $args = array_filter(
@@ -193,18 +193,18 @@ class Transactions extends \WP_REST_Controller {
                 'upcoming'  => 'Upcoming',
                 'failed'    => 'Failed',
             );
-            
+
             $response = rest_ensure_response( $formatted );
-            
+
             // Total count
-            $response->header('X-WP-Total',(int) Transaction::get_transaction_information( $count_args ) );
-            
+            $response->header( 'X-WP-Total', (int) Transaction::get_transaction_information( $count_args ) );
+
             // Status-wise counts
             foreach ( $statuses as $key => $status ) {
-                $count = Transaction::get_transaction_information(array_merge( $count_args, array( 'status' => $status ) ) );
-                $response->header('X-WP-Status-' . ucfirst( $key ), (int) $count );
+                $count = Transaction::get_transaction_information( array_merge( $count_args, array( 'status' => $status ) ) );
+                $response->header( 'X-WP-Status-' . ucfirst( $key ), (int) $count );
             }
-            
+
             if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) ) {
                 set_transient(
                     Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id,
@@ -214,7 +214,6 @@ class Transactions extends \WP_REST_Controller {
             }
 
             return $response;
-
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 

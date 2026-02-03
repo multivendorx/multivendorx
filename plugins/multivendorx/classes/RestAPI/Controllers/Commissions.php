@@ -149,7 +149,7 @@ class Commissions extends \WP_REST_Controller {
             $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
             $page   = max( intval( $request->get_param( 'page' ) ), 1 );
             $status = $request->get_param( 'status' );
-            $ids = $request->get_param( 'ids' );
+            $ids    = $request->get_param( 'ids' );
 
             $range = Utill::normalize_date_range(
                 $request->get_param( 'startDate' ),
@@ -196,8 +196,8 @@ class Commissions extends \WP_REST_Controller {
                         break;
                 }
             }
-            if( $ids ){
-                $filter['ID']   = $ids;
+            if ( $ids ) {
+                $filter['ID'] = $ids;
             }
             // Default: latest first
             $filter['orderBy'] = $order_by ?: 'created_at';

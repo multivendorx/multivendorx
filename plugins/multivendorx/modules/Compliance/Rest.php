@@ -134,8 +134,8 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $limit = intval( $request->get_param( 'row' ) ) > 0 ? intval( $request->get_param( 'row' ) ) : 10;
-            $page  = intval( $request->get_param( 'page' ) ) > 0 ? intval( $request->get_param( 'page' ) ) : 1;            
+            $limit  = intval( $request->get_param( 'row' ) ) > 0 ? intval( $request->get_param( 'row' ) ) : 10;
+            $page   = intval( $request->get_param( 'page' ) ) > 0 ? intval( $request->get_param( 'page' ) ) : 1;
             $offset = ( $page - 1 ) * $limit;
 
             // Get filters.
@@ -199,9 +199,9 @@ class Rest extends \WP_REST_Controller {
                 $reports
             );
 
-            $response = rest_ensure_response( $formatted );
+            $response    = rest_ensure_response( $formatted );
             $total_count = Util::get_report_abuse_information( array( 'count' => true ) );
-            $response->header( 'X-WP-Total',(int) $total_count );
+            $response->header( 'X-WP-Total', (int) $total_count );
             return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );

@@ -1451,10 +1451,10 @@ class Stores extends \WP_REST_Controller {
     private function get_stores_with_pending_withdraw( $request ) {
         $all_stores           = StoreUtil::get_store_information(); // get all stores.
         $stores_with_withdraw = array();
-    
+
         foreach ( $all_stores as $store ) {
             $store_meta = Store::get_store( (int) $store['ID'] );
-    
+
             // Check if request_withdrawal_amount exists and is non-zero.
             if ( ! empty( $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] ] ) ) {
                 $stores_with_withdraw[] = array(
@@ -1468,23 +1468,23 @@ class Stores extends \WP_REST_Controller {
                 );
             }
         }
-    
+
         $total_count = count( $stores_with_withdraw );
-    
+
         // Pagination.
         $page   = max( 1, intval( $request->get_param( 'page' ) ) );
         $limit  = max( 1, intval( $request->get_param( 'row' ) ) );
         $offset = ( $page - 1 ) * $limit;
-    
+
         $paged_data = array_slice( $stores_with_withdraw, $offset, $limit );
-    
+
         // Return WP_REST_Response with total count in headers
         $response = rest_ensure_response( $paged_data );
         $response->header( 'X-WP-Total', $total_count );
-    
+
         return $response;
     }
-    
+
 
     /**
      * Get stores with deactivate requests
@@ -1495,10 +1495,10 @@ class Stores extends \WP_REST_Controller {
     private function get_stores_with_deactivate_requests( $request ) {
         $all_stores                 = StoreUtil::get_store_information();
         $stores_deactivate_requests = array();
-    
+
         foreach ( $all_stores as $store ) {
             $store_meta = Store::get_store( (int) $store['ID'] );
-    
+
             if ( ! empty( $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['deactivation_reason'] ] ) ) {
                 $stores_deactivate_requests[] = array(
                     'id'         => (int) $store['ID'],
@@ -1507,29 +1507,26 @@ class Stores extends \WP_REST_Controller {
                     'date'       => gmdate(
                         'M j, Y',
                         strtotime(
-                            $store_meta->meta_data[
-                                Utill::STORE_SETTINGS_KEYS['deactivation_request_date']
-                            ]
+                            $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['deactivation_request_date'] ]
                         )
                     ),
                 );
             }
         }
-    
+
         $total = count( $stores_deactivate_requests );
-    
+
         // Pagination
         $page   = max( 1, (int) $request->get_param( 'page' ) );
         $limit  = max( 1, (int) $request->get_param( 'row' ) );
         $offset = ( $page - 1 ) * $limit;
-    
+
         $data = array_slice( $stores_deactivate_requests, $offset, $limit );
-    
+
         // REST response with headers
         $response = rest_ensure_response( $data );
         $response->header( 'X-WP-Total', (int) $total );
-    
+
         return $response;
     }
-    
 }
