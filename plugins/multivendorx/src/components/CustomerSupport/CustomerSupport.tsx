@@ -106,7 +106,7 @@ const CustomerSupport = () => {
 							title={__('Looks like customer support isn’t set up yet!', 'multivendorx')}
 							desc={__('Turn on a support module to start assisting your customers.', 'multivendorx')}
 							buttonText={__('Enable Now', 'multivendorx')}
-							buttonLink={appLocalizer.module_page_url}
+							buttonLink={`${appLocalizer.plugin_url}modules`}
 						/>
 					</Column>
 				</Container>

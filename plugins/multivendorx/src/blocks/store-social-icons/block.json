@@ -1,0 +1,53 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-social-icons",
+  "title": "Store Social Icons",
+  "category": "multivendorx-store-shop",
+  "icon": "share",
+  "description": "Display store social media icons",
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js",
+  "attributes": {
+    "iconSize": {
+      "type": "number",
+      "default": 20
+    },
+    "iconColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "iconGap": {
+      "type": "number",
+      "default": 15
+    },
+    "align": {
+      "type": "string",
+      "default": "center"
+    }
+  },
+  "supports": {
+    "align": ["left", "center", "right"],
+    "alignWide": false,
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "__experimentalDefaultControls": {
+        "margin": true,
+        "padding": true
+      }
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "style": true,
+      "width": true,
+      "radius": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "style": true,
+        "width": true,
+        "radius": true
+      }
+    }
+  }
+}

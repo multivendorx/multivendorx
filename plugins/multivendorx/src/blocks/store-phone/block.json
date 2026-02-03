@@ -1,10 +1,10 @@
 {
   "apiVersion": 2,
-  "name": "multivendorx/store-name",
-  "title": "Store Name",
+  "name": "multivendorx/store-phone",
+  "title": "Store Phone",
   "category": "multivendorx-store-shop",
-  "icon": "store",
-  "description": "Display store name",
+  "icon": "phone",
+  "description": "Display store phone number",
   "editorScript": "file:./index.js",
   "supports": {
     "align": true,
@@ -41,5 +41,20 @@
         "width": true
       }
     }
-  }
+  },
+  "styles": [
+    {
+      "name": "default",
+      "label": "Default",
+      "isDefault": true
+    },
+    {
+      "name": "outline",
+      "label": "Outline"
+    },
+    {
+      "name": "link",
+      "label": "Link Style"
+    }
+  ]
 }
