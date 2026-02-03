@@ -13,7 +13,6 @@ export { default as MultiCalendarInput } from './components/MultiCalendarInput';
 export { default as CatalogCustomizer } from './components/CatalogCustomizer';
 export { default as Table, TableCell } from './components/Table';
 export { default as Datepicker } from './components/DatePicker';
-export { default as DisplayButton } from './components/DisplayButton';
 export { default as Elements } from './components/Elements';
 export { default as FileInput } from './components/FileInput';
 export { default as FormCustomizer } from './components/NotifimaFormCustomizer';
