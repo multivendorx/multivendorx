@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import '../styles/web/ExpandablePanelGroup.scss';
-import TextArea from './TextArea';
 import BlockText from './BlockText';
 import ToggleSetting from './ToggleSetting';
 import MultiCheckBox from './MultiCheckbox';
@@ -40,20 +39,13 @@ interface PanelFormField {
     key: string;
     type:
     | 'text'
-    | 'password'
-    | 'number'
-    | 'checkbox'
-    | 'textarea'
     | 'multi-checkbox'
-    | 'check-list'
-    | 'description'
     | 'setup'
     | 'setting-toggle'
     | 'buttons'
     | 'nested'
     | 'clickable-list'
     | 'iconlibrary'
-    | 'copy-text'
     | 'blocktext'
     | 'multi-select';
 
@@ -495,10 +487,6 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
         return !proSetting && moduleEnabled;
     };
 
-    const handleCopy = (text: string) => {
-        navigator.clipboard.writeText(text);
-    };
-
     const handleInputChange = (
         methodKey: string,
         fieldKey: string,
@@ -693,6 +681,17 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
 
         return { price: priceDisplay, unit: unitDisplay };
     };
+
+    const normalizeOptions = (
+        options?: { label: string; value: string | number }[]
+    ) =>
+        Array.isArray(options)
+            ? options.map((opt) => ({
+                ...opt,
+                value: String(opt.value),
+            }))
+            : [];
+
     const renderField = (methodId: string, field: PanelFormField) => {
         const fieldValue = value[methodId]?.[field.key];
 
@@ -702,14 +701,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     <ToggleSetting
                         key={field.key}
                         description={field.desc}
-                        options={
-                            Array.isArray(field.options)
-                                ? field.options.map((opt) => ({
-                                    ...opt,
-                                    value: String(opt.value),
-                                }))
-                                : []
-                        }
+                        options={normalizeOptions(field.options)}
                         value={fieldValue || ''}
                         onChange={(val) =>
                             handleInputChange(methodId, field.key, val)
@@ -727,25 +719,6 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     />
                 );
 
-            case 'checkbox':
-                return (
-                    <>
-                        <input
-                            type="checkbox"
-                            checked={!!fieldValue}
-                            onChange={(e) =>
-                                handleInputChange(
-                                    methodId,
-                                    field.key,
-                                    e.target.checked
-                                )
-                            }
-                        />
-                        <div className="settings-metabox-description">
-                            {field.desc}
-                        </div>
-                    </>
-                );
             case 'clickable-list':
                 return (
                     <div className="clickable-list-wrapper">
@@ -755,8 +728,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                 field.items.map((item, idx) => (
                                     <li
                                         key={idx}
-                                        className={`clickable-item admin-badge blue ${item.url ? 'has-link' : ''
-                                            }`}
+                                        className={`clickable-item admin-badge blue ${item.url ? 'has-link' : ''}`}
                                         onClick={() => {
                                             if (item.url) {
                                                 let url = item.url;
@@ -797,30 +769,6 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     </div>
                 );
 
-            case 'textarea':
-                return (
-                    <TextArea
-                        inputClass={field.class}
-                        description={field.desc || ''}
-                        key={field.key}
-                        id={field.key}
-                        name={field.key}
-                        placeholder={field.placeholder}
-                        rowNumber={field.rowNumber}
-                        colNumber={field.colNumber}
-                        value={fieldValue || ''}
-                        proSetting={false}
-                        onChange={(
-                            e: React.ChangeEvent<HTMLTextAreaElement>
-                        ) =>
-                            handleInputChange(
-                                methodId,
-                                field.key,
-                                e.target.value
-                            )
-                        }
-                    />
-                );
             case 'multi-select': {
                 return (
                     <SelectInput
@@ -847,13 +795,8 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                 let normalizedValue: string[] = [];
 
                 if (Array.isArray(fieldValue)) {
-                    normalizedValue = fieldValue.filter(
-                        (v) => v && v.trim() !== ''
-                    );
-                } else if (
-                    typeof fieldValue === 'string' &&
-                    fieldValue.trim() !== ''
-                ) {
+                    normalizedValue = fieldValue.filter( (v) => v && v.trim() !== '' );
+                } else if ( typeof fieldValue === 'string' && fieldValue.trim() !== '') {
                     normalizedValue = [fieldValue];
                 }
 
@@ -881,15 +824,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                         selectDeselect={field.selectDeselect}
                         selectDeselectValue="Select / Deselect All"
                         rightContentClass="settings-metabox-description"
-                        options={
-                            Array.isArray(field.options)
-                                ? field.options.map((opt) => ({
-                                    ...opt,
-                                    value: String(opt.value),
-                                }))
-                                : []
-                        }
-                        /* THIS IS THE FIX */
+                        options={normalizeOptions(field.options)}
                         value={normalizedValue}
                         onChange={(e: any) => {
                             // Case 1: MultiCheckBox gives an array of selected values (preferred)
@@ -954,33 +889,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     />
                 );
             }
-            case 'description':
-                return (
-                    <>
-                        {field.title ? (
-                            <div className="description-wrapper">
-                                <div className="title">
-                                    <i className="adminfont-error"></i>
-                                    {field.title}
-                                </div>
-
-                                {field.des && (
-                                    <p
-                                        className="panel-description"
-                                        dangerouslySetInnerHTML={{ __html: field.des }}
-                                    />
-                                )}
-                            </div>
-                        ) : (
-                            field.des && (
-                                <p
-                                    className="panel-description"
-                                    dangerouslySetInnerHTML={{ __html: field.des }}
-                                />
-                            )
-                        )}
-                    </>
-                );
+            
             case 'setup':
                 return (
                     <>
@@ -1032,42 +941,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                         </div>
                     </>
                 );
-            case 'check-list':
-                return (
-                    <>
-                        <ul className="check-list">
-                            {Array.isArray(field.options) &&
-                                field.options.map(
-                                    (item: FieldOption, index: number) => (
-                                        <li key={index}>
-                                            {item.check ? (
-                                                <i className="check adminfont-icon-yes"></i>
-                                            ) : (
-                                                <i className="close adminfont-cross"></i>
-                                            )}
-                                            {item.desc}
-                                        </li>
-                                    )
-                                )}
-                        </ul>
-                    </>
-                );
 
-            case 'copy-text':
-                return (
-                    <>
-                        <div className="copy-text-wrapper">
-                            <code>{field.title}</code>
-                            <i
-                                className="adminfont-vendor-form-copy"
-                                onClick={() => handleCopy(field.title)}
-                            ></i>
-                        </div>
-                        <div className="settings-metabox-description">
-                            {field.desc}
-                        </div>
-                    </>
-                );
 
             case 'buttons':
                 return (
@@ -1102,8 +976,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                             onClick={() => {
                                                 // previous METHOD
                                                 if (!isFirstMethod) {
-                                                    const prevStep =
-                                                        wizardSteps[wizardIndex - 1];
+                                                    const prevStep = wizardSteps[wizardIndex - 1];
                                                     setWizardIndex(prevStep.index);
                                                     setActiveTabs([prevStep.id]);
                                                 }
@@ -1123,8 +996,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                                                 handleSaveSetupWizard();
                                                 // next METHOD
                                                 if (!isLastMethod) {
-                                                    const nextStep =
-                                                        wizardSteps[wizardIndex + 1];
+                                                    const nextStep = wizardSteps[wizardIndex + 1];
                                                     setWizardIndex(nextStep.index);
                                                     setActiveTabs([nextStep.id]);
                                                     return;
@@ -1250,6 +1122,7 @@ const ExpandablePanelGroup: React.FC<ExpandablePanelGroupProps> = ({
                     </div>
                 );
             }
+
             default:
                 return (
                     <>
