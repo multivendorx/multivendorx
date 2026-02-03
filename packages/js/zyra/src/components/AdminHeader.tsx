@@ -176,21 +176,21 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                         { /* dropdown render */}
                         {showSearchDropdown && (
                             <ul className="search-dropdown">
-                                {results.map((r, i) => {
-                                    const name = r.name || '(No name)';
-                                    const desc = r.desc || '';
+                                {results.map((result, index) => {
+                                    const name = result.name || '(No name)';
+                                    const desc = result.desc || '';
 
                                     return (
                                         <li
-                                            key={i}
+                                            key={index}
                                             onClick={() => {
-                                                onResultClick(r);
+                                                onResultClick(result);
                                                 closeAll(); // close dropdown on click
                                             }}
                                         >
                                             <div className="icon-wrapper">
-                                                {r.icon && (
-                                                    <i className={r.icon}></i>
+                                                {result.icon && (
+                                                    <i className={result.icon}></i>
                                                 )}
                                             </div>
 
@@ -281,8 +281,8 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                                     </div>
                                     <div className="notification">
                                         <ul>
-                                            {messages.map((msg, idx) => (
-                                                <li key={idx}>
+                                            {messages.map((msg, index) => (
+                                                <li key={index}>
                                                     <a href={msg.link || '#'}>
                                                         <div
                                                             className={`icon admin-badge ${msg.color ||

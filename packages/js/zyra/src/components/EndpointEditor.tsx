@@ -76,8 +76,8 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
             params: { menuOnly: true },
         } ).then( ( res ) => {
             const typedData = res.data as Record< string, Endpoint >;
-            const data = Object.entries( typedData ).map( ( [ k, v ] ) => [
-                k,
+            const data = Object.entries( typedData ).map( ( [ compareKey, v ] ) => [
+                compareKey,
                 { ...v, visible: v.visible !== false }, // default true
             ] ) as [ string, Endpoint ][];
             setEndpoints( data );
@@ -109,14 +109,14 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
     ) => {
         // Submenu drag
         const onSubmenuDragEnd = ( fromIndex: number, toIndex: number ) => {
-            const updated = endpoints.map( ( [ k, item ] ) => {
-                if ( k === key ) {
+            const updated = endpoints.map( ( [ compareKey, item ] ) => {
+                if ( compareKey === key ) {
                     const submenuUpdated = [ ...item.submenu ];
                     const moved = submenuUpdated.splice( fromIndex, 1 )[ 0 ];
                     submenuUpdated.splice( toIndex, 0, moved );
-                    return [ k, { ...item, submenu: submenuUpdated } ];
+                    return [ compareKey, { ...item, submenu: submenuUpdated } ];
                 }
-                return [ k, item ];
+                return [ compareKey, item ];
             } ) as [ string, Endpoint ][];
             autoSave( updated );
         };
@@ -140,10 +140,10 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                     const newName = e.target.value;
                                     setEditName( newName );
                                     const updated = endpoints.map(
-                                        ( [ k, item ] ) =>
-                                            k === editKey
+                                        ( [ compareKey, item ] ) =>
+                                            compareKey === editKey
                                                 ? [
-                                                      k,
+                                                      compareKey,
                                                       {
                                                           ...item,
                                                           name: newName,
@@ -151,7 +151,7 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                           visible: item.visible,
                                                       },
                                                   ]
-                                                : [ k, item ]
+                                                : [ compareKey, item ]
                                     ) as [ string, Endpoint ][];
                                     autoSave( updated );
                                 } }
@@ -172,10 +172,10 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                         onChange={ ( e ) => {
                                             // const newSlug = e.target.value;
                                             // setEditSlug(newSlug);
-                                            // const updated = endpoints.map(([k, item]) =>
-                                            //   k === editKey
-                                            //     ? [k, { ...item, name: editName, slug: newSlug, visible: item.visible }]
-                                            //     : [k, item]
+                                            // const updated = endpoints.map(([compareKey, item]) =>
+                                            //   compareKey === editKey
+                                            //     ? [compareKey, { ...item, name: editName, slug: newSlug, visible: item.visible }]
+                                            //     : [compareKey, item]
                                             // ) as [string, Endpoint][];
                                             // autoSave(updated);
                                             let newSlug = e.target.value
@@ -198,7 +198,7 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                             // Collect all existing slugs (except the one being edited)
                                             const existingSlugs = endpoints
                                                 .filter(
-                                                    ( [ k ] ) => k !== editKey
+                                                    ( [ compareKey ] ) => compareKey !== editKey
                                                 )
                                                 .map(
                                                     ( [ , item ] ) => item.slug
@@ -219,10 +219,10 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
 
                                             // Update endpoints
                                             const updated = endpoints.map(
-                                                ( [ k, item ] ) =>
-                                                    k === editKey
+                                                ( [ compareKey, item ] ) =>
+                                                    compareKey === editKey
                                                         ? [
-                                                              k,
+                                                              compareKey,
                                                               {
                                                                   ...item,
                                                                   name: editName,
@@ -231,7 +231,7 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                                       item.visible,
                                                               },
                                                           ]
-                                                        : [ k, item ]
+                                                        : [ compareKey, item ]
                                             ) as [ string, Endpoint ][];
 
                                             autoSave( updated );
@@ -284,10 +284,10 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                         }` }
                                         onClick={ () => {
                                             const updated = endpoints.map(
-                                                ( [ k, item ] ) =>
-                                                    k === key
+                                                ( [ compareKey, item ] ) =>
+                                                    compareKey === key
                                                         ? [
-                                                              k,
+                                                              compareKey,
                                                               {
                                                                   ...item,
                                                                   visible:
@@ -297,7 +297,7 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                                           : false,
                                                               },
                                                           ]
-                                                        : [ k, item ]
+                                                        : [ compareKey, item ]
                                             ) as [ string, Endpoint ][];
                                             autoSave( updated );
                                         } }
@@ -316,11 +316,11 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                         onDragEnd={ onSubmenuDragEnd }
                     >
                         <ul>
-                            { endpoint.submenu.map( ( sub, i ) => {
-                                const subKey = `${ key }-sub-${ i }`;
+                            { endpoint.submenu.map( ( sub, index ) => {
+                                const subKey = `${ key }-sub-${ index }`;
                                 return (
                                     <li
-                                        key={ i }
+                                        key={ index }
                                         className="sub-menu"
                                         style={ {
                                             opacity:
@@ -332,14 +332,14 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                         { editKey === subKey ? (
                                             <>
                                                 <label
-                                                    htmlFor={ `submenu-name-${ key }-${ i }` }
+                                                    htmlFor={ `submenu-name-${ key }-${ index }` }
                                                     className="input-label"
                                                 >
                                                     Submenu Name:{ ' ' }
                                                 </label>
                                                 <span ref={ editRef }>
                                                     <input
-                                                        id={ `submenu-name-${ key }-${ i }` }
+                                                        id={ `submenu-name-${ key }-${ index }` }
                                                         value={ editName }
                                                         onChange={ ( e ) => {
                                                             const newName =
@@ -350,21 +350,21 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                             const updated =
                                                                 endpoints.map(
                                                                     ( [
-                                                                        k,
+                                                                        compareKey,
                                                                         item,
                                                                     ] ) => {
-                                                                        if (k ===key) {
+                                                                        if (compareKey ===key) {
                                                                             const submenuUpdated =
                                                                                 [
                                                                                     ...item.submenu,
                                                                                 ];
-                                                                            submenuUpdated[i] =
+                                                                            submenuUpdated[index] =
                                                                                 {
-                                                                                    ...submenuUpdated[i],
+                                                                                    ...submenuUpdated[index],
                                                                                     name: newName,
                                                                                 };
                                                                             return [
-                                                                                k,
+                                                                                compareKey,
                                                                                 {
                                                                                     ...item,
                                                                                     submenu:
@@ -372,7 +372,7 @@ const EndpointManager: React.FC< EndpointEditorProps > = ( {
                                                                                 },
                                                                             ];
                                                                         }
-                                                                        return [k,item,];
+                                                                        return [compareKey,item,];
                                                                     }
                                                                 ) as [
                                                                     string,

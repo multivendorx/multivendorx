@@ -330,9 +330,9 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                                             <label htmlFor={`${props.idPrefix}-${option.key}`}>
                                                 {option.colors && (
                                                     <div className="color">
-                                                        {Object.values(option.colors).map((color, i) => (
+                                                        {Object.values(option.colors).map((color, index) => (
                                                             <div
-                                                                key={i}
+                                                                key={index}
                                                                 style={{ backgroundColor: color }}
                                                             />
                                                         ))}

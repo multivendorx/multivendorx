@@ -93,11 +93,11 @@ const GoogleMap = ({
     
         if (markers.length) {
             const bounds = new google.maps.LatLngBounds();
-            markers.forEach(m => bounds.extend(m.getPosition()!));
+            markers.forEach(mapmarker => bounds.extend(mapmarker.getPosition()!));
             map.fitBounds(bounds);
         }
     
-        return () => markers.forEach(m => m.setMap(null));
+        return () => markers.forEach(mapmarker => mapmarker.setMap(null));
     }, [map, stores]);
 
     // Load Google Maps script

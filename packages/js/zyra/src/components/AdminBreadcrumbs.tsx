@@ -191,9 +191,9 @@ const AdminBreadcrumbs = < T, >( {
             { /* render multiple notices */ }
             { ! submenuRender &&
                 notices.length > 0 &&
-                notices.map( ( html, i ) => (
+                notices.map( ( html, index ) => (
                     <div
-                        key={ i }
+                        key={ index }
                         className="wp-admin-notice"
                         dangerouslySetInnerHTML={ { __html: html } }
                     />

@@ -361,9 +361,9 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
                 />
 
                 {/* Task Progress Display */}
-                {taskSequence.map((task, idx) => (
+                {taskSequence.map((task, index) => (
                     <div
-                        key={idx}
+                        key={index}
                         className={`${task.status} details-status-row`}
                     >
                         <div className="task-message">
@@ -425,8 +425,8 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
                 {/* Sync Status Display */}
                 {syncStatus && syncStatus.length > 0 && (
                     <div className="sync-status-container">
-                        {syncStatus.map((status, idx) => (
-                            <div key={idx} className="details-status-row sync-status">
+                        {syncStatus.map((status, index) => (
+                            <div key={index} className="details-status-row sync-status">
                                 <span className="sync-action">{status.action}</span>
                                 <div className="status-meta">
                                     <span className="status-icons">

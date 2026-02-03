@@ -68,13 +68,27 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
     const allSelected = props.value?.length === localOptions.length;
     const selectedCount = props.value?.length ?? 0;
 
-    const shouldBlockForPro = () =>
-            props.proSetting !== undefined &&
-            props.proSetting &&
-            !props.khali_dabba;
-    const shouldBlockForModule = () =>
-            props.moduleEnabled !== undefined &&
-            !props.moduleEnabled;
+    const checkPermissionBlock = (): {
+        blocked: boolean;
+        reason: 'pro' | 'module' | null
+    } => {
+        if (
+            props.proSetting !== undefined && 
+            props.proSetting && 
+            ! props.khali_dabba
+        ) {
+            return { blocked: true, reason: 'pro' };
+        }
+
+        if (
+            props.moduleEnabled ! == undefined && 
+            ! props.moduleEnabled
+        ) {
+            return { blocked: true, reason: 'module' };
+        }
+
+        return { blocked: false, reason: null };
+    };
 
     const handleCheckboxChange = (
         directionValue: string,
@@ -150,13 +164,12 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
     const deleteOption = (index: number) => {
         const option = localOptions[index];
 
-        if (shouldBlockForPro()) {
-            props.proChanged?.();
-            return;
-        }
-
-        if (shouldBlockForModule()) {
-            props.moduleChange?.(props.module || '');
+        if (checkPermissionBlock().blocked) {
+            if (checkPermissionBlock().reason === 'pro') {
+                props.proChanged?.();
+            } else if (checkPermissionBlock().reason === 'module') {
+                props.moduleChange?.(props.module || '');
+            }
             return;
         }
 
@@ -185,10 +198,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                 onChange={(e) => {
                                     // If locked, show popup and stop
 
-                                    if (
-                                        shouldBlockForPro() ||
-                                        shouldBlockForModule()
-                                    ) {
+                                    if (checkPermissionBlock().blocked) {
                                         e.preventDefault();
                                         props.proChanged?.();
                                         return;
@@ -338,19 +348,7 @@ const MultiCheckBox: React.FC<MultiCheckBoxProps> = (props) => {
                                                         className="admin-badge green border adminfont-check"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            const shouldBlockForPro =
-                                                                props.proSetting !== undefined &&
-                                                                props.proSetting &&
-                                                                !props.khali_dabba;
-
-                                                            const shouldBlockForModule =
-                                                                props.moduleEnabled !== undefined &&
-                                                                !props.moduleEnabled;
-
-                                                            if (
-                                                                shouldBlockForPro ||
-                                                                shouldBlockForModule
-                                                            ) {
+                                                            if (checkPermissionBlock().blocked) {
                                                                 e.preventDefault();
                                                                 props.proChanged?.();
                                                                 return;

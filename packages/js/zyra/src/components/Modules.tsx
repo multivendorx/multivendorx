@@ -367,9 +367,9 @@ const Modules: React.FC<ModuleProps> = ({
                                         <div className="tag-wrapper">
                                             {getCategories(
                                                 module.category
-                                            ).map((cat, idx) => (
+                                            ).map((cat, index) => (
                                                 <span
-                                                    key={idx}
+                                                    key={index}
                                                     className="admin-badge blue"
                                                 >
                                                     {formatCategory(cat)}
@@ -394,9 +394,9 @@ const Modules: React.FC<ModuleProps> = ({
                                                         name: string;
                                                         link: string;
                                                     },
-                                                    idx: number
+                                                    index: number
                                                 ) => (
-                                                    <span key={idx}>
+                                                    <span key={index}>
                                                         <a
                                                             href={plugin.link}
                                                             className="link-item"
@@ -405,7 +405,7 @@ const Modules: React.FC<ModuleProps> = ({
                                                         >
                                                             {plugin.name}
                                                         </a>
-                                                        {idx <
+                                                        {index <
                                                             requiredPlugins.length -
                                                             1
                                                             ? ', '

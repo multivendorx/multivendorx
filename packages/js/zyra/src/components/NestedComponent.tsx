@@ -153,8 +153,8 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
         value: string | number | boolean | string[]
     ) {
         updateAndSave(
-            rows.map( ( row, i ) =>
-                i === rowIndex ? { ...row, [ key ]: value } : row
+            rows.map( ( row, index ) =>
+                index === rowIndex ? { ...row, [ key ]: value } : row
             )
         );
     }
@@ -502,8 +502,8 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                 return (
                     <ul className="checklist" key={ field.key }>
                         { Array.isArray( field.options ) &&
-                            field.options.map( ( opt, i ) => (
-                                <li key={ i }>
+                            field.options.map( ( opt, index ) => (
+                                <li key={ index }>
                                     <i
                                         className={
                                             opt.check

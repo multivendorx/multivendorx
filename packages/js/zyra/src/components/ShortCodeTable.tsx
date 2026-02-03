@@ -74,8 +74,8 @@ const ShortCodeTable: React.FC< ShortCodeTableProps > = ( props ) => {
                             <tbody>
                                 { Array.isArray( option.arguments ) &&
                                 option.arguments.length > 0 ? (
-                                    option.arguments.map( ( arg, i ) => (
-                                        <tr key={ i }>
+                                    option.arguments.map( ( arg, index ) => (
+                                        <tr key={ index }>
                                             <td>
                                                 <b>{ arg.attribute }</b>
                                             </td>
