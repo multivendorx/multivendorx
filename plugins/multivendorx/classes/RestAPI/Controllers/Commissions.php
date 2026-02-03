@@ -112,11 +112,6 @@ class Commissions extends \WP_REST_Controller {
 
         try {
             // Check if CSV download is requested.
-            $format = $request->get_param( 'format' );
-            if ( 'csv' === $format ) {
-                return $this->download_csv( $request );
-            }
-
             $store_id = $request->get_param( 'store_id' );
 
             if ( 'reports' === $format ) {
@@ -154,6 +149,7 @@ class Commissions extends \WP_REST_Controller {
             $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
             $page   = max( intval( $request->get_param( 'page' ) ), 1 );
             $status = $request->get_param( 'status' );
+            $ids = $request->get_param( 'ids' );
 
             $range = Utill::normalize_date_range(
                 $request->get_param( 'startDate' ),
@@ -200,7 +196,9 @@ class Commissions extends \WP_REST_Controller {
                         break;
                 }
             }
-
+            if( $ids ){
+                $filter['ID']   = $ids;
+            }
             // Default: latest first
             $filter['orderBy'] = $order_by ?: 'created_at';
             $filter['order']   = strtolower( $order ) === 'asc' ? 'ASC' : 'DESC';
@@ -298,143 +296,6 @@ class Commissions extends \WP_REST_Controller {
 
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
-    }
-
-
-    /**
-     * Download CSV for commission data.
-     *
-     * @param object $request The request object.
-     */
-    private function download_csv( $request ) {
-
-        $store_id   = (int) $request->get_param( 'store_id' );
-        $status     = $request->get_param( 'status' );
-        $ids        = $request->get_param( 'ids' );
-        $start_date = $request->get_param( 'startDate' );
-        $end_date   = $request->get_param( 'endDate' );
-        $page       = (int) $request->get_param( 'page' );
-        $per_page   = (int) $request->get_param( 'row' );
-
-        // Build filter
-        $filter = array();
-
-        if ( $store_id ) {
-            $filter['store_id'] = $store_id;
-        }
-
-        if ( ! empty( $status ) ) {
-            $filter['status'] = $status;
-        }
-
-        if ( ! empty( $start_date ) && ! empty( $end_date ) ) {
-            $filter['start_date'] = gmdate( 'Y-m-d 00:00:00', strtotime( $start_date ) );
-            $filter['end_date']   = gmdate( 'Y-m-d 23:59:59', strtotime( $end_date ) );
-        }
-
-        // Bulk selection OR pagination
-        if ( ! empty( $ids ) ) {
-            $filter['ID'] = array_map( 'intval', explode( ',', $ids ) );
-        } elseif ( $page && $per_page ) {
-            $filter['limit']  = $per_page;
-            $filter['offset'] = ( $page - 1 ) * $per_page;
-        }
-
-        $commissions = CommissionUtil::get_commission_information( $filter );
-
-        if ( empty( $commissions ) ) {
-            return new \WP_Error(
-                'no_data',
-                __( 'No commission data found.', 'multivendorx' ),
-                array( 'status' => 404 )
-            );
-        }
-
-        // CSV setup
-        $headers = array(
-            'ID',
-            'Order ID',
-            'Store Name',
-            'Total Order Amount',
-            'Commission Amount',
-            'Facilitator Fee',
-            'Gateway Fee',
-            'Shipping Amount',
-            'Tax Amount',
-            'Commission Total',
-            'Status',
-            'Created At',
-            'Commission Refunded',
-            'Currency',
-        );
-
-        ob_start();
-
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
-        $csv_output = fopen( 'php://output', 'w' );
-
-        // UTF-8 BOM for Excel
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
-        fwrite( $csv_output, "\xEF\xBB\xBF" );
-
-        // Write headers.
-        fputcsv( $csv_output, $headers, ',', '"', '\\' );
-
-        foreach ( $commissions as $commission ) {
-            $store_name = '';
-
-            if ( ! empty( $commission['store_id'] ) ) {
-                $store      = new Store( (int) $commission['store_id'] );
-                $store_name = (string) $store->get( Utill::STORE_SETTINGS_KEYS['name'] );
-            }
-
-            fputcsv(
-                $csv_output,
-                array(
-                    $commission['ID'],
-                    $commission['order_id'],
-                    $store_name,
-                    $commission['total_order_amount'],
-                    $commission['commission_amount'],
-                    $commission['facilitator_fee'],
-                    $commission['gateway_fee'],
-                    $commission['shipping_amount'],
-                    $commission['tax_amount'],
-                    $commission['commission_total'],
-                    $commission['status'],
-                    $commission['created_at'],
-                    $commission['commission_refunded'],
-                    $commission['currency'],
-                )
-            );
-        }
-
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
-        fclose( $csv_output );
-
-        $csv = ob_get_clean();
-
-        // Filename
-        $filename = 'commissions_';
-
-        if ( ! empty( $ids ) ) {
-            $filename .= 'selected_';
-        } elseif ( $page ) {
-            $filename .= 'page_' . $page . '_';
-        } else {
-            $filename .= 'all_';
-        }
-
-        $filename .= gmdate( 'Y-m-d' ) . '.csv';
-
-        // Output
-        header( 'Content-Type: text/csv; charset=UTF-8' );
-        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
-        header( 'Pragma: no-cache' );
-        header( 'Expires: 0' );
-
-        echo esc_html( $csv );
-        exit;
     }
 
     /**
