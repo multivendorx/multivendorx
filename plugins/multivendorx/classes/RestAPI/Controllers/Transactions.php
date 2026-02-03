@@ -115,7 +115,6 @@ class Transactions extends \WP_REST_Controller {
             $offset             = ( $page - 1 ) * $limit;
             $store_id           = (int) $request->get_param( 'store_id' );
             $status             = $request->get_param( 'status' );
-            $filter_status      = $request->get_param( 'filter_status' );
             $transaction_type   = $request->get_param( 'transactionType' );
             $transaction_status = $request->get_param( 'transactionStatus' );
             $order_by           = sanitize_text_field( $request->get_param( 'orderBy' ) ) ?: 'created_at';
@@ -136,7 +135,6 @@ class Transactions extends \WP_REST_Controller {
                     'status'           => $status ?: null,
                     'start_date'       => $dates['start_date'] ?: null,
                     'end_date'         => $dates['end_date'] ?: null,
-                    'entry_type'       => $filter_status ?: null,
                     'transaction_type' => $transaction_type ?: null,
                     'limit'            => $limit,
                     'offset'           => $offset,
