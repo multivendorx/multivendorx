@@ -11,27 +11,79 @@ import {
     ColorPalette,
     SelectControl
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
-// const TEMPLATE = [
-//     ['core/heading', { 
-//         level: 2, 
-//         content: __('Welcome to Our Store', 'multivendorx'),
-//         align: 'center',
-//         textColor: 'white'
-//     }],
-//     ['core/paragraph', { 
-//         content: __('Discover amazing products and exclusive deals', 'multivendorx'),
-//         align: 'center'
-//     }],
-//     ['core/buttons', {
-//         align: 'center'
-//     }, [
-//         ['core/button', {
-//             text: __('Shop Now', 'multivendorx'),
-//             className: 'is-style-fill'
-//         }]
-//     ]]
-// ];
+// Template 1: Store Header
+const TEMPLATE_1 = [
+    ['multivendorx/store-logo', {}],
+    ['core/spacer', { height: '20px' }],
+    ['multivendorx/store-name', {}],
+    ['core/spacer', { height: '10px' }],
+    ['core/paragraph', { 
+        content: __('Premium quality products with fast delivery', 'multivendorx'),
+        align: 'center',
+        fontSize: 'small'
+    }],
+    ['core/spacer', { height: '20px' }],
+    ['multivendorx/store-buttons', {}]
+];
+
+// Template 2: Contact Focused
+const TEMPLATE_2 = [
+    ['multivendorx/store-logo', {}],
+    ['core/spacer', { height: '30px' }],
+    ['multivendorx/store-name', {}],
+    ['core/spacer', { height: '30px' }],
+    ['core/columns', {}, [
+        ['core/column', { width: '33.33%' }, [
+            ['multivendorx/store-email', {}]
+        ]],
+        ['core/column', { width: '33.33%' }, [
+            ['multivendorx/store-phone', {}]
+        ]],
+        ['core/column', { width: '33.33%' }, [
+            ['multivendorx/store-social-icons', {}]
+        ]]
+    ]],
+    ['core/spacer', { height: '30px' }],
+    ['multivendorx/store-buttons', {}]
+];
+
+// Template 3: Simple Hero
+const TEMPLATE_3 = [
+    ['multivendorx/store-name', {}],
+    ['core/spacer', { height: '15px' }],
+    ['core/paragraph', { 
+        content: __('Welcome to our store. We offer the best products with excellent customer service.', 'multivendorx'),
+        align: 'center'
+    }],
+    ['core/spacer', { height: '30px' }],
+    ['core/buttons', {
+        align: 'center'
+    }, [
+        ['core/button', {
+            text: __('Browse Products', 'multivendorx'),
+            className: 'is-style-fill'
+        }],
+        ['core/button', {
+            text: __('Contact Us', 'multivendorx'),
+            className: 'is-style-outline'
+        }]
+    ]],
+    ['core/spacer', { height: '30px' }],
+    ['multivendorx/store-social-icons', {}]
+];
+
+// Empty template for reset
+const EMPTY_TEMPLATE = [];
+
+// Map templates
+const TEMPLATES = {
+    'template-1': TEMPLATE_1,
+    'template-2': TEMPLATE_2,
+    'template-3': TEMPLATE_3,
+    'empty': EMPTY_TEMPLATE
+};
 
 const ALLOWED_BLOCKS = [
     'core/heading',
@@ -82,10 +134,14 @@ registerBlockType('multivendorx/store-banner', {
         contentPosition: {
             type: 'string',
             default: 'center center'
+        },
+        template: {
+            type: 'string',
+            default: 'template-1'
         }
     },
 
-    edit: ({ attributes, setAttributes }) => {
+    edit: ({ attributes, setAttributes, clientId }) => {
         const { 
             height, 
             minHeight,
@@ -93,13 +149,14 @@ registerBlockType('multivendorx/store-banner', {
             overlayOpacity, 
             contentColor,
             backgroundPosition,
-            contentPosition
+            contentPosition,
+            template
         } = attributes;
 
         const bannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
 
         const blockProps = useBlockProps({
-            className: 'multivendorx-store-banner',
+            className: `multivendorx-store-banner template-${template}`,
             style: {
                 height: height,
                 minHeight: minHeight,
@@ -138,10 +195,44 @@ registerBlockType('multivendorx/store-banner', {
             color: contentColor
         };
 
+        // Get template
+        const currentTemplate = TEMPLATES[template] || TEMPLATE_1;
+
+        // Function to handle template change
+        const handleTemplateChange = (newTemplate) => {
+            // First set the template attribute
+            setAttributes({ template: newTemplate });
+            
+            // Get the InnerBlocks
+            const innerBlocks = wp.data.select('core/block-editor').getBlocks(clientId);
+            
+            // If there are existing blocks, replace them with new template
+            if (innerBlocks.length > 0) {
+                // Replace blocks with the new template
+                wp.data.dispatch('core/block-editor').replaceInnerBlocks(
+                    clientId,
+                    TEMPLATES[newTemplate] || TEMPLATE_1
+                );
+            }
+        };
+
         return (
             <>
                 <InspectorControls>
                     <PanelBody title={__('Banner Settings', 'multivendorx')} initialOpen={true}>
+                        
+                        <SelectControl
+                            label={__('Template', 'multivendorx')}
+                            value={template}
+                            onChange={handleTemplateChange}
+                            options={[
+                                { label: 'Template 1', value: 'template-1' },
+                                { label: 'Template 2', value: 'template-2' },
+                                { label: 'Template 3', value: 'template-3' },
+                                { label: 'Custom', value: 'empty' }
+                            ]}
+                        />
+                        
                         <SelectControl
                             label={__('Height', 'multivendorx')}
                             value={height}
@@ -232,11 +323,11 @@ registerBlockType('multivendorx/store-banner', {
                     <div style={overlayStyle}></div>
                     <div style={contentContainerStyle}>
                         <InnerBlocks 
-                            // template={TEMPLATE}
-                            templateLock={false} 
+                            template={currentTemplate}
+                            templateLock={template === 'empty' ? false : 'all'}
                             allowedBlocks={ALLOWED_BLOCKS}
                             orientation="vertical"
-                            renderAppender={InnerBlocks.ButtonBlockAppender}
+                            renderAppender={template === 'empty' ? InnerBlocks.ButtonBlockAppender : false}
                         />
                     </div>
                 </div>
@@ -252,7 +343,8 @@ registerBlockType('multivendorx/store-banner', {
             overlayOpacity, 
             contentColor,
             backgroundPosition,
-            contentPosition
+            contentPosition,
+            template
         } = attributes;
 
         const bannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
@@ -260,7 +352,7 @@ registerBlockType('multivendorx/store-banner', {
         const [justifyContent, alignItems] = contentPosition.split(' ');
         
         const blockProps = useBlockProps.save({
-            className: 'multivendorx-store-banner',
+            className: `multivendorx-store-banner template-${template}`,
             style: {
                 height: height,
                 minHeight: minHeight,
@@ -273,6 +365,7 @@ registerBlockType('multivendorx/store-banner', {
                 overflow: 'hidden'
             }
         });
+        
         const overlayStyle = {
             position: 'absolute',
             top: 0,
@@ -282,6 +375,7 @@ registerBlockType('multivendorx/store-banner', {
             backgroundColor: overlayColor,
             opacity: overlayOpacity / 100
         };
+        
         const contentContainerStyle = {
             position: 'relative',
             zIndex: 2,

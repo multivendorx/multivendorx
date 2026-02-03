@@ -2,8 +2,8 @@
 import { MouseEvent, FocusEvent, useState, forwardRef, ReactNode } from 'react';
 
 // Internal Dependencies
-import DisplayButton from './DisplayButton';
 import SelectInput from './SelectInput';
+import AdminButton from './UI/AdminButton';
 
 interface InputFeedback {
     type: string;
@@ -21,19 +21,19 @@ type Addon =
     | string
     | ReactNode
     | {
-          type: 'select';
-          key: string;
-          options: SelectOption[];
-          value?: string;
-          size?: string;
-      }
+        type: 'select';
+        key: string;
+        options: SelectOption[];
+        value?: string;
+        size?: string;
+    }
     | {
-          type: 'text';
-          key: string;
-          placeholder?: string;
-          value?: string;
-          size?: string;
-      };
+        type: 'text';
+        key: string;
+        placeholder?: string;
+        value?: string;
+        size?: string;
+    };
 
 interface BasicInputProps {
     wrapperClass?: string;
@@ -42,16 +42,16 @@ interface BasicInputProps {
     id?: string;
     fieldKey?: string;
     type?:
-        | 'text'
-        | 'button'
-        | 'number'
-        | 'color'
-        | 'password'
-        | 'email'
-        | 'file'
-        | 'range'
-        | 'time'
-        | 'url';
+    | 'text'
+    | 'button'
+    | 'number'
+    | 'color'
+    | 'password'
+    | 'email'
+    | 'file'
+    | 'range'
+    | 'time'
+    | 'url';
     name?: string;
     value: InputValue;
     placeholder?: string;
@@ -225,23 +225,20 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
         return (
             <>
                 <div
-                    className={`setting-form-input ${wrapperClass || ''} ${
-                        clickBtnName || generate ? 'input-button' : ''
-                    } ${preInsideText || postInsideText ? 'inner-input' : ''}`}
+                    className={`setting-form-input ${wrapperClass || ''} ${clickBtnName || generate ? 'input-button' : ''
+                        } ${preInsideText || postInsideText ? 'inner-input' : ''}`}
                 >
                     {inputLabel && <label htmlFor={id}>{inputLabel}</label>}
 
                     {type === 'button' ? (
-                        <DisplayButton
-                            wraperClass={inputClass || 'admin-btn default-btn'}
-                            onClick={(e) =>
-                                onclickCallback
+                        <AdminButton
+                            buttons={{
+                                text: name,
+                                onClick: () => onclickCallback
                                     ? onclickCallback(e)
                                     : onClick?.(e as MouseEvent<HTMLInputElement>)
-                            }
-                        >
-                            <span className="text">{name}</span>
-                        </DisplayButton>
+                            }}
+                        />
                     ) : (
                         <>
                             {preText && (
@@ -300,59 +297,65 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                 )}
 
                                 {clickBtnName && (
-                                    <DisplayButton
-                                        wraperClass="admin-btn btn-purple input-btn"
-                                        onClick={onclickCallback}
-                                    >
-                                        {clickBtnName}
-                                    </DisplayButton>
+                                    <AdminButton
+                                            buttons={{
+                                                text: clickBtnName,
+                                                // icon: 'star-icon',
+                                                className: 'purple input-btn',
+                                                onClick: () => onclickCallback,
+                                            }}
+                                        />
                                 )}
 
                                 {generate &&
                                     (mainValue === '' ? (
-                                        <DisplayButton
-                                            wraperClass="admin-btn btn-purple input-btn"
-                                            onClick={handleGenerate}
-                                        >
-                                            <>
-                                                <i className="adminfont-star-icon"></i>
-                                                <span className="text">
-                                                    Generate
-                                                </span>
-                                            </>
-                                        </DisplayButton>
+                                        <AdminButton
+                                            buttons={{
+                                                text: 'Generate',
+                                                icon: 'star-icon',
+                                                className: 'purple input-btn',
+                                                onClick: () => handleGenerate,
+                                            }}
+                                        />
+
                                     ) : (
                                         <>
-                                            <DisplayButton
-                                                wraperClass="clear-btn"
-                                                onClick={handleClear}
-                                            >
-                                                <i className="adminfont-delete"></i>
-                                            </DisplayButton>
-                                            <DisplayButton
-                                                wraperClass="copy-btn"
-                                                onClick={handleCopy}
-                                            >
-                                                <>
-                                                    <i className="adminfont-vendor-form-copy"></i>
-                                                    <span
-                                                        className={
-                                                            !copied
-                                                                ? 'tooltip'
-                                                                : 'tooltip tool-clip'
-                                                        }
-                                                    >
-                                                        {copied ? (
-                                                            <>
-                                                                <i className="adminfont-success-notification"></i>
-                                                                Copied
-                                                            </>
-                                                        ) : (
-                                                            'Copy to clipboard'
-                                                        )}
-                                                    </span>
-                                                </>
-                                            </DisplayButton>
+                                            <AdminButton
+                                                buttons={{
+                                                    text: '',
+                                                    icon: 'delete',
+                                                    className: 'clear-btn',
+                                                    onClick: () => handleClear,
+                                                }}
+                                            />
+                                            <AdminButton
+                                                buttons={{
+                                                    text: "",
+                                                    className: 'copy-btn',
+                                                    onClick: () => handleCopy,
+                                                    children: (
+                                                        <>
+                                                            <i className="adminfont-vendor-form-copy"></i>
+                                                            <span
+                                                                className={
+                                                                    !copied
+                                                                        ? 'tooltip'
+                                                                        : 'tooltip tool-clip'
+                                                                }
+                                                            >
+                                                                {copied ? (
+                                                                    <>
+                                                                        <i className="adminfont-success-notification"></i>
+                                                                        Copied
+                                                                    </>
+                                                                ) : (
+                                                                    'Copy to clipboard'
+                                                                )}
+                                                            </span>
+                                                        </>
+                                                    ),
+                                                }}
+                                            />
                                         </>
                                     ))}
                             </div>
