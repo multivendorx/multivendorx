@@ -45,6 +45,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	const [formData, setFormData] = useState({ content: '' });
 	const [viewOrder, setViewOrder] = useState<StoreRow | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [orderMap, setOrderMap] = useState<Record<number, StoreRow>>({});
 
 	useEffect(() => {
 		axios
@@ -67,8 +68,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			});
 	}, []);
 
-
-
 	const handleCloseForm = () => {
 		setPopupOpen(false);
 		setViewOrder(null);
@@ -79,15 +78,14 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = async () => {
-		if (!viewOrder?.id || isSubmitting) {
+	const handleSubmit = async (orderId: number) => {
+		if (isSubmitting) {
 			return;
 		}
 
 		setIsSubmitting(true);
 
 		try {
-			const orderId = viewOrder.id;
 			//Add order note
 			await axios({
 				method: 'POST',
@@ -125,12 +123,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		}
 	};
 
-	const handleViewDetails = (row: StoreRow) => {
-		setViewOrder(row);
-		setPopupOpen(true);
-	};
-
-
 	const headers = [
 		{ key: 'order', label: __('Order', 'multivendorx') },
 		{ key: 'store', label: __('Store', 'multivendorx') },
@@ -146,16 +138,20 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				{
 					label: __('View Details', 'multivendorx'),
 					icon: 'preview',
-					onClick: () => {
-						// handleViewDetails(row.original)
+					onClick: (id: number) => {
+						const order = orderMap[id];
+						console.log(order)
+						if (!order) return;
+
+						setViewOrder(order);
+						setPopupOpen(true);
 					},
 				},
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: () => {
-						// setViewOrder(row.original);
-						// handleSubmit();
+					onClick: (id: number) => {
+						handleSubmit(id);
 					},
 				},
 			],
@@ -178,10 +174,10 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 
 	const getMetaValue = (metaData: any[], key: string) =>
 		metaData.find((m: any) => m.key === key)?.value;
-	
+
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
-	
+
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
 				headers: {
@@ -208,12 +204,14 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				const orders = Array.isArray(response.data)
 					? response.data
 					: [];
-	
-				// 🔹 Normalize API response (meta parsing happens once)
-				const normalizedOrders = orders.map((order: any) => {
+
+				const orderById: Record<number, StoreRow> = {};
+
+				// 🔹 Normalize API response + build order map
+				const normalizedOrders: StoreRow[] = orders.map((order: any) => {
 					const metaData = order.meta_data || [];
-	
-					return {
+
+					const normalized: StoreRow = {
 						id: order.id,
 						store_id: getMetaValue(metaData, 'multivendorx_store_id'),
 						store_name: order.store_name || '-',
@@ -222,39 +220,47 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						date: order.date_created,
 						status: order.status,
 						currency_symbol: order.currency_symbol,
-	
+
 						reason:
 							getMetaValue(
 								metaData,
 								appLocalizer.order_meta.customer_refund_reason
 							) || '',
-	
+
 						addi_info:
 							getMetaValue(
 								metaData,
 								appLocalizer.order_meta.customer_refund_addi_info
 							) || '',
-	
+
 						refund_images:
 							getMetaValue(
 								metaData,
 								appLocalizer.order_meta.customer_refund_product_imgs
 							) || [],
-	
+
 						refund_products:
 							getMetaValue(
 								metaData,
 								appLocalizer.order_meta.customer_refund_product
 							) || [],
 					};
+
+					// ✅ critical for View Details
+					orderById[normalized.id] = normalized;
+
+					return normalized;
 				});
-	
+
+				// 🔹 Save map for action handlers
+				setOrderMap(orderById);
+
 				// 🔹 Row IDs
 				const ids = normalizedOrders.map((o) => o.id);
 				setRowIds(ids);
-	
+
 				// 🔹 Table rows
-				const mappedRows: any[][] = normalizedOrders.map((order) => [
+				const mappedRows: TableRow[][] = normalizedOrders.map((order) => [
 					{
 						type: 'card',
 						value: order.id,
@@ -297,11 +303,9 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						value: order.date,
 					},
 				]);
-	
+
 				setRows(mappedRows);
-				setTotalRows(
-					Number(response.headers['x-wp-total']) || 0
-				);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -311,7 +315,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				setIsLoading(false);
 			});
 	};
-	
 
 	return (
 		<>
@@ -358,7 +361,10 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 										icon: 'save',
 										text: __('Reject', 'multivendorx'),
 										className: 'purple-bg',
-										onClick: handleSubmit,
+										onClick: () => {
+											if (!viewOrder) return;
+											handleSubmit(viewOrder.id);
+										},
 										disabled: isSubmitting,
 									},
 								]}

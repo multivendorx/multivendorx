@@ -134,8 +134,8 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
-            $page   = max( intval( $request->get_param( 'page' ) ), 1 );
+            $limit = intval( $request->get_param( 'row' ) ) > 0 ? intval( $request->get_param( 'row' ) ) : 10;
+            $page  = intval( $request->get_param( 'page' ) ) > 0 ? intval( $request->get_param( 'page' ) ) : 1;            
             $offset = ( $page - 1 ) * $limit;
 
             // Get filters.
@@ -146,12 +146,6 @@ class Rest extends \WP_REST_Controller {
             );
             $order_by = $request->get_param( 'orderBy' ) ? $request->get_param( 'orderBy' ) : 'created_at';
             $order    = strtoupper( $request->get_param( 'order' ) ) === 'ASC' ? 'ASC' : 'DESC';
-
-            // Count only.
-            if ( $request->get_param( 'count' ) ) {
-                $total_count = Util::get_report_abuse_information( array( 'count' => true ) );
-                return rest_ensure_response( (int) $total_count );
-            }
 
             // Prepare args.
             $args = array(
@@ -205,7 +199,10 @@ class Rest extends \WP_REST_Controller {
                 $reports
             );
 
-            return rest_ensure_response( $formatted );
+            $response = rest_ensure_response( $formatted );
+            $total_count = Util::get_report_abuse_information( array( 'count' => true ) );
+            $response->header( 'X-WP-Total',(int) $total_count );
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 
