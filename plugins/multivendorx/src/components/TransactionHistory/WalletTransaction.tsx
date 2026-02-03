@@ -19,7 +19,7 @@ import {
 	TableCard
 } from 'zyra';
 
-import { formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -35,8 +35,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		categoryCounts[] | null
 	>(null);
-
-
 	const [wallet, setWallet] = useState<any[]>([]);
 	const [recentDebits, setRecentDebits] = useState<any[]>([]);
 	const [storeData, setStoreData] = useState<any>(null);
@@ -364,81 +362,103 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			label: 'Download CSV',
 			icon: 'download',
 			onClickWithQuery: (query: QueryProps) => {
-				downloadProductsCSV(query);
+				downloadTransactionCSVByQuery(query);
 			},
 		},
 	];
 
-	const downloadProductsCSV = (query: QueryProps) => {
-		// setIsLoading(true);
+	const downloadTransactionCSVByQuery = (query: QueryProps) => {
+		setIsLoading(true);
 
-		// axios
-		// 	.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
-		// 		headers: {
-		// 			'X-WP-Nonce': appLocalizer.nonce,
-		// 		},
-		// 		params: {
-		// 			per_page: 100, // WooCommerce max per page
-		// 			page: 1,
-		// 			search: query.searchValue,
-		// 			orderby: query.orderby,
-		// 			order: query.order,
-		// 			meta_key: 'multivendorx_store_id',
-		// 			value: query?.filter?.store_id,
-		// 			after: query.filter?.created_at?.startDate
-		// 				? toWcIsoDate(query.filter.created_at.startDate, 'start')
-		// 				: undefined,
-		// 			before: query.filter?.created_at?.endDate
-		// 				? toWcIsoDate(query.filter.created_at.endDate, 'end')
-		// 				: undefined,
-		// 		},
-		// 	})
-		// 	.then((response) => {
-		// 		const products = Array.isArray(response.data)
-		// 			? response.data
-		// 			: [];
+		axios
+			.get(getApiLink(appLocalizer, 'transaction'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					per_page: 1000, // large export
+					store_id: storeId,
+					searchValue: query.searchValue,
+					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+					orderby: query.orderby,
+					order: query.order,
+					transactionStatus: query?.filter?.transactionStatus,
+					transactionType: query?.filter?.transactionType,
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+				},
+			})
+			.then((res) => {
+				const data = Array.isArray(res.data) ? res.data : [];
 
-		// 		const csvData = products.map((product) => ({
-		// 			ID: product.id,
-		// 			Product: product.name,
-		// 			SKU: product.sku || '',
-		// 			Store: product.store_name || '',
-		// 			Items_Sold: Number(product.total_sales || 0),
-		// 			Net_Sales: product.price
-		// 				? formatCurrency(product.price)
-		// 				: '',
-		// 			Category:
-		// 				product.categories
-		// 					?.map((c: { name: string }) => c.name)
-		// 					.join(', ') || '',
-		// 			Date_Created: product.date_created
-		// 				? formatWcShortDate(product.date_created)
-		// 				: '',
-		// 		}));
-
-		// 		downloadCSV({
-		// 			data: csvData,
-		// 			filename: 'products-report.csv',
-		// 			headers: {
-		// 				ID: 'Product ID',
-		// 				Product: 'Product Name',
-		// 				SKU: 'SKU',
-		// 				Store: 'Store',
-		// 				Items_Sold: 'Items Sold',
-		// 				Net_Sales: 'Net Sales',
-		// 				Category: 'Category',
-		// 				Date_Created: 'Date Created',
-		// 			},
-		// 		});
-
-		// 		setIsLoading(false);
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error('CSV download failed:', error);
-		// 		setIsLoading(false);
-		// 	});
+				downloadCSV({
+					data: mapTransactionsToCSV(data),
+					filename: 'wallet-transactions.csv',
+					headers: {
+						ID: 'ID',
+						Store: 'Store',
+						Transaction_Type: 'Transaction Type',
+						Status: 'Status',
+						Order_ID: 'Order ID',
+						Credit: 'Credit',
+						Debit: 'Debit',
+						Balance: 'Balance',
+						Date: 'Date',
+						Narration: 'Narration',
+					},
+				});
+			})
+			.finally(() => setIsLoading(false));
 	};
+	const mapTransactionsToCSV = (transactions: any[]) =>
+		transactions.map((txn) => ({
+			ID: txn.id,
+			Store: txn.store_name,
+			Transaction_Type: txn.transaction_type,
+			Status: txn.status,
+			Order_ID: txn.order_details || '',
+			Credit: txn.credit ? formatCurrency(txn.credit) : '',
+			Debit: txn.debit ? formatCurrency(txn.debit) : '',
+			Balance: txn.balance ? formatCurrency(txn.balance) : '',
+			Date: txn.date ? formatWcShortDate(txn.date) : '',
+			Narration: txn.narration || '',
+		}));
+	const downloadTransactionCSVByIds = (selectedIds: number[]) => {
+		if (!selectedIds.length) return;
 
+		setIsLoading(true);
+
+		axios
+			.get(getApiLink(appLocalizer, 'transaction'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					ids: selectedIds,
+				},
+			})
+			.then((res) => {
+				const data = Array.isArray(res.data) ? res.data : [];
+
+				downloadCSV({
+					data: mapTransactionsToCSV(data),
+					filename: 'selected-wallet-transactions.csv',
+					headers: {
+						ID: 'ID',
+						Store: 'Store',
+						Transaction_Type: 'Transaction Type',
+						Status: 'Status',
+						Order_ID: 'Order ID',
+						Credit: 'Credit',
+						Debit: 'Debit',
+						Balance: 'Balance',
+						Date: 'Date',
+						Narration: 'Narration',
+					},
+				});
+			})
+			.finally(() => setIsLoading(false));
+	};
 
 	return (
 		<>
@@ -742,7 +762,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							categoryCounts={categoryCounts}
 							bulkActions={[]}
 							onSelectCsvDownloadApply={(selectedIds: []) => {
-								console.log('csv select', selectedIds)
+								downloadTransactionCSVByIds(selectedIds)
 							}}
 						/>
 					</div>
