@@ -5,42 +5,42 @@ import Loading from './Loading';
 
 type ModuleKey = 'catalog' | 'enquiry' | 'quote' | 'wholesale';
 
-const Modules = ( props: any ) => {
+const Modules = (props: any) => {
     const { onNext, onPrev } = props;
-    const [ loading, setLoading ] = useState( false );
-    const [ selectedModules, setSelectedModules ] = useState<
-        Record< ModuleKey, boolean >
-    >( {
+    const [loading, setLoading] = useState(false);
+    const [selectedModules, setSelectedModules] = useState<
+        Record<ModuleKey, boolean>
+    >({
         catalog: false,
         enquiry: false,
         quote: false,
         wholesale: false,
-    } );
+    });
 
     const handleCheckboxChange = (
-        event: React.ChangeEvent< HTMLInputElement >
+        event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const { name, checked } = event.target;
-        setSelectedModules( ( prevState ) => ( {
+        setSelectedModules((prevState) => ({
             ...prevState,
-            [ name ]: checked,
-        } ) );
+            [name]: checked,
+        }));
     };
 
     const moduleSave = () => {
-        setLoading( true );
+        setLoading(true);
         const modulesToSave = (
-            Object.keys( selectedModules ) as ModuleKey[]
-         ).filter( ( key ) => selectedModules[ key ] );
-        axios( {
+            Object.keys(selectedModules) as ModuleKey[]
+        ).filter((key) => selectedModules[key]);
+        axios({
             method: 'post',
-            url: getApiLink( appLocalizer, 'modules' ),
+            url: getApiLink(appLocalizer, 'modules'),
             headers: { 'X-WP-Nonce': appLocalizer.nonce },
             data: { modules: modulesToSave },
-        } ).then( () => {
-            setLoading( false );
+        }).then(() => {
+            setLoading(false);
             onNext();
-        } );
+        });
     };
 
     return (
@@ -61,10 +61,10 @@ const Modules = ( props: any ) => {
                             type="checkbox"
                             id="enquiry"
                             name="enquiry"
-                            checked={ selectedModules.enquiry }
-                            onChange={ handleCheckboxChange }
+                            checked={selectedModules.enquiry}
+                            onChange={handleCheckboxChange}
                         />
-                        { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                         <label htmlFor="enquiry"></label>
                     </div>
                 </div>
@@ -82,28 +82,28 @@ const Modules = ( props: any ) => {
                             type="checkbox"
                             id="quote"
                             name="quote"
-                            checked={ selectedModules.quote }
-                            onChange={ handleCheckboxChange }
+                            checked={selectedModules.quote}
+                            onChange={handleCheckboxChange}
                         />
-                        { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                         <label htmlFor="quote"></label>
                     </div>
                 </div>
             </article>
             <footer className="setup-footer-btn-wrapper">
                 <div>
-                    <button className="footer-btn pre-btn" onClick={ onPrev }>
+                    <button className="footer-btn pre-btn" onClick={onPrev}>
                         Prev
                     </button>
-                    <button className="footer-btn " onClick={ onNext }>
+                    <button className="footer-btn " onClick={onNext}>
                         Skip
                     </button>
                 </div>
-                <button className="footer-btn next-btn" onClick={ moduleSave }>
+                <button className="footer-btn next-btn" onClick={moduleSave}>
                     Next
                 </button>
             </footer>
-            { loading && <Loading /> }
+            {loading && <Loading />}
         </section>
     );
 };
