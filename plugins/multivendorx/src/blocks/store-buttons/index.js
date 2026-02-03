@@ -40,14 +40,6 @@ const StoreIcon = () => (
 
 registerBlockType('multivendorx/store-buttons', {
     attributes: {
-        buttonSize: {
-            type: 'string',
-            default: 'default' // 'small', 'default', 'large'
-        },
-        buttonType: {
-            type: 'string',
-            default: 'primary' // 'primary', 'secondary', 'outline'
-        },
         align: {
             type: 'string',
             default: 'center'
@@ -80,8 +72,6 @@ registerBlockType('multivendorx/store-buttons', {
 
     edit: ({ attributes, setAttributes }) => {
         const { 
-            buttonSize, 
-            buttonType,
             align,
             followersCount,
             showFollowersCount,
