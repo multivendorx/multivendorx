@@ -29,14 +29,14 @@ export interface AddressFormField {
 
 interface AddressFieldProps {
     formField: AddressFormField;
-    onChange: ( key: 'fields', value: SubField[] ) => void;
+    // onChange: ( key: 'fields', value: SubField[] ) => void;
     opendInput: SubField | null;
     setOpendInput: React.Dispatch< React.SetStateAction< SubField | null > >;
 }
 
 const AddressField: React.FC< AddressFieldProps > = ( {
     formField,
-    onChange,
+    // onChange,
     opendInput,
     setOpendInput,
 } ) => {
@@ -51,7 +51,7 @@ const AddressField: React.FC< AddressFieldProps > = ( {
     // Update parent
     const updateParent = ( updated: SubField[] ) => {
         setSubFields( updated );
-        onChange( 'fields', updated );
+        // onChange( 'fields', updated );
     };
 
     const FieldRenderers = {
@@ -73,7 +73,7 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                 }}
                 type="dropdown"
                 selected={false}
-                onChange={() => {}}
+                // onChange={() => {}}
             />
         ),
     };
