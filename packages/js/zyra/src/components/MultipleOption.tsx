@@ -14,11 +14,9 @@ interface MultipleOptionsFormField {
     type?: string;
     options?: Option[];
 }
-type MultipleOptionsValue = string | boolean | Option[];
 
 interface MultipleOptionsProps {
     formField: MultipleOptionsFormField;
-    onChange: ( key: string, value: MultipleOptionsValue ) => void;
     type: 'radio' | 'checkboxes' | 'dropdown' | 'multiselect';
     selected: boolean;
 }
