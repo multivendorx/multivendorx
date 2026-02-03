@@ -261,22 +261,22 @@ class Rest extends \WP_REST_Controller {
 
             // Prepare counts
             $base_args['count'] = true;
-            $all_count          = (int) Util::get_question_information( $base_args );
+            $all_count          = Util::get_question_information( $base_args );
 
             // Answered count
             $answered_args               = $base_args;
             $answered_args['has_answer'] = true;
-            $answered_count              = (int) Util::get_question_information( $answered_args );
+            $answered_count              = Util::get_question_information( $answered_args );
 
             // Unanswered count
             $unanswered_args              = $base_args;
             $unanswered_args['no_answer'] = true;
-            $unanswered_count             = (int) Util::get_question_information( $unanswered_args );
+            $unanswered_count             = Util::get_question_information( $unanswered_args );
 
             // Set headers
-            $response->header( 'X-WP-Total', $all_count );
-            $response->header( 'X-WP-Status-Answered', $answered_count );
-            $response->header( 'X-WP-Status-Unanswered', $unanswered_count );
+            $response->header( 'X-WP-Total', (int) $all_count );
+            $response->header( 'X-WP-Status-Answered', (int) $answered_count );
+            $response->header( 'X-WP-Status-Unanswered', (int) $unanswered_count );
 
             return $response;
         } catch ( \Exception $e ) {

@@ -18,7 +18,7 @@ const ApprovalQueue = () => {
 	const [reportAbuseCount, setReportAbuseCount] = useState<number>(0);
 	const [withdrawCount, setWithdrawCount] = useState<number>(0);
 	const [deactivateCount, setDeactivateCount] = useState<number>(0);
-	const [isLoading, setIsLoading] = useState(true);	
+	const [isLoading, setIsLoading] = useState(true);
 	const { modules } = useModules();
 	const ranOnce = useRef(false);
 	const settings = appLocalizer.settings_databases_value || {};
@@ -31,11 +31,19 @@ const ApprovalQueue = () => {
 				method: 'GET',
 				url: getApiLink(appLocalizer, 'store'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { count: true, status: 'pending' },
+				params: { status: 'pending', page: 1, row: 1 },
 			})
-				.then((res) => setStoreCount(res.data || 0))
-				.finally(() => {setIsLoading(false);})
-				.catch(() => {});
+				.then((res) => {
+					const pendingCount =
+						Number(res.headers['x-wp-status-pending']) || 0;
+
+					setStoreCount(pendingCount);
+				})
+				.catch(() => { })
+				.finally(() => {
+					setIsLoading(false);
+				});
+
 		}
 
 		// Product Count (only if can publish products)
@@ -56,8 +64,8 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setProductCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
-				.finally(() => {setIsLoading(false);})
-				.catch(() => {});
+				.finally(() => { setIsLoading(false); })
+				.catch(() => { });
 		}
 
 		//Coupon Count (only if can publish coupons)
@@ -76,8 +84,8 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setCouponCount(parseInt(res.headers['x-wp-total']) || 0)
 				)
-				.finally(() => {setIsLoading(false);})
-				.catch(() => {});
+				.finally(() => { setIsLoading(false); })
+				.catch(() => { });
 		}
 
 		// Refund Count (only if refund module active)
@@ -96,8 +104,8 @@ const ApprovalQueue = () => {
 				.then((res) =>
 					setRefundCount(Number(res.headers['x-wp-total']) || 0)
 				)
-				.finally(() => {setIsLoading(false);})
-				.catch(() => {});
+				.finally(() => { setIsLoading(false); })
+				.catch(() => { });
 		}
 
 		// Report Abuse (only if module active)
@@ -105,36 +113,62 @@ const ApprovalQueue = () => {
 			axios
 				.get(getApiLink(appLocalizer, 'report-abuse'), {
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: { count: true },
+					params: {
+						page: 1,
+						row: 1,
+					},
 				})
-				.then((res) => setReportAbuseCount(res.data || 0))
-				.finally(() => {setIsLoading(false);})
-				.catch(() => {});
+				.then((res) => {
+					setReportAbuseCount(Number(res.headers['x-wp-total']) || 0);
+				})
+				.catch(() => { })
+				.finally(() => {
+					setIsLoading(false);
+				});
 		}
 
 		// Withdraw Count (only if manual withdraw enabled)
 		if (settings?.disbursement?.withdraw_type === 'manual') {
-			axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'store'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { count: true, pending_withdraw: true },
-			})
-				.then((res) => setWithdrawCount(res.data || 0))
-				.finally(() => {setIsLoading(false);})
-				.catch(() => {});
+			axios
+				.get(getApiLink(appLocalizer, 'store'), {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						page: 1,
+						row: 1,          
+						pending_withdraw: true,
+					},
+				})
+				.then((res) => {
+					setWithdrawCount(
+						Number(res.headers['x-wp-total']) || 0
+					);
+				})
+				.catch(() => { })
+				.finally(() => {
+					setIsLoading(false);
+				});
 		}
 
 		// Deactivate Store Request (always active)
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { count: true, deactivate: true },
-		})
-			.then((res) => setDeactivateCount(res.data || 0))
-			.finally(() => {setIsLoading(false);})
-			.catch(() => {});
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: 1,
+					row: 1,   
+					deactivate: true,
+				},
+			})
+			.then((res) => {
+				setDeactivateCount(
+					Number(res.headers['x-wp-total']) || 0
+				);
+			})
+			.catch(() => { })
+			.finally(() => {
+				setIsLoading(false);
+			});
+
 	};
 
 	useEffect(() => {
