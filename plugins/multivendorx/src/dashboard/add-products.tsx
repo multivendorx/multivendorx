@@ -1635,7 +1635,7 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
-					{/* 
+					
 					 <Card
 						title={__('Visibility', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
@@ -1785,7 +1785,7 @@ const AddProduct = () => {
 								</FormGroup>
 							)} 
 					</FormGroupWrapper>
-					 </Card>  */}
+					 </Card> 
 				</Column>
 			</Container >
 		</>

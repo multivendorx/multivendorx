@@ -37,6 +37,10 @@
     "contentPosition": {
       "type": "string",
       "default": "center center"
+    },
+    "template": {
+      "type": "string",
+      "default": "template-1"
     }
   },
   "supports": {
