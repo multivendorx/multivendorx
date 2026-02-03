@@ -13,8 +13,6 @@ import Recaptcha from './Recaptcha';
 import Datepicker from './DatePicker';
 import TimePicker from './TimePicker';
 import TemplateSection from './EmailTemplate/TemplateSection';
-import BlockLayout from './EmailTemplate/BlockLayout';
-import ImageGallery from './EmailTemplate/ImageGallery';
 import AddressField, { AddressFormField } from './AddressField';
 import TemplateTextArea from './EmailTemplate/TemplateTextArea';
 import '../styles/web/RegistrationForm.scss';
@@ -41,13 +39,6 @@ export interface SelectOption {
     name?: string;
 }
 
-interface ImageItem {
-    id: string;
-    url: string;
-    alt: string;
-    caption?: string;
-}
-
 export interface FormField {
     id: number;
     type: string;
@@ -58,8 +49,6 @@ export interface FormField {
     options?: Option[];
     sitekey?: string;
     readonly?: boolean;
-    images?: ImageItem[];
-    layout?: { blocks?: Array<Record<string, unknown>> };
     charlimit?: number;
     row?: number;
     column?: number;
@@ -264,11 +253,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
     const [opendInput, setOpendInput] = useState<FormField | null>(null);
     const [randMaxId, setRendMaxId] = useState<number>(0);
 
-    // State for image gallery
-    const [showImageGallery, setShowImageGallery] = useState(false);
-    const [selectedFieldForGallery, setSelectedFieldForGallery] =
-        useState<FormField | null>(null);
-
     useEffect(() => {
         setRendMaxId(
             formFieldList.reduce(
@@ -312,12 +296,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             newFormField.options = DEFAULT_OPTIONS;
         } else if (type === 'title') {
             newFormField.label = DEFAULT_FORM_TITLE;
-        } else if (type === 'image-gallery') {
-            newFormField.label = 'Image Gallery';
-            newFormField.images = [];
-        } else if (type === 'block-layout') {
-            newFormField.label = 'Content Block';
-            newFormField.layout = { blocks: [] };
         } else if (type === 'address') {
             newFormField.label = 'Address';
             newFormField.fields = [
@@ -519,72 +497,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
         settingHasChanged.current = true;
         setFormFieldList(newFormFieldList);
         setOpendInput(newFormField);
-    };
-
-    const handleImageSelect = (images: ImageItem[]) => {
-        if (!selectedFieldForGallery) {
-            return;
-        }
-
-        const index = formFieldList.findIndex(
-            (f) => f.id === selectedFieldForGallery.id
-        );
-        if (index >= 0) {
-            handleFormFieldChange(index, 'images', images);
-        }
-
-        setShowImageGallery(false);
-        setSelectedFieldForGallery(null);
-    };
-
-    // Image Gallery Field Component
-    const ImageGalleryField: React.FC<{
-        formField: FormField;
-        onChange: (key: string, value: FieldValue) => void;
-    }> = ({ formField, onChange }) => {
-        return (
-            <div className="image-gallery-field">
-                <label>{formField.label}</label>
-                <div className="gallery-preview">
-                    {formField.images && formField.images.length > 0 ? (
-                        <div className="selected-images">
-                            {formField.images.map((image, index) => (
-                                <div key={index} className="image-thumbnail">
-                                    <img src={image.url} alt={image.alt} />
-                                    <button
-                                        className="remove-image"
-                                        onClick={() => {
-                                            const newImages =
-                                                formField.images?.filter(
-                                                    (_, i) => i !== index
-                                                ) || [];
-                                            onChange('images', newImages);
-                                        }}
-                                    >
-                                        <i className="admin-font adminfont-delete"></i>
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="empty-gallery">
-                            <i className="admin-font adminfont-image"></i>
-                            <p>No images selected</p>
-                        </div>
-                    )}
-                </div>
-                <button
-                    className="admin-btn btn-purple"
-                    onClick={() => {
-                        setSelectedFieldForGallery(formField);
-                        setShowImageGallery(true);
-                    }}
-                >
-                    <i className="admin-font adminfont-plus-circle"></i>
-                    Select Images
-                </button>
-            </div>
-        );
     };
 
     // Tabs configuration
@@ -824,21 +736,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             }
                                         />
                                     )}
-                                    {formField.type === 'block-layout' && (
-                                        <BlockLayout />
-                                    )}
-                                    {formField.type === 'image-gallery' && (
-                                        <ImageGalleryField
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
-                                    )}
                                     {formField.type === 'textarea' && (
                                         <TemplateTextArea
                                             formField={formField}
@@ -1009,33 +906,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     </>
                 )}
             </div>
-
-            { /* Image Gallery Modal */}
-            {showImageGallery && (
-                <div className="modal-overlay">
-                    <div className="modal-content large">
-                        <div className="modal-header">
-                            <h3>Select Images</h3>
-                            <button
-                                className="close-btn"
-                                onClick={() => {
-                                    setShowImageGallery(false);
-                                    setSelectedFieldForGallery(null);
-                                }}
-                            >
-                                <i className="admin-font adminfont-close"></i>
-                            </button>
-                        </div>
-                        <ImageGallery
-                            onImageSelect={handleImageSelect}
-                            multiple={true}
-                            selectedImages={
-                                selectedFieldForGallery?.images || []
-                            }
-                        />
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
