@@ -8,13 +8,9 @@ import Elements from './Elements';
 import SettingMetaBox from './SettingMetaBox';
 import SimpleInput from './SimpleInput';
 import MultipleOptions from './MultipleOption';
-import Attachment from './Attachment';
-import Recaptcha from './Recaptcha';
-import Datepicker from './DatePicker';
-import TimePicker from './TimePicker';
-import TemplateSection from './EmailTemplate/TemplateSection';
 import AddressField, { AddressFormField } from './AddressField';
-import TemplateTextArea from './EmailTemplate/TemplateTextArea';
+import TextArea from './TextArea';
+import FileInput from './FileInput';
 import '../styles/web/RegistrationForm.scss';
 
 // Types
@@ -23,7 +19,7 @@ export type FieldValue =
     | number
     | boolean
     | FieldValue[]
-    | { [ key: string ]: FieldValue };
+    | { [key: string]: FieldValue };
 
 export interface Option {
     id: string;
@@ -340,9 +336,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     label: 'Country',
                     type: 'select',
                     options: [
-                        'India', 
-                        'USA', 
-                        'UK', 
+                        'India',
+                        'USA',
+                        'UK',
                         'Canada'
                     ],
                 },
@@ -428,7 +424,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
 
         const newFormFieldList = [...formFieldList];
 
-       if ( parentId !== -1 ) {
+        if (parentId !== -1) {
             // Handle subfield
             const parentIndex = newFormFieldList.findIndex(
                 (f) => f.id === parentId
@@ -663,13 +659,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     ) && (
                                             <SimpleInput
                                                 formField={formField}
-                                                onChange={(key, value) =>
-                                                    handleFormFieldChange(
-                                                        index,
-                                                        key,
-                                                        value
-                                                    )
-                                                }
                                             />
                                         )}
                                     {[
@@ -680,13 +669,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     ].includes(formField.type) && (
                                             <MultipleOptions
                                                 formField={formField}
-                                                onChange={(key, value) =>
-                                                    handleFormFieldChange(
-                                                        index,
-                                                        key,
-                                                        value
-                                                    )
-                                                }
                                                 type={
                                                     formField.type as
                                                     | 'radio'
@@ -698,82 +680,71 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             />
                                         )}
                                     {formField.type === 'datepicker' && (
-                                        <Datepicker
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <div className="settings-form-group-radio">
+                                                <input className="basic-input" type="date" readOnly />
+                                            </div>
+                                        </>
                                     )}
                                     {formField.type === 'TimePicker' && (
-                                        <TimePicker
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <div className="settings-form-group-radio">
+                                                <input className="basic-input" type="time" readOnly />
+                                            </div>
+                                        </>
                                     )}
                                     {formField.type === 'attachment' && (
-                                        <Attachment />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <FileInput
+                                                value={''}
+                                                inputClass="form-input"
+                                                name="image"
+                                                type="hidden"
+                                                imageWidth={75}
+                                                imageHeight={75}
+                                            />
+                                        </>
                                     )}
                                     {formField.type === 'section' && (
-                                        <TemplateSection
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <div className="main-input-wrapper">
+                                                <input
+                                                    className="basic-input textarea-label"
+                                                    type="text"
+                                                    value={formField.label}
+                                                    placeholder="I am label"
+                                                />
+                                            </div>
+                                        </>
                                     )}
                                     {formField.type === 'textarea' && (
-                                        <TemplateTextArea
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <TextArea
+                                                name="content"
+                                            />
+                                        </>
                                     )}
                                     {formField.type === 'recaptcha' && (
-                                        <Recaptcha
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <div
+                                            className={`main-input-wrapper ${!formField.sitekey ? 'recaptcha' : ''
+                                                }`}
+                                        >
+                                            {formField.sitekey
+                                                ? 'reCAPTCHA has been successfully added to the form.'
+                                                : 'reCAPTCHA is not configured.'}
+                                        </div>
                                     )}
                                     {formField.type === 'address' && (
                                         <AddressField
                                             formField={
                                                 formField as AddressFormField
                                             }
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                            opendInput={opendInput} // pass current opened input
-                                            setOpendInput={setOpendInput} // allow subfields to set it
+                                            opendInput={opendInput}
+                                            setOpendInput={setOpendInput}
                                         />
                                     )}
                                     {formField.type === 'divider' && (
