@@ -120,14 +120,14 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
 
         const mainValue =
             typeof value === 'object' && fieldKey
-                ? value[fieldKey]
-                : String(value);
+                ? value[fieldKey] ?? ''
+                : value ?? '';
 
-        const updateValue = (newVal: string) => {
+        const updateValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
             if (typeof value === 'object' && fieldKey) {
-                onChange({ ...value, [fieldKey]: newVal });
+                onChange({ ...value, [fieldKey]: e.target.value });
             } else {
-                onChange(newVal);
+                onChange(e);
             }
         };
 
@@ -197,12 +197,22 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
 
         const handleGenerate = (e: MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
-            updateValue(randomKey(8));
+            if (onChange) {
+                const event = {
+                    target: { value: randomKey(8) },
+                } as React.ChangeEvent<HTMLInputElement>;
+                onChange(event);
+            }
         };
 
         const handleClear = (e: MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
-            updateValue('');
+            if (onChange) {
+                const event = {
+                    target: { value: '' },
+                } as React.ChangeEvent<HTMLInputElement>;
+                onChange(event);
+            }
         };
 
         const handleCopy = (e: MouseEvent<HTMLButtonElement>) => {
@@ -268,9 +278,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                             : undefined
                                     }
                                     value={mainValue}
-                                    onChange={(e) =>
-                                        updateValue(e.target.value)
-                                    }
+                                    onChange={updateValue}
                                     onClick={onClick}
                                     onMouseOver={onMouseOver}
                                     onMouseOut={onMouseOut}

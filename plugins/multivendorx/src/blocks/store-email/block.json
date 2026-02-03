@@ -3,7 +3,68 @@
   "name": "multivendorx/store-email",
   "title": "Store Email",
   "category": "multivendorx-store-shop",
-  "icon": "store",
+  "icon": "email",
+  "description": "Display store email address",
+  "keywords": ["email", "contact", "store"],
   "editorScript": "file:./index.js",
-  "script": "file:./index.js"
+  "supports": {
+    "align": true,
+    "alignWide": false,
+    "html": false,
+    "color": {
+      "text": true,
+      "__experimentalDefaultControls": {
+        "text": true
+      }
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "__experimentalDefaultControls": {
+        "margin": true,
+        "padding": true
+      }
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "style": true,
+        "width": true
+      }
+    }
+  },
+  "styles": [
+    {
+      "name": "default",
+      "label": "Default",
+      "isDefault": true,
+      "attributes": {
+        "showIcon": true
+      }
+    },
+    {
+      "name": "no-icon",
+      "label": "No Icon",
+      "attributes": {
+        "showIcon": false
+      }
+    },
+    {
+      "name": "link",
+      "label": "Link Style",
+      "attributes": {
+        "showIcon": true
+      }
+    }
+  ]
 }

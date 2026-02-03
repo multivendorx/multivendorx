@@ -1,0 +1,82 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-logo",
+  "title": "Store Logo",
+  "category": "multivendorx-store-shop",
+  "icon": "format-image",
+  "description": "Display store logo",
+  "keywords": ["logo", "store", "image", "brand"],
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js",
+  "attributes": {
+    "overlayColor": {
+      "type": "string"
+    },
+    "customOverlayColor": {
+      "type": "string"
+    },
+    "dimRatio": {
+      "type": "number",
+      "default": 0
+    },
+    "height": {
+      "type": "number",
+      "default": 100
+    },
+    "width": {
+      "type": "number",
+      "default": 100
+    },
+    "aspectRatio": {
+      "type": "string",
+      "default": "1:1"
+    }
+  },
+  "supports": {
+    "align": true,
+    "alignWide": false,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true,
+      "__experimentalDefaultControls": {
+        "background": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "__experimentalDefaultControls": {
+        "margin": true,
+        "padding": true
+      }
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "style": true,
+      "width": true,
+      "radius": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "style": true,
+        "width": true,
+        "radius": true
+      }
+    }
+  },
+  "styles": [
+    {
+      "name": "default",
+      "label": "Default",
+      "isDefault": true
+    },
+    {
+      "name": "rounded",
+      "label": "Rounded"
+    },
+    {
+      "name": "circle",
+      "label": "Circle"
+    }
+  ]
+}
