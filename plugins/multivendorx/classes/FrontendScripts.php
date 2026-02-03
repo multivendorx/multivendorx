@@ -285,6 +285,11 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
+                'multivendorx-store-review-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-review/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
 			)
         );
         foreach ( $register_scripts as $name => $props ) {
