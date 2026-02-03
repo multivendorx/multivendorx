@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __, sprintf } from '@wordpress/i18n';
 import {
-	Table,
 	getApiLink,
-	TableCell,
 	CommonPopup,
 	BasicInput,
 	TextArea,
@@ -16,316 +14,29 @@ import {
 	FormGroup,
 	AdminButton,
 	MiniCard,
-	MultiCalendarInput,
 	MessageState,
-	Skeleton
+	Skeleton,
+	TableCard
 } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
-import ViewCommission from '../Commissions/ViewCommission';
 
-type StoreRow = {
-	id?: number;
-	store_name?: string;
-	store_slug?: string;
-	status?: string;
-	date?: string;
-	order_details?: string;
-	transaction_type?: string;
-	credit?: string;
-	debit?: string;
-	balance?: string;
-	payment_method?: string;
-};
+import { formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
+import ViewCommission from '../Commissions/ViewCommission';
+import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 interface WalletTransactionProps {
 	storeId: number | null;
-	dateRange: { startDate: Date | null; endDate: Date | null };
 }
 
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => ReactNode;
-}
+const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [totalRows, setTotalRows] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [categoryCounts, setCategoryCounts] = useState<
+		categoryCounts[] | null
+	>(null);
 
-type TransactionStatus = {
-	key: string;
-	name: string;
-	count: number;
-};
 
-type FilterData = {
-	searchAction?: string;
-	searchField?: string;
-	categoryFilter?: string;
-	store?: string;
-	order?: string;
-	orderBy?: string;
-	date?: {
-		start_date: Date;
-		end_date: Date;
-	};
-	transactionType?: string;
-	transactionStatus?: string;
-};
-
-// CSV Download Button Component for Transactions (Bulk Action)
-const DownloadTransactionCSVButton: React.FC<{
-	selectedRows: RowSelectionState;
-	data: StoreRow[] | null;
-	filterData: FilterData;
-	storeId: number | null;
-	isLoading?: boolean;
-}> = ({ selectedRows, data, filterData, storeId, isLoading = false }) => {
-	const [isDownloading, setIsDownloading] = useState(false);
-
-	const handleDownload = async () => {
-		if (!storeId) {
-			alert(__('Please select a store first.', 'multivendorx'));
-			return;
-		}
-
-		setIsDownloading(true);
-		try {
-			// Get selected row IDs
-			const selectedIds = Object.keys(selectedRows)
-				.filter((key) => selectedRows[key])
-				.map((key) => {
-					const rowIndex = parseInt(key);
-					return data?.[rowIndex]?.id;
-				})
-				.filter((id) => id !== undefined);
-
-			// Prepare parameters for CSV download
-			const params: any = {
-				format: 'csv',
-				store_id: storeId,
-			};
-
-			// Add date filters if present
-			if (filterData?.date?.start_date) {
-				params.start_date = filterData.date.start_date
-					.toISOString()
-					.split('T')[0];
-			}
-			if (filterData?.date?.end_date) {
-				params.end_date = filterData.date.end_date
-					.toISOString()
-					.split('T')[0];
-			}
-
-			// Add transaction type filter
-			if (filterData?.transactionType) {
-				params.transaction_type = filterData.transactionType;
-			}
-
-			// Add transaction status filter
-			if (filterData?.transactionStatus) {
-				params.transaction_status = filterData.transactionStatus;
-			}
-
-			// Add status filter (Cr/Dr)
-			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
-				params.filter_status = filterData.categoryFilter;
-			}
-
-			// If specific rows are selected, send their IDs
-			if (selectedIds.length > 0) {
-				params.ids = selectedIds.join(',');
-			} else {
-				// If no rows selected, export current page data
-				params.page = 1; // You might want to get current page from props
-				params.row = 10; // You might want to get current page size from props
-			}
-
-			// Make API request for CSV
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'transaction'),
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-					Accept: 'text/csv',
-				},
-				params: params,
-				responseType: 'blob',
-			});
-
-			// Create download link
-			const url = window.URL.createObjectURL(new Blob([response.data]));
-			const link = document.createElement('a');
-			link.href = url;
-
-			// Generate filename with timestamp and store ID
-			const timestamp = new Date().toISOString().split('T')[0];
-			const context = selectedIds.length > 0 ? 'selected' : 'page';
-			const filename = `transactions_${context}_store_${storeId}_${timestamp}.csv`;
-			link.setAttribute('download', filename);
-
-			document.body.appendChild(link);
-			link.click();
-			link.remove();
-			window.URL.revokeObjectURL(url);
-		} catch (error) {
-			console.error('Error downloading CSV:', error);
-			alert(
-				__('Failed to download CSV. Please try again.', 'multivendorx')
-			);
-		} finally {
-			setIsDownloading(false);
-		}
-	};
-
-	const hasSelectedRows = Object.keys(selectedRows).some(
-		(key) => selectedRows[key]
-	);
-
-	return (
-		<div className="action-item">
-			<button
-				onClick={handleDownload}
-				disabled={
-					isDownloading ||
-					isLoading ||
-					!storeId ||
-					(!hasSelectedRows && !data)
-				}
-				className="admin-btn"
-			>
-				<i className="adminfont-download"></i>
-				{__('Download CSV', 'multivendorx')}
-			</button>
-		</div>
-	);
-};
-
-// Export All CSV Button Component for Transactions - Downloads ALL filtered data
-const ExportAllTransactionCSVButton: React.FC<{
-	filterData: FilterData;
-	storeId: number | null;
-}> = ({ filterData, storeId }) => {
-	const [isDownloading, setIsDownloading] = useState(false);
-
-	const handleExportAll = async () => {
-		if (!storeId) {
-			alert(__('Please select a store first.', 'multivendorx'));
-			return;
-		}
-
-		setIsDownloading(true);
-		try {
-			// Prepare parameters for CSV download - NO pagination params
-			const params: any = {
-				format: 'csv',
-				store_id: storeId,
-			};
-
-			// Add date filters if present
-			if (filterData?.date?.start_date) {
-				params.start_date = filterData.date.start_date
-					.toISOString()
-					.split('T')[0];
-			}
-			if (filterData?.date?.end_date) {
-				params.end_date = filterData.date.end_date
-					.toISOString()
-					.split('T')[0];
-			}
-
-			// Add transaction type filter
-			if (filterData?.transactionType) {
-				params.transaction_type = filterData.transactionType;
-			}
-
-			// Add transaction status filter
-			if (filterData?.transactionStatus) {
-				params.transaction_status = filterData.transactionStatus;
-			}
-
-			// Add status filter (Cr/Dr)
-			if (filterData?.categoryFilter && filterData.categoryFilter !== 'all') {
-				params.filter_status = filterData.categoryFilter;
-			}
-
-			// Make API request for CSV
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'transaction'),
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-					Accept: 'text/csv',
-				},
-				params: params,
-				responseType: 'blob',
-			});
-
-			// Create download link
-			const url = window.URL.createObjectURL(new Blob([response.data]));
-			const link = document.createElement('a');
-			link.href = url;
-
-			// Generate filename with timestamp and store ID
-			const timestamp = new Date().toISOString().split('T')[0];
-			const filename = `transactions_all_store_${storeId}_${timestamp}.csv`;
-			link.setAttribute('download', filename);
-
-			document.body.appendChild(link);
-			link.click();
-			link.remove();
-			window.URL.revokeObjectURL(url);
-		} catch (error) {
-			console.error('Error downloading CSV:', error);
-			alert(
-				__('Failed to download CSV. Please try again.', 'multivendorx')
-			);
-		} finally {
-			setIsDownloading(false);
-		}
-	};
-
-	return (
-		<button
-			onClick={handleExportAll}
-			disabled={isDownloading || !storeId}
-			className="admin-btn btn-purple-bg"
-		>
-			<span className="adminfont-download"></span>
-			Download CSV
-		</button>
-	);
-};
-
-// Bulk Actions Component for Transactions
-const TransactionBulkActions: React.FC<{
-	selectedRows: RowSelectionState;
-	data: StoreRow[] | null;
-	filterData: FilterData;
-	storeId: number | null;
-	onActionComplete?: () => void;
-}> = ({ selectedRows, data, filterData, storeId, onActionComplete }) => {
-	return (
-		<div>
-			<DownloadTransactionCSVButton
-				selectedRows={selectedRows}
-				data={data}
-				filterData={filterData}
-				storeId={storeId}
-			/>
-		</div>
-	);
-};
-
-const WalletTransaction: React.FC<WalletTransactionProps> = ({
-	storeId,
-	dateRange,
-}) => {
-	const [data, setData] = useState<StoreRow[] | null>(null);
 	const [wallet, setWallet] = useState<any[]>([]);
 	const [recentDebits, setRecentDebits] = useState<any[]>([]);
 	const [storeData, setStoreData] = useState<any>(null);
@@ -338,386 +49,12 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 	const [note, setNote] = useState<any | ''>('');
 	const [paymentMethod, setPaymentMethod] = useState<any | ''>('');
 
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [pageCount, setPageCount] = useState(0);
-	const [transactionStatus, setTransactionStatus] = useState<
-		TransactionStatus[] | null
-	>(null);
-	const [currentFilterData, setCurrentFilterData] = useState<FilterData>({});
 	const [viewCommission, setViewCommission] = useState(false);
 	const [selectedCommissionId, setSelectedCommissionId] = useState<
 		number | null
 	>(null);
 	const [walletLoading, setWalletLoading] = useState(true);
-	const [dateFilter, setDateFilter] = useState<{
-		start_date: Date;
-		end_date: Date;
-	}>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
 
-	// Add search filter with export button
-	const actionButton: RealtimeFilter[] = [
-		{
-			name: 'actionButton',
-			render: () => (
-				<>
-					<ExportAllTransactionCSVButton
-						filterData={currentFilterData}
-						storeId={storeId}
-					/>
-				</>
-			),
-		},
-	];
-
-	// 🔹 Fetch data from backend
-	function requestData(
-		rowsPerPage: number,
-		currentPage: number,
-		categoryFilter = '',
-		transactionType = '',
-		transactionStatus = '',
-		orderBy = '',
-		order = '',
-		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date(),
-		searchFiled = ''
-	) {
-		if (!storeId) {
-			return;
-		}
-
-		setData(null);
-
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'transaction'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				store_id: storeId,
-				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',
-				status: categoryFilter == 'all' ? '' : categoryFilter,
-				transaction_status: transactionStatus,
-				transaction_type: transactionType,
-				orderBy,
-				order,
-				searchFiled
-			},
-		})
-			.then((response) => {
-				setData(response.data.transaction || []);
-				setTotalRows(response.data.all || 0);
-				setPageCount(Math.ceil(response.data.all / pagination.pageSize));
-
-				const statuses = [
-					{ key: 'all', name: 'All', count: response.data.all || 0 },
-					{
-						key: 'Completed',
-						name: 'Completed',
-						count: response.data.completed || 0,
-					},
-					{
-						key: 'Processed',
-						name: 'Processed',
-						count: response.data.processed || 0,
-					},
-					{
-						key: 'Upcoming',
-						name: 'Upcoming',
-						count: response.data.upcoming || 0,
-					},
-					{
-						key: 'Failed',
-						name: 'Failed',
-						count: response.data.failed || 0,
-					},
-				];
-
-				// keep only items whose count is NOT zero
-				const filteredStatuses = statuses.filter(
-					(item) => item.count !== 0
-				);
-
-				setTransactionStatus(filteredStatuses);
-			})
-			.catch(() => setData([]));
-	}
-
-	// 🔹 Handle pagination & date changes
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		requestData(pagination.pageSize, currentPage);
-		setPageCount(Math.ceil(totalRows / pagination.pageSize));
-	}, [storeId]);
-
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		const date = filterData?.date || {
-			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-			end_date: new Date(),
-		};
-		setDateFilter(date);
-		setCurrentFilterData(filterData);
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.categoryFilter,
-			filterData?.transactionType,
-			filterData?.transactionStatus,
-			filterData?.orderBy,
-			filterData?.order,
-			date?.start_date,
-			date?.end_date,
-			filterData.searchField,
-		);
-	};
-
-	// 🔹 Column definitions with Status sorting
-	const columns: ColumnDef<StoreRow>[] = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('ID', 'multivendorx'),
-			cell: ({ row }) => <TableCell>#{row.original.id}</TableCell>,
-		},
-		{
-			header: __('Status', 'multivendorx'),
-			cell: ({ row }) => {
-				return <TableCell type="status" status={row.original.status} />;
-			},
-		},
-		{
-			header: __('Transaction Type', 'multivendorx'),
-			cell: ({ row }) => {
-				const type = row.original.transaction_type?.toLowerCase();
-				const commissionId = row.original?.commission_id;
-				const formatText = (text: string) =>
-					text
-						?.replace(/-/g, ' ')
-						?.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-';
-
-				let displayValue = '-';
-				let content: string = displayValue;
-
-				// Commission Transaction (clickable)
-				if (type === 'commission') {
-					displayValue = `Commission #${commissionId}`;
-					content = commissionId ? (
-						<span
-							className="link-item"
-							onClick={() => {
-								setSelectedCommissionId(commissionId);
-								setViewCommission(true);
-							}}
-						>
-							{displayValue}
-						</span>
-					) : (
-						displayValue
-					);
-				} else if (row.original.transaction_type) {
-					displayValue = formatText(row.original.narration);
-					content = displayValue;
-				}
-
-				return <TableCell title={displayValue}>{content}</TableCell>;
-			},
-		},
-		{
-			id: 'date',
-			accessorKey: 'date',
-			enableSorting: true,
-			header: __('Date', 'multivendorx'),
-			cell: ({ row }) => {
-				const rawDate = row.original.date;
-				let formattedDate = '-';
-				if (rawDate) {
-					const dateObj = new Date(rawDate);
-					formattedDate = new Intl.DateTimeFormat('en-US', {
-						month: 'short',
-						day: 'numeric',
-						year: 'numeric',
-					}).format(dateObj);
-				}
-				return (
-					<TableCell title={formattedDate}>{formattedDate}</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Credit', 'multivendorx'),
-			cell: ({ row }) => {
-				const credit = row.original.credit;
-				return (
-					<TableCell>
-						{credit ? formatCurrency(credit) : '-'}
-					</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Debit', 'multivendorx'),
-			cell: ({ row }) => {
-				const debit = row.original.debit;
-				return (
-					<TableCell>{debit ? formatCurrency(debit) : '-'}</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Balance', 'multivendorx'),
-			cell: ({ row }) => {
-				const balance = row.original.balance;
-				return (
-					<TableCell>
-						{balance ? formatCurrency(balance) : '-'}
-					</TableCell>
-				);
-			},
-		},
-	];
-
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'transactionType',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="group-field">
-					<select
-						name="transactionType"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">
-							{__('Transaction Type', 'multivendorx')}
-						</option>
-						<option value="Commission">
-							{__('Commission', 'multivendorx')}
-						</option>
-						<option value="Withdrawal">
-							{__('Withdrawal', 'multivendorx')}
-						</option>
-						<option value="Refund">
-							{__('Refund', 'multivendorx')}
-						</option>
-						<option value="Reversed">
-							{__('Reversed', 'multivendorx')}
-						</option>
-						<option value="COD received">
-							{__('COD received', 'multivendorx')}
-						</option>
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'transactionStatus',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="group-field">
-					<select
-						name="transactionStatus"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">
-							{__('Financial Transactions', 'multivendorx')}
-						</option>
-						<option value="Cr">
-							{__('Credit', 'multivendorx')}
-						</option>
-						<option value="Dr">
-							{__('Debit', 'multivendorx')}
-						</option>
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<MultiCalendarInput
-					value={{
-						startDate: dateFilter.start_date,
-						endDate: dateFilter.end_date,
-					}}
-					onChange={(range: { startDate: Date; endDate: Date }) => {
-						const next = {
-							start_date: range.startDate,
-							end_date: range.endDate,
-						};
-
-						setDateFilter(next);
-						updateFilter('date', next);
-					}}
-				/>
-			),
-		},
-	];
-	const searchFilter: RealtimeFilter[] = [
-		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<>
-					<div className="search-section">
-						<input
-							name="searchField"
-							type="text"
-							placeholder={__('Search', 'multivendorx')}
-							onChange={(e) => {
-								updateFilter(e.target.name, e.target.value);
-							}}
-							value={filterValue || ''}
-							className="basic-input"
-						/>
-						<i className="adminfont-search"></i>
-					</div>
-				</>
-			),
-		},
-	];
 	// 🔹 Fetch wallet/transaction overview whenever store changes
 	useEffect(() => {
 		if (!storeId) {
@@ -753,8 +90,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 				page: 1,
 				row: 3,
 				store_id: storeId,
-				filter_status: 'Dr',
-				transaction_type: 'Withdrawal',
+				transactionStatus: 'Dr',
+				transactionType: 'Withdrawal',
 				orderBy: 'created_at',
 				order: 'DESC',
 				status: 'Completed'
@@ -850,6 +187,259 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 
 	// fee calculation
 	const fee = amount * (percentage / 100) + fixed;
+
+	const headers = [
+		{ key: 'id', label: __('ID', 'multivendorx') },
+		{ key: 'status', label: __('Status', 'multivendorx') },
+		{ key: 'TransactionType', label: __('Transaction Type', 'multivendorx') },
+		{ key: 'date', label: __('Date', 'multivendorx') },
+		{ key: 'credit', label: __('Credit', 'multivendorx') },
+		{ key: 'debit', label: __('Debit', 'multivendorx') },
+		{ key: 'balance', label: __('Balance', 'multivendorx'), isSortable: true, },
+	];
+
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+		axios
+			.get(getApiLink(appLocalizer, 'transaction'), {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: {
+					page: query.paged,
+					per_page: query.per_page,
+					store_id: storeId,
+					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+					searchValue: query.searchValue,
+					orderby: query.orderby,
+					order: query.order,
+					transactionStatus: query?.filter?.transactionStatus,
+					transactionType: query?.filter?.transactionType,
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+				},
+			})
+			.then((response) => {
+				const products = Array.isArray(response.data)
+					? response.data
+					: [];
+
+				const ids: number[] = products.map((p: any) => Number(p.id));
+				setRowIds(ids);
+
+				const mappedRows: any[][] = products.map((product: any) => [
+					{
+						display: `#${product.id}`,
+						value: product.id,
+					},
+					{
+						display: product.status,
+						value: product.status,
+					},
+					{
+						display: (
+							product.transaction_type?.toLowerCase() === 'commission' && product.commission_id ? (
+								<span
+									className="link-item"
+									onClick={() => {
+										setSelectedCommissionId(product.commission_id);
+										setViewCommission(true);
+									}}
+								>
+									{`Commission #${product.commission_id}`}
+								</span>
+							) : (
+								<span>
+									{product.narration
+										?.replace(/-/g, ' ')
+										.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-'}
+								</span>
+							)
+						),
+						value: product.transaction_type,
+					},
+					{
+						display: product.date
+							? formatWcShortDate(product.date)
+							: '-',
+						value: product.date,
+					},
+					{
+						display: product.credit
+							? formatCurrency(product.credit)
+							: '-',
+						value: product.credit,
+					},
+					{
+						display: product.debit
+							? formatCurrency(product.debit)
+							: '-',
+						value: product.debit,
+					},
+					{
+						display: product.balance
+							? formatCurrency(product.balance)
+							: '-',
+						value: product.balance,
+					},
+				]);
+
+				setRows(mappedRows);
+				setCategoryCounts([
+					{
+						value: 'all',
+						label: 'All',
+						count: Number(response.headers['x-wp-total']) || 0,
+					},
+					{
+						value: 'completed',
+						label: 'Completed',
+						count: Number(response.headers['x-wp-status-completed']) || 0,
+					},
+					{
+						value: 'processed',
+						label: 'Processed',
+						count: Number(response.headers['x-wp-status-processed']) || 0,
+					},
+					{
+						value: 'upcoming',
+						label: 'Upcoming',
+						count: Number(response.headers['x-wp-status-upcoming']) || 0,
+					},
+					{
+						value: 'vailed',
+						label: 'Failed',
+						count: Number(response.headers['x-wp-status-failed']) || 0,
+					}
+				]);
+
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('Product fetch failed:', error);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
+	};
+
+	const filters = [
+		{
+			key: 'transactionType',
+			label: 'Transaction Type',
+			type: 'select',
+			options: [
+				{ label: __('Transaction Type', 'multivendorx'), value: '' },
+				{ label: __('Commission', 'multivendorx'), value: 'Commission' },
+				{ label: __('Withdrawal', 'multivendorx'), value: 'Withdrawal' },
+				{ label: __('Refund', 'multivendorx'), value: 'Refund' },
+				{ label: __('Reversed', 'multivendorx'), value: 'Reversed' },
+				{ label: __('COD received', 'multivendorx'), value: 'COD received' }
+			]
+		},
+		{
+			key: 'transactionStatus',
+			label: 'Financial Transactions',
+			type: 'select',
+			options: [
+				{ label: __('Financial Transactions', 'multivendorx'), value: '' },
+				{ label: __('Credit', 'multivendorx'), value: 'Cr' },
+				{ label: __('Debit', 'multivendorx'), value: 'Dr' }
+			]
+		},
+		{
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		},
+	];
+
+	const buttonActions = [
+		{
+			label: 'Download CSV',
+			icon: 'download',
+			onClickWithQuery: (query: QueryProps) => {
+				downloadProductsCSV(query);
+			},
+		},
+	];
+
+	const downloadProductsCSV = (query: QueryProps) => {
+		// setIsLoading(true);
+
+		// axios
+		// 	.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
+		// 		headers: {
+		// 			'X-WP-Nonce': appLocalizer.nonce,
+		// 		},
+		// 		params: {
+		// 			per_page: 100, // WooCommerce max per page
+		// 			page: 1,
+		// 			search: query.searchValue,
+		// 			orderby: query.orderby,
+		// 			order: query.order,
+		// 			meta_key: 'multivendorx_store_id',
+		// 			value: query?.filter?.store_id,
+		// 			after: query.filter?.created_at?.startDate
+		// 				? toWcIsoDate(query.filter.created_at.startDate, 'start')
+		// 				: undefined,
+		// 			before: query.filter?.created_at?.endDate
+		// 				? toWcIsoDate(query.filter.created_at.endDate, 'end')
+		// 				: undefined,
+		// 		},
+		// 	})
+		// 	.then((response) => {
+		// 		const products = Array.isArray(response.data)
+		// 			? response.data
+		// 			: [];
+
+		// 		const csvData = products.map((product) => ({
+		// 			ID: product.id,
+		// 			Product: product.name,
+		// 			SKU: product.sku || '',
+		// 			Store: product.store_name || '',
+		// 			Items_Sold: Number(product.total_sales || 0),
+		// 			Net_Sales: product.price
+		// 				? formatCurrency(product.price)
+		// 				: '',
+		// 			Category:
+		// 				product.categories
+		// 					?.map((c: { name: string }) => c.name)
+		// 					.join(', ') || '',
+		// 			Date_Created: product.date_created
+		// 				? formatWcShortDate(product.date_created)
+		// 				: '',
+		// 		}));
+
+		// 		downloadCSV({
+		// 			data: csvData,
+		// 			filename: 'products-report.csv',
+		// 			headers: {
+		// 				ID: 'Product ID',
+		// 				Product: 'Product Name',
+		// 				SKU: 'SKU',
+		// 				Store: 'Store',
+		// 				Items_Sold: 'Items Sold',
+		// 				Net_Sales: 'Net Sales',
+		// 				Category: 'Category',
+		// 				Date_Created: 'Date Created',
+		// 			},
+		// 		});
+
+		// 		setIsLoading(false);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error('CSV download failed:', error);
+		// 		setIsLoading(false);
+		// 	});
+	};
+
+
 	return (
 		<>
 			<Container>
@@ -1139,30 +729,21 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({
 
 				<Column>
 					<div className="admin-table-wrapper admin-pt-2">
-						<Table
-							data={data}
-							columns={columns as ColumnDef<Record<string, any>, any>[]}
-							rowSelection={rowSelection}
-							onRowSelectionChange={setRowSelection}
-							defaultRowsPerPage={10}
-							pageCount={pageCount}
-							pagination={pagination}
-							onPaginationChange={setPagination}
-							handlePagination={requestApiForData}
-							perPageOption={[10, 25, 50]}
-							categoryFilter={transactionStatus as TransactionStatus[]}
-							totalCounts={totalRows}
-							searchFilter={searchFilter}
-							realtimeFilter={realtimeFilter}
-							actionButton={actionButton}
-							bulkActionComp={() => (
-								<TransactionBulkActions
-									selectedRows={rowSelection}
-									data={data}
-									filterData={currentFilterData}
-									storeId={storeId}
-								/>
-							)}
+						<TableCard
+							headers={headers}
+							rows={rows}
+							totalRows={totalRows}
+							isLoading={isLoading}
+							onQueryUpdate={fetchData}
+							search={{ placeholder: 'Search...' }}
+							filters={filters}
+							buttonActions={buttonActions}
+							ids={rowIds}
+							categoryCounts={categoryCounts}
+							bulkActions={[]}
+							onSelectCsvDownloadApply={(selectedIds: []) => {
+								console.log('csv select', selectedIds)
+							}}
 						/>
 					</div>
 				</Column>

@@ -113,20 +113,22 @@ class Transactions extends \WP_REST_Controller {
             $limit              = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
             $page               = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
             $offset             = ( $page - 1 ) * $limit;
-            $count              = $request->get_param( 'count' );
             $store_id           = (int) $request->get_param( 'store_id' );
             $status             = $request->get_param( 'status' );
             $filter_status      = $request->get_param( 'filter_status' );
-            $transaction_type   = $request->get_param( 'transaction_type' );
-            $transaction_status = $request->get_param( 'transaction_status' );
+            $transaction_type   = $request->get_param( 'transactionType' );
+            $transaction_status = $request->get_param( 'transactionStatus' );
             $order_by           = sanitize_text_field( $request->get_param( 'orderBy' ) ) ?: 'created_at';
             $order              = strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) ?: 'DESC';
-            $dashboard          = $request->get_param( 'dashboard' );
-            $search_id          = $request->get_param( 'searchFiled' );
+            $search_id          = $request->get_param( 'searchValue' );
             $dates              = Utill::normalize_date_range(
                 $request->get_param( 'startDate' ),
                 $request->get_param( 'endDate' )
             );
+
+            $sec_fetch_site = $request->get_header( 'sec_fetch_site' );
+            $referer        = $request->get_header( 'referer' );
+
             // Build args
             $args = array_filter(
                 array(
@@ -142,24 +144,14 @@ class Transactions extends \WP_REST_Controller {
                     'order'            => in_array( $order, array( 'ASC', 'DESC' ), true ) ? $order : null,
                 )
             );
-            // Count only
-            if ( $count ) {
-                $args['count'] = true;
-                return rest_ensure_response(
-                    (int) Transaction::get_transaction_information( $args )
-                );
-            }
 
             if ( $transaction_status ) {
                 $args['entry_type'] = $transaction_status;
             }
 
-            if ( $dashboard ) {
-                if ( get_transient( 'multivendorx_withdrawal_data_' . $store_id ) ) {
-                    return get_transient( 'multivendorx_withdrawal_data_' . $store_id );
-                }
+            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id ) ) {
+                return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id );
             }
-
             if ( ! empty( $search_id ) && is_numeric( $search_id ) ) {
                 $args['id'] = intval( $search_id );
 
@@ -198,32 +190,34 @@ class Transactions extends \WP_REST_Controller {
                 )
             );
 
-            $counts = array(
-                'all' => Transaction::get_transaction_information( $count_args ),
-            );
-
             $statuses = array(
                 'completed' => 'Completed',
                 'processed' => 'Processed',
                 'upcoming'  => 'Upcoming',
                 'failed'    => 'Failed',
             );
-
+            
+            $response = rest_ensure_response( $formatted );
+            
+            // Total count
+            $response->header('X-WP-Total',(int) Transaction::get_transaction_information( $count_args ) );
+            
+            // Status-wise counts
             foreach ( $statuses as $key => $status ) {
-                $counts[ $key ] = Transaction::get_transaction_information(
-                    array_merge( $count_args, array( 'status' => $status ) )
+                $count = Transaction::get_transaction_information(array_merge( $count_args, array( 'status' => $status ) ) );
+                $response->header('X-WP-Status-' . ucfirst( $key ), (int) $count );
+            }
+            
+            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) ) {
+                set_transient(
+                    Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id,
+                    $response,
+                    DAY_IN_SECONDS
                 );
             }
 
-            if ( $dashboard ) {
-                set_transient( 'multivendorx_withdrawal_data_' . $store_id, array( 'transaction' => $formatted ), DAY_IN_SECONDS );
-            }
-            return rest_ensure_response(
-                array_merge(
-                    array( 'transaction' => $formatted ),
-                    $counts
-                )
-            );
+            return $response;
+
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 
