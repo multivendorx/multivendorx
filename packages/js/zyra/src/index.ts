@@ -19,7 +19,6 @@ export { default as FormCustomizer } from './components/NotifimaFormCustomizer';
 export { default as FormViewer } from './components/FormViewer';
 export { default as FreeProFormCustomizer } from './components/FreeProFormCustomizer';
 export { default as GoogleMap } from './components/GoogleMap';
-export { default as HoverInputRender } from './components/HoverInputRender';
 export { default as IconList } from './components/IconList';
 export { default as InputMailchimpList } from './components/InputMailchimpList';
 export { default as Log } from './components/Log';
