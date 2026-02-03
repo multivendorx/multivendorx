@@ -1,0 +1,10 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-review",
+  "title": "Store Review",
+  "category": "multivendorx-store-shop",
+  "icon": "star-filled",
+  "description": "Display store social media icons",
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js"
+}
