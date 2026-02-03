@@ -133,13 +133,13 @@ const Mapbox = ({
                 `<strong>${store.store_name}</strong><br/>${store.address_1 || ''}`
             );
     
-            const m = new window.mapboxgl.Marker()
+            const mapmaker = new window.mapboxgl.Marker()
                 .setLngLat([lng, lat])
                 .setPopup(popup)
                 .addTo(map);
     
             bounds.extend([lng, lat]);
-            storeMarkers.push(m);
+            storeMarkers.push(mapmaker);
         });
     
         if (storeMarkers.length) {
@@ -147,7 +147,7 @@ const Mapbox = ({
         }
     
         return () => {
-            storeMarkers.forEach(m => m.remove());
+            storeMarkers.forEach(mapmaker => mapmaker.remove());
         };
     }, [map, stores]);    
 

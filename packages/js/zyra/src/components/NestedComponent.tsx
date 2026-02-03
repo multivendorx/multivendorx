@@ -170,32 +170,32 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
             return true;
         }
 
-        return fields.every( ( f ) => {
+        return fields.every( ( field ) => {
             if ( 
-                f.skipFirstRow && 
+                field.skipFirstRow && 
                 lastRowIndex === 0 
             ) {
                 return true;
             }
             if ( 
-                f.firstRowOnly && 
+                field.firstRowOnly && 
                 lastRowIndex > 0 
             ) {
                 return true;
             }
 
-            const val = lastRow[ f.key ];
+            const val = lastRow[ field.key ];
 
             // dependency check
-            if ( f.dependent ) {
-                const depVal = lastRow[ f.dependent.key ];
+            if ( field.dependent ) {
+                const depVal = lastRow[ field.dependent.key ];
                 const depActive = Array.isArray( depVal )
-                    ? depVal.includes( f.dependent.value )
-                    : depVal === f.dependent.value;
+                    ? depVal.includes( field.dependent.value )
+                    : depVal === field.dependent.value;
 
                 if (
-                    ( f.dependent.set && ! depActive ) ||
-                    ( ! f.dependent.set && depActive )
+                    ( field.dependent.set && ! depActive ) ||
+                    ( ! field.dependent.set && depActive )
                 ) {
                     return true;
                 }

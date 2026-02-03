@@ -431,18 +431,18 @@ const CustomForm: React.FC<CustomFormProps> = ({
        if ( parentId !== -1 ) {
             // Handle subfield
             const parentIndex = newFormFieldList.findIndex(
-                (f) => f.id === parentId
+                (field) => field.id === parentId
             );
             if (parentIndex >= 0) {
                 const parentField = { ...newFormFieldList[parentIndex] };
-                parentField.fields = parentField.fields?.map((f) =>
-                    f.id === index ? { ...f, [key]: value } : f
+                parentField.fields = parentField.fields?.map((field) =>
+                    field.id === index ? { ...field, [key]: value } : field
                 );
 
                 // Update parent value object
                 parentField.value = parentField.value || {};
                 const changedSubField = parentField.fields?.find(
-                    (f) => f.id === index
+                    (field) => field.id === index
                 );
                 if (changedSubField?.key) {
                     parentField.value[changedSubField.key] = value;
@@ -638,8 +638,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             onClick={() => {
                                                 const index =
                                                     formFieldList.findIndex(
-                                                        (f) =>
-                                                            f.id ===
+                                                        (field) =>
+                                                            field.id ===
                                                             opendInput.id
                                                     );
                                                 if (index >= 0) {
@@ -846,8 +846,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             // Top-level field case
                                             const index =
                                                 formFieldList.findIndex(
-                                                    (f) =>
-                                                        f.id === opendInput.id
+                                                    (field) =>
+                                                        field.id === opendInput.id
                                                 );
                                             if (index >= 0) {
                                                 handleFormFieldChange(
@@ -870,7 +870,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     opened={{ click: true }}
                                     onChange={(key, value) => {
                                         const index = formFieldList.findIndex(
-                                            (f) => f.id === opendInput.id
+                                            (field) => field.id === opendInput.id
                                         );
                                         if (index >= 0) {
                                             handleFormFieldChange(
@@ -886,7 +886,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     }}
                                     onTypeChange={(newType) => {
                                         const index = formFieldList.findIndex(
-                                            (f) => f.id === opendInput.id
+                                            (field) => field.id === opendInput.id
                                         );
                                         if (index >= 0) {
                                             handleFormFieldTypeChange(
