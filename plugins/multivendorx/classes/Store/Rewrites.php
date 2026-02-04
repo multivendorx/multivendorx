@@ -228,10 +228,13 @@ class Rewrites {
         if ( ! $store_slug ) {
             return;
         }
-
+        
         FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-email-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-phone-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-social-icons-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );

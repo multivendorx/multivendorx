@@ -304,16 +304,7 @@ const Commission: React.FC = () => {
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
-		// page: currentPage,
-		// row: rowsPerPage,
-		// status: categoryFilter === 'all' ? '' : categoryFilter,
-		// store_id: store,
-		// orderBy,
-		// order,
-		// startDate: startDate ? formatLocalDate(startDate) : '',
-		// endDate: endDate ? formatLocalDate(endDate) : '',
-		// searchAction,
-		// searchValue,
+
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -484,8 +475,6 @@ const Commission: React.FC = () => {
 		},
 	];
 	const downloadCommissionCSVByQuery = (query: QueryProps) => {
-		setIsLoading(true);
-
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -534,13 +523,10 @@ const Commission: React.FC = () => {
 					},
 				});
 			})
-			.finally(() => setIsLoading(false));
 	};
 
 	const downloadCommissionsCSVByIds = (selectedIds: number[]) => {
 		if (!selectedIds.length) return;
-
-		setIsLoading(true);
 
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
@@ -576,7 +562,6 @@ const Commission: React.FC = () => {
 					},
 				});
 			})
-			.finally(() => setIsLoading(false));
 	};
 
 	const mapCommissionsToCSV = (commissions: any[]) =>
