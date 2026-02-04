@@ -290,7 +290,7 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-policy-script'          => array(
+                'multivendorx-store-policy-script' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-policy/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
