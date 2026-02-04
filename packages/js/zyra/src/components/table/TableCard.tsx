@@ -8,6 +8,7 @@ import TableSearch from './TableSearch';
 import RealtimeFilters from './RealtimeFilter';
 import CategoryFilter from './CategoryFilter';
 import ButtonActions from './ButtonActions';
+import OutsideClickWrapper from '../UI/OutsideClickWrapper';
 
 const defaultOnColumnsChange = (
 	showCols: string[],
@@ -49,6 +50,7 @@ const TableCard: React.FC<TableCardProps> = ({
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
 
 	const [query, setQuery] = useState<QueryProps>({
 		orderby: 'date',
@@ -97,6 +99,10 @@ const TableCard: React.FC<TableCardProps> = ({
 	useEffect(() => {
 		props.onQueryUpdate?.(query);
 	}, [query]);
+
+	useEffect(() => {
+		setDerivedTotalRows(totalRows);
+	}, [totalRows]);
 
 	// Toggle single row
 	const handleSelectRow = (id: number, selected: boolean) => {
@@ -219,6 +225,12 @@ const TableCard: React.FC<TableCardProps> = ({
 						categories={categoryCounts}
 						activeCategory={query.categoryFilter || activeCategory}
 						onCategoryClick={(value) => {
+
+							const matched = categoryCounts.find(
+								(cat) => cat.value === value
+							);
+							setDerivedTotalRows(matched?.count ?? 0);
+
 							setQuery((prev) => ({
 								...prev,
 								paged: 1,
@@ -250,36 +262,41 @@ const TableCard: React.FC<TableCardProps> = ({
 						</div>
 					)}
 					{showMenu && showColumnToggleIcon && (
-						<div className="popover-wrapper">
-							<div className="popover-toggle" onClick={togglePopover} >
-								<i className="popover-icon adminfont-more-vertical"></i>
-							</div>
-							{isPopoverOpen && (
-								<div className="popover popover-action checkbox">
-									<div className="popover-body">
-										<ul>
-											{headers.map(({ key, label, required }) => {
-												if (required) return null;
-
-												return (
-													<li key={key}>
-														<label>
-															<input
-																type="checkbox"
-																checked={showCols.includes(key)}
-																onChange={onColumnToggle(key)}
-															/>
-															{label}
-														</label>
-													</li>
-												);
-											})}
-										</ul>
-									</div>
+						<OutsideClickWrapper
+							enabled={isPopoverOpen}
+							onOutsideClick={() => setIsPopoverOpen(false)}
+						>
+							<div className="popover-wrapper">
+								<div className="popover-toggle" onClick={togglePopover} >
+									<i className="popover-icon adminfont-more-vertical"></i>
 								</div>
-							)}
+								{isPopoverOpen && (
+									<div className="popover popover-action checkbox">
+										<div className="popover-body">
+											<ul>
+												{headers.map(({ key, label, required }) => {
+													if (required) return null;
 
-						</div>
+													return (
+														<li key={key}>
+															<label>
+																<input
+																	type="checkbox"
+																	checked={showCols.includes(key)}
+																	onChange={onColumnToggle(key)}
+																/>
+																{label}
+															</label>
+														</li>
+													);
+												})}
+											</ul>
+										</div>
+									</div>
+								)}
+							</div>
+						</OutsideClickWrapper>
+
 					)}
 				</div>
 			</div>
@@ -315,7 +332,7 @@ const TableCard: React.FC<TableCardProps> = ({
 						<Pagination
 							page={Number(query.paged)}
 							perPage={Number(query.per_page)}
-							total={totalRows}
+							total={derivedTotalRows}
 							onPageChange={onPageChange}
 							onPerPageChange={(perPage) =>
 								onQueryChange('per_page')(String(perPage))
