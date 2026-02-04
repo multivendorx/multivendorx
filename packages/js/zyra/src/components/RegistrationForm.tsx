@@ -125,6 +125,12 @@ interface CustomFormProps {
     setting: Record<string, FormSetting>;
 }
 
+// Helper to generate unique IDs
+const getNextId = (() => {
+    let counter = Date.now();
+    return () => ++counter;
+})();
+
 // TextBlockView Component
 const TextBlockView: React.FC<{
     block: { type: 'text'; html: string; style?: BlockStyle };
@@ -374,6 +380,72 @@ const DEFAULT_LABEL_SIMPLE = (
 const DEFAULT_LABEL_SELECT = 'Nature of Business';
 const DEFAULT_FORM_TITLE = 'Demo Form';
 
+export interface RegistrationTemplate {
+  id: string;
+  name: string;
+  formfieldlist: FormField[];
+}
+
+const REGISTRATION_TEMPLATES: RegistrationTemplate[] = [
+  {
+    id: 'basic-store',
+    name: 'Basic Store Registration',
+    formfieldlist: [
+      {
+        id: 1,
+        type: 'title',
+        label: 'Register Your Store',
+        required: true,
+        name: 'FORM_TITLE',
+      },
+      {
+        id: 2,
+        type: 'text',
+        label: 'Enter your store name',
+        required: true,
+        name: 'store_name',
+        placeholder: 'Store Name',
+      },
+      {
+        id: 3,
+        type: 'email',
+        label: 'Enter your email',
+        required: true,
+        name: 'email',
+        placeholder: 'Email',
+      },
+      {
+        id: 4,
+        type: 'columns',
+        label: 'Columns',
+        layout: '2-50',
+        columns: [
+          [
+            {
+              id: 5,
+              type: 'text',
+              label: 'First Name',
+              required: true,
+              name: 'first_name',
+              placeholder: 'First Name',
+            },
+          ],
+          [
+            {
+              id: 6,
+              type: 'text',
+              label: 'Last Name',
+              required: true,
+              name: 'last_name',
+              placeholder: 'Last Name',
+            },
+          ],
+        ],
+      },
+    ],
+  },
+];
+
 // Example select options
 const selectOptions: SelectOption[] = [
     {
@@ -525,20 +597,26 @@ const CustomForm: React.FC<CustomFormProps> = ({
         formSetting.butttonsetting || {}
     );
     const [opendInput, setOpendInput] = useState<FormField | null>(null);
-    const [randMaxId, setRendMaxId] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState<'blocks' | 'templates'>('blocks');
     const [activeColumnField, setActiveColumnField] = useState<{
         parentId: number;
         columnIndex: number;
     } | null>(null);
 
-    useEffect(() => {
-        setRendMaxId(
-            formFieldList.reduce(
-                (maxId, field) => Math.max(maxId, field.id),
-                0
-            ) + 1
-        );
-    }, [formFieldList]);
+    const applyRegistrationTemplate = (templateId: string) => {
+    if (proSettingChange()) return;
+
+    const template = REGISTRATION_TEMPLATES.find(t => t.id === templateId);
+    if (!template) return;
+
+    // 🔥 Deep clone to avoid shared references
+    const clonedFields: FormField[] = structuredClone(template.formfieldlist);
+
+    settingHasChanged.current = true;
+    setFormFieldList(clonedFields);
+    setOpendInput(null);
+    };
+
 
     useEffect(() => {
         if (settingHasChanged.current) {
@@ -558,7 +636,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         isStore: boolean = false
     ): FormField => {
         const newFormField: FormField = {
-            id: randMaxId ?? 0,
+            id: getNextId(),
             type,
             label: '',
             required: false,
@@ -654,7 +732,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
             newFormField.label = 'Address';
             newFormField.fields = [
                 {
-                    id: randMaxId + 1,
+                    id: getNextId() +1,
                     key: 'address_1',
                     label: 'Address Line 1',
                     type: 'text',
@@ -662,14 +740,14 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     required: true,
                 },
                 {
-                    id: randMaxId + 2,
+                    id: getNextId() + 2,
                     key: 'address_2',
                     label: 'Address Line 2',
                     type: 'text',
                     placeholder: 'Address Line 2',
                 },
                 {
-                    id: randMaxId + 3,
+                    id: getNextId() + 3,
                     key: 'city',
                     label: 'City',
                     type: 'text',
@@ -677,7 +755,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     required: true,
                 },
                 {
-                    id: randMaxId + 4,
+                    id: getNextId() + 4,
                     key: 'state',
                     label: 'State',
                     type: 'select',
@@ -689,7 +767,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     ],
                 },
                 {
-                    id: randMaxId + 5,
+                    id: getNextId() + 5,
                     key: 'country',
                     label: 'Country',
                     type: 'select',
@@ -701,7 +779,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     ],
                 },
                 {
-                    id: randMaxId + 6,
+                    id: getNextId() + 6,
                     key: 'postcode',
                     label: 'Postal Code',
                     type: 'text',
@@ -719,7 +797,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             newFormField.placeholder = DEFAULT_PLACEHOLDER(type);
         }
 
-        setRendMaxId((prev) => (prev ?? 0) + 1);
         return newFormField;
     };
 
@@ -812,9 +889,12 @@ const CustomForm: React.FC<CustomFormProps> = ({
         if (parentIndex >= 0 && newFormFieldList[parentIndex].columns) {
             const updatedParent = { ...newFormFieldList[parentIndex] };
             const updatedColumns = [...(updatedParent.columns || [])];
+            
+            // FIX: Filter by field.id instead of index
             updatedColumns[columnIndex] = updatedColumns[columnIndex].filter(
                 (field) => field.id !== fieldId
             );
+            
             updatedParent.columns = updatedColumns;
             newFormFieldList[parentIndex] = updatedParent;
 
@@ -1292,64 +1372,67 @@ const CustomForm: React.FC<CustomFormProps> = ({
             );
         }
 
-        if (formField.type === 'divider') {
-            return (
-                <div className="divider-field">
-                    <hr />
-                    <span>{formField.label}</span>
-                </div>
-            );
-        }
-
         return null;
     };
 
-    const activeTab = 'blocks';
     const tabs = [
         {
             id: 'blocks',
             label: 'Blocks',
             content: (
                 <>
-                    <Elements
-                        label="General"
-                        selectOptions={selectOptions}
-                        onClick={(type) => {
-                            const newInput = appendNewFormField(
-                                formFieldList.length - 1,
-                                type
-                            );
-                            if (newInput && type !== 'columns') {
-                                setOpendInput(newInput);
-                            }
-                        }}
-                    />
-                    <Elements
-                        label="Let's get your store ready!"
-                        selectOptions={selectOptionsStore}
-                        onClick={(type) => {
-                            const option = selectOptionsStore.find(
-                                (o) => o.value === type
-                            );
-                            const fixedName = option?.name;
-                            appendNewFormField(
-                                formFieldList.length - 1,
-                                type,
-                                fixedName,
-                                true,
-                                true
-                            );
-                            setOpendInput(null);
-                        }}
-                    />
-                </>
-            ),
-        },
-    ];
+        <Elements
+          label="General"
+          selectOptions={selectOptions}
+          onClick={(type) => {
+            const newInput = appendNewFormField(
+              formFieldList.length - 1,
+              type
+            );
+            if (newInput && type !== 'columns') {
+              setOpendInput(newInput);
+            }
+          }}
+        />
+      </>
+    ),
+  },
+  {
+    id: 'templates',
+    label: 'Templates',
+    content: (
+      <aside className="template-list">
+        {REGISTRATION_TEMPLATES.map((tpl) => (
+          <div
+            key={tpl.id}
+            className="template-item"
+            onClick={() => applyRegistrationTemplate(tpl.id)}
+          >
+            <div className="template-name">{tpl.name}</div>
+          </div>
+        ))}
+      </aside>
+    ),
+  },
+];
 
     return (
         <div className="registration-from-wrapper">
             <div className="elements-wrapper">
+                  <div className="tab-titles">
+    <div
+      className={`title ${activeTab === 'blocks' ? 'active' : ''}`}
+      onClick={() => setActiveTab('blocks')}
+    >
+      Blocks
+    </div>
+    <div
+      className={`title ${activeTab === 'templates' ? 'active' : ''}`}
+      onClick={() => setActiveTab('templates')}
+    >
+      Templates
+    </div>
+  </div>
                 <div className="tab-contend">
                     {tabs.map(
                         (tab) =>

@@ -265,21 +265,21 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                                             options={[
                                                 {
                                                     key: 'h1',
-                                                    value: '1',
+                                                    value: 1,
                                                     label: 'H1',
                                                 },
                                                 {
                                                     key: 'h2',
-                                                    value: '2',
+                                                    value: 2,
                                                     label: 'H2',
                                                 },
                                                 {
                                                     key: 'h3',
-                                                    value: '3',
+                                                    value: 3,
                                                     label: 'H3',
                                                 },
                                             ]}
-                                            value={String(formField.level )}
+                                            value={formField.level || 2}
                                             onChange={(value) =>
                                                 onChange('level', Number(value) as 1 | 2 | 3)
                                             }
