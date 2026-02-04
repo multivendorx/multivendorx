@@ -304,16 +304,7 @@ const Commission: React.FC = () => {
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
-		// page: currentPage,
-		// row: rowsPerPage,
-		// status: categoryFilter === 'all' ? '' : categoryFilter,
-		// store_id: store,
-		// orderBy,
-		// order,
-		// startDate: startDate ? formatLocalDate(startDate) : '',
-		// endDate: endDate ? formatLocalDate(endDate) : '',
-		// searchAction,
-		// searchValue,
+
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
