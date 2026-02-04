@@ -35,6 +35,40 @@ export interface SelectOption {
     name?: string;
 }
 
+// TextBlock interfaces
+interface TextBlockStyle {
+    backgroundColor?: string;
+    padding?: number | string;
+    paddingTop?: number;
+    paddingRight?: number;
+    paddingBottom?: number;
+    paddingLeft?: number;
+    margin?: number | string;
+    marginTop?: number;
+    marginRight?: number;
+    marginBottom?: number;
+    marginLeft?: number;
+    textAlign?: 'left' | 'center' | 'right';
+    fontSize?: number;
+    fontFamily?: string;
+    color?: string;
+    lineHeight?: number;
+    fontWeight?: string;
+    borderWidth?: number;
+    borderColor?: string;
+    borderStyle?: string;
+    borderRadius?: number;
+    width?: string;
+    height?: string;
+    textDecoration?: string;
+}
+
+interface TextBlock {
+    type: 'text';
+    html: string;
+    style?: TextBlockStyle;
+}
+
 export interface FormField {
     id: number;
     type: string;
@@ -62,6 +96,10 @@ export interface FormField {
         required?: boolean;
     }>;
     value?: Record<string, unknown>;
+    html?: string;
+    style?: TextBlockStyle;
+    layout?: '1' | '2-50' | '2-66' | '3' | '4';
+    columns?: FormField[][];
 }
 
 interface ButtonSetting {
@@ -86,6 +124,61 @@ interface CustomFormProps {
     formTitlePlaceholder?: string;
     setting: Record<string, FormSetting>;
 }
+
+// TextBlockView Component
+const TextBlockView: React.FC<{
+    block: TextBlock;
+    onChange: (html: string) => void;
+}> = ({ block, onChange }) => {
+    const style = {
+        backgroundColor: block.style?.backgroundColor,
+        padding: block.style?.padding ||
+            (block.style?.paddingTop || block.style?.paddingRight || block.style?.paddingBottom || block.style?.paddingLeft
+                ? `${block.style?.paddingTop || 0}px ${block.style?.paddingRight || 0}px ${block.style?.paddingBottom || 0}px ${block.style?.paddingLeft || 0}px`
+                : undefined),
+        margin: block.style?.margin ||
+            (block.style?.marginTop || block.style?.marginRight || block.style?.marginBottom || block.style?.marginLeft
+                ? `${block.style?.marginTop || 0}px ${block.style?.marginRight || 0}px ${block.style?.marginBottom || 0}px ${block.style?.marginLeft || 0}px`
+                : undefined),
+        textAlign: block.style?.textAlign,
+        fontSize: block.style?.fontSize,
+        fontFamily: block.style?.fontFamily,
+        color: block.style?.color,
+        lineHeight: block.style?.lineHeight,
+        fontWeight: block.style?.fontWeight,
+        borderWidth: block.style?.borderWidth,
+        borderColor: block.style?.borderColor,
+        borderStyle: block.style?.borderStyle,
+        borderRadius: block.style?.borderRadius,
+        width: block.style?.width,
+        height: block.style?.height,
+        textDecoration: block.style?.textDecoration,
+    };
+
+    return (
+        <div
+            className="email-text"
+            style={style}
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={(e) => onChange(e.currentTarget.innerHTML)}
+            dangerouslySetInnerHTML={{ __html: block.html }}
+        />
+    );
+};
+
+// Helper function to get column count
+const getColumnCount = (layout: '1' | '2-50' | '2-66' | '3' | '4') => {
+    switch (layout) {
+        case '1': return 1;
+        case '2-50':
+        case '2-66': return 2;
+        case '3': return 3;
+        case '4': return 4;
+        default: return 2;
+    }
+};
+
 // Default values for input options
 const DEFAULT_OPTIONS: Option[] = [
     { id: '1', label: 'Manufacture', value: 'manufacture' },
@@ -135,6 +228,11 @@ const selectOptions: SelectOption[] = [
         label: 'Textarea',
     },
     {
+        icon: 'adminfont-text icon-form-textarea',
+        value: 'richtext',
+        label: 'Rich Text Block',
+    },
+    {
         icon: 'adminfont-checkbox icon-form-checkboxes',
         value: 'checkboxes',
         label: 'Checkboxes',
@@ -179,6 +277,11 @@ const selectOptions: SelectOption[] = [
         icon: 'adminfont-divider icon-form-address',
         value: 'divider',
         label: 'Divider',
+    },
+    {
+        icon: 'adminfont-blocks',
+        value: 'columns',
+        label: 'Columns',
     },
 ];
 
@@ -248,6 +351,10 @@ const CustomForm: React.FC<CustomFormProps> = ({
     );
     const [opendInput, setOpendInput] = useState<FormField | null>(null);
     const [randMaxId, setRendMaxId] = useState<number>(0);
+    const [activeColumnField, setActiveColumnField] = useState<{
+        parentId: number;
+        columnIndex: number;
+    } | null>(null);
 
     useEffect(() => {
         setRendMaxId(
@@ -292,6 +399,30 @@ const CustomForm: React.FC<CustomFormProps> = ({
             newFormField.options = DEFAULT_OPTIONS;
         } else if (type === 'title') {
             newFormField.label = DEFAULT_FORM_TITLE;
+        } else if (type === 'richtext') {
+            newFormField.label = 'Rich Text Content';
+            newFormField.html = '<p>Your rich text content here. Click to edit.</p>';
+            newFormField.style = {
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                fontSize: 16,
+                lineHeight: 1.5,
+                paddingTop: 10,
+                paddingRight: 10,
+                paddingBottom: 10,
+                paddingLeft: 10,
+            };
+        } else if (type === 'columns') {
+            newFormField.label = 'Column Layout';
+            newFormField.layout = '2-50';
+            newFormField.columns = [[], []];
+            newFormField.style = {
+                backgroundColor: '#ffffff',
+                paddingTop: 10,
+                paddingRight: 10,
+                paddingBottom: 10,
+                paddingLeft: 10,
+            };
         } else if (type === 'address') {
             newFormField.label = 'Address';
             newFormField.fields = [
@@ -375,11 +506,41 @@ const CustomForm: React.FC<CustomFormProps> = ({
         if (proSettingChange()) {
             return;
         }
+
+        // Check if we're adding to a column
+        if (activeColumnField) {
+            const newField: FormField = getNewFormField(type, fixedName, isStore);
+            if (readonly) {
+                newField.readonly = true;
+            }
+
+            const newFormFieldList = [...formFieldList];
+            const parentIndex = newFormFieldList.findIndex(
+                (field) => field.id === activeColumnField.parentId
+            );
+
+            if (parentIndex >= 0 && newFormFieldList[parentIndex].columns) {
+                const updatedParent = { ...newFormFieldList[parentIndex] };
+                const updatedColumns = [...(updatedParent.columns || [])];
+                updatedColumns[activeColumnField.columnIndex] = [
+                    ...(updatedColumns[activeColumnField.columnIndex] || []),
+                    newField,
+                ];
+                updatedParent.columns = updatedColumns;
+                newFormFieldList[parentIndex] = updatedParent;
+
+                settingHasChanged.current = true;
+                setFormFieldList(newFormFieldList);
+                setOpendInput(newField);
+                return newField;
+            }
+        }
+
+        // Regular field addition
         const newField: FormField = getNewFormField(type, fixedName, isStore);
         if (readonly) {
             newField.readonly = true;
         }
-        // const newFormFieldList = [...formFieldList.slice(0, index + 1), newField, ...formFieldList.slice(index + 1)];
 
         const currentIndex = opendInput
             ? formFieldList.findIndex((field) => field.id === opendInput.id)
@@ -395,6 +556,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         settingHasChanged.current = true;
         setFormFieldList(newFormFieldList);
         setOpendInput(newField);
+        setActiveColumnField(null);
         return newField;
     };
 
@@ -412,11 +574,39 @@ const CustomForm: React.FC<CustomFormProps> = ({
         }
     };
 
+    const deleteColumnField = (parentId: number, columnIndex: number, fieldId: number) => {
+        if (proSettingChange()) {
+            return;
+        }
+
+        const newFormFieldList = [...formFieldList];
+        const parentIndex = newFormFieldList.findIndex(
+            (field) => field.id === parentId
+        );
+
+        if (parentIndex >= 0 && newFormFieldList[parentIndex].columns) {
+            const updatedParent = { ...newFormFieldList[parentIndex] };
+            const updatedColumns = [...(updatedParent.columns || [])];
+            updatedColumns[columnIndex] = updatedColumns[columnIndex].filter(
+                (field) => field.id !== fieldId
+            );
+            updatedParent.columns = updatedColumns;
+            newFormFieldList[parentIndex] = updatedParent;
+
+            settingHasChanged.current = true;
+            setFormFieldList(newFormFieldList);
+            if (opendInput?.id === fieldId) {
+                setOpendInput(null);
+            }
+        }
+    };
+
     const handleFormFieldChange = (
         index: number,
         key: string,
         value: FieldValue,
-        parentId: number = -1
+        parentId: number = -1,
+        columnIndex: number = -1
     ) => {
         if (proSettingChange()) {
             return;
@@ -424,8 +614,43 @@ const CustomForm: React.FC<CustomFormProps> = ({
 
         const newFormFieldList = [...formFieldList];
 
-        if (parentId !== -1) {
-            // Handle subfield
+        // Handle column field change
+        if (parentId !== -1 && columnIndex !== -1) {
+            const parentIndex = newFormFieldList.findIndex(
+                (field) => field.id === parentId
+            );
+
+            if (parentIndex >= 0 && newFormFieldList[parentIndex].columns) {
+                const updatedParent = { ...newFormFieldList[parentIndex] };
+                const updatedColumns = [...(updatedParent.columns || [])];
+                const columnFields = [...updatedColumns[columnIndex]];
+                
+                const fieldIndex = columnFields.findIndex(
+                    (field) => field.id === index
+                );
+
+                if (fieldIndex >= 0) {
+                    columnFields[fieldIndex] = {
+                        ...columnFields[fieldIndex],
+                        [key]: value,
+                    };
+                    updatedColumns[columnIndex] = columnFields;
+                    updatedParent.columns = updatedColumns;
+                    newFormFieldList[parentIndex] = updatedParent;
+
+                    setFormFieldList(newFormFieldList);
+                    settingHasChanged.current = true;
+
+                    if (opendInput?.id === index) {
+                        setOpendInput({ ...columnFields[fieldIndex] });
+                    }
+                }
+                return;
+            }
+        }
+
+        // Handle address subfield
+        if (parentId !== -1 && columnIndex === -1) {
             const parentIndex = newFormFieldList.findIndex(
                 (field) => field.id === parentId
             );
@@ -495,7 +720,276 @@ const CustomForm: React.FC<CustomFormProps> = ({
         setOpendInput(newFormField);
     };
 
-    // Tabs configuration
+    const handleColumnLayoutChange = (parentId: number, newLayout: '1' | '2-50' | '2-66' | '3' | '4') => {
+        const newFormFieldList = [...formFieldList];
+        const parentIndex = newFormFieldList.findIndex(
+            (field) => field.id === parentId
+        );
+
+        if (parentIndex >= 0) {
+            const updatedParent = { ...newFormFieldList[parentIndex] };
+            const count = getColumnCount(newLayout);
+            const newColumns = Array.from({ length: count }, (_, i) =>
+                updatedParent.columns?.[i] || []
+            );
+
+            updatedParent.layout = newLayout;
+            updatedParent.columns = newColumns;
+            newFormFieldList[parentIndex] = updatedParent;
+
+            settingHasChanged.current = true;
+            setFormFieldList(newFormFieldList);
+            if (opendInput?.id === parentId) {
+                setOpendInput(updatedParent);
+            }
+        }
+    };
+
+    // Render column block
+    const renderColumnBlock = (formField: FormField, parentIndex: number) => {
+        const style = {
+            backgroundColor: formField.style?.backgroundColor,
+            padding: formField.style?.padding ||
+                (formField.style?.paddingTop || formField.style?.paddingRight || formField.style?.paddingBottom || formField.style?.paddingLeft
+                    ? `${formField.style?.paddingTop || 0}px ${formField.style?.paddingRight || 0}px ${formField.style?.paddingBottom || 0}px ${formField.style?.paddingLeft || 0}px`
+                    : undefined),
+            borderWidth: formField.style?.borderWidth,
+            borderColor: formField.style?.borderColor,
+            borderStyle: formField.style?.borderStyle,
+            borderRadius: formField.style?.borderRadius,
+        };
+
+        return (
+            <div
+                className={`email-columns layout-${formField.layout || '2-50'}`}
+                style={style}
+            >
+                {(formField.columns || []).map((column, colIndex) => (
+                    <div 
+                        key={colIndex} 
+                        className="email-column-wrapper"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveColumnField({
+                                parentId: formField.id,
+                                columnIndex: colIndex,
+                            });
+                            setOpendInput(formField);
+                        }}
+                    >
+                        <div 
+                            className="column-icon"
+                            style={{
+                                background: activeColumnField?.parentId === formField.id && 
+                                           activeColumnField?.columnIndex === colIndex 
+                                    ? '#007bff' 
+                                    : '#ccc',
+                                color: activeColumnField?.parentId === formField.id && 
+                                       activeColumnField?.columnIndex === colIndex 
+                                    ? '#fff' 
+                                    : '#666',
+                            }}
+                        >
+                            <i className="adminfont-plus"></i>
+                        </div>
+
+                        <div className="email-column">
+                            {column.map((childField) => (
+                                <div
+                                    key={childField.id}
+                                    className={`form-field ${
+                                        opendInput?.id === childField.id ? 'active' : ''
+                                    }`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setOpendInput(childField);
+                                        setActiveColumnField(null);
+                                    }}
+                                >
+                                    {opendInput?.id === childField.id && (
+                                        <section className="meta-menu">
+                                            <span
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteColumnField(
+                                                        formField.id,
+                                                        colIndex,
+                                                        childField.id
+                                                    );
+                                                }}
+                                                className="admin-badge red"
+                                            >
+                                                <i className="admin-font adminfont-delete"></i>
+                                            </span>
+                                        </section>
+                                    )}
+
+                                    <section className="form-field-container-wrapper">
+                                        {renderFieldContent(childField, formField.id, colIndex)}
+                                    </section>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    // Render field content helper
+    const renderFieldContent = (formField: FormField, parentId: number = -1, columnIndex: number = -1) => {
+        if (['text', 'email', 'number'].includes(formField.type)) {
+            return (
+                <>
+                    <p>{formField.label}</p>
+                    <BasicInput
+                        type={formField.type}
+                        placeholder={formField.placeholder || formField.type}
+                        value={''}
+                        onChange={() => {}}
+                    />
+                </>
+            );
+        }
+
+        if (formField.type === 'richtext') {
+            return (
+                <TextBlockView
+                    block={{
+                        type: 'text',
+                        html: formField.html || '<p>Your text here</p>',
+                        style: formField.style,
+                    }}
+                    onChange={(html) => {
+                        if (parentId !== -1 && columnIndex !== -1) {
+                            handleFormFieldChange(formField.id, 'html', html, parentId, columnIndex);
+                        } else {
+                            const idx = formFieldList.findIndex(
+                                (f) => f.id === formField.id
+                            );
+                            if (idx >= 0) {
+                                handleFormFieldChange(idx, 'html', html);
+                            }
+                        }
+                    }}
+                />
+            );
+        }
+
+        if (['radio', 'dropdown', 'multiselect', 'checkboxes'].includes(formField.type)) {
+            return (
+                <MultipleOptions
+                    formField={formField}
+                    type={
+                        formField.type as
+                        | 'radio'
+                        | 'checkboxes'
+                        | 'dropdown'
+                        | 'multiselect'
+                    }
+                    selected={false}
+                />
+            );
+        }
+
+        if (formField.type === 'datepicker') {
+            return (
+                <>
+                    <p>{formField.label}</p>
+                    <BasicInput
+                        type="date"
+                        placeholder={formField.placeholder || formField.type}
+                        value={''}
+                        onChange={() => {}}
+                    />
+                </>
+            );
+        }
+
+        if (formField.type === 'TimePicker') {
+            return (
+                <>
+                    <p>{formField.label}</p>
+                    <BasicInput
+                        type="time"
+                        placeholder={formField.placeholder || formField.type}
+                        value={''}
+                        onChange={() => {}}
+                    />
+                </>
+            );
+        }
+
+        if (formField.type === 'attachment') {
+            return (
+                <>
+                    <p>{formField.label}</p>
+                    <FileInput
+                        value={''}
+                        inputClass="form-input"
+                        name="image"
+                        type="hidden"
+                        imageWidth={75}
+                        imageHeight={75}
+                    />
+                </>
+            );
+        }
+
+        if (formField.type === 'section') {
+            return (
+                <BasicInput
+                    type="text"
+                    value={formField.label}
+                    placeholder={formField.placeholder || formField.type}
+                    onChange={() => {}}
+                />
+            );
+        }
+
+        if (formField.type === 'textarea') {
+            return (
+                <>
+                    <p>{formField.label}</p>
+                    <TextArea name="content" />
+                </>
+            );
+        }
+
+        if (formField.type === 'recaptcha') {
+            return (
+                <div
+                    className={`main-input-wrapper ${!formField.sitekey ? 'recaptcha' : ''}`}
+                >
+                    {formField.sitekey
+                        ? 'reCAPTCHA has been successfully added to the form.'
+                        : 'reCAPTCHA is not configured.'}
+                </div>
+            );
+        }
+
+        if (formField.type === 'address') {
+            return (
+                <AddressField
+                    formField={formField as AddressFormField}
+                    opendInput={opendInput}
+                    setOpendInput={setOpendInput}
+                />
+            );
+        }
+
+        if (formField.type === 'divider') {
+            return (
+                <div className="divider-field">
+                    <hr />
+                    <span>{formField.label}</span>
+                </div>
+            );
+        }
+
+        return null;
+    };
+
     const activeTab = 'blocks';
     const tabs = [
         {
@@ -511,7 +1005,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                 formFieldList.length - 1,
                                 type
                             );
-                            if (newInput) {
+                            if (newInput && type !== 'columns') {
                                 setOpendInput(newInput);
                             }
                         }}
@@ -557,7 +1051,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
             <div className="registration-form-main-section">
                 <div
                     className={`form-heading ${formFieldList[0]?.disabled ? 'disable' : ''
-                        }`}
+                    }`}
                 >
                     <BasicInput
                         type= "text"
@@ -575,7 +1069,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     />
                     <i
                         className={`adminfont-${formFieldList[0]?.disabled ? 'eye-blocked' : 'eye'
-                            }`}
+                        }`}
                         title={
                             formFieldList[0]?.disabled
                                 ? 'Show Title'
@@ -625,6 +1119,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setOpendInput(formField);
+                                    setActiveColumnField(null);
                                 }}
                             >
                                 {opendInput?.id === formField.id && (
@@ -650,110 +1145,11 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                         </span>
                                     </section>
                                 )}
-                                <section
-                                    className={`form-field-container-wrapper`}
-                                >
-                                    {['text', 'email', 'number'].includes(
-                                        formField.type
-                                    ) && (
-                                            <>
-                                                <p>{formField.label}</p>
-                                                <BasicInput
-                                                    type= {formField.type}
-                                                    placeholder= {formField.type}
-                                                />
-                                            </>
-                                        )}
-                                    {[
-                                        'radio',
-                                        'dropdown',
-                                        'multiselect',
-                                        'checkboxes',
-                                    ].includes(formField.type) && (
-                                            <MultipleOptions
-                                                formField={formField}
-                                                type={
-                                                    formField.type as
-                                                    | 'radio'
-                                                    | 'checkboxes'
-                                                    | 'dropdown'
-                                                    | 'multiselect'
-                                                }
-                                                selected={false}
-                                            />
-                                        )}
-                                    {formField.type === 'datepicker' && (
-                                        <>
-                                            <p>{formField.label}</p>
-                                            <BasicInput
-                                                type= "date"
-                                                placeholder= {formField.type}
-                                            />
-                                        </>
-                                    )}
-                                    {formField.type === 'TimePicker' && (
-                                        <>
-                                            <p>{formField.label}</p>
-                                            <BasicInput
-                                                type= "time"
-                                                placeholder= {formField.type}
-                                            />
-                                        </>
-                                    )}
-                                    {formField.type === 'attachment' && (
-                                        <>
-                                            <p>{formField.label}</p>
-                                            <FileInput
-                                                value={''}
-                                                inputClass="form-input"
-                                                name="image"
-                                                type="hidden"
-                                                imageWidth={75}
-                                                imageHeight={75}
-                                            />
-                                        </>
-                                    )}
-                                    {formField.type === 'section' && (
-                                        <>
-                                            <BasicInput
-                                                type= "text"
-                                                value={formField.label}
-                                                placeholder= {formField.type}
-                                            />
-                                        </>
-                                    )}
-                                    {formField.type === 'textarea' && (
-                                        <>
-                                            <p>{formField.label}</p>
-                                            <TextArea
-                                                name="content"
-                                            />
-                                        </>
-                                    )}
-                                    {formField.type === 'recaptcha' && (
-                                        <div
-                                            className={`main-input-wrapper ${!formField.sitekey ? 'recaptcha' : ''
-                                                }`}
-                                        >
-                                            {formField.sitekey
-                                                ? 'reCAPTCHA has been successfully added to the form.'
-                                                : 'reCAPTCHA is not configured.'}
-                                        </div>
-                                    )}
-                                    {formField.type === 'address' && (
-                                        <AddressField
-                                            formField={
-                                                formField as AddressFormField
-                                            }
-                                            opendInput={opendInput}
-                                            setOpendInput={setOpendInput}
-                                        />
-                                    )}
-                                    {formField.type === 'divider' && (
-                                        <div className="divider-field">
-                                            <hr />
-                                            <span>{formField.label}</span>
-                                        </div>
+                                <section className={`form-field-container-wrapper`}>
+                                    {formField.type === 'columns' ? (
+                                        renderColumnBlock(formField, index)
+                                    ) : (
+                                        renderFieldContent(formField)
                                     )}
                                 </section>
                             </main>
@@ -846,11 +1242,19 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             (field) => field.id === opendInput.id
                                         );
                                         if (index >= 0) {
-                                            handleFormFieldChange(
-                                                index,
-                                                key,
-                                                value
-                                            );
+                                            // Special handling for columns layout change
+                                            if (key === 'layout' && opendInput.type === 'columns') {
+                                                handleColumnLayoutChange(
+                                                    opendInput.id,
+                                                    value as '1' | '2-50' | '2-66' | '3' | '4'
+                                                );
+                                            } else {
+                                                handleFormFieldChange(
+                                                    index,
+                                                    key,
+                                                    value
+                                                );
+                                            }
                                             setOpendInput({
                                                 ...formFieldList[index],
                                                 [key]: value,

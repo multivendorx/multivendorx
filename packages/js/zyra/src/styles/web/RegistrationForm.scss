@@ -453,3 +453,328 @@
         }
     }
 }
+
+.email-text {
+    min-height: 50px;
+    border: 1px dashed #ccc;
+    cursor: text;
+    outline: none;
+    
+    &:focus {
+        border-color: #007bff;
+    }
+    
+    p {
+        margin: 0;
+        padding: 5px 0;
+    }
+}
+
+/* Columns Block Styling */
+.email-columns {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px dashed #e0e0e0;
+    border-radius: 4px;
+    min-height: 100px;
+}
+
+/* Layout variations */
+.email-columns.layout-1 {
+    flex-direction: column;
+}
+
+.email-columns.layout-1 .email-column-wrapper {
+    width: 100%;
+}
+
+.email-columns.layout-2-50 .email-column-wrapper {
+    flex: 1;
+    width: 50%;
+}
+
+.email-columns.layout-2-66 .email-column-wrapper:first-child {
+    flex: 2;
+    width: 66.66%;
+}
+
+.email-columns.layout-2-66 .email-column-wrapper:last-child {
+    flex: 1;
+    width: 33.33%;
+}
+
+.email-columns.layout-3 .email-column-wrapper {
+    flex: 1;
+    width: 33.33%;
+}
+
+.email-columns.layout-4 .email-column-wrapper {
+    flex: 1;
+    width: 25%;
+}
+
+/* Column wrapper */
+.email-column-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 80px;
+    border: 1px dashed #d0d0d0;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.email-column-wrapper:hover {
+    background-color: #f0f0f0;
+    border-color: #007bff;
+}
+
+/* Column icon - the plus button */
+.column-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ccc;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+.email-column-wrapper:hover .column-icon {
+    background: #007bff;
+    color: #fff;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.column-icon i {
+    font-size: 20px;
+}
+
+/* Hide the icon when column has content */
+.email-column-wrapper:has(.email-column .form-field) .column-icon {
+    display: none;
+}
+
+/* Email column - the container for fields */
+.email-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 80px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Fields inside columns */
+.email-column .form-field {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.email-column .form-field:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.1);
+}
+
+.email-column .form-field.active {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Text block inside columns */
+.email-column .email-text {
+    min-height: 40px;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    cursor: text;
+    outline: none;
+}
+
+.email-column .email-text:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+/* Setting group styles for column settings */
+.setting-group {
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.setting-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.setting-group-header:hover {
+    background-color: #e9ecef;
+}
+
+.setting-group-header h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.setting-group-header i {
+    font-size: 16px;
+    color: #666;
+    transition: transform 0.2s ease;
+}
+
+.setting-group-content {
+    padding: 15px;
+    background-color: #fff;
+}
+
+/* Field group for side-by-side inputs */
+.field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.field-wrapper label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.field-wrapper .basic-input,
+.field-wrapper select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.field-wrapper .basic-input:focus,
+.field-wrapper select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+/* Spacing grid for padding/margin controls */
+.spacing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.spacing-section h5 {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.spacing-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.spacing-input {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.spacing-input input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.spacing-input label {
+    font-size: 11px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .email-columns {
+        flex-direction: column;
+    }
+
+    .email-columns .email-column-wrapper {
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    .field-group,
+    .spacing-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Active column indication */
+.email-column-wrapper.active-column {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+.email-column-wrapper.active-column .column-icon {
+    background: #0056b3;
+    color: #fff;
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+/* Empty state styling */
+.email-column:empty::before {
+    content: "Click + to add fields";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #999;
+    font-size: 12px;
+    pointer-events: none;
+    white-space: nowrap;
+}

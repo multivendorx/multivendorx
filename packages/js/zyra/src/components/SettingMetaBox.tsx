@@ -5,9 +5,10 @@ import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
 import '../styles/web/SettingMetaBox.scss';
+import StyleControls from './StyleControl';
 
 type FormFieldValue = string | number | boolean | Option[];
-type SettingFieldKey = keyof FormField | 'value';
+type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout';
 
 // Types
 interface Option {
@@ -31,6 +32,9 @@ interface FormField {
     disabled?: boolean;
     readonly?: boolean;
     options?: Option[];
+    html?: string;
+    style?: any;
+    layout?: '1' | '2-50' | '2-66' | '3' | '4';
 }
 
 interface InputType {
@@ -138,6 +142,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
     setDefaultValue,
 } ) => {
     const [ hasOpened, setHasOpened ] = useState( opened.click );
+    const [ expandedLayoutGroup, setExpandedLayoutGroup ] = useState( false );
 
     const isValidSiteKey = ( key: string ) =>
         /^6[0-9A-Za-z_-]{39}$/.test( key );
@@ -204,6 +209,65 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                                 />
                             </>
                         ) }
+                    </>
+                );
+
+            case 'richtext':
+                return (
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <StyleControls
+                            style={formField.style || {}}
+                            onChange={(style) => onChange('style', style)}
+                            includeTextStyles={true}
+                        />
+                    </div>
+                );
+
+            case 'columns':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedLayoutGroup(!expandedLayoutGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Layout</h4>
+                                <i className={`adminfont-${expandedLayoutGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedLayoutGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Column Layout</label>
+                                        <select
+                                            value={formField.layout || '2-50'}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('layout', e.target.value);
+                                            }}
+                                        >
+                                            <option value="1">1 Column</option>
+                                            <option value="2-50">50 / 50</option>
+                                            <option value="2-66">66 / 34</option>
+                                            <option value="3">3 Columns</option>
+                                            <option value="4">4 Columns</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={(style) => onChange('style', style)}
+                                includeTextStyles={false}
+                            />
+                        </div>
                     </>
                 );
 
@@ -348,13 +412,9 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
     };
 
     return (
-        <div
-            role="button"
-            tabIndex={ 0 }
-            onClick={ () => setHasOpened( ( prev ) => ! prev ) }
-        >
+        <>
             { hasOpened && (
-                <main className="meta-setting-modal-content">
+                <main className="meta-setting-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="settings-title">
                         { formField?.type
                             ? `${
@@ -476,7 +536,9 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                             { metaType === 'setting-meta' &&
                                 renderConditionalFields() }
 
-                            { metaType === 'setting-meta' && (
+                            { metaType === 'setting-meta' && 
+                              formField?.type !== 'richtext' && 
+                              formField?.type !== 'columns' && (
                                 <FieldWrapper label="Visibility">
                                     <div className="toggle-setting-container">
                                         <div className="toggle-setting-wrapper">
@@ -532,39 +594,43 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                                 </FieldWrapper>
                             ) }
 
-                            <FieldWrapper
-                                label={
-                                    metaType === 'setting-meta'
-                                        ? 'Required'
-                                        : 'Set default'
-                                }
-                            >
-                                <div className="input-wrapper">
-                                    <input
-                                        type="checkbox"
-                                        checked={
-                                            metaType === 'setting-meta'
-                                                ? formField?.required
-                                                : option?.isdefault
-                                        }
-                                        onChange={ ( e ) => {
-                                            if ( metaType === 'setting-meta' ) {
-                                                onChange(
-                                                    'required',
-                                                    e.target.checked
-                                                );
-                                            } else if ( setDefaultValue ) {
-                                                setDefaultValue();
+                            { metaType === 'setting-meta' && 
+                              formField?.type !== 'richtext' && 
+                              formField?.type !== 'columns' && (
+                                <FieldWrapper
+                                    label={
+                                        metaType === 'setting-meta'
+                                            ? 'Required'
+                                            : 'Set default'
+                                    }
+                                >
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="checkbox"
+                                            checked={
+                                                metaType === 'setting-meta'
+                                                    ? formField?.required
+                                                    : option?.isdefault
                                             }
-                                        } }
-                                    />
-                                </div>
-                            </FieldWrapper>
+                                            onChange={ ( e ) => {
+                                                if ( metaType === 'setting-meta' ) {
+                                                    onChange(
+                                                        'required',
+                                                        e.target.checked
+                                                    );
+                                                } else if ( setDefaultValue ) {
+                                                    setDefaultValue();
+                                                }
+                                            } }
+                                        />
+                                    </div>
+                                </FieldWrapper>
+                            )}
                         </>
                     ) }
                 </main>
             ) }
-        </div>
+        </>
     );
 };
 
