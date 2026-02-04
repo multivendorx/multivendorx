@@ -44,7 +44,10 @@
     }
   },
   "supports": {
-    "align": ["wide", "full"],
+    "align": [
+      "wide",
+      "full"
+    ],
     "html": false,
     "spacing": {
       "margin": true,

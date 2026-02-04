@@ -112,6 +112,7 @@ class Utill {
         'announcement_transient' => 'multivendorx_announcement_data_',
         'review_transient'       => 'multivendorx_review_data_',
         'report_transient'       => 'multivendorx_report_data_',
+        'withdrawal_transient'   => 'multivendorx_withdrawal_data_',
     );
 
     const WOO_SETTINGS = array(

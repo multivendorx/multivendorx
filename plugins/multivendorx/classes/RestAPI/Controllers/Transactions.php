@@ -104,29 +104,25 @@ class Transactions extends \WP_REST_Controller {
         }
 
         try {
-            // CSV download
-            if ( 'csv' === $request->get_param( 'format' ) ) {
-                return $this->download_transaction_csv( $request );
-            }
-
             // Pagination & basic params
             $limit              = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
             $page               = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
             $offset             = ( $page - 1 ) * $limit;
-            $count              = $request->get_param( 'count' );
             $store_id           = (int) $request->get_param( 'store_id' );
             $status             = $request->get_param( 'status' );
-            $filter_status      = $request->get_param( 'filter_status' );
-            $transaction_type   = $request->get_param( 'transaction_type' );
-            $transaction_status = $request->get_param( 'transaction_status' );
+            $transaction_type   = $request->get_param( 'transactionType' );
+            $transaction_status = $request->get_param( 'transactionStatus' );
             $order_by           = sanitize_text_field( $request->get_param( 'orderBy' ) ) ?: 'created_at';
             $order              = strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) ?: 'DESC';
-            $dashboard          = $request->get_param( 'dashboard' );
-            $search_id          = $request->get_param( 'searchFiled' );
+            $search_id          = $request->get_param( 'searchValue' );
             $dates              = Utill::normalize_date_range(
                 $request->get_param( 'startDate' ),
                 $request->get_param( 'endDate' )
             );
+            $ids                = $request->get_param( 'ids' );
+            $sec_fetch_site     = $request->get_header( 'sec_fetch_site' );
+            $referer            = $request->get_header( 'referer' );
+
             // Build args
             $args = array_filter(
                 array(
@@ -134,7 +130,6 @@ class Transactions extends \WP_REST_Controller {
                     'status'           => $status ?: null,
                     'start_date'       => $dates['start_date'] ?: null,
                     'end_date'         => $dates['end_date'] ?: null,
-                    'entry_type'       => $filter_status ?: null,
                     'transaction_type' => $transaction_type ?: null,
                     'limit'            => $limit,
                     'offset'           => $offset,
@@ -142,28 +137,22 @@ class Transactions extends \WP_REST_Controller {
                     'order'            => in_array( $order, array( 'ASC', 'DESC' ), true ) ? $order : null,
                 )
             );
-            // Count only
-            if ( $count ) {
-                $args['count'] = true;
-                return rest_ensure_response(
-                    (int) Transaction::get_transaction_information( $args )
-                );
-            }
 
             if ( $transaction_status ) {
                 $args['entry_type'] = $transaction_status;
             }
 
-            if ( $dashboard ) {
-                if ( get_transient( 'multivendorx_withdrawal_data_' . $store_id ) ) {
-                    return get_transient( 'multivendorx_withdrawal_data_' . $store_id );
-                }
+            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id ) ) {
+                return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id );
             }
-
             if ( ! empty( $search_id ) && is_numeric( $search_id ) ) {
                 $args['id'] = intval( $search_id );
 
                 unset( $args['start_date'], $args['end_date'] );
+            }
+
+            if ( $ids ) {
+                $args['id'] = $ids;
             }
 
             $transactions = Transaction::get_transaction_information( $args );
@@ -198,10 +187,6 @@ class Transactions extends \WP_REST_Controller {
                 )
             );
 
-            $counts = array(
-                'all' => Transaction::get_transaction_information( $count_args ),
-            );
-
             $statuses = array(
                 'completed' => 'Completed',
                 'processed' => 'Processed',
@@ -209,21 +194,26 @@ class Transactions extends \WP_REST_Controller {
                 'failed'    => 'Failed',
             );
 
+            $response = rest_ensure_response( $formatted );
+
+            // Total count
+            $response->header( 'X-WP-Total', (int) Transaction::get_transaction_information( $count_args ) );
+
+            // Status-wise counts
             foreach ( $statuses as $key => $status ) {
-                $counts[ $key ] = Transaction::get_transaction_information(
-                    array_merge( $count_args, array( 'status' => $status ) )
+                $count = Transaction::get_transaction_information( array_merge( $count_args, array( 'status' => $status ) ) );
+                $response->header( 'X-WP-Status-' . ucfirst( $key ), (int) $count );
+            }
+
+            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) ) {
+                set_transient(
+                    Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id,
+                    $response,
+                    DAY_IN_SECONDS
                 );
             }
 
-            if ( $dashboard ) {
-                set_transient( 'multivendorx_withdrawal_data_' . $store_id, array( 'transaction' => $formatted ), DAY_IN_SECONDS );
-            }
-            return rest_ensure_response(
-                array_merge(
-                    array( 'transaction' => $formatted ),
-                    $counts
-                )
-            );
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 
@@ -233,135 +223,6 @@ class Transactions extends \WP_REST_Controller {
                 array( 'status' => 500 )
             );
         }
-    }
-
-    /**
-     * Download transactions as CSV
-     *
-     * @param object $request Request object.
-     */
-    private function download_transaction_csv( $request ) {
-        $store_id           = (int) $request->get_param( 'store_id' );
-        $filter_status      = $request->get_param( 'filter_status' );
-        $transaction_type   = $request->get_param( 'transaction_type' );
-        $transaction_status = $request->get_param( 'transaction_status' );
-        $ids                = $request->get_param( 'ids' );
-        $page               = (int) $request->get_param( 'page' );
-        $per_page           = (int) $request->get_param( 'row' );
-
-        $dates = Utill::normalize_date_range(
-            $request->get_param( 'startDate' ),
-            $request->get_param( 'endDate' )
-        );
-
-        $args = array_filter(
-            array(
-                'store_id'         => $store_id ?: null,
-                'transaction_type' => $transaction_type ?: null,
-                'entry_type'       => $transaction_status ?: $filter_status ?: null,
-            )
-        );
-
-        if ( ! empty( $dates['start_date'] ) && ! empty( $dates['end_date'] ) ) {
-            $args['start_date'] = $dates['start_date'];
-            $args['end_date']   = $dates['end_date'];
-        }
-
-        // If specific IDs are requested (selected rows from bulk action).
-        if ( $ids ) {
-            $args['id'] = array_map( 'intval', explode( ',', $ids ) );
-        } elseif ( $page && $per_page ) {
-            $args['limit']  = $per_page;
-            $args['offset'] = ( $page - 1 ) * $per_page;
-        }
-        // Fetch transactions
-        $transactions = Transaction::get_transaction_information( $args );
-
-        if ( empty( $transactions ) ) {
-            return new \WP_Error(
-                'no_data',
-                __( 'No transaction data found.', 'multivendorx' ),
-                array( 'status' => 404 )
-            );
-        }
-
-        // CSV headers.
-        $headers = array(
-            'Transaction ID',
-            'Date',
-            'Order ID',
-            'Store Name',
-            'Transaction Type',
-            'Credit',
-            'Debit',
-            'Balance',
-            'Status',
-            'Payment Method',
-            'Narration',
-        );
-
-        // Build CSV data.
-        $csv_output = fopen( 'php://output', 'w' );
-        ob_start();
-
-        // Add BOM for UTF-8 compatibility.
-        fwrite( $csv_output, "\xEF\xBB\xBF" );
-
-        fputcsv( $csv_output, $headers );
-
-        foreach ( $transactions as $transaction ) {
-            $store      = new Store( $transaction['store_id'] );
-            $store_name = $store ? $store->get( 'name' ) : '';
-
-            // Format date.
-            $date = ! empty( $transaction['created_at'] ) ? gmdate( 'M j, Y', strtotime( $transaction['created_at'] ) ) : '-';
-
-            fputcsv(
-                $csv_output,
-                array(
-                    $transaction['id'],
-                    $date,
-                    $transaction['order_id'] ? $transaction['order_id'] : '-',
-                    $store_name,
-                    $transaction['transaction_type'] ? $transaction['transaction_type'] : '-',
-                    'Cr' === $transaction['entry_type'] ? $transaction['amount'] : 0,
-                    'Dr' === $transaction['entry_type'] ? $transaction['amount'] : 0,
-                    $transaction['balance'],
-                    $transaction['status'],
-                    $transaction['payment_method'] ? $transaction['payment_method'] : '',
-                    $transaction['narration'],
-                )
-            );
-        }
-
-        fclose( $csv_output );
-        $csv = ob_get_clean();
-
-        // Determine filename based on context.
-        $filename = 'transactions_';
-        if ( ! empty( $ids ) ) {
-            $filename .= 'selected_';
-        } elseif ( ! empty( $page ) ) {
-            $filename .= 'page_' . $page . '_';
-        } else {
-            $filename .= 'all_';
-        }
-
-        // Add store ID to filename if available.
-        if ( ! empty( $store_id ) ) {
-            $filename .= 'store_' . $store_id . '_';
-        }
-
-        $filename .= gmdate( 'Y-m-d' ) . '.csv';
-
-        // Send headers for browser download.
-        header( 'Content-Type: text/csv; charset=UTF-8' );
-        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
-        header( 'Pragma: no-cache' );
-        header( 'Expires: 0' );
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSV must output raw data
-        echo $csv;
-        exit;
     }
 
     /**

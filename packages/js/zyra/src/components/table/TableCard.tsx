@@ -303,7 +303,7 @@ const TableCard: React.FC<TableCardProps> = ({
 				onSelectRow={handleSelectRow}
 				onSelectAll={handleSelectAll}
 				onCellEdit={onCellEdit}
-				enableBulkSelect={bulkActions.length > 0}
+				enableBulkSelect={bulkActions.length > 0 || !!onSelectCsvDownloadApply}
 				isLoading={isLoading}
 			/>
 			{/* pagination */}
@@ -341,7 +341,7 @@ const TableCard: React.FC<TableCardProps> = ({
 						/>
 					)}
 
-					{selectedIds.length > 2 && bulkActions.length > 0 && (
+					{selectedIds.length > 2 && (bulkActions.length > 0 || onSelectCsvDownloadApply) && (
 						<BulkActionDropdown
 							actions={bulkActions}
 							selectedIds={selectedIds}
@@ -352,8 +352,10 @@ const TableCard: React.FC<TableCardProps> = ({
 							onToggleSelectAll={(select) =>
 								setSelectedIds(select ? [...ids] : [])
 							}
+							showDropdown={bulkActions.length > 0}
 						/>
 					)}
+
 				</div>
 
 			</div>
