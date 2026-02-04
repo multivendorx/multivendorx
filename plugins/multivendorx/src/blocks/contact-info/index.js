@@ -9,8 +9,6 @@ import {
     PanelRow
 } from '@wordpress/components';
 import { InspectorControls, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
-import { Heading } from '@wordpress/components';
-import { Button } from '@wordpress/components';
 
 registerBlockType('multivendorx/contact-info', {
     attributes: {
@@ -215,11 +213,8 @@ registerBlockType('multivendorx/contact-info', {
 
         const blockProps = useBlockProps.save();
         
-        // Create wrapper classes based on attributes
-        const wrapperClass = `multivendorx-contact-form-block ${hideFromGuests ? 'hide-from-guests' : ''} ${enableGoogleRecaptcha ? 'has-recaptcha' : ''}`;
-        
         return (
-            <div {...blockProps} className={wrapperClass}>
+            <div {...blockProps}>
                 <form className="woocommerce-form woocommerce-form-login login">
                     {hideFromGuests && (
                         <div className="multivendorx-hide-guests-notice" style={{ display: 'none' }}>

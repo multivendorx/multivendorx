@@ -4,7 +4,34 @@
   "title": "Store Review",
   "category": "multivendorx-store-shop",
   "icon": "star-filled",
-  "description": "Display store reviews and ratings",
-  "editorScript": "file:./index.tsx",
-  "viewScript": "file:./frontend.ts"
+  "description": "Display store reviews with ratings and images",
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js",
+  "supports": {
+    "align": true,
+    "alignWide": false,
+    "html": false
+  },
+  "attributes": {
+    "reviewsToShow": {
+      "type": "number",
+      "default": 3
+    },
+    "showImages": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAdminReply": {
+      "type": "boolean",
+      "default": true
+    },
+    "showRating": {
+      "type": "boolean",
+      "default": true
+    },
+    "sortOrder": {
+      "type": "string",
+      "default": "newest"
+    }
+  }
 }
