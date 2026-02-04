@@ -14,6 +14,7 @@ import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState,
 import axios from 'axios';
 import { downloadCSV, formatCurrency, formatWcShortDate, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
+import Counter from '@/services/Counter';
 
 
 
@@ -41,33 +42,6 @@ const ProductReport: React.FC = () => {
 			...prev,
 			[key]: !prev[key],
 		}));
-	};
-
-	const Counter = ({ value, duration = 1200 }) => {
-		const [count, setCount] = React.useState(0);
-
-		React.useEffect(() => {
-			let start = 0;
-			const end = parseInt(value);
-			if (start === end) {
-				return;
-			}
-
-			const increment = end / (duration / 16);
-
-			const timer = setInterval(() => {
-				start += increment;
-				if (start >= end) {
-					start = end;
-					clearInterval(timer);
-				}
-				setCount(Math.floor(start));
-			}, 16);
-
-			return () => clearInterval(timer);
-		}, [value, duration]);
-
-		return <>{count}</>;
 	};
 
 	useEffect(() => {

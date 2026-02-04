@@ -45,16 +45,27 @@ const Pagination: React.FC<PaginationProps> = ({
 
 	// If only a per-page picker should show
 	if (pageCount <= 1) {
-		return total > perPageOptions[0] ? (
-			<PageSizePicker
-				currentPage={page}
-				perPage={perPage}
-				setCurrentPage={onPageChange}
-				total={total}
-				setPerPageChange={onPerPageChange}
-				perPageOptions={perPageOptions}
-			/>
-		) : null;
+		return (
+			<div className="pagination-number-wrapper">
+				<PageArrows
+					currentPage={page}
+					showPageArrowsLabel={showPageArrowsLabel}
+					perPage={perPage}
+					total={total}
+				/>
+	
+				{total > perPageOptions[0] && (
+					<PageSizePicker
+						currentPage={page}
+						perPage={perPage}
+						setCurrentPage={onPageChange}
+						total={total}
+						setPerPageChange={onPerPageChange}
+						perPageOptions={perPageOptions}
+					/>
+				)}
+			</div>
+		);
 	}
 
 	return (
