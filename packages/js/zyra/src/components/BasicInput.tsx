@@ -4,6 +4,7 @@ import { MouseEvent, FocusEvent, useState, forwardRef, ReactNode } from 'react';
 // Internal Dependencies
 import SelectInput from './SelectInput';
 import AdminButton from './UI/AdminButton';
+import { FieldComponent } from './types';
 
 interface InputFeedback {
     type: string;
@@ -79,7 +80,7 @@ interface BasicInputProps {
     postInsideText?: Addon;
 }
 
-const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
+const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
     (
         {
             wrapperClass,
@@ -116,6 +117,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
         },
         ref
     ) => {
+        console.log('value', value)
         const [copied, setCopied] = useState(false);
 
         const mainValue =
@@ -124,11 +126,11 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                 : value ?? '';
 
         const updateValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-            if (typeof value === 'object' && fieldKey) {
-                onChange({ ...value, [fieldKey]: e.target.value });
-            } else {
+            // if (typeof value === 'object' && fieldKey) {
+            //     onChange({ ...value, [fieldKey]: e.target.value });
+            // } else {
                 onChange(e);
-            }
+            // }
         };
 
         const renderAddon = (addon: Addon) => {
@@ -221,7 +223,7 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
             setCopied(true);
             setTimeout(() => setCopied(false), 3000);
         };
-
+console.log('type', type)
         return (
             <>
                 <div
@@ -241,21 +243,21 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                         />
                     ) : (
                         <>
-                            {preText && (
+                            {/* {preText && (
                                 <span className="before">
                                     {renderAddon(preText)}
                                 </span>
-                            )}
+                            )} */}
 
                             <div
                                 className="input-wrapper"
                                 style={{ width: size || '100%' }}
                             >
-                                {preInsideText && (
+                                {/* {preInsideText && (
                                     <span className="pre">
                                         {renderAddon(preInsideText)}
                                     </span>
-                                )}
+                                )} */}
 
                                 <input
                                     ref={ref}
@@ -274,8 +276,10 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                             ? max
                                             : undefined
                                     }
-                                    value={mainValue}
-                                    onChange={updateValue}
+                                    value={value}
+                                    onChange={(e) =>
+                                        onChange(e)
+                                    }
                                     onClick={onClick}
                                     onMouseOver={onMouseOver}
                                     onMouseOut={onMouseOut}
@@ -290,13 +294,13 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                     <div className="color-value">{mainValue}</div>
                                 )}
 
-                                {postInsideText && (
+                                {/* {postInsideText && (
                                     <span className="parameter">
                                         {renderAddon(postInsideText)}
                                     </span>
-                                )}
+                                )} */}
 
-                                {clickBtnName && (
+                                {/* {clickBtnName && (
                                     <AdminButton
                                             buttons={{
                                                 text: clickBtnName,
@@ -357,14 +361,14 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
                                                 }}
                                             />
                                         </>
-                                    ))}
+                                    ))} */}
                             </div>
 
-                            {postText && (
+                            {/* {postText && (
                                 <span className="after">
                                     {renderAddon(postText)}
                                 </span>
-                            )}
+                            )} */}
                         </>
                     )}
 
@@ -389,4 +393,36 @@ const BasicInput = forwardRef<HTMLInputElement, BasicInputProps>(
     }
 );
 
+const BasicInput: FieldComponent = {
+  render: ({ field, value, onChange }) => (
+    <BasicInputUI
+      wrapperClass={field.wrapperClass}
+      inputClass={field.class}
+      description={field.desc}
+      fieldKey={field.key}
+      id={field.id}
+      name={field.name}
+      type={field.type}
+      placeholder={field.placeholder}
+      inputLabel={field.inputLabel}
+      rangeUnit={field.rangeUnit}
+      min={field.min ?? 0}
+      max={field.max ?? 50}
+      value={value}
+      size={field.size}
+      onChange={(e: any) =>
+        onChange(e, field.key, 'single', 'simple')
+      }
+    />
+  ),
+
+  validate: (field, value) => {
+    if (field.required && !value?.[field.key]) {
+      return `${field.label} is required`;
+    }
+    return null;
+  },
+};
+
 export default BasicInput;
+

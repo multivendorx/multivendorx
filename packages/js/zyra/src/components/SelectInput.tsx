@@ -7,6 +7,7 @@ import type {
     ActionMeta,
     StylesConfig,
 } from 'react-select';
+import { FieldComponent } from './types';
 
 // Types
 export interface SelectOptions {
@@ -86,7 +87,7 @@ const CustomNoOptionsMessage = (props: any) => {
     );
 };
 
-const SelectInput: React.FC<SelectInputProps> = ({
+const SelectInputUI: React.FC<SelectInputProps> = ({
     wrapperClass,
     selectDeselect,
     selectDeselectClass,
@@ -224,6 +225,44 @@ const SelectInput: React.FC<SelectInputProps> = ({
             )}
         </div>
     );
+};
+
+const SelectInput: FieldComponent = {
+  render: ({ field, value, onChange }) => (
+    <SelectInputUI
+        wrapperClass={field.wrapperClass}
+        name={field.key}
+        description={field.desc}
+        inputClass={field.className}
+        size={field.size}
+        options={
+            Array.isArray(field.options)
+                ? field.options.map((opt) => ({
+                    value: String(opt.value),
+                    label: opt.label ?? String(opt.value),
+                }))
+                : []
+        }
+        value={
+            typeof value === 'number'
+                ? value.toString()
+                : value
+        }
+        onChange={(newValue) =>
+            onChange(newValue, field.key,
+                'single',
+                'select'
+            )
+        }
+    />
+  ),
+
+  validate: (field, value) => {
+    if (field.required && !value?.[field.key]) {
+      return `${field.label} is required`;
+    }
+    return null;
+  },
 };
 
 export default SelectInput;
