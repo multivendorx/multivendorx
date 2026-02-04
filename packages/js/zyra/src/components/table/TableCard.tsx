@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Table from './table';
 import TableSummary, { TableSummaryPlaceholder } from './summary';
 import Pagination from '../pagination/Pagination';
@@ -8,7 +8,6 @@ import TableSearch from './TableSearch';
 import RealtimeFilters from './RealtimeFilter';
 import CategoryFilter from './CategoryFilter';
 import ButtonActions from './ButtonActions';
-import OutsideClickWrapper from '../UI/OutsideClickWrapper';
 
 const defaultOnColumnsChange = (
 	showCols: string[],
@@ -51,6 +50,20 @@ const TableCard: React.FC<TableCardProps> = ({
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
+	const ref = useRef<HTMLDivElement | null>(null);
+
+	const handleClickOutside = (event: MouseEvent) => {
+		if (ref.current && !ref.current.contains(event.target as Node)) {
+			setIsPopoverOpen(false);
+		}
+	};
+
+	useEffect(() => {
+		document.addEventListener("click", handleClickOutside);
+		return () => {
+			document.removeEventListener("click", handleClickOutside);
+		};
+	}, []);
 
 	const [query, setQuery] = useState<QueryProps>({
 		orderby: 'date',
@@ -262,41 +275,35 @@ const TableCard: React.FC<TableCardProps> = ({
 						</div>
 					)}
 					{showMenu && showColumnToggleIcon && (
-						<OutsideClickWrapper
-							enabled={isPopoverOpen}
-							onOutsideClick={() => setIsPopoverOpen(false)}
-						>
-							<div className="popover-wrapper">
-								<div className="popover-toggle" onClick={togglePopover} >
-									<i className="popover-icon adminfont-more-vertical"></i>
-								</div>
-								{isPopoverOpen && (
-									<div className="popover popover-action checkbox">
-										<div className="popover-body">
-											<ul>
-												{headers.map(({ key, label, required }) => {
-													if (required) return null;
-
-													return (
-														<li key={key}>
-															<label>
-																<input
-																	type="checkbox"
-																	checked={showCols.includes(key)}
-																	onChange={onColumnToggle(key)}
-																/>
-																{label}
-															</label>
-														</li>
-													);
-												})}
-											</ul>
-										</div>
-									</div>
-								)}
+						<div className="popover-wrapper" ref={ref}>
+							<div className="popover-toggle" onClick={togglePopover} >
+								<i className="popover-icon adminfont-more-vertical"></i>
 							</div>
-						</OutsideClickWrapper>
+							{isPopoverOpen && (
+								<div className="popover popover-action checkbox">
+									<div className="popover-body">
+										<ul>
+											{headers.map(({ key, label, required }) => {
+												if (required) return null;
 
+												return (
+													<li key={key}>
+														<label>
+															<input
+																type="checkbox"
+																checked={showCols.includes(key)}
+																onChange={onColumnToggle(key)}
+															/>
+															{label}
+														</label>
+													</li>
+												);
+											})}
+										</ul>
+									</div>
+								</div>
+							)}
+						</div>
 					)}
 				</div>
 			</div>
