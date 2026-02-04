@@ -11,21 +11,32 @@ import {
     ColorPalette,
     SelectControl
 } from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
 
 // Template 1: Store Header
 const TEMPLATE_1 = [
+    ['multivendorx/store-social-icons', {align: 'right'}],
     ['multivendorx/store-logo', {}],
-    ['core/spacer', { height: '20px' }],
     ['multivendorx/store-name', {}],
-    ['core/spacer', { height: '10px' }],
-    ['core/paragraph', { 
-        content: __('Premium quality products with fast delivery', 'multivendorx'),
-        align: 'center',
-        fontSize: 'small'
-    }],
+    ['core/group', {
+        layout: {
+            type: 'flex',
+            flexWrap: 'nowrap',
+            justifyContent: 'start',  
+            alignItems: 'center',     
+            orientation: 'horizontal'  
+        },
+        style: {
+            spacing: {
+                blockGap: '20px' 
+            }
+        }
+    }, [
+        ['multivendorx/store-email', {}],
+        ['multivendorx/store-phone', {}]
+    ]],
+    ['multivendorx/store-description', {}],
     ['core/spacer', { height: '20px' }],
-    ['multivendorx/store-buttons', {}]
+    ['multivendorx/store-buttons', {align: 'right'}]
 ];
 
 // Template 2: Contact Focused
@@ -92,6 +103,7 @@ const ALLOWED_BLOCKS = [
     'core/button',
     'core/columns',
     'core/column',
+    'core/row',
     'core/image',
     'core/spacer',
     'multivendorx/store-name',
@@ -166,7 +178,6 @@ registerBlockType('multivendorx/store-banner', {
                 backgroundRepeat: 'no-repeat',
                 position: 'relative',
                 display: 'flex',
-                overflow: 'hidden'
             }
         });
 
@@ -195,7 +206,7 @@ registerBlockType('multivendorx/store-banner', {
             color: contentColor
         };
 
-        // Get template
+        // Get current template
         const currentTemplate = TEMPLATES[template] || TEMPLATE_1;
 
         // Function to handle template change

@@ -68,6 +68,8 @@ class Block {
             'store-social-icons',
             'store-phone',
             'store-description',
+            'store-review',
+            'store-policy'
         );
 
         $textdomain = 'multivendorx';

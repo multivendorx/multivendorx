@@ -4,59 +4,28 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	Table,
-	TableCell,
 	CommonPopup,
 	TextArea,
-	MultiCalendarInput,
 	AdminButton,
+	TableCard,
 } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
-import { formatWcShortDate } from '@/services/commonFunction';
 
-type CouponRow = {
-	store_name: string;
-	id?: number;
-	code?: string;
-	amount?: string;
-	discount_type?: string;
-	status?: string;
-	date_created?: string;
-	meta_data?: Array<{ key: string; value: any }>;
-};
+import { formatWcShortDate, toWcIsoDate } from '@/services/commonFunction';
+import { QueryProps, TableRow } from '@/services/type';
 
-type FilterData = {
-	searchAction?: string;
-	searchField?: string;
-	typeCount?: any;
-	store?: string;
-	date?: { start_date?: Date; end_date?: Date };
-	orderBy?: string;
-	order?: string;
+const DISCOUNT_TYPE_LABELS: Record<string, string> = {
+	percent: __('Percentage discount', 'multivendorx'),
+	fixed_cart: __('Fixed cart discount', 'multivendorx'),
+	fixed_product: __('Fixed product discount', 'multivendorx'),
 };
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => React.ReactNode;
-}
 
 const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 	onUpdated,
 }) => {
-	const [data, setData] = useState<CouponRow[] | null>(null);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [pageCount, setPageCount] = useState(0);
+	const [rowIds, setRowIds] = useState<number[]>([]);
 
 	// Reject popup state
 	const [rejectPopupOpen, setRejectPopupOpen] = useState(false);
@@ -64,33 +33,27 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 	const [rejectCouponId, setRejectCouponId] = useState<number | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [store, setStore] = useState<any[] | null>(null);
-	const [dateFilter, setDateFilter] = useState<FilterDate>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
 
 	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		})
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
 			.then((response) => {
-				setStore(response.data.stores);
+				const options =
+					(response.data || []).map((store: any) => ({
+						label: store.store_name,
+						value: store.id,
+					}));
+
+				setStore(options);
+				setIsLoading(false);
 			})
 			.catch(() => {
 				setStore([]);
+				setIsLoading(false);
 			});
 	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		requestData(pagination.pageSize, currentPage);
-	}, [pagination]);
 
 	const handleSingleAction = (action: string, couponId: number) => {
 		if (!couponId) {
@@ -115,7 +78,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				requestData(pagination.pageSize, pagination.pageIndex + 1);
+				fetchData({})
 				onUpdated?.();
 			})
 			.catch(console.error);
@@ -143,267 +106,134 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectCouponId(null);
-				requestData(pagination.pageSize, pagination.pageIndex + 1);
+				fetchData({});
 				onUpdated?.();
 			})
 			.catch(console.error)
 			.finally(() => setIsSubmitting(false));
 	};
 
-	const formatDateToISO8601 = (date: Date) => date.toISOString().slice(0, 19);
+	const headers = [
+		{ key: 'code', label: __('Code', 'multivendorx') },
+		{ key: 'discount_type', label: __('Discount Type', 'multivendorx') },
+		{ key: 'date', label: __('Date created', 'multivendorx'), isSortable: true, },
+		{
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Approve', 'multivendorx'),
+					icon: 'check',
+					onClick: (id: number) => handleSingleAction('approve_coupon', id)
+				},
+				{
+					label: __('Reject', 'multivendorx'),
+					icon: 'close',
+					onClick: (id: number) => handleSingleAction('reject_coupon', id),
+					className: 'danger',
+				},
+			],
+		},
+	];
 
-	const requestData = (
-		rowsPerPage: number,
-		currentPage: number,
-		store = '',
-		orderBy = '',
-		order = '',
-		startDate?: Date,
-		endDate?: Date
-	) => {
-		const now = new Date();
-		const formattedStartDate = formatDateToISO8601(
-			startDate ||
-			new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
-		);
-		const formattedEndDate = formatDateToISO8601(endDate || now);
+	const filters = [
+		{
+			key: 'store_id',
+			label: 'Stores',
+			type: 'select',
+			options: store,
+		},
+		{
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		},
+	];
 
-		setData(null);
-
-		const params: any = {
-			page: currentPage,
-			per_page: rowsPerPage,
-			meta_key: 'multivendorx_store_id',
-			status: 'pending',
-			after: formattedStartDate,
-			before: formattedEndDate,
-		};
-
-		//Add `store` only if not empty
-		if (store) {
-			params.value = store;
-		}
-		if (orderBy) {
-			params.orderby = orderBy; // e.g. 'date', 'title', 'price'
-		}
-		if (order) {
-			params.order = order; // 'asc' or 'desc'
-		}
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params,
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: {
+					page: query.paged,
+					per_page: query.per_page,
+					search: query.searchValue,
+					orderby: query.orderby,
+					order: query.order,
+					meta_key: 'multivendorx_store_id',
+					value: query?.filter?.store_id,
+					after: query.filter?.created_at?.startDate
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: undefined,
+
+					before: query.filter?.created_at?.endDate
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: undefined,
+					status: 'pending',
+				},
 			})
 			.then((response) => {
-				const totalCount =
-					parseInt(response.headers['x-wp-total'], 10) || 0;
-				setTotalRows(totalCount);
-				setPageCount(Math.ceil(totalCount / pagination.pageSize));
-				setData(response.data || []);
+				const products = Array.isArray(response.data)
+					? response.data
+					: [];
+
+				const ids = products.map((p: any) => p.id);
+				setRowIds(ids);
+
+				const mappedRows: any[][] = products.map((coupon: any) => [
+					{
+						type: 'card',
+						value: coupon.id,
+						display: coupon.code,
+						data: {
+							name: coupon.code,
+							description:`By: ${coupon.store_name}`,
+							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`,
+						},
+					},
+					{
+						display: `${coupon.amount} ${DISCOUNT_TYPE_LABELS[coupon.discount_type]}`,
+						value: coupon.amount,
+					},
+					{
+						display: coupon.date_created
+							? formatWcShortDate(coupon.date_created)
+							: '-',
+						value: coupon.date_created,
+					}
+				]);
+
+				setRows(mappedRows);
+				setTotalRows(
+					Number(response.headers['x-wp-total']) || 0
+				);
+				setIsLoading(false);
 			})
-			.catch(() => setData([]));
+			.catch((error) => {
+				console.error('Product fetch failed:', error);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
 	};
-
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		const date = filterData?.date || {
-			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-			end_date: new Date(),
-		};
-		setDateFilter(date);
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.store,
-			filterData?.orderBy,
-			filterData?.order,
-			date?.start_date,
-			date?.end_date
-		);
-	};
-
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'store',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="   group-field">
-					<select
-						name="store"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">All Store</option>
-						{store?.map((s: any) => (
-							<option key={s.id} value={s.id}>
-								{s.store_name.charAt(0).toUpperCase() +
-									s.store_name.slice(1)}
-							</option>
-						))}
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						value={{
-							startDate: dateFilter.start_date!,
-							endDate: dateFilter.end_date!,
-						}}
-						onChange={(range: DateRange) => {
-							const next = {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							};
-
-							setDateFilter(next);
-							updateFilter('date', next);
-						}}
-					/>
-				</div>
-			),
-		},
-	];
-
-	const columns: ColumnDef<CouponRow>[] = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('Code', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original?.code ?? '-'}>
-					<div className="product-wrapper">
-						<div className="details">
-							<span className="title">
-								{row.original?.id ? (
-									<a
-										href={`${appLocalizer.site_url}/wp-admin/post.php?post=${row.original.id}&action=edit`}
-										target="_blank"
-										rel="noreferrer"
-									>
-										{row.original.code}
-									</a>
-								) : (
-									(row.original?.code ?? '-')
-								)}
-							</span>
-							<div className="des">
-								By {row.original.store_name ?? '-'}
-							</div>
-						</div>
-					</div>
-				</TableCell>
-			),
-		},
-		{
-			header: __('Discount Type', 'multivendorx'),
-			cell: ({ row }) => {
-				const type = row.original?.discount_type;
-				const formattedType =
-					type === 'percent'
-						? __('Percentage discount', 'multivendorx')
-						: type === 'fixed_cart'
-							? __('Fixed cart discount', 'multivendorx')
-							: type === 'fixed_product'
-								? __('Fixed product discount', 'multivendorx')
-								: '-';
-
-				return (
-					<TableCell title={formattedType}>
-						{row.original?.amount ?? '-'} {formattedType}
-					</TableCell>
-				);
-			},
-		},
-		{
-			id: 'date',
-			accessorKey: 'date',
-			enableSorting: true,
-			header: __('Date created', 'multivendorx'),
-			cell: ({ row }) => {
-				return (
-					<TableCell title={''}>{formatWcShortDate(row.original.date_created)}</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell>
-					<span
-						className="admin-btn btn-purple"
-						onClick={() =>
-							handleSingleAction(
-								'approve_coupon',
-								row.original.id
-							)
-						}
-					>
-						<i className="adminfont-check"></i>
-						{__('Approve', 'multivendorx')}
-					</span>
-
-					<span
-						className="admin-btn btn-red"
-						onClick={() =>
-							handleSingleAction(
-								'reject_coupon',
-								row.original.id
-							)
-						}
-					>
-						<i className="adminfont-close"></i>
-						{__('Reject', 'multivendorx')}
-					</span>
-				</TableCell>
-			),
-		}
-	];
 
 	return (
 		<>
 			<div className="admin-table-wrapper">
-				<Table
-					data={data}
-					columns={columns as ColumnDef<Record<string, any>, any>[]}
-					rowSelection={rowSelection}
-					onRowSelectionChange={setRowSelection}
-					defaultRowsPerPage={10}
-					pageCount={pageCount}
-					pagination={pagination}
-					onPaginationChange={setPagination}
-					handlePagination={requestApiForData}
-					perPageOption={[10, 25, 50]}
-					totalCounts={totalRows}
-					realtimeFilter={realtimeFilter}
+				<TableCard
+					headers={headers}
+					rows={rows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={fetchData}
+					ids={rowIds}
+					search={{}}
+					filters={filters}
 				/>
-
 				{/* Reject Coupon Popup */}
 				{rejectPopupOpen && (
 					<CommonPopup

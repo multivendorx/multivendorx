@@ -11,13 +11,6 @@ import { applyFilters } from '@wordpress/hooks';
 export const TransactionHistory: React.FC = () => {
 	const [allStores, setAllStores] = useState<any[]>([]);
 	const [selectedStore, setSelectedStore] = useState<any>(null);
-	const [dateRange, setDateRange] = useState<{
-		startDate: Date | null;
-		endDate: Date | null;
-	}>({
-		startDate: null,
-		endDate: null,
-	});
 
 	// Fetch stores on mount
 	useEffect(() => {
@@ -71,12 +64,9 @@ export const TransactionHistory: React.FC = () => {
 	const getForm = (tabId: string) => {
 		switch (tabId) {
 			case 'wallet-transaction':
-				return (
-					<WalletTransaction
-						storeId={selectedStore?.value}
-						dateRange={dateRange}
-					/>
-				);
+				return selectedStore?.value ? (
+					<WalletTransaction storeId={selectedStore.value} />
+				) : null;
 			case 'direct-transaction':
 				const output = applyFilters(
 					'direct_transaction_output',

@@ -6,12 +6,12 @@ import { ReactSortable } from 'react-sortablejs';
 import ButtonCustomizer from './ButtonCustomiser';
 import Elements from './Elements';
 import SettingMetaBox from './SettingMetaBox';
-import SimpleInput from './SimpleInput';
 import MultipleOptions from './MultipleOption';
 import AddressField, { AddressFormField } from './AddressField';
 import TextArea from './TextArea';
 import FileInput from './FileInput';
 import '../styles/web/RegistrationForm.scss';
+import BasicInput from './BasicInput';
 
 // Types
 export type FieldValue =
@@ -559,9 +559,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     className={`form-heading ${formFieldList[0]?.disabled ? 'disable' : ''
                         }`}
                 >
-                    <input
-                        type="text"
-                        className="basic-input"
+                    <BasicInput
+                        type= "text"
                         placeholder={formTitlePlaceholder}
                         value={formFieldList[0]?.label}
                         onChange={(e) => {
@@ -657,9 +656,13 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     {['text', 'email', 'number'].includes(
                                         formField.type
                                     ) && (
-                                            <SimpleInput
-                                                formField={formField}
-                                            />
+                                            <>
+                                                <p>{formField.label}</p>
+                                                <BasicInput
+                                                    type= {formField.type}
+                                                    placeholder= {formField.type}
+                                                />
+                                            </>
                                         )}
                                     {[
                                         'radio',
@@ -682,17 +685,19 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     {formField.type === 'datepicker' && (
                                         <>
                                             <p>{formField.label}</p>
-                                            <div className="settings-form-group-radio">
-                                                <input className="basic-input" type="date" readOnly />
-                                            </div>
+                                            <BasicInput
+                                                type= "date"
+                                                placeholder= {formField.type}
+                                            />
                                         </>
                                     )}
                                     {formField.type === 'TimePicker' && (
                                         <>
                                             <p>{formField.label}</p>
-                                            <div className="settings-form-group-radio">
-                                                <input className="basic-input" type="time" readOnly />
-                                            </div>
+                                            <BasicInput
+                                                type= "time"
+                                                placeholder= {formField.type}
+                                            />
                                         </>
                                     )}
                                     {formField.type === 'attachment' && (
@@ -710,14 +715,11 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     )}
                                     {formField.type === 'section' && (
                                         <>
-                                            <div className="main-input-wrapper">
-                                                <input
-                                                    className="basic-input textarea-label"
-                                                    type="text"
-                                                    value={formField.label}
-                                                    placeholder="I am label"
-                                                />
-                                            </div>
+                                            <BasicInput
+                                                type= "text"
+                                                value={formField.label}
+                                                placeholder= {formField.type}
+                                            />
                                         </>
                                     )}
                                     {formField.type === 'textarea' && (

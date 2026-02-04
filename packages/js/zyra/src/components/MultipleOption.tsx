@@ -83,12 +83,12 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
     };
 
     return (
-        <div className="edit-form-wrapper">
+        <>
             <p>{ formField.label }</p>
             <div className="settings-form-group-radio">
                 { renderInputFields( type ) }
             </div>
-        </div>
+        </>
     );
 };
 
