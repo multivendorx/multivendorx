@@ -6,9 +6,10 @@ import { ReactSortable } from 'react-sortablejs';
 
 import '../styles/web/SettingMetaBox.scss';
 import StyleControls from './StyleControl';
+import ToggleSetting from './ToggleSetting';
 
 type FormFieldValue = string | number | boolean | Option[];
-type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout';
+type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout' | 'text' | 'level' | 'src' | 'alt' | 'url';
 
 // Types
 interface Option {
@@ -33,6 +34,11 @@ interface FormField {
     readonly?: boolean;
     options?: Option[];
     html?: string;
+    text?: string;
+    level?: 1 | 2 | 3;
+    src?: string;
+    alt?: string;
+    url?: string;
     style?: any;
     layout?: '1' | '2-50' | '2-66' | '3' | '4';
 }
@@ -142,6 +148,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
     setDefaultValue,
 } ) => {
     const [ hasOpened, setHasOpened ] = useState( opened.click );
+    const [ expandedContentGroup, setExpandedContentGroup ] = useState( true );
     const [ expandedLayoutGroup, setExpandedLayoutGroup ] = useState( false );
 
     const isValidSiteKey = ( key: string ) =>
@@ -219,6 +226,193 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                             style={formField.style || {}}
                             onChange={(style) => onChange('style', style)}
                             includeTextStyles={true}
+                        />
+                    </div>
+                );
+
+            case 'heading':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedContentGroup(!expandedContentGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Heading Content</h4>
+                                <i className={`adminfont-${expandedContentGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedContentGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Heading Text</label>
+                                        <input
+                                            value={formField.text || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('text', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                    <div className="field-wrapper">
+                                        <label>Heading Level</label>
+                                        <ToggleSetting
+                                            options={[
+                                                {
+                                                    key: 'h1',
+                                                    value: '1',
+                                                    label: 'H1',
+                                                },
+                                                {
+                                                    key: 'h2',
+                                                    value: '2',
+                                                    label: 'H2',
+                                                },
+                                                {
+                                                    key: 'h3',
+                                                    value: '3',
+                                                    label: 'H3',
+                                                },
+                                            ]}
+                                            value={String(formField.level )}
+                                            onChange={(value) =>
+                                                onChange('level', Number(value) as 1 | 2 | 3)
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={(style) => onChange('style', style)}
+                                includeTextStyles={true}
+                            />
+                        </div>
+                    </>
+                );
+
+            case 'image':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedContentGroup(!expandedContentGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Image</h4>
+                                <i className={`adminfont-${expandedContentGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedContentGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Image URL</label>
+                                        <input
+                                            value={formField.src || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('src', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                    <div className="field-wrapper">
+                                        <label>Alt Text</label>
+                                        <input
+                                            value={formField.alt || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('alt', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={(style) => onChange('style', style)}
+                                includeTextStyles={false}
+                            />
+                        </div>
+                    </>
+                );
+
+            case 'button':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedContentGroup(!expandedContentGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Button Content</h4>
+                                <i className={`adminfont-${expandedContentGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedContentGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Button Text</label>
+                                        <input
+                                            value={formField.text || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('text', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                    <div className="field-wrapper">
+                                        <label>Button URL</label>
+                                        <input
+                                            value={formField.url || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('url', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={(style) => onChange('style', style)}
+                                includeTextStyles={true}
+                            />
+                        </div>
+                    </>
+                );
+
+            case 'divider':
+                return (
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <StyleControls
+                            style={formField.style || {}}
+                            onChange={(style) => onChange('style', style)}
+                            includeTextStyles={false}
                         />
                     </div>
                 );
@@ -411,6 +605,16 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
         }
     };
 
+    // Block types that don't need Visibility and Required fields
+    const isBlockType = [
+        'richtext',
+        'heading',
+        'image',
+        'button',
+        'divider',
+        'columns'
+    ].includes(formField?.type || '');
+
     return (
         <>
             { hasOpened && (
@@ -536,9 +740,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                             { metaType === 'setting-meta' &&
                                 renderConditionalFields() }
 
-                            { metaType === 'setting-meta' && 
-                              formField?.type !== 'richtext' && 
-                              formField?.type !== 'columns' && (
+                            { metaType === 'setting-meta' && !isBlockType && (
                                 <FieldWrapper label="Visibility">
                                     <div className="toggle-setting-container">
                                         <div className="toggle-setting-wrapper">
@@ -594,9 +796,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                                 </FieldWrapper>
                             ) }
 
-                            { metaType === 'setting-meta' && 
-                              formField?.type !== 'richtext' && 
-                              formField?.type !== 'columns' && (
+                            { metaType === 'setting-meta' && !isBlockType && (
                                 <FieldWrapper
                                     label={
                                         metaType === 'setting-meta'

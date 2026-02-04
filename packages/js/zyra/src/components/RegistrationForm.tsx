@@ -35,8 +35,8 @@ export interface SelectOption {
     name?: string;
 }
 
-// TextBlock interfaces
-interface TextBlockStyle {
+// Block interfaces
+interface BlockStyle {
     backgroundColor?: string;
     padding?: number | string;
     paddingTop?: number;
@@ -61,12 +61,7 @@ interface TextBlockStyle {
     width?: string;
     height?: string;
     textDecoration?: string;
-}
-
-interface TextBlock {
-    type: 'text';
-    html: string;
-    style?: TextBlockStyle;
+    align?: 'left' | 'center' | 'right';
 }
 
 export interface FormField {
@@ -97,7 +92,12 @@ export interface FormField {
     }>;
     value?: Record<string, unknown>;
     html?: string;
-    style?: TextBlockStyle;
+    text?: string;
+    level?: 1 | 2 | 3;
+    src?: string;
+    alt?: string;
+    url?: string;
+    style?: BlockStyle;
     layout?: '1' | '2-50' | '2-66' | '3' | '4';
     columns?: FormField[][];
 }
@@ -127,7 +127,7 @@ interface CustomFormProps {
 
 // TextBlockView Component
 const TextBlockView: React.FC<{
-    block: TextBlock;
+    block: { type: 'text'; html: string; style?: BlockStyle };
     onChange: (html: string) => void;
 }> = ({ block, onChange }) => {
     const style = {
@@ -164,6 +164,167 @@ const TextBlockView: React.FC<{
             onBlur={(e) => onChange(e.currentTarget.innerHTML)}
             dangerouslySetInnerHTML={{ __html: block.html }}
         />
+    );
+};
+
+// HeadingBlockView Component
+const HeadingBlockView: React.FC<{
+    block: { text: string; level: 1 | 2 | 3; style?: BlockStyle };
+    onChange: (text: string) => void;
+}> = ({ block, onChange }) => {
+    const style = {
+        backgroundColor: block.style?.backgroundColor,
+        padding: block.style?.padding ||
+            (block.style?.paddingTop || block.style?.paddingRight || block.style?.paddingBottom || block.style?.paddingLeft
+                ? `${block.style?.paddingTop || 0}px ${block.style?.paddingRight || 0}px ${block.style?.paddingBottom || 0}px ${block.style?.paddingLeft || 0}px`
+                : undefined),
+        margin: block.style?.margin ||
+            (block.style?.marginTop || block.style?.marginRight || block.style?.marginBottom || block.style?.marginLeft
+                ? `${block.style?.marginTop || 0}px ${block.style?.marginRight || 0}px ${block.style?.marginBottom || 0}px ${block.style?.marginLeft || 0}px`
+                : undefined),
+        textAlign: block.style?.textAlign,
+        fontSize: block.style?.fontSize,
+        fontFamily: block.style?.fontFamily,
+        color: block.style?.color,
+        lineHeight: block.style?.lineHeight,
+        fontWeight: block.style?.fontWeight,
+        borderWidth: block.style?.borderWidth,
+        borderColor: block.style?.borderColor,
+        borderStyle: block.style?.borderStyle,
+        borderRadius: block.style?.borderRadius,
+        textDecoration: block.style?.textDecoration,
+    };
+
+    const Tag = `h${block.level}` as keyof JSX.IntrinsicElements;
+
+    return (
+        <Tag
+            className="email-heading"
+            style={style}
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={(e) => onChange(e.currentTarget.textContent || '')}
+        >
+            {block.text}
+        </Tag>
+    );
+};
+
+// ButtonBlockView Component
+const ButtonBlockView: React.FC<{
+    block: { text: string; url?: string; style?: BlockStyle };
+    onChange: (text: string) => void;
+}> = ({ block, onChange }) => {
+    const buttonStyle = {
+        backgroundColor: block.style?.backgroundColor || '#007bff',
+        color: block.style?.color || '#ffffff',
+        padding: block.style?.padding ||
+            (block.style?.paddingTop || block.style?.paddingRight || block.style?.paddingBottom || block.style?.paddingLeft
+                ? `${block.style?.paddingTop || 10}px ${block.style?.paddingRight || 20}px ${block.style?.paddingBottom || 10}px ${block.style?.paddingLeft || 20}px`
+                : '10px 20px'),
+        margin: block.style?.margin ||
+            (block.style?.marginTop || block.style?.marginRight || block.style?.marginBottom || block.style?.marginLeft
+                ? `${block.style?.marginTop || 0}px ${block.style?.marginRight || 0}px ${block.style?.marginBottom || 0}px ${block.style?.marginLeft || 0}px`
+                : undefined),
+        borderWidth: block.style?.borderWidth,
+        borderColor: block.style?.borderColor,
+        borderStyle: block.style?.borderStyle,
+        borderRadius: block.style?.borderRadius || '5px',
+        fontSize: block.style?.fontSize || '16px',
+        fontFamily: block.style?.fontFamily || 'Arial',
+        fontWeight: block.style?.fontWeight || 'bold',
+        textAlign: 'center' as const,
+        display: 'inline-block',
+        textDecoration: block.style?.textDecoration || 'none',
+        cursor: 'pointer',
+    };
+
+    const wrapperStyle = {
+        textAlign: (block.style?.align || block.style?.textAlign || 'center') as 'left' | 'center' | 'right',
+    };
+
+    return (
+        <div className="email-button-wrapper" style={wrapperStyle}>
+            <a
+                href={block.url || '#'}
+                className="email-button"
+                style={buttonStyle}
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => onChange(e.currentTarget.textContent || '')}
+            >
+                {block.text}
+            </a>
+        </div>
+    );
+};
+
+// DividerBlockView Component
+const DividerBlockView: React.FC<{
+    block: { style?: BlockStyle };
+}> = ({ block }) => {
+    const style = {
+        height: block.style?.height || '1px',
+        backgroundColor: block.style?.backgroundColor || block.style?.color || '#cccccc',
+        margin: block.style?.margin ||
+            (block.style?.marginTop || block.style?.marginRight || block.style?.marginBottom || block.style?.marginLeft
+                ? `${block.style?.marginTop || 20}px ${block.style?.marginRight || 0}px ${block.style?.marginBottom || 20}px ${block.style?.marginLeft || 0}px`
+                : '20px 0'),
+        padding: block.style?.padding,
+        borderWidth: block.style?.borderWidth,
+        borderColor: block.style?.borderColor,
+        borderStyle: block.style?.borderStyle,
+        borderRadius: block.style?.borderRadius,
+        width: block.style?.width || '100%',
+    };
+    return <hr className="email-divider" style={style} />;
+};
+
+// ImageBlockView Component
+const ImageBlockView: React.FC<{
+    block: { src: string; alt?: string; style?: BlockStyle };
+    onChange: (src: string) => void;
+}> = ({ block, onChange }) => {
+    const wrapperStyle = {
+        backgroundColor: block.style?.backgroundColor,
+        padding: block.style?.padding ||
+            (block.style?.paddingTop || block.style?.paddingRight || block.style?.paddingBottom || block.style?.paddingLeft
+                ? `${block.style?.paddingTop || 0}px ${block.style?.paddingRight || 0}px ${block.style?.paddingBottom || 0}px ${block.style?.paddingLeft || 0}px`
+                : undefined),
+        margin: block.style?.margin ||
+            (block.style?.marginTop || block.style?.marginRight || block.style?.marginBottom || block.style?.marginLeft
+                ? `${block.style?.marginTop || 0}px ${block.style?.marginRight || 0}px ${block.style?.marginBottom || 0}px ${block.style?.marginLeft || 0}px`
+                : undefined),
+        textAlign: (block.style?.align || 'center') as 'left' | 'center' | 'right',
+    };
+
+    const imageStyle = {
+        borderWidth: block.style?.borderWidth,
+        borderColor: block.style?.borderColor,
+        borderStyle: block.style?.borderStyle,
+        borderRadius: block.style?.borderRadius,
+        width: block.style?.width || 'auto',
+        height: block.style?.height || 'auto',
+        maxWidth: '100%',
+    };
+
+    return (
+        <div className="email-image" style={wrapperStyle}>
+            {block.src ? (
+                <img src={block.src} alt={block.alt || ''} style={imageStyle} />
+            ) : (
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const url = URL.createObjectURL(file);
+                        onChange(url);
+                    }}
+                />
+            )}
+        </div>
     );
 };
 
@@ -204,7 +365,6 @@ const DEFAULT_LABEL_SIMPLE = (
             paypal_email: 'Enter your store PayPal email',
             address: 'Enter your store address',
         };
-        // return mapped label or fallback generic
         return storeLabelMap[name];
     }
 
@@ -231,6 +391,26 @@ const selectOptions: SelectOption[] = [
         icon: 'adminfont-text icon-form-textarea',
         value: 'richtext',
         label: 'Rich Text Block',
+    },
+    {
+        icon: 'adminfont-form-textarea',
+        value: 'heading',
+        label: 'Heading',
+    },
+    {
+        icon: 'adminfont-image',
+        value: 'image',
+        label: 'Image',
+    },
+    {
+        icon: 'adminfont-button',
+        value: 'button',
+        label: 'Button',
+    },
+    {
+        icon: 'adminfont-divider',
+        value: 'divider',
+        label: 'Divider',
     },
     {
         icon: 'adminfont-checkbox icon-form-checkboxes',
@@ -272,11 +452,6 @@ const selectOptions: SelectOption[] = [
         icon: 'adminfont-alarm icon-form-address',
         value: 'TimePicker',
         label: 'Time Picker',
-    },
-    {
-        icon: 'adminfont-divider icon-form-address',
-        value: 'divider',
-        label: 'Divider',
     },
     {
         icon: 'adminfont-blocks',
@@ -412,6 +587,58 @@ const CustomForm: React.FC<CustomFormProps> = ({
                 paddingBottom: 10,
                 paddingLeft: 10,
             };
+        } else if (type === 'heading') {
+            newFormField.label = 'Heading';
+            newFormField.text = 'Heading Text';
+            newFormField.level = 2;
+            newFormField.style = {
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                fontSize: 24,
+                lineHeight: 1.5,
+                fontWeight: 'bold',
+                paddingTop: 10,
+                paddingRight: 10,
+                paddingBottom: 10,
+                paddingLeft: 10,
+            };
+        } else if (type === 'image') {
+            newFormField.label = 'Image';
+            newFormField.src = '';
+            newFormField.alt = '';
+            newFormField.style = {
+                backgroundColor: '#ffffff',
+                paddingTop: 10,
+                paddingRight: 10,
+                paddingBottom: 10,
+                paddingLeft: 10,
+                align: 'center',
+            };
+        } else if (type === 'button') {
+            newFormField.label = 'Button';
+            newFormField.text = 'Click Here';
+            newFormField.url = '#';
+            newFormField.style = {
+                backgroundColor: '#007bff',
+                color: '#ffffff',
+                fontSize: 16,
+                fontWeight: 'bold',
+                paddingTop: 10,
+                paddingRight: 20,
+                paddingBottom: 10,
+                paddingLeft: 20,
+                borderRadius: 5,
+                align: 'center',
+            };
+        } else if (type === 'divider') {
+            newFormField.label = 'Divider';
+            newFormField.style = {
+                backgroundColor: '#cccccc',
+                height: '1px',
+                marginTop: 20,
+                marginBottom: 20,
+                width: '100%',
+            };
         } else if (type === 'columns') {
             newFormField.label = 'Column Layout';
             newFormField.layout = '2-50';
@@ -482,7 +709,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     required: true,
                 },
             ];
-            newFormField.value = {}; // optional, to hold user-entered values later
+            newFormField.value = {};
         } else {
             newFormField.label = DEFAULT_LABEL_SIMPLE(
                 type,
@@ -507,7 +734,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             return;
         }
 
-        // Check if we're adding to a column
         if (activeColumnField) {
             const newField: FormField = getNewFormField(type, fixedName, isStore);
             if (readonly) {
@@ -536,7 +762,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             }
         }
 
-        // Regular field addition
         const newField: FormField = getNewFormField(type, fixedName, isStore);
         if (readonly) {
             newField.readonly = true;
@@ -614,7 +839,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
 
         const newFormFieldList = [...formFieldList];
 
-        // Handle column field change
         if (parentId !== -1 && columnIndex !== -1) {
             const parentIndex = newFormFieldList.findIndex(
                 (field) => field.id === parentId
@@ -630,10 +854,18 @@ const CustomForm: React.FC<CustomFormProps> = ({
                 );
 
                 if (fieldIndex >= 0) {
-                    columnFields[fieldIndex] = {
-                        ...columnFields[fieldIndex],
-                        [key]: value,
-                    };
+                    const updatedField = { ...columnFields[fieldIndex] };
+                    
+                    if (key === 'style') {
+                        updatedField.style = {
+                            ...(updatedField.style || {}),
+                            ...(value as BlockStyle)
+                        };
+                    } else {
+                        updatedField[key as keyof FormField] = value as any;
+                    }
+                    
+                    columnFields[fieldIndex] = updatedField;
                     updatedColumns[columnIndex] = columnFields;
                     updatedParent.columns = updatedColumns;
                     newFormFieldList[parentIndex] = updatedParent;
@@ -642,14 +874,13 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     settingHasChanged.current = true;
 
                     if (opendInput?.id === index) {
-                        setOpendInput({ ...columnFields[fieldIndex] });
+                        setOpendInput({ ...updatedField });
                     }
                 }
                 return;
             }
         }
 
-        // Handle address subfield
         if (parentId !== -1 && columnIndex === -1) {
             const parentIndex = newFormFieldList.findIndex(
                 (field) => field.id === parentId
@@ -660,7 +891,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     field.id === index ? { ...field, [key]: value } : field
                 );
 
-                // Update parent value object
                 parentField.value = parentField.value || {};
                 const changedSubField = parentField.fields?.find(
                     (field) => field.id === index
@@ -673,7 +903,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                 setFormFieldList(newFormFieldList);
                 settingHasChanged.current = true;
 
-                // Update opened input if it's the same subfield
                 if (opendInput?.id === index) {
                     setOpendInput({ ...opendInput, [key]: value });
                 }
@@ -682,17 +911,23 @@ const CustomForm: React.FC<CustomFormProps> = ({
             }
         }
 
-        // Top-level field
-        newFormFieldList[index] = {
-            ...newFormFieldList[index],
-            [key]: value,
-        };
+        const updatedField = { ...newFormFieldList[index] };
+        
+        if (key === 'style') {
+            updatedField.style = {
+                ...(updatedField.style || {}),
+                ...(value as BlockStyle)
+            };
+        } else {
+            updatedField[key as keyof FormField] = value as any;
+        }
+        
+        newFormFieldList[index] = updatedField;
         setFormFieldList(newFormFieldList);
         settingHasChanged.current = true;
 
-        // Update opened input if it's the same field
-        if (opendInput?.id === newFormFieldList[index].id) {
-            setOpendInput(newFormFieldList[index]);
+        if (opendInput?.id === updatedField.id) {
+            setOpendInput(updatedField);
         }
     };
 
@@ -708,7 +943,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
         const newFormField = getNewFormField(newType);
         newFormField.id = selectedFormField.id;
 
-        // Preserve some properties if needed
         if (selectedFormField.readonly) {
             newFormField.readonly = true;
         }
@@ -745,7 +979,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
         }
     };
 
-    // Render column block
     const renderColumnBlock = (formField: FormField, parentIndex: number) => {
         const style = {
             backgroundColor: formField.style?.backgroundColor,
@@ -836,7 +1069,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
         );
     };
 
-    // Render field content helper
     const renderFieldContent = (formField: FormField, parentId: number = -1, columnIndex: number = -1) => {
         if (['text', 'email', 'number'].includes(formField.type)) {
             return (
@@ -869,6 +1101,88 @@ const CustomForm: React.FC<CustomFormProps> = ({
                             );
                             if (idx >= 0) {
                                 handleFormFieldChange(idx, 'html', html);
+                            }
+                        }
+                    }}
+                />
+            );
+        }
+
+        if (formField.type === 'heading') {
+            return (
+                <HeadingBlockView
+                    block={{
+                        text: formField.text || 'Heading',
+                        level: formField.level || 2,
+                        style: formField.style,
+                    }}
+                    onChange={(text) => {
+                        if (parentId !== -1 && columnIndex !== -1) {
+                            handleFormFieldChange(formField.id, 'text', text, parentId, columnIndex);
+                        } else {
+                            const idx = formFieldList.findIndex(
+                                (f) => f.id === formField.id
+                            );
+                            if (idx >= 0) {
+                                handleFormFieldChange(idx, 'text', text);
+                            }
+                        }
+                    }}
+                />
+            );
+        }
+
+        if (formField.type === 'button') {
+            return (
+                <ButtonBlockView
+                    block={{
+                        text: formField.text || 'Click Here',
+                        url: formField.url,
+                        style: formField.style,
+                    }}
+                    onChange={(text) => {
+                        if (parentId !== -1 && columnIndex !== -1) {
+                            handleFormFieldChange(formField.id, 'text', text, parentId, columnIndex);
+                        } else {
+                            const idx = formFieldList.findIndex(
+                                (f) => f.id === formField.id
+                            );
+                            if (idx >= 0) {
+                                handleFormFieldChange(idx, 'text', text);
+                            }
+                        }
+                    }}
+                />
+            );
+        }
+
+        if (formField.type === 'divider') {
+            return (
+                <DividerBlockView
+                    block={{
+                        style: formField.style,
+                    }}
+                />
+            );
+        }
+
+        if (formField.type === 'image') {
+            return (
+                <ImageBlockView
+                    block={{
+                        src: formField.src || '',
+                        alt: formField.alt,
+                        style: formField.style,
+                    }}
+                    onChange={(src) => {
+                        if (parentId !== -1 && columnIndex !== -1) {
+                            handleFormFieldChange(formField.id, 'src', src, parentId, columnIndex);
+                        } else {
+                            const idx = formFieldList.findIndex(
+                                (f) => f.id === formField.id
+                            );
+                            if (idx >= 0) {
+                                handleFormFieldChange(idx, 'src', src);
                             }
                         }
                     }}
@@ -1011,7 +1325,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                         }}
                     />
                     <Elements
-                        label="Let’s get your store ready!"
+                        label="Let's get your store ready!"
                         selectOptions={selectOptionsStore}
                         onClick={(type) => {
                             const option = selectOptionsStore.find(
@@ -1082,7 +1396,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     ></i>
                 </div>
 
-                { /* Form Fields */}
                 <ReactSortable
                     list={formFieldList}
                     setList={(newList) => {
@@ -1182,13 +1495,11 @@ const CustomForm: React.FC<CustomFormProps> = ({
                 />
             </div>
 
-            { /* Meta Setting Modal outside registration-form-main-section */}
             <div className="registration-edit-form-wrapper">
                 {opendInput && (
                     <>
                         <div className="registration-edit-form">
                             {opendInput.readonly ? (
-                                // MultivendorX Free field: allow only label & placeholder
                                 <SettingMetaBox
                                     formField={opendInput}
                                     opened={{ click: true }}
@@ -1204,7 +1515,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                         }
 
                                         if (opendInput?.parentId) {
-                                            // Subfield case
                                             handleFormFieldChange(
                                                 opendInput.id,
                                                 key,
@@ -1212,7 +1522,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                                 opendInput.parentId
                                             );
                                         } else {
-                                            // Top-level field case
                                             const index =
                                                 formFieldList.findIndex(
                                                     (field) =>
@@ -1224,41 +1533,54 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                                     key,
                                                     value
                                                 );
-                                                setOpendInput({
-                                                    ...formFieldList[index],
-                                                    [key]: value,
-                                                });
                                             }
                                         }
                                     }}
                                 />
                             ) : (
-                                // Normal fields: full edit box
                                 <SettingMetaBox
                                     formField={opendInput}
                                     opened={{ click: true }}
                                     onChange={(key, value) => {
-                                        const index = formFieldList.findIndex(
-                                            (field) => field.id === opendInput.id
-                                        );
-                                        if (index >= 0) {
-                                            // Special handling for columns layout change
-                                            if (key === 'layout' && opendInput.type === 'columns') {
-                                                handleColumnLayoutChange(
-                                                    opendInput.id,
-                                                    value as '1' | '2-50' | '2-66' | '3' | '4'
-                                                );
-                                            } else {
+                                        let parentId = -1;
+                                        let columnIndex = -1;
+                                        
+                                        formFieldList.forEach((field) => {
+                                            if (field.columns) {
+                                                field.columns.forEach((column, colIdx) => {
+                                                    const foundField = column.find(f => f.id === opendInput.id);
+                                                    if (foundField) {
+                                                        parentId = field.id;
+                                                        columnIndex = colIdx;
+                                                    }
+                                                });
+                                            }
+                                        });
+
+                                        if (key === 'layout' && opendInput.type === 'columns') {
+                                            handleColumnLayoutChange(
+                                                opendInput.id,
+                                                value as '1' | '2-50' | '2-66' | '3' | '4'
+                                            );
+                                        } else if (parentId !== -1 && columnIndex !== -1) {
+                                            handleFormFieldChange(
+                                                opendInput.id,
+                                                key,
+                                                value,
+                                                parentId,
+                                                columnIndex
+                                            );
+                                        } else {
+                                            const index = formFieldList.findIndex(
+                                                (field) => field.id === opendInput.id
+                                            );
+                                            if (index >= 0) {
                                                 handleFormFieldChange(
                                                     index,
                                                     key,
                                                     value
                                                 );
                                             }
-                                            setOpendInput({
-                                                ...formFieldList[index],
-                                                [key]: value,
-                                            });
                                         }
                                     }}
                                     onTypeChange={(newType) => {
@@ -1270,10 +1592,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                                 index,
                                                 newType
                                             );
-                                            setOpendInput({
-                                                ...formFieldList[index],
-                                                type: newType,
-                                            });
                                         }
                                     }}
                                     inputTypeList={selectOptions}
