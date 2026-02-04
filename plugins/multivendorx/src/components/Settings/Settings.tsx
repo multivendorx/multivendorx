@@ -11,7 +11,7 @@ import {
 	getAvailableSettings,
 	getSettingById,
 	Support,
-	AdminForm,
+	RenderComponent,
 	Banner,
 	Tabs,
 	useModules,
@@ -193,7 +193,7 @@ const Settings: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<AdminForm
+					<RenderComponent
 						settings={settingModal as SettingContent}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}

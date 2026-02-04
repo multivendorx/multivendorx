@@ -2,6 +2,7 @@ import './styles/fonts.scss';
 
 import './styles/common.scss';
 
+export { default as RenderComponent } from './components/RenderComponent';
 export { default as AdminForm } from './components/AdminForm';
 export { default as Banner } from './components/Banner';
 export { default as BasicInput } from './components/BasicInput';

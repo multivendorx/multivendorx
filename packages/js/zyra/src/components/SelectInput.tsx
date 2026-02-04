@@ -228,7 +228,7 @@ const SelectInputUI: React.FC<SelectInputProps> = ({
 };
 
 const SelectInput: FieldComponent = {
-  render: ({ field, value, onChange }) => (
+  render: ({ field, value, onChange, canAccess }) => (
     <SelectInputUI
         wrapperClass={field.wrapperClass}
         name={field.key}
@@ -248,12 +248,18 @@ const SelectInput: FieldComponent = {
                 ? value.toString()
                 : value
         }
-        onChange={(newValue) =>
-            onChange(newValue, field.key,
-                'single',
-                'select'
-            )
-        }
+        onChange={(newValue) => {
+            if (!canAccess) return;
+
+            if (Array.isArray(newValue)) {
+            // multi-select
+            const values = newValue.map((opt) => opt.value);
+            onChange(field.key, values);
+            } else {
+            // single-select
+            onChange(field.key, newValue.value);
+            }
+      }}
     />
   ),
 

@@ -40,7 +40,6 @@ import SystemInfo from './SystemInfo';
 import { useModules } from '../contexts/ModuleContext';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
 import '../styles/web/AdminForm.scss';
-import { renderField } from './RenderField';
 
 interface WPMediaAttachment {
     url: string;
@@ -519,6 +518,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
             | 'simple'
             | 'select'
             | 'multi-select' = 'simple',
+        arrayValue: string[] | number[] = []
     ) => {
         settingChanged.current = true;
 
@@ -532,11 +532,8 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         : event;
                 updateSetting(key, val);
             } else if (fromType === 'select') {
-                const val =
-                    typeof event === 'object' && 'value' in event
-                    ? event.value
-                    : event;
-                updateSetting(key, val);
+                const selectEvent = event as { index: number };
+                updateSetting(key, arrayValue[selectEvent.index]);
             } else if (fromType === 'multi-select') {
                 updateSetting(key, event as string[]);
             }
@@ -724,9 +721,939 @@ const AdminForm: React.FC<AdminFormProps> = ({
                 }
             }
 
-            
-            input = renderField(inputField, value, handleChange);
+            // Set input field based on type
+            switch (inputField.type) {
+                case 'text':
+                case 'url':
+                case 'password':
+                case 'email':
+                case 'number':
+                case 'range':
+                case 'time':
+                    input = (
+                        <BasicInput
+                            wrapperClass={inputField.wrapperClass}
+                            inputClass= {inputField.class}
+                            description={ inputField.desc }
+                            fieldKey={ inputField.key }
+                            id={ inputField.id }
+                            name={ inputField.name }
+                            type={ inputField.type }
+                            placeholder={ inputField.placeholder }
+                            inputLabel={ inputField.inputLabel } // for range input label
+                            rangeUnit={ inputField.rangeUnit } // for range parameter
+                            min={ inputField.min ?? 0 } // for range min value
+                            max={ inputField.max ?? 50 } // for range max value
+                            value={ value || inputField.value }
+                            size={ inputField.size } //Width of the input container.
+                            preText={ inputField.preText } //Content displayed before input (icon/text).
+                            postText={ inputField.postText } //Content displayed after input (icon/text).
+                            proSetting={ isProSetting(
+                                inputField.proSetting ?? false
+                            ) }
+                            onChange={ (
+                                e: React.ChangeEvent< HTMLInputElement >
+                            ) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    handleChange(
+                                        e,
+                                        inputField.key
+                                    );
+                                }
+                            }}
+                            preInsideText={inputField.preInsideText} //Symbol/unit shown inside input at start.
+                            postInsideText={inputField.postInsideText} // for showing text beside the text box
+                            generate={inputField.generate} //Enables generate button for random/auto value generation.
+                        />
+                    );
+                    break;
+                case 'textarea':
+                    /**
+                     * TextArea input field
+                     * - Supports plain textarea and TinyMCE editor
+                     */
+                    input = (
+                        <TextArea
+                            inputClass={inputField.class}
+                            description={inputField.desc}
+                            key={inputField.key}
+                            id={inputField.id}
+                            name={inputField.name}
+                            placeholder={inputField.placeholder}
+                            rowNumber={inputField.rowNumber} // for row number value
+                            colNumber={inputField.colNumber} // for column number value
+                            value={
+                                value !== undefined && value !== null
+                                    ? value
+                                    : ''
+                            }
+                            usePlainText={inputField.usePlainText} // Toggle between textarea and TinyMCE
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            tinymceApiKey={
+                                appLocalizer.tinymceApiKey
+                                    ? appLocalizer.tinymceApiKey
+                                    : ''
+                            }
+                            onChange={(e) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    handleChange(e, inputField.key);
+                                }
+                            }}
+                        />
+                    );
+                    break;
 
+                case 'file':
+                    input = (
+                        <FileInput
+                            description={inputField.desc}
+                            inputClass={inputField.key}
+                            imageSrc={value ?? appLocalizer?.default_logo}
+                            imageWidth={inputField.width} // Width of the displayed image
+                            imageHeight={inputField.height} // Height of the displayed image
+                            buttonColor={inputField.buttonColor} // CSS class for the file upload button
+                            openUploader={appLocalizer?.open_uploader}
+                            type="hidden" // Input type; in this case, hidden because the FileInput manages its own display
+                            key={inputField.key}
+                            name={inputField.name}
+                            value={value ?? []}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            multiple={inputField.multiple} //to add multiple image pass true or false
+                            size={inputField.size} // Size of the input (if used by FileInput for styling)
+                            onChange={(value) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    settingChanged.current = true;
+                                    updateSetting(inputField.key, value);
+                                }
+                            }}
+                            // Function triggered when the "Upload" button is clicked
+                            onButtonClick={() => {
+                                runUploader(
+                                    inputField.key,
+                                    inputField.multiple
+                                );
+                            }}
+                            // Function triggered when the "Remove" action is performed
+                            onRemove={() => {
+                                settingChanged.current = true;
+                                updateSetting(
+                                    inputField.key,
+                                    inputField.multiple ? [] : ''
+                                );
+                            }}
+                            // Function triggered when the "Replace" action is performed
+                            onReplace={(index, images) => {
+                                runUploader(
+                                    inputField.key,
+                                    inputField.multiple,
+                                    index,
+                                    images
+                                );
+                            }}
+                        />
+                    );
+                    break;
+
+                // Check in MultiVendorX
+                case 'button':
+                    input = (
+                        <div className="form-button-group">
+                            <div className="settings-input-content">
+                                <BasicInput
+                                    wrapperClass="settings-basic-input-class"
+                                    inputClass="admin-btn btn-purple"
+                                    description={inputField.desc} // optional description displayed under the input
+                                    name={inputField.name} // name attribute for the input
+                                    type={inputField.type} // input type (text, number, password, etc.)
+                                    placeholder={inputField.placeholder} // placeholder text inside the input
+                                    proSetting={isProSetting(
+                                        inputField.proSetting ?? false
+                                    )}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.open(inputField.link, '_blank');
+                                    }}
+                                    {...(inputField.apilink
+                                        ? {
+                                              onclickCallback: () => {
+                                                  axios({
+                                                      url: getApiLink(
+                                                          appLocalizer,
+                                                          String(
+                                                              inputField.apilink
+                                                          )
+                                                      ),
+                                                      method: inputField.method,
+                                                      headers: {
+                                                          'X-WP-Nonce':
+                                                              appLocalizer.nonce,
+                                                      },
+                                                      params: {
+                                                          key: inputField.key,
+                                                      },
+                                                  }).then((res) => {});
+                                              },
+                                          }
+                                        : {})}
+                                />
+                            </div>
+                        </div>
+                    );
+                    break;
+
+                case 'radio':
+                    input = (
+                        <RadioInput
+                            wrapperClass="settings-form-group-radio"
+                            inputWrapperClass="radio-basic-input-wrap"
+                            inputClass="setting-form-input"
+                            descClass="settings-metabox-description"
+                            activeClass="radio-select-active"
+                            description={inputField.desc} // optional description displayed below the radio group
+                            value={
+                                typeof value === 'number'
+                                    ? value.toString()
+                                    : value
+                            }
+                            name={inputField.name}
+                            keyName={inputField.key}
+                            options={Array.isArray(value) ? value : []} // array of radio options (ensure it's an array)
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            onChange={(e) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    handleChange(e, inputField.key);
+                                }
+                            }}
+                        />
+                    );
+                    break;
+
+                case 'color-setting':
+                    input = (
+                        <ColorSettingInput
+                            wrapperClass="form-group-color-setting"
+                            inputClass="setting-form-input"
+                            description={inputField.desc} // optional description displayed under the input
+                            predefinedOptions={inputField.predefinedOptions ?? []} // array of predefined color options for quick selection
+                            images={inputField.images ?? []} // optional array of images associated with colors
+                            value={value} // currently selected color value
+                            templates={inputField.templates}
+                            onChange={(e) => handleChange(e, inputField.key)}
+                            idPrefix="color-setting"
+                            showPdfButton={inputField.showPdfButton ?? false}
+                        />
+                    );
+                    break;
+
+                // Normal select box.
+                case 'select':
+                    input = (
+                        <SelectInput
+                            wrapperClass={inputField.wrapperClass}
+                            name={inputField.key}
+                            description={inputField.desc} // optional description displayed below the select input
+                            inputClass={inputField.className}
+                            size={inputField.size}
+                            options={
+                                Array.isArray(inputField.options)
+                                    ? inputField.options.map((opt) => ({
+                                          value: String(opt.value),
+                                          label: opt.label ?? String(opt.value),
+                                      }))
+                                    : []
+                            }
+                            value={
+                                typeof value === 'number'
+                                    ? value.toString()
+                                    : value
+                            }
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            onChange={onSelectChange}
+                        />
+                    );
+                    break;
+
+                // for multiple select box with select/deselect button
+                case 'multi-select':
+                    input = (
+                        <SelectInput
+                            name={inputField.key}
+                            wrapperClass="settings-from-multi-select"
+                            descClass="settings-metabox-description"
+                            selectDeselectClass="btn-purple select-deselect-trigger"
+                            selectDeselect={inputField.selectDeselect}
+                            selectDeselectValue="Select / Deselect All" // text for select/deselect all button
+                            description={inputField.desc} // optional description displayed below the select
+                            inputClass={inputField.key}
+                            options={
+                                Array.isArray(inputField.options)
+                                    ? inputField.options.map((opt) => ({
+                                          value: String(opt.value),
+                                          label: opt.label ?? String(opt.value),
+                                      }))
+                                    : []
+                            }
+                            type="multi-select" // input type; allows multiple selections
+                            value={
+                                typeof value === 'number'
+                                    ? value.toString()
+                                    : value
+                            }
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            onChange={onSelectChange}
+                            onMultiSelectDeselectChange={() =>
+                                handlMultiSelectDeselectChange(
+                                    inputField.key,
+                                    Array.isArray(inputField.options)
+                                        ? inputField.options.map((opt) => ({
+                                              value: String(opt.value),
+                                              label:
+                                                  opt.label ??
+                                                  String(opt.value),
+                                          }))
+                                        : [], // Ensure options is always an array
+                                    'multi-select'
+                                )
+                            }
+                        />
+                    );
+                    break;
+                // For single or multiple checkbox (free / pro or some free some pro)
+                case 'checkbox': {
+                    let normalizedValue: string[] = [];
+
+                    if (Array.isArray(value)) {
+                        normalizedValue = value.filter(
+                            (v) => v && v.trim() !== ''
+                        );
+                    } else if (
+                        typeof value === 'string' &&
+                        value.trim() !== ''
+                    ) {
+                        normalizedValue = [value];
+                    }
+
+                    const normalizedOptions = Array.isArray(
+                        setting[`${inputField.key}_options`]
+                    )
+                        ? setting[`${inputField.key}_options`].map((opt) => ({
+                              ...opt,
+                              value: String(opt.value),
+                          }))
+                        : Array.isArray(inputField.options)
+                          ? inputField.options.map((opt) => ({
+                                ...opt,
+                                value: String(opt.value),
+                            }))
+                          : [];
+
+                    input = (
+                        <MultiCheckBox
+                            khali_dabba={appLocalizer?.khali_dabba}
+                            wrapperClass={
+                                inputField.look === 'toggle'
+                                    ? 'toggle-btn'
+                                    : inputField.selectDeselect === true
+                                      ? 'checkbox-list-side-by-side'
+                                      : 'simple-checkbox'
+                            }
+                            moduleEnabled={
+                                inputField.moduleEnabled
+                                    ? modules.includes(inputField.moduleEnabled)
+                                    : true
+                            }
+                            descClass="settings-metabox-description"
+                            description={inputField.desc}
+                            selectDeselectClass="admin-btn btn-purple select-deselect-trigger"
+                            inputWrapperClass="toggle-checkbox-header"
+                            inputInnerWrapperClass={
+                                inputField.look === 'toggle'
+                                    ? 'toggle-checkbox'
+                                    : 'default-checkbox'
+                            } // this props for change classes default/ Toggle
+                            inputClass={inputField.class}
+                            tour={inputField.tour} // optional guided tour tooltip
+                            hintOuterClass="settings-metabox-description"
+                            hintInnerClass="hover-tooltip"
+                            idPrefix="toggle-switch"
+                            selectDeselect={inputField.selectDeselect} // enable "Select / Deselect All"
+                            selectDeselectValue="Select / Deselect All" // text for select/deselect all
+                            rightContentClass="settings-metabox-description"
+                            rightContent={inputField.rightContent} // for place checkbox right
+                            addNewBtn={inputField.addNewBtnText}
+                            options={normalizedOptions}
+                            value={normalizedValue}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            preText={inputField.preText}
+                            postText={inputField.postText}
+                            onChange={(e) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    handleChange(e, inputField.key, 'multiple');
+                                }
+                            }}
+                            onMultiSelectDeselectChange={() =>
+                                handlMultiSelectDeselectChange(
+                                    inputField.key,
+                                    Array.isArray(inputField.options)
+                                        ? inputField.options.map((opt) => ({
+                                              ...opt,
+                                              value: String(opt.value),
+                                          }))
+                                        : []
+                                )
+                            }
+                            proChanged={() => setModelOpen(true)}
+                            modules={modules} //Active module list for dependency validation.
+                            module={inputField.moduleEnabled ?? ''}
+                            moduleChange={(moduleEnabled) => {
+                                moduleEnabledChanged(
+                                    String(moduleEnabled ?? '')
+                                );
+                            }}
+                            onOptionsChange={(options) => {
+                                settingChanged.current = true;
+                                updateSetting(
+                                    `${inputField.key}_options`,
+                                    options
+                                );
+                            }}
+                        />
+                    );
+                    break;
+                }
+                // Checkbox with custom image
+                case 'checkbox-custom-img':
+                    input = (
+                        <MultiCheckBox
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
+                            wrapperClass={inputField.wrapperClass}
+                            inputWrapperClass={inputField.inputWrapperClass}
+                            type="checkbox-custom-img"
+                            inputInnerWrapperClass={
+                                inputField.look === 'toggle'
+                                    ? 'toggle-checkbox'
+                                    : 'default-checkbox'
+                            } // this props for change classes default/ Toggle
+                            idPrefix="toggle-switch"
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            description={inputField.desc}
+                            descClass="settings-metabox-description"
+                            value={
+                                Array.isArray(value) ? value : [String(value)]
+                            }
+                            options={inputField.syncDirections ?? []} // array includes label, value, img1, img2
+                            onChange={(data) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    settingChanged.current = true;
+                                    updateSetting(inputField.key, data);
+                                }
+                            }}
+                        />
+                    );
+
+                    break;
+                /**
+                 * Renders a toggle input that supports:
+                 * - Single select (radio-style)
+                 * - Multi select (checkbox-style)
+                 */
+                case 'setting-toggle':
+                    input = (
+                        <ToggleSetting
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
+                            wrapperClass={inputField.wrapperClass}
+                            description={inputField.desc}
+                            key={inputField.key}
+                            iconEnable={inputField.iconEnable} // If true, will display the toggle value as an icon
+                            custom={inputField.custom}
+                            multiSelect={inputField.multiSelect} // If true, allows selecting multiple options (checkboxes), else single select (radio)
+                            preText={inputField.preText} // Optional content displayed before the toggle group
+                            postText={inputField.postText} // Optional content displayed after the toggle group
+                            options={
+                                Array.isArray(inputField.options)
+                                    ? inputField.options.map((opt) => ({
+                                          ...opt,
+                                          value: String(opt.value), // this can be an icon class
+                                      }))
+                                    : []
+                            }
+                            value={
+                                inputField.multiSelect
+                                    ? Array.isArray(value)
+                                        ? value
+                                        : [
+                                              String(
+                                                  value ??
+                                                      inputField.defaultValue ??
+                                                      ''
+                                              ),
+                                          ]
+                                    : String(
+                                          value ?? inputField.defaultValue ?? ''
+                                      )
+                            }
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            onChange={(data) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    settingChanged.current = true;
+                                    updateSetting(inputField.key, data);
+                                }
+                            }}
+                            proChanged={() => setModelOpen(true)}
+                        />
+                    );
+                    break;
+
+                // For separation (if you want heading in line then put desc or add some description then add hint)
+                case 'section':
+                    input = (
+                        <Section
+                            key={`${inputField.key}`}
+                            wrapperClass={
+                                inputField.wrapperClass || 'divider-wrapper'
+                            }
+                            value={inputField.label} //Optional main heading/title of the section.
+                            hint={inputField.hint} //Optional hint or subtext below the title, can include HTML.
+                            description={inputField.desc} //Optional descriptive text displayed below the hint.
+                        />
+                    );
+                    break;
+
+                case 'blocktext':
+                    input = (
+                        <BlockText
+                            key={inputField.blocktext}
+                            blockTextClass={
+                                inputField.blockTextClass ||
+                                'settings-metabox-note'
+                            }
+                            title={inputField.title}
+                            value={String(inputField.blocktext)} // Text or HTML content to display inside the block (safe HTML injected).
+                        />
+                    );
+                    break;
+                // Special input type project specific
+                case 'notifima-form-customizer':
+                    input = (
+                        <FormCustomizer
+                            value={String(value)}
+                            buttonText={
+                                (setting.customize_btn &&
+                                    setting.customize_btn.button_text) ||
+                                'Submit'
+                            } //Text displayed on the submit/customize button; defaults to 'Submit' if not provided.
+                            setting={setting}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            onChange={(e, key) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    settingChanged.current = true;
+                                    updateSetting(e, key);
+                                }
+                            }}
+                        />
+                    );
+                    break;
+                // custom from with free-pro tab
+                case 'form-customizer':
+                    input = (
+                        <FreeProFormCustomizer
+                            key={inputField.key}
+                            setting={setting}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            proSettingChange={() =>
+                                proSettingChanged(
+                                    inputField.proSetting ?? false
+                                )
+                            }
+                            moduleEnabledChange={() =>
+                                moduleEnabledChanged(
+                                    String(inputField.moduleEnabled ?? '')
+                                )
+                            }
+                            onChange={(key, data) => {
+                                settingChanged.current = true;
+                                updateSetting(key, data);
+                            }}
+                        />
+                    );
+                    break;
+                // shop page builder( use in catalogx )
+                case 'catalog-customizer':
+                    input = (
+                        <CatalogCustomizer
+                            setting={setting}
+                            proSetting={appLocalizer?.khali_dabba ?? false}
+                            onChange={(key, data) => {
+                                settingChanged.current = true;
+                                updateSetting(key, data);
+                            }}
+                            SampleProduct="#"
+                            proUrl="#"
+                        />
+                    );
+                    break;
+                // for Grid-table input with multiple checkbox
+                case 'multi-checkbox-table':
+                    input = (
+                        <MultiCheckboxTable
+                            khali_dabba={appLocalizer?.khali_dabba ?? false}
+                            rows={inputField.rows ?? []} // row array
+                            columns={inputField.columns ?? []} // columns array
+                            enable={inputField.enable}
+                            description={String(inputField.desc)}
+                            setting={setting}
+                            storeTabSetting={storeTabSetting}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            modules={modules} //Active module list for dependency validation.
+                            onChange={(key, data) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    settingChanged.current = true;
+                                    updateSetting(key, data);
+                                }
+                            }}
+                            moduleChange={(moduleEnabled) => {
+                                moduleEnabledChanged(
+                                    String(moduleEnabled ?? '')
+                                );
+                                // setModelOpen(true);
+                            }}
+                            proChanged={() => setModelOpen(true)}
+                        />
+                    );
+                    break;
+                // for shortcode name and description
+                case 'shortcode-table':
+                    input = (
+                        <ShortCodeTable
+                            descClass="settings-metabox-description"
+                            description={inputField.desc} // Help text / description shown under the table
+                            key={inputField.key}
+                            icon={inputField.icon}
+                            options={
+                                Array.isArray(inputField.options)
+                                    ? inputField.options
+                                    : []
+                            } // array includes label and description
+                            optionLabel={inputField.optionLabel} // Label header for the options column
+                        />
+                    );
+                    break;
+                // Synchronize button
+                case 'do-action-btn':
+                    input = (
+                        <DoActionBtn
+                            appLocalizer={appLocalizer}
+                            buttonKey={inputField.key}
+                            apilink={String(inputField.apilink)} // API endpoint to trigger the action
+                            value={String(inputField.value)}
+                            description={String(inputField.desc)}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            proSettingChanged={() =>
+                                proSettingChanged(
+                                    inputField.proSetting ?? false
+                                )
+                            }
+                            interval={Number(inputField.interval)} // Time interval (e.g., for polling or scheduling tasks)
+                            tasks={inputField.tasks ?? []} // List of tasks/actions handled by this button
+                            parameter={String(inputField.parameter)} // api for each status of synchronization
+                        />
+                    );
+                    break;
+                // attribute mapping
+                case 'dropdown-mapping':
+                    input = (
+                        <DropDownMapping
+                            description={inputField.desc}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            proSettingChanged={() =>
+                                proSettingChanged(
+                                    inputField.proSetting ?? false
+                                )
+                            }
+                            value={
+                                Array.isArray(value)
+                                    ? (value as [string, string][])
+                                    : [['key', String(value)]]
+                            }
+                            syncFieldsMap={inputField.syncFieldsMap ?? {}} // Map of available sync fields for systems (default to empty object if not provided)
+                            onChange={(data) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    settingChanged.current = true;
+                                    updateSetting(inputField.key, data);
+                                }
+                            }}
+                        />
+                    );
+                    break;
+
+                case 'log':
+                    input = (
+                        <Log
+                            appLocalizer={appLocalizer}
+                            apiLink={String(inputField.apiLink)} // api to fetch and download the log content
+                            downloadFileName={String(inputField.fileName)}
+                        />
+                    ); // log file name
+                    break;
+                case 'system-info':
+                    /**
+                     * SystemInfo component
+                     *
+                     * Renders a collapsible accordion displaying system-level
+                     * diagnostic information fetched from a REST endpoint.
+                     * Includes a copy-to-clipboard action for support/debug use.
+                     */
+                    input = (
+                        <SystemInfo
+                            appLocalizer={appLocalizer}
+                            apiLink={String(inputField.apiLink)}
+                            copyButtonLabel={inputField.copyButtonLabel} //The button text before copying (e.g., “Copy Info”).
+                            copiedLabel={inputField.copiedLabel} //The text shown after copying (e.g., “Copied!”).
+                        />
+                    );
+                    break;
+
+                // For mailchimp list
+                case 'api-connect':
+                    input = (
+                        <InputMailchimpList
+                            appLocalizer={appLocalizer}
+                            setting={setting}
+                            updateSetting={updateSetting}
+                            mailchimpKey={inputField.key}
+                            selectKey={String(inputField.selectKey)} //Stores which Mailchimp list is chosen.
+                            optionKey={String(inputField.optionKey)} //Stores all available lists fetched from Mailchimp.
+                            onChange={handleChange}
+                            proSettingChanged={() =>
+                                proSettingChanged(
+                                    inputField.proSetting ?? false
+                                )
+                            }
+                            settingChanged={settingChanged}
+                            apiLink={String(inputField.apiLink)} //The API URL to fetch Mailchimp lists from.
+                        />
+                    );
+                    break;
+                case 'email-template':
+                    input = <EmailTemplate name={inputField.key} />;
+                    break;
+                case 'form-builder':
+                    input = (
+                        <FromBuilder
+                            name={inputField.key}
+                            proSettingChange={() =>
+                                proSettingChanged(
+                                    inputField.proSetting ?? false
+                                )
+                            }
+                            onChange={(value) => {
+                                settingChanged.current = true;
+                                updateSetting(inputField.key, value);
+                            }}
+                            setting={setting}
+                        />
+                    );
+                    break;
+                case 'nested':
+                    input = (
+                        <NestedComponent
+                            khali_dabba={appLocalizer?.khali_dabba}
+                            modules={modules}
+                            key={inputField.key}
+                            id={inputField.key}
+                            label={inputField.label}
+                            description={inputField.desc}
+                            fields={inputField.nestedFields ?? []} //The list of inner fields that belong to this section.
+                            value={value}
+                            wrapperClass={inputField.rowClass}
+                            addButtonLabel={inputField.addButtonLabel} //The text shown on the button to add a new item.
+                            deleteButtonLabel={inputField.deleteButtonLabel} //The text shown on the button to remove an item.
+                            single={inputField.single} //If set to true, only one item is allowed.
+                            onChange={(val: RowType[]) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    updateSetting(inputField.key, val);
+                                    settingChanged.current = true;
+                                }
+                            }}
+                        />
+                    );
+                    break;
+
+                case 'endpoint-editor':
+                    input = (
+                        <EndpointEditor
+                            name={inputField.key}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            proSettingChanged={() =>
+                                proSettingChanged(
+                                    inputField.proSetting ?? false
+                                )
+                            }
+                            apilink={String(inputField.apiLink)} //API URL for backend communication.
+                            appLocalizer={appLocalizer}
+                            onChange={(data) => {
+                                settingChanged.current = true;
+                                updateSetting(inputField.key, data);
+                            }}
+                        />
+                    );
+                    break;
+                case 'expandable-panel':
+                    input = (
+                        <ExpandablePanelGroup
+                            key={inputField.key}
+                            name={inputField.key}
+                            proSetting={isProSetting(
+                                inputField.proSetting ?? false
+                            )}
+                            proSettingChanged={() =>
+                                proSettingChanged(
+                                    inputField.proSetting ?? false
+                                )
+                            }
+                            moduleEnabled={
+                                inputField.moduleEnabled
+                                    ? modules.includes(inputField.moduleEnabled)
+                                    : true
+                            }
+                            apilink={ String( inputField.apiLink ) } //API endpoint used for communication with backend.
+                            appLocalizer={ appLocalizer }
+                            methods={ inputField.modal ?? [] } //Array of available payment methods/options.
+                            addNewBtn={ inputField.addNewBtn }
+                            addNewTemplate={ inputField.addNewTemplate ?? [] }
+                            iconEnable={ inputField.iconEnable }
+                            iconOptions={ inputField.iconOptions || [] }
+                            value={ value || {} }
+                            onChange={ ( data ) => {
+                                if (
+                                    hasAccess(
+                                        inputField.proSetting ?? false,
+                                        String(inputField.moduleEnabled ?? ''),
+                                        String(inputField.dependentSetting ?? ''),
+                                        String(inputField.dependentPlugin ?? '')
+                                    )
+                                ) {
+                                    settingChanged.current = true;
+                                    updateSetting(inputField.key, data);
+                                }
+                            }}
+                            modules={modules}
+                            moduleChange={(moduleEnabled) => {
+                                moduleEnabledChanged(
+                                    String(moduleEnabled ?? '')
+                                );
+                                // setModelOpen(true);
+                            }}
+                            proChanged={() => setModelOpen(true)}
+                        />
+                    );
+                    break;
+            }
             const isLocked =
                 (inputField.proSetting && !appLocalizer?.khali_dabba) ||
                 (inputField.moduleEnabled &&

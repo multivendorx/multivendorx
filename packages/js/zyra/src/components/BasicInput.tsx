@@ -2,7 +2,6 @@
 import { MouseEvent, FocusEvent, useState, forwardRef, ReactNode } from 'react';
 
 // Internal Dependencies
-import SelectInput from './SelectInput';
 import AdminButton from './UI/AdminButton';
 import { FieldComponent } from './types';
 
@@ -16,7 +15,7 @@ interface SelectOption {
     label: string;
 }
 
-type InputValue = string | number | Record<string, string>;
+type InputValue = string | number;
 
 type Addon =
     | string
@@ -74,6 +73,7 @@ interface BasicInputProps {
     readOnly?: boolean;
     size?: string;
     required?: boolean;
+    hasAccess?: boolean;
     preText?: Addon;
     postText?: Addon;
     preInsideText?: Addon;
@@ -114,116 +114,56 @@ const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             disabled = false,
             readOnly = false,
             required = false,
+            hasAccess
         },
         ref
     ) => {
+        console.log('hasAccess', hasAccess)
         console.log('value', value)
         const [copied, setCopied] = useState(false);
-
-        const mainValue =
-            typeof value === 'object' && fieldKey
-                ? value[fieldKey] ?? ''
-                : value ?? '';
-
-        const updateValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-            // if (typeof value === 'object' && fieldKey) {
-            //     onChange({ ...value, [fieldKey]: e.target.value });
-            // } else {
-                onChange(e);
-            // }
-        };
 
         const renderAddon = (addon: Addon) => {
             if (typeof addon === 'string') {
                 return <span dangerouslySetInnerHTML={{ __html: addon }} />;
             }
 
-            if (!addon) {
-                return addon;
-            }
-
-            if (addon.type === 'select') {
-                const selected =
-                    typeof value === 'object'
-                        ? value[addon.key]
-                        : addon.value;
-
-                return (
-                    <SelectInput
-                        name={addon.key}
-                        options={addon.options}
-                        value={selected}
-                        size={addon.size}
-                        onChange={(opt) =>
-                            onChange({
-                                ...(typeof value === 'object' ? value : {}),
-                                [addon.key]: opt.value,
-                            })
-                        }
-                    />
-                );
-            }
-
-            if (addon.type === 'text') {
-                const textVal =
-                    typeof value === 'object'
-                        ? value[addon.key]
-                        : addon.value;
-
-                return (
-                    <input
-                        type="text"
-                        className="addon-text-input"
-                        style={{ width: addon.size ?? '80px' }}
-                        placeholder={addon.placeholder}
-                        value={textVal}
-                        onChange={(e) =>
-                            onChange({
-                                ...(typeof value === 'object' ? value : {}),
-                                [addon.key]: e.target.value,
-                            })
-                        }
-                    />
-                );
-            }
-
             return null;
         };
 
-        const randomKey = (len: number): string =>
-            Array.from({ length: len }, () =>
-                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(
-                    Math.floor(Math.random() * 62)
-                )
-            ).join('');
+        // const randomKey = (len: number): string =>
+        //     Array.from({ length: len }, () =>
+        //         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(
+        //             Math.floor(Math.random() * 62)
+        //         )
+        //     ).join('');
 
-        const handleGenerate = (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            if (onChange) {
-                const event = {
-                    target: { value: randomKey(8) },
-                } as React.ChangeEvent<HTMLInputElement>;
-                onChange(event);
-            }
-        };
+        // const handleGenerate = (e: MouseEvent<HTMLButtonElement>) => {
+        //     e.preventDefault();
+        //     if (onChange) {
+        //         const event = {
+        //             target: { value: randomKey(8) },
+        //         } as React.ChangeEvent<HTMLInputElement>;
+        //         onChange(event);
+        //     }
+        // };
 
-        const handleClear = (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            if (onChange) {
-                const event = {
-                    target: { value: '' },
-                } as React.ChangeEvent<HTMLInputElement>;
-                onChange(event);
-            }
-        };
+        // const handleClear = (e: MouseEvent<HTMLButtonElement>) => {
+        //     e.preventDefault();
+        //     if (onChange) {
+        //         const event = {
+        //             target: { value: '' },
+        //         } as React.ChangeEvent<HTMLInputElement>;
+        //         onChange(event);
+        //     }
+        // };
 
-        const handleCopy = (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            navigator.clipboard.writeText(mainValue);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 3000);
-        };
-console.log('type', type)
+        // const handleCopy = (e: MouseEvent<HTMLButtonElement>) => {
+        //     e.preventDefault();
+        //     navigator.clipboard.writeText(mainValue);
+        //     setCopied(true);
+        //     setTimeout(() => setCopied(false), 3000);
+        // };
+
         return (
             <>
                 <div
@@ -243,21 +183,15 @@ console.log('type', type)
                         />
                     ) : (
                         <>
-                            {/* {preText && (
-                                <span className="before">
-                                    {renderAddon(preText)}
-                                </span>
-                            )} */}
-
                             <div
                                 className="input-wrapper"
                                 style={{ width: size || '100%' }}
                             >
-                                {/* {preInsideText && (
+                                {preInsideText && (
                                     <span className="pre">
                                         {renderAddon(preInsideText)}
                                     </span>
-                                )} */}
+                                )}
 
                                 <input
                                     ref={ref}
@@ -278,7 +212,7 @@ console.log('type', type)
                                     }
                                     value={value}
                                     onChange={(e) =>
-                                        onChange(e)
+                                        onChange(e.target.value)
                                     }
                                     onClick={onClick}
                                     onMouseOver={onMouseOver}
@@ -291,90 +225,21 @@ console.log('type', type)
                                 />
 
                                 {type === 'color' && (
-                                    <div className="color-value">{mainValue}</div>
+                                    <div className="color-value">{value ?? ''}</div>
                                 )}
 
-                                {/* {postInsideText && (
+                                {postInsideText && (
                                     <span className="parameter">
                                         {renderAddon(postInsideText)}
                                     </span>
-                                )} */}
-
-                                {/* {clickBtnName && (
-                                    <AdminButton
-                                            buttons={{
-                                                text: clickBtnName,
-                                                // icon: 'star-icon',
-                                                className: 'purple input-btn',
-                                                onClick: () => onclickCallback,
-                                            }}
-                                        />
                                 )}
-
-                                {generate &&
-                                    (mainValue === '' ? (
-                                        <AdminButton
-                                            buttons={{
-                                                text: 'Generate',
-                                                icon: 'star-icon',
-                                                className: 'purple input-btn',
-                                                onClick: () => handleGenerate,
-                                            }}
-                                        />
-
-                                    ) : (
-                                        <>
-                                            <AdminButton
-                                                buttons={{
-                                                    text: '',
-                                                    icon: 'delete',
-                                                    className: 'clear-btn',
-                                                    onClick: () => handleClear,
-                                                }}
-                                            />
-                                            <AdminButton
-                                                buttons={{
-                                                    text: "",
-                                                    className: 'copy-btn',
-                                                    onClick: () => handleCopy,
-                                                    children: (
-                                                        <>
-                                                            <i className="adminfont-vendor-form-copy"></i>
-                                                            <span
-                                                                className={
-                                                                    !copied
-                                                                        ? 'tooltip'
-                                                                        : 'tooltip tool-clip'
-                                                                }
-                                                            >
-                                                                {copied ? (
-                                                                    <>
-                                                                        <i className="adminfont-success-notification"></i>
-                                                                        Copied
-                                                                    </>
-                                                                ) : (
-                                                                    'Copy to clipboard'
-                                                                )}
-                                                            </span>
-                                                        </>
-                                                    ),
-                                                }}
-                                            />
-                                        </>
-                                    ))} */}
                             </div>
-
-                            {/* {postText && (
-                                <span className="after">
-                                    {renderAddon(postText)}
-                                </span>
-                            )} */}
                         </>
                     )}
 
                     {type === 'range' && (
                         <output className="settings-metabox-description">
-                            {mainValue}
+                            {value ?? ''}
                             {rangeUnit}
                         </output>
                     )}
@@ -394,7 +259,7 @@ console.log('type', type)
 );
 
 const BasicInput: FieldComponent = {
-  render: ({ field, value, onChange }) => (
+  render: ({ field, value, onChange, canAccess }) => (
     <BasicInputUI
       wrapperClass={field.wrapperClass}
       inputClass={field.class}
@@ -410,9 +275,11 @@ const BasicInput: FieldComponent = {
       max={field.max ?? 50}
       value={value}
       size={field.size}
-      onChange={(e: any) =>
-        onChange(e, field.key, 'single', 'simple')
-      }
+      hasAccess={canAccess}
+      onChange={(val) => {
+        if (!canAccess) return;
+        onChange(field.key, val)
+      }}
     />
   ),
 
