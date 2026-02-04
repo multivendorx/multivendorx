@@ -49,8 +49,17 @@ registerBlockType('multivendorx/store-email', {
         return (
             <div {...blockProps}>
                 <span className="dashicons dashicons-email"></span>
-                <div className="multivendorx-store-email-block">store@gmail.com</div>
+                <div className="multivendorx-store-email-block"></div>
             </div>
         );
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+	document
+		.querySelectorAll('.multivendorx-store-email-block')
+		.forEach(el => {
+			el.textContent = StoreInfo.storeDetails.storeEmail;
+		});
+});
+

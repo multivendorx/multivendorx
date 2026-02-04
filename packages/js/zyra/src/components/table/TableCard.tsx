@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Table from './table';
 import TableSummary, { TableSummaryPlaceholder } from './summary';
 import Pagination from '../pagination/Pagination';
@@ -49,6 +49,21 @@ const TableCard: React.FC<TableCardProps> = ({
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
+	const ref = useRef<HTMLDivElement | null>(null);
+
+	const handleClickOutside = (event: MouseEvent) => {
+		if (ref.current && !ref.current.contains(event.target as Node)) {
+			setIsPopoverOpen(false);
+		}
+	};
+
+	useEffect(() => {
+		document.addEventListener("click", handleClickOutside);
+		return () => {
+			document.removeEventListener("click", handleClickOutside);
+		};
+	}, []);
 
 	const [query, setQuery] = useState<QueryProps>({
 		orderby: 'date',
@@ -97,6 +112,10 @@ const TableCard: React.FC<TableCardProps> = ({
 	useEffect(() => {
 		props.onQueryUpdate?.(query);
 	}, [query]);
+
+	useEffect(() => {
+		setDerivedTotalRows(totalRows);
+	}, [totalRows]);
 
 	// Toggle single row
 	const handleSelectRow = (id: number, selected: boolean) => {
@@ -219,6 +238,12 @@ const TableCard: React.FC<TableCardProps> = ({
 						categories={categoryCounts}
 						activeCategory={query.categoryFilter || activeCategory}
 						onCategoryClick={(value) => {
+
+							const matched = categoryCounts.find(
+								(cat) => cat.value === value
+							);
+							setDerivedTotalRows(matched?.count ?? 0);
+
 							setQuery((prev) => ({
 								...prev,
 								paged: 1,
@@ -250,7 +275,7 @@ const TableCard: React.FC<TableCardProps> = ({
 						</div>
 					)}
 					{showMenu && showColumnToggleIcon && (
-						<div className="popover-wrapper">
+						<div className="popover-wrapper" ref={ref}>
 							<div className="popover-toggle" onClick={togglePopover} >
 								<i className="popover-icon adminfont-more-vertical"></i>
 							</div>
@@ -278,7 +303,6 @@ const TableCard: React.FC<TableCardProps> = ({
 									</div>
 								</div>
 							)}
-
 						</div>
 					)}
 				</div>
@@ -315,7 +339,7 @@ const TableCard: React.FC<TableCardProps> = ({
 						<Pagination
 							page={Number(query.paged)}
 							perPage={Number(query.per_page)}
-							total={totalRows}
+							total={derivedTotalRows}
 							onPageChange={onPageChange}
 							onPerPageChange={(perPage) =>
 								onQueryChange('per_page')(String(perPage))

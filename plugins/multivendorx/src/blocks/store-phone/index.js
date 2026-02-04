@@ -49,8 +49,16 @@ registerBlockType('multivendorx/store-phone', {
         return (
             <div {...blockProps}>
                 <span className="dashicons dashicons-phone"></span>
-                <div className="multivendorx-store-phone-block">+91 9874563210</div>
+                <div className="multivendorx-store-phone-block"></div>
             </div>
         );
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+	document
+		.querySelectorAll('.multivendorx-store-phone-block')
+		.forEach(el => {
+			el.textContent = StoreInfo.storeDetails.storePhone;
+		});
 });
