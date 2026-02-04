@@ -58,7 +58,6 @@ class Block {
             'registration-form',
             'store-coupons',
             'store-products',
-            'stores',
             'contact-info',
             'store-name',
             'store-email',
