@@ -44,7 +44,6 @@ registerBlockType('multivendorx/store-review', {
             sortOrder 
         } = attributes;
 
-        // Use block props - WordPress will automatically handle alignment from block.json
         const blockProps = useBlockProps();
 
         const StarFilled = () => (

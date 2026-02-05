@@ -69,7 +69,8 @@ class Block {
             'store-description',
             'store-review',
             'store-policy',
-            'recent-product'
+            'recent-product',
+            'product-search'
         );
 
         $textdomain = 'multivendorx';
