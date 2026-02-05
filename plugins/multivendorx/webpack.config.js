@@ -73,6 +73,8 @@ module.exports = {
 		'block/store-review/index': './src/blocks/store-review/index.js',
 		'block/store-policy/index': './src/blocks/store-policy/index.js',
 		'block/recent-product/index': './src/blocks/recent-product/index.js',
+		'block/product-search/index': './src/blocks/product-search/index.js',
+		'block/top-rated-products/index': './src/blocks/top-rated-products/index.js',
 	},
 
 	output: {

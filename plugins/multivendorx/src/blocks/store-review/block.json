@@ -25,10 +25,6 @@
       "type": "boolean",
       "default": true
     },
-    "showRating": {
-      "type": "boolean",
-      "default": true
-    },
     "sortOrder": {
       "type": "string",
       "default": "newest"
