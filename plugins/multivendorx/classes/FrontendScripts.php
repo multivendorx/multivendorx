@@ -205,16 +205,6 @@ class FrontendScripts {
 					'deps'    => array( 'jquery' ),
 					'version' => $version,
 				),
-                'multivendorx-marketplace-stores-script'   => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/marketplace-stores/index.js',
-					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
-					'version' => $version,
-				),
-                'multivendorx-stores-script'               => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/stores/index.js',
-					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
-					'version' => $version,
-				),
                 'multivendorx-contact-info-script'         => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/contact-info/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
@@ -290,8 +280,13 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-policy-script'          => array(
+                'multivendorx-store-policy-script' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-policy/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-recent-product-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/recent-product/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),

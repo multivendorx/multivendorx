@@ -58,7 +58,6 @@ class Block {
             'registration-form',
             'store-coupons',
             'store-products',
-            'stores',
             'contact-info',
             'store-name',
             'store-email',
@@ -69,7 +68,8 @@ class Block {
             'store-phone',
             'store-description',
             'store-review',
-            'store-policy'
+            'store-policy',
+            'recent-product'
         );
 
         $textdomain = 'multivendorx';

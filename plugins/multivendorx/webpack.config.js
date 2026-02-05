@@ -61,7 +61,6 @@ module.exports = {
 		'block/setup-wizard/index': './src/blocks/setup-wizard/index.js',
 		'block/store-coupons/index': './src/blocks/store-coupons/index.js',
 		'block/store-products/index': './src/blocks/store-products/index.js',
-		'block/stores/index': './src/blocks/stores/index.js',
 		'block/contact-info/index': './src/blocks/contact-info/index.js',
 		'block/store-name/index': './src/blocks/store-name/index.js',
 		'block/store-email/index': './src/blocks/store-email/index.js',
@@ -73,6 +72,7 @@ module.exports = {
 		'block/store-description/index': './src/blocks/store-description/index.js',
 		'block/store-review/index': './src/blocks/store-review/index.js',
 		'block/store-policy/index': './src/blocks/store-policy/index.js',
+		'block/recent-product/index': './src/blocks/recent-product/index.js',
 	},
 
 	output: {

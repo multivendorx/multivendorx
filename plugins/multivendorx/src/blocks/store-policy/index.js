@@ -1,70 +1,231 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
+import { 
+    RichText, 
+    InspectorControls,
+    useBlockProps
+} from '@wordpress/block-editor';
+import {
+    PanelBody,
+    ToggleControl
+} from '@wordpress/components';
 
 registerBlockType('multivendorx/store-policy', {
-	edit: () => {
-		return (
-			<div className="multivendorx-store-policy">
-				<h2>{__('Store Policy', 'multivendorx')}</h2>
+    supports: {
+        align: true,
+        alignWide: false,
+        html: false,
+        color: {
+            text: true,
+            __experimentalDefaultControls: {
+                text: true
+            }
+        },
+        typography: {
+            fontSize: true,
+            lineHeight: true,
+            __experimentalDefaultControls: {
+                fontSize: true
+            }
+        },
+        spacing: {
+            margin: true,
+            padding: true,
+            __experimentalDefaultControls: {
+                margin: true,
+                padding: true
+            }
+        }
+    },
 
-				<div className="policy-item">
-					<h4>{__('Store Policy', 'multivendorx')}</h4>
-					<p>{__('Store policy description goes here.', 'multivendorx')}</p>
-				</div>
+    attributes: {
+        heading: {
+            type: 'string',
+            default: 'Store policy'
+        },
+        showStorePolicy: {
+            type: 'boolean',
+            default: true
+        },
+        showShippingPolicy: {
+            type: 'boolean',
+            default: true
+        },
+        showRefundPolicy: {
+            type: 'boolean',
+            default: true
+        },
+        showCancellationPolicy: {
+            type: 'boolean',
+            default: true
+        }
+    },
 
-				<div className="policy-item">
-					<h4>{__('Shipping Policy', 'multivendorx')}</h4>
-					<p>{__('Shipping policy description goes here.', 'multivendorx')}</p>
-				</div>
+    edit: ({ attributes, setAttributes }) => {
+        const {
+            heading,
+            showStorePolicy,
+            showShippingPolicy,
+            showRefundPolicy,
+            showCancellationPolicy
+        } = attributes;
 
-				<div className="policy-item">
-					<h4>{__('Refund Policy', 'multivendorx')}</h4>
-					<p>{__('Refund policy description goes here.', 'multivendorx')}</p>
-				</div>
+        const headingProps = useBlockProps();
+        const blockProps = { className: 'multivendorx-store-policy-block' };
 
-				<div className="policy-item">
-					<h4>{__('Cancellation Policy', 'multivendorx')}</h4>
-					<p>{__('Cancellation policy description goes here.', 'multivendorx')}</p>
-				</div>
-			</div>
-		);
-	},
+        const accordionItems = [];
 
-	save: () => {
-		return (
-			<div className="multivendorx-store-policy">
-				<h2>Store Policy</h2>
+        if (showStorePolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="store-policy">
+                    <div className="accordion-header">Store Policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Store policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
 
-				<div className="policy-item" data-policy="storePolicy"></div>
-				<div className="policy-item" data-policy="shippingPolicy"></div>
-				<div className="policy-item" data-policy="refundPolicy"></div>
-				<div className="policy-item" data-policy="cancellationPolicy"></div>
-			</div>
-		);
-	}
-});
+        if (showShippingPolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="shipping-policy">
+                    <div className="accordion-header">Shipping Policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Shipping policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
 
-document.addEventListener('DOMContentLoaded', () => {
-	const policies = StoreInfo?.storeDetails || {};
+        if (showRefundPolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="refund-policy">
+                    <div className="accordion-header">Refund policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Refund policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
 
-	const titles = {
-		storePolicy: 'Store Policy',
-		shippingPolicy: 'Shipping Policy',
-		refundPolicy: 'Refund Policy',
-		cancellationPolicy: 'Cancellation Policy',
-	};
+        if (showCancellationPolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="cancellation-policy">
+                    <div className="accordion-header">Cancellation / return / exchange policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Cancellation/return/exchange policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
 
-	document
-		.querySelectorAll('.multivendorx-store-policy .policy-item')
-		.forEach((el) => {
-			const key = el.dataset.policy;
-			const value = policies[key];
+        return (
+            <div {...blockProps}>
+                <InspectorControls>
+                    <PanelBody title={__('Policy Settings')} initialOpen={false}>
+                        <ToggleControl
+                            label={__('Show Store Policy')}
+                            checked={showStorePolicy}
+                            onChange={(value) => setAttributes({ showStorePolicy: value })}
+                        />
+                        <ToggleControl
+                            label={__('Show Shipping Policy')}
+                            checked={showShippingPolicy}
+                            onChange={(value) => setAttributes({ showShippingPolicy: value })}
+                        />
+                        <ToggleControl
+                            label={__('Show Refund Policy')}
+                            checked={showRefundPolicy}
+                            onChange={(value) => setAttributes({ showRefundPolicy: value })}
+                        />
+                        <ToggleControl
+                            label={__('Show Cancellation Policy')}
+                            checked={showCancellationPolicy}
+                            onChange={(value) => setAttributes({ showCancellationPolicy: value })}
+                        />
+                    </PanelBody>
+                </InspectorControls>
 
-			if (!value) return;
+                <RichText
+                    tagName="h2"
+                    value={heading}
+                    onChange={(value) => setAttributes({ heading: value })}
+                    placeholder={__('Enter store policy heading...')}
+                    {...headingProps}
+                />
+                
+                <div className="multivendorx-policies-accordion">
+                    {accordionItems}
+                </div>
+            </div>
+        );
+    },
 
-			el.innerHTML = `
-				<h4>${titles[key] || ''}</h4>
-				<p>${value}</p>
-			`;
-		});
+    save: ({ attributes }) => {
+        const {
+            heading,
+            showStorePolicy,
+            showShippingPolicy,
+            showRefundPolicy,
+            showCancellationPolicy
+        } = attributes;
+
+        const headingProps = useBlockProps.save();
+        const blockProps = { className: 'multivendorx-store-policy-block' };
+
+        const accordionItems = [];
+
+        if (showStorePolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="store-policy">
+                    <div className="accordion-header">Store Policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Store policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
+
+        if (showShippingPolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="shipping-policy">
+                    <div className="accordion-header">Shipping Policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Shipping policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
+
+        if (showRefundPolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="refund-policy">
+                    <div className="accordion-header">Refund policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Refund policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
+
+        if (showCancellationPolicy) {
+            accordionItems.push(
+                <div className="accordion-item" key="cancellation-policy">
+                    <div className="accordion-header">Cancellation / return / exchange policy</div>
+                    <div className="accordion-body" style={{ display: 'none' }}>
+                        <p>Cancellation/return/exchange policy content goes here...</p>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div {...blockProps}>
+                <h2 {...headingProps}>{heading}</h2>
+                <div className="multivendorx-policies-accordion">
+                    {accordionItems}
+                </div>
+            </div>
+        );
+    }
 });
