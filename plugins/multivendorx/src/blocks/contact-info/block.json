@@ -2,7 +2,7 @@
   "apiVersion": 2,
   "name": "multivendorx/contact-info",
   "title": "Contact Form",
-  "category": "multivendorx-store-shop",
+  "category": "multivendorx",
   "icon": "email",
   "description": "Display a contact form with various settings",
   "editorScript": "file:./index.js",

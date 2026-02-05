@@ -96,3 +96,93 @@
 }
 
 // store quick info end
+
+
+
+// store review block start
+    .multivendorx-review-list {
+        margin: 0;
+        list-style-type: none;
+
+        .multivendorx-review-item {
+            padding: 1.5rem 0;
+            border-bottom: 0.063rem solid #d3d0d0;
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+
+                .details-wrapper {
+                    display: flex;
+                    align-items: center;
+
+                    .avatar {
+                        width: 2rem;
+                        height: 2rem;
+                        background: var(--primary);
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-size: 1.25rem;
+                        color: #fff;
+                    }
+
+                    .name {
+                        font-size: 1.125rem;
+                        font-weight: 600;
+                        padding-left: 0.5rem;
+                    }
+
+                    span {
+                        font-size: 0.813rem;
+                        line-height: 0.9;
+                        padding-left: 0.5rem;
+                        color: #00000085;
+                        font-weight: 500;
+                    }
+
+                }
+            }
+
+            .body {
+                padding-top: 0.5rem;
+
+                .title {
+                    font-size: 1.063rem;
+                    font-weight: 600;
+                    padding-left: 0.5rem;
+                }
+
+                .rating {
+                    padding-left: 0.5rem
+                }
+            }
+
+            .review-images {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.313rem;
+
+                a {
+                    img {
+                        height: 5rem;
+                        width: auto;
+                    }
+                }
+            }
+
+            .multivendorx-review-reply {
+                padding: 0.625rem;
+                background: #8f8f8f1f;
+                margin-top: 0.5rem;
+                border-radius: 0.313rem;
+
+                p {
+                    margin: 0;
+                }
+            }
+        }
+
+    }
+// store review block end
