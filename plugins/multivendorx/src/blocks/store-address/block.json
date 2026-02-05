@@ -1,0 +1,9 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-address",
+  "title": "Store address",
+  "category": "multivendorx-store-shop",
+  "icon": "location",
+  "description": "Display store name",
+  "editorScript": "file:./index.js"
+}

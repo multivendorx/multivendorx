@@ -342,6 +342,7 @@ registerBlockType('multivendorx/store-banner', {
                         />
                     </div>
                 </div>
+                
             </>
         );
     },
@@ -353,13 +354,10 @@ registerBlockType('multivendorx/store-banner', {
             overlayColor, 
             overlayOpacity, 
             contentColor,
-            backgroundPosition,
             contentPosition,
             template
         } = attributes;
-
-        const bannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
-
+    
         const [justifyContent, alignItems] = contentPosition.split(' ');
         
         const blockProps = useBlockProps.save({
@@ -367,10 +365,6 @@ registerBlockType('multivendorx/store-banner', {
             style: {
                 height: height,
                 minHeight: minHeight,
-                backgroundImage: `url(${bannerImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: backgroundPosition,
-                backgroundRepeat: 'no-repeat',
                 position: 'relative',
                 display: 'flex',
                 overflow: 'hidden'
@@ -398,7 +392,7 @@ registerBlockType('multivendorx/store-banner', {
             padding: '40px',
             color: contentColor
         };
-
+    
         return (
             <div {...blockProps}>
                 <div style={overlayStyle}></div>
@@ -408,4 +402,19 @@ registerBlockType('multivendorx/store-banner', {
             </div>
         );
     }
+    
+});
+document.addEventListener('DOMContentLoaded', () => {
+    const bannerUrl = StoreInfo?.storeDetails?.storeBanner || '';
+
+    document
+        .querySelectorAll('.multivendorx-store-banner')
+        .forEach(banner => {
+            if (bannerUrl) {
+                banner.style.backgroundImage = `url(${bannerUrl})`;
+                banner.style.backgroundSize = 'cover';
+                banner.style.backgroundPosition = 'center';
+                banner.style.backgroundRepeat = 'no-repeat';
+            }
+        });
 });

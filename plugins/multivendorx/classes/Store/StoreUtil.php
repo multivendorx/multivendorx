@@ -683,6 +683,13 @@ class StoreUtil {
             'youtube'          => $store_obj->get_meta( 'youtube' ),
             'instagram'        => $store_obj->get_meta( 'instagram' ),
             'pinterest'        => $store_obj->get_meta( 'pinterest' ),
+            'storeLogo'        => $store_obj->get_meta( 'image' ),
+            'storeBanner'       => $store_obj->get_meta( 'banner' ),
+            'storePolicy'       => $store_obj->get_meta( 'store_policy' ),
+            'shippingPolicy'    => $store_obj->get_meta( 'shipping_policy' ),
+            'refundPolicy'      => $store_obj->get_meta( 'refund_policy' ),
+            'cancellationPolicy'=> $store_obj->get_meta( 'cancellation_policy' ),
+            'storeAddress'      => $store_obj->get_meta( 'address' ),
         );
 
         return $info;
