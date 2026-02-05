@@ -75,6 +75,7 @@ module.exports = {
 		'block/recent-product/index': './src/blocks/recent-product/index.js',
 		'block/product-search/index': './src/blocks/product-search/index.js',
 		'block/top-rated-products/index': './src/blocks/top-rated-products/index.js',
+		'block/highlighted-store-products/index': './src/blocks/highlighted-store-products/index.js',
 	},
 
 	output: {

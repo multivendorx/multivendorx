@@ -71,7 +71,8 @@ class Block {
             'store-policy',
             'recent-product',
             'product-search',
-            'top-rated-products'
+            'top-rated-products',
+            'highlighted-store-products'
         );
 
         $textdomain = 'multivendorx';

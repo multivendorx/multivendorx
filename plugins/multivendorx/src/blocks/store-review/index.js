@@ -1,19 +1,22 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { 
+import {
     InspectorControls,
     useBlockProps,
     BlockControls,
     AlignmentToolbar,
-    BlockAlignmentToolbar 
+    BlockAlignmentToolbar
 } from '@wordpress/block-editor';
-import { 
-    PanelBody, 
-    RangeControl, 
-    ToggleControl, 
+import {
+    PanelBody,
+    RangeControl,
+    ToggleControl,
     SelectControl,
     ToolbarGroup
 } from '@wordpress/components';
+import StoreReview from './StoreReview';
+import { render } from '@wordpress/element';
+import { BrowserRouter } from 'react-router-dom';
 
 registerBlockType('multivendorx/store-review', {
 
@@ -32,16 +35,16 @@ registerBlockType('multivendorx/store-review', {
         },
         sortOrder: {
             type: 'string',
-            default: 'newest',
+            default: 'DESC',
         }
     },
 
     edit: ({ attributes, setAttributes }) => {
-        const { 
-            reviewsToShow, 
-            showImages, 
-            showAdminReply, 
-            sortOrder 
+        const {
+            reviewsToShow,
+            showImages,
+            showAdminReply,
+            sortOrder
         } = attributes;
 
         const blockProps = useBlockProps();
@@ -106,10 +109,8 @@ registerBlockType('multivendorx/store-review', {
                             label={__('Sort Order')}
                             value={sortOrder}
                             options={[
-                                { label: 'Newest First', value: 'newest' },
-                                { label: 'Oldest First', value: 'oldest' },
-                                { label: 'Highest Rating', value: 'highest_rating' },
-                                { label: 'Lowest Rating', value: 'lowest_rating' },
+                                { label: 'Newest First', value: 'DESC' },
+                                { label: 'Oldest First', value: 'ASC' },
                             ]}
                             onChange={(value) => setAttributes({ sortOrder: value })}
                         />
@@ -183,58 +184,47 @@ registerBlockType('multivendorx/store-review', {
     save: ({ attributes }) => {
         const { reviewsToShow, showImages, showAdminReply, sortOrder } = attributes;
         const blockProps = useBlockProps.save();
-
+    
         return (
-            <div {...blockProps}>
-                <ul
-                    className="multivendorx-review-list"
-                    data-reviews-to-show={reviewsToShow}
-                    data-show-images={showImages}
-                    data-show-admin-reply={showAdminReply}
-                    data-sort-order={sortOrder}
-                >
-                    <li className="multivendorx-review-item">
-                        <div className="header">
-                            <div className="details-wrapper">
-                                <div className="avatar"></div>
-                                <div className="name"></div>
-                                <span className="time"></span>
-                            </div>
-                        </div>
-
-                        <div className="body">
-                            <div className="rating">
-                                <i className="dashicons dashicons-star-filled"></i>
-                                <i className="dashicons dashicons-star-filled"></i>
-                                <i className="dashicons dashicons-star-filled"></i>
-                                <i className="dashicons dashicons-star-filled"></i>
-                                <i className="dashicons dashicons-star-empty"></i>
-                                <span className="title"></span>
-                            </div>
-
-                            <div className="content"></div>
-                        </div>
-
-                        {showImages && (
-                            <div className="review-images">
-                                <a href="#" target="_blank" rel="noopener noreferrer">
-                                    <img src="#" alt="Review Image" />
-                                </a>
-                                <a href="#" target="_blank" rel="noopener noreferrer">
-                                    <img src="#" alt="Review Image" />
-                                </a>
-                            </div>
-                        )}
-
-                        {showAdminReply && (
-                            <div className="multivendorx-review-reply">
-                                <strong>Admin reply:</strong>
-                                <p></p>
-                            </div>
-                        )}
-                    </li>
-                </ul>
-            </div>
+            <div
+                {...blockProps}
+                className="multivendorx-review-list"
+                data-reviews-to-show={reviewsToShow}
+                data-show-images={showImages}
+                data-show-admin-reply={showAdminReply}
+                data-sort-order={sortOrder}
+            />
         );
+    }    
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const activeModules = StoreInfo.activeModules;
+
+    if (!activeModules.includes('store-review')) {
+        return;
     }
+
+    document.querySelectorAll('.multivendorx-review-list').forEach((el) => {
+        const {
+            reviewsToShow,
+            showImages,
+            showAdminReply,
+            sortOrder,
+        } = el.dataset;
+
+        const props = {
+            reviewsToShow: Number(reviewsToShow),
+            showImages: showImages === 'true',
+            showAdminReply: showAdminReply === 'true',
+            sortOrder,
+        };
+
+        render(
+            <BrowserRouter>
+                <StoreReview {...props} />
+            </BrowserRouter>,
+            el
+        );
+    });
 });

@@ -133,10 +133,9 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            // --- Step 2: Collect Request Parameters ---.
             $store_id       = $request->get_param( 'storeId' );
-            $limit          = max( intval( $request->get_param( 'row' ) ), 10 );
-            $page           = max( intval( $request->get_param( 'page' ) ), 1 );
+            $limit = intval( $request->get_param( 'row' ) ) ?: 0;
+            $page  = intval( $request->get_param( 'page' ) ) ?: 1;            
             $offset         = ( $page - 1 ) * $limit;
             $status         = sanitize_text_field( $request->get_param( 'status' ) );
             $orderBy        = sanitize_text_field( $request->get_param( 'orderBy' ) );
@@ -313,7 +312,41 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            return rest_ensure_response( $data );
+            $review_id       = $request->get_param( 'id' );
+
+            // --- Step 6: Fetch Review Data ---.
+            $review = reset(Util::get_review_information( array('review_id' => $review_id ) ));
+
+            if ( ! $review ) {
+                return new \WP_Error(
+                    'not_found',
+                    __( 'Review not found', 'multivendorx' ),
+                    array( 'status' => 404 )
+                );
+            }
+            $customer      = get_userdata( $review['customer_id'] );
+            $customer_name = $customer ? $customer->display_name : __( 'Guest', 'multivendorx' );
+            $store_obj     = MultivendorX()->store->get_store( (int) $review['store_id'] );
+            
+            $formatted = array(
+                'review_id'      => (int) $review['review_id'],
+                'store_id'       => (int) $review['store_id'],
+                'store_name'     => $store_obj->get( 'name' ),
+                'customer_id'    => (int) $review['customer_id'],
+                'customer_name'  => $customer_name,
+                'order_id'       => (int) $review['order_id'],
+                'overall_rating' => round( (float) $review['overall_rating'], 2 ),
+                'review_title'   => sanitize_text_field( $review['review_title'] ),
+                'review_content' => wp_strip_all_tags( $review['review_content'] ),
+                'status'         => ucfirst( sanitize_text_field( $review['status'] ) ),
+                'reported'       => (int) $review['reported'],
+                'reply'          => $review['reply'] ?? '',
+                'reply_date'     => $review['reply_date'] ?? '',
+                'date_created'   => $review['date_created'],
+                'date_modified'  => $review['date_modified'],
+            );
+            
+            return rest_ensure_response( $formatted );
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 

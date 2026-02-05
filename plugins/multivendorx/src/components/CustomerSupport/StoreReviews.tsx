@@ -120,7 +120,6 @@ const StoreReviews: React.FC = () => {
 
 
 	const fetchReviewById = (id: number) => {
-		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, `review/${id}`), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -135,9 +134,6 @@ const StoreReviews: React.FC = () => {
 			.catch(() => {
 				alert(__('Failed to fetch review data', 'multivendorx'));
 			})
-			.finally(() => {
-				setIsLoading(false);
-			});
 	};
 
 	const headers = [
@@ -153,12 +149,12 @@ const StoreReviews: React.FC = () => {
 			actions: [
 				{
 					label: __('Reply / Edit', 'multivendorx'),
-					icon: 'adminfont-edit',
+					icon: 'edit',
 					onClick: (id: number) => fetchReviewById(id), // Only returns ID for fetching
 				},
 				{
 					label: __('Delete', 'multivendorx'),
-					icon: 'adminfont-delete delete',
+					icon: 'delete',
 					onClick: (id: number) => {
 						setSelectedRv({ id });
 						setConfirmOpen(true);
@@ -222,8 +218,8 @@ const StoreReviews: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((item: any) => item?.id != null)
-					.map((item: any) => item.id);
+					.filter((item: any) => item?.review_id != null)
+					.map((item: any) => item.review_id);
 
 				setRowIds(ids);
 
