@@ -30,6 +30,8 @@ interface InputField {
     proSetting?: boolean;
     dependentPlugin?: boolean;
     dependentSetting?: string;
+    preText?: string | ReactNode;
+    postText?: string | ReactNode;
 }
 
 interface SettingsType {
@@ -102,6 +104,7 @@ const RenderComponent: React.FC<RenderProps> = ({
         plugin: '',
     });
     const { modules } = useModules();
+    const [errors, setErrors] = useState<Record<string, string | null>>({});
 
     useEffect(() => {
         if (settingChanged.current) {
@@ -168,12 +171,6 @@ const RenderComponent: React.FC<RenderProps> = ({
         hasDependentSetting?: string,
         hasDependentPlugin?: string
     ) => {
-        const popupData: PopupProps = {
-            moduleName: '',
-            settings: '',
-            plugin: '',
-        };
-
         if (proFeaturesEnabled && !appLocalizer?.khali_dabba) {
             return false;
         }
@@ -278,47 +275,129 @@ const RenderComponent: React.FC<RenderProps> = ({
 
     const handleChange = ( key: string, value: string | string[] | number[]) => {
         console.log('save')
+        const field = modal.find((f) => f.key === key);
+        if (!field) return;
+
+        const error = validateField(field, value);
+
+        setErrors((prev) => ({
+            ...prev,
+            [key]: error,
+        }));
+
+        if (error) {
+            return;
+        }
+
         settingChanged.current = true;
         updateSetting(key, value);
     }
 
+    const VALUE_ADDON_TYPES = ['select', 'text'];
+
+    const isCompositeField = (field: InputField) =>
+        VALUE_ADDON_TYPES.includes(field.preText?.type) ||
+        VALUE_ADDON_TYPES.includes(field.postText?.type);
+
+    // const renderFieldInternal = (
+    //     field: InputField,
+    //     value: any,
+    //     onChange: any,
+    //     canAccess: boolean
+    // ): JSX.Element | null => {
+    //     const fieldComponent = FIELD_REGISTRY[field.type];
+
+    //     if (!fieldComponent) {
+    //         console.warn(`Unknown field type: ${field.type}`);
+    //         return null;
+    //     }
+
+    //     const Render = fieldComponent.render;
+
+    //     return (
+    //         <>
+    //          {field.preText &&
+    //                 renderFieldInternal(field.preText, value, onChange, canAccess)}
+            
+    //             <Render
+    //                 field={field}
+    //                 value={value}
+    //                 onChange={onChange}
+    //                 canAccess={canAccess}
+    //             />
+
+    //         {field.postText &&
+    //                 renderFieldInternal(field.postText, value, onChange, canAccess)}
+            
+    //         </>
+    //     );
+    // };
+
     const renderFieldInternal = (
         field: InputField,
+        parentField: InputField,
         value: any,
-        onChange: any,
-        canAccess: boolean
-    ): JSX.Element | null => {
+        onChange: (key: string, value: any) => void,
+        canAccess: boolean,
+        appLocalizer: any
+        ): JSX.Element | null => {
         const fieldComponent = FIELD_REGISTRY[field.type];
-
-        if (!fieldComponent) {
-            console.warn(`Unknown field type: ${field.type}`);
-            return null;
-        }
+        if (!fieldComponent) return null;
 
         const Render = fieldComponent.render;
 
-        return (
-            <>
-             {field.preText &&
-                    renderFieldInternal(field.preText, value, onChange, canAccess)}
-            
-                <Render
-                    field={field}
-                    value={value}
-                    onChange={onChange}
-                    canAccess={canAccess}
-                />
+        const handleInternalChange = (val: any) => {
+            console.log(field.key, val);
+            if (field.type == 'button') {
+                onChange(val.key, val.value);
+                return;
+            }
 
-            {field.postText &&
-                    renderFieldInternal(field.postText, value, onChange, canAccess)}
-            
-            </>
+            if (!isCompositeField(parentField)) {
+                onChange(field.key, val);
+                return;
+            }
+
+            onChange(parentField.key, {
+            ...(value ?? {}),
+            [field.key]: val,
+            });
+        };
+
+        const fieldValue = isCompositeField(parentField)
+            ? value?.[field.key] ?? ''
+            : value ?? '';
+
+        return (
+            <Render
+                field={field}
+                value={fieldValue}
+                onChange={handleInternalChange}
+                canAccess={canAccess}
+                appLocalizer={appLocalizer}
+            />
         );
     };
 
+    const validateField = (field: InputField, value: any): string | null => {
+        const component = FIELD_REGISTRY[field.type];
+        if (!component?.validate) return null;
+
+        if (!isCompositeField(field)) {
+            return component.validate(field, value);
+        }
+
+        return component.validate(field, value ?? {});
+    };
+
+    {console.log('errors', errors)}
+
     const renderForm = () => {
         return modal.map((inputField: InputField) => {
-            const value: unknown = setting[inputField.key] ?? '';
+            // const value: unknown = setting[inputField.key] ?? '';
+            const composite = isCompositeField(inputField);
+
+            const value = composite ? setting[inputField.key] ?? {} : setting[inputField.key] ?? '';
 
             // Filter dependent conditions
             if (Array.isArray(inputField.dependent)) {
@@ -340,7 +419,40 @@ const RenderComponent: React.FC<RenderProps> = ({
                 String(inputField.dependentPlugin ?? '')
             );
 
-            const input = renderFieldInternal(inputField, value, handleChange, access );
+            // const input = renderFieldInternal(inputField, value, handleChange, access );
+console.log('post', inputField.postText)
+            const input = (
+                <>
+                    {inputField.preText &&
+                        renderFieldInternal(
+                            inputField.preText,
+                            inputField,
+                            value,
+                            handleChange,
+                            access,
+                            appLocalizer
+                        )}
+
+                    {renderFieldInternal(
+                        inputField,
+                        inputField,
+                        value,
+                        handleChange,
+                        access,
+                        appLocalizer
+                    )}
+
+                    {inputField.postText &&
+                        renderFieldInternal(
+                            inputField.postText,
+                            inputField,
+                            value,
+                            handleChange,
+                            access,
+                            appLocalizer
+                        )}
+                </>
+            );
           
             // const input = renderField(inputField, value, handleChange, access);
 
@@ -401,6 +513,19 @@ const RenderComponent: React.FC<RenderProps> = ({
                                             },
                                         })
                                     : input}
+
+                            {errors && errors[inputField.key] && (
+                                <div className="field-error">
+                                    {errors[inputField.key]}
+                                </div>
+                            )}
+
+                            {inputField.desc && (
+                                <p
+                                    className="settings-metabox-description"
+                                    dangerouslySetInnerHTML={{ __html: inputField.desc }}
+                                />
+                            )}
                         </div>
                         {((inputField.proSetting &&
                             appLocalizer?.khali_dabba) ||

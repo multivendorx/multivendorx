@@ -40,7 +40,6 @@ interface BasicInputProps {
     inputLabel?: string;
     inputClass?: string;
     id?: string;
-    fieldKey?: string;
     type?:
     | 'text'
     | 'button'
@@ -67,13 +66,11 @@ interface BasicInputProps {
     clickBtnName?: string;
     onclickCallback?: (e: MouseEvent<HTMLButtonElement>) => void;
     msg?: InputFeedback;
-    description?: string;
     rangeUnit?: string;
     disabled?: boolean;
     readOnly?: boolean;
     size?: string;
     required?: boolean;
-    hasAccess?: boolean;
     preText?: Addon;
     postText?: Addon;
     preInsideText?: Addon;
@@ -87,7 +84,6 @@ const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             inputLabel,
             inputClass,
             id,
-            fieldKey,
             type = 'text',
             name = 'basic-input',
             value,
@@ -100,8 +96,6 @@ const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             onMouseOut,
             onFocus,
             onBlur,
-            preText,
-            postText,
             preInsideText,
             postInsideText,
             size,
@@ -109,16 +103,13 @@ const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             clickBtnName,
             onclickCallback,
             msg,
-            description,
             rangeUnit,
             disabled = false,
             readOnly = false,
-            required = false,
-            hasAccess
+            required = false
         },
         ref
     ) => {
-        console.log('hasAccess', hasAccess)
         console.log('value', value)
         const [copied, setCopied] = useState(false);
 
@@ -130,7 +121,127 @@ const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             return null;
         };
 
-        // const randomKey = (len: number): string =>
+        return (
+            <>
+                <div
+                    className={`setting-form-input ${wrapperClass || ''} ${clickBtnName || generate ? 'input-button' : ''
+                        } ${preInsideText || postInsideText ? 'inner-input' : ''}`}
+                >
+                    {inputLabel && <label htmlFor={id}>{inputLabel}</label>}
+
+					<div
+						className="input-wrapper"
+						style={{ width: size || '100%' }}
+					>
+						{preInsideText && (
+							<span className="pre">
+								{renderAddon(preInsideText)}
+							</span>
+						)}
+
+						<input
+							ref={ref}
+							id={id}
+							className={`basic-input ${inputClass ?? ''}`}
+							type={type}
+							name={name}
+							placeholder={placeholder}
+							min={
+								type === 'number' || type === 'range'
+									? min
+									: undefined
+							}
+							max={
+								type === 'number' || type === 'range'
+									? max
+									: undefined
+							}
+							value={value}
+							onChange={(e) =>
+								onChange(e.target.value)
+							}
+							onClick={onClick}
+							onMouseOver={onMouseOver}
+							onMouseOut={onMouseOut}
+							onFocus={onFocus}
+							onBlur={onBlur}
+							disabled={disabled}
+							readOnly={readOnly}
+							required={required}
+						/>
+
+						{type === 'color' && (
+							<div className="color-value">{value ?? ''}</div>
+						)}
+
+						{postInsideText && (
+							<span className="parameter">
+								{renderAddon(postInsideText)}
+							</span>
+						)}
+					</div>
+
+                    {type === 'range' && (
+                        <output className="settings-metabox-description">
+                            {value ?? ''}
+                            {rangeUnit}
+                        </output>
+                    )}
+                </div>
+
+                {msg && <div className={msg.type}>{msg.message}</div>}
+            </>
+        );
+    }
+);
+
+const BasicInput: FieldComponent = {
+  	render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+		<BasicInputUI
+		wrapperClass={field.wrapperClass}
+		inputClass={field.class}
+		id={field.id}
+		name={field.name}
+		type={field.type}
+		placeholder={field.placeholder}
+		inputLabel={field.inputLabel}
+		rangeUnit={field.rangeUnit}
+		min={field.min ?? 0}
+		max={field.max ?? 50}
+		preInsideText={field.preInsideText}
+		postInsideText={field.postInsideText}
+		value={value}
+		size={field.size}
+		onChange={(val) => {
+			if (!canAccess) return;
+			onChange(val)
+		}}
+		/>
+	),
+
+	validate: (field, value) => {
+		
+		// if (!field.preText && !field.postText) {
+		// 	if (field.required && !value) {
+		// 		return `${field.label} is required`;
+		// 	}
+		// 	return null;
+		// }
+
+		if (field.required && !value?.[field.key]) {
+			return `${field.label} is required`;
+		}
+
+		return null;
+	},
+
+};
+
+export default BasicInput;
+
+
+
+// const randomKey = (len: number): string =>
         //     Array.from({ length: len }, () =>
         //         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(
         //             Math.floor(Math.random() * 62)
@@ -164,132 +275,4 @@ const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
         //     setTimeout(() => setCopied(false), 3000);
         // };
 
-        return (
-            <>
-                <div
-                    className={`setting-form-input ${wrapperClass || ''} ${clickBtnName || generate ? 'input-button' : ''
-                        } ${preInsideText || postInsideText ? 'inner-input' : ''}`}
-                >
-                    {inputLabel && <label htmlFor={id}>{inputLabel}</label>}
-
-                    {type === 'button' ? (
-                        <AdminButton
-                            buttons={{
-                                text: name,
-                                onClick: () => onclickCallback
-                                    ? onclickCallback(e)
-                                    : onClick?.(e as MouseEvent<HTMLInputElement>)
-                            }}
-                        />
-                    ) : (
-                        <>
-                            <div
-                                className="input-wrapper"
-                                style={{ width: size || '100%' }}
-                            >
-                                {preInsideText && (
-                                    <span className="pre">
-                                        {renderAddon(preInsideText)}
-                                    </span>
-                                )}
-
-                                <input
-                                    ref={ref}
-                                    id={id}
-                                    className={`basic-input ${inputClass ?? ''}`}
-                                    type={type}
-                                    name={name}
-                                    placeholder={placeholder}
-                                    min={
-                                        type === 'number' || type === 'range'
-                                            ? min
-                                            : undefined
-                                    }
-                                    max={
-                                        type === 'number' || type === 'range'
-                                            ? max
-                                            : undefined
-                                    }
-                                    value={value}
-                                    onChange={(e) =>
-                                        onChange(e.target.value)
-                                    }
-                                    onClick={onClick}
-                                    onMouseOver={onMouseOver}
-                                    onMouseOut={onMouseOut}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    disabled={disabled}
-                                    readOnly={readOnly}
-                                    required={required}
-                                />
-
-                                {type === 'color' && (
-                                    <div className="color-value">{value ?? ''}</div>
-                                )}
-
-                                {postInsideText && (
-                                    <span className="parameter">
-                                        {renderAddon(postInsideText)}
-                                    </span>
-                                )}
-                            </div>
-                        </>
-                    )}
-
-                    {type === 'range' && (
-                        <output className="settings-metabox-description">
-                            {value ?? ''}
-                            {rangeUnit}
-                        </output>
-                    )}
-                </div>
-
-                {description && (
-                    <p
-                        className="settings-metabox-description"
-                        dangerouslySetInnerHTML={{ __html: description }}
-                    />
-                )}
-
-                {msg && <div className={msg.type}>{msg.message}</div>}
-            </>
-        );
-    }
-);
-
-const BasicInput: FieldComponent = {
-  render: ({ field, value, onChange, canAccess }) => (
-    <BasicInputUI
-      wrapperClass={field.wrapperClass}
-      inputClass={field.class}
-      description={field.desc}
-      fieldKey={field.key}
-      id={field.id}
-      name={field.name}
-      type={field.type}
-      placeholder={field.placeholder}
-      inputLabel={field.inputLabel}
-      rangeUnit={field.rangeUnit}
-      min={field.min ?? 0}
-      max={field.max ?? 50}
-      value={value}
-      size={field.size}
-      hasAccess={canAccess}
-      onChange={(val) => {
-        if (!canAccess) return;
-        onChange(field.key, val)
-      }}
-    />
-  ),
-
-  validate: (field, value) => {
-    if (field.required && !value?.[field.key]) {
-      return `${field.label} is required`;
-    }
-    return null;
-  },
-};
-
-export default BasicInput;
 

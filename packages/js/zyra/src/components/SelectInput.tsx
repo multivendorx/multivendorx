@@ -28,15 +28,13 @@ interface SelectInputProps {
     options: SelectOptions[];
     value?: string | string[];
     inputClass?: string;
-    type?: 'single-select' | 'multi-select';
+    type?: 'single-select' | 'multiselect';
     onChange?: (
         newValue: SingleValue<SelectOptions> | MultiValue<SelectOptions>,
         actionMeta: ActionMeta<SelectOptions>
     ) => void;
     onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
     proSetting?: boolean;
-    description?: string;
-    descClass?: string;
     preText?: React.ReactNode;
     postText?: React.ReactNode;
     size?: string;
@@ -99,8 +97,6 @@ const SelectInputUI: React.FC<SelectInputProps> = ({
     inputClass,
     type = 'single-select',
     onChange,
-    description,
-    descClass,
     preText,
     postText,
     size,
@@ -208,7 +204,7 @@ const SelectInputUI: React.FC<SelectInputProps> = ({
                     }}
                     styles={customStyles}
                     // closeMenuOnSelect={true}
-                    isMulti={type === 'multi-select'}
+                    isMulti={type === 'multiselect'}
                     components={{ MenuList: CustomMenuList, NoOptionsMessage: CustomNoOptionsMessage, }}
                     menuContent={menuContent}
                     keepMenuOpenOnMenuContentClick={
@@ -217,24 +213,20 @@ const SelectInputUI: React.FC<SelectInputProps> = ({
                 />
                 {postText && <div className="after">{postText}</div>}
             </div>
-            {description && (
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={{ __html: description }}
-                ></p>
-            )}
         </div>
     );
 };
 
 const SelectInput: FieldComponent = {
-  render: ({ field, value, onChange, canAccess }) => (
+  render: ({ field, value, onChange, canAccess, appLocalizer }) => (
     <SelectInputUI
         wrapperClass={field.wrapperClass}
         name={field.key}
-        description={field.desc}
         inputClass={field.className}
         size={field.size}
+        type={field.type}
+        selectDeselect={field.selectDeselect}
+        selectDeselectValue="Select / Deselect All"
         options={
             Array.isArray(field.options)
                 ? field.options.map((opt) => ({
@@ -254,10 +246,10 @@ const SelectInput: FieldComponent = {
             if (Array.isArray(newValue)) {
             // multi-select
             const values = newValue.map((opt) => opt.value);
-            onChange(field.key, values);
+            onChange(values);
             } else {
             // single-select
-            onChange(field.key, newValue.value);
+            onChange(newValue.value);
             }
       }}
     />

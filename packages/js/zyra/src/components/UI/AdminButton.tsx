@@ -1,5 +1,8 @@
 import "../../styles/web/UI/AdminButton.scss";
 import React, { useState } from "react";
+import { FieldComponent } from '../types';
+import axios from 'axios';
+import { getApiLink } from '../../utils/apiService';
 
 type CustomStyle = {
     button_border_size?: number;
@@ -31,7 +34,7 @@ type AdminButtonProps = {
   wrapperClass?: 'left' | 'right' | 'center';
 };
 
-const AdminButton: React.FC<AdminButtonProps> = ({
+const AdminButtonUI: React.FC<AdminButtonProps> = ({
     buttons,
     wrapperClass = "",
 }) => {
@@ -102,6 +105,68 @@ const AdminButton: React.FC<AdminButtonProps> = ({
     }`;
 
     return <div className={wrapperClasses}>{renderedButtons}</div>;
+};
+
+
+const AdminButton: FieldComponent = {
+     render: ({ field, onChange, canAccess, appLocalizer }) => {
+        const randomKey = (len: number): string =>
+            Array.from({ length: len }, () =>
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(
+                    Math.floor(Math.random() * 62)
+                )
+            ).join('');
+
+        const handleClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+            if (!canAccess) return;
+
+            if (field.generate) {
+                const generatedValue = randomKey(8);
+                 onChange({
+                    key: field.responseKey,
+                    value: generatedValue,
+                });
+            }
+            
+            if (field.apilink) {
+                axios({
+                    url: getApiLink(
+                        appLocalizer,
+                        String(field.apilink)
+                    ),
+                    method: field.method ?? 'GET',
+                    headers: {
+                        'X-WP-Nonce': appLocalizer.nonce,
+                    },
+                    params: {
+                        key: field.key,
+                    },
+                }).then(() => {
+                    console.log('hittt')
+                });
+            }
+
+        };
+
+        return (
+            <AdminButtonUI
+                wrapperClass={field.wrapperClass}
+                buttons={{
+                    text: field.name,
+                    onClick: handleClick,
+                }}
+            />
+        );
+    },
+
+    validate: (field, value) => {
+        if (field.required && !value?.[field.key]) {
+        	return `${field.label} is required`;
+        }
+
+        return null;
+    },
+
 };
 
 export default AdminButton;
