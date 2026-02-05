@@ -689,6 +689,7 @@ class StoreUtil {
             'shippingPolicy'    => $store_obj->get_meta( 'shipping_policy' ),
             'refundPolicy'      => $store_obj->get_meta( 'refund_policy' ),
             'cancellationPolicy'=> $store_obj->get_meta( 'cancellation_policy' ),
+            'storeAddress'      => $store_obj->get_meta( 'address' ),
         );
 
         return $info;

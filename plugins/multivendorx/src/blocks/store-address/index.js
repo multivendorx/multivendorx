@@ -31,7 +31,7 @@ registerBlockType('multivendorx/store-address', {
 
                 <div {...blockProps}>
                     <span className="dashicons dashicons-location"></span>
-                    <span>store@gmail.com</span>
+                    <span>Kolkata</span>
                 </div>
             </>
         );
@@ -55,11 +55,11 @@ registerBlockType('multivendorx/store-address', {
     }
 });
 
-// document.addEventListener('DOMContentLoaded', () => {
-// 	document
-// 		.querySelectorAll('.multivendorx-store-email-block')
-// 		.forEach(el => {
-// 			el.textContent = StoreInfo.storeDetails.storeEmail;
-// 		});
-// });
+document.addEventListener('DOMContentLoaded', () => {
+	document
+		.querySelectorAll('.multivendorx-store-address-block')
+		.forEach(el => {
+			el.textContent = StoreInfo.storeDetails.storeAddress;
+		});
+});
 
