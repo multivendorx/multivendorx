@@ -4,6 +4,14 @@
   "title": "Product Category",
   "category": "multivendorx",
   "icon": "store",
-  "description": "Display store name",
-  "editorScript": "file:./index.js"
+  "description": "Display product categories with alignment options",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "align": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "align": true
+  }
 }
