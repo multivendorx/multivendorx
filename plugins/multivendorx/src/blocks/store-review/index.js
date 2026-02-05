@@ -1,10 +1,22 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl, SelectControl } from '@wordpress/components';
+import { 
+    InspectorControls,
+    useBlockProps,
+    BlockControls,
+    AlignmentToolbar,
+    BlockAlignmentToolbar 
+} from '@wordpress/block-editor';
+import { 
+    PanelBody, 
+    RangeControl, 
+    ToggleControl, 
+    SelectControl,
+    ToolbarGroup
+} from '@wordpress/components';
 
 registerBlockType('multivendorx/store-review', {
-    
+
     attributes: {
         reviewsToShow: {
             type: 'number',
@@ -18,28 +30,32 @@ registerBlockType('multivendorx/store-review', {
             type: 'boolean',
             default: true,
         },
-        showRating: {
-            type: 'boolean',
-            default: true,
-        },
         sortOrder: {
             type: 'string',
             default: 'newest',
-        },
+        }
     },
 
     edit: ({ attributes, setAttributes }) => {
-        const { reviewsToShow, showImages, showAdminReply, showRating, sortOrder } = attributes;
+        const { 
+            reviewsToShow, 
+            showImages, 
+            showAdminReply, 
+            sortOrder 
+        } = attributes;
+
+        // Use block props - WordPress will automatically handle alignment from block.json
+        const blockProps = useBlockProps();
 
         const StarFilled = () => (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" fill="#f0b849"/>
+                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" fill="#f0b849" />
             </svg>
         );
 
         const StarEmpty = () => (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" fill="#ddd"/>
+                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" fill="#ddd" />
             </svg>
         );
 
@@ -51,8 +67,8 @@ registerBlockType('multivendorx/store-review', {
             title: 'Great Store',
             content: 'The quality is excellent and delivery was fast.',
             images: [
-                'https://example.com/image1.jpg',
-                'https://example.com/image2.jpg'
+                '#',
+                '#'
             ],
             adminReply: 'Thank you for your valuable feedback!',
         };
@@ -71,6 +87,12 @@ registerBlockType('multivendorx/store-review', {
 
         return (
             <>
+                <BlockControls>
+                    <ToolbarGroup>
+                        <AlignmentToolbar />
+                    </ToolbarGroup>
+                </BlockControls>
+
                 <InspectorControls>
                     <PanelBody title={__('Review Settings')} initialOpen={true}>
                         <RangeControl
@@ -80,7 +102,7 @@ registerBlockType('multivendorx/store-review', {
                             min={1}
                             max={10}
                         />
-                        
+
                         <SelectControl
                             label={__('Sort Order')}
                             value={sortOrder}
@@ -92,101 +114,96 @@ registerBlockType('multivendorx/store-review', {
                             ]}
                             onChange={(value) => setAttributes({ sortOrder: value })}
                         />
-                        
+
                         <ToggleControl
                             label={__('Show Images')}
                             checked={showImages}
                             onChange={() => setAttributes({ showImages: !showImages })}
                         />
-                        
+
                         <ToggleControl
                             label={__('Show Admin Replies')}
                             checked={showAdminReply}
                             onChange={() => setAttributes({ showAdminReply: !showAdminReply })}
                         />
-                        
-                        <ToggleControl
-                            label={__('Show Rating Stars')}
-                            checked={showRating}
-                            onChange={() => setAttributes({ showRating: !showRating })}
-                        />
                     </PanelBody>
                 </InspectorControls>
 
-                <ul className="multivendorx-review-list">
-                    <li className="multivendorx-review-item">
-                        <div className="header">
-                            <div className="details-wrapper">
-                                <div className="avatar">{reviewData.avatar}</div>
-                                <div className="name">{reviewData.name}</div>
-                                <span className="time">{reviewData.time}</span>
+                <div {...blockProps}>
+                    <ul className="multivendorx-review-list">
+                        <li className="multivendorx-review-item">
+                            <div className="header">
+                                <div className="details-wrapper">
+                                    <div className="avatar">{reviewData.avatar}</div>
+                                    <div className="name">{reviewData.name}</div>
+                                    <span className="time">{reviewData.time}</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="body">
-                            {showRating && (
+                            <div className="body">
                                 <div className="rating">
                                     <span className="stars">
                                         {renderStars(reviewData.rating, true)}
                                     </span>
                                     <span className="title">{reviewData.title}</span>
                                 </div>
+
+                                <div className="content">
+                                    {reviewData.content}
+                                </div>
+                            </div>
+
+                            {showImages && reviewData.images.length > 0 && (
+                                <div className="review-images">
+                                    {reviewData.images.map((image, index) => (
+                                        <a
+                                            key={index}
+                                            href={image}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <img src={image} alt="Review Image" />
+                                        </a>
+                                    ))}
+                                </div>
                             )}
 
-                            <div className="content">
-                                {reviewData.content}
-                            </div>
-                        </div>
-
-                        {showImages && reviewData.images.length > 0 && (
-                            <div className="review-images">
-                                {reviewData.images.map((image, index) => (
-                                    <a 
-                                        key={index}
-                                        href={image} 
-                                        target="_blank"
-                                    >
-                                        <img src={image} alt="Review Image" />
-                                    </a>
-                                ))}
-                            </div>
-                        )}
-
-                        {showAdminReply && reviewData.adminReply && (
-                            <div className="multivendorx-review-reply">
-                                <strong>Admin reply:</strong>
-                                <p>{reviewData.adminReply}</p>
-                            </div>
-                        )}
-                    </li>
-                </ul>
+                            {showAdminReply && reviewData.adminReply && (
+                                <div className="multivendorx-review-reply">
+                                    <strong>Admin reply:</strong>
+                                    <p>{reviewData.adminReply}</p>
+                                </div>
+                            )}
+                        </li>
+                    </ul>
+                </div>
             </>
         );
     },
 
     save: ({ attributes }) => {
-        const { reviewsToShow, showImages, showAdminReply, showRating, sortOrder } = attributes;
-        
-        return (
-            <ul 
-                className="multivendorx-review-list"
-                data-reviews-to-show={reviewsToShow}
-                data-show-images={showImages}
-                data-show-admin-reply={showAdminReply}
-                data-show-rating={showRating}
-                data-sort-order={sortOrder}
-            >
-                <li className="multivendorx-review-item">
-                    <div className="header">
-                        <div className="details-wrapper">
-                            <div className="avatar"></div>
-                            <div className="name"></div>
-                            <span className="time"></span>
-                        </div>
-                    </div>
+        const { reviewsToShow, showImages, showAdminReply, sortOrder } = attributes;
+        const blockProps = useBlockProps.save();
 
-                    <div className="body">
-                        {showRating && (
+        return (
+            <div {...blockProps}>
+                <ul
+                    className="multivendorx-review-list"
+                    data-reviews-to-show={reviewsToShow}
+                    data-show-images={showImages}
+                    data-show-admin-reply={showAdminReply}
+                    data-sort-order={sortOrder}
+                >
+                    <li className="multivendorx-review-item">
+                        <div className="header">
+                            <div className="details-wrapper">
+                                <div className="avatar"></div>
+                                <div className="name"></div>
+                                <span className="time"></span>
+                            </div>
+                        </div>
+
+                        <div className="body">
                             <div className="rating">
                                 <i className="dashicons dashicons-star-filled"></i>
                                 <i className="dashicons dashicons-star-filled"></i>
@@ -195,30 +212,30 @@ registerBlockType('multivendorx/store-review', {
                                 <i className="dashicons dashicons-star-empty"></i>
                                 <span className="title"></span>
                             </div>
+
+                            <div className="content"></div>
+                        </div>
+
+                        {showImages && (
+                            <div className="review-images">
+                                <a href="#" target="_blank" rel="noopener noreferrer">
+                                    <img src="#" alt="Review Image" />
+                                </a>
+                                <a href="#" target="_blank" rel="noopener noreferrer">
+                                    <img src="#" alt="Review Image" />
+                                </a>
+                            </div>
                         )}
 
-                        <div className="content"></div>
-                    </div>
-
-                    {showImages && (
-                        <div className="review-images">
-                            <a href="#" target="_blank">
-                                <img src="#" alt="Review Image" />
-                            </a>
-                            <a href="#" target="_blank">
-                                <img src="#" alt="Review Image" />
-                            </a>
-                        </div>
-                    )}
-
-                    {showAdminReply && (
-                        <div className="multivendorx-review-reply">
-                            <strong>Admin reply:</strong>
-                            <p></p>
-                        </div>
-                    )}
-                </li>
-            </ul>
+                        {showAdminReply && (
+                            <div className="multivendorx-review-reply">
+                                <strong>Admin reply:</strong>
+                                <p></p>
+                            </div>
+                        )}
+                    </li>
+                </ul>
+            </div>
         );
     }
 });
