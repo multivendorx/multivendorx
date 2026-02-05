@@ -70,7 +70,8 @@ class Block {
             'store-review',
             'store-policy',
             'recent-product',
-            'product-search'
+            'product-search',
+            'top-rated-products'
         );
 
         $textdomain = 'multivendorx';
