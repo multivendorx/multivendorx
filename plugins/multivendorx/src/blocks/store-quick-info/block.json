@@ -1,0 +1,9 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-quick-info",
+  "title": "Store Quick Info",
+  "category": "multivendorx",
+  "icon": "phone",
+  "description": "Display store phone number",
+  "editorScript": "file:./index.js"
+}

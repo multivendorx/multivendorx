@@ -61,6 +61,7 @@ class Block {
             'contact-info',
             'store-name',
             'store-email',
+            'store-address',
             'store-banner',
             'store-buttons',
             'store-logo',
@@ -69,9 +70,10 @@ class Block {
             'store-description',
             'store-review',
             'store-policy',
-            'recent-product',
             'product-search',
-            'top-rated-products'
+            'sale-product',
+            'product-category',
+            'store-quick-info'
         );
 
         $textdomain = 'multivendorx';
