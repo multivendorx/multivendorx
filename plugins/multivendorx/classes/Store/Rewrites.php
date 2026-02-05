@@ -238,6 +238,10 @@ class Rewrites {
         FrontendScripts::enqueue_script( 'multivendorx-store-logo-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-banner-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-policy-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-review-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-highlighted-store-products-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-address-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-quick-info-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );

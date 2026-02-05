@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { 
-    RichText, 
+import {
+    RichText,
     InspectorControls,
     useBlockProps
 } from '@wordpress/block-editor';
@@ -10,57 +10,74 @@ import {
     ToggleControl
 } from '@wordpress/components';
 
+/**
+ * Single source of truth for policies
+ */
+const POLICY_MAP = {
+    storePolicy: {
+        label: __('Store Policy'),
+        placeholder: __('Store policy content goes here...')
+    },
+    shippingPolicy: {
+        label: __('Shipping Policy'),
+        placeholder: __('Shipping policy content goes here...')
+    },
+    refundPolicy: {
+        label: __('Refund Policy'),
+        placeholder: __('Refund policy content goes here...')
+    },
+    cancellationPolicy: {
+        label: __('Cancellation / return / exchange policy'),
+        placeholder: __('Cancellation / return / exchange policy content goes here...')
+    }
+};
+
+/**
+ * Shared accordion builder
+ */
+const buildAccordionItems = ({ visibility, isEdit }) => {
+    return Object.entries(POLICY_MAP).map(([key, config]) => {
+        if (!visibility[key]) return null;
+
+        return (
+            <div
+                key={key}
+                className="accordion-item"
+                data-policy={!isEdit ? key : undefined}
+            >
+                <div className="accordion-header">
+                    {config.label}
+                </div>
+
+                <div className="accordion-body" style={{ display: 'none' }}>
+                    <p>{isEdit ? config.placeholder : ''}</p>
+                </div>
+            </div>
+        );
+    });
+};
+
+
 registerBlockType('multivendorx/store-policy', {
     supports: {
         align: true,
-        alignWide: false,
-        html: false,
-        color: {
-            text: true,
-            __experimentalDefaultControls: {
-                text: true
-            }
-        },
-        typography: {
-            fontSize: true,
-            lineHeight: true,
-            __experimentalDefaultControls: {
-                fontSize: true
-            }
-        },
-        spacing: {
-            margin: true,
-            padding: true,
-            __experimentalDefaultControls: {
-                margin: true,
-                padding: true
-            }
-        }
+        html: false
     },
 
     attributes: {
         heading: {
             type: 'string',
-            default: 'Store policy'
+            default: __('Store policy')
         },
-        showStorePolicy: {
-            type: 'boolean',
-            default: true
-        },
-        showShippingPolicy: {
-            type: 'boolean',
-            default: true
-        },
-        showRefundPolicy: {
-            type: 'boolean',
-            default: true
-        },
-        showCancellationPolicy: {
-            type: 'boolean',
-            default: true
-        }
+        showStorePolicy: { type: 'boolean', default: true },
+        showShippingPolicy: { type: 'boolean', default: true },
+        showRefundPolicy: { type: 'boolean', default: true },
+        showCancellationPolicy: { type: 'boolean', default: true }
     },
 
+    /**
+     * EDIT — static preview only
+     */
     edit: ({ attributes, setAttributes }) => {
         const {
             heading,
@@ -70,78 +87,48 @@ registerBlockType('multivendorx/store-policy', {
             showCancellationPolicy
         } = attributes;
 
-        const headingProps = useBlockProps();
-        const blockProps = { className: 'multivendorx-store-policy-block' };
+        const blockProps = useBlockProps({
+            className: 'multivendorx-store-policy-block'
+        });
 
-        const accordionItems = [];
-
-        if (showStorePolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="store-policy">
-                    <div className="accordion-header">Store Policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Store policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (showShippingPolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="shipping-policy">
-                    <div className="accordion-header">Shipping Policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Shipping policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (showRefundPolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="refund-policy">
-                    <div className="accordion-header">Refund policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Refund policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (showCancellationPolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="cancellation-policy">
-                    <div className="accordion-header">Cancellation / return / exchange policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Cancellation/return/exchange policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
+        const visibility = {
+            storePolicy: showStorePolicy,
+            shippingPolicy: showShippingPolicy,
+            refundPolicy: showRefundPolicy,
+            cancellationPolicy: showCancellationPolicy
+        };
 
         return (
             <div {...blockProps}>
                 <InspectorControls>
                     <PanelBody title={__('Policy Settings')} initialOpen={false}>
                         <ToggleControl
-                            label={__('Show Store Policy')}
+                            label={POLICY_MAP.storePolicy.label}
                             checked={showStorePolicy}
-                            onChange={(value) => setAttributes({ showStorePolicy: value })}
+                            onChange={(value) =>
+                                setAttributes({ showStorePolicy: value })
+                            }
                         />
                         <ToggleControl
-                            label={__('Show Shipping Policy')}
+                            label={POLICY_MAP.shippingPolicy.label}
                             checked={showShippingPolicy}
-                            onChange={(value) => setAttributes({ showShippingPolicy: value })}
+                            onChange={(value) =>
+                                setAttributes({ showShippingPolicy: value })
+                            }
                         />
                         <ToggleControl
-                            label={__('Show Refund Policy')}
+                            label={POLICY_MAP.refundPolicy.label}
                             checked={showRefundPolicy}
-                            onChange={(value) => setAttributes({ showRefundPolicy: value })}
+                            onChange={(value) =>
+                                setAttributes({ showRefundPolicy: value })
+                            }
                         />
                         <ToggleControl
-                            label={__('Show Cancellation Policy')}
+                            label={POLICY_MAP.cancellationPolicy.label}
                             checked={showCancellationPolicy}
-                            onChange={(value) => setAttributes({ showCancellationPolicy: value })}
+                            onChange={(value) =>
+                                setAttributes({ showCancellationPolicy: value })
+                            }
                         />
                     </PanelBody>
                 </InspectorControls>
@@ -149,18 +136,25 @@ registerBlockType('multivendorx/store-policy', {
                 <RichText
                     tagName="h2"
                     value={heading}
-                    onChange={(value) => setAttributes({ heading: value })}
-                    placeholder={__('Enter store policy heading...')}
-                    {...headingProps}
+                    onChange={(value) =>
+                        setAttributes({ heading: value })
+                    }
+                    placeholder={__('Enter store policy heading…')}
                 />
-                
+
                 <div className="multivendorx-policies-accordion">
-                    {accordionItems}
+                    {buildAccordionItems({
+                        visibility,
+                        isEdit: true
+                    })}
                 </div>
             </div>
         );
     },
 
+    /**
+     * SAVE — dynamic-ready markup only
+     */
     save: ({ attributes }) => {
         const {
             heading,
@@ -169,63 +163,78 @@ registerBlockType('multivendorx/store-policy', {
             showRefundPolicy,
             showCancellationPolicy
         } = attributes;
-
-        const headingProps = useBlockProps.save();
-        const blockProps = { className: 'multivendorx-store-policy-block' };
-
-        const accordionItems = [];
-
-        if (showStorePolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="store-policy">
-                    <div className="accordion-header">Store Policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Store policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (showShippingPolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="shipping-policy">
-                    <div className="accordion-header">Shipping Policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Shipping policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (showRefundPolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="refund-policy">
-                    <div className="accordion-header">Refund policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Refund policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (showCancellationPolicy) {
-            accordionItems.push(
-                <div className="accordion-item" key="cancellation-policy">
-                    <div className="accordion-header">Cancellation / return / exchange policy</div>
-                    <div className="accordion-body" style={{ display: 'none' }}>
-                        <p>Cancellation/return/exchange policy content goes here...</p>
-                    </div>
-                </div>
-            );
-        }
-
+    
+        const blockProps = useBlockProps.save({
+            className: 'multivendorx-store-policy-block'
+        });
+    
+        const visibility = {
+            storePolicy: showStorePolicy,
+            shippingPolicy: showShippingPolicy,
+            refundPolicy: showRefundPolicy,
+            cancellationPolicy: showCancellationPolicy
+        };
+    
         return (
             <div {...blockProps}>
-                <h2 {...headingProps}>{heading}</h2>
+                <h2>{heading}</h2>
+    
                 <div className="multivendorx-policies-accordion">
-                    {accordionItems}
+                    {Object.entries(POLICY_MAP).map(([key, config]) => {
+                        if (!visibility[key]) return null;
+    
+                        return (
+                            <div
+                                key={key}
+                                className="accordion-item"
+                                data-policy={key}
+                            >
+                                <div className="accordion-header">
+                                    {config.label}
+                                </div>
+    
+                                <div
+                                    className="accordion-body"
+                                    style={{ display: 'none' }}
+                                >
+                                    <p></p>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         );
-    }
+    }    
 });
+
+/**
+ * FRONTEND ONLY — dynamic policy injection
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    if (
+        !window.StoreInfo ||
+        !StoreInfo.activeModules?.includes('store-policy')
+    ) {
+        return;
+    }
+
+    const policies = StoreInfo.storeDetails || {};
+
+    document
+        .querySelectorAll(
+            '.multivendorx-store-policy-block .accordion-item'
+        )
+        .forEach((item) => {
+            const key = item.dataset.policy;
+            const value = policies[key];
+
+            if (!key || !value) return;
+
+            const p = item.querySelector('.accordion-body p');
+            if (p) {
+                p.textContent = value;
+            }
+        });
+});
+

@@ -71,6 +71,7 @@ class Block {
             'store-review',
             'store-policy',
             'product-search',
+            'highlighted-store-products',
             'sale-product',
             'product-category',
             'store-quick-info'
