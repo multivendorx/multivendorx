@@ -83,7 +83,7 @@ jQuery(document).ready(function ($) {
 			},
 			function (res) {
 				if (res.success) {
-					$('#multivendorx-vendor-reviews-list').html(res.data.html);
+					$('#multivendorx-store-reviews-list').html(res.data.html);
 				}
 			}
 		);

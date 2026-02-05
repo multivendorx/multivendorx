@@ -2,7 +2,7 @@
     "apiVersion": 2,
     "name": "multivendorx/store-policy",
     "title": "Store Policy",
-    "category": "multivendorx-store-shop",
+    "category": "multivendorx",
     "icon": "star-filled",
     "description": "Display store social media icons",
     "editorScript": "file:./index.js",
