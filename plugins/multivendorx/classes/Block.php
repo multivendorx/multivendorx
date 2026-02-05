@@ -72,7 +72,8 @@ class Block {
             'store-policy',
             'product-search',
             'sale-product',
-            'product-category'
+            'product-category',
+            'store-quick-info'
         );
 
         $textdomain = 'multivendorx';
