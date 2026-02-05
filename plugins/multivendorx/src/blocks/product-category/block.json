@@ -1,7 +1,7 @@
 {
   "apiVersion": 2,
   "name": "multivendorx/product-category",
-  "title": "Product Category",
+  "title": "Product Category(w)",
   "category": "multivendorx",
   "icon": "store",
   "description": "Display product categories with alignment options",
