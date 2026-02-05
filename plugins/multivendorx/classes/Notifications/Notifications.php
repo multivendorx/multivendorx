@@ -619,7 +619,6 @@ class Notifications {
             }
 
             $message = $event->sms_content;
-
 			foreach ( $parameters as $key => $value ) {
 				$message = str_replace( '[' . $key . ']', $value, $message );
 			}
