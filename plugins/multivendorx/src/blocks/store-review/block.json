@@ -29,5 +29,7 @@
       "type": "string",
       "default": "newest"
     }
-  }
+  },
+  "editorStyle": [ "multivendorx-common-block-style" ],
+  "style": [ "multivendorx-common-block-style" ]
 }

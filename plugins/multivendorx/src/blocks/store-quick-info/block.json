@@ -5,5 +5,7 @@
   "category": "multivendorx",
   "icon": "phone",
   "description": "Display store phone number",
-  "editorScript": "file:./index.js"
+  "editorScript": "file:./index.js",
+  "editorStyle": [ "multivendorx-common-block-style" ],
+  "style": [ "multivendorx-common-block-style" ]
 }
