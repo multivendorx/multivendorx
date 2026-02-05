@@ -64,6 +64,7 @@ module.exports = {
 		'block/contact-info/index': './src/blocks/contact-info/index.js',
 		'block/store-name/index': './src/blocks/store-name/index.js',
 		'block/store-email/index': './src/blocks/store-email/index.js',
+		'block/store-address/index': './src/blocks/store-address/index.js',
 		'block/store-buttons/index': './src/blocks/store-buttons/index.js',
 		'block/store-phone/index': './src/blocks/store-phone/index.js',
 		'block/store-logo/index': './src/blocks/store-logo/index.js',
@@ -75,6 +76,7 @@ module.exports = {
 		'block/recent-product/index': './src/blocks/recent-product/index.js',
 		'block/product-search/index': './src/blocks/product-search/index.js',
 		'block/top-rated-products/index': './src/blocks/top-rated-products/index.js',
+		'block/sale-product/index': './src/blocks/sale-product/index.js',
 	},
 
 	output: {

@@ -13,7 +13,7 @@ import {
     ToolbarGroup
 } from '@wordpress/components';
 
-registerBlockType('multivendorx/top-rated-products', {
+registerBlockType('multivendorx/sale-product', {
     attributes: {
         align: {
             type: 'string',
