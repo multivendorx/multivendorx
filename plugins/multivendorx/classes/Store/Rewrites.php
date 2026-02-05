@@ -235,6 +235,9 @@ class Rewrites {
         FrontendScripts::enqueue_script( 'multivendorx-store-email-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-phone-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-social-icons-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-logo-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-banner-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-policy-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );

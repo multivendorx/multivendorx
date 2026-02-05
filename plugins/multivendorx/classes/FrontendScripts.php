@@ -582,8 +582,9 @@ class FrontendScripts {
                 'multivendorx-follow-store-frontend-script' => array(
 					'object_name' => 'followStoreFrontend',
 					'data'        => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                        'nonce'   => wp_create_nonce( 'follow_store_ajax_nonce' ),
+                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
+                        'restUrl'                  => MultiVendorX()->rest_namespace,
+                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
 					),
 				),
                 'multivendorx-store-shipping-frontend-script' => array(
@@ -765,6 +766,8 @@ class FrontendScripts {
                         'nonce'                    => wp_create_nonce( 'wp_rest' ),
                         'storeDetails'             => StoreUtil::get_specific_store_info(),
                         'settings_databases_value' => $settings_databases_value,
+                        'activeModules'            => MultiVendorX()->modules->get_active_modules(),
+                        'currentUserId'            => get_current_user_id(),
                     ),
                 ),
 			)
