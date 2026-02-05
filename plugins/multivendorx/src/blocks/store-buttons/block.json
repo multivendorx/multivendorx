@@ -3,7 +3,7 @@
   "name": "multivendorx/store-buttons",
   "title": "Store Buttons",
   "category": "multivendorx-store-shop",
-  "icon": "store",
+  "icon": "button",
   "editorScript": "file:./index.js",
   "script": "file:./index.js"
 }

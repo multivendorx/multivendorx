@@ -82,7 +82,7 @@ const ProductList: React.FC<ProductListProps> = ({
 			{loading ? (
 				<p>Loading products...</p>
 			) : (
-				<ul className="products columns-4">
+				<ul className="top-products-inner">
 					{products.map((product) => (
 						<li key={product.id} className="wc-block-product product type-product status-publish instock">
 							<a href={product.permalink} className="product-card">

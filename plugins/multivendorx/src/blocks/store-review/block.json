@@ -2,7 +2,7 @@
   "apiVersion": 2,
   "name": "multivendorx/store-review",
   "title": "Store Review",
-  "category": "multivendorx-store-shop",
+  "category": "multivendorx",
   "icon": "star-filled",
   "description": "Display store reviews with ratings and images",
   "editorScript": "file:./index.js",
@@ -29,5 +29,7 @@
       "type": "string",
       "default": "newest"
     }
-  }
+  },
+  "editorStyle": [ "multivendorx-common-block-style" ],
+  "style": [ "multivendorx-common-block-style" ]
 }

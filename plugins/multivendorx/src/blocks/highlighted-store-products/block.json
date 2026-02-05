@@ -2,7 +2,7 @@
     "apiVersion": 2,
 	"name": "multivendorx/highlighted-store-products",
 	"title": "Highlighted Store Products(widgets)",
-	"category": "multivendorx-store-shop",
+	"category": "multivendorx",
 	"icon": "products",
     "editorScript": "file:./index.js",
     "script": "file:./index.js"
