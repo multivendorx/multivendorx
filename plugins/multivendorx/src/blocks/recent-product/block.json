@@ -1,0 +1,10 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/recent-product",
+  "title": "Recent Product",
+  "category": "multivendorx",
+  "icon": "products",
+  "description": "Display store social media icons",
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js"
+}
