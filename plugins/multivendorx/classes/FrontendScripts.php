@@ -587,8 +587,9 @@ class FrontendScripts {
                 'multivendorx-follow-store-frontend-script' => array(
 					'object_name' => 'followStoreFrontend',
 					'data'        => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                        'nonce'   => wp_create_nonce( 'follow_store_ajax_nonce' ),
+                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
+                        'restUrl'                  => MultiVendorX()->rest_namespace,
+                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
 					),
 				),
                 'multivendorx-store-shipping-frontend-script' => array(

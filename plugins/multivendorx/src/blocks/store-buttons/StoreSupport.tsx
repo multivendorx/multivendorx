@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import React from 'react';
 
 const SupportIcon = () => (
@@ -12,7 +13,7 @@ const StoreSupport: React.FC = () => {
         className={`wp-block-button__link has-border-color has-accent-1-border-color wp-element-button multivendorx-store-support-btn`}
     >
         <SupportIcon />
-        {__('Support', 'multivendorx')}
+        {__('Support com', 'multivendorx')}
     </button>
     );
 };

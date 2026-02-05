@@ -10,6 +10,11 @@ import {
     PanelBody,
     ToggleControl
 } from '@wordpress/components';
+import FollowStore from './FollowStore';
+import LiveChat from './LiveChat';
+import StoreSupport from './StoreSupport';
+import { render } from '@wordpress/element';
+import { BrowserRouter } from 'react-router-dom';
 
 // Button Icons
 const FollowIcon = () => (
@@ -225,9 +230,41 @@ registerBlockType('multivendorx/store-buttons', {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-	document
-		.querySelectorAll('.multivendorx-store-email-block')
-		.forEach(el => {
-			el.textContent = StoreInfo.storeDetails.storeEmail;
-		});
+    const activeModules = StoreInfo.activeModules;
+    if (activeModules.includes('follow-store')) {
+        // Mount FollowStore
+        document.querySelectorAll('.multivendorx-follow-store').forEach(el => {
+            render(
+                <BrowserRouter>
+                    <FollowStore />
+                </BrowserRouter>,
+                el
+            );
+        });
+    }
+
+    if (activeModules.includes('live-chat')) {
+        // Mount LiveChat
+        document.querySelectorAll('.multivendorx-live-chat').forEach(el => {
+            render(
+                <BrowserRouter>
+                    <LiveChat />
+                </BrowserRouter>,
+                el
+            );
+        });
+    }
+
+    if (activeModules.includes('store-support')) {
+        // Mount Support
+        document.querySelectorAll('.multivendorx-store-support').forEach(el => {
+            render(
+                <BrowserRouter>
+                    <StoreSupport />
+                </BrowserRouter>,
+                el
+            );
+        });
+    }
+
 });

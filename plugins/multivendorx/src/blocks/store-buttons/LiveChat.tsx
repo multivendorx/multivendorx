@@ -13,7 +13,7 @@ const LiveChat: React.FC = () => {
             className={`wp-block-button__link has-border-color has-accent-1-border-color wp-element-button multivendorx-store-chat-btn`}
         >
             <ChatIcon />
-            {__('Live Chat', 'multivendorx')}
+            {__('Live Chat com', 'multivendorx')}
         </button>
     );
 };
