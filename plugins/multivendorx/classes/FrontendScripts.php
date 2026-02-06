@@ -342,6 +342,11 @@ class FrontendScripts {
 					'deps'    => array(),
 					'version' => $version,
 				),
+                'multivendorx-common-block-style' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-common-block.min.css',
+					'deps'    => array(),
+					'version' => $version,
+				),
 			)
         );
         foreach ( $register_styles as $name => $props ) {
