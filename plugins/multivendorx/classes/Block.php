@@ -57,7 +57,7 @@ class Block {
             'marketplace-coupons',
             'registration-form',
             'store-coupons',
-            'store-products',
+            'store-tabs',
             'contact-info',
             'store-name',
             'store-email',
@@ -74,7 +74,8 @@ class Block {
             'highlighted-store-products',
             'sale-product',
             'product-category',
-            'store-quick-info'
+            'store-quick-info',
+            'store-sidebar'
         );
 
         $textdomain = 'multivendorx';
