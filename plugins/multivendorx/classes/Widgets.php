@@ -7,7 +7,7 @@ class Widgets {
 
     public function __construct() {
         add_action( 'widgets_init', [ $this, 'register_sidebar' ] );
-        add_filter('register_block_type_args',[ $this, 'attach_sidebar_render_callback' ],10,2);
+        add_filter( 'register_block_type_args',[ $this, 'attach_sidebar_render_callback' ],10,2);
         
     }
 
@@ -27,26 +27,27 @@ class Widgets {
     }
     
     public function attach_sidebar_render_callback( $args, $block_type ) {
-
-        if ( $block_type === 'multivendorx/store-sidebar' ) {
+        if ( isset( $block_type ) && $block_type === 'multivendorx/store-sidebar' ) {
             $args['render_callback'] = [ $this, 'render_sidebar' ];
         }
     
         return $args;
     }
     
+    
     /**
      * Render sidebar output (used by block templates)
      */
     public function render_sidebar() {
-
         if ( ! is_active_sidebar( 'multivendorx-store-sidebar' ) ) {
             return '';
         }
+        $sidebar_position_setting = MultiVendorX()->setting->get_setting( 'store_sidebar', array() );
+        $sidebar_position = is_array( $sidebar_position_setting ) ? reset( $sidebar_position_setting ) : $sidebar_position_setting;
 
         ob_start();
         ?>
-        <aside class="multivendorx-store-sidebar">
+        <aside class="multivendorx-store-sidebar multivendorx-store-sidebar-<?php echo esc_attr( $sidebar_position ); ?>">
             <?php dynamic_sidebar( 'multivendorx-store-sidebar' ); ?>
         </aside>
         <?php
