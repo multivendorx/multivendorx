@@ -183,6 +183,24 @@
                 }
             }
         }
-
     }
 // store review block end
+
+
+// logo and place holder start
+.placeholder {
+     left: 0;
+     top: 0;
+     width: 5rem;
+     height: 5rem;
+     color: #fff;
+     display: flex;
+     justify-content: center;
+     background: #5007aa;
+     align-items: center;
+     font-size: 3rem;
+     width: 5rem;
+     height: 5rem;
+     box-shadow: 0 0.125rem 0.5rem 0 rgba(66, 62, 78, 0.12);
+ }
+ // logo and place holder end
