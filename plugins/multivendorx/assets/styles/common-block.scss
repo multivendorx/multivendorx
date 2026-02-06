@@ -329,3 +329,19 @@
          }
      }
  }
+
+
+//  product list style start
+.top-products-inner{
+    .product-item{
+        .product-card{
+            .product-image{
+                width: 4rem;
+
+                img{
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

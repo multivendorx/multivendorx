@@ -71,7 +71,6 @@ class Block {
             'store-review',
             'store-policy',
             'highlighted-store-products',
-            'sale-product',
             'product-category',
             'store-quick-info',
             'store-sidebar'
