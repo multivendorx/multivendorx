@@ -77,7 +77,7 @@ interface BasicInputProps {
     postInsideText?: Addon;
 }
 
-const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
+export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
     (
         {
             wrapperClass,

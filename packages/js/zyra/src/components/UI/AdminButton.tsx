@@ -34,7 +34,7 @@ type AdminButtonProps = {
   wrapperClass?: 'left' | 'right' | 'center';
 };
 
-const AdminButtonUI: React.FC<AdminButtonProps> = ({
+export const AdminButtonUI: React.FC<AdminButtonProps> = ({
     buttons,
     wrapperClass = "",
 }) => {
