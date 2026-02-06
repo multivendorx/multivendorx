@@ -1,0 +1,12 @@
+{
+    "apiVersion": 2,
+    "name": "multivendorx/store-sidebar",
+    "title": "Store Sidebar",
+    "category": "multivendorx-store-shop",
+    "description": "Store sidebar widgets",
+    "textdomain": "multivendorx",
+    "supports": {
+      "html": false
+    }
+  }
+  
