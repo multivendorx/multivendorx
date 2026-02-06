@@ -32,7 +32,8 @@ const TEMPLATE_1 = [
         }
     }, [
         ['multivendorx/store-email', {}],
-        ['multivendorx/store-phone', {}]
+        ['multivendorx/store-phone', {}],
+        ['multivendorx/store-address', {}]
     ]],
     ['multivendorx/store-description', {}],
     ['core/spacer', { height: '20px' }],
@@ -109,6 +110,7 @@ const ALLOWED_BLOCKS = [
     'multivendorx/store-name',
     'multivendorx/store-email',
     'multivendorx/store-phone',
+     'multivendorx/store-address',
     'multivendorx/store-social-icons',
     'multivendorx/store-buttons',
     'multivendorx/store-logo'
@@ -118,7 +120,7 @@ registerBlockType('multivendorx/store-banner', {
     attributes: {
         height: {
             type: 'string',
-            default: '400px'
+            default: 'auto'
         },
         minHeight: {
             type: 'string',
@@ -200,8 +202,8 @@ registerBlockType('multivendorx/store-banner', {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: justifyContent || 'center',
-            alignItems: alignItems || 'center',
+            // justifyContent: justifyContent || 'center',
+            // alignItems: alignItems || 'center',
             padding: '40px',
             color: contentColor
         };
@@ -335,7 +337,6 @@ registerBlockType('multivendorx/store-banner', {
                     <div style={contentContainerStyle}>
                         <InnerBlocks 
                             template={currentTemplate}
-                            templateLock={template === 'empty' ? false : 'all'}
                             allowedBlocks={ALLOWED_BLOCKS}
                             orientation="vertical"
                             renderAppender={template === 'empty' ? InnerBlocks.ButtonBlockAppender : false}
@@ -387,8 +388,8 @@ registerBlockType('multivendorx/store-banner', {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: justifyContent || 'center',
-            alignItems: alignItems || 'center',
+            // justifyContent: justifyContent ,
+            // alignItems: alignItems,
             padding: '40px',
             color: contentColor
         };

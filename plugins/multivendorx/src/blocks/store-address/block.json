@@ -1,9 +1,46 @@
 {
   "apiVersion": 2,
   "name": "multivendorx/store-address",
-  "title": "Store address",
+  "title": "Store Address",
   "category": "multivendorx-store-shop",
   "icon": "location",
-  "description": "Display store name",
-  "editorScript": "file:./index.js"
+  "description": "Display store address",
+  "keywords": ["address", "location", "store"],
+  "editorScript": "file:./index.js",
+  "supports": {
+    "align": true,
+    "alignWide": false,
+    "html": false,
+    "color": {
+      "text": true,
+      "__experimentalDefaultControls": {
+        "text": true
+      }
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "__experimentalDefaultControls": {
+        "margin": true,
+        "padding": true
+      }
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "style": true,
+        "width": true
+      }
+    }
+  }
 }
