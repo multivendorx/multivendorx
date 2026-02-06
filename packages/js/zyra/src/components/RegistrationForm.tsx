@@ -1,10 +1,3 @@
-/**
- * RegistrationForm.tsx - PROPERLY FIXED VERSION
- * Issues fixed:
- * 1. Column child blocks can now be edited in settings panel
- * 2. Column layout changes work properly
- */
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
@@ -18,6 +11,8 @@ import {
     normalizeBlock,
     BlockRenderer,
     ColumnsBlock,
+    getColumnCount,
+    ColumnRenderer, // Add this import
 } from './block';
 
 // Import existing components
@@ -153,8 +148,13 @@ const CustomForm: React.FC<CustomFormProps> = ({
                 ...patch,
             } as Block;
             updatedColumns[columnIndex] = updatedColumn;
-            parentBlock.columns = updatedColumns;
-            updated[parentIndex] = parentBlock;
+            
+            // Create new parent block with updated columns
+            const newParentBlock: ColumnsBlock = {
+                ...parentBlock,
+                columns: updatedColumns,
+            };
+            updated[parentIndex] = newParentBlock;
             updateBlocks(updated);
 
             // Update opendInput if it's the same block
@@ -164,93 +164,75 @@ const CustomForm: React.FC<CustomFormProps> = ({
         }
     };
 
-    const renderColumnBlock = (block: Block, parentIndex: number) => {
-        if (block.type !== 'columns') return null;
+    const deleteColumnChild = (
+        parentIndex: number,
+        columnIndex: number,
+        childIndex: number
+    ) => {
+        if (proSettingChange()) {
+            return;
+        }
 
-        const style = {
-            backgroundColor: block.style?.backgroundColor,
-            padding: block.style?.padding,
-            margin: block.style?.margin,
-            borderWidth: block.style?.borderWidth,
-            borderColor: block.style?.borderColor,
-            borderStyle: block.style?.borderStyle,
-            borderRadius: block.style?.borderRadius,
-        };
+        const updated = [...formFieldList];
+        const parentBlock = updated[parentIndex];
 
-        return (
-            <div className={`email-columns layout-${block.layout || '2-50'}`} style={style}>
-                {(block.columns || []).map((column, colIndex) => (
-                    <div key={colIndex} className="email-column-wrapper">
-                        <div className="column-icon">
-                            <i className="adminfont-plus"></i>
-                        </div>
+        if (parentBlock.type === 'columns') {
+            const updatedColumns = [...parentBlock.columns];
+            const deletedBlock = updatedColumns[columnIndex][childIndex];
+            
+            // Remove the child from the column
+            updatedColumns[columnIndex] = updatedColumns[columnIndex].filter((_, index) => index !== childIndex);
+            
+            // Create new parent block with updated columns
+            const newParentBlock: ColumnsBlock = {
+                ...parentBlock,
+                columns: updatedColumns,
+            };
+            updated[parentIndex] = newParentBlock;
+            updateBlocks(updated);
 
-                        <ReactSortable
-                            list={column}
-                            setList={(newList) => {
-                                if (proSettingChange()) {
-                                    return;
-                                }
-                                const updated = [...formFieldList];
-                                const parentBlock = { ...updated[parentIndex] } as any;
-                                const updatedColumns = [...(parentBlock.columns || [])];
-                                updatedColumns[colIndex] = newList.map(normalizeBlock);
-                                parentBlock.columns = updatedColumns;
-                                updated[parentIndex] = parentBlock;
-                                updateBlocks(updated);
-                            }}
-                            group={{ name: 'registration', pull: true, put: true }}
-                            className="email-column"
-                            animation={150}
-                            handle=".drag-handle"
-                            fallbackOnBody
-                            swapThreshold={0.65}
-                        >
-                            {column.map((childBlock, childIndex) => (
-                                <BlockRenderer
-                                    key={childBlock.id}
-                                    block={childBlock}
-                                    onSelect={() => {
-                                        setOpendInput(childBlock);
-                                        // Store location so settings panel knows this is a column child
-                                        setSelectedBlockLocation({
-                                            parentIndex,
-                                            columnIndex: colIndex,
-                                            childIndex,
-                                        });
-                                    }}
-                                    onChange={(patch) =>
-                                        updateColumnBlock(parentIndex, colIndex, childIndex, patch)
-                                    }
-                                    onDelete={() => {
-                                        if (proSettingChange()) {
-                                            return;
-                                        }
-                                        const updated = [...formFieldList];
-                                        const parentBlock = { ...updated[parentIndex] } as any;
-                                        const updatedColumns = [...(parentBlock.columns || [])];
-                                        updatedColumns[colIndex].splice(childIndex, 1);
-                                        parentBlock.columns = updatedColumns;
-                                        updated[parentIndex] = parentBlock;
-                                        updateBlocks(updated);
-                                        if (opendInput?.id === childBlock.id) {
-                                            setOpendInput(null);
-                                            setSelectedBlockLocation(null);
-                                        }
-                                    }}
-                                    isActive={opendInput?.id === childBlock.id}
-                                    BasicInput={BasicInput}
-                                    MultipleOptions={MultipleOptions}
-                                    TextArea={TextArea}
-                                    FileInput={FileInput}
-                                    AddressField={AddressField}
-                                />
-                            ))}
-                        </ReactSortable>
-                    </div>
-                ))}
-            </div>
-        );
+            // Clear selection if deleted block was selected
+            if (opendInput?.id === deletedBlock.id) {
+                setOpendInput(null);
+                setSelectedBlockLocation(null);
+            }
+        }
+    };
+
+    const updateColumnLayout = (parentIndex: number, columnIndex: number, newList: Block[]) => {
+        if (proSettingChange()) {
+            return;
+        }
+
+        const updated = [...formFieldList];
+        const parentBlock = updated[parentIndex];
+
+        if (parentBlock.type === 'columns') {
+            const updatedColumns = [...parentBlock.columns];
+            updatedColumns[columnIndex] = newList.map(normalizeBlock);
+            
+            // Create new parent block with updated columns
+            const newParentBlock: ColumnsBlock = {
+                ...parentBlock,
+                columns: updatedColumns,
+            };
+            updated[parentIndex] = newParentBlock;
+            updateBlocks(updated);
+        }
+    };
+
+    const handleColumnChildSelect = (
+        childBlock: Block,
+        parentIndex: number,
+        columnIndex: number,
+        childIndex: number
+    ) => {
+        setOpendInput(childBlock);
+        setSelectedBlockLocation({
+            parentIndex,
+            columnIndex,
+            childIndex,
+        });
     };
 
     // ==================== Template Selection ====================
@@ -274,64 +256,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         // Check if this is a column child block
         if (selectedBlockLocation) {
             const { parentIndex, columnIndex, childIndex } = selectedBlockLocation;
-
-            // Special handling for layout changes on column blocks
-            if (key === 'layout') {
-                // This is the parent column block itself
-                updateBlock(parentIndex, { [key]: value } as any);
-
-                // Update columns array structure based on new layout
-                const updated = [...formFieldList];
-                const parentBlock = updated[parentIndex] as ColumnsBlock;
-
-                if (parentBlock.type === 'columns') {
-                    const currentColumns = parentBlock.columns || [];
-                    const currentLayout = parentBlock.layout || '2-50';
-                    const newLayout = value as typeof parentBlock.layout;
-
-                    // Get current and new column counts
-                    const currentColCount = getColumnCount(currentLayout);
-                    const newColCount = getColumnCount(newLayout);
-
-                    let newColumns: Block[][] = [];
-
-                    if (newColCount > currentColCount) {
-                        // Adding columns - preserve existing, add empty ones
-                        newColumns = [...currentColumns];
-                        for (let i = currentColCount; i < newColCount; i++) {
-                            newColumns.push([]);
-                        }
-                    } else if (newColCount < currentColCount) {
-                        // Removing columns - merge extra columns into the last one
-                        newColumns = currentColumns.slice(0, newColCount);
-                        const extraBlocks = currentColumns
-                            .slice(newColCount)
-                            .flat();
-                        if (extraBlocks.length > 0) {
-                            newColumns[newColCount - 1] = [
-                                ...newColumns[newColCount - 1],
-                                ...extraBlocks,
-                            ];
-                        }
-                    } else {
-                        // Same number of columns
-                        newColumns = currentColumns;
-                    }
-
-                    parentBlock.layout = newLayout;
-                    parentBlock.columns = newColumns;
-                    updated[parentIndex] = parentBlock;
-                    updateBlocks(updated);
-
-                    // Update opendInput with new layout
-                    if (opendInput?.id === parentBlock.id) {
-                        setOpendInput(parentBlock);
-                    }
-                }
-            } else {
-                // Regular column child block update
-                updateColumnBlock(parentIndex, columnIndex, childIndex, { [key]: value } as any);
-            }
+            updateColumnBlock(parentIndex, columnIndex, childIndex, { [key]: value } as any);
         } else {
             // Regular block update (not in a column)
             const index = formFieldList.findIndex(
@@ -377,92 +302,118 @@ const CustomForm: React.FC<CustomFormProps> = ({
                         newColumns = currentColumns;
                     }
 
-                    parentBlock.layout = newLayout;
-                    parentBlock.columns = newColumns;
-                    updated[index] = parentBlock;
+                    // Create updated column block
+                    const updatedBlock: ColumnsBlock = {
+                        ...parentBlock,
+                        layout: newLayout,
+                        columns: newColumns,
+                    };
+                    
+                    updated[index] = updatedBlock;
                     updateBlocks(updated);
 
                     // Update opendInput with new layout
-                    setOpendInput(parentBlock);
+                    setOpendInput(updatedBlock);
                 } else {
-                    // Regular update
+                    // Regular update for non-column blocks or non-layout changes
                     updateBlock(index, { [key]: value } as any);
                 }
             }
         }
     };
 
-    // Helper function to get column count based on layout
-    const getColumnCount = (layout: '1' | '2-50' | '2-66' | '3' | '4'): number => {
-        switch (layout) {
-            case '1': return 1;
-            case '2-50':
-            case '2-66': return 2;
-            case '3': return 3;
-            case '4': return 4;
-            default: return 2;
-        }
+    // ==================== Dynamic Count Calculation ====================
+
+    const getBlockCount = (blocks: typeof REGISTRATION_BLOCKS | typeof STORE_BLOCKS) => {
+        return blocks.length;
     };
 
     // ==================== Tabs Configuration ====================
 
     const tabs = [
-  {
-    id: 'blocks',
-    label: 'Blocks',
-    content: (
-      <>
-        <Elements label="General">
-          <ReactSortable
-            list={REGISTRATION_BLOCKS}
-            setList={() => {}}
-            sort={false}
-            group={{ name: 'registration', pull: 'clone', put: false }}
-          >
-            {REGISTRATION_BLOCKS.map((item) => (
-              <div key={item.value} className="elements-items">
-                <i className={item.icon} />
-                <p className="list-title">{item.label}</p>
-              </div>
-            ))}
-          </ReactSortable>
-        </Elements>
+        {
+            id: 'blocks',
+            label: 'Blocks',
+            content: (
+                <>
+                    <Elements 
+                        label="General" 
+                        selectOptions={REGISTRATION_BLOCKS}
+                        onClick={(value) => {
+                            if (proSettingChange()) return;
+                            const newField = createBlock(value as any);
+                            updateBlocks([...formFieldList, newField]);
+                            setOpendInput(null);
+                            setSelectedBlockLocation(null);
+                        }}
+                    >
+                        <ReactSortable
+                            list={REGISTRATION_BLOCKS}
+                            setList={() => {}}
+                            sort={false}
+                            group={{ name: 'registration', pull: 'clone', put: false }}
+                        >
+                            {REGISTRATION_BLOCKS.map((item) => (
+                                <div key={item.value} className="elements-items">
+                                    <i className={item.icon} />
+                                    <p className="list-title">{item.label}</p>
+                                </div>
+                            ))}
+                        </ReactSortable>
+                    </Elements>
 
-        <Elements label="Let’s get your store ready!">
-          <ReactSortable
-            list={STORE_BLOCKS}
-            setList={() => {}}
-            sort={false}
-            group={{ name: 'registration', pull: 'clone', put: false }}
-          >
-            {STORE_BLOCKS.map((item) => (
-              <div
-                key={item.value}
-                className="elements-items"
-                onClick={() => {
-                  if (proSettingChange()) return;
-                  const newField = createBlock(
-                    item.value as any,
-                    item.name,
-                    true,
-                    true
-                  );
-                  updateBlocks([...formFieldList, newField]);
-                  setOpendInput(null);
-                  setSelectedBlockLocation(null);
-                }}
-              >
-                <i className={item.icon} />
-                <p className="list-title">{item.label}</p>
-              </div>
-            ))}
-          </ReactSortable>
-        </Elements>
-      </>
-    ),
-  },
-];
-
+                    <Elements 
+                        label="Let's get your store ready!" 
+                        selectOptions={STORE_BLOCKS}
+                        onClick={(value) => {
+                            if (proSettingChange()) return;
+                            const storeBlock = STORE_BLOCKS.find(b => b.value === value);
+                            if (storeBlock) {
+                                const newField = createBlock(
+                                    storeBlock.value as any,
+                                    storeBlock.name,
+                                    true,
+                                    true
+                                );
+                                updateBlocks([...formFieldList, newField]);
+                                setOpendInput(null);
+                                setSelectedBlockLocation(null);
+                            }
+                        }}
+                    >
+                        <ReactSortable
+                            list={STORE_BLOCKS}
+                            setList={() => {}}
+                            sort={false}
+                            group={{ name: 'registration', pull: 'clone', put: false }}
+                        >
+                            {STORE_BLOCKS.map((item) => (
+                                <div
+                                    key={item.value}
+                                    className="elements-items"
+                                    onClick={() => {
+                                        if (proSettingChange()) return;
+                                        const newField = createBlock(
+                                            item.value as any,
+                                            item.name,
+                                            true,
+                                            true
+                                        );
+                                        updateBlocks([...formFieldList, newField]);
+                                        setOpendInput(null);
+                                        setSelectedBlockLocation(null);
+                                    }}
+                                >
+                                    <i className={item.icon} />
+                                    <p className="list-title">{item.label}</p>
+                                </div>
+                            ))}
+                        </ReactSortable>
+                    </Elements>
+                </>
+            ),
+        },
+    ];
 
     return (
         <div className="registration-from-wrapper">
@@ -520,8 +471,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                             <div className="field-wrapper" key={formField.id}>
                                 {formField.type === 'columns' ? (
                                     <div
-                                        className={`form-field ${opendInput?.id === formField.id ? 'active' : ''
-                                            }`}
+                                        className={`form-field ${opendInput?.id === formField.id ? 'active' : ''}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setOpendInput(formField);
@@ -543,7 +493,24 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             </span>
                                         </section>
                                         <section className="form-field-container-wrapper">
-                                            {renderColumnBlock(formField, index)}
+                                            <ColumnRenderer
+                                                block={formField as ColumnsBlock}
+                                                parentIndex={index}
+                                                openBlock={opendInput}
+                                                onSelectChild={handleColumnChildSelect}
+                                                onUpdateColumn={updateColumnLayout}
+                                                onUpdateChild={updateColumnBlock}
+                                                onDeleteChild={deleteColumnChild}
+                                                proSettingChange={() => proSettingChange()}
+                                                groupName="registration"
+                                                components={{
+                                                    BasicInput,
+                                                    MultipleOptions,
+                                                    TextArea,
+                                                    FileInput,
+                                                    AddressField,
+                                                }}
+                                            />
                                         </section>
                                     </div>
                                 ) : (

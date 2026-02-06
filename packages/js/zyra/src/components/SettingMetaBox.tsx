@@ -1,14 +1,14 @@
 /**
  * External dependencies
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
 import '../styles/web/SettingMetaBox.scss';
 import StyleControls from './StyleControl';
 import ToggleSetting from './ToggleSetting';
 
-type FormFieldValue = string | number | boolean | Option[];
+type FormFieldValue = string | number | boolean | Option[] | Record<string, any>;
 type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout' | 'text' | 'level' | 'src' | 'alt' | 'url';
 
 // Types
@@ -20,6 +20,7 @@ interface Option {
 }
 
 interface FormField {
+    id: number;
     type: string;
     name: string;
     placeholder?: string;
@@ -39,7 +40,7 @@ interface FormField {
     src?: string;
     alt?: string;
     url?: string;
-    style?: any;
+    style?: Record<string, any>;
     layout?: '1' | '2-50' | '2-66' | '3' | '4';
 }
 
@@ -166,7 +167,12 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
         if ( formField?.type === 'recaptcha' ) {
             onChange( 'disabled', isSiteKeyEmpty );
         }
-    }, [ isSiteKeyEmpty ] );
+    }, [ isSiteKeyEmpty, formField ] );
+
+    // Handle style changes with proper typing
+    const handleStyleChange = useCallback((newStyle: Record<string, any>) => {
+        onChange('style', newStyle);
+    }, [onChange]);
 
     // ---------------- Conditional fields ----------------
     const renderConditionalFields = () => {
@@ -224,7 +230,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                     <div onClick={(e) => e.stopPropagation()}>
                         <StyleControls
                             style={formField.style || {}}
-                            onChange={(style) => onChange('style', style)}
+                            onChange={handleStyleChange}
                             includeTextStyles={true}
                         />
                     </div>
@@ -291,7 +297,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                         <div onClick={(e) => e.stopPropagation()}>
                             <StyleControls
                                 style={formField.style || {}}
-                                onChange={(style) => onChange('style', style)}
+                                onChange={handleStyleChange}
                                 includeTextStyles={true}
                             />
                         </div>
@@ -345,7 +351,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                         <div onClick={(e) => e.stopPropagation()}>
                             <StyleControls
                                 style={formField.style || {}}
-                                onChange={(style) => onChange('style', style)}
+                                onChange={handleStyleChange}
                                 includeTextStyles={false}
                             />
                         </div>
@@ -399,7 +405,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                         <div onClick={(e) => e.stopPropagation()}>
                             <StyleControls
                                 style={formField.style || {}}
-                                onChange={(style) => onChange('style', style)}
+                                onChange={handleStyleChange}
                                 includeTextStyles={true}
                             />
                         </div>
@@ -411,7 +417,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                     <div onClick={(e) => e.stopPropagation()}>
                         <StyleControls
                             style={formField.style || {}}
-                            onChange={(style) => onChange('style', style)}
+                            onChange={handleStyleChange}
                             includeTextStyles={false}
                         />
                     </div>
@@ -458,7 +464,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                         <div onClick={(e) => e.stopPropagation()}>
                             <StyleControls
                                 style={formField.style || {}}
-                                onChange={(style) => onChange('style', style)}
+                                onChange={handleStyleChange}
                                 includeTextStyles={false}
                             />
                         </div>

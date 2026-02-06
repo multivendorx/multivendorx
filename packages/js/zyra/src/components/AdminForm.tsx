@@ -39,6 +39,7 @@ import ExpandablePanelGroup from './ExpandablePanelGroup';
 import SystemInfo from './SystemInfo';
 import { useModules } from '../contexts/ModuleContext';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
+import { createBlock } from '../components/block/blockFactory';
 import '../styles/web/AdminForm.scss';
 
 interface WPMediaAttachment {
@@ -1531,7 +1532,13 @@ const AdminForm: React.FC<AdminFormProps> = ({
                     );
                     break;
                 case 'email-template':
-                    input = <EmailTemplate name={inputField.key} />;
+                    input = (
+                        <EmailTemplate
+                            name={inputField.key}
+                            templates={inputField.templates}
+                            defaultTemplateId={inputField.defaultTemplateId}
+                        />
+                    );
                     break;
                 case 'form-builder':
                     input = (

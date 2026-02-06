@@ -26,7 +26,15 @@ export interface EmailTemplate {
     blocks: Block[];
 }
 
-const EMAIL_TEMPLATES: EmailTemplate[] = [
+interface EmailTemplateProps {
+    /** Array of email templates to display in the templates tab */
+    templates?: EmailTemplate[];
+    /** ID of the initially active template (optional) */
+    defaultTemplateId?: string;
+}
+
+// Default fallback templates when none are provided via props
+const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
     {
         id: 'order-placed',
         name: 'Template 1',
@@ -52,13 +60,32 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
     },
 ];
 
-const EmailTemplate: React.FC = () => {
-    const [templates, setTemplates] = useState<EmailTemplate[]>(EMAIL_TEMPLATES);
-    const [activeTemplateId, setActiveTemplateId] = useState<string>(EMAIL_TEMPLATES[0].id);
+const EmailTemplate: React.FC<EmailTemplateProps> = ({
+    templates: propTemplates,
+    defaultTemplateId,
+}) => {
+    // Use provided templates or fall back to defaults
+    const [templates, setTemplates] = useState<EmailTemplate[]>(
+        propTemplates || DEFAULT_EMAIL_TEMPLATES
+    );
+    
+    // Determine initial active template ID
+    const initialTemplateId = defaultTemplateId || 
+        (propTemplates?.[0]?.id || DEFAULT_EMAIL_TEMPLATES[0].id);
+    
+    const [activeTemplateId, setActiveTemplateId] = useState<string>(initialTemplateId);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
-    const [activeTab, setActiveTab] = useState('blocks');
+    
+    // Only show templates tab when templates are provided via props
+    const showTemplatesTab = propTemplates !== undefined;
+    const [activeTab, setActiveTab] = useState(showTemplatesTab ? 'blocks' : 'blocks');
 
-    const activeTemplate = templates.find((t) => t.id === activeTemplateId)!;
+    const activeTemplate = templates.find((t) => t.id === activeTemplateId);
+    
+    // Fallback in case active template is not found
+    if (!activeTemplate) {
+        return <div className="email-template-error">No active template found</div>;
+    }
 
     const updateBlocks = (blocks: Block[]) => {
         setTemplates((prev) =>
@@ -142,12 +169,22 @@ const EmailTemplate: React.FC = () => {
             {/* LEFT PANEL */}
             <div className="elements-wrapper">
                 <div className="tab-titles">
-                    <div className={`title ${activeTab === 'blocks' ? 'active' : ''}`} onClick={() => setActiveTab('blocks')}>
+                    <div 
+                        className={`title ${activeTab === 'blocks' ? 'active' : ''}`} 
+                        onClick={() => setActiveTab('blocks')}
+                    >
                         Blocks
                     </div>
-                    <div className={`title ${activeTab === 'templates' ? 'active' : ''}`} onClick={() => setActiveTab('templates')}>
-                        Templates
-                    </div>
+                    
+                    {/* Conditionally render Templates tab */}
+                    {showTemplatesTab && (
+                        <div 
+                            className={`title ${activeTab === 'templates' ? 'active' : ''}`} 
+                            onClick={() => setActiveTab('templates')}
+                        >
+                            Templates
+                        </div>
+                    )}
                 </div>
 
                 <div className="tab-contend">
@@ -169,7 +206,8 @@ const EmailTemplate: React.FC = () => {
                             </ReactSortable>
                         </aside>
                     )}
-                    {activeTab === 'templates' && (
+                    
+                    {activeTab === 'templates' && showTemplatesTab && (
                         <aside className="template-list">
                             {templates.map((tpl) => (
                                 <div
