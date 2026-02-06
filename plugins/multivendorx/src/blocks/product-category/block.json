@@ -1,0 +1,17 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/product-category",
+  "title": "Product Category(w)",
+  "category": "multivendorx",
+  "icon": "screenoptions",
+  "description": "Display product categories with alignment options",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "align": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "align": true
+  }
+}

@@ -206,3 +206,37 @@ registerBlockType('multivendorx/store-social-icons', {
         );
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+	if (!window.StoreInfo?.storeDetails) return;
+
+	const {
+		facebook,
+		twitter,
+		instagram,
+		youtube,
+		linkedin,
+		pinterest,
+	} = StoreInfo.storeDetails;
+
+	const map = {
+		facebook: facebook,
+		twitter: twitter,
+		instagram: instagram,
+		youtube: youtube,
+		linkedin: linkedin,
+		pinterest: pinterest,
+	};
+
+	Object.entries(map).forEach(([key, url]) => {
+		if (!url) return;
+
+		document
+			.querySelectorAll(`.multivendorx-social-${key}`)
+			.forEach(el => {
+				el.href = url;
+				el.target = '_blank';
+				el.rel = 'noopener noreferrer';
+			});
+	});
+});

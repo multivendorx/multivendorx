@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { Analytics, Card, Column, getApiLink, TableCard } from 'zyra';
 import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import axios from 'axios';
 import { formatCurrency, formatDate, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
+import Counter from '@/services/Counter';
 
 const StoreReport: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -18,32 +19,71 @@ const StoreReport: React.FC = () => {
 	const [pieData, setPieData] = useState<{ name: string; value: number }[]>(
 		[]
 	);
-	const Counter = ({ value, duration = 1200 }) => {
-		const [count, setCount] = React.useState(0);
+	useEffect(() => {
+		const fetchOverviewAndPie = async () => {
+			try {
+				const response = await axios.get(
+					getApiLink(appLocalizer, 'store'),
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+						params: {
+							page: 1,
+							row: 1000,
+						},
+					}
+				);
 
-		React.useEffect(() => {
-			let start = 0;
-			const end = parseInt(value);
-			if (start === end) {
-				return;
+				const items = response.data || [];
+
+				// 🔹 Pie data
+				const pieChartData = items
+					.filter(
+						(store: any) =>
+							store.commission &&
+							store.commission.commission_total > 0
+					)
+					.map((store: any) => ({
+						name: `${store.store_name} (${formatCurrency(
+							store.commission.commission_total
+						)})`,
+						value: store.commission.commission_total,
+					}));
+
+				setPieData(pieChartData);
+				setOverviewData([
+					{
+						id: 'all',
+						label: 'All Stores',
+						count: Number(response.headers['x-wp-total']) || 0,
+						icon: 'storefront blue',
+					},
+					{
+						id: 'active',
+						label: 'Active Stores',
+						count: Number(response.headers['x-wp-status-active']) || 0,
+						icon: 'store-policy green',
+					},
+					{
+						id: 'pending',
+						label: 'Pending Stores',
+						count: Number(response.headers['x-wp-status-pending']) || 0,
+						icon: 'pending yellow',
+					},
+					{
+						id: 'deactivated',
+						label: 'Deactivated Stores',
+						count: Number(response.headers['x-wp-status-deactivated']) || 0,
+						icon: 'close-delete red',
+					},
+				]);
+			} catch (e) {
+				setPieData([]);
+				setOverviewData([]);
 			}
+		};
 
-			const increment = end / (duration / 16);
-
-			const timer = setInterval(() => {
-				start += increment;
-				if (start >= end) {
-					start = end;
-					clearInterval(timer);
-				}
-				setCount(Math.floor(start));
-			}, 16);
-
-			return () => clearInterval(timer);
-		}, [value, duration]);
-
-		return <>{count}</>;
-	};
+		fetchOverviewAndPie();
+	}, []);
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -67,21 +107,6 @@ const StoreReport: React.FC = () => {
 			})
 			.then((response) => {
 				const items = response.data || [];
-
-				const pieChartData = items
-					.filter(
-						(store) =>
-							store.commission &&
-							store.commission.commission_total > 0
-					)
-					.map((store) => ({
-						name: `${store.store_name} (${formatCurrency(
-							store.commission.commission_total
-						)})`,
-						value: store.commission.commission_total,
-					}));
-				setPieData(pieChartData);
-
 				const ids = items
 					.filter((ann: any) => ann?.id != null)
 					.map((ann: any) => ann.id);
@@ -150,7 +175,7 @@ const StoreReport: React.FC = () => {
 							Number(store.commission?.total_order_amount || 0) -
 							Number(store.commission?.commission_total || 0),
 					}
-					
+
 				]);
 
 				setRows(mappedRows);
@@ -183,32 +208,6 @@ const StoreReport: React.FC = () => {
 					},
 				]);
 
-				setOverviewData([
-					{
-						id: 'all',
-						label: 'All Stores',
-						count: Number(response.headers['x-wp-total']) || 0,
-						icon: 'storefront blue',
-					},
-					{
-						id: 'active',
-						label: 'Active Stores',
-						count: Number(response.headers['x-wp-status-active']) || 0,
-						icon: 'store-policy green',
-					},
-					{
-						id: 'pending',
-						label: 'Pending Stores',
-						count: Number(response.headers['x-wp-status-pending']) || 0,
-						icon: 'pending yellow',
-					},
-					{
-						id: 'deactivated',
-						label: 'Deactivated Stores',
-						count: Number(response.headers['x-wp-status-deactivated']) || 0,
-						icon: 'close-delete red',
-					},
-				]);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})

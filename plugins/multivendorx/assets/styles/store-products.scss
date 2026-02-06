@@ -457,7 +457,7 @@
 
 
  //  review page start
- #multivendorx-vendor-reviews {
+ #multivendorx-store-reviews {
      .avg-rating-summary {
 
          .overall-wrapper {
@@ -556,7 +556,7 @@
          }
      }
 
-     #multivendorx-vendor-reviews-list {
+     #multivendorx-store-reviews-list {
          .multivendorx-review-list {
              margin: 0;
              list-style-type: none;
@@ -809,3 +809,18 @@
      display: flex;
      flex-wrap: wrap;
  }
+
+//  map style 
+#location-map {
+    height: 18.75rem;
+    width: 100%;
+    border-radius: 0.25rem;
+    margin-top: 0.5rem;
+    position: relative;
+
+    #store-location-autocomplete-container {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+    }
+}

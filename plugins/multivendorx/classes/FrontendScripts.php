@@ -205,16 +205,6 @@ class FrontendScripts {
 					'deps'    => array( 'jquery' ),
 					'version' => $version,
 				),
-                'multivendorx-marketplace-stores-script'   => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/marketplace-stores/index.js',
-					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
-					'version' => $version,
-				),
-                'multivendorx-stores-script'               => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/stores/index.js',
-					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
-					'version' => $version,
-				),
                 'multivendorx-contact-info-script'         => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/blocks/contact-info/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
@@ -255,6 +245,11 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
+                'multivendorx-store-address-script'          => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-address/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
                 'multivendorx-store-banner-script'         => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-banner/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
@@ -290,8 +285,33 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-policy-script'          => array(
+                'multivendorx-store-policy-script' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-policy/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-product-search-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/product-search/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-sale-product-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/sale-product/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-product-category-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/product-category/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-store-quick-info-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-quick-info/index.js',
+					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
+					'version' => $version,
+				),
+                'multivendorx-highlighted-store-products-script' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/highlighted-store-products/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
@@ -319,6 +339,11 @@ class FrontendScripts {
 				),
                 'multivendorx-store-product-style' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.css',
+					'deps'    => array(),
+					'version' => $version,
+				),
+                'multivendorx-common-block-style' => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-common-block.min.css',
 					'deps'    => array(),
 					'version' => $version,
 				),
@@ -587,8 +612,9 @@ class FrontendScripts {
                 'multivendorx-follow-store-frontend-script' => array(
 					'object_name' => 'followStoreFrontend',
 					'data'        => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                        'nonce'   => wp_create_nonce( 'follow_store_ajax_nonce' ),
+                        'apiUrl'                   => untrailingslashit( get_rest_url() ),
+                        'restUrl'                  => MultiVendorX()->rest_namespace,
+                        'nonce'                    => wp_create_nonce( 'wp_rest' ),
 					),
 				),
                 'multivendorx-store-shipping-frontend-script' => array(
@@ -770,6 +796,8 @@ class FrontendScripts {
                         'nonce'                    => wp_create_nonce( 'wp_rest' ),
                         'storeDetails'             => StoreUtil::get_specific_store_info(),
                         'settings_databases_value' => $settings_databases_value,
+                        'activeModules'            => MultiVendorX()->modules->get_active_modules(),
+                        'currentUserId'            => get_current_user_id(),
                     ),
                 ),
 			)

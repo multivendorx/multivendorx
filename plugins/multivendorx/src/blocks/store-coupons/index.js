@@ -9,8 +9,7 @@ registerBlockType('multivendorx/store-coupons', {
 	apiVersion: 2,
 	title: 'Store Coupons(w)',
 	icon: 'tickets-alt',
-	category: 'multivendorx-store-shop',
-
+	category: 'multivendorx',
 	attributes: {
 		store_id: {
 			type: 'string',

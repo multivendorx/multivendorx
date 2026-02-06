@@ -145,9 +145,11 @@ class Transactions extends \WP_REST_Controller {
             if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id ) ) {
                 return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id );
             }
-            if ( ! empty( $search_id ) && is_numeric( $search_id ) ) {
-                $args['id'] = intval( $search_id );
-
+            
+            if ( ! empty( $search_id ) ) {
+                // Force numeric-only search
+                $args['id'] = is_numeric( $search_id ) ? intval( $search_id ) : 0;
+            
                 unset( $args['start_date'], $args['end_date'] );
             }
 

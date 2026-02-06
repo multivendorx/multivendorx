@@ -61,10 +61,10 @@ module.exports = {
 		'block/setup-wizard/index': './src/blocks/setup-wizard/index.js',
 		'block/store-coupons/index': './src/blocks/store-coupons/index.js',
 		'block/store-products/index': './src/blocks/store-products/index.js',
-		'block/stores/index': './src/blocks/stores/index.js',
 		'block/contact-info/index': './src/blocks/contact-info/index.js',
 		'block/store-name/index': './src/blocks/store-name/index.js',
 		'block/store-email/index': './src/blocks/store-email/index.js',
+		'block/store-address/index': './src/blocks/store-address/index.js',
 		'block/store-buttons/index': './src/blocks/store-buttons/index.js',
 		'block/store-phone/index': './src/blocks/store-phone/index.js',
 		'block/store-logo/index': './src/blocks/store-logo/index.js',
@@ -73,6 +73,11 @@ module.exports = {
 		'block/store-description/index': './src/blocks/store-description/index.js',
 		'block/store-review/index': './src/blocks/store-review/index.js',
 		'block/store-policy/index': './src/blocks/store-policy/index.js',
+		'block/product-search/index': './src/blocks/product-search/index.js',
+		'block/highlighted-store-products/index': './src/blocks/highlighted-store-products/index.js',
+		'block/sale-product/index': './src/blocks/sale-product/index.js',
+		'block/product-category/index': './src/blocks/product-category/index.js',
+		'block/store-quick-info/index': './src/blocks/store-quick-info/index.js',
 	},
 
 	output: {

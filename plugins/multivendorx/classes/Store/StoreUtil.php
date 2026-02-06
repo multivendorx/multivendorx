@@ -675,6 +675,21 @@ class StoreUtil {
             'storeDescription' => $store_obj->get( 'description' ),
             'storeSlug'        => $store_slug,
             'storeId'          => $store_obj->get_id(),
+            'storeEmail'       => $store_obj->get_meta( 'primary_email' ),
+            'storePhone'       => $store_obj->get_meta( 'phone' ),
+            'facebook'         => $store_obj->get_meta( 'facebook' ),
+            'twitter'          => $store_obj->get_meta( 'twitter' ),
+            'linkedin'         => $store_obj->get_meta( 'linkedin' ),
+            'youtube'          => $store_obj->get_meta( 'youtube' ),
+            'instagram'        => $store_obj->get_meta( 'instagram' ),
+            'pinterest'        => $store_obj->get_meta( 'pinterest' ),
+            'storeLogo'        => $store_obj->get_meta( 'image' ),
+            'storeBanner'       => $store_obj->get_meta( 'banner' ),
+            'storePolicy'       => $store_obj->get_meta( 'store_policy' ),
+            'shippingPolicy'    => $store_obj->get_meta( 'shipping_policy' ),
+            'refundPolicy'      => $store_obj->get_meta( 'refund_policy' ),
+            'cancellationPolicy'=> $store_obj->get_meta( 'cancellation_policy' ),
+            'storeAddress'      => $store_obj->get_meta( 'address' ),
         );
 
         return $info;

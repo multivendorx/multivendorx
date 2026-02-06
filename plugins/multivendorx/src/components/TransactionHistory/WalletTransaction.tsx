@@ -368,8 +368,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	];
 
 	const downloadTransactionCSVByQuery = (query: QueryProps) => {
-		setIsLoading(true);
-
 		axios
 			.get(getApiLink(appLocalizer, 'transaction'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -410,7 +408,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					},
 				});
 			})
-			.finally(() => setIsLoading(false));
 	};
 	const mapTransactionsToCSV = (transactions: any[]) =>
 		transactions.map((txn) => ({
@@ -427,8 +424,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		}));
 	const downloadTransactionCSVByIds = (selectedIds: number[]) => {
 		if (!selectedIds.length) return;
-
-		setIsLoading(true);
 
 		axios
 			.get(getApiLink(appLocalizer, 'transaction'), {
@@ -457,7 +452,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					},
 				});
 			})
-			.finally(() => setIsLoading(false));
 	};
 
 	return (
