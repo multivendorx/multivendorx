@@ -70,7 +70,6 @@ const Qna: React.FC = () => {
 	};
 
 	const fetchQnaById = (id: number) => {
-		setIsLoading(true);
 
 		return axios
 			.get(getApiLink(appLocalizer, `qna/${id}`), {
@@ -91,7 +90,6 @@ const Qna: React.FC = () => {
 				setQna(item.question_text);
 				setAnswer(item.answer_text || '');
 			})
-			.finally(() => setIsLoading(false));
 	};
 
 	useEffect(() => {
