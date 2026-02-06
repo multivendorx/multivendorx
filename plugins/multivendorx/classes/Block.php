@@ -70,7 +70,6 @@ class Block {
             'store-description',
             'store-review',
             'store-policy',
-            'product-search',
             'highlighted-store-products',
             'sale-product',
             'product-category',
