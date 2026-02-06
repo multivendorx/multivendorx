@@ -23,7 +23,6 @@ type ToggleState = { [key: string]: boolean };
 const ProductReport: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState(0);
-	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState([]);
 
@@ -35,7 +34,8 @@ const ProductReport: React.FC = () => {
 	const [inStockCount, setInStockCount] = useState(0);
 	const [outOfStockCount, setOutOfStockCount] = useState(0);
 	const [onBackorderCount, setOnBackorderCount] = useState(0);
-
+	const [isDashboardLoading, setIsDashboardLoading] = useState(false);
+	const [isTableLoading, setIsTableLoading] = useState(false);
 
 	const toggleReviewedCard = (key: string) => {
 		setOpenReviewedCards((prev) => ({
@@ -45,8 +45,8 @@ const ProductReport: React.FC = () => {
 	};
 
 	useEffect(() => {
-		const fetchData = async () => {
-			setIsLoading(true);
+		const fetchChartData = async () => {
+			setIsDashboardLoading(true);
 			try {
 				axios
 					.get(getApiLink(appLocalizer, 'store'), {
@@ -60,12 +60,12 @@ const ProductReport: React.FC = () => {
 							}));
 
 						setStore(options);
-						setIsLoading(false);
+						setIsDashboardLoading(false);
 					})
 					.catch(() => {
 						setError(__('Failed to load stores', 'multivendorx'));
 						setStore([]);
-						setIsLoading(false);
+						setIsDashboardLoading(false);
 					});
 
 				// 3. Chart data
@@ -88,7 +88,7 @@ const ProductReport: React.FC = () => {
 							}));
 						setChartData(data);
 					})
-					.finally(() => { setIsLoading(false); })
+					.finally(() => { setIsDashboardLoading(false); })
 					.catch(() => setError('Failed to load product sales data'));
 
 				// 4. Top reviewed products
@@ -111,7 +111,7 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
-					.finally(() => { setIsLoading(false); })
+					.finally(() => { setIsDashboardLoading(false); })
 					.catch((error) =>
 						console.error(
 							'Error fetching top reviewed products:',
@@ -139,7 +139,7 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
-					.finally(() => { setIsLoading(false); })
+					.finally(() => { setIsDashboardLoading(false); })
 					.catch((error) =>
 						console.error(
 							'Error fetching top selling products:',
@@ -171,7 +171,7 @@ const ProductReport: React.FC = () => {
 								setOnBackorderCount(count);
 							}
 						})
-						.finally(() => { setIsLoading(false); })
+						.finally(() => { setIsDashboardLoading(false); })
 						.catch((error) =>
 							console.error(
 								`Error fetching ${status} count:`,
@@ -185,7 +185,7 @@ const ProductReport: React.FC = () => {
 			}
 		};
 
-		fetchData();
+		fetchChartData();
 	}, []);
 
 	const overview = [
@@ -225,14 +225,14 @@ const ProductReport: React.FC = () => {
 	];
 
 	const fetchData = (query: QueryProps) => {
-		setIsLoading(true);
+		setIsTableLoading(true);
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
 				params: {
-					page: query.page,
+					page: query.paged,
 					per_page: query.per_page,
 					search: query.searchValue,
 					orderby: query.orderby,
@@ -302,13 +302,13 @@ const ProductReport: React.FC = () => {
 				setTotalRows(
 					Number(response.headers['x-wp-total']) || 0
 				);
-				setIsLoading(false);
+				setIsTableLoading(false);
 			})
 			.catch((error) => {
 				console.error('Product fetch failed:', error);
 				setRows([]);
 				setTotalRows(0);
-				setIsLoading(false);
+				setIsTableLoading(false);
 			});
 	};
 
@@ -329,14 +329,12 @@ const ProductReport: React.FC = () => {
 		{
 			label: 'Download CSV',
 			icon: 'download',
-			onClickWithQuery: (query:QueryProps) => {
+			onClickWithQuery: (query: QueryProps) => {
 				downloadProductsCSV(query);
 			},
 		},
 	];
 	const downloadProductsCSV = (query: QueryProps) => {
-		setIsLoading(true);
-	
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
 				headers: {
@@ -362,7 +360,7 @@ const ProductReport: React.FC = () => {
 				const products = Array.isArray(response.data)
 					? response.data
 					: [];
-	
+
 				const csvData = products.map((product) => ({
 					ID: product.id,
 					Product: product.name,
@@ -380,7 +378,7 @@ const ProductReport: React.FC = () => {
 						? formatWcShortDate(product.date_created)
 						: '',
 				}));
-	
+
 				downloadCSV({
 					data: csvData,
 					filename: 'products-report.csv',
@@ -395,15 +393,12 @@ const ProductReport: React.FC = () => {
 						Date_Created: 'Date Created',
 					},
 				});
-	
-				setIsLoading(false);
 			})
 			.catch((error) => {
 				console.error('CSV download failed:', error);
-				setIsLoading(false);
 			});
 	};
-	
+
 	return (
 		<>
 			<Container>
@@ -417,7 +412,7 @@ const ProductReport: React.FC = () => {
 							number: <Counter value={item.count} />,
 							text: __(item.label, 'multivendorx'),
 						}))}
-						isLoading={isLoading}
+						isLoading={isDashboardLoading}
 					/>
 
 					<Card title="Revenue & Sales Comparison">
@@ -616,7 +611,7 @@ const ProductReport: React.FC = () => {
 				headers={headers}
 				rows={rows}
 				totalRows={totalRows}
-				isLoading={isLoading}
+				isLoading={isTableLoading}
 				onQueryUpdate={fetchData}
 				search={{ placeholder: 'Search Products...' }}
 				filters={filters}

@@ -235,8 +235,8 @@ class FrontendScripts {
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
-                'multivendorx-store-products-script'       => array(
-					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-products/index.js',
+                'multivendorx-store-tabs-script'       => array(
+					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'js/block/store-tabs/index.js',
 					'deps'    => array( 'jquery', 'jquery-blockui', 'wp-element', 'wp-i18n', 'wp-blocks' ),
 					'version' => $version,
 				),
@@ -337,7 +337,7 @@ class FrontendScripts {
 					'deps'    => array(),
 					'version' => $version,
 				),
-                'multivendorx-store-product-style' => array(
+                'multivendorx-store-tabs-style' => array(
 					'src'     => MultiVendorX()->plugin_url . self::get_build_path_name() . 'styles/' . MULTIVENDORX_PLUGIN_SLUG . '-store-products.min.css',
 					'deps'    => array(),
 					'version' => $version,
