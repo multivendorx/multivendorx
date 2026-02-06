@@ -9,7 +9,6 @@ class Widgets {
 
     public function __construct() {
         add_action( 'widgets_init', array( $this, 'register_sidebar' ) );
-        add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
     }
 
     public function register_sidebar() {
@@ -24,17 +23,5 @@ class Widgets {
 				'after_title'   => '</h3>',
             )
         );
-    }
-
-    public function frontend_scripts() {
-        // FrontendScripts::load_scripts();
-        // FrontendScripts::enqueue_script('multivendorx-store-products-script');
-        // FrontendScripts::enqueue_script('multivendorx-store-provider-script');
-        // FrontendScripts::localize_scripts('multivendorx-store-provider-script');
-        // FrontendScripts::enqueue_script('multivendorx-store-coupons-script');
-        // FrontendScripts::localize_scripts('multivendorx-marketplace-coupons-script');
-        // FrontendScripts::enqueue_script('multivendorx-stores-script');
-        // FrontendScripts::enqueue_script('multivendorx-stores-script');
-        // FrontendScripts::localize_scripts('multivendorx-stores-script');
     }
 }
