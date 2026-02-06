@@ -1,7 +1,7 @@
 {
     "apiVersion": 2,
-	"name": "multivendorx/store-products",
-	"title": "Store Products(widgets)",
+	"name": "multivendorx/store-tabs",
+	"title": "Store Tabs(widgets)",
 	"category": "multivendorx-store-shop",
 	"icon": "products",
     "editorScript": "file:./index.js",

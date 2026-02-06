@@ -60,7 +60,7 @@ module.exports = {
 		'block/marketplace-coupons/index': './src/blocks/marketplace-coupons/index.js',
 		'block/setup-wizard/index': './src/blocks/setup-wizard/index.js',
 		'block/store-coupons/index': './src/blocks/store-coupons/index.js',
-		'block/store-products/index': './src/blocks/store-products/index.js',
+		'block/store-tabs/index': './src/blocks/store-tabs/index.js',
 		'block/contact-info/index': './src/blocks/contact-info/index.js',
 		'block/store-name/index': './src/blocks/store-name/index.js',
 		'block/store-email/index': './src/blocks/store-email/index.js',
@@ -78,6 +78,7 @@ module.exports = {
 		'block/sale-product/index': './src/blocks/sale-product/index.js',
 		'block/product-category/index': './src/blocks/product-category/index.js',
 		'block/store-quick-info/index': './src/blocks/store-quick-info/index.js',
+		'block/store-sidebar/index': './src/blocks/store-sidebar/index.js',
 	},
 
 	output: {

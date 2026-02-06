@@ -71,19 +71,19 @@ export default {
 				{
 					key: 'no-sidebar',
 					label: __('No Sidebar', 'multivendorx'),
-					value: 'No Sidebar',
+					value: 'no',
 					icon: "adminfont-right-sidebar"
 				},
 				{
 					key: 'left',
 					label: __('Left Sidebar', 'multivendorx'),
-					value: 'Left Sidebar',
+					value: 'left',
 					icon: "adminfont-left-sidebar"
 				},
 				{
 					key: 'right',
 					label: __('Right Sidebar', 'multivendorx'),
-					value: 'Right Sidebar',
+					value: 'right',
 					icon: "adminfont-no-sidebar"
 				}
 			]
