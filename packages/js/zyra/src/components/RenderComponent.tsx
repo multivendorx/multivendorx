@@ -32,6 +32,8 @@ interface InputField {
     dependentSetting?: string;
     preText?: string | ReactNode;
     postText?: string | ReactNode;
+    beforeElement?: string | ReactNode;
+    afterElement?: string | ReactNode;
 }
 
 interface SettingsType {
@@ -296,8 +298,8 @@ const RenderComponent: React.FC<RenderProps> = ({
     const VALUE_ADDON_TYPES = ['select', 'text'];
 
     const isCompositeField = (field: InputField) =>
-        VALUE_ADDON_TYPES.includes(field.preText?.type) ||
-        VALUE_ADDON_TYPES.includes(field.postText?.type);
+        VALUE_ADDON_TYPES.includes(field.beforeElement?.type) ||
+        VALUE_ADDON_TYPES.includes(field.afterElement?.type);
 
     // const renderFieldInternal = (
     //     field: InputField,
@@ -423,9 +425,9 @@ const RenderComponent: React.FC<RenderProps> = ({
 console.log('post', inputField.postText)
             const input = (
                 <>
-                    {inputField.preText &&
+                    {inputField.beforeElement &&
                         renderFieldInternal(
-                            inputField.preText,
+                            inputField.beforeElement,
                             inputField,
                             value,
                             handleChange,
@@ -442,9 +444,9 @@ console.log('post', inputField.postText)
                         appLocalizer
                     )}
 
-                    {inputField.postText &&
+                    {inputField.afterElement &&
                         renderFieldInternal(
-                            inputField.postText,
+                            inputField.afterElement,
                             inputField,
                             value,
                             handleChange,
