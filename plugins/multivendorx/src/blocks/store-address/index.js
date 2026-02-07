@@ -6,6 +6,12 @@ import {
     AlignmentToolbar
 } from '@wordpress/block-editor';
 
+const LocationIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+    </svg>
+);
+
 registerBlockType('multivendorx/store-address', {
 
     edit: ({ attributes, setAttributes }) => {
@@ -17,6 +23,7 @@ registerBlockType('multivendorx/store-address', {
                 gap: '8px'
             }
         });
+        const showIcon = attributes.showIcon !== false;
 
         return (
             <>
@@ -30,14 +37,14 @@ registerBlockType('multivendorx/store-address', {
                 </BlockControls>
 
                 <div {...blockProps}>
-                    <span className="dashicons dashicons-location"></span>
-                    <span>Kolkata</span>
+                    {showIcon && <LocationIcon />}
+                    <span>{__('Kolkata, India', 'multivendorx')}</span>
                 </div>
             </>
         );
     },
 
-    save: () => {
+    save: ({ attributes }) => {
         const blockProps = useBlockProps.save({
             style: {
                 display: 'flex',
@@ -45,10 +52,11 @@ registerBlockType('multivendorx/store-address', {
                 gap: '8px'
             }
         });
+        const showIcon = attributes.showIcon !== false;
 
         return (
             <div {...blockProps}>
-                <span className="dashicons dashicons-location"></span>
+                {showIcon && <LocationIcon />}
                 <div className="multivendorx-store-address-block"></div>
             </div>
         );
@@ -56,10 +64,9 @@ registerBlockType('multivendorx/store-address', {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-	document
-		.querySelectorAll('.multivendorx-store-address-block')
-		.forEach(el => {
-			el.textContent = StoreInfo.storeDetails.storeAddress;
-		});
+    document
+        .querySelectorAll('.multivendorx-store-address-block')
+        .forEach(el => {
+            el.textContent = StoreInfo.storeDetails.storeAddress;
+        });
 });
-

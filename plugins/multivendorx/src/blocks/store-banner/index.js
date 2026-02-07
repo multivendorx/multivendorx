@@ -3,7 +3,8 @@ import { __ } from '@wordpress/i18n';
 import { 
     useBlockProps,
     InnerBlocks,
-    InspectorControls
+    InspectorControls,
+    store as blockEditorStore
 } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -11,6 +12,7 @@ import {
     ColorPalette,
     SelectControl
 } from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
 
 // Template 1: Store Header
 const TEMPLATE_1 = [
@@ -32,7 +34,8 @@ const TEMPLATE_1 = [
         }
     }, [
         ['multivendorx/store-email', {}],
-        ['multivendorx/store-phone', {}]
+        ['multivendorx/store-phone', {}],
+        ['multivendorx/store-address', {}]
     ]],
     ['multivendorx/store-description', {}],
     ['core/spacer', { height: '20px' }],
@@ -109,6 +112,7 @@ const ALLOWED_BLOCKS = [
     'multivendorx/store-name',
     'multivendorx/store-email',
     'multivendorx/store-phone',
+    'multivendorx/store-address',
     'multivendorx/store-social-icons',
     'multivendorx/store-buttons',
     'multivendorx/store-logo'
@@ -118,7 +122,7 @@ registerBlockType('multivendorx/store-banner', {
     attributes: {
         height: {
             type: 'string',
-            default: '400px'
+            default: 'auto'
         },
         minHeight: {
             type: 'string',
@@ -165,6 +169,11 @@ registerBlockType('multivendorx/store-banner', {
             template
         } = attributes;
 
+        const { replaceInnerBlocks } = useDispatch(blockEditorStore);
+        const { getBlocks } = useSelect(select => ({
+            getBlocks: select(blockEditorStore).getBlocks,
+        }));
+
         const bannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
 
         const blockProps = useBlockProps({
@@ -200,8 +209,6 @@ registerBlockType('multivendorx/store-banner', {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: justifyContent || 'center',
-            alignItems: alignItems || 'center',
             padding: '40px',
             color: contentColor
         };
@@ -211,20 +218,11 @@ registerBlockType('multivendorx/store-banner', {
 
         // Function to handle template change
         const handleTemplateChange = (newTemplate) => {
-            // First set the template attribute
+            // Set the template attribute
             setAttributes({ template: newTemplate });
             
-            // Get the InnerBlocks
-            const innerBlocks = wp.data.select('core/block-editor').getBlocks(clientId);
-            
-            // If there are existing blocks, replace them with new template
-            if (innerBlocks.length > 0) {
-                // Replace blocks with the new template
-                wp.data.dispatch('core/block-editor').replaceInnerBlocks(
-                    clientId,
-                    TEMPLATES[newTemplate] || TEMPLATE_1
-                );
-            }
+            // Replace inner blocks with new template
+            replaceInnerBlocks(clientId, TEMPLATES[newTemplate] || TEMPLATE_1);
         };
 
         return (
@@ -335,14 +333,12 @@ registerBlockType('multivendorx/store-banner', {
                     <div style={contentContainerStyle}>
                         <InnerBlocks 
                             template={currentTemplate}
-                            templateLock={template === 'empty' ? false : 'all'}
                             allowedBlocks={ALLOWED_BLOCKS}
                             orientation="vertical"
                             renderAppender={template === 'empty' ? InnerBlocks.ButtonBlockAppender : false}
                         />
                     </div>
                 </div>
-                
             </>
         );
     },
@@ -354,11 +350,8 @@ registerBlockType('multivendorx/store-banner', {
             overlayColor, 
             overlayOpacity, 
             contentColor,
-            contentPosition,
             template
         } = attributes;
-    
-        const [justifyContent, alignItems] = contentPosition.split(' ');
         
         const blockProps = useBlockProps.save({
             className: `multivendorx-store-banner template-${template}`,
@@ -387,8 +380,6 @@ registerBlockType('multivendorx/store-banner', {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: justifyContent || 'center',
-            alignItems: alignItems || 'center',
             padding: '40px',
             color: contentColor
         };
@@ -403,18 +394,4 @@ registerBlockType('multivendorx/store-banner', {
         );
     }
     
-});
-document.addEventListener('DOMContentLoaded', () => {
-    const bannerUrl = StoreInfo?.storeDetails?.storeBanner || '';
-
-    document
-        .querySelectorAll('.multivendorx-store-banner')
-        .forEach(banner => {
-            if (bannerUrl) {
-                banner.style.backgroundImage = `url(${bannerUrl})`;
-                banner.style.backgroundSize = 'cover';
-                banner.style.backgroundPosition = 'center';
-                banner.style.backgroundRepeat = 'no-repeat';
-            }
-        });
 });

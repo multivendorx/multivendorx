@@ -40,7 +40,7 @@ const ProductList: React.FC<ProductListProps> = ({
 				const params: any = {
 					per_page: limit,
 					meta_key: 'multivendorx_store_id',
-					value:StoreInfo.storeDetails.storeId,
+					value: StoreInfo.storeDetails.storeId,
 				};
 
 				// Adjust API params based on productType
@@ -78,28 +78,46 @@ const ProductList: React.FC<ProductListProps> = ({
 
 	// Render products using the WooCommerce ul/li design
 	return (
-		<div className="woocommerce">
+		<>
 			{loading ? (
 				<p>Loading products...</p>
 			) : (
-				<ul className="top-products-inner">
+				<div className="top-products-inner">
 					{products.map((product) => (
-						<li key={product.id} className="wc-block-product product type-product status-publish instock">
+						<div className="product-item" key={product.id}>
 							<a href={product.permalink} className="product-card">
-								<img
-									src={
-										product.images?.[0]?.src ||
-										'http://localhost:8889/wp-content/uploads/woocommerce-placeholder.webp'
-									}
-									alt={product.name}
-								/>
-								<h2 className="has-text-align-center">{product.name}</h2>
+								<div className="product-image">
+									<div className="image-placeholder">
+										<img
+											src={
+												product.images?.[0]?.src ||
+												'http://localhost:8889/wp-content/uploads/woocommerce-placeholder.webp'
+											}
+											alt={product.name}
+										/>
+									</div>
+								</div>
+								<div className="product-content">
+									<h3 className="product-title">
+										{product.name}
+									</h3>
+									<div className="product-price">
+										{product.salePrice ? (
+											<>
+												<del className="regular-price">{product.price}</del>
+												<div className="sale-price">{product.salePrice}</div>
+											</>
+										) : (
+											<span className="regular-price">{product.price}</span>
+										)}
+									</div>
+								</div>
 							</a>
-						</li>
+						</div>
 					))}
-				</ul>
+				</div>
 			)}
-		</div>
+		</>
 	);
 };
 

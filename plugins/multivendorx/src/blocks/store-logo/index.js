@@ -171,20 +171,10 @@ registerBlockType('multivendorx/store-logo', {
                 </InspectorControls>
 
                 <div {...blockProps}>
-                    <div style={{
+                    <div className="placeholder" style={{
                         width: `${imgWidth}px`,
-                        height: `${imgHeight}px`,
-                        position: 'relative',
-                        border: '1px dashed #ccc',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#5007aa',
-                        margin: '0 auto'
-                    }}>
-                        <span style={{ color: '#666', fontSize: '12px' }}>
-                            {__('Logo', 'multivendorx')}
-                        </span>
+                        height: `${imgHeight}px`,}}>
+                            {__('SN', 'multivendorx')}
                         {dimRatio > 0 && (overlayColor || customOverlayColor) && (
                             <div style={overlayStyle}></div>
                         )}
@@ -283,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.alt = storeName;
                 img.style.width = '100%';
                 img.style.height = '100%';
-                img.style.objectFit = 'contain'; // or 'cover'
+                img.style.objectFit = 'cover'; 
                 img.style.position = 'absolute';
                 img.style.top = '0';
                 img.style.left = '0';
@@ -293,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             container.innerHTML = `
-                <div>
+                <div class="placeholder">
                     ${fallbackText}
                 </div>
             `;

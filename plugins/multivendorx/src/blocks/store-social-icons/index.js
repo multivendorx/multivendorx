@@ -9,7 +9,9 @@ import {
 import {
     PanelBody,
     RangeControl,
-    ColorPalette
+    ColorPalette,
+    ToggleControl,
+    BaseControl
 } from '@wordpress/components';
 
 const FacebookIcon = () => (
@@ -42,7 +44,6 @@ const LinkedInIcon = () => (
     </svg>
 );
 
-// Icon background colors for each platform
 const iconColors = {
     facebook: '#1877f2',
     twitter: '#1da1f2',
@@ -51,9 +52,10 @@ const iconColors = {
     linkedin: '#0077b5'
 };
 
+
 registerBlockType('multivendorx/store-social-icons', {
     edit: ({ attributes, setAttributes }) => {
-        const { iconSize, iconColor, iconGap, align } = attributes;
+        const { iconSize, iconColor, iconGap, align, useThemeColors = true } = attributes;
         
         // Set block props with alignment
         const blockProps = useBlockProps({
@@ -66,16 +68,23 @@ registerBlockType('multivendorx/store-social-icons', {
             }
         });
 
-        // Common icon container style
-        const iconContainerStyle = (bgColor) => ({
+        // Get background color based on settings
+        const getBackgroundColor = (platform) => {
+            if (useThemeColors && iconColors[platform]) {
+                return iconColors[platform];
+            }
+            return iconColor || '#666666';
+        };
+
+        const iconContainerStyle = (platform) => ({
             width: `${iconSize}px`,
             height: `${iconSize}px`,
             borderRadius: '50%',
-            backgroundColor: bgColor,
+            backgroundColor: getBackgroundColor(platform),
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: iconColor,
+            color: '#ffffff', 
             padding: '0.4%'
         });
 
@@ -108,39 +117,53 @@ registerBlockType('multivendorx/store-social-icons', {
                             step={5}
                         />
                         
-                        <div style={{ marginTop: '20px' }}>
-                            <label>{__('Icon Color', 'multivendorx')}</label>
-                            <ColorPalette
-                                value={iconColor}
-                                onChange={(color) => setAttributes({ iconColor: color })}
-                            />
-                        </div>
+                        <ToggleControl
+                            label={__('Use Theme Colors', 'multivendorx')}
+                            checked={useThemeColors}
+                            onChange={() => setAttributes({ useThemeColors: !useThemeColors })}
+                            help={useThemeColors ? 
+                                __('Using platform-specific colors', 'multivendorx') : 
+                                __('Using custom color', 'multivendorx')}
+                        />
+                        
+                        {!useThemeColors && (
+                            <BaseControl>
+                                <BaseControl.VisualLabel>
+                                    {__('Custom Color', 'multivendorx')}
+                                </BaseControl.VisualLabel>
+                                <ColorPalette
+                                    value={iconColor}
+                                    onChange={(color) => setAttributes({ iconColor: color })}
+                                    clearable={false}
+                                />
+                            </BaseControl>
+                        )}
                     </PanelBody>
                 </InspectorControls>
 
                 <div {...blockProps}>
                     {/* Facebook Icon */}
-                    <div style={iconContainerStyle(iconColors.facebook)}>
+                    <div style={iconContainerStyle('facebook')}>
                         <FacebookIcon />
                     </div>
                     
                     {/* Twitter Icon */}
-                    <div style={iconContainerStyle(iconColors.twitter)}>
+                    <div style={iconContainerStyle('twitter')}>
                         <TwitterIcon />
                     </div>
                     
                     {/* Instagram Icon */}
-                    <div style={iconContainerStyle(iconColors.instagram)}>
+                    <div style={iconContainerStyle('instagram')}>
                         <InstagramIcon />
                     </div>
                     
                     {/* YouTube Icon */}
-                    <div style={iconContainerStyle(iconColors.youtube)}>
+                    <div style={iconContainerStyle('youtube')}>
                         <YouTubeIcon />
                     </div>
                     
                     {/* LinkedIn Icon */}
-                    <div style={iconContainerStyle(iconColors.linkedin)}>
+                    <div style={iconContainerStyle('linkedin')}>
                         <LinkedInIcon />
                     </div>
                 </div>
@@ -149,7 +172,7 @@ registerBlockType('multivendorx/store-social-icons', {
     },
 
     save: ({ attributes }) => {
-        const { iconSize, iconColor, iconGap, align } = attributes;
+        const { iconSize, iconColor, iconGap, align, useThemeColors = true } = attributes;
         
         // Set block props with alignment
         const blockProps = useBlockProps.save({
@@ -162,15 +185,23 @@ registerBlockType('multivendorx/store-social-icons', {
             }
         });
 
-        const iconLinkStyle = (bgColor) => ({
+        // Get background color based on settings
+        const getBackgroundColor = (platform) => {
+            if (useThemeColors && iconColors[platform]) {
+                return iconColors[platform];
+            }
+            return iconColor || '#666666'; 
+        };
+
+        const iconLinkStyle = (platform) => ({
             width: `${iconSize}px`,
             height: `${iconSize}px`,
             borderRadius: '50%',
-            backgroundColor: bgColor,
+            backgroundColor: getBackgroundColor(platform),
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: iconColor,
+            color: '#ffffff',
             textDecoration: 'none',
             transition: 'all 0.3s ease',
             padding: '0.4%'
@@ -179,27 +210,27 @@ registerBlockType('multivendorx/store-social-icons', {
         return (
             <div {...blockProps}>
                 {/* Facebook Icon */}
-                <a href="#" className="multivendorx-social-icon multivendorx-social-facebook" style={iconLinkStyle(iconColors.facebook)}>
+                <a href="#" className="multivendorx-social-icon multivendorx-social-facebook" style={iconLinkStyle('facebook')}>
                     <FacebookIcon />
                 </a>
                 
                 {/* Twitter Icon */}
-                <a href="#" className="multivendorx-social-icon multivendorx-social-twitter" style={iconLinkStyle(iconColors.twitter)}>
+                <a href="#" className="multivendorx-social-icon multivendorx-social-twitter" style={iconLinkStyle('twitter')}>
                     <TwitterIcon />
                 </a>
                 
                 {/* Instagram Icon */}
-                <a href="#" className="multivendorx-social-icon multivendorx-social-instagram" style={iconLinkStyle(iconColors.instagram)}>
+                <a href="#" className="multivendorx-social-icon multivendorx-social-instagram" style={iconLinkStyle('instagram')}>
                     <InstagramIcon />
                 </a>
                 
                 {/* YouTube Icon */}
-                <a href="#" className="multivendorx-social-icon multivendorx-social-youtube" style={iconLinkStyle(iconColors.youtube)}>
+                <a href="#" className="multivendorx-social-icon multivendorx-social-youtube" style={iconLinkStyle('youtube')}>
                     <YouTubeIcon />
                 </a>
                 
                 {/* LinkedIn Icon */}
-                <a href="#" className="multivendorx-social-icon multivendorx-social-linkedin" style={iconLinkStyle(iconColors.linkedin)}>
+                <a href="#" className="multivendorx-social-icon multivendorx-social-linkedin" style={iconLinkStyle('linkedin')}>
                     <LinkedInIcon />
                 </a>
             </div>
