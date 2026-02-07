@@ -5,16 +5,6 @@ import axios from 'axios';
 import { FieldComponent } from './types';
 import { FIELD_REGISTRY } from './FieldRegistry';
 
-interface ClickableItem {
-    name: string;
-    url?: string;
-}
-
-interface ButtonItem {
-    label: string;
-    url?: string;
-}
-
 interface AppLocalizer {
     khali_dabba?: boolean;
     site_url?: string;
@@ -67,8 +57,6 @@ interface PanelFormField {
     hideCheckbox?: boolean;
     btnClass?: string;
     selectType?: string;
-    items?: ClickableItem[];
-    button?: ButtonItem;
     edit?: boolean;
     iconEnable?: boolean;
     iconOptions?: string[];
@@ -629,17 +617,24 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
         methodId: string, 
         field: PanelFormField
         ): JSX.Element | null => {
+
         const fieldComponent = FIELD_REGISTRY[field.type];
         if (!fieldComponent) return null;
 
         const Render = fieldComponent.render;
         const fieldValue = value[methodId]?.[field.key];
+            
+        const handleInternalChange = (val: any) => {
+            handleInputChange(methodId, field.key, val);
+            return;            
+        };
 
         return (
             <Render
                 field={field}
                 value={fieldValue}
-                onChange={handleInputChange}
+                onChange={handleInternalChange}
+                canAccess={canAccess}
                 appLocalizer={appLocalizer}
             />
         );

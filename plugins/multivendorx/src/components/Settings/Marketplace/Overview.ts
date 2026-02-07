@@ -96,7 +96,7 @@ export default {
 		},
 		{
 			key: 'marketplace_model',
-			type: 'multiselect',
+			type: 'multi-select',
 			label: __(
 				'What kind of marketplace you are building',
 				'multivendorx'
@@ -164,6 +164,32 @@ export default {
 			},
 		},
 		{
+			key: 'withdraw_type',
+			type: 'setting-toggle',
+			label: __('Withdrawal request approval', 'multivendorx'),
+			settingDescription: __(
+				'Control how withdrawl requests are handled when stores initiate withdrawals manually.',
+				'multivendorx'
+			),
+			desc: __(
+				"<strong>Depending on your chosen approval mode:</strong><br><br><strong>Automatic</strong><br> If the payment method is <em>Stripe Connect</em> or <em>PayPal Payout</em>, the withdrawal is automatically approved and transferred to the store's account as soon as it's requested. For all other payment methods, withdrawals must be processed manually.<br><strong>Example:</strong>A store's $150 commission becomes available after a 7-day clearance period. Once they request a withdrawal, Stripe instantly transfers the amount to their connected account.<br><br><strong>Manual</strong><br>The store submits a withdrawal request, and the admin must manually review and disburse the funds.<br><strong>Example:</strong> The same $150 request appears in the admin dashboard. The admin verifies the transaction and manually releases the payment.",
+				'multivendorx'
+			),
+
+			options: [
+				{
+					key: 'automatic',
+					label: __('Automatic', 'multivendorx'),
+					value: 'automatic',
+				},
+				{
+					key: 'manual',
+					label: __('Manual', 'multivendorx'),
+					value: 'manual',
+				},
+			],
+		},
+		{
 			key: 'refund_reasons',
 			type: 'expandable-panel',
 			label: __('Refund reasons', 'multivendorx'),
@@ -225,10 +251,38 @@ export default {
 			},
 			modal: [],
 			proSetting: false,
-			moduleEnabled: 'store-review',
 		},
-		
-
+		{
+			key: 'shipping_modules',
+			type: 'expandable-panel',
+			label: __('Shipping methods available to stores ', 'multivendorx'),
+			desc: __(
+				'See which shipping options your stores can offer to customers. Each method determines how shipping costs are calculated.',
+				'multivendorx'
+			),
+			modal: [
+				{
+					id: 'zone-wise-shipping',
+					icon: 'adminfont-zone-wise-shipping',
+					label: 'Zone based shipping',
+					disableBtn: true,
+					desc: 'Stores can configure multiple shipping zones.',
+					formFields: [
+						{
+							key: 'zones',
+							type: 'clickable-list',
+							label: 'Shipping Zones',
+							desc: 'Create shipping zones in WooCommerce → Shipping using the ‘Add Zone’ button. Assign the shipping method ‘Store shipping’ to let each store set its own shipping costs for that zone.',
+							items: appLocalizer.all_zones,
+							button: {
+								label: 'Add New Zone',
+								url: `${appLocalizer.admin_url}admin.php?page=wc-settings&tab=shipping`,
+							},
+						},
+					],
+				},
+			]
+		}
 		// {
 		// 	key: 'section',
 		// 	type: 'section',

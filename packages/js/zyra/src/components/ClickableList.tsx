@@ -3,7 +3,7 @@ import { MouseEvent, FC } from 'react';
 
 // Internal Dependencies
 import { FieldComponent } from './types';
-import AdminButtonUI from './UI/AdminButton';
+import { AdminButtonUI } from './UI/AdminButton';
 
 
 interface ClickableItem {
@@ -65,7 +65,6 @@ export const ClickableListUI: FC<ClickableListProps> = ({
                             text: button.label,
                             className: 'purple',
                             onClick: (e) => {
-                                e.preventDefault();
                                 onButtonClick?.(e);
                             },
                         },
@@ -85,7 +84,7 @@ export const ClickableListUI: FC<ClickableListProps> = ({
 
 
 const ClickableList: FieldComponent = {
-    render: ({ field, canAccess }) => (
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
         <ClickableListUI
             wrapperClass={field.wrapperClass}
             items={field.items}

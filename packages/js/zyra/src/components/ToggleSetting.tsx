@@ -18,7 +18,6 @@ interface Option {
 }
 
 interface ToggleSettingProps {
-    description?: string;
     options: Option[];
     wrapperClass?: string;
     descClass?: string;
@@ -33,7 +32,6 @@ interface ToggleSettingProps {
 }
 
 const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
-    description,
     options,
     wrapperClass,
     value,
@@ -134,12 +132,6 @@ const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
                     } ) }
                 </div>
             </div>
-            { description && (
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={ { __html: description } }
-                ></p>
-            ) }
         </>
     );
 };
@@ -148,7 +140,6 @@ const ToggleSetting: FieldComponent = {
     render: ({ field, value, onChange, canAccess, appLocalizer }) => (
         <ToggleSettingUI
             wrapperClass={field.wrapperClass}
-            description={field.desc}
             key={field.key}
             iconEnable={field.iconEnable} // If true, will display the toggle value as an icon
             custom={field.custom}

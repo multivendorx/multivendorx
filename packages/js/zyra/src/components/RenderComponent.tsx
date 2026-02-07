@@ -349,7 +349,6 @@ const RenderComponent: React.FC<RenderProps> = ({
         const Render = fieldComponent.render;
 
         const handleInternalChange = (val: any) => {
-            console.log(field.key, val);
             if (field.type == 'button') {
                 onChange(val.key, val.value);
                 return;
@@ -392,8 +391,6 @@ const RenderComponent: React.FC<RenderProps> = ({
         return component.validate(field, value ?? {});
     };
 
-    {console.log('errors', errors)}
-
     const renderForm = () => {
         return modal.map((inputField: InputField) => {
             // const value: unknown = setting[inputField.key] ?? '';
@@ -422,7 +419,7 @@ const RenderComponent: React.FC<RenderProps> = ({
             );
 
             // const input = renderFieldInternal(inputField, value, handleChange, access );
-console.log('post', inputField.postText)
+
             const input = (
                 <>
                     {inputField.beforeElement &&

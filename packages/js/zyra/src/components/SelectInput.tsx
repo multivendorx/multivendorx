@@ -28,7 +28,7 @@ interface SelectInputProps {
     options: SelectOptions[];
     value?: string | string[];
     inputClass?: string;
-    type?: 'single-select' | 'multiselect';
+    type?: 'single-select' | 'multi-select';
     onChange?: (
         newValue: SingleValue<SelectOptions> | MultiValue<SelectOptions>,
         actionMeta: ActionMeta<SelectOptions>
@@ -204,7 +204,7 @@ const SelectInputUI: React.FC<SelectInputProps> = ({
                     }}
                     styles={customStyles}
                     // closeMenuOnSelect={true}
-                    isMulti={type === 'multiselect'}
+                    isMulti={type === 'multi-select'}
                     components={{ MenuList: CustomMenuList, NoOptionsMessage: CustomNoOptionsMessage, }}
                     menuContent={menuContent}
                     keepMenuOpenOnMenuContentClick={
