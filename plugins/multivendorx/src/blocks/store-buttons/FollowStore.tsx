@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { getApiLink } from 'zyra';
 
 interface FollowStoreProps {
-    followersCount: number;
+    followersCount?: number;
+    showFollowerCount?: boolean;
 }
 
 const ButtonStyle = {
@@ -13,21 +14,13 @@ const ButtonStyle = {
     alignItems: 'center'
 };
 
-// Followers count style
-const followersCountStyle = {
-    fontSize: '16px',
-    color: '#fff',
-    fontWeight: 'normal',
-    marginTop: '2px'
-};
-
 const FollowIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
         <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
     </svg>
 );
 
-const FollowStore: React.FC<FollowStoreProps> = () => {
+const FollowStore: React.FC<FollowStoreProps> = ({ showFollowerCount = true }) => {
     const [followersCount, setFollowersCount] = useState<number>(0);
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
@@ -69,6 +62,7 @@ const FollowStore: React.FC<FollowStoreProps> = () => {
             }
         });
     };
+    
     return (
         <div className="multivendorx-follow-store-inner">
             <button
@@ -82,9 +76,11 @@ const FollowStore: React.FC<FollowStoreProps> = () => {
                     : __('Follow Store', 'multivendorx')}
             </button>
 
-            <div >
-                {followersCount} {followersCount === 1 ? __('follower', 'multivendorx') : __('followers', 'multivendorx')}
-            </div>
+            {showFollowerCount && (
+                <div className="multivendorx-followers-count">
+                    {followersCount.toLocaleString()} {followersCount === 1 ? __('follower', 'multivendorx') : __('followers', 'multivendorx')}
+                </div>
+            )}
         </div>
     );
 };

@@ -14,7 +14,7 @@
     },
     "iconColor": {
       "type": "string",
-      "default": "#ffffff"
+      "default": "#000"
     },
     "iconGap": {
       "type": "number",
