@@ -10,7 +10,8 @@ import {
 } from '@tanstack/react-table';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { formatCurrency, formatTimeAgo } from '../services/commonFunction';
+import { formatCurrency, formatTimeAgo, formatWcShortDate, toWcIsoDate } from '../services/commonFunction';
+import { QueryProps, TableRow } from '@/services/type';
 
 // Type declarations
 type OrderStatus = {
@@ -35,6 +36,10 @@ export interface RealtimeFilter {
 }
 
 const Orders: React.FC = () => {
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [totalRows, setTotalRows] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
+	const [rowIds, setRowIds] = useState<number[]>([]);
 	const { modules } = useModules();
 	const location = useLocation();
 	const [data, setData] = useState<any[]>([]);
@@ -43,7 +48,6 @@ const Orders: React.FC = () => {
 		pageSize: 10,
 	});
 	const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
-	const [totalRows, setTotalRows] = useState<number>(0);
 	const [pageCount, setPageCount] = useState(0);
 	const [orderStatus, setOrderStatus] = useState<OrderStatus[]>([]);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -448,7 +452,7 @@ const Orders: React.FC = () => {
 		if (filterData.categoryFilter && filterData.categoryFilter !== 'all') {
 			params.status = filterData.categoryFilter;
 		}
-		requestData(rowsPerPage, currentPage,  date.start_dat,  date.end_date, params);
+		requestData(rowsPerPage, currentPage, date.start_dat, date.end_date, params);
 	};
 
 	// Fetch orders
@@ -609,150 +613,263 @@ const Orders: React.FC = () => {
 		},
 	];
 
-	const realtimeFilter: RealtimeFilter[] = [
+	const headers = [
 		{
-			name: 'date',
-			render: (updateFilter) => (
-				<MultiCalendarInput
-					value={{
-						startDate: dateFilter.start_date,
-						endDate: dateFilter.end_date,
-					}}
-					onChange={(range: { startDate: Date; endDate: Date }) => {
-						const next = {
-							start_date: range.startDate,
-							end_date: range.endDate,
-						};
-
-						setDateFilter(next);
-						updateFilter('date', next);
-					}}
-				/>
-			),
+			key: 'id',
+			label: __('Order ID', 'multivendorx'),
+		},
+		{
+			key: 'customer',
+			label: __('Customer', 'multivendorx'),
+		},
+		{
+			key: 'date_created',
+			label: __('Date', 'multivendorx'),
+			isSortable: true,
+		},
+		{
+			key: 'status',
+			label: __('Status', 'multivendorx'),
+		},
+		{
+			key: 'commission_total',
+			label: __('Total Earning', 'multivendorx'),
+		},
+		{
+			key: 'total',
+			label: __('Total', 'multivendorx'),
 		},
 	];
-
-	const searchFilter: RealtimeFilter[] = [
+	const filters = [
 		{
-			name: 'searchAction',
-			render: (updateFilter, filterValue) => (
-				<div className="search-action">
-					<select
-						value={filterValue || ''}
-						onChange={(e) => {
-							updateFilter('searchAction', e.target.value || '');
-						}}
-					>
-						<option value="all">{__('All', 'moowoodle')}</option>
-						<option value="order_id">
-							{__('Order Id', 'moowoodle')}
-						</option>
-						<option value="products">
-							{__('Products', 'moowoodle')}
-						</option>
-						<option value="customer_email">
-							{__('Customer Email', 'moowoodle')}
-						</option>
-						<option value="customer">
-							{__('Customer', 'moowoodle')}
-						</option>
-					</select>
-				</div>
-			),
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
 		},
+	];
+	const buttonActions = [
 		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<>
-					<div className="search-section">
-						<input
-							name="searchField"
-							type="text"
-							placeholder={__('Search', 'multivendorx')}
-							onChange={(e) => {
-								updateFilter(e.target.name, e.target.value);
+			label: 'Download CSV',
+			icon: 'download',
+			onClickWithQuery: (query: QueryProps) => {
+				downloadOrdersCSV(query);
+			},
+		},
+	];
+	const downloadOrdersCSV = (query: QueryProps) => {
+		setIsLoading(true);
+
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: {
+					per_page: 100,
+					page: 1,
+					search: query.searchValue,
+					orderby: query.orderby || 'date',
+					order: query.order || 'desc',
+					meta_key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+					after: query.filter?.created_at?.startDate
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: undefined,
+					before: query.filter?.created_at?.endDate
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: undefined,
+				},
+			})
+			.then((response) => {
+				const orders = Array.isArray(response.data)
+					? response.data
+					: [];
+
+				const csvData = orders.map((order: any) => ({
+					Order_ID: order.id,
+					Store: order.store_name || '',
+					Amount: order.total,
+					Commission: order.commission_total || 0,
+					Status: order.status,
+					Date: formatWcShortDate(order.date_created),
+				}));
+
+				downloadCSV({
+					data: csvData,
+					filename: 'orders-report.csv',
+					headers: {
+						Order_ID: 'Order ID',
+						Store: 'Store',
+						Amount: 'Amount',
+						Commission: 'Commission',
+						Status: 'Status',
+						Date: 'Date',
+					},
+				});
+
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('CSV download failed:', error);
+				setIsLoading(false);
+			});
+	};
+
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: {
+					page: query.page,
+					per_page: query.per_page,
+					search: query.searchValue,
+					orderby: query.orderby || 'date',
+					order: query.order || 'desc',
+					meta_key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+					after: query.filter?.created_at?.startDate
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: undefined,
+					before: query.filter?.created_at?.endDate
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: undefined,
+				},
+			})
+			.then((response) => {
+				const orders = Array.isArray(response.data)
+					? response.data
+					: [];
+
+				setRowIds(orders.map((o: any) => o.id));
+
+				const mappedRows: TableRow[][] = orders.map((order: any) => [
+					{
+						display: {< span
+							className="link"
+							onClick={() => {
+	// Open order in view mode (same as View action)
+	setSelectedOrder(order);
+	window.location.hash = `view/${order.id}`;
+}}
+						>
+							#{ order.number }
+						</span >},
+value: order.id,
+					},
+{
+	display: { order.billing?.first_name || order.billing?.last_name ? `${order.billing.first_name || ''} ${order.billing.last_name || ''}` : order.billing?.email || __('Guest', 'multivendorx') },
+	value: order.id || '',
+					},
+{
+	display: formatWcShortDate(order.date_created),
+		value: order.date_created,
+					},
+{
+	display: order.status,
+		value: order.status,
+					},
+{
+	display: formatCurrency(order.commission_total || 0),
+		value: order.commission_total || 0,
+					},
+{
+	display: formatCurrency(order.total),
+		value: order.total,
+					},
+
+				]);
+
+setRows(mappedRows);
+setTotalRows(Number(response.headers['x-wp-total']) || 0);
+setIsLoading(false);
+			})
+			.catch ((error) => {
+	console.error('Order fetch failed:', error);
+	setRows([]);
+	setTotalRows(0);
+	setIsLoading(false);
+});
+	};
+
+
+return (
+	<>
+		{!isViewOrder && !isAddOrder && !selectedOrder && (
+			<>
+				<div className="page-title-wrapper">
+					<div className="page-title">
+						<div className="title">
+							{__('Orders', 'multivendorx')}
+						</div>
+						<div className="des">
+							{__(
+								'Manage your store information and preferences',
+								'multivendorx'
+							)}
+						</div>
+					</div>
+					<div className="buttons-wrapper">
+						<div
+							className="admin-btn btn-purple-bg"
+							onClick={exportAllOrders}
+						>
+							<i className="adminfont-export"></i>
+							{__('Export', 'multivendorx')}
+						</div>
+						<div
+							className="admin-btn btn-purple-bg"
+							onClick={() => {
+								window.location.hash = `add`;
 							}}
-							value={filterValue || ''}
-							className="basic-input"
-						/>
-						<i className="adminfont-search"></i>
-					</div>
-				</>
-			),
-		},
-	];
-
-	return (
-		<>
-			{!isViewOrder && !isAddOrder && !selectedOrder && (
-				<>
-					<div className="page-title-wrapper">
-						<div className="page-title">
-							<div className="title">
-								{__('Orders', 'multivendorx')}
-							</div>
-							<div className="des">
-								{__(
-									'Manage your store information and preferences',
-									'multivendorx'
-								)}
-							</div>
-						</div>
-						<div className="buttons-wrapper">
-							<div
-								className="admin-btn btn-purple-bg"
-								onClick={exportAllOrders}
-							>
-								<i className="adminfont-export"></i>
-								{__('Export', 'multivendorx')}
-							</div>
-							<div
-								className="admin-btn btn-purple-bg"
-								onClick={() => {
-									window.location.hash = `add`;
-								}}
-							>
-								<i className="adminfont-plus"></i>
-								{__('Add New', 'multivendorx')}
-							</div>
+						>
+							<i className="adminfont-plus"></i>
+							{__('Add New', 'multivendorx')}
 						</div>
 					</div>
+				</div>
 
-					<Table
-						data={data}
-						columns={
-							columns as ColumnDef<Record<string, any>, any>[]
-						}
-						rowSelection={rowSelection}
-						onRowSelectionChange={setRowSelection}
-						defaultRowsPerPage={10}
-						pageCount={pageCount}
-						pagination={pagination}
-						onPaginationChange={setPagination}
-						perPageOption={[10, 25, 50]}
-						handlePagination={requestApiForData}
-						totalCounts={totalRows}
-						searchFilter={searchFilter}
-						realtimeFilter={realtimeFilter}
-						categoryFilter={orderStatus}
-						bulkActionComp={() => <BulkAction />}
-						defaultCounts={hash ? 'refund-requested' : 'all'}
-					/>
-				</>
-			)}
-
-			{isAddOrder && <AddOrder />}
-			{isViewOrder && (
-				<OrderDetails
-					order={selectedOrder}
-					onBack={() => {
-						setSelectedOrder(null);
-						window.location.hash = '';
+				<TableCard
+					headers={headers}
+					rows={rows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={fetchData}
+					search={{
+						placeholder: 'Search...',
+						options: [
+							{ label: 'All', value: 'all' },
+							{ label: 'Order Id', value: 'order_id' },
+							{ label: 'Products', value: 'products' },
+							{ label: 'Customer Email', value: 'customer_email' },
+							{ label: 'Customer', value: 'customer' },
+						],
 					}}
+					filters={filters}
+					buttonActions={buttonActions}
+					ids={rowIds}
+					categoryCounts={categoryCounts}
+					bulkActions={[]}
 				/>
-			)}
-		</>
-	);
+
+			</>
+		)}
+
+		{isAddOrder && <AddOrder />}
+		{isViewOrder && (
+			<OrderDetails
+				order={selectedOrder}
+				onBack={() => {
+					setSelectedOrder(null);
+					window.location.hash = '';
+				}}
+			/>
+		)}
+	</>
+);
 };
 
 export default Orders;
