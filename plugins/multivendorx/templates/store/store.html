@@ -75,9 +75,27 @@
 </div>
 <!-- /wp:cover -->
 
-<!-- wp:multivendorx/store-products -->
-<div id="multivendorx-store-shop-products"></div>
-<!-- /wp:multivendorx/store-products -->
+<!-- wp:columns {"align":"wide"} -->
+<div class="wp-block-columns alignwide">
+
+    <!-- Main Content -->
+    <!-- wp:column {"width":"70%"} -->
+    <div class="wp-block-column" style="flex-basis:70%">
+        <!-- wp:multivendorx/store-products -->
+        <div id="multivendorx-store-shop-products"></div>
+        <!-- /wp:multivendorx/store-products -->
+    </div>
+    <!-- /wp:column -->
+
+    <!-- Sidebar -->
+    <!-- wp:column {"width":"30%"} -->
+    <div class="wp-block-column" style="flex-basis:30%">
+        <!-- wp:multivendorx/store-sidebar /-->
+    </div>
+    <!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
 
 <!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|50"}}},"layout":{"type":"constrained"}} -->
 <div class="wp-block-group"

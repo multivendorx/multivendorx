@@ -71,24 +71,20 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 
 	return (
 		<>
-			<div
-			>
+			<div>
 				{products.map((product) => (
-					<a
-						key={product.id}
-						href={product.permalink || '#'}
-						className="product-card"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						{product.images?.[0]?.src && (
+					<li key={product.id} className="wc-block-product product type-product status-publish instock">
+						<a href={product.permalink} className="product-card">
 							<img
-								src={product.images[0].src}
+								src={
+									product.images?.[0]?.src ||
+									'http://localhost:8889/wp-content/uploads/woocommerce-placeholder.webp'
+								}
 								alt={product.name}
 							/>
-						)}
-						<h3>{product.name}</h3>
-					</a>
+							<h2 className="has-text-align-center">{product.name}</h2>
+						</a>
+					</li>
 				))}
 			</div>
 
