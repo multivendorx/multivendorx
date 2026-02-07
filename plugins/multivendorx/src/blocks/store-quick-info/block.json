@@ -4,7 +4,7 @@
   "title": "Store Quick Info",
   "category": "multivendorx",
   "icon": "info-outline",
-  "description": "Display store phone number",
+  "description": "Display key store details like logo, ratings, product count, and total sales at a glance.",
   "editorScript": "file:./index.js",
   "editorStyle": [ "multivendorx-common-block-style" ],
   "style": [ "multivendorx-common-block-style" ]
