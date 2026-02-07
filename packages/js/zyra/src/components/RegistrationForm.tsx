@@ -12,7 +12,6 @@ import {
     BlockRenderer,
     ColumnsBlock,
     getColumnCount,
-    ColumnRenderer, // Add this import
 } from './block';
 
 // Import existing components
@@ -96,7 +95,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         }
     }, [formFieldList, buttonSetting, onChange]);
 
-    // ==================== Block Management ====================
+    // Block Management
 
     const updateBlocks = (blocks: Block[]) => {
         setFormFieldList(blocks);
@@ -129,7 +128,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         }
     };
 
-    // ==================== Column Block Handlers ====================
+    // Column Block Handlers
 
     const updateColumnBlock = (
         parentIndex: number,
@@ -235,7 +234,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         });
     };
 
-    // ==================== Template Selection ====================
+    // Template Selection
 
     const handleTemplateSelect = (template: RegistrationTemplate) => {
         if (proSettingChange()) return;
@@ -246,7 +245,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         setSelectedBlockLocation(null);
     };
 
-    // ==================== Settings Panel Change Handler ====================
+    // Settings Panel Change Handler
 
     const handleSettingsChange = (key: string, value: any) => {
         if (proSettingChange()) {
@@ -322,13 +321,13 @@ const CustomForm: React.FC<CustomFormProps> = ({
         }
     };
 
-    // ==================== Dynamic Count Calculation ====================
+    // Dynamic Count Calculation
 
     const getBlockCount = (blocks: typeof REGISTRATION_BLOCKS | typeof STORE_BLOCKS) => {
         return blocks.length;
     };
 
-    // ==================== Tabs Configuration ====================
+    // Tabs Configuration
 
     const tabs = [
         {
@@ -367,7 +366,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                         selectOptions={STORE_BLOCKS}
                         onClick={(value) => {
                             if (proSettingChange()) return;
-                            const storeBlock = STORE_BLOCKS.find(b => b.value === value);
+                            const storeBlock = STORE_BLOCKS.find(block => block.value === value);
                             if (storeBlock) {
                                 const newField = createBlock(
                                     storeBlock.value as any,
@@ -475,7 +474,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setOpendInput(formField);
-                                            setSelectedBlockLocation(null); // This is a parent column block
+                                            setSelectedBlockLocation(null);
                                         }}
                                     >
                                         <section className="meta-menu">
@@ -493,23 +492,28 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             </span>
                                         </section>
                                         <section className="form-field-container-wrapper">
-                                            <ColumnRenderer
+                                            <BlockRenderer
                                                 block={formField as ColumnsBlock}
                                                 parentIndex={index}
-                                                openBlock={opendInput}
-                                                onSelectChild={handleColumnChildSelect}
+                                                onSelect={() => {
+                                                    setOpendInput(formField);
+                                                    setSelectedBlockLocation(null);
+                                                }}
+                                                onChange={() => { }}
+                                                onDelete={() => deleteBlock(index)}
+                                                isActive={opendInput?.id === formField.id}
+                                                showMeta={false}
                                                 onUpdateColumn={updateColumnLayout}
                                                 onUpdateChild={updateColumnBlock}
                                                 onDeleteChild={deleteColumnChild}
+                                                onSelectChild={handleColumnChildSelect}
                                                 proSettingChange={() => proSettingChange()}
                                                 groupName="registration"
-                                                components={{
-                                                    BasicInput,
-                                                    MultipleOptions,
-                                                    TextArea,
-                                                    FileInput,
-                                                    AddressField,
-                                                }}
+                                                BasicInput={BasicInput}
+                                                MultipleOptions={MultipleOptions}
+                                                TextArea={TextArea}
+                                                FileInput={FileInput}
+                                                AddressField={AddressField}
                                             />
                                         </section>
                                     </div>
@@ -566,9 +570,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
                             formField={opendInput}
                             opened={{ click: true }}
                             onChange={handleSettingsChange}
-                            inputTypeList={REGISTRATION_BLOCKS.map(b => ({
-                                value: b.value,
-                                label: b.label,
+                            inputTypeList={REGISTRATION_BLOCKS.map(block => ({
+                                value: block.value,
+                                label: block.label,
                             }))}
                         />
                     </div>

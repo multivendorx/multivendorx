@@ -1,16 +1,11 @@
 // Types
 export * from './types';
 
-// Block Configuration
-export * from './blockConfig';
-
-// Block Factory
-export * from './blockFactory';
+// Block creation & normalization & configurations & constants
+export * from './blockCore';
 
 // Block Views
-export * from './blockView';
+export * from './BlockView';
 
 // Block Renderer
 export { BlockRenderer, renderBlockContent } from './BlockRenderer';
-
-export { ColumnRenderer } from './ColumnRenderer';

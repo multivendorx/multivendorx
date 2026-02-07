@@ -39,7 +39,6 @@ import ExpandablePanelGroup from './ExpandablePanelGroup';
 import SystemInfo from './SystemInfo';
 import { useModules } from '../contexts/ModuleContext';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
-import { createBlock } from '../components/block/blockFactory';
 import '../styles/web/AdminForm.scss';
 
 interface WPMediaAttachment {

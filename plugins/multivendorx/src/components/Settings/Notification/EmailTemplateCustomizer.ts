@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { createBlock } from '/home/techmonastic/Documents/Shivam/multivendorx/packages/js/zyra/src/components/block/blockFactory';
+import { createBlock } from '/home/techmonastic/Documents/Shivam/multivendorx/packages/js/zyra/src/components/block/blockCore';
 
 export default {
     id: 'email-template-customizer',
