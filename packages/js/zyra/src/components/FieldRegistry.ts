@@ -3,6 +3,9 @@ import SelectInput from './SelectInput';
 import PrePostText from './PrePostText';
 import AdminButton from './UI/AdminButton';
 import ExpandablePanelGroup from './ExpandablePanelGroup';
+import ToggleSetting from './ToggleSetting';
+import BlockText from './BlockText';
+import ClickableList from './ClickableList';
 import { FieldComponent } from './types';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
@@ -11,5 +14,8 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   multiselect: SelectInput,
   preposttest: PrePostText,
   button: AdminButton,
-  // expandable: ExpandablePanelGroup,
+  'expandable-panel': ExpandablePanelGroup,
+  'setting-toggle': ToggleSetting,
+  'blocktext': BlockText,
+  'clickable-list': ClickableList,
 };

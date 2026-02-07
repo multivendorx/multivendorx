@@ -3,6 +3,7 @@ import React from 'react';
 
 // Internal dependencies
 import '../styles/web/ToggleSetting.scss';
+import { FieldComponent } from './types';
 
 // Types
 interface Option {
@@ -23,38 +24,31 @@ interface ToggleSettingProps {
     descClass?: string;
     value: string | string[];
     onChange: ( value: string | string[] ) => void;
-    proChanged?: () => void;
     proSetting?: boolean;
-    khali_dabba?: boolean;
     iconEnable?: boolean;
     key?: string;
-    preText?: string;
-    postText?: string;
     multiSelect?: boolean;
     custom?: boolean;
+    canAccess?: boolean;
 }
 
-const ToggleSetting: React.FC< ToggleSettingProps > = ( {
+const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
     description,
     options,
     wrapperClass,
     value,
     key,
     onChange,
-    proChanged,
-    khali_dabba,
     iconEnable = false,
-    postText,
-    preText,
     custom,
     multiSelect = false,
+    canAccess
 } ) => {
     const handleChange = ( optionValue: string, isPro: boolean ) => {
         if ( 
             isPro && 
-            ! khali_dabba 
+            ! canAccess
         ) {
-            proChanged?.();
             return;
         }
 
@@ -75,7 +69,6 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
     return (
         <>
             <div className={`toggle-setting-container ${wrapperClass ? wrapperClass : ''}`}>
-                { preText && <span className="before">{ preText }</span> }
 
                 <div className={`toggle-setting-wrapper ${custom ? 'custom' : ''}`}>
                     { options.map( ( option ) => {
@@ -131,7 +124,7 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
                                         <div className="toggle-custom-wrapper" dangerouslySetInnerHTML={{ __html: option.customHtml }} />
                                     )}
                                 </label>
-                                {option.proSetting && ! khali_dabba && (
+                                {option.proSetting && ! canAccess && (
                                     <span className="admin-pro-tag">
                                         <i className="adminfont-pro-tag"></i>Pro
                                     </span>
@@ -140,7 +133,6 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
                         );
                     } ) }
                 </div>
-                { postText && <span className="after">{ postText }</span> }
             </div>
             { description && (
                 <p
@@ -150,6 +142,56 @@ const ToggleSetting: React.FC< ToggleSettingProps > = ( {
             ) }
         </>
     );
+};
+
+const ToggleSetting: FieldComponent = {
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+        <ToggleSettingUI
+            wrapperClass={field.wrapperClass}
+            description={field.desc}
+            key={field.key}
+            iconEnable={field.iconEnable} // If true, will display the toggle value as an icon
+            custom={field.custom}
+            multiSelect={field.multiSelect} // If true, allows selecting multiple options (checkboxes), else single select (radio)
+            canAccess={canAccess}
+            options={
+                Array.isArray(field.options)
+                    ? field.options.map((opt) => ({
+                            ...opt,
+                            value: String(opt.value), // this can be an icon class
+                        }))
+                    : []
+            }
+            value={
+                field.multiSelect
+                    ? Array.isArray(value)
+                        ? value
+                        : [
+                                String(
+                                    value ??
+                                        field.defaultValue ??
+                                        ''
+                                ),
+                            ]
+                    : String(
+                            value ?? field.defaultValue ?? ''
+                        )
+            }
+            onChange={(val) => {
+                if (!canAccess) return;
+                onChange(val)
+            }}
+        />
+    ),
+
+    validate: (field, value) => {
+        if (field.required && !value?.[field.key]) {
+            return `${field.label} is required`;
+        }
+
+        return null;
+    },
+
 };
 
 export default ToggleSetting;
