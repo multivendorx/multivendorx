@@ -44,6 +44,17 @@ class Rest extends \WP_REST_Controller
     {
         register_rest_route(
             MultiVendorX()->rest_namespace,
+            '/' . $this->rest_base,
+            array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				),
+			)
+        );
+        register_rest_route(
+            MultiVendorX()->rest_namespace,
             '/' . $this->rest_base . '/(?P<id>[\d]+)',
             array(
                 array(
@@ -81,6 +92,104 @@ class Rest extends \WP_REST_Controller
     public function update_item_permissions_check($request)
     {
         return current_user_can('read');
+    }
+
+        /**
+     * Get all knowledge base articles.
+     *
+     * @param object $request WP_REST_Request object.
+     */
+    public function get_items( $request ) {
+
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+
+            MultiVendorX()->util->log( $error );
+            return $error;
+        }
+
+        try {
+
+            $store_id = intval( $request->get_param( 'store_id' ) );
+            if ( ! $store_id ) {
+                return rest_ensure_response( array( 'error' => 'Invalid store ID' ) );
+            }
+
+            // Get store object.
+            $store = new Store( $store_id );
+
+            // Fetch followers from meta_data.
+            $followers_raw = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? '[]';
+            $followers     = json_decode( $followers_raw, true );
+            if ( ! is_array( $followers ) ) {
+                $followers = array();
+            }
+
+            // Handle old format (plain array of user IDs).
+            // Convert to new format with id + empty date.
+            if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
+                $followers = array_map(
+                    fn( $uid ) => array(
+                        'id'   => $uid,
+                        'date' => '',
+                    ),
+                    $followers
+                );
+            }
+
+            $response = rest_ensure_response( array() );
+            $response->header( 'X-WP-Total', count( $followers ) );
+
+            usort(
+                $followers,
+                function ( $a, $b ) {
+                    $date_a = ! empty( $a['date'] ) ? strtotime( $a['date'] ) : 0;
+                    $date_b = ! empty( $b['date'] ) ? strtotime( $b['date'] ) : 0;
+                    return $date_b <=> $date_a;
+                }
+            );
+
+            // Pagination.
+            $page   = max( intval( $request->get_param( 'page' ) ), 1 );
+            $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
+            $offset = ( $page - 1 ) * $limit;
+
+            // Paginate followers.
+            $followers_page = array_slice( $followers, $offset, $limit );
+
+            $formatted_followers = array();
+            foreach ( $followers_page as $follower ) {
+                $user_id     = $follower['id'] ?? 0;
+                $follow_date = $follower['date'] ?? '';
+
+                $user = get_userdata( $user_id );
+                if ( $user ) {
+                    // Get first + last name.
+                    $first_name = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['first_name'], true );
+                    $last_name  = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['last_name'], true );
+
+                    // Combine names, fallback to display_name if empty.
+                    $full_name = trim( "$first_name $last_name" );
+                    if ( empty( $full_name ) ) {
+                        $full_name = $user->display_name;
+                    }
+
+                    $formatted_followers[] = array(
+                        'id'    => $user_id,
+                        'name'  => $full_name,
+                        'email' => $user->user_email,
+                        'date'  => $follow_date,
+                    );
+                }
+            }
+            $response->set_data( $formatted_followers );
+            return $response;
+        } catch ( \Exception $e ) {
+            MultiVendorX()->util->log( $e );
+
+            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+        }
     }
 
     /**

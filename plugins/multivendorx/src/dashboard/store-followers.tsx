@@ -3,101 +3,52 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, Table, TableCell } from 'zyra';
-import { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { formatTimeAgo } from '@/services/commonFunction';
+import { QueryProps, TableRow } from '@/services/type';
 
-type FollowerRow = {
-	date: string;
-	id: number;
-	name: string;
-	email: string;
-};
 
 const StoreFollower: React.FC = () => {
-	const [data, setData] = useState<FollowerRow[]>([]);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pageCount, setPageCount] = useState(0);
 
-	// Fetch total rows on mount
-	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				count: true,
-				follower: 'follower',
-				store_id: appLocalizer.store_id,
-			},
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(Math.ceil(response.data / pagination.pageSize));
+	const headers = [
+		{ key: 'name', label: 'Name' },
+		{ key: 'email', label: 'Email' },
+		{ key: 'date', label: 'Followed On' }
+	];
+
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+		axios
+			.get(getApiLink(appLocalizer, 'follow-store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					store_id: appLocalizer.store_id,
+					page: query.paged || 1,
+					row:query.per_page || 10,
+				},
 			})
-			.catch(() => {
-				console.log(__('Failed to load total rows', 'multivendorx'));
-			});
-	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, []);
-
-	const requestData = (rowsPerPage: number, currentPage: number) => {
-		setData(null);
-	
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				store_id: appLocalizer.store_id,
-				page: currentPage,
-				row: rowsPerPage,
-				follower: 'follower',
-			},
-		})
 			.then((response) => {
-				setData(response.data || []);
+				const items = response.data || [];
+
+				const mappedRows: any[][] = items.map((fol: any) => [
+					{ display: fol.name, value:  fol.name },
+					{ display: fol.email, value:  fol.email },
+					{ display: formatTimeAgo(fol.date), value:  fol.date },
+				]);
+
+				setRows(mappedRows);
+
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
 			})
 			.catch((error) => {
-				console.error('Store fetch failed:', error);
-				setData([]);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
 			});
 	};
-
-
-	const requestApiForData = (rowsPerPage: number, currentPage: number) => {
-		requestData(rowsPerPage, currentPage);
-	};
-
-	const columns: ColumnDef<FollowerRow>[] = [
-		{
-			header: __('Name', 'multivendorx'),
-			cell: ({ row }) => <TableCell>{row.original.name}</TableCell>,
-		},
-		{
-			header: __('Email', 'multivendorx'),
-			cell: ({ row }) => <TableCell>{row.original.email}</TableCell>,
-		},
-		{
-			header: __('Followed On', 'multivendorx'),
-			cell: ({ row }) => {
-				return (
-					<TableCell title={'date'}>
-						{formatTimeAgo(row.original.date)}
-					</TableCell>
-				);
-			},
-		},
-	];
 
 	return (
 		<>
@@ -116,16 +67,12 @@ const StoreFollower: React.FC = () => {
 			</div>
 
 			<div className="admin-table-wrapper">
-				<Table
-					data={data}
-					columns={columns}
-					defaultRowsPerPage={10}
-					pageCount={pageCount}
-					pagination={pagination}
-					onPaginationChange={setPagination}
-					handlePagination={requestApiForData}
-					perPageOption={[10, 25, 50]}
-					totalCounts={totalRows}
+				<TableCard
+					headers={headers}
+					rows={rows}
+					totalRows={totalRows}
+					isLoading={isLoading}
+					onQueryUpdate={fetchData}
 				/>
 			</div>
 		</>

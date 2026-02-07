@@ -243,7 +243,6 @@ class Stores extends \WP_REST_Controller {
                 'deactivate'       => 'get_stores_with_deactivate_requests',
                 'options'          => 'get_stores_dropdown',
                 'status'           => 'get_pending_stores',
-                'follower'         => 'get_store_follower',
             );
 
             foreach ( $flag_map as $param => $method ) {
@@ -1354,92 +1353,6 @@ class Stores extends \WP_REST_Controller {
                 'categories' => $category_data,
             )
         );
-    }
-
-    /**
-     * Get paginated followers of a store
-     *
-     * @param object $request WP_REST_Request object.
-     */
-    public function get_store_follower( $request ) {
-        $store_id = intval( $request->get_param( 'store_id' ) );
-        if ( ! $store_id ) {
-            return rest_ensure_response( array( 'error' => 'Invalid store ID' ) );
-        }
-
-        // Check if count param is requested.
-        $count = $request->get_param( 'count' );
-
-        // Get store object.
-        $store = new Store( $store_id );
-
-        // Fetch followers from meta_data.
-        $followers_raw = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['followers'] ] ?? '[]';
-        $followers     = json_decode( $followers_raw, true );
-        if ( ! is_array( $followers ) ) {
-            $followers = array();
-        }
-
-        // Handle old format (plain array of user IDs).
-        // Convert to new format with id + empty date.
-        if ( ! empty( $followers[0] ) && is_int( $followers[0] ) ) {
-            $followers = array_map(
-                fn( $uid ) => array(
-                    'id'   => $uid,
-                    'date' => '',
-                ),
-                $followers
-            );
-        }
-
-        if ( $count ) {
-            return rest_ensure_response( count( $followers ) );
-        }
-
-        usort(
-            $followers,
-            function ( $a, $b ) {
-                $date_a = ! empty( $a['date'] ) ? strtotime( $a['date'] ) : 0;
-                $date_b = ! empty( $b['date'] ) ? strtotime( $b['date'] ) : 0;
-                return $date_b <=> $date_a;
-            }
-        );
-
-        // Pagination.
-        $page   = max( intval( $request->get_param( 'page' ) ), 1 );
-        $limit  = max( intval( $request->get_param( 'row' ) ), 10 );
-        $offset = ( $page - 1 ) * $limit;
-
-        // Paginate followers.
-        $followers_page = array_slice( $followers, $offset, $limit );
-
-        $formatted_followers = array();
-        foreach ( $followers_page as $follower ) {
-            $user_id     = $follower['id'] ?? 0;
-            $follow_date = $follower['date'] ?? '';
-
-            $user = get_userdata( $user_id );
-            if ( $user ) {
-                // Get first + last name.
-                $first_name = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['first_name'], true );
-                $last_name  = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['last_name'], true );
-
-                // Combine names, fallback to display_name if empty.
-                $full_name = trim( "$first_name $last_name" );
-                if ( empty( $full_name ) ) {
-                    $full_name = $user->display_name;
-                }
-
-                $formatted_followers[] = array(
-                    'id'    => $user_id,
-                    'name'  => $full_name,
-                    'email' => $user->user_email,
-                    'date'  => $follow_date,
-                );
-            }
-        }
-
-        return rest_ensure_response( $formatted_followers );
     }
 
     /**
