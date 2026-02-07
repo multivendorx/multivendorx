@@ -10,5 +10,7 @@
 	},
 	"textdomain": "multivendorx",
 	"editorScript": "file:./index.js",
-	"script": "file:./index.js"
+	"script": "file:./index.js",
+	"editorStyle": [ "multivendorx-common-block-style" ],
+  	"style": [ "multivendorx-common-block-style" ]
 }

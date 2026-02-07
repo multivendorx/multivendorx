@@ -53,39 +53,41 @@ const StoreTabs: React.FC = () => {
 
 	return (
 		<div className="woocommerce">
-			<div className="woocommerce-tabs wc-tabs-wrapper">
-				<ul className="tabs wc-tabs" role="tablist">
-					{availableTabs.map((tab) => (
-						<li
-							key={tab.key}
-							className={activeTab === tab.key ? 'active' : ''}
-						>
-							<a
-								href={`#tab-${tab.key}`}
-								onClick={(e) => {
-									e.preventDefault();
-									setActiveTab(tab.key);
-								}}
+			<div className="product">
+				<div className="woocommerce-tabs wc-tabs-wrapper">
+					<ul className="tabs wc-tabs" role="tablist">
+						{availableTabs.map((tab) => (
+							<li
+								key={tab.key}
+								className={activeTab === tab.key ? 'active' : ''}
 							>
-								{tab.label}
-							</a>
-						</li>
-					))}
-				</ul>
+								<a
+									href={`#tab-${tab.key}`}
+									onClick={(e) => {
+										e.preventDefault();
+										setActiveTab(tab.key);
+									}}
+								>
+									{tab.label}
+								</a>
+							</li>
+						))}
+					</ul>
 
-				{availableTabs.map((tab) => (
-					<div
-						key={tab.key}
-						id={`tab-${tab.key}`}
-						className="panel entry-content wc-tab"
-						style={{
-							display:
-								activeTab === tab.key ? 'block' : 'none',
-						}}
-					>
-						<tab.Component />
-					</div>
-				))}
+					{availableTabs.map((tab) => (
+						<div
+							key={tab.key}
+							id={`tab-${tab.key}`}
+							className="panel entry-content wc-tab"
+							style={{
+								display:
+									activeTab === tab.key ? 'block' : 'none',
+							}}
+						>
+							<tab.Component />
+						</div>
+					))}
+				</div>
 			</div>
 		</div>
 	);
