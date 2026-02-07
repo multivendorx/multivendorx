@@ -1,13 +1,15 @@
 /**
  * External dependencies
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
 import '../styles/web/SettingMetaBox.scss';
+import StyleControls from './StyleControl';
+import ToggleSetting from './ToggleSetting';
 
-type FormFieldValue = string | number | boolean | Option[];
-type SettingFieldKey = keyof FormField | 'value';
+type FormFieldValue = string | number | boolean | Option[] | Record<string, any>;
+type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout' | 'text' | 'level' | 'src' | 'alt' | 'url';
 
 // Types
 interface Option {
@@ -18,6 +20,7 @@ interface Option {
 }
 
 interface FormField {
+    id: number;
     type: string;
     name: string;
     placeholder?: string;
@@ -31,6 +34,14 @@ interface FormField {
     disabled?: boolean;
     readonly?: boolean;
     options?: Option[];
+    html?: string;
+    text?: string;
+    level?: 1 | 2 | 3;
+    src?: string;
+    alt?: string;
+    url?: string;
+    style?: Record<string, any>;
+    layout?: '1' | '2-50' | '2-66' | '3' | '4';
 }
 
 interface InputType {
@@ -138,6 +149,8 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
     setDefaultValue,
 } ) => {
     const [ hasOpened, setHasOpened ] = useState( opened.click );
+    const [ expandedContentGroup, setExpandedContentGroup ] = useState( true );
+    const [ expandedLayoutGroup, setExpandedLayoutGroup ] = useState( false );
 
     const isValidSiteKey = ( key: string ) =>
         /^6[0-9A-Za-z_-]{39}$/.test( key );
@@ -154,7 +167,12 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
         if ( formField?.type === 'recaptcha' ) {
             onChange( 'disabled', isSiteKeyEmpty );
         }
-    }, [ isSiteKeyEmpty ] );
+    }, [ isSiteKeyEmpty, formField ] );
+
+    // Handle style changes with proper typing
+    const handleStyleChange = useCallback((newStyle: Record<string, any>) => {
+        onChange('style', newStyle);
+    }, [onChange]);
 
     // ---------------- Conditional fields ----------------
     const renderConditionalFields = () => {
@@ -204,6 +222,252 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                                 />
                             </>
                         ) }
+                    </>
+                );
+
+            case 'richtext':
+                return (
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <StyleControls
+                            style={formField.style || {}}
+                            onChange={handleStyleChange}
+                            includeTextStyles={true}
+                        />
+                    </div>
+                );
+
+            case 'heading':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedContentGroup(!expandedContentGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Heading Content</h4>
+                                <i className={`adminfont-${expandedContentGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedContentGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Heading Text</label>
+                                        <input
+                                            value={formField.text || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('text', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                    <div className="field-wrapper">
+                                        <label>Heading Level</label>
+                                        <ToggleSetting
+                                            options={[
+                                                {
+                                                    key: 'h1',
+                                                    value: 1,
+                                                    label: 'H1',
+                                                },
+                                                {
+                                                    key: 'h2',
+                                                    value: 2,
+                                                    label: 'H2',
+                                                },
+                                                {
+                                                    key: 'h3',
+                                                    value: 3,
+                                                    label: 'H3',
+                                                },
+                                            ]}
+                                            value={formField.level || 2}
+                                            onChange={(value) =>
+                                                onChange('level', Number(value) as 1 | 2 | 3)
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={handleStyleChange}
+                                includeTextStyles={true}
+                            />
+                        </div>
+                    </>
+                );
+
+            case 'image':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedContentGroup(!expandedContentGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Image</h4>
+                                <i className={`adminfont-${expandedContentGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedContentGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Image URL</label>
+                                        <input
+                                            value={formField.src || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('src', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                    <div className="field-wrapper">
+                                        <label>Alt Text</label>
+                                        <input
+                                            value={formField.alt || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('alt', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={handleStyleChange}
+                                includeTextStyles={false}
+                            />
+                        </div>
+                    </>
+                );
+
+            case 'button':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedContentGroup(!expandedContentGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Button Content</h4>
+                                <i className={`adminfont-${expandedContentGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedContentGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Button Text</label>
+                                        <input
+                                            value={formField.text || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('text', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                    <div className="field-wrapper">
+                                        <label>Button URL</label>
+                                        <input
+                                            value={formField.url || ''}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('url', e.target.value);
+                                            }}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={handleStyleChange}
+                                includeTextStyles={true}
+                            />
+                        </div>
+                    </>
+                );
+
+            case 'divider':
+                return (
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <StyleControls
+                            style={formField.style || {}}
+                            onChange={handleStyleChange}
+                            includeTextStyles={false}
+                        />
+                    </div>
+                );
+
+            case 'columns':
+                return (
+                    <>
+                        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+                            <div 
+                                className="setting-group-header" 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setExpandedLayoutGroup(!expandedLayoutGroup);
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <h4>Layout</h4>
+                                <i className={`adminfont-${expandedLayoutGroup ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+                            </div>
+                            {expandedLayoutGroup && (
+                                <div className="setting-group-content" onClick={(e) => e.stopPropagation()}>
+                                    <div className="field-wrapper">
+                                        <label>Column Layout</label>
+                                        <select
+                                            value={formField.layout || '2-50'}
+                                            className="basic-input"
+                                            onClick={(e) => e.stopPropagation()}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                onChange('layout', e.target.value);
+                                            }}
+                                        >
+                                            <option value="1">1 Column</option>
+                                            <option value="2-50">50 / 50</option>
+                                            <option value="2-66">66 / 34</option>
+                                            <option value="3">3 Columns</option>
+                                            <option value="4">4 Columns</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={handleStyleChange}
+                                includeTextStyles={false}
+                            />
+                        </div>
                     </>
                 );
 
@@ -347,14 +611,20 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
         }
     };
 
+    // Block types that don't need Visibility and Required fields
+    const isBlockType = [
+        'richtext',
+        'heading',
+        'image',
+        'button',
+        'divider',
+        'columns'
+    ].includes(formField?.type || '');
+
     return (
-        <div
-            role="button"
-            tabIndex={ 0 }
-            onClick={ () => setHasOpened( ( prev ) => ! prev ) }
-        >
+        <>
             { hasOpened && (
-                <main className="meta-setting-modal-content">
+                <main className="meta-setting-modal-content" onClick={(e) => e.stopPropagation()}>
                     <div className="settings-title">
                         { formField?.type
                             ? `${
@@ -476,7 +746,7 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                             { metaType === 'setting-meta' &&
                                 renderConditionalFields() }
 
-                            { metaType === 'setting-meta' && (
+                            { metaType === 'setting-meta' && !isBlockType && (
                                 <FieldWrapper label="Visibility">
                                     <div className="toggle-setting-container">
                                         <div className="toggle-setting-wrapper">
@@ -532,39 +802,41 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
                                 </FieldWrapper>
                             ) }
 
-                            <FieldWrapper
-                                label={
-                                    metaType === 'setting-meta'
-                                        ? 'Required'
-                                        : 'Set default'
-                                }
-                            >
-                                <div className="input-wrapper">
-                                    <input
-                                        type="checkbox"
-                                        checked={
-                                            metaType === 'setting-meta'
-                                                ? formField?.required
-                                                : option?.isdefault
-                                        }
-                                        onChange={ ( e ) => {
-                                            if ( metaType === 'setting-meta' ) {
-                                                onChange(
-                                                    'required',
-                                                    e.target.checked
-                                                );
-                                            } else if ( setDefaultValue ) {
-                                                setDefaultValue();
+                            { metaType === 'setting-meta' && !isBlockType && (
+                                <FieldWrapper
+                                    label={
+                                        metaType === 'setting-meta'
+                                            ? 'Required'
+                                            : 'Set default'
+                                    }
+                                >
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="checkbox"
+                                            checked={
+                                                metaType === 'setting-meta'
+                                                    ? formField?.required
+                                                    : option?.isdefault
                                             }
-                                        } }
-                                    />
-                                </div>
-                            </FieldWrapper>
+                                            onChange={ ( e ) => {
+                                                if ( metaType === 'setting-meta' ) {
+                                                    onChange(
+                                                        'required',
+                                                        e.target.checked
+                                                    );
+                                                } else if ( setDefaultValue ) {
+                                                    setDefaultValue();
+                                                }
+                                            } }
+                                        />
+                                    </div>
+                                </FieldWrapper>
+                            )}
                         </>
                     ) }
                 </main>
             ) }
-        </div>
+        </>
     );
 };
 

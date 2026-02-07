@@ -79,20 +79,20 @@ const ProPopup: React.FC<PopupProps> = (props) => {
                                         value={selectedBtn.link}
                                         onChange={(e) => {
                                             const found = btnLink.find(
-                                                (b) =>
-                                                    b.link === e.target.value
+                                                (btn) =>
+                                                    btn.link === e.target.value
                                             );
                                             if (found) {
                                                 setSelectedBtn(found);
                                             }
                                         }}
                                     >
-                                        {btnLink.map((b, idx) => (
+                                        {btnLink.map((btn, index) => (
                                             <option
-                                                key={idx}
-                                                value={b.link}
+                                                key={index}
+                                                value={btn.link}
                                             >
-                                                {b.site}
+                                                {btn.site}
                                             </option>
                                         ))}
                                     </select>

@@ -76,7 +76,7 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
     };
 
     const handleDelete = ( rowIndex: number ) => {
-        onChange( value.filter( ( _, i ) => i !== rowIndex ) );
+        onChange( value.filter( ( _, index ) => index !== rowIndex ) );
     };
 
     const renderField = (

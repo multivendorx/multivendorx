@@ -40,27 +40,27 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
     const renderInputFields = ( fieldType: string ) => {
         switch ( fieldType ) {
             case 'radio':
-                return options.map( ( option, idx ) => (
-                    <div className="radio-basic-input-wrap" key={ idx }>
+                return options.map( ( option, index ) => (
+                    <div className="radio-basic-input-wrap" key={ index }>
                         <input
                             type="radio"
-                            id={ `radio-${ idx }` }
+                            id={ `radio-${ index }` }
                             value={ option.value }
                         />
-                        <label htmlFor={ `radio-${ idx }` }>
+                        <label htmlFor={ `radio-${ index }` }>
                             { option.label }
                         </label>
                     </div>
                 ) );
             case 'checkboxes':
-                return options.map( ( option, idx ) => (
-                    <div className="radio-basic-input-wrap" key={ idx }>
+                return options.map( ( option, index ) => (
+                    <div className="radio-basic-input-wrap" key={ index }>
                         <input
                             type="checkbox"
-                            id={ `checkbox-${ idx }` }
+                            id={ `checkbox-${ index }` }
                             value={ option.value }
                         />
-                        <label htmlFor={ `checkbox-${ idx }` }>
+                        <label htmlFor={ `checkbox-${ index }` }>
                             { option.label }
                         </label>
                     </div>
@@ -70,8 +70,8 @@ const MultipleOptions: React.FC< MultipleOptionsProps > = ( {
                 return (
                     <select className="basic-select">
                         <option>Select...</option>
-                        { options.map( ( option, idx ) => (
-                            <option key={ idx } value={ option.value }>
+                        { options.map( ( option, index ) => (
+                            <option key={ index } value={ option.value }>
                                 { option.label }
                             </option>
                         ) ) }

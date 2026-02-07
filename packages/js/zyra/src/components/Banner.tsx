@@ -136,12 +136,12 @@ const Banner: React.FC< BannerProps > = ( { isPro, products, proUrl } ) => {
                         onClick={ handleCloseBanner }
                     ></i>
                     <ul className="carousel-list ">
-                        { products?.map( ( product, i ) => {
+                        { products?.map( ( product, index ) => {
                             return (
                                 <li
-                                    key={ i }
+                                    key={ index }
                                     className={ `carousel-item ${
-                                        i === 0 ? 'active' : ''
+                                        index === 0 ? 'active' : ''
                                     }` }
                                 >
                                     <span className="title">
