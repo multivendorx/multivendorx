@@ -4,7 +4,7 @@
   "title": "Store Logo",
   "category": "multivendorx-store-shop",
   "icon": "format-image",
-  "description": "Display store logo",
+  "description": "Show the store’s logo to help customers easily recognize the store.",
   "keywords": ["logo", "store", "image", "brand"],
   "editorScript": "file:./index.js",
   "script": "file:./index.js",

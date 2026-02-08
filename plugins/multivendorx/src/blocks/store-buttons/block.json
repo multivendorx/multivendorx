@@ -1,10 +1,10 @@
 {
   "apiVersion": 2,
-  "name": "multivendorx/store-buttons",
-  "title": "Store Buttons",
+  "name": "multivendorx/store-engagement-tools",
+  "title": "Store engagement tools",
   "category": "multivendorx-store-shop",
   "icon": "button",
-  "description": "Display store action buttons",
+  "description": "Enable interactive features that let customers follow stores, ask questions, and connect with sellers in real time.",
   "editorScript": "file:./index.js",
   "script": "file:./index.js",
   "attributes": {
