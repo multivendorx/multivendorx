@@ -35,12 +35,12 @@ interface InfoSection {
 
 type ApiResponse = Record<string, InfoSection>;
 
-export const SystemInfoUI = ({
+export const SystemInfoUI : React.FC<SystemInfoProps> = ({
     apiLink,
     appLocalizer,
     copyButtonLabel = 'Copy System Info',
     copiedLabel = 'Copied!',
-}: SystemInfoProps) => {
+}) => {
     const [data, setData] = useState<ApiResponse | null>(null);
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const [copied, setCopied] = useState(false);

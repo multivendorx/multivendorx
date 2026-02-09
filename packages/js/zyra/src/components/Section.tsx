@@ -10,12 +10,12 @@ interface SectionProps {
     description?: string;
 }
 
-export const SectionUI = ( {
+export const SectionUI : React.FC<SectionProps> = ( {
     wrapperClass,
     hint,
     value,
     description,
-}: SectionProps ) => {
+} ) => {
     return (
             <div className={`divider-wrapper ${wrapperClass}`}>
                 <div className="divider-section">
