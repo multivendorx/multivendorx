@@ -65,7 +65,7 @@ module.exports = {
 		'block/store-name/index': './src/blocks/store-name/index.js',
 		'block/store-email/index': './src/blocks/store-email/index.js',
 		'block/store-address/index': './src/blocks/store-address/index.js',
-		'block/store-engagement-tools/index': './src/blocks/store-engagement-tools/index.js',
+		// 'block/store-engagement-tools/index': './src/blocks/store-engagement-tools/index.js',
 		'block/store-phone/index': './src/blocks/store-phone/index.js',
 		'block/store-logo/index': './src/blocks/store-logo/index.js',
 		'block/store-social-icons/index': './src/blocks/store-social-icons/index.js',

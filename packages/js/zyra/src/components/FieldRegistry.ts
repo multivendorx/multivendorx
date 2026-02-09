@@ -21,5 +21,5 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'setting-toggle': ToggleSetting,
   'blocktext': BlockText,
   'clickable-list': ClickableList,
-  // 'checkbox': MultiCheckBox,
+  'checkbox': MultiCheckBox,
 };
