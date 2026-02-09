@@ -4,7 +4,7 @@ import { ReactSortable } from 'react-sortablejs';
 
 // Internal Dependencies
 import MultipleOptions from './MultipleOption';
-import BasicInput from './BasicInput';
+import { BasicInputUI } from './BasicInput';
 
 interface SubField {
     id: number;
@@ -58,7 +58,7 @@ const AddressField: React.FC< AddressFieldProps > = ( {
         text: (f: SubField) => (
             <>
                 <p>{f.label}</p>
-                <BasicInput
+                <BasicInputUI
                     type= "text"
                     placeholder= {f.placeholder}
                 />

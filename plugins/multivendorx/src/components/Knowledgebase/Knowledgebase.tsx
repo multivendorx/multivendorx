@@ -16,6 +16,7 @@ import {
 	AdminButton,
 	ProPopup,
 	TableCard,
+	BasicInputUI,
 } from 'zyra';
 
 import '../Announcements/Announcements.scss';
@@ -391,7 +392,7 @@ export const KnowledgeBase: React.FC = () => {
 					<>
 						<FormGroupWrapper>
 							<FormGroup label={__('Title', 'multivendorx')} htmlFor="Title">
-								<BasicInput
+								<BasicInputUI
 									type="text"
 									name="title"
 									value={formData.title}
@@ -453,7 +454,7 @@ export const KnowledgeBase: React.FC = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Add tag', 'multivendorx')} htmlFor="Title">
-								<BasicInput
+								<BasicInputUI
 									type="text"
 									name="title"
 								// value={formData.title}

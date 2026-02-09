@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
+import { AdminButton, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -440,7 +440,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																</div>
 
 																{isRefund && (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund-amount"
 																		type="number"
 																		value={refundItems[
@@ -491,7 +491,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		</div>
 																	)}
 																{isRefund && (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund-amount"
 																		type="number"
 																		value={
@@ -536,7 +536,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		</div>
 																	)}
 																{isRefund && (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund-amount"
 																		type="number"
 																		value={
@@ -603,7 +603,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															<td className="admin-column"></td>
 															<td className="admin-column">
 																{isRefund ? (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund"
 																		type="number"
 																		value={
@@ -647,7 +647,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															</td>
 															<td className="admin-column">
 																{isRefund ? (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund"
 																		type="number"
 																		value={
@@ -805,7 +805,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															{__('Refund amount:', 'multivendorx')}
 														</td>
 														<td>
-															<BasicInput
+															<BasicInputUI
 																name="refund-amount"
 																type="number"
 																value={refundDetails.refundAmount}
@@ -1123,7 +1123,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 										/> */}
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking Url ', 'multivendorx')} htmlFor="tracking-number">
-										<BasicInput
+										<BasicInputUI
 											value={shipmentData.tracking_url}
 											onChange={(e) =>
 												setShipmentData((prev) => ({
@@ -1134,7 +1134,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 										/>
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking ID', 'multivendorx')} htmlFor="tracking-number">
-										<BasicInput
+										<BasicInputUI
 											value={shipmentData.tracking_id}
 											onChange={(e) =>
 												setShipmentData((prev) => ({

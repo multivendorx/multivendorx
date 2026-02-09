@@ -11,9 +11,11 @@ import { FieldComponent } from './types';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
+  number: BasicInput,
+  email: BasicInput,
   select: SelectInput,
   'multi-select': SelectInput,
-  preposttest: PrePostText,
+  preposttext: PrePostText,
   button: AdminButton,
   'expandable-panel': ExpandablePanelGroup,
   'setting-toggle': ToggleSetting,

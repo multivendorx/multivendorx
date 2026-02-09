@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { BasicInput, FormGroup, FormGroupWrapper, getApiLink, GoogleMap, Mapbox, SelectInput, SuccessNotice, useModules } from 'zyra';
+import { BasicInput, BasicInputUI, FormGroup, FormGroupWrapper, getApiLink, GoogleMap, Mapbox, SelectInput, SuccessNotice, useModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 declare global {
@@ -300,17 +300,15 @@ const BusinessAddress = () => {
 					label={__('Address *', 'multivendorx')}
 					htmlFor="address"
 				>
-					<BasicInput
+					<BasicInputUI
 						name="address"
 						value={addressData.address}
-
-						descClass="settings-metabox-description"
 						onChange={handleAddressChange}
 					/>
 				</FormGroup>
 				{/* City */}
 				<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="city">
-					<BasicInput
+					<BasicInputUI
 						name="city"
 						value={addressData.city}
 						onChange={handleAddressChange}
@@ -319,11 +317,9 @@ const BusinessAddress = () => {
 
 				{/* Zip */}
 				<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
-					<BasicInput
+					<BasicInputUI
 						name="zip"
 						value={addressData.zip}
-
-						descClass="settings-metabox-description"
 						onChange={handleAddressChange}
 					/>
 				</FormGroup>

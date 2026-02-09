@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
 	BasicInput,
+	BasicInputUI,
 	Column,
 	Container,
 	DynamicRowSetting,
@@ -150,7 +151,7 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="multivendorx_shipping_type_price"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="multivendorx_shipping_type_price"
 
@@ -173,7 +174,7 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="multivendorx_additional_product"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="multivendorx_additional_product"
 
@@ -196,7 +197,7 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="multivendorx_additional_qty"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="multivendorx_additional_qty"
 
@@ -219,10 +220,9 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="free_shipping_amount"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="free_shipping_amount"
-
 												placeholder={__('NO Free Shipping', 'multivendorx')}
 												value={formData.free_shipping_amount || ''}
 												onChange={handleChange}
@@ -242,10 +242,9 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="local_pickup_cost"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="local_pickup_cost"
-
 												placeholder="0.00"
 												value={formData.local_pickup_cost || ''}
 												onChange={handleChange}
@@ -302,7 +301,7 @@ const ShippingDelivery = () => {
 										>
 
 
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="distance_default_cost"
 
@@ -347,7 +346,7 @@ const ShippingDelivery = () => {
 											label={__('Max Distance', 'multivendorx')}
 											htmlFor="distance_max"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="distance_max"
 
@@ -372,10 +371,9 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="distance_local_pickup_cost"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="distance_local_pickup_cost"
-
 												placeholder="0.00"
 												value={formData.distance_local_pickup_cost || ''}
 												onChange={handleChange}
