@@ -44,11 +44,12 @@ export interface PopoverTab {
 // Generic Popover configuration
 export interface HeaderPopover {
     toggleIcon: string;
-    width?: string;
-    template: 'default' | 'notification' | 'tab';
     items?: PopoverItem[]; 
+}
+
+export interface HeaderPopoverWithTab {
+    toggleIcon: string;
     tabs?: PopoverTab[];   
-    defaultActiveTab?: string;
 }
 
 export type AdminHeaderProps = {
@@ -73,7 +74,8 @@ export type AdminHeaderProps = {
     }) => void;
 
     onResultClick: (res: SearchItem) => void;
-    popovers?: HeaderPopover[];
+    utilityList?: HeaderPopover[];
+    utilityListWithTab?: HeaderPopoverWithTab[],
 };
 
 export type SupportChatProps = {

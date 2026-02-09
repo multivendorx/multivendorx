@@ -6,6 +6,8 @@ import Popover from '../UI/Popover';
 import HeaderSearch from './HeaderSearch';
 import SupportChat from './SupportChat';
 import { AdminHeaderProps } from '../types';
+import ItemList from '../UI/ItemList';
+import Tabs from '../UI/Tabs';
 
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({
@@ -17,7 +19,8 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     free,
     pro,
     chatUrl,
-    popovers = [],
+    utilityList = [],
+    utilityListWithTab = [],
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     return (
@@ -46,34 +49,47 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                         onResultClick={onResultClick}
                     />
 
-                    {/* Render all popovers dynamically */}
-                    {popovers.map((headerPopover, popoverIndex) => (
+                    {utilityListWithTab.map((headerPopover, index) => (
+                        <Popover
+                            key={index}
+                            toggleIcon={headerPopover.toggleIcon}
+                            toggleContent={
+                                /* Pass the nested tabs array directly to your Tabs component */
+                                <Tabs
+                                    tabs={headerPopover?.tabs?.map(tab => ({
+                                        label: tab.label,
+                                        content: (
+                                            <div>
+                                                {tab.content}
+                                            </div>
+                                        )
+                                    }))}
+                                />
+                            }
+                        />
+                    ))}
+                    {utilityList.map((headerPopover, popoverIndex) => (
                         <Popover
                             key={popoverIndex}
                             toggleIcon={headerPopover.toggleIcon}
-                            width={headerPopover.width}
-                            template={headerPopover.template}
-                            defaultActiveTab={headerPopover.defaultActiveTab}
-                            // Pass items only if template is NOT tab
-                            items={
-                                headerPopover.template !== 'tab' && headerPopover.items
-                                    ? headerPopover.items.map((popoverItem) => ({
-                                        title: popoverItem.title,
-                                        icon: popoverItem.icon,
-                                        link: popoverItem.link,
-                                        targetBlank: popoverItem.targetBlank,
-                                        action: popoverItem.action,
-                                        desc: popoverItem.desc,
-                                        time: popoverItem.time,
-                                        className: popoverItem.className,
-                                    }))
-                                    : undefined
+                            toggleContent={
+                                headerPopover.items && (
+                                    <ItemList
+                                        items={headerPopover.items.map((item) => ({
+                                            title: item.title,
+                                            icon: item.icon,
+                                            link: item.link,
+                                            targetBlank: item.targetBlank,
+                                            action: item.action,
+                                            desc: item.desc,
+                                            time: item.time,
+                                            className: item.className,
+                                        }))}
+                                    />
+                                )
                             }
-                            // Pass tabs only if template IS tab
-                            tabs={headerPopover.template === 'tab' ? headerPopover.tabs : undefined}
                         />
                     ))}
-
 
                 </div>
             </div>
