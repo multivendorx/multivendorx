@@ -1,11 +1,13 @@
 // External dependencies
 import React, { useState, useRef, useEffect } from 'react';
-import { DateRangePicker, Range, RangeKeyDict } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 
-// Internal dependencies
-import '../styles/web/CalendarInput.scss';
+import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
+import 'react-calendar/dist/Calendar.css';
+
+type ValuePiece = Date | null;
+
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 interface CalendarInputProps {
     wrapperClass?: string;
@@ -20,22 +22,18 @@ interface CalendarInputProps {
 }
 
 const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
-    const [ selectedRange, setSelectedRange ] = useState< Range[] >( [
-        {
-            startDate:
-                props.value?.startDate ||
-                new Date( new Date().getTime() - 30 * 24 * 60 * 60 * 1000 ),
-            endDate: props.value?.endDate || new Date(),
-            key: 'selection',
-        },
-    ] );
+    const [value, onChange] = useState<Value>([new Date(), new Date()]);
+    const [selectedRange, setSelectedRange] = useState<{ startDate: Date; endDate: Date }>({
+        startDate: new Date(),
+        endDate: new Date(),
+    });
 
     const [ pickerPosition, setPickerPosition ] = useState< 'top' | 'bottom' >(
         'bottom'
     );
     const dateRef = useRef< HTMLDivElement | null >( null );
     const closeTimeoutRef = useRef<number | null>(null);
-    const [ openDatePicker, setOpenDatePicker ] = useState( false );
+    const [ openDatePicker, setOpenDatePicker ] = useState( true );
     useEffect(() => {
         return () => {
             if (closeTimeoutRef.current) {
@@ -60,51 +58,10 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
             document.removeEventListener( 'mousedown', handleClickOutside );
         };
     }, [ openDatePicker ] );
-    const handleDateOpen = () => {
-        if ( dateRef.current ) {
-            const rect = dateRef.current.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            setPickerPosition(
-                viewportHeight - rect.bottom < 300 ? 'top' : 'bottom'
-            );
-        }
-        setOpenDatePicker( ( prev ) => ! prev );
-    };
-    
-    const handleDateChange = (ranges: RangeKeyDict) => {
-        const selection = ranges.selection;
-        if (!selection?.startDate || !selection?.endDate) return;
-    
-        // Normalize to LOCAL day boundaries
-        const start = new Date(selection.startDate);
-        start.setHours(0, 0, 0, 0);
-    
-        const end = new Date(selection.endDate);
-        end.setHours(23, 59, 59, 999);
-    
-        setSelectedRange([
-            {
-                startDate: start,
-                endDate: end,
-                key: 'selection',
-            },
-        ]);
-    
-        // Return LOCAL Date objects only
-        props.onChange?.({
-            startDate: start,
-            endDate: end,
-        });
-    
-        closeTimeoutRef.current = window.setTimeout(() => {
-            setOpenDatePicker(false);
-        }, 1500);
-    };
-    
 
     const getLabel = () => {
-        const start = selectedRange[ 0 ].startDate!;
-        const end = selectedRange[ 0 ].endDate!;
+        const start = selectedRange.startDate;
+        const end = selectedRange.endDate;
         const today = new Date();
         today.setHours( 0, 0, 0, 0 );
         const isSameDay = (targetDate:Date, referenceDate:Date) =>
@@ -205,29 +162,6 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
                 { props.showLabel && getLabel() && (
                     <div className="date-label">{ getLabel() }</div>
                 ) }
-
-                <input
-                    value={ `${ selectedRange[ 0 ].startDate?.toLocaleDateString(
-                        'en-US',
-                        {
-                            month: 'long',
-                            day: '2-digit',
-                            year: 'numeric',
-                        }
-                    ) } - ${ selectedRange[ 0 ].endDate?.toLocaleDateString(
-                        'en-US',
-                        {
-                            month: 'long',
-                            day: '2-digit',
-                            year: 'numeric',
-                        }
-                    ) }` }
-                    onClick={ handleDateOpen }
-                    className={ props.inputClass || 'basic-input date' }
-                    type="text"
-                    readOnly
-                    placeholder="DD/MM/YYYY"
-                />
                 { openDatePicker && (
                     <div
                         className={ `date-picker ${
@@ -237,15 +171,7 @@ const MultiCalendarInput: React.FC< CalendarInputProps > = ( props ) => {
                         }` }
                         id="date-picker-wrapper"
                     >
-                        <DateRangePicker
-                            ranges={ selectedRange }
-                            months={ 1 }
-                            direction="vertical"
-                            scroll={ { enabled: true } }
-                            maxDate={ new Date() }
-                            onChange={ handleDateChange }
-                            rangeColors={ [ 'var(--colorPrimary)' ] }
-                        />
+                        <DateRangePicker onChange={onChange} value={value} autoFocus={true} />
                     </div>
                 ) }
             </div>
