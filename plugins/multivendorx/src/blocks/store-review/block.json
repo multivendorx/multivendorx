@@ -4,7 +4,7 @@
   "title": "Store Review",
   "category": "multivendorx",
   "icon": "star-filled",
-  "description": "Display store reviews with ratings and images",
+  "description": "Show store ratings and reviews so customers can quickly assess seller credibility.",
   "editorScript": "file:./index.js",
   "script": "file:./index.js",
   "supports": {

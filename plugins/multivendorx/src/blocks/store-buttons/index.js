@@ -35,7 +35,7 @@ const SupportIcon = () => (
     </svg>
 );
 
-registerBlockType('multivendorx/store-buttons', {
+registerBlockType('multivendorx/store-engagement-tools', {
     attributes: {
         align: {
             type: 'string',
@@ -74,7 +74,7 @@ registerBlockType('multivendorx/store-buttons', {
         } = attributes;
 
         const blockProps = useBlockProps({
-            className: `multivendorx-store-buttons align-${align} wc-store-buttons`,
+            className: `multivendorx-store-engagement-tools align-${align} wc-store-engagement-tools`,
             style: {
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -187,7 +187,7 @@ registerBlockType('multivendorx/store-buttons', {
         } = attributes;
 
         const blockProps = useBlockProps.save({
-            className: `multivendorx-store-buttons align-${align} wc-store-buttons`,
+            className: `multivendorx-store-engagement-tools align-${align} wc-store-engagement-tools`,
             style: {
                 display: 'flex',
                 flexWrap: 'wrap',
