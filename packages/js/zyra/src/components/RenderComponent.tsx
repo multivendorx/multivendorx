@@ -521,24 +521,22 @@ const RenderComponent: React.FC<RenderProps> = ({
                             </label>
                         )}
                         <div className="settings-input-content">
-                            <div className="setting-form-input">
-                                {isLocked &&
-                                    React.isValidElement<
-                                        React.HTMLAttributes<HTMLElement>
-                                    >(input)
-                                        ? React.cloneElement(input, {
-                                                onClick: (e) => {
-                                                    e.stopPropagation();
-                                                },
-                                            })
-                                        : input}
+                            {isLocked &&
+                                React.isValidElement<
+                                    React.HTMLAttributes<HTMLElement>
+                                >(input)
+                                    ? React.cloneElement(input, {
+                                            onClick: (e) => {
+                                                e.stopPropagation();
+                                            },
+                                        })
+                                    : input}
 
-                                {errors && errors[inputField.key] && (
-                                    <div className="field-error">
-                                        {errors[inputField.key]}
-                                    </div>
-                                )}
-                            </div>
+                            {errors && errors[inputField.key] && (
+                                <div className="field-error">
+                                    {errors[inputField.key]}
+                                </div>
+                            )}
                             {inputField.desc && (
                                 <p
                                     className="settings-metabox-description"
