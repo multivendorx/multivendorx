@@ -8,6 +8,8 @@ import BlockText from './BlockText';
 import ClickableList from './ClickableList';
 import MultiCheckBox from './MultiCheckbox';
 import { FieldComponent } from './types';
+import SystemInfo from './SystemInfo';
+import Section from './Section';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -21,5 +23,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'setting-toggle': ToggleSetting,
   'blocktext': BlockText,
   'clickable-list': ClickableList,
+  'system-info': SystemInfo,
+  'section': Section,
   'checkbox': MultiCheckBox,
 };
