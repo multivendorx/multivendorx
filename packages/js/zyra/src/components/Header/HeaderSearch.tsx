@@ -1,32 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-
-type SearchOption = {
-    label: string;
-    value: string;
-};
-
-type SearchConfig = {
-    placeholder?: string;
-    options?: SearchOption[];
-};
-
-type SearchPayload =
-    | { searchValue: string }
-    | { searchValue: string; searchAction: string };
-
-type SearchItem = {
-    icon?: string;
-    name?: string;
-    desc?: string;
-    link: string;
-};
-
-type HeaderSearchProps = {
-    search?: SearchConfig;
-    results: SearchItem[];
-    onQueryUpdate: (payload: SearchPayload) => void;
-    onResultClick: (res: SearchItem) => void;
-};
+import { HeaderSearchProps } from './type';
 
 const HeaderSearch: React.FC<HeaderSearchProps> = ({
     search,

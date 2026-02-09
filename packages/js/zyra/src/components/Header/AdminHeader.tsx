@@ -1,82 +1,11 @@
 // External Dependencies
-import React, { useRef, ReactNode } from 'react';
+import React, { useRef } from 'react';
 
 // Internal Dependencies
 import Popover from '../UI/Popover';
 import HeaderSearch from './HeaderSearch';
 import SupportChat from './SupportChat';
-
-// Accepts searchIndex-style items directly
-type SearchItem = {
-    icon?: string;
-    name?: string;
-    desc?: string;
-    link: string;
-};
-interface ProfileItem {
-    title: string;
-    icon?: string;
-    link?: string;
-    targetBlank?: boolean;
-    action?: () => void;
-}
-export interface PopoverItem {
-    title: string;
-    icon?: string;
-    link?: string;
-    targetBlank?: boolean;
-    action?: () => void;
-    desc?: string;
-    time?: string;
-    className?: string;
-}
-export interface PopoverTab {
-    id: string;
-    label: string;
-    icon?: string;
-    content: React.ReactNode;
-        footer?: {
-        url: string;
-        icon?: string;
-        text: string;
-    };
-}
-
-// Generic Popover configuration
-export interface HeaderPopover {
-    toggleIcon: string;
-    width?: string;
-    template: 'default' | 'notification' | 'tab';
-    items?: PopoverItem[]; // for default / notification
-    tabs?: PopoverTab[];   // for tab
-    defaultActiveTab?: string;
-}
-
-
-type AdminHeaderProps = {
-    brandImg: string;
-    results?: SearchItem[];
-    free?: string;
-    pro?: string;
-
-    showProfile?: boolean;
-    profileItems?: ProfileItem[];
-
-    chatUrl?: string;
-
-    search?: {
-        placeholder?: string;
-        options?: { label: string; value: string }[];
-    };
-
-    onQueryUpdate: (payload: {
-        searchValue: string;
-        searchAction?: string;
-    }) => void;
-
-    onResultClick: (res: SearchItem) => void;
-    popovers?: HeaderPopover[];
-};
+import { AdminHeaderProps } from './type';
 
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({
