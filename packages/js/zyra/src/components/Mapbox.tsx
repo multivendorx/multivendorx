@@ -93,7 +93,6 @@ interface MapboxComponentProps {
         zip?: string;
     }) => void;
     labelSearch: string;
-    labelMap: string;
     instructionText: string;
     placeholderSearch: string;
     stores: { data: any[] };
@@ -106,7 +105,6 @@ const Mapbox = ({
     isUserLocation,
     onLocationUpdate,
     labelSearch,
-    labelMap,
     instructionText,
     placeholderSearch,
     stores,
