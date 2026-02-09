@@ -8,6 +8,7 @@ import BlockText from './BlockText';
 import ClickableList from './ClickableList';
 import MultiCheckBox from './MultiCheckbox';
 import { FieldComponent } from './types';
+import SystemInfo from './SystemInfo';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -20,4 +21,5 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'blocktext': BlockText,
   'clickable-list': ClickableList,
   // 'checkbox': MultiCheckBox,
+  'system-info': SystemInfo,
 };
