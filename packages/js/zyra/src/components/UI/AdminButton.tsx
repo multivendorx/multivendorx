@@ -153,6 +153,7 @@ const AdminButton: FieldComponent = {
                 wrapperClass={field.wrapperClass}
                 buttons={{
                     text: field.name,
+                    className: field.className,
                     onClick: handleClick,
                 }}
             />
