@@ -4,7 +4,7 @@
   "title": "Store Address",
   "category": "multivendorx-store-shop",
   "icon": "location",
-  "description": "Display store address",
+  "description": "Display the store’s physical or service location to build trust and clarity.",
   "keywords": ["address", "location", "store"],
   "editorScript": "file:./index.js",
   "supports": {

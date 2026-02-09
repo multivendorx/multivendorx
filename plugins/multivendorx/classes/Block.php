@@ -63,7 +63,7 @@ class Block {
             'store-email',
             'store-address',
             'store-banner',
-            'store-buttons',
+            'store-engagement-tools',
             'store-logo',
             'store-social-icons',
             'store-phone',

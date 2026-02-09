@@ -4,7 +4,7 @@
   "title": "Product Category(w)",
   "category": "multivendorx",
   "icon": "screenoptions",
-  "description": "Display product categories with alignment options",
+  "description": "Allow customers to filter and browse store products by category.",
   "editorScript": "file:./index.js",
   "attributes": {
     "align": {
