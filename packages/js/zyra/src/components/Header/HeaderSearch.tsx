@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { HeaderSearchProps } from '../types';
+import { useOutsideClick } from '../useOutsideClick';
 
 const HeaderSearch: React.FC<HeaderSearchProps> = ({
     search,
@@ -17,6 +18,8 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
+    useOutsideClick(wrapperRef, () => setIsOpen(false));
+    
     /* Close dropdown when query is cleared */
     useEffect(() => {
         if (!query) {
@@ -24,21 +27,6 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
         }
     }, [query]);
 
-    /* Close on outside click */
-    useEffect(() => {
-        const handleOutsideClick = (e: MouseEvent) => {
-            if (
-                wrapperRef.current &&
-                !wrapperRef.current.contains(e.target as Node)
-            ) {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleOutsideClick);
-        return () =>
-            document.removeEventListener('mousedown', handleOutsideClick);
-    }, []);
 
     const triggerSearch = (value: string, newAction = action) => {
         onQueryUpdate({
