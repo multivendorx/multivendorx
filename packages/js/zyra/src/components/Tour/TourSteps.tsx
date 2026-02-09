@@ -1,28 +1,11 @@
 // External dependencies
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { StepType, useTour } from '@reactour/tour';
+import { useTour } from '@reactour/tour';
 
 // Internal dependencies
-import { getApiLink } from '../utils/apiService';
-
-// Types
-interface AppLocalizer {
-    enquiry_form_settings_url?: string;
-    page_url?: string;
-    settings_page_url?: string;
-    customization_settings_url?: string;
-    site_url?: string;
-    restUrl: string;
-    apiUrl: string;
-    nonce: string;
-}
-
-interface TourProps {
-    appLocalizer: AppLocalizer;
-    steps: StepType[];
-    forceOpen: boolean;
-}
+import { getApiLink } from '../../utils/apiService';
+import { TourProps } from './type';
 
 const Tour: React.FC< TourProps > = ( { appLocalizer, steps, forceOpen } ) => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour();
