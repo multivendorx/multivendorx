@@ -932,7 +932,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             wrapperClass="settings-form-group-radio"
                             inputWrapperClass="radio-basic-input-wrap"
                             inputClass="setting-form-input"
-                            descClass="settings-metabox-description"
                             activeClass="radio-select-active"
                             description={inputField.desc} // optional description displayed below the radio group
                             value={
@@ -1015,7 +1014,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                         <SelectInput
                             name={inputField.key}
                             wrapperClass="settings-from-multi-select"
-                            descClass="settings-metabox-description"
                             selectDeselectClass="btn-purple select-deselect-trigger"
                             selectDeselect={inputField.selectDeselect}
                             selectDeselectValue="Select / Deselect All" // text for select/deselect all button
@@ -1100,7 +1098,6 @@ const AdminForm: React.FC<AdminFormProps> = ({
                                     ? modules.includes(inputField.moduleEnabled)
                                     : true
                             }
-                            descClass="settings-metabox-description"
                             description={inputField.desc}
                             selectDeselectClass="admin-btn btn-purple select-deselect-trigger"
                             inputWrapperClass="toggle-checkbox-header"
