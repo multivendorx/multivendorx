@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	BasicInput,
 	getApiLink,
 	SuccessNotice,
 	SelectInput,
@@ -14,6 +13,7 @@ import {
 	Card,
 	FormGroupWrapper,
 	FormGroup,
+	BasicInputUI,
 } from 'zyra';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
@@ -434,7 +434,7 @@ const StoreSettings = ({
 						</FormGroup>
 
 						<FormGroup label={__('Phone', 'multivendorx')}>
-							<BasicInput
+							<BasicInputUI
 								name="phone"
 								type="number"
 								value={formData.phone}
@@ -462,7 +462,7 @@ const StoreSettings = ({
 					<Card title={__('Communication address', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Address *', 'multivendorx')} htmlFor="address">
-								<BasicInput
+								<BasicInputUI
 									name="address"
 									value={addressData.address}
 									onChange={handleAddressChange}
@@ -470,14 +470,14 @@ const StoreSettings = ({
 							</FormGroup>
 
 							<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="City">
-								<BasicInput
+								<BasicInputUI
 									name="city"
 									value={addressData.city}
 									onChange={handleAddressChange}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
-								<BasicInput
+								<BasicInputUI
 									name="zip"
 									value={addressData.zip}
 									onChange={handleAddressChange}
@@ -574,7 +574,7 @@ const StoreSettings = ({
 						<div className="card-body">
 							<FormGroupWrapper>
 								<FormGroup label={__('Current storefront link', 'multivendorx')}>
-									<BasicInput
+									<BasicInputUI
 										name="slug"
 										value={formData.slug}
 										onChange={handleChange}
@@ -626,7 +626,7 @@ const StoreSettings = ({
 													.toUpperCase() +
 												network.slice(1)}
 										</label>
-										<BasicInput
+										<BasicInputUI
 											name={network}
 											value={
 												formData[network]?.trim() ||

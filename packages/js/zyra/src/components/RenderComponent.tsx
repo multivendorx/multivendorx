@@ -275,11 +275,44 @@ const RenderComponent: React.FC<RenderProps> = ({
         setModelOpen(false);
     };
 
-    const handleChange = ( key: string, value: string | string[] | number[]) => {
-        console.log('save')
+    const isProSetting = (proDependent: boolean): boolean => {
+        return proDependent && !appLocalizer?.khali_dabba;
+    };
+
+    type MultiSelectOption = { value: string; proSetting?: boolean };
+
+    const handleChange = (
+        key: string,
+        value: string | string[] | number[] | MultiSelectOption[]
+    ) => {
+        console.log('save');
+        settingChanged.current = true;
+
         const field = modal.find((f) => f.key === key);
         if (!field) return;
 
+        // Multi-select select / deselect-all logic
+        if (
+            Array.isArray(value) &&
+            value.length > 0 &&
+            typeof value[0] === 'object'
+        ) {
+            if (Array.isArray(setting[key]) && setting[key].length > 0) {
+                updateSetting(key, [] as string[]);
+                return;
+            }
+
+            const newValue: string[] = value
+                .filter(
+                    (option) => !isProSetting(option.proSetting ?? false)
+                )
+                .map((option) => option.value);
+
+            updateSetting(key, newValue);
+            return;
+        }
+
+        // Normal input change (value is now SettingValue)
         const error = validateField(field, value);
 
         setErrors((prev) => ({
@@ -287,13 +320,10 @@ const RenderComponent: React.FC<RenderProps> = ({
             [key]: error,
         }));
 
-        if (error) {
-            return;
-        }
+        if (error) return;
 
-        settingChanged.current = true;
         updateSetting(key, value);
-    }
+    };
 
     const VALUE_ADDON_TYPES = ['select', 'text'];
 
@@ -301,39 +331,15 @@ const RenderComponent: React.FC<RenderProps> = ({
         VALUE_ADDON_TYPES.includes(field.beforeElement?.type) ||
         VALUE_ADDON_TYPES.includes(field.afterElement?.type);
 
-    // const renderFieldInternal = (
-    //     field: InputField,
-    //     value: any,
-    //     onChange: any,
-    //     canAccess: boolean
-    // ): JSX.Element | null => {
-    //     const fieldComponent = FIELD_REGISTRY[field.type];
+    const openProPopup = () => {
+        setModulePopupData({ moduleName: '', settings: '', plugin: '' });
+        setModelOpen(true);
+    };
 
-    //     if (!fieldComponent) {
-    //         console.warn(`Unknown field type: ${field.type}`);
-    //         return null;
-    //     }
-
-    //     const Render = fieldComponent.render;
-
-    //     return (
-    //         <>
-    //          {field.preText &&
-    //                 renderFieldInternal(field.preText, value, onChange, canAccess)}
-            
-    //             <Render
-    //                 field={field}
-    //                 value={value}
-    //                 onChange={onChange}
-    //                 canAccess={canAccess}
-    //             />
-
-    //         {field.postText &&
-    //                 renderFieldInternal(field.postText, value, onChange, canAccess)}
-            
-    //         </>
-    //     );
-    // };
+    const openModulePopup = (module: string) => {
+        setModulePopupData({ moduleName: module, settings: '', plugin: '' });
+        setModelOpen(true);
+    };
 
     const renderFieldInternal = (
         field: InputField,
@@ -376,6 +382,18 @@ const RenderComponent: React.FC<RenderProps> = ({
                 onChange={handleInternalChange}
                 canAccess={canAccess}
                 appLocalizer={appLocalizer}
+                modules={modules}
+                settings={setting}
+                onOptionsChange={(opts: any[]) => {
+                    settingChanged.current = true;
+                    updateSetting(`${field.key}_options`, opts);
+                }}
+
+                onBlocked={(type: 'pro' | 'module', payload?: string) => {
+                    if (type === 'pro') openProPopup();
+                    if (type === 'module' && payload)
+                        openModulePopup(payload);
+                }}
             />
         );
     };

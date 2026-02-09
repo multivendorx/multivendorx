@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { BasicInput, Card, FormGroup, FormGroupWrapper, SelectInput, ToggleSetting } from 'zyra';
+import { BasicInputUI, Card, FormGroup, FormGroupWrapper, SelectInput, ToggleSetting } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShippingCard = ({ product, setProduct, handleChange }) => {
@@ -67,7 +67,7 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 					<>
 						{/* Weight & Shipping class */}
 						<FormGroup cols={2} label={__('Weight (kg)', 'multivendorx')} htmlFor="Weight">
-							<BasicInput
+							<BasicInputUI
 								name="weight"
 								value={product.weight}
 								onChange={(e) => {
@@ -86,7 +86,7 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 							/>
 						</FormGroup>
 						<FormGroup cols={3} label={`${__('Length', 'multivendorx')} (${appLocalizer.dimension_unit})`} >
-							<BasicInput
+							<BasicInputUI
 								name="product_length"
 								value={product.dimensions?.length || ''}
 								placeholder={__('Length', 'multivendorx')}
@@ -100,7 +100,7 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 						</FormGroup>
 
 						<FormGroup cols={3} label={`${__('Width', 'multivendorx')} (${appLocalizer.dimension_unit})`}>
-							<BasicInput
+							<BasicInputUI
 								name="product_width"
 								value={product.dimensions?.width}
 								placeholder={__('Width', 'multivendorx')}
@@ -114,7 +114,7 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 						</FormGroup>
 
 						<FormGroup cols={3} label={`${__('Height', 'multivendorx')} (${appLocalizer.dimension_unit})`}>
-							<BasicInput
+							<BasicInputUI
 								name="product_height"
 								value={product.dimensions?.height}
 								placeholder={__('Height', 'multivendorx')}

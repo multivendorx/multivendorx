@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container, AdminButton, Column, FormGroupWrapper, FormGroup, MiniCard } from 'zyra';
+import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container, AdminButton, Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI } from 'zyra';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -274,7 +274,7 @@ const Withdrawls: React.FC = () => {
 				>
 					<FormGroupWrapper>
 						<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="amount"
 								value={amount}
