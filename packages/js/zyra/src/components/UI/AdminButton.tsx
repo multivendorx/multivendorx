@@ -156,12 +156,14 @@ const AdminButton: FieldComponent = {
             Array.isArray(field.options) && field.options.length > 0
                 ? field.options.map((btn: any) => ({
                         text: btn.label,
+                        className: field.className,
                         onClick: (e) => {
                             btn.onClick?.(e);
                         },
                     }))
                 : {
                         text: field.name,
+                        className: field.className,
                         onClick: handleClick,
                     };
 

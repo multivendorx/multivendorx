@@ -142,7 +142,9 @@ export default {
 		{
             key: 'default_pages',
             type: 'button',
+			wrapperClass: 'left',
             name: __('Create Default MultiVendorX Page', 'multivendorx'),
+			className: 'purple',
             label: __('MultiVendorX page', 'multivendorx'),
             desc: __(
                 'This tool will install all the missing MultiVendorX pages. Pages already defined and set up will not be replaced.',
@@ -160,7 +162,8 @@ export default {
 				key: 'generate_button',
 				name: "Generate",
 				generate: true,
-				responseKey: 'generate_key'
+				responseKey: 'generate_key',
+				className: 'purple-bg'
 			},
 		},
 		{

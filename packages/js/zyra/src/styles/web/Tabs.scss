@@ -4,7 +4,7 @@
   border-radius: 0.313rem;
   margin: 2.5rem 1rem 1rem;
 
-  &.template-1 {
+  &[data-template="default"] {
     border: $border-light-small;
     position: relative;
 
@@ -53,8 +53,8 @@
     }
   }
 
-  &.template-2,
-  &.template-3 {
+  &[data-template="compact"],
+  &[data-template="card"] {
     .divider-wrapper {
       margin-bottom: 1.5rem;
 
@@ -365,7 +365,7 @@
   padding: 1.5rem 1.5rem .5rem 0;
   border-bottom: $border-light-small;
 
-  &.template-1 {
+  &[data-template="default"] {
     .title-wrapper {
       font-weight: 500;
       margin-bottom: 0;
@@ -448,7 +448,7 @@
 
   }
 
-  &.template-2 {
+  &[data-template="compact"] {
     .tab:not(.pro-btn) {
       cursor: pointer;
       display: flex;
@@ -495,7 +495,7 @@
     }
   }
 
-  &.template-3 {
+  &[data-template="card"] {
     cursor: pointer;
     padding-bottom: 1.5rem;
 
