@@ -18,7 +18,6 @@ import Commissions from './components/Commissions/Commissions';
 import Analytics from './components/Reports/Reports';
 import HelpSupport from './components/HelpSupport/HelpSupport';
 import ApprovalQueue from './components/ApprovalQueue/ApprovalQueue';
-import HeaderNotification from './components/Notifications/HeaderNotifications';
 import Notifications from './components/Notifications/Notifications';
 import TransactionHistory from './components/TransactionHistory/TransactionHistory';
 import { getTourSteps } from './components/Tour/TourSteps';
@@ -200,7 +199,6 @@ const App = () => {
 		setResults(filtered);
 	};
 
-
 	const handleResultClick = (item: SearchItem) => {
 		window.location.hash = item.link;
 	};
@@ -242,12 +240,9 @@ const App = () => {
 			action: handleOpenFeaturePopup,
 		},
 	];
-	const popovers = [
+	const utilityListWithTab = [
 		{
 			toggleIcon: 'adminfont-notification',
-			width: '24rem',
-			template: 'tab',
-			defaultActiveTab: 'notifications',
 			tabs: [
 				{
 					id: 'notifications',
@@ -273,10 +268,11 @@ const App = () => {
 				},
 			],
 		},
+	];
+
+	const utilityList = [
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
-			width: '14rem',
-			template: 'default',
 			items: profileItems,
 		}
 	];
@@ -302,7 +298,8 @@ const App = () => {
 				onResultClick={handleResultClick}
 				free={appLocalizer.freeVersion}
 				pro={appLocalizer.pro_data.version}
-				popovers={popovers}
+				utilityList={utilityList}
+				utilityListWithTab={utilityListWithTab}
 			/>
 
 			<CommonPopup
