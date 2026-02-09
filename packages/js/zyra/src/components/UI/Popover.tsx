@@ -6,6 +6,11 @@ interface PopoverTab {
     label: string;
     icon?: string;
     content: React.ReactNode;
+    footer?: {
+        url: string;
+        icon?: string;
+        text: string;
+    };
 }
 
 interface PopoverItem {
@@ -147,6 +152,20 @@ const Popover: React.FC<PopoverProps> = ({
                                 <div className="notification">
                                     {tabs.find((tab) => tab.id === activeTab)?.content}
                                 </div>
+
+                                {tabs.find((tab) => tab.id === activeTab)?.footer && (
+                                    <div className="popover-footer">
+                                        <a
+                                            href={tabs.find((tab) => tab.id === activeTab)?.footer!.url}
+                                            className="admin-btn btn-purple"
+                                        >
+                                            {tabs.find((tab) => tab.id === activeTab)?.footer!.icon && (
+                                                <i className={tabs.find((tab) => tab.id === activeTab)?.footer!.icon}></i>
+                                            )}
+                                            {tabs.find((tab) => tab.id === activeTab)?.footer!.text}
+                                        </a>
+                                    </div>
+                                )}
                             </div>
                         )}
 

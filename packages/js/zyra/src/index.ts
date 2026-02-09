@@ -43,7 +43,7 @@ export { default as Tabs } from './components/Tabs';
 export { default as TextArea } from './components/TextArea';
 export { default as ToggleSetting } from './components/ToggleSetting';
 export { default as Tour } from './components/TourSteps';
-export { default as AdminHeader } from './components/AdminHeader';
+export { default as AdminHeader } from './components/Header/AdminHeader';
 export { default as AdminBreadcrumbs } from './components/AdminBreadcrumbs';
 export { default as NestedComponent } from './components/NestedComponent';
 export { default as ExpandablePanelGroup } from './components/ExpandablePanelGroup';
