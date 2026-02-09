@@ -7,7 +7,7 @@ import React, { useState } from 'react';
  * Internal dependencies
  */
 import { getApiLink, getApiResponse } from '../utils/apiService';
-import BasicInput from './BasicInput';
+import BasicInput, { BasicInputUI } from './BasicInput';
 import SelectInput from './SelectInput';
 
 // Types
@@ -104,8 +104,7 @@ const InputMailchimpList: React.FC< InputMailchimpListProps > = ( {
 
     return (
         <div className="connect-main-wrapper">
-            <BasicInput
-                 
+            <BasicInputUI                 
                 type="text"
                 value={ setting[ mailchimpKey ] }
                 proSetting={ false }

@@ -331,7 +331,7 @@ const Stores = () => {
 						>
 							<FormGroupWrapper>
 								<FormGroup label={__('Store name', 'multivendorx')} htmlFor="store-name">
-									{/* <BasicInput
+									{/* <BasicInputUI
 										type="text"
 										name="name"
 										value={formData.name || ''}
@@ -349,7 +349,7 @@ const Stores = () => {
 								</FormGroup>
 
 								<FormGroup label={__('Store slug', 'multivendorx')} htmlFor="store-slug">
-									{/* <BasicInput
+									{/* <BasicInputUI
 										type="text"
 										name="slug"
 										value={formData.slug || ''}

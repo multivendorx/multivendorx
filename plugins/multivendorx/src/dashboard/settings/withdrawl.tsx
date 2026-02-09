@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { BasicInput, FormGroup, FormGroupWrapper, ToggleSetting, getApiLink } from 'zyra';
+import { BasicInput, BasicInputUI, FormGroup, FormGroupWrapper, ToggleSetting, getApiLink } from 'zyra';
 import {
 	ConnectComponentsProvider,
 	ConnectAccountOnboarding,
@@ -295,7 +295,7 @@ const Withdrawl: React.FC = () => {
 						return (
 							<FormGroup
 								label={__(field.label, 'multivendorx')} htmlFor={field.key}>
-								<BasicInput
+								<BasicInputUI
 									key={field.key || ''}
 									name={field.key}
 									type={field.type || 'text'}

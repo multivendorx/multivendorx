@@ -19,6 +19,7 @@ import {
 	AdminButton,
 	getApiLink,
 	CommonPopup,
+	BasicInputUI,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { formatWcShortDate } from '@/services/commonFunction';
@@ -906,9 +907,8 @@ const AddProduct = () => {
 						<FormGroupWrapper>
 							{/* Product Name */}
 							<FormGroup label={__('Product name', 'multivendorx')} desc={__('A unique name for your product', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="name"
-
 									value={product.name}
 									onChange={(e) => handleChange('name', e.target.value)}
 								/>
@@ -950,9 +950,8 @@ const AddProduct = () => {
 									{/* Regular & Sale Price (Simple Product) */}
 
 									<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="regular_price"
-
 											value={product.regular_price}
 											onChange={(e) =>
 												handleChange('regular_price', e.target.value)
@@ -961,7 +960,7 @@ const AddProduct = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="sale_price"
 
 											value={product.sale_price}
@@ -1046,7 +1045,7 @@ const AddProduct = () => {
 							</FormGroup> */}
 							{/* SKU + Sold Individually */}
 							<FormGroup cols={2} label={__('SKU', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="sku"
 
 									value={product.sku}
@@ -1095,7 +1094,7 @@ const AddProduct = () => {
 							{product.manage_stock && (
 								<>
 									<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="stock"
 
 											value={product.stock}
@@ -1118,7 +1117,7 @@ const AddProduct = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('Low stock threshold', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="low_stock_amount"
 
 											value={product.low_stock_amount}
@@ -1139,17 +1138,15 @@ const AddProduct = () => {
 					>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="name"
-
 								// value={product.name}
 								// onChange={(e) => handleChange('name', e.target.value)}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('Cross-sells', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="name"
-
 								// value={product.name}
 								// onChange={(e) => handleChange('name', e.target.value)}
 								/>
@@ -1766,7 +1763,7 @@ const AddProduct = () => {
 													format="YYYY-MM-DD"
 												/>
 
-												<BasicInput
+												<BasicInputUI
 													type="time"
 													value={
 														product.date_created.split('T')[1]?.slice(0, 5) || ''
