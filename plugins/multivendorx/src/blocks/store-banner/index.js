@@ -1,42 +1,46 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { 
+import {
     useBlockProps,
     InnerBlocks,
-    InspectorControls
+    InspectorControls,
+    store as blockEditorStore
 } from '@wordpress/block-editor';
 import {
     PanelBody,
     RangeControl,
     ColorPalette,
-    SelectControl
+    SelectControl,
+    ToggleControl
 } from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
 
 // Template 1: Store Header
 const TEMPLATE_1 = [
-    ['multivendorx/store-social-icons', {align: 'right'}],
+    ['multivendorx/store-social-icons', { align: 'right' }],
     ['multivendorx/store-logo', {}],
     ['multivendorx/store-name', {}],
     ['core/group', {
         layout: {
             type: 'flex',
             flexWrap: 'nowrap',
-            justifyContent: 'start',  
-            alignItems: 'center',     
-            orientation: 'horizontal'  
+            justifyContent: 'start',
+            alignItems: 'center',
+            orientation: 'horizontal'
         },
         style: {
             spacing: {
-                blockGap: '20px' 
+                blockGap: '20px'
             }
         }
     }, [
-        ['multivendorx/store-email', {}],
-        ['multivendorx/store-phone', {}]
-    ]],
+            ['multivendorx/store-email', {}],
+            ['multivendorx/store-phone', {}],
+            ['multivendorx/store-address', {}]
+        ]],
     ['multivendorx/store-description', {}],
     ['core/spacer', { height: '20px' }],
-    ['multivendorx/store-buttons', {align: 'right'}]
+    ['multivendorx/store-engagement-tools', { align: 'right' }]
 ];
 
 // Template 2: Contact Focused
@@ -57,14 +61,14 @@ const TEMPLATE_2 = [
         ]]
     ]],
     ['core/spacer', { height: '30px' }],
-    ['multivendorx/store-buttons', {}]
+    ['multivendorx/store-engagement-tools', {}]
 ];
 
 // Template 3: Simple Hero
 const TEMPLATE_3 = [
     ['multivendorx/store-name', {}],
     ['core/spacer', { height: '15px' }],
-    ['core/paragraph', { 
+    ['core/paragraph', {
         content: __('Welcome to our store. We offer the best products with excellent customer service.', 'multivendorx'),
         align: 'center'
     }],
@@ -72,15 +76,15 @@ const TEMPLATE_3 = [
     ['core/buttons', {
         align: 'center'
     }, [
-        ['core/button', {
-            text: __('Browse Products', 'multivendorx'),
-            className: 'is-style-fill'
-        }],
-        ['core/button', {
-            text: __('Contact Us', 'multivendorx'),
-            className: 'is-style-outline'
-        }]
-    ]],
+            ['core/button', {
+                text: __('Browse Products', 'multivendorx'),
+                className: 'is-style-fill'
+            }],
+            ['core/button', {
+                text: __('Contact Us', 'multivendorx'),
+                className: 'is-style-outline'
+            }]
+        ]],
     ['core/spacer', { height: '30px' }],
     ['multivendorx/store-social-icons', {}]
 ];
@@ -109,8 +113,9 @@ const ALLOWED_BLOCKS = [
     'multivendorx/store-name',
     'multivendorx/store-email',
     'multivendorx/store-phone',
+    'multivendorx/store-address',
     'multivendorx/store-social-icons',
-    'multivendorx/store-buttons',
+    'multivendorx/store-engagement-tools',
     'multivendorx/store-logo'
 ];
 
@@ -118,7 +123,7 @@ registerBlockType('multivendorx/store-banner', {
     attributes: {
         height: {
             type: 'string',
-            default: '400px'
+            default: 'auto'
         },
         minHeight: {
             type: 'string',
@@ -150,25 +155,35 @@ registerBlockType('multivendorx/store-banner', {
         template: {
             type: 'string',
             default: 'template-1'
+        },
+        innerContentEnabled: {
+            type: 'boolean',
+            default: true
         }
     },
 
     edit: ({ attributes, setAttributes, clientId }) => {
-        const { 
-            height, 
+        const {
+            height,
             minHeight,
-            overlayColor, 
-            overlayOpacity, 
+            overlayColor,
+            overlayOpacity,
             contentColor,
             backgroundPosition,
             contentPosition,
-            template
+            template,
+            innerContentEnabled
         } = attributes;
+
+        const { replaceInnerBlocks } = useDispatch(blockEditorStore);
+        const { getBlocks } = useSelect(select => ({
+            getBlocks: select(blockEditorStore).getBlocks,
+        }));
 
         const bannerImage = 'http://localhost:8889/wp-content/plugins/woocommerce/assets/images/pattern-placeholders/table-wood-house-chair-floor-window.jpg';
 
         const blockProps = useBlockProps({
-            className: `multivendorx-store-banner template-${template}`,
+            className: `multivendorx-store-banner template-${template} ${innerContentEnabled ? 'has-inner-content' : 'no-inner-content'}`,
             style: {
                 height: height,
                 minHeight: minHeight,
@@ -182,7 +197,7 @@ registerBlockType('multivendorx/store-banner', {
         });
 
         const [justifyContent, alignItems] = contentPosition.split(' ');
-        
+
         // Overlay style
         const overlayStyle = {
             position: 'absolute',
@@ -200,10 +215,10 @@ registerBlockType('multivendorx/store-banner', {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: justifyContent || 'center',
-            alignItems: alignItems || 'center',
             padding: '40px',
-            color: contentColor
+            color: contentColor,
+            justifyContent: justifyContent || 'center',
+            alignItems: alignItems || 'center'
         };
 
         // Get current template
@@ -211,19 +226,12 @@ registerBlockType('multivendorx/store-banner', {
 
         // Function to handle template change
         const handleTemplateChange = (newTemplate) => {
-            // First set the template attribute
+            // Set the template attribute
             setAttributes({ template: newTemplate });
-            
-            // Get the InnerBlocks
-            const innerBlocks = wp.data.select('core/block-editor').getBlocks(clientId);
-            
-            // If there are existing blocks, replace them with new template
-            if (innerBlocks.length > 0) {
-                // Replace blocks with the new template
-                wp.data.dispatch('core/block-editor').replaceInnerBlocks(
-                    clientId,
-                    TEMPLATES[newTemplate] || TEMPLATE_1
-                );
+
+            // Only replace inner blocks if inner content is enabled
+            if (innerContentEnabled) {
+                replaceInnerBlocks(clientId, TEMPLATES[newTemplate] || TEMPLATE_1);
             }
         };
 
@@ -231,7 +239,14 @@ registerBlockType('multivendorx/store-banner', {
             <>
                 <InspectorControls>
                     <PanelBody title={__('Banner Settings', 'multivendorx')} initialOpen={true}>
-                        
+
+                        <ToggleControl
+                            label={__('Inner Banner Content', 'multivendorx')}
+                            checked={innerContentEnabled}
+                            onChange={(value) => setAttributes({ innerContentEnabled: value })}
+                            help={__('Enable to show content blocks inside the banner', 'multivendorx')}
+                        />
+
                         <SelectControl
                             label={__('Template', 'multivendorx')}
                             value={template}
@@ -243,49 +258,7 @@ registerBlockType('multivendorx/store-banner', {
                                 { label: 'Custom', value: 'empty' }
                             ]}
                         />
-                        
-                        <SelectControl
-                            label={__('Height', 'multivendorx')}
-                            value={height}
-                            onChange={(value) => setAttributes({ height: value })}
-                            options={[
-                                { label: 'Small (300px)', value: '300px' },
-                                { label: 'Medium (400px)', value: '400px' },
-                                { label: 'Large (500px)', value: '500px' },
-                                { label: 'Extra Large (600px)', value: '600px' },
-                                { label: 'Auto', value: 'auto' }
-                            ]}
-                        />
-                        
-                        <SelectControl
-                            label={__('Min Height', 'multivendorx')}
-                            value={minHeight}
-                            onChange={(value) => setAttributes({ minHeight: value })}
-                            options={[
-                                { label: 'Small (200px)', value: '200px' },
-                                { label: 'Medium (300px)', value: '300px' },
-                                { label: 'Large (400px)', value: '400px' },
-                                { label: 'Extra Large (500px)', value: '500px' }
-                            ]}
-                        />
-                        
-                        <SelectControl
-                            label={__('Background Position', 'multivendorx')}
-                            value={backgroundPosition}
-                            onChange={(value) => setAttributes({ backgroundPosition: value })}
-                            options={[
-                                { label: 'Center', value: 'center' },
-                                { label: 'Top', value: 'top' },
-                                { label: 'Bottom', value: 'bottom' },
-                                { label: 'Left', value: 'left' },
-                                { label: 'Right', value: 'right' },
-                                { label: 'Top Left', value: 'top left' },
-                                { label: 'Top Right', value: 'top right' },
-                                { label: 'Bottom Left', value: 'bottom left' },
-                                { label: 'Bottom Right', value: 'bottom right' }
-                            ]}
-                        />
-                        
+
                         <SelectControl
                             label={__('Content Position', 'multivendorx')}
                             value={contentPosition}
@@ -302,7 +275,48 @@ registerBlockType('multivendorx/store-banner', {
                                 { label: 'Bottom Right', value: 'flex-end flex-end' }
                             ]}
                         />
-                        
+
+                        <SelectControl
+                            label={__('Height', 'multivendorx')}
+                            value={height}
+                            onChange={(value) => setAttributes({ height: value })}
+                            options={[
+                                { label: 'Small (300px)', value: '300px' },
+                                { label: 'Medium (400px)', value: '400px' },
+                                { label: 'Large (500px)', value: '500px' },
+                                { label: 'Extra Large (600px)', value: '600px' },
+                                { label: 'Auto', value: 'auto' }
+                            ]}
+                        />
+
+                        <SelectControl
+                            label={__('Min Height', 'multivendorx')}
+                            value={minHeight}
+                            onChange={(value) => setAttributes({ minHeight: value })}
+                            options={[
+                                { label: 'Small (200px)', value: '200px' },
+                                { label: 'Medium (300px)', value: '300px' },
+                                { label: 'Large (400px)', value: '400px' },
+                                { label: 'Extra Large (500px)', value: '500px' }
+                            ]}
+                        />
+
+                        <SelectControl
+                            label={__('Background Position', 'multivendorx')}
+                            value={backgroundPosition}
+                            onChange={(value) => setAttributes({ backgroundPosition: value })}
+                            options={[
+                                { label: 'Center', value: 'center' },
+                                { label: 'Top', value: 'top' },
+                                { label: 'Bottom', value: 'bottom' },
+                                { label: 'Left', value: 'left' },
+                                { label: 'Right', value: 'right' },
+                                { label: 'Top Left', value: 'top left' },
+                                { label: 'Top Right', value: 'top right' },
+                                { label: 'Bottom Left', value: 'bottom left' },
+                                { label: 'Bottom Right', value: 'bottom right' }
+                            ]}
+                        />
                         <div style={{ marginTop: '20px' }}>
                             <label>{__('Content Text Color', 'multivendorx')}</label>
                             <ColorPalette
@@ -310,7 +324,6 @@ registerBlockType('multivendorx/store-banner', {
                                 onChange={(color) => setAttributes({ contentColor: color })}
                             />
                         </div>
-                        
                         <div style={{ marginTop: '20px' }}>
                             <label>{__('Overlay Color', 'multivendorx')}</label>
                             <ColorPalette
@@ -318,7 +331,7 @@ registerBlockType('multivendorx/store-banner', {
                                 onChange={(color) => setAttributes({ overlayColor: color })}
                             />
                         </div>
-                        
+
                         <RangeControl
                             label={__('Overlay Opacity (%)', 'multivendorx')}
                             value={overlayOpacity}
@@ -332,36 +345,44 @@ registerBlockType('multivendorx/store-banner', {
 
                 <div {...blockProps}>
                     <div style={overlayStyle}></div>
-                    <div style={contentContainerStyle}>
-                        <InnerBlocks 
-                            template={currentTemplate}
-                            templateLock={template === 'empty' ? false : 'all'}
-                            allowedBlocks={ALLOWED_BLOCKS}
-                            orientation="vertical"
-                            renderAppender={template === 'empty' ? InnerBlocks.ButtonBlockAppender : false}
-                        />
-                    </div>
+                    {innerContentEnabled ? (
+                        <div style={contentContainerStyle}>
+                            <InnerBlocks
+                                template={currentTemplate}
+                                allowedBlocks={ALLOWED_BLOCKS}
+                                orientation="vertical"
+                                renderAppender={template === 'empty' ? InnerBlocks.ButtonBlockAppender : false}
+                            />
+                        </div>
+                    ) : (
+                        <div style={{
+                            position: 'relative',
+                            zIndex: 2,
+                            width: '100%',
+                            height: '100%',
+                            minHeight: minHeight
+                        }}>
+                            {/* Empty container when inner content is disabled */}
+                        </div>
+                    )}
                 </div>
-                
             </>
         );
     },
 
     save: ({ attributes }) => {
-        const { 
-            height, 
+        const {
+            height,
             minHeight,
-            overlayColor, 
-            overlayOpacity, 
+            overlayColor,
+            overlayOpacity,
             contentColor,
-            contentPosition,
-            template
+            template,
+            innerContentEnabled
         } = attributes;
-    
-        const [justifyContent, alignItems] = contentPosition.split(' ');
-        
+
         const blockProps = useBlockProps.save({
-            className: `multivendorx-store-banner template-${template}`,
+            className: `multivendorx-store-banner template-${template} ${innerContentEnabled ? 'has-inner-content' : 'no-inner-content'}`,
             style: {
                 height: height,
                 minHeight: minHeight,
@@ -370,7 +391,7 @@ registerBlockType('multivendorx/store-banner', {
                 overflow: 'hidden'
             }
         });
-        
+
         const overlayStyle = {
             position: 'absolute',
             top: 0,
@@ -380,41 +401,36 @@ registerBlockType('multivendorx/store-banner', {
             backgroundColor: overlayColor,
             opacity: overlayOpacity / 100
         };
-        
+
         const contentContainerStyle = {
             position: 'relative',
             zIndex: 2,
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: justifyContent || 'center',
-            alignItems: alignItems || 'center',
             padding: '40px',
             color: contentColor
         };
-    
+
         return (
             <div {...blockProps}>
                 <div style={overlayStyle}></div>
-                <div style={contentContainerStyle}>
-                    <InnerBlocks.Content />
-                </div>
+                {innerContentEnabled ? (
+                    <div style={contentContainerStyle}>
+                        <InnerBlocks.Content />
+                    </div>
+                ) : (
+                    <div style={{
+                        position: 'relative',
+                        zIndex: 2,
+                        width: '100%',
+                        height: '100%',
+                        minHeight: minHeight
+                    }}>
+                    </div>
+                )}
             </div>
         );
     }
-    
-});
-document.addEventListener('DOMContentLoaded', () => {
-    const bannerUrl = StoreInfo?.storeDetails?.storeBanner || '';
 
-    document
-        .querySelectorAll('.multivendorx-store-banner')
-        .forEach(banner => {
-            if (bannerUrl) {
-                banner.style.backgroundImage = `url(${bannerUrl})`;
-                banner.style.backgroundSize = 'cover';
-                banner.style.backgroundPosition = 'center';
-                banner.style.backgroundRepeat = 'no-repeat';
-            }
-        });
 });

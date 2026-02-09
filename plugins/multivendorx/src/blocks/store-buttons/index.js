@@ -35,7 +35,7 @@ const SupportIcon = () => (
     </svg>
 );
 
-registerBlockType('multivendorx/store-buttons', {
+registerBlockType('multivendorx/store-engagement-tools', {
     attributes: {
         align: {
             type: 'string',
@@ -57,7 +57,7 @@ registerBlockType('multivendorx/store-buttons', {
             type: 'boolean',
             default: true
         },
-        showShopButton: {
+        showFollowerCount: {
             type: 'boolean',
             default: true
         }
@@ -69,12 +69,12 @@ registerBlockType('multivendorx/store-buttons', {
             followersCount,
             showFollowButton,
             showChatButton,
-            showSupportButton
+            showSupportButton,
+            showFollowerCount
         } = attributes;
 
-
         const blockProps = useBlockProps({
-            className: `multivendorx-store-buttons align-${align} wc-store-buttons`,
+            className: `multivendorx-store-engagement-tools align-${align} wc-store-engagement-tools`,
             style: {
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -93,18 +93,12 @@ registerBlockType('multivendorx/store-buttons', {
             gap: '5px'
         };
 
-        // Followers count style
-        const followersCountStyle = {
-            fontSize: '16px',
-            color: '#fff',
-            fontWeight: 'normal',
-            marginTop: '2px'
-        };
         const ButtonStyle = {
             display: 'flex',
             gap: '0.5rem',
             alignItems: 'center'
-        }
+        };
+        
         return (
             <>
                 <BlockControls>
@@ -121,6 +115,13 @@ registerBlockType('multivendorx/store-buttons', {
                             checked={showFollowButton}
                             onChange={(value) => setAttributes({ showFollowButton: value })}
                         />
+                        {showFollowButton && (
+                            <ToggleControl
+                                label={__('Show Follower Count', 'multivendorx')}
+                                checked={showFollowerCount}
+                                onChange={(value) => setAttributes({ showFollowerCount: value })}
+                            />
+                        )}
                         <ToggleControl
                             label={__('Show Live Chat', 'multivendorx')}
                             checked={showChatButton}
@@ -144,9 +145,11 @@ registerBlockType('multivendorx/store-buttons', {
                                 <FollowIcon />
                                 {__('Follow Store', 'multivendorx')}
                             </button>
-                            <div style={followersCountStyle}>
-                                {followersCount.toLocaleString()} {__('followers', 'multivendorx')}
-                            </div>
+                            {showFollowerCount && (
+                                <div className="multivendorx-followers-count">
+                                    {followersCount.toLocaleString()} {__('followers', 'multivendorx')}
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -180,10 +183,11 @@ registerBlockType('multivendorx/store-buttons', {
             showFollowButton,
             showChatButton,
             showSupportButton,
+            showFollowerCount
         } = attributes;
 
         const blockProps = useBlockProps.save({
-            className: `multivendorx-store-buttons align-${align} wc-store-buttons`,
+            className: `multivendorx-store-engagement-tools align-${align} wc-store-engagement-tools`,
             style: {
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -206,22 +210,23 @@ registerBlockType('multivendorx/store-buttons', {
             <div {...blockProps}>
                 {/* Follow Store Button with Count */}
                 {showFollowButton && (
-                    <div className="multivendorx-follow-store" style={followButtonWrapperStyle}>
-
+                    <div 
+                        className="multivendorx-follow-store" 
+                        style={followButtonWrapperStyle}
+                        data-show-follower-count={showFollowerCount}
+                    >
                     </div>
                 )}
 
                 {/* Live Chat Button */}
                 {showChatButton && (
                     <div className="multivendorx-live-chat" >
-
                     </div>
                 )}
 
                 {/* Support Button */}
                 {showSupportButton && (
                     <div className="multivendorx-store-support" >
-
                     </div>
                 )}
             </div>
@@ -230,13 +235,14 @@ registerBlockType('multivendorx/store-buttons', {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const activeModules = StoreInfo.activeModules;
+    const activeModules = StoreInfo.activeModules;    
     if (activeModules.includes('follow-store')) {
         // Mount FollowStore
         document.querySelectorAll('.multivendorx-follow-store').forEach(el => {
+            const showFollowerCount = el.getAttribute('data-show-follower-count') === 'true';
             render(
                 <BrowserRouter>
-                    <FollowStore />
+                    <FollowStore showFollowerCount={showFollowerCount} />
                 </BrowserRouter>,
                 el
             );
@@ -266,5 +272,4 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         });
     }
-
 });

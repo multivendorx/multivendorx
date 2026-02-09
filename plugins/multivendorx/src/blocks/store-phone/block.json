@@ -4,7 +4,7 @@
   "title": "Store Phone",
   "category": "multivendorx-store-shop",
   "icon": "phone",
-  "description": "Display store phone number",
+  "description": "Show the store’s phone number for quick and direct communication.",
   "editorScript": "file:./index.js",
   "supports": {
     "align": true,

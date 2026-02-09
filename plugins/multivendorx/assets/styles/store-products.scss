@@ -64,22 +64,6 @@
      background-position: center !important;
      background-repeat: no-repeat !important;
 
-     .placeholder {
-         left: 0;
-         top: 0;
-         width: 5rem;
-         height: 5rem;
-         color: #0000007d;
-         display: flex;
-         justify-content: center;
-         background: #6a696959;
-         align-items: center;
-         font-size: 3rem;
-         width: 5rem;
-         height: 5rem;
-         box-shadow: 0 0.125rem 0.5rem 0 rgba(66, 62, 78, 0.12);
-     }
-
      .banner-img {
          width: 100%;
          background: #5756560d;
@@ -269,6 +253,22 @@
              }
          }
      }
+ }
+
+ .placeholder {
+     left: 0;
+     top: 0;
+     width: 5rem;
+     height: 5rem;
+     color: #fff;
+     display: flex;
+     justify-content: center;
+     background: #5007aa;
+     align-items: center;
+     font-size: 3rem;
+     width: 5rem;
+     height: 5rem;
+     box-shadow: 0 0.125rem 0.5rem 0 rgba(66, 62, 78, 0.12);
  }
 
  //  store tab start
@@ -810,17 +810,17 @@
      flex-wrap: wrap;
  }
 
-//  map style 
-#location-map {
-    height: 18.75rem;
-    width: 100%;
-    border-radius: 0.25rem;
-    margin-top: 0.5rem;
-    position: relative;
+ //  map style 
+ #location-map {
+     height: 18.75rem;
+     width: 100%;
+     border-radius: 0.25rem;
+     margin-top: 0.5rem;
+     position: relative;
 
-    #store-location-autocomplete-container {
-        position: absolute;
-        top: 0.5rem;
-        left: 0.5rem;
-    }
-}
+     #store-location-autocomplete-container {
+         position: absolute;
+         top: 0.5rem;
+         left: 0.5rem;
+     }
+ }

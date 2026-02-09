@@ -4,7 +4,7 @@
   "title": "Store Email",
   "category": "multivendorx-store-shop",
   "icon": "email",
-  "description": "Display store email address",
+  "description": "Display the store’s email address so customers can contact the seller directly.",
   "keywords": ["email", "contact", "store"],
   "editorScript": "file:./index.js",
   "supports": {

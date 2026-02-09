@@ -265,17 +265,17 @@ class Rewrites {
             return $filtered_template;
         }
 
-        $store_name = get_query_var( $this->custom_store_url );
+        // $store_name = get_query_var( $this->custom_store_url );
 
-        if ( ! empty( $store_name ) ) {
-            $store = Store::get_store( $store_name, 'slug' );
-        }
+        // if ( ! empty( $store_name ) ) {
+        //     $store = Store::get_store( $store_name, 'slug' );
+        // }
 
-        // Classic theme fallback
-        $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
-        if ( file_exists( $classic_template ) ) {
-			return $classic_template;
-        }
+        // // Classic theme fallback
+        // $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
+        // if ( file_exists( $classic_template ) ) {
+		// 	return $classic_template;
+        // }
 
         return $template;
     }

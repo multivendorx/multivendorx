@@ -4,7 +4,7 @@
   "title": "Store Description",
   "category": "multivendorx-store-shop",
   "icon": "text-page",
-  "description": "Display store nadescriptionme",
+  "description": "Show a brief description of the store to help customers understand what the seller offers.",
   "editorScript": "file:./index.js",
     "script": "file:./index.js",
   "supports": {
