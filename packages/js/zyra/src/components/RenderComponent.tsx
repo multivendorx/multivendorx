@@ -5,7 +5,6 @@ import React, {
     useState,
     ReactNode,
 } from 'react';
-import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import Popup, { PopupProps } from './Popup';
