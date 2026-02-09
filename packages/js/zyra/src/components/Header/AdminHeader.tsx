@@ -56,14 +56,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             toggleContent={
                                 /* Pass the nested tabs array directly to your Tabs component */
                                 <Tabs
-                                    tabs={headerPopover?.tabs?.map(tab => ({
-                                        label: tab.label,
-                                        content: (
-                                            <div>
-                                                {tab.content}
-                                            </div>
-                                        )
-                                    }))}
+                                    tabs={headerPopover?.tabs}
                                 />
                             }
                         />
@@ -75,16 +68,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             toggleContent={
                                 headerPopover.items && (
                                     <ItemList
-                                        items={headerPopover.items.map((item) => ({
-                                            title: item.title,
-                                            icon: item.icon,
-                                            link: item.link,
-                                            targetBlank: item.targetBlank,
-                                            action: item.action,
-                                            desc: item.desc,
-                                            time: item.time,
-                                            className: item.className,
-                                        }))}
+                                        items={headerPopover.items}
                                     />
                                 )
                             }
