@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
-import { CommonPopup, getApiLink, TextArea, BasicInput, AdminButton, FormGroupWrapper, FormGroup } from 'zyra';
+import { CommonPopup, getApiLink, TextArea, BasicInput, AdminButton, FormGroupWrapper, FormGroup, BasicInputUI } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -637,7 +637,7 @@ const EventRules: React.FC = () => {
 							{openChannel === 'mail' && (
 								<>
 									<FormGroup cols={2} label={__('Email Subject', 'multivendorx')} htmlFor="email-subject">
-										<BasicInput
+										<BasicInputUI
 											type="text"
 											name="email_subject"
 											value={formData.email_subject || ''}

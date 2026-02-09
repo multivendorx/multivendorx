@@ -1,7 +1,7 @@
 // BasicInputProProps.stories.tsx
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import BasicInput from '../src/components/BasicInput';
+import BasicInput, { BasicInputUI } from '../src/components/BasicInput';
 
 const meta: Meta<typeof BasicInput> = {
     title: 'Zyra/Components/BasicInput/ProExamples',
@@ -21,7 +21,7 @@ export const AllInteractiveProps: Story = {
         return (
             <div style={{ display: 'grid', gap: '24px', maxWidth: '600px' }}>
                 {/* Text Input with pre/post text */}
-                <BasicInput
+                <BasicInputUI
                     wrapperClass="input-wrapper"
                     inputLabel="Text Input"
                     value={textValue}
@@ -37,7 +37,7 @@ export const AllInteractiveProps: Story = {
                 />
 
                 {/* Password with Generate / Copy / Clear */}
-                <BasicInput
+                <BasicInputUI
                     wrapperClass="input-wrapper"
                     inputLabel="Password Input"
                     type="text"
@@ -50,7 +50,7 @@ export const AllInteractiveProps: Story = {
                 />
 
                 {/* Range input with unit */}
-                <BasicInput
+                <BasicInputUI
                     wrapperClass="input-wrapper"
                     inputLabel="Range Input"
                     type="range"
@@ -65,7 +65,7 @@ export const AllInteractiveProps: Story = {
                 />
 
                 {/* Button Input */}
-                <BasicInput
+                <BasicInputUI
                     wrapperClass="input-wrapper"
                     inputLabel="Custom Button Input"
                     type="button"
@@ -78,14 +78,14 @@ export const AllInteractiveProps: Story = {
                 />
 
                 {/* Disabled / ReadOnly */}
-                <BasicInput
+                <BasicInputUI
                     wrapperClass="input-wrapper"
                     inputLabel="Disabled Input"
                     value="Disabled"
                     disabled
                     description="Disabled input field"
                 />
-                <BasicInput
+                <BasicInputUI
                     wrapperClass="input-wrapper"
                     inputLabel="ReadOnly Input"
                     value="Read Only"
@@ -94,7 +94,7 @@ export const AllInteractiveProps: Story = {
                 />
 
                 {/* Feedback Example */}
-                <BasicInput
+                <BasicInputUI
                     wrapperClass="input-wrapper"
                     inputLabel="Input with Feedback"
                     value={textValue}

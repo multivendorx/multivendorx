@@ -9,6 +9,7 @@ import {
 	BasicInput,
 	getApiLink,
 	AdminButton,
+	BasicInputUI,
 } from 'zyra';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { __ } from '@wordpress/i18n';
@@ -486,7 +487,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 							{formData.shippingMethod === 'local_pickup' && (
 								<div className="form-group">
 									<label>{__('Cost', 'multivendorx')}</label>
-									<BasicInput
+									<BasicInputUI
 										type="number"
 										name="localPickupCost"
 										placeholder="Enter cost"
@@ -537,7 +538,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 														'multivendorx'
 													)}
 												</label>
-												<BasicInput
+												<BasicInputUI
 													type="number"
 													name="minOrderCost"
 													placeholder="Enter minimum order cost"
@@ -561,7 +562,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										<label className="font-medium">
 											{__('Cost', 'multivendorx')}
 										</label>
-										<BasicInput
+										<BasicInputUI
 											type="number"
 											name="flatRateCost"
 											placeholder="Enter cost"
@@ -582,7 +583,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 												'multivendorx'
 											)}
 										</label>
-										<BasicInput
+										<BasicInputUI
 											type="text"
 											name="flatRateClassCost"
 											placeholder="Enter class cost"

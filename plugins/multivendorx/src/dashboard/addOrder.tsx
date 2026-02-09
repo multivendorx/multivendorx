@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
+import { AdminButton, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -944,7 +944,7 @@ const AddOrder = () => {
 
 							<FormGroupWrapper>
 								<FormGroup cols={2} label={__('First name', 'multivendorx')} htmlFor="Select-customer">
-									<BasicInput
+									<BasicInputUI
 										name="first_name"
 										value={newCustomer.first_name}
 										onChange={(e) =>
@@ -952,13 +952,12 @@ const AddOrder = () => {
 												...newCustomer,
 												first_name: e.target.value,
 											})
-										}
-										 
+										}										 
 									/>
 								</FormGroup>
 
 								<FormGroup cols={2} label={__('Last name', 'multivendorx')} htmlFor="last-name">
-									<BasicInput
+									<BasicInputUI
 										name="last_name"
 										value={newCustomer.last_name}
 										onChange={(e) =>
@@ -966,13 +965,12 @@ const AddOrder = () => {
 												...newCustomer,
 												last_name: e.target.value,
 											})
-										}
-										 
+										}										 
 									/>
 								</FormGroup>
 
 								<FormGroup label={__('Email', 'multivendorx')} htmlFor="email">
-									<BasicInput
+									<BasicInputUI
 										name="email"
 										value={newCustomer.email}
 										onChange={(e) =>
@@ -980,13 +978,12 @@ const AddOrder = () => {
 												...newCustomer,
 												email: e.target.value,
 											})
-										}
-										 
+										}										 
 									/>
 								</FormGroup>
 
 								<FormGroup label={__('Phone number', 'multivendorx')} htmlFor="phone-number">
-									<BasicInput
+									<BasicInputUI
 										name="phone"
 										value={newCustomer.phone}
 										onChange={(e) =>
@@ -994,8 +991,7 @@ const AddOrder = () => {
 												...newCustomer,
 												phone: e.target.value,
 											})
-										}
-										 
+										}										 
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
@@ -1050,7 +1046,7 @@ const AddOrder = () => {
 							<div ref={shippingAddressEditRef}>
 								<FormGroupWrapper>
 									<FormGroup label={__('Address', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="address_1"
 											value={shippingAddress.address_1}
 											 
@@ -1063,10 +1059,9 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('City', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="city"
-											value={shippingAddress.city || ''}
-											 
+											value={shippingAddress.city || ''}											 
 											onChange={(e) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1076,7 +1071,7 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Postcode / ZIP', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="postcode"
 											value={shippingAddress.postcode || ''}
 											 
@@ -1162,7 +1157,7 @@ const AddOrder = () => {
 							<div ref={addressEditRef}>
 								<FormGroupWrapper>
 									<FormGroup label={__('Address', 'multivendorx')} htmlFor="Address">
-										<BasicInput
+										<BasicInputUI
 											name="address_1"
 											value={billingAddress.address_1}
 											 
@@ -1179,7 +1174,7 @@ const AddOrder = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="city">
-										<BasicInput
+										<BasicInputUI
 											name="city"
 											value={
 												billingAddress.city || ''
@@ -1197,7 +1192,7 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Postcode / ZIP', 'multivendorx')} htmlFor="postcode-zip">
-										<BasicInput
+										<BasicInputUI
 											name="postcode"
 											value={
 												billingAddress.postcode ||

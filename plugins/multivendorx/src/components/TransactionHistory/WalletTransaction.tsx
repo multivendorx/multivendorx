@@ -5,7 +5,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import {
 	getApiLink,
 	CommonPopup,
-	BasicInput,
 	TextArea,
 	Column,
 	Card,
@@ -16,7 +15,8 @@ import {
 	MiniCard,
 	MessageState,
 	Skeleton,
-	TableCard
+	TableCard,
+	BasicInputUI
 } from 'zyra';
 
 import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
@@ -670,7 +670,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							</FormGroup>
 
 							<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
-								<BasicInput
+								<BasicInputUI
 									type="number"
 									name="amount"
 									value={amount}

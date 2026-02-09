@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
-import { NestedComponent, BasicInput, Card } from 'zyra';
+import { NestedComponent, BasicInput, Card, BasicInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const MinMax = ({ product, setProduct }) => {
@@ -90,12 +90,10 @@ const MinMax = ({ product, setProduct }) => {
 				{/* Quantity */}
 				<div className="form-group">
 					<label>{__('Quantity', 'multivendorx')}</label>
-
-					<BasicInput
+					<BasicInputUI
 						name="min_quantity"
-						type="number"
-						 
-						preInsideText={__('Min', 'multivendorx')}
+						type="number"						 
+						preText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_quantity}
 						onChange={(e) =>
 							handleQuantityChange(
@@ -105,11 +103,10 @@ const MinMax = ({ product, setProduct }) => {
 						}
 					/>
 
-					<BasicInput
+					<BasicInputUI
 						name="max_quantity"
-						type="number"
-						 
-						preInsideText={__('Max', 'multivendorx')}
+						type="number"						 
+						preText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_quantity}
 						onChange={(e) =>
 							handleQuantityChange(
@@ -124,11 +121,10 @@ const MinMax = ({ product, setProduct }) => {
 				<div className="form-group">
 					<label>{__('Amount', 'multivendorx')}</label>
 
-					<BasicInput
+					<BasicInputUI
 						name="min_amount"
-						type="number"
-						 
-						preInsideText={__('Min', 'multivendorx')}
+						type="number"						 
+						preText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_amount}
 						onChange={(e) =>
 							handleQuantityChange(
@@ -138,11 +134,10 @@ const MinMax = ({ product, setProduct }) => {
 						}
 					/>
 
-					<BasicInput
+					<BasicInputUI
 						name="max_amount"
-						type="number"
-						 
-						preInsideText={__('Max', 'multivendorx')}
+						type="number"						 
+						preText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_amount}
 						onChange={(e) =>
 							handleQuantityChange(

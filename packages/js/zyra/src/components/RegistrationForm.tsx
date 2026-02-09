@@ -11,7 +11,7 @@ import AddressField, { AddressFormField } from './AddressField';
 import TextArea from './TextArea';
 import FileInput from './FileInput';
 import '../styles/web/RegistrationForm.scss';
-import BasicInput from './BasicInput';
+import { BasicInputUI } from './BasicInput';
 
 // Types
 export type FieldValue =
@@ -559,7 +559,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     className={`form-heading ${formFieldList[0]?.disabled ? 'disable' : ''
                         }`}
                 >
-                    <BasicInput
+                    <BasicInputUI
                         type= "text"
                         placeholder={formTitlePlaceholder}
                         value={formFieldList[0]?.label}
@@ -658,7 +658,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     ) && (
                                             <>
                                                 <p>{formField.label}</p>
-                                                <BasicInput
+                                                <BasicInputUI
                                                     type= {formField.type}
                                                     placeholder= {formField.type}
                                                 />
@@ -685,7 +685,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     {formField.type === 'datepicker' && (
                                         <>
                                             <p>{formField.label}</p>
-                                            <BasicInput
+                                            <BasicInputUI
                                                 type= "date"
                                                 placeholder= {formField.type}
                                             />
@@ -694,7 +694,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     {formField.type === 'TimePicker' && (
                                         <>
                                             <p>{formField.label}</p>
-                                            <BasicInput
+                                            <BasicInputUI
                                                 type= "time"
                                                 placeholder= {formField.type}
                                             />
@@ -715,7 +715,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     )}
                                     {formField.type === 'section' && (
                                         <>
-                                            <BasicInput
+                                            <BasicInputUI
                                                 type= "text"
                                                 value={formField.label}
                                                 placeholder= {formField.type}
