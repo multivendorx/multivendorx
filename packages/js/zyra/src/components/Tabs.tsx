@@ -528,21 +528,19 @@ const Tabs: React.FC< TabsProps > = ( {
                 action={ action }
             />
 
-            <div className={ `general-wrapper ${ template || 'template-1' }` }>
+            <div className={ `general-wrapper admin-settings ${ template || 'template-1' }` }>
                 { HeaderSection && <HeaderSection /> }
-                <div className="middle-child-container">
-                    { menuStack.length > 1 && (
-                        <div id="tabs-wrapper" className="tabs-wrapper">
-                            <div className="tabs-item">
-                                { renderAllMenuItems( currentMenu ) }
-                            </div>
+                { menuStack.length > 1 && (
+                    <div id="tabs-wrapper" className="tabs-wrapper">
+                        <div className="tabs-item">
+                            { renderAllMenuItems( currentMenu ) }
                         </div>
-                    ) }
-
-                    <div className="tab-content">
-                        { getActiveTabInfo() }
-                        { getForm( activeTab ) }
                     </div>
+                ) }
+
+                <div className="tab-content">
+                    { getActiveTabInfo() }
+                    { getForm( activeTab ) }
                 </div>
             </div>
         </>
