@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
 	AdminButton,
-	BasicInput,
+	BasicInputUI,
 	CommonPopup,
 	FormGroup,
 	FormGroupWrapper,
@@ -357,7 +357,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Coupon amount', 'multivendorx')} htmlFor="coupon_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="coupon_amount"
 								value={formData.coupon_amount}
@@ -369,7 +369,6 @@ const AllCoupon: React.FC = () => {
 
 						<FormGroup label={__('Allow free shipping', 'multivendorx')} htmlFor="free_shipping">
 							<ToggleSetting
-
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -380,7 +379,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Coupon expiry date', 'multivendorx')} htmlFor="expiry_date">
-							<BasicInput
+							<BasicInputUI
 								type="date"
 								name="expiry_date"
 								value={formData.expiry_date}
@@ -399,7 +398,7 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Usage limit per coupon', 'multivendorx')} htmlFor="usage_limit">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="usage_limit"
 								value={formData.usage_limit}
@@ -410,7 +409,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Limit usage to X items', 'multivendorx')} htmlFor="limit_usage_to_x_items">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="limit_usage_to_x_items"
 								value={formData.limit_usage_to_x_items}
@@ -421,7 +420,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Usage limit per user', 'multivendorx')} htmlFor="usage_limit_per_user">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="usage_limit_per_user"
 								value={formData.usage_limit_per_user}
@@ -442,7 +441,7 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Minimum spend', 'multivendorx')} htmlFor="minimum_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="minimum_amount"
 								value={formData.minimum_amount}
@@ -453,7 +452,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Maximum spend', 'multivendorx')} htmlFor="maximum_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="maximum_amount"
 								value={formData.maximum_amount}
@@ -492,7 +491,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Allowed emails', 'multivendorx')} htmlFor="customer_email">
-							<BasicInput
+							<BasicInputUI
 								type="text"
 								name="customer_email"
 								value={formData.customer_email}
@@ -966,10 +965,9 @@ const AllCoupon: React.FC = () => {
 					<>
 						<FormGroupWrapper>
 							<FormGroup label={__('Coupon code', 'multivendorx')} htmlFor="title">
-								<BasicInput
+								<BasicInputUI
 									type="text"
 									name="title"
-
 									value={formData.title}
 									generate={true}
 									onChange={(e: any) =>

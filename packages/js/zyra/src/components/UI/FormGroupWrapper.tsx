@@ -1,3 +1,5 @@
+import "../../styles/web/UI/FormGroupWrapper.scss";
+
 type FormGroupWrapperProps = {
   children: React.ReactNode;
   className?: string;

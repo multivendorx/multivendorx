@@ -43,7 +43,7 @@ import type {
 /**
  * Internal dependencies
  */
-import BasicInput from './BasicInput';
+import BasicInput, { BasicInputUI } from './BasicInput';
 import '../styles/web/Table.scss';
 import { Skeleton } from '@mui/material';
 
@@ -184,7 +184,7 @@ export const TableCell: React.FC<TableCellProps> = ({
                 <div className={`${header.class}`}>
                     {type === 'product' && children}
                     <div className="table-data-container">
-                        <BasicInput
+                        <BasicInputUI
                             inputClass="main-input"
                             type={header.type as InputType}
                             value={

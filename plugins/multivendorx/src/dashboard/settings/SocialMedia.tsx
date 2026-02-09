@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BasicInput, SuccessNotice, getApiLink } from 'zyra';
+import { BasicInput, BasicInputUI, SuccessNotice, getApiLink } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const SocialMedia = () => {
@@ -61,7 +61,7 @@ const SocialMedia = () => {
 						<i className="adminfont-facebook-fill"></i>{' '}
 						{__('Facebook', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="facebook"
 						value={formData.facebook}
 						onChange={handleChange}
@@ -76,7 +76,7 @@ const SocialMedia = () => {
 						<i className="adminfont-twitter"></i>{' '}
 						{__('X', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="twitter"
 						value={formData.twitter}
 						onChange={handleChange}
@@ -91,7 +91,7 @@ const SocialMedia = () => {
 						<i className="adminfont-linkedin-border"></i>{' '}
 						{__('LinkedIn', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="linkedin"
 						value={formData.linkedin}
 						onChange={handleChange}
@@ -106,7 +106,7 @@ const SocialMedia = () => {
 						<i className="adminfont-youtube"></i>{' '}
 						{__('YouTube', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="youtube"
 						value={formData.youtube}
 						onChange={handleChange}
@@ -121,7 +121,7 @@ const SocialMedia = () => {
 						<i className="adminfont-mail"></i>{' '}
 						{__('Instagram', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="instagram"
 						value={formData.instagram}
 						onChange={handleChange}
@@ -135,7 +135,7 @@ const SocialMedia = () => {
 						<i className="adminfont-mail"></i>{' '}
 						{__('Pinterest', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="pinterest"
 						value={formData.pinterest}
 						onChange={handleChange}

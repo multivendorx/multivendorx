@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 // Internal dependencies
 import '../styles/web/NestedComponent.scss';
 import ToggleSetting from './ToggleSetting';
-import BasicInput from './BasicInput';
+import BasicInput, { BasicInputUI } from './BasicInput';
 import SelectInput from './SelectInput';
 import MultiCheckBox from './MultiCheckbox';
 import TextArea from './TextArea';
@@ -286,7 +286,7 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                     <>
                         { ! ( rowIndex === 0 && field.skipLabel ) &&
                             field.label && <label>{ field.label }</label> }
-                        <BasicInput
+                        <BasicInputUI
                             type={ field.type }
                             id={ `${ field.key }-${ rowIndex }` }
                             name={ field.key }
@@ -296,18 +296,24 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                                     ? val
                                     : undefined
                             }
-                            preInsideText={ field.preInsideText }
-                            postInsideText={ field.postInsideText }
-                            preText={
-                                rowIndex === 0
+                            preText={ field.preInsideText }
+                            postText={ field.postInsideText }
+                            beforeElement={{
+                                type: 'preposttext',
+                                textType: 'pre',
+                                postText:
+                                    rowIndex === 0
                                     ? field.preTextFirstRow ?? field.preText
                                     : field.preText
-                            }
-                            postText={
-                                rowIndex === 0
-                                    ? field.postTextFirstRow ?? field.postText
-                                    : field.postText
-                            }
+                            }}
+                            afterElement={{
+                                type: 'preposttext',
+                                textType: 'post',
+                                postText:
+                                    rowIndex === 0
+                                        ? field.postTextFirstRow ?? field.postText
+                                        : field.postText,
+                            }}
                             min={ field.min ?? 0 }
                             description={ field.desc }
                             size={ field.size }
@@ -340,7 +346,6 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                             rowNumber={ 4 }
                             colNumber={ 50 }
                             description={ field.desc }
-                            descClass="settings-metabox-description"
                             onChange={ ( e ) => {
                                 if ( ! hasFieldAccess( field ) ) {
                                     return;
@@ -361,8 +366,6 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                         { ! ( rowIndex === 0 && field.skipLabel ) &&
                             field.label && <label>{ field.label }</label> }
                         <SelectInput
-                            wrapperClass="form-select-field-wrapper"
-                            descClass="settings-metabox-description"
                             name={ field.key }
                             description={ field.desc }
                             inputClass={ field.className }
@@ -436,10 +439,7 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                                     ? 'checkbox-list-side-by-side'
                                     : 'simple-checkbox'
                             }
-                            descClass="settings-metabox-description"
                             description={ field.desc }
-                            selectDeselectClass="admin-btn btn-purple select-deselect-trigger"
-                            inputWrapperClass="toggle-checkbox-header"
                             inputInnerWrapperClass={
                                 look === 'toggle'
                                     ? 'toggle-checkbox'
@@ -447,12 +447,9 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                             }
                             inputClass={ look }
                             tour={ field.tour }
-                            hintOuterClass="settings-metabox-description"
                             hintInnerClass="hover-tooltip"
                             idPrefix={ `${ field.key }-${ rowIndex }` }
                             selectDeselect={ field.selectDeselect }
-                            selectDeselectValue="Select / Deselect All"
-                            rightContentClass="settings-metabox-description"
                             rightContent={ field.rightContent }
                             options={
                                 Array.isArray( field.options )

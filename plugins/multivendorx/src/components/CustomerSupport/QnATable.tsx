@@ -13,6 +13,7 @@ import {
 	FormGroup,
 	ProPopup,
 	TableCard,
+	BasicInputUI,
 } from 'zyra';
 
 import { Dialog } from '@mui/material';
@@ -351,7 +352,7 @@ const Qna: React.FC = () => {
 					<>
 						<FormGroupWrapper>
 							<FormGroup label={__('Question', 'multivendorx')} htmlFor="question">
-								<BasicInput
+								<BasicInputUI
 									name="phone"
 									value={qna}
 									onChange={(e) => setQna(e.target.value)}

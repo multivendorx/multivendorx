@@ -4,7 +4,8 @@
   border-radius: 0.313rem;
   margin: 2.5rem 1rem 1rem;
 
-  .middle-child-container {
+  &.template-1 {
+    border: $border-light-small;
     position: relative;
 
     .tabs-wrapper {
@@ -37,17 +38,6 @@
           }
         }
       }
-    }
-  }
-
-  &.bg-wrapper {
-    padding: 1.5rem;
-    background: $background-white;
-  }
-
-  &.template-1 {
-    .middle-child-container {
-      border: $border-light-small;
     }
 
     .divider-wrapper {
@@ -222,9 +212,7 @@
 }
 
 .general-wrapper:has(.tab-bg) {
-  .middle-child-container {
-    border: none;
-  }
+  border: none;
 
   .divider-wrapper {
     display: none;
@@ -607,8 +595,6 @@
     }
 
     .desc{
-      color: $sub-text-color;
-
       a{
         color: $theme-color;
       }
@@ -703,14 +689,12 @@
     border: $border-light-small;
     margin: 0 1rem 1rem;
     border-radius: 0.313rem;
+    border: none;
 
     .card-content {
       padding: 0;
     }
 
-    .middle-child-container {
-      border: none;
-    }
 
     .tab-content {
       padding: 0.5rem;

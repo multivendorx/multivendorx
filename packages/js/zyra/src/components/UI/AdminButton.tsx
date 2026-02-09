@@ -146,15 +146,29 @@ const AdminButton: FieldComponent = {
                 });
             }
 
+            if (field.link) {
+                window.open(field.link, '_blank');
+            }
+
         };
+
+        const resolvedButtons: ButtonConfig | ButtonConfig[] =
+            Array.isArray(field.options) && field.options.length > 0
+                ? field.options.map((btn: any) => ({
+                        text: btn.label,
+                        onClick: (e) => {
+                            btn.onClick?.(e);
+                        },
+                    }))
+                : {
+                        text: field.name,
+                        onClick: handleClick,
+                    };
 
         return (
             <AdminButtonUI
                 wrapperClass={field.wrapperClass}
-                buttons={{
-                    text: field.name,
-                    onClick: handleClick,
-                }}
+                buttons={resolvedButtons}
             />
         );
     },

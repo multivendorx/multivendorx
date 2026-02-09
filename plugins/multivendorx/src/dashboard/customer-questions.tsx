@@ -13,6 +13,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	AdminButton,
+	BasicInputUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -504,7 +505,7 @@ const CustomerQuestions: React.FC = () => {
 				>
 					<FormGroupWrapper>
 						<FormGroup label={__('Question', 'multivendorx')} htmlFor="question">
-							<BasicInput
+							<BasicInputUI
 								name="question"
 								value={qna}
 								onChange={(e) => setQna(e.target.value)}
