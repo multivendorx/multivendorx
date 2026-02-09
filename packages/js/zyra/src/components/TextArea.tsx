@@ -14,7 +14,6 @@ interface TextAreaProps {
     proSetting?: boolean;
     readOnly?: boolean;
     description?: string;
-    descClass?: string;
     tinymceApiKey?: string;
     usePlainText?: boolean;
     onChange?: ( e: ChangeEvent< HTMLTextAreaElement > ) => void;
