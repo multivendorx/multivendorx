@@ -282,7 +282,135 @@ export default {
 					],
 				},
 			]
-		}
+		},
+		{
+            key: 'type_options',
+            type: 'checkbox',
+            classes: 'vertical',
+            label: __('When to send invoice emails  ', 'multivendorx'),
+
+            desc: __(
+                'Choose how invoices are automatically sent to customers and stores',
+                'multivendorx'
+            ),
+            // moduleEnabled: 'invoice',
+            options: [
+                {
+                    key: 'virtual',
+                    label: __(
+                        'Attach to order confirmation email',
+                        'multivendorx'
+                    ),
+                    desc: __('Include invoice PDF with the order confirmation customers already receive.', 'multivendorx'),
+                    value: 'virtual',
+            		proSetting: true,
+                },
+                {
+                    key: 'Send Separate Invoice Email',
+                    label: __('Send separate invoice email', 'multivendorx'),
+                    desc: __('Dedicated email with invoice', 'multivendorx'),
+                    value: 'downloadable',
+                },
+                {
+                    key: 'Notify Stores of Invoice Generation',
+                    label: __(
+                        'Notify stores',
+                        'multivendorx'
+                    ),
+                    desc: __('Send a copy to the vendor when their sale generates an invoice.', 'multivendorx'),
+                    value: 'downloadable',
+                },
+                {
+                    key: 'Generate Packing Slips',
+                    label: __('Include packing slip', 'multivendorx'),
+                    desc: __('Also generate and attach a packing slip with the invoice.', 'multivendorx'),
+                    value: 'downloadable',
+                },
+            ],
+            selectDeselect: true,
+        },
+		{
+			key: 'shipping_providers',
+			type: 'checkbox',
+			label: __(' Shipping carriers', 'multivendorx'),
+			moduleEnabled: 'store-shipping',
+			settingDescription: __(
+				' Choose which shipping providers stores can use. Only the carriers you enable will be available for sellers to ship their products and add tracking details. This helps keep all shipments through trusted, approved providers.',
+				'multivendorx'
+			),
+			 
+			addNewBtnText: 'Add Custom Provider',
+			options: [
+				{
+					key: 'australia_post',
+					label: __('Australia post', 'multivendorx'),
+					value: 'australia_post',
+					edit : true,
+				},
+				{
+					key: 'canada_post',
+					label: __('Canada post', 'multivendorx'),
+					value: 'canada_post',
+					edit : true,
+				},
+				{
+					key: 'city_link',
+					label: __('City link', 'multivendorx'),
+					value: 'city_link',
+					edit : true,
+				},
+				{
+					key: 'dhl',
+					label: __('DHL', 'multivendorx'),
+					value: 'dhl',
+					edit : true,
+				},
+				{
+					key: 'fastway_south_africa',
+					label: __('Fastway South Africa', 'multivendorx'),
+					value: 'fastway_south_africa',
+					edit : true,
+				},
+				{
+					key: 'fedex',
+					label: __('FedEx', 'multivendorx'),
+					value: 'fedex',
+					edit : true,
+				},
+				{
+					key: 'ontrac',
+					label: __('OnTrac', 'multivendorx'),
+					value: 'ontrac',
+					edit : true,
+				},
+				{
+					key: 'polish_shipping',
+					label: __('Polish shipping providers', 'multivendorx'),
+					value: 'polish_shipping',
+					edit : true,
+				},
+			],
+			selectDeselect: true,
+		},
+		{
+			key: 'taxable',
+			label: __('Charge tax on shipping cost', 'multivendorx'),
+			settingDescription: __(
+				'Shipping charges will be treated as taxable items during checkout. Otherwise shipping costs will be tax-free.',
+				'multivendorx'
+			),
+			desc: __('', 'multivendorx'),
+			type: 'checkbox',
+			moduleEnabled: 'store-shipping',
+			options: [
+				{
+					key: 'taxable',
+					value: 'taxable',
+				},
+			],
+			look: 'toggle',
+		},
+
 		// {
 		// 	key: 'section',
 		// 	type: 'section',

@@ -11,6 +11,7 @@ import { FieldComponent } from './types';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
+  number: BasicInput,
   select: SelectInput,
   'multi-select': SelectInput,
   preposttest: PrePostText,
@@ -19,5 +20,5 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'setting-toggle': ToggleSetting,
   'blocktext': BlockText,
   'clickable-list': ClickableList,
-  // 'checkbox': MultiCheckBox,
+  'checkbox': MultiCheckBox,
 };
