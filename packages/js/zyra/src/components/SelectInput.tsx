@@ -7,6 +7,7 @@ import type {
     ActionMeta,
     StylesConfig,
 } from 'react-select';
+import { FieldComponent } from './types';
 
 // Types
 export interface SelectOptions {
@@ -34,8 +35,6 @@ interface SelectInputProps {
     ) => void;
     onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
     proSetting?: boolean;
-    description?: string;
-    descClass?: string;
     preText?: React.ReactNode;
     postText?: React.ReactNode;
     size?: string;
@@ -86,7 +85,7 @@ const CustomNoOptionsMessage = (props: any) => {
     );
 };
 
-const SelectInput: React.FC<SelectInputProps> = ({
+const SelectInputUI: React.FC<SelectInputProps> = ({
     wrapperClass,
     selectDeselect,
     selectDeselectClass,
@@ -98,8 +97,6 @@ const SelectInput: React.FC<SelectInputProps> = ({
     inputClass,
     type = 'single-select',
     onChange,
-    description,
-    descClass,
     preText,
     postText,
     size,
@@ -216,14 +213,54 @@ const SelectInput: React.FC<SelectInputProps> = ({
                 />
                 {postText && <div className="after">{postText}</div>}
             </div>
-            {description && (
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={{ __html: description }}
-                ></p>
-            )}
         </div>
     );
+};
+
+const SelectInput: FieldComponent = {
+  render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+    <SelectInputUI
+        wrapperClass={field.wrapperClass}
+        name={field.key}
+        inputClass={field.className}
+        size={field.size}
+        type={field.type}
+        selectDeselect={field.selectDeselect}
+        selectDeselectValue="Select / Deselect All"
+        options={
+            Array.isArray(field.options)
+                ? field.options.map((opt) => ({
+                    value: String(opt.value),
+                    label: opt.label ?? String(opt.value),
+                }))
+                : []
+        }
+        value={
+            typeof value === 'number'
+                ? value.toString()
+                : value
+        }
+        onChange={(newValue) => {
+            if (!canAccess) return;
+
+            if (Array.isArray(newValue)) {
+            // multi-select
+            const values = newValue.map((opt) => opt.value);
+            onChange(values);
+            } else {
+            // single-select
+            onChange(newValue.value);
+            }
+      }}
+    />
+  ),
+
+  validate: (field, value) => {
+    if (field.required && !value?.[field.key]) {
+      return `${field.label} is required`;
+    }
+    return null;
+  },
 };
 
 export default SelectInput;

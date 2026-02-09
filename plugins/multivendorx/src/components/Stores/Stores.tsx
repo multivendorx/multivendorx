@@ -3,8 +3,8 @@ import StoreTable from './StoreTable';
 import EditStore from './Edit/EditStore';
 import {
 	AdminBreadcrumbs,
-	AdminButton,
-	BasicInput,
+	AdminButtonUI,
+	BasicInputUI,
 	CommonPopup,
 	EmailsInput,
 	FileInput,
@@ -58,41 +58,20 @@ const Stores = () => {
 		}
 	};
 
-	// update text in state immediately (no API here)
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
-
-		if (name === 'slug') {
-			const clean = value.replace(/[^a-zA-Z0-9-]/g, '');
-			updated.slug = clean.toLowerCase();
-		} else if (name === 'name') {
-			updated.name = value;
-			updated.slug = generateSlug(value);
-		}
-
-		setFormData(updated);
-	};
-
-	const saveEmails = (emailList: string[], primary: string) => {
-		const updated = {
-			...formData,
-			primary_email: primary,
-			emails: emailList,
-		};
-		setFormData(updated);
-	};
-
-	// run slug check only after user finishes typing (onBlur)
-	const handleNameBlur = async () => {
+	const handleSlugCheck = async () => {
 		if (!formData.slug) {
+			setError({
+				slug: {
+					type: 'error',
+					message: 'Slug is required',
+				},
+			});
 			return;
 		}
+
 		const exists = await checkSlugExists(formData.slug);
-		if (exists) // setError(`Slug "${formData.slug}" already exists.`);
-		{
+
+		if (exists) {
 			setError((prev) => ({
 				...prev,
 				slug: {
@@ -109,6 +88,56 @@ const Stores = () => {
 				},
 			}));
 		}
+	};
+
+
+	// update text in state immediately (no API here)
+	// const handleChange = (
+	// 	e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	// ) => {
+	// 	const { name, value } = e.target;
+	// 	const updated = { ...formData, [name]: value };
+
+	// 	if (name === 'slug') {
+	// 		const clean = value.replace(/[^a-zA-Z0-9-]/g, '');
+	// 		updated.slug = clean.toLowerCase();
+	// 	} else if (name === 'name') {
+	// 		updated.name = value;
+	// 		updated.slug = generateSlug(value);
+	// 	}
+
+	// 	setFormData(updated);
+	// };
+
+	const handleChange = (name: 'name' | 'slug', value: string) => {
+		setFormData((prev) => {
+			if (name === 'name') {
+				return {
+					...prev,
+					name: value,
+					slug: generateSlug(value),
+				};
+			}
+
+			if (name === 'slug') {
+				return {
+					...prev,
+					slug: value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase(),
+				};
+			}
+
+			return prev;
+		});
+	};
+
+
+	const saveEmails = (emailList: string[], primary: string) => {
+		const updated = {
+			...formData,
+			primary_email: primary,
+			emails: emailList,
+		};
+		setFormData(updated);
 	};
 
 	const handleSubmit = async () => {
@@ -277,7 +306,7 @@ const Stores = () => {
 								),
 							}}
 							footer={
-								<AdminButton
+								<AdminButtonUI
 									buttons={[
 										{
 											icon: 'close',
@@ -302,18 +331,25 @@ const Stores = () => {
 						>
 							<FormGroupWrapper>
 								<FormGroup label={__('Store name', 'multivendorx')} htmlFor="store-name">
-									<BasicInput
+									{/* <BasicInput
 										type="text"
 										name="name"
 										value={formData.name || ''}
 										onChange={handleChange}
 										required={true}
 										msg={error.name}
+									/> */}
+									<BasicInputUI
+										type="text"
+										name="name"
+										value={formData.name || ''}
+										onChange={(val) => handleChange('name', val as string)}
+										msg={error.name}
 									/>
 								</FormGroup>
 
 								<FormGroup label={__('Store slug', 'multivendorx')} htmlFor="store-slug">
-									<BasicInput
+									{/* <BasicInput
 										type="text"
 										name="slug"
 										value={formData.slug || ''}
@@ -326,6 +362,21 @@ const Stores = () => {
 										)}
 										onclickCallback={handleNameBlur}
 										msg={error.slug}
+									/> */}
+									<BasicInputUI
+										type="text"
+										name="slug"
+										value={formData.slug}
+										onChange={(val) => handleChange('slug', val as string)}
+										msg={error.slug}
+									/>
+
+									<AdminButtonUI
+										buttons={{
+											text: 'Check Slug',
+											onClick: handleSlugCheck,
+											className: 'purple',
+										}}
 									/>
 								</FormGroup>
 
@@ -360,7 +411,7 @@ const Stores = () => {
 								</FormGroup>
 
 								<FormGroup label={__('Primary owner', 'multivendorx')} htmlFor="store_owners">
-									<SelectInput
+									{/* <SelectInput
 										name="store_owners"
 										options={
 											appLocalizer?.store_owners || []
@@ -381,7 +432,7 @@ const Stores = () => {
 											};
 											setFormData(updated);
 										}}
-									/>
+									/> */}
 									{error?.primary?.message && (
 										<div className="invalid-massage">
 											{error?.primary?.message}
