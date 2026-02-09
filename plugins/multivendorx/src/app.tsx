@@ -23,6 +23,7 @@ import Notifications from './components/Notifications/Notifications';
 import TransactionHistory from './components/TransactionHistory/TransactionHistory';
 import { getTourSteps } from './components/Tour/TourSteps';
 import TableCardDemo from './components/table/TableCardDemo';
+import NotificationTabContent from './components/Notifications/HeaderNotifications';
 
 localStorage.setItem('force_multivendorx_context_reload', 'true');
 
@@ -241,7 +242,50 @@ const App = () => {
 			action: handleOpenFeaturePopup,
 		},
 	];
-
+	const popovers = [
+		{
+			toggleIcon: 'adminfont-notification',
+			width: '24rem',
+			template: 'tab',
+			defaultActiveTab: 'notifications',
+			tabs: [
+				{
+					id: 'notifications',
+					label: __('Notifications', 'multivendorx'),
+					icon: 'adminfont-notification',
+					content: <NotificationTabContent type="notification" />,
+					footer: {
+						url: '?page=multivendorx#&tab=notifications&subtab=notifications',
+						icon: 'adminfont-eye',
+						text: __('View all notifications', 'multivendorx')
+					}
+				},
+				{
+					id: 'activities',
+					label: __('Activities', 'multivendorx'),
+					icon: 'adminfont-activity',
+					content: <NotificationTabContent type="activity" />,
+					footer: {
+						url: '?page=multivendorx#&tab=notifications&subtab=activities',
+						icon: 'adminfont-eye',
+						text: __('View all activities', 'multivendorx')
+					}
+				},
+			],
+		},
+		{
+			toggleIcon: 'admin-icon adminfont-user-circle',
+			width: '14rem',
+			template: 'default',
+			items: profileItems,
+		},
+		{
+			toggleIcon: 'admin-icon adminfont-user-circle',
+			width: '14rem',
+			template: 'notification',
+			items: profileItems,
+		},
+	];
 	return (
 		<>
 			<Banner
@@ -264,25 +308,8 @@ const App = () => {
 				onResultClick={handleResultClick}
 				free={appLocalizer.freeVersion}
 				pro={appLocalizer.pro_data.version}
-				chatUrl=""
-				showProfile={true}
-				profileItems={profileItems}
-				notifications={<HeaderNotification type="notification" />}
-				showNotifications={true}
-				showActivities={true}
-				messages={[
-					{
-						heading: 'Support Ticket #123',
-						message: 'Customer reported an issue',
-						time: '15 mins ago',
-						icon: 'adminfont-user-network-icon',
-						color: 'red',
-						link: '/tickets/123',
-					},
-				]}
-				messagesLink="/messages"
+				popovers={popovers}
 			/>
-
 
 			<CommonPopup
 				open={openFeaturePopup}
