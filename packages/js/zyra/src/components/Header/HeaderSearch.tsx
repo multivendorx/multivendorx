@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { HeaderSearchProps } from './type';
+import { HeaderSearchProps } from '../types';
 
 const HeaderSearch: React.FC<HeaderSearchProps> = ({
     search,
@@ -41,18 +41,11 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     }, []);
 
     const triggerSearch = (value: string, newAction = action) => {
-        if (hasDropdown) {
-            onQueryUpdate({
-                searchValue: value,
-                searchAction: newAction,
-            });
-        } else {
-            onQueryUpdate({
-                searchValue: value,
-            });
-        }
+        onQueryUpdate({
+            searchValue: value,
+            ...(hasDropdown && { searchAction: newAction }),
+        });
     };
-
     const showResults = isOpen && results.length > 0;
 
     return (

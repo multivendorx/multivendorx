@@ -180,7 +180,7 @@ const ProPopup: React.FC<PopupProps> = (props) => {
                             <h2>{props.title || 'Confirmation'}</h2>
                             <p className="desc">{props.confirmMessage}</p>
                             <AdminButton
-                            wrapperClass="center"
+                                wrapperClass="center"
                                 buttons={[
                                     {
                                         icon: 'close',

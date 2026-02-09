@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SupportChatProps } from './type';
+import { SupportChatProps } from '../types';
 
 const SupportChat: React.FC<SupportChatProps> = ({ chatUrl }) => {
     const [contactSupportPopup, setContactSupportPopup] = useState(false);

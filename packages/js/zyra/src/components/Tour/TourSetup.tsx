@@ -4,7 +4,7 @@ import { TourProvider, ProviderProps, StepType } from '@reactour/tour';
 
 // Internal dependencies
 import Tour from './TourSteps';
-import { AppLocalizer } from './type';
+import { AppLocalizer } from '../types';
 
 
 // Props for TourSetup

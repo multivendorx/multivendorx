@@ -5,7 +5,7 @@ import React, { useRef } from 'react';
 import Popover from '../UI/Popover';
 import HeaderSearch from './HeaderSearch';
 import SupportChat from './SupportChat';
-import { AdminHeaderProps } from './type';
+import { AdminHeaderProps } from '../types';
 
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({

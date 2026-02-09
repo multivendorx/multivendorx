@@ -5,7 +5,7 @@ import { useTour } from '@reactour/tour';
 
 // Internal dependencies
 import { getApiLink } from '../../utils/apiService';
-import { TourProps } from './type';
+import { TourProps } from '../types';
 
 const Tour: React.FC< TourProps > = ( { appLocalizer, steps, forceOpen } ) => {
     const { setIsOpen, setSteps, setCurrentStep } = useTour();
