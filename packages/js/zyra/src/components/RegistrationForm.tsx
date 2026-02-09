@@ -15,14 +15,11 @@ import {
 } from './block';
 
 // Import existing components
-import BasicInput from './BasicInput';
+
 import ButtonCustomizer from './ButtonCustomiser';
 import Elements from './Elements';
 import SettingMetaBox from './SettingMetaBox';
-import MultipleOptions from './MultipleOption';
-import AddressField from './AddressField';
-import TextArea from './TextArea';
-import FileInput from './FileInput';
+import { FieldComponent } from './types';
 
 interface ButtonSetting {
     button_text?: string;
@@ -42,7 +39,7 @@ interface CustomFormProps {
         butttonsetting: ButtonSetting;
     }) => void;
     name: string;
-    proSettingChange: () => boolean;
+    canAccess: boolean;
     formTitlePlaceholder?: string;
     setting: Record<string, FormSetting>;
 }
@@ -53,18 +50,20 @@ export interface RegistrationTemplate {
     formfieldlist: Block[];
 }
 
-const CustomForm: React.FC<CustomFormProps> = ({
+const CustomFormUI: React.FC<CustomFormProps> = ({
+    field,
+    value,
     onChange,
-    name,
-    proSettingChange,
-    setting,
-    formTitlePlaceholder,
+    canAccess,
+    appLocalizer,
 }) => {
-    const formSetting = setting[name] || {};
     const settingHasChanged = useRef(false);
 
+    // Extract form data from the value
+    const formData = value?.[field.key] || {};
+    
     const [formFieldList, setFormFieldList] = useState<Block[]>(() => {
-        const inputList = formSetting.formfieldlist || [];
+        const inputList = formData.formfieldlist || [];
         if (!Array.isArray(inputList) || inputList.length <= 0) {
             return [createBlock('title')];
         }
@@ -72,7 +71,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
     });
 
     const [buttonSetting, setButtonSetting] = useState<ButtonSetting>(
-        formSetting.butttonsetting || {}
+        formData.butttonsetting || {}
     );
     const [opendInput, setOpendInput] = useState<Block | null>(null);
     const [activeTab, setActiveTab] = useState<'blocks'>('blocks');
@@ -86,23 +85,28 @@ const CustomForm: React.FC<CustomFormProps> = ({
 
     // Trigger onChange when form data changes
     useEffect(() => {
-        if (settingHasChanged.current) {
-            onChange({
-                formfieldlist: formFieldList,
-                butttonsetting: buttonSetting,
-            });
+        if (settingHasChanged.current && canAccess) {
+            const newValue = {
+                ...value,
+                [field.key]: {
+                    formfieldlist: formFieldList,
+                    butttonsetting: buttonSetting,
+                }
+            };
+            onChange(newValue);
             settingHasChanged.current = false;
         }
-    }, [formFieldList, buttonSetting, onChange]);
+    }, [formFieldList, buttonSetting, onChange, field.key, value, canAccess]);
 
     // Block Management
-
     const updateBlocks = (blocks: Block[]) => {
+        if (!canAccess) return;
         setFormFieldList(blocks);
         settingHasChanged.current = true;
     };
 
     const updateBlock = (index: number, patch: BlockPatch) => {
+        if (!canAccess) return;
         const updated = [...formFieldList];
         updated[index] = { ...updated[index], ...patch } as Block;
         updateBlocks(updated);
@@ -114,9 +118,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
     };
 
     const deleteBlock = (index: number) => {
-        if (proSettingChange()) {
-            return;
-        }
+        if (!canAccess) return;
 
         const updatedBlocks = [...formFieldList];
         updatedBlocks.splice(index, 1);
@@ -129,13 +131,13 @@ const CustomForm: React.FC<CustomFormProps> = ({
     };
 
     // Column Block Handlers
-
     const updateColumnBlock = (
         parentIndex: number,
         columnIndex: number,
         childIndex: number,
         patch: BlockPatch
     ) => {
+        if (!canAccess) return;
         const updated = [...formFieldList];
         const parentBlock = updated[parentIndex];
 
@@ -148,7 +150,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             } as Block;
             updatedColumns[columnIndex] = updatedColumn;
             
-            // Create new parent block with updated columns
             const newParentBlock: ColumnsBlock = {
                 ...parentBlock,
                 columns: updatedColumns,
@@ -156,7 +157,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             updated[parentIndex] = newParentBlock;
             updateBlocks(updated);
 
-            // Update opendInput if it's the same block
             if (opendInput?.id === updatedColumn[childIndex].id) {
                 setOpendInput(updatedColumn[childIndex]);
             }
@@ -168,9 +168,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         columnIndex: number,
         childIndex: number
     ) => {
-        if (proSettingChange()) {
-            return;
-        }
+        if (!canAccess) return;
 
         const updated = [...formFieldList];
         const parentBlock = updated[parentIndex];
@@ -179,10 +177,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
             const updatedColumns = [...parentBlock.columns];
             const deletedBlock = updatedColumns[columnIndex][childIndex];
             
-            // Remove the child from the column
             updatedColumns[columnIndex] = updatedColumns[columnIndex].filter((_, index) => index !== childIndex);
             
-            // Create new parent block with updated columns
             const newParentBlock: ColumnsBlock = {
                 ...parentBlock,
                 columns: updatedColumns,
@@ -190,7 +186,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             updated[parentIndex] = newParentBlock;
             updateBlocks(updated);
 
-            // Clear selection if deleted block was selected
             if (opendInput?.id === deletedBlock.id) {
                 setOpendInput(null);
                 setSelectedBlockLocation(null);
@@ -199,9 +194,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
     };
 
     const updateColumnLayout = (parentIndex: number, columnIndex: number, newList: Block[]) => {
-        if (proSettingChange()) {
-            return;
-        }
+        if (!canAccess) return;
 
         const updated = [...formFieldList];
         const parentBlock = updated[parentIndex];
@@ -210,7 +203,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             const updatedColumns = [...parentBlock.columns];
             updatedColumns[columnIndex] = newList.map(normalizeBlock);
             
-            // Create new parent block with updated columns
             const newParentBlock: ColumnsBlock = {
                 ...parentBlock,
                 columns: updatedColumns,
@@ -226,6 +218,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
         columnIndex: number,
         childIndex: number
     ) => {
+        if (!canAccess) return;
         setOpendInput(childBlock);
         setSelectedBlockLocation({
             parentIndex,
@@ -234,36 +227,19 @@ const CustomForm: React.FC<CustomFormProps> = ({
         });
     };
 
-    // Template Selection
-
-    const handleTemplateSelect = (template: RegistrationTemplate) => {
-        if (proSettingChange()) return;
-
-        const clonedFields: Block[] = structuredClone(template.formfieldlist);
-        updateBlocks(clonedFields);
-        setOpendInput(null);
-        setSelectedBlockLocation(null);
-    };
-
     // Settings Panel Change Handler
-
     const handleSettingsChange = (key: string, value: any) => {
-        if (proSettingChange()) {
-            return;
-        }
+        if (!canAccess) return;
 
-        // Check if this is a column child block
         if (selectedBlockLocation) {
             const { parentIndex, columnIndex, childIndex } = selectedBlockLocation;
             updateColumnBlock(parentIndex, columnIndex, childIndex, { [key]: value } as any);
         } else {
-            // Regular block update (not in a column)
             const index = formFieldList.findIndex(
                 (field) => field.id === opendInput?.id
             );
 
             if (index >= 0) {
-                // Special handling for layout changes on column blocks
                 if (key === 'layout' && formFieldList[index].type === 'columns') {
                     const updated = [...formFieldList];
                     const parentBlock = updated[index] as ColumnsBlock;
@@ -272,24 +248,19 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     const currentLayout = parentBlock.layout || '2-50';
                     const newLayout = value as typeof parentBlock.layout;
 
-                    // Get current and new column counts
                     const currentColCount = getColumnCount(currentLayout);
                     const newColCount = getColumnCount(newLayout);
 
                     let newColumns: Block[][] = [];
 
                     if (newColCount > currentColCount) {
-                        // Adding columns - preserve existing, add empty ones
                         newColumns = [...currentColumns];
                         for (let i = currentColCount; i < newColCount; i++) {
                             newColumns.push([]);
                         }
                     } else if (newColCount < currentColCount) {
-                        // Removing columns - merge extra columns into the last one
                         newColumns = currentColumns.slice(0, newColCount);
-                        const extraBlocks = currentColumns
-                            .slice(newColCount)
-                            .flat();
+                        const extraBlocks = currentColumns.slice(newColCount).flat();
                         if (extraBlocks.length > 0) {
                             newColumns[newColCount - 1] = [
                                 ...newColumns[newColCount - 1],
@@ -297,11 +268,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
                             ];
                         }
                     } else {
-                        // Same number of columns
                         newColumns = currentColumns;
                     }
 
-                    // Create updated column block
                     const updatedBlock: ColumnsBlock = {
                         ...parentBlock,
                         layout: newLayout,
@@ -310,25 +279,30 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     
                     updated[index] = updatedBlock;
                     updateBlocks(updated);
-
-                    // Update opendInput with new layout
                     setOpendInput(updatedBlock);
                 } else {
-                    // Regular update for non-column blocks or non-layout changes
                     updateBlock(index, { [key]: value } as any);
                 }
             }
         }
     };
 
-    // Dynamic Count Calculation
-
-    const getBlockCount = (blocks: typeof REGISTRATION_BLOCKS | typeof STORE_BLOCKS) => {
-        return blocks.length;
+    // Handle adding a new block
+    const handleAddBlock = (blockConfig: any) => {
+        if (!canAccess) return;
+        
+        const newField = createBlock(
+            blockConfig.value,
+            blockConfig.name,
+            blockConfig.category === 'store',
+            blockConfig.category === 'store'
+        );
+        updateBlocks([...formFieldList, newField]);
+        setOpendInput(null);
+        setSelectedBlockLocation(null);
     };
 
     // Tabs Configuration
-
     const tabs = [
         {
             id: 'blocks',
@@ -339,11 +313,10 @@ const CustomForm: React.FC<CustomFormProps> = ({
                         label="General" 
                         selectOptions={REGISTRATION_BLOCKS}
                         onClick={(value) => {
-                            if (proSettingChange()) return;
-                            const newField = createBlock(value as any);
-                            updateBlocks([...formFieldList, newField]);
-                            setOpendInput(null);
-                            setSelectedBlockLocation(null);
+                            const blockConfig = REGISTRATION_BLOCKS.find(b => b.value === value);
+                            if (blockConfig) {
+                                handleAddBlock(blockConfig);
+                            }
                         }}
                     >
                         <ReactSortable
@@ -351,6 +324,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                             setList={() => {}}
                             sort={false}
                             group={{ name: 'registration', pull: 'clone', put: false }}
+                            clone={(item) => ({ ...item, id: Date.now().toString() })}
                         >
                             {REGISTRATION_BLOCKS.map((item) => (
                                 <div key={item.value} className="elements-items">
@@ -365,18 +339,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
                         label="Let's get your store ready!" 
                         selectOptions={STORE_BLOCKS}
                         onClick={(value) => {
-                            if (proSettingChange()) return;
                             const storeBlock = STORE_BLOCKS.find(block => block.value === value);
                             if (storeBlock) {
-                                const newField = createBlock(
-                                    storeBlock.value as any,
-                                    storeBlock.name,
-                                    true,
-                                    true
-                                );
-                                updateBlocks([...formFieldList, newField]);
-                                setOpendInput(null);
-                                setSelectedBlockLocation(null);
+                                handleAddBlock(storeBlock);
                             }
                         }}
                     >
@@ -385,23 +350,13 @@ const CustomForm: React.FC<CustomFormProps> = ({
                             setList={() => {}}
                             sort={false}
                             group={{ name: 'registration', pull: 'clone', put: false }}
+                            clone={(item) => ({ ...item, id: Date.now().toString() })}
                         >
                             {STORE_BLOCKS.map((item) => (
                                 <div
                                     key={item.value}
                                     className="elements-items"
-                                    onClick={() => {
-                                        if (proSettingChange()) return;
-                                        const newField = createBlock(
-                                            item.value as any,
-                                            item.name,
-                                            true,
-                                            true
-                                        );
-                                        updateBlocks([...formFieldList, newField]);
-                                        setOpendInput(null);
-                                        setSelectedBlockLocation(null);
-                                    }}
+                                    onClick={() => handleAddBlock(item)}
                                 >
                                     <i className={item.icon} />
                                     <p className="list-title">{item.label}</p>
@@ -413,6 +368,17 @@ const CustomForm: React.FC<CustomFormProps> = ({
             ),
         },
     ];
+
+    if (!canAccess) {
+        return (
+            <div className="registration-from-wrapper">
+                <div className="locked-form-builder">
+                    <i className="adminfont-lock"></i>
+                    <p>This feature requires premium access</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="registration-from-wrapper">
@@ -443,11 +409,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
                 <ReactSortable
                     list={formFieldList}
                     setList={(newList) => {
-                        if (proSettingChange()) {
-                            return;
-                        }
-                        const normalized = newList.map(normalizeBlock);
-                        updateBlocks(normalized);
+                        if (!canAccess) return;
+                        updateBlocks(newList);
                     }}
                     group={{
                         name: 'registration',
@@ -472,6 +435,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     <div
                                         className={`form-field ${opendInput?.id === formField.id ? 'active' : ''}`}
                                         onClick={(e) => {
+                                            if (!canAccess) return;
                                             e.stopPropagation();
                                             setOpendInput(formField);
                                             setSelectedBlockLocation(null);
@@ -483,6 +447,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             </span>
                                             <span
                                                 onClick={(e) => {
+                                                    if (!canAccess) return;
                                                     e.stopPropagation();
                                                     deleteBlock(index);
                                                 }}
@@ -496,6 +461,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                                 block={formField as ColumnsBlock}
                                                 parentIndex={index}
                                                 onSelect={() => {
+                                                    if (!canAccess) return;
                                                     setOpendInput(formField);
                                                     setSelectedBlockLocation(null);
                                                 }}
@@ -507,13 +473,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                                 onUpdateChild={updateColumnBlock}
                                                 onDeleteChild={deleteColumnChild}
                                                 onSelectChild={handleColumnChildSelect}
-                                                proSettingChange={() => proSettingChange()}
                                                 groupName="registration"
-                                                BasicInput={BasicInput}
-                                                MultipleOptions={MultipleOptions}
-                                                TextArea={TextArea}
-                                                FileInput={FileInput}
-                                                AddressField={AddressField}
                                             />
                                         </section>
                                     </div>
@@ -522,17 +482,14 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                         key={formField.id}
                                         block={formField}
                                         onSelect={() => {
+                                            if (!canAccess) return;
                                             setOpendInput(formField);
-                                            setSelectedBlockLocation(null); // Regular block, not in column
+                                            setSelectedBlockLocation(null);
                                         }}
                                         onChange={(patch) => updateBlock(index, patch)}
                                         onDelete={() => deleteBlock(index)}
                                         isActive={opendInput?.id === formField.id}
-                                        BasicInput={BasicInput}
-                                        MultipleOptions={MultipleOptions}
-                                        TextArea={TextArea}
-                                        FileInput={FileInput}
-                                        AddressField={AddressField}
+                                        
                                     />
                                 )}
                             </div>
@@ -545,9 +502,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     text={buttonSetting.button_text || 'Submit'}
                     setting={buttonSetting}
                     onChange={(key, value, isRestoreDefaults = false) => {
-                        if (proSettingChange()) {
-                            return;
-                        }
+                        if (!canAccess) return;
                         settingHasChanged.current = true;
                         const previousSetting = buttonSetting || {};
                         if (isRestoreDefaults) {
@@ -582,4 +537,14 @@ const CustomForm: React.FC<CustomFormProps> = ({
     );
 };
 
-export default CustomForm;
+const RegistrationForm: FieldComponent = {
+    render: CustomFormUI,
+    validate: (field, value) => {
+        if (field.required && !value?.[field.name]) {
+            return `${field.label} is required`;
+        }
+        return null;
+    },
+};
+
+export default RegistrationForm;

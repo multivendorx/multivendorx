@@ -5,14 +5,9 @@ import {
     BlockPatch,
     ColumnsBlock,
 } from './types';
-import {
-    TextBlockView,
-    HeadingBlockView,
-    ButtonBlockView,
-    DividerBlockView,
-    ImageBlockView,
-} from './BlockView';
 import { normalizeBlock } from './blockCore';
+// import { BLOCK_REGISTRY, getBlockComponent } from './BlockRegistry';
+import { FIELD_REGISTRY } from '../FieldRegistry';
 
 interface BlockRendererProps {
     block: Block;
@@ -33,204 +28,39 @@ interface BlockRendererProps {
     onSelectChild?: (childBlock: Block, parentIndex: number, columnIndex: number, childIndex: number) => void;
     proSettingChange?: () => boolean;
     groupName?: string;
-    
-    // Pass through any additional components needed
-    BasicInput?: any;
-    MultipleOptions?: any;
-    TextArea?: any;
-    FileInput?: any;
-    AddressField?: any;
 }
 
-// Renders the content of a block based on its type
+// Renders the content of a block based on its type using the Block Registry
 export const renderBlockContent = (
     block: Block,
     onChange: (patch: BlockPatch) => void,
-    editable: boolean = true,
-    components?: {
-        BasicInput?: any;
-        MultipleOptions?: any;
-        TextArea?: any;
-        FileInput?: any;
-        AddressField?: any;
-    }
+    editable: boolean = true
 ): React.ReactNode => {
-    const { BasicInput, MultipleOptions, TextArea, FileInput, AddressField } = components || {};
-
-    switch (block.type) {
-        // Basic Text Inputs
-        case 'text':
-        case 'email':
-        case 'number':
-            if (!BasicInput) return null;
-            return (
-                <>
-                    <p>{block.label}</p>
-                    <BasicInput
-                        type={block.type}
-                        placeholder={block.placeholder || block.type}
-                        value={''}
-                        onChange={() => { }}
-                    />
-                </>
-            );
-
-        // Textarea
-        case 'textarea':
-            if (!TextArea) return null;
-            return (
-                <>
-                    <p>{block.label}</p>
-                    <TextArea name="content" />
-                </>
-            );
-
-        // Rich Text
-        case 'richtext':
-            return (
-                <TextBlockView
-                    block={block}
-                    onChange={(html) => onChange({ html })}
-                    editable={editable}
-                />
-            );
-
-        // Heading
-        case 'heading':
-            return (
-                <HeadingBlockView
-                    block={block}
-                    onChange={(text) => onChange({ text })}
-                    editable={editable}
-                />
-            );
-
-        // Button
-        case 'button':
-            return (
-                <ButtonBlockView
-                    block={block}
-                    onChange={(text) => onChange({ text })}
-                    editable={editable}
-                />
-            );
-
-        // Divider
-        case 'divider':
-            return <DividerBlockView block={block} />;
-
-        // Image
-        case 'image':
-            return (
-                <ImageBlockView
-                    block={block}
-                    onChange={(src) => onChange({ src })}
-                    editable={editable}
-                />
-            );
-
-        // Selection Blocks
-        case 'radio':
-        case 'dropdown':
-        case 'multiselect':
-        case 'checkboxes':
-            if (!MultipleOptions) return null;
-            return (
-                <MultipleOptions
-                    formField={block}
-                    type={block.type}
-                    selected={false}
-                />
-            );
-
-        // Date Picker
-        case 'datepicker':
-            if (!BasicInput) return null;
-            return (
-                <>
-                    <p>{block.label}</p>
-                    <BasicInput
-                        type="date"
-                        placeholder={block.placeholder || block.type}
-                        value={''}
-                        onChange={() => { }}
-                    />
-                </>
-            );
-
-        // Time Picker
-        case 'TimePicker':
-            if (!BasicInput) return null;
-            return (
-                <>
-                    <p>{block.label}</p>
-                    <BasicInput
-                        type="time"
-                        placeholder={block.placeholder || block.type}
-                        value={''}
-                        onChange={() => { }}
-                    />
-                </>
-            );
-
-        // Attachment
-        case 'attachment':
-            if (!FileInput) return null;
-            return (
-                <>
-                    <p>{block.label}</p>
-                    <FileInput
-                        value={''}
-                        inputClass="form-input"
-                        name="image"
-                        type="hidden"
-                        imageWidth={75}
-                        imageHeight={75}
-                    />
-                </>
-            );
-
-        // Section
-        case 'section':
-            if (!BasicInput) return null;
-            return (
-                <BasicInput
-                    type="text"
-                    value={block.label}
-                    placeholder={block.placeholder || block.type}
-                    onChange={() => { }}
-                />
-            );
-
-        // Recaptcha
-        case 'recaptcha':
-            return (
-                <div className={`main-input-wrapper ${!block.sitekey ? 'recaptcha' : ''}`}>
-                    {block.sitekey
-                        ? 'reCAPTCHA has been successfully added to the form.'
-                        : 'reCAPTCHA is not configured.'}
-                </div>
-            );
-
-        // Address
-        case 'address':
-            if (!AddressField) return null;
-            return (
-                <AddressField
-                    formField={block}
-                    opendInput={null}
-                    setOpendInput={() => { }}
-                />
-            );
-
-        // Title
-        case 'title':
-            return null; // Title is handled separately
-
-        // Default
-        default:
-            return <div>Unknown block type: {(block as any).type}</div>;
-    }
+    // Get the component from the registry
+    const blockComponent = FIELD_REGISTRY[block.type];
+    console.log(block.type)
+    
+    // If component exists in registry, render it
+    // if (blockComponent) {
+    //     return blockComponent.render({ block, onChange, editable });
+    // }
+    const Render = blockComponent.render;
+            
+        
+        return (
+            <Render
+                field={block}
+                onChange={onChange}
+            />
+        );
+    
+    // Fallback for unknown block types
+    return (
+        <div className="unknown-block-type">
+            <i className="adminfont-alert-triangle"></i>
+            <p>Unknown block type: {block.type}</p>
+        </div>
+    );
 };
 
 // Main Block Renderer Component
@@ -253,13 +83,6 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
     onSelectChild,
     proSettingChange,
     groupName = 'blocks',
-    
-    // Component props
-    BasicInput,
-    MultipleOptions,
-    TextArea,
-    FileInput,
-    AddressField,
 }) => {
     // Special handling for column blocks
     if (block.type === 'columns') {
@@ -336,11 +159,6 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
                                                 isColumnChild={true}
                                                 parentIndex={parentIndex}
                                                 columnIndex={colIndex}
-                                                BasicInput={BasicInput}
-                                                MultipleOptions={MultipleOptions}
-                                                TextArea={TextArea}
-                                                FileInput={FileInput}
-                                                AddressField={AddressField}
                                             />
                                         ))}
                                     </ReactSortable>
@@ -362,7 +180,7 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
         }
     }
 
-    // Regular block rendering
+    // Regular block rendering using registry
     return (
         <div
             className={`form-field ${isActive ? 'active' : ''}`}
@@ -388,15 +206,9 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
                 </section>
             )}
 
-            {/* FIELD CONTENT */}
+            {/* FIELD CONTENT - Rendered via Registry */}
             <section className="form-field-container-wrapper">
-                {renderBlockContent(block, onChange, editable, {
-                    BasicInput,
-                    MultipleOptions,
-                    TextArea,
-                    FileInput,
-                    AddressField,
-                })}
+                {renderBlockContent(block, onChange, editable)}
             </section>
         </div>
     );

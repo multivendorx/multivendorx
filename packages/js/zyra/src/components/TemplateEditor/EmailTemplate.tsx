@@ -24,6 +24,7 @@ import MultipleOptions from '../MultipleOption';
 import TextArea from '../TextArea';
 import FileInput from '../FileInput';
 import AddressField from '../AddressField';
+import { FieldComponent } from '../types';
 
 export interface EmailTemplate {
     id: string;
@@ -64,7 +65,7 @@ const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
     },
 ];
 
-const EmailTemplate: React.FC<EmailTemplateProps> = ({
+export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
     templates: propTemplates,
     defaultTemplateId,
 }) => {
@@ -476,6 +477,16 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
             </div>
         </div>
     );
+};
+
+const EmailTemplate: FieldComponent = {
+    render: EmailTemplateUI,
+    validate: (field, value) => {
+        if (field.required && !value?.[field.name]) {
+            return `${field.label} is required`;
+        }
+        return null;
+    },
 };
 
 export default EmailTemplate;

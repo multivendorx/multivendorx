@@ -6,8 +6,10 @@ import ExpandablePanelGroup from './ExpandablePanelGroup';
 import ToggleSetting from './ToggleSetting';
 import BlockText from './BlockText';
 import ClickableList from './ClickableList';
+import RegistrationForm from './RegistrationForm';
 import MultiCheckBox from './MultiCheckbox';
 import { FieldComponent } from './types';
+import EmailTemplate from './TemplateEditor/EmailTemplate';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -19,5 +21,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'setting-toggle': ToggleSetting,
   'blocktext': BlockText,
   'clickable-list': ClickableList,
+  'form-builder': RegistrationForm,
+  'email-template': EmailTemplate,
   // 'checkbox': MultiCheckBox,
 };
