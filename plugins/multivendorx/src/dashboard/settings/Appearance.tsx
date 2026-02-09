@@ -2,13 +2,13 @@ import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
-	BasicInput,
 	FileInput,
 	SelectInput,
 	getApiLink,
 	SuccessNotice,
 	FormGroupWrapper,
 	FormGroup,
+	BasicInputUI,
 } from 'zyra';
 
 interface FormData {
@@ -218,7 +218,7 @@ const Appearance = () => {
 				{/* Video Banner */}
 				{formData.banner_type === 'video' && (
 					<FormGroup label={__('Banner Video URL', 'multivendorx')} htmlFor="banner_video">
-						<BasicInput
+						<BasicInputUI
 							name="banner_video"
 							type="text"
 							value={formData.banner_video || ''}

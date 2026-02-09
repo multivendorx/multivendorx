@@ -317,15 +317,23 @@ const SetupWizard: React.FC = () => {
 						{
 							key: 'commission_fixed',
 							type: 'number',
-							preInsideText: __('$', 'multivendorx'),
+							preText: appLocalizer.currency_symbol,
 							size: '8rem',
-							preText: 'Fixed',
-							postText: '+',
+							beforeElement: {
+								type: 'preposttext',
+								textType: 'pre',
+								preText: 'Fixed',
+							},
+							afterElement: {
+								type: 'preposttext',
+								textType: 'post',
+								postText: '+',
+							},
 						},
 						{
 							key: 'commission_percentage',
 							type: 'number',
-							postInsideText: __('%', 'multivendorx'),
+							postText: __('%', 'multivendorx'),
 							size: '8rem',
 						},
 					],

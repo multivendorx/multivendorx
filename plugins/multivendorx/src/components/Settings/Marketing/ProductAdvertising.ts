@@ -27,24 +27,45 @@ export default {
 					key: 'paid_promotion_limit',
 					type: 'number',
 					size: '8rem',
-					preText: __('Each store can promote up to', 'multivendorx'),
-					postText: __(
-						'products for free, and can promote up to',
-						'multivendorx'
-					),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('Each store can promote up to', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
+							'products for free, and can promote up to',
+							'multivendorx'
+						),
+					},
 				},
 				{
 					key: 'promotion_slot_cost',
 					type: 'number',
 					size: '8rem',
-					// preText: __(' and additionally promote up to', 'multivendorx'),
-					postText: __('additional products by paying', 'multivendorx'),
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
+							'additional products by paying',
+							'multivendorx'
+						),
+					},
 				},
 				{
 					key: 'promotion_slot_cost_',
 					type: 'number',
 					size: '8rem',
-					postText: __('per promotion slot.', 'multivendorx'),
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
+							'per promotion slot.',
+							'multivendorx'
+						),
+					},
 				},
 			],
 		},
@@ -57,7 +78,11 @@ export default {
 				'Set the maximum number of days a product can be promoted.',
 				'multivendorx'
 			),
-			preText: __('Promoted products can stay visible for up to', 'multivendorx'),
+			beforeElement: {
+				type: 'preposttext',
+				textType: 'pre',
+				preText: __('Promoted products can stay visible for up to', 'multivendorx'),
+			},
 			postInsideText: __('days', 'multivendorx'),
 			size: '8rem',
 			moduleEnabled: 'advertisement',
@@ -67,7 +92,7 @@ export default {
 			key: 'store_advertisement_advanced_settings',
 			type: 'checkbox',
 			label: __('Advanced advertising settings', 'multivendorx'),
-			settingDescription: __( 'Manage how promoted products appear. Control featured status, catalog placement, subscription inclusion, and out-of-stock visibility for advertised items.', 'multivendorx' ),
+			settingDescription: __('Manage how promoted products appear. Control featured status, catalog placement, subscription inclusion, and out-of-stock visibility for advertised items.', 'multivendorx'),
 			options: [
 				{
 					key: 'enable_advertisement_in_subscription',

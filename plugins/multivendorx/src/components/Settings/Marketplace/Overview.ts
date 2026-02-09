@@ -83,12 +83,12 @@ export default {
 			),
 			size: '8rem',
 			beforeElement: {
-				type: 'preposttest',
+				type: 'preposttext',
 				textType: 'pre',
 				preText: appLocalizer.site_url + '/',
 			},
 			afterElement: {
-				type: 'preposttest',
+				type: 'preposttext',
 				textType: 'post',
 				postText: '/sample-store/',
 			},

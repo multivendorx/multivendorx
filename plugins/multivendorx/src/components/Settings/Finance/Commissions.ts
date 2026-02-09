@@ -5,10 +5,18 @@ const gatewayFields = gatewayList.flatMap((gateway) => [
 	{
 		key: `${gateway.value}_fixed`,
 		type: 'number',
-		preInsideText: __('$', 'multivendorx'),
+		preText: appLocalizer.currency_symbol,
 		size: '8rem',
-		preText: gateway.label,
-		postText: '+',
+		beforeElement: {
+			type: 'preposttext',
+			textType: 'pre',
+			preText: gateway.label,
+		},
+		afterElement: {
+			type: 'preposttext',
+			textType: 'post',
+			postText: '+',
+		},
 	},
 	{
 		key: `${gateway.value}_percentage`,
@@ -28,10 +36,18 @@ const nestedFields = [
 	{
 		key: 'default_fixed',
 		type: 'number',
-		preInsideText: __('$', 'multivendorx'),
+		preText: appLocalizer.currency_symbol,
 		size: '8rem',
-		preText: 'Default',
-		postText: '+',
+		beforeElement: {
+			type: 'preposttext',
+			textType: 'pre',
+			preText: __('Default', 'multivendorx'),
+		},
+		afterElement: {
+			type: 'preposttext',
+			textType: 'post',
+			postText: '+',
+		},
 	},
 	{
 		key: 'default_percentage',
@@ -133,10 +149,14 @@ export default {
 							value: 'product_price',
 						},
 					],
-					preInsideText: '$',
+					preText: appLocalizer.currency_symbol,
 					size: '8rem',
 					skipFirstRow: true,
-					postText: 'then',
+					afterElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: 'then',
+					},
 					dependent: {
 						key: 'rule_type',
 						set: true,
@@ -152,10 +172,14 @@ export default {
 							value: 'product_qty',
 						},
 					],
-					preInsideText: '$',
+					preText: appLocalizer.currency_symbol,
 					size: '8rem',
 					skipFirstRow: true,
-					postText: 'then',
+					afterElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: 'then',
+					},
 					dependent: {
 						key: 'rule_type',
 						set: true,
@@ -172,8 +196,12 @@ export default {
 						},
 					],
 					size: '8rem',
-					preInsideText: '$',
-					postText: 'then',
+					preText: appLocalizer.currency_symbol,
+					afterElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: 'then',
+					},
 					dependent: {
 						key: 'rule_type',
 						set: true,
@@ -183,18 +211,33 @@ export default {
 				{
 					key: 'commission_fixed',
 					type: 'text',
-					preInsideText: __('$', 'multivendorx'),
+					preText: appLocalizer.currency_symbol,
 					size: '8rem',
-					preText: 'fixed',
 					preTextFirstRow: 'Fixed',
-					postText: '+',
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('fixed', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
+							'+',
+							'multivendorx'
+						),
+					},
 				},
 				{
 					key: 'commission_percentage',
 					type: 'number',
 					size: '8rem',
 					postInsideText: __('%', 'multivendorx'),
-					postText: 'commission will be charged.',
+					afterElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: 'commission will be charged.',
+					},
 					postTextFirstRow: '',
 				},
 			],
@@ -217,10 +260,21 @@ export default {
 				{
 					key: 'commission_fixed',
 					type: 'number',
-					preInsideText: __('$', 'multivendorx'),
+					preText: appLocalizer.currency_symbol,
 					size: '8rem',
-					preText: 'Fixed',
-					postText: '+',
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('fixed', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
+							'+',
+							'multivendorx'
+						),
+					},
 				},
 				{
 					key: 'commission_percentage',
@@ -329,10 +383,18 @@ export default {
 				{
 					key: 'commission_fixed',
 					type: 'text',
-					preInsideText: __('$', 'multivendorx'),
+					preText: appLocalizer.currency_symbol,
 					size: '8rem',
-					preText: 'Charge a fixed',
-					postText: '+'
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('Charge a fixed', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: '+',
+					},
 				},
 				{
 					key: 'commission_percentage',
@@ -354,7 +416,6 @@ export default {
 							label: 'deducted from the store’s commission',
 						},
 					],
-					// postText: "",
 				},
 			],
 			moduleEnabled: 'marketplace-fee',
@@ -380,15 +441,30 @@ export default {
 				{
 					key: 'facilitator_fixed',
 					type: 'number',
-					preInsideText: __('$', 'multivendorx'),
+					preText: appLocalizer.currency_symbol,
 					size: '8rem',
-					preText: 'Fixed',
-					postText: '+',
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('fixed', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
+							'+',
+							'multivendorx'
+						),
+					},
 				},
 				{
 					key: 'facilitator_percentage',
 					type: 'number',
-					postInsideText: __('%', 'multivendorx'),
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __('%'),
+					},
 					size: '8rem',
 				},
 			],
