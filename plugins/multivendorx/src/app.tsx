@@ -278,13 +278,7 @@ const App = () => {
 			width: '14rem',
 			template: 'default',
 			items: profileItems,
-		},
-		{
-			toggleIcon: 'admin-icon adminfont-user-circle',
-			width: '14rem',
-			template: 'notification',
-			items: profileItems,
-		},
+		}
 	];
 	return (
 		<>
