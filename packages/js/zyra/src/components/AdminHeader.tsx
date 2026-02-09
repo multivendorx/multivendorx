@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, ReactNode } from 'react';
 
 // Internal Dependencies
 import Popover from './UI/Popover';
+import HeaderSearch from './Header/HeaderSearch';
 
 // Accepts searchIndex-style items directly
 type SearchItem = {
@@ -43,12 +44,7 @@ type OpenPanel =
 
 type AdminHeaderProps = {
     brandImg: string;
-    query: string;
     results?: SearchItem[];
-    onSearchChange: (value: string) => void;
-    onResultClick: (res: SearchItem) => void;
-    onSelectChange: (value: string) => void;
-    selectValue: string;
     free?: string;
     pro?: string;
     showDropdown?: boolean;
@@ -67,20 +63,27 @@ type AdminHeaderProps = {
     profileItems?: ProfileItem[];
     showActivities?: boolean;
     activities?: ReactNode;
+    search?: {
+        placeholder?: string;
+        options?: { label: string; value: string }[];
+    };
+
+    onQueryUpdate: (payload: {
+        searchValue: string;
+        searchAction?: string;
+    }) => void;
+
+    onResultClick: (res: SearchItem) => void;
 };
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({
     brandImg,
-    query,
     results = [],
-    onSearchChange,
+    search,
+    onQueryUpdate,
     onResultClick,
-    onSelectChange,
-    selectValue,
     free,
     pro,
-    showDropdown,
-    dropdownOptions,
     notifications,
     messagesLink,
     messages,
@@ -89,8 +92,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     showProfile,
     chatUrl,
     profileItems,
-    showActivities,
-    activities
 }) => {
     const [openPanel, setOpenPanel] = useState<OpenPanel>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -115,9 +116,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
         };
     }, []);
 
-    // Open dropdown automatically when there are results
-    const showSearchDropdown = openPanel === 'search' && results.length > 0;
-
     return (
         <>
             <div className="admin-header" ref={wrapperRef}>
@@ -137,123 +135,15 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                 </div>
 
                 <div className="right-section">
-                    <div className="search-field header-search">
-                        <div className="search-action">
-                            {showDropdown &&
-                                dropdownOptions &&
-                                dropdownOptions.length > 0 && (
-                                    <select
-                                        value={selectValue}
-                                        onChange={(e) =>
-                                            onSelectChange(e.target.value)
-                                        }
-                                    >
-                                        {dropdownOptions.map((opt) => (
-                                            <option
-                                                key={opt.value}
-                                                value={opt.value}
-                                            >
-                                                {opt.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                )}
-                        </div>
-
-                        <div className="search-section">
-                            <input
-                                type="text"
-                                placeholder="Search Settings"
-                                value={query}
-                                onChange={(e) =>{
-                                    onSearchChange(e.target.value)
-                                    setOpenPanel('search');
-                                }}
-                            />
-                            <i className="adminfont-search"></i>
-                        </div>
-
-                        { /* dropdown render */}
-                        {showSearchDropdown && (
-                            <ul className="search-dropdown">
-                                {results.map((r, i) => {
-                                    const name = r.name || '(No name)';
-                                    const desc = r.desc || '';
-
-                                    return (
-                                        <li
-                                            key={i}
-                                            onClick={() => {
-                                                onResultClick(r);
-                                                closeAll(); // close dropdown on click
-                                            }}
-                                        >
-                                            <div className="icon-wrapper">
-                                                {r.icon && (
-                                                    <i className={r.icon}></i>
-                                                )}
-                                            </div>
-
-                                            <div className="details">
-                                                <div className="title">
-                                                    {name.length > 60
-                                                        ? name.substring(
-                                                            0,
-                                                            60
-                                                        ) + '...'
-                                                        : name}
-                                                </div>
-                                                {desc && (
-                                                    <div className="desc">
-                                                        {desc.length > 80
-                                                            ? desc.substring(
-                                                                0,
-                                                                80
-                                                            ) + '...'
-                                                            : desc}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        )}
-                    </div>
+                    <HeaderSearch
+                        search={search}
+                        results={results}
+                        onQueryUpdate={onQueryUpdate}
+                        onResultClick={onResultClick}
+                    />
 
                     { /* Notifications */}
-                    {showNotifications && (
-                        // <div className="icon-wrapper">
-                        //     <i
-                        //         className="admin-icon adminfont-notification"
-                        //         title="Notifications"
-                        //         onClick={() => {
-                        //             setNotifOpen(!notifOpen);
-                        //             setProfileOpen(false);
-                        //             setMessageOpen(false);
-                        //             setActivityOpen(false);
-                        //         }}
-                        //     ></i>
-                            notifications
-                        // </div>
-                    )}
-
-                    { /* Activities */}
-                    {/* {showActivities && (
-                        <div className="icon-wrapper">
-                            <i
-                                className="admin-icon adminfont-notification"
-                                title="Activities"
-                                onClick={() => {
-                                    setActivityOpen(!activityOpen);
-                                    setNotifOpen(false);
-                                    setProfileOpen(false);
-                                    setMessageOpen(false);
-                                }}
-                            ></i>
-                            {activityOpen && activities}
-                        </div>
-                    )} */}
+                    {showNotifications && (notifications)}
 
                     { /* Messages */}
                     {showMessages && messages && messages.length > 0 && (
@@ -261,7 +151,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             <i
                                 className="admin-icon adminfont-enquiry"
                                 title="Messages"
-                                onClick={() => 
+                                onClick={() =>
                                     setOpenPanel(
                                         openPanel === 'messages'
                                             ? null
@@ -329,20 +219,18 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                     )}
 
                     {showProfile && profileItems && (
-                        <>
-                            <Popover
-                                toggleIcon="admin-icon adminfont-user-circle"
-                                width="14rem"
-                                template="default"
-                                items={profileItems.map((item) => ({
-                                    title: item.title,
-                                    icon: item.icon,
-                                    link: item.link,
-                                    targetBlank: item.targetBlank,
-                                    action: item.action,
-                                }))}
-                            />
-                        </>
+                        <Popover
+                            toggleIcon="admin-icon adminfont-user-circle"
+                            width="14rem"
+                            template="default"
+                            items={profileItems.map((item) => ({
+                                title: item.title,
+                                icon: item.icon,
+                                link: item.link,
+                                targetBlank: item.targetBlank,
+                                action: item.action,
+                            }))}
+                        />
                     )}
                 </div>
             </div>
