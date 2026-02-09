@@ -355,7 +355,7 @@ const ApprovalQueue = () => {
 				Link={Link}
 				hideTitle={true}
 				hideBreadcrumb={true}
-				template={'template-3'}
+				variant={'card'}
 				premium={false}
 				menuIcon={true}
 				desc={true}
