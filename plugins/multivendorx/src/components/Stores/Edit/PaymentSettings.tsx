@@ -319,7 +319,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Fixed', 'multivendorx')} htmlFor="Fixed">
 								<BasicInputUI
-									preText="$"
+									preText={appLocalizer.currency_symbol}
 									name="commission_fixed"
 									 afterElement= {{
 										type: 'preposttext',
