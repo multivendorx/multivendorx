@@ -33,61 +33,61 @@ interface Products {
 
 const products: Products[] = [
 	{
-	title: __('Marketplace monetization', 'multivendorx'),
-	description: __(
-		'Create flexible membership plans that let you charge stores for access, features, and growth opportunities.',
-		'multivendorx'
-	),
-},
-{
-	title: __('Built-in tax compliance', 'multivendorx'),
-	description: __(
-		'Automatically generate tax-ready invoices for orders, commissions, and payouts to keep your marketplace compliant.',
-		'multivendorx'
-	),
-},
-{
-	title: __('Franchise-ready scaling', 'multivendorx'),
-	description: __(
-		'Run multiple regional or franchise marketplaces with centralized control and consistent branding.',
-		'multivendorx'
-	),
-},
-{
-	title: __('Recurring revenue engine', 'multivendorx'),
-	description: __(
-		'Enable subscription-based selling so your marketplace benefits from predictable, recurring income.',
-		'multivendorx'
-	),
-},
-{
-	title: __('Service and booking sales', 'multivendorx'),
-	description: __(
-		'Allow stores to sell bookings for services, appointments, rentals, and experiences on your platform.',
-		'multivendorx'
-	),
-},
-{
-	title: __('High-value rentals', 'multivendorx'),
-	description: __(
-		'Launch rental marketplace with date-based availability and higher order values.',
-		'multivendorx'
-	),
-},
-{
-	title: __('Verified stores', 'multivendorx'),
-	description: __(
-		'Verify store identities using documents and badges to build trust and reduce risk on your marketplace.',
-		'multivendorx'
-	),
-},
-{
-	title: __('Vacation mode', 'multivendorx'),
-	description: __(
-		'Allow stores to temporarily pause their shop during vacations while keeping their listings intact.',
-		'multivendorx'
-	),
-},
+		title: __('Marketplace monetization', 'multivendorx'),
+		description: __(
+			'Create flexible membership plans that let you charge stores for access, features, and growth opportunities.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Built-in tax compliance', 'multivendorx'),
+		description: __(
+			'Automatically generate tax-ready invoices for orders, commissions, and payouts to keep your marketplace compliant.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Franchise-ready scaling', 'multivendorx'),
+		description: __(
+			'Run multiple regional or franchise marketplaces with centralized control and consistent branding.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Recurring revenue engine', 'multivendorx'),
+		description: __(
+			'Enable subscription-based selling so your marketplace benefits from predictable, recurring income.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Service and booking sales', 'multivendorx'),
+		description: __(
+			'Allow stores to sell bookings for services, appointments, rentals, and experiences on your platform.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('High-value rentals', 'multivendorx'),
+		description: __(
+			'Launch rental marketplace with date-based availability and higher order values.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Verified stores', 'multivendorx'),
+		description: __(
+			'Verify store identities using documents and badges to build trust and reduce risk on your marketplace.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Vacation mode', 'multivendorx'),
+		description: __(
+			'Allow stores to temporarily pause their shop during vacations while keeping their listings intact.',
+			'multivendorx'
+		),
+	},
 
 
 ];
@@ -115,7 +115,7 @@ const Route = () => {
 			{tab === 'help-support' && <HelpSupport />}
 			{tab === 'notifications' && <Notifications />}
 			{tab === 'table-card' && <TableCardDemo />}
-			
+
 			{applyFilters(
 				'multivendorx_admin_submenu_render',
 				null,
@@ -132,10 +132,8 @@ const Route = () => {
 
 const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);
-	const [query, setQuery] = useState('');
-	const [results, setResults] = useState<SearchItem[]>([]);
-	const [selectValue, setSelectValue] = useState('all');
 	const [openFeaturePopup, setOpenFeaturePopup] = useState(false);
+	const [results, setResults] = useState<SearchItem[]>([]);
 
 	const handleOpenFeaturePopup = () => {
 		setOpenFeaturePopup(true);
@@ -172,47 +170,38 @@ const App = () => {
 			});
 	}, [currentTabParams]);
 
-	// 🔹 Search handlers
-	const handleSearchChange = (value: string) => {
-		setQuery(value);
-
-		if (!value.trim()) {
+	const handleQueryUpdate = ({
+		searchValue,
+		searchAction,
+	}: {
+		searchValue: string;
+		searchAction?: string;
+	}) => {
+		if (!searchValue.trim()) {
 			setResults([]);
 			return;
 		}
 
-		const lowerValue = value.toLowerCase();
+		const lower = searchValue.toLowerCase();
 
 		const filtered = searchIndex.filter((item) => {
-			// Filter by dropdown selection
-			if (selectValue !== 'all' && item.tab !== selectValue) {
+			// Ignore action if "all"
+			if (searchAction && searchAction !== 'all' && item.tab !== searchAction) {
 				return false;
 			}
 
-			// Case-insensitive search
-			const name = item.name?.toLowerCase() || '';
-			const desc = item.desc?.toLowerCase() || '';
-			return name.includes(lowerValue) || desc.includes(lowerValue);
+			return (
+				item.name?.toLowerCase().includes(lower) ||
+				item.desc?.toLowerCase().includes(lower)
+			);
 		});
 
 		setResults(filtered);
 	};
 
-	const handleSelectChange = (value: string) => {
-		setSelectValue(value);
-
-		// Re-run search for current query whenever dropdown changes
-		if (query.trim()) {
-			handleSearchChange(query);
-		} else {
-			setResults([]);
-		}
-	};
 
 	const handleResultClick = (item: SearchItem) => {
 		window.location.hash = item.link;
-		setQuery('');
-		setResults([]);
 	};
 
 	const profileItems = [
@@ -259,36 +248,27 @@ const App = () => {
 				products={products}
 				isPro={appLocalizer.khali_dabba}
 				proUrl={appLocalizer.pro_url}
-				tag="Why Premium"
-				buttonText="View Pricing"
-				bgCode="#852aff"
-				textCode="#fff"
-				btnCode="#fff"
-				btnBgCode="#e35047"
 			/>
 			<AdminHeader
 				brandImg={Brand}
-				query={query}
 				results={results}
-				onSearchChange={handleSearchChange}
+				search={{
+					placeholder: 'Search...',
+					options: [
+						{ value: 'all', label: 'Modules & Settings' },
+						{ value: 'modules', label: 'Modules' },
+						{ value: 'settings', label: 'Settings' },
+					],
+				}}
+				onQueryUpdate={handleQueryUpdate}
 				onResultClick={handleResultClick}
-				onSelectChange={handleSelectChange}
-				selectValue={selectValue}
 				free={appLocalizer.freeVersion}
 				pro={appLocalizer.pro_data.version}
-				managePlanUrl={appLocalizer.pro_data.manage_plan_url}
 				chatUrl=""
 				showProfile={true}
 				profileItems={profileItems}
-				showDropdown={true}
-				dropdownOptions={[
-					{ value: 'all', label: 'Modules & Settings' },
-					{ value: 'modules', label: 'Modules' },
-					{ value: 'settings', label: 'Settings' },
-				]}
 				notifications={<HeaderNotification type="notification" />}
 				showNotifications={true}
-				activities={<HeaderNotification type="activity" />}
 				showActivities={true}
 				messages={[
 					{
@@ -302,6 +282,7 @@ const App = () => {
 				]}
 				messagesLink="/messages"
 			/>
+
 
 			<CommonPopup
 				open={openFeaturePopup}
@@ -319,8 +300,8 @@ const App = () => {
 					</FormGroup>
 					<div className="desc">
 						Get a hands-on feel of your marketplace in minutes.
-						 Import demo stores, store owners, products, and commission data to see how everything works together.  
-						 <b>Important: </b>Delete all demo data before going live so your real marketplace data stays clean and reliable.</div>
+						Import demo stores, store owners, products, and commission data to see how everything works together.
+						<b>Important: </b>Delete all demo data before going live so your real marketplace data stays clean and reliable.</div>
 					<DoActionBtn
 						buttonKey="import_dummy_data"
 						value={__('Import Dummy Data', 'multivendorx')}
