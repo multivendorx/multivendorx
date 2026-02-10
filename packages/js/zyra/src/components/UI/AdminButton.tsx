@@ -24,19 +24,21 @@ type ButtonConfig = {
     icon?: string;
     text: string; 
     onClick?: React.MouseEventHandler<HTMLDivElement>; 
-    className?: string;
+    color?: string;
     children?: React.ReactNode;
     customStyle?: CustomStyle;
 };
 
 type AdminButtonProps = {
   buttons: ButtonConfig | ButtonConfig[];
-  wrapperClass?: 'left' | 'right' | 'center';
+  wrapperClass?: string;
+  position?: 'left' | 'right' | 'center';
 };
 
 export const AdminButtonUI: React.FC<AdminButtonProps> = ({
     buttons,
     wrapperClass = "",
+    position = ""
 }) => {
     const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
 
@@ -81,7 +83,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
             <div
                 key={index}
                 className={`admin-btn ${
-                    btn.className ? `btn-${btn.className}` : ""
+                    btn.color ? `btn-${btn.color}` : "btn-purple-bg"
                 }`}
                 onClick={btn.onClick} // Now TypeScript is happy with this
                 onMouseEnter={() => setHovered(true)}
@@ -104,7 +106,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
         wrapperClass ? ` ${wrapperClass}` : ""
     }`;
 
-    return <div className={wrapperClasses}>{renderedButtons}</div>;
+    return <div className={wrapperClasses} data-position={position}>{renderedButtons}</div>;
 };
 
 
@@ -156,14 +158,14 @@ const AdminButton: FieldComponent = {
             Array.isArray(field.options) && field.options.length > 0
                 ? field.options.map((btn: any) => ({
                         text: btn.label,
-                        className: field.className,
+                        color: field.color,
                         onClick: (e) => {
                             btn.onClick?.(e);
                         },
                     }))
                 : {
                         text: field.name,
-                        className: field.className,
+                        color: field.color,
                         onClick: handleClick,
                     };
 

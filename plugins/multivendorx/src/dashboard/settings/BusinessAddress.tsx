@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { BasicInput, BasicInputUI, FormGroup, FormGroupWrapper, getApiLink, GoogleMap, Mapbox, SelectInput, SuccessNotice, useModules } from 'zyra';
+import { BasicInputUI, FormGroup, FormGroupWrapper, getApiLink, GoogleMap, Mapbox, SelectInputUI, SuccessNotice, useModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 declare global {
@@ -326,22 +326,20 @@ const BusinessAddress = () => {
 
 				{/* Country */}
 				<FormGroup cols={2} label={__('Country', 'multivendorx')} htmlFor="country">
-					<SelectInput
+					<SelectInputUI
 						name="country"
 						value={formData.country}
 						options={appLocalizer.country_list || []}
-						type="single-select"
 						onChange={handleCountryChange}
 					/>
 				</FormGroup>
 
 				{/* State */}
 				<FormGroup cols={2} label={__('State', 'multivendorx')} htmlFor="state">
-					<SelectInput
+					<SelectInputUI
 						name="state"
 						value={formData.state}
 						options={stateOptions}
-						type="single-select"
 						onChange={handleStateChange}
 					/>
 				</FormGroup>

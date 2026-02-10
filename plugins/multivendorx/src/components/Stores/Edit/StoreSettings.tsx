@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
 	getApiLink,
 	SuccessNotice,
-	SelectInput,
 	useModules,
 	EmailsInput,
 	GoogleMap,
@@ -14,6 +13,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	BasicInputUI,
+	SelectInputUI,
 } from 'zyra';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
@@ -486,22 +486,20 @@ const StoreSettings = ({
 
 							{/* Country and State */}
 							<FormGroup cols={2} label={__('Country', 'multivendorx')} htmlFor="country">
-								<SelectInput
+								<SelectInputUI
 									name="country"
 									value={formData.country}
 									options={
 										appLocalizer.country_list || []
 									}
-									type="single-select"
 									onChange={handleCountryChange}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('State', 'multivendorx')} htmlFor="state">
-								<SelectInput
+								<SelectInputUI
 									name="state"
 									value={formData.state}
 									options={stateOptions}
-									type="single-select"
 									onChange={handleStateChange}
 								/>
 							</FormGroup>
@@ -534,11 +532,10 @@ const StoreSettings = ({
 						<div className="card-body">
 							<FormGroupWrapper>
 								<FormGroup label={__('Current status', 'multivendorx')}>
-									<SelectInput
+									<SelectInputUI
 										name="status"
 										value={formData.status}
 										options={statusOptions}
-										type="single-select"
 										onChange={(newValue: any) => {
 											if (
 												!newValue ||

@@ -3,8 +3,8 @@ import React, { ChangeEvent, useState, useEffect, useMemo } from 'react';
 
 // Internal Dependencies
 import '../styles/web/ColorSettingInput.scss';
-import ToggleSetting from './ToggleSetting';
-import SelectInput from './SelectInput';
+import { ToggleSettingUI } from './ToggleSetting';
+import { SelectInputUI } from './SelectInput';
 import PdfDownloadButton from './PdfDownloadButton';
 
 interface CustomColors {
@@ -212,9 +212,8 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                 <div className={props.wrapperClass}>
                     <div className="form-group-setting-wrapper">
                         <label>Select Template</label>
-                        <SelectInput
+                        <SelectInputUI
                             name="dashboard_template"
-                            type="single-select"
                             options={props.templates!.map((tpl) => ({
                                 label: tpl.label,
                                 value: tpl.key,
@@ -238,7 +237,7 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                         {!selectedImage && (
                                 <div className="form-group-setting-wrapper">
                                     <label>Color Palette</label>
-                                    <ToggleSetting
+                                    <ToggleSettingUI
                                         options={[
                                             {
                                                 key: 'predefined',
