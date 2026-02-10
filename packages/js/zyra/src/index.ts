@@ -47,6 +47,7 @@ export { default as AdminHeader } from './components/AdminHeader';
 export { default as AdminBreadcrumbs } from './components/AdminBreadcrumbs';
 export { default as NestedComponent } from './components/NestedComponent';
 export { default as ExpandablePanelGroup } from './components/ExpandablePanelGroup';
+export { ExpandablePanelGroupUI } from './components/ExpandablePanelGroup';
 export { default as CommonPopup } from './components/CommonPopup';
 export { default as SuccessNotice } from './components/SuccessNotice';
 export { default as EmailsInput } from './components/EmailsInput';
