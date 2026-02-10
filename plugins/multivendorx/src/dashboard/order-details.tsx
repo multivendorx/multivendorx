@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { AdminButton, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
+import { AdminButton, AdminButtonUI, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -726,28 +726,28 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									<div className="left">
 										{modules.includes('marketplace-refund') && (
 											!isRefund ? (
-												<AdminButton
+												<AdminButtonUI
 													buttons={[
 														{
 															text: __('Refund', 'multivendorx'),
-															className: 'purple',
+															color: 'purple',
 															onClick: () => setIsRefund(true),
 														},
 													]}
 												/>
 											) : (
-												<AdminButton
-													wrapperClass="left"
+												<AdminButtonUI
+													position="left"
 													buttons={[
 														{
 															text: `${__('Refund', 'multivendorx')} $${refundDetails.refundAmount.toFixed(2)} ${__('manually', 'multivendorx')}`,
-															className: 'green',
+															color: 'green',
 															onClick: handleRefundSubmit,
 															disabled: isRefundLoading,
 														},
 														{
 															text: __('Cancel', 'multivendorx'),
-															className: 'red',
+															color: 'red',
 															onClick: () => setIsRefund(false),
 														},
 													]}
@@ -1146,12 +1146,12 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									</FormGroup>
 								</FormGroupWrapper>
 
-								<AdminButton
-									wrapperClass="left"
+								<AdminButtonUI
+									position="left"
 									buttons={{
 										icon: 'plus',
 										text: __('Create Shipment', 'multivendorx'),
-										className: 'purple-bg',
+										color: 'purple-bg',
 										onClick: saveShipmentToOrder,
 									}}
 								/>

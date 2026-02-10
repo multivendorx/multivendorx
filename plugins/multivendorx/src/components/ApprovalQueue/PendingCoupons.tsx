@@ -8,6 +8,7 @@ import {
 	TextArea,
 	AdminButton,
 	TableCard,
+	AdminButtonUI,
 } from 'zyra';
 
 import { formatWcShortDate, toWcIsoDate } from '@/services/commonFunction';
@@ -254,12 +255,12 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 							},
 						}}
 						footer={
-							<AdminButton
+							<AdminButtonUI
 								buttons={[
 									{
 										icon: 'close',
 										text: __('Cancel', 'multivendorx'),
-										className: 'red',
+										color: 'red',
 										onClick: () => {
 											setRejectPopupOpen(false);
 											setRejectReason('');
@@ -271,7 +272,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 										text: isSubmitting
 											? __('Submitting...', 'multivendorx')
 											: __('Reject', 'multivendorx'),
-										className: 'purple-bg',
+										color: 'purple-bg',
 										disabled: isSubmitting,
 										onClick: submitReject,
 									},

@@ -10,6 +10,7 @@ import {
 	FormGroup,
 	useModules,
 	AdminButton,
+	AdminButtonUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -169,11 +170,7 @@ const Privacy = () => {
 							htmlFor="enable_deactivation"
 						>
 							<MultiCheckBox
-								wrapperClass="toggle-btn"
-								descClass="settings-metabox-description"
-								inputWrapperClass="toggle-checkbox-header"
-								inputInnerWrapperClass="toggle-checkbox"
-								idPrefix="toggle-switch"
+								look='toggle'
 								key="enable_deactivation"
 								options={[
 									{
@@ -208,13 +205,12 @@ const Privacy = () => {
 										onChange={handleChange}
 									/>
 								</FormGroup>
-								<AdminButton
-									wrapperClass='end'
+								<AdminButtonUI
 									buttons={[
 										{
 											icon: 'save',
 											text: 'Submit',
-											className: 'purple-bg',
+											color: 'purple-bg',
 											// disableMultipleClick: true,
 											onClick: () => autoSave(updateData),
 										},

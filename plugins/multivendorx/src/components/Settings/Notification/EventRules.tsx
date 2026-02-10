@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
-import { CommonPopup, getApiLink, TextArea, BasicInput, AdminButton, FormGroupWrapper, FormGroup, BasicInputUI } from 'zyra';
+import { CommonPopup, getApiLink, TextArea, BasicInput, AdminButton, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -563,12 +563,12 @@ const EventRules: React.FC = () => {
 					}}
 
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setOpenChannel(null),
 								},
 							]}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButton, Card, Column, CommonPopup, getApiLink, MessageState, MiniCard } from 'zyra';
+import { AdminButton, AdminButtonUI, Card, Column, CommonPopup, getApiLink, MessageState, MiniCard } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -197,18 +197,18 @@ const Documentation: React.FC = () => {
 						title: activeDocument.title,
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Close', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setPopupOpen(false),
 								},
 								{
 									icon: 'import',
 									text: __('Print', 'multivendorx'),
-									className: 'purple',
+									color: 'purple',
 									onClick: () => handlePrint(activeDocument),
 								},
 							]}

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	AdminButton,
+	AdminButtonUI,
 	Column,
 	CommonPopup,
 	Container,
@@ -343,12 +344,12 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						}}
 
 						footer={
-							<AdminButton
+							<AdminButtonUI
 								buttons={[
 									{
 										icon: 'external-link',
 										text: __('View order to release funds', 'multivendorx'),
-										className: 'yellow-bg',
+										color: 'yellow-bg',
 										onClick: () => {
 											if (!viewOrder) return;
 											window.open(
@@ -360,7 +361,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 									{
 										icon: 'save',
 										text: __('Reject', 'multivendorx'),
-										className: 'purple-bg',
+										color: 'purple-bg',
 										onClick: () => {
 											if (!viewOrder) return;
 											handleSubmit(viewOrder.id);

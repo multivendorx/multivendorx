@@ -16,7 +16,8 @@ import {
 	MessageState,
 	Skeleton,
 	TableCard,
-	BasicInputUI
+	BasicInputUI,
+	AdminButtonUI
 } from 'zyra';
 
 import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
@@ -602,12 +603,12 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 								)}
 							</Column>
-							<AdminButton
+							<AdminButtonUI
 								buttons={
 									{
 										icon: 'wallet',
 										text: __('Disburse Payment', 'multivendorx'),
-										className: 'purple-bg',
+										color: 'purple-bg',
 										onClick: () => setRequestWithdrawal(true),
 									}}
 							/>
@@ -629,12 +630,12 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'wallet',
 									text: __('Disburse', 'multivendorx'),
-									className: 'purple',
+									color: 'purple',
 									onClick: handleWithdrawal,
 								},
 							]}

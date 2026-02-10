@@ -17,6 +17,7 @@ import {
 	ProPopup,
 	TableCard,
 	BasicInputUI,
+	AdminButtonUI,
 } from 'zyra';
 
 import '../Announcements/Announcements.scss';
@@ -371,18 +372,18 @@ export const KnowledgeBase: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: handleCloseForm,
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
+									color: 'purple-bg',
 									onClick: () => handleSubmit(formData.status || 'draft'),
 								},
 							]}

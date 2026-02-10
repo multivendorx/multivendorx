@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, AdminButton, Skeleton, PdfDownloadButton } from 'zyra';
+import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, AdminButton, Skeleton, PdfDownloadButton, AdminButtonUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 import { printContent } from '@/services/commonFunction';
@@ -366,16 +366,16 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 														)}
 													</label>
 												</FormGroup>
-												<AdminButton
+												<AdminButtonUI
 													buttons={[
 														{
 															text: __('Approve', 'multivendorx'),
-															className: 'green',
+															color: 'green',
 															onClick: () => handleSubmit('approve'),
 														},
 														{
 															text: __('Reject', 'multivendorx'),
-															className: 'red',
+															color: 'red',
 															onClick: () => handleSubmit('rejected'),
 														},
 													]}

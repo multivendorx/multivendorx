@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButton, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
+import { AdminButton, AdminButtonUI, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -709,19 +709,19 @@ const AddOrder = () => {
 								</div>
 							</div>
 							<FormGroupWrapper>
-								<AdminButton
-									wrapperClass="left"
+								<AdminButtonUI
+									position="left"
 									buttons={[
 										{
 											icon: 'plus',
 											text: 'Add Product',
-											className: 'purple-bg',
+											color: 'purple-bg',
 											onClick: () => setShowAddProduct(true),
 										},
 										{
 											icon: 'plus',
 											text: 'Add Shipping',
-											className: 'purple-bg',
+											color: 'purple-bg',
 											onClick: () =>
 												setShippingLines((prev) => [
 													...prev,
@@ -731,7 +731,7 @@ const AddOrder = () => {
 										{
 											icon: 'plus',
 											text: 'Add Tax',
-											className: 'purple-bg',
+											color: 'purple-bg',
 											onClick: () => setShowAddTax(true),
 										},
 									]}
@@ -788,12 +788,12 @@ const AddOrder = () => {
 												data={taxRates}
 												columns={taxColumns}
 											/>
-											<AdminButton
+											<AdminButtonUI
 												buttons={[
 													{
 														text: __('Add', 'multivendorx'),
 														icon: 'plus',
-														className: 'purple-bg',
+														color: 'purple-bg',
 														onClick: () => {
 															applyTaxToOrder();
 															setShowAddTax(false);
@@ -868,12 +868,12 @@ const AddOrder = () => {
 									</FormGroup>
 								</FormGroupWrapper>
 
-								<AdminButton
+								<AdminButtonUI
 									buttons={{
 										icon: 'plus',
 										text: __('Add New Customer', 'multivendorx'),
 										onClick: () => setShowCreateCustomer(!showCreateCustomer),
-										className: 'purple-bg',
+										color: 'purple-bg',
 									}}
 								/>
 							</>
@@ -996,12 +996,12 @@ const AddOrder = () => {
 								</FormGroup>
 							</FormGroupWrapper>
 
-							<AdminButton
+							<AdminButtonUI
 								buttons={{
 									icon: 'plus',
 									text: __('Create', 'multivendorx'),
 									onClick: () => createCustomer,
-									className: 'purple-bg',
+									color: 'purple-bg',
 								}}
 							/>
 						</Card>

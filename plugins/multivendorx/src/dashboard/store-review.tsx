@@ -12,6 +12,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
+	AdminButtonUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -448,18 +449,18 @@ const StoreReview: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedReview(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
+									color: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}
