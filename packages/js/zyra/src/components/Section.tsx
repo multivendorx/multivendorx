@@ -1,5 +1,6 @@
 // External dependencies
 import React from 'react';
+import { FieldComponent } from './types';
 
 // Types
 interface SectionProps {
@@ -9,7 +10,7 @@ interface SectionProps {
     description?: string;
 }
 
-const Section: React.FC< SectionProps > = ( {
+export const SectionUI : React.FC<SectionProps> = ( {
     wrapperClass,
     hint,
     value,
@@ -34,6 +35,18 @@ const Section: React.FC< SectionProps > = ( {
                 </div>
             </div>
     );
+};
+
+const Section: FieldComponent = {
+    render: ({ field }) => (
+        <SectionUI
+            wrapperClass={field.wrapperClass}
+            hint={field.hint}
+            value={field.value}
+            description={field.description}
+        />
+    ),
+    validate: () => null,
 };
 
 export default Section;
