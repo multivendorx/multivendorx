@@ -120,6 +120,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                         <Popover
                             key={index}
                             toggleIcon={list.toggleIcon}
+                            width= {24}
                             toggleContent={ <Tabs tabs={list?.tabs}/> }
                         />
                     ))}
