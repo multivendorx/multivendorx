@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getApiLink, Skeleton } from 'zyra';
+import { getApiLink, ItemList, Skeleton } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -73,27 +73,39 @@ const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = 
   if (items.length === 0) return <div>{__('No notifications', 'multivendorx')}</div>;
 
   return (
-    <ul className="notification-list">
-      {items.map(item => (
-        <li key={item.id}>
-          <div className="item" onClick={() => markRead(item.id)}>
-            <i className={item.icon || 'adminfont-user-network-icon green'}></i>
-            <div className="details">
-              <span className="heading">{item.title}</span>
-              <span className="message">{item.message}</span>
-              <span className="time">{item.time}</span>
-            </div>
-            <i
-              className="check-icon adminfont-cross color-red"
-              onClick={e => {
-                e.stopPropagation();
-                dismissItem(item.id);
-              }}
-            />
-          </div>
-        </li>
-      ))}
-    </ul>
+    <ItemList
+      items={items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        icon: item.icon,
+        time: item.time,
+        action: (item) => {
+          markRead(item.id)
+        }
+      }))}
+    />
+
+    // <ul className="notification-list">
+    //   {items.map(item => (
+    //     <li key={item.id}>
+    //       <div className="item" onClick={() => markRead(item.id)}>
+    //         <i className={item.icon || 'adminfont-user-network-icon green'}></i>
+    //         <div className="details">
+    //           <span className="heading">{item.title}</span>
+    //           <span className="message">{item.message}</span>
+    //           <span className="time">{item.time}</span>
+    //         </div>
+    //         <i
+    //           className="check-icon adminfont-cross color-red"
+    //           onClick={e => {
+    //             e.stopPropagation();
+    //             dismissItem(item.id);
+    //           }}
+    //         />
+    //       </div>
+    //     </li>
+    //   ))}
+    // </ul>
   );
 };
 
