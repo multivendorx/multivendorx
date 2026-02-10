@@ -114,10 +114,6 @@ const Tabs: React.FC<TabsProps> = ({
     variant = 'default',
     menuIcon,
     desc,
-    hideBreadcrumb,
-    action,
-    hideTitle,
-    premium,
 }) => {
     const [activeTab, setActiveTab] = useState(currentTab);
 
@@ -344,7 +340,6 @@ const Tabs: React.FC<TabsProps> = ({
 
     const tabIcon = getCurrentTabIcon();
     const parentTab = getParentTabName();
-
     return (
         <>
             {tabTitleSection && <>{tabTitleSection}</>}
@@ -352,17 +347,11 @@ const Tabs: React.FC<TabsProps> = ({
             <AdminBreadcrumbs
                 activeTabIcon={tabIcon}
                 tabTitle={parentTab}
-                submenuRender={submenuRender}
                 variant={variant}
                 renderBreadcrumb={renderBreadcrumbLinks}
                 renderMenuItems={renderAllMenuItems}
                 tabData={tabData}
-                premium={premium}
-                goPremium={!appLocalizer.khali_dabba}
-                goPremiumLink={appLocalizer.shop_url}
-                hideBreadcrumb={hideBreadcrumb}
-                hideTitle={hideTitle}
-                action={action}
+                goPremiumLink={ !appLocalizer.khali_dabba ? appLocalizer.shop_url: '' }
             />
 
             <div className="general-wrapper admin-settings" data-template={variant}>

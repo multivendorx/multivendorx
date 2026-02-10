@@ -19,8 +19,6 @@ interface AdminBreadcrumbsProps<T> {
     renderMenuItems?: (items: T[]) => React.ReactNode;
     tabData?: T[];
     buttons?: button[];
-    premium?: boolean;
-    goPremium?: boolean;
     goPremiumLink?: string;
     description?: string;
     customContent?: React.ReactNode;
@@ -36,8 +34,6 @@ const AdminBreadcrumbs = <T,>({
     renderMenuItems,
     tabData = [],
     buttons = [],
-    premium = true,
-    goPremium = false,
     goPremiumLink,
     description,
     customContent,
@@ -143,7 +139,7 @@ const AdminBreadcrumbs = <T,>({
                         >
                             {renderMenuItems(tabData)}
                         </div>
-                        {!submenuRender && goPremium && premium && (
+                        {!submenuRender && goPremiumLink && (
                             <a
                                 href={goPremiumLink}
                                 className="tab pro-btn"
