@@ -83,7 +83,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
             <div
                 key={index}
                 className={`admin-btn ${
-                    btn.color ? `btn-${btn.color}` : ""
+                    btn.color ? `btn-${btn.color}` : "btn-purple-bg"
                 }`}
                 onClick={btn.onClick} // Now TypeScript is happy with this
                 onMouseEnter={() => setHovered(true)}

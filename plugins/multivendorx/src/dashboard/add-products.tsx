@@ -767,7 +767,7 @@ const AddProduct = () => {
 						{
 							icon: 'save',
 							text: __('Save', 'multivendorx'),
-							color: 'purple-bg',
+							 ,
 							onClick: () => createProduct(),
 						},
 					]}
@@ -981,7 +981,7 @@ const AddProduct = () => {
 							<>
 								<div className="field-wrapper">
 									{__('Stock management', 'multivendorx')}
-									<MultiCheckBox
+									<MultiCheckBoxUI
 										look="toggle"
 										type="checkbox"
 										value={product.manage_stock ? ['manage_stock'] : []}

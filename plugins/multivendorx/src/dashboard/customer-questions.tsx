@@ -496,7 +496,7 @@ const CustomerQuestions: React.FC = () => {
 									text: saving
 										? __('Saving...', 'multivendorx')
 										: __('Save Answer', 'multivendorx'),
-									color: 'purple-bg',
+									 ,
 									disabled: saving,
 									onClick: handleSaveAnswer,
 								},

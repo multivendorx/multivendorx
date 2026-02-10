@@ -715,13 +715,13 @@ const AddOrder = () => {
 										{
 											icon: 'plus',
 											text: 'Add Product',
-											color: 'purple-bg',
+											 ,
 											onClick: () => setShowAddProduct(true),
 										},
 										{
 											icon: 'plus',
 											text: 'Add Shipping',
-											color: 'purple-bg',
+											 ,
 											onClick: () =>
 												setShippingLines((prev) => [
 													...prev,
@@ -731,7 +731,7 @@ const AddOrder = () => {
 										{
 											icon: 'plus',
 											text: 'Add Tax',
-											color: 'purple-bg',
+											 ,
 											onClick: () => setShowAddTax(true),
 										},
 									]}
@@ -793,7 +793,7 @@ const AddOrder = () => {
 													{
 														text: __('Add', 'multivendorx'),
 														icon: 'plus',
-														color: 'purple-bg',
+														 ,
 														onClick: () => {
 															applyTaxToOrder();
 															setShowAddTax(false);
@@ -873,7 +873,7 @@ const AddOrder = () => {
 										icon: 'plus',
 										text: __('Add New Customer', 'multivendorx'),
 										onClick: () => setShowCreateCustomer(!showCreateCustomer),
-										color: 'purple-bg',
+										 ,
 									}}
 								/>
 							</>
@@ -1001,7 +1001,7 @@ const AddOrder = () => {
 									icon: 'plus',
 									text: __('Create', 'multivendorx'),
 									onClick: () => createCustomer,
-									color: 'purple-bg',
+									 ,
 								}}
 							/>
 						</Card>

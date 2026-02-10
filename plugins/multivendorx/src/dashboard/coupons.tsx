@@ -955,7 +955,7 @@ const AllCoupon: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Publish', 'multivendorx'),
-									color: 'purple-bg',
+									 ,
 									onClick: () => handleSave('publish'),
 								},
 							]}

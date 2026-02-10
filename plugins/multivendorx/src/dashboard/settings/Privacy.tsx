@@ -210,7 +210,7 @@ const Privacy = () => {
 										{
 											icon: 'save',
 											text: 'Submit',
-											color: 'purple-bg',
+											 ,
 											// disableMultipleClick: true,
 											onClick: () => autoSave(updateData),
 										},

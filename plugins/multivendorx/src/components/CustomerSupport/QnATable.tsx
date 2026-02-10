@@ -343,7 +343,6 @@ const Qna: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Save Answer', 'multivendorx'),
-									color: 'purple-bg',
 									onClick: () => handleSaveAnswer(),
 								},
 							]}

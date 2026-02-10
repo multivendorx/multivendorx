@@ -383,7 +383,6 @@ export const KnowledgeBase: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									color: 'purple-bg',
 									onClick: () => handleSubmit(formData.status || 'draft'),
 								},
 							]}

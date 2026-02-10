@@ -191,7 +191,6 @@ const ProPopup: React.FC<PopupProps> = (props) => {
                                     {
                                         icon: 'delete',
                                         text: props.confirmYesText || 'Confirm',
-                                        color: 'purple-bg',
                                         onClick: props.onConfirm,
                                     },
                                 ]}

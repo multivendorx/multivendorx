@@ -272,7 +272,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 										text: isSubmitting
 											? __('Submitting...', 'multivendorx')
 											: __('Reject', 'multivendorx'),
-										color: 'purple-bg',
 										disabled: isSubmitting,
 										onClick: submitReject,
 									},

@@ -617,7 +617,7 @@ const Dashboard: React.FC = () => {
 									icon: 'preview',
 									text: __('View transaction history', 'multivendorx'),
 									onClick: window.location.href = '/dashboard/wallet/transactions/',
-									color: 'purple-bg',
+									 ,
 								}}
 							/>
 						)}

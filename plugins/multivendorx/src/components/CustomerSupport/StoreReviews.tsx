@@ -364,7 +364,6 @@ const StoreReviews: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									color: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}

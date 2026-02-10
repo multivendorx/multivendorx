@@ -425,7 +425,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									text: isEditing
 										? __('Update', 'multivendorx')
 										: __('Save', 'multivendorx'),
-									color: 'purple-bg',
+									 ,
 									onClick: handleSave,
 								},
 							]}

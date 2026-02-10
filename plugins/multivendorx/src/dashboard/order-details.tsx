@@ -1151,7 +1151,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									buttons={{
 										icon: 'plus',
 										text: __('Create Shipment', 'multivendorx'),
-										color: 'purple-bg',
+										 ,
 										onClick: saveShipmentToOrder,
 									}}
 								/>

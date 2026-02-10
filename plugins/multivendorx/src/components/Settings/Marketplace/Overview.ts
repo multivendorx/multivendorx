@@ -163,7 +163,7 @@ export default {
 				name: "Generate",
 				generate: true,
 				responseKey: 'generate_key',
-				className: 'purple-bg'
+				 
 			},
 		},
 		{

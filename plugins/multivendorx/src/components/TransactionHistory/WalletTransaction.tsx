@@ -608,7 +608,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									{
 										icon: 'wallet',
 										text: __('Disburse Payment', 'multivendorx'),
-										color: 'purple-bg',
+										 ,
 										onClick: () => setRequestWithdrawal(true),
 									}}
 							/>

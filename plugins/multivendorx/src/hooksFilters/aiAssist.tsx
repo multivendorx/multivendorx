@@ -366,7 +366,7 @@ const AICard = () => {
 					buttons={{
 						icon: 'send',
 						text: 'Generate with AI',
-						color: 'purple-bg',
+						 ,
 						onClick: !isLoading ? handleSendPrompt : undefined,
 					}}
 				/>

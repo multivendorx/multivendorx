@@ -155,7 +155,7 @@ const Withdrawls: React.FC = () => {
 								icon: 'eye',
 								text: __('View transaction history', 'multivendorx'),
 								onClick: () => (window.location.href = `${appLocalizer.site_url}/dashboard/transactions/`),
-								color: 'purple-bg',
+								 ,
 							}}
 						/>
 					</Card>
@@ -241,7 +241,7 @@ const Withdrawls: React.FC = () => {
 									icon: 'withdraw',
 									text: __('Request Withdrawal', 'multivendorx'),
 									onClick: () => setRequestWithdrawal(true),
-									color: 'purple-bg',
+									 ,
 								}}
 							/>
 						</div>
@@ -266,7 +266,7 @@ const Withdrawls: React.FC = () => {
 									icon: 'withdraw',
 									text: __('Disburse', 'multivendorx'),
 									onClick: () => handleWithdrawal(),
-									color: 'purple-bg',
+									 ,
 								}}
 							/>
 						</>

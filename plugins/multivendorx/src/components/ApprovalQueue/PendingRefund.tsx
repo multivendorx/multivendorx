@@ -361,7 +361,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 									{
 										icon: 'save',
 										text: __('Reject', 'multivendorx'),
-										color: 'purple-bg',
 										onClick: () => {
 											if (!viewOrder) return;
 											handleSubmit(viewOrder.id);
