@@ -91,13 +91,8 @@ const CustomerSupport = () => {
 						`?page=multivendorx#&tab=customer-support&subtab=${subTab}`
 					}
 					appLocalizer={appLocalizer}
-					supprot={[]}
 					Link={Link}
-					hideTitle={true}
-					hideBreadcrumb={true}
 					variant={'compact'}
-					premium={false}
-					menuIcon={true}
 				/>
 			) : (
 				<Container general>

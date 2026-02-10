@@ -351,15 +351,8 @@ const ApprovalQueue = () => {
 					`?page=multivendorx#&tab=approval-queue&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]}
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'card'}
-				premium={false}
-				menuIcon={true}
-				desc={true}
-				isLoading={isLoading}
 			/>
 		</>
 	);
