@@ -6,7 +6,6 @@ import Popover from './UI/Popover';
 import HeaderSearch from './HeaderSearch';
 import ItemList from './UI/ItemList';
 import Tabs from './UI/Tabs';
-import SupportChat from './SupportChat';
 
 type SearchItem = {
     icon?: string;
@@ -64,9 +63,6 @@ type AdminHeaderProps = {
 
     showProfile?: boolean;
     profileItems?: ProfileItem[];
-
-    chatUrl?: string;
-
     search?: {
         placeholder?: string;
         options?: { label: string; value: string }[];
@@ -90,7 +86,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     onResultClick,
     free,
     pro,
-    chatUrl,
     utilityList = [],
     utilityListWithTab = [],
 }) => {
@@ -120,7 +115,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                         onQueryUpdate={onQueryUpdate}
                         onResultClick={onResultClick}
                     />
-
+                    {/* it will render header icon with tab */}
                     {utilityListWithTab.map((list, index) => (
                         <Popover
                             key={index}
@@ -128,6 +123,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                             toggleContent={ <Tabs tabs={list?.tabs}/> }
                         />
                     ))}
+                    {/* it will render header icon without tab and list of items */}
                     {utilityList.map((list, index) => (
                         <Popover
                             key={index}
@@ -138,9 +134,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
 
                 </div>
             </div>
-
-            {chatUrl && <SupportChat chatUrl={chatUrl} />}
-
         </>
     );
 };
