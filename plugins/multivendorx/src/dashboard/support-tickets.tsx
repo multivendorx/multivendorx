@@ -7,13 +7,13 @@ import {
 	TableCell,
 	CommonPopup,
 	getApiLink,
-	ToggleSetting,
 	MultiCalendarInput, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
 	ProPopup,
 	AdminButtonUI,
+	ToggleSettingUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -647,7 +647,7 @@ const SupportTickets: React.FC = () => {
 
 							{/* Status Toggle */}
 							<FormGroup label={__('Control if this review appears publicly, stays under moderation, or is excluded from the store page.', 'multivendorx')}>
-								<ToggleSetting
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'pending',

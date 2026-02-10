@@ -35,7 +35,7 @@ interface MultiCheckBoxProps {
     appLocalizer?: any;
 }
 
-const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
+export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
     const [localOptions, setLocalOptions] = useState<Option[]>(
         props.options
     );

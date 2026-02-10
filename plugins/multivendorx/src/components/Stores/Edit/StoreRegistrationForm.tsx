@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup,  Skeleton, PdfDownloadButton, AdminButtonUI } from 'zyra';
+import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, Skeleton, PdfDownloadButton, AdminButtonUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 import { printContent } from '@/services/commonFunction';
