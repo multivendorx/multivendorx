@@ -610,33 +610,6 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
         return { price: priceDisplay, unit: unitDisplay };
     };
 
-    // const renderField = (
-    //     methodId: string, 
-    //     field: PanelFormField
-    //     ): JSX.Element | null => {
-
-    //     const fieldComponent = FIELD_REGISTRY[field.type];
-    //     if (!fieldComponent) return null;
-
-    //     const Render = fieldComponent.render;
-    //     const fieldValue = value[methodId]?.[field.key];
-            
-    //     const handleInternalChange = (val: any) => {
-    //         handleInputChange(methodId, field.key, val);
-    //         return;            
-    //     };
-
-    //     return (
-    //         <Render
-    //             field={field}
-    //             value={fieldValue}
-    //             onChange={handleInternalChange}
-    //             canAccess={canAccess}
-    //             appLocalizer={appLocalizer}
-    //         />
-    //     );
-    // };
-
     const renderField = (
         methodId: string,
         field: PanelFormField

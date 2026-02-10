@@ -3,18 +3,11 @@ import React, { useState, useEffect } from 'react';
 
 // Internal dependencies
 import '../styles/web/NestedComponent.scss';
-import ToggleSetting, { ToggleSettingUI } from './ToggleSetting';
-import   { BasicInputUI } from './BasicInput';
-import SelectInput from './SelectInput';
-import MultiCheckBox from './MultiCheckbox';
-import TextArea from './TextArea';
+import { FieldComponent } from './types';
+import { FIELD_REGISTRY } from './FieldRegistry';
 
 type RowType = Record< string, string | number | boolean | string[] >;
 
-type SelectOption = {
-    value: string;
-    label: string;
-};
 
 interface NestedFieldOption {
     key?: string;
@@ -26,21 +19,17 @@ interface NestedFieldOption {
 
 interface NestedField {
     lock: string;
-    treeData: never[];
     multiple: boolean;
     key: string;
     type:
         | 'number'
-        | 'select'
+        | 'setting-toggle'
         | 'text'
-        | 'url'
-        | 'treeselect'
-        | 'dropdown'
+        | 'select'
         | 'time'
         | 'checkbox'
         | 'textarea'
         | 'checklist'
-        | 'setup'
         | 'divider';
     label?: string;
     placeholder?: string;
@@ -74,9 +63,6 @@ interface NestedField {
     link?: string;
 }
 
-declare const appLocalizer: { khali_dabba?: boolean };
-declare function setModelOpen( value: boolean ): void;
-
 interface NestedComponentProps {
     id: string;
     label?: string;
@@ -88,11 +74,11 @@ interface NestedComponentProps {
     single?: boolean;
     description?: string;
     wrapperClass?: string;
-    khali_dabba?: boolean;
-    modules?: string[];
+    canAccess?: boolean;
+    appLocalizer?: any;
 }
 
-const NestedComponent: React.FC< NestedComponentProps > = ( {
+export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
     id,
     fields,
     value = [],
@@ -102,31 +88,10 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
     single = false,
     description,
     wrapperClass,
-    khali_dabba,
-    modules,
+    canAccess,
+    appLocalizer
 } ) => {
-    function hasFieldAccess( field: NestedField ) {
-        // PRO CHECK
-        if ( field.proSetting ) {
-            if ( ! khali_dabba ) {
-                return false;
-            }
-        }
-
-        // MODULE CHECK
-        if ( field.moduleEnabled ) {
-            // modules is an array of enabled module names
-            if (
-                ! Array.isArray( modules ) ||
-                ! modules.includes( field.moduleEnabled )
-            ) {
-                return false; // module not active
-            }
-        }
-
-        return true; // access allowed
-    }
-
+    
     const [ rows, setRows ] = useState< RowType[] >( [] );
 
     // sync value → state
@@ -220,7 +185,7 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
             updateAndSave( rows.filter( ( _, i ) => i !== index ) );
         }
     }
-
+    
     function renderField( field: NestedField, row: RowType, rowIndex: number ) {
         if (
             rowIndex === 0 && 
@@ -235,315 +200,45 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
             return null;
         }
 
-        const val = row[ field.key ] ?? '';
-
         // dependency check
-        if ( field.dependent ) {
-            const depVal = row[ field.dependent.key ];
-            const depActive = Array.isArray( depVal )
-                ? depVal.includes( field.dependent.value )
-                : depVal === field.dependent.value;
+        // if ( field.dependent ) {
+        //     const depVal = row[ field.dependent.key ];
+        //     const depActive = Array.isArray( depVal )
+        //         ? depVal.includes( field.dependent.value )
+        //         : depVal === field.dependent.value;
 
-            if (
-                ( field.dependent.set && ! depActive ) ||
-                ( ! field.dependent.set && depActive )
-            ) {
-                return null;
-            }
-        }
+        //     if (
+        //         ( field.dependent.set && ! depActive ) ||
+        //         ( ! field.dependent.set && depActive )
+        //     ) {
+        //         return null;
+        //     }
+        // }
 
-        switch ( field.type ) {
-            case 'select':
-                return (
-                    <>
-                        { ! ( rowIndex === 0 && field.skipLabel ) &&
-                            field.label && <label>{ field.label }</label> }
-                        <ToggleSettingUI
-                            key={ field.key }
-                            options={ field.options || [] }
-                            value={
-                                typeof val === 'string' || Array.isArray( val )
-                                    ? val
-                                    : ''
-                            }
-                            onChange={ ( newVal ) => {
-                                if ( ! hasFieldAccess( field ) ) {
-                                    return;
-                                }
-                                handleChange( rowIndex, field.key, newVal );
-                            } }
-                            preText={ field.preText }
-                            postText={ field.postText }
-                        />
-                    </>
-                );
+        const fieldComponent = FIELD_REGISTRY[field.type];
+        if (!fieldComponent) return null;
 
-            case 'number':
-            case 'text':
-            case 'url':
-            case 'time':
-                return (
-                    <>
-                        { ! ( rowIndex === 0 && field.skipLabel ) &&
-                            field.label && <label>{ field.label }</label> }
-                        <BasicInputUI
-                            type={ field.type }
-                            id={ `${ field.key }-${ rowIndex }` }
-                            name={ field.key }
-                            value={
-                                typeof val === 'string' ||
-                                typeof val === 'number'
-                                    ? val
-                                    : undefined
-                            }
-                            preText={ field.preInsideText }
-                            postText={ field.postInsideText }
-                            beforeElement={{
-                                type: 'preposttext',
-                                textType: 'pre',
-                                postText:
-                                    rowIndex === 0
-                                    ? field.preTextFirstRow ?? field.preText
-                                    : field.preText
-                            }}
-                            afterElement={{
-                                type: 'preposttext',
-                                textType: 'post',
-                                postText:
-                                    rowIndex === 0
-                                        ? field.postTextFirstRow ?? field.postText
-                                        : field.postText,
-                            }}
-                            min={ field.min ?? 0 }
-                            description={ field.desc }
-                            size={ field.size }
-                            placeholder={ field.placeholder }
-                            onChange={ ( e ) => {
-                                if ( ! hasFieldAccess( field ) ) {
-                                    return;
-                                }
-                                handleChange(
-                                    rowIndex,
-                                    field.key,
-                                    e.target.value
-                                );
-                            } }
-                             
-                        />
-                    </>
-                );
+        const Render = fieldComponent.render;
+        const fieldValue = row[ field.key ];
+            
+        const handleInternalChange = (val: any) => {
+            handleChange( rowIndex, field.key, val )
+            return;            
+        };
 
-            case 'textarea':
-                return (
-                    <>
-                        { ! ( rowIndex === 0 && field.skipLabel ) &&
-                            field.label && <label>{ field.label }</label> }
-                        <TextArea
-                            id={ `${ field.key }-${ rowIndex }` }
-                            name={ field.key }
-                            value={ typeof val === 'string' ? val : '' }
-                            placeholder={ field.placeholder }
-                            rowNumber={ 4 }
-                            colNumber={ 50 }
-                            description={ field.desc }
-                            onChange={ ( e ) => {
-                                if ( ! hasFieldAccess( field ) ) {
-                                    return;
-                                }
-                                handleChange(
-                                    rowIndex,
-                                    field.key,
-                                    e.target.value
-                                );
-                            } }
-                        />
-                    </>
-                );
-
-            case 'dropdown':
-                return (
-                    <>
-                        { ! ( rowIndex === 0 && field.skipLabel ) &&
-                            field.label && <label>{ field.label }</label> }
-                        <SelectInput
-                            name={ field.key }
-                            description={ field.desc }
-                            inputClass={ field.className }
-                            preText={ field.preText }
-                            postText={ field.postText }
-                            options={
-                                Array.isArray( field.options )
-                                    ? field.options.map( ( opt ) => ( {
-                                          value: String( opt.value ),
-                                          label:
-                                              opt.label ?? String( opt.value ),
-                                      } ) )
-                                    : []
-                            }
-                            value={ typeof val === 'object' ? val.value : val }
-                            onChange={ (
-                                newVal: SelectOption | SelectOption[] | null
-                            ) => {
-                                if ( ! hasFieldAccess( field ) ) {
-                                    return;
-                                }
-
-                                if ( ! newVal ) {
-                                    handleChange( rowIndex, field.key, '' );
-                                } else if ( Array.isArray( newVal ) ) {
-                                    handleChange(
-                                        rowIndex,
-                                        field.key,
-                                        newVal.map( ( v ) => v.value )
-                                    );
-                                } else {
-                                    handleChange(
-                                        rowIndex,
-                                        field.key,
-                                        newVal.value
-                                    );
-                                }
-                            } }
-                        />
-                    </>
-                );
-
-            case 'checkbox': {
-                const look = ( field.look || field.lock ) ?? '';
-                let normalizedValue: string[] = [];
-
-                if ( Array.isArray( val ) ) {
-                    normalizedValue = val.filter(
-                        ( v: string ) => v && v.trim() !== ''
-                    );
-                } else if ( 
-                    typeof val === 'string' && 
-                    val.trim() !== '' 
-                ) {
-                    normalizedValue = [ val ];
-                } else {
-                    normalizedValue = [];
-                }
-
-                return (
-                    <>
-                        { ! ( rowIndex === 0 && field.skipLabel ) &&
-                            field.label && <label>{ field.label }</label> }
-
-                        <MultiCheckBox
-                            khali_dabba={ appLocalizer?.khali_dabba ?? false }
-                            wrapperClass={
-                                look === 'toggle'
-                                    ? 'toggle-btn'
-                                    : field.selectDeselect === true
-                                    ? 'checkbox-list-side-by-side'
-                                    : 'simple-checkbox'
-                            }
-                            description={ field.desc }
-                            inputInnerWrapperClass={
-                                look === 'toggle'
-                                    ? 'toggle-checkbox'
-                                    : 'default-checkbox'
-                            }
-                            inputClass={ look }
-                            tour={ field.tour }
-                            hintInnerClass="hover-tooltip"
-                            idPrefix={ `${ field.key }-${ rowIndex }` }
-                            selectDeselect={ field.selectDeselect }
-                            rightContent={ field.rightContent }
-                            options={
-                                Array.isArray( field.options )
-                                    ? field.options.map( ( opt ) => ( {
-                                          ...opt,
-                                          value: String( opt.value ),
-                                      } ) )
-                                    : []
-                            }
-                            value={ normalizedValue }
-                            onChange={ ( e ) => {
-                                if ( ! hasFieldAccess( field ) ) {
-                                    return;
-                                }
-                                if ( Array.isArray( e ) ) {
-                                    handleChange(
-                                        rowIndex,
-                                        field.key,
-                                        e.length > 0 ? e : []
-                                    );
-                                } else if ( 'target' in e ) {
-                                    const target = e.target as HTMLInputElement;
-                                    handleChange(
-                                        rowIndex,
-                                        field.key,
-                                        target.checked ? [ target.value ] : []
-                                    );
-                                }
-                            } }
-                            onMultiSelectDeselectChange={ () =>
-                                handleChange(
-                                    rowIndex,
-                                    field.key,
-                                    Array.isArray( field.options )
-                                        ? field.options.map( ( opt ) =>
-                                              String( opt.value )
-                                          )
-                                        : []
-                                )
-                            }
-                            proChanged={ () => setModelOpen( true ) }
-                        />
-                    </>
-                );
-            }
-            case 'checklist':
-                return (
-                    <ul className="checklist" key={ field.key }>
-                        { Array.isArray( field.options ) &&
-                            field.options.map( ( opt, i ) => (
-                                <li key={ i }>
-                                    <i
-                                        className={
-                                            opt.check
-                                                ? 'check adminfont-icon-yes'
-                                                : 'close adminfont-cross'
-                                        }
-                                    ></i>
-                                    { opt.label ?? opt.value }
-                                </li>
-                            ) ) }
-                    </ul>
-                );
-
-            case 'setup':
-                return (
-                    <>
-                        <div className="wizard-step">
-                            <div className="step-info">
-                                <div className="step-text">
-                                    <span className="step-title">
-                                        { field.label }
-                                    </span>
-                                    <span className="desc">{ field.desc }</span>
-                                </div>
-                            </div>
-                            { field.link && (
-                                <a
-                                    href={ field.link }
-                                    className="admin-btn btn-purple"
-                                >
-                                    Set Up{ ' ' }
-                                    <i className="adminfont-arrow-right"></i>{ ' ' }
-                                </a>
-                            ) }
-                        </div>
-                    </>
-                );
-            case 'divider':
-                return <span className="divider" key={ field.key }></span>;
-
-            default:
-                return null;
-        }
+        return (
+            <>
+                { ! ( rowIndex === 0 && field.skipLabel ) &&
+                    field.label && <label>{ field.label }</label> }
+                <Render
+                    field={field}
+                    value={fieldValue}
+                    onChange={handleInternalChange}
+                    canAccess={canAccess}
+                    appLocalizer={appLocalizer}
+                />
+            </>
+        );
     }
 
     return (
@@ -596,6 +291,34 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
             ) }
         </div>
     );
+};
+
+const NestedComponent: FieldComponent = {
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+        <NestedComponentUI
+            key={field.key}
+            id={field.key}
+            label={field.label}
+            description={field.desc}
+            fields={field.nestedFields ?? []} //The list of inner fields that belong to this section.
+            value={value}
+            wrapperClass={field.rowClass}
+            addButtonLabel={field.addButtonLabel} //The text shown on the button to add a new item.
+            deleteButtonLabel={field.deleteButtonLabel} //The text shown on the button to remove an item.
+            single={field.single} //If set to true, only one item is allowed.
+            onChange={(val) => {
+                if (!canAccess) return;
+                onChange(val)
+            }}
+            canAccess={canAccess}
+            appLocalizer={appLocalizer}
+        />
+    ),
+
+    validate: (field, value) => {
+        return null;
+    },
+
 };
 
 export default NestedComponent;

@@ -220,7 +220,7 @@ export default {
 			nestedFields: [
 				{
 					key: 'payout_frequency',
-					type: 'select',
+					type: 'setting-toggle',
 					label: __('On', 'multivendorx'),
 					// label: __('Payout frequency', 'multivendorx'),
 					options: [
@@ -238,7 +238,7 @@ export default {
 				},
 				{
 					key: 'payout_day',
-					type: 'dropdown',
+					type: 'select',
 					// label: __('Payout Day', 'multivendorx'),
 					// settingDescription: __("Select the day of the week to release store commissions:", 'multivendorx'),
 					// desc: __("<ul><li>Choose the specific day when store commissions should be disbursed.</li></ul>", 'multivendorx'),
@@ -364,7 +364,11 @@ export default {
 				{
 					key: 'weekly_payout_day', // day of week toggle
 					type: 'dropdown',
-					preText: __('On', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('On', 'multivendorx'),
+					},
 					description: __(
 						'Select the day of the week for payouts:',
 						'multivendorx'
@@ -410,7 +414,11 @@ export default {
 				{
 					key: 'weekly_payout_time', // time of day
 					type: 'time', // links to TimeSelect component
-					preText: __('at', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('at', 'multivendorx'),
+					},
 					description: __(
 						'Select the time of day for weekly payouts.',
 						'multivendorx'
