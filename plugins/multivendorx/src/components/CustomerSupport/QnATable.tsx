@@ -6,14 +6,13 @@ import {
 	getApiLink,
 	CommonPopup,
 	TextArea,
-	ToggleSetting,
-	BasicInput,
-	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
 	ProPopup,
 	TableCard,
 	BasicInputUI,
+	AdminButtonUI,
+	ToggleSettingUI,
 } from 'zyra';
 
 import { Dialog } from '@mui/material';
@@ -331,18 +330,17 @@ const Qna: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedQna(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save Answer', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSaveAnswer(),
 								},
 							]}
@@ -366,9 +364,7 @@ const Qna: React.FC = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">
-								<ToggleSetting
-
-									descClass="settings-metabox-description"
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'public',

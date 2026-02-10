@@ -58,12 +58,12 @@ export const ClickableListUI: FC<ClickableListProps> = ({
             {/* Bottom Button */}
             {button?.label && (
                 <AdminButtonUI
-                    wrapperClass="left"
+                    position="left"
                     buttons={[
                         {
                             icon: 'plus',
                             text: button.label,
-                            className: 'purple',
+                            color: 'purple',
                             onClick: (e) => {
                                 onButtonClick?.(e);
                             },

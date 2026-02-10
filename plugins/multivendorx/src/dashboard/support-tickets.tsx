@@ -7,13 +7,13 @@ import {
 	TableCell,
 	CommonPopup,
 	getApiLink,
-	ToggleSetting,
-	MultiCalendarInput,
-	AdminButton,
+	MultiCalendarInput, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
 	ProPopup,
+	AdminButtonUI,
+	ToggleSettingUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -566,18 +566,17 @@ const SupportTickets: React.FC = () => {
 						title: `${__('Reply to Review', 'multivendorx')} - ${selectedReview.store_name}`,
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedReview(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}
@@ -648,7 +647,7 @@ const SupportTickets: React.FC = () => {
 
 							{/* Status Toggle */}
 							<FormGroup label={__('Control if this review appears publicly, stays under moderation, or is excluded from the store page.', 'multivendorx')}>
-								<ToggleSetting
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'pending',

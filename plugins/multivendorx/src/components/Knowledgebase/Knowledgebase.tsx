@@ -4,19 +4,18 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs,
-	BasicInput,
+	AdminBreadcrumbs, 
 	TextArea,
 	CommonPopup,
-	ToggleSetting,
+	ToggleSettingUI,
 	Container,
 	Column,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	ProPopup,
 	TableCard,
 	BasicInputUI,
+	AdminButtonUI,
 } from 'zyra';
 
 import '../Announcements/Announcements.scss';
@@ -371,18 +370,17 @@ export const KnowledgeBase: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: handleCloseForm,
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSubmit(formData.status || 'draft'),
 								},
 							]}
@@ -423,7 +421,7 @@ export const KnowledgeBase: React.FC = () => {
 								)}
 							</FormGroup>
 							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-								<ToggleSetting
+								<ToggleSettingUI
 									value={formData.status}
 									options={[
 										{

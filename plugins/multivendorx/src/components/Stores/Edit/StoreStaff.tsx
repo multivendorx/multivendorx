@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SuccessNotice, SelectInput, getApiLink, useModules, Container, Column, FormGroupWrapper, FormGroup, Card } from 'zyra';
+import { SuccessNotice, getApiLink, useModules, Container, Column, FormGroupWrapper, FormGroup, Card, SelectInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -50,7 +50,7 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 					<Card title={__('Store owners', 'multivendorx')}>
 						{/* Store owners multi-select */}
 						<FormGroupWrapper>
-							<SelectInput
+							<SelectInputUI
 								name="store_owners"
 								options={
 									appLocalizer.store_owners || []
@@ -120,13 +120,10 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 						<div className="card-body">
 							<FormGroupWrapper>
 								<FormGroup label={__('Select primary owner', 'multivendorx')} >
-									<SelectInput
+									<SelectInputUI
 										name="primary_owner"
-										options={
-											appLocalizer?.store_owners || []
-										}
+										options={ appLocalizer?.store_owners || [] }
 										value={formData.primary_owner}
-										type="single-select"
 										onChange={(newValue: any) => {
 											if (
 												!newValue ||
