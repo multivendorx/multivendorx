@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import { RealtimeFilterConfig, TableRow } from './types';
-import MultiCalendarInput from '../MultiCalendarInput';
+import CalendarInput from '../CalendarInput';
 
 export type FilterValue =
     | string
@@ -46,16 +46,19 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 
                 // Date filter
                 if (filter.type === 'date') {
+                    const range = value as { startDate: Date; endDate: Date } | undefined;
+                
                     return (
                         <div key={filter.key} className="group-field">
-                            <MultiCalendarInput
-                                value={value as { startDate: Date; endDate: Date } | undefined}
-                                onChange={(range) => onFilterChange(filter.key, range)}
-                                showLabel
+                            <CalendarInput
+                                value={range}
+                                onChange={(newRange) => {
+                                    onFilterChange(filter.key, newRange as any);
+                                }}
                             />
                         </div>
                     );
-                }
+                }                
 
                 // React select options
                 const options = filter.options?.map((opt) => ({ label: opt.label, value: opt.value })) || [];
