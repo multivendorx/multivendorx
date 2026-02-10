@@ -137,7 +137,7 @@ export const TransactionHistory: React.FC = () => {
 				Link={Link}
 				hideTitle={true}
 				hideBreadcrumb={true}
-				template={'template-2'}
+				variant={'compact'}
 				premium={false}
 				menuIcon={true}
 			/>

@@ -10,6 +10,8 @@ import RegistrationForm from './RegistrationForm';
 import MultiCheckBox from './MultiCheckbox';
 import { FieldComponent } from './types';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
+import SystemInfo from './SystemInfo';
+import Section from './Section';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -26,4 +28,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'form-builder': RegistrationForm,
   'email-template': EmailTemplate,
   // 'checkbox': MultiCheckBox,
+  'system-info': SystemInfo,
+  'section': Section,
+  'checkbox': MultiCheckBox,
 };

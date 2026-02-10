@@ -23,7 +23,6 @@ interface GoogleMapComponentProps {
         zip?: string;
     }) => void;
     labelSearch: string;
-    labelMap: string;
     placeholderSearch: string;
     stores: { data: Store[] } | null;
 }
@@ -52,7 +51,6 @@ const GoogleMap = ({
     isUserLocation,
     onLocationUpdate,
     labelSearch,
-    labelMap,
     placeholderSearch,
     stores,
 }: GoogleMapComponentProps) => {

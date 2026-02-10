@@ -55,7 +55,7 @@ type TabsProps = {
     submenuRender?: boolean;
     menuIcon?: boolean;
     desc?: boolean;
-    template?: string;
+    variant?: 'default' | 'compact' | 'card';
     hideBreadcrumb?: boolean;
     action?: React.ReactNode;
     hideTitle?: boolean;
@@ -209,7 +209,7 @@ const Tabs: React.FC< TabsProps > = ( {
     tabTitleSection,
     appLocalizer,
     submenuRender,
-    template,
+    variant = 'default',
     menuIcon,
     desc,
     hideBreadcrumb,
@@ -516,7 +516,7 @@ const Tabs: React.FC< TabsProps > = ( {
                 activeTabIcon={ tabIcon }
                 tabTitle={ parentTab }
                 submenuRender={ submenuRender }
-                template={ template }
+                variant={ variant }
                 renderBreadcrumb={ renderBreadcrumbLinks }
                 renderMenuItems={ renderAllMenuItems }
                 tabData={ tabData }
@@ -528,7 +528,7 @@ const Tabs: React.FC< TabsProps > = ( {
                 action={ action }
             />
 
-            <div className={ `general-wrapper admin-settings ${ template || 'template-1' }` }>
+            <div className="general-wrapper admin-settings" data-template={variant}>
                 { HeaderSection && <HeaderSection /> }
                 { menuStack.length > 1 && (
                     <div id="tabs-wrapper" className="tabs-wrapper">
