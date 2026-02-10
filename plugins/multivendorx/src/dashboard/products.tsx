@@ -4,7 +4,7 @@ import {
 	useModules,
 	Table,
 	TableCell,
-	MultiCalendarInput,
+	CalendarInput,
 	getApiLink,
 } from 'zyra';
 import {
@@ -703,7 +703,7 @@ const AllProduct: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<MultiCalendarInput
+				<CalendarInput
 					value={{
 						startDate: dateFilter.start_date,
 						endDate: dateFilter.end_date,

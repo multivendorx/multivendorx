@@ -8,7 +8,7 @@ import {
 	TableCell,
 	CommonPopup,
 	TextArea, 
-	MultiCalendarInput,
+	CalendarInput,
 	FormGroupWrapper,
 	FormGroup, 
 	BasicInputUI,
@@ -393,7 +393,7 @@ const CustomerQuestions: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<MultiCalendarInput
+				<CalendarInput
 					value={{
 						startDate: dateFilter.start_date,
 						endDate: dateFilter.end_date,

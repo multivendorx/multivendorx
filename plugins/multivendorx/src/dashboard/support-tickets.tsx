@@ -7,13 +7,13 @@ import {
 	TableCell,
 	CommonPopup,
 	getApiLink,
-	MultiCalendarInput, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
 	ProPopup,
 	AdminButtonUI,
 	ToggleSettingUI,
+	CalendarInput,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -272,7 +272,7 @@ const SupportTickets: React.FC = () => {
 			name: 'date',
 			render: (updateFilter) => (
 				<div className="right">
-					<MultiCalendarInput
+					<CalendarInput
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,

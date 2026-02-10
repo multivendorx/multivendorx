@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
+import DatePanel from "react-multi-date-picker/plugins/date_panel"
 
 export interface CalendarRange {
   startDate: Date;
@@ -12,6 +13,7 @@ interface CalendarInputProps {
   format?: string;
   value?: CalendarRange;
   onChange?: (range?: CalendarRange) => void;
+  multiple?: boolean;
   proSetting?: boolean;
 }
 
@@ -34,18 +36,19 @@ const Presets = ({
 }: any) => {
   const now = new Date();
 
+  const clone = (date: Date) => new Date(date);
+
   const startOfWeek = (date: Date) => {
-    const newDate = new Date(date);
-    const day = newDate.getDay();
-    const diff = newDate.getDate() - day + 1;
-    return new Date(newDate.setDate(diff));
+    const newdate = clone(date);
+    const day = newdate.getDay();
+    newdate.setDate(newdate.getDate() - day + 1);
+    return newdate;
   };
 
   const endOfWeek = (date: Date) => {
-    const startDate = startOfWeek(date);
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 6);
-    return endDate;
+    const newdate = startOfWeek(date);
+    newdate.setDate(newdate.getDate() + 6);
+    return newdate;
   };
 
   const startOfMonth = (date: Date) =>
@@ -55,20 +58,35 @@ const Presets = ({
     new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
   const apply = (dates: Date[]) => {
-    const objs = dates.map(date => new DateObject({ date: date, format }));
-    setValue(objs.length === 1 ? objs[0] : objs);
+    const result = dates.map(date => new DateObject({ date, format }));
+    setValue(result.length === 1 ? result[0] : result);
     pickerRef.current?.closeCalendar();
   };
 
-  const yesterday = new Date();
-  yesterday.setDate(now.getDate() - 1);
+  // Yesterday
+  const yesterday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - 1
+  );
 
-  const lastWeekStart = new Date(startOfWeek(now));
-  lastWeekStart.setDate(lastWeekStart.getDate() - 7);
-  const lastWeekEnd = new Date(lastWeekStart);
-  lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+  // Last week
+  const lastWeekStart = new Date(
+    startOfWeek(now).getFullYear(),
+    startOfWeek(now).getMonth(),
+    startOfWeek(now).getDate() - 7
+  );
 
-  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastWeekEnd = endOfWeek(lastWeekStart);
+
+  // Last month
+  const lastMonthStart = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    1
+  );
+
+  const lastMonthEnd = endOfMonth(lastMonthStart);
 
   return (
     <div style={{ padding: 10, borderRight: '1px solid #eee' }}>
@@ -85,14 +103,7 @@ const Presets = ({
       <div onClick={() => apply([startOfMonth(now), endOfMonth(now)])}>
         This Month
       </div>
-      <div
-        onClick={() =>
-          apply([
-            startOfMonth(lastMonth),
-            endOfMonth(lastMonth),
-          ])
-        }
-      >
+      <div onClick={() => apply([lastMonthStart, lastMonthEnd])}>
         Last Month
       </div>
     </div>
@@ -105,6 +116,7 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
   format = 'YYYY-MM-DD',
   value,
   onChange,
+  multiple = false,
   proSetting,
 }) => {
   const pickerRef = useRef<any>();
@@ -137,6 +149,19 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
     }
   };
 
+  const plugins = [];
+  if (multiple) {
+    plugins.push(<DatePanel key="date-panel" />);
+  } else {
+    plugins.push(
+      <Presets
+        key="presets"
+        setValue={handleChange}
+        pickerRef={pickerRef}
+        format={format}
+      />
+    );
+  }
   return (
     <div className={`settings-calender ${wrapperClass || ''}`}>
       <DatePicker
@@ -144,20 +169,14 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
         className={inputClass}
         value={internalValue}
         format={format}
-        range
+        range={!multiple}
         numberOfMonths={1}
         sort
         placeholder={format}
         onChange={handleChange}
         maxDate={new Date()}
-        plugins={[
-          <Presets
-            key="presets"
-            setValue={handleChange}
-            pickerRef={pickerRef}
-            format={format}
-          />,
-        ]}
+        multiple={multiple}
+        plugins={plugins}
       />
 
       {proSetting && <span className="admin-pro-tag">Pro</span>}
