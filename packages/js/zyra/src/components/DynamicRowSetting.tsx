@@ -4,7 +4,7 @@ import React from 'react';
 // Internal dependencies
 import '../styles/web/DynamicRowSetting.scss';
 import '../styles/web/ToggleSetting.scss';
-import SelectInput from './SelectInput';
+import { SelectInputUI } from './SelectInput';
 
 // Types
 type FieldType = 'text' | 'number' | 'file' | 'select' | 'button';
@@ -124,9 +124,8 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
 
                 return (
                     <div className="select-wrapper">
-                        <SelectInput
+                        <SelectInputUI
                             name={ field.key }
-                            type="single-select"
                             value={ val as string }
                             options={ selectOptions }
                             inputClass="react-select"

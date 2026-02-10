@@ -7,8 +7,8 @@ import React, { useState } from 'react';
  * Internal dependencies
  */
 import { getApiLink, getApiResponse } from '../utils/apiService';
-import   { BasicInputUI } from './BasicInput';
-import SelectInput from './SelectInput';
+import { BasicInputUI } from './BasicInput';
+import { SelectInputUI } from './SelectInput';
 
 // Types
 interface SelectOption {
@@ -138,7 +138,7 @@ const InputMailchimpList: React.FC< InputMailchimpListProps > = ( {
             </div>
 
             { ( selectOption.length > 0 || showOption ) && (
-                <SelectInput
+                <SelectInputUI
                     onChange={ ( e ) => {
                         if ( ! proSettingChanged() && e && 'value' in e ) {
                             onChange(

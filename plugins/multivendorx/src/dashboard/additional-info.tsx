@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, getApiLink, ToggleSetting, SuccessNotice } from 'zyra';
+import { TextArea, getApiLink, SuccessNotice } from 'zyra';
 
 const AdditionalInformation = () => {
 	const id = appLocalizer.store_id;

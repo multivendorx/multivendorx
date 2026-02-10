@@ -5,10 +5,10 @@ import {
 	Table,
 	TableCell,
 	CommonPopup,
-	ToggleSetting, 
 	getApiLink, 
 	BasicInputUI,
 	AdminButtonUI,
+	ToggleSettingUI,
 } from 'zyra';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { __ } from '@wordpress/i18n';
@@ -436,8 +436,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								<label>
 									{__('Shipping Method', 'multivendorx')}
 								</label>
-								<ToggleSetting
-									 
+								<ToggleSettingUI									 
 									value={formData.shippingMethod}
 									onChange={(val: string) => {
 										if (!isEditing) {
@@ -504,8 +503,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 							{formData.shippingMethod === 'free_shipping' && (
 								<>
 									<div className="form-group">
-										<ToggleSetting
-											 
+										<ToggleSettingUI											 
 											value={formData.freeShippingType}
 											onChange={(val: string) =>
 												handleChange(
@@ -602,8 +600,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 												'multivendorx'
 											)}
 										</label>
-										<ToggleSetting
-											 
+										<ToggleSettingUI											 
 											value={
 												formData.flatRateCalculationType
 											}

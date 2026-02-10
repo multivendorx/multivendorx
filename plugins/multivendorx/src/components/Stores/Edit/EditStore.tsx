@@ -1,9 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-	ToggleSetting,
+	ToggleSettingUI,
 	getApiLink,
-	SelectInput,
 	Tabs,
 	CommonPopup,
 	useModules,
@@ -12,7 +11,8 @@ import {
 	FormGroup, 
 	Popover,
 	Skeleton,
-	AdminButtonUI
+	AdminButtonUI,
+	SelectInputUI
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -1024,9 +1024,7 @@ const EditStore = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Deletion method', 'multivendorx')} htmlFor="deletion-method">
-							<ToggleSetting
-								 
-								descClass="settings-metabox-description"
+							<ToggleSettingUI
 								options={[
 									{
 										value: 'set_store_owner',
@@ -1062,11 +1060,10 @@ const EditStore = () => {
 						</FormGroup>
 						{deleteOption === 'set_store_owner' && (
 							<FormGroup label={__('Assign new store owner', 'multivendorx')}>
-								<SelectInput
+								<SelectInputUI
 									name="new_owner"
 									value={selectedOwner?.value}
 									options={appLocalizer.store_owners}
-									type="single-select"
 									onChange={(val: any) => {
 										if (val) {
 											setSelectedOwner(val);

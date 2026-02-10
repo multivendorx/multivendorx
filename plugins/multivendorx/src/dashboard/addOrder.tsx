@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
+import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCell, TextArea, getApiLink } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -586,9 +586,8 @@ const AddOrder = () => {
 															)}
 														</div>
 
-														<SelectInput
+														<SelectInputUI
 															name="shipping_method"
-															type="single-select"
 															options={
 																availableShippingMethods
 															}
@@ -736,9 +735,8 @@ const AddOrder = () => {
 
 								{showAddProduct && (
 									<FormGroup row label={__('Select Product', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="product_select"
-											type="single-select"
 											options={[
 												{
 													label: __(
@@ -813,10 +811,9 @@ const AddOrder = () => {
 					<Card title={__('Payment Method', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Select Payment Method', 'multivendorx')} htmlFor="payment-method">
-								<SelectInput
+								<SelectInputUI
 									name="payment_method"
 									options={paymentOptions}
-									type="single-select"
 									value={selectedPayment?.value}
 									onChange={(value) => {
 										const method = paymentMethods.find(
@@ -834,10 +831,9 @@ const AddOrder = () => {
 							<>
 								<FormGroupWrapper>
 									<FormGroup label={__('Select Customer', 'multivendorx')} htmlFor="Select-customer">
-										<SelectInput
+										<SelectInputUI
 											name="new_owner"
 											options={customerOptions}
-											type="single-select"
 											onChange={(value) => {
 												const customer =
 													customers.find(
@@ -1078,11 +1074,10 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Country / Region', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="country"
 											value={shippingAddress.country}
 											options={appLocalizer.country_list || []}
-											type="single-select"
 											onChange={(selected) => {
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1094,11 +1089,10 @@ const AddOrder = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('State / County', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="state"
 											value={shippingAddress.state}
 											options={stateOptions}
-											type="single-select"
 											onChange={(selected) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1205,14 +1199,13 @@ const AddOrder = () => {
 										/></FormGroup>
 
 									<FormGroup cols={2} label={__('Country / Region', 'multivendorx')} htmlFor="country-region">
-										<SelectInput
+										<SelectInputUI
 											name="country"
 											value={billingAddress.country}
 											options={
 												appLocalizer.country_list ||
 												[]
 											}
-											type="single-select"
 											onChange={(selected) => {
 												setBillingAddress(
 													(prev) => ({
@@ -1228,11 +1221,10 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('State / County', 'multivendorx')} htmlFor="state-county">
-										<SelectInput
+										<SelectInputUI
 											name="state"
 											value={billingAddress.state}
 											options={stateOptions}
-											type="single-select"
 											onChange={(selected) => {
 												setBillingAddress(
 													(prev) => ({
