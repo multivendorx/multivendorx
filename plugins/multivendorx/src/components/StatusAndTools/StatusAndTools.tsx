@@ -252,16 +252,13 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 	return (
 		<SettingProvider>
 			<Tabs
-				tabData={settingsArray as any}
+				tabContent={settingsArray as any}
 				currentTab={location.get('subtab') as string}
 				getForm={GetForm}
-				BannerSection={getBanner}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=status-tools&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				brandImg={Brand}
-				supprot={supportLink}
 				Link={Link}
 				settingName={'Status & Tools'}
 			/>

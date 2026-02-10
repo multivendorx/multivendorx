@@ -23,7 +23,7 @@ const StoreStatus: React.FC = () => {
 		[]
 	);
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'heading',
 			name: 'Activation flow',
@@ -149,7 +149,7 @@ const StoreStatus: React.FC = () => {
 		<SettingProvider>
 			<div className="horizontal-tabs">
 				<Tabs
-					tabData={tabData as any}
+					tabContent={tabContent as any}
 					currentTab={initialTab}
 					getForm={GetForm}
 					prepareUrl={(tabid: string) =>

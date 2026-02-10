@@ -188,7 +188,7 @@ const ApprovalQueue = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			// condition: settings?.general?.approve_store === 'manually',
@@ -344,7 +344,7 @@ const ApprovalQueue = () => {
 				}
 			/>
 			<Tabs
-				tabData={tabData}
+				tabContent={tabContent}
 				currentTab={location.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>

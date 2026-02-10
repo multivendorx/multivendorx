@@ -74,7 +74,7 @@ const Reports = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			content: {
@@ -157,7 +157,7 @@ const Reports = () => {
 			/>
 
 			<Tabs
-				tabData={tabData}
+				tabContent={tabContent}
 				currentTab={location.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>

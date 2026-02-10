@@ -193,7 +193,7 @@ const EditStore = () => {
 		});
 	};
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			content: {
@@ -284,7 +284,7 @@ const EditStore = () => {
 	}, []);
 
 	const visibleTabs = useMemo(() => {
-		const updatedTabs = tabData.map((tab) =>
+		const updatedTabs = tabContent.map((tab) =>
 			tab.content.id === 'application-details'
 				? {
 					...tab,
@@ -313,7 +313,7 @@ const EditStore = () => {
 		}
 
 		return updatedTabs;
-	}, [tabData, data?.status]);
+	}, [tabContent, data?.status]);
 
 	const [expanded, setExpanded] = useState(false);
 
@@ -414,7 +414,7 @@ const EditStore = () => {
 		<>
 			<SuccessNotice message={successMsg} />
 			<Tabs
-				tabData={visibleTabs}
+				tabContent={visibleTabs}
 				currentTab={currentTab}
 				getForm={getForm}
 				prepareUrl={prepareUrl}

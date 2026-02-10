@@ -11,7 +11,7 @@ const CustomerSupport = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			module: 'question-answer',
@@ -82,9 +82,9 @@ const CustomerSupport = () => {
 					'multivendorx'
 				)}
 			/>
-			{tabData.length > 0 ? (
+			{tabContent.length > 0 ? (
 				<Tabs
-					tabData={tabData}
+					tabContent={tabContent}
 					currentTab={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>

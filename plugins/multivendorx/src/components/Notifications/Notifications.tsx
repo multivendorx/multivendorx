@@ -7,7 +7,7 @@ const Notifications = () => {
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 	const initialTab = location.get('subtab') || 'notifications';
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			content: {
@@ -43,7 +43,7 @@ const Notifications = () => {
 
 	return (
 		<Tabs
-			tabData={tabData}
+			tabContent={tabContent}
 			currentTab={initialTab}
 			getForm={getForm}
 			prepareUrl={(tabid: string) => `?page=multivendorx#&tab=notifications&subtab=${tabid}`}

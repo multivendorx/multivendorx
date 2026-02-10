@@ -23,7 +23,7 @@ const Invoice: React.FC = () => {
 		[]
 	);
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			content: {
@@ -141,7 +141,7 @@ const Invoice: React.FC = () => {
 		<SettingProvider>
 			<div className="horizontal-tabs">
 				<Tabs
-					tabData={tabData as any}
+					tabContent={tabContent as any}
 					currentTab={initialTab}
 					getForm={GetForm}
 					prepareUrl={(tabid: string) =>

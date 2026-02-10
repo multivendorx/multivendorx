@@ -40,7 +40,7 @@ export const TransactionHistory: React.FC = () => {
 
 	const locationUrl = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			content: {
@@ -125,7 +125,7 @@ export const TransactionHistory: React.FC = () => {
 			/>
 
 			<Tabs
-				tabData={tabData}
+				tabContent={tabContent}
 				currentTab={locationUrl.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
