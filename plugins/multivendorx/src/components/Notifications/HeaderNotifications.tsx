@@ -1,28 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { getApiLink } from 'zyra';
+import { getApiLink, Skeleton } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
 type NotificationItem = {
-	id: number;
-	icon?: string;
-	title: string;
-	message: string;
-	time: string;
+  id: number;
+  icon?: string;
+  title: string;
+  message: string;
+  time: string;
 };
 
 const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = ({ type }) => {
-  const [items, setItems] = useState<NotificationItem[] | null>(null);
+  const [items, setItems] = useState<NotificationItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     axios({
       method: 'GET',
       url: getApiLink(appLocalizer, 'notifications'),
       headers: { 'X-WP-Nonce': appLocalizer.nonce },
       params: { header: true, type },
     })
-      .then(res => setItems(res.data || []))
-      .catch(() => setItems([]));
+      .then(res => {
+        setItems(res.data || [])
+        setLoading(false);
+      })
+      .catch(() => {
+        setItems([])
+        setLoading(false);
+      });
   }, [type]);
 
   const dismissItem = (id: number) => {
@@ -41,7 +49,27 @@ const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = 
       .then(() => setItems(prev => prev?.filter(i => i.id !== id) || []));
   };
 
-  if (items === null) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <>
+        <li>
+          <div className="item">
+            <Skeleton width={400} height={70} />
+          </div>
+          <div className="item">
+            <Skeleton width={400} height={70} />
+          </div>
+          <div className="item">
+            <Skeleton width={400} height={70} />
+          </div>
+          <div className="item">
+            <Skeleton width={400} height={70} />
+          </div>
+        </li>
+      </>
+    );
+  }
+
   if (items.length === 0) return <div>{__('No notifications', 'multivendorx')}</div>;
 
   return (
