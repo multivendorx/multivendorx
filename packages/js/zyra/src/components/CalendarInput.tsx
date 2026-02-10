@@ -19,7 +19,7 @@ interface CalendarInputProps {
 
 const toDateObjectRange = (
   range?: CalendarRange,
-  format = 'YYYY-MM-DD'
+  format = 'MMMM DD YYYY'
 ) => {
   if (!range) return null;
 
@@ -89,7 +89,7 @@ const Presets = ({
   const lastMonthEnd = endOfMonth(lastMonthStart);
 
   return (
-    <div style={{ padding: 10, borderRight: '1px solid #eee' }}>
+    <div>
       <div onClick={() => apply([now])}>Today</div>
       <div onClick={() => apply([yesterday])}>Yesterday</div>
 
@@ -113,11 +113,10 @@ const Presets = ({
 const CalendarInput: React.FC<CalendarInputProps> = ({
   wrapperClass,
   inputClass,
-  format = 'YYYY-MM-DD',
+  format = "MMMM DD YYYY",
   value,
   onChange,
   multiple = false,
-  proSetting,
 }) => {
   const pickerRef = useRef<any>();
 
@@ -145,7 +144,7 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
 
       pickerRef.current?.closeCalendar();
     } else {
-      onChange?.(undefined);
+      onChange?.();
     }
   };
 
@@ -178,8 +177,6 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
         multiple={multiple}
         plugins={plugins}
       />
-
-      {proSetting && <span className="admin-pro-tag">Pro</span>}
     </div>
   );
 };

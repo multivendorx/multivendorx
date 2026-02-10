@@ -46,7 +46,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 
                 // Date filter
                 if (filter.type === 'date') {
-                    const range = value as { startDate: Date; endDate: Date } | undefined;
+                    const range = value as { startDate: Date; endDate: Date };
                 
                     return (
                         <div key={filter.key} className="group-field">
