@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useOutsideClick } from './useOutsideClick';
 import { BasicInputUI } from './BasicInput';
 import ItemList from './UI/ItemList';
+import { SelectInputUI } from './SelectInput';
 
 type SearchItem = {
     icon?: string;
@@ -39,7 +40,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
 }) => {
     if (!search) return null;
 
-    const { placeholder = 'Search Settings', options = [] } = search;
+    const { placeholder = '', options = [] } = search;
     const hasDropdown = options.length > 0;
 
     const [query, setQuery] = useState('');
@@ -70,20 +71,15 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             {/* Search scope dropdown */}
             {hasDropdown && (
                 <div className="search-action">
-                    <select
+                    <SelectInputUI
+                        options={options}
                         value={action}
-                        onChange={(e) => {
-                            const val = e.target.value;
+                        onChange={(newValue) => {
+                            const val = newValue.value;
                             setAction(val);
                             triggerSearch(query, val);
                         }}
-                    >
-                        {options.map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
             )}
 

@@ -16,11 +16,10 @@ export interface ItemListProps {
 }
 
 const ItemList: React.FC<ItemListProps> = ({ items }) => {
-    if (!items || items.length === 0) return null;
 
     return (
         <div className="popover-list">
-            {items.map((item, index) => {
+            {items && items.map((item, index) => {
                 const handleClick = (e: React.MouseEvent) => {
                     e.stopPropagation();
                     if (item.action) item.action();
@@ -39,7 +38,6 @@ const ItemList: React.FC<ItemListProps> = ({ items }) => {
                                 <a
                                     href={item.link}
                                     target={item.targetBlank ? "_blank" : "_self"}
-                                    rel={item.targetBlank ? "noopener noreferrer" : undefined}
                                 >
                                     {item.title}
                                 </a>
