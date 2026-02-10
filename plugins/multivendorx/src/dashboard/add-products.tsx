@@ -4,21 +4,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
 	CalendarInput,
 	FileInput,
-	MultiCheckBox,
 	RadioInput,
-	SelectInput,
 	TextArea,
 	useModules,
-	ToggleSetting,
 	Card,
 	Column,
 	Container,
 	FormGroupWrapper,
 	FormGroup, 
 	getApiLink,
-	CommonPopup,
 	BasicInputUI,
 	AdminButtonUI,
+	MultiCheckBoxUI,
+	SelectInputUI,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { formatWcShortDate } from '@/services/commonFunction';
@@ -777,7 +775,7 @@ const AddProduct = () => {
 					<Card title={__('Product type', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup desc={__('A standalone product with no variant', 'multivendorx')}>
-								<SelectInput
+								<SelectInputUI
 									name="type"
 									options={typeOptions}
 									value={product.type}
@@ -1072,10 +1070,9 @@ const AddProduct = () => {
 							{!product.manage_stock && (
 								<>
 									<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="stock_status"
 											options={stockStatusOptions}
-											type="single-select"
 											value={product.stock_status}
 											onChange={(selected) =>
 												handleChange('stock_status', selected.value)
@@ -1100,10 +1097,9 @@ const AddProduct = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('Allow backorders?', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="backorders"
 											options={backorderOptions}
-											type="single-select"
 											value={product.backorders}
 											onChange={(selected) =>
 												handleChange('backorders', selected.value)
@@ -1257,9 +1253,8 @@ const AddProduct = () => {
 											</div>
 										)}
 										{isEditingVisibility && (
-											<SelectInput
+											<SelectInputUI
 												name="catalog_visibility"
-												// wrapperClass="fit-content"
 												size="14rem"
 												options={[
 													{ key: 'visible', value: 'visible', label: 'Shop and search results' },
@@ -1296,7 +1291,7 @@ const AddProduct = () => {
 									)}
 									{/* Edit Product Page Status */}
 									{isEditingStatus && (
-										<SelectInput
+										<SelectInputUI
 											name="status"
 											wrapperClass="fit-content"
 											options={[

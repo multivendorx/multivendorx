@@ -5,13 +5,13 @@ import { __ } from '@wordpress/i18n';
 import {
 	CommonPopup,
 	getApiLink,
-	ToggleSetting, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
 	ProPopup,
 	TableCard,
 	AdminButtonUI,
+	ToggleSettingUI,
 } from 'zyra';
 import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
@@ -441,9 +441,7 @@ const StoreReviews: React.FC = () => {
 							</FormGroup>
 
 							<FormGroup label={__('Control if this review appears publicly, stays under moderation, or is excluded from the store page.', 'multivendorx')} htmlFor="control">
-								<ToggleSetting
-									wrapperclassName="setting-form-input"
-									descclassName="settings-metabox-description"
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'pending',

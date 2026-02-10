@@ -6,13 +6,13 @@ import {
 	getApiLink,
 	CommonPopup,
 	TextArea,
-	ToggleSetting,  
 	FormGroupWrapper,
 	FormGroup,
 	ProPopup,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
+	ToggleSettingUI,
 } from 'zyra';
 
 import { Dialog } from '@mui/material';
@@ -364,9 +364,7 @@ const Qna: React.FC = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">
-								<ToggleSetting
-
-									descClass="settings-metabox-description"
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'public',

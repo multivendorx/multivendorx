@@ -162,8 +162,7 @@ export default {
 				key: 'generate_button',
 				name: "Generate",
 				generate: true,
-				responseKey: 'generate_key',
-				 
+				responseKey: 'generate_key',				 
 			},
 		},
 		{

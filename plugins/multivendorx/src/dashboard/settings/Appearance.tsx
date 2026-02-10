@@ -3,12 +3,12 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
 	FileInput,
-	SelectInput,
 	getApiLink,
 	SuccessNotice,
 	FormGroupWrapper,
 	FormGroup,
 	BasicInputUI,
+	SelectInputUI,
 } from 'zyra';
 
 interface FormData {
@@ -148,9 +148,8 @@ const Appearance = () => {
 
 				{/* Banner Type */}
 				<FormGroup label={__('Banner / Cover Image', 'multivendorx')} htmlFor="banner_type">
-					<SelectInput
+					<SelectInputUI
 						name="banner_type"
-						type="single-select"
 						options={storeOptions}
 						value={formData.banner_type || ''}
 						onChange={(newValue: any) => {

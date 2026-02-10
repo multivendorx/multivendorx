@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
+import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SelectInputUI, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -302,7 +302,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								)}
 								{statusSelect && (
 									<div className="status-edit">
-										<SelectInput
+										<SelectInputUI
 											name="status"
 											options={[
 												{
@@ -323,7 +323,6 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 												},
 											]}
 											value={orderData?.status}
-											type="single-select"
 											onChange={(newValue: any) => {
 												handleStatusChange(
 													newValue.value

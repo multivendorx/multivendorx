@@ -7,7 +7,7 @@ import {
 	AdminBreadcrumbs, 
 	TextArea,
 	CommonPopup,
-	ToggleSetting,
+	ToggleSettingUI,
 	Container,
 	Column,
 	FormGroupWrapper,
@@ -421,7 +421,7 @@ export const KnowledgeBase: React.FC = () => {
 								)}
 							</FormGroup>
 							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-								<ToggleSetting
+								<ToggleSettingUI
 									value={formData.status}
 									options={[
 										{
