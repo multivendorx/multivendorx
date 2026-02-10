@@ -6,16 +6,16 @@ import { StepType, useTour } from '@reactour/tour';
 // Internal dependencies
 import { getApiLink } from '../utils/apiService';
 
-// Types
 interface AppLocalizer {
     enquiry_form_settings_url?: string;
     page_url?: string;
     settings_page_url?: string;
-    customization_settings_url?: string;
     site_url?: string;
-    restUrl: string;
+    module_page_url?: string;
+    customization_settings_url?: string;
     apiUrl: string;
     nonce: string;
+    restUrl: string;
 }
 
 interface TourProps {

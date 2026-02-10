@@ -85,7 +85,7 @@ const CustomNoOptionsMessage = (props: any) => {
     );
 };
 
-const SelectInputUI: React.FC<SelectInputProps> = ({
+export const SelectInputUI: React.FC<SelectInputProps> = ({
     wrapperClass,
     selectDeselect,
     selectDeselectClass,
