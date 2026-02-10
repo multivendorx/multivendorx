@@ -1,11 +1,7 @@
 import React, { useState, useRef } from 'react';
 import "../../styles/web/UI/Popover.scss";
 import { useOutsideClick } from '../useOutsideClick';
-
-interface PopoverProps {
-    toggleIcon?: string;
-    toggleContent?: React.ReactNode;
-}
+import { PopoverProps } from '../types';
 
 const Popover: React.FC<PopoverProps> = ({
     toggleIcon,

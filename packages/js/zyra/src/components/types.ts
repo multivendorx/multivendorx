@@ -122,3 +122,24 @@ export interface TourProps {
     forceOpen: boolean;
 }
 
+interface TabFooter {
+    url: string;
+    icon?: string;
+    text: string;
+}
+
+interface Tab {
+    label: string;
+    content: React.ReactNode;
+    footer?:TabFooter;
+}
+
+export interface TabsProps {
+    tabs: Tab[];
+    defaultActiveIndex?: number;
+}
+
+export interface PopoverProps {
+    toggleIcon?: string;
+    toggleContent?: React.ReactNode;
+}
