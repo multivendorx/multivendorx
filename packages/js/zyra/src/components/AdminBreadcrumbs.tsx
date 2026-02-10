@@ -12,7 +12,6 @@ interface AdminBreadcrumbsProps<T> {
     activeTabIcon?: string;
     tabTitle?: string;
     submenuRender?: boolean;
-    template?: string;
     variant?: 'default' | 'compact' | 'card';
     hideTitle?: boolean;
     hideBreadcrumb?: boolean;
@@ -32,7 +31,6 @@ const AdminBreadcrumbs = <T,>({
     activeTabIcon = '',
     tabTitle = '',
     submenuRender = false,
-    template = '',
     variant = 'default',
     renderBreadcrumb,
     renderMenuItems,
