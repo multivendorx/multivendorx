@@ -1,11 +1,12 @@
 import React from 'react';
 
 interface Item {
+    id?:string;
     title?: string;
     icon?: string;
     link?: string;
     targetBlank?: boolean;
-    action?: () => void;
+    action?: (item: Item) => void;
     desc?: string;
     time?: string;
     className?: string;
@@ -22,7 +23,7 @@ const ItemList: React.FC<ItemListProps> = ({ items }) => {
             {items && items.map((item, index) => {
                 const handleClick = (e: React.MouseEvent) => {
                     e.stopPropagation();
-                    if (item.action) item.action();
+                    if (item.action) item.action(item);
                 };
 
                 return (
