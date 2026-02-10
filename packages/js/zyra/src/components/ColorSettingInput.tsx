@@ -3,7 +3,7 @@ import React, { ChangeEvent, useState, useEffect, useMemo } from 'react';
 
 // Internal Dependencies
 import '../styles/web/ColorSettingInput.scss';
-import ToggleSetting from './ToggleSetting';
+import { ToggleSettingUI } from './ToggleSetting';
 import SelectInput from './SelectInput';
 import PdfDownloadButton from './PdfDownloadButton';
 
@@ -238,7 +238,7 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                         {!selectedImage && (
                                 <div className="form-group-setting-wrapper">
                                     <label>Color Palette</label>
-                                    <ToggleSetting
+                                    <ToggleSettingUI
                                         options={[
                                             {
                                                 key: 'predefined',

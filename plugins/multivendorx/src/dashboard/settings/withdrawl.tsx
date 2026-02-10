@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {   BasicInputUI, FormGroup, FormGroupWrapper, ToggleSetting, getApiLink } from 'zyra';
+import { BasicInputUI, FormGroup, FormGroupWrapper, ToggleSetting, ToggleSettingUI, getApiLink } from 'zyra';
 import {
 	ConnectComponentsProvider,
 	ConnectAccountOnboarding,
@@ -148,18 +148,14 @@ const Withdrawl: React.FC = () => {
 				<FormGroup
 					label={__('Payment Method', 'multivendorx')}
 					htmlFor="payment_method"
-				>
-					<ToggleSetting
-						 
-						descClass="settings-metabox-description"
-						description={
-							paymentOptions && paymentOptions.length === 0
+					desc={paymentOptions && paymentOptions.length === 0
 								? __(
 									'You haven’t enabled any payment methods yet.',
 									'multivendorx'
 								)
-								: ''
-						}
+								: '' }						
+				>
+					<ToggleSettingUI
 						options={paymentOptions}
 						value={formData.payment_method || ''}
 						onChange={(value) => handleToggleChange(value)}
@@ -265,14 +261,9 @@ const Withdrawl: React.FC = () => {
 						}
 						if (field.type === 'setting-toggle') {
 							return (
-								<FormGroup label={__(field.label, 'multivendorx')} htmlFor={field.key}>
-									<ToggleSetting
+								<FormGroup label={__(field.label, 'multivendorx')} desc={field.desc ? __(field.desc, 'multivendorx'): ''} htmlFor={field.key}>
+									<ToggleSettingUI
 										key={field.key}
-										description={
-											field.desc
-												? __(field.desc, 'multivendorx')
-												: ''
-										}
 										options={
 											Array.isArray(field.options)
 												? field.options.map((opt) => ({

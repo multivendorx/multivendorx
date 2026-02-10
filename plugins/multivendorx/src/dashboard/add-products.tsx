@@ -19,6 +19,7 @@ import {
 	CommonPopup,
 	BasicInputUI,
 	AdminButtonUI,
+	MultiCheckBoxUI,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { formatWcShortDate } from '@/services/commonFunction';

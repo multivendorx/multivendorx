@@ -13,7 +13,7 @@ import {
 	Table,
 	TableCell,
 	TextArea,
-	ToggleSetting,
+	ToggleSettingUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -368,7 +368,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Allow free shipping', 'multivendorx')} htmlFor="free_shipping">
-							<ToggleSetting
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -463,8 +463,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Individual use only', 'multivendorx')} htmlFor="individual_use">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -477,8 +476,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Exclude sale items', 'multivendorx')} htmlFor="exclude_sale_items">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },

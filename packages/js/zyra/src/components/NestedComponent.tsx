@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 // Internal dependencies
 import '../styles/web/NestedComponent.scss';
-import ToggleSetting from './ToggleSetting';
+import ToggleSetting, { ToggleSettingUI } from './ToggleSetting';
 import   { BasicInputUI } from './BasicInput';
 import SelectInput from './SelectInput';
 import MultiCheckBox from './MultiCheckbox';
@@ -258,7 +258,7 @@ const NestedComponent: React.FC< NestedComponentProps > = ( {
                     <>
                         { ! ( rowIndex === 0 && field.skipLabel ) &&
                             field.label && <label>{ field.label }</label> }
-                        <ToggleSetting
+                        <ToggleSettingUI
                             key={ field.key }
                             options={ field.options || [] }
                             value={

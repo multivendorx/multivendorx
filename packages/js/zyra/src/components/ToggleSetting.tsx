@@ -20,7 +20,6 @@ interface Option {
 interface ToggleSettingProps {
     options: Option[];
     wrapperClass?: string;
-    descClass?: string;
     value: string | string[];
     onChange: ( value: string | string[] ) => void;
     proSetting?: boolean;
@@ -31,7 +30,7 @@ interface ToggleSettingProps {
     canAccess?: boolean;
 }
 
-const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
+export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
     options,
     wrapperClass,
     value,

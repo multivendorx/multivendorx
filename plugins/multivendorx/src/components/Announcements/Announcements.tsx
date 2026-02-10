@@ -17,6 +17,7 @@ import {
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
+	ToggleSettingUI,
 } from 'zyra';
 
 
@@ -574,14 +575,8 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-							<ToggleSetting
-
-								descClass="settings-metabox-description"
-								description={__(
-									'Select the status of the announcement.',
-									'multivendorx'
-								)}
+						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.','multivendorx')} htmlFor="status">
+							<ToggleSettingUI
 								options={[
 									{
 										key: 'draft',

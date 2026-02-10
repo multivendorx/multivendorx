@@ -5,11 +5,11 @@ import {
 	getApiLink,
 	SuccessNotice,
 	Section,
-	MultiCheckBox,
 	FormGroupWrapper,
 	FormGroup,
 	useModules, 
 	AdminButtonUI,
+	MultiCheckBoxUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -168,7 +168,7 @@ const Privacy = () => {
 							label={__('Enable Deactivation', 'multivendorx')}
 							htmlFor="enable_deactivation"
 						>
-							<MultiCheckBox
+							<MultiCheckBoxUI
 								look='toggle'
 								key="enable_deactivation"
 								options={[
