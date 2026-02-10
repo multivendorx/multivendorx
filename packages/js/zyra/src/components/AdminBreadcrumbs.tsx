@@ -17,7 +17,7 @@ interface AdminBreadcrumbsProps<T> {
     hideBreadcrumb?: boolean;
     renderBreadcrumb?: () => React.ReactNode;
     renderMenuItems?: (items: T[]) => React.ReactNode;
-    tabData?: T[];
+    tabContent?: T[];
     buttons?: button[];
     goPremiumLink?: string;
     description?: string;
@@ -32,7 +32,7 @@ const AdminBreadcrumbs = <T,>({
     variant = 'default',
     renderBreadcrumb,
     renderMenuItems,
-    tabData = [],
+    tabContent = [],
     buttons = [],
     goPremiumLink,
     description,
@@ -121,7 +121,7 @@ const AdminBreadcrumbs = <T,>({
                         )}
                     </>
                 )}
-                {renderMenuItems && tabData.length > 0 && (
+                {renderMenuItems && tabContent.length > 0 && (
                     <div className="tabs-wrapper">
                         {submenuRender && (
                             <>
@@ -137,7 +137,7 @@ const AdminBreadcrumbs = <T,>({
                                     : 'tabs-item'
                             }
                         >
-                            {renderMenuItems(tabData)}
+                            {renderMenuItems(tabContent)}
                         </div>
                         {!submenuRender && goPremiumLink && (
                             <a

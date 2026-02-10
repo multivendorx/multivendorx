@@ -7,7 +7,7 @@ import { LinkProps } from 'react-router-dom';
 import '../styles/web/Tabs.scss';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 
-type TabContent = {
+type Content = {
     id: string;
     name: string;
     desc?: string;
@@ -20,16 +20,16 @@ type TabContent = {
     proDependent?: boolean;
 };
 
-type TabData = {
+type TabContent = {
     name?: string;
     type: 'file' | 'folder' | 'heading';
-    content: TabContent | TabData[];
+    content: Content | TabContent[];
 };
 
 type BreadcrumbItem = { name: string; id: string; type: string };
 
 type TabsProps = {
-    tabData: TabData[];
+    tabContent: TabContent[];
     currentTab: string;
     getForm: (tabId: string) => ReactNode;
     prepareUrl: (tabId: string) => string;
@@ -39,27 +39,22 @@ type TabsProps = {
     onNavigate?: (url: string) => void;
     tabTitleSection?: React.ReactNode;
     appLocalizer: { khali_dabba?: boolean; shop_url?: string };
-    submenuRender?: boolean;
     menuIcon?: boolean;
     desc?: boolean;
     variant?: 'default' | 'compact' | 'card';
-    hideBreadcrumb?: boolean;
-    action?: React.ReactNode;
-    hideTitle?: boolean;
-    premium?: boolean;
 };
 
 // Helper functions
-const isFile = (item: TabData): item is TabData & { content: TabContent } => {
+const isFile = (item: TabContent): item is TabContent & { content: Content } => {
     return item.type === 'file';
 };
 
-const isFolder = (item: TabData): item is TabData & { content: TabData[] } => {
+const isFolder = (item: TabContent): item is TabContent & { content: TabContent[] } => {
     return item.type === 'folder';
 };
 
 // Find path to a tab (breadcrumb path)
-function findTabPath(items: TabData[], targetId: string, path: TabData[] = []): TabData[] | null {
+function findTabPath(items: TabContent[], targetId: string, path: TabContent[] = []): TabContent[] | null {
     for (const item of items) {
         if (isFile(item) && item.content.id === targetId) {
             return [...path, item];
@@ -73,7 +68,7 @@ function findTabPath(items: TabData[], targetId: string, path: TabData[] = []): 
 }
 
 // Find first file in items
-function findFirstFile(items: TabData[]): TabContent | null {
+function findFirstFile(items: TabContent[]): Content | null {
     for (const item of items) {
         if (isFile(item)) return item.content;
         if (isFolder(item)) {
@@ -85,7 +80,7 @@ function findFirstFile(items: TabData[]): TabContent | null {
 }
 
 // Get folder contents if active tab is inside it
-function getFolderContents(items: TabData[], activeTabId: string): TabData[] {
+function getFolderContents(items: TabContent[], activeTabId: string): TabContent[] {
     // Find the folder that contains the active tab
     for (const item of items) {
         if (isFolder(item)) {
@@ -100,7 +95,7 @@ function getFolderContents(items: TabData[], activeTabId: string): TabData[] {
 }
 
 const Tabs: React.FC<TabsProps> = ({
-    tabData,
+    tabContent,
     currentTab,
     getForm,
     prepareUrl,
@@ -110,7 +105,6 @@ const Tabs: React.FC<TabsProps> = ({
     onNavigate,
     tabTitleSection,
     appLocalizer,
-    submenuRender,
     variant = 'default',
     menuIcon,
     desc,
@@ -118,7 +112,7 @@ const Tabs: React.FC<TabsProps> = ({
     const [activeTab, setActiveTab] = useState(currentTab);
 
     // Get breadcrumb path for current tab
-    const tabPath = findTabPath(tabData, activeTab) || [];
+    const tabPath = findTabPath(tabContent, activeTab) || [];
 
     // Build breadcrumb items
     const breadcrumbs: BreadcrumbItem[] = [
@@ -142,7 +136,7 @@ const Tabs: React.FC<TabsProps> = ({
     });
 
     // Get current menu items to display
-    const currentMenu = getFolderContents(tabData, activeTab);
+    const currentMenu = getFolderContents(tabContent, activeTab);
 
     // Check if we should show submenu (when inside a folder)
     const showSubmenu = tabPath.length > 1; // More than just the file itself
@@ -158,7 +152,7 @@ const Tabs: React.FC<TabsProps> = ({
         }
     };
 
-    const navigateToFolder = (folder: TabData) => {
+    const navigateToFolder = (folder: TabContent) => {
         if (!isFolder(folder)) return;
         const firstFile = findFirstFile(folder.content);
         if (firstFile) {
@@ -170,7 +164,7 @@ const Tabs: React.FC<TabsProps> = ({
         e.preventDefault();
         if (index === 0) {
             // Root - go to first file
-            const firstFile = findFirstFile(tabData);
+            const firstFile = findFirstFile(tabContent);
             if (firstFile) navigateToTab(firstFile.id);
             return;
         }
@@ -182,7 +176,7 @@ const Tabs: React.FC<TabsProps> = ({
             navigateToTab(crumb.id);
         } else if (crumb.type === 'folder') {
             // Find the folder and navigate to it
-            const folder = tabData.find(item =>
+            const folder = tabContent.find(item =>
                 isFolder(item) && item.name === crumb.id
             );
             if (folder) navigateToFolder(folder);
@@ -190,7 +184,7 @@ const Tabs: React.FC<TabsProps> = ({
     };
 
     // Check if folder contains active tab
-    const doesFolderContainTab = (folderItems: TabData[]): boolean => {
+    const doesFolderContainTab = (folderItems: TabContent[]): boolean => {
         return findTabPath(folderItems, activeTab) !== null;
     };
 
@@ -209,7 +203,7 @@ const Tabs: React.FC<TabsProps> = ({
         ));
 
     // Render single menu item
-    const renderSingleMenuItem = (item: TabData, index: number) => {
+    const renderSingleMenuItem = (item: TabContent, index: number) => {
         if (item.type === 'heading') {
             return (
                 <div key={`heading-${item.name}-${index}`} className="tab-heading">
@@ -274,12 +268,12 @@ const Tabs: React.FC<TabsProps> = ({
     };
 
     // Render all menu items
-    const renderAllMenuItems = (items: TabData[]) =>
+    const renderAllMenuItems = (items: TabContent[]) =>
         items.map(renderSingleMenuItem);
 
     // Get active tab description
     const getActiveTabInfo = (): ReactNode => {
-        const path = findTabPath(tabData, activeTab);
+        const path = findTabPath(tabContent, activeTab);
         if (!path) return null;
 
         const fileItem = path.find(isFile);
@@ -310,7 +304,7 @@ const Tabs: React.FC<TabsProps> = ({
 
     // Get current tab icon
     const getCurrentTabIcon = (): string => {
-        const path = findTabPath(tabData, activeTab);
+        const path = findTabPath(tabContent, activeTab);
         if (!path) return '';
 
         const fileItem = path.find(isFile);
@@ -319,7 +313,7 @@ const Tabs: React.FC<TabsProps> = ({
 
     // Get parent tab name
     const getParentTabName = (): string => {
-        const path = findTabPath(tabData, activeTab);
+        const path = findTabPath(tabContent, activeTab);
         if (!path) return '';
 
         const fileItem = path.find(isFile);
@@ -331,12 +325,12 @@ const Tabs: React.FC<TabsProps> = ({
         if (currentTab) {
             setActiveTab(currentTab);
         } else {
-            const firstFile = findFirstFile(tabData);
+            const firstFile = findFirstFile(tabContent);
             if (firstFile) {
                 navigateToTab(firstFile.id);
             }
         }
-    }, [currentTab, tabData]);
+    }, [currentTab, tabContent]);
 
     const tabIcon = getCurrentTabIcon();
     const parentTab = getParentTabName();
@@ -350,7 +344,7 @@ const Tabs: React.FC<TabsProps> = ({
                 variant={variant}
                 renderBreadcrumb={renderBreadcrumbLinks}
                 renderMenuItems={renderAllMenuItems}
-                tabData={tabData}
+                tabContent={tabContent}
                 goPremiumLink={ !appLocalizer.khali_dabba ? appLocalizer.shop_url: '' }
             />
 
