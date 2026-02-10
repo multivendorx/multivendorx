@@ -121,7 +121,7 @@ export default {
 			nestedFields: [
 				{
 					key: 'rule_type',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'If',
 					options: [
 						{ value: 'price', label: 'Product/listing price' },
@@ -132,7 +132,7 @@ export default {
 				},
 				{
 					key: 'rule',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'is',
 					options: [
 						{ value: 'less_than', label: 'up to' },
@@ -403,7 +403,7 @@ export default {
 				},
 				{
 					key: 'rule',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'to be',
 					options: [
 						{

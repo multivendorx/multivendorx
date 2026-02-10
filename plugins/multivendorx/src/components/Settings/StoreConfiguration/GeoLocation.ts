@@ -129,7 +129,7 @@ export default {
 
 				{
 					key: 'radius_search_unit',
-					type: 'select',
+					type: 'setting-toggle',
 					options: [
 						{
 							key: 'kilometers',

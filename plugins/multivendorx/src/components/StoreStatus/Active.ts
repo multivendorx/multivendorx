@@ -16,8 +16,8 @@ export default {
 			nestedFields: [
 				{
 					key: 'paid_promotion_limit',
-					type: 'setup',
-					label: __('Configure store permissions', 'multivendorx'),
+					type: 'button',
+					name: __('Configure store permissions', 'multivendorx'),
 					desc: __(
 						'Control what dashboard sections and tools are available to active stores.',
 						'multivendorx'
