@@ -5,11 +5,10 @@ import {
 	Table,
 	TableCell,
 	CommonPopup,
-	ToggleSetting,
-	BasicInput,
-	getApiLink,
-	AdminButton,
+	ToggleSetting, 
+	getApiLink, 
 	BasicInputUI,
+	AdminButtonUI,
 } from 'zyra';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { __ } from '@wordpress/i18n';
@@ -411,12 +410,12 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					}}
 
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setAddShipping(false),
 								},
 								{
@@ -424,7 +423,6 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									text: isEditing
 										? __('Update', 'multivendorx')
 										: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSave,
 								},
 							]}

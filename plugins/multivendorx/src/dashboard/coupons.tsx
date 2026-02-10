@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-	AdminButton,
+import { 
+	AdminButtonUI,
 	BasicInputUI,
 	CommonPopup,
 	FormGroup,
@@ -943,18 +943,17 @@ const AllCoupon: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'contact-form',
 									text: __('Draft', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => handleSave('draft'),
 								},
 								{
 									icon: 'save',
 									text: __('Publish', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSave('publish'),
 								},
 							]}

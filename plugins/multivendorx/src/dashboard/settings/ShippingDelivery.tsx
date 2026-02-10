@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import {
-	BasicInput,
+import { 
 	BasicInputUI,
 	Column,
 	Container,

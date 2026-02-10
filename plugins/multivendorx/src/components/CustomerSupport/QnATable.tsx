@@ -6,14 +6,13 @@ import {
 	getApiLink,
 	CommonPopup,
 	TextArea,
-	ToggleSetting,
-	BasicInput,
-	AdminButton,
+	ToggleSetting,  
 	FormGroupWrapper,
 	FormGroup,
 	ProPopup,
 	TableCard,
 	BasicInputUI,
+	AdminButtonUI,
 } from 'zyra';
 
 import { Dialog } from '@mui/material';
@@ -331,18 +330,17 @@ const Qna: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedQna(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save Answer', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSaveAnswer(),
 								},
 							]}

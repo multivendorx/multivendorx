@@ -9,10 +9,10 @@ import {
 	useModules,
 	SuccessNotice,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	Popover,
-	Skeleton
+	Skeleton,
+	AdminButtonUI
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -999,18 +999,18 @@ const EditStore = () => {
 					),
 				}}
 				footer={
-					<AdminButton
+					<AdminButtonUI
 						buttons={[
 							{
 								icon: 'close',
 								text: 'Cancel',
-								className: 'red',
+								color: 'red',
 								onClick: () => setDeleteModal(false),
 							},
 							{
 								icon: 'delete',
 								text: 'Delete',
-								className: 'red-bg',
+								color: 'red-bg',
 								onClick: () => {
 									if (deleteOption) {
 										deleteStoreApiCall(deleteOption);

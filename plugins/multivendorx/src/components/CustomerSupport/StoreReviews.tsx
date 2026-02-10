@@ -5,13 +5,13 @@ import { __ } from '@wordpress/i18n';
 import {
 	CommonPopup,
 	getApiLink,
-	ToggleSetting,
-	AdminButton,
+	ToggleSetting, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
 	ProPopup,
 	TableCard,
+	AdminButtonUI,
 } from 'zyra';
 import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
@@ -352,18 +352,17 @@ const StoreReviews: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedReview(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BasicInput, TextArea, FileInput, SelectInput, getApiLink } from 'zyra';
+import {   TextArea, FileInput, SelectInput, getApiLink } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 

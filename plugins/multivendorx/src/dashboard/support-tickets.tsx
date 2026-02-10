@@ -8,12 +8,12 @@ import {
 	CommonPopup,
 	getApiLink,
 	ToggleSetting,
-	MultiCalendarInput,
-	AdminButton,
+	MultiCalendarInput, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
 	ProPopup,
+	AdminButtonUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -566,18 +566,17 @@ const SupportTickets: React.FC = () => {
 						title: `${__('Reply to Review', 'multivendorx')} - ${selectedReview.store_name}`,
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedReview(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}
