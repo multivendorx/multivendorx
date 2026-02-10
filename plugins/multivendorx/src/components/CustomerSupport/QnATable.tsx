@@ -365,7 +365,6 @@ const Qna: React.FC = () => {
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">
 								<ToggleSettingUI
-									key="f"
 									options={[
 										{
 											key: 'public',
