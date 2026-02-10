@@ -143,3 +143,18 @@ export interface PopoverProps {
     toggleIcon?: string;
     toggleContent?: React.ReactNode;
 }
+
+interface Item {
+    title?: string;
+    icon?: string;
+    link?: string;
+    targetBlank?: boolean;
+    action?: () => void;
+    desc?: string;
+    time?: string;
+    className?: string;
+}
+
+export interface ItemListProps {
+    items: Item[];
+}
