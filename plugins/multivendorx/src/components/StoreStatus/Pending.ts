@@ -8,6 +8,7 @@ export default {
 	icon: 'adminfont-store-inventory',
 	submitUrl: 'settings',
 	modal: [
+		
 		{
 			key: 'store_promotion_limit',
 			label: __('Account capabilities', 'multivendorx'),
