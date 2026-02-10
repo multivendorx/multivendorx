@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addFilter } from '@wordpress/hooks';
-import { AdminButton, Card, getApiLink } from 'zyra';
+import {  AdminButtonUI, Card, getApiLink } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -362,11 +362,10 @@ const AICard = () => {
 					></i>
 					Generate with AI
 				</div> */}
-				<AdminButton
+				<AdminButtonUI
 					buttons={{
 						icon: 'send',
 						text: 'Generate with AI',
-						className: 'purple-bg',
 						onClick: !isLoading ? handleSendPrompt : undefined,
 					}}
 				/>

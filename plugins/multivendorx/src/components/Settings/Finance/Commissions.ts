@@ -348,7 +348,6 @@ export default {
 				'Shipping charges will be treated as taxable items during checkout. Otherwise shipping costs will be tax-free.',
 				'multivendorx'
 			),
-			desc: __('', 'multivendorx'),
 			type: 'checkbox',
 			moduleEnabled: 'store-shipping',
 			options: [

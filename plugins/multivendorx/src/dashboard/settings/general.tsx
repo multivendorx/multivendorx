@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BasicInput, TextArea, SuccessNotice, getApiLink, FormGroupWrapper, FormGroup, BasicInputUI } from 'zyra';
+import {   TextArea, SuccessNotice, getApiLink, FormGroupWrapper, FormGroup, BasicInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const GeneralSettings = () => {

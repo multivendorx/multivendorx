@@ -4,7 +4,7 @@ import { DialogContent, DialogContentText } from '@mui/material';
 
 // Internal dependencies
 import '../styles/web/Popup.scss';
-import AdminButton from './UI/AdminButton';
+import  { AdminButtonUI } from './UI/AdminButton';
 
 export interface PopupMessage {
     text: string;
@@ -179,19 +179,18 @@ const ProPopup: React.FC<PopupProps> = (props) => {
                             <i className="popup-icon adminfont-suspended admin-badge red"></i>
                             <h2>{props.title || 'Confirmation'}</h2>
                             <p className="desc">{props.confirmMessage}</p>
-                            <AdminButton
-                                wrapperClass="center"
+                            <AdminButtonUI
+                            position="center"
                                 buttons={[
                                     {
                                         icon: 'close',
                                         text: props.confirmNoText || 'Cancel',
-                                        className: 'red',
+                                        color: 'red',
                                         onClick: props.onCancel,
                                     },
                                     {
                                         icon: 'delete',
                                         text: props.confirmYesText || 'Confirm',
-                                        className: 'purple-bg',
                                         onClick: props.onConfirm,
                                     },
                                 ]}

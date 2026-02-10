@@ -7,12 +7,16 @@
   gap: 0.625rem;
   flex-wrap: wrap;
 
-  &.center {
+  &[data-position="center"] {
     justify-content: center;
   }
 
-  &.left {
+  &[data-position="left"] {
     justify-content: start;
+  }
+
+  &[data-position="right"] {
+    justify-content: end;
   }
 }
 

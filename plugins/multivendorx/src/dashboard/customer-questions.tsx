@@ -7,13 +7,12 @@ import {
 	getApiLink,
 	TableCell,
 	CommonPopup,
-	TextArea,
-	BasicInput,
+	TextArea, 
 	MultiCalendarInput,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	BasicInputUI,
+	AdminButtonUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -482,12 +481,12 @@ const CustomerQuestions: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedQna(null),
 								},
 								{
@@ -495,7 +494,6 @@ const CustomerQuestions: React.FC = () => {
 									text: saving
 										? __('Saving...', 'multivendorx')
 										: __('Save Answer', 'multivendorx'),
-									className: 'purple-bg',
 									disabled: saving,
 									onClick: handleSaveAnswer,
 								},

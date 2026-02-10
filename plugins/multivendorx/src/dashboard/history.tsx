@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
-import { BasicInput, MultiCheckBox, Table, TableCell, TextArea } from 'zyra';
+import {   MultiCheckBox, Table, TableCell, TextArea } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,

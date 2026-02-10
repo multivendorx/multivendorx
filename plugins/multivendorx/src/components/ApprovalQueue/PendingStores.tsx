@@ -5,12 +5,12 @@ import { __ } from '@wordpress/i18n';
 import {
 	CommonPopup,
 	TextArea,
-	getApiLink,
-	AdminButton,
+	getApiLink, 
 	FormGroupWrapper,
 	Container,
 	Column,
 	TableCard,
+	AdminButtonUI,
 } from 'zyra';
 
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
@@ -219,12 +219,12 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 						title: __('Reason', 'multivendorx'),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => {
 										setRejectPopupOpen(false);
 										setRejectReason('');
@@ -233,7 +233,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 								{
 									icon: 'permanently-rejected',
 									text: __('Reject', 'multivendorx'),
-									className: 'red-bg',
+									color: 'red-bg',
 									onClick: () => submitReject(),
 								},
 							]}

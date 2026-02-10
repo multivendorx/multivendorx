@@ -180,10 +180,6 @@ const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
                             <div
                                 key={option.key}
                                 className="toggle-checkbox-header"
-                                onClick={() => {
-                                    if (block(option)) return;
-                                    toggle(option.value);
-                                }}
                             >
                                 {props.rightContent && (
                                     <p

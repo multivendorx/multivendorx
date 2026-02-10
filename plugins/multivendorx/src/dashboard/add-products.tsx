@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-	BasicInput,
 	CalendarInput,
 	FileInput,
 	MultiCheckBox,
@@ -15,11 +14,11 @@ import {
 	Column,
 	Container,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	getApiLink,
 	CommonPopup,
 	BasicInputUI,
+	AdminButtonUI,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { formatWcShortDate } from '@/services/commonFunction';
@@ -756,7 +755,7 @@ const AddProduct = () => {
 						{__('Publish', 'multivendorx')}
 					</button>
 				</div> */}
-				<AdminButton
+				<AdminButtonUI
 					buttons={[
 						// {
 						// 	icon: 'form',
@@ -767,7 +766,6 @@ const AddProduct = () => {
 						{
 							icon: 'save',
 							text: __('Save', 'multivendorx'),
-							className: 'purple-bg',
 							onClick: () => createProduct(),
 						},
 					]}
@@ -981,11 +979,8 @@ const AddProduct = () => {
 							<>
 								<div className="field-wrapper">
 									{__('Stock management', 'multivendorx')}
-									<MultiCheckBox
-										wrapperClass="toggle-btn"
-										inputWrapperClass="toggle-checkbox-header"
-										inputInnerWrapperClass="toggle-checkbox"
-										idPrefix="toggle-switch-manage-stock"
+									<MultiCheckBoxUI
+										look="toggle"
 										type="checkbox"
 										value={product.manage_stock ? ['manage_stock'] : []}
 										onChange={(e) =>
@@ -1006,7 +1001,7 @@ const AddProduct = () => {
 							{/* <FormGroup cols={2} label={__('Track Quantity', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
-									inputWrapperClass="toggle-checkbox-header"
+									 
 									inputInnerWrapperClass="toggle-checkbox"
 									idPrefix="toggle-switch-sold-individually"
 									type="checkbox"
@@ -1027,7 +1022,7 @@ const AddProduct = () => {
 							{/* <FormGroup cols={2} label={__('Sold Individually', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
-									inputWrapperClass="toggle-checkbox-header"
+									 
 									inputInnerWrapperClass="toggle-checkbox"
 									idPrefix="toggle-switch-manage-stock"
 									type="checkbox"
@@ -1057,7 +1052,7 @@ const AddProduct = () => {
 							{/* <FormGroup cols={2} label={__('Stock management', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
-									inputWrapperClass="toggle-checkbox-header"
+									 
 									inputInnerWrapperClass="toggle-checkbox"
 									idPrefix="toggle-switch-manage-stock"
 									type="checkbox"
