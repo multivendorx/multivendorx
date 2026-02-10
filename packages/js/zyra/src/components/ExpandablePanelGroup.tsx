@@ -55,7 +55,6 @@ interface PanelFormField {
     check?: boolean;
     hideCheckbox?: boolean;
     btnClass?: string;
-    selectType?: string;
     edit?: boolean;
     iconEnable?: boolean;
     iconOptions?: string[];
@@ -101,14 +100,13 @@ interface ExpandablePanelGroupProps {
     value: Record<string, Record<string, unknown>>;
     onChange: (data: Record<string, Record<string, unknown>>) => void;
     isWizardMode?: boolean;
-    setWizardIndex?: (index: number) => void;
     canAccess: boolean;
     addNewBtn?: boolean;
     addNewTemplate?: AddNewTemplate;
     min?: number;
 }
 
-const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
+export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
     methods,
     value,
     onChange,
@@ -130,9 +128,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
         null
     );
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const [iconDropdownOpen, setIconDropdownOpen] = useState<string | null>(
-        null
-    );
+    
     // State for inline editing
     const [editingMethodId, setEditingMethodId] = useState<string | null>(null);
     const [editingField, setEditingField] = useState<'title' | 'description' | null>(null);
@@ -656,13 +652,12 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
             handleInputChange(methodId, field.key, val);
         };
 
-
         if (field.type === 'button' && isWizardMode) {
-            const wizardSteps = ExpandablePanelMethods
-                .map((m, i) => ({ ...m, index: i }))
-                .filter((m) => m.isWizardMode);
+            const wizardSteps = methods.map((m, i) => ({ ...m, index: i }))
+                        .filter((m) => m.isWizardMode);
 
-            const isLastMethod = wizardIndex === wizardSteps.length - 1;
+            const isLastMethod =
+                wizardIndex === wizardSteps.length - 1;
             const isFirstMethod = wizardIndex === 0;
 
             const resolvedButtons = field.options.map((btn) => {
@@ -705,7 +700,11 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                         ...btn,
                         text: btn.label,
                         onClick: () => {
-                            window.open(appLocalizer.site_url, '_self');
+                            setWizardIndex(methods.length);
+                            window.open(
+                                appLocalizer.site_url,
+                                '_self'
+                            );
                         },
                     };
                 }
@@ -1179,10 +1178,6 @@ const ExpandablePanelGroup: FieldComponent = {
     ),
 
     validate: (field, value) => {
-        if (field.required && !value?.[field.key]) {
-            return `${field.label} is required`;
-        }
-
         return null;
     },
 
