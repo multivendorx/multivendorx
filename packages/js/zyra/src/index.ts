@@ -43,6 +43,7 @@ export { default as DropDownMapping } from './components/DropDownMapping';
 export { default as DoActionBtn } from './components/DoActionBtn';
 export { default as Tabs } from './components/Tabs';
 export { default as TextArea } from './components/TextArea';
+export { TextAreaUI } from './components/TextArea';
 export { default as ToggleSetting } from './components/ToggleSetting';
 export { ToggleSettingUI } from './components/ToggleSetting';
 export { default as Tour } from './components/TourSteps';
