@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import 'zyra/build/index.css';
-import { ExpandablePanelGroup } from 'zyra';
+import { ExpandablePanelGroupUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import img from '../../assets/images/multivendorx-logo.png';
 
@@ -19,8 +19,6 @@ const SetupWizard: React.FC = () => {
 	});
 	const settingChanged = useRef(false);
 
-	// NEW: Wizard step control
-	const [currentStep, setCurrentStep] = useState(0);
 
 	const appLocalizer = (window as any).appLocalizer;
 
@@ -35,8 +33,6 @@ const SetupWizard: React.FC = () => {
 		buttonEnable: true,
 	};
 
-	const isProSetting = (pro: boolean) => pro === true;
-
 	const methods = [
 		{
 			id: 'marketplace_setup',
@@ -50,7 +46,6 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'marketplace_model',
 					type: 'multi-select',
-					selectType: 'single-select',
 					label: __(
 						'What kind of marketplace you are building',
 						'multivendorx'
@@ -96,7 +91,6 @@ const SetupWizard: React.FC = () => {
 				{
 					key: 'product_types',
 					type: 'multi-select',
-					selectType: 'multi-select',
 					label: __(
 						'What kind of listings stores can create',
 						'multivendorx'
@@ -207,7 +201,7 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
 					options: [
 						{
 							label: 'Back',
@@ -254,7 +248,7 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
 					options: [
 						{
 							label: 'Back',
@@ -340,7 +334,7 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'disbursement_order_status',
-					type: 'multi-checkbox',
+					type: 'checkbox',
 					label: __(
 						'When stores earn money',
 						'multivendorx'
@@ -378,7 +372,7 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
 					options: [
 						{
 							label: 'Back',
@@ -437,7 +431,7 @@ const SetupWizard: React.FC = () => {
 				},
 				{
 					key: 'wizardButtons',
-					type: 'buttons',
+					type: 'button',
 					options: [
 						{
 							label: 'Back',
@@ -456,15 +450,9 @@ const SetupWizard: React.FC = () => {
 		},
 	];
 
-	const proSettingChanged = (pro: boolean) => {
-		console.log('Pro setting change triggered', pro);
-	};
-
 	const updateSetting = (key: string, data: any) => {
 		setValue(data);
 	};
-
-	const hasAccess = () => true;
 
 	return (
 		<div className="wizard-container">
@@ -482,28 +470,19 @@ const SetupWizard: React.FC = () => {
 					</div>
 				</div>
 
-				<ExpandablePanelGroup
+				<ExpandablePanelGroupUI
 					key={inputField.key}
 					name={inputField.key}
-					proSetting={isProSetting(inputField.proSetting ?? false)}
-					proSettingChanged={() =>
-						proSettingChanged(inputField.proSetting ?? false)
-					}
 					apilink={String(inputField.apiLink)}
 					appLocalizer={appLocalizer}
 					methods={methods}
-					buttonEnable={inputField.buttonEnable}
-					moduleEnabled={inputField.moduleEnabled}
 					value={value}
 					onChange={(data: any) => {
-						if (hasAccess()) {
-							settingChanged.current = true;
-							updateSetting(inputField.key, data);
-						}
+						settingChanged.current = true;
+						updateSetting(inputField.key, data);
 					}}
 					isWizardMode={true}
-					wizardIndex={currentStep}
-					setWizardIndex={setCurrentStep}
+					canAccess={true}
 				/>
 
 				{/* <div className="welcome-wrapper">
