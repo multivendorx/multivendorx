@@ -101,7 +101,6 @@ const Settings: React.FC<SettingsProps> = () => {
 		getTemplateData('settings'),
 		[]
 	);
-	console.log(settingsArray)
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
 	const getBanner = () => {
