@@ -1,5 +1,6 @@
 //External Dependencies
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { AdminButtonUI } from './UI/AdminButton';
 
 interface button {
     label: string;
@@ -37,30 +38,8 @@ const AdminBreadcrumbs = <T,>({
     goPremiumLink,
     description,
     customContent,
-    hideBreadcrumb = false,
-    hideTitle = false,
     action,
 }: AdminBreadcrumbsProps<T>) => {
-    const [notices, setNotices] = useState<string[]>([]);
-
-    useEffect(() => {
-        const captureNotices = () => {
-            const noticeNodes = document.querySelectorAll(
-                '#screen-meta + .wrap .notice, #wpbody-content .notice'
-            );
-
-            if (noticeNodes.length > 0) {
-                const htmlArray: string[] = [];
-                noticeNodes.forEach((node) => {
-                    htmlArray.push(node.outerHTML);
-                    node.remove(); // remove from DOM so we control rendering
-                });
-                setNotices(htmlArray);
-            }
-        };
-
-        captureNotices();
-    }, []);
 
     return (
         <>
@@ -78,7 +57,7 @@ const AdminBreadcrumbs = <T,>({
                                     : 'title-wrapper'
                             }
                         >
-                            {!hideTitle && (
+                            {variant === 'default' && (
                                 <div className="title">
                                     {activeTabIcon && (
                                         <i className={activeTabIcon}></i>
@@ -87,17 +66,22 @@ const AdminBreadcrumbs = <T,>({
                                 </div>
                             )}
                             <div className="buttons">
-                                {buttons && buttons.map((button, index) => {
-                                    return (
-                                        <div
-                                            className={button.className}
-                                            onClick={button.onClick}
-                                        >
-                                            <i className={button.iconClass}></i>
-                                            {button.label}
-                                        </div>
-                                    );
-                                })}
+                                {buttons && (
+                                    <AdminButtonUI
+                                        buttons={buttons.map((button) => ({
+                                            text: button.label,
+                                            icon: button.iconClass?.replace('adminfont-', ''),
+                                            onClick: button.onClick,
+                                            children: (
+                                                <>
+                                                    <i className={button.iconClass}></i>
+                                                    {button.label}
+                                                </>
+                                            ),
+                                        }))}
+                                    />
+                                )}
+
                             </div>
 
                             {customContent && (
@@ -110,7 +94,7 @@ const AdminBreadcrumbs = <T,>({
                         {description && (
                             <div className="description">{description}</div>
                         )}
-                        {!hideBreadcrumb && (
+                        {variant === 'default' && (
                             <>
                                 {renderBreadcrumb && (
                                     <div className="breadcrumbs">
@@ -154,17 +138,6 @@ const AdminBreadcrumbs = <T,>({
                     </div>
                 )}
             </div>
-
-            { /* render multiple notices */}
-            {!submenuRender &&
-                notices.length > 0 &&
-                notices.map((html, i) => (
-                    <div
-                        key={i}
-                        className="wp-admin-notice"
-                        dangerouslySetInnerHTML={{ __html: html }}
-                    />
-                ))}
         </>
     );
 };
