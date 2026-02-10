@@ -4,8 +4,18 @@ import { TourProvider, ProviderProps, StepType } from '@reactour/tour';
 
 // Internal dependencies
 import Tour from './TourSteps';
-import { AppLocalizer } from '../types';
 
+interface AppLocalizer {
+    enquiry_form_settings_url?: string;
+    page_url?: string;
+    settings_page_url?: string;
+    site_url?: string;
+    module_page_url?: string;
+    customization_settings_url?: string;
+    apiUrl: string;
+    nonce: string;
+    restUrl: string;
+}
 
 // Props for TourSetup
 interface TourSetupProps extends Omit< ProviderProps, 'steps' > {

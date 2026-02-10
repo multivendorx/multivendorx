@@ -1,6 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { HeaderSearchProps } from '../types';
-import { useOutsideClick } from '../useOutsideClick';
+import { useOutsideClick } from './useOutsideClick';
+import { BasicInputUI } from './BasicInput';
+import ItemList from './UI/ItemList';
+
+type SearchItem = {
+    icon?: string;
+    name?: string;
+    desc?: string;
+    link: string;
+};
+
+type SearchOption = {
+    label: string;
+    value: string;
+};
+
+type SearchConfig = {
+    placeholder?: string;
+    options?: SearchOption[];
+};
+
+type SearchPayload =
+    | { searchValue: string }
+    | { searchValue: string; searchAction: string };
+
+type HeaderSearchProps = {
+    search?: SearchConfig;
+    results: SearchItem[];
+    onQueryUpdate: (payload: SearchPayload) => void;
+    onResultClick: (res: SearchItem) => void;
+};
 
 const HeaderSearch: React.FC<HeaderSearchProps> = ({
     search,
@@ -19,7 +48,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     useOutsideClick(wrapperRef, () => setIsOpen(false));
-    
+
     /* Close dropdown when query is cleared */
     useEffect(() => {
         if (!query) {
@@ -60,13 +89,11 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
 
             {/* Input */}
             <div className="search-section">
-                <input
-                    type="text"
+                <BasicInputUI
+                    type={'text'}
                     placeholder={placeholder}
                     value={query}
-                    onFocus={() => setIsOpen(true)}
-                    onChange={(e) => {
-                        const val = e.target.value;
+                    onChange={(val: string) => {
                         setQuery(val);
                         setIsOpen(true);
                         triggerSearch(val);
@@ -75,48 +102,22 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
                 <i className="adminfont-search"></i>
             </div>
 
-            {/* Results */}
             {showResults && (
                 <ul className="search-dropdown">
-                    {results.map((item, index) => {
-                        const name = item.name || '(No name)';
-                        const desc = item.desc || '';
-
-                        return (
-                            <li
-                                key={index}
-                                onClick={() => {
-                                    onResultClick(item);
-                                    setIsOpen(false);
-                                    setQuery('');
-                                    setAction('');
-                                    triggerSearch('', '');
-                                }}
-                            >
-                                <div className="icon-wrapper">
-                                    {item.icon && (
-                                        <i className={item.icon}></i>
-                                    )}
-                                </div>
-
-                                <div className="details">
-                                    <div className="title">
-                                        {name.length > 60
-                                            ? `${name.slice(0, 60)}...`
-                                            : name}
-                                    </div>
-
-                                    {desc && (
-                                        <div className="desc">
-                                            {desc.length > 80
-                                                ? `${desc.slice(0, 80)}...`
-                                                : desc}
-                                        </div>
-                                    )}
-                                </div>
-                            </li>
-                        );
-                    })}
+                    <ItemList
+                        items={results.map((item) => ({
+                            title: item.name,
+                            desc: item.desc,
+                            icon: item.icon,
+                            action: () => {
+                                onResultClick(item);
+                                setIsOpen(false);
+                                setQuery('');
+                                setAction('');
+                                triggerSearch('', '');
+                            }
+                        }))}
+                    />
                 </ul>
             )}
         </div>

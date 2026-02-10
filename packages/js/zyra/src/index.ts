@@ -42,15 +42,15 @@ export { default as DoActionBtn } from './components/DoActionBtn';
 export { default as Tabs } from './components/Tabs';
 export { default as TextArea } from './components/TextArea';
 export { default as ToggleSetting } from './components/ToggleSetting';
-export { default as Tour } from './components/Tour/TourSteps';
-export { default as AdminHeader } from './components/Header/AdminHeader';
+export { default as Tour } from './components/TourSteps';
+export { default as AdminHeader } from './components/AdminHeader';
 export { default as AdminBreadcrumbs } from './components/AdminBreadcrumbs';
 export { default as NestedComponent } from './components/NestedComponent';
 export { default as ExpandablePanelGroup } from './components/ExpandablePanelGroup';
 export { default as CommonPopup } from './components/CommonPopup';
 export { default as SuccessNotice } from './components/SuccessNotice';
 export { default as EmailsInput } from './components/EmailsInput';
-export { default as TourSetup } from './components/Tour/TourSetup';
+export { default as TourSetup } from './components/TourSetup';
 export { default as DynamicRowSetting } from './components/DynamicRowSetting';
 export { default as InputWithSuggestions } from './components/InputWithSuggestions';
 

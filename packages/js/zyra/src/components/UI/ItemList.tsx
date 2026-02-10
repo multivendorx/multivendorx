@@ -1,5 +1,19 @@
 import React from 'react';
-import { ItemListProps } from '../types';
+
+interface Item {
+    title?: string;
+    icon?: string;
+    link?: string;
+    targetBlank?: boolean;
+    action?: () => void;
+    desc?: string;
+    time?: string;
+    className?: string;
+}
+
+export interface ItemListProps {
+    items: Item[];
+}
 
 const ItemList: React.FC<ItemListProps> = ({ items }) => {
     if (!items || items.length === 0) return null;

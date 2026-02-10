@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
-import { TabsProps } from '../types';
+interface TabFooter {
+    url: string;
+    icon?: string;
+    text: string;
+}
 
+interface Tab {
+    label: string;
+    content: React.ReactNode;
+    footer?:TabFooter;
+}
+
+interface TabsProps {
+    tabs: Tab[];
+    defaultActiveIndex?: number;
+}
 
 const Tabs: React.FC<TabsProps> = ({ tabs, defaultActiveIndex = 0 }) => {
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
