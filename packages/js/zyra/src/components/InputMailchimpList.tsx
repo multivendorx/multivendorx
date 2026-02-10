@@ -7,7 +7,7 @@ import React, { useState } from 'react';
  * Internal dependencies
  */
 import { getApiLink, getApiResponse } from '../utils/apiService';
-import BasicInput, { BasicInputUI } from './BasicInput';
+import   { BasicInputUI } from './BasicInput';
 import SelectInput from './SelectInput';
 
 // Types

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { BasicInput, BasicInputUI, FormGroup, FormGroupWrapper, getApiLink, GoogleMap, Mapbox, SelectInput, SuccessNotice, useModules } from 'zyra';
+import {   BasicInputUI, FormGroup, FormGroupWrapper, getApiLink, GoogleMap, Mapbox, SelectInput, SuccessNotice, useModules } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 declare global {

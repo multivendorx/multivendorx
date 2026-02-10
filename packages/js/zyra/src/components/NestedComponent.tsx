@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 // Internal dependencies
 import '../styles/web/NestedComponent.scss';
 import ToggleSetting from './ToggleSetting';
-import BasicInput, { BasicInputUI } from './BasicInput';
+import   { BasicInputUI } from './BasicInput';
 import SelectInput from './SelectInput';
 import MultiCheckBox from './MultiCheckbox';
 import TextArea from './TextArea';

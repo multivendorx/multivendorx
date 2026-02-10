@@ -4,8 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs,
-	BasicInput,
+	AdminBreadcrumbs, 
 	TextArea,
 	CommonPopup,
 	SelectInput,

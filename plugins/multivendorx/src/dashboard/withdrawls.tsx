@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container,  Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI } from 'zyra';
+import { getApiLink, CommonPopup,   SuccessNotice, Card, Container,  Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI } from 'zyra';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
