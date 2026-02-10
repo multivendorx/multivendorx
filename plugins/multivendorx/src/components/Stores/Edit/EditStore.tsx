@@ -1,9 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-	ToggleSetting,
+	ToggleSettingUI,
 	getApiLink,
-	SelectInput,
 	Tabs,
 	CommonPopup,
 	useModules,
@@ -1025,9 +1024,7 @@ const EditStore = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Deletion method', 'multivendorx')} htmlFor="deletion-method">
-							<ToggleSetting
-								 
-								descClass="settings-metabox-description"
+							<ToggleSettingUI
 								options={[
 									{
 										value: 'set_store_owner',

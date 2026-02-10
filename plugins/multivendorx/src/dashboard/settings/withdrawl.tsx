@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { BasicInputUI, FormGroup, FormGroupWrapper, ToggleSetting, ToggleSettingUI, getApiLink } from 'zyra';
+import { BasicInputUI, FormGroup, FormGroupWrapper, ToggleSettingUI, getApiLink } from 'zyra';
 import {
 	ConnectComponentsProvider,
 	ConnectAccountOnboarding,

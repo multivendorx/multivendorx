@@ -6,7 +6,6 @@ import {
 	getApiLink,
 	CommonPopup,
 	TextArea,
-	ToggleSetting,  
 	FormGroupWrapper,
 	FormGroup,
 	ProPopup,
