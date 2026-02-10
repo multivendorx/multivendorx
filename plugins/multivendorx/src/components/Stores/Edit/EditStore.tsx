@@ -12,7 +12,8 @@ import {
 	FormGroup, 
 	Popover,
 	Skeleton,
-	AdminButtonUI
+	AdminButtonUI,
+	SelectInputUI
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -1062,11 +1063,10 @@ const EditStore = () => {
 						</FormGroup>
 						{deleteOption === 'set_store_owner' && (
 							<FormGroup label={__('Assign new store owner', 'multivendorx')}>
-								<SelectInput
+								<SelectInputUI
 									name="new_owner"
 									value={selectedOwner?.value}
 									options={appLocalizer.store_owners}
-									type="single-select"
 									onChange={(val: any) => {
 										if (val) {
 											setSelectedOwner(val);

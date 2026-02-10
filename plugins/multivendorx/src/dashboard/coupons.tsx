@@ -6,10 +6,9 @@ import {
 	CommonPopup,
 	FormGroup,
 	FormGroupWrapper,
-	getApiLink,
 	MultiCalendarInput,
 	ProPopup,
-	SelectInput,
+	SelectInputUI,
 	Table,
 	TableCell,
 	TextArea,
@@ -342,11 +341,10 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Discount type', 'multivendorx')} htmlFor="discount_type">
-							<SelectInput
+							<SelectInputUI
 								name="discount_type"
 								value={formData.discount_type}
 								options={discountOptions}
-								type="single-select"
 								onChange={(val: any) =>
 									setFormData({ ...formData, discount_type: val?.value || '' })
 								}

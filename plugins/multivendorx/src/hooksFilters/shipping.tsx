@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { BasicInputUI, Card, FormGroup, FormGroupWrapper, SelectInput, ToggleSettingUI } from 'zyra';
+import { BasicInputUI, Card, FormGroup, FormGroupWrapper, SelectInputUI, ToggleSettingUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShippingCard = ({ product, setProduct, handleChange }) => {
@@ -76,7 +76,7 @@ const ShippingCard = ({ product, setProduct, handleChange }) => {
 							/>
 						</FormGroup>
 						<FormGroup cols={2} label={__('Shipping classes', 'multivendorx')} htmlFor="shipping-classes">
-							<SelectInput
+							<SelectInputUI
 								name="shipping_class"
 								options={shippingClasses}
 								value={product.shipping_class}

@@ -7,8 +7,6 @@ import {
 	AdminBreadcrumbs, 
 	TextArea,
 	CommonPopup,
-	SelectInput,
-	ToggleSetting,
 	Container,
 	Column,
 	FormGroupWrapper,
@@ -18,6 +16,7 @@ import {
 	BasicInputUI,
 	AdminButtonUI,
 	ToggleSettingUI,
+	SelectInputUI,
 } from 'zyra';
 
 
@@ -524,8 +523,8 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores">
-							<SelectInput
+						<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores" >
+							<SelectInputUI
 								name="stores"
 								type="multi-select"
 								options={storeOptions}
