@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButton, AdminButtonUI, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
+import {  AdminButtonUI, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -715,13 +715,11 @@ const AddOrder = () => {
 										{
 											icon: 'plus',
 											text: 'Add Product',
-											 ,
 											onClick: () => setShowAddProduct(true),
 										},
 										{
 											icon: 'plus',
 											text: 'Add Shipping',
-											 ,
 											onClick: () =>
 												setShippingLines((prev) => [
 													...prev,
@@ -731,7 +729,6 @@ const AddOrder = () => {
 										{
 											icon: 'plus',
 											text: 'Add Tax',
-											 ,
 											onClick: () => setShowAddTax(true),
 										},
 									]}
@@ -793,7 +790,6 @@ const AddOrder = () => {
 													{
 														text: __('Add', 'multivendorx'),
 														icon: 'plus',
-														 ,
 														onClick: () => {
 															applyTaxToOrder();
 															setShowAddTax(false);
@@ -873,7 +869,6 @@ const AddOrder = () => {
 										icon: 'plus',
 										text: __('Add New Customer', 'multivendorx'),
 										onClick: () => setShowCreateCustomer(!showCreateCustomer),
-										 ,
 									}}
 								/>
 							</>
@@ -1001,7 +996,6 @@ const AddOrder = () => {
 									icon: 'plus',
 									text: __('Create', 'multivendorx'),
 									onClick: () => createCustomer,
-									 ,
 								}}
 							/>
 						</Card>

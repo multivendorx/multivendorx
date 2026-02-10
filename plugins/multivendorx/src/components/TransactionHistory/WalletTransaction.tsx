@@ -10,8 +10,7 @@ import {
 	Card,
 	Container,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	MiniCard,
 	MessageState,
 	Skeleton,
@@ -608,7 +607,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									{
 										icon: 'wallet',
 										text: __('Disburse Payment', 'multivendorx'),
-										 ,
 										onClick: () => setRequestWithdrawal(true),
 									}}
 							/>

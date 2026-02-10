@@ -14,8 +14,7 @@ import {
 	Column,
 	Container,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	getApiLink,
 	CommonPopup,
 	BasicInputUI,
@@ -767,7 +766,6 @@ const AddProduct = () => {
 						{
 							icon: 'save',
 							text: __('Save', 'multivendorx'),
-							 ,
 							onClick: () => createProduct(),
 						},
 					]}

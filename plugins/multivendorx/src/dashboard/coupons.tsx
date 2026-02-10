@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
-import {
-	AdminButton,
+import { 
 	AdminButtonUI,
 	BasicInputUI,
 	CommonPopup,
@@ -955,7 +954,6 @@ const AllCoupon: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Publish', 'multivendorx'),
-									 ,
 									onClick: () => handleSave('publish'),
 								},
 							]}

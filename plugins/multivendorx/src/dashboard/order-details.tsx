@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { AdminButton, AdminButtonUI, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
+import {  AdminButtonUI, BasicInput, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -1151,7 +1151,6 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									buttons={{
 										icon: 'plus',
 										text: __('Create Shipment', 'multivendorx'),
-										 ,
 										onClick: saveShipmentToOrder,
 									}}
 								/>

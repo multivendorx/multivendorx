@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container, AdminButton, Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI } from 'zyra';
+import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container,  Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI } from 'zyra';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -155,7 +155,6 @@ const Withdrawls: React.FC = () => {
 								icon: 'eye',
 								text: __('View transaction history', 'multivendorx'),
 								onClick: () => (window.location.href = `${appLocalizer.site_url}/dashboard/transactions/`),
-								 ,
 							}}
 						/>
 					</Card>
@@ -241,7 +240,6 @@ const Withdrawls: React.FC = () => {
 									icon: 'withdraw',
 									text: __('Request Withdrawal', 'multivendorx'),
 									onClick: () => setRequestWithdrawal(true),
-									 ,
 								}}
 							/>
 						</div>
@@ -266,7 +264,6 @@ const Withdrawls: React.FC = () => {
 									icon: 'withdraw',
 									text: __('Disburse', 'multivendorx'),
 									onClick: () => handleWithdrawal(),
-									 ,
 								}}
 							/>
 						</>

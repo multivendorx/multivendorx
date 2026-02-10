@@ -4,7 +4,7 @@ import { DialogContent, DialogContentText } from '@mui/material';
 
 // Internal dependencies
 import '../styles/web/Popup.scss';
-import AdminButton, { AdminButtonUI } from './UI/AdminButton';
+import  { AdminButtonUI } from './UI/AdminButton';
 
 export interface PopupMessage {
     text: string;

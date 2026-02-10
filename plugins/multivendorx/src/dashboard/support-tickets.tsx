@@ -8,8 +8,7 @@ import {
 	CommonPopup,
 	getApiLink,
 	ToggleSetting,
-	MultiCalendarInput,
-	AdminButton,
+	MultiCalendarInput, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
@@ -578,7 +577,6 @@ const SupportTickets: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									 ,
 									onClick: handleSaveReply,
 								},
 							]}

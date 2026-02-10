@@ -11,8 +11,7 @@ import {
 	BasicInput,
 	MultiCalendarInput,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	BasicInputUI,
 	AdminButtonUI,
 } from 'zyra';
@@ -496,7 +495,6 @@ const CustomerQuestions: React.FC = () => {
 									text: saving
 										? __('Saving...', 'multivendorx')
 										: __('Save Answer', 'multivendorx'),
-									 ,
 									disabled: saving,
 									onClick: handleSaveAnswer,
 								},

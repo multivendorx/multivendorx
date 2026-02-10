@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
-import { CommonPopup, getApiLink, TextArea, BasicInput, AdminButton, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI } from 'zyra';
+import { CommonPopup, getApiLink, TextArea, BasicInput,  FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 

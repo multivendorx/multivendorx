@@ -15,7 +15,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import { AdminButton, AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, MultiCalendarInput, useModules } from 'zyra';
+import {  AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, MultiCalendarInput, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { formatCurrency, formatTimeAgo } from '@/services/commonFunction';
@@ -617,7 +617,6 @@ const Dashboard: React.FC = () => {
 									icon: 'preview',
 									text: __('View transaction history', 'multivendorx'),
 									onClick: window.location.href = '/dashboard/wallet/transactions/',
-									 ,
 								}}
 							/>
 						)}

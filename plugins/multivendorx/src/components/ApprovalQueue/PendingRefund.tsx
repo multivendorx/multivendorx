@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {
-	AdminButton,
+import { 
 	AdminButtonUI,
 	Column,
 	CommonPopup,

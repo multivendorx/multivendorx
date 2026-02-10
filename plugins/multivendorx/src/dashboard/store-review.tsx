@@ -7,8 +7,7 @@ import {
 	TableCell,
 	CommonPopup,
 	getApiLink,
-	MultiCalendarInput,
-	AdminButton,
+	MultiCalendarInput, 
 	FormGroupWrapper,
 	FormGroup,
 	TextArea,
@@ -460,7 +459,6 @@ const StoreReview: React.FC = () => {
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									 ,
 									onClick: handleSaveReply,
 								},
 							]}

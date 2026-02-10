@@ -311,7 +311,7 @@ const Stores = () => {
 										{
 											icon: 'close',
 											text: __('Cancel', 'multivendorx'),
-											className: 'red',
+											color: 'red',
 											onClick: () => {
 												setFormData({});
 												setImagePreview('');
@@ -321,7 +321,7 @@ const Stores = () => {
 										{
 											icon: 'save',
 											text: __('Submit', 'multivendorx'),
-											className: 'purple',
+											color: 'purple',
 											onClick: handleSubmit,
 										},
 									]}
@@ -375,7 +375,7 @@ const Stores = () => {
 										buttons={{
 											text: 'Check Slug',
 											onClick: handleSlugCheck,
-											className: 'purple',
+											color: 'purple',
 										}}
 									/>
 								</FormGroup>

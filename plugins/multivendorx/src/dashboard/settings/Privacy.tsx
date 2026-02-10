@@ -8,8 +8,7 @@ import {
 	MultiCheckBox,
 	FormGroupWrapper,
 	FormGroup,
-	useModules,
-	AdminButton,
+	useModules, 
 	AdminButtonUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
@@ -210,8 +209,6 @@ const Privacy = () => {
 										{
 											icon: 'save',
 											text: 'Submit',
-											 ,
-											// disableMultipleClick: true,
 											onClick: () => autoSave(updateData),
 										},
 									]}

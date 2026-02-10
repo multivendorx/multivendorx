@@ -7,8 +7,7 @@ import {
 	CommonPopup,
 	ToggleSetting,
 	BasicInput,
-	getApiLink,
-	AdminButton,
+	getApiLink, 
 	BasicInputUI,
 	AdminButtonUI,
 } from 'zyra';
@@ -425,7 +424,6 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									text: isEditing
 										? __('Update', 'multivendorx')
 										: __('Save', 'multivendorx'),
-									 ,
 									onClick: handleSave,
 								},
 							]}
