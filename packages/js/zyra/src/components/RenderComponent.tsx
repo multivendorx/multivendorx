@@ -5,13 +5,14 @@ import React, {
     useState,
     ReactNode,
 } from 'react';
-import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
 import { Dialog } from '@mui/material';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import Popup, { PopupProps } from './Popup';
 import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
+import FormGroupWrapper from './UI/FormGroupWrapper';
+import SuccessNotice from './SuccessNotice';
 
 
 interface InputField {
@@ -495,7 +496,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                 ) : (
                     <div
                         key={inputField.key}
-                        className={`form-group ${
+                        className={`form-group row ${
                             inputField.classes ? inputField.classes : ''
                         } ${inputField.proSetting ? 'pro-setting' : ''} ${
                             inputField.moduleEnabled &&
@@ -536,7 +537,6 @@ const RenderComponent: React.FC<RenderProps> = ({
                                     {errors[inputField.key]}
                                 </div>
                             )}
-
                             {inputField.desc && (
                                 <p
                                     className="settings-metabox-description"
@@ -578,54 +578,37 @@ const RenderComponent: React.FC<RenderProps> = ({
 
     return (
             <>
-                <div className="dynamic-fields-wrapper">
-                    <Dialog
-                        className="admin-module-popup"
-                        open={modelOpen}
-                        onClose={handleModelClose}
-                        aria-labelledby="form-dialog-title"
-                    >
-                        <span
-                            className="admin-font adminfont-cross"
-                            role="button"
-                            tabIndex={0}
-                            onClick={handleModelClose}
-                        ></span>
-                        {
-                            <Popup
-                                moduleName={String(modulePopupData.moduleName)}
-                                settings={modulePopupData.settings}
-                                plugin={modulePopupData.plugin}
-                                message={modulePopupFields?.message}
-                                moduleButton={modulePopupFields?.moduleButton}
-                                pluginDescription={modulePopupFields?.pluginDescription}
-                                pluginButton={modulePopupFields?.pluginButton}
-                                SettingDescription={modulePopupFields?.SettingDescription}
-                                pluginUrl={modulePopupFields?.pluginUrl}
-                                modulePageUrl={modulePopupFields?.modulePageUrl}
-                            />
-                        }
-                    </Dialog>
-                    {successMsg && (
-                        <>
-                            <div className="admin-notice-wrapper notice-error">
-                                <i className="admin-font adminfont-info"></i>
-                                <div className="notice-details">
-                                    <div className="title">Sorry!</div>
-                                    <div className="desc">{successMsg}</div>
-                                </div>
-                            </div>
-                            <div className="admin-notice-wrapper">
-                                <i className="admin-font adminfont-icon-yes"></i>
-                                <div className="notice-details">
-                                    <div className="title">Success</div>
-                                    <div className="desc">{successMsg}</div>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    <form className="dynamic-form">{renderForm()}</form>
-                </div>
+                <Dialog
+                    className="admin-module-popup"
+                    open={modelOpen}
+                    onClose={handleModelClose}
+                    aria-labelledby="form-dialog-title"
+                >
+                    <span
+                        className="admin-font adminfont-cross"
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleModelClose}
+                    ></span>
+                    {
+                        <Popup
+                            moduleName={String(modulePopupData.moduleName)}
+                            settings={modulePopupData.settings}
+                            plugin={modulePopupData.plugin}
+                            message={modulePopupFields?.message}
+                            moduleButton={modulePopupFields?.moduleButton}
+                            pluginDescription={modulePopupFields?.pluginDescription}
+                            pluginButton={modulePopupFields?.pluginButton}
+                            SettingDescription={modulePopupFields?.SettingDescription}
+                            pluginUrl={modulePopupFields?.pluginUrl}
+                            modulePageUrl={modulePopupFields?.modulePageUrl}
+                        />
+                    }
+                </Dialog>
+                {successMsg && (
+                    <SuccessNotice message={successMsg} />
+                )}
+                <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
             </>
         );
     

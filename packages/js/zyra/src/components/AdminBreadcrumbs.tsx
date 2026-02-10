@@ -14,6 +14,7 @@ interface AdminBreadcrumbsProps< T > {
     tabTitle?: string;
     submenuRender?: boolean;
     template?: string;
+    variant?: 'default' | 'compact' | 'card';
     hideTitle?: boolean;
     hideBreadcrumb?: boolean;
     renderBreadcrumb?: () => React.ReactNode;
@@ -33,6 +34,7 @@ const AdminBreadcrumbs = < T, >( {
     tabTitle = '',
     submenuRender = false,
     template = '',
+    variant= 'default',
     renderBreadcrumb,
     renderMenuItems,
     tabData = [],
@@ -72,7 +74,8 @@ const AdminBreadcrumbs = < T, >( {
             <div
                 className={ `${
                     submenuRender ? 'horizontal-title-section' : 'title-section'
-                } ${ template || 'template-1' }` }
+                }` }
+                data-template={variant}
             >
                 { ! submenuRender && (
                     <>

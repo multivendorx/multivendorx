@@ -84,6 +84,7 @@ const ViewNotifications = (React.FC = () => {
 				appLocalizer={appLocalizer}
 				settingName="Settings"
 				template={'template-2'}
+				variant={'compact'}
 				supprot={[]}
 				premium={false}
 				Link={SimpleLink}
