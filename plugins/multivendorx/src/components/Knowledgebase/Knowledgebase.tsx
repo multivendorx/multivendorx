@@ -4,14 +4,14 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs, 
+	AdminBreadcrumbs,
 	TextArea,
 	CommonPopup,
 	ToggleSetting,
 	Container,
 	Column,
 	FormGroupWrapper,
-	FormGroup, 
+	FormGroup,
 	ProPopup,
 	TableCard,
 	BasicInputUI,
@@ -340,129 +340,130 @@ export const KnowledgeBase: React.FC = () => {
 					'multivendorx'
 				)}
 				buttons={[
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={() => {
+					{
+						label: __('Add New', 'multivendorx'),
+						className: "admin-btn btn-purple-bg",
+						iconClass: 'adminfont-plus',
+						onClick: () => {
 							setValidationErrors({});
 							setAddEntry(true);
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>,
+						}
+					}
 				]}
 			/>
 
-			{addEntry && (
-				<CommonPopup
-					open={addEntry}
-					onClose={handleCloseForm}
-					width="31.25rem"
-					height="70%"
-					header={{
-						icon: 'book',
-						title: editId
-							? __('Edit Knowledgebase', 'multivendorx')
-							: __('Add Knowledgebase', 'multivendorx'),
-						description: __(
-							'Write and publish a new knowledge base article to help stores navigate their dashboard.',
-							'multivendorx'
-						),
-					}}
-					footer={
-						<AdminButtonUI
-							buttons={[
-								{
-									icon: 'close',
-									text: __('Cancel', 'multivendorx'),
-									color: 'red',
-									onClick: handleCloseForm,
-								},
-								{
-									icon: 'save',
-									text: __('Save', 'multivendorx'),
-									onClick: () => handleSubmit(formData.status || 'draft'),
-								},
-							]}
-						/>
-					}
-				>
-					<>
-						<FormGroupWrapper>
-							<FormGroup label={__('Title', 'multivendorx')} htmlFor="Title">
-								<BasicInputUI
-									type="text"
-									name="title"
-									value={formData.title}
-									onChange={handleChange}
-								/>
-								{validationErrors.title && (
-									<p className="invalid-massage">
-										{validationErrors.title}
-									</p>
-								)}
-							</FormGroup>
-							<FormGroup label={__('Content', 'multivendorx')} htmlFor="Content">
-								<TextArea
-									name="content"
-									value={formData.content}
-									onChange={handleChange}
-									usePlainText={false}
-									tinymceApiKey={
-										appLocalizer.settings_databases_value[
-										'overview'
-										]['tinymce_api_section'] ?? ''
-									}
-								/>
-								{validationErrors.content && (
-									<p className="invalid-massage">
-										{validationErrors.content}
-									</p>
-								)}
-							</FormGroup>
-							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-								<ToggleSetting
-									value={formData.status}
-									options={[
-										{
-											label: __('Draft', 'multivendorx'),
-											value: 'draft',
-										},
-										{
-											label: __(
-												'Pending',
-												'multivendorx'
-											),
-											value: 'pending',
-										},
-										{
-											label: __(
-												'Published',
-												'multivendorx'
-											),
-											value: 'publish',
-										},
-									]}
-									onChange={(value) =>
-										setFormData((prev) => ({
-											...prev,
-											status: value,
-										}))
-									}
-								/>
-							</FormGroup>
-							<FormGroup label={__('Add tag', 'multivendorx')} htmlFor="Title">
-								<BasicInputUI
-									type="text"
-									name="title"
-								// value={formData.title}
-								// onChange={handleChange}
-								/>
-							</FormGroup>
-						</FormGroupWrapper>
-					</>
-				</CommonPopup>
-			)}
+			{
+				addEntry && (
+					<CommonPopup
+						open={addEntry}
+						onClose={handleCloseForm}
+						width="31.25rem"
+						height="70%"
+						header={{
+							icon: 'book',
+							title: editId
+								? __('Edit Knowledgebase', 'multivendorx')
+								: __('Add Knowledgebase', 'multivendorx'),
+							description: __(
+								'Write and publish a new knowledge base article to help stores navigate their dashboard.',
+								'multivendorx'
+							),
+						}}
+						footer={
+							<AdminButtonUI
+								buttons={[
+									{
+										icon: 'close',
+										text: __('Cancel', 'multivendorx'),
+										color: 'red',
+										onClick: handleCloseForm,
+									},
+									{
+										icon: 'save',
+										text: __('Save', 'multivendorx'),
+										onClick: () => handleSubmit(formData.status || 'draft'),
+									},
+								]}
+							/>
+						}
+					>
+						<>
+							<FormGroupWrapper>
+								<FormGroup label={__('Title', 'multivendorx')} htmlFor="Title">
+									<BasicInputUI
+										type="text"
+										name="title"
+										value={formData.title}
+										onChange={handleChange}
+									/>
+									{validationErrors.title && (
+										<p className="invalid-massage">
+											{validationErrors.title}
+										</p>
+									)}
+								</FormGroup>
+								<FormGroup label={__('Content', 'multivendorx')} htmlFor="Content">
+									<TextArea
+										name="content"
+										value={formData.content}
+										onChange={handleChange}
+										usePlainText={false}
+										tinymceApiKey={
+											appLocalizer.settings_databases_value[
+											'overview'
+											]['tinymce_api_section'] ?? ''
+										}
+									/>
+									{validationErrors.content && (
+										<p className="invalid-massage">
+											{validationErrors.content}
+										</p>
+									)}
+								</FormGroup>
+								<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
+									<ToggleSetting
+										value={formData.status}
+										options={[
+											{
+												label: __('Draft', 'multivendorx'),
+												value: 'draft',
+											},
+											{
+												label: __(
+													'Pending',
+													'multivendorx'
+												),
+												value: 'pending',
+											},
+											{
+												label: __(
+													'Published',
+													'multivendorx'
+												),
+												value: 'publish',
+											},
+										]}
+										onChange={(value) =>
+											setFormData((prev) => ({
+												...prev,
+												status: value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup label={__('Add tag', 'multivendorx')} htmlFor="Title">
+									<BasicInputUI
+										type="text"
+										name="title"
+									// value={formData.title}
+									// onChange={handleChange}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</>
+					</CommonPopup>
+				)
+			}
 			<Container general>
 				<Column>
 					<TableCard

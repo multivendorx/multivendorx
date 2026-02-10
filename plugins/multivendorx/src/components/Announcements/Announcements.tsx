@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs, 
+	AdminBreadcrumbs,
 	TextArea,
 	CommonPopup,
 	SelectInput,
@@ -12,7 +12,7 @@ import {
 	Container,
 	Column,
 	FormGroupWrapper,
-	FormGroup, 
+	FormGroup,
 	ProPopup,
 	TableCard,
 	BasicInputUI,
@@ -441,21 +441,20 @@ export const Announcements: React.FC = () => {
 				}
 				tabTitle="Announcements"
 				buttons={[
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={async () => {
+					{
+						label: __('Add New', 'multivendorx'),
+						className : "admin-btn btn-purple-bg",
+						iconClass: 'adminfont-plus',
+						onClick: () => {
 							setValidationErrors({});
-							await fetchStoreOptions();
+							fetchStoreOptions();
 							setAddAnnouncements(true);
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>,
+						}
+					}
 				]}
 			/>
 
-			<CommonPopup
+			< CommonPopup
 				open={addAnnouncements}
 				onClose={handleCloseForm}
 				width="31.25rem"
@@ -471,20 +470,21 @@ export const Announcements: React.FC = () => {
 					),
 				}}
 				footer={
-					<AdminButtonUI
-						buttons={[
-							{
-								icon: 'close',
-								text: __('Cancel', 'multivendorx'),
-								color: 'red',
-								onClick: handleCloseForm,
-							},
-							{
-								icon: 'save',
-								text: __('Save', 'multivendorx'),
-								onClick: () => handleSubmit(),
-							},
-						]}
+					< AdminButtonUI
+						buttons={
+							[
+								{
+									icon: 'close',
+									text: __('Cancel', 'multivendorx'),
+									color: 'red',
+									onClick: handleCloseForm,
+								},
+								{
+									icon: 'save',
+									text: __('Save', 'multivendorx'),
+									onClick: () => handleSubmit(),
+								},
+							]}
 					/>
 				}
 			>
@@ -606,7 +606,7 @@ export const Announcements: React.FC = () => {
 					</FormGroupWrapper>
 				</>
 				{error && <p className="error-text">{error}</p>}
-			</CommonPopup>
+			</CommonPopup >
 
 			<Container general>
 				<Column>
