@@ -8,18 +8,8 @@ interface PopoverProps {
     header?: PopoverHeaderProps;
     footer?: React.ReactNode;
     width?: number | string;
-    minWidth?: number | string;
-    maxWidth?: number | string;
     height?: number | string;
     position?: 'inline' | 'right' | 'left' | 'top' | 'bottom' | 'center';
-    anchorOrigin?: {
-        vertical: 'top' | 'center' | 'bottom';
-        horizontal: 'left' | 'center' | 'right';
-    };
-    transformOrigin?: {
-        vertical: 'top' | 'center' | 'bottom';
-        horizontal: 'left' | 'center' | 'right';
-    };
     className?: string;
     onOpen?: () => void;
     onClose?: () => void;
@@ -32,21 +22,15 @@ const Popover: React.FC<PopoverProps> = ({
     header,
     footer,
     width = 14,
-    minWidth,
-    maxWidth,
     height = 'auto',
     position = 'inline',
-    anchorOrigin = { vertical: 'bottom', horizontal: 'right' },
-    transformOrigin = { vertical: 'top', horizontal: 'right' },
     className = '',
     onOpen,
     onClose,
-    open: controlledOpen // Add this
+    open: controlledOpen 
 }) => {
     const [internalOpen, setInternalOpen] = useState(false);
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    
-    // Use controlled open if provided, otherwise use internal state
+    const wrapperRef = useRef<HTMLDivElement>(null);    
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
 
     useOutsideClick(wrapperRef, () => {
@@ -89,7 +73,6 @@ const Popover: React.FC<PopoverProps> = ({
 
     return (
         <div className={`popover-wrapper ${className}`} data-position={position} ref={wrapperRef}>
-            {/* Backdrop for modal-like popovers */}
             {position !== 'inline' && open && (
                 <div
                     className="popover-backdrop"
@@ -97,7 +80,6 @@ const Popover: React.FC<PopoverProps> = ({
                 />
             )}
 
-            {/* Toggle button - hidden for center position */}
             {position == 'inline' && (
                 <div
                     className="popover-toggle"
@@ -140,12 +122,12 @@ const Popover: React.FC<PopoverProps> = ({
                         </div>
                     )}
 
-                    {/* Body/Content */}
+                    {/* popover Body */}
                     <div className="popover-body">
                         {children}
                     </div>
 
-                    {/* Footer */}
+                    {/* popover Footer */}
                     {footer && (
                         <div className="popover-footer">
                             {footer}

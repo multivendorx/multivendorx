@@ -13,7 +13,6 @@ import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import SuccessNotice from './SuccessNotice';
 import Popover from './UI/Popover';
-import ProPopup from './Popup';
 
 
 interface InputField {
