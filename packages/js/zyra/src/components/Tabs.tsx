@@ -140,48 +140,37 @@ const Tabs: React.FC<TabsProps> = ({
     // Check if we should show submenu (when inside a folder)
     const showSubmenu = tabPath.length > 1; // More than just the file itself
 
-    // Navigation functions
-    const navigateToTab = (tabId: string) => {
-        setActiveTab(tabId);
-        const url = prepareUrl(tabId);
-        if (onNavigate) {
-            onNavigate(url);
-        } else {
-            window.history.pushState(null, '', url);
-        }
-    };
+    // Navigation
+    const navigate = (tabId?: string) => {
+        if (!tabId || tabId === activeTab) return;
 
-    const navigateToFolder = (folder: TabContent) => {
-        if (!isFolder(folder)) return;
-        const firstFile = findFirstFile(folder.content);
-        if (firstFile) {
-            navigateToTab(firstFile.id);
-        }
+        setActiveTab(tabId);
+
+        const url = prepareUrl(tabId);
+        onNavigate?.(url) ?? window.history.pushState(null, '', url);
     };
 
     const handleBreadcrumbClick = (index: number, e: React.MouseEvent) => {
         e.preventDefault();
+
         if (index === 0) {
-            // Root - go to first file
             const firstFile = findFirstFile(tabContent);
-            if (firstFile) navigateToTab(firstFile.id);
+            if (firstFile) navigate(firstFile.id);
             return;
         }
 
-        const crumb = breadcrumbs[index];
-        if (!crumb) return;
+        const targetItem = tabPath[index - 1];
+        if (!targetItem) return;
 
-        if (crumb.type === 'file') {
-            navigateToTab(crumb.id);
-        } else if (crumb.type === 'folder') {
-            // Find the folder and navigate to it
-            const folder = tabContent.find(item =>
-                isFolder(item) && item.name === crumb.id
-            );
-            if (folder) navigateToFolder(folder);
+        if (isFile(targetItem)) {
+            navigate(targetItem.content.id);
+        }
+
+        if (isFolder(targetItem)) {
+            const firstFile = findFirstFile(targetItem.content);
+            if (firstFile) navigate(firstFile.id);
         }
     };
-
 
     // Render breadcrumb links
     const renderBreadcrumbLinks = () =>
@@ -219,7 +208,7 @@ const Tabs: React.FC<TabsProps> = ({
                     onClick={(e) => {
                         if (e.button === 0 && !e.metaKey && !e.ctrlKey) {
                             e.preventDefault();
-                            navigateToTab(tab.id);
+                            navigate(tab.id);
                         }
                     }}
                 >
@@ -251,7 +240,7 @@ const Tabs: React.FC<TabsProps> = ({
                     onClick={(e) => {
                         if (firstFile && e.button === 0 && !e.metaKey && !e.ctrlKey) {
                             e.preventDefault();
-                            navigateToFolder(item);
+                            navigate(firstFile.id);
                         }
                     }}
                 >
@@ -308,7 +297,7 @@ const Tabs: React.FC<TabsProps> = ({
         } else {
             const firstFile = findFirstFile(tabContent);
             if (firstFile) {
-                navigateToTab(firstFile.id);
+                navigate(firstFile.id);
             }
         }
     }, [currentTab, tabContent]);
