@@ -96,10 +96,6 @@ export interface HeadingBlock extends BaseBlock {
     level: 1 | 2 | 3;
 }
 
-export interface DividerBlock extends BaseBlock {
-    type: 'divider';
-}
-
 export interface ColumnsBlock extends BaseBlock {
     type: 'columns';
     layout: ColumnLayout;
@@ -141,7 +137,6 @@ export interface TitleBlock extends BaseBlock {
 export type Block = 
     | RichTextBlock
     | HeadingBlock
-    | DividerBlock
     | ColumnsBlock
     | DatePickerBlock
     | TimePickerBlock

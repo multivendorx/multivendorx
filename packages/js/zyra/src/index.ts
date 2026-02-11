@@ -29,7 +29,6 @@ export { default as Modules } from './components/Modules';
 export { default as MultiCheckBox } from './components/MultiCheckbox';
 export { MultiCheckBoxUI } from './components/MultiCheckbox';
 export { default as MultiCheckboxTable } from './components/MultiCheckboxTable';
-export { default as MultipleOptions } from './components/MultipleOption';
 export { default as ProPopup } from './components/Popup';
 export { default as RadioInput } from './components/RadioInput';
 export { default as CustomFrom } from './components/RegistrationForm';

@@ -18,6 +18,7 @@ import RadioInput from './RadioInput';
 import FileInput from './FileInput';
 import AddressField from './AddressField';
 import NestedComponent from './NestedComponent';
+import Divider from './Divider';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -40,8 +41,10 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'system-info': SystemInfo,
   'section': Section,
   'radio': RadioInput,
+  'dropdown': SelectInput,
   'recaptcha': Recaptcha,
   'attachment': FileInput,
   'image': FileInput,
   'address': AddressField,
+  'divider': Divider,
 };

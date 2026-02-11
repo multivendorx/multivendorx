@@ -1,9 +1,3 @@
-/**
- * ColumnBlockManager.tsx
- * Centralized column block management - hook + renderer in one file
- * Eliminates circular imports and provides clean column functionality
- */
-
 import React, { useState, useCallback } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import {
@@ -53,10 +47,7 @@ export interface ColumnRendererProps {
     showMeta?: boolean;
 }
 
-// ============================================================================
 // HOOK: useColumnManager
-// ============================================================================
-
 export const useColumnManager = ({
     blocks,
     onBlocksUpdate,
@@ -229,9 +220,8 @@ export const useColumnManager = ({
         [blocks, openBlock, setOpenBlock, updateParentBlock]
     );
 
-    /**
-     * Clear selection (used when selecting a non-column block)
-     */
+    // Clear selection (used when selecting a non-column block)
+
     const clearSelection = useCallback(() => {
         setSelectedBlockLocation(null);
     }, []);
@@ -247,10 +237,7 @@ export const useColumnManager = ({
     };
 };
 
-// ============================================================================
 // COMPONENT: ColumnBlockRenderer
-// ============================================================================
-
 export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
     block,
     parentIndex,

@@ -9,7 +9,6 @@ import { ReactSortable } from 'react-sortablejs';
 import {
     Block,
     BlockPatch,
-    createBlock,
     normalizeBlock,
     BlockRenderer,
     ColumnRenderer,
@@ -19,11 +18,11 @@ import {
 
 import SettingMetaBox from './SettingMetaBox';
 import BasicInput from './BasicInput';
-import MultipleOptions from './MultipleOption';
 import TextArea from './TextArea';
 import FileInput from './FileInput';
 import AddressField from './AddressField';
 import { FieldComponent } from './types';
+import '../styles/web/RegistrationForm.scss';
 
 // Types
 interface RegistrationFormProps {
@@ -197,7 +196,13 @@ export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
         <div className="registration-from-wrapper registration-builder">
             {/* Left Panel */}
             <LeftPanel
-                blocks={REGISTRATION_BLOCKS}
+                blocks={[
+                    ...REGISTRATION_BLOCKS,
+                    ...STORE_BLOCKS.map(block => ({
+                        ...block,
+                        group: 'store-blocks'
+                    }))
+                ]}
             />
 
             {/* Center Canvas */}
@@ -241,7 +246,6 @@ export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
                                     onDelete={() => deleteBlock(index)}
                                     isActive={openBlock?.id === block.id}
                                     BasicInput={BasicInput}
-                                    MultipleOptions={MultipleOptions}
                                     TextArea={TextArea}
                                     FileInput={FileInput}
                                     AddressField={AddressField}
@@ -281,9 +285,6 @@ export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
     );
 };
 
-
-
-// Export
 const RegistrationForm: FieldComponent = {
     render: RegistrationFormUI,
     validate: (field, value) => {

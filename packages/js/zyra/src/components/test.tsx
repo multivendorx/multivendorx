@@ -1,228 +1,350 @@
-/**
- * RegistrationForm.tsx - CLEAN VERSION
- * Uses ColumnBlockManager for all column operations
- * No template functionality - only single form editing
- */
+// External dependencies
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-import React, { useState } from 'react';
-import { ReactSortable } from 'react-sortablejs';
+// Internal dependencies
+import SubTabSection, { MenuItem } from './SubTabSection';
+import ProForm from './RegistrationForm';
+import '../styles/web/FreeProFormCustomizer.scss';
+import '../styles/web/RegistrationForm.scss';
 
-import {
-    Block,
-    BlockPatch,
-    normalizeBlock,
-    BlockRenderer,
-    ColumnRenderer,
-    useColumnManager,
-    LeftPanel
-} from './block';
-
-import SettingMetaBox from './SettingMetaBox';
-import BasicInput from './BasicInput';
-import MultipleOptions from './MultipleOption';
-import TextArea from './TextArea';
-import FileInput from './FileInput';
-import AddressField from './AddressField';
-import { FieldComponent } from './types';
-
-export interface RegistrationTemplate {
-    id: string;
-    name: string;
-    previewText?: string;
-    blocks: Block[];
+//Types
+interface FormField {
+    key: string;
+    label?: string;
+    active?: boolean;
+    desc?: string;
 }
 
-interface RegistrationFormProps {
-    // No template props - only single form editing
+type FormValue = string | number | boolean | FormField[] | undefined;
+
+interface FreeProFormCustomizerProps {
+    setting: { freefromsetting?: FormField[] };
+    proSetting: boolean;
+    proSettingChange: () => boolean;
+    moduleEnabledChange: () => boolean;
+    onChange: ( key: string, value: FormValue ) => void;
 }
 
-const REGISTRATION_BLOCKS = [
-    { id: 'text', icon: 'adminfont-t-letter-bold icon-form-textbox', value: 'text', label: 'Textbox' },
-    { id: 'email', icon: 'adminfont-unread icon-form-email', value: 'email', label: 'Email' },
-    { id: 'textarea', icon: 'adminfont-text icon-form-textarea', value: 'textarea', label: 'Textarea' },
-    { id: 'datepicker', icon: 'adminfont-calendar icon-form-store-description', value: 'datepicker', label: 'Date Picker' },
-    { id: 'timepicker', icon: 'adminfont-alarm icon-form-address', value: 'TimePicker', label: 'Time Picker' },
-    { id: 'richtext', icon: 'adminfont-text icon-form-textarea', value: 'richtext', label: 'Rich Text Block' },
-    { id: 'heading', icon: 'adminfont-form-textarea', value: 'heading', label: 'Heading' },
-    { id: 'image', icon: 'adminfont-image', value: 'image', label: 'Image' },
-    { id: 'button', icon: 'adminfont-button', value: 'button', label: 'Button' },
-    { id: 'divider', icon: 'adminfont-divider', value: 'divider', label: 'Divider' },
-    { id: 'checkboxes', icon: 'adminfont-checkbox icon-form-checkbox', value: 'checkboxes', label: 'Checkboxes' },
-    { id: 'multi-select', icon: 'adminfont-multi-select icon-form-multi-select', value: 'multi-select', label: 'Multi Select' },
-    { id: 'radio', icon: 'adminfont-radio icon-form-radio', value: 'radio', label: 'Radio' },
-    { id: 'dropdown', icon: 'adminfont-dropdown-checklist icon-form-dropdown', value: 'dropdown', label: 'Dropdown' },
-    { id: 'columns', icon: 'adminfont-blocks', value: 'columns', label: 'Columns' },
-    { id: 'section', icon: 'adminfont-form-section icon-form-section', value: 'section', label: 'Section' },
-    { id: 'recaptcha', icon: 'adminfont-captcha-automatic-code icon-form-recaptcha', value: 'recaptcha', label: 'reCaptcha v3' },
-    { id: 'attachment', icon: 'adminfont-submission-message icon-form-attachment', value: 'attachment', label: 'Attachment' },
-    { id: 'address', icon: 'adminfont-form-address icon-form-address', value: 'address', label: 'Address' },
-];
+// FormCustomizer Component
+const FreeProFormCustomizer: React.FC< FreeProFormCustomizerProps > = ( {
+    setting,
+    proSettingChange,
+    moduleEnabledChange,
+    onChange,
+} ) => {
+    const settingChange = useRef< boolean >( false );
 
-// Single form with one starting block
-const DEFAULT_FORM_BLOCKS: Block[] = [];
+    // Initialize state
+    const [ formFieldsData, setFormFieldsData ] = useState< FormField[] >(
+        setting?.freefromsetting || []
+    );
 
-export const RegistrationFormUI: React.FC<RegistrationFormProps> = () => {
-    // Only manage a single form's blocks
-    const [blocks, setBlocks] = useState<Block[]>(DEFAULT_FORM_BLOCKS);
-    const [openBlock, setOpenBlock] = useState<Block | null>(null);
-
-    // Block operations
-    const updateBlock = (index: number, patch: BlockPatch) => {
-        const updated = [...blocks];
-        updated[index] = { ...updated[index], ...patch } as Block;
-        setBlocks(updated);
-        
-        if (openBlock?.id === updated[index].id) {
-            setOpenBlock(updated[index]);
+    useEffect( () => {
+        if ( settingChange.current ) {
+            onChange( 'freefromsetting', formFieldsData );
+            settingChange.current = false;
         }
+    }, [ formFieldsData, onChange ] );
+
+    const getFields = ( fieldKey: string ): FormField | undefined => {
+        return formFieldsData.find( ( { key } ) => key === fieldKey );
     };
 
-    const deleteBlock = (index: number) => {
-        const deletedBlock = blocks[index];
-        const updated = [...blocks];
-        updated.splice(index, 1);
-        setBlocks(updated);
-        
-        if (openBlock?.id === deletedBlock.id) {
-            setOpenBlock(null);
-            columnManager.clearSelection();
+    const activeDeactiveFields = useCallback(
+        (fieldKey: string,
+        activeStatus: boolean
+    ) => {
+        if ( moduleEnabledChange() ) {
+            return;
         }
-    };
+        settingChange.current = true;
 
-    // Column manager hook
-    const columnManager = useColumnManager({
-        blocks,
-        onBlocksUpdate: setBlocks,
-        openBlock,
-        setOpenBlock,
+        setFormFieldsData( ( prevData ) => {
+            const existingField = prevData.find(
+                ( { key } ) => key === fieldKey
+            );
+            if ( existingField ) {
+                return prevData.map( ( data ) =>
+                    data.key === fieldKey
+                        ? { ...data, active: activeStatus }
+                        : data
+                );
+            }
+            return [
+                ...prevData,
+                { key: fieldKey, label: '', active: activeStatus },
+            ];
+        } );
     });
 
-    // Settings change handler
-    const handleSettingsChange = (key: string, value: any) => {
-        // Check if editing a column child
-        if (columnManager.selectedBlockLocation) {
-            const { parentIndex, columnIndex, childIndex } = columnManager.selectedBlockLocation;
-            columnManager.handleColumnChildUpdate(parentIndex, columnIndex, childIndex, { [key]: value } as any);
-        } else {
-            // Regular block or column parent
-            const index = blocks.findIndex((field) => field.id === openBlock?.id);
-
-            if (index >= 0) {
-                // Special handling for column layout changes
-                if (key === 'layout' && blocks[index].type === 'columns') {
-                    columnManager.handleLayoutChange(index, value);
-                } else {
-                    updateBlock(index, { [key]: value } as any);
-                }
-            }
+    const updateFieldLabel = ( fieldKey: string, labelValue: string ) => {
+        if ( moduleEnabledChange() ) {
+            return;
         }
+        settingChange.current = true;
+
+        setFormFieldsData( ( prevData ) => {
+            const existingField = prevData.find(
+                ( { key } ) => key === fieldKey
+            );
+            if ( existingField ) {
+                return prevData.map( ( data ) =>
+                    data.key === fieldKey
+                        ? { ...data, label: labelValue }
+                        : data
+                );
+            }
+            return [
+                ...prevData,
+                { key: fieldKey, label: labelValue, active: false },
+            ];
+        } );
+    };
+
+    const formFields: FormField[] = [
+        { key: 'name', desc: 'Name' },
+        { key: 'email', desc: 'Email' },
+        { key: 'phone', desc: 'Phone' },
+        { key: 'address', desc: 'Address' },
+        { key: 'subject', desc: 'Enquiry about' },
+        { key: 'comment', desc: 'Enquiry details' },
+        { key: 'fileupload', desc: 'File upload' },
+        { key: 'filesize-limit', desc: 'File upload size limit (in MB)' },
+        { key: 'captcha', desc: 'Captcha' },
+    ];
+
+    const menu: MenuItem[] = [
+        { name: 'Free', link: 'hi', id: '2', icon: 'adminfont-info' },
+        { name: 'Pro', link: 'hi', id: '1', icon: 'adminfont-cart' },
+    ];
+
+    const [ currentTab, setCurrentTab ] = useState< MenuItem >( menu[ 0 ] );
+
+    // Read-only field state
+    const [ readonlyFields, setReadonlyFields ] = useState< boolean[] >(
+        formFields.map( ( _, index ) =>
+            formFieldsData[ index ]?.active === true ? false : true
+        )
+    );
+
+    return (
+        <>
+            <SubTabSection
+                menuitem={ menu }
+                currentTab={ currentTab }
+                setCurrentTab={ setCurrentTab }
+            />
+            { currentTab.id === '1' ? (
+                <ProForm
+                    setting={ setting }
+                    name="formsettings"
+                    proSettingChange={ proSettingChange }
+                    onChange={ ( value ) => onChange( 'formsettings', value ) }
+                />
+            ) : (
+                <div>
+                    <div className="form-field">
+                        <div className="edit-form-wrapper free-form">
+                            <h3 className="form-label">{ 'Field Name' }</h3>
+                            <h3 className="set-name">
+                                { 'Set new field name' }
+                            </h3>
+                        </div>
+                        { formFields.map( ( fields, index ) => (
+                            <div
+                                className="edit-form-wrapper free-form"
+                                key={ index }
+                            >
+                                <div
+                                    className="form-label"
+                                    style={ {
+                                        opacity: readonlyFields[ index ]
+                                            ? '0.3'
+                                            : '1',
+                                    } }
+                                >
+                                    { fields.desc }
+                                </div>
+                                <div className="settings-form-group-radio">
+                                    <input
+                                        className="basic-input"
+                                        type="text"
+                                        onChange={ ( e ) =>
+                                            updateFieldLabel(
+                                                fields.key,
+                                                e.target.value
+                                            )
+                                        }
+                                        value={
+                                            getFields( fields.key )?.label || ''
+                                        }
+                                        readOnly={ readonlyFields[ index ] }
+                                        style={ {
+                                            opacity: readonlyFields[ index ]
+                                                ? '0.3'
+                                                : '1',
+                                        } }
+                                    />
+                                </div>
+                                <div
+                                    className="button-visibility"
+                                    role="button"
+                                    tabIndex={ 0 }
+                                    onClick={ () => {
+                                        setReadonlyFields( ( prev ) =>
+                                            prev.map( ( readonly, i ) =>
+                                                i === index
+                                                    ? ! readonly
+                                                    : readonly
+                                            )
+                                        );
+                                        activeDeactiveFields(
+                                            fields.key,
+                                            readonlyFields[ index ]
+                                        );
+                                    } }
+                                >
+                                    <i
+                                        className={ `admin-font ${
+                                            readonlyFields[ index ]
+                                                ? 'adminfont-eye-blocked enable-visibility'
+                                                : 'adminfont-eye'
+                                        }` }
+                                    />
+                                </div>
+                            </div>
+                        ) ) }
+                    </div>
+                </div>
+            ) }
+        </>
+    );
+};
+
+export default FreeProFormCustomizer;
+
+
+
+//External Dependencies
+import React, { useState, useEffect } from 'react';
+import { ReactSortable } from 'react-sortablejs';
+
+// Internal Dependencies
+import MultipleOptions from './MultipleOption';
+import { BasicInputUI } from './BasicInput';
+
+interface SubField {
+    id: number;
+    key: string;
+    label: string;
+    type: 'text' | 'select';
+    placeholder?: string;
+    options?: string[];
+    required?: boolean;
+    readonly?: boolean;
+    parentId?: number;
+}
+
+export interface AddressFormField {
+    id: number;
+    type: string;
+    label: string;
+    fields?: SubField[];
+    value?: Record< string, string >;
+    readonly?: boolean;
+}
+
+interface AddressFieldProps {
+    formField: AddressFormField;
+    // onChange: ( key: 'fields', value: SubField[] ) => void;
+    opendInput: SubField | null;
+    setOpendInput: React.Dispatch< React.SetStateAction< SubField | null > >;
+}
+
+const AddressField: React.FC< AddressFieldProps > = ( {
+    formField,
+    // onChange,
+    opendInput,
+    setOpendInput,
+} ) => {
+    const [ subFields, setSubFields ] = useState< SubField[] >(
+        formField.fields || []
+    );
+
+    useEffect( () => {
+        setSubFields( formField.fields || [] );
+    }, [ formField.fields ] );
+
+    // Update parent
+    const updateParent = ( updated: SubField[] ) => {
+        setSubFields( updated );
+        // onChange( 'fields', updated );
+    };
+
+    const FieldRenderers = {
+        text: (f: SubField) => (
+            <>
+                <p>{f.label}</p>
+                <BasicInputUI
+                    type= "text"
+                    placeholder= {f.placeholder}
+                />
+            </>
+        ),
+        select: (f: SubField) => (
+            <MultipleOptions
+                formField={{
+                    label: f.label,
+                    type: 'dropdown',
+                    options: f.options?.map((opt) => ({
+                        id: opt,
+                        value: opt,
+                        label: opt,
+                    })) || [],
+                }}
+                type="dropdown"
+                selected={false}
+                // onChange={() => {}}
+            />
+        ),
     };
 
     return (
-        <div className="registration-from-wrapper registration-builder">
-            {/* LEFT PANEL - Only show blocks, no templates */}
-            <LeftPanel
-                blocks={REGISTRATION_BLOCKS}
-                templates={[]} // Empty array to hide templates tab
-                activeTemplateId={null}
-                onTemplateSelect={() => {}} // No-op
-                showTemplatesTab={false}
-            />
-
-            {/* CENTER CANVAS */}
-            <div className="registration-form-main-section registration-canvas">
-                <ReactSortable
-                    list={blocks}
-                    setList={(newList) => setBlocks(newList.map(normalizeBlock))}
-                    group={{ name: 'registration', pull: true, put: true }}
-                    handle=".drag-handle"
-                    animation={150}
-                    fallbackOnBody
-                    swapThreshold={0.65}
-                    className="registration-canvas-sortable"
-                >
-                    {blocks.map((block, index) => {
-                        if (!block) return null;
-
-                        return (
-                            <div className="field-wrapper" key={block.id}>
-                                {block.type === 'columns' ? (
-                                    <ColumnRenderer
-                                        block={block}
-                                        parentIndex={index}
-                                        blocks={blocks}
-                                        isActive={openBlock?.id === block.id}
-                                        groupName="registration"
-                                        openBlock={openBlock}
-                                        setOpenBlock={setOpenBlock}
-                                        onBlocksUpdate={setBlocks}
-                                        onSelect={() => {
-                                            setOpenBlock(block);
-                                            columnManager.clearSelection();
-                                        }}
-                                        onDelete={() => deleteBlock(index)}
-                                    />
-                                ) : (
-                                    <BlockRenderer
-                                        key={block.id}
-                                        block={block}
-                                        onSelect={() => {
-                                            setOpenBlock(block);
-                                            columnManager.clearSelection();
-                                        }}
-                                        onChange={(patch) => updateBlock(index, patch)}
-                                        onDelete={() => deleteBlock(index)}
-                                        isActive={openBlock?.id === block.id}
-                                        BasicInput={BasicInput}
-                                        MultipleOptions={MultipleOptions}
-                                        TextArea={TextArea}
-                                        FileInput={FileInput}
-                                        AddressField={AddressField}
-                                    />
-                                )}
-                            </div>
-                        );
-                    })}
-                </ReactSortable>
-            </div>
-
-            {/* RIGHT SETTINGS */}
-            <div className="registration-edit-form-wrapper">
-                {openBlock && (
-                    <div className="registration-edit-form">
-                        <div className="meta-setting-modal-content">
-                            <div className="block-type-header">
-                                <div className="block-type-title">
-                                    <h3>
-                                        {openBlock.type.charAt(0).toUpperCase() + openBlock.type.slice(1)} Settings
-                                    </h3>
-                                </div>
-                            </div>
-                            <SettingMetaBox
-                                formField={openBlock}
-                                opened={{ click: true }}
-                                onChange={handleSettingsChange}
-                                inputTypeList={REGISTRATION_BLOCKS.map(block => ({ 
-                                    value: block.value, 
-                                    label: block.label 
-                                }))}
-                            />
+        <div className="address-field-wrapper">
+            <ReactSortable
+                list={ subFields }
+                setList={ updateParent }
+                handle=".drag-handle"
+                animation={ 150 }
+            >
+                { subFields.map( ( f ) => (
+                    <div
+                        key={ f.id }
+                        className={ `form-field ${
+                            opendInput?.id === f.id ? 'active' : ''
+                        }` }
+                        onClick={ ( e ) => {
+                            e.stopPropagation();
+                            setOpendInput( {
+                                ...f,
+                                readonly: formField.readonly,
+                                parentId: formField.id,
+                            } );
+                        } }
+                    >
+                        <div className="meta-menu">
+                            <span className="admin-badge blue drag-handle">
+                                <i className="admin-font adminfont-drag"></i>
+                            </span>
                         </div>
+
+                        {FieldRenderers[f.type]?.(f)}
+
                     </div>
-                )}
-            </div>
+                ) ) }
+            </ReactSortable>
         </div>
     );
 };
 
-const RegistrationForm: FieldComponent = {
-    render: RegistrationFormUI,
-    validate: (field, value) => {
-        if (field.required && !value?.[field.name]) {
-            return `${field.label} is required`;
-        }
-        return null;
-    },
-};
-
-export default RegistrationForm;
+export default AddressField;

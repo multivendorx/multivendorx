@@ -1,7 +1,6 @@
 import { 
     Block, 
-    BlockType, 
-    BlockConfig, 
+    BlockType,
     Option, 
     AddressField,
     DEFAULT_BLOCK_STYLES,

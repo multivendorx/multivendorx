@@ -18,7 +18,6 @@ import {
 
 import SettingMetaBox from '../SettingMetaBox';
 import BasicInput from '../BasicInput';
-import MultipleOptions from '../MultipleOption';
 import TextArea from '../TextArea';
 import FileInput from '../FileInput';
 import AddressField from '../AddressField';
@@ -194,7 +193,6 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
                                         onDelete={() => deleteBlock(index)}
                                         isActive={openBlock?.id === block.id}
                                         BasicInput={BasicInput}
-                                        MultipleOptions={MultipleOptions}
                                         TextArea={TextArea}
                                         FileInput={FileInput}
                                         AddressField={AddressField}
