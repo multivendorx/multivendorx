@@ -12,7 +12,7 @@ import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import SuccessNotice from './SuccessNotice';
-import { PopupUI } from './UI/Popup';
+import Popover, { PopupUI } from './UI/Popup';
 
 
 interface InputField {
@@ -579,7 +579,7 @@ const RenderComponent: React.FC<RenderProps> = ({
             {modelOpen && (
                 <PopupUI
                     position="center"
-                    variant='pro'
+                    variant=''
                     open={modelOpen}
                     onClose={handleModelClose}
                     moduleName={String(modulePopupData.moduleName)}
