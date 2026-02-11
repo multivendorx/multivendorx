@@ -40,7 +40,6 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'system-info': SystemInfo,
   'section': Section,
   'radio': RadioInput,
-  'textarea': TextArea,
   'recaptcha': Recaptcha,
   'attachment': FileInput,
   'image': FileInput,

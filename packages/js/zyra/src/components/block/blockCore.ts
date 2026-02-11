@@ -13,10 +13,10 @@ export const isContentBlock = (type: BlockType): boolean =>
     ['richtext', 'heading', 'image', 'button', 'divider'].includes(type);
 
 export const isFormInputBlock = (type: BlockType): boolean =>
-    ['text', 'email', 'number', 'textarea', 'datepicker', 'TimePicker', 'radio', 'dropdown', 'multiselect', 'checkboxes', 'attachment', 'address'].includes(type);
+    ['text', 'email', 'number', 'textarea', 'datepicker', 'TimePicker', 'radio', 'dropdown', 'multi-select', 'checkboxes', 'attachment', 'address'].includes(type);
 
 export const supportsOptions = (type: BlockType): boolean =>
-    ['radio', 'dropdown', 'multiselect', 'checkboxes'].includes(type);
+    ['radio', 'dropdown', 'multi-select', 'checkboxes'].includes(type);
 
 // DEFAULT VALUES & CONSTANTS
 // Helper to generate unique IDs
@@ -65,7 +65,7 @@ const getDefaultLabel = (
         return storeLabelMap[fixedName] || `Enter your ${type}`;
     }
     
-    if (['multiselect', 'radio', 'dropdown', 'checkboxes'].includes(type)) {
+    if (['multi-select', 'radio', 'dropdown', 'checkboxes'].includes(type)) {
         return 'Nature of Business';
     }
     
@@ -220,10 +220,10 @@ export const createBlock = (
     }
 
     // Selection blocks (radio, dropdown, multiselect, checkboxes)
-    if (['radio', 'dropdown', 'multiselect', 'checkboxes'].includes(type)) {
+    if (['radio', 'dropdown', 'multi-select', 'checkboxes'].includes(type)) {
         return {
             ...baseBlock,
-            type: type as 'radio' | 'dropdown' | 'multiselect' | 'checkboxes',
+            type: type as 'radio' | 'dropdown' | 'multi-select' | 'checkboxes',
             options: DEFAULT_OPTIONS,
         };
     }
