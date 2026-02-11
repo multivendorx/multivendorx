@@ -1,6 +1,7 @@
 // External dependencies
 import React, { ChangeEvent, MouseEvent, FocusEvent } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
+import { FieldComponent } from './types';
 
 interface TextAreaProps {
     id?: string;
@@ -24,7 +25,7 @@ interface TextAreaProps {
     onBlur?: ( e: React.FocusEvent< HTMLTextAreaElement > ) => void;
 }
 
-const TextArea: React.FC< TextAreaProps > = ( {
+export const TextAreaUI: React.FC< TextAreaProps > = ( {
     inputClass,
     id,
     name,
@@ -102,4 +103,15 @@ const TextArea: React.FC< TextAreaProps > = ( {
     );
 };
 
+// Component wrapper to be used in registry
+const TextArea: FieldComponent = {
+    render: TextAreaUI,
+    validate: (field, value) => {
+        if (field.required && !value?.[field.name]) {
+            return `${field.label} is required`;
+        }
+        return null;
+    },
+
+};
 export default TextArea;

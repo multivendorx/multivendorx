@@ -12,6 +12,11 @@ import { FieldComponent } from './types';
 import EmailTemplate from './TemplateEditor/EmailTemplate';
 import SystemInfo from './SystemInfo';
 import Section from './Section';
+import TextArea from './TextArea';
+import Recaptcha from './Recaptcha';
+import RadioInput from './RadioInput';
+import FileInput from './FileInput';
+import AddressField from './AddressField';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -27,8 +32,13 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'clickable-list': ClickableList,
   'form-builder': RegistrationForm,
   'email-template': EmailTemplate,
-  // 'checkbox': MultiCheckBox,
+  'checkboxes': MultiCheckBox,
   'system-info': SystemInfo,
   'section': Section,
-  'checkbox': MultiCheckBox,
+  'radio': RadioInput,
+  'textarea': TextArea,
+  'recaptcha': Recaptcha,
+  'attachment': FileInput,
+  'image': FileInput,
+  'address': AddressField,
 };

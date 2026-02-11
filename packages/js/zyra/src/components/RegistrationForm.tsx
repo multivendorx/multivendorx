@@ -1,285 +1,193 @@
-import React, { useState, useEffect, useRef } from 'react';
+/**
+ * RegistrationForm.tsx - OPTIMIZED CLEAN VERSION
+ * Simplified with custom hooks and extracted logic
+ */
+
+import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
-// Import from centralized block system
 import {
     Block,
     BlockPatch,
-    REGISTRATION_BLOCKS,
-    STORE_BLOCKS,
-    createBlock,
     normalizeBlock,
     BlockRenderer,
-    ColumnsBlock,
-    getColumnCount,
+    ColumnRenderer,
+    useColumnManager,
+    LeftPanel
 } from './block';
 
-// Import existing components
-
-import ButtonCustomizer from './ButtonCustomiser';
-import Elements from './Elements';
 import SettingMetaBox from './SettingMetaBox';
+import BasicInput from './BasicInput';
+import MultipleOptions from './MultipleOption';
+import TextArea from './TextArea';
+import FileInput from './FileInput';
+import AddressField from './AddressField';
 import { FieldComponent } from './types';
 
-interface ButtonSetting {
-    button_text?: string;
-    button_style?: string;
-    button_color?: string;
-    button_background?: string;
-}
+// Custom hooks
+const useFormData = (initialData: any) => {
+    const [blocks, setBlocks] = useState<Block[]>(() => {
+        const formData = initialData || {};
+        const initialBlocks = formData.formfieldlist || [];
+        return Array.isArray(initialBlocks) ? initialBlocks : [];
+    });
 
-interface FormSetting {
-    formfieldlist?: Block[];
-    butttonsetting?: ButtonSetting;
-}
+    const [buttonSetting, setButtonSetting] = useState(() => {
+        const formData = initialData || {};
+        return formData.butttonsetting || {};
+    });
 
-interface CustomFormProps {
-    onChange: (data: {
-        formfieldlist: Block[];
-        butttonsetting: ButtonSetting;
-    }) => void;
-    name: string;
-    canAccess: boolean;
-    formTitlePlaceholder?: string;
-    setting: Record<string, FormSetting>;
-}
+    return { blocks, setBlocks, buttonSetting, setButtonSetting };
+};
 
-export interface RegistrationTemplate {
-    id: string;
-    name: string;
-    formfieldlist: Block[];
-}
+const useAutoSave = (blocks: Block[], buttonSetting: any, onChange: (value: any) => void) => {
+    useEffect(() => {
+        const saveData = () => {
+            const newValue = {
+                formfieldlist: blocks,
+                butttonsetting: buttonSetting,
+            };
+            onChange(newValue);
+        };
 
-const CustomFormUI: React.FC<CustomFormProps> = ({
+        // Debounce save to prevent too many calls
+        const timeoutId = setTimeout(saveData, 300);
+        return () => clearTimeout(timeoutId);
+    }, [blocks, buttonSetting, onChange]);
+};
+
+// Constants
+const REGISTRATION_BLOCKS = [
+    { id: 'text', icon: 'adminfont-t-letter-bold icon-form-textbox', value: 'text', label: 'Textbox' },
+    { id: 'email', icon: 'adminfont-unread icon-form-email', value: 'email', label: 'Email' },
+    { id: 'textarea', icon: 'adminfont-text icon-form-textarea', value: 'textarea', label: 'Textarea' },
+    { id: 'datepicker', icon: 'adminfont-calendar icon-form-store-description', value: 'datepicker', label: 'Date Picker' },
+    { id: 'timepicker', icon: 'adminfont-alarm icon-form-address', value: 'TimePicker', label: 'Time Picker' },
+    { id: 'richtext', icon: 'adminfont-text icon-form-textarea', value: 'richtext', label: 'Rich Text Block' },
+    { id: 'heading', icon: 'adminfont-form-textarea', value: 'heading', label: 'Heading' },
+    { id: 'image', icon: 'adminfont-image', value: 'image', label: 'Image' },
+    { id: 'button', icon: 'adminfont-button', value: 'button', label: 'Button' },
+    { id: 'divider', icon: 'adminfont-divider', value: 'divider', label: 'Divider' },
+    { id: 'checkboxes', icon: 'adminfont-checkbox icon-form-checkbox', value: 'checkboxes', label: 'Checkboxes' },
+    { id: 'multi-select', icon: 'adminfont-multi-select icon-form-multi-select', value: 'multi-select', label: 'Multi Select' },
+    { id: 'radio', icon: 'adminfont-radio icon-form-radio', value: 'radio', label: 'Radio' },
+    { id: 'dropdown', icon: 'adminfont-dropdown-checklist icon-form-dropdown', value: 'dropdown', label: 'Dropdown' },
+    { id: 'columns', icon: 'adminfont-blocks', value: 'columns', label: 'Columns' },
+    { id: 'section', icon: 'adminfont-form-section icon-form-section', value: 'section', label: 'Section' },
+    { id: 'recaptcha', icon: 'adminfont-captcha-automatic-code icon-form-recaptcha', value: 'recaptcha', label: 'reCaptcha v3' },
+    { id: 'attachment', icon: 'adminfont-submission-message icon-form-attachment', value: 'attachment', label: 'Attachment' },
+    { id: 'address', icon: 'adminfont-form-address icon-form-address', value: 'address', label: 'Address' },
+];
+
+// Helper functions
+const createNewBlock = (blockType: string, label?: string, isReadOnly: boolean = false, isRequired: boolean = false): Block => {
+    const baseBlock = {
+        id: `${blockType}_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+        type: blockType as any,
+        label: label || blockType.charAt(0).toUpperCase() + blockType.slice(1),
+        name: blockType.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+        placeholder: `Enter ${label || blockType}`,
+        readOnly: isReadOnly,
+        required: isRequired,
+        value: '',
+    };
+
+    // Type-specific properties
+    const typeSpecificProps = {
+        columns: { columns: [[], []], layout: '2-50' },
+        checkboxes: { options: [{ value: 'option1', label: 'Option 1' }] },
+        radio: { options: [{ value: 'option1', label: 'Option 1' }] },
+        'multi-select': { options: [{ value: 'option1', label: 'Option 1' }] },
+        dropdown: { options: [{ value: 'option1', label: 'Option 1' }] },
+    };
+
+    return { ...baseBlock, ...(typeSpecificProps[blockType as keyof typeof typeSpecificProps] || {}) } as Block;
+};
+
+// Main component
+export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
     field,
     value,
     onChange,
-    canAccess,
-    appLocalizer,
+    proSettingChange = () => false,
+    name = field?.key || 'registration-form',
+    setting = {},
 }) => {
-    const settingHasChanged = useRef(false);
-
-    // Extract form data from the value
-    const formData = value?.[field.key] || {};
+    const { blocks, setBlocks, buttonSetting, setButtonSetting } = useFormData(value || setting[name]);
+    const [openBlock, setOpenBlock] = useState<Block | null>(null);
     
-    const [formFieldList, setFormFieldList] = useState<Block[]>(() => {
-        const inputList = formData.formfieldlist || [];
-        if (!Array.isArray(inputList) || inputList.length <= 0) {
-            return [createBlock('title')];
-        }
-        return inputList;
+    useAutoSave(blocks, buttonSetting, onChange);
+
+    // Column manager
+    const columnManager = useColumnManager({
+        blocks,
+        onBlocksUpdate: setBlocks,
+        openBlock,
+        setOpenBlock,
+        proSettingChange,
     });
 
-    const [buttonSetting, setButtonSetting] = useState<ButtonSetting>(
-        formData.butttonsetting || {}
-    );
-    const [opendInput, setOpendInput] = useState<Block | null>(null);
-    const [activeTab, setActiveTab] = useState<'blocks'>('blocks');
-
-    // Track where the selected block is located (for column child blocks)
-    const [selectedBlockLocation, setSelectedBlockLocation] = useState<{
-        parentIndex: number;
-        columnIndex: number;
-        childIndex: number;
-    } | null>(null);
-
-    // Trigger onChange when form data changes
-    useEffect(() => {
-        if (settingHasChanged.current && canAccess) {
-            const newValue = {
-                ...value,
-                [field.key]: {
-                    formfieldlist: formFieldList,
-                    butttonsetting: buttonSetting,
-                }
-            };
-            onChange(newValue);
-            settingHasChanged.current = false;
+    // Block operations
+    const handleBlockOperation = (operation: () => void) => {
+        if (!proSettingChange()) {
+            operation();
         }
-    }, [formFieldList, buttonSetting, onChange, field.key, value, canAccess]);
-
-    // Block Management
-    const updateBlocks = (blocks: Block[]) => {
-        if (!canAccess) return;
-        setFormFieldList(blocks);
-        settingHasChanged.current = true;
     };
 
     const updateBlock = (index: number, patch: BlockPatch) => {
-        if (!canAccess) return;
-        const updated = [...formFieldList];
-        updated[index] = { ...updated[index], ...patch } as Block;
-        updateBlocks(updated);
-
-        // Update opendInput if it's the same block
-        if (opendInput?.id === updated[index].id) {
-            setOpendInput(updated[index]);
-        }
-    };
-
-    const deleteBlock = (index: number) => {
-        if (!canAccess) return;
-
-        const updatedBlocks = [...formFieldList];
-        updatedBlocks.splice(index, 1);
-        updateBlocks(updatedBlocks);
-
-        if (opendInput?.id === formFieldList[index].id) {
-            setOpendInput(null);
-            setSelectedBlockLocation(null);
-        }
-    };
-
-    // Column Block Handlers
-    const updateColumnBlock = (
-        parentIndex: number,
-        columnIndex: number,
-        childIndex: number,
-        patch: BlockPatch
-    ) => {
-        if (!canAccess) return;
-        const updated = [...formFieldList];
-        const parentBlock = updated[parentIndex];
-
-        if (parentBlock.type === 'columns') {
-            const updatedColumns = [...parentBlock.columns];
-            const updatedColumn = [...updatedColumns[columnIndex]];
-            updatedColumn[childIndex] = {
-                ...updatedColumn[childIndex],
-                ...patch,
-            } as Block;
-            updatedColumns[columnIndex] = updatedColumn;
-            
-            const newParentBlock: ColumnsBlock = {
-                ...parentBlock,
-                columns: updatedColumns,
-            };
-            updated[parentIndex] = newParentBlock;
-            updateBlocks(updated);
-
-            if (opendInput?.id === updatedColumn[childIndex].id) {
-                setOpendInput(updatedColumn[childIndex]);
-            }
-        }
-    };
-
-    const deleteColumnChild = (
-        parentIndex: number,
-        columnIndex: number,
-        childIndex: number
-    ) => {
-        if (!canAccess) return;
-
-        const updated = [...formFieldList];
-        const parentBlock = updated[parentIndex];
-
-        if (parentBlock.type === 'columns') {
-            const updatedColumns = [...parentBlock.columns];
-            const deletedBlock = updatedColumns[columnIndex][childIndex];
-            
-            updatedColumns[columnIndex] = updatedColumns[columnIndex].filter((_, index) => index !== childIndex);
-            
-            const newParentBlock: ColumnsBlock = {
-                ...parentBlock,
-                columns: updatedColumns,
-            };
-            updated[parentIndex] = newParentBlock;
-            updateBlocks(updated);
-
-            if (opendInput?.id === deletedBlock.id) {
-                setOpendInput(null);
-                setSelectedBlockLocation(null);
-            }
-        }
-    };
-
-    const updateColumnLayout = (parentIndex: number, columnIndex: number, newList: Block[]) => {
-        if (!canAccess) return;
-
-        const updated = [...formFieldList];
-        const parentBlock = updated[parentIndex];
-
-        if (parentBlock.type === 'columns') {
-            const updatedColumns = [...parentBlock.columns];
-            updatedColumns[columnIndex] = newList.map(normalizeBlock);
-            
-            const newParentBlock: ColumnsBlock = {
-                ...parentBlock,
-                columns: updatedColumns,
-            };
-            updated[parentIndex] = newParentBlock;
-            updateBlocks(updated);
-        }
-    };
-
-    const handleColumnChildSelect = (
-        childBlock: Block,
-        parentIndex: number,
-        columnIndex: number,
-        childIndex: number
-    ) => {
-        if (!canAccess) return;
-        setOpendInput(childBlock);
-        setSelectedBlockLocation({
-            parentIndex,
-            columnIndex,
-            childIndex,
+        handleBlockOperation(() => {
+            setBlocks(prev => {
+                const updated = [...prev];
+                updated[index] = { ...updated[index], ...patch } as Block;
+                
+                if (openBlock?.id === updated[index].id) {
+                    setOpenBlock(updated[index]);
+                }
+                
+                return updated;
+            });
         });
     };
 
-    // Settings Panel Change Handler
+    const deleteBlock = (index: number) => {
+        handleBlockOperation(() => {
+            const deletedBlock = blocks[index];
+            setBlocks(prev => prev.filter((_, i) => i !== index));
+            
+            if (openBlock?.id === deletedBlock.id) {
+                setOpenBlock(null);
+                columnManager.clearSelection();
+            }
+        });
+    };
+
+    const addBlock = (blockType: string, label?: string) => {
+        handleBlockOperation(() => {
+            const newBlock = createNewBlock(blockType, label);
+            setBlocks(prev => [...prev, newBlock]);
+            setOpenBlock(newBlock);
+            columnManager.clearSelection();
+        });
+    };
+
+    const reorderBlocks = (newList: Block[]) => {
+        handleBlockOperation(() => {
+            setBlocks(newList.map(normalizeBlock));
+        });
+    };
+
+    // Settings handler
     const handleSettingsChange = (key: string, value: any) => {
-        if (!canAccess) return;
+        if (proSettingChange()) return;
 
-        if (selectedBlockLocation) {
-            const { parentIndex, columnIndex, childIndex } = selectedBlockLocation;
-            updateColumnBlock(parentIndex, columnIndex, childIndex, { [key]: value } as any);
+        if (columnManager.selectedBlockLocation) {
+            const { parentIndex, columnIndex, childIndex } = columnManager.selectedBlockLocation;
+            columnManager.handleColumnChildUpdate(parentIndex, columnIndex, childIndex, { [key]: value } as any);
         } else {
-            const index = formFieldList.findIndex(
-                (field) => field.id === opendInput?.id
-            );
-
+            const index = blocks.findIndex(field => field.id === openBlock?.id);
             if (index >= 0) {
-                if (key === 'layout' && formFieldList[index].type === 'columns') {
-                    const updated = [...formFieldList];
-                    const parentBlock = updated[index] as ColumnsBlock;
-
-                    const currentColumns = parentBlock.columns || [];
-                    const currentLayout = parentBlock.layout || '2-50';
-                    const newLayout = value as typeof parentBlock.layout;
-
-                    const currentColCount = getColumnCount(currentLayout);
-                    const newColCount = getColumnCount(newLayout);
-
-                    let newColumns: Block[][] = [];
-
-                    if (newColCount > currentColCount) {
-                        newColumns = [...currentColumns];
-                        for (let i = currentColCount; i < newColCount; i++) {
-                            newColumns.push([]);
-                        }
-                    } else if (newColCount < currentColCount) {
-                        newColumns = currentColumns.slice(0, newColCount);
-                        const extraBlocks = currentColumns.slice(newColCount).flat();
-                        if (extraBlocks.length > 0) {
-                            newColumns[newColCount - 1] = [
-                                ...newColumns[newColCount - 1],
-                                ...extraBlocks,
-                            ];
-                        }
-                    } else {
-                        newColumns = currentColumns;
-                    }
-
-                    const updatedBlock: ColumnsBlock = {
-                        ...parentBlock,
-                        layout: newLayout,
-                        columns: newColumns,
-                    };
-                    
-                    updated[index] = updatedBlock;
-                    updateBlocks(updated);
-                    setOpendInput(updatedBlock);
+                if (key === 'layout' && blocks[index].type === 'columns') {
+                    columnManager.handleLayoutChange(index, value);
                 } else {
                     updateBlock(index, { [key]: value } as any);
                 }
@@ -287,258 +195,126 @@ const CustomFormUI: React.FC<CustomFormProps> = ({
         }
     };
 
-    // Handle adding a new block
-    const handleAddBlock = (blockConfig: any) => {
-        if (!canAccess) return;
-        
-        const newField = createBlock(
-            blockConfig.value,
-            blockConfig.name,
-            blockConfig.category === 'store',
-            blockConfig.category === 'store'
-        );
-        updateBlocks([...formFieldList, newField]);
-        setOpendInput(null);
-        setSelectedBlockLocation(null);
+    // Button setting handler
+    const updateButtonSetting = (updates: Partial<ButtonSetting>) => {
+        handleBlockOperation(() => {
+            setButtonSetting(prev => ({ ...prev, ...updates }));
+        });
     };
 
-    // Tabs Configuration
-    const tabs = [
-        {
-            id: 'blocks',
-            label: 'Blocks',
-            content: (
-                <>
-                    <Elements 
-                        label="General" 
-                        selectOptions={REGISTRATION_BLOCKS}
-                        onClick={(value) => {
-                            const blockConfig = REGISTRATION_BLOCKS.find(b => b.value === value);
-                            if (blockConfig) {
-                                handleAddBlock(blockConfig);
-                            }
-                        }}
-                    >
-                        <ReactSortable
-                            list={REGISTRATION_BLOCKS}
-                            setList={() => {}}
-                            sort={false}
-                            group={{ name: 'registration', pull: 'clone', put: false }}
-                            clone={(item) => ({ ...item, id: Date.now().toString() })}
-                        >
-                            {REGISTRATION_BLOCKS.map((item) => (
-                                <div key={item.value} className="elements-items">
-                                    <i className={item.icon} />
-                                    <p className="list-title">{item.label}</p>
-                                </div>
-                            ))}
-                        </ReactSortable>
-                    </Elements>
-
-                    <Elements 
-                        label="Let's get your store ready!" 
-                        selectOptions={STORE_BLOCKS}
-                        onClick={(value) => {
-                            const storeBlock = STORE_BLOCKS.find(block => block.value === value);
-                            if (storeBlock) {
-                                handleAddBlock(storeBlock);
-                            }
-                        }}
-                    >
-                        <ReactSortable
-                            list={STORE_BLOCKS}
-                            setList={() => {}}
-                            sort={false}
-                            group={{ name: 'registration', pull: 'clone', put: false }}
-                            clone={(item) => ({ ...item, id: Date.now().toString() })}
-                        >
-                            {STORE_BLOCKS.map((item) => (
-                                <div
-                                    key={item.value}
-                                    className="elements-items"
-                                    onClick={() => handleAddBlock(item)}
-                                >
-                                    <i className={item.icon} />
-                                    <p className="list-title">{item.label}</p>
-                                </div>
-                            ))}
-                        </ReactSortable>
-                    </Elements>
-                </>
-            ),
-        },
-    ];
-
-    if (!canAccess) {
-        return (
-            <div className="registration-from-wrapper">
-                <div className="locked-form-builder">
-                    <i className="adminfont-lock"></i>
-                    <p>This feature requires premium access</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="registration-from-wrapper">
-            {/* LEFT PANEL - Block Selection */}
-            <div className="elements-wrapper">
-                <div className="tab-titles">
-                    <div
-                        className={`title ${activeTab === 'blocks' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('blocks')}
-                    >
-                        Blocks
-                    </div>
-                </div>
-                <div className="tab-contend">
-                    {tabs.map(
-                        (tab) =>
-                            activeTab === tab.id && (
-                                <div key={tab.id} className="tab-panel">
-                                    {tab.content}
-                                </div>
-                            )
-                    )}
-                </div>
-            </div>
+        <div className="registration-from-wrapper registration-builder">
+            {/* Left Panel */}
+            <LeftPanel
+                blocks={REGISTRATION_BLOCKS}
+                templates={[]}
+                activeTemplateId={null}
+                onTemplateSelect={() => {}}
+                showTemplatesTab={false}
+                onBlockSelect={addBlock}
+            />
 
-            {/* CENTER CANVAS - Form Builder */}
-            <div className="registration-form-main-section">
+            {/* Center Canvas */}
+            <div className="registration-form-main-section registration-canvas">
                 <ReactSortable
-                    list={formFieldList}
-                    setList={(newList) => {
-                        if (!canAccess) return;
-                        updateBlocks(newList);
-                    }}
-                    group={{
-                        name: 'registration',
-                        pull: true,
-                        put: true,
-                    }}
+                    list={blocks}
+                    setList={reorderBlocks}
+                    group={{ name: 'registration', pull: true, put: true }}
                     handle=".drag-handle"
                     animation={150}
                     fallbackOnBody
                     swapThreshold={0.65}
                     className="registration-canvas-sortable"
                 >
-                    {formFieldList.map((formField, index) => {
-                        // Skip title field (index 0)
-                        if (index === 0) {
-                            return <div key={formField.id} style={{ display: 'none' }}></div>;
-                        }
-
-                        return (
-                            <div className="field-wrapper" key={formField.id}>
-                                {formField.type === 'columns' ? (
-                                    <div
-                                        className={`form-field ${opendInput?.id === formField.id ? 'active' : ''}`}
-                                        onClick={(e) => {
-                                            if (!canAccess) return;
-                                            e.stopPropagation();
-                                            setOpendInput(formField);
-                                            setSelectedBlockLocation(null);
+                    {blocks.map((block, index) => (
+                        block && (
+                            <div className="field-wrapper" key={block.id}>
+                                {block.type === 'columns' ? (
+                                    <ColumnRenderer
+                                        block={block}
+                                        parentIndex={index}
+                                        blocks={blocks}
+                                        isActive={openBlock?.id === block.id}
+                                        groupName="registration"
+                                        openBlock={openBlock}
+                                        setOpenBlock={setOpenBlock}
+                                        onBlocksUpdate={setBlocks}
+                                        onSelect={() => {
+                                            setOpenBlock(block);
+                                            columnManager.clearSelection();
                                         }}
-                                    >
-                                        <section className="meta-menu">
-                                            <span className="drag-handle admin-badge blue">
-                                                <i className="adminfont-drag"></i>
-                                            </span>
-                                            <span
-                                                onClick={(e) => {
-                                                    if (!canAccess) return;
-                                                    e.stopPropagation();
-                                                    deleteBlock(index);
-                                                }}
-                                                className="admin-badge red"
-                                            >
-                                                <i className="admin-font adminfont-delete"></i>
-                                            </span>
-                                        </section>
-                                        <section className="form-field-container-wrapper">
-                                            <BlockRenderer
-                                                block={formField as ColumnsBlock}
-                                                parentIndex={index}
-                                                onSelect={() => {
-                                                    if (!canAccess) return;
-                                                    setOpendInput(formField);
-                                                    setSelectedBlockLocation(null);
-                                                }}
-                                                onChange={() => { }}
-                                                onDelete={() => deleteBlock(index)}
-                                                isActive={opendInput?.id === formField.id}
-                                                showMeta={false}
-                                                onUpdateColumn={updateColumnLayout}
-                                                onUpdateChild={updateColumnBlock}
-                                                onDeleteChild={deleteColumnChild}
-                                                onSelectChild={handleColumnChildSelect}
-                                                groupName="registration"
-                                            />
-                                        </section>
-                                    </div>
+                                        onDelete={() => deleteBlock(index)}
+                                        proSettingChange={proSettingChange}
+                                    />
                                 ) : (
                                     <BlockRenderer
-                                        key={formField.id}
-                                        block={formField}
+                                        block={block}
                                         onSelect={() => {
-                                            if (!canAccess) return;
-                                            setOpendInput(formField);
-                                            setSelectedBlockLocation(null);
+                                            setOpenBlock(block);
+                                            columnManager.clearSelection();
                                         }}
                                         onChange={(patch) => updateBlock(index, patch)}
                                         onDelete={() => deleteBlock(index)}
-                                        isActive={opendInput?.id === formField.id}
-                                        
+                                        isActive={openBlock?.id === block.id}
+                                        BasicInput={BasicInput}
+                                        MultipleOptions={MultipleOptions}
+                                        TextArea={TextArea}
+                                        FileInput={FileInput}
+                                        AddressField={AddressField}
                                     />
                                 )}
                             </div>
-                        );
-                    })}
+                        )
+                    ))}
                 </ReactSortable>
-
-                {/* Submit Button Customizer */}
-                <ButtonCustomizer
-                    text={buttonSetting.button_text || 'Submit'}
-                    setting={buttonSetting}
-                    onChange={(key, value, isRestoreDefaults = false) => {
-                        if (!canAccess) return;
-                        settingHasChanged.current = true;
-                        const previousSetting = buttonSetting || {};
-                        if (isRestoreDefaults) {
-                            setButtonSetting(value as ButtonSetting);
-                        } else {
-                            setButtonSetting({
-                                ...previousSetting,
-                                [key]: value,
-                            });
-                        }
-                    }}
-                />
             </div>
 
-            {/* RIGHT SETTINGS PANEL */}
-            <div className="registration-edit-form-wrapper">
-                {opendInput && (
+            {/* Right Settings Panel */}
+            {openBlock && (
+                <div className="registration-edit-form-wrapper">
                     <div className="registration-edit-form">
-                        <SettingMetaBox
-                            formField={opendInput}
-                            opened={{ click: true }}
+                        <SettingsPanel
+                            block={openBlock}
                             onChange={handleSettingsChange}
-                            inputTypeList={REGISTRATION_BLOCKS.map(block => ({
-                                value: block.value,
-                                label: block.label,
-                            }))}
+                            blocks={REGISTRATION_BLOCKS}
                         />
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 };
 
+
+
+// Extracted Settings Panel Component
+const SettingsPanel: React.FC<{
+    block: Block;
+    onChange: (key: string, value: any) => void;
+    blocks: Array<{ value: string; label: string }>;
+}> = ({ block, onChange, blocks }) => (
+    <div className="meta-setting-modal-content">
+        <div className="block-type-header">
+            <div className="block-type-title">
+                <h3>
+                    {block.type.charAt(0).toUpperCase() + block.type.slice(1)} Settings
+                </h3>
+            </div>
+        </div>
+        <SettingMetaBox
+            formField={block}
+            opened={{ click: true }}
+            onChange={onChange}
+            inputTypeList={blocks.map(b => ({ 
+                value: b.value, 
+                label: b.label 
+            }))}
+        />
+    </div>
+);
+
 const RegistrationForm: FieldComponent = {
-    render: CustomFormUI,
+    render: RegistrationFormUI,
     validate: (field, value) => {
         if (field.required && !value?.[field.name]) {
             return `${field.label} is required`;
@@ -548,3 +324,22 @@ const RegistrationForm: FieldComponent = {
 };
 
 export default RegistrationForm;
+
+// Type definitions (kept at bottom for clarity)
+interface RegistrationFormProps {
+    field: any;
+    value: any;
+    onChange: (value: any) => void;
+    canAccess: boolean;
+    appLocalizer: any;
+    setting?: Record<string, any>;
+    name?: string;
+    proSettingChange?: () => boolean;
+}
+
+interface ButtonSetting {
+    button_text?: string;
+    button_style?: string;
+    button_color?: string;
+    button_background?: string;
+}

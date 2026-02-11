@@ -1,5 +1,6 @@
 // External dependencies
 import React, { ChangeEvent } from 'react';
+import { FieldComponent } from './types';
 
 // Types
 interface RadioOption {
@@ -32,7 +33,10 @@ interface RadioInputProps {
     keyName?: string;
 }
 
-const RadioInput: React.FC< RadioInputProps > = ( props ) => {
+export const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
+    if(!props.options.length){
+        return null;
+    }
     return (
         <>
             <div className={ props.wrapperClass }>
@@ -71,6 +75,44 @@ const RadioInput: React.FC< RadioInputProps > = ( props ) => {
             ) }
         </>
     );
+};
+
+const RadioInput: FieldComponent = {
+    render:({ field, value, onChange, canAccess, appLocalizer }) => (
+        <RadioInputUI
+            wrapperClass={ field.wrapperClass }
+            inputWrapperClass={ field.inputWrapperClass }
+            activeClass={ field.activeClass }
+            inputClass={ field.className }
+            idPrefix={ field.key }
+            options={
+                Array.isArray( field.options )
+                    ? field.options.map( ( opt ) => ( {
+                          key: String( opt.value ),
+                          value: String( opt.value ) || '',
+                          label: opt.label || String( opt.value ),
+                          name: field.key,
+                      } ) )
+                    : []
+            }
+            value={ value }
+            onChange={ ( e ) => {
+                if ( ! canAccess ) return;
+                onChange( e.target.value );
+            } }
+            description={ field.description ? appLocalizer.__( field.description ) : '' }
+            descClass={ field.descClass }
+        />
+    ),
+
+    validate: (field, value) => {
+        if (field.required && !value?.[field.key]) {
+            return `${field.label} is required`;
+        }
+
+        return null;
+    },
+
 };
 
 export default RadioInput;

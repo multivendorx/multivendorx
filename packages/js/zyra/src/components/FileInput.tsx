@@ -1,5 +1,6 @@
 // External dependencies
 import React, { ChangeEvent, MouseEvent, useRef, useState, useEffect } from 'react';
+import { FieldComponent } from './types';
 
 interface FileInputProps {
     wrapperClass?: string;
@@ -29,7 +30,7 @@ interface FileInputProps {
     multiple?: boolean;
 }
 
-const FileInput: React.FC< FileInputProps > = ( props ) => {
+const FileInputUI: React.FC< FileInputProps > = ( props ) => {
     const [ activeIndex, setActiveIndex ] = useState< number >( 0 );
     const [ isReplacing, setIsReplacing ] = useState< boolean >( false );
     const inputRef = useRef< HTMLInputElement >( null );
@@ -233,6 +234,33 @@ const FileInput: React.FC< FileInputProps > = ( props ) => {
             ) }
         </>
     );
+};
+
+const FileInput: FieldComponent = {
+    render: ( { field, value, onChange, canAccess, appLocalizer } ) => (
+        <FileInputUI
+            wrapperClass={ field.wrapperClass }
+            inputClass={ field.className }
+            id={ field.key }
+            type="file"
+            name={ field.key }
+            placeholder={ field.placeholder }
+            onChange={ onChange }
+            onClick={ ( e ) => field.onClick?.( e ) }
+            onMouseOver={ ( e ) => field.onMouseOver?.( e ) }
+            onMouseOut={ ( e ) => field.onMouseOut?.( e ) }
+            onFocus={ ( e ) => field.onFocus?.( e ) }
+            onBlur={ ( e ) => field.onBlur?.( e ) }
+            multiple={ field.multiple }
+            description={ field.description }
+        />
+    ),
+    validate: ( field, value ) => {
+        if ( field.required && ! value ) {
+            return `${ field.label } is required`;
+        }
+        return null;
+    },
 };
 
 export default FileInput;

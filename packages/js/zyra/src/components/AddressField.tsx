@@ -5,6 +5,7 @@ import { ReactSortable } from 'react-sortablejs';
 // Internal Dependencies
 import MultipleOptions from './MultipleOption';
 import { BasicInputUI } from './BasicInput';
+import { FieldComponent } from './types';
 
 interface SubField {
     id: number;
@@ -34,7 +35,7 @@ interface AddressFieldProps {
     setOpendInput: React.Dispatch< React.SetStateAction< SubField | null > >;
 }
 
-const AddressField: React.FC< AddressFieldProps > = ( {
+const AddressFieldUI: React.FC< AddressFieldProps > = ( {
     formField,
     // onChange,
     opendInput,
@@ -82,6 +83,10 @@ const AddressField: React.FC< AddressFieldProps > = ( {
         ),
     };
 
+    if(!subFields.length){
+        return null;
+    }
+
     return (
         <div className="address-field-wrapper">
             <ReactSortable
@@ -120,4 +125,17 @@ const AddressField: React.FC< AddressFieldProps > = ( {
     );
 };
 
+const AddressField: FieldComponent = {
+    render: ( { field, value, onChange, canAccess, appLocalizer } ) => {
+        const [ openedInput, setOpenedInput ] = useState< SubField | null >( null );
+
+        return (
+            <AddressFieldUI
+                formField={ field as AddressFormField }
+                opendInput={ openedInput }
+                setOpendInput={ setOpenedInput }
+            />
+        );
+    },
+};
 export default AddressField;

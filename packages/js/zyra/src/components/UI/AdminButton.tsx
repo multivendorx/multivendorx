@@ -93,7 +93,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                         {btn.icon && (
                             <i className={`adminfont-${btn.icon}`} />
                         )}
-                        {btn.customStyle?.button_text ?? btn.text}
+                        {btn.text}
                     </>
                 )}
             </div>
@@ -162,7 +162,7 @@ const AdminButton: FieldComponent = {
                         },
                     }))
                 : {
-                        text: field.name,
+                        text: field.text || field.name || 'Button',
                         className: field.className,
                         onClick: handleClick,
                     };

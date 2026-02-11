@@ -59,7 +59,7 @@ export type BlockType =
     | 'columns'
     | 'radio'
     | 'dropdown'
-    | 'multiselect'
+    | 'multi-select'
     | 'checkboxes'
     | 'datepicker'
     | 'TimePicker'
@@ -85,21 +85,6 @@ export interface BaseBlock {
 }
 
 // Specific Block Interfaces
-
-export interface TextBlock extends BaseBlock {
-    type: 'text' | 'email' | 'number';
-    placeholder?: string;
-    charlimit?: number;
-}
-
-export interface TextAreaBlock extends BaseBlock {
-    type: 'textarea';
-    placeholder?: string;
-    charlimit?: number;
-    row?: number;
-    column?: number;
-}
-
 export interface RichTextBlock extends BaseBlock {
     type: 'richtext';
     html: string;
@@ -109,18 +94,6 @@ export interface HeadingBlock extends BaseBlock {
     type: 'heading';
     text: string;
     level: 1 | 2 | 3;
-}
-
-export interface ImageBlock extends BaseBlock {
-    type: 'image';
-    src: string;
-    alt?: string;
-}
-
-export interface ButtonBlock extends BaseBlock {
-    type: 'button';
-    text: string;
-    url?: string;
 }
 
 export interface DividerBlock extends BaseBlock {
@@ -133,10 +106,6 @@ export interface ColumnsBlock extends BaseBlock {
     columns: Block[][];
 }
 
-export interface SelectionBlock extends BaseBlock {
-    type: 'radio' | 'dropdown' | 'multiselect' | 'checkboxes';
-    options: Option[];
-}
 
 export interface DatePickerBlock extends BaseBlock {
     type: 'datepicker';
@@ -146,21 +115,6 @@ export interface DatePickerBlock extends BaseBlock {
 export interface TimePickerBlock extends BaseBlock {
     type: 'TimePicker';
     placeholder?: string;
-}
-
-export interface AttachmentBlock extends BaseBlock {
-    type: 'attachment';
-    filesize?: number;
-}
-
-export interface SectionBlock extends BaseBlock {
-    type: 'section';
-    placeholder?: string;
-}
-
-export interface RecaptchaBlock extends BaseBlock {
-    type: 'recaptcha';
-    sitekey?: string;
 }
 
 export interface AddressField {
@@ -185,20 +139,12 @@ export interface TitleBlock extends BaseBlock {
 
 // Union Type for All Blocks
 export type Block = 
-    | TextBlock
-    | TextAreaBlock
     | RichTextBlock
     | HeadingBlock
-    | ImageBlock
-    | ButtonBlock
     | DividerBlock
     | ColumnsBlock
-    | SelectionBlock
     | DatePickerBlock
     | TimePickerBlock
-    | AttachmentBlock
-    | SectionBlock
-    | RecaptchaBlock
     | AddressBlock
     | TitleBlock;
 
@@ -210,7 +156,6 @@ export interface BlockConfig {
     value: BlockType;
     label: string;
     name?: string;
-    category: 'basic' | 'advanced' | 'layout' | 'store';
 }
 
 // Helper Types
