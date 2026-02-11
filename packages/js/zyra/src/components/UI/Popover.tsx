@@ -5,12 +5,14 @@ import { useOutsideClick } from '../useOutsideClick';
 interface PopoverProps {
     toggleIcon?: string;
     toggleContent?: React.ReactNode;
-    className?:string;
+    width?: number; // width in rem
+    className?: string;
 }
 const Popover: React.FC<PopoverProps> = ({
     toggleIcon,
     toggleContent,
-    className='',
+    className = '',
+    width = 14
 }) => {
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -30,10 +32,13 @@ const Popover: React.FC<PopoverProps> = ({
             </div>
             {open && (
                 <div
-                    className={`popover popover-default`}
+                    className={`popover-dropdown`}
                     onClick={(e) => e.stopPropagation()}
+                    style={{ minWidth: `${width}rem` }}
                 >
-                    {toggleContent}
+                    <div className="popover-body">
+                        {toggleContent}
+                    </div>
                 </div>
             )}
         </div>

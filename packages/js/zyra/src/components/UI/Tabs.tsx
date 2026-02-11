@@ -8,7 +8,7 @@ interface TabFooter {
 interface Tab {
     label: string;
     content: React.ReactNode;
-    footer?:TabFooter;
+    footer?: TabFooter;
 }
 
 interface TabsProps {
@@ -19,21 +19,25 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({ tabs, defaultActiveIndex = 0 }) => {
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
     return (
-        <div className="tabs-wrapper">
-            <div className="tabs-header">
-                {tabs.map((tab, index) => (
-                    <div
-                        key={index}
-                        className={`tab-title ${index === activeIndex ? 'active' : ''}`}
-                        onClick={() => setActiveIndex(index)}
-                    >
-                        {tab.label}
-                    </div>
-                ))}
+        <>
+            <div className="tabs-wrapper">
+                <div className="tabs-item">
+                    {tabs.map((tab, index) => (
+                        <div
+                            key={index}
+                            className={`tab ${index === activeIndex ? 'active-tab' : ''}`}
+                            onClick={() => setActiveIndex(index)}
+                        >
+                           <span className="tab-name"> {tab.label}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
+            
             <div className="tabs-content">
                 {tabs[activeIndex] && tabs[activeIndex].content}
             </div>
+
             {/* Footer */}
             {tabs[activeIndex]?.footer && (
                 <div className="footer">
@@ -48,7 +52,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, defaultActiveIndex = 0 }) => {
                     </a>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 
