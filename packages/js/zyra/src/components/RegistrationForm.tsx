@@ -17,10 +17,6 @@ import {
 } from './block';
 
 import SettingMetaBox from './SettingMetaBox';
-import BasicInput from './BasicInput';
-import TextArea from './TextArea';
-import FileInput from './FileInput';
-import AddressField from './AddressField';
 import { FieldComponent } from './types';
 import '../styles/web/RegistrationForm.scss';
 
@@ -82,6 +78,47 @@ const REGISTRATION_BLOCKS = [
     { id: 'address', icon: 'adminfont-form-address icon-form-address', value: 'address', label: 'Address', category: 'advanced' },
 ];
 
+const BLOCK_GROUPS = [
+    {
+        id: 'registration',
+        label: 'Registration Fields',
+        icon: 'adminfont-user',
+        blocks: [
+            { id: 'text', icon: 'adminfont-t-letter-bold icon-form-textbox', value: 'text', label: 'Textbox' },
+            { id: 'email', icon: 'adminfont-unread icon-form-email', value: 'email', label: 'Email' },
+            { id: 'textarea', icon: 'adminfont-text icon-form-textarea', value: 'textarea', label: 'Textarea' },
+            { id: 'datepicker', icon: 'adminfont-calendar icon-form-store-description', value: 'datepicker', label: 'Date Picker' },
+            { id: 'timepicker', icon: 'adminfont-alarm icon-form-address', value: 'TimePicker', label: 'Time Picker' },
+            { id: 'checkboxes', icon: 'adminfont-checkbox icon-form-checkboxes', value: 'checkboxes', label: 'Checkboxes' },
+            { id: 'multi-select', icon: 'adminfont-multi-select icon-form-multi-select', value: 'multi-select', label: 'Multi Select' },
+            { id: 'radio', icon: 'adminfont-radio icon-form-radio', value: 'radio', label: 'Radio' },
+            { id: 'dropdown', icon: 'adminfont-dropdown-checklist icon-form-dropdown', value: 'dropdown', label: 'Dropdown' },
+            { id: 'address', icon: 'adminfont-form-address icon-form-address', value: 'address', label: 'Address' },
+            { id: 'attachment', icon: 'adminfont-submission-message icon-form-attachment', value: 'attachment', label: 'Attachment' },
+            { id: 'richtext', icon: 'adminfont-text icon-form-textarea', value: 'richtext', label: 'Rich Text Block' },
+            { id: 'heading', icon: 'adminfont-form-textarea', value: 'heading', label: 'Heading' },
+            { id: 'image', icon: 'adminfont-image', value: 'image', label: 'Image' },
+            { id: 'button', icon: 'adminfont-button', value: 'button', label: 'Button' },
+            { id: 'divider', icon: 'adminfont-divider', value: 'divider', label: 'Divider' },
+            { id: 'columns', icon: 'adminfont-blocks', value: 'columns', label: 'Columns' },
+            { id: 'section', icon: 'adminfont-form-section icon-form-section', value: 'section', label: 'Section' },
+            { id: 'recaptcha', icon: 'adminfont-captcha-automatic-code icon-form-recaptcha', value: 'recaptcha', label: 'reCaptcha v3' },
+        ]
+    },
+    {
+        id: 'store',
+        label: 'Store Fields',
+        icon: 'adminfont-store',
+        blocks: [
+            { id: 'store-name', icon: 'adminfont-t-letter-bold icon-form-textbox', value: 'text', label: 'Store Name' },
+            { id: 'store-description', icon: 'adminfont-text icon-form-textarea', value: 'textarea', label: 'Store Desc' },
+            { id: 'store-phone', icon: 'adminfont-form-phone icon-form-textbox', value: 'text', label: 'Store Phone' },
+            { id: 'store-paypal', icon: 'adminfont-unread icon-form-email', value: 'email', label: 'Store Paypal Email' },
+            { id: 'store-address', icon: 'adminfont-form-address icon-form-address', value: 'address', label: 'Store Address' },
+        ]
+    }
+];
+
 // Main Component
 export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
     field,
@@ -97,7 +134,7 @@ export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
     // State with change tracking
     const { blocks, setBlocks, buttonSetting, setButtonSetting } = useFormState(initialData);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
-    
+    const visibleGroups = field?.visibleGroups || ['registration',];
     // Track changes for auto-save
     const blocksRef = useRef(blocks);
     const saveTimeoutRef = useRef<NodeJS.Timeout>();
@@ -195,14 +232,11 @@ export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
     return (
         <div className="registration-from-wrapper registration-builder">
             {/* Left Panel */}
-            <LeftPanel
-                blocks={[
-                    ...REGISTRATION_BLOCKS,
-                    ...STORE_BLOCKS.map(block => ({
-                        ...block,
-                        group: 'store-blocks'
-                    }))
-                ]}
+             <LeftPanel
+                blockGroups={BLOCK_GROUPS}
+                visibleGroups={visibleGroups}
+                collapsible={true}
+                groupName="registration"
             />
 
             {/* Center Canvas */}
@@ -245,10 +279,6 @@ export const RegistrationFormUI: React.FC<RegistrationFormProps> = ({
                                     onChange={(patch) => updateBlock(index, patch)}
                                     onDelete={() => deleteBlock(index)}
                                     isActive={openBlock?.id === block.id}
-                                    BasicInput={BasicInput}
-                                    TextArea={TextArea}
-                                    FileInput={FileInput}
-                                    AddressField={AddressField}
                                 />
                             )}
                         </div>
