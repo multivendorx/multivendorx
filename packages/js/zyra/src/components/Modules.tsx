@@ -1,12 +1,12 @@
 // External dependencies
 import React, { useEffect, useState } from 'react';
-import Dialog from '@mui/material/Dialog';
 
 // Internal dependencies
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 import '../styles/web/Modules.scss';
+import Popover from './UI/Popover';
 
 // Types
 interface Module {
@@ -147,12 +147,12 @@ const Modules: React.FC<ModuleProps> = ({
         }
         // Apply status filter
         if (
-            selectedFilter === 'Active' && 
+            selectedFilter === 'Active' &&
             !modules.includes(module.id)
         ) {
             return false;
         }
-        if (selectedFilter === 'Inactive' && 
+        if (selectedFilter === 'Inactive' &&
             modules.includes(module.id)
         ) {
             return false;
@@ -276,7 +276,7 @@ const Modules: React.FC<ModuleProps> = ({
             />
 
             <div className="module-container general-wrapper">
-                <Dialog
+                {/* <Dialog
                     className="admin-module-popup"
                     open={modelOpen}
                     onClose={() => setModelOpen(false)}
@@ -287,7 +287,20 @@ const Modules: React.FC<ModuleProps> = ({
                         aria-label="Close dialog"
                     ></button>
                     {ProPopupComponent && <ProPopupComponent />}
-                </Dialog>
+                </Dialog> */}
+
+                <Popover
+                    className="admin-module-popup"
+                    position="center"
+                    isOpen={modelOpen}
+                    onClose={() => setModelOpen(false)}
+                    header={{
+                        showCloseButton: true,
+                        onClose: () => setModelOpen(false)
+                    }}
+                >
+                    {ProPopupComponent && <ProPopupComponent />}
+                </Popover>
 
                 {successMsg && (
                     <div className="admin-notice-wrapper">
@@ -307,8 +320,8 @@ const Modules: React.FC<ModuleProps> = ({
                                     key={category.id}
                                     id={category.id}
                                     className={`category-item ${selectedCategory === category.id
-                                            ? 'active'
-                                            : ''
+                                        ? 'active'
+                                        : ''
                                         }`}
                                     onClick={() =>
                                         setSelectedCategory(category.id)

@@ -120,17 +120,19 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                         <Popover
                             key={index}
                             toggleIcon={list.toggleIcon}
-                            width= {24}
-                            toggleContent={ <Tabs tabs={list?.tabs}/> }
-                        />
+                            width={24}
+                        >
+                            <Tabs tabs={list?.tabs} />
+                        </Popover>
                     ))}
                     {/* it will render header icon without tab and list of items */}
                     {utilityList.map((list, index) => (
                         <Popover
                             key={index}
                             toggleIcon={list.toggleIcon}
-                            toggleContent={<ItemList items={list.items} /> }
-                        />
+                        >
+                            <ItemList items={list.items} />
+                        </Popover>
                     ))}
 
                 </div>

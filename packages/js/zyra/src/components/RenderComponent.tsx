@@ -5,7 +5,6 @@ import React, {
     useState,
     ReactNode,
 } from 'react';
-import { Dialog } from '@mui/material';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import Popup, { PopupProps } from './Popup';
 import { useModules } from '../contexts/ModuleContext';
@@ -13,6 +12,8 @@ import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import SuccessNotice from './SuccessNotice';
+import Popover from './UI/Popover';
+import ProPopup from './Popup';
 
 
 interface InputField {
@@ -20,7 +21,7 @@ interface InputField {
     id?: string;
     class?: string;
     name?: string;
-    type?:string;
+    type?: string;
     label?: string;
     classes?: string;
     settingDescription?: string;
@@ -349,7 +350,7 @@ const RenderComponent: React.FC<RenderProps> = ({
         onChange: (key: string, value: any) => void,
         canAccess: boolean,
         appLocalizer: any
-        ): JSX.Element | null => {
+    ): JSX.Element | null => {
         const fieldComponent = FIELD_REGISTRY[field.type];
         if (!fieldComponent) return null;
 
@@ -367,8 +368,8 @@ const RenderComponent: React.FC<RenderProps> = ({
             }
 
             onChange(parentField.key, {
-            ...(value ?? {}),
-            [field.key]: val,
+                ...(value ?? {}),
+                [field.key]: val,
             });
         };
 
@@ -471,7 +472,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                         )}
                 </>
             );
-          
+
             // const input = renderField(inputField, value, handleChange, access);
 
             const isLocked =
@@ -496,14 +497,12 @@ const RenderComponent: React.FC<RenderProps> = ({
                 ) : (
                     <div
                         key={inputField.key}
-                        className={`form-group row ${
-                            inputField.classes ? inputField.classes : ''
-                        } ${inputField.proSetting ? 'pro-setting' : ''} ${
-                            inputField.moduleEnabled &&
-                            !modules.includes(inputField.moduleEnabled)
+                        className={`form-group row ${inputField.classes ? inputField.classes : ''
+                            } ${inputField.proSetting ? 'pro-setting' : ''} ${inputField.moduleEnabled &&
+                                !modules.includes(inputField.moduleEnabled)
                                 ? 'module-enabled'
                                 : ''
-                        }`}
+                            }`}
                         onClick={(e) => handleGroupClick(e, inputField)}
                     >
                         {inputField.label && (
@@ -525,12 +524,12 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 React.isValidElement<
                                     React.HTMLAttributes<HTMLElement>
                                 >(input)
-                                    ? React.cloneElement(input, {
-                                            onClick: (e) => {
-                                                e.stopPropagation();
-                                            },
-                                        })
-                                    : input}
+                                ? React.cloneElement(input, {
+                                    onClick: (e) => {
+                                        e.stopPropagation();
+                                    },
+                                })
+                                : input}
 
                             {errors && errors[inputField.key] && (
                                 <div className="field-error">
@@ -571,47 +570,44 @@ const RenderComponent: React.FC<RenderProps> = ({
                         )}
                     </div>
                 );
-                
+
             return fieldContent;
         });
     };
 
     return (
-            <>
-                <Dialog
-                    className="admin-module-popup"
+        <>
+            {modelOpen && (
+                <Popover
+                    position="center"
                     open={modelOpen}
                     onClose={handleModelClose}
-                    aria-labelledby="form-dialog-title"
+                    header={{
+                        showCloseButton: true,
+                        onClose: handleModelClose
+                    }}
                 >
-                    <span
-                        className="admin-font adminfont-cross"
-                        role="button"
-                        tabIndex={0}
-                        onClick={handleModelClose}
-                    ></span>
-                    {
-                        <Popup
-                            moduleName={String(modulePopupData.moduleName)}
-                            settings={modulePopupData.settings}
-                            plugin={modulePopupData.plugin}
-                            message={modulePopupFields?.message}
-                            moduleButton={modulePopupFields?.moduleButton}
-                            pluginDescription={modulePopupFields?.pluginDescription}
-                            pluginButton={modulePopupFields?.pluginButton}
-                            SettingDescription={modulePopupFields?.SettingDescription}
-                            pluginUrl={modulePopupFields?.pluginUrl}
-                            modulePageUrl={modulePopupFields?.modulePageUrl}
-                        />
-                    }
-                </Dialog>
-                {successMsg && (
-                    <SuccessNotice message={successMsg} />
-                )}
-                <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
-            </>
-        );
-    
+                    <Popup
+                        moduleName={String(modulePopupData.moduleName)}
+                        settings={modulePopupData.settings}
+                        plugin={modulePopupData.plugin}
+                        message={modulePopupFields?.message}
+                        moduleButton={modulePopupFields?.moduleButton}
+                        pluginDescription={modulePopupFields?.pluginDescription}
+                        pluginButton={modulePopupFields?.pluginButton}
+                        SettingDescription={modulePopupFields?.SettingDescription}
+                        pluginUrl={modulePopupFields?.pluginUrl}
+                        modulePageUrl={modulePopupFields?.modulePageUrl}
+                    />
+                </Popover>
+            )}
+            {successMsg && (
+                <SuccessNotice message={successMsg} />
+            )}
+            <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
+        </>
+    );
+
 }
 
 export default RenderComponent;
