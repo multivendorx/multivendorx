@@ -147,7 +147,8 @@ const Tabs: React.FC<TabsProps> = ({
         setActiveTab(tabId);
 
         const url = prepareUrl(tabId);
-        onNavigate?.(url) ?? window.history.pushState(null, '', url);
+        if (onNavigate) onNavigate(url);
+        else window.history.pushState(null, '', url);
     };
 
     const handleBreadcrumbClick = (index: number, e: React.MouseEvent) => {
