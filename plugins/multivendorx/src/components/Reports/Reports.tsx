@@ -145,9 +145,6 @@ const Reports = () => {
 				return <div></div>;
 		}
 	};
-	
-	const currentTab = location.get('subtab') || tabContent[0].content.id;
-
 	return (
 		<>
 			<AdminBreadcrumbs
@@ -167,8 +164,12 @@ const Reports = () => {
 					`?page=multivendorx#&tab=reports&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
+				supprot={[]}
 				Link={Link}
+				hideTitle={true}
+				hideBreadcrumb={true}
 				variant={'compact'}
+				premium={false}
 				menuIcon={true}
 			/>
 		</>
