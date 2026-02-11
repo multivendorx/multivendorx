@@ -6,7 +6,6 @@ import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 import '../styles/web/Modules.scss';
-import Popover from './UI/Popover';
 
 // Types
 interface Module {
@@ -289,7 +288,7 @@ const Modules: React.FC<ModuleProps> = ({
                     {ProPopupComponent && <ProPopupComponent />}
                 </Dialog> */}
 
-                <Popover
+                {/* <Popover
                     className="admin-module-popup"
                     position="center"
                     isOpen={modelOpen}
@@ -300,7 +299,7 @@ const Modules: React.FC<ModuleProps> = ({
                     }}
                 >
                     {ProPopupComponent && <ProPopupComponent />}
-                </Popover>
+                </Popover> */}
 
                 {successMsg && (
                     <div className="admin-notice-wrapper">

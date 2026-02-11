@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { applyFilters } from '@wordpress/hooks';
-import { AdminHeader, Banner, DoActionBtn, FormGroup, FormGroupWrapper, Popover, TourSetup } from 'zyra';
+import { AdminHeader, Banner, DoActionBtn, FormGroup, FormGroupWrapper, PopupUI, TourSetup } from 'zyra';
 
 import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/Modules';
@@ -302,16 +302,16 @@ const App = () => {
 				utilityListWithTab={utilityListWithTab}
 			/>
 
-			<Popover
+			<PopupUI
 				position="right"
 				open={openFeaturePopup}
 				onClose={handleCloseFeaturePopup}
 				width={31.25}
-				header={{
-					icon: 'import',
-					title: __('Import Dummy Data', 'multivendorx'),
-					showCloseButton: true
-				}}
+				title={__('Import Dummy Data', 'multivendorx')}
+				description={__(
+					'Get a hands-on feel of your marketplace in minutes.',
+					'multivendorx'
+				)}
 			>
 				<FormGroupWrapper>
 					<FormGroup label={__('Import Dummy Data', 'multivendorx')}>
@@ -381,7 +381,7 @@ const App = () => {
 						}}
 					/>
 				</FormGroupWrapper>
-			</Popover>
+			</PopupUI>
 
 			<TourSetup
 				appLocalizer={appLocalizer}

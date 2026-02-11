@@ -12,7 +12,7 @@ import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import SuccessNotice from './SuccessNotice';
-import Popover from './UI/Popover';
+import { PopupUI } from './UI/Popup';
 
 
 interface InputField {
@@ -577,28 +577,22 @@ const RenderComponent: React.FC<RenderProps> = ({
     return (
         <>
             {modelOpen && (
-                <Popover
+                <PopupUI
                     position="center"
+                    variant='pro'
                     open={modelOpen}
                     onClose={handleModelClose}
-                    header={{
-                        showCloseButton: true,
-                        onClose: handleModelClose
-                    }}
-                >
-                    <Popup
-                        moduleName={String(modulePopupData.moduleName)}
-                        settings={modulePopupData.settings}
-                        plugin={modulePopupData.plugin}
-                        message={modulePopupFields?.message}
-                        moduleButton={modulePopupFields?.moduleButton}
-                        pluginDescription={modulePopupFields?.pluginDescription}
-                        pluginButton={modulePopupFields?.pluginButton}
-                        SettingDescription={modulePopupFields?.SettingDescription}
-                        pluginUrl={modulePopupFields?.pluginUrl}
-                        modulePageUrl={modulePopupFields?.modulePageUrl}
-                    />
-                </Popover>
+                    moduleName={String(modulePopupData.moduleName)}
+                    settings={modulePopupData.settings}
+                    plugin={modulePopupData.plugin}
+                    message={modulePopupFields?.message}
+                    moduleButton={modulePopupFields?.moduleButton}
+                    pluginDescription={modulePopupFields?.pluginDescription}
+                    pluginButton={modulePopupFields?.pluginButton}
+                    SettingDescription={modulePopupFields?.SettingDescription}
+                    pluginUrl={modulePopupFields?.pluginUrl}
+                    modulePageUrl={modulePopupFields?.modulePageUrl}
+                />
             )}
             {successMsg && (
                 <SuccessNotice message={successMsg} />

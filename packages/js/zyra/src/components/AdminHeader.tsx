@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 
 // Internal Dependencies
-import Popover from './UI/Popover';
+import { PopupUI } from './UI/Popup';
 import HeaderSearch from './HeaderSearch';
 import ItemList from './UI/ItemList';
 import Tabs from './UI/Tabs';
@@ -117,22 +117,23 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                     />
                     {/* it will render header icon with tab */}
                     {utilityListWithTab.map((list, index) => (
-                        <Popover
+                        <PopupUI
                             key={index}
-                            toggleIcon={list.toggleIcon}
+                            toggleIcon={list?.toggleIcon}
                             width={24}
                         >
-                            <Tabs tabs={list?.tabs} />
-                        </Popover>
+                            {list?.tabs && <Tabs tabs={list.tabs} />}
+                        </PopupUI>
+
                     ))}
                     {/* it will render header icon without tab and list of items */}
                     {utilityList.map((list, index) => (
-                        <Popover
+                        <PopupUI
                             key={index}
                             toggleIcon={list.toggleIcon}
                         >
                             <ItemList items={list.items} />
-                        </Popover>
+                        </PopupUI>
                     ))}
 
                 </div>
