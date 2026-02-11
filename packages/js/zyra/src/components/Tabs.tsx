@@ -1,11 +1,11 @@
-// External Dependencies
-import React, { useState, useEffect, ReactNode, JSX } from 'react';
+import React, { useState, useEffect, useMemo, ReactNode, JSX } from 'react';
 import { LinkProps } from 'react-router-dom';
 
 // Internal Dependencies
 import '../styles/web/Tabs.scss';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 
+// ... (Types stay exactly the same as your original)
 type Content = {
     id: string;
     name: string;
@@ -43,55 +43,9 @@ type TabsProps = {
     variant?: 'default' | 'compact' | 'card';
 };
 
-// Helper functions
-const isFile = (item: TabContent): item is TabContent & { content: Content } => {
-    return item.type === 'file';
-};
-
-const isFolder = (item: TabContent): item is TabContent & { content: TabContent[] } => {
-    return item.type === 'folder';
-};
-
-// Find path to a tab (breadcrumb path)
-function findTabPath(items: TabContent[], targetId: string, path: TabContent[] = []): TabContent[] | null {
-    for (const item of items) {
-        if (isFile(item) && item.content.id === targetId) {
-            return [...path, item];
-        }
-        if (isFolder(item)) {
-            const found = findTabPath(item.content, targetId, [...path, item]);
-            if (found) return found;
-        }
-    }
-    return null;
-}
-
-// Find first file in items
-function findFirstFile(items: TabContent[]): Content | null {
-    for (const item of items) {
-        if (isFile(item)) return item.content;
-        if (isFolder(item)) {
-            const found = findFirstFile(item.content);
-            if (found) return found;
-        }
-    }
-    return null;
-}
-
-// Get folder contents if active tab is inside it
-function getFolderContents(items: TabContent[], activeTabId: string): TabContent[] {
-    // Find the folder that contains the active tab
-    for (const item of items) {
-        if (isFolder(item)) {
-            const path = findTabPath(item.content, activeTabId);
-            if (path) {
-                // This folder contains the active tab, return its contents
-                return item.content;
-            }
-        }
-    }
-    return items; // Return root items if no folder found
-}
+// Typesafe check helpers
+const isFile = (item: TabContent): item is TabContent & { content: Content } => item.type === 'file';
+const isFolder = (item: TabContent): item is TabContent & { content: TabContent[] } => item.type === 'folder';
 
 const Tabs: React.FC<TabsProps> = ({
     tabContent,
@@ -110,42 +64,48 @@ const Tabs: React.FC<TabsProps> = ({
 }) => {
     const [activeTab, setActiveTab] = useState(currentTab);
 
-    // Get breadcrumb path for current tab
-    const tabPath = findTabPath(tabContent, activeTab) || [];
+    // 1. DATA OPTIMIZATION: Build lookup maps once
+    const { flatMap, parentMap, pathMap, firstFileMap } = useMemo(() => {
+        const fMap: Record<string, Content> = {};           // id -> Content object
+        const pMap: Record<string, TabContent[]> = {};      // id -> current folder items
+        const pathM: Record<string, TabContent[]> = {};     // id -> full breadcrumb path
+        const ffMap: Record<string, string> = {};           // folderName -> first child ID
 
-    // Build breadcrumb items
-    const breadcrumbs: BreadcrumbItem[] = [
-        { name: settingName, id: 'root', type: 'root' }
-    ];
+        const traverse = (items: TabContent[], currentPath: TabContent[] = []) => {
+            let firstFileInThisLevel: string | null = null;
 
-    tabPath.forEach(item => {
-        if (isFolder(item)) {
-            breadcrumbs.push({
-                name: item.name || '',
-                id: item.name || '',
-                type: 'folder'
+            items.forEach(item => {
+                if (isFile(item)) {
+                    const id = item.content.id;
+                    fMap[id] = item.content;
+                    pMap[id] = items;
+                    pathM[id] = [...currentPath, item];
+                    if (!firstFileInThisLevel) firstFileInThisLevel = id;
+                } else if (isFolder(item)) {
+                    const folderFirstFile = traverse(item.content, [...currentPath, item]);
+                    if (folderFirstFile) {
+                        ffMap[item.name || ''] = folderFirstFile;
+                        if (!firstFileInThisLevel) firstFileInThisLevel = folderFirstFile;
+                    }
+                }
             });
-        } else if (isFile(item)) {
-            breadcrumbs.push({
-                name: item.content.name,
-                id: item.content.id,
-                type: 'file'
-            });
-        }
-    });
+            return firstFileInThisLevel;
+        };
 
-    // Get current menu items to display
-    const currentMenu = getFolderContents(tabContent, activeTab);
+        traverse(tabContent);
+        return { flatMap: fMap, parentMap: pMap, pathMap: pathM, firstFileMap: ffMap };
+    }, [tabContent]);
 
-    // Check if we should show submenu (when inside a folder)
-    const showSubmenu = tabPath.length > 1; // More than just the file itself
+    // 2. DERIVED DATA (Instant Lookups)
+    const activeTabPath = pathMap[activeTab] || [];
+    const activeFile = flatMap[activeTab];
+    const currentMenu = parentMap[activeTab] || tabContent;
+    const showSubmenu = activeTabPath.length > 1;
 
-    // Navigation
+    // 3. NAVIGATION LOGIC
     const navigate = (tabId?: string) => {
         if (!tabId || tabId === activeTab) return;
-
         setActiveTab(tabId);
-
         const url = prepareUrl(tabId);
         if (onNavigate) onNavigate(url);
         else window.history.pushState(null, '', url);
@@ -153,54 +113,44 @@ const Tabs: React.FC<TabsProps> = ({
 
     const handleBreadcrumbClick = (index: number, e: React.MouseEvent) => {
         e.preventDefault();
-
         if (index === 0) {
-            const firstFile = findFirstFile(tabContent);
-            if (firstFile) navigate(firstFile.id);
+            const first = firstFileMap['root'] || Object.keys(flatMap)[0];
+            navigate(first);
             return;
         }
-
-        const targetItem = tabPath[index - 1];
+        const targetItem = activeTabPath[index - 1];
         if (!targetItem) return;
 
-        if (isFile(targetItem)) {
-            navigate(targetItem.content.id);
-        }
-
-        if (isFolder(targetItem)) {
-            const firstFile = findFirstFile(targetItem.content);
-            if (firstFile) navigate(firstFile.id);
-        }
+        if (isFile(targetItem)) navigate(targetItem.content.id);
+        else if (isFolder(targetItem)) navigate(firstFileMap[targetItem.name || '']);
     };
 
-    // Render breadcrumb links
-    const renderBreadcrumbLinks = () =>
-        breadcrumbs.map((crumb, index) => (
-            <span key={index}>
+    // 4. RENDERING HELPERS
+    const renderBreadcrumbLinks = () => {
+        const crumbs: BreadcrumbItem[] = [{ name: settingName, id: 'root', type: 'root' }];
+        activeTabPath.forEach(item => {
+            crumbs.push({
+                name: isFile(item) ? item.content.name : (item.name || ''),
+                id: isFile(item) ? item.content.id : (item.name || ''),
+                type: item.type
+            });
+        });
+
+        return crumbs.map((crumb, index) => (
+            <span key={`${crumb.id}-${index}`}>
                 {index > 0 && ' / '}
-                <Link
-                    to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'}
-                    onClick={(e) => handleBreadcrumbClick(index, e)}
-                >
+                <Link to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'} onClick={(e) => handleBreadcrumbClick(index, e)}>
                     {crumb.name}
                 </Link>
             </span>
         ));
+    };
 
-    // Render single menu item
     const renderSingleMenuItem = (item: TabContent, index: number) => {
-        if (item.type === 'heading') {
-            return (
-                <div key={`heading-${item.name}-${index}`} className="tab-heading">
-                    {item.name}
-                </div>
-            );
-        }
+        if (item.type === 'heading') return <div key={index} className="tab-heading">{item.name}</div>;
 
         if (isFile(item)) {
             const tab = item.content;
-            if (!tab.id || !tab.name) return null;
-
             return (
                 <Link
                     key={tab.id}
@@ -214,9 +164,7 @@ const Tabs: React.FC<TabsProps> = ({
                     }}
                 >
                     <p className="tab-name">
-                        {menuIcon && tab.icon && (
-                            <i className={`adminfont-${tab.icon}`}></i>
-                        )}
+                        {menuIcon && tab.icon && <i className={`adminfont-${tab.icon}`}></i>}
                         <span>{tab.count}</span>
                         {tab.name}
                     </p>
@@ -226,22 +174,17 @@ const Tabs: React.FC<TabsProps> = ({
         }
 
         if (isFolder(item)) {
-            const folderItems = item.content;
-            if (folderItems.length === 0) return null;
-
-            const firstFile = findFirstFile(folderItems);
-
-            const isActive = findTabPath(folderItems, activeTab) !== null;
-
+            const firstId = firstFileMap[item.name || ''];
+            const isActive = activeTabPath.some(pathItem => pathItem === item);
             return (
                 <Link
-                    key={`folder-${item.name || ''}-${index}`}
-                    to={firstFile ? prepareUrl(firstFile.id) : '#'}
+                    key={index}
+                    to={firstId ? prepareUrl(firstId) : '#'}
                     className={`tab ${isActive ? 'active-tab' : ''}`}
                     onClick={(e) => {
-                        if (firstFile && e.button === 0 && !e.metaKey && !e.ctrlKey) {
+                        if (firstId && e.button === 0 && !e.metaKey && !e.ctrlKey) {
                             e.preventDefault();
-                            navigate(firstFile.id);
+                            navigate(firstId);
                         }
                     }}
                 >
@@ -249,78 +192,45 @@ const Tabs: React.FC<TabsProps> = ({
                 </Link>
             );
         }
-
         return null;
     };
 
-    // Render all menu items
-    const renderAllMenuItems = (items: TabContent[]) =>
-        items.map(renderSingleMenuItem);
+    const renderAllMenuItems = (items: TabContent[]) => items.map(renderSingleMenuItem);
 
-    // Get active tab description
-    const getActiveTabInfo = (key = ''): string | ReactNode => {
-        const path = findTabPath(tabContent, activeTab);
-        if (!path) return null;
-
-        const fileItem = path.find(isFile);
-        if (!fileItem || !isFile(fileItem)) return null;
-
-        const tab = fileItem.content;
-        if (tab.id === 'support' || tab.hideTabHeader) return null;
-
-        if (key === 'icon') return tab.icon ?? '';
-        if (key === 'name') return tab.name ?? '';
-
-        const description = tab.tabDes?.trim() || tab.desc || '';
+    const renderTabHeaderInfo = () => {
+        if (!activeFile || activeFile.id === 'support' || activeFile.hideTabHeader) return null;
+        const description = activeFile.tabDes?.trim() || activeFile.desc || '';
         return (
             <div className="divider-wrapper">
                 <div className="divider-section">
-                    {tab.name && (
-                        <div className="title">
-                            {tab.tabTitle ?? tab.name}
-                        </div>
-                    )}
-                    {description && (
-                        <div
-                            className="desc"
-                            dangerouslySetInnerHTML={{ __html: description }}
-                        ></div>
-                    )}
+                    <div className="title">{activeFile.tabTitle ?? activeFile.name}</div>
+                    {description && <div className="desc" dangerouslySetInnerHTML={{ __html: description }}></div>}
                 </div>
             </div>
         );
     };
 
-    // Initialize active tab
     useEffect(() => {
-        if (currentTab) {
-            setActiveTab(currentTab);
-        } else {
-            const firstFile = findFirstFile(tabContent);
-            if (firstFile) {
-                navigate(firstFile.id);
-            }
-        }
-    }, [currentTab, tabContent]);
+        if (currentTab) setActiveTab(currentTab);
+    }, [currentTab]);
 
-    const tabIcon = getActiveTabInfo('icon');
-    const parentTab = getActiveTabInfo('name');
     return (
         <>
             {tabTitleSection && <>{tabTitleSection}</>}
 
             <AdminBreadcrumbs
-                activeTabIcon={tabIcon}
-                tabTitle={parentTab}
+                activeTabIcon={activeFile?.icon || ''}
+                tabTitle={activeFile?.name || ''}
                 variant={variant}
                 renderBreadcrumb={renderBreadcrumbLinks}
-                renderMenuItems={renderAllMenuItems}
+                renderMenuItems={() => renderAllMenuItems(tabContent)}
                 tabContent={tabContent}
                 goPremiumLink={!appLocalizer.khali_dabba ? appLocalizer.shop_url : ''}
             />
 
             <div className="general-wrapper admin-settings" data-template={variant}>
                 {HeaderSection && <HeaderSection />}
+                
                 {showSubmenu && (
                     <div id="tabs-wrapper" className="tabs-wrapper">
                         <div className="tabs-item">
@@ -330,7 +240,7 @@ const Tabs: React.FC<TabsProps> = ({
                 )}
 
                 <div className="tab-content">
-                    {getActiveTabInfo()}
+                    {renderTabHeaderInfo()}
                     {getForm(activeTab)}
                 </div>
             </div>
