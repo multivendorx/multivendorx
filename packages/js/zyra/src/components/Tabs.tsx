@@ -5,7 +5,6 @@ import { LinkProps } from 'react-router-dom';
 import '../styles/web/Tabs.scss';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 
-// ... (Types stay exactly the same as your original)
 type Content = {
     id: string;
     name: string;
@@ -64,12 +63,11 @@ const Tabs: React.FC<TabsProps> = ({
 }) => {
     const [activeTab, setActiveTab] = useState(currentTab);
 
-    // 1. DATA OPTIMIZATION: Build lookup maps once
     const { flatMap, parentMap, pathMap, firstFileMap } = useMemo(() => {
-        const fMap: Record<string, Content> = {};           // id -> Content object
-        const pMap: Record<string, TabContent[]> = {};      // id -> current folder items
-        const pathM: Record<string, TabContent[]> = {};     // id -> full breadcrumb path
-        const ffMap: Record<string, string> = {};           // folderName -> first child ID
+        const fMap: Record<string, Content> = {};           
+        const pMap: Record<string, TabContent[]> = {};     
+        const pathM: Record<string, TabContent[]> = {};    
+        const ffMap: Record<string, string> = {};         
 
         const traverse = (items: TabContent[], currentPath: TabContent[] = []) => {
             let firstFileInThisLevel: string | null = null;
@@ -96,13 +94,11 @@ const Tabs: React.FC<TabsProps> = ({
         return { flatMap: fMap, parentMap: pMap, pathMap: pathM, firstFileMap: ffMap };
     }, [tabContent]);
 
-    // 2. DERIVED DATA (Instant Lookups)
     const activeTabPath = pathMap[activeTab] || [];
     const activeFile = flatMap[activeTab];
     const currentMenu = parentMap[activeTab] || tabContent;
     const showSubmenu = activeTabPath.length > 1;
 
-    // 3. NAVIGATION LOGIC
     const navigate = (tabId?: string) => {
         if (!tabId || tabId === activeTab) return;
         setActiveTab(tabId);
@@ -125,7 +121,6 @@ const Tabs: React.FC<TabsProps> = ({
         else if (isFolder(targetItem)) navigate(firstFileMap[targetItem.name || '']);
     };
 
-    // 4. RENDERING HELPERS
     const renderBreadcrumbLinks = () => {
         const crumbs: BreadcrumbItem[] = [{ name: settingName, id: 'root', type: 'root' }];
         activeTabPath.forEach(item => {
