@@ -206,8 +206,18 @@ const Tabs: React.FC<TabsProps> = ({
     };
 
     useEffect(() => {
-        if (currentTab) setActiveTab(currentTab);
-    }, [currentTab]);
+        if (currentTab) {
+            setActiveTab(currentTab);
+        } else {
+            const tabIds = Object.keys(flatMap);
+            if (tabIds.length > 0) {
+                const firstId = tabIds[0];
+                setActiveTab(firstId);
+                const url = prepareUrl(firstId);
+                window.history.replaceState(null, '', url);
+            }
+        }
+    }, [currentTab, flatMap, prepareUrl]);
 
     return (
         <>
