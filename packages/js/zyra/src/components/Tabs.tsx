@@ -271,7 +271,7 @@ const Tabs: React.FC<TabsProps> = ({
         items.map(renderSingleMenuItem);
 
     // Get active tab description
-    const getActiveTabInfo = (): ReactNode => {
+    const getActiveTabInfo = (key = ''): string | ReactNode => {
         const path = findTabPath(tabContent, activeTab);
         if (!path) return null;
 
@@ -280,6 +280,9 @@ const Tabs: React.FC<TabsProps> = ({
 
         const tab = fileItem.content;
         if (tab.id === 'support' || tab.hideTabHeader) return null;
+
+        if (key === 'icon') return tab.icon ?? '';
+        if (key === 'name') return tab.name ?? '';
 
         const description = tab.tabDes?.trim() || tab.desc || '';
         return (
@@ -301,24 +304,6 @@ const Tabs: React.FC<TabsProps> = ({
         );
     };
 
-    // Get current tab icon
-    const getCurrentTabIcon = (): string => {
-        const path = findTabPath(tabContent, activeTab);
-        if (!path) return '';
-
-        const fileItem = path.find(isFile);
-        return fileItem && isFile(fileItem) ? fileItem.content.icon || '' : '';
-    };
-
-    // Get parent tab name
-    const getParentTabName = (): string => {
-        const path = findTabPath(tabContent, activeTab);
-        if (!path) return '';
-
-        const fileItem = path.find(isFile);
-        return fileItem && isFile(fileItem) ? fileItem.content.name : '';
-    };
-
     // Initialize active tab
     useEffect(() => {
         if (currentTab) {
@@ -331,8 +316,8 @@ const Tabs: React.FC<TabsProps> = ({
         }
     }, [currentTab, tabContent]);
 
-    const tabIcon = getCurrentTabIcon();
-    const parentTab = getParentTabName();
+    const tabIcon = getActiveTabInfo('icon');
+    const parentTab = getActiveTabInfo('name');
     return (
         <>
             {tabTitleSection && <>{tabTitleSection}</>}
@@ -344,7 +329,7 @@ const Tabs: React.FC<TabsProps> = ({
                 renderBreadcrumb={renderBreadcrumbLinks}
                 renderMenuItems={renderAllMenuItems}
                 tabContent={tabContent}
-                goPremiumLink={ !appLocalizer.khali_dabba ? appLocalizer.shop_url: '' }
+                goPremiumLink={!appLocalizer.khali_dabba ? appLocalizer.shop_url : ''}
             />
 
             <div className="general-wrapper admin-settings" data-template={variant}>
