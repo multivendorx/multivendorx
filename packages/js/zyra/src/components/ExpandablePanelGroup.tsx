@@ -59,7 +59,6 @@ interface PanelFormField {
     iconEnable?: boolean;
     iconOptions?: string[];
     beforeElement?: string | ReactNode;
-    
 }
 
 interface ExpandablePanelMethod {

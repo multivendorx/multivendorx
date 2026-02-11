@@ -35,22 +35,15 @@ interface NestedField {
     placeholder?: string;
     options?: NestedFieldOption[];
     dependent?: { key: string; set: boolean; value: string };
-    firstRowOnly?: boolean;
     skipFirstRow?: boolean;
-    skipLabel?: boolean;
-    postInsideText?: string;
-    preInsideText?: string;
     preText?: string;
     postText?: string;
-    preTextFirstRow?: string;
-    postTextFirstRow?: string;
     desc?: string;
     size?: string;
     min?: number;
     defaultValue?: string;
     className?: string;
     proSetting?: boolean;
-
     // for checkbox fields
     selectDeselect?: boolean;
     tour?: string;
@@ -58,7 +51,6 @@ interface NestedField {
     moduleEnabled?: string;
     dependentSetting?: string;
     dependentPlugin?: string;
-
     hideCheckbox?: boolean;
     link?: string;
 }
@@ -67,12 +59,11 @@ interface NestedComponentProps {
     id: string;
     label?: string;
     fields: NestedField[];
-    value: RowType[];
+    value?: RowType[];
     addButtonLabel?: string;
     deleteButtonLabel?: string;
     onChange: ( value: RowType[] ) => void;
     single?: boolean;
-    description?: string;
     wrapperClass?: string;
     canAccess?: boolean;
     appLocalizer?: any;
@@ -86,12 +77,25 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
     addButtonLabel = 'Add',
     deleteButtonLabel = 'Delete',
     single = false,
-    description,
     wrapperClass,
     canAccess,
     appLocalizer
 } ) => {
-    
+
+    // const rows: RowType[] = React.useMemo(() => {
+    //     if (!Array.isArray(value)) return [{}];
+
+    //     const cleaned = value
+    //         .filter(v => v && typeof v === 'object')
+    //         .map(v => v ?? {});
+
+    //     if (single) {
+    //         return cleaned.length ? [cleaned[0]] : [{}];
+    //     }
+
+    //     return cleaned.length ? cleaned : [{}];
+    // }, [value, single]);
+
     const [ rows, setRows ] = useState< RowType[] >( [] );
 
     // sync value → state
@@ -117,57 +121,42 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
         key: string,
         value: string | number | boolean | string[]
     ) {
-        updateAndSave(
-            rows.map( ( row, i ) =>
-                i === rowIndex ? { ...row, [ key ]: value } : row
-            )
+        const updated = rows.map((row, i) =>
+            i === rowIndex ? { ...(row ?? {}), [key]: value } : row
         );
+        onChange(updated);
     }
 
+
     function isLastRowComplete() {
-        if ( rows.length === 0 ) {
-            return true;
-        }
-        const lastRowIndex = rows.length - 1;
-        const lastRow = rows[ lastRowIndex ] || {};
+        if (!rows.length) return true;
 
-        if ( lastRowIndex === 0 ) {
-            return true;
-        }
+        const lastRow = rows[rows.length - 1] ?? {};
 
-        return fields.every( ( f ) => {
-            if ( 
-                f.skipFirstRow && 
-                lastRowIndex === 0 
-            ) {
+        return fields.every((f) => {
+            if (f.skipFirstRow && rows.length === 1) {
                 return true;
             }
-            if ( 
-                f.firstRowOnly && 
-                lastRowIndex > 0 
-            ) {
-                return true;
-            }
-
-            const val = lastRow[ f.key ];
 
             // dependency check
-            if ( f.dependent ) {
-                const depVal = lastRow[ f.dependent.key ];
-                const depActive = Array.isArray( depVal )
-                    ? depVal.includes( f.dependent.value )
+            if (f.dependent) {
+                const depVal = lastRow[f.dependent.key];
+                const depActive = Array.isArray(depVal)
+                    ? depVal.includes(f.dependent.value)
                     : depVal === f.dependent.value;
 
                 if (
-                    ( f.dependent.set && ! depActive ) ||
-                    ( ! f.dependent.set && depActive )
+                    (f.dependent.set && !depActive) ||
+                    (!f.dependent.set && depActive)
                 ) {
                     return true;
                 }
             }
 
+            const val = lastRow[f.key];
+
             return val !== undefined && val !== '';
-        } );
+        });
     }
 
     function addRow() {
@@ -185,42 +174,13 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
             updateAndSave( rows.filter( ( _, i ) => i !== index ) );
         }
     }
-    
+
     function renderField( field: NestedField, row: RowType, rowIndex: number ) {
-        if (
-            rowIndex === 0 && 
-            field.skipFirstRow
-        ) {
-            return null;
-        }
-        if ( 
-            rowIndex > 0 && 
-            field.firstRowOnly 
-        ) {
-            return null;
-        }
-
-        // dependency check
-        // if ( field.dependent ) {
-        //     const depVal = row[ field.dependent.key ];
-        //     const depActive = Array.isArray( depVal )
-        //         ? depVal.includes( field.dependent.value )
-        //         : depVal === field.dependent.value;
-
-        //     if (
-        //         ( field.dependent.set && ! depActive ) ||
-        //         ( ! field.dependent.set && depActive )
-        //     ) {
-        //         return null;
-        //     }
-        // }
-
         const fieldComponent = FIELD_REGISTRY[field.type];
         if (!fieldComponent) return null;
-
         const Render = fieldComponent.render;
-        const fieldValue = row[ field.key ];
-            
+        const fieldValue =row?.[field.key];
+
         const handleInternalChange = (val: any) => {
             handleChange( rowIndex, field.key, val )
             return;            
@@ -228,8 +188,6 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
 
         return (
             <>
-                { ! ( rowIndex === 0 && field.skipLabel ) &&
-                    field.label && <label>{ field.label }</label> }
                 <Render
                     field={field}
                     value={fieldValue}
@@ -250,9 +208,39 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
                         single ? '' : 'multiple'
                     } ${ wrapperClass }` }
                 >
-                    { fields.map( ( field ) =>
-                        renderField( field, row, rowIndex )
-                    ) }
+                    {fields.map((field, fieldIndex) => {
+                        if (rowIndex === 0 && field.skipFirstRow) {
+                            return null;
+                        }
+
+                        // dependency check
+                        if ( field.dependent && field.key ) {
+                            const depVal = row[ field.dependent.key ];
+                            const depActive = Array.isArray( depVal )
+                                ? depVal.includes( field.dependent.value )
+                                : depVal === field.dependent.value;
+
+                            if (
+                                ( field.dependent.set && ! depActive ) ||
+                                ( ! field.dependent.set && depActive )
+                            ) {
+                                return null;
+                            }
+                        }
+
+                        return (
+                             <>
+                                {field.beforeElement &&
+                                    renderField(field.beforeElement, row, rowIndex)}
+
+                                {renderField(field, row, rowIndex)}
+
+                                {field.afterElement &&
+                                    renderField(field.afterElement, row, rowIndex)}
+                            </>
+                        );
+                    })}
+
                     { ! single && (
                         <div className="buttons-wrapper">
                             { /* Add button only on last row */ }
@@ -283,12 +271,6 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
                     ) }
                 </div>
             ) ) }
-            { description && (
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={ { __html: description } }
-                />
-            ) }
         </div>
     );
 };
@@ -299,7 +281,6 @@ const NestedComponent: FieldComponent = {
             key={field.key}
             id={field.key}
             label={field.label}
-            description={field.desc}
             fields={field.nestedFields ?? []} //The list of inner fields that belong to this section.
             value={value}
             wrapperClass={field.rowClass}
