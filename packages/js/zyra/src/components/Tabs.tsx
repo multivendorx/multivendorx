@@ -64,10 +64,10 @@ const Tabs: React.FC<TabsProps> = ({
     const [activeTab, setActiveTab] = useState(currentTab);
 
     const { flatMap, parentMap, pathMap, firstFileMap } = useMemo(() => {
-        const fMap: Record<string, Content> = {};           
-        const pMap: Record<string, TabContent[]> = {};     
-        const pathM: Record<string, TabContent[]> = {};    
-        const ffMap: Record<string, string> = {};         
+        const fMap: Record<string, Content> = {};
+        const pMap: Record<string, TabContent[]> = {};
+        const pathM: Record<string, TabContent[]> = {};
+        const ffMap: Record<string, string> = {};
 
         const traverse = (items: TabContent[], currentPath: TabContent[] = []) => {
             let firstFileInThisLevel: string | null = null;
@@ -225,7 +225,7 @@ const Tabs: React.FC<TabsProps> = ({
 
             <div className="general-wrapper admin-settings" data-template={variant}>
                 {HeaderSection && <HeaderSection />}
-                
+
                 {showSubmenu && (
                     <div id="tabs-wrapper" className="tabs-wrapper">
                         <div className="tabs-item">
