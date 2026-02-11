@@ -1357,31 +1357,6 @@ $index: 1;
   }
 }
 
-// tabs checklist style start
-.checklist {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-
-  li {
-    font-size: 0.95rem;
-    width: 50%;
-    color: #000000db;
-
-    i {
-      font-size: 1.125rem;
-      padding-right: 0.5rem;
-
-      &.check {
-        color: green;
-      }
-
-      &.close {
-        color: $accent-color;
-      }
-    }
-  }
-}
 
 // highlight section start
 @keyframes animate {

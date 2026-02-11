@@ -14,10 +14,9 @@ interface TextAreaProps {
     colNumber?: number;
     proSetting?: boolean;
     readOnly?: boolean;
-    description?: string;
     tinymceApiKey?: string;
     usePlainText?: boolean;
-    onChange?: ( e: ChangeEvent< HTMLTextAreaElement > ) => void;
+    onChange?: (value: string) => void;
     onClick?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
     onMouseOver?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
     onMouseOut?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
@@ -33,7 +32,6 @@ export const TextAreaUI: React.FC< TextAreaProps > = ( {
     rowNumber = 4,
     colNumber = 50,
     readOnly,
-    description,
     placeholder,
     tinymceApiKey,
     usePlainText = false,
@@ -44,14 +42,12 @@ export const TextAreaUI: React.FC< TextAreaProps > = ( {
     onFocus,
     onBlur,
 } ) => {
-    const handleEditorChange = ( content: string ) => {
-        if ( onChange ) {
-            // create fake event to mimic textarea behavior
-            const fakeEvent = {
-                target: { name, value: content },
-            } as ChangeEvent< HTMLTextAreaElement >;
-            onChange( fakeEvent );
-        }
+    const handleEditorChange = (content: string) => {
+        onChange?.(content);
+    };
+
+    const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        onChange?.(e.target.value);
     };
 
     return (
@@ -84,7 +80,7 @@ export const TextAreaUI: React.FC< TextAreaProps > = ( {
                     value={ value }
                     rows={ rowNumber }
                     cols={ colNumber }
-                    onChange={ onChange }
+                    onChange={ handleTextareaChange }
                     onClick={ onClick }
                     onMouseOver={ onMouseOver }
                     onMouseOut={ onMouseOut }
@@ -93,25 +89,38 @@ export const TextAreaUI: React.FC< TextAreaProps > = ( {
                     readOnly={ readOnly }
                 />
             ) }
-            { description && (
-                <p
-                    className= "settings-metabox-description"
-                    dangerouslySetInnerHTML={ { __html: description } }
-                ></p>
-            ) }
         </>
     );
 };
 
-// Component wrapper to be used in registry
 const TextArea: FieldComponent = {
-    render: TextAreaUI,
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+        <TextAreaUI
+            inputClass={field.class}
+            key={field.key}
+            id={field.id}
+            name={field.name}
+            placeholder={field.placeholder}
+            rowNumber={field.rowNumber} // for row number value
+            colNumber={field.colNumber} // for column number value
+            value={value || ''}
+            usePlainText={field.usePlainText} // Toggle between textarea and TinyMCE
+            tinymceApiKey={
+                appLocalizer.tinymceApiKey
+                    ? appLocalizer.tinymceApiKey
+                    : ''
+            }
+            onChange={(val) => {
+                if (!canAccess) return;
+                onChange(val)
+            }}
+        />
+    ),
+
     validate: (field, value) => {
-        if (field.required && !value?.[field.name]) {
-            return `${field.label} is required`;
-        }
         return null;
     },
 
 };
+
 export default TextArea;

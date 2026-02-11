@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import {
-	BasicInput,
+import { 
 	BasicInputUI,
 	Column,
 	Container,
@@ -10,7 +9,7 @@ import {
 	FormGroupWrapper,
 	getApiLink,
 	SuccessNotice,
-	ToggleSetting,
+	ToggleSettingUI,
 } from 'zyra';
 import ShippingRatesByCountry from './ShippingRatesByCountry';
 import DistanceByZoneShipping from './DistanceByZoneShipping';
@@ -101,14 +100,9 @@ const ShippingDelivery = () => {
 							<FormGroup
 								label={__('Method Type', 'multivendorx')}
 								htmlFor="shipping_options"
+								desc={__('Choose your preferred shipping method.','multivendorx')}
 							>
-								<ToggleSetting
-
-									descClass="settings-metabox-description"
-									description={__(
-										'Choose your preferred shipping method.',
-										'multivendorx'
-									)}
+								<ToggleSettingUI
 									options={appLocalizer.shipping_methods}
 									value={formData.shipping_options || ''}
 									onChange={(value: any) =>
@@ -322,14 +316,9 @@ const ShippingDelivery = () => {
 										<FormGroup
 											label={__('Distance Type', 'multivendorx')}
 											htmlFor="distance_type"
+											desc={__('Choose kilometers or miles based on your region so shipping charges are calculated correctly.','multivendorx')}
 										>
-											<ToggleSetting
-
-												descClass="settings-metabox-description"
-												description={__(
-													'Choose kilometers or miles based on your region so shipping charges are calculated correctly.',
-													'multivendorx'
-												)}
+											<ToggleSettingUI
 												options={[
 													{ label: __('Kilometers (km)', 'multivendorx'), value: 'K' },
 													{ label: __('Miles (mi)', 'multivendorx'), value: 'M' },

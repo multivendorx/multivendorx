@@ -17,15 +17,19 @@ import Recaptcha from './Recaptcha';
 import RadioInput from './RadioInput';
 import FileInput from './FileInput';
 import AddressField from './AddressField';
+import NestedComponent from './NestedComponent';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
   number: BasicInput,
   email: BasicInput,
+  time: BasicInput,
   select: SelectInput,
-  'multi-select': SelectInput,
+  textarea: TextArea,
   preposttext: PrePostText,
   button: AdminButton,
+  nested: NestedComponent,
+  'multi-select': SelectInput,
   'expandable-panel': ExpandablePanelGroup,
   'setting-toggle': ToggleSetting,
   'blocktext': BlockText,

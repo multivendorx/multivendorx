@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import '../Announcements/Announcements.scss';
-import { AdminBreadcrumbs, getApiLink, SelectInput, Tabs } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, SelectInputUI, Tabs } from 'zyra';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';
@@ -111,11 +111,10 @@ export const TransactionHistory: React.FC = () => {
 							{__('Switch Store', 'multivendorx')}
 						</label>
 
-						<SelectInput
+						<SelectInputUI
 							name="store"
 							value={selectedStore?.value || ''}
 							options={allStores}
-							type="select"
 							onChange={(newValue: any) =>
 								setSelectedStore(newValue)
 							}

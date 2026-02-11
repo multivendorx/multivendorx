@@ -121,7 +121,7 @@ export default {
 			nestedFields: [
 				{
 					key: 'rule_type',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'If',
 					options: [
 						{ value: 'price', label: 'Product/listing price' },
@@ -132,7 +132,7 @@ export default {
 				},
 				{
 					key: 'rule',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'is',
 					options: [
 						{ value: 'less_than', label: 'up to' },
@@ -348,7 +348,6 @@ export default {
 				'Shipping charges will be treated as taxable items during checkout. Otherwise shipping costs will be tax-free.',
 				'multivendorx'
 			),
-			desc: __('', 'multivendorx'),
 			type: 'checkbox',
 			moduleEnabled: 'store-shipping',
 			options: [
@@ -404,7 +403,7 @@ export default {
 				},
 				{
 					key: 'rule',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'to be',
 					options: [
 						{

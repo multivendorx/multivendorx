@@ -43,7 +43,7 @@ import type {
 /**
  * Internal dependencies
  */
-import BasicInput, { BasicInputUI } from './BasicInput';
+import   { BasicInputUI } from './BasicInput';
 import '../styles/web/Table.scss';
 import { Skeleton } from '@mui/material';
 

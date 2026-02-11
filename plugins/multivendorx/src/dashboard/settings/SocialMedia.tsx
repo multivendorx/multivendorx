@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BasicInput, BasicInputUI, SuccessNotice, getApiLink } from 'zyra';
+import {   BasicInputUI, SuccessNotice, getApiLink } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const SocialMedia = () => {

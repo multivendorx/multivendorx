@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
-import { NestedComponent, BasicInput, Card, BasicInputUI } from 'zyra';
+import { NestedComponent,   Card, BasicInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const MinMax = ({ product, setProduct }) => {

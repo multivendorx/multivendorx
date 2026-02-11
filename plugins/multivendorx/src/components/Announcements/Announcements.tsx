@@ -4,20 +4,19 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs,
-	BasicInput,
+	AdminBreadcrumbs, 
 	TextArea,
 	CommonPopup,
-	SelectInput,
-	ToggleSetting,
 	Container,
 	Column,
 	FormGroupWrapper,
-	FormGroup,
-	AdminButton,
+	FormGroup, 
 	ProPopup,
 	TableCard,
 	BasicInputUI,
+	AdminButtonUI,
+	ToggleSettingUI,
+	SelectInputUI,
 } from 'zyra';
 
 
@@ -472,18 +471,17 @@ export const Announcements: React.FC = () => {
 					),
 				}}
 				footer={
-					<AdminButton
+					<AdminButtonUI
 						buttons={[
 							{
 								icon: 'close',
 								text: __('Cancel', 'multivendorx'),
-								className: 'red',
+								color: 'red',
 								onClick: handleCloseForm,
 							},
 							{
 								icon: 'save',
 								text: __('Save', 'multivendorx'),
-								className: 'purple-bg',
 								onClick: () => handleSubmit(),
 							},
 						]}
@@ -525,8 +523,8 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores">
-							<SelectInput
+						<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores" >
+							<SelectInputUI
 								name="stores"
 								type="multi-select"
 								options={storeOptions}
@@ -576,14 +574,8 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-							<ToggleSetting
-
-								descClass="settings-metabox-description"
-								description={__(
-									'Select the status of the announcement.',
-									'multivendorx'
-								)}
+						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.','multivendorx')} htmlFor="status">
+							<ToggleSettingUI
 								options={[
 									{
 										key: 'draft',

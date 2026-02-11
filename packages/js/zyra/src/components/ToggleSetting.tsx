@@ -20,7 +20,6 @@ interface Option {
 interface ToggleSettingProps {
     options: Option[];
     wrapperClass?: string;
-    descClass?: string;
     value: string | string[];
     onChange: ( value: string | string[] ) => void;
     proSetting?: boolean;
@@ -29,9 +28,10 @@ interface ToggleSettingProps {
     multiSelect?: boolean;
     custom?: boolean;
     canAccess?: boolean;
+    appLocalizer?: any;
 }
 
-const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
+export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
     options,
     wrapperClass,
     value,
@@ -40,7 +40,8 @@ const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
     iconEnable = false,
     custom,
     multiSelect = false,
-    canAccess
+    canAccess,
+    appLocalizer
 } ) => {
     const handleChange = ( optionValue: string, isPro: boolean ) => {
         if ( 
@@ -122,7 +123,7 @@ const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
                                         <div className="toggle-custom-wrapper" dangerouslySetInnerHTML={{ __html: option.customHtml }} />
                                     )}
                                 </label>
-                                {option.proSetting && ! canAccess && (
+                                {option.proSetting && !appLocalizer.khali_dabba && (
                                     <span className="admin-pro-tag">
                                         <i className="adminfont-pro-tag"></i>Pro
                                     </span>
@@ -145,6 +146,7 @@ const ToggleSetting: FieldComponent = {
             custom={field.custom}
             multiSelect={field.multiSelect} // If true, allows selecting multiple options (checkboxes), else single select (radio)
             canAccess={canAccess}
+            appLocalizer={appLocalizer}
             options={
                 Array.isArray(field.options)
                     ? field.options.map((opt) => ({

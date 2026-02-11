@@ -1,7 +1,7 @@
 // BasicInputProProps.stories.tsx
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import BasicInput, { BasicInputUI } from '../src/components/BasicInput';
+import   { BasicInputUI } from '../src/components/BasicInput';
 
 const meta: Meta<typeof BasicInput> = {
     title: 'Zyra/Components/BasicInput/ProExamples',

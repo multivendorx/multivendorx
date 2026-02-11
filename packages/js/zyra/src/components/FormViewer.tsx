@@ -4,7 +4,7 @@ import Select from 'react-select';
 import type { MultiValue, SingleValue } from 'react-select';
 
 // Internal dependencies
-import AdminButton from './UI/AdminButton';
+import { AdminButtonUI } from './UI/AdminButton';
 
 
 // Types
@@ -862,7 +862,7 @@ const FormViewer: React.FC<FormViewerProps> = ({
                 }
             })}
             <p className="woocommerce-form-row form-row">
-                <AdminButton
+                <AdminButtonUI
                     buttons={{
                         customStyle: buttonSetting,
                         onClick: (e) => {
