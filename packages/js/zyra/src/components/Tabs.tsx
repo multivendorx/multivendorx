@@ -182,10 +182,6 @@ const Tabs: React.FC<TabsProps> = ({
         }
     };
 
-    // Check if folder contains active tab
-    const doesFolderContainTab = (folderItems: TabContent[]): boolean => {
-        return findTabPath(folderItems, activeTab) !== null;
-    };
 
     // Render breadcrumb links
     const renderBreadcrumbLinks = () =>
@@ -244,7 +240,8 @@ const Tabs: React.FC<TabsProps> = ({
             if (folderItems.length === 0) return null;
 
             const firstFile = findFirstFile(folderItems);
-            const isActive = doesFolderContainTab(folderItems);
+
+            const isActive = findTabPath(folderItems, activeTab) !== null;
 
             return (
                 <Link
