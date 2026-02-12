@@ -617,8 +617,8 @@ const Commission: React.FC = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-commission"
-				tabTitle={__('Commissions', 'multivendorx')}
+				settingIcon="adminfont-commission"
+				headerTitle={__('Commissions', 'multivendorx')}
 				description={__(
 					'Details of commissions earned by each store for every order, including order amount, commission rate, and payout status.',
 					'multivendorx'

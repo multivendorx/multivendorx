@@ -435,11 +435,11 @@ export const Announcements: React.FC = () => {
 				/>
 			</Dialog>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-announcement"
+				settingIcon="adminfont-announcement"
 				description={
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
 				}
-				tabTitle="Announcements"
+				headerTitle="Announcements"
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),

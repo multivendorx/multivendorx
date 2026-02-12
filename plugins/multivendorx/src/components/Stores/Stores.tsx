@@ -267,14 +267,14 @@ const Stores = () => {
 			{!isAddStore && !iseditStore && (
 				<>
 					<AdminBreadcrumbs
-						activeTabIcon="adminfont-storefront"
-						tabTitle="Stores"
+						settingIcon="adminfont-storefront"
+						headerTitle="Stores"
 						description={
 							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'
 						}
 						buttons={[
 							{
-								label: __('Add Store','multivendorx'),
+								label: __('Add Store', 'multivendorx'),
 								className: "admin-btn btn-purple-bg",
 								iconClass: 'adminfont-plus',
 								onClick: () => {

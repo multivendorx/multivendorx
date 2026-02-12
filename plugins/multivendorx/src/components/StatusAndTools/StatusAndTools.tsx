@@ -15,6 +15,7 @@ import {
 	Banner,
 	useModules,
 	SettingsNavigator,
+	RenderComponent,
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
@@ -232,8 +233,8 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<AdminForm
-						settings={settingModal as SettingContent}
+					<RenderComponent
+						settings={settingModal}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
 						updateSetting={updateSetting}
