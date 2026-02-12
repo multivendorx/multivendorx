@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, Tabs, useModules } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, SettingsNavigator, useModules } from 'zyra';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
@@ -188,7 +188,7 @@ const ApprovalQueue = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			// condition: settings?.general?.approve_store === 'manually',
@@ -197,8 +197,8 @@ const ApprovalQueue = () => {
 				name: 'Stores',
 				desc: 'Eager to join the marketplace',
 				icon: 'storefront yellow',
-				tabTitle: 'Store in review queue',
-				tabDes: 'Next in line! Approve or reject new store join requests.',
+				title: 'Store in review queue',
+				settingDes: 'Next in line! Approve or reject new store join requests.',
 				count: storeCount,
 			},
 		},
@@ -213,8 +213,8 @@ const ApprovalQueue = () => {
 				name: 'Products',
 				desc: 'Pending your approval',
 				icon: 'multi-product red',
-				tabTitle: 'Products awaiting review',
-				tabDes: 'Approve these listings to start generating sales in your marketplace.',
+				title: 'Products awaiting review',
+				settingDes: 'Approve these listings to start generating sales in your marketplace.',
 				count: productCount,
 			},
 		},
@@ -229,8 +229,8 @@ const ApprovalQueue = () => {
 				name: 'Coupons',
 				desc: 'Need a quick review',
 				icon: 'coupon green',
-				tabTitle: 'Coupons up for review',
-				tabDes: 'Approve, decline, or tweak before they go live.',
+				title: 'Coupons up for review',
+				settingDes: 'Approve, decline, or tweak before they go live.',
 				count: couponCount,
 			},
 		},
@@ -253,8 +253,8 @@ const ApprovalQueue = () => {
 				name: 'Refunds',
 				desc: 'Need your decision',
 				icon: 'marketplace-refund blue',
-				tabTitle: 'Refund tracker',
-				tabDes: 'Monitor refund trends and stay informed on store returns.',
+				title: 'Refund tracker',
+				settingDes: 'Monitor refund trends and stay informed on store returns.',
 				count: refundCount,
 			},
 		},
@@ -266,8 +266,8 @@ const ApprovalQueue = () => {
 				name: 'Flagged',
 				desc: 'Product reported for assessment',
 				icon: 'product indigo',
-				tabTitle: 'Flagged products awaiting action',
-				tabDes: 'Review reports and maintain quality.',
+				title: 'Flagged products awaiting action',
+				settingDes: 'Review reports and maintain quality.',
 				count: reportAbuseCount,
 			},
 		},
@@ -279,8 +279,8 @@ const ApprovalQueue = () => {
 				name: 'Withdrawals',
 				desc: 'Queued for disbursement',
 				icon: 'bank orange',
-				tabTitle: 'Withdrawals awaiting approval',
-				tabDes: 'Review and process store payouts.',
+				title: 'Withdrawals awaiting approval',
+				settingDes: 'Review and process store payouts.',
 				count: withdrawCount,
 			},
 		},
@@ -291,8 +291,8 @@ const ApprovalQueue = () => {
 				name: 'Deactivations',
 				desc: 'Permanent store closure request',
 				icon: 'rejecte teal',
-				tabTitle: 'Stores requesting deactivation',
-				tabDes: 'Approve or reject marketplace joiners.',
+				title: 'Stores requesting deactivation',
+				settingDes: 'Approve or reject marketplace joiners.',
 				count: deactivateCount,
 			},
 		},
@@ -343,23 +343,16 @@ const ApprovalQueue = () => {
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'
 				}
 			/>
-			<Tabs
-				tabData={tabData}
-				currentTab={location.get('subtab') as string}
+			<SettingsNavigator
+				settingContent={settingContent}
+				currentSetting={location.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=approval-queue&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]}
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'card'}
-				premium={false}
-				menuIcon={true}
-				desc={true}
-				isLoading={isLoading}
 			/>
 		</>
 	);

@@ -1,20 +1,19 @@
-import { Tabs } from 'zyra';
+import { SettingsNavigator } from 'zyra';
 import { Link, useLocation } from 'react-router-dom';
 import NotificationTable from './NotificationTable';
 import ActivityTable from './ActivityTable';
 
 const Notifications = () => {
 	const location = new URLSearchParams(useLocation().hash.substring(1));
-	const initialTab = location.get('subtab') || 'notifications';
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'notifications',
 				name: 'Notifications',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -24,7 +23,7 @@ const Notifications = () => {
 				id: 'activities',
 				name: 'Activities',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -42,17 +41,14 @@ const Notifications = () => {
 	};
 
 	return (
-		<Tabs
-			tabData={tabData}
-			currentTab={initialTab}
+		<SettingsNavigator
+			settingContent={settingContent}
+			currentSetting={location.get('subtab') as string}
 			getForm={getForm}
 			prepareUrl={(tabid: string) => `?page=multivendorx#&tab=notifications&subtab=${tabid}`}
 			appLocalizer={appLocalizer}
 			variant={'compact'}
-			premium={false}
 			Link={Link}
-			hideTitle={true}
-			hideBreadcrumb={true}
 		/>
 	);
 };
