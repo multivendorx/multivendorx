@@ -4,10 +4,10 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	TextArea, 
 	TableCard,
 	AdminButtonUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 
 import { formatWcShortDate, toWcIsoDate } from '@/services/commonFunction';
@@ -191,7 +191,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						display: coupon.code,
 						data: {
 							name: coupon.code,
-							description:`By: ${coupon.store_name}`,
+							description: `By: ${coupon.store_name}`,
 							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`,
 						},
 					},
@@ -236,7 +236,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				/>
 				{/* Reject Coupon Popup */}
 				{rejectPopupOpen && (
-					<CommonPopup
+					<PopupUI
 						open={rejectPopupOpen}
 						onClose={() => {
 							setRejectPopupOpen(false);
@@ -247,11 +247,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						header={{
 							icon: 'cart',
 							title: __('Reason', 'multivendorx'),
-							onClose: () => {
-								setRejectPopupOpen(false);
-								setRejectReason('');
-								setIsSubmitting(false);
-							},
 						}}
 						footer={
 							<AdminButtonUI
@@ -279,7 +274,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						}
 					>
 						<>
-							<TextArea
+							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
 								onChange={(
@@ -289,7 +284,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 								rows={4}
 							/>
 						</>
-					</CommonPopup>
+					</PopupUI>
 				)}
 			</div>
 		</>

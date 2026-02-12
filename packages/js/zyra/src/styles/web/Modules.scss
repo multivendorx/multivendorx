@@ -176,4 +176,18 @@
       }
     }
   }
+
+  .module-search {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 2rem;
+
+    .form-select-field-wrapper {
+      width: fit-content;
+    }
+
+    .search-field {
+      margin: 0;
+    }
+  }
 }

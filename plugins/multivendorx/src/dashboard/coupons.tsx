@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
-import { 
+import {
 	AdminButtonUI,
 	BasicInputUI,
-	CommonPopup,
 	FormGroup,
 	FormGroupWrapper,
 	MultiCalendarInput,
-	ProPopup,
+	PopupUI,
 	SelectInputUI,
 	Table,
 	TableCell,
-	TextArea,
+	TextAreaUI,
 	ToggleSettingUI,
 } from 'zyra';
 import {
@@ -21,7 +20,6 @@ import {
 } from '@tanstack/react-table';
 import axios from 'axios';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
-import { Dialog } from '@mui/material';
 
 type CouponRow = {
 	id: number;
@@ -925,10 +923,10 @@ const AllCoupon: React.FC = () => {
 			</div>
 
 			{AddCoupon && (
-				<CommonPopup
+				<PopupUI
 					open={AddCoupon}
 					onClose={() => setAddCoupon(false)}
-					width="31.25rem"
+					width={31.25}
 					height="100%"
 					header={{
 						icon: 'coupon',
@@ -955,7 +953,6 @@ const AllCoupon: React.FC = () => {
 							]}
 						/>
 					}
-
 				>
 					<>
 						<FormGroupWrapper>
@@ -980,7 +977,7 @@ const AllCoupon: React.FC = () => {
 							</FormGroup>
 
 							<FormGroup label={__('Description (optional)', 'multivendorx')} htmlFor="title">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									rowNumber={6}
 									value={formData.content}
@@ -1019,9 +1016,9 @@ const AllCoupon: React.FC = () => {
 							)}
 						</div>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -1044,7 +1041,46 @@ const AllCoupon: React.FC = () => {
 						setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
+
+			<PopupUI
+				position="lightbox"
+				open={confirmOpen}
+				onClose={() => {
+					setConfirmOpen(false);
+					setSelectedCoupon(null);
+				}}
+				showBackdrop={true}
+				header={{
+					icon: 'warning',
+					title: __('Are you sure?', 'multivendorx'),
+					showCloseButton: true
+				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								onClick: () => {
+									setConfirmOpen(false);
+									setSelectedCoupon(null);
+								},
+							},
+							{
+								icon: 'cross',
+								text: __('Delete', 'multivendorx'),
+								onClick: handleConfirmDelete,
+							},
+						]}
+					/>
+				}
+			>
+				<p>
+					{__('Are you sure you want to delete this coupon?', 'multivendorx')}
+				</p>
+			</PopupUI>
 
 			<Table
 				data={data}

@@ -5,22 +5,20 @@ import { __ } from '@wordpress/i18n';
 import {
 	Table,
 	TableCell,
-	CommonPopup,
 	getApiLink,
-	MultiCalendarInput, 
+	MultiCalendarInput,
 	FormGroupWrapper,
 	FormGroup,
-	TextArea,
-	ProPopup,
 	AdminButtonUI,
 	ToggleSettingUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { Dialog } from '@mui/material';
 
 type Review = {
 	review_id: number;
@@ -532,7 +530,7 @@ const SupportTickets: React.FC = () => {
 				realtimeFilter={realtimeFilter}
 			/>
 
-			<Dialog
+			{/* <Dialog
 				open={deleteReview}
 				onClose={() => setDeleteReview(false)}
 			>
@@ -553,13 +551,13 @@ const SupportTickets: React.FC = () => {
 						// setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 
 			{selectedReview && (
-				<CommonPopup
+				<PopupUI
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					header={{
 						icon: 'store-review',
@@ -636,7 +634,7 @@ const SupportTickets: React.FC = () => {
 							</div>
 
 							<FormGroup label={__('Respond to customer', 'multivendorx')} htmlFor="respond-to-customer">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									value={replyText}
 									onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -686,7 +684,7 @@ const SupportTickets: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

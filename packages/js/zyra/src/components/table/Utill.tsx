@@ -38,34 +38,33 @@ export const renderCell = (cell: TableRow) => {
 			return (
 				<Wrapper
 					{...(link ? { href: link } : {})}
-					className="card-cell"
+					className="details-wrapper"
 				>
-					<div className="card-cell-content">
-						{name && (
-							<div className="card-cell-name">{name}</div>
-						)}
-
-						{description && (
-							<div className="card-cell-description">
-								{description}
-							</div>
-						)}
-						{subDescription && (
-							<div className="card-cell-description">
-								{subDescription}
-							</div>
-						)}
-					</div>
-
 					{image ? (
 						<img
 							src={image}
 							alt={name || ''}
-							className="card-cell-image"
+							className="image"
 						/>
 					) : icon ? (
 						<i className={`item-icon ${icon}`} />
 					) : null}
+					<div className="details">
+						{name && (
+							<div className="title">{name}</div>
+						)}
+
+						{description && (
+							<div className="desc">
+								{description}
+							</div>
+						)}
+						{subDescription && (
+							<div className="desc">
+								{subDescription}
+							</div>
+						)}
+					</div>
 				</Wrapper>
 			);
 		}

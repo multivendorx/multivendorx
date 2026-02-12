@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { applyFilters } from '@wordpress/hooks';
-import { AdminHeader, Banner, CommonPopup, DoActionBtn, FormGroup, FormGroupWrapper, TourSetup } from 'zyra';
+import { AdminButtonUI, AdminHeader, Banner, DoActionBtn, FormGroup, FormGroupWrapper, PopupUI, TourSetup } from 'zyra';
 
 import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/Modules';
@@ -302,15 +302,36 @@ const App = () => {
 				utilityListWithTab={utilityListWithTab}
 			/>
 
-			<CommonPopup
+			<PopupUI
 				open={openFeaturePopup}
 				onClose={handleCloseFeaturePopup}
-				width="31.25rem"
-				height="70%"
+				width={31.25}
 				header={{
-					icon: 'import',
-					title: __('Import Dummy Data', 'multivendorx')
+					icon: 'book',
+					title: __('Import Dummy Data', 'multivendorx'),
+					description: __(
+						'Get a hands-on feel of your marketplace in minutes.',
+						'multivendorx'
+					),
+					showCloseButton: true, // Add this to show close button in header
 				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								// onClick: handleCloseForm,
+							},
+							{
+								icon: 'save',
+								text: __('Save', 'multivendorx'),
+								// onClick: () => handleSubmit(formData.status || 'draft'),
+							},
+						]}
+					/>
+				}
 			>
 				<FormGroupWrapper>
 					<FormGroup label={__('Import Dummy Data', 'multivendorx')}>
@@ -380,7 +401,7 @@ const App = () => {
 						}}
 					/>
 				</FormGroupWrapper>
-			</CommonPopup>
+			</PopupUI>
 
 			<TourSetup
 				appLocalizer={appLocalizer}

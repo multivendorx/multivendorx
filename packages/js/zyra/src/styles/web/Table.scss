@@ -247,7 +247,7 @@
             }
         }
 
-        .product-wrapper {
+        .details-wrapper {
             display: flex;
             gap: 0.625rem;
             cursor: pointer;
@@ -364,7 +364,7 @@
                     }
 
                     &.product {
-                        .product-wrapper {
+                        .details-wrapper {
                             display: flex;
                             gap: 0.625rem;
                         }
@@ -428,7 +428,7 @@
                     }
 
                     &.commission-summary,
-                    &.product-wrapper {
+                    &.details-wrapper {
                         flex-grow: 0;
                         min-width: 18rem;
                     }

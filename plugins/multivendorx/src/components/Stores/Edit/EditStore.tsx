@@ -3,16 +3,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	ToggleSettingUI,
 	getApiLink,
-	CommonPopup,
 	useModules,
 	SuccessNotice,
 	FormGroupWrapper,
-	FormGroup, 
-	Popover,
+	FormGroup,
 	Skeleton,
 	AdminButtonUI,
 	SelectInputUI,
-	SettingsNavigator
+	SettingsNavigator,
+	PopupUI
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -648,7 +647,7 @@ const EditStore = () => {
 													) : data?.name ? (
 														data.name
 													) : (
-														<Skeleton width={150}/>
+														<Skeleton width={150} />
 													)}
 
 													<span
@@ -738,7 +737,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : (
-													<Skeleton width={100}/>
+													<Skeleton width={100} />
 												)}
 
 												{modules.includes(
@@ -795,7 +794,7 @@ const EditStore = () => {
 													/>
 												) : Object.keys(data).length ===
 													0 ? (
-													<Skeleton width={150}/>
+													<Skeleton width={150} />
 												) : data?.description ? (
 													<div>
 														<span>
@@ -973,19 +972,20 @@ const EditStore = () => {
 				Link={Link}
 				settingName={'Store'}
 				action={
-					<Popover
-						className="edit-wrapper"
-						template="action"
-						toggleIcon="adminfont-more-vertical"
-						items={actionItems}
-					/>
+					// <Popover
+					// 	className="edit-wrapper"
+					// 	template="action"
+					// 	toggleIcon="adminfont-more-vertical"
+					// 	items={actionItems}
+					// />
+					<></>
 				}
 			/>
 
-			<CommonPopup
+			<PopupUI
 				open={deleteModal}
 				onClose={() => setDeleteModal(false)}
-				width="37.5rem"
+				width={37.5}
 				height="50%"
 				header={{
 					icon: 'storefront',
@@ -1071,7 +1071,7 @@ const EditStore = () => {
 						)}
 					</FormGroupWrapper>
 				</>
-			</CommonPopup>
+			</PopupUI>
 		</>
 	);
 };

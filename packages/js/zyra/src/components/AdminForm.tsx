@@ -7,7 +7,6 @@ import React, {
     ReactNode,
 } from 'react';
 import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
-import { Dialog } from '@mui/material';
 import axios from 'axios';
 
 // Internal Dependencies
@@ -31,7 +30,6 @@ import RadioInput from './RadioInput';
 import MultiCheckBox from './MultiCheckbox';
 import Log from './Log';
 import InputMailchimpList from './InputMailchimpList';
-import Popup, { PopupProps } from './Popup';
 import NestedComponent from './NestedComponent';
 import ColorSettingInput from './ColorSettingInput';
 import EndpointEditor from './EndpointEditor';
@@ -1750,7 +1748,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
     return (
         <>
             <div className="dynamic-fields-wrapper">
-                <Dialog
+                {/* <Dialog
                     className="admin-module-popup"
                     open={modelOpen}
                     onClose={handleModelClose}
@@ -1776,7 +1774,7 @@ const AdminForm: React.FC<AdminFormProps> = ({
                             modulePageUrl={modulePopupFields?.modulePageUrl}
                         />
                     }
-                </Dialog>
+                </Dialog> */}
                 {successMsg && (
                     <>
                         <div className="admin-notice-wrapper notice-error">

@@ -45,7 +45,6 @@ import type {
  */
 import   { BasicInputUI } from './BasicInput';
 import '../styles/web/Table.scss';
-import { Skeleton } from '@mui/material';
 
 const PENALTY = 28;
 const COOLDOWN = 1;
@@ -624,9 +623,9 @@ const Table: React.FC<TableProps> = ({
                         <div className="filter-wrapper">
                             {categoryFilter === null ? (
                                 <>
-                                  <div className="filter-item"> <Skeleton variant="text" width={20} /> </div>
+                                  {/* <div className="filter-item"> <Skeleton variant="text" width={20} /> </div>
                                    <div className="filter-item"><Skeleton variant="text" width={30} /></div> 
-                                   <div className="filter-item"> <Skeleton variant="text" width={20} /></div>
+                                   <div className="filter-item"> <Skeleton variant="text" width={20} /></div> */}
                                 </>
                             ) : (
                                 categoryFilter?.map((countInfo, index) => (
