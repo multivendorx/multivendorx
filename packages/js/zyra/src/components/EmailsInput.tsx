@@ -3,121 +3,122 @@ import React, { useState, useRef, forwardRef, useImperativeHandle, useCallback, 
 
 // Internal dependencies
 import '../styles/web/EmailsInput.scss';
+import { BasicInputUI } from './BasicInput';
 
 export interface EmailsInputProps {
     mode?: 'single' | 'multiple';
     max?: number;
     value?: string[];
-    primary?: string | null;
+    primary?: string;
     enablePrimary?: boolean;
     placeholder?: string;
-    onChange?: ( emails: string[], primary: string | null ) => void;
+    onChange?: (emails: string[], primary: string ) => void;
 }
 
-const EmailsInput = forwardRef< HTMLInputElement, EmailsInputProps >(
+const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
     (
         {
             mode = 'multiple',
             max,
             value = [],
-            primary = null,
+            primary = '',
             enablePrimary = true,
             placeholder = 'Enter email...',
             onChange,
         },
         ref
     ) => {
-        const [ emails, setEmails ] = useState< string[] >( value );
-        const [ primaryEmail, setPrimaryEmail ] = useState< string | null >(
-            enablePrimary ? primary : null
+        const [emails, setEmails] = useState<string[]>(value);
+        const [primaryEmail, setPrimaryEmail] = useState<string >(
+            enablePrimary ? primary : ''
         );
 
-        const [ inputValue, setInputValue ] = useState( '' );
+        const [inputValue, setInputValue] = useState('');
 
-        const inputRef = useRef< HTMLInputElement >( null );
+        const inputRef = useRef<HTMLInputElement>(null);
 
         // Sync when parent updates props
-        useEffect( () => {
-            setEmails( value );
-        }, [ value ] );
+        useEffect(() => {
+            setEmails(value);
+        }, [value]);
 
-        useEffect( () => {
-            setPrimaryEmail( enablePrimary ? primary : null );
-        }, [ primary, enablePrimary ] );
+        useEffect(() => {
+            setPrimaryEmail(enablePrimary ? primary : '');
+        }, [primary, enablePrimary]);
 
         // expose inputRef externally
-        useImperativeHandle( ref, () => inputRef.current as HTMLInputElement );
+        useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
-        const isValidEmail = useCallback(( email: string ) =>
-            /^\S+@\S+\.\S+$/.test( email ),[]);
+        const isValidEmail = useCallback((email: string) =>
+            /^\S+@\S+\.\S+$/.test(email), []);
 
         const addEmail = useCallback(
-            ( email: string ) => {
-            email = email.trim();
-            if ( 
-                ! email || 
-                ! isValidEmail( email ) || 
-                emails.includes( email ) || 
-                ( max && emails.length >= max )
-            ) {
-                return;
-            }
+            (email: string) => {
+                email = email.trim();
+                if (
+                    !email ||
+                    !isValidEmail(email) ||
+                    emails.includes(email) ||
+                    (max && emails.length >= max)
+                ) {
+                    return;
+                }
 
-            const updated = [ ...emails, email ];
-            setEmails( updated );
+                const updated = [...emails, email];
+                setEmails(updated);
 
-            const newPrimary = enablePrimary ? primaryEmail || email : null;
-            if ( enablePrimary && ! primaryEmail ) {
-                setPrimaryEmail( email );
-            }
+                const newPrimary = enablePrimary ? primaryEmail || email : '';
+                if (enablePrimary && !primaryEmail) {
+                    setPrimaryEmail(email);
+                }
 
-            setInputValue( '' );
-            onChange?.( updated, newPrimary );
-        });
+                setInputValue('');
+                onChange?.(updated, newPrimary);
+            });
 
-        const removeEmail = ( email: string ) => {
-            const updated = emails.filter( ( e ) => e !== email );
+        const removeEmail = (email: string) => {
+            const updated = emails.filter((e) => e !== email);
 
             let newPrimary = primaryEmail;
-            if ( enablePrimary && primaryEmail === email ) {
-                newPrimary = updated[ 0 ] || null;
-                setPrimaryEmail( newPrimary );
+            if (enablePrimary && primaryEmail === email) {
+                newPrimary = updated[0] || '';
+                setPrimaryEmail(newPrimary);
             }
 
-            setEmails( updated );
-            onChange?.( updated, enablePrimary ? newPrimary : null );
+            setEmails(updated);
+            onChange?.(updated, enablePrimary ? newPrimary : '');
         };
 
-        const togglePrimary = ( email: string ) => {
-            if ( ! enablePrimary || mode === 'single' ) {
+        const togglePrimary = (email: string) => {
+            if (!enablePrimary || mode === 'single') {
                 return;
             }
-            setPrimaryEmail( email );
-            onChange?.( emails, email );
+            setPrimaryEmail(email);
+            onChange?.(emails, email);
         };
 
         const handleKeyDown = (
-            e: React.KeyboardEvent< HTMLInputElement >
+            e: React.KeyboardEvent<HTMLInputElement>
         ) => {
-            if ( [ 'Enter', ',', ' ' ].includes( e.key ) ) {
+            if (['Enter', ',', ' '].includes(e.key)) {
                 e.preventDefault();
-                addEmail( inputValue );
+                addEmail(inputValue);
             }
         };
 
         // SINGLE MODE
-        if ( mode === 'single' ) {
+        if (mode === 'single') {
             return (
-                <input
+                <BasicInputUI
                     type="email"
-                    value={ emails[ 0 ] || '' }
-                    placeholder={ placeholder }
-                    onChange={ ( e ) => {
-                        const v = e.target.value.trim();
-                        const updated = isValidEmail( v ) ? [ v ] : [];
-                        setEmails( updated );
-                        onChange?.( updated, null );
-                    } }
+                    value={emails[0] || ''}
+                    placeholder={placeholder}
+                    onChange={(val) => {
+                        const v = String(val).trim();
+                        const updated = isValidEmail(v) ? [v] : [];
+                        setEmails(updated);
+                        onChange?.(updated, '');
+                    }}
                 />
             );
         }
@@ -126,63 +127,61 @@ const EmailsInput = forwardRef< HTMLInputElement, EmailsInputProps >(
         return (
             <div
                 className="emails-section"
-                onClick={ () => inputRef.current?.focus() }
+                onClick={() => inputRef.current?.focus()}
             >
-                { emails.map( ( email ) => (
+                {emails.map((email) => (
                     <div
-                        className={ `email ${
-                            enablePrimary && primaryEmail === email
-                                ? 'primary'
-                                : ''
-                        }` }
-                        key={ email }
+                        className={`email ${enablePrimary && primaryEmail === email
+                            ? 'primary'
+                            : ''
+                            }`}
+                        key={email}
                     >
-                        { enablePrimary && (
+                        {enablePrimary && (
                             <i
-                                className={ `stat-icon adminfont-star${
-                                    primaryEmail === email ? ' primary' : '-o'
-                                }` }
-                                onClick={ ( e ) => {
+                                className={`stat-icon adminfont-star${primaryEmail === email ? ' primary' : '-o'
+                                    }`}
+                                onClick={(e) => {
                                     e.stopPropagation();
-                                    togglePrimary( email );
-                                } }
+                                    togglePrimary(email);
+                                }}
                             ></i>
-                        ) }
-                        <span>{ email }</span>
+                        )}
+                        <span>{email}</span>
                         <i
                             className="adminfont-close close-icon"
-                            onClick={ ( e ) => {
+                            onClick={(e) => {
                                 e.stopPropagation();
-                                removeEmail( email );
-                            } }
+                                removeEmail(email);
+                            }}
                         ></i>
                     </div>
-                ) ) }
+                ))}
 
                 <div className="input-wrapper">
-                    <input
-                        ref={ inputRef }
+                    <BasicInputUI
+                        ref={inputRef}
                         type="text"
-                        value={ inputValue }
-                        onChange={ ( e ) => setInputValue( e.target.value ) }
-                        onKeyDown={ handleKeyDown }
-                        placeholder={ emails.length === 0 ? placeholder : '' }
+                        value={inputValue}
+                        placeholder={emails.length === 0 ? placeholder : ''}
+                        onChange={(val) => setInputValue(String(val))}
+                        onKeyDown={handleKeyDown}
                     />
 
-                    { /* MAGIC INLINE SUGGESTION */ }
-                    { inputValue &&
-                        ! inputValue.endsWith( ' ' ) &&
-                        ! inputValue.endsWith( ',' ) &&
-                        isValidEmail( inputValue ) &&
-                        ! emails.includes( inputValue.trim() ) && (
+                    { /* MAGIC INLINE SUGGESTION */}
+                    {inputValue &&
+                        !inputValue.endsWith(' ') &&
+                        !inputValue.endsWith(',') &&
+                        isValidEmail(inputValue) &&
+                        !emails.includes(inputValue.trim()) && (
                             <div
                                 className="inline-suggestion"
-                                onClick={ () => addEmail( inputValue.trim() ) }
+                                onClick={() => addEmail(inputValue.trim())}
                             >
-                                <i className="adminfont-mail orange"></i>{ ' ' }
-                                { inputValue.trim() }
+                                <i className="adminfont-mail orange"></i>{' '}
+                                {inputValue.trim()}
                             </div>
-                        ) }
+                        )}
                 </div>
             </div>
         );
