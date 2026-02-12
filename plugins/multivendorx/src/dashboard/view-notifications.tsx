@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Tabs } from 'zyra';
+import { SettingsNavigator } from 'zyra';
 import NotificationsTable from './notificationsTable';
 import ActivitiesTable from './activityTable';
 import AnnouncementsTable from './AnnouncementsTable';
@@ -76,7 +76,7 @@ const ViewNotifications = (React.FC = () => {
 	};
 	return (
 		<>
-			<Tabs
+			<SettingsNavigator
 				tabData={tabData}
 				currentTab={currentTab}
 				getForm={getForm}
@@ -85,8 +85,6 @@ const ViewNotifications = (React.FC = () => {
 				settingName="Settings"
 				template={'template-2'}
 				variant={'compact'}
-				supprot={[]}
-				premium={false}
 				Link={SimpleLink}
 				hideTitle={true}
 				hideBreadcrumb={true}

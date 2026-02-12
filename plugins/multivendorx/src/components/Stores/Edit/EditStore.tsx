@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	ToggleSettingUI,
 	getApiLink,
-	Tabs,
 	CommonPopup,
 	useModules,
 	SuccessNotice,
@@ -12,7 +11,8 @@ import {
 	Popover,
 	Skeleton,
 	AdminButtonUI,
-	SelectInputUI
+	SelectInputUI,
+	SettingsNavigator
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -193,7 +193,7 @@ const EditStore = () => {
 		});
 	};
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			content: {
@@ -284,7 +284,7 @@ const EditStore = () => {
 	}, []);
 
 	const visibleTabs = useMemo(() => {
-		const updatedTabs = tabData.map((tab) =>
+		const updatedTabs = tabContent.map((tab) =>
 			tab.content.id === 'application-details'
 				? {
 					...tab,
@@ -313,7 +313,7 @@ const EditStore = () => {
 		}
 
 		return updatedTabs;
-	}, [tabData, data?.status]);
+	}, [tabContent, data?.status]);
 
 	const [expanded, setExpanded] = useState(false);
 
@@ -413,13 +413,12 @@ const EditStore = () => {
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
-			<Tabs
-				tabData={visibleTabs}
+			<SettingsNavigator
+				tabContent={visibleTabs}
 				currentTab={currentTab}
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
-				premium={false}
 				tabTitleSection={
 					<>
 						<div className="general-wrapper">
@@ -973,8 +972,6 @@ const EditStore = () => {
 				}
 				Link={Link}
 				settingName={'Store'}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				action={
 					<Popover
 						className="edit-wrapper"

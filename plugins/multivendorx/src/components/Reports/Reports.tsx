@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, Tabs } from 'zyra';
+import { AdminBreadcrumbs, SettingsNavigator,  } from 'zyra';
 import '../../dashboard/dashboardCommon.scss';
 import { useLocation, Link } from 'react-router-dom';
 import MarketplaceReport from './MarketplaceReport';
@@ -74,7 +74,7 @@ const Reports = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			content: {
@@ -156,20 +156,16 @@ const Reports = () => {
 				)}
 			/>
 
-			<Tabs
-				tabData={tabData}
+			<SettingsNavigator
+				tabContent={tabContent}
 				currentTab={location.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=reports&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]}
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'compact'}
-				premium={false}
 				menuIcon={true}
 			/>
 		</>

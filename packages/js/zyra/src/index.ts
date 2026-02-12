@@ -41,7 +41,7 @@ export { default as SubTabSection } from './components/SubTabSection';
 export { default as Support } from './components/Support';
 export { default as DropDownMapping } from './components/DropDownMapping';
 export { default as DoActionBtn } from './components/DoActionBtn';
-export { default as Tabs } from './components/Tabs';
+export { default as SettingsNavigator } from './components/SettingsNavigator';
 export { default as TextArea } from './components/TextArea';
 export { TextAreaUI } from './components/TextArea';
 export { default as ToggleSetting } from './components/ToggleSetting';
