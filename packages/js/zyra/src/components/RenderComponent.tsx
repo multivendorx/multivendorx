@@ -292,6 +292,11 @@ const RenderComponent: React.FC<RenderProps> = ({
         const field = modal.find((f) => f.key === key);
         if (!field) return;
 
+        if (field.type === 'nested') {
+            updateSetting(key, value);
+            return;
+        }
+
         // Multi-select select / deselect-all logic
         if (
             Array.isArray(value) &&
