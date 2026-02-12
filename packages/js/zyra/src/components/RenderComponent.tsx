@@ -589,7 +589,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                     width="31.25rem"
                     height="auto"
                 >
-                    {Popup}
+                    <div>Prp popup</div>
                 </PopupUI>
 
             )}

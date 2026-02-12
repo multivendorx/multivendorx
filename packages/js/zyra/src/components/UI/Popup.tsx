@@ -148,7 +148,6 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
                             {children}
                         </div>
 
-                        {/* popover Footer */}
                         {footer && (
                             <div className="popover-footer">
                                 {footer}
