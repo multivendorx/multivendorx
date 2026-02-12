@@ -19,8 +19,7 @@ import FileInput from './FileInput';
 import AddressField from './AddressField';
 import NestedComponent from './NestedComponent';
 import Divider from './Divider';
-import HeadingBlock from './Heading';
-import Text from './Text';
+import Content from './Content';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -49,6 +48,6 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'image': FileInput,
   'address': AddressField,
   'divider': Divider,
-  'heading': HeadingBlock,
-  'richtext': Text,
+  'heading': Content,
+  'richtext': Content,
 };

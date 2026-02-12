@@ -1,11 +1,17 @@
+/**
+ * blockCore.ts - UPDATED VERSION
+ * Uses centralized style management from blockStyles.ts
+ */
+
 import { 
     Block, 
     BlockType,
     Option, 
     AddressField,
-    DEFAULT_BLOCK_STYLES,
     ColumnLayout
 } from './blockTypes';
+
+import { DEFAULT_BLOCK_STYLES, BLOCK_STYLE_PRESETS } from './blockStyle';
 
 // HELPER FUNCTIONS - Configuration
 export const isContentBlock = (type: BlockType): boolean =>
@@ -130,7 +136,7 @@ export const createBlock = (
         };
     }
 
-    // Rich Text
+    // Rich Text - Using centralized styles
     if (type === 'richtext') {
         return {
             ...baseBlock,
@@ -140,7 +146,7 @@ export const createBlock = (
         };
     }
 
-    // Heading
+    // Heading - Using centralized styles with preset
     if (type === 'heading') {
         return {
             ...baseBlock,
@@ -149,13 +155,12 @@ export const createBlock = (
             level: 2,
             style: {
                 ...DEFAULT_BLOCK_STYLES,
-                fontSize: 24,
-                fontWeight: 'bold',
+                ...BLOCK_STYLE_PRESETS.heading,
             },
         };
     }
 
-    // Image
+    // Image - Using centralized styles with preset
     if (type === 'image') {
         return {
             ...baseBlock,
@@ -164,12 +169,12 @@ export const createBlock = (
             alt: '',
             style: {
                 ...DEFAULT_BLOCK_STYLES,
-                align: 'center',
+                ...BLOCK_STYLE_PRESETS.image,
             },
         };
     }
 
-    // Button
+    // Button - Using centralized styles with preset
     if (type === 'button') {
         return {
             ...baseBlock,
@@ -177,31 +182,18 @@ export const createBlock = (
             text: 'Click Here',
             url: '#',
             style: {
-                backgroundColor: '#007bff',
-                color: '#ffffff',
-                fontSize: 16,
-                fontWeight: 'bold',
-                paddingTop: 10,
-                paddingRight: 20,
-                paddingBottom: 10,
-                paddingLeft: 20,
-                borderRadius: 5,
-                align: 'center',
+                ...BLOCK_STYLE_PRESETS.button,
             },
         };
     }
 
-    // Divider
+    // Divider - Using centralized styles with preset
     if (type === 'divider') {
         return {
             ...baseBlock,
             type: 'divider',
             style: {
-                backgroundColor: '#cccccc',
-                height: '1px',
-                marginTop: 20,
-                marginBottom: 20,
-                width: '100%',
+                ...BLOCK_STYLE_PRESETS.divider,
             },
         };
     }

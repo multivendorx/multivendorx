@@ -1,12 +1,40 @@
 // External dependencies
 import React, { useState } from 'react';
-import ToggleSetting from './ToggleSetting';
 
 interface StyleControlsProps {
     style?: any;
     onChange: (style: any) => void;
     includeTextStyles?: boolean;
 }
+
+// Custom icon-based toggle component for alignment
+const IconToggle: React.FC<{
+  options: Array<{ key: string; value: string; icon: string }>;
+  value: string;
+  onChange: (value: string) => void;
+}> = ({ options, value, onChange }) => {
+  return (
+    <div className="toggle-setting-container">
+      <div className="toggle-setting-wrapper">
+        {options.map((option) => (
+          <div key={option.key}>
+            <input
+              type="radio"
+              id={option.key}
+              name="text-align-toggle"
+              checked={value === option.value}
+              onChange={() => onChange(option.value)}
+              className="toggle-setting-form-input"
+            />
+            <label htmlFor={option.key}>
+              <i className={option.icon}></i>
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const StyleControls: React.FC<StyleControlsProps> = ({
   style = {},
@@ -48,7 +76,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
               {/* text align */}
               <div className="field-wrapper">
                 <label>Text Align</label>
-                <ToggleSetting
+                <IconToggle
                   options={[
                     {
                       key: 'left',

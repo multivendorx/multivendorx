@@ -1,87 +1,70 @@
 import React from 'react';
 import { FieldComponent } from './types';
+import { generateBlockStyles, BlockStyle } from './block';
 
-export interface DividerBlockStyle {
-  backgroundColor?: string;
-  padding?: number | string;
-  margin?: number | string;
-  height?: string;
-  width?: string;
-  borderWidth?: number;
-  borderColor?: string;
-  borderStyle?: string;
-  borderRadius?: number;
-  opacity?: number;
+export interface DividerBlockData {
+  id: number;
+  type: 'divider';
+  style?: BlockStyle;
 }
 
-export interface DividerBlockProps {
-  style?: DividerBlockStyle;
-  className?: string;
-}
+// View Component
+export const DividerView: React.FC<{
+  field: DividerBlockData;
+  onChange: (updates: Partial<DividerBlockData>) => void;
+  editable?: boolean;
+}> = ({ field, onChange, editable = true }) => {
+  if (!field) return null;
 
-const DEFAULT_STYLES: DividerBlockStyle = {
-  height: '1px',
-  backgroundColor: '#cccccc',
-  margin: '20px 0',
-  width: '100%',
-  opacity: 1,
-};
-
-export const DividerBlock: React.FC<DividerBlockProps> = ({
-  style = {},
-  className = '',
-}) => {
-  // Merge default styles with provided styles
-  const mergedStyle = {
-    ...DEFAULT_STYLES,
-    ...style,
-  };
-
-  // Build the style object
-  const dividerStyle: React.CSSProperties = {
-    backgroundColor: mergedStyle.backgroundColor,
-    margin: mergedStyle.margin,
-    padding: mergedStyle.padding,
-    width: mergedStyle.width,
-    height: mergedStyle.height,
-    opacity: mergedStyle.opacity,
-    borderWidth: mergedStyle.borderWidth,
-    borderColor: mergedStyle.borderColor,
-    borderStyle: mergedStyle.borderStyle,
-    borderRadius: mergedStyle.borderRadius,
-  };
-
-  // Clean up undefined values
-  Object.keys(dividerStyle).forEach(key => {
-    if (dividerStyle[key as keyof React.CSSProperties] === undefined) {
-      delete dividerStyle[key as keyof React.CSSProperties];
-    }
+  const styles = generateBlockStyles(field.style, { 
+    includeText: false,
+    includeDimensions: true 
   });
 
   return (
-    <hr
-      className={`divider-block ${className}`}
-      style={dividerStyle}
+    <div className="email-divider-container">
+      <hr
+        className="email-divider"
+        style={{
+          ...styles,
+          border: 'none',
+          backgroundColor: field.style?.backgroundColor || '#cccccc',
+          height: field.style?.height || '1px',
+        }}
+      />
+    </div>
+  );
+};
+
+// Main Render Component
+export const DividerUI: React.FC<{
+  field: DividerBlockData;
+  value?: any;
+  onChange: (value: any) => void;
+  canAccess?: boolean;
+  appLocalizer?: any;
+  modules?: string[];
+  settings?: Record<string, any>;
+  onOptionsChange?: (options: any[]) => void;
+  onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
+}> = ({ field, onChange }) => {
+  if (!field) return null;
+
+  const handleChange = (updates: Partial<DividerBlockData>) => {
+    onChange(updates);
+  };
+
+  return (
+    <DividerView
+      field={field}
+      onChange={handleChange}
+      editable={true}
     />
   );
 };
 
-export const useDividerBlock = () => {
-  const createDividerBlock = (
-    customStyles?: DividerBlockStyle,
-  ) => ({
-    id: Date.now(),
-    type: 'divider' as const,
-    style: {
-      ...customStyles,
-    },
-  });
-
-  return { createDividerBlock };
-};
-
 const Divider: FieldComponent = {
-    render: DividerBlock,
-}
+  render: DividerUI,
+};
 
 export default Divider;

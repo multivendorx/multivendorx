@@ -1,16 +1,16 @@
 /**
- * External dependencies
+ * SettingMetaBox.tsx - UPDATED VERSION
+ * Uses centralized style management from blockStyles.ts
  */
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ReactSortable } from 'react-sortablejs';
-
-import '../styles/web/SettingMetaBox.scss';
 import StyleControls from './StyleControl';
-import ToggleSetting from './ToggleSetting';
+import { BlockStyle } from './block';
 
 // TYPES
 type FormFieldValue = string | number | boolean | Option[] | Record<string, any>;
-type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout' | 'text' | 'level' | 'src' | 'alt' | 'url';
+type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout' | 'text' | 'level' | 'src' | 'alt' | 'url' | 'html';
 
 interface Option {
     id: string;
@@ -40,7 +40,7 @@ interface FormField {
     src?: string;
     alt?: string;
     url?: string;
-    style?: Record<string, any>;
+    style?: BlockStyle;
     layout?: '1' | '2-50' | '2-66' | '3' | '4';
 }
 
@@ -77,17 +77,15 @@ const HEADING_LEVELS = [
     { id: 'h3', value: 3, label: 'H3' },
 ];
 
-const BLOCK_TYPES = new Set(['richtext', 'heading', 'image', 'button', 'divider', 'columns']);
+// Blocks that have style controls
+const STYLED_BLOCKS = new Set(['richtext', 'heading', 'image', 'button', 'divider', 'columns']);
+
+// Blocks that have text style controls
+const TEXT_STYLED_BLOCKS = new Set(['richtext', 'heading', 'button']);
 
 const DEFAULT_EXPANDED_GROUPS = {
-    heading: true,
-    image: true,
-    button: true,
+    content: true,
     layout: false,
-    text: false,
-    background: false,
-    spacing: false,
-    border: false,
 };
 
 // REUSABLE COMPONENTS
@@ -183,14 +181,14 @@ const RadioGroup: React.FC<{
                 <div key={id}>
                     <input
                         type="radio"
-                        id={id}
+                        id={`${name}-${id}`}
                         name={name}
                         value={optionValue}
                         checked={value === optionValue}
                         onChange={(e) => onChange(Number(e.target.value))}
                         className="toggle-setting-form-input"
                     />
-                    <label htmlFor={id}>{label}</label>
+                    <label htmlFor={`${name}-${id}`}>{label}</label>
                 </div>
             ))}
         </div>
@@ -254,15 +252,6 @@ const OptionEditor: React.FC<{ options: Option[]; onChange: (options: Option[]) 
         );
     };
 
-    const renderBasicInputSettings = (
-    formField: FormField,
-    onChange: ( key: SettingFieldKey, value: FormFieldValue) => void ) => (
-    <>
-        <InputField label="Placeholder" value={formField.placeholder || ''} onChange={(v) => onChange('placeholder', v)} />
-        <InputField label="Character limit" type="number" value={formField.charlimit?.toString() || ''} onChange={(v) => onChange('charlimit', Number(v))} />
-    </>
-);
-
 // FIELD RENDERER FACTORY
 const createFieldRenderers = (): Record<string, React.FC<{
     formField: FormField;
@@ -295,15 +284,27 @@ const createFieldRenderers = (): Record<string, React.FC<{
     ),
     
     // Content blocks
-    richtext: ({ formField, onChange }) => (
-        <div onClick={(e) => e.stopPropagation()}>
-            <StyleControls style={formField.style || {}} onChange={(s) => onChange('style', s)} includeTextStyles />
-        </div>
+    richtext: ({ formField, onChange, expandedGroups, toggleGroup }) => (
+        <>
+            <ContentGroup title="Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
+                <div className="field-wrapper">
+                    <label>HTML Content</label>
+                    <textarea
+                        value={formField.html || ''}
+                        onChange={(e) => onChange('html', e.target.value)}
+                        className="basic-input"
+                        placeholder="Enter HTML content"
+                        rows={6}
+                        style={{ fontFamily: 'monospace', width: '100%' }}
+                    />
+                </div>
+            </ContentGroup>
+        </>
     ),
     
     heading: ({ formField, onChange, expandedGroups, toggleGroup }) => (
         <>
-            <ContentGroup title="Heading Content" expanded={expandedGroups.heading} onToggle={() => toggleGroup('heading')}>
+            <ContentGroup title="Heading Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
                 <InputField 
                     label="Heading Text" 
                     value={formField.text || ''} 
@@ -320,41 +321,28 @@ const createFieldRenderers = (): Record<string, React.FC<{
                     />
                 </div>
             </ContentGroup>
-            <div onClick={(e) => e.stopPropagation()}>
-                <StyleControls style={formField.style || {}} onChange={(s) => onChange('style', s)} includeTextStyles />
-            </div>
         </>
     ),
     
     image: ({ formField, onChange, expandedGroups, toggleGroup }) => (
         <>
-            <ContentGroup title="Image" expanded={expandedGroups.image} onToggle={() => toggleGroup('image')}>
+            <ContentGroup title="Image" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
                 <InputField label="Image URL" value={formField.src || ''} onChange={(v) => onChange('src', v)} />
                 <InputField label="Alt Text" value={formField.alt || ''} onChange={(v) => onChange('alt', v)} />
             </ContentGroup>
-            <div onClick={(e) => e.stopPropagation()}>
-                <StyleControls style={formField.style || {}} onChange={(s) => onChange('style', s)} includeTextStyles={false} />
-            </div>
         </>
     ),
     
     button: ({ formField, onChange, expandedGroups, toggleGroup }) => (
         <>
-            <ContentGroup title="Button Content" expanded={expandedGroups.button} onToggle={() => toggleGroup('button')}>
+            <ContentGroup title="Button Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
                 <InputField label="Button Text" value={formField.text || ''} onChange={(v) => onChange('text', v)} />
                 <InputField label="Button URL" value={formField.url || ''} onChange={(v) => onChange('url', v)} />
             </ContentGroup>
-            <div onClick={(e) => e.stopPropagation()}>
-                <StyleControls style={formField.style || {}} onChange={(s) => onChange('style', s)} includeTextStyles />
-            </div>
         </>
     ),
     
-    divider: ({ formField, onChange }) => (
-        <div onClick={(e) => e.stopPropagation()}>
-            <StyleControls style={formField.style || {}} onChange={(s) => onChange('style', s)} includeTextStyles={false} />
-        </div>
-    ),
+    divider: () => null, // Divider has no content settings, only style
     
     columns: ({ formField, onChange, expandedGroups, toggleGroup }) => (
         <>
@@ -368,14 +356,11 @@ const createFieldRenderers = (): Record<string, React.FC<{
                     </select>
                 </div>
             </ContentGroup>
-            <div onClick={(e) => e.stopPropagation()}>
-                <StyleControls style={formField.style || {}} onChange={(s) => onChange('style', s)} includeTextStyles={false} />
-            </div>
         </>
     ),
     
     // Selection fields
-    multiselect: ({ formField, onChange }) => (
+    'multi-select': ({ formField, onChange }) => (
         <OptionEditor options={formField.options || []} onChange={(o) => onChange('options', o)} />
     ),
     dropdown: ({ formField, onChange }) => (
@@ -454,8 +439,13 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
         setExpandedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }));
     }, []);
     
-    const isBlockType = useMemo(() => 
-        BLOCK_TYPES.has(formField?.type || ''), 
+    const hasStyleControls = useMemo(() => 
+        STYLED_BLOCKS.has(formField?.type || ''), 
+        [formField?.type]
+    );
+
+    const hasTextStyles = useMemo(() =>
+        TEXT_STYLED_BLOCKS.has(formField?.type || ''),
         [formField?.type]
     );
     
@@ -485,6 +475,10 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
     
     const handleValueChange = useCallback((value: string) => {
         onChange('value', value);
+    }, [onChange]);
+
+    const handleStyleChange = useCallback((style: BlockStyle) => {
+        onChange('style', style);
     }, [onChange]);
     
     if (!hasOpened || !formField) return null;
@@ -526,6 +520,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                         onChange={handleNameChange}
                     />
                     
+                    {/* Block-specific content settings */}
                     {metaType === 'setting-meta' && formField.type && (
                         <FieldRenderer
                             formField={formField}
@@ -534,8 +529,20 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                             toggleGroup={toggleGroup}
                         />
                     )}
+
+                    {/* Centralized Style Controls for styled blocks */}
+                    {metaType === 'setting-meta' && hasStyleControls && (
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={handleStyleChange}
+                                includeTextStyles={hasTextStyles}
+                            />
+                        </div>
+                    )}
                     
-                    {metaType === 'setting-meta' && !isBlockType && (
+                    {/* Visibility and Required for non-styled blocks */}
+                    {metaType === 'setting-meta' && !hasStyleControls && (
                         <>
                             <VisibilityToggle disabled={formField.disabled} onChange={handleDisabledChange} />
                             <FieldWrapper label="Required">
