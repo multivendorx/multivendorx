@@ -71,7 +71,7 @@ interface ColorSettingProps {
 }
 
 export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
-    const { predefinedOptions = [], images = [], templates = [], value, onChange } = props;
+    const { predefinedOptions = [], images = [], templates = [], value, onChange, showPdfButton } = props;
 
     const FIELD_NAME = 'store_color_settings';
 
@@ -431,7 +431,7 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                 </div>
             )}
 
-            {props.showPdfButton && ActivePdf && (
+            {showPdfButton && ActivePdf && (
                 <PdfDownloadButton
                     PdfComponent={() => <ActivePdf colors={selectedColors as CustomColors} />}
                     fileName={`invoice-${templateKey}.pdf`}
