@@ -332,8 +332,8 @@ export const KnowledgeBase: React.FC = () => {
 				/>
 			</Dialog> */}
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-book"
-				tabTitle={__('Knowledge Base', 'multivendorx')}
+				settingIcon="adminfont-book"
+				headerTitle={__('Knowledge Base', 'multivendorx')}
 				description={__(
 					'Build your knowledge base: add new guides or manage existing ones in one place.',
 					'multivendorx'

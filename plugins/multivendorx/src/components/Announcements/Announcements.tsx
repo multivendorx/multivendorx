@@ -466,11 +466,11 @@ export const Announcements: React.FC = () => {
 				<p>Are you sure you want to delete Announcement?</p>
 			</PopupUI>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-announcement"
+				settingIcon="adminfont-announcement"
 				description={
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
 				}
-				tabTitle="Announcements"
+				headerTitle="Announcements"
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),

@@ -266,8 +266,8 @@ const Stores = () => {
 			{!isAddStore && !iseditStore && (
 				<>
 					<AdminBreadcrumbs
-						activeTabIcon="adminfont-storefront"
-						tabTitle="Stores"
+						settingIcon="adminfont-storefront"
+						headerTitle="Stores"
 						description={
 							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'
 						}
