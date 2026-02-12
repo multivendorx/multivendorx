@@ -148,8 +148,8 @@ const Reports = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-report"
-				tabTitle={__('Reports', 'multivendorx')}
+				settingIcon="adminfont-report"
+				headerTitle={__('Reports', 'multivendorx')}
 				description={__(
 					'Track sales, earnings, and store performance with real-time marketplace insights.',
 					'multivendorx'

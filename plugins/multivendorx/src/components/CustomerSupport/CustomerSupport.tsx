@@ -75,8 +75,8 @@ const CustomerSupport = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-customer-service"
-				tabTitle={__('Customer Support', 'multivendorx')}
+				settingIcon="adminfont-customer-service"
+				headerTitle={__('Customer Support', 'multivendorx')}
 				description={__(
 					'Manage store reviews, support requests, financial transactions, and reported issues.',
 					'multivendorx'

@@ -278,7 +278,6 @@ const Stores = () => {
 								className: "admin-btn btn-purple-bg",
 								iconClass: 'adminfont-plus',
 								onClick: () => {
-									console.log('test')
 									setFormData({});
 									setImagePreview('');
 									setaddStore(true);

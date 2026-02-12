@@ -84,8 +84,8 @@ export const TransactionHistory: React.FC = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-store-reactivated"
-				tabTitle={
+				settingIcon="adminfont-store-reactivated"
+				headerTitle={
 					selectedStore
 						? __(
 								`Storewise Transaction History - ${selectedStore.label}`,

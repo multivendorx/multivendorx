@@ -337,8 +337,8 @@ const ApprovalQueue = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-approval"
-				tabTitle="Approval Queue"
+				settingIcon="adminfont-approval"
+				headerTitle="Approval Queue"
 				description={
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'
 				}
