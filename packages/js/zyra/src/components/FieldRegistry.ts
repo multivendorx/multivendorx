@@ -12,6 +12,7 @@ import SystemInfo from './SystemInfo';
 import Section from './Section';
 import TextArea from './TextArea';
 import NestedComponent from './NestedComponent';
+import RadioInput from './RadioInput';
 import ColorSettingInput from './ColorSettingInput';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
@@ -20,6 +21,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   email: BasicInput,
   time: BasicInput,
   select: SelectInput,
+  radio: RadioInput,
   textarea: TextArea,
   preposttext: PrePostText,
   button: AdminButton,
