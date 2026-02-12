@@ -1,83 +1,54 @@
 //External Dependencies
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { AdminButtonUI } from './UI/AdminButton';
 
-interface ButtonConfig {
-    label?: string;
-    onClick?: () => void;
-    iconClass?: string;
-    className?: string;
-    tooltip?: string;
+interface button {
+    label: string;
+    onClick: () => void;
+    iconClass: string;
+    className: string;
 }
 
-interface AdminBreadcrumbsProps< T > {
-    activeTabIcon?: string;
-    tabTitle?: string;
+interface AdminBreadcrumbsProps<T> {
+    settingIcon?: string;
+    title?: string;
     submenuRender?: boolean;
-    template?: string;
     variant?: 'default' | 'compact' | 'card';
     hideTitle?: boolean;
     hideBreadcrumb?: boolean;
     renderBreadcrumb?: () => React.ReactNode;
-    renderMenuItems?: ( items: T[] ) => React.ReactNode;
-    tabData?: T[];
-    buttons?: React.ReactNode[];
-    premium?: boolean;
-    goPremium?: boolean;
+    renderMenuItems?: (items: T[]) => React.ReactNode;
+    settingContent?: T[];
+    buttons?: button[];
     goPremiumLink?: string;
     description?: string;
     customContent?: React.ReactNode;
     action?: React.ReactNode;
 }
 
-const AdminBreadcrumbs = < T, >( {
-    activeTabIcon = '',
-    tabTitle = '',
+const AdminBreadcrumbs = <T,>({
+    settingIcon = '',
+    title = '',
     submenuRender = false,
-    template = '',
-    variant= 'default',
+    variant = 'default',
     renderBreadcrumb,
     renderMenuItems,
-    tabData = [],
+    settingContent = [],
     buttons = [],
-    premium = true,
-    goPremium = false,
     goPremiumLink,
     description,
     customContent,
-    hideBreadcrumb = false,
-    hideTitle = false,
     action,
-}: AdminBreadcrumbsProps< T > ) => {
-    const [ notices, setNotices ] = useState< string[] >( [] );
-
-    useEffect( () => {
-        const captureNotices = () => {
-            const noticeNodes = document.querySelectorAll(
-                '#screen-meta + .wrap .notice, #wpbody-content .notice'
-            );
-
-            if ( noticeNodes.length > 0 ) {
-                const htmlArray: string[] = [];
-                noticeNodes.forEach( ( node ) => {
-                    htmlArray.push( node.outerHTML );
-                    node.remove(); // remove from DOM so we control rendering
-                } );
-                setNotices( htmlArray );
-            }
-        };
-
-        captureNotices();
-    }, [] );
+}: AdminBreadcrumbsProps<T>) => {
 
     return (
         <>
             <div
-                className={ `${
-                    submenuRender ? 'horizontal-title-section' : 'title-section'
-                }` }
+                className={`${submenuRender ? 'horizontal-title-section' : 'title-section'
+                    }`}
                 data-template={variant}
             >
-                { ! submenuRender && (
+                {!submenuRender && (
                     <>
                         <div
                             className={
@@ -86,86 +57,63 @@ const AdminBreadcrumbs = < T, >( {
                                     : 'title-wrapper'
                             }
                         >
-                            { ! hideTitle && (
+                            {variant === 'default' && (
                                 <div className="title">
-                                    { activeTabIcon && (
-                                        <i className={ activeTabIcon }></i>
-                                    ) }
-                                    { tabTitle }
+                                    {settingIcon && (
+                                        <i className={settingIcon}></i>
+                                    )}
+                                    {title}
                                 </div>
-                            ) }
+                            )}
                             <div className="buttons">
-                                { buttons.length > 0 &&
-                                    buttons.map( ( btn, index ) => {
-                                        if ( React.isValidElement( btn ) ) {
-                                            return (
-                                                <React.Fragment key={ index }>
-                                                    { btn }
-                                                </React.Fragment>
-                                            );
-                                        }
+                                {buttons && (
+                                    <AdminButtonUI
+                                        buttons={buttons.map((button) => ({
+                                            text: button.label,
+                                            icon: button.iconClass?.replace('adminfont-', ''),
+                                            onClick: button.onClick,
+                                            children: (
+                                                <>
+                                                    <i className={button.iconClass}></i>
+                                                    {button.label}
+                                                </>
+                                            ),
+                                        }))}
+                                    />
+                                )}
 
-                                        const {
-                                            label,
-                                            onClick,
-                                            iconClass,
-                                            className,
-                                            tooltip,
-                                        } = btn as ButtonConfig;
-                                        return (
-                                            <button
-                                                key={ index }
-                                                className={ `tooltip-btn ${
-                                                    className || ''
-                                                }` }
-                                                onClick={ onClick }
-                                            >
-                                                { iconClass && (
-                                                    <i
-                                                        className={ iconClass }
-                                                    ></i>
-                                                ) }
-                                                { label }
-                                                { tooltip && (
-                                                    <span className="tooltip">
-                                                        { tooltip }
-                                                    </span>
-                                                ) }
-                                            </button>
-                                        );
-                                    } ) }
                             </div>
 
-                            { customContent && (
+                            {customContent && (
                                 <div className="custom-content">
-                                    { customContent }
+                                    {customContent}
                                 </div>
-                            ) }
+                            )}
                         </div>
 
-                        { description && (
-                            <div className="description">{ description }</div>
-                        ) }
-                        { ! hideBreadcrumb && (
+                        {description && (
+                            <div className="description">{description}</div>
+                        )}
+                        {variant === 'default' && (
                             <>
-                                { renderBreadcrumb && (
+                                {renderBreadcrumb && (
                                     <div className="breadcrumbs">
-                                        { renderBreadcrumb() }
+                                        {renderBreadcrumb()}
                                     </div>
-                                ) }
+                                )}
                             </>
-                        ) }
+                        )}
                     </>
-                ) }
-                { renderMenuItems && tabData.length > 0 && (
+                )}
+                {renderMenuItems && settingContent.length > 0 && (
                     <div className="tabs-wrapper">
-                        { submenuRender && (
+                        {submenuRender && (
                             <>
-                                { activeTabIcon && (
-                                    <i className={ activeTabIcon }></i>
-                                ) }
+                                {settingIcon && (
+                                    <i className={settingIcon}></i>
+                                )}
                             </>
-                        ) }
+                        )}
                         <div
                             className={
                                 submenuRender
@@ -173,34 +121,23 @@ const AdminBreadcrumbs = < T, >( {
                                     : 'tabs-item'
                             }
                         >
-                            { renderMenuItems( tabData ) }
+                            {renderMenuItems(settingContent)}
                         </div>
-                        { ! submenuRender && goPremium && premium && (
+                        {!submenuRender && goPremiumLink && (
                             <a
-                                href={ goPremiumLink }
+                                href={goPremiumLink}
                                 className="tab pro-btn"
                             >
                                 <i className="adminfont-pro-tag"></i> Upgrade
                                 <i className="adminfont-arrow-right"></i>
                             </a>
-                        ) }
-                        { action && (
-                            <div className="action-wrapper">{ action }</div>
-                        ) }
+                        )}
+                        {action && (
+                            <div className="action-wrapper">{action}</div>
+                        )}
                     </div>
-                ) }
+                )}
             </div>
-
-            { /* render multiple notices */ }
-            { ! submenuRender &&
-                notices.length > 0 &&
-                notices.map( ( html, i ) => (
-                    <div
-                        key={ i }
-                        className="wp-admin-notice"
-                        dangerouslySetInnerHTML={ { __html: html } }
-                    />
-                ) ) }
         </>
     );
 };

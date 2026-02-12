@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, Tabs, useModules } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, SettingsNavigator, useModules } from 'zyra';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
@@ -188,7 +188,7 @@ const ApprovalQueue = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			// condition: settings?.general?.approve_store === 'manually',
@@ -343,23 +343,16 @@ const ApprovalQueue = () => {
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'
 				}
 			/>
-			<Tabs
-				tabData={tabData}
+			<SettingsNavigator
+				tabContent={tabContent}
 				currentTab={location.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=approval-queue&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]}
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'card'}
-				premium={false}
-				menuIcon={true}
-				desc={true}
-				isLoading={isLoading}
 			/>
 		</>
 	);

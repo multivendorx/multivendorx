@@ -260,7 +260,6 @@ const Stores = () => {
 	const handleReplaceImage = (key: string) => {
 		runUploader(key);
 	};
-
 	return (
 		<>
 			{isTabActive && iseditStore && !isAddStore && <EditStore />}
@@ -274,17 +273,16 @@ const Stores = () => {
 							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'
 						}
 						buttons={[
-							<div
-								className="admin-btn btn-purple-bg"
-								onClick={() => {
-									setFormData({}); // reset all fields
-									setImagePreview(''); // reset image preview
+							{
+								label: __('Add Store','multivendorx'),
+								className: "admin-btn btn-purple-bg",
+								iconClass: 'adminfont-plus',
+								onClick: () => {
+									setFormData({});
+									setImagePreview('');
 									setaddStore(true);
-								}}
-							>
-								<i className="adminfont-plus"></i>
-								Add Store
-							</div>,
+								}
+							}
 						]}
 					/>
 

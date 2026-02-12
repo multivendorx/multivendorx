@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, useModules, Tabs, Container, Column, MessageState } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, useModules, Container, Column, MessageState, SettingsNavigator } from 'zyra';
 import './CustomerSupport.scss';
 import '../AdminDashboard/AdminDashboard.scss';
 import Qna from './QnATable';
@@ -11,7 +11,7 @@ const CustomerSupport = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const tabContent = [
 		{
 			type: 'file',
 			module: 'question-answer',
@@ -82,22 +82,17 @@ const CustomerSupport = () => {
 					'multivendorx'
 				)}
 			/>
-			{tabData.length > 0 ? (
-				<Tabs
-					tabData={tabData}
+			{tabContent.length > 0 ? (
+				<SettingsNavigator
+					tabContent={tabContent}
 					currentTab={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>
 						`?page=multivendorx#&tab=customer-support&subtab=${subTab}`
 					}
 					appLocalizer={appLocalizer}
-					supprot={[]}
 					Link={Link}
-					hideTitle={true}
-					hideBreadcrumb={true}
 					variant={'compact'}
-					premium={false}
-					menuIcon={true}
 				/>
 			) : (
 				<Container general>

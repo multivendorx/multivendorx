@@ -4,14 +4,14 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs, 
+	AdminBreadcrumbs,
 	TextArea,
 	CommonPopup,
 	ToggleSettingUI,
 	Container,
 	Column,
 	FormGroupWrapper,
-	FormGroup, 
+	FormGroup,
 	ProPopup,
 	TableCard,
 	BasicInputUI,
@@ -340,16 +340,15 @@ export const KnowledgeBase: React.FC = () => {
 					'multivendorx'
 				)}
 				buttons={[
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={() => {
+					{
+						label: __('Add New', 'multivendorx'),
+						className: "admin-btn btn-purple-bg",
+						iconClass: 'adminfont-plus',
+						onClick: () => {
 							setValidationErrors({});
 							setAddEntry(true);
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>,
+						}
+					}
 				]}
 			/>
 
