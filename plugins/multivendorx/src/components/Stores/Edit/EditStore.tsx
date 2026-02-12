@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	ToggleSettingUI,
 	getApiLink,
-	Tabs,
 	CommonPopup,
 	useModules,
 	SuccessNotice,
@@ -12,7 +11,8 @@ import {
 	Popover,
 	Skeleton,
 	AdminButtonUI,
-	SelectInputUI
+	SelectInputUI,
+	SettingsNavigator
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -413,13 +413,12 @@ const EditStore = () => {
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
-			<Tabs
+			<SettingsNavigator
 				tabContent={visibleTabs}
 				currentTab={currentTab}
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
-				premium={false}
 				tabTitleSection={
 					<>
 						<div className="general-wrapper">
@@ -973,8 +972,6 @@ const EditStore = () => {
 				}
 				Link={Link}
 				settingName={'Store'}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				action={
 					<Popover
 						className="edit-wrapper"

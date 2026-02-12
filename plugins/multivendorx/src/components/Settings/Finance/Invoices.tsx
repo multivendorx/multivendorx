@@ -7,8 +7,8 @@ import {
 	getAvailableSettings,
 	getSettingById,
 	AdminForm,
-	Tabs,
 	useModules,
+	SettingsNavigator,
 } from 'zyra';
 
 // Types
@@ -140,18 +140,15 @@ const Invoice: React.FC = () => {
 	return (
 		<SettingProvider>
 			<div className="horizontal-tabs">
-				<Tabs
+				<SettingsNavigator
 					tabContent={tabContent as any}
 					currentTab={initialTab}
 					getForm={GetForm}
 					prepareUrl={(tabid: string) =>
 						`?page=multivendorx#&tab=settings&subtab=invoice&tabId=${tabid}`
 					}
-					appLocalizer={appLocalizer}
 					settingName="Settings"
-					supprot={[]}
 					Link={Link}
-					submenuRender={true}
 					menuIcon={true}
 				/>
 			</div>

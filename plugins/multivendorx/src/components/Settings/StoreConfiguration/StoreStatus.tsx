@@ -7,8 +7,8 @@ import {
 	getAvailableSettings,
 	getSettingById,
 	AdminForm,
-	Tabs,
 	useModules,
+	SettingsNavigator,
 } from 'zyra';
 
 // Types
@@ -148,7 +148,7 @@ const StoreStatus: React.FC = () => {
 	return (
 		<SettingProvider>
 			<div className="horizontal-tabs">
-				<Tabs
+				<SettingsNavigator
 					tabContent={tabContent as any}
 					currentTab={initialTab}
 					getForm={GetForm}
@@ -157,9 +157,7 @@ const StoreStatus: React.FC = () => {
 					}
 					appLocalizer={appLocalizer}
 					settingName="Settings"
-					supprot={[]}
 					Link={Link}
-					submenuRender={true}
 					menuIcon={true}
 				/>
 			</div>

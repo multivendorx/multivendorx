@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, useModules, Tabs, Container, Column, MessageState } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, useModules, Container, Column, MessageState, SettingsNavigator } from 'zyra';
 import './CustomerSupport.scss';
 import '../AdminDashboard/AdminDashboard.scss';
 import Qna from './QnATable';
@@ -83,7 +83,7 @@ const CustomerSupport = () => {
 				)}
 			/>
 			{tabContent.length > 0 ? (
-				<Tabs
+				<SettingsNavigator
 					tabContent={tabContent}
 					currentTab={location.get('subtab') as string}
 					getForm={getForm}

@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, Tabs } from 'zyra';
+import { AdminBreadcrumbs, SettingsNavigator,  } from 'zyra';
 import '../../dashboard/dashboardCommon.scss';
 import { useLocation, Link } from 'react-router-dom';
 import MarketplaceReport from './MarketplaceReport';
@@ -156,7 +156,7 @@ const Reports = () => {
 				)}
 			/>
 
-			<Tabs
+			<SettingsNavigator
 				tabContent={tabContent}
 				currentTab={location.get('subtab') as string}
 				getForm={getForm}
@@ -164,12 +164,8 @@ const Reports = () => {
 					`?page=multivendorx#&tab=reports&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]}
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'compact'}
-				premium={false}
 				menuIcon={true}
 			/>
 		</>

@@ -13,8 +13,8 @@ import {
 	Support,
 	AdminForm,
 	Banner,
-	Tabs,
 	useModules,
+	SettingsNavigator,
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
@@ -251,7 +251,7 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<Tabs
+			<SettingsNavigator
 				tabContent={settingsArray as any}
 				currentTab={location.get('subtab') as string}
 				getForm={GetForm}

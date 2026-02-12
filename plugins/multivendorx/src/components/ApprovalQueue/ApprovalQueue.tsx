@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, Tabs, useModules } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, SettingsNavigator, useModules } from 'zyra';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
@@ -343,7 +343,7 @@ const ApprovalQueue = () => {
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'
 				}
 			/>
-			<Tabs
+			<SettingsNavigator
 				tabContent={tabContent}
 				currentTab={location.get('subtab') as string}
 				getForm={getForm}

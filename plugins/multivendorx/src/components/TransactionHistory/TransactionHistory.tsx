@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import '../Announcements/Announcements.scss';
-import { AdminBreadcrumbs, getApiLink, SelectInputUI, Tabs } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, SelectInputUI, SettingsNavigator } from 'zyra';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';
@@ -124,7 +124,7 @@ export const TransactionHistory: React.FC = () => {
 				}
 			/>
 
-			<Tabs
+			<SettingsNavigator
 				tabContent={tabContent}
 				currentTab={locationUrl.get('subtab') as string}
 				getForm={getForm}
@@ -132,12 +132,8 @@ export const TransactionHistory: React.FC = () => {
 					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]} // keeping your original key
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'compact'}
-				premium={false}
 				menuIcon={true}
 			/>
 		</>

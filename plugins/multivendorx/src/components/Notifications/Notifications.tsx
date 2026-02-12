@@ -1,4 +1,4 @@
-import { Tabs } from 'zyra';
+import { SettingsNavigator } from 'zyra';
 import { Link, useLocation } from 'react-router-dom';
 import NotificationTable from './NotificationTable';
 import ActivityTable from './ActivityTable';
@@ -42,7 +42,7 @@ const Notifications = () => {
 	};
 
 	return (
-		<Tabs
+		<SettingsNavigator
 			tabContent={tabContent}
 			currentTab={initialTab}
 			getForm={getForm}

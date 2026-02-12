@@ -10,17 +10,15 @@ import { getTemplateData } from '../../services/templateService';
 import {
 	getAvailableSettings,
 	getSettingById,
-	Support,
 	RenderComponent,
 	Banner,
-	Tabs,
 	useModules,
+	SettingsNavigator,
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
-import Invoice from './Finance/Invoices.tsx';
 
 // Types
 type SettingItem = Record<string, any>;
@@ -212,7 +210,7 @@ const Settings: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<Tabs
+			<SettingsNavigator
 				tabContent={settingsArray as any}
 				currentTab={location.get('subtab') as string}
 				getForm={GetForm}
