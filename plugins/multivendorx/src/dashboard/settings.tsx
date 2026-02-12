@@ -48,7 +48,7 @@ const settings = () => {
 	// Build hash URL for a given tab
 	const prepareUrl = (tabId: string) => `#subtab=${tabId}`;
 
-	const tabContent = applyFilters(
+	const settingContent = applyFilters(
 		'multivendorx_store_settings_tabs',
 		[
 			{
@@ -193,8 +193,8 @@ const settings = () => {
 		<>
 			<div className="horizontal-tabs">
 				<SettingsNavigator
-					tabContent={tabContent}
-					currentTab={currentTab}
+					settingContent={settingContent}
+					currentSetting={currentTab}
 					getForm={getForm}
 					prepareUrl={prepareUrl}
 					appLocalizer={appLocalizer}

@@ -29,14 +29,14 @@ const ViewNotifications = (React.FC = () => {
 	// Build hash URL for a given tab
 	const prepareUrl = (tabId: string) => `#subtab=${tabId}`;
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'notifications',
 				name: 'Notifications',
 				desc: 'general',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'notification',
 			},
 		},
@@ -46,7 +46,7 @@ const ViewNotifications = (React.FC = () => {
 				id: 'activity',
 				name: 'Activities',
 				desc: 'appearance',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'tools',
 			},
 		},
@@ -56,7 +56,7 @@ const ViewNotifications = (React.FC = () => {
 				id: 'announcements',
 				name: 'Announcements',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'announcement',
 			},
 		},
@@ -77,8 +77,8 @@ const ViewNotifications = (React.FC = () => {
 	return (
 		<>
 			<SettingsNavigator
-				tabData={tabData}
-				currentTab={currentTab}
+				settingContent={settingContent}
+				currentSetting={currentTab}
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
