@@ -113,8 +113,8 @@ const Modules: React.FC<ModuleProps> = ({
 
     const isModuleAvailable = (moduleId: string): boolean => {
         const module = modulesArray.modules.find(
-            (m) => isModule(m) && m.id === moduleId
-        ) as Module | undefined;
+            (moduleData) => isModule(moduleData) && moduleData.id === moduleId
+        ) as Module;
         return module?.proModule ? appLocalizer.khali_dabba ?? false : true;
     };
 
