@@ -65,11 +65,14 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 }) => {
     const [activeTab, setActiveTab] = useState(currentTab);
 
-    const { flatMap, parentMap, pathMap, firstFileMap } = useMemo(() => {
-        const fMap: Record<string, Content> = {};
-        const pMap: Record<string, TabContent[]> = {};
-        const pathM: Record<string, TabContent[]> = {};
-        const ffMap: Record<string, string> = {};
+    /**
+     * Pre-calculates navigation maps for O(1) lookups during render and navigation.
+     */
+    const { flatContentMap, siblingLevelMap, hierarchyPathMap, folderToFirstFileMap } = useMemo(() => {
+        const flatContent: Record<string, Content> = {};
+        const siblings: Record<string, TabContent[]> = {};
+        const paths: Record<string, TabContent[]> = {};
+        const firstFiles: Record<string, string> = {};
 
         const traverse = (items: TabContent[], currentPath: TabContent[] = []) => {
             let firstFileInThisLevel: string | null = null;
@@ -77,15 +80,15 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             items.forEach(item => {
                 if (isFile(item)) {
                     const id = item.content.id;
-                    fMap[id] = item.content;
-                    pMap[id] = items;
-                    pathM[id] = [...currentPath, item];
+                    flatContent[id] = item.content;
+                    siblings[id] = items;
+                    paths[id] = [...currentPath, item];
                     if (!firstFileInThisLevel) firstFileInThisLevel = id;
                 } else if (isFolder(item)) {
-                    const folderFirstFile = traverse(item.content, [...currentPath, item]);
-                    if (folderFirstFile) {
-                        ffMap[item.name || ''] = folderFirstFile;
-                        if (!firstFileInThisLevel) firstFileInThisLevel = folderFirstFile;
+                    const folderFirstFileId = traverse(item.content, [...currentPath, item]);
+                    if (folderFirstFileId) {
+                        firstFiles[item.name || ''] = folderFirstFileId;
+                        if (!firstFileInThisLevel) firstFileInThisLevel = folderFirstFileId;
                     }
                 }
             });
@@ -93,12 +96,17 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         };
 
         traverse(tabContent);
-        return { flatMap: fMap, parentMap: pMap, pathMap: pathM, firstFileMap: ffMap };
+        return { 
+            flatContentMap: flatContent, 
+            siblingLevelMap: siblings, 
+            hierarchyPathMap: paths, 
+            folderToFirstFileMap: firstFiles 
+        };
     }, [tabContent]);
 
-    const activeTabPath = pathMap[activeTab] || [];
-    const activeFile = flatMap[activeTab];
-    const currentMenu = parentMap[activeTab] || tabContent;
+    const activeTabPath = hierarchyPathMap[activeTab] || [];
+    const activeFile = flatContentMap[activeTab];
+    const currentMenu = siblingLevelMap[activeTab] || tabContent;
     const showSubmenu = activeTabPath.length > 1;
 
     const navigate = (tabId?: string) => {
@@ -112,19 +120,24 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     const handleBreadcrumbClick = (index: number, e: React.MouseEvent) => {
         e.preventDefault();
         if (index === 0) {
-            const first = firstFileMap['root'] || Object.keys(flatMap)[0];
-            navigate(first);
+            const firstRootFile = folderToFirstFileMap['root'] || Object.keys(flatContentMap)[0];
+            navigate(firstRootFile);
             return;
         }
+        
         const targetItem = activeTabPath[index - 1];
         if (!targetItem) return;
 
-        if (isFile(targetItem)) navigate(targetItem.content.id);
-        else if (isFolder(targetItem)) navigate(firstFileMap[targetItem.name || '']);
+        if (isFile(targetItem)) {
+            navigate(targetItem.content.id);
+        } else if (isFolder(targetItem)) {
+            navigate(folderToFirstFileMap[targetItem.name || '']);
+        }
     };
 
     const renderBreadcrumbLinks = () => {
         const crumbs: BreadcrumbItem[] = [{ name: settingName, id: 'root', type: 'root' }];
+        
         activeTabPath.forEach(item => {
             crumbs.push({
                 name: isFile(item) ? item.content.name : (item.name || ''),
@@ -136,7 +149,10 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         return crumbs.map((crumb, index) => (
             <span key={`${crumb.id}-${index}`}>
                 {index > 0 && ' / '}
-                <Link to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'} onClick={(e) => handleBreadcrumbClick(index, e)}>
+                <Link 
+                    to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'} 
+                    onClick={(e) => handleBreadcrumbClick(index, e)}
+                >
                     {crumb.name}
                 </Link>
             </span>
@@ -144,7 +160,9 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     };
 
     const renderSingleMenuItem = (item: TabContent, index: number) => {
-        if (item.type === 'heading') return <div key={index} className="tab-heading">{item.name}</div>;
+        if (item.type === 'heading') {
+            return <div key={index} className="tab-heading">{item.name}</div>;
+        }
 
         if (isFile(item)) {
             const tab = item.content;
@@ -171,17 +189,18 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         }
 
         if (isFolder(item)) {
-            const firstId = firstFileMap[item.name || ''];
-            const isActive = activeTabPath.some(pathItem => pathItem === item);
+            const firstInFolderId = folderToFirstFileMap[item.name || ''];
+            const isPartOfActivePath = activeTabPath.some(pathItem => pathItem === item);
+            
             return (
                 <Link
                     key={index}
-                    to={firstId ? prepareUrl(firstId) : '#'}
-                    className={`tab ${isActive ? 'active-tab' : ''}`}
+                    to={firstInFolderId ? prepareUrl(firstInFolderId) : '#'}
+                    className={`tab ${isPartOfActivePath ? 'active-tab' : ''}`}
                     onClick={(e) => {
-                        if (firstId && e.button === 0 && !e.metaKey && !e.ctrlKey) {
+                        if (firstInFolderId && e.button === 0 && !e.metaKey && !e.ctrlKey) {
                             e.preventDefault();
-                            navigate(firstId);
+                            navigate(firstInFolderId);
                         }
                     }}
                 >
@@ -197,11 +216,17 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     const renderTabHeaderInfo = () => {
         if (!activeFile || activeFile.id === 'support' || activeFile.hideTabHeader) return null;
         const description = activeFile.tabDes?.trim() || activeFile.desc || '';
+        
         return (
             <div className="divider-wrapper">
                 <div className="divider-section">
                     <div className="title">{activeFile.tabTitle ?? activeFile.name}</div>
-                    {description && <div className="desc" dangerouslySetInnerHTML={{ __html: description }}></div>}
+                    {description && (
+                        <div 
+                            className="desc" 
+                            dangerouslySetInnerHTML={{ __html: description }}
+                        ></div>
+                    )}
                 </div>
             </div>
         );
@@ -211,15 +236,15 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         if (currentTab) {
             setActiveTab(currentTab);
         } else {
-            const tabIds = Object.keys(flatMap);
-            if (tabIds.length > 0) {
-                const firstId = tabIds[0];
-                setActiveTab(firstId);
-                const url = prepareUrl(firstId);
+            const availableTabs = Object.keys(flatContentMap);
+            if (availableTabs.length > 0) {
+                const firstAvailableId = availableTabs[0];
+                setActiveTab(firstAvailableId);
+                const url = prepareUrl(firstAvailableId);
                 window.history.replaceState(null, '', url);
             }
         }
-    }, [currentTab, flatMap, prepareUrl]);
+    }, [currentTab, flatContentMap, prepareUrl]);
 
     return (
         <>
