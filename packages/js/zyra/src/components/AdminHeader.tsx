@@ -119,6 +119,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                     {utilityListWithTab.map((list, index) => (
                         <PopupUI
                             key={index}
+                            position="menu-dropdown"
                             toggleIcon={list?.toggleIcon}
                             width={24}
                         >
@@ -130,6 +131,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                     {utilityList.map((list, index) => (
                         <PopupUI
                             key={index}
+                            position="menu-dropdown"
                             toggleIcon={list.toggleIcon}
                         >
                             <ItemList items={list.items} />

@@ -3,15 +3,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	CommonPopup,
 	getApiLink,
 	FormGroupWrapper,
 	FormGroup,
-	TextArea,
 	ProPopup,
 	TableCard,
 	AdminButtonUI,
 	ToggleSettingUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
@@ -338,10 +338,10 @@ const StoreReviews: React.FC = () => {
 			/>
 
 			{selectedReview && (
-				<CommonPopup
+				<PopupUI
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
-					width="31.25rem"
+					width={31.25}
 					height="80%"
 					header={{
 						icon: 'store-review',
@@ -431,7 +431,7 @@ const StoreReviews: React.FC = () => {
 
 						<FormGroupWrapper>
 							<FormGroup label={__('Respond to customer', 'multivendorx')} htmlFor="reply">
-								<TextArea
+								<TextAreaUI
 									name="reply"
 									value={replyText}
 									onChange={(e) => setReplyText(e.target.value)}
@@ -480,7 +480,7 @@ const StoreReviews: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

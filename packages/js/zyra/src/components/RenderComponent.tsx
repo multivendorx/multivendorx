@@ -583,7 +583,7 @@ const RenderComponent: React.FC<RenderProps> = ({
         <>
             {modelOpen && (
                 <PopupUI
-                    position="center"
+                    position="lightbox"
                     open={modelOpen}
                     onClose={handleModelClose}
                     width="31.25rem"

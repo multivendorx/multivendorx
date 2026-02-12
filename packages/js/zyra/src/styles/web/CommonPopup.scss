@@ -1,51 +1,6 @@
 @use '../../global.scss' as *;
 
 .MuiDialog-container {
-    .title-wrapper {
-        padding: 1.313rem;
-        border-bottom: $border-light-small;
-        position: relative;
-        background: $background-white;
-
-        .title {
-            font-size: 1.313rem;
-            color: $text-color;
-            padding-bottom: 0.125rem;
-            line-height: 1.625rem;
-
-            i {
-                color: $theme-color;
-                font-size: 1.625rem;
-                margin-right: 0.5rem;
-            }
-        }
-
-        p {
-            font-size: 0.85rem;
-            margin: 0;
-            padding-top: 0.125rem;
-            font-weight: 400;
-            padding-right: 1rem;
-        }
-
-        .icon {
-            position: absolute;
-            background: #fde8e4;
-            padding: 0.125rem;
-            font-size: 0.95rem;
-            color: $accent-color;
-            border-radius: 50%;
-            cursor: pointer;
-            top: 1.313rem;
-            right: 1.313rem;
-        }
-    }
-
-    .popup-footer {
-        padding: 0.813rem;
-        border-top: $border-light-small;
-    }
-
     .admin-table-header {
         background: $theme-background-color;
         color: $theme-color;
@@ -62,11 +17,6 @@
 
 .MuiDialog-container {
     .content {
-        max-height: 70vh;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-
         .form-group-wrapper {
             // display: flex;
             // flex-direction: column;
@@ -115,12 +65,6 @@
                     padding-right: 0.5rem;
                 }
             }
-        }
-
-        .heading {
-            font-size: 1.125rem;
-            font-weight: 500;
-            // margin-bottom: 1.125rem;
         }
 
         .vendor-details {

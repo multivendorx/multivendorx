@@ -1,26 +1,31 @@
 import React, {
     forwardRef,
     useRef,
-    useState,
+    useState
 } from 'react';
 import { useOutsideClick } from '../useOutsideClick';
-// import '../styles/web/Popup.scss';
-
 import { FieldComponent } from '../types';
 
 export type PopupPosition =
-    | 'inline'
-    | 'right'
-    | 'left'
-    | 'top'
-    | 'bottom'
-    | 'center';
+    | 'menu-dropdown'
+    | 'slide-right-to-left'
+    | 'slide-left-to-right'
+    | 'slide-top-to-bottom'
+    | 'slide-bottom-to-top'
+    | 'lightbox';
+
+export interface PopupHeaderProps {
+    icon?: string;
+    title?: string;
+    description?: string;
+    showCloseButton?: boolean;
+}
 
 export interface PopupProps {
     position?: PopupPosition;
     open?: boolean;
     toggleIcon?: string;
-    header?: PopoverHeaderProps;
+    header?: PopupHeaderProps;
     footer?: React.ReactNode;
     width?: number | string;
     height?: number | string;
@@ -34,11 +39,11 @@ export interface PopupProps {
 export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
     (
         {
-            position = 'inline',
+            position = 'slide-right-to-left',
             open: controlledOpen,
             toggleIcon,
             width = 14,
-            height = 'auto',
+            height = 'fit-content',
             className = '',
             showBackdrop = true,
             onOpen,
@@ -49,98 +54,75 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
         },
         ref
     ) => {
-        const [internalOpen, setInternalOpen] =
-            useState(false);
+        const [internalOpen, setInternalOpen] = useState(false);
+        const wrapperRef = useRef<HTMLDivElement>(null);
 
-        const wrapperRef =
-            useRef<HTMLDivElement>(null);
-
-        const isControlled =
-            controlledOpen !== undefined;
-        const open = isControlled
-            ? controlledOpen
-            : internalOpen;
+        const isControlled = controlledOpen !== undefined;
+        const open = isControlled ? controlledOpen : internalOpen;
 
         const handleOpen = () => {
-            if (!isControlled)
-                setInternalOpen(true);
+            if (!isControlled) setInternalOpen(true);
             onOpen?.();
         };
 
         const handleClose = () => {
-            if (!isControlled)
-                setInternalOpen(false);
+            if (!isControlled) setInternalOpen(false);
             onClose?.();
         };
 
-        const handleToggle = (
-            e: React.MouseEvent
-        ) => {
+        const handleToggle = (e: React.MouseEvent) => {
             e.stopPropagation();
-            open
-                ? handleClose()
-                : handleOpen();
+            open ? handleClose() : handleOpen();
         };
 
         useOutsideClick(wrapperRef, () => {
             if (open) handleClose();
         });
 
-        const styles: React.CSSProperties =
-        {
+        const styles: React.CSSProperties = {
             minWidth: typeof width === 'number' ? `${width}rem` : width,
             height: typeof height === 'number' ? `${height}rem` : height,
         };
 
         return (
-            <div className={`popup popup-${position} ${className}`}>
+            <div 
+                className={`popup ${className} ${open ? 'popup-open' : ''}`} 
+                ref={wrapperRef}
+            >
                 {toggleIcon && (
                     <div className="popup-toggle" onClick={handleToggle}>
-                        <i className={ toggleIcon }/>
+                        <i className={toggleIcon} />
                     </div>
                 )}
 
                 {showBackdrop && !toggleIcon && open && (
                     <div
                         className="popup-backdrop"
-                        onClick={
-                            handleClose
-                        }
+                        onClick={handleClose}
                     />
                 )}
 
                 {open && (
                     <div
-                        className="popup-content"
+                        className={`popup-content`}
                         style={styles}
-                        onClick={(
-                            e
-                        ) =>
-                            e.stopPropagation()
-                        }
+                        data-position={position}
+                        onClick={(e) => e.stopPropagation()}
+                        ref={ref}
                     >
                         {header && (
-                            <div className="popover-header">
-                                <div className="popover-header-content">
-                                    {header.icon && (
-                                        <i className={`popover-header-icon ${header.icon}`}></i>
-                                    )}
-                                    <div className="popover-header-text">
-                                        <div className="popover-title">{header.title}</div>
-                                        {header.description && (
-                                            <div className="popover-description">{header.description}</div>
-                                        )}
-                                    </div>
+                            <div className="popup-header">
+                                <div className="popup-title">
+                                    {header.icon && <i className={`adminfont-${header.icon}`}></i>}
+                                    {header.title}
                                 </div>
-                                {header.showCloseButton && (
-                                    <button
-                                        className="popover-close-button"
-                                        onClick={handleClose}
-                                        aria-label="Close"
-                                    >
-                                        <i className="icon adminfont-close"></i>
-                                    </button>
+                                {header.description && (
+                                    <div className="desc">{header.description}</div>
                                 )}
+                                <i 
+                                    onClick= {handleClose}
+                                    className="icon adminfont-close"
+                                ></i>
                             </div>
                         )}
 
@@ -149,7 +131,7 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
                         </div>
 
                         {footer && (
-                            <div className="popover-footer">
+                            <div className="popup-footer">
                                 {footer}
                             </div>
                         )}
@@ -159,8 +141,6 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
         );
     }
 );
-
-PopupUI.displayName = 'PopupUI';
 
 const Popup: FieldComponent = {
     render: ({
@@ -174,6 +154,8 @@ const Popup: FieldComponent = {
             className={field.className}
             showBackdrop={field.showBackdrop}
             open={field.open}
+            onClose={field.onClose}
+            onOpen={field.onOpen}
             header={field.header}
             footer={field.footer}
         >

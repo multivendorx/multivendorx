@@ -4,8 +4,6 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	TextArea,
 	FormGroupWrapper,
 	FormGroup,
 	ProPopup,
@@ -13,6 +11,8 @@ import {
 	BasicInputUI,
 	AdminButtonUI,
 	ToggleSettingUI,
+	TextAreaUI,
+	PopupUI,
 } from 'zyra';
 
 import { Dialog } from '@mui/material';
@@ -316,10 +316,10 @@ const Qna: React.FC = () => {
 				filters={filters}
 			/>
 			{selectedQna && (
-				<CommonPopup
+				<PopupUI
 					open={selectedQna}
 					onClose={() => setSelectedQna(null)}
-					width="30rem"
+					width={30}
 					height="70%"
 					header={{
 						icon: 'question',
@@ -357,7 +357,7 @@ const Qna: React.FC = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
-								<TextArea
+								<TextAreaUI
 									name="answer"
 									value={answer}
 									onChange={(e) => setAnswer(e.target.value)}
@@ -399,7 +399,7 @@ const Qna: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

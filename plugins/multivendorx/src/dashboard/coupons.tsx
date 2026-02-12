@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
-import { 
+import {
 	AdminButtonUI,
 	BasicInputUI,
-	CommonPopup,
 	FormGroup,
 	FormGroupWrapper,
 	MultiCalendarInput,
+	PopupUI,
 	ProPopup,
 	SelectInputUI,
 	Table,
 	TableCell,
-	TextArea,
+	TextAreaUI,
 	ToggleSettingUI,
 } from 'zyra';
 import {
@@ -925,10 +925,10 @@ const AllCoupon: React.FC = () => {
 			</div>
 
 			{AddCoupon && (
-				<CommonPopup
+				<PopupUI
 					open={AddCoupon}
 					onClose={() => setAddCoupon(false)}
-					width="31.25rem"
+					width={31.25}
 					height="100%"
 					header={{
 						icon: 'coupon',
@@ -955,7 +955,6 @@ const AllCoupon: React.FC = () => {
 							]}
 						/>
 					}
-
 				>
 					<>
 						<FormGroupWrapper>
@@ -980,7 +979,7 @@ const AllCoupon: React.FC = () => {
 							</FormGroup>
 
 							<FormGroup label={__('Description (optional)', 'multivendorx')} htmlFor="title">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									rowNumber={6}
 									value={formData.content}
@@ -1019,7 +1018,7 @@ const AllCoupon: React.FC = () => {
 							)}
 						</div>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 			<Dialog
 				open={confirmOpen}

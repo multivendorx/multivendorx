@@ -359,7 +359,7 @@ export const KnowledgeBase: React.FC = () => {
 					onClose={handleCloseForm}
 					width="31.25rem"
 					height="70%"
-					position="center"
+					position="slide-right-to-left"
 					showBackdrop={true}
 					header={{
 						icon: 'book',

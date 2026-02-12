@@ -303,7 +303,6 @@ const App = () => {
 			/>
 
 			<PopupUI
-				position="right"
 				open={openFeaturePopup}
 				onClose={handleCloseFeaturePopup}
 				width={31.25}
