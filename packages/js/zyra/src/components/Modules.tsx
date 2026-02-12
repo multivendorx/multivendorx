@@ -63,10 +63,17 @@ const Modules: React.FC<ModuleProps> = ({
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [successMsg, setSuccessMsg] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [selectedFilter] = useState<string>('Total');
-    const [searchQuery] = useState<string>('');
+    const [selectedFilter, setSelectedFilter] = useState<string>('Total');
+    const [searchQuery,setSearchQuery] = useState<string>('');
 
     const { modules, insertModule, removeModule } = useModules();
+    const totalCount = modulesArray.modules.filter(isModule).length;
+
+    const activeCount = modulesArray.modules.filter(
+        (item) => isModule(item) && modules.includes(item.id)
+    ).length;
+
+    const inactiveCount = totalCount - activeCount;
 
     const formatCategory = (category: string): string =>
         category
@@ -194,6 +201,36 @@ const Modules: React.FC<ModuleProps> = ({
                 </Dialog>
 
                 {successMsg && (<SuccessNotice title={'Success!'} message={successMsg} />)}
+                <div className="status-filter">
+                    <span
+                        className={`status-item ${selectedFilter === 'All' ? 'active' : ''}`}
+                        onClick={() => setSelectedFilter('All')}
+                    >
+                        All ({totalCount})
+                    </span>
+
+                    <span
+                        className={`status-item ${selectedFilter === 'Active' ? 'active' : ''}`}
+                        onClick={() => setSelectedFilter('Active')}
+                    >
+                        Active ({activeCount})
+                    </span>
+
+                    <span
+                        className={`status-item ${selectedFilter === 'Inactive' ? 'active' : ''}`}
+                        onClick={() => setSelectedFilter('Inactive')}
+                    >
+                        Inactive ({inactiveCount})
+                    </span>
+                </div>
+                <div className="module-search">
+                    <input
+                        type="text"
+                        placeholder="Search modules..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
 
                 <div className="category-filter">
                     {modulesArray.category && categories.length > 1 &&
@@ -264,12 +301,12 @@ const Modules: React.FC<ModuleProps> = ({
                                                 look="toggle"
                                                 type="checkbox"
                                                 value={modules.includes(module.id) ? [module.id] : []}
-                                                onChange={(e) => 
+                                                onChange={(e) =>
                                                     handleOnChange(
-                                                    e,
-                                                    module.id,
-                                                    module.reloadOnChange
-                                                )}
+                                                        e,
+                                                        module.id,
+                                                        module.reloadOnChange
+                                                    )}
                                                 options={[
                                                     { key: module.id, value: module.id },
                                                 ]}
