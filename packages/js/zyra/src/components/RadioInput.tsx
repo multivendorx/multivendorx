@@ -16,7 +16,7 @@ interface RadioInputProps {
     type?: 'default';
     options: RadioOption[];
     value?: string;
-    onChange?: ( e: ChangeEvent< HTMLInputElement > ) => void;
+    onChange: (val: string | number) => void;
 }
 
 const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
