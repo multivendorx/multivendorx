@@ -23,10 +23,11 @@ type CustomStyle = {
 type ButtonConfig = {
     icon?: string;
     text: string; 
-    onClick?: React.MouseEventHandler<HTMLDivElement>; 
+    onClick?: React.MouseEventHandler<HTMLButtonElement>; 
     color?: string;
     children?: React.ReactNode;
     customStyle?: CustomStyle;
+    disabled?: boolean;
 };
 
 type AdminButtonProps = {
@@ -44,7 +45,6 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
 
     const renderedButtons = buttonsArray.map((btn, index) => {
         const [hovered, setHovered] = useState(false);
-
         const baseStyle = btn.customStyle
             ? {
                   border: `${btn.customStyle.button_border_size ?? ""}px solid ${
@@ -80,12 +80,13 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                 : undefined;
 
         return (
-            <div
+            <button
                 key={index}
                 className={`admin-btn ${
                     btn.color ? `btn-${btn.color}` : "btn-purple-bg"
                 }`}
-                onClick={btn.onClick} // Now TypeScript is happy with this
+                onClick={btn.onClick}
+                disabled={ btn.disabled }
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 style={hoverStyle ?? baseStyle}
@@ -98,7 +99,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                         {btn.customStyle?.button_text ?? btn.text}
                     </>
                 )}
-            </div>
+            </button>
         );
     });
 
