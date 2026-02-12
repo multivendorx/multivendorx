@@ -7,6 +7,8 @@ import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 import '../styles/web/Modules.scss';
+import SuccessNotice from './SuccessNotice';
+import { MultiCheckBoxUI } from './MultiCheckbox';
 
 // Types
 interface Module {
@@ -109,7 +111,7 @@ const Modules: React.FC<ModuleProps> = ({
     };
 
     const handleOnChange = async (
-        event: React.ChangeEvent<HTMLInputElement>,
+        event: [],
         moduleId: string,
         reloadOnChange = false
     ) => {
@@ -118,7 +120,7 @@ const Modules: React.FC<ModuleProps> = ({
             return;
         }
 
-        const action = event.target.checked ? 'activate' : 'deactivate';
+        const action = event.length > 0 ? 'activate' : 'deactivate';
         try {
             if (action === 'activate') {
                 insertModule?.(moduleId);
@@ -191,15 +193,7 @@ const Modules: React.FC<ModuleProps> = ({
                     {ProPopupComponent && <ProPopupComponent />}
                 </Dialog>
 
-                {successMsg && (
-                    <div className="admin-notice-wrapper">
-                        <i className="admin-font adminfont-icon-yes"></i>
-                        <div className="notice-details">
-                            <div className="title">Success!</div>
-                            <div className="desc">{successMsg}</div>
-                        </div>
-                    </div>
-                )}
+                {successMsg && (<SuccessNotice title={'Success!'} message={successMsg} />)}
 
                 <div className="category-filter">
                     {modulesArray.category && categories.length > 1 &&
@@ -266,14 +260,20 @@ const Modules: React.FC<ModuleProps> = ({
                                             {module.settingsLink && <a href={module.settingsLink}><i className="adminfont-setting"></i></a>}
                                         </div>
                                         <div className="toggle-checkbox" data-tour={`${module.id}-showcase-tour`}>
-                                            <input
+                                            <MultiCheckBoxUI
+                                                look="toggle"
                                                 type="checkbox"
-                                                className="woo-toggle-checkbox"
-                                                id={`toggle-switch-${module.id}`}
-                                                checked={modules.includes(module.id)}
-                                                onChange={(e) => handleOnChange(e, module.id, module.reloadOnChange)}
+                                                value={modules.includes(module.id) ? [module.id] : []}
+                                                onChange={(e) => 
+                                                    handleOnChange(
+                                                    e,
+                                                    module.id,
+                                                    module.reloadOnChange
+                                                )}
+                                                options={[
+                                                    { key: module.id, value: module.id },
+                                                ]}
                                             />
-                                            <label htmlFor={`toggle-switch-${module.id}`} className="toggle-switch-is_hide_cart_checkout"></label>
                                         </div>
                                     </div>
                                 </div>
