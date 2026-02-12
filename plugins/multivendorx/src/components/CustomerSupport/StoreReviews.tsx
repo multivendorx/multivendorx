@@ -12,7 +12,6 @@ import {
 	PopupUI,
 	TextAreaUI,
 } from 'zyra';
-import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -302,7 +301,7 @@ const StoreReviews: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -322,7 +321,7 @@ const StoreReviews: React.FC = () => {
 						setSelectedRv(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 
 			<TableCard
 				headers={headers}

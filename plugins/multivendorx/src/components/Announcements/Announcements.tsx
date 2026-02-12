@@ -21,7 +21,6 @@ import {
 
 import './Announcements.scss';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
-import { Dialog } from '@mui/material';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 

@@ -18,7 +18,6 @@ import {
 } from 'zyra';
 
 import '../Announcements/Announcements.scss';
-import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 

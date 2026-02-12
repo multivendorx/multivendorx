@@ -9,7 +9,6 @@ import {
 	MultiCalendarInput,
 	FormGroupWrapper,
 	FormGroup,
-	ProPopup,
 	AdminButtonUI,
 	ToggleSettingUI,
 	PopupUI,
@@ -20,7 +19,6 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { Dialog } from '@mui/material';
 
 type Review = {
 	review_id: number;
@@ -532,7 +530,7 @@ const SupportTickets: React.FC = () => {
 				realtimeFilter={realtimeFilter}
 			/>
 
-			<Dialog
+			{/* <Dialog
 				open={deleteReview}
 				onClose={() => setDeleteReview(false)}
 			>
@@ -553,7 +551,7 @@ const SupportTickets: React.FC = () => {
 						// setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 
 			{selectedReview && (
 				<PopupUI

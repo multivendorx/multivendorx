@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, Container, Column, TableCard } from 'zyra';
-import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
