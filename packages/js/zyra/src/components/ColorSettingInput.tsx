@@ -47,9 +47,6 @@ interface Template {
 interface ColorSettingProps {
     wrapperClass?: string;
     inputClass?: string;
-    descClass?: string;
-    description?: string;
-
     predefinedOptions: PaletteOption[];
     images: ImagePaletteOption[];
 
@@ -462,13 +459,6 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                     </div>
                 )}
 
-                {props.description && (
-                    <p
-                        className={props.descClass}
-                        dangerouslySetInnerHTML={{ __html: props.description }}
-                    ></p>
-                )}
-
                 {props.showPdfButton && ActivePdf && (
                     <PdfDownloadButton
                         PdfComponent={() => <ActivePdf colors={selectedColors as CustomColors} />}
@@ -485,7 +475,6 @@ const ColorSettingInput: FieldComponent = {
         <ColorSettingInputUI
             wrapperClass="form-group-color-setting"
             inputClass="setting-form-input"
-            description={field.desc}
             predefinedOptions={field.predefinedOptions ?? []}
             images={field.images ?? []}
             value={value}

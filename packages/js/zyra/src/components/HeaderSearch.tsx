@@ -27,9 +27,9 @@ type SearchPayload =
 
 type HeaderSearchProps = {
     search?: SearchConfig;
-    results: SearchItem[];
+    results?: SearchItem[];
     onQueryUpdate: (payload: SearchPayload) => void;
-    onResultClick: (res: SearchItem) => void;
+    onResultClick?: (res: SearchItem) => void;
 };
 
 const HeaderSearch: React.FC<HeaderSearchProps> = ({
@@ -64,7 +64,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             ...(hasDropdown && { searchAction: newAction }),
         });
     };
-    const showResults = isOpen && results.length > 0;
+    const showResults = isOpen && results && results.length > 0;
 
     return (
         <div className="search-field header-search" ref={wrapperRef}>

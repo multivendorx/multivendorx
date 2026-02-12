@@ -9,6 +9,7 @@ import AdminBreadcrumbs from './AdminBreadcrumbs';
 import '../styles/web/Modules.scss';
 import SuccessNotice from './SuccessNotice';
 import { MultiCheckBoxUI } from './MultiCheckbox';
+import HeaderSearch from './HeaderSearch';
 
 // Types
 interface Module {
@@ -64,7 +65,7 @@ const Modules: React.FC<ModuleProps> = ({
     const [successMsg, setSuccessMsg] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedFilter, setSelectedFilter] = useState<string>('Total');
-    const [searchQuery,setSearchQuery] = useState<string>('');
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     const { modules, insertModule, removeModule } = useModules();
     const totalCount = modulesArray.modules.filter(isModule).length;
@@ -224,11 +225,9 @@ const Modules: React.FC<ModuleProps> = ({
                     </span>
                 </div>
                 <div className="module-search">
-                    <input
-                        type="text"
-                        placeholder="Search modules..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                    <HeaderSearch
+                        search={{placeholder: 'Search .....'}}
+                        onQueryUpdate={(e)=>setSearchQuery(e.searchValue)}
                     />
                 </div>
 
