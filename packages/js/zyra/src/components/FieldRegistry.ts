@@ -13,6 +13,7 @@ import Section from './Section';
 import TextArea from './TextArea';
 import NestedComponent from './NestedComponent';
 import RadioInput from './RadioInput';
+import ColorSettingInput from './ColorSettingInput';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -33,4 +34,5 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'system-info': SystemInfo,
   'section': Section,
   'checkbox': MultiCheckBox,
+  'color-setting' : ColorSettingInput,
 };

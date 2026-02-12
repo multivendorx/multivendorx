@@ -3,6 +3,7 @@ import notifima from '../../assets/images/brand-icon.png';
 import catalogx from '../../assets/images/catalogx.png';
 import Mascot from '../../assets/images/multivendorx-mascot-scale.png';
 import freePro from '../../assets/images/dashboard-1.png';
+import proPopupContent from '../Popup/Popup';
 
 interface Section {
 	title: string;
@@ -11,8 +12,8 @@ interface Section {
 interface Module {
 	id: string;
 	name: string;
-	iconClass: string;
-	pro?: boolean;
+	icon: string;
+	proModule?: boolean;
 	hasToggle?: boolean;
 }
 interface Feature {
@@ -29,7 +30,7 @@ interface WPPlugin {
 import './AdminDashboard.scss';
 import '../dashboard.scss';
 import { useEffect, useState } from 'react';
-import { Card, Column, Container, getApiLink, MiniCard, sendApiResponse, SuccessNotice, useModules } from 'zyra';
+import { Card, Column, Container, getApiLink, MiniCard, Modules, sendApiResponse, SuccessNotice, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -372,80 +373,81 @@ const AdminDashboard = () => {
 		return value;
 	};
 
-	const Modules: Module[] = [
+	const ModuleList: Module[] = [
 		{
 			id: 'shared-listing',
 			name: 'Shared listing',
-			iconClass: 'adminfont-spmv',
-			pro: false,
+			icon: 'adminfont-spmv',
+			proModule: false,
 		},
 		{
 			id: 'staff-manager',
 			name: 'Staff manager',
-			iconClass: 'adminfont-staff-manager',
-			pro: true,
+			icon: 'adminfont-staff-manager',
+			proModule: true,
 		},
 		{
 			id: 'vacation',
 			name: 'Vacation mode',
-			iconClass: 'adminfont-vacation',
-			pro: true,
+			icon: 'adminfont-vacation',
+			proModule: true,
 		},
 		{
 			id: 'business-hours',
 			name: 'Business hours',
-			iconClass: 'adminfont-business-hours',
-			pro: true,
+			icon: 'adminfont-business-hours',
+			proModule: true,
 		},
 		{
 			id: 'store-inventory',
 			name: 'Store inventory',
-			iconClass: 'adminfont-store-inventory',
-			pro: true,
+			icon: 'adminfont-store-inventory',
+			proModule: true,
 		},
 		{
 			id: 'min-max-quantities',
 			name: 'Min max',
-			iconClass: 'adminfont-min-max',
-			pro: false,
+			icon: 'adminfont-min-max',
+			proModule: false,
 		},
 		{
 			id: 'wholesale',
 			name: 'Wholesale',
-			iconClass: 'adminfont-wholesale',
-			pro: true,
+			icon: 'adminfont-wholesale',
+			proModule: true,
 		},
 		{
 			id: 'paypal-marketplace',
 			name: 'PayPal marketplace',
-			iconClass: 'adminfont-paypal-marketplace',
-			pro: true,
+			icon: 'adminfont-paypal-marketplace',
+			proModule: true,
 		},
 		{
 			id: 'stripe-marketplace',
 			name: 'Stripe marketplace',
-			iconClass: 'adminfont-stripe-marketplace',
-			pro: true,
+			icon: 'adminfont-stripe-marketplace',
+			proModule: true,
 		},
 		{
 			id: 'facilitator',
 			name: 'Facilitator',
-			iconClass: 'adminfont-facilitator',
-			pro: true,
+			icon: 'adminfont-facilitator',
+			proModule: true,
 		},
 		{
 			id: 'franchises-module',
 			name: 'Franchises',
-			iconClass: 'adminfont-franchises-module',
-			pro: true,
+			icon: 'adminfont-franchises-module',
+			proModule: true,
 		},
 		{
 			id: 'invoice',
 			name: 'Invoice & packing slip',
-			iconClass: 'adminfont-invoice',
-			pro: true,
+			icon: 'adminfont-invoice',
+			proModule: true,
 		},
 	];
+
 
 	const [activeTab, setActiveTab] = useState('dashboard');
 	const isPro = !!appLocalizer.khali_dabba;
@@ -556,62 +558,13 @@ const AdminDashboard = () => {
 
 						)}
 						<Card contentHeight title="Modules" buttonLabel="View All" onButtonClick={() => (window.location.href = `?page=multivendorx#&tab=modules`)}>
-							<div className="mini-module">
-								{Modules.map((module) => (
-									<div
-										className="module-list-item"
-										key={module.id}
-									>
-										<div className="module-header">
-											<i
-												className={`font ${module.iconClass}`}
-											></i>
-
-											{!module.pro ||
-												appLocalizer.khali_dabba ? (
-												<div
-													className="toggle-checkbox"
-													data-tour={`id-showcase-tour`}
-												>
-													<input
-														type="checkbox"
-														className="woo-toggle-checkbox"
-														id={`toggle-switch-${module.id}`}
-														checked={modules.includes(
-															module.id
-														)}
-														onChange={(e) =>
-															handleOnChange(
-																e,
-																module.id
-															)
-														}
-													/>
-													<label
-														htmlFor={`toggle-switch-${module.id}`}
-														className="toggle-switch-is_hide_cart_checkout"
-													></label>
-												</div>
-											) : (
-												<span className="admin-pro-tag">
-													<i className="adminfont-pro-tag"></i>
-													{__(
-														'Pro',
-														'multivendorx'
-													)}
-												</span>
-											)}
-										</div>
-
-										<div className="module-name">
-											{__(
-												module.name,
-												'multivendorx'
-											)}
-										</div>
-									</div>
-								))}
-							</div>
+							<Modules
+								modulesArray={{category: false,modules: ModuleList}}
+								appLocalizer={appLocalizer}
+								apiLink="modules"
+								proPopupContent={proPopupContent}
+								pluginName="multivendorx"
+							/>
 						</Card>
 					</Column>
 
