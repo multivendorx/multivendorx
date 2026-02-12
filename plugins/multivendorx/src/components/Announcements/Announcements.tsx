@@ -10,12 +10,12 @@ import {
 	Column,
 	FormGroupWrapper,
 	FormGroup,
-	ProPopup,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
 	ToggleSettingUI,
 	SelectInputUI,
+	PopupUI,
 } from 'zyra';
 
 
@@ -412,7 +412,7 @@ export const Announcements: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -421,7 +421,7 @@ export const Announcements: React.FC = () => {
 					title="Are you sure"
 					confirmMessage={
 						selectedAn
-							? `Are you sure you want to delete Announcement?`
+							? ``
 							: ''
 					}
 					confirmYesText="Delete"
@@ -432,7 +432,39 @@ export const Announcements: React.FC = () => {
 						setSelectedAn(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
+
+			<PopupUI
+				position="lightbox"
+				open={confirmOpen}
+				onClose={() => {
+					setConfirmOpen(false);
+				}}
+				showBackdrop={true}
+				header={{
+					icon: 'warning',
+					title: 'Are you sure'
+				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								onClick: () => { setConfirmOpen(false) },
+							},
+							{
+								icon: 'cross',
+								text: __('Delete', 'multivendorx'),
+								onClick: () => { handleConfirmDelete }
+							},
+						]}
+					/>
+				}
+			>
+				<p>Are you sure you want to delete Announcement?</p>
+			</PopupUI>
 			<AdminBreadcrumbs
 				activeTabIcon="adminfont-announcement"
 				description={

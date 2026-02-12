@@ -7,7 +7,6 @@ import {
 	FormGroupWrapper,
 	MultiCalendarInput,
 	PopupUI,
-	ProPopup,
 	SelectInputUI,
 	Table,
 	TableCell,
@@ -1020,7 +1019,7 @@ const AllCoupon: React.FC = () => {
 					</>
 				</PopupUI>
 			)}
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -1043,7 +1042,46 @@ const AllCoupon: React.FC = () => {
 						setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
+
+			<PopupUI
+				position="lightbox"
+				open={confirmOpen}
+				onClose={() => {
+					setConfirmOpen(false);
+					setSelectedCoupon(null);
+				}}
+				showBackdrop={true}
+				header={{
+					icon: 'warning',
+					title: __('Are you sure?', 'multivendorx'),
+					showCloseButton: true
+				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								onClick: () => {
+									setConfirmOpen(false);
+									setSelectedCoupon(null);
+								},
+							},
+							{
+								icon: 'cross',
+								text: __('Delete', 'multivendorx'),
+								onClick: handleConfirmDelete,
+							},
+						]}
+					/>
+				}
+			>
+				<p>
+					{__('Are you sure you want to delete this coupon?', 'multivendorx')}
+				</p>
+			</PopupUI>
 
 			<Table
 				data={data}

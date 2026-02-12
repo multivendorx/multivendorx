@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, ProPopup, Container, Column, TableCard } from 'zyra';
+import { getApiLink, Container, Column, TableCard } from 'zyra';
 import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
@@ -189,7 +189,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 					/>
 				</Column>
 			</Container>
-			<Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+			{/* <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
 				<ProPopup
 					confirmMode
 					title={__('Are you sure?', 'multivendorx')}
@@ -204,7 +204,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 						setConfirmOpen(false);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 		</>
 	);
 };

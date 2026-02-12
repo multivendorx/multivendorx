@@ -11,7 +11,6 @@ import {
 	Column,
 	FormGroupWrapper,
 	FormGroup,
-	ProPopup,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
@@ -311,7 +310,7 @@ export const KnowledgeBase: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -331,7 +330,7 @@ export const KnowledgeBase: React.FC = () => {
 						setSelectedKb(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 			<AdminBreadcrumbs
 				activeTabIcon="adminfont-book"
 				tabTitle={__('Knowledge Base', 'multivendorx')}
