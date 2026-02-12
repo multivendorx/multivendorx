@@ -1,8 +1,4 @@
-/**
- * EmailTemplate.tsx - CLEAN VERSION
- * Uses ColumnBlockManager for all column operations
- */
-
+// External Dependencies
 import React, { useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
@@ -17,12 +13,7 @@ import {
 } from '../block';
 
 import SettingMetaBox from '../SettingMetaBox';
-import BasicInput from '../BasicInput';
-import TextArea from '../TextArea';
-import FileInput from '../FileInput';
-import AddressField from '../AddressField';
 import { FieldComponent } from '../types';
-
 
 export interface EmailTemplate {
     id: string;
@@ -31,9 +22,21 @@ export interface EmailTemplate {
     blocks: Block[];
 }
 
-interface EmailTemplateProps {
+interface EmailTemplateField {
     templates?: EmailTemplate[];
     defaultTemplateId?: string;
+    [key: string]: any; // For other field properties
+}
+
+interface EmailTemplateProps {
+    field: EmailTemplateField; // This receives the full field config from backend
+    value: any;
+    onChange: (value: any) => void;
+    canAccess: boolean;
+    appLocalizer: any;
+    setting?: Record<string, any>;
+    name?: string;
+    proSettingChange?: () => boolean;
 }
 
 const EMAIL_BLOCKS = [
@@ -47,45 +50,69 @@ const EMAIL_BLOCKS = [
 
 const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
     {
-        id: 'order-placed',
-        name: 'Template 1',
-        previewText: 'Your order has been received',
+        id: 'default',
+        name: 'Default Template',
+        previewText: 'Default email template',
         blocks: [],
     },
 ];
 
 export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
-    templates: propTemplates,
-    defaultTemplateId,
+    field,
+    value,
+    onChange,
+    proSettingChange = () => false,
+    name = field?.key || 'email-template',
+    setting = {},
 }) => {
-    // Template state
+    // Get templates from field prop (from backend) or from value/setting
+    const fieldTemplates = field?.templates || [];
+    const savedData = value || setting[name] || {};
+    const savedTemplates = savedData.templates || [];
+    
+    // Merge backend templates with saved templates (saved ones take precedence)
+    const initialTemplates = fieldTemplates.map(template => {
+        const savedTemplate = savedTemplates.find((t: EmailTemplate) => t.id === template.id);
+        return savedTemplate ? { ...template, ...savedTemplate } : template;
+    });
+
     const [templates, setTemplates] = useState<EmailTemplate[]>(
-        propTemplates || DEFAULT_EMAIL_TEMPLATES
+        initialTemplates.length > 0 ? initialTemplates : DEFAULT_EMAIL_TEMPLATES
     );
     
-    const initialTemplateId = defaultTemplateId || 
-        (propTemplates?.[0]?.id || DEFAULT_EMAIL_TEMPLATES[0].id);
+    const initialTemplateId = field?.defaultTemplateId || 
+        (templates[0]?.id || DEFAULT_EMAIL_TEMPLATES[0].id);
     
     const [activeTemplateId, setActiveTemplateId] = useState<string>(initialTemplateId);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
     
-    const showTemplatesTab = propTemplates !== undefined;
     const activeTemplate = templates.find((t) => t.id === activeTemplateId);
     
     if (!activeTemplate) {
         return <div className="email-template-error">No active template found</div>;
     }
 
-    // Block operations
+    // Block operations with auto-save
     const updateBlocks = (blocks: Block[]) => {
-        setTemplates((prev) =>
-            prev.map((tpl) =>
-                tpl.id === activeTemplateId ? { ...tpl, blocks } : tpl
-            )
+        const updatedTemplates = templates.map((tpl) =>
+            tpl.id === activeTemplateId ? { ...tpl, blocks } : tpl
         );
+        
+        setTemplates(updatedTemplates);
+        
+        // Save to parent component
+        onChange({
+            ...value,
+            [name]: {
+                templates: updatedTemplates,
+                activeTemplateId,
+            }
+        });
     };
 
     const updateBlock = (index: number, patch: BlockPatch) => {
+        if (proSettingChange()) return;
+        
         const updated = [...activeTemplate.blocks];
         updated[index] = { ...updated[index], ...patch } as Block;
         updateBlocks(updated);
@@ -96,6 +123,8 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
     };
 
     const deleteBlock = (index: number) => {
+        if (proSettingChange()) return;
+        
         const deletedBlock = activeTemplate.blocks[index];
         const updated = [...activeTemplate.blocks];
         updated.splice(index, 1);
@@ -105,6 +134,11 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
             setOpenBlock(null);
             columnManager.clearSelection();
         }
+    };
+
+    const reorderBlocks = (newList: Block[]) => {
+        if (proSettingChange()) return;
+        updateBlocks(newList.map(normalizeBlock));
     };
 
     // Column manager hook
@@ -117,16 +151,14 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 
     // Settings change handler
     const handleSettingsChange = (key: string, value: any) => {
-        // Check if editing a column child
+        if (proSettingChange()) return;
+
         if (columnManager.selectedBlockLocation) {
             const { parentIndex, columnIndex, childIndex } = columnManager.selectedBlockLocation;
             columnManager.handleColumnChildUpdate(parentIndex, columnIndex, childIndex, { [key]: value } as any);
         } else {
-            // Regular block or column parent
             const index = activeTemplate.blocks.findIndex((field) => field.id === openBlock?.id);
-
             if (index >= 0) {
-                // Special handling for column layout changes
                 if (key === 'layout' && activeTemplate.blocks[index].type === 'columns') {
                     columnManager.handleLayoutChange(index, value);
                 } else {
@@ -138,21 +170,21 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 
     return (
         <div className="registration-from-wrapper email-builder">
-            {/* LEFT PANEL */}
+            {/* LEFT PANEL - Now receives templates prop correctly */}
             <LeftPanel
                 blocks={EMAIL_BLOCKS}
-                templates={showTemplatesTab ? templates : []}
+                templates={templates} // Always pass templates
                 activeTemplateId={activeTemplateId}
                 onTemplateSelect={setActiveTemplateId}
                 groupName="email"
-                showTemplatesTab={showTemplatesTab}
+                showTemplatesTab={true} // Always show templates tab when there are templates
             />
 
             {/* CENTER CANVAS */}
             <div className="registration-form-main-section email-canvas">
                 <ReactSortable
                     list={activeTemplate.blocks}
-                    setList={(newList) => updateBlocks(newList.map(normalizeBlock))}
+                    setList={reorderBlocks}
                     group={{ name: 'email', pull: true, put: true }}
                     handle=".drag-handle"
                     animation={150}
@@ -192,10 +224,6 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
                                         onChange={(patch) => updateBlock(index, patch)}
                                         onDelete={() => deleteBlock(index)}
                                         isActive={openBlock?.id === block.id}
-                                        BasicInput={BasicInput}
-                                        TextArea={TextArea}
-                                        FileInput={FileInput}
-                                        AddressField={AddressField}
                                     />
                                 )}
                             </div>
@@ -236,7 +264,7 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 const EmailTemplate: FieldComponent = {
     render: EmailTemplateUI,
     validate: (field, value) => {
-        if (field.required && !value?.[field.name]) {
+        if (field.required && !value) {
             return `${field.label} is required`;
         }
         return null;

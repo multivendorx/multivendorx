@@ -149,15 +149,10 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
                                 className={`template-item ${tpl.id === activeTemplateId ? 'active' : ''}`}
                                 onClick={() => onTemplateSelect?.(tpl.id)}
                             >
-                                {tpl.name}
-                                <div className="template-image-wrapper">
-                                    <div className="template-image">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                </div>
+                                <div className="template-name">{tpl.name}</div>
+                                {tpl.previewText && (
+                                    <div className="template-preview">{tpl.previewText}</div>
+                                )}
                             </div>
                         ))}
                     </aside>

@@ -254,6 +254,15 @@ const OptionEditor: React.FC<{ options: Option[]; onChange: (options: Option[]) 
         );
     };
 
+    const renderBasicInputSettings = (
+    formField: FormField,
+    onChange: ( key: SettingFieldKey, value: FormFieldValue) => void ) => (
+    <>
+        <InputField label="Placeholder" value={formField.placeholder || ''} onChange={(v) => onChange('placeholder', v)} />
+        <InputField label="Character limit" type="number" value={formField.charlimit?.toString() || ''} onChange={(v) => onChange('charlimit', Number(v))} />
+    </>
+);
+
 // FIELD RENDERER FACTORY
 const createFieldRenderers = (): Record<string, React.FC<{
     formField: FormField;
