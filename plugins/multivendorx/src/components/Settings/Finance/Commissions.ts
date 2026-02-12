@@ -143,19 +143,13 @@ export default {
 				{
 					key: 'product_price',
 					type: 'number',
-					// options: [
-					// 	{
-					// 		key: 'product_price',
-					// 		value: 'product_price',
-					// 	},
-					// ],
 					preText: appLocalizer.currency_symbol,
 					size: '8rem',
 					skipFirstRow: true,
 					afterElement: {
 						type: 'preposttext',
-						textType: 'pre',
-						preText: 'then',
+						textType: 'post',
+						postText: 'then',
 					},
 					dependent: {
 						key: 'rule_type',
@@ -166,19 +160,13 @@ export default {
 				{
 					key: 'product_qty',
 					type: 'number',
-					// options: [
-					// 	{
-					// 		key: 'product_qty',
-					// 		value: 'product_qty',
-					// 	},
-					// ],
 					preText: appLocalizer.currency_symbol,
 					size: '8rem',
 					skipFirstRow: true,
 					afterElement: {
 						type: 'preposttext',
-						textType: 'pre',
-						preText: 'then',
+						textType: 'post',
+						postText: 'then',
 					},
 					dependent: {
 						key: 'rule_type',
@@ -189,18 +177,12 @@ export default {
 				{
 					key: 'order_value',
 					type: 'number',
-					// options: [
-					// 	{
-					// 		key: 'order_value',
-					// 		value: 'order_value',
-					// 	},
-					// ],
 					size: '8rem',
 					preText: appLocalizer.currency_symbol,
 					afterElement: {
 						type: 'preposttext',
-						textType: 'pre',
-						preText: 'then',
+						textType: 'post',
+						postText: 'then',
 					},
 					dependent: {
 						key: 'rule_type',
@@ -221,10 +203,7 @@ export default {
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
-						postText: __(
-							'+',
-							'multivendorx'
-						),
+						postText: __('+', 'multivendorx'),
 					},
 				},
 				{
@@ -236,8 +215,8 @@ export default {
 				{
 					afterElement: {
 						type: 'preposttext',
-						textType: 'pre',
-						preText: 'commission will be charged.',
+						textType: 'post',
+						postText: 'commission will be charged.',
 					},
 					skipFirstRow: true,
 				},

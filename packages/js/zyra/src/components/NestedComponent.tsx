@@ -188,6 +188,8 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
 
         return (
             <>
+                { ! ( rowIndex === 0 ) && field.label && 
+                    <label>{ field.label }</label> }
                 <Render
                     field={field}
                     value={fieldValue}
