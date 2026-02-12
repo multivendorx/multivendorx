@@ -45,6 +45,7 @@ interface Template {
 
 
 interface ColorSettingProps {
+    key: string;
     wrapperClass?: string;
     inputClass?: string;
     predefinedOptions: PaletteOption[];
@@ -71,9 +72,7 @@ interface ColorSettingProps {
 }
 
 export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
-    const { predefinedOptions = [], images = [], templates = [], value, onChange, showPdfButton } = props;
-
-    const FIELD_NAME = 'store_color_settings';
+    const { key, predefinedOptions = [], images = [], templates = [], value, onChange, showPdfButton } = props;
 
     // Initialize selectedPalette from DB value or default to first option
     const initialPalette =
@@ -93,7 +92,7 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
     const emitChange = (payload: any) => {
         onChange?.({
             target: {
-                name: FIELD_NAME,
+                name: key,
                 value: payload
             }
         });
@@ -444,6 +443,7 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
 const ColorSettingInput: FieldComponent = {
     render: ({ field, value, onChange, canAccess, appLocalizer }) => (
         <ColorSettingInputUI
+            key={field.key}
             wrapperClass="form-group-color-setting"
             inputClass="setting-form-input"
             predefinedOptions={field.predefinedOptions ?? []}
