@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/web/NestedComponent.scss';
 import { FieldComponent } from './types';
 import { FIELD_REGISTRY } from './FieldRegistry';
+import { AdminButtonUI } from './UI/AdminButton';
 
 type RowType = Record< string, string | number | boolean | string[] >;
 
@@ -18,8 +19,6 @@ interface NestedFieldOption {
 }
 
 interface NestedField {
-    lock: string;
-    multiple: boolean;
     key: string;
     type:
         | 'number'
@@ -49,8 +48,6 @@ interface NestedField {
     tour?: string;
     rightContent?: boolean;
     moduleEnabled?: string;
-    dependentSetting?: string;
-    dependentPlugin?: string;
     hideCheckbox?: boolean;
     link?: string;
 }
@@ -82,34 +79,16 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
     appLocalizer
 } ) => {
 
-    // const rows: RowType[] = React.useMemo(() => {
-    //     if (!Array.isArray(value)) return [{}];
-
-    //     const cleaned = value
-    //         .filter(v => v && typeof v === 'object')
-    //         .map(v => v ?? {});
-
-    //     if (single) {
-    //         return cleaned.length ? [cleaned[0]] : [{}];
-    //     }
-
-    //     return cleaned.length ? cleaned : [{}];
-    // }, [value, single]);
-
     const [ rows, setRows ] = useState< RowType[] >( [] );
 
     // sync value → state
-    useEffect( () => {
-        setRows(
-            single
-                ? value.length
-                    ? [ value[ 0 ] ]
-                    : [ {} ]
-                : value.length
-                ? value
-                : [ {} ]
-        );
-    }, [ value, single ] );
+    useEffect(() => {
+        if (single) {
+            setRows(value.length ? [value[0]] : [{}]);
+        } else {
+            setRows(value.length ? value : [{}]);
+        }
+    }, [value, single]);
 
     function updateAndSave( updated: RowType[] ) {
         setRows( updated );
@@ -127,35 +106,41 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
         onChange(updated);
     }
 
+    const isFieldActive = (field: NestedField, row: RowType, rowIndex: number) => {
+        if (rowIndex === 0 && field.skipFirstRow) return false;
+
+        if (!field.dependent) return true;
+
+        const depVal = row?.[field.dependent.key];
+
+        const depActive = Array.isArray(depVal)
+            ? depVal.includes(field.dependent.value)
+            : depVal === field.dependent.value;
+
+        return field.dependent.set ? depActive : !depActive;
+    };
 
     function isLastRowComplete() {
         if (!rows.length) return true;
 
         const lastRow = rows[rows.length - 1] ?? {};
 
-        return fields.every((f) => {
-            if (f.skipFirstRow && rows.length === 1) {
+        return fields.every((field) => {
+            if (field.skipFirstRow && rows.length === 1) {
+                return true;
+            }
+
+            if (!field.key) {
                 return true;
             }
 
             // dependency check
-            if (f.dependent) {
-                const depVal = lastRow[f.dependent.key];
-                const depActive = Array.isArray(depVal)
-                    ? depVal.includes(f.dependent.value)
-                    : depVal === f.dependent.value;
-
-                if (
-                    (f.dependent.set && !depActive) ||
-                    (!f.dependent.set && depActive)
-                ) {
-                    return true;
-                }
+            if (!isFieldActive(field, lastRow, rows.length - 1)) {
+                return true;
             }
 
-            const val = lastRow[f.key];
-
-            return val !== undefined && val !== '';
+            const val = lastRow[field.key];
+            return val !== '';
         });
     }
 
@@ -163,6 +148,7 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
         if ( single ) {
             return;
         }
+        
         if ( ! isLastRowComplete() ) {
             return;
         }
@@ -188,6 +174,8 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
 
         return (
             <>
+                { ! ( rowIndex === 0 ) && field.label && 
+                    <label>{ field.label }</label> }
                 <Render
                     field={field}
                     value={fieldValue}
@@ -213,19 +201,8 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
                             return null;
                         }
 
-                        // dependency check
-                        if ( field.dependent && field.key ) {
-                            const depVal = row[ field.dependent.key ];
-                            const depActive = Array.isArray( depVal )
-                                ? depVal.includes( field.dependent.value )
-                                : depVal === field.dependent.value;
-
-                            if (
-                                ( field.dependent.set && ! depActive ) ||
-                                ( ! field.dependent.set && depActive )
-                            ) {
-                                return null;
-                            }
+                        if (!isFieldActive(field, row, rowIndex)) {
+                            return null;
                         }
 
                         return (
@@ -245,27 +222,29 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
                         <div className="buttons-wrapper">
                             { /* Add button only on last row */ }
                             { rowIndex === rows.length - 1 && (
-                                <button
-                                    type="button"
-                                    className="admin-btn btn-purple"
-                                    onClick={ addRow }
-                                    disabled={ ! isLastRowComplete() }
-                                >
-                                    <i className="adminfont-plus"></i>{ ' ' }
-                                    { addButtonLabel }
-                                </button>
+                                <AdminButtonUI
+                                    buttons={[
+                                        {
+                                            icon: 'plus',
+                                            text: addButtonLabel,
+                                            onClick: addRow,
+                                            disabled: !isLastRowComplete()
+                                        },
+                                    ]}
+                                />
                             ) }
 
                             { /* Delete button on all rows except row 0 */ }
                             { rows.length > 1 && rowIndex > 0 && (
-                                <button
-                                    type="button"
-                                    className="admin-btn btn-red"
-                                    onClick={ () => removeRow( rowIndex ) }
-                                >
-                                    <i className="adminfont-delete"></i>{ ' ' }
-                                    { deleteButtonLabel }
-                                </button>
+                                <AdminButtonUI
+                                    buttons={[
+                                        {
+                                            icon: 'delete',
+                                            text: deleteButtonLabel,
+                                            onClick: () => removeRow(rowIndex)
+                                        },
+                                    ]}
+                                />
                             ) }
                         </div>
                     ) }
