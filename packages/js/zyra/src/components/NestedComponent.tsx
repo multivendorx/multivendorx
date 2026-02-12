@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/web/NestedComponent.scss';
 import { FieldComponent } from './types';
 import { FIELD_REGISTRY } from './FieldRegistry';
-import { AdminButtonUI } from './UI/AdminButton';
+import { AdminButtonUI } from './AdminButton';
 
 type RowType = Record< string, string | number | boolean | string[] >;
 

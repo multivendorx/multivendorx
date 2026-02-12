@@ -1,5 +1,5 @@
 // External dependencies
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { FieldComponent } from './types';
 
 // Types

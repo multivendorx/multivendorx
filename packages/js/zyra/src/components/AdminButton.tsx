@@ -1,8 +1,8 @@
-import "../../styles/web/UI/AdminButton.scss";
+import "../styles/web/UI/AdminButton.scss";
 import React, { useState } from "react";
-import { FieldComponent } from '../types';
+import { FieldComponent } from './types';
 import axios from 'axios';
-import { getApiLink } from '../../utils/apiService';
+import { getApiLink } from '../utils/apiService';
 
 type CustomStyle = {
     button_border_size?: number;

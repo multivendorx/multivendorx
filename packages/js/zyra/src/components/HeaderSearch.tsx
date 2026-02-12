@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useOutsideClick } from './useOutsideClick';
 import { BasicInputUI } from './BasicInput';
-import ItemList from './UI/ItemList';
+import ItemList from './ItemList';
 import { SelectInputUI } from './SelectInput';
 
 type SearchItem = {
