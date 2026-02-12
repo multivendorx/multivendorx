@@ -7,6 +7,7 @@ import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 import '../styles/web/Modules.scss';
+import SuccessNotice from './SuccessNotice';
 
 // Types
 interface Module {
@@ -290,13 +291,14 @@ const Modules: React.FC<ModuleProps> = ({
                 </Dialog>
 
                 {successMsg && (
-                    <div className="admin-notice-wrapper">
-                        <i className="admin-font adminfont-icon-yes"></i>
-                        <div className="notice-details">
-                            <div className="title">Success!</div>
-                            <div className="desc">{successMsg}</div>
-                        </div>
-                    </div>
+                    <SuccessNotice message={successMsg} title={'Success!'} />
+                    // <div className="admin-notice-wrapper">
+                    //     <i className="admin-font adminfont-icon-yes"></i>
+                    //     <div className="notice-details">
+                    //         <div className="title">Success!</div>
+                    //         <div className="desc">{successMsg}</div>
+                    //     </div>
+                    // </div>
                 )}
 
                 <div className="category-filter">

@@ -252,8 +252,8 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 	return (
 		<SettingProvider>
 			<SettingsNavigator
-				tabContent={settingsArray as any}
-				currentTab={location.get('subtab') as string}
+				settingContent={settingsArray as any}
+				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=status-tools&subtab=${subTab}`
