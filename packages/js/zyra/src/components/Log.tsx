@@ -6,6 +6,7 @@ import axios from 'axios';
 import { getApiLink } from '../utils/apiService';
 import '../styles/web/Log.scss';
 import { FieldComponent } from './types';
+import { AdminButtonUI } from './UI/AdminButton';
 
 interface AppLocalizer {
     nonce: string;
@@ -20,12 +21,18 @@ interface LogProps {
     apiLink: string;
     downloadFileName: string;
     appLocalizer: AppLocalizer;
+    downloadBtnText?: string;
+    copyBtnText?: string;
+    deleteBtnText?: string;
 }
 
 export const LogUI: React.FC<LogProps> = ({
     apiLink,
     downloadFileName,
     appLocalizer,
+    downloadBtnText = 'Download',
+    copyBtnText = 'Copy',
+    deleteBtnText = 'Delete',
 }) => {
     const [logData, setLogData] = useState<string[]>([]);
     const [copied, setCopied] = useState<boolean>(false);
@@ -118,44 +125,63 @@ export const LogUI: React.FC<LogProps> = ({
     return (
         <div className="section-log-container">
             <div className="buttons-wrapper">
-                <button
-                    onClick={handleDownloadLog}
-                    className="admin-btn btn-purple"
-                >
-                    <i className="adminfont-import"></i>
-                    Download
-                </button>
-                <button
-                    className="admin-btn btn-red delete-btn"
-                    onClick={handleClearLog}
-                >
-                    <i className="adminfont-delete"></i>
-                    <span className="text">Clear</span>
-                </button>
+                <AdminButtonUI
+                    position="left"
+                    buttons={[
+                        {
+                            icon: 'import',
+                            text: downloadBtnText,
+                            color: 'purple',
+                            onClick: (e) => {
+                                handleDownloadLog?.(e);
+                            },
+                        },
+                    ]}
+                />
+                <AdminButtonUI
+                    position="left"
+                    buttons={[
+                        {
+                            icon: 'delete',
+                            text: deleteBtnText,
+                            color: 'purple',
+                            onClick: (e) => {
+                                handleClearLog?.(e);
+                            },
+                        },
+                    ]}
+                />
             </div>
             <div className="log-container-wrapper">
                 <div className="wrapper-header">
                     <p className="log-viewer-text">
                         {appLocalizer.tab_name} - log viewer
                     </p>
-                    <button
-                        className="copy-btn"
-                        onClick={handleCopyToClipboard}
-                    >
-                        <i className="adminfont-vendor-form-copy"></i>
-                        <span
-                            className={
-                                !copied ? 'tooltip' : 'tooltip tool-clip'
-                            }
-                        >
-                            {!copied ? (
-                                'Copy to clipboard'
-                            ) : (
-                                <i className="adminfont-success-notification"></i>
-                            )}
-                            {!copied ? '' : 'Copied'}
-                        </span>
-                    </button>
+                    <AdminButtonUI
+                        position="left"
+                        buttons={[
+                            {
+                                icon: 'copy',
+                                text: copyBtnText,
+                                color: 'purple',
+                                onClick: (e) => {
+                                    handleCopyToClipboard?.(e);
+                                },
+                                children: (
+                                    <span
+                                        className={!copied ? 'tooltip' : 'tooltip tool-clip'}
+                                    >
+                                        {!copied ? (
+                                            'Copy to clipboard'
+                                        ) : (
+                                            <i className="adminfont-success-notification"></i>
+                                        )}
+                                        {!copied ? '' : 'Copied'}
+                                    </span>
+                                ),
+                            },
+                        ]}
+                    />
                 </div>
                 <div className="wrapper-body">
                     {logData.map((log, index) => {
@@ -186,6 +212,9 @@ const Log: FieldComponent = {
             appLocalizer={appLocalizer}
             apiLink={String(field.apiLink)}
             downloadFileName={String(field.fileName)}
+            downloadBtnText={field.downloadBtnText}
+            copyBtnText={field.copyBtnText}
+            deleteBtnText={field.deleteBtnText}
         />
     ),
 
