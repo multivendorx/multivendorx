@@ -63,7 +63,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                   margin: `${btn.customStyle.button_margin ?? ""}px`,
                   padding: `${btn.customStyle.button_padding ?? ""}px`,
               }
-            : undefined;
+            : {};
 
         const hoverStyle =
             btn.customStyle && hovered
@@ -77,7 +77,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                           btn.customStyle
                               .button_background_color_onhover ?? "",
                   }
-                : undefined;
+                : {};
 
         return (
             <button
