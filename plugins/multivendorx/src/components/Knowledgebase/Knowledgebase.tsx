@@ -16,6 +16,7 @@ import {
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
+	PopupUI,
 } from 'zyra';
 
 import '../Announcements/Announcements.scss';
@@ -353,11 +354,13 @@ export const KnowledgeBase: React.FC = () => {
 			/>
 
 			{addEntry && (
-				<CommonPopup
+				<PopupUI
 					open={addEntry}
 					onClose={handleCloseForm}
 					width="31.25rem"
 					height="70%"
+					position="center"
+					showBackdrop={true}
 					header={{
 						icon: 'book',
 						title: editId
@@ -367,6 +370,7 @@ export const KnowledgeBase: React.FC = () => {
 							'Write and publish a new knowledge base article to help stores navigate their dashboard.',
 							'multivendorx'
 						),
+						showCloseButton: true, // Add this to show close button in header
 					}}
 					footer={
 						<AdminButtonUI
@@ -460,7 +464,7 @@ export const KnowledgeBase: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 			<Container general>
 				<Column>

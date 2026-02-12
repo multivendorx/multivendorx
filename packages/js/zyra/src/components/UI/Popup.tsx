@@ -20,13 +20,14 @@ export interface PopupProps {
     position?: PopupPosition;
     open?: boolean;
     toggleIcon?: string;
+    header?: PopoverHeaderProps;
+    footer?: React.ReactNode;
     width?: number | string;
     height?: number | string;
     className?: string;
     showBackdrop?: boolean;
     onOpen?: () => void;
     onClose?: () => void;
-
     children?: React.ReactNode;
 }
 
@@ -43,6 +44,8 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
             onOpen,
             onClose,
             children,
+            header,
+            footer,
         },
         ref
     ) => {
@@ -90,20 +93,14 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
         };
 
         return (
-            <div className={`popup popup--${position} ${className}`}>
-                {position === 'inline' && (
+            <div className={`popup popup-${position} ${className}`}>
+                {toggleIcon && (
                     <div className="popup-toggle" onClick={handleToggle}>
-                        {toggleIcon && (
-                            <i
-                                className={
-                                    toggleIcon
-                                }
-                            />
-                        )}
+                        <i className={ toggleIcon }/>
                     </div>
                 )}
 
-                {showBackdrop && position !== 'inline' && open && (
+                {showBackdrop && !toggleIcon && open && (
                     <div
                         className="popup-backdrop"
                         onClick={
@@ -122,9 +119,41 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
                             e.stopPropagation()
                         }
                     >
+                        {header && (
+                            <div className="popover-header">
+                                <div className="popover-header-content">
+                                    {header.icon && (
+                                        <i className={`popover-header-icon ${header.icon}`}></i>
+                                    )}
+                                    <div className="popover-header-text">
+                                        <div className="popover-title">{header.title}</div>
+                                        {header.description && (
+                                            <div className="popover-description">{header.description}</div>
+                                        )}
+                                    </div>
+                                </div>
+                                {header.showCloseButton && (
+                                    <button
+                                        className="popover-close-button"
+                                        onClick={handleClose}
+                                        aria-label="Close"
+                                    >
+                                        <i className="icon adminfont-close"></i>
+                                    </button>
+                                )}
+                            </div>
+                        )}
+
                         <div className="popup-body">
                             {children}
                         </div>
+
+                        {/* popover Footer */}
+                        {footer && (
+                            <div className="popover-footer">
+                                {footer}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -146,6 +175,8 @@ const Popup: FieldComponent = {
             className={field.className}
             showBackdrop={field.showBackdrop}
             open={field.open}
+            header={field.header}
+            footer={field.footer}
         >
             {field.children}
         </PopupUI>

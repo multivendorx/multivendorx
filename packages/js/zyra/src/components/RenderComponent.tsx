@@ -584,20 +584,14 @@ const RenderComponent: React.FC<RenderProps> = ({
             {modelOpen && (
                 <PopupUI
                     position="center"
-                    variant=''
                     open={modelOpen}
                     onClose={handleModelClose}
-                    moduleName={String(modulePopupData.moduleName)}
-                    settings={modulePopupData.settings}
-                    plugin={modulePopupData.plugin}
-                    message={modulePopupFields?.message}
-                    moduleButton={modulePopupFields?.moduleButton}
-                    pluginDescription={modulePopupFields?.pluginDescription}
-                    pluginButton={modulePopupFields?.pluginButton}
-                    SettingDescription={modulePopupFields?.SettingDescription}
-                    pluginUrl={modulePopupFields?.pluginUrl}
-                    modulePageUrl={modulePopupFields?.modulePageUrl}
-                />
+                    width="31.25rem"
+                    height="auto"
+                >
+                    {Popup}
+                </PopupUI>
+
             )}
             {successMsg && (
                 <SuccessNotice message={successMsg} />

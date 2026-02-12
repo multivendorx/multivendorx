@@ -185,11 +185,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 	return (
 		<>
 			{props.moduleName ? (
-				<ProPopup {...modulePopupContent} />
+				// <ProPopup {...modulePopupContent} />
+				<div>Module Popup</div>
 			) : props.wooSetting ? (
 				<ProPopup {...wooPopupContent} />
 			) : (
-				<ProPopup {...proPopupContent} />
+				// <ProPopup {...proPopupContent} />
+				<div>Pro Popup</div>
 			)}
 		</>
 	);
