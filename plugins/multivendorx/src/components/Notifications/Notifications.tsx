@@ -5,16 +5,15 @@ import ActivityTable from './ActivityTable';
 
 const Notifications = () => {
 	const location = new URLSearchParams(useLocation().hash.substring(1));
-	const initialTab = location.get('subtab') || 'notifications';
 
-	const tabContent = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'notifications',
 				name: 'Notifications',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -24,7 +23,7 @@ const Notifications = () => {
 				id: 'activities',
 				name: 'Activities',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -43,16 +42,13 @@ const Notifications = () => {
 
 	return (
 		<SettingsNavigator
-			tabContent={tabContent}
-			currentTab={initialTab}
+			settingContent={settingContent}
+			currentSetting={location.get('subtab') as string}
 			getForm={getForm}
 			prepareUrl={(tabid: string) => `?page=multivendorx#&tab=notifications&subtab=${tabid}`}
 			appLocalizer={appLocalizer}
 			variant={'compact'}
-			premium={false}
 			Link={Link}
-			hideTitle={true}
-			hideBreadcrumb={true}
 		/>
 	);
 };

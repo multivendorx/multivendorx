@@ -40,14 +40,14 @@ export const TransactionHistory: React.FC = () => {
 
 	const locationUrl = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabContent = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'wallet-transaction',
 				name: __('Wallet Transaction', 'multivendorx'),
 				icon: 'wallet-in',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -56,7 +56,7 @@ export const TransactionHistory: React.FC = () => {
 				id: 'direct-transaction',
 				name: __('Direct Transaction', 'multivendorx'),
 				icon: 'direct-transaction',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 	];
@@ -125,8 +125,8 @@ export const TransactionHistory: React.FC = () => {
 			/>
 
 			<SettingsNavigator
-				tabContent={tabContent}
-				currentTab={locationUrl.get('subtab') as string}
+				settingContent={settingContent}
+				currentSetting={locationUrl.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`

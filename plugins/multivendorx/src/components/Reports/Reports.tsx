@@ -74,14 +74,14 @@ const Reports = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabContent = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'marketplace',
 				name: 'Marketplace',
 				icon: 'marketplace-membership',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -90,7 +90,7 @@ const Reports = () => {
 				id: 'products',
 				name: 'Products',
 				icon: 'multi-product',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -99,7 +99,7 @@ const Reports = () => {
 				id: 'stores',
 				name: 'Stores',
 				icon: 'store-inventory',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -108,7 +108,7 @@ const Reports = () => {
 				id: 'store-orders',
 				name: 'Store Orders',
 				icon: 'order',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -117,7 +117,7 @@ const Reports = () => {
 				id: 'refunded-orders',
 				name: 'Refunded Orders',
 				icon: 'marketplace-refund',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 	];
@@ -157,8 +157,8 @@ const Reports = () => {
 			/>
 
 			<SettingsNavigator
-				tabContent={tabContent}
-				currentTab={location.get('subtab') as string}
+				settingContent={settingContent}
+				currentSetting={location.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=reports&subtab=${subTab}`

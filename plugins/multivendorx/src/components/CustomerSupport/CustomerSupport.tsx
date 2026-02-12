@@ -11,7 +11,7 @@ const CustomerSupport = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabContent = [
+	const settingContent = [
 		{
 			type: 'file',
 			module: 'question-answer',
@@ -20,8 +20,8 @@ const CustomerSupport = () => {
 				name: 'Questions',
 				desc: 'Waiting for your response',
 				icon: 'question',
-				tabTitle: 'Product questions in queue',
-				tabDes: 'Waiting for your response',
+				title: 'Product questions in queue',
+				settingDes: 'Waiting for your response',
 			},
 		},
 		{
@@ -32,8 +32,8 @@ const CustomerSupport = () => {
 				name: 'Store Reviews',
 				icon: 'store-review',
 				desc: 'Track and manage reviews for all stores.',
-				tabTitle: 'Store reviews at a glance',
-				tabDes: 'Track and manage reviews for all stores.',
+				title: 'Store reviews at a glance',
+				settingDes: 'Track and manage reviews for all stores.',
 			},
 		},
 		{
@@ -82,10 +82,10 @@ const CustomerSupport = () => {
 					'multivendorx'
 				)}
 			/>
-			{tabContent.length > 0 ? (
+			{settingContent.length > 0 ? (
 				<SettingsNavigator
-					tabContent={tabContent}
-					currentTab={location.get('subtab') as string}
+					settingContent={settingContent}
+					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>
 						`?page=multivendorx#&tab=customer-support&subtab=${subTab}`
