@@ -12,7 +12,7 @@ export interface EmailsInputProps {
     primary?: string;
     enablePrimary?: boolean;
     placeholder?: string;
-    onChange?: (emails: string[], primary: string ) => void;
+    onChange?: (emails: string[], primary: string) => void;
 }
 
 const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
@@ -29,7 +29,7 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
         ref
     ) => {
         const [emails, setEmails] = useState<string[]>(value);
-        const [primaryEmail, setPrimaryEmail] = useState<string >(
+        const [primaryEmail, setPrimaryEmail] = useState<string>(
             enablePrimary ? primary : ''
         );
 
@@ -55,6 +55,7 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
         const addEmail = useCallback(
             (email: string) => {
                 email = email.trim();
+
                 if (
                     !email ||
                     !isValidEmail(email) ||
@@ -68,34 +69,43 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
                 setEmails(updated);
 
                 const newPrimary = enablePrimary ? primaryEmail || email : '';
+
                 if (enablePrimary && !primaryEmail) {
                     setPrimaryEmail(email);
                 }
 
                 setInputValue('');
                 onChange?.(updated, newPrimary);
-            });
+            },
+            [emails, max, isValidEmail, enablePrimary, primaryEmail, onChange]
+        );
 
-        const removeEmail = (email: string) => {
-            const updated = emails.filter((e) => e !== email);
+        const removeEmail = useCallback(
+            (email: string) => {
+                const updated = emails.filter((e) => e !== email);
 
-            let newPrimary = primaryEmail;
-            if (enablePrimary && primaryEmail === email) {
-                newPrimary = updated[0] || '';
-                setPrimaryEmail(newPrimary);
-            }
+                let newPrimary = primaryEmail;
 
-            setEmails(updated);
-            onChange?.(updated, enablePrimary ? newPrimary : '');
-        };
+                if (enablePrimary && primaryEmail === email) {
+                    newPrimary = updated[0] || '';
+                    setPrimaryEmail(newPrimary);
+                }
 
-        const togglePrimary = (email: string) => {
-            if (!enablePrimary || mode === 'single') {
-                return;
-            }
-            setPrimaryEmail(email);
-            onChange?.(emails, email);
-        };
+                setEmails(updated);
+                onChange?.(updated, enablePrimary ? newPrimary : '');
+            },
+            [emails, primaryEmail, enablePrimary, onChange]
+        );
+
+        const togglePrimary = useCallback(
+            (email: string) => {
+                if (!enablePrimary || mode === 'single') return;
+
+                setPrimaryEmail(email);
+                onChange?.(emails, email);
+            },
+            [enablePrimary, mode, emails, onChange]
+        );
 
         const handleKeyDown = (
             e: React.KeyboardEvent<HTMLInputElement>
