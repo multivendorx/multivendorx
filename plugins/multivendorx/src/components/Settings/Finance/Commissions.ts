@@ -21,7 +21,7 @@ const gatewayFields = gatewayList.flatMap((gateway) => [
 	{
 		key: `${gateway.value}_percentage`,
 		type: 'number',
-		postInsideText: __('%', 'multivendorx'),
+		postText: __('%', 'multivendorx'),
 		size: '8rem',
 	},
 	{
@@ -52,7 +52,7 @@ const nestedFields = [
 	{
 		key: 'default_percentage',
 		type: 'number',
-		postInsideText: __('%', 'multivendorx'),
+		postText: __('%', 'multivendorx'),
 		size: '8rem',
 	},
 	{
@@ -121,7 +121,7 @@ export default {
 			nestedFields: [
 				{
 					key: 'rule_type',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'If',
 					options: [
 						{ value: 'price', label: 'Product/listing price' },
@@ -132,7 +132,7 @@ export default {
 				},
 				{
 					key: 'rule',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'is',
 					options: [
 						{ value: 'less_than', label: 'up to' },
@@ -143,12 +143,12 @@ export default {
 				{
 					key: 'product_price',
 					type: 'number',
-					options: [
-						{
-							key: 'product_price',
-							value: 'product_price',
-						},
-					],
+					// options: [
+					// 	{
+					// 		key: 'product_price',
+					// 		value: 'product_price',
+					// 	},
+					// ],
 					preText: appLocalizer.currency_symbol,
 					size: '8rem',
 					skipFirstRow: true,
@@ -166,12 +166,12 @@ export default {
 				{
 					key: 'product_qty',
 					type: 'number',
-					options: [
-						{
-							key: 'product_qty',
-							value: 'product_qty',
-						},
-					],
+					// options: [
+					// 	{
+					// 		key: 'product_qty',
+					// 		value: 'product_qty',
+					// 	},
+					// ],
 					preText: appLocalizer.currency_symbol,
 					size: '8rem',
 					skipFirstRow: true,
@@ -189,12 +189,12 @@ export default {
 				{
 					key: 'order_value',
 					type: 'number',
-					options: [
-						{
-							key: 'order_value',
-							value: 'order_value',
-						},
-					],
+					// options: [
+					// 	{
+					// 		key: 'order_value',
+					// 		value: 'order_value',
+					// 	},
+					// ],
 					size: '8rem',
 					preText: appLocalizer.currency_symbol,
 					afterElement: {
@@ -213,11 +213,10 @@ export default {
 					type: 'text',
 					preText: appLocalizer.currency_symbol,
 					size: '8rem',
-					preTextFirstRow: 'Fixed',
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
-						preText: __('fixed', 'multivendorx'),
+						preText: __('Fixed', 'multivendorx'),
 					},
 					afterElement: {
 						type: 'preposttext',
@@ -232,13 +231,15 @@ export default {
 					key: 'commission_percentage',
 					type: 'number',
 					size: '8rem',
-					postInsideText: __('%', 'multivendorx'),
+					postText: __('%', 'multivendorx'),
+				},
+				{
 					afterElement: {
 						type: 'preposttext',
 						textType: 'pre',
 						preText: 'commission will be charged.',
 					},
-					postTextFirstRow: '',
+					skipFirstRow: true,
 				},
 			],
 			dependent: {
@@ -265,7 +266,7 @@ export default {
 					beforeElement: {
 						type: 'preposttext',
 						textType: 'pre',
-						preText: __('fixed', 'multivendorx'),
+						preText: __('Fixed', 'multivendorx'),
 					},
 					afterElement: {
 						type: 'preposttext',
@@ -279,7 +280,7 @@ export default {
 				{
 					key: 'commission_percentage',
 					type: 'number',
-					postInsideText: __('%', 'multivendorx'),
+					postText: __('%', 'multivendorx'),
 					size: '8rem',
 				},
 			],
@@ -399,11 +400,11 @@ export default {
 					key: 'commission_percentage',
 					type: 'number',
 					size: '8rem',
-					postInsideText: __('%', 'multivendorx'),
+					postText: __('%', 'multivendorx'),
 				},
 				{
 					key: 'rule',
-					type: 'select',
+					type: 'setting-toggle',
 					label: 'to be',
 					options: [
 						{

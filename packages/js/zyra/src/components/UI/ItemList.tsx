@@ -1,7 +1,7 @@
 import React from 'react';
-
+import "../../styles/web/UI/ItemList.scss";
 interface Item {
-    id?:string;
+    id?: string;
     title?: string;
     icon?: string;
     link?: string;
@@ -14,12 +14,14 @@ interface Item {
 
 export interface ItemListProps {
     items: Item[];
+    variant?: 'default' | 'notification' | 'checklist';
 }
 
-const ItemList: React.FC<ItemListProps> = ({ items }) => {
+const ItemList: React.FC<ItemListProps> = ({ items, variant }) => {
 
     return (
-        <div className="popover-list">
+        <div className={`item-list ${variant || 'default'}`}>
+
             {items && items.map((item, index) => {
                 const handleClick = (e: React.MouseEvent) => {
                     e.stopPropagation();
@@ -27,31 +29,49 @@ const ItemList: React.FC<ItemListProps> = ({ items }) => {
                 };
 
                 return (
-                    <div
-                        key={index}
-                        className={`popover-list-item ${item.className || ''}`}
-                        onClick={handleClick}
-                    >
-                        {item.icon && <i className={`popover-item-icon ${item.icon}`}></i>}
+                    // <div
+                    //     key={index}
+                    //     className={`item ${item.className || ''}`}
+                    //     onClick={handleClick}
+                    // >
+                    <>
+                        {item.link ? (
+                            <a
+                                href={item.link}
+                                target={item.targetBlank ? "_blank" : "_self"}
+                                className="item"
+                            >
+                                {item.icon && <i className={`item-icon ${item.icon}`}></i>}
+                                {item.title}
+                            </a>
+                        ) : (
+                            <div
+                                className="item"
+                                onClick={() => {
+                                    item.action?.();
+                                }}
+                            >
+                                {item.icon && <i className={`item-icon ${item.icon}`}></i>}
 
-                        <div className="popover-item-content">
-                            {item.link ? (
-                                <a
-                                    href={item.link}
-                                    target={item.targetBlank ? "_blank" : "_self"}
-                                >
-                                    {item.title}
-                                </a>
-                            ) : (
-                                <span>{item.title}</span>
-                            )}
+                                <div className="details">
+                                    <div className="heading">{item.title}</div>
+                                    {item.desc && <div className="desc">{item.desc}</div>}
+                                </div>
+                                {item.time && <div className="popover-item-time">{item.time}</div>}
 
-                            {item.desc && <div className="popover-item-desc">{item.desc}</div>}
-                            {item.time && <div className="popover-item-time">{item.time}</div>}
-                        </div>
-                    </div>
+                                {variant === 'notification' && (
+                                    <>
+                                        <i className="check-icon adminfont-check color-green" />
+                                        <i className="check-icon adminfont-cross color-red" />
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </>
+                    /* </div> */
                 );
             })}
+
         </div>
     );
 };
