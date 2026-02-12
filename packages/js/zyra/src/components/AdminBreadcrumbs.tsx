@@ -10,15 +10,15 @@ interface button {
 }
 
 interface AdminBreadcrumbsProps<T> {
-    activeTabIcon?: string;
-    tabTitle?: string;
+    settingIcon?: string;
+    title?: string;
     submenuRender?: boolean;
     variant?: 'default' | 'compact' | 'card';
     hideTitle?: boolean;
     hideBreadcrumb?: boolean;
     renderBreadcrumb?: () => React.ReactNode;
     renderMenuItems?: (items: T[]) => React.ReactNode;
-    tabContent?: T[];
+    settingContent?: T[];
     buttons?: button[];
     goPremiumLink?: string;
     description?: string;
@@ -27,13 +27,13 @@ interface AdminBreadcrumbsProps<T> {
 }
 
 const AdminBreadcrumbs = <T,>({
-    activeTabIcon = '',
-    tabTitle = '',
+    settingIcon = '',
+    title = '',
     submenuRender = false,
     variant = 'default',
     renderBreadcrumb,
     renderMenuItems,
-    tabContent = [],
+    settingContent = [],
     buttons = [],
     goPremiumLink,
     description,
@@ -59,10 +59,10 @@ const AdminBreadcrumbs = <T,>({
                         >
                             {variant === 'default' && (
                                 <div className="title">
-                                    {activeTabIcon && (
-                                        <i className={activeTabIcon}></i>
+                                    {settingIcon && (
+                                        <i className={settingIcon}></i>
                                     )}
-                                    {tabTitle}
+                                    {title}
                                 </div>
                             )}
                             <div className="buttons">
@@ -105,12 +105,12 @@ const AdminBreadcrumbs = <T,>({
                         )}
                     </>
                 )}
-                {renderMenuItems && tabContent.length > 0 && (
+                {renderMenuItems && settingContent.length > 0 && (
                     <div className="tabs-wrapper">
                         {submenuRender && (
                             <>
-                                {activeTabIcon && (
-                                    <i className={activeTabIcon}></i>
+                                {settingIcon && (
+                                    <i className={settingIcon}></i>
                                 )}
                             </>
                         )}
@@ -121,7 +121,7 @@ const AdminBreadcrumbs = <T,>({
                                     : 'tabs-item'
                             }
                         >
-                            {renderMenuItems(tabContent)}
+                            {renderMenuItems(settingContent)}
                         </div>
                         {!submenuRender && goPremiumLink && (
                             <a

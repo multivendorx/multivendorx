@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, ReactNode, JSX } from 'react';
 import { LinkProps } from 'react-router-dom';
 
 // Internal Dependencies
-import '../styles/web/Tabs.scss';
+import '../styles/web/SettingsNavigator.scss';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
 
 type Content = {
@@ -10,32 +10,32 @@ type Content = {
     name: string;
     desc?: string;
     count?: string;
-    tabTitle?: string;
-    tabDes?: string;
+    title?: string;
+    settingDes?: string;
     icon?: string;
     link?: string;
-    hideTabHeader?: boolean;
+    hideSettingHeader?: boolean;
     proDependent?: boolean;
 };
 
-type TabContent = {
+type SettingContent = {
     name?: string;
     type: 'file' | 'folder' | 'heading';
-    content: Content | TabContent[];
+    content: Content | SettingContent[];
 };
 
 type BreadcrumbItem = { name: string; id: string; type: string };
 
 type SettingsNavigatorProps = {
-    tabContent: TabContent[];
-    currentTab: string;
-    getForm: (tabId: string) => ReactNode;
-    prepareUrl: (tabId: string) => string;
+    settingContent: SettingContent[];
+    currentSetting: string;
+    getForm: (settingId: string) => ReactNode;
+    prepareUrl: (settingId: string) => string;
     HeaderSection?: () => JSX.Element;
     Link: React.ElementType<LinkProps>;
     settingName?: string;
     onNavigate?: (url: string) => void;
-    tabTitleSection?: React.ReactNode;
+    settingTitleSection?: React.ReactNode;
     appLocalizer: { khali_dabba?: boolean; shop_url?: string };
     menuIcon?: boolean;
     desc?: boolean;
@@ -44,37 +44,37 @@ type SettingsNavigatorProps = {
 };
 
 // Typesafe check helpers
-const isFile = (item: TabContent): item is TabContent & { content: Content } => item.type === 'file';
-const isFolder = (item: TabContent): item is TabContent & { content: TabContent[] } => item.type === 'folder';
+const isFile = (item: SettingContent): item is SettingContent & { content: Content } => item.type === 'file';
+const isFolder = (item: SettingContent): item is SettingContent & { content: SettingContent[] } => item.type === 'folder';
 
 const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
-    tabContent,
-    currentTab,
+    settingContent,
+    currentSetting,
     getForm,
     prepareUrl,
     HeaderSection,
     Link,
     settingName = '',
     onNavigate,
-    tabTitleSection,
+    settingTitleSection,
     appLocalizer,
     variant = 'default',
     menuIcon,
     desc,
     action
 }) => {
-    const [activeTab, setActiveTab] = useState(currentTab);
+    const [activeSetting, setActiveSetting] = useState(currentSetting);
 
     /**
      * Pre-calculates navigation maps for O(1) lookups during render and navigation.
      */
     const { flatContentMap, siblingLevelMap, hierarchyPathMap, folderToFirstFileMap } = useMemo(() => {
         const flatContent: Record<string, Content> = {};
-        const siblings: Record<string, TabContent[]> = {};
-        const paths: Record<string, TabContent[]> = {};
+        const siblings: Record<string, SettingContent[]> = {};
+        const paths: Record<string, SettingContent[]> = {};
         const firstFiles: Record<string, string> = {};
 
-        const traverse = (items: TabContent[], currentPath: TabContent[] = []) => {
+        const traverse = (items: SettingContent[], currentPath: SettingContent[] = []) => {
             let firstFileInThisLevel: string | null = null;
 
             items.forEach(item => {
@@ -95,24 +95,24 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             return firstFileInThisLevel;
         };
 
-        traverse(tabContent);
+        traverse(settingContent);
         return { 
             flatContentMap: flatContent, 
             siblingLevelMap: siblings, 
             hierarchyPathMap: paths, 
             folderToFirstFileMap: firstFiles 
         };
-    }, [tabContent]);
+    }, [settingContent]);
 
-    const activeTabPath = hierarchyPathMap[activeTab] || [];
-    const activeFile = flatContentMap[activeTab];
-    const currentMenu = siblingLevelMap[activeTab] || tabContent;
-    const showSubmenu = activeTabPath.length > 1;
+    const activeSettingPath = hierarchyPathMap[activeSetting] || [];
+    const activeFile = flatContentMap[activeSetting];
+    const currentMenu = siblingLevelMap[activeSetting] || settingContent;
+    const showSubmenu = activeSettingPath.length > 1;
 
-    const navigate = (tabId?: string) => {
-        if (!tabId || tabId === activeTab) return;
-        setActiveTab(tabId);
-        const url = prepareUrl(tabId);
+    const navigate = (settingId?: string) => {
+        if (!settingId || settingId === activeSetting) return;
+        setActiveSetting(settingId);
+        const url = prepareUrl(settingId);
         if (onNavigate) onNavigate(url);
         else window.history.pushState(null, '', url);
     };
@@ -125,7 +125,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             return;
         }
         
-        const targetItem = activeTabPath[index - 1];
+        const targetItem = activeSettingPath[index - 1];
         if (!targetItem) return;
 
         if (isFile(targetItem)) {
@@ -138,7 +138,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     const renderBreadcrumbLinks = () => {
         const crumbs: BreadcrumbItem[] = [{ name: settingName, id: 'root', type: 'root' }];
         
-        activeTabPath.forEach(item => {
+        activeSettingPath.forEach(item => {
             crumbs.push({
                 name: isFile(item) ? item.content.name : (item.name || ''),
                 id: isFile(item) ? item.content.id : (item.name || ''),
@@ -159,38 +159,38 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         ));
     };
 
-    const renderSingleMenuItem = (item: TabContent, index: number) => {
+    const renderSingleMenuItem = (item: SettingContent, index: number) => {
         if (item.type === 'heading') {
             return <div key={index} className="tab-heading">{item.name}</div>;
         }
 
         if (isFile(item)) {
-            const tab = item.content;
+            const setting = item.content;
             return (
                 <Link
-                    key={tab.id}
-                    to={prepareUrl(tab.id)}
-                    className={`tab ${activeTab === tab.id ? 'active-tab' : ''}`}
+                    key={setting.id}
+                    to={prepareUrl(setting.id)}
+                    className={`tab ${activeSetting === setting.id ? 'active-tab' : ''}`}
                     onClick={(e) => {
                         if (e.button === 0 && !e.metaKey && !e.ctrlKey) {
                             e.preventDefault();
-                            navigate(tab.id);
+                            navigate(setting.id);
                         }
                     }}
                 >
                     <p className="tab-name">
-                        {menuIcon && tab.icon && <i className={`adminfont-${tab.icon}`}></i>}
-                        <span>{tab.count}</span>
-                        {tab.name}
+                        {menuIcon && setting.icon && <i className={`adminfont-${setting.icon}`}></i>}
+                        <span>{setting.count}</span>
+                        {setting.name}
                     </p>
-                    {desc && tab.desc && <div className="des">{tab.desc}</div>}
+                    {desc && setting.desc && <div className="des">{setting.desc}</div>}
                 </Link>
             );
         }
 
         if (isFolder(item)) {
             const firstInFolderId = folderToFirstFileMap[item.name || ''];
-            const isPartOfActivePath = activeTabPath.some(pathItem => pathItem === item);
+            const isPartOfActivePath = activeSettingPath.some(pathItem => pathItem === item);
             
             return (
                 <Link
@@ -211,16 +211,16 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         return null;
     };
 
-    const renderAllMenuItems = (items: TabContent[]) => items.map(renderSingleMenuItem);
+    const renderAllMenuItems = (items: SettingContent[]) => items.map(renderSingleMenuItem);
 
-    const renderTabHeaderInfo = () => {
-        if (!activeFile || activeFile.id === 'support' || activeFile.hideTabHeader) return null;
-        const description = activeFile.tabDes?.trim() || activeFile.desc || '';
+    const renderSettingHeaderInfo = () => {
+        if (!activeFile || activeFile.id === 'support' || activeFile.hideSettingHeader) return null;
+        const description = activeFile.settingDes?.trim() || activeFile.desc || '';
         
         return (
             <div className="divider-wrapper">
                 <div className="divider-section">
-                    <div className="title">{activeFile.tabTitle ?? activeFile.name}</div>
+                    <div className="title">{activeFile.title ?? activeFile.name}</div>
                     {description && (
                         <div 
                             className="desc" 
@@ -233,30 +233,30 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     };
 
     useEffect(() => {
-        if (currentTab) {
-            setActiveTab(currentTab);
+        if (currentSetting) {
+            setActiveSetting(currentSetting);
         } else {
-            const availableTabs = Object.keys(flatContentMap);
-            if (availableTabs.length > 0) {
-                const firstAvailableId = availableTabs[0];
-                setActiveTab(firstAvailableId);
+            const availableSettings = Object.keys(flatContentMap);
+            if (availableSettings.length > 0) {
+                const firstAvailableId = availableSettings[0];
+                setActiveSetting(firstAvailableId);
                 const url = prepareUrl(firstAvailableId);
                 window.history.replaceState(null, '', url);
             }
         }
-    }, [currentTab, flatContentMap, prepareUrl]);
+    }, [currentSetting, flatContentMap, prepareUrl]);
 
     return (
         <>
-            {tabTitleSection && <>{tabTitleSection}</>}
+            {settingTitleSection && <>{settingTitleSection}</>}
 
             <AdminBreadcrumbs
-                activeTabIcon={activeFile?.icon || ''}
-                tabTitle={activeFile?.name || ''}
+                settingIcon={activeFile?.icon || ''}
+                title={activeFile?.name || ''}
                 variant={variant}
                 renderBreadcrumb={renderBreadcrumbLinks}
-                renderMenuItems={() => renderAllMenuItems(tabContent)}
-                tabContent={tabContent}
+                renderMenuItems={() => renderAllMenuItems(settingContent)}
+                settingContent={settingContent}
                 goPremiumLink={!appLocalizer.khali_dabba ? appLocalizer.shop_url : ''}
                 action={action}
             />
@@ -273,8 +273,8 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                 )}
 
                 <div className="tab-content">
-                    {renderTabHeaderInfo()}
-                    {getForm(activeTab)}
+                    {renderSettingHeaderInfo()}
+                    {getForm(activeSetting)}
                 </div>
             </div>
         </>
