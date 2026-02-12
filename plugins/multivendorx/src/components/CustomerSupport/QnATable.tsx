@@ -14,7 +14,7 @@ import {
 	PopupUI,
 } from 'zyra';
 
-import { Dialog } from '@mui/material';
+// import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -282,7 +282,7 @@ const Qna: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -302,7 +302,7 @@ const Qna: React.FC = () => {
 						setSelectedQn(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 			<TableCard
 				headers={headers}
 				rows={rows}
