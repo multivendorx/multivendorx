@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	CommonPopup,
 	TextArea,
 	getApiLink,
 	FormGroupWrapper,

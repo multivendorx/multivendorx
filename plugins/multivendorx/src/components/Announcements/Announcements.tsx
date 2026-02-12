@@ -6,7 +6,6 @@ import {
 	getApiLink,
 	AdminBreadcrumbs,
 	TextArea,
-	CommonPopup,
 	Container,
 	Column,
 	FormGroupWrapper,
@@ -443,7 +442,7 @@ export const Announcements: React.FC = () => {
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),
-						className : "admin-btn btn-purple-bg",
+						className: "admin-btn btn-purple-bg",
 						iconClass: 'adminfont-plus',
 						onClick: () => {
 							setValidationErrors({});
@@ -454,10 +453,10 @@ export const Announcements: React.FC = () => {
 				]}
 			/>
 
-			< CommonPopup
+			<PopupUI
 				open={addAnnouncements}
 				onClose={handleCloseForm}
-				width="31.25rem"
+				width={31.25}
 				height="80%"
 				header={{
 					icon: 'announcement',
@@ -470,21 +469,20 @@ export const Announcements: React.FC = () => {
 					),
 				}}
 				footer={
-					< AdminButtonUI
-						buttons={
-							[
-								{
-									icon: 'close',
-									text: __('Cancel', 'multivendorx'),
-									color: 'red',
-									onClick: handleCloseForm,
-								},
-								{
-									icon: 'save',
-									text: __('Save', 'multivendorx'),
-									onClick: () => handleSubmit(),
-								},
-							]}
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								onClick: handleCloseForm,
+							},
+							{
+								icon: 'save',
+								text: __('Save', 'multivendorx'),
+								onClick: () => handleSubmit(),
+							},
+						]}
 					/>
 				}
 			>
@@ -574,7 +572,7 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.','multivendorx')} htmlFor="status">
+						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.', 'multivendorx')} htmlFor="status">
 							<ToggleSettingUI
 								options={[
 									{
@@ -600,7 +598,7 @@ export const Announcements: React.FC = () => {
 					</FormGroupWrapper>
 				</>
 				{error && <p className="error-text">{error}</p>}
-			</CommonPopup >
+			</PopupUI >
 
 			<Container general>
 				<Column>

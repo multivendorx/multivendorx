@@ -6,7 +6,6 @@ import {
 	getApiLink,
 	AdminBreadcrumbs,
 	TextArea,
-	CommonPopup,
 	ToggleSettingUI,
 	Container,
 	Column,
