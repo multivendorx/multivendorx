@@ -26,7 +26,7 @@ type TabContent = {
 
 type BreadcrumbItem = { name: string; id: string; type: string };
 
-type TabsProps = {
+type SettingsNavigatorProps = {
     tabContent: TabContent[];
     currentTab: string;
     getForm: (tabId: string) => ReactNode;
@@ -40,13 +40,14 @@ type TabsProps = {
     menuIcon?: boolean;
     desc?: boolean;
     variant?: 'default' | 'compact' | 'card';
+    action?: React.ReactNode;
 };
 
 // Typesafe check helpers
 const isFile = (item: TabContent): item is TabContent & { content: Content } => item.type === 'file';
 const isFolder = (item: TabContent): item is TabContent & { content: TabContent[] } => item.type === 'folder';
 
-const Tabs: React.FC<TabsProps> = ({
+const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     tabContent,
     currentTab,
     getForm,
@@ -60,6 +61,7 @@ const Tabs: React.FC<TabsProps> = ({
     variant = 'default',
     menuIcon,
     desc,
+    action
 }) => {
     const [activeTab, setActiveTab] = useState(currentTab);
 
@@ -231,6 +233,7 @@ const Tabs: React.FC<TabsProps> = ({
                 renderMenuItems={() => renderAllMenuItems(tabContent)}
                 tabContent={tabContent}
                 goPremiumLink={!appLocalizer.khali_dabba ? appLocalizer.shop_url : ''}
+                action={action}
             />
 
             <div className="general-wrapper admin-settings" data-template={variant}>
@@ -253,4 +256,4 @@ const Tabs: React.FC<TabsProps> = ({
     );
 };
 
-export default Tabs;
+export default SettingsNavigator;
