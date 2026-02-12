@@ -71,42 +71,45 @@ interface ColorSettingProps {
 }
 
 export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
+    const { predefinedOptions = [], images = [], templates = [], value, onChange } = props;
+
+    const FIELD_NAME = 'store_color_settings';
+
     // Initialize selectedPalette from DB value or default to first option
     const initialPalette =
-        props.value?.selectedPalette ||
-        (props.predefinedOptions[0]?.value ?? '');
-    const initialColors = props.value?.colors || {};
+        value?.selectedPalette ||
+        (predefinedOptions[0]?.value ?? '');
+    const initialColors = value?.colors || {};
     const [templateKey, setTemplateKey] = useState(
-        props.value?.templateKey || props.templates?.[0]?.key
+        value?.templateKey || templates?.[0]?.key
     );
 
     const activeTemplate = useMemo(
-        () => props.templates?.find(t => t.key === templateKey),
-        [props.templates, templateKey]
+        () => templates?.find(t => t.key === templateKey),
+        [templates, templateKey]
     );
     const ActivePdf = activeTemplate?.pdf;
+
+    const emitChange = (payload: any) => {
+        onChange?.({
+            target: {
+                name: FIELD_NAME,
+                value: payload
+            }
+        });
+    };
+
     const changeTemplate = (key: string) => {
         setTemplateKey(key);
-
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    templateKey: key,
-                    colors: customColors,
-                },
-            },
+        emitChange({
+            templateKey: key,
+            colors: customColors,
         });
     };
     const emitTemplateChange = (colors: CustomColors, key?: string) => {
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    templateKey: key || templateKey,
-                    colors,
-                },
-            },
+        emitChange({
+            templateKey: key || templateKey,
+            colors,
         });
     };
 
@@ -132,29 +135,29 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
     });
 
     const [selectedImage, setSelectedImage] = useState<string | null>(
-        props.images?.[0]?.img || null
+        images?.[0]?.img || null
     );
 
     useEffect(() => {
         if (selectedPalette !== 'custom') {
-            const selectedOption = props.predefinedOptions.find(
+            const selectedOption = predefinedOptions.find(
                 (opt) => opt.value === selectedPalette
             );
             setSelectedColors(selectedOption?.colors || {});
         }
-    }, [selectedPalette, props.predefinedOptions]);
+    }, [selectedPalette, predefinedOptions]);
 
     useEffect(() => {
-        const selectedPaletteValue = props.value?.selectedPalette;
-        if (selectedPaletteValue && props.images) {
-            const matchedImage = props.images.find(
+        const selectedPaletteValue = value?.selectedPalette;
+        if (selectedPaletteValue && images) {
+            const matchedImage = images.find(
                 (img) => img.value === selectedPaletteValue
             );
             if (matchedImage?.img) {
                 setSelectedImage(matchedImage.img);
             }
         }
-    }, [props.value, props.images]);
+    }, [value, images]);
 
     const handlePaletteChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -167,22 +170,15 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
             setMode('predefined');
         }
 
-        const option = props.predefinedOptions.find(
+        const option = predefinedOptions.find(
             (opt) => opt.value === value
         );
         const colors = value === 'custom' ? customColors : option?.colors || {};
 
         setSelectedColors(colors);
-
-        // Use the actual field name from props instead of hardcoded string
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    selectedPalette: value,
-                    colors,
-                },
-            },
+        emitChange({
+            selectedPalette: value,
+            colors,
         });
     };
 
@@ -192,27 +188,21 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
         setSelectedColors(updated);
         setSelectedPalette('custom');
         setMode('custom'); // Ensure mode is set to custom
-
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    selectedPalette: 'custom',
-                    colors: updated,
-                },
-            },
+        emitChange({
+            selectedPalette: 'custom',
+            colors: updated,
         });
     };
     return (
         <>
             <div className="color-settings-wrapper">
-                {(props.templates?.length ?? 0) > 1 && (
+                {(templates?.length ?? 0) > 1 && (
                     <div className={props.wrapperClass}>
                         <div className="form-group-setting-wrapper">
                             <label>Select Template</label>
                             <SelectInputUI
                                 name="dashboard_template"
-                                options={props.templates!.map((tpl) => ({
+                                options={templates!.map((tpl) => ({
                                     label: tpl.label,
                                     value: tpl.key,
                                 }))}
@@ -228,7 +218,7 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                     </div>
                 )}
 
-                {props.predefinedOptions && (
+                {predefinedOptions && (
                     <div className="color-setting">
                         <div className="color-palette-wrapper">
                             { /* Toggle Mode */}
@@ -256,27 +246,21 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                                                 setMode('predefined');
 
                                                 const value =
-                                                    props.predefinedOptions[0]?.value ??
+                                                    predefinedOptions[0]?.value ??
                                                     '';
 
                                                 setSelectedPalette(value);
 
-                                                const option = props.predefinedOptions.find(
+                                                const option = predefinedOptions.find(
                                                     (opt) => opt.value === value
                                                 );
 
                                                 const colors = option?.colors || {};
 
                                                 setSelectedColors(colors);
-
-                                                props.onChange?.({
-                                                    target: {
-                                                        name: 'store_color_settings',
-                                                        value: {
-                                                            selectedPalette: value,
-                                                            colors,
-                                                        },
-                                                    },
+                                                emitChange({
+                                                    selectedPalette: value,
+                                                    colors,
                                                 });
                                             }
 
@@ -291,15 +275,9 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                                                 setMode('custom');
                                                 setSelectedPalette('custom');
                                                 setSelectedColors(customColors);
-
-                                                props.onChange?.({
-                                                    target: {
-                                                        name: 'store_color_settings',
-                                                        value: {
-                                                            selectedPalette: 'custom',
-                                                            colors: customColors,
-                                                        },
-                                                    },
+                                                emitChange({
+                                                    selectedPalette: 'custom',
+                                                    colors: customColors,
                                                 });
                                             }
 
@@ -310,7 +288,7 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                             {/* Predefined Palettes */}
                             {mode === 'predefined' && (
                                 <div className="predefined">
-                                    {props.predefinedOptions.map((option) => {
+                                    {predefinedOptions.map((option) => {
                                         const checked = selectedPalette === option.value;
                                         return (
                                             <div key={option.key} className="palette">
@@ -407,11 +385,11 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                 )}
 
                 { /* Image Palette List */}
-                {props.images && (
+                {images && (
                     <div className="color-setting">
                         <div className="image-list">
-                            {props.images &&
-                                props.images.map((imgOption) => (
+                            {images &&
+                                images.map((imgOption) => (
                                     <div
                                         key={imgOption.key}
                                         className={`image-thumbnail ${selectedPalette === imgOption.value
@@ -425,19 +403,13 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                                             setMode('predefined'); // Set mode to predefined when selecting an image
 
                                             // You need to get the corresponding predefined option
-                                            const option = props.predefinedOptions.find(
+                                            const option = predefinedOptions.find(
                                                 (opt) => opt.value === value
                                             );
                                             const colors = option?.colors || {};
-
-                                            props.onChange?.({
-                                                target: {
-                                                    name: 'store_color_settings', // Use the correct field name
-                                                    value: {
-                                                        selectedPalette: value,
-                                                        colors,
-                                                    },
-                                                },
+                                            emitChange({
+                                                selectedPalette: value,
+                                                colors,
                                             });
                                         }}
                                     >
