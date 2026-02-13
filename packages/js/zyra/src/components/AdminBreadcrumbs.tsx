@@ -1,6 +1,6 @@
 //External Dependencies
 import React from 'react';
-import { AdminButtonUI } from './UI/AdminButton';
+import { AdminButtonUI } from './AdminButton';
 
 interface button {
     label: string;
@@ -11,7 +11,7 @@ interface button {
 
 interface AdminBreadcrumbsProps<T> {
     settingIcon?: string;
-    title?: string;
+    headerTitle?: string;
     submenuRender?: boolean;
     variant?: 'default' | 'compact' | 'card';
     hideTitle?: boolean;
@@ -28,7 +28,7 @@ interface AdminBreadcrumbsProps<T> {
 
 const AdminBreadcrumbs = <T,>({
     settingIcon = '',
-    title = '',
+    headerTitle = '',
     submenuRender = false,
     variant = 'default',
     renderBreadcrumb,
@@ -62,7 +62,7 @@ const AdminBreadcrumbs = <T,>({
                                     {settingIcon && (
                                         <i className={settingIcon}></i>
                                     )}
-                                    {title}
+                                    {headerTitle}
                                 </div>
                             )}
                             <div className="buttons">

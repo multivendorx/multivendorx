@@ -1,7 +1,7 @@
 import BasicInput from './BasicInput';
 import SelectInput from './SelectInput';
 import PrePostText from './PrePostText';
-import AdminButton from './UI/AdminButton';
+import AdminButton from './AdminButton';
 import ExpandablePanelGroup from './ExpandablePanelGroup';
 import ToggleSetting from './ToggleSetting';
 import BlockText from './BlockText';
@@ -20,6 +20,9 @@ import AddressField from './AddressField';
 import NestedComponent from './NestedComponent';
 import Divider from './Divider';
 import Content from './Content';
+import ColorSettingInput from './ColorSettingInput';
+import Log from './Log';
+import EndpointEditor from './EndpointEditor';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -50,4 +53,8 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'divider': Divider,
   'heading': Content,
   'richtext': Content,
+  'checkbox': MultiCheckBox,
+  'color-setting' : ColorSettingInput,
+  'log' : Log,
+  'endpoint-editor' : EndpointEditor,
 };

@@ -3,7 +3,7 @@ import { MouseEvent, FC } from 'react';
 
 // Internal Dependencies
 import { FieldComponent } from './types';
-import { AdminButtonUI } from './UI/AdminButton';
+import { AdminButtonUI } from './AdminButton';
 
 
 interface ClickableItem {
