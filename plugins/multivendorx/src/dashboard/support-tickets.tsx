@@ -6,7 +6,6 @@ import {
 	Table,
 	TableCell,
 	getApiLink,
-	MultiCalendarInput,
 	FormGroupWrapper,
 	FormGroup,
 	AdminButtonUI,

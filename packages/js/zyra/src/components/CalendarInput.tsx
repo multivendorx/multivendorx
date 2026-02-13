@@ -17,7 +17,7 @@ interface CalendarInputProps {
   proSetting?: boolean;
 }
 
-const toDateObjectRange = (
+const convertToDateObjectRange = (
   range?: CalendarRange,
   format = 'MMMM DD YYYY'
 ) => {
@@ -36,10 +36,8 @@ const Presets = ({
 }: any) => {
   const now = new Date();
 
-  const clone = (date: Date) => new Date(date);
-
   const startOfWeek = (date: Date) => {
-    const newdate = clone(date);
+    const newdate = new Date(date);
     const day = newdate.getDay();
     newdate.setDate(newdate.getDate() - day + 1);
     return newdate;
@@ -121,10 +119,10 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
   const pickerRef = useRef<any>();
 
   const [internalValue, setInternalValue] =
-    useState<any>(toDateObjectRange(value, format));
+    useState<any>(convertToDateObjectRange(value, format));
 
   useEffect(() => {
-    setInternalValue(toDateObjectRange(value, format));
+    setInternalValue(convertToDateObjectRange(value, format));
   }, [value, format]);
 
   const handleChange = (val: any) => {
