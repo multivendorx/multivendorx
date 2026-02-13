@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DatePicker, { DateObject, DatePickerRef } from 'react-multi-date-picker';
-import DatePanel from "react-multi-date-picker/plugins/date_panel"
-
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
 export interface CalendarRange {
   startDate: Date;
   endDate: Date;
@@ -89,7 +88,7 @@ const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
   const lastMonthEnd = endOfMonth(lastMonthStart);
 
   return (
-    <div>
+    <div className="range-picker-wrapper">
       <div onClick={() => apply([now])}>Today</div>
       <div onClick={() => apply([yesterday])}>Yesterday</div>
 
@@ -111,7 +110,7 @@ const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
 };
 
 const CalendarInput: React.FC<CalendarInputProps> = ({
-  wrapperClass,
+  wrapperClass = "calender-wrapper",
   inputClass,
   format = "MMMM DD YYYY",
   value,

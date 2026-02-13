@@ -5,7 +5,7 @@ import React, { useRef } from 'react';
 import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
 import ItemList from './ItemList';
-import Tabs from './UI/Tabs';
+import Tabs from './Tabs';
 
 type SearchItem = {
     icon?: string;
