@@ -1,46 +1,48 @@
 import React from 'react';
 import { QueryProps } from './types';
+import { AdminButtonUI } from '../AdminButton';
 
 export type ButtonAction = {
-	label: string;
-	icon?: string;
-	onClick: () => void;
-	className?: string;
-	onClickWithQuery?:( query:QueryProps) => void;
+    label: string;
+    icon?: string;
+    onClick?: () => void;
+    className?: string;
+    onClickWithQuery?: (query: QueryProps) => void;
+    color?: string; // Added to support your AdminButtonUI color prop
 };
 
 type ButtonActionsProps = {
-	actions?: ButtonAction[];
-	query?: QueryProps;
+    actions?: ButtonAction[];
+    query?: QueryProps;
 };
 
 const ButtonActions: React.FC<ButtonActionsProps> = ({
-	actions = [],
-	query,
+    actions = [],
+    query,
 }) => {
-	if (!actions.length) return null;
+    if (!actions.length) return null;
 
-	return (
-		<div className="table-button-actions">
-			{actions.map((action, index) => (
-				<button
-					key={index}
-					className={`admin-badge ${action.className || ''}`}
-					onClick={() => {
-						if (action.onClickWithQuery && query) {
-							action.onClickWithQuery(query);
-						} else {
-							action.onClick?.();
-						}
-					}}
-				>
-					{action.icon && <i className={`adminfont-${action.icon}`} />}
-					{action.label}
-				</button>
-			))}
-		</div>
-	);
+    const resolvedButtons = actions.map((action) => ({
+        text: action.label,
+        icon: action.icon,
+        color: action.color || 'white',
+        onClick: () => {
+            if (action.onClickWithQuery && query) {
+                action.onClickWithQuery(query);
+            } else {
+                action.onClick?.();
+            }
+        },
+    }));
+
+    return (
+        <div className="table-button-actions">
+            <AdminButtonUI 
+                buttons={resolvedButtons} 
+                position="left" 
+            />
+        </div>
+    );
 };
 
 export default ButtonActions;
-

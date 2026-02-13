@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { BasicInputUI } from '../BasicInput';
+import { AdminButtonUI } from '../AdminButton';
 
 interface PagePickerProps {
   currentPage: number;
   pageCount: number;
   setCurrentPage: (page: number, action?: 'previous' | 'next' | 'goto' | 'first' | 'last') => void;
-  maxPageButtons?: number;
 }
 
 const PagePicker: React.FC<PagePickerProps> = ({
   currentPage,
   pageCount,
   setCurrentPage,
-  maxPageButtons = 5, // default to 5 buttons
 }) => {
   const [inputValue, setInputValue] = useState<number>(currentPage);
 
@@ -48,39 +48,39 @@ const PagePicker: React.FC<PagePickerProps> = ({
   // Determine visible page numbers with ellipsis
   const getVisiblePages = () => {
     const pages: (number | string)[] = [];
-  
+
     if (pageCount <= 6) {
       for (let i = 1; i <= pageCount; i++) pages.push(i);
       return pages;
     }
-  
+
     // Always first two
     pages.push(1, 2);
-  
+
     let middleStart = currentPage - 1;
     let middleEnd = currentPage + 1;
-  
+
     middleStart = Math.max(middleStart, 3);
     middleEnd = Math.min(middleEnd, pageCount - 2);
-  
+
     // Left ellipsis
     if (middleStart > 3) {
       pages.push('...');
     }
-  
+
     // Middle pages (dynamic)
     for (let i = middleStart; i <= middleEnd; i++) {
       pages.push(i);
     }
-  
+
     // Right ellipsis
     if (middleEnd < pageCount - 2) {
       pages.push('...');
     }
-  
+
     // Always last two
     pages.push(pageCount - 1, pageCount);
-  
+
     return pages;
   };
 
@@ -89,19 +89,17 @@ const PagePicker: React.FC<PagePickerProps> = ({
   const pages = getVisiblePages();
   return (
     <div className="pagination-number-wrapper">
-      <label className="show-section">
-        Go to page
-        <input
-          type="number"
-          min={1}
-          max={pageCount}
-          value={inputValue}
-          onClick={selectInputValue}
-          onChange={onInputChange}
-          onBlur={onInputBlur}
-          className={`pagination-page-picker-input`}
-        />
-      </label>
+      <BasicInputUI
+        type="number"
+        inputLabel="Go to page"
+        minNumber={1}
+        maxNumber={pageCount}
+        value={inputValue}
+        inputClass="pagination-page-picker-input"
+        onChange={(val) => setInputValue(val)}
+        onBlur={onInputBlur}
+        onClick={(e) => e.currentTarget.select()}
+      />
       <div className="pagination-arrow">
         <span
           className={`${currentPage <= 1 ? 'pagination-button-disabled' : ''}`}
@@ -122,13 +120,13 @@ const PagePicker: React.FC<PagePickerProps> = ({
         <div className="pagination">
           {pages.map((page, idx) =>
             typeof page === 'number' ? (
-              <button
-                key={idx}
-                className={`number-btn ${currentPage === page ? 'active' : ''}`}
-                onClick={() => goToPage(page)}
-              >
-                {page}
-              </button>
+              <AdminButtonUI
+                buttons={{
+                  text: String(page),
+                  color: currentPage === page ? 'purple' : 'white',
+                  onClick: () => goToPage(page),
+                }}
+              />
             ) : (
               <span key={idx} className="pagination-ellipsis">
                 {page}

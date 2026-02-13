@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useOutsideClick } from '../useOutsideClick';
 
 export interface ActionItem {
   label?: string;
@@ -19,9 +20,15 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const showInline = rowActions.length <= 2;
+  
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(containerRef, () => {
+    if (open) setOpen(false);
+  });
 
   return (
-    <div className="action-section">
+    <div className="action-section" ref={containerRef}>
       <div className="action-icons">
         <div className="inline-actions">
           {showInline ? (
@@ -37,7 +44,6 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
             ))
           ) : (
             <>
-              {/* single icon */}
               <div
                 className="inline-action-btn tooltip-wrapper"
                 onClick={() => setOpen((v) => !v)}
@@ -45,7 +51,6 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
                 <i className="adminfont-more-vertical" />
               </div>
 
-              {/* dropdown actions */}
               {open &&
                 rowActions.map((action, index) => (
                   <div
