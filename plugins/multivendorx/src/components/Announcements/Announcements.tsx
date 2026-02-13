@@ -16,6 +16,7 @@ import {
 	ToggleSettingUI,
 	SelectInputUI,
 	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 
 
@@ -534,7 +535,7 @@ export const Announcements: React.FC = () => {
 							)}
 						</FormGroup>
 						<FormGroup label={__('Announcement message', 'multivendorx')} htmlFor="content">
-							<TextArea
+							<TextAreaUI
 								name="content"
 								value={formData.content}
 								onChange={handleChange}
