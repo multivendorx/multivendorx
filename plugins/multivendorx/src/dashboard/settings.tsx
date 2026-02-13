@@ -200,7 +200,6 @@ const settings = () => {
 					appLocalizer={appLocalizer}
 					settingName="Settings"
 					Link={SimpleLink}
-					submenuRender={true}
 					menuIcon={true}
 				/>
 			</div>

@@ -20,32 +20,32 @@ export default {
 					type: 'checklist',
 					options: [
 						{
-							label: __(
+							title: __(
 								'Can log in to dashboard',
 								'multivendorx'
 							),
-							check: true,
+							icon: 'check adminfont-icon-yes',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot modify store settings',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 						{
-							label: __(
+							title: __(
 								'Denied from adding or editing products',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot process or fulfill orders',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 					],
 				},

@@ -46,6 +46,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	onSelectCsvDownloadApply,
 	onCellEdit,
 	buttonActions,
+	format,
 	...props
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -353,6 +354,7 @@ const TableCard: React.FC<TableCardProps> = ({
 							onResetFilters={() =>
 								setQuery((prev) => ({ ...prev, filter: {}, paged: 1 }))
 							}
+							format={format}
 						/>
 					)}
 

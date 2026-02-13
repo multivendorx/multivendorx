@@ -695,7 +695,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
             );
         }
 
-        // 👇 NORMAL FIELDS
+        // NORMAL FIELDS
         return (
             <Render
                 field={field}

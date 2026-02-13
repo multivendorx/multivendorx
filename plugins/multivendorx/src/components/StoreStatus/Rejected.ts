@@ -19,30 +19,30 @@ export default {
 					type: 'checklist',
 					options: [
 						{
-							label: __('Log in to dashboard', 'multivendorx'),
-							check: true,
+							title: __('Log in to dashboard', 'multivendorx'),
+							icon: 'check adminfont-icon-yes',
 						},
 						{
-							label: __('View rejection reason', 'multivendorx'),
-							check: true,
+							title: __('View rejection reason', 'multivendorx'),
+							icon: 'check adminfont-icon-yes',
 						},
 						{
-							label: __('Submit new application', 'multivendorx'),
-							check: true,
+							title: __('Submit new application', 'multivendorx'),
+							icon: 'check adminfont-icon-yes',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot modify products or settings',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot sell or fulfill orders',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 					],
 				},
