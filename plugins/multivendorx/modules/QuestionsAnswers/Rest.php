@@ -327,16 +327,16 @@ class Rest extends \WP_REST_Controller {
         }
 
         // Permission check.
-        if ( ! in_array( 'administrator', $current_user->roles, true ) ) {
-            if ( in_array( 'store_owner', $current_user->roles, true ) ) {
-                $product = wc_get_product( $q['product_id'] );
-                if ( ! $product || $product->get_author() !== $current_user_id ) {
-                    return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
-                }
-            } else {
-                return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
-            }
-        }
+        // if ( ! in_array( 'administrator', $current_user->roles, true ) ) {
+        //     if ( in_array( 'store_owner', $current_user->roles, true ) ) {
+        //         $product = wc_get_product( $q['product_id'] );
+        //         if ( ! $product || $product->get_author() !== $current_user_id ) {
+        //             return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
+        //         }
+        //     } else {
+        //         return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
+        //     }
+        // }
 
         $product       = wc_get_product( $q['product_id'] );
         $product_name  = $product ? $product->get_name() : '';
