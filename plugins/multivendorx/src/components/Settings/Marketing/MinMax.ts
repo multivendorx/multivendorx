@@ -4,7 +4,7 @@ export default {
 	id: 'min-max',
 	priority: 6,
 	name: __('Min/Max', 'multivendorx'),
-	tabTitle: 'Per-product/listing purchase limits',
+	headerTitle: 'Per-product/listing purchase limits',
 	desc: __(
 		'Set purchase limits for individual products to prevent bulk buying or ensure minimum order quantities.',
 		'multivendorx'

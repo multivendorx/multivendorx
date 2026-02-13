@@ -4,6 +4,8 @@ import DragListView from 'react-drag-listview';
 import '../styles/web/EndpointEditor.scss';
 import { getApiLink } from '../utils/apiService';
 import { FieldComponent } from './types';
+import { BasicInputUI } from './BasicInput';
+import { useOutsideClick } from './useOutsideClick';
 
 interface Submenu {
     name: string;
@@ -42,6 +44,7 @@ const EndpointManagerUI: React.FC<EndpointEditorProps> = ({
     const [editName, setEditName] = useState('');
     const [editSlug, setEditSlug] = useState('');
     const editRef = useRef<HTMLDivElement>(null);
+    useOutsideClick(editRef, () => setEditKey(null));
 
     useEffect(() => {
         axios({
@@ -58,23 +61,7 @@ const EndpointManagerUI: React.FC<EndpointEditorProps> = ({
 
             setEndpoints(formatted);
         });
-    }, [apilink, appLocalizer]);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (editRef.current && !editRef.current.contains(event.target as Node)) {
-                setEditKey(null);
-            }
-        };
-
-        if (editKey) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [editKey]);
+    }, [apilink, appLocalizer]);  
 
     const autoSave = (updated: [string, Endpoint][]) => {
         setEndpoints(updated);
@@ -163,36 +150,32 @@ const EndpointManagerUI: React.FC<EndpointEditorProps> = ({
                 {editKey === key ? (
                     <div className="edit-menu" ref={editRef}>
                         <div className="name-wrapper">
-                            <input
+                            <BasicInputUI
+                                type="text"
                                 value={editName}
-                                onChange={(e) => {
-                                    const name = e.target.value;
+                                onChange={(val) => {
+                                    const name = val;
                                     setEditName(name);
                                     updateEndpoint(key, (item) => ({
                                         ...item,
                                         name,
                                     }));
                                 }}
-                                className="basic-input"
                             />
 
                             {!isDashboard && (
-                                <input
+                                <BasicInputUI
+                                    type="text"
                                     value={editSlug}
-                                    onChange={(e) => {
-                                        const slug = generateUniqueSlug(
-                                            e.target.value,
-                                            key
-                                        );
+                                    onChange={(val) => {
+                                        const slug = generateUniqueSlug( val, key );
                                         setEditSlug(slug);
                                         if (!slug) return;
-
                                         updateEndpoint(key, (item) => ({
                                             ...item,
                                             slug,
                                         }));
                                     }}
-                                    className="basic-input"
                                 />
                             )}
                         </div>
@@ -260,12 +243,12 @@ const EndpointManagerUI: React.FC<EndpointEditorProps> = ({
                                         }}
                                     >
                                         {editKey === subKey ? (
-                                            <input
+                                            <BasicInputUI
                                                 ref={editRef}
+                                                type="text"
                                                 value={editName}
-                                                onChange={(e) => {
-                                                    const name =
-                                                        e.target.value;
+                                                onChange={(val) => {
+                                                    const name = val;
                                                     setEditName(name);
                                                     updateSubmenu(
                                                         key,
@@ -276,7 +259,6 @@ const EndpointManagerUI: React.FC<EndpointEditorProps> = ({
                                                         })
                                                     );
                                                 }}
-                                                className="basic-input"
                                             />
                                         ) : (
                                             <>

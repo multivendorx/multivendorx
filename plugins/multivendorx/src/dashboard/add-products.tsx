@@ -11,12 +11,13 @@ import {
 	Column,
 	Container,
 	FormGroupWrapper,
-	FormGroup, 
+	FormGroup,
 	getApiLink,
 	BasicInputUI,
 	AdminButtonUI,
 	MultiCheckBoxUI,
 	SelectInputUI,
+	useOutsideClick,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { formatWcShortDate } from '@/services/commonFunction';
@@ -126,40 +127,8 @@ const AddProduct = () => {
 		publish: __('Published', 'multivendorx'),
 		pending: __('Submit', 'multivendorx'),
 	};
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				visibilityRef.current &&
-				!visibilityRef.current.contains(event.target as Node)
-			) {
-				setIsEditingVisibility(false);
-			}
-		};
 
-		document.addEventListener('mousedown', handleClickOutside);
-
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, []);
-
-	// Close on click outside
-	// useEffect(() => {
-	// 	if (!isPyramidEnabled) {
-	// 		return;
-	// 	}
-	// 	const handleClickOutside = (event) => {
-	// 		if (
-	// 			wrapperRef.current &&
-	// 			!wrapperRef.current.contains(event.target)
-	// 		) {
-	// 			resetSelection();
-	// 		}
-	// 	};
-	// 	document.addEventListener('mousedown', handleClickOutside);
-	// 	return () =>
-	// 		document.removeEventListener('mousedown', handleClickOutside);
-	// }, []);
+	useOutsideClick(visibilityRef, () => setIsEditingVisibility(false));
 
 	// Add this useEffect in AddProduct to listen for suggestion clicks
 	useEffect(() => {
@@ -1622,14 +1591,14 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
-					
-					 <Card
+
+					<Card
 						title={__('Visibility', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
-					> 
-					 <FormGroupWrapper> 
-					 <FormGroup>
+					>
+						<FormGroupWrapper>
+							<FormGroup>
 								<div className="checkbox-wrapper">
 									<div className="item">
 										<input
@@ -1653,9 +1622,9 @@ const AddProduct = () => {
 										{__('Download', 'multivendorx')}
 									</div>
 								</div>
-							</FormGroup> 
+							</FormGroup>
 
-					 <FormGroup>
+							<FormGroup>
 								<div className="catalog-visibility">
 									{__('Catalog Visibility:', 'multivendorx')}
 									<span className="catalog-visibility-value">
@@ -1672,9 +1641,9 @@ const AddProduct = () => {
 										<i className="adminfont-edit" />
 									</span>
 								</div>
-							</FormGroup> 
+							</FormGroup>
 
-					{isEditingVisibility && (
+							{isEditingVisibility && (
 								<>
 									<FormGroup>
 										<RadioInput
@@ -1713,9 +1682,9 @@ const AddProduct = () => {
 										</label>
 									</FormGroup>
 								</>
-							)} 
+							)}
 
-					 <FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
+							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 								<ToggleSetting
 
 									descClass="settings-metabox-description"
@@ -1727,9 +1696,9 @@ const AddProduct = () => {
 									value={product.status}
 									onChange={(value) => handleChange('status', value)}
 								/>
-							</FormGroup> 
+							</FormGroup>
 
-					 {product.status === 'publish' && (
+							{product.status === 'publish' && (
 								<label>{__('Published on Dec 16, 2025', 'multivendorx')}</label>
 							)}
 
@@ -1770,9 +1739,9 @@ const AddProduct = () => {
 										)}
 									</div>
 								</FormGroup>
-							)} 
-					</FormGroupWrapper>
-					 </Card> 
+							)}
+						</FormGroupWrapper>
+					</Card>
 				</Column>
 			</Container >
 		</>
