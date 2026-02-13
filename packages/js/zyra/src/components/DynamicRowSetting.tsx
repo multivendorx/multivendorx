@@ -3,8 +3,6 @@ import React from 'react';
 
 // Internal dependencies
 import '../styles/web/DynamicRowSetting.scss';
-import '../styles/web/ToggleSetting.scss';
-import { SelectInputUI } from './SelectInput';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import { AdminButtonUI } from './AdminButton';
 
