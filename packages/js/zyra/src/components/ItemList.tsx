@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../styles/web/UI/ItemList.scss";
+import "../styles/web/UI/ItemList.scss";
 interface Item {
     id?: string;
     title?: string;

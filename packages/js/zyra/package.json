@@ -61,7 +61,6 @@
   "peerDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/material": "^7.0.2",
     "@reactour/tour": "^3.7.0",
     "@tinymce/tinymce-react": "^5.1.0",
     "google-map-react": "^2.2.1",

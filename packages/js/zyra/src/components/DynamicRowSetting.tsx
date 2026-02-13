@@ -30,9 +30,7 @@ interface RowConfig {
 }
 
 export interface DynamicRowSettingProps {
-    description?: string;
     wrapperClass?: string;
-    descClass?: string;
     keyName: string;
     template: RowConfig;
     value: RowValue[];
@@ -45,9 +43,7 @@ export interface DynamicRowSettingProps {
 }
 
 const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
-    description = '',
     wrapperClass = '',
-    descClass = '',
     template,
     value,
     onChange,
@@ -220,13 +216,6 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
                     <i className="adminfont-plus"></i> { addLabel }
                 </button>
             </div>
-
-            { description && (
-                <p
-                    className={ descClass }
-                    dangerouslySetInnerHTML={ { __html: description } }
-                ></p>
-            ) }
         </>
     );
 };

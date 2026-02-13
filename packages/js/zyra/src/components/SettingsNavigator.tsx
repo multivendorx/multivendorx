@@ -10,7 +10,7 @@ type Content = {
     name: string;
     desc?: string;
     count?: string;
-    title?: string;
+    headerTitle?: string;
     settingDes?: string;
     icon?: string;
     link?: string;
@@ -64,7 +64,6 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     action
 }) => {
     const [activeSetting, setActiveSetting] = useState(currentSetting);
-
     /**
      * Pre-calculates navigation maps for O(1) lookups during render and navigation.
      */
@@ -220,7 +219,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         return (
             <div className="divider-wrapper">
                 <div className="divider-section">
-                    <div className="title">{activeFile.title ?? activeFile.name}</div>
+                    <div className="title">{activeFile.headerTitle ?? activeFile.name}</div>
                     {description && (
                         <div 
                             className="desc" 
@@ -252,7 +251,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
             <AdminBreadcrumbs
                 settingIcon={activeFile?.icon || ''}
-                title={activeFile?.name || ''}
+                headerTitle={activeFile?.headerTitle || ''}
                 variant={variant}
                 renderBreadcrumb={renderBreadcrumbLinks}
                 renderMenuItems={() => renderAllMenuItems(settingContent)}

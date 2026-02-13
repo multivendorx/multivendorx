@@ -6,7 +6,7 @@ import { getTemplateData } from '../../../services/templateService';
 import {
 	getAvailableSettings,
 	getSettingById,
-	AdminForm,
+	RenderComponent,
 	useModules,
 	SettingsNavigator,
 } from 'zyra';
@@ -123,7 +123,7 @@ const Invoice: React.FC = () => {
 		}, [setting, settingName, currentTab]);
 
 		return settingName === currentTab ? (
-			<AdminForm
+			<RenderComponent
 				settings={settingModal as any}
 				proSetting={appLocalizer.pro_settings_list}
 				setting={setting}

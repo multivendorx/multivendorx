@@ -197,7 +197,7 @@ const ApprovalQueue = () => {
 				name: 'Stores',
 				desc: 'Eager to join the marketplace',
 				icon: 'storefront yellow',
-				title: 'Store in review queue',
+				// title: 'Store in review queue',
 				settingDes: 'Next in line! Approve or reject new store join requests.',
 				count: storeCount,
 			},
@@ -337,8 +337,8 @@ const ApprovalQueue = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-approval"
-				tabTitle="Approval Queue"
+				settingIcon="adminfont-approval"
+				headerTitle="Approval Queue"
 				description={
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'
 				}

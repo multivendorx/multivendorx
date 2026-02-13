@@ -1,0 +1,187 @@
+@use '../config.scss' as *;
+
+// module popup
+.popup-wrapper {
+    .popup-header {
+        height: 12rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: $theme-color;
+
+        i {
+            color: #fff;
+            font-size: 6rem;
+        }
+    }
+
+    .popup-body {
+        padding: 2rem;
+    }
+
+    h2 {
+        margin: 0;
+        font-size: 1.75rem;
+        text-align: center;
+    }
+
+    p {
+        text-align: center;
+        font-size: 1.063rem;
+        padding: 1rem 0;
+    }
+}
+
+
+// pro popup
+.popup-wrapper {
+    .top-section {
+        padding: 2.5rem 2rem;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: 0.313rem;
+        background: $theme-color;
+
+        .heading {
+            font-size: 2.063rem;
+            font-weight: 600;
+            color: $color-white;
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        .description {
+            color: #fff;
+            font-size: 1.063rem;
+            text-align: center;
+        }
+
+        .price {
+            font-size: 2.4rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .admin-btn {
+            background: #fff;
+            margin-top: 1rem;
+            color: #000;
+        }
+
+        .select-wrapper {
+            color: #fff;
+            font-size: 1.125rem;
+            justify-content: center;
+        }
+
+        select {
+            background: transparent;
+            font-size: 1.125rem;
+            border: none;
+            color: #fff;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path fill='%23fff' d='M5 7l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            margin-bottom: 0.125rem;
+
+            option {
+                color: #1a1a1aa4;
+            }
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+
+    .popup-content {
+        padding: 1rem 0 1rem 2rem;
+
+        .heading-text {
+            font-size: 1.25rem;
+            color: #000000e3;
+            font-weight: 600;
+        }
+
+        ul {
+            max-height: 20vh;
+            overflow: auto;
+            padding-right: 2rem;
+
+            li {
+                .title {
+                    font-size: 1.063rem;
+                    font-weight: 600;
+                    color: #000000e0;
+                }
+
+                .sub-text {
+                    font-size: 0.95rem;
+                    line-height: 1.313;
+                }
+            }
+        }
+    }
+
+    .admin-btn {
+        font-size: 1.063rem;
+        font-weight: 500;
+
+        .arrow-icon {
+            transform: rotate(-45deg);
+        }
+    }
+}
+.popup-content:has(.top-section){
+    width: 40rem !important;
+    height: 75% !important;
+}
+
+
+// popup confirm
+.popup-confirm {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .title {
+        font-size: 1625rem;
+        color: $text-color;
+        padding-top: 0.625rem;
+    }
+
+    .popup-icon {
+        font-size: 2.125rem;
+        padding: 0.813rem;
+    }
+
+    .buttons-wrapper {
+        padding-top: 0.813rem;
+    }
+}
+
+.review-popup-wrapper {
+    .customer-wrapper {
+        display: flex;
+        gap: 0.5rem;
+
+        .name {
+            font-size: 1.125rem;
+            font-weight: 500;
+            padding-bottom: 0.45rem;
+            color: $text-color;
+        }
+
+    }
+
+    .review {
+        padding-top: 0.95rem;
+        font-size: 0.95rem;
+        line-height: 1.45rem;
+        color: $sub-text-color;
+    }
+}

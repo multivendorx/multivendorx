@@ -4,18 +4,17 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	TextArea,
 	FormGroupWrapper,
 	FormGroup,
-	ProPopup,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
 	ToggleSettingUI,
+	TextAreaUI,
+	PopupUI,
 } from 'zyra';
 
-import { Dialog } from '@mui/material';
+// import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -283,7 +282,7 @@ const Qna: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -303,7 +302,7 @@ const Qna: React.FC = () => {
 						setSelectedQn(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 			<TableCard
 				headers={headers}
 				rows={rows}
@@ -316,10 +315,10 @@ const Qna: React.FC = () => {
 				filters={filters}
 			/>
 			{selectedQna && (
-				<CommonPopup
+				<PopupUI
 					open={selectedQna}
 					onClose={() => setSelectedQna(null)}
-					width="30rem"
+					width={30}
 					height="70%"
 					header={{
 						icon: 'question',
@@ -357,7 +356,7 @@ const Qna: React.FC = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
-								<TextArea
+								<TextAreaUI
 									name="answer"
 									value={answer}
 									onChange={(e) => setAnswer(e.target.value)}
@@ -399,7 +398,7 @@ const Qna: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

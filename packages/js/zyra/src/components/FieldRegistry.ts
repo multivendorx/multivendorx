@@ -18,8 +18,7 @@ import RadioInput from './RadioInput';
 import FileInput from './FileInput';
 import AddressField from './AddressField';
 import NestedComponent from './NestedComponent';
-import Divider from './Divider';
-import Content from './Content';
+import RadioInput from './RadioInput';
 import ColorSettingInput from './ColorSettingInput';
 import Log from './Log';
 import EndpointEditor from './EndpointEditor';
@@ -30,6 +29,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   email: BasicInput,
   time: BasicInput,
   select: SelectInput,
+  radio: RadioInput,
   textarea: TextArea,
   preposttext: PrePostText,
   button: AdminButton,

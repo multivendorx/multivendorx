@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { CommonPopup, getApiLink, Table, TableCell } from 'zyra';
+import { getApiLink, PopupUI, Table, TableCell } from 'zyra';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
 import { formatCurrency } from '../../services/commonFunction';
@@ -350,15 +350,14 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 		},
 	];
 	return (
-		<CommonPopup
+		<PopupUI
 			open={open}
 			onClose={onClose}
 			width="70%"
 			height="100%"
 			header={{
 				icon: 'commission',
-				title: `${__('View Commission', 'multivendorx')}${commissionId ? ` #${commissionId}` : ''
-					}`,
+				title: `${__('View Commission', 'multivendorx')}${commissionId ? ` #${commissionId}` : ''}`,
 				description: __(
 					'Details of this commission including stores, order breakdown, and notes.',
 					'multivendorx'
@@ -493,8 +492,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							<div className="value">
 								<span
 									className={`admin-badge ${commissionData?.status === 'paid'
-											? 'green'
-											: 'red'
+										? 'green'
+										: 'red'
 										}`}
 								>
 									{commissionData?.status
@@ -581,7 +580,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 					)}
 				</div>
 			</div>
-		</CommonPopup>
+		</PopupUI>
 	);
 };
 
