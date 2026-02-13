@@ -1024,8 +1024,7 @@ const AllCoupon: React.FC = () => {
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
-				width="31.25rem"
-				height="auto"
+				width={31.25}
 			>
 				<Popup
 					confirmMode

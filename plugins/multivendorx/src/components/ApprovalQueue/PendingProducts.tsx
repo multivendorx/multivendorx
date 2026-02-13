@@ -245,7 +245,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 						setRejectReason('');
 						setIsSubmitting(false);
 					}}
-					width="31.25rem"
+					width={31.25}
 					header={{
 						icon: 'cart',
 						title: __('Reason', 'multivendorx')

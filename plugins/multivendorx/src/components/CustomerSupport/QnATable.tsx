@@ -286,7 +286,7 @@ const Qna: React.FC = () => {
 				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
-				width="31.25rem"
+				width={31.25}
 				height="auto"
 			>
 				<Popup

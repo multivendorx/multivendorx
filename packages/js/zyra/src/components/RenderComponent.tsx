@@ -589,7 +589,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                     position="lightbox"
                     open={modelOpen}
                     onClose={handleModelClose}
-                    width="31.25rem"
+                    width={31.25}
                     height="auto"
                 >
                     <Popup

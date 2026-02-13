@@ -311,7 +311,7 @@ export const KnowledgeBase: React.FC = () => {
 			position="lightbox"
 			open={confirmOpen}
 			onClose={() => setConfirmOpen(false)}
-			width="31.25rem"
+			width={31.25}
 			height="auto"
 		>
 			<Popup
@@ -356,7 +356,7 @@ export const KnowledgeBase: React.FC = () => {
 				<PopupUI
 					open={addEntry}
 					onClose={handleCloseForm}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					position="slide-right-to-left"
 					showBackdrop={true}
