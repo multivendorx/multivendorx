@@ -6,7 +6,6 @@ import React, {
     ReactNode,
 } from 'react';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
-import Popup, { PopupProps } from './Popup';
 import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
@@ -73,6 +72,12 @@ interface DependentCondition {
     value?: string | number | boolean;
 }
 
+interface PopupProps {
+    moduleName?: string;
+    settings?: string;
+    plugin?: string;
+}
+
 interface RenderProps {
     settings: SettingsType;
     proSetting: SettingsType;
@@ -80,8 +85,7 @@ interface RenderProps {
     updateSetting: (key: string, value: SettingValue) => void;
     modules: string[];
     appLocalizer: AppLocalizer; // Allows any structure
-    Popup: typeof Popup;
-    modulePopupFields?: PopupProps;
+    Popup: React.ComponentType<PopupProps>;
 }
 
 const PENALTY = 10;
@@ -92,8 +96,7 @@ const RenderComponent: React.FC<RenderProps> = ({
     updateSetting,
     appLocalizer,
     settings,
-    Popup,
-    modulePopupFields
+    Popup
 }) => {
     const { modal, submitUrl, id } = settings;
     const settingChanged = useRef<boolean>(false);
@@ -589,7 +592,12 @@ const RenderComponent: React.FC<RenderProps> = ({
                     width="31.25rem"
                     height="auto"
                 >
-                    {Popup()}
+                    <Popup
+                        moduleName={String(modulePopupData.moduleName)}
+                        settings={modulePopupData.settings}
+                        plugin={modulePopupData.plugin}
+                    />
+
                 </PopupUI>
 
             )}
