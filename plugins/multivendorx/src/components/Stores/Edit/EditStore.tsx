@@ -418,7 +418,7 @@ const EditStore = () => {
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
-				tabTitleSection={
+				settingTitleSection={
 					<>
 						<div className="general-wrapper">
 							<div className="store-header">

@@ -8,7 +8,7 @@ export default {
 	id: 'overview',
 	priority: 1,
 	name: __('Overview', 'multivendorx'),
-	title: 'Marketplace pages configuration',
+	headerTitle: 'Marketplace pages configuration',
 	desc: __(
 		'Configure the essential system pages required for your marketplace - including store registration, store dashboard.',
 		'multivendorx'

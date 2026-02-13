@@ -8,7 +8,7 @@ export default {
 	id: 'appearance',
 	priority: 5,
 	name: __('Appearance', 'multivendorx'),
-	tabTitle: 'Marketplace Branding',
+	headerTitle: 'Marketplace Branding',
 	desc: __(
 		'Set a marketplace logo to strengthen brand identity across all connected stores.',
 		'multivendorx'

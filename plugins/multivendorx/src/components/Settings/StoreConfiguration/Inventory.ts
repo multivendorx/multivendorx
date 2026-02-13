@@ -4,7 +4,7 @@ export default {
 	id: 'inventory',
 	priority: 6,
 	name: __('Inventory', 'multivendorx'),
-	tabTitle: 'Store Inventory Notifications',
+	headerTitle: 'Store Inventory Notifications',
 	desc: __(
 		'Manage inventory alerts and stock monitoring settings for stores in your marketplace.',
 		'multivendorx'
