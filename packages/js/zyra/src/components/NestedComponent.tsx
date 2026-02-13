@@ -6,9 +6,9 @@ import '../styles/web/NestedComponent.scss';
 import { FieldComponent } from './types';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import { AdminButtonUI } from './AdminButton';
+import ItemList from './ItemList';
 
 type RowType = Record< string, string | number | boolean | string[] >;
-
 
 interface NestedFieldOption {
     key?: string;
@@ -163,6 +163,14 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
 
     function renderField( field: NestedField, row: RowType, rowIndex: number ) {
         const fieldComponent = FIELD_REGISTRY[field.type];
+        if (field.type === 'checklist') {
+            return (
+                <ItemList
+                        variant='checklist'
+                        items={field.options}
+                    />
+            );
+        }
         if (!fieldComponent) return null;
         const Render = fieldComponent.render;
         const fieldValue =row?.[field.key];

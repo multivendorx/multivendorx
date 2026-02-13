@@ -16,7 +16,6 @@ import {
 	ToggleSettingUI,
 	SelectInputUI,
 	PopupUI,
-	TextAreaUI,
 } from 'zyra';
 
 
