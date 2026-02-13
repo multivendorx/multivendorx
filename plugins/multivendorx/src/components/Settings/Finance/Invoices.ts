@@ -11,7 +11,7 @@ export default {
 	id: 'invoices',
 	priority: 6,
 	name: __('Invoices', 'multivendorx'),
-    tabTitle: 'Automatic invoice generation',
+    headerTitle: 'Automatic invoice generation',
 	desc: __(
 		'Choose at which order stages invoices should be generated automatically.',
 		'multivendorx'

@@ -12,8 +12,6 @@ interface button {
 interface AdminBreadcrumbsProps<T> {
     settingIcon?: string;
     headerTitle?: string;
-    submenuRender?: boolean;
-    variant?: 'default' | 'compact' | 'card';
     hideTitle?: boolean;
     hideBreadcrumb?: boolean;
     renderBreadcrumb?: () => React.ReactNode;
@@ -29,8 +27,6 @@ interface AdminBreadcrumbsProps<T> {
 const AdminBreadcrumbs = <T,>({
     settingIcon = '',
     headerTitle = '',
-    submenuRender = false,
-    variant = 'default',
     renderBreadcrumb,
     renderMenuItems,
     settingContent = [],
@@ -43,87 +39,49 @@ const AdminBreadcrumbs = <T,>({
 
     return (
         <>
-            <div
-                className={`${submenuRender ? 'horizontal-title-section' : 'title-section'
-                    }`}
-                data-template={variant}
-            >
-                {!submenuRender && (
-                    <>
-                        <div
-                            className={
-                                submenuRender
-                                    ? 'horizontal-title-wrapper'
-                                    : 'title-wrapper'
-                            }
-                        >
-                            {variant === 'default' && (
-                                <div className="title">
-                                    {settingIcon && (
-                                        <i className={settingIcon}></i>
-                                    )}
-                                    {headerTitle}
-                                </div>
-                            )}
-                            <div className="buttons">
-                                {buttons && (
-                                    <AdminButtonUI
-                                        buttons={buttons.map((button) => ({
-                                            text: button.label,
-                                            icon: button.iconClass?.replace('adminfont-', ''),
-                                            onClick: button.onClick,
-                                            children: (
-                                                <>
-                                                    <i className={button.iconClass}></i>
-                                                    {button.label}
-                                                </>
-                                            ),
-                                        }))}
-                                    />
-                                )}
-
-                            </div>
-
-                            {customContent && (
-                                <div className="custom-content">
-                                    {customContent}
-                                </div>
-                            )}
+            <div className="title-section">
+                <div className="title-wrapper">
+                    <div className="title">
+                        {settingIcon && (
+                            <i className={settingIcon}></i>
+                        )}
+                        {headerTitle}
+                    </div>
+                    {buttons && (
+                        <AdminButtonUI
+                            buttons={buttons.map((button) => ({
+                                text: button.label,
+                                icon: button.iconClass?.replace('adminfont-', ''),
+                                onClick: button.onClick,
+                                children: (
+                                    <>
+                                        <i className={button.iconClass}></i>
+                                        {button.label}
+                                    </>
+                                ),
+                            }))}
+                        />
+                    )}
+                    {customContent && (
+                        <div className="custom-content">
+                            {customContent}
                         </div>
-
-                        {description && (
-                            <div className="description">{description}</div>
-                        )}
-                        {variant === 'default' && (
-                            <>
-                                {renderBreadcrumb && (
-                                    <div className="breadcrumbs">
-                                        {renderBreadcrumb()}
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </>
+                    )}
+                </div>
+                {description && (
+                    <div className="description">{description}</div>
+                )}
+                {renderBreadcrumb && (
+                    <div className="breadcrumbs">
+                        {renderBreadcrumb()}
+                    </div>
                 )}
                 {renderMenuItems && settingContent.length > 0 && (
                     <div className="tabs-wrapper">
-                        {submenuRender && (
-                            <>
-                                {settingIcon && (
-                                    <i className={settingIcon}></i>
-                                )}
-                            </>
-                        )}
-                        <div
-                            className={
-                                submenuRender
-                                    ? 'horizontal-tabs-item'
-                                    : 'tabs-item'
-                            }
-                        >
+                        <div className="tabs-item" >
                             {renderMenuItems(settingContent)}
                         </div>
-                        {!submenuRender && goPremiumLink && (
+                        {goPremiumLink && (
                             <a
                                 href={goPremiumLink}
                                 className="tab pro-btn"

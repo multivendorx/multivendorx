@@ -4,7 +4,7 @@ export default {
 	id: 'intelligence',
 	priority: 10,
 	name: 'Intelligence',
-	tabTitle: 'API Keys',
+	headerTitle: 'API Keys',
 	moduleEnabled: 'marketplace-intelligence',
 	desc: __(
 		'AI services can be enabled to assist with creating product details and enhancing images automatically. These settings can be configured to control which AI services are used.',

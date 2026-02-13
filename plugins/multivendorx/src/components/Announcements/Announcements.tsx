@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
 	AdminBreadcrumbs,
-	TextArea,
+	TextAreaUI,
 	Container,
 	Column,
 	FormGroupWrapper,
@@ -16,6 +16,7 @@ import {
 	ToggleSettingUI,
 	SelectInputUI,
 	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 
 
@@ -172,12 +173,8 @@ export const Announcements: React.FC = () => {
 	};
 
 	// Handle form input change
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
+	const handleChange = (name: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
-
 		// Clear field error when user types
 		if (validationErrors[name]) {
 			setValidationErrors((prev) => {
@@ -524,7 +521,7 @@ export const Announcements: React.FC = () => {
 								type="text"
 								name="title"
 								value={formData.title}
-								onChange={handleChange}
+								onChange={(val) => handleChange('title', val as string)}
 								msg={error}
 							/>
 							{validationErrors.title && (
@@ -534,10 +531,10 @@ export const Announcements: React.FC = () => {
 							)}
 						</FormGroup>
 						<FormGroup label={__('Announcement message', 'multivendorx')} htmlFor="content">
-							<TextArea
+							<TextAreaUI
 								name="content"
 								value={formData.content}
-								onChange={handleChange}
+								onChange={(val) => handleChange('content', val as string)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer.settings_databases_value[

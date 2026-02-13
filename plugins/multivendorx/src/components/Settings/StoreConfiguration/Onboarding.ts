@@ -4,7 +4,7 @@ export default {
 	id: 'onboarding',
 	priority: 1,
 	name: __('Onboarding', 'multivendorx'),
-	tabTitle: 'Approval process for new stores',
+	headerTitle: 'Approval process for new stores',
 	desc: __(
 		'Choose how new stores enter your marketplace, review them manually or allow instant access.',
 		'multivendorx'

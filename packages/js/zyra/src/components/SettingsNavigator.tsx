@@ -4,6 +4,7 @@ import { LinkProps } from 'react-router-dom';
 // Internal Dependencies
 import '../styles/web/SettingsNavigator.scss';
 import AdminBreadcrumbs from './AdminBreadcrumbs';
+import { SectionUI } from './Section';
 
 type Content = {
     id: string;
@@ -39,7 +40,7 @@ type SettingsNavigatorProps = {
     appLocalizer: { khali_dabba?: boolean; shop_url?: string };
     menuIcon?: boolean;
     desc?: boolean;
-    variant?: 'default' | 'compact' | 'card';
+    variant?: 'default' | 'compact' | 'card' | 'settings'; // default like settings panel   // compact like icon and title compact design  // card like count with title and desc card design  // settings like left side settings tab design
     action?: React.ReactNode;
 };
 
@@ -95,11 +96,11 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         };
 
         traverse(settingContent);
-        return { 
-            flatContentMap: flatContent, 
-            siblingLevelMap: siblings, 
-            hierarchyPathMap: paths, 
-            folderToFirstFileMap: firstFiles 
+        return {
+            flatContentMap: flatContent,
+            siblingLevelMap: siblings,
+            hierarchyPathMap: paths,
+            folderToFirstFileMap: firstFiles
         };
     }, [settingContent]);
 
@@ -123,7 +124,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             navigate(firstRootFile);
             return;
         }
-        
+
         const targetItem = activeSettingPath[index - 1];
         if (!targetItem) return;
 
@@ -136,7 +137,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
     const renderBreadcrumbLinks = () => {
         const crumbs: BreadcrumbItem[] = [{ name: settingName, id: 'root', type: 'root' }];
-        
+
         activeSettingPath.forEach(item => {
             crumbs.push({
                 name: isFile(item) ? item.content.name : (item.name || ''),
@@ -148,8 +149,8 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         return crumbs.map((crumb, index) => (
             <span key={`${crumb.id}-${index}`}>
                 {index > 0 && ' / '}
-                <Link 
-                    to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'} 
+                <Link
+                    to={crumb.type === 'file' ? prepareUrl(crumb.id) : '#'}
                     onClick={(e) => handleBreadcrumbClick(index, e)}
                 >
                     {crumb.name}
@@ -190,7 +191,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         if (isFolder(item)) {
             const firstInFolderId = folderToFirstFileMap[item.name || ''];
             const isPartOfActivePath = activeSettingPath.some(pathItem => pathItem === item);
-            
+
             return (
                 <Link
                     key={index}
@@ -215,19 +216,12 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     const renderSettingHeaderInfo = () => {
         if (!activeFile || activeFile.id === 'support' || activeFile.hideSettingHeader) return null;
         const description = activeFile.settingDes?.trim() || activeFile.desc || '';
-        
+
         return (
-            <div className="divider-wrapper">
-                <div className="divider-section">
-                    <div className="title">{activeFile.headerTitle ?? activeFile.name}</div>
-                    {description && (
-                        <div 
-                            className="desc" 
-                            dangerouslySetInnerHTML={{ __html: description }}
-                        ></div>
-                    )}
-                </div>
-            </div>
+            <SectionUI
+                hint={activeFile.headerTitle ?? activeFile.name}
+                description={description}
+            />
         );
     };
 
@@ -247,33 +241,34 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
     return (
         <>
-            {settingTitleSection && <>{settingTitleSection}</>}
+            <div className="settings-wrapper" data-template={variant}>
+                {settingTitleSection && <>{settingTitleSection}</>}
 
-            <AdminBreadcrumbs
-                settingIcon={activeFile?.icon || ''}
-                headerTitle={activeFile?.headerTitle || ''}
-                variant={variant}
-                renderBreadcrumb={renderBreadcrumbLinks}
-                renderMenuItems={() => renderAllMenuItems(settingContent)}
-                settingContent={settingContent}
-                goPremiumLink={!appLocalizer.khali_dabba ? appLocalizer.shop_url : ''}
-                action={action}
-            />
+                <AdminBreadcrumbs
+                    settingIcon={activeFile?.icon || ''}
+                    headerTitle={activeFile?.headerTitle || ''}
+                    renderBreadcrumb={renderBreadcrumbLinks}
+                    renderMenuItems={() => renderAllMenuItems(settingContent)}
+                    settingContent={settingContent}
+                    goPremiumLink={!appLocalizer.khali_dabba ? appLocalizer.shop_url : ''}
+                    action={action}
+                />
 
-            <div className="general-wrapper admin-settings" data-template={variant}>
-                {HeaderSection && <HeaderSection />}
+                <div className="general-wrapper admin-settings">
+                    {HeaderSection && <HeaderSection />}
 
-                {showSubmenu && (
-                    <div id="tabs-wrapper" className="tabs-wrapper">
-                        <div className="tabs-item">
-                            {renderAllMenuItems(currentMenu)}
+                    {showSubmenu && (
+                        <div id="tabs-wrapper" className="tabs-wrapper">
+                            <div className="tabs-item">
+                                {renderAllMenuItems(currentMenu)}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                <div className="tab-content">
-                    {renderSettingHeaderInfo()}
-                    {getForm(activeSetting)}
+                    <div className="tab-content">
+                        {renderSettingHeaderInfo()}
+                        {getForm(activeSetting)}
+                    </div>
                 </div>
             </div>
         </>

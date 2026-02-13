@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 // Internal dependencies
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import { useModules } from '../contexts/ModuleContext';
-import AdminBreadcrumbs from './AdminBreadcrumbs';
 import '../styles/web/Modules.scss';
 import SuccessNotice from './SuccessNotice';
 import { MultiCheckBoxUI } from './MultiCheckbox';
@@ -49,6 +48,7 @@ interface ModuleProps {
     brandImg: string;
     appLocalizer: AppLocalizer;
     proPopupContent?: React.FC;
+    variant?: 'default' | 'mini-module'
 }
 
 // Type Guard
@@ -60,11 +60,12 @@ const Modules: React.FC<ModuleProps> = ({
     apiLink,
     proPopupContent: ProPopupComponent,
     pluginName,
+    variant = 'default'
 }) => {
     const [modelOpen, setModelOpen] = useState<boolean>(false);
     const [successMsg, setSuccessMsg] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [selectedFilter, setSelectedFilter] = useState<string>('Total');
+    const [selectedFilter, setSelectedFilter] = useState<string>('All');
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     const { modules, insertModule, removeModule } = useModules();
@@ -190,92 +191,94 @@ const Modules: React.FC<ModuleProps> = ({
 
     return (
         <>
-            <AdminBreadcrumbs
-                settingIcon="adminfont-module"
-                headerTitle="Modules"
-                description={'Manage marketplace features by enabling or disabling modules.'}
-            />
+            {/* <Dialog className="admin-module-popup" open={modelOpen} onClose={() => setModelOpen(false)}>
+                <button
+                    className="admin-font adminfont-cross"
+                    onClick={() => setModelOpen(false)}
+                    aria-label="Close dialog"
+                ></button>
+                {ProPopupComponent && <ProPopupComponent />}
+            </Dialog> */}
 
-            <div className="module-container general-wrapper">
-                {/* <Dialog className="admin-module-popup" open={modelOpen} onClose={() => setModelOpen(false)}>
-                    <button
-                        className="admin-font adminfont-cross"
-                        onClick={() => setModelOpen(false)}
-                        aria-label="Close dialog"
-                    ></button>
-                    {ProPopupComponent && <ProPopupComponent />}
-                </Dialog> */}
-
-                {successMsg && (<SuccessNotice title={'Success!'} message={successMsg} />)}
-                <div className="module-search">
-                    {/* <span
-                        className={`status-item ${selectedFilter === 'All' ? 'active' : ''}`}
-                        onClick={() => setSelectedFilter('All')}
-                    >
-                        All ({totalCount})
-                    </span>
-
-                    <span
-                        className={`status-item ${selectedFilter === 'Active' ? 'active' : ''}`}
-                        onClick={() => setSelectedFilter('Active')}
-                    >
-                        Active ({activeCount})
-                    </span>
-
-                    <span
-                        className={`status-item ${selectedFilter === 'Inactive' ? 'active' : ''}`}
-                        onClick={() => setSelectedFilter('Inactive')}
-                    >
-                        Inactive ({inactiveCount})
-                    </span> */}
-                        <HeaderSearch
-                            search={{
-                                placeholder: 'Search .....',
-                                options: statusOptions
-                            }}
-                            onQueryUpdate={(e) => {
-                                setSearchQuery(e.searchValue);
-                                if ('searchAction' in e) {
-                                    setSelectedFilter(e.searchAction);
-                                }
-                            }}
-                        />
+            {successMsg && (<SuccessNotice title={'Success!'} message={successMsg} />)}
+            <div className="module-container" data-variant={variant}>
+                {variant === 'default' && (
+                    <div className="filter-wrapper">
+                        <div className="category-filter">
+                            {modulesArray.category && categories.length > 1 &&
+                                categories.map((category) => (
+                                    <span
+                                        key={category.id}
+                                        className={`category-item ${selectedCategory === category.id ? 'active' : ''}`}
+                                        onClick={() => setSelectedCategory(category.id)}
+                                    >
+                                        {category.label}
+                                    </span>
+                                ))
+                            }
+                        </div>
+                        <div className="module-search">
+                            <HeaderSearch
+                                variant="mini-search"
+                                search={{ placeholder: 'Search .....' }}
+                                onQueryUpdate={(e) => {
+                                    setSearchQuery(e.searchValue);
+                                    if ('searchAction' in e) {
+                                        setSelectedFilter(e.searchAction);
+                                    }
+                                }}
+                            />
+                            <SelectInputUI
+                                options={statusOptions}
+                                value={selectedFilter}
+                                size={'8rem'}
+                                onChange={(newValue) => {
+                                    const val = newValue.value;
+                                    setSelectedFilter(val);
+                                    setSearchQuery(searchQuery);
+                                }}
+                            />
+                        </div>
                     </div>
+                )}
 
-                    <div className="category-filter">
-                        {modulesArray.category && categories.length > 1 &&
-                            categories.map((category) => (
-                                <span
-                                    key={category.id}
-                                    className={`category-item ${selectedCategory === category.id ? 'active' : ''}`}
-                                    onClick={() => setSelectedCategory(category.id)}
-                                >
-                                    {category.label}
-                                </span>
-                            ))
-                        }
-                    </div>
+                <div className="module-option-row" >
+                    {filteredModules.map((item, index) => {
+                        if (!isModule(item)) return null;
 
-                    <div className="module-option-row">
-                        {filteredModules.map((item, index) => {
-                            if (!isModule(item)) return null;
+                        const module = item;
+                        const requiredPlugins = module.reqPluging || [];
 
-                            const module = item;
-                            const requiredPlugins = module.reqPluging || [];
-
-                            return (
-                                <div data-index={index} className="module-list-item" key={module.id} id={module.id}>
-                                    <div className="module-body">
-                                        <div className="module-header">
-                                            <div className="icon"><i className={`font ${module.icon}`}></i></div>
+                        return (
+                            <div data-index={index} className="module-list-item" key={module.id} id={module.id}>
+                                <div className="module-body">
+                                    <div className="module-header">
+                                        <div className="icon"><i className={`font ${module.icon}`}></i></div>
+                                        {module.proModule && !appLocalizer.khali_dabba && (
                                             <div className="pro-tag">
-                                                {module.proModule && !appLocalizer.khali_dabba && (
-                                                    <i className="adminfont-pro-tag"></i>
-                                                )}
+                                                <i className="adminfont-pro-tag"></i>
                                             </div>
-                                        </div>
-                                        <div className="module-details">
-                                            <div className="meta-name">{module.name}</div>
+                                        )}
+                                        {appLocalizer.khali_dabba && variant === 'mini-module' && (
+                                            <MultiCheckBoxUI
+                                                look="toggle"
+                                                type="checkbox"
+                                                value={modules.includes(module.id) ? [module.id] : []}
+                                                onChange={(e) =>
+                                                    handleOnChange(
+                                                        e,
+                                                        module.id,
+                                                        module.reloadOnChange
+                                                    )}
+                                                options={[
+                                                    { key: module.id, value: module.id },
+                                                ]}
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="module-details">
+                                        <div className="meta-name">{module.name}</div>
+                                        {getCategories(module.category).length > 0 && (
                                             <div className="tag-wrapper">
                                                 {getCategories(module.category).map((cat, idx) => (
                                                     <span key={idx} className="admin-badge blue">
@@ -283,9 +286,11 @@ const Modules: React.FC<ModuleProps> = ({
                                                     </span>
                                                 ))}
                                             </div>
-                                            <p className="meta-description" dangerouslySetInnerHTML={{ __html: module.desc || '' }}></p>
-                                        </div>
+                                        )}
+                                        <p className="meta-description" dangerouslySetInnerHTML={{ __html: module.desc || '' }}></p>
                                     </div>
+                                </div>
+                                {variant === 'default' && (
                                     <div className="footer-wrapper">
                                         {requiredPlugins.length > 0 && (
                                             <div className="requires">
@@ -324,13 +329,14 @@ const Modules: React.FC<ModuleProps> = ({
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
-            </>
-            );
+            </div>
+        </>
+    );
 };
 
-            export default Modules;
+export default Modules;

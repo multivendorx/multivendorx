@@ -8,6 +8,7 @@ import TableSearch from './TableSearch';
 import RealtimeFilters from './RealtimeFilter';
 import CategoryFilter from './CategoryFilter';
 import ButtonActions from './ButtonActions';
+import { useOutsideClick } from '../useOutsideClick';
 
 const defaultOnColumnsChange = (
 	showCols: string[],
@@ -51,19 +52,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
 	const ref = useRef<HTMLDivElement | null>(null);
-
-	const handleClickOutside = (event: MouseEvent) => {
-		if (ref.current && !ref.current.contains(event.target as Node)) {
-			setIsPopoverOpen(false);
-		}
-	};
-
-	useEffect(() => {
-		document.addEventListener("click", handleClickOutside);
-		return () => {
-			document.removeEventListener("click", handleClickOutside);
-		};
-	}, []);
+	useOutsideClick(ref, () => setIsPopoverOpen(false));
 
 	const [query, setQuery] = useState<QueryProps>({
 		orderby: 'date',

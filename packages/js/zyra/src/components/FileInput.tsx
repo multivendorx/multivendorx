@@ -23,7 +23,6 @@ interface FileInputProps {
     buttonColor?: string;
     onButtonClick?: ( event: MouseEvent< HTMLButtonElement > ) => void;
     openUploader?: string;
-    description?: string;
     onRemove?: () => void;
     onReplace?: ( index: number, images: string[] ) => void;
     size?: string;
@@ -224,13 +223,6 @@ const FileInputUI: React.FC< FileInputProps > = ( props ) => {
                         </div>
                     ) ) }
                 </div>
-            ) }
-
-            { props.description && (
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={ { __html: props.description } }
-                ></p>
             ) }
         </>
     );
