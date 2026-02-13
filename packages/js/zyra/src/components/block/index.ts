@@ -14,9 +14,4 @@ export { LeftPanel } from './LeftPanel';
 export { generateBlockStyles, BlockStyle, DEFAULT_BLOCK_STYLES, BLOCK_STYLE_PRESETS } from './blockStyle';
 
 // Keep only utility functions that don't create blocks
-export { 
-    isContentBlock, 
-    isFormInputBlock, 
-    supportsOptions,
-    getColumnCount 
-} from '../block/blockTypes'; // Move these to blockTypes.ts
+export { getColumnCount } from '../block/blockTypes'; // Move these to blockTypes.ts

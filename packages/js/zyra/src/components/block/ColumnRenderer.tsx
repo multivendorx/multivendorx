@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import {
     Block,
@@ -8,7 +8,7 @@ import {
 } from '../block';
 import BlockRenderer from './BlockRenderer';
 
-// TYPES
+// Types
 interface SelectedBlockLocation {
     parentIndex: number;
     columnIndex: number;
@@ -20,16 +20,6 @@ interface UseColumnManagerProps {
     onBlocksUpdate: (blocks: Block[]) => void;
     openBlock: Block | null;
     setOpenBlock: (block: Block | null) => void;
-}
-
-interface UseColumnManagerReturn {
-    selectedBlockLocation: SelectedBlockLocation | null;
-    handleColumnUpdate: (parentIndex: number, columnIndex: number, newList: Block[]) => void;
-    handleColumnChildUpdate: (parentIndex: number, columnIndex: number, childIndex: number, patch: BlockPatch) => void;
-    handleColumnChildDelete: (parentIndex: number, columnIndex: number, childIndex: number) => void;
-    handleColumnChildSelect: (childBlock: Block, parentIndex: number, columnIndex: number, childIndex: number) => void;
-    handleLayoutChange: (parentIndex: number, newLayout: ColumnsBlock['layout']) => void;
-    clearSelection: () => void;
 }
 
 export interface ColumnRendererProps {
@@ -46,191 +36,153 @@ export interface ColumnRendererProps {
     showMeta?: boolean;
 }
 
-// HOOK: useColumnManager
+// Simple ID generator (sync with RegistrationForm)
+let idCounter = Date.now();
+const generateId = () => ++idCounter;
+
+const createValidBlock = (item: any): Block => {
+    // If it's already a valid block, return it
+    if (item?.id && item?.type) return item as Block;
+    
+    // If it's a block config from left panel, create a new block
+    if (item?.value) {
+        const id = generateId();
+        const type = item.value;
+        const block: any = {
+            id,
+            type,
+            name: item.fixedName ?? `${type}-${id}`,
+            label: item.label ?? type,
+        };
+
+        // Add placeholder if exists
+        if (item.placeholder) block.placeholder = item.placeholder;
+
+        // Initialize specific block types
+        if (type === 'columns') {
+            block.columns = [[], []];
+            block.layout = '2-50';
+        }
+        if (type === 'heading') {
+            block.text = item.placeholder || 'Heading Text';
+            block.level = 2;
+        }
+        if (type === 'richtext') {
+            block.html = item.placeholder || '<p>This is a demo text</p>';
+        }
+        if (type === 'button') {
+            block.text = item.placeholder || 'Click me';
+            block.url = '#';
+        }
+
+        return block as Block;
+    }
+    
+    // Fallback - create a basic block
+    return {
+        id: generateId(),
+        type: 'text',
+        name: `text-${generateId()}`,
+        label: 'Text',
+    } as Block;
+};
+
+// Hook
 export const useColumnManager = ({
     blocks,
     onBlocksUpdate,
     openBlock,
     setOpenBlock,
-}: UseColumnManagerProps): UseColumnManagerReturn => {
-    const [selectedBlockLocation, setSelectedBlockLocation] = useState<SelectedBlockLocation | null>(null);
+}: UseColumnManagerProps) => {
+    const [selectedLocation, setSelectedLocation] = React.useState<SelectedBlockLocation | null>(null);
 
-    const updateParentBlock = useCallback(
-        (parentIndex: number, newBlock: ColumnsBlock) => {
-            const updated = [...blocks];
-            updated[parentIndex] = newBlock;
-            onBlocksUpdate(updated);
-        },
-        [blocks, onBlocksUpdate]
-    );
+    const updateParent = (index: number, newBlock: ColumnsBlock) => {
+        const updated = [...blocks];
+        updated[index] = newBlock;
+        onBlocksUpdate(updated);
+    };
 
-    const handleColumnUpdate = useCallback(
-        (parentIndex: number, columnIndex: number, newList: Block[]) => {
-            const parent = blocks[parentIndex] as ColumnsBlock;
-            if (parent.type !== 'columns') return;
+    const handleColumnUpdate = (parentIdx: number, colIdx: number, newList: any[]) => {
+        const parent = blocks[parentIdx] as ColumnsBlock;
+        if (parent?.type !== 'columns') return;
+        
+        // Convert any raw items to valid blocks
+        const validBlocks = newList.map(item => createValidBlock(item));
+        
+        const columns = [...parent.columns];
+        columns[colIdx] = validBlocks;
+        updateParent(parentIdx, { ...parent, columns });
+    };
 
-            const columns = [...parent.columns];
-            columns[columnIndex] = newList; // No normalization needed - blocks are already valid
+    const handleChildUpdate = (parentIdx: number, colIdx: number, childIdx: number, patch: BlockPatch) => {
+        const parent = blocks[parentIdx] as ColumnsBlock;
+        if (parent?.type !== 'columns') return;
 
-            updateParentBlock(parentIndex, {
-                ...parent,
-                columns,
-            });
-        },
-        [blocks, updateParentBlock]
-    );
+        const columns = [...parent.columns];
+        const column = [...columns[colIdx]];
+        column[childIdx] = { ...column[childIdx], ...patch } as Block;
+        columns[colIdx] = column;
+        
+        updateParent(parentIdx, { ...parent, columns });
+        
+        if (openBlock?.id === column[childIdx].id) setOpenBlock(column[childIdx]);
+    };
 
-    /**
-     * Update a specific child block property (e.g., label, style)
-     */
-    const handleColumnChildUpdate = useCallback(
-        (
-            parentIndex: number,
-            columnIndex: number,
-            childIndex: number,
-            patch: BlockPatch
-        ) => {
-            const parent = blocks[parentIndex] as ColumnsBlock;
-            if (parent.type !== 'columns') return;
+    const handleChildDelete = (parentIdx: number, colIdx: number, childIdx: number) => {
+        const parent = blocks[parentIdx] as ColumnsBlock;
+        if (parent?.type !== 'columns') return;
 
-            const columns = [...parent.columns];
-            const column = [...columns[columnIndex]];
+        const deleted = parent.columns[colIdx]?.[childIdx];
+        const columns = [...parent.columns];
+        columns[colIdx] = columns[colIdx].filter((_, i) => i !== childIdx);
+        
+        updateParent(parentIdx, { ...parent, columns });
+        
+        if (openBlock?.id === deleted?.id) {
+            setOpenBlock(null);
+            setSelectedLocation(null);
+        }
+    };
 
-            column[childIndex] = {
-                ...column[childIndex],
-                ...patch,
-            } as Block;
+    const handleChildSelect = (child: Block, parentIdx: number, colIdx: number, childIdx: number) => {
+        setOpenBlock(child);
+        setSelectedLocation({ parentIndex: parentIdx, columnIndex: colIdx, childIndex: childIdx });
+    };
 
-            columns[columnIndex] = column;
+    const handleLayoutChange = (parentIdx: number, newLayout: ColumnsBlock['layout']) => {
+        const parent = blocks[parentIdx] as ColumnsBlock;
+        if (parent?.type !== 'columns') return;
 
-            updateParentBlock(parentIndex, {
-                ...parent,
-                columns,
-            });
+        const current = getColumnCount(parent.layout || '2-50');
+        const next = getColumnCount(newLayout);
+        let columns = [...parent.columns];
 
-            // Sync openBlock if it's the same block being updated
-            if (openBlock?.id === column[childIndex].id) {
-                setOpenBlock(column[childIndex]);
-            }
-        },
-        [blocks, openBlock, setOpenBlock, updateParentBlock]
-    );
+        if (next > current) {
+            for (let i = current; i < next; i++) columns.push([]);
+        } else if (next < current) {
+            const extra = columns.slice(next).flat();
+            columns = columns.slice(0, next);
+            if (extra.length) columns[next - 1] = [...columns[next - 1], ...extra];
+        }
 
-    /**
-     * Delete a child block from a column
-     */
-    const handleColumnChildDelete = useCallback(
-        (parentIndex: number, columnIndex: number, childIndex: number) => {
-            const parent = blocks[parentIndex] as ColumnsBlock;
-            if (parent.type !== 'columns') return;
+        updateParent(parentIdx, { ...parent, layout: newLayout, columns });
+        if (openBlock?.id === parent.id) setOpenBlock({ ...parent, layout: newLayout, columns });
+    };
 
-            const deletedBlock = parent.columns[columnIndex][childIndex];
-            const columns = [...parent.columns];
-
-            columns[columnIndex] = columns[columnIndex].filter((_, i) => i !== childIndex);
-
-            updateParentBlock(parentIndex, {
-                ...parent,
-                columns,
-            });
-
-            // Clear selection if the deleted block was selected
-            if (openBlock?.id === deletedBlock.id) {
-                setOpenBlock(null);
-                setSelectedBlockLocation(null);
-            }
-        },
-        [blocks, openBlock, setOpenBlock, updateParentBlock]
-    );
-
-    /**
-     * Select a child block within a column
-     */
-    const handleColumnChildSelect = useCallback(
-        (
-            childBlock: Block,
-            parentIndex: number,
-            columnIndex: number,
-            childIndex: number
-        ) => {
-            setOpenBlock(childBlock);
-            setSelectedBlockLocation({
-                parentIndex,
-                columnIndex,
-                childIndex,
-            });
-        },
-        [setOpenBlock]
-    );
-
-    /**
-     * Handle column layout changes (1-col, 2-col, 3-col, 4-col)
-     * Intelligently redistributes blocks when changing layouts
-     */
-    const handleLayoutChange = useCallback(
-        (parentIndex: number, newLayout: ColumnsBlock['layout']) => {
-            const parent = blocks[parentIndex] as ColumnsBlock;
-            if (parent.type !== 'columns') return;
-
-            const currentCount = getColumnCount(parent.layout || '2-50');
-            const nextCount = getColumnCount(newLayout);
-
-            let columns = [...parent.columns];
-
-            // Adding columns: create empty ones
-            if (nextCount > currentCount) {
-                for (let i = currentCount; i < nextCount; i++) {
-                    columns.push([]);
-                }
-            }
-
-            // Removing columns: merge extra blocks into last column
-            if (nextCount < currentCount) {
-                const extraBlocks = columns.slice(nextCount).flat();
-                columns = columns.slice(0, nextCount);
-
-                if (extraBlocks.length) {
-                    columns[nextCount - 1] = [
-                        ...columns[nextCount - 1],
-                        ...extraBlocks,
-                    ];
-                }
-            }
-
-            const updatedBlock: ColumnsBlock = {
-                ...parent,
-                layout: newLayout,
-                columns,
-            };
-
-            updateParentBlock(parentIndex, updatedBlock);
-
-            // Sync openBlock if it's the column being updated
-            if (openBlock?.id === updatedBlock.id) {
-                setOpenBlock(updatedBlock);
-            }
-        },
-        [blocks, openBlock, setOpenBlock, updateParentBlock]
-    );
-
-    // Clear selection (used when selecting a non-column block)
-
-    const clearSelection = useCallback(() => {
-        setSelectedBlockLocation(null);
-    }, []);
+    const clearSelection = () => setSelectedLocation(null);
 
     return {
-        selectedBlockLocation,
+        selectedLocation,
         handleColumnUpdate,
-        handleColumnChildUpdate,
-        handleColumnChildDelete,
-        handleColumnChildSelect,
+        handleChildUpdate,
+        handleChildDelete,
+        handleChildSelect,
         handleLayoutChange,
         clearSelection,
     };
 };
 
-// COMPONENT: ColumnBlockRenderer
+// Component
 export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
     block,
     parentIndex,
@@ -245,103 +197,50 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
     showMeta = true,
 }) => {
     const {
-        selectedBlockLocation,
+        selectedLocation,
         handleColumnUpdate,
-        handleColumnChildUpdate,
-        handleColumnChildDelete,
-        handleColumnChildSelect,
-    } = useColumnManager({
-        blocks,
-        onBlocksUpdate,
-        openBlock,
-        setOpenBlock,
-    });
+        handleChildUpdate,
+        handleChildDelete,
+        handleChildSelect,
+    } = useColumnManager({ blocks, onBlocksUpdate, openBlock, setOpenBlock });
 
     return (
-        <div
-            className={`form-field ${isActive ? 'active' : ''}`}
-            onClick={onSelect}
-        >
-            {/* Meta Menu */}
+        <div className={`form-field ${isActive ? 'active' : ''}`} onClick={onSelect}>
             {showMeta && (
                 <section className="meta-menu">
-                    <span className="drag-handle admin-badge blue">
-                        <i className="adminfont-drag" />
-                    </span>
-                    <span
-                        className="admin-badge red"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onDelete();
-                        }}
-                    >
+                    <span className="drag-handle admin-badge blue"><i className="adminfont-drag" /></span>
+                    <span className="admin-badge red" onClick={(e) => { e.stopPropagation(); onDelete(); }}>
                         <i className="adminfont-delete" />
                     </span>
                 </section>
             )}
 
-            {/* Column Layout Container */}
             <section className="form-field-container-wrapper">
-                <div
-                    className={`email-columns layout-${block.layout || '2-50'}`}
-                    style={{
-                        backgroundColor: block.style?.backgroundColor,
-                        padding: block.style?.padding,
-                        margin: block.style?.margin,
-                    }}
-                >
-                    {block.columns.map((column, colIndex) => (
-                        <div key={colIndex} className="email-column-wrapper">
-                            <div className="column-icon">
-                                <i className="adminfont-plus" />
-                            </div>
-
-                            {/* Sortable Column */}
+                <div className={`email-columns layout-${block.layout || '2-50'}`}>
+                    {block.columns.map((column, colIdx) => (
+                        <div key={colIdx} className="email-column-wrapper">
+                            <div className="column-icon"><i className="adminfont-plus" /></div>
                             <ReactSortable
                                 list={column}
-                                setList={(list) =>
-                                    handleColumnUpdate(parentIndex, colIndex, list)
-                                }
+                                setList={(list) => handleColumnUpdate(parentIndex, colIdx, list)}
                                 group={{ name: groupName, pull: true, put: true }}
                                 className="email-column"
                                 animation={150}
                                 handle=".drag-handle"
-                                fallbackOnBody
-                                swapThreshold={0.65}
                             >
-                                {column.map((child, childIndex) => (
+                                {column.map((child, childIdx) => (
                                     <BlockRenderer
                                         key={child.id}
                                         block={child}
                                         isColumnChild
                                         isActive={
-                                            selectedBlockLocation?.parentIndex === parentIndex &&
-                                            selectedBlockLocation?.columnIndex === colIndex &&
-                                            selectedBlockLocation?.childIndex === childIndex
+                                            selectedLocation?.parentIndex === parentIndex &&
+                                            selectedLocation?.columnIndex === colIdx &&
+                                            selectedLocation?.childIndex === childIdx
                                         }
-                                        onSelect={() =>
-                                            handleColumnChildSelect(
-                                                child,
-                                                parentIndex,
-                                                colIndex,
-                                                childIndex
-                                            )
-                                        }
-                                        onChange={(patch) =>
-                                            handleColumnChildUpdate(
-                                                parentIndex,
-                                                colIndex,
-                                                childIndex,
-                                                patch
-                                            )
-                                        }
-                                        onDelete={() =>
-                                            handleColumnChildDelete(
-                                                parentIndex,
-                                                colIndex,
-                                                childIndex
-                                            )
-                                        }
+                                        onSelect={() => handleChildSelect(child, parentIndex, colIdx, childIdx)}
+                                        onChange={(patch) => handleChildUpdate(parentIndex, colIdx, childIdx, patch)}
+                                        onDelete={() => handleChildDelete(parentIndex, colIdx, childIdx)}
                                     />
                                 ))}
                             </ReactSortable>

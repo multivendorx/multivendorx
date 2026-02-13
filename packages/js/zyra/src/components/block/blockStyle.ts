@@ -1,15 +1,3 @@
-/**
- * blockStyles.ts - Centralized Style Management for All Blocks
- * 
- * This file contains shared style utilities used by:
- * - Text (richtext)
- * - Heading
- * - Button
- * - Image
- * - Divider
- * - Columns
- */
-
 import React from 'react';
 
 // Common Block Style Interface
@@ -50,10 +38,7 @@ export interface BlockStyle {
   height?: string | number;
 }
 
-/**
- * Format spacing values into CSS shorthand
- * Used for padding and margin
- */
+// Used for padding and margin
 export const formatSpacing = (
   type: 'padding' | 'margin',
   style: BlockStyle
@@ -70,9 +55,7 @@ export const formatSpacing = (
   return '0px';
 };
 
-/**
- * Generate CSS properties for color styles
- */
+// Generate CSS properties for color styles
 export const generateColorStyles = (style?: BlockStyle): React.CSSProperties => {
   if (!style) return {};
   
@@ -82,9 +65,7 @@ export const generateColorStyles = (style?: BlockStyle): React.CSSProperties => 
   };
 };
 
-/**
- * Generate CSS properties for spacing styles
- */
+// Generate CSS properties for spacing styles
 export const generateSpacingStyles = (style?: BlockStyle): React.CSSProperties => {
   if (!style) return {};
   
@@ -94,9 +75,7 @@ export const generateSpacingStyles = (style?: BlockStyle): React.CSSProperties =
   };
 };
 
-/**
- * Generate CSS properties for border styles
- */
+// Generate CSS properties for border styles
 export const generateBorderStyles = (style?: BlockStyle): React.CSSProperties => {
   if (!style) return {};
   
@@ -108,9 +87,7 @@ export const generateBorderStyles = (style?: BlockStyle): React.CSSProperties =>
   };
 };
 
-/**
- * Generate CSS properties for text styles
- */
+// Generate CSS properties for text styles
 export const generateTextStyles = (style?: BlockStyle): React.CSSProperties => {
   if (!style) return {};
   
@@ -124,9 +101,7 @@ export const generateTextStyles = (style?: BlockStyle): React.CSSProperties => {
   };
 };
 
-/**
- * Generate CSS properties for dimension styles
- */
+// Generate CSS properties for dimension styles
 export const generateDimensionStyles = (style?: BlockStyle): React.CSSProperties => {
   if (!style) return {};
   
@@ -136,10 +111,7 @@ export const generateDimensionStyles = (style?: BlockStyle): React.CSSProperties
   };
 };
 
-/**
- * Generate complete block styles
- * Combines all style categories
- */
+// Generate complete block styles Combines all style categories
 export const generateBlockStyles = (
   style?: BlockStyle,
   options: {
@@ -160,9 +132,7 @@ export const generateBlockStyles = (
   };
 };
 
-/**
- * Default style values for new blocks
- */
+// Default style values for new blocks
 export const DEFAULT_BLOCK_STYLES: Partial<BlockStyle> = {
   backgroundColor: '#ffffff',
   color: '#000000',
@@ -174,9 +144,7 @@ export const DEFAULT_BLOCK_STYLES: Partial<BlockStyle> = {
   paddingLeft: 10,
 };
 
-/**
- * Style presets for specific block types
- */
+// Style presets for specific block types
 export const BLOCK_STYLE_PRESETS = {
   heading: {
     fontSize: 24,

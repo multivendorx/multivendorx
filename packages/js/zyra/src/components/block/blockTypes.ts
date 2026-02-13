@@ -1,21 +1,4 @@
-// Base Types
-
-export interface Option {
-    id: string;
-    label: string;
-    value: string;
-    isdefault?: boolean;
-}
-
-export interface SelectOption {
-    icon: string;
-    value: string;
-    label: string;
-    name?: string;
-}
-
 // Block Type Definitions
-
 export type BlockType = 
     | 'text'
     | 'email'
@@ -41,80 +24,14 @@ export type BlockType =
 
 export type ColumnLayout = '1' | '2-50' | '2-66' | '3' | '4';
 
-// Base Block Interface
-
-export interface BaseBlock {
-    id: number;
-    type: BlockType;
-    label: string;
-    required?: boolean;
-    name?: string;
-    disabled?: boolean;
-    readonly?: boolean;
-    style?: BlockStyle;
-}
-
-// Specific Block Interfaces
-export interface RichTextBlock extends BaseBlock {
-    type: 'richtext';
-    html: string;
-}
-
-export interface HeadingBlock extends BaseBlock {
-    type: 'heading';
-    text: string;
-    level: 1 | 2 | 3;
-}
-
-export interface ColumnsBlock extends BaseBlock {
-    type: 'columns';
-    layout: ColumnLayout;
-    columns: Block[][];
-}
-
-
-export interface DatePickerBlock extends BaseBlock {
-    type: 'datepicker';
-    placeholder?: string;
-}
-
-export interface TimePickerBlock extends BaseBlock {
-    type: 'TimePicker';
-    placeholder?: string;
-}
-
-export interface AddressField {
-    id: string | number;
-    key: string;
-    label: string;
-    type: 'text' | 'select';
-    placeholder?: string;
-    options?: string[];
-    required?: boolean;
-}
-
-export interface AddressBlock extends BaseBlock {
-    type: 'address';
-    fields: AddressField[];
-    value?: Record<string, unknown>;
-}
-
-export interface TitleBlock extends BaseBlock {
+export interface TitleBlock {
     type: 'title';
 }
 
 // Union Type for All Blocks
-export type Block = 
-    | RichTextBlock
-    | HeadingBlock
-    | ColumnsBlock
-    | DatePickerBlock
-    | TimePickerBlock
-    | AddressBlock
-    | TitleBlock;
+export type Block =TitleBlock;
 
 // Block Configuration
-
 export interface BlockConfig {
     id: string;
     icon: string;
@@ -124,24 +41,8 @@ export interface BlockConfig {
 }
 
 // Helper Types
-
 export type BlockPatch<T extends Block = Block> = Omit<Partial<T>, 'type' | 'id'>;
-
 export type FieldValue = string | number | boolean | FieldValue[] | { [key: string]: FieldValue };
-
-// Constants
-
-export const DEFAULT_BLOCK_STYLES: Partial<BlockStyle> = {
-    backgroundColor: '#ffffff',
-    color: '#000000',
-    fontSize: 16,
-    lineHeight: 1.5,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-};
-
 
 export const getColumnCount = (layout: ColumnLayout): number => {
     switch (layout) {
@@ -153,7 +54,3 @@ export const getColumnCount = (layout: ColumnLayout): number => {
         default: return 2;
     }
 };
-
-// Simple ID generator - keep this
-let idCounter = Date.now();
-export const generateId = () => ++idCounter;
