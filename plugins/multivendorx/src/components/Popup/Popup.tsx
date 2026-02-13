@@ -1,12 +1,20 @@
 /* global appLocalizer */
 import React from 'react';
+import { AdminButtonUI } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
-import { ProPopup } from 'zyra';
+import '../Popup/Popup.scss';
 
 interface PopupProps {
 	moduleName?: string;
 	wooSetting?: string;
 	wooLink?: string;
+	confirmMode?: boolean;
+	title?: string;
+    confirmMessage?: string;
+    confirmYesText?: string;
+    confirmNoText?: string;
+    onConfirm?: () => void;
+    onCancel?: () => void;
 }
 
 export const proPopupContent = {
@@ -151,46 +159,134 @@ export const proPopupContent = {
 };
 
 const ShowProPopup: React.FC<PopupProps> = (props) => {
-	const modulePopupContent = {
-		moduleName: props.moduleName,
-		message: sprintf(
-			__(
-				'This feature is currently unavailable. To activate it, please enable the %s',
-				'multivendorx'
-			),
-			props.moduleName
-		),
-		moduleButton: __('Enable Now', 'multivendorx'),
-		modulePageUrl:
-			typeof appLocalizer !== 'undefined'
-				? `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules&module=${props.moduleName}`
-				: '#',
-	};
-
-	const wooPopupContent = {
-		wooSetting: props.wooSetting,
-		message: sprintf(
-			__(
-				'To enable this feature, please configure WooCommerce settings: %s',
-				'multivendorx'
-			),
-			props.wooSetting
-		),
-		wooButton: __('Go to WooCommerce Settings', 'multivendorx'),
-		wooPageUrl:
-			typeof appLocalizer !== 'undefined' && props.wooLink
-				? `${appLocalizer.site_url}/wp-admin/admin.php?${props.wooLink}`
-				: '#',
-	};
 	return (
 		<>
-			{props.moduleName ? (
-				<ProPopup {...modulePopupContent} />
-			) : props.wooSetting ? (
-				<ProPopup {...wooPopupContent} />
+			{props.confirmMode ? (
+				<div className="popup-confirm">
+                    <i className="popup-icon adminfont-suspended admin-badge red"></i>
+                    <div className="title">{props.title || 'Confirmation'}</div>
+                    <p className="desc">{props.confirmMessage}</p>
+                    <AdminButtonUI
+                        position="center"
+                        buttons={[
+                            {
+                                icon: 'close',
+                                text: props.confirmNoText || 'Cancel',
+                                color: 'red',
+                                onClick: props.onCancel,
+                            },
+                            {
+                                icon: 'delete',
+                                text: props.confirmYesText || 'Confirm',
+                                onClick: props.onConfirm,
+                            },
+                        ]}
+                    />
+                </div>
+			) : props.moduleName ? (
+
+				<div className="popup-wrapper">
+					<div className="popup-header">
+						<i
+							className={`adminfont-store-seo`}
+						></i>
+					</div>
+					<div className="popup-body">
+						<h2>
+							Activate Store Seo
+						</h2>
+						<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Expedita quam maxime dolores itaque nesciunt! Suscipit.</p>
+
+						<AdminButtonUI
+							position="center"
+							buttons={[
+								{
+									icon: 'eye',
+									text: __('Enable Now', 'multivendorx'),
+								},
+							]}
+						/>
+					</div>
+				</div>
 			) : (
-				<ProPopup {...proPopupContent} />
-			)}
+				<>
+					{/* pro */}
+					<div className="popup-wrapper">
+						<div className="top-section">
+							<div className="heading">Upgrade every marketplace needs!</div>
+							<div className="description"> Recurring revenue for you, empowered stores, automated operations</div>
+							<div className="price">
+								{/* {selectedBtn.price} */}
+								$299
+							</div>
+							<div className="select-wrapper">
+								For website with
+								{/* <select
+									value={selectedBtn.link}
+									onChange={(e) => {
+										const found = btnLink.find(
+											(b) =>
+												b.link === e.target.value
+										);
+										if (found) {
+											setSelectedBtn(found);
+										}
+									}}
+								>
+									{btnLink.map((b, idx) => (
+										<option
+											key={idx}
+											value={b.link}
+										>
+											{b.site}
+										</option>
+									))}
+								</select> */}
+								1
+								site license
+							</div>
+							<a
+								className="admin-btn"
+								href={typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#'}
+								target="_blank"
+								rel="noreferrer"
+							>
+								Yes, Upgrade Me!
+								<i className="adminfont-arrow-right arrow-icon"></i>
+							</a>
+						</div>
+						<div className="popup-content">
+							<div className="heading-text">
+								Why should you upgrade?
+							</div>
+
+							<ul>
+								{/* {props.messages?.map(
+									(message, index) => ( */}
+								<li>
+									<div className="title">
+										<i
+											// className={
+											//     message.icon  													
+											// }
+											className='adminfont-commission'
+										></i>
+										{/* {message.text} */}
+										Membership Rewards & Commission
+									</div>
+									<div className="sub-text">
+										{/* {message.des} */}
+										Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.
+									</div>
+								</li>
+								{/* )
+								)} */}
+							</ul>
+						</div>
+					</div>
+				</>
+			)
+			}
 		</>
 	);
 };

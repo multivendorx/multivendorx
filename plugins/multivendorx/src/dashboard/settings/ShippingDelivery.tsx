@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import {
-	BasicInput,
+import { 
+	BasicInputUI,
 	Column,
 	Container,
 	DynamicRowSetting,
@@ -9,7 +9,7 @@ import {
 	FormGroupWrapper,
 	getApiLink,
 	SuccessNotice,
-	ToggleSetting,
+	ToggleSettingUI,
 } from 'zyra';
 import ShippingRatesByCountry from './ShippingRatesByCountry';
 import DistanceByZoneShipping from './DistanceByZoneShipping';
@@ -100,14 +100,9 @@ const ShippingDelivery = () => {
 							<FormGroup
 								label={__('Method Type', 'multivendorx')}
 								htmlFor="shipping_options"
+								desc={__('Choose your preferred shipping method.','multivendorx')}
 							>
-								<ToggleSetting
-
-									descClass="settings-metabox-description"
-									description={__(
-										'Choose your preferred shipping method.',
-										'multivendorx'
-									)}
+								<ToggleSettingUI
 									options={appLocalizer.shipping_methods}
 									value={formData.shipping_options || ''}
 									onChange={(value: any) =>
@@ -150,7 +145,7 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="multivendorx_shipping_type_price"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="multivendorx_shipping_type_price"
 
@@ -173,7 +168,7 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="multivendorx_additional_product"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="multivendorx_additional_product"
 
@@ -196,7 +191,7 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="multivendorx_additional_qty"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="multivendorx_additional_qty"
 
@@ -219,10 +214,9 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="free_shipping_amount"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="free_shipping_amount"
-
 												placeholder={__('NO Free Shipping', 'multivendorx')}
 												value={formData.free_shipping_amount || ''}
 												onChange={handleChange}
@@ -242,10 +236,9 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="local_pickup_cost"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="local_pickup_cost"
-
 												placeholder="0.00"
 												value={formData.local_pickup_cost || ''}
 												onChange={handleChange}
@@ -302,7 +295,7 @@ const ShippingDelivery = () => {
 										>
 
 
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="distance_default_cost"
 
@@ -323,14 +316,9 @@ const ShippingDelivery = () => {
 										<FormGroup
 											label={__('Distance Type', 'multivendorx')}
 											htmlFor="distance_type"
+											desc={__('Choose kilometers or miles based on your region so shipping charges are calculated correctly.','multivendorx')}
 										>
-											<ToggleSetting
-
-												descClass="settings-metabox-description"
-												description={__(
-													'Choose kilometers or miles based on your region so shipping charges are calculated correctly.',
-													'multivendorx'
-												)}
+											<ToggleSettingUI
 												options={[
 													{ label: __('Kilometers (km)', 'multivendorx'), value: 'K' },
 													{ label: __('Miles (mi)', 'multivendorx'), value: 'M' },
@@ -347,7 +335,7 @@ const ShippingDelivery = () => {
 											label={__('Max Distance', 'multivendorx')}
 											htmlFor="distance_max"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="distance_max"
 
@@ -372,10 +360,9 @@ const ShippingDelivery = () => {
 											)}
 											htmlFor="distance_local_pickup_cost"
 										>
-											<BasicInput
+											<BasicInputUI
 												type="number"
 												name="distance_local_pickup_cost"
-
 												placeholder="0.00"
 												value={formData.distance_local_pickup_cost || ''}
 												onChange={handleChange}

@@ -243,10 +243,10 @@ const CustomerQuestions: React.FC = () => {
 				filters={filters}
 			/>
 			{selectedQna && (
-				<CommonPopup
+				<PopupUI
 					open={selectedQna}
 					onClose={() => setSelectedQna(null)}
-					width="30rem"
+					width={30}
 					height="70%"
 					header={{
 						icon: 'question',
@@ -257,12 +257,12 @@ const CustomerQuestions: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedQna(null),
 								},
 								{
@@ -270,7 +270,6 @@ const CustomerQuestions: React.FC = () => {
 									text: saving
 										? __('Saving...', 'multivendorx')
 										: __('Save Answer', 'multivendorx'),
-									className: 'purple-bg',
 									disabled: saving,
 									onClick: handleSaveAnswer,
 								},
@@ -280,7 +279,7 @@ const CustomerQuestions: React.FC = () => {
 				>
 					<FormGroupWrapper>
 						<FormGroup label={__('Question', 'multivendorx')} htmlFor="question">
-							<BasicInput
+							<BasicInputUI
 								name="question"
 								value={qna}
 								onChange={(e) => setQna(e.target.value)}
@@ -288,14 +287,14 @@ const CustomerQuestions: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
-							<TextArea
+							<TextAreaUI
 								name="answer"
 								value={answer}
 								onChange={(e) => setAnswer(e.target.value)}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
-				</CommonPopup>
+				</PopupUI>
 
 			)}
 		</>

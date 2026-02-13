@@ -4,10 +4,10 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	TextArea,
-	AdminButton,
 	TableCard,
+	AdminButtonUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 
 import { formatWcShortDate, toWcIsoDate } from '@/services/commonFunction';
@@ -191,7 +191,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						display: coupon.code,
 						data: {
 							name: coupon.code,
-							description:`By: ${coupon.store_name}`,
+							description: `By: ${coupon.store_name}`,
 							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`,
 						},
 					},
@@ -233,10 +233,11 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					ids={rowIds}
 					search={{}}
 					filters={filters}
+					format={appLocalizer.date_format}
 				/>
 				{/* Reject Coupon Popup */}
 				{rejectPopupOpen && (
-					<CommonPopup
+					<PopupUI
 						open={rejectPopupOpen}
 						onClose={() => {
 							setRejectPopupOpen(false);
@@ -247,19 +248,14 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						header={{
 							icon: 'cart',
 							title: __('Reason', 'multivendorx'),
-							onClose: () => {
-								setRejectPopupOpen(false);
-								setRejectReason('');
-								setIsSubmitting(false);
-							},
 						}}
 						footer={
-							<AdminButton
+							<AdminButtonUI
 								buttons={[
 									{
 										icon: 'close',
 										text: __('Cancel', 'multivendorx'),
-										className: 'red',
+										color: 'red',
 										onClick: () => {
 											setRejectPopupOpen(false);
 											setRejectReason('');
@@ -271,7 +267,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 										text: isSubmitting
 											? __('Submitting...', 'multivendorx')
 											: __('Reject', 'multivendorx'),
-										className: 'purple-bg',
 										disabled: isSubmitting,
 										onClick: submitReject,
 									},
@@ -280,7 +275,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						}
 					>
 						<>
-							<TextArea
+							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
 								onChange={(
@@ -290,7 +285,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 								rows={4}
 							/>
 						</>
-					</CommonPopup>
+					</PopupUI>
 				)}
 			</div>
 		</>

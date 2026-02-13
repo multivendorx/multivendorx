@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	CommonPopup,
-	TextArea,
 	getApiLink,
 	TableCard,
+	AdminButtonUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 import { formatCurrency, formatWcShortDate, toWcIsoDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
@@ -233,10 +234,11 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				ids={rowIds}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 			{/* Reject Product Popup */}
 			{rejectPopupOpen && (
-				<CommonPopup
+				<PopupUI
 					open={rejectPopupOpen}
 					onClose={() => {
 						setRejectPopupOpen(false);
@@ -244,50 +246,36 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 						setIsSubmitting(false);
 					}}
 					width="31.25rem"
-					header={
-						<>
-							<div className="title">
-								<i className="adminfont-cart"></i>
-								{__('Reason', 'multivendorx')}
-							</div>
-							<i
-								onClick={() => {
-									setRejectPopupOpen(false);
-									setRejectReason('');
-									setIsSubmitting(false);
-								}}
-								className="icon adminfont-close"
-							></i>
-						</>
-					}
+					header={{
+						icon: 'cart',
+						title: __('Reason', 'multivendorx')
+					}}
 					footer={
-						<>
-							<div
-								className="admin-btn btn-red"
-								onClick={() => {
-									setRejectPopupOpen(false);
-									setRejectReason('');
-									setIsSubmitting(false);
-								}}
-							>
-								{__('Cancel', 'multivendorx')}
-
-							</div>
-							<button
-								className="admin-btn btn-purple"
-								onClick={submitReject}
-								disabled={isSubmitting} // prevent multiple clicks
-							>
-								{isSubmitting
-									? __('Submitting...', 'multivendorx')
-									: __('Reject', 'multivendorx')}
-							</button>
-						</>
+						<AdminButtonUI
+							buttons={[
+								{
+									icon: 'close',
+									text: __('Cancel', 'multivendorx'),
+									color: 'red',
+									onClick: () => {
+										setRejectPopupOpen(false);
+										setRejectReason('');
+										setIsSubmitting(false);
+									},
+								},
+								{
+									icon: 'cross',
+									text: isSubmitting ? __('Submitting...', 'multivendorx') : __('Reject', 'multivendorx'),
+									disabled: isSubmitting,
+									onClick: submitReject,
+								},
+							]}
+						/>
 					}
 				>
 					<>
 						<div className="form-group">
-							<TextArea
+							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
 								onChange={(
@@ -298,7 +286,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 							/>
 						</div>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

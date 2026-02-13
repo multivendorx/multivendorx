@@ -1,0 +1,198 @@
+@use '../../../global.scss' as *;
+
+.form-group-title-wrapper {
+    padding: 1rem 0 0.5rem;
+    border-bottom: $border-light-small;
+    margin-bottom: 1rem;
+}
+
+.form-group-wrapper {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .settings-metabox-note {
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        width: 100%;
+        position: relative;
+
+        &[data-cols='1'] {
+            flex: 1 1 100%;
+        }
+
+        &[data-cols='2'] {
+            flex: 1 1 calc(50% - 1rem);
+        }
+
+        &[data-cols='3'] {
+            flex: 1 1 calc(33.333% - 1rem);
+        }
+
+        &[data-cols='4'] {
+            flex: 1 1 calc(25% - 1rem);
+        }
+
+        .settings-form-label {
+            width: 22%;
+            overflow-wrap: break-word;
+
+            .title {
+                font-size: 0.95rem;
+                color: $text-color;
+                line-height: 1.125;
+            }
+        }
+
+        .settings-input-content {
+            width: 72%;
+
+            &:has(.setting-form-input) {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.5rem;
+
+                .settings-metabox-description{
+                    padding: 0;
+                }
+            }
+
+            .after {
+                font-size: 0.95rem;
+                color: #0000009c;
+            }
+
+            // multi input style start
+            .settings-basic-child-wrap {
+                display: flex;
+                gap: 1rem;
+
+                .settings-basic-input-child-class {
+                    width: 9rem;
+
+                    &.prefix .input-unit {
+                        border-right: 0.063rem solid #11141891;
+                        padding-right: 0.5rem;
+                    }
+
+                    &.suffix .input-unit {
+                        border-left: 0.063rem solid #11141891;
+                        padding-left: 0.5rem;
+                    }
+
+                    .setting-form-input {
+                        align-items: center;
+                        position: relative;
+                        border: $border-light-small;
+                        border-radius: $border-radius-small;
+                        padding: 0 0.5rem;
+                        background: #fff;
+
+                        .input-unit {
+                            font-size: 1rem;
+                        }
+
+                        input {
+                            width: 100%;
+                            border: none !important;
+
+                            /* overwrite common style */
+                            padding: 0;
+
+                            &:focus {
+                                box-shadow: none !important;
+
+                                /* overwrite common style */
+                            }
+                        }
+                    }
+
+                    .setting-form-input:has(.toggle-setting-wrapper) {
+                        border: none;
+                    }
+                }
+            }
+
+            // multi input style end  
+
+            // add new btn start
+            .add-new-option {
+                margin-top: 1rem;
+                display: flex;
+                width: 50%;
+                gap: 0.5rem;
+            }
+
+            // add new btn end
+        }
+
+        .form-group.pro-setting {
+            position: relative;
+        }
+
+        .form-group.module-enabled {
+            position: relative;
+
+            .adminfont-lock {
+                color: blue;
+            }
+        }
+
+        &.row {
+            flex-direction: row;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        &.align-bottom {
+            align-items: end;
+        }
+
+        &.border-top {
+            padding-top: 1rem;
+            border-top: $border-light-small;
+        }
+
+        .button-wrapper {
+            display: flex;
+            justify-content: start;
+        }
+
+        .toggle-setting-container label {
+            margin: 0;
+        }
+
+        .date-field-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .multi-field {
+            display: flex;
+            gap: 0.313rem;
+        }
+
+        // add membership page 
+        .checkbox-list-side-by-side {
+            margin-top: 0.625rem;
+        }
+    }
+}
+
+// for settings panel
+.admin-settings {
+    .form-group-wrapper {
+        gap: 0;
+
+        .form-group {
+            background: $background-white;
+            padding: 1rem;
+        }
+    }
+}

@@ -4,11 +4,11 @@ import axios from 'axios';
 import {
 	Table,
 	TableCell,
-	CommonPopup,
-	ToggleSetting,
-	BasicInput,
 	getApiLink,
-	AdminButton,
+	BasicInputUI,
+	AdminButtonUI,
+	ToggleSettingUI,
+	PopupUI,
 } from 'zyra';
 import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { __ } from '@wordpress/i18n';
@@ -349,18 +349,18 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									<div className="admin-badge yellow">
 										{method.title}
 									</div>
-										<i
-											onClick={() => handleEdit(method)} className="admin-badge blue adminfont-edit"
-										></i>
-										<i
-											onClick={() =>
-												handleDelete(
-													method,
-													row.original
-												)
-											}
-											className="admin-badge red adminfont-delete"
-										></i>
+									<i
+										onClick={() => handleEdit(method)} className="admin-badge blue adminfont-edit"
+									></i>
+									<i
+										onClick={() =>
+											handleDelete(
+												method,
+												row.original
+											)
+										}
+										className="admin-badge red adminfont-delete"
+									></i>
 								</div>
 							))}
 
@@ -396,9 +396,9 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			</div>
 
 			{addShipping && selectedZone && (
-				<CommonPopup
+				<PopupUI
 					open={addShipping}
-					width="31.25rem"
+					width={31.25}
 					height="60%"
 					onClose={() => setAddShipping(false)}
 					header={{
@@ -408,14 +408,13 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 							: __('Add Shipping', 'multivendorx')
 							} — ${selectedZone.zone_name}`,
 					}}
-
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setAddShipping(false),
 								},
 								{
@@ -423,13 +422,11 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									text: isEditing
 										? __('Update', 'multivendorx')
 										: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSave,
 								},
 							]}
 						/>
 					}
-
 				>
 					<>
 						<div className="form-group-wrapper">
@@ -437,8 +434,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								<label>
 									{__('Shipping Method', 'multivendorx')}
 								</label>
-								<ToggleSetting
-									 
+								<ToggleSettingUI
 									value={formData.shippingMethod}
 									onChange={(val: string) => {
 										if (!isEditing) {
@@ -486,7 +482,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 							{formData.shippingMethod === 'local_pickup' && (
 								<div className="form-group">
 									<label>{__('Cost', 'multivendorx')}</label>
-									<BasicInput
+									<BasicInputUI
 										type="number"
 										name="localPickupCost"
 										placeholder="Enter cost"
@@ -505,8 +501,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 							{formData.shippingMethod === 'free_shipping' && (
 								<>
 									<div className="form-group">
-										<ToggleSetting
-											 
+										<ToggleSettingUI
 											value={formData.freeShippingType}
 											onChange={(val: string) =>
 												handleChange(
@@ -537,7 +532,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 														'multivendorx'
 													)}
 												</label>
-												<BasicInput
+												<BasicInputUI
 													type="number"
 													name="minOrderCost"
 													placeholder="Enter minimum order cost"
@@ -561,7 +556,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										<label className="font-medium">
 											{__('Cost', 'multivendorx')}
 										</label>
-										<BasicInput
+										<BasicInputUI
 											type="number"
 											name="flatRateCost"
 											placeholder="Enter cost"
@@ -582,7 +577,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 												'multivendorx'
 											)}
 										</label>
-										<BasicInput
+										<BasicInputUI
 											type="text"
 											name="flatRateClassCost"
 											placeholder="Enter class cost"
@@ -603,8 +598,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 												'multivendorx'
 											)}
 										</label>
-										<ToggleSetting
-											 
+										<ToggleSettingUI
 											value={
 												formData.flatRateCalculationType
 											}
@@ -632,7 +626,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 							)}
 						</div>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

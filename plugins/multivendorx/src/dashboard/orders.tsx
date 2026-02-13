@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { MultiCalendarInput, Table, TableCell, useModules } from 'zyra';
+import { CalendarInput, Table, TableCell, useModules } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,

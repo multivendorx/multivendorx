@@ -5,13 +5,13 @@ import React, {
     useState,
     ReactNode,
 } from 'react';
-import type { ActionMeta, MultiValue, SingleValue } from 'react-select';
-import { Dialog } from '@mui/material';
 import { getApiLink, sendApiResponse } from '../utils/apiService';
-import Popup, { PopupProps } from './Popup';
 import { useModules } from '../contexts/ModuleContext';
 import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
+import FormGroupWrapper from './UI/FormGroupWrapper';
+import SuccessNotice from './SuccessNotice';
+import Popover, { PopupUI } from './Popup';
 
 
 interface InputField {
@@ -19,7 +19,7 @@ interface InputField {
     id?: string;
     class?: string;
     name?: string;
-    type?:string;
+    type?: string;
     label?: string;
     classes?: string;
     settingDescription?: string;
@@ -72,6 +72,12 @@ interface DependentCondition {
     value?: string | number | boolean;
 }
 
+interface PopupProps {
+    moduleName?: string;
+    settings?: string;
+    plugin?: string;
+}
+
 interface RenderProps {
     settings: SettingsType;
     proSetting: SettingsType;
@@ -79,8 +85,7 @@ interface RenderProps {
     updateSetting: (key: string, value: SettingValue) => void;
     modules: string[];
     appLocalizer: AppLocalizer; // Allows any structure
-    Popup: typeof Popup;
-    modulePopupFields?: PopupProps;
+    Popup: React.ComponentType<PopupProps>;
 }
 
 const PENALTY = 10;
@@ -91,8 +96,7 @@ const RenderComponent: React.FC<RenderProps> = ({
     updateSetting,
     appLocalizer,
     settings,
-    Popup,
-    modulePopupFields
+    Popup
 }) => {
     const { modal, submitUrl, id } = settings;
     const settingChanged = useRef<boolean>(false);
@@ -275,11 +279,49 @@ const RenderComponent: React.FC<RenderProps> = ({
         setModelOpen(false);
     };
 
-    const handleChange = ( key: string, value: string | string[] | number[]) => {
-        console.log('save')
+    const isProSetting = (proDependent: boolean): boolean => {
+        return proDependent && !appLocalizer?.khali_dabba;
+    };
+
+    type MultiSelectOption = { value: string; proSetting?: boolean };
+
+    const handleChange = (
+        key: string,
+        value: string | string[] | number[] | MultiSelectOption[]
+    ) => {
+        console.log('save');
+        settingChanged.current = true;
+
         const field = modal.find((f) => f.key === key);
         if (!field) return;
 
+        if (field.type === 'nested') {
+            updateSetting(key, value);
+            return;
+        }
+
+        // Multi-select select / deselect-all logic
+        if (
+            Array.isArray(value) &&
+            value.length > 0 &&
+            typeof value[0] === 'object'
+        ) {
+            if (Array.isArray(setting[key]) && setting[key].length > 0) {
+                updateSetting(key, [] as string[]);
+                return;
+            }
+
+            const newValue: string[] = value
+                .filter(
+                    (option) => !isProSetting(option.proSetting ?? false)
+                )
+                .map((option) => option.value);
+
+            updateSetting(key, newValue);
+            return;
+        }
+
+        // Normal input change (value is now SettingValue)
         const error = validateField(field, value);
 
         setErrors((prev) => ({
@@ -287,13 +329,10 @@ const RenderComponent: React.FC<RenderProps> = ({
             [key]: error,
         }));
 
-        if (error) {
-            return;
-        }
+        if (error) return;
 
-        settingChanged.current = true;
         updateSetting(key, value);
-    }
+    };
 
     const VALUE_ADDON_TYPES = ['select', 'text'];
 
@@ -301,39 +340,15 @@ const RenderComponent: React.FC<RenderProps> = ({
         VALUE_ADDON_TYPES.includes(field.beforeElement?.type) ||
         VALUE_ADDON_TYPES.includes(field.afterElement?.type);
 
-    // const renderFieldInternal = (
-    //     field: InputField,
-    //     value: any,
-    //     onChange: any,
-    //     canAccess: boolean
-    // ): JSX.Element | null => {
-    //     const fieldComponent = FIELD_REGISTRY[field.type];
+    const openProPopup = () => {
+        setModulePopupData({ moduleName: '', settings: '', plugin: '' });
+        setModelOpen(true);
+    };
 
-    //     if (!fieldComponent) {
-    //         console.warn(`Unknown field type: ${field.type}`);
-    //         return null;
-    //     }
-
-    //     const Render = fieldComponent.render;
-
-    //     return (
-    //         <>
-    //          {field.preText &&
-    //                 renderFieldInternal(field.preText, value, onChange, canAccess)}
-            
-    //             <Render
-    //                 field={field}
-    //                 value={value}
-    //                 onChange={onChange}
-    //                 canAccess={canAccess}
-    //             />
-
-    //         {field.postText &&
-    //                 renderFieldInternal(field.postText, value, onChange, canAccess)}
-            
-    //         </>
-    //     );
-    // };
+    const openModulePopup = (module: string) => {
+        setModulePopupData({ moduleName: module, settings: '', plugin: '' });
+        setModelOpen(true);
+    };
 
     const renderFieldInternal = (
         field: InputField,
@@ -342,7 +357,7 @@ const RenderComponent: React.FC<RenderProps> = ({
         onChange: (key: string, value: any) => void,
         canAccess: boolean,
         appLocalizer: any
-        ): JSX.Element | null => {
+    ): JSX.Element | null => {
         const fieldComponent = FIELD_REGISTRY[field.type];
         if (!fieldComponent) return null;
 
@@ -360,8 +375,8 @@ const RenderComponent: React.FC<RenderProps> = ({
             }
 
             onChange(parentField.key, {
-            ...(value ?? {}),
-            [field.key]: val,
+                ...(value ?? {}),
+                [field.key]: val,
             });
         };
 
@@ -376,6 +391,18 @@ const RenderComponent: React.FC<RenderProps> = ({
                 onChange={handleInternalChange}
                 canAccess={canAccess}
                 appLocalizer={appLocalizer}
+                modules={modules}
+                settings={setting}
+                onOptionsChange={(opts: any[]) => {
+                    settingChanged.current = true;
+                    updateSetting(`${field.key}_options`, opts);
+                }}
+
+                onBlocked={(type: 'pro' | 'module', payload?: string) => {
+                    if (type === 'pro') openProPopup();
+                    if (type === 'module' && payload)
+                        openModulePopup(payload);
+                }}
             />
         );
     };
@@ -452,7 +479,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                         )}
                 </>
             );
-          
+
             // const input = renderField(inputField, value, handleChange, access);
 
             const isLocked =
@@ -477,14 +504,12 @@ const RenderComponent: React.FC<RenderProps> = ({
                 ) : (
                     <div
                         key={inputField.key}
-                        className={`form-group ${
-                            inputField.classes ? inputField.classes : ''
-                        } ${inputField.proSetting ? 'pro-setting' : ''} ${
-                            inputField.moduleEnabled &&
-                            !modules.includes(inputField.moduleEnabled)
+                        className={`form-group row ${inputField.classes ? inputField.classes : ''
+                            } ${inputField.proSetting ? 'pro-setting' : ''} ${inputField.moduleEnabled &&
+                                !modules.includes(inputField.moduleEnabled)
                                 ? 'module-enabled'
                                 : ''
-                        }`}
+                            }`}
                         onClick={(e) => handleGroupClick(e, inputField)}
                     >
                         {inputField.label && (
@@ -506,19 +531,18 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 React.isValidElement<
                                     React.HTMLAttributes<HTMLElement>
                                 >(input)
-                                    ? React.cloneElement(input, {
-                                            onClick: (e) => {
-                                                e.stopPropagation();
-                                            },
-                                        })
-                                    : input}
+                                ? React.cloneElement(input, {
+                                    onClick: (e) => {
+                                        e.stopPropagation();
+                                    },
+                                })
+                                : input}
 
                             {errors && errors[inputField.key] && (
                                 <div className="field-error">
                                     {errors[inputField.key]}
                                 </div>
                             )}
-
                             {inputField.desc && (
                                 <p
                                     className="settings-metabox-description"
@@ -553,64 +577,37 @@ const RenderComponent: React.FC<RenderProps> = ({
                         )}
                     </div>
                 );
-                
+
             return fieldContent;
         });
     };
 
     return (
-            <>
-                <div className="dynamic-fields-wrapper">
-                    <Dialog
-                        className="admin-module-popup"
-                        open={modelOpen}
-                        onClose={handleModelClose}
-                        aria-labelledby="form-dialog-title"
-                    >
-                        <span
-                            className="admin-font adminfont-cross"
-                            role="button"
-                            tabIndex={0}
-                            onClick={handleModelClose}
-                        ></span>
-                        {
-                            <Popup
-                                moduleName={String(modulePopupData.moduleName)}
-                                settings={modulePopupData.settings}
-                                plugin={modulePopupData.plugin}
-                                message={modulePopupFields?.message}
-                                moduleButton={modulePopupFields?.moduleButton}
-                                pluginDescription={modulePopupFields?.pluginDescription}
-                                pluginButton={modulePopupFields?.pluginButton}
-                                SettingDescription={modulePopupFields?.SettingDescription}
-                                pluginUrl={modulePopupFields?.pluginUrl}
-                                modulePageUrl={modulePopupFields?.modulePageUrl}
-                            />
-                        }
-                    </Dialog>
-                    {successMsg && (
-                        <>
-                            <div className="admin-notice-wrapper notice-error">
-                                <i className="admin-font adminfont-info"></i>
-                                <div className="notice-details">
-                                    <div className="title">Sorry!</div>
-                                    <div className="desc">{successMsg}</div>
-                                </div>
-                            </div>
-                            <div className="admin-notice-wrapper">
-                                <i className="admin-font adminfont-icon-yes"></i>
-                                <div className="notice-details">
-                                    <div className="title">Success</div>
-                                    <div className="desc">{successMsg}</div>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    <form className="dynamic-form">{renderForm()}</form>
-                </div>
-            </>
-        );
-    
+        <>
+            {modelOpen && (
+                <PopupUI
+                    position="lightbox"
+                    open={modelOpen}
+                    onClose={handleModelClose}
+                    width="31.25rem"
+                    height="auto"
+                >
+                    <Popup
+                        moduleName={String(modulePopupData.moduleName)}
+                        settings={modulePopupData.settings}
+                        plugin={modulePopupData.plugin}
+                    />
+
+                </PopupUI>
+
+            )}
+            {successMsg && (
+                <SuccessNotice message={successMsg} />
+            )}
+            <FormGroupWrapper>{renderForm()}</FormGroupWrapper>
+        </>
+    );
+
 }
 
 export default RenderComponent;

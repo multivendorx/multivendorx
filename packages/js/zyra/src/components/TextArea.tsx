@@ -1,6 +1,7 @@
 // External dependencies
 import React, { ChangeEvent, MouseEvent, FocusEvent } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
+import { FieldComponent } from './types';
 
 interface TextAreaProps {
     id?: string;
@@ -13,11 +14,9 @@ interface TextAreaProps {
     colNumber?: number;
     proSetting?: boolean;
     readOnly?: boolean;
-    description?: string;
-    descClass?: string;
     tinymceApiKey?: string;
     usePlainText?: boolean;
-    onChange?: ( e: ChangeEvent< HTMLTextAreaElement > ) => void;
+    onChange?: (value: string) => void;
     onClick?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
     onMouseOver?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
     onMouseOut?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
@@ -25,7 +24,7 @@ interface TextAreaProps {
     onBlur?: ( e: React.FocusEvent< HTMLTextAreaElement > ) => void;
 }
 
-const TextArea: React.FC< TextAreaProps > = ( {
+export const TextAreaUI: React.FC< TextAreaProps > = ( {
     inputClass,
     id,
     name,
@@ -33,7 +32,6 @@ const TextArea: React.FC< TextAreaProps > = ( {
     rowNumber = 4,
     colNumber = 50,
     readOnly,
-    description,
     placeholder,
     tinymceApiKey,
     usePlainText = false,
@@ -44,14 +42,12 @@ const TextArea: React.FC< TextAreaProps > = ( {
     onFocus,
     onBlur,
 } ) => {
-    const handleEditorChange = ( content: string ) => {
-        if ( onChange ) {
-            // create fake event to mimic textarea behavior
-            const fakeEvent = {
-                target: { name, value: content },
-            } as ChangeEvent< HTMLTextAreaElement >;
-            onChange( fakeEvent );
-        }
+    const handleEditorChange = (content: string) => {
+        onChange?.(content);
+    };
+
+    const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        onChange?.(e.target.value);
     };
 
     return (
@@ -84,7 +80,7 @@ const TextArea: React.FC< TextAreaProps > = ( {
                     value={ value }
                     rows={ rowNumber }
                     cols={ colNumber }
-                    onChange={ onChange }
+                    onChange={ handleTextareaChange }
                     onClick={ onClick }
                     onMouseOver={ onMouseOver }
                     onMouseOut={ onMouseOut }
@@ -93,14 +89,38 @@ const TextArea: React.FC< TextAreaProps > = ( {
                     readOnly={ readOnly }
                 />
             ) }
-            { description && (
-                <p
-                    className= "settings-metabox-description"
-                    dangerouslySetInnerHTML={ { __html: description } }
-                ></p>
-            ) }
         </>
     );
+};
+
+const TextArea: FieldComponent = {
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+        <TextAreaUI
+            inputClass={field.class}
+            key={field.key}
+            id={field.id}
+            name={field.name}
+            placeholder={field.placeholder}
+            rowNumber={field.rowNumber} // for row number value
+            colNumber={field.colNumber} // for column number value
+            value={value || ''}
+            usePlainText={field.usePlainText} // Toggle between textarea and TinyMCE
+            tinymceApiKey={
+                appLocalizer.tinymceApiKey
+                    ? appLocalizer.tinymceApiKey
+                    : ''
+            }
+            onChange={(val) => {
+                if (!canAccess) return;
+                onChange(val)
+            }}
+        />
+    ),
+
+    validate: (field, value) => {
+        return null;
+    },
+
 };
 
 export default TextArea;

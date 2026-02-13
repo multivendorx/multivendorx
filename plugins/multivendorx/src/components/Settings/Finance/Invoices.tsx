@@ -6,9 +6,9 @@ import { getTemplateData } from '../../../services/templateService';
 import {
 	getAvailableSettings,
 	getSettingById,
-	AdminForm,
-	Tabs,
+	RenderComponent,
 	useModules,
+	SettingsNavigator,
 } from 'zyra';
 
 // Types
@@ -23,14 +23,14 @@ const Invoice: React.FC = () => {
 		[]
 	);
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'general',
 				name: 'General',
 				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				// hideTabHeader: true,
+				// hideSettingHeader: true,
 				icon: 'in-progress',
 			},
 		},
@@ -40,7 +40,7 @@ const Invoice: React.FC = () => {
 				id: 'customer-invoice',
 				name: 'Customer Invoice',
 				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				// hideTabHeader: true,
+				// hideSettingHeader: true,
 				icon: 'in-progress',
 			},
 		},
@@ -50,7 +50,7 @@ const Invoice: React.FC = () => {
 				id: 'marketplace-fee-invoice',
 				name: 'Marketplace Fee Invoice',
 				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				// hideTabHeader: true,
+				// hideSettingHeader: true,
 				icon: 'in-progress',
 			},
 		},
@@ -60,7 +60,7 @@ const Invoice: React.FC = () => {
 				id: 'store-invoice',
 				name: 'Store Invoice',
 				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				// hideTabHeader: true,
+				// hideSettingHeader: true,
 				icon: 'in-progress',
 			},
 		},
@@ -70,7 +70,7 @@ const Invoice: React.FC = () => {
 				id: 'store-subscription',
 				name: 'Store Subscription',
 				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				// hideTabHeader: true,
+				// hideSettingHeader: true,
 				icon: 'in-progress',
 			},
 		},
@@ -80,7 +80,7 @@ const Invoice: React.FC = () => {
 				id: 'admin-invoice',
 				name: 'Admin Invoice',
 				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				// hideTabHeader: true,
+				// hideSettingHeader: true,
 				icon: 'in-progress',
 			},
 		},
@@ -90,7 +90,7 @@ const Invoice: React.FC = () => {
 				id: 'packing-slip',
 				name: 'Packing Slip',
 				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				// hideTabHeader: true,
+				// hideSettingHeader: true,
 				icon: 'in-progress',
 			},
 		},
@@ -123,7 +123,7 @@ const Invoice: React.FC = () => {
 		}, [setting, settingName, currentTab]);
 
 		return settingName === currentTab ? (
-			<AdminForm
+			<RenderComponent
 				settings={settingModal as any}
 				proSetting={appLocalizer.pro_settings_list}
 				setting={setting}
@@ -140,18 +140,15 @@ const Invoice: React.FC = () => {
 	return (
 		<SettingProvider>
 			<div className="horizontal-tabs">
-				<Tabs
-					tabData={tabData as any}
-					currentTab={initialTab}
+				<SettingsNavigator
+					settingContent={settingContent as any}
+					currentSetting={initialTab}
 					getForm={GetForm}
 					prepareUrl={(tabid: string) =>
 						`?page=multivendorx#&tab=settings&subtab=invoice&tabId=${tabid}`
 					}
-					appLocalizer={appLocalizer}
 					settingName="Settings"
-					supprot={[]}
 					Link={Link}
-					submenuRender={true}
 					menuIcon={true}
 				/>
 			</div>

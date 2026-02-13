@@ -29,7 +29,7 @@ export default {
 				'Select the order statuses after which earning will be added to the store wallet.',
 				'multivendorx'
 			),
-			 
+
 			options: [
 				{
 					key: 'completed',
@@ -65,12 +65,17 @@ export default {
 			),
 			type: 'number',
 			size: '8rem',
-			preText: __('Wait', 'multivendorx'),
-			postText: __(
-				'as the clearance period before pending earnings become available for payout.',
-				'multivendorx'
-			),
-			postInsideText: __('days', 'multivendorx'),
+			beforeElement: {
+				type: 'preposttext',
+				textType: 'pre',
+				preText: 'Wait',
+			},
+			afterElement: {
+				type: 'preposttext',
+				textType: 'post',
+				postText: 'as the clearance period before pending earnings become available for payout.',
+			},
+			postText: __('days', 'multivendorx'),
 		},
 		{
 			key: 'payout_threshold_amount',
@@ -80,9 +85,17 @@ export default {
 				'multivendorx'
 			),
 			type: 'number',
-			preText: __('Stores must accumulate at least', 'multivendorx'),
-			preInsideText: __('$', 'multivendorx'),
-			postText: __(' into wallet receive a payout.', 'multivendorx'),
+			preText: appLocalizer.currency_symbol,
+			beforeElement: {
+				type: 'preposttext',
+				textType: 'pre',
+				preText: 'Stores must accumulate at least',
+			},
+			afterElement: {
+				type: 'preposttext',
+				textType: 'post',
+				postText: 'into wallet receive a payout.',
+			},
 			size: '8rem',
 			options: [
 				{
@@ -100,12 +113,17 @@ export default {
 				'multivendorx'
 			),
 			type: 'number',
-			preText: __('Stores must always keep at least', 'multivendorx'),
-			preInsideText: __('$', 'multivendorx'),
-			postText: __(
-				' in their wallet as a safety reserve.',
-				'multivendorx'
-			),
+			preText: appLocalizer.currency_symbol,
+			beforeElement: {
+				type: 'preposttext',
+				textType: 'pre',
+				preText: 'Stores must always keep at least',
+			},
+			afterElement: {
+				type: 'preposttext',
+				textType: 'post',
+				postText: 'in their wallet as a safety reserve.',
+			},
 			size: '8rem',
 			options: [
 				{
@@ -171,9 +189,17 @@ export default {
 					value: 'payouts_every_hour',
 				},
 			],
-			postText: __('minute of every hour.', 'multivendorx'),
-			preText: __('At', 'multivendorx'),
-			postInsideText: __('th', 'multivendorx'),
+			postText: __('th', 'multivendorx'),
+			beforeElement: {
+				type: 'preposttext',
+				textType: 'pre',
+				preText: 'At',
+			},
+			afterElement: {
+				type: 'preposttext',
+				textType: 'post',
+				postText: 'minute of every hour.',
+			},
 			dependent: {
 				key: 'payment_schedules',
 				set: true,
@@ -194,7 +220,7 @@ export default {
 			nestedFields: [
 				{
 					key: 'payout_frequency',
-					type: 'select',
+					type: 'setting-toggle',
 					label: __('On', 'multivendorx'),
 					// label: __('Payout frequency', 'multivendorx'),
 					options: [
@@ -212,7 +238,7 @@ export default {
 				},
 				{
 					key: 'payout_day',
-					type: 'dropdown',
+					type: 'select',
 					// label: __('Payout Day', 'multivendorx'),
 					// settingDescription: __("Select the day of the week to release store commissions:", 'multivendorx'),
 					// desc: __("<ul><li>Choose the specific day when store commissions should be disbursed.</li></ul>", 'multivendorx'),
@@ -290,7 +316,7 @@ export default {
 							value: 'payouts_every_month',
 						},
 					],
-					postInsideText: __('day', 'multivendorx'),
+					postText: __('day', 'multivendorx'),
 				},
 				{
 					key: 'monthly_payout_time', // time of day
@@ -338,7 +364,11 @@ export default {
 				{
 					key: 'weekly_payout_day', // day of week toggle
 					type: 'dropdown',
-					preText: __('On', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('On', 'multivendorx'),
+					},
 					description: __(
 						'Select the day of the week for payouts:',
 						'multivendorx'
@@ -384,7 +414,11 @@ export default {
 				{
 					key: 'weekly_payout_time', // time of day
 					type: 'time', // links to TimeSelect component
-					preText: __('at', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('at', 'multivendorx'),
+					},
 					description: __(
 						'Select the time of day for weekly payouts.',
 						'multivendorx'
@@ -453,26 +487,49 @@ export default {
 							value: 'free_withdrawals',
 						},
 					],
-					preText: __('Stores get', 'multivendorx'),
-					postText: __(
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('Stores get', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
 						'free withdrawals. After that, each withdrawal costs',
 						'multivendorx'
 					),
+					},
 				},
 				{
 					key: 'withdrawal_fixed', // updated key
 					type: 'number',
 					size: '5rem',
-					preInsideText: __('$', 'multivendorx'),
-					preText: 'fixed',
-					postText: '+',
+					preText: appLocalizer.currency_symbol,
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('fixed', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __(
+						'+',
+						'multivendorx'
+					),
+					},
 				},
 				{
 					key: 'withdrawal_percentage', // updated key
 					type: 'number',
 					size: '5rem',
-					postText: __('.', 'multivendorx'),
-					postInsideText: __('%', 'multivendorx'),
+					postText: __('%', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: '.',
+					},
 				},
 			],
 		},

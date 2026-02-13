@@ -5,24 +5,21 @@ import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
 	AdminBreadcrumbs,
-	BasicInput,
-	TextArea,
-	CommonPopup,
-	SelectInput,
-	ToggleSetting,
+	TextAreaUI,
 	Container,
 	Column,
 	FormGroupWrapper,
 	FormGroup,
-	AdminButton,
-	ProPopup,
 	TableCard,
+	BasicInputUI,
+	AdminButtonUI,
+	ToggleSettingUI,
+	SelectInputUI,
+	PopupUI,
 } from 'zyra';
-
-
 import './Announcements.scss';
+import Popup from '../Popup/Popup';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
-import { Dialog } from '@mui/material';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 
@@ -42,8 +39,6 @@ interface StoreOption {
 	value: string;
 	label: string;
 }
-
-
 
 export const Announcements: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -174,12 +169,8 @@ export const Announcements: React.FC = () => {
 	};
 
 	// Handle form input change
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
+	const handleChange = (name: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
-
 		// Clear field error when user types
 		if (validationErrors[name]) {
 			setValidationErrors((prev) => {
@@ -413,18 +404,17 @@ export const Announcements: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title="Are you sure"
-					confirmMessage={
-						selectedAn
-							? `Are you sure you want to delete Announcement?`
-							: ''
-					}
+					confirmMessage={ selectedAn ? `` : '' }
 					confirmYesText="Delete"
 					confirmNoText="Cancel"
 					onConfirm={handleConfirmDelete}
@@ -433,32 +423,31 @@ export const Announcements: React.FC = () => {
 						setSelectedAn(null);
 					}}
 				/>
-			</Dialog>
+			</PopupUI>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-announcement"
+				settingIcon="adminfont-announcement"
 				description={
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
 				}
-				tabTitle="Announcements"
+				headerTitle="Announcements"
 				buttons={[
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={async () => {
+					{
+						label: __('Add New', 'multivendorx'),
+						className: "admin-btn btn-purple-bg",
+						iconClass: 'adminfont-plus',
+						onClick: () => {
 							setValidationErrors({});
-							await fetchStoreOptions();
+							fetchStoreOptions();
 							setAddAnnouncements(true);
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>,
+						}
+					}
 				]}
 			/>
 
-			<CommonPopup
+			<PopupUI
 				open={addAnnouncements}
 				onClose={handleCloseForm}
-				width="31.25rem"
+				width={31.25}
 				height="80%"
 				header={{
 					icon: 'announcement',
@@ -471,18 +460,17 @@ export const Announcements: React.FC = () => {
 					),
 				}}
 				footer={
-					<AdminButton
+					<AdminButtonUI
 						buttons={[
 							{
 								icon: 'close',
 								text: __('Cancel', 'multivendorx'),
-								className: 'red',
+								color: 'red',
 								onClick: handleCloseForm,
 							},
 							{
 								icon: 'save',
 								text: __('Save', 'multivendorx'),
-								className: 'purple-bg',
 								onClick: () => handleSubmit(),
 							},
 						]}
@@ -492,11 +480,11 @@ export const Announcements: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Title', 'multivendorx')} htmlFor="title">
-							<BasicInput
+							<BasicInputUI
 								type="text"
 								name="title"
 								value={formData.title}
-								onChange={handleChange}
+								onChange={(val) => handleChange('title', val as string)}
 								msg={error}
 							/>
 							{validationErrors.title && (
@@ -506,10 +494,10 @@ export const Announcements: React.FC = () => {
 							)}
 						</FormGroup>
 						<FormGroup label={__('Announcement message', 'multivendorx')} htmlFor="content">
-							<TextArea
+							<TextAreaUI
 								name="content"
 								value={formData.content}
-								onChange={handleChange}
+								onChange={(val) => handleChange('content', val as string)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer.settings_databases_value[
@@ -524,8 +512,8 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores">
-							<SelectInput
+						<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores" >
+							<SelectInputUI
 								name="stores"
 								type="multi-select"
 								options={storeOptions}
@@ -575,14 +563,8 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-							<ToggleSetting
-
-								descClass="settings-metabox-description"
-								description={__(
-									'Select the status of the announcement.',
-									'multivendorx'
-								)}
+						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.', 'multivendorx')} htmlFor="status">
+							<ToggleSettingUI
 								options={[
 									{
 										key: 'draft',
@@ -607,7 +589,7 @@ export const Announcements: React.FC = () => {
 					</FormGroupWrapper>
 				</>
 				{error && <p className="error-text">{error}</p>}
-			</CommonPopup>
+			</PopupUI >
 
 			<Container general>
 				<Column>
@@ -625,6 +607,7 @@ export const Announcements: React.FC = () => {
 						onBulkActionApply={(action: string, selectedIds: []) => {
 							handleBulkAction(action, selectedIds)
 						}}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

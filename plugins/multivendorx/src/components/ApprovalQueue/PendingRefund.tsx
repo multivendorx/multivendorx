@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	AdminButton,
+	AdminButtonUI,
 	Column,
-	CommonPopup,
 	Container,
 	FormGroup,
 	FormGroupWrapper,
 	getApiLink,
 	TableCard,
-	TextArea,
+	TextAreaUI,
 } from 'zyra';
 import { formatCurrency, formatWcShortDate, toWcIsoDate, truncateText } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
@@ -329,26 +328,25 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						ids={rowIds}
 						search={{}}
 						filters={filters}
+						format={appLocalizer.date_format}
 					/>
-					<CommonPopup
+					<PopupUI
 						open={popupOpen}
 						onClose={handleCloseForm}
-						width="40rem"
+						width={40}  
 						height="80%"
 						header={{
 							icon: 'announcement',
 							title: __('Refund Request Details', 'multivendorx'),
 							description: __('Review refund details before taking action.', 'multivendorx'),
-							onClose: handleCloseForm,
 						}}
-
 						footer={
-							<AdminButton
+							<AdminButtonUI
 								buttons={[
 									{
 										icon: 'external-link',
 										text: __('View order to release funds', 'multivendorx'),
-										className: 'yellow-bg',
+										color: 'yellow-bg',
 										onClick: () => {
 											if (!viewOrder) return;
 											window.open(
@@ -360,7 +358,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 									{
 										icon: 'save',
 										text: __('Reject', 'multivendorx'),
-										className: 'purple-bg',
 										onClick: () => {
 											if (!viewOrder) return;
 											handleSubmit(viewOrder.id);
@@ -405,7 +402,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 								</FormGroup>
 							)}
 							<FormGroup label={__('Reject Message', 'multivendorx')} htmlFor="content">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									value={formData.content}
 									onChange={handleChange}
@@ -418,7 +415,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 								/>
 							</FormGroup>
 						</FormGroupWrapper>
-					</CommonPopup>
+					</PopupUI>
 				</Column>
 			</Container>
 		</>

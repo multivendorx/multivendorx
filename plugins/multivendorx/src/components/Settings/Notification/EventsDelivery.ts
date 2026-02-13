@@ -4,7 +4,7 @@ export default {
 	id: 'events-delivery',
 	priority: 1,
 	name: 'Events Delivery',
-	tabTitle: 'Email & SMS delivery',
+	headerTitle: 'Email & SMS delivery',
 	desc: __(
 		'Get notified about important updates. Choose how you want to receive notifications from your marketplace - by email, text message, or both.',
 		'multivendorx'
@@ -22,7 +22,7 @@ export default {
 				'The primary email address that will receive system and marketplace notifications.',
 				'multivendorx'
 			),
-			desc: __('You can add multiple email addresses separated by commas to notify additional recipients.','multivendorx'),
+			desc: __('You can add multiple email addresses separated by commas to notify additional recipients.', 'multivendorx'),
 		},
 		{
 			key: 'sms_receiver_phone_number',
@@ -33,10 +33,10 @@ export default {
 				'The phone number that will receive SMS notifications. Use country code followed by phone number. Example: +44 – 7123456789, +91 – 9000012345',
 				'multivendorx'
 			),
-			preText: {
+			beforeElement: {
 				type: 'select',
 				key: 'store_base',
-				size: '90px',
+				size: '5.625rem',
 				options: [
 					{ label: '+91', value: 'store' },
 					{ label: '+92', value: 'shop' },
@@ -217,6 +217,6 @@ export default {
 				value: 'plivo',
 			},
 		},
-		
+
 	],
 };

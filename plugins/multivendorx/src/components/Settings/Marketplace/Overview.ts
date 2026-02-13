@@ -8,7 +8,7 @@ export default {
 	id: 'overview',
 	priority: 1,
 	name: __('Overview', 'multivendorx'),
-	tabTitle: 'Marketplace pages configuration',
+	headerTitle: 'Marketplace pages configuration',
 	desc: __(
 		'Configure the essential system pages required for your marketplace - including store registration, store dashboard.',
 		'multivendorx'
@@ -83,12 +83,12 @@ export default {
 			),
 			size: '8rem',
 			beforeElement: {
-				type: 'preposttest',
+				type: 'preposttext',
 				textType: 'pre',
 				preText: appLocalizer.site_url + '/',
 			},
 			afterElement: {
-				type: 'preposttest',
+				type: 'preposttext',
 				textType: 'post',
 				postText: '/sample-store/',
 			},
@@ -142,7 +142,9 @@ export default {
 		{
             key: 'default_pages',
             type: 'button',
+			wrapperClass: 'left',
             name: __('Create Default MultiVendorX Page', 'multivendorx'),
+			className: 'purple',
             label: __('MultiVendorX page', 'multivendorx'),
             desc: __(
                 'This tool will install all the missing MultiVendorX pages. Pages already defined and set up will not be replaced.',
@@ -160,7 +162,7 @@ export default {
 				key: 'generate_button',
 				name: "Generate",
 				generate: true,
-				responseKey: 'generate_key'
+				responseKey: 'generate_key',				 
 			},
 		},
 		{
@@ -279,10 +281,162 @@ export default {
 								url: `${appLocalizer.admin_url}admin.php?page=wc-settings&tab=shipping`,
 							},
 						},
+						{
+							key: 'default_pages',
+							type: 'button',
+							name: __('Set up', 'multivendorx'),
+							desc: __(
+								'This tool will install all the missing MultiVendorX pages. Pages already defined and set up will not be replaced.',
+								'multivendorx'
+							),
+							link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=commissions`,
+							beforeElement: {
+								key: 'taxable',
+								label: __('Charge tax on shipping cost', 'multivendorx'),
+								desc: __('Shipping charges will be treated as taxable items during checkout', 'multivendorx'),
+								type: 'checkbox',
+								options: [
+									{
+										key: 'taxable',
+										value: 'taxable',
+									},
+								],
+							},
+						},
+						
 					],
 				},
 			]
-		}
+		},
+		
+		{
+            key: 'type_options',
+            type: 'checkbox',
+            classes: 'vertical',
+            label: __('When to send invoice emails  ', 'multivendorx'),
+
+            desc: __(
+                'Choose how invoices are automatically sent to customers and stores',
+                'multivendorx'
+            ),
+            // moduleEnabled: 'invoice',
+            options: [
+                {
+                    key: 'virtual',
+                    label: __(
+                        'Attach to order confirmation email',
+                        'multivendorx'
+                    ),
+                    desc: __('Include invoice PDF with the order confirmation customers already receive.', 'multivendorx'),
+                    value: 'virtual',
+            		proSetting: true,
+                },
+                {
+                    key: 'Send Separate Invoice Email',
+                    label: __('Send separate invoice email', 'multivendorx'),
+                    desc: __('Dedicated email with invoice', 'multivendorx'),
+                    value: 'downloadable',
+                },
+                {
+                    key: 'Notify Stores of Invoice Generation',
+                    label: __(
+                        'Notify stores',
+                        'multivendorx'
+                    ),
+                    desc: __('Send a copy to the vendor when their sale generates an invoice.', 'multivendorx'),
+                    value: 'downloadable',
+                },
+                {
+                    key: 'Generate Packing Slips',
+                    label: __('Include packing slip', 'multivendorx'),
+                    desc: __('Also generate and attach a packing slip with the invoice.', 'multivendorx'),
+                    value: 'downloadable',
+                },
+            ],
+            selectDeselect: true,
+        },
+		{
+			key: 'shipping_providers',
+			type: 'checkbox',
+			label: __(' Shipping carriers', 'multivendorx'),
+			moduleEnabled: 'store-shipping',
+			settingDescription: __(
+				' Choose which shipping providers stores can use. Only the carriers you enable will be available for sellers to ship their products and add tracking details. This helps keep all shipments through trusted, approved providers.',
+				'multivendorx'
+			),
+			 
+			addNewBtnText: 'Add Custom Provider',
+			options: [
+				{
+					key: 'australia_post',
+					label: __('Australia post', 'multivendorx'),
+					value: 'australia_post',
+					edit : true,
+				},
+				{
+					key: 'canada_post',
+					label: __('Canada post', 'multivendorx'),
+					value: 'canada_post',
+					edit : true,
+				},
+				{
+					key: 'city_link',
+					label: __('City link', 'multivendorx'),
+					value: 'city_link',
+					edit : true,
+				},
+				{
+					key: 'dhl',
+					label: __('DHL', 'multivendorx'),
+					value: 'dhl',
+					edit : true,
+				},
+				{
+					key: 'fastway_south_africa',
+					label: __('Fastway South Africa', 'multivendorx'),
+					value: 'fastway_south_africa',
+					edit : true,
+				},
+				{
+					key: 'fedex',
+					label: __('FedEx', 'multivendorx'),
+					value: 'fedex',
+					edit : true,
+				},
+				{
+					key: 'ontrac',
+					label: __('OnTrac', 'multivendorx'),
+					value: 'ontrac',
+					edit : true,
+				},
+				{
+					key: 'polish_shipping',
+					label: __('Polish shipping providers', 'multivendorx'),
+					value: 'polish_shipping',
+					edit : true,
+				},
+			],
+			selectDeselect: true,
+		},
+		{
+			key: 'taxable',
+			label: __('Charge tax on shipping cost', 'multivendorx'),
+			settingDescription: __(
+				'Shipping charges will be treated as taxable items during checkout. Otherwise shipping costs will be tax-free.',
+				'multivendorx'
+			),
+			desc: __('', 'multivendorx'),
+			type: 'checkbox',
+			moduleEnabled: 'store-shipping',
+			options: [
+				{
+					key: 'taxable',
+					value: 'taxable',
+				},
+			],
+			look: 'toggle',
+		},
+
 		// {
 		// 	key: 'section',
 		// 	type: 'section',

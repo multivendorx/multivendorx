@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
+import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SelectInputUI, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -302,7 +302,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								)}
 								{statusSelect && (
 									<div className="status-edit">
-										<SelectInput
+										<SelectInputUI
 											name="status"
 											options={[
 												{
@@ -323,7 +323,6 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 												},
 											]}
 											value={orderData?.status}
-											type="single-select"
 											onChange={(newValue: any) => {
 												handleStatusChange(
 													newValue.value
@@ -440,7 +439,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																</div>
 
 																{isRefund && (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund-amount"
 																		type="number"
 																		value={refundItems[
@@ -491,7 +490,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		</div>
 																	)}
 																{isRefund && (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund-amount"
 																		type="number"
 																		value={
@@ -536,7 +535,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		</div>
 																	)}
 																{isRefund && (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund-amount"
 																		type="number"
 																		value={
@@ -603,7 +602,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															<td className="admin-column"></td>
 															<td className="admin-column">
 																{isRefund ? (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund"
 																		type="number"
 																		value={
@@ -647,7 +646,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															</td>
 															<td className="admin-column">
 																{isRefund ? (
-																	<BasicInput
+																	<BasicInputUI
 																		name="refund"
 																		type="number"
 																		value={
@@ -726,28 +725,28 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									<div className="left">
 										{modules.includes('marketplace-refund') && (
 											!isRefund ? (
-												<AdminButton
+												<AdminButtonUI
 													buttons={[
 														{
 															text: __('Refund', 'multivendorx'),
-															className: 'purple',
+															color: 'purple',
 															onClick: () => setIsRefund(true),
 														},
 													]}
 												/>
 											) : (
-												<AdminButton
-													wrapperClass="left"
+												<AdminButtonUI
+													position="left"
 													buttons={[
 														{
 															text: `${__('Refund', 'multivendorx')} $${refundDetails.refundAmount.toFixed(2)} ${__('manually', 'multivendorx')}`,
-															className: 'green',
+															color: 'green',
 															onClick: handleRefundSubmit,
 															disabled: isRefundLoading,
 														},
 														{
 															text: __('Cancel', 'multivendorx'),
-															className: 'red',
+															color: 'red',
 															onClick: () => setIsRefund(false),
 														},
 													]}
@@ -805,7 +804,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															{__('Refund amount:', 'multivendorx')}
 														</td>
 														<td>
-															<BasicInput
+															<BasicInputUI
 																name="refund-amount"
 																type="number"
 																value={refundDetails.refundAmount}
@@ -1123,7 +1122,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 										/> */}
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking Url ', 'multivendorx')} htmlFor="tracking-number">
-										<BasicInput
+										<BasicInputUI
 											value={shipmentData.tracking_url}
 											onChange={(e) =>
 												setShipmentData((prev) => ({
@@ -1134,7 +1133,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 										/>
 									</FormGroup>
 									<FormGroup label={__('Enter Tracking ID', 'multivendorx')} htmlFor="tracking-number">
-										<BasicInput
+										<BasicInputUI
 											value={shipmentData.tracking_id}
 											onChange={(e) =>
 												setShipmentData((prev) => ({
@@ -1146,12 +1145,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									</FormGroup>
 								</FormGroupWrapper>
 
-								<AdminButton
-									wrapperClass="left"
+								<AdminButtonUI
+									position="left"
 									buttons={{
 										icon: 'plus',
 										text: __('Create Shipment', 'multivendorx'),
-										className: 'purple-bg',
 										onClick: saveShipmentToOrder,
 									}}
 								/>

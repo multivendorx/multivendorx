@@ -8,7 +8,9 @@ import {
 	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
-	TextArea,
+	AdminButtonUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
@@ -254,10 +256,10 @@ const StoreReview: React.FC = () => {
 				filters={filters}
 			/>
 			{selectedReview && (
-				<CommonPopup
+				<PopupUI
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					header={{
 						icon: 'store-review',
@@ -268,18 +270,17 @@ const StoreReview: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedReview(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}
@@ -349,7 +350,7 @@ const StoreReview: React.FC = () => {
 								label={__('Respond to customer', 'multivendorx')}
 								htmlFor="reply"
 							>
-								<TextArea
+								<TextAreaUI
 									name="reply"
 									inputClass="input-text"
 									value={replyText}
@@ -359,7 +360,7 @@ const StoreReview: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

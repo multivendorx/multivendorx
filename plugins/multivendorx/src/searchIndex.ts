@@ -30,7 +30,7 @@ function buildIndexFromContext(context: __WebpackModuleApi.RequireContext) {
 						tab: baseTab,
 						name: mod.name,
 						desc: mod.desc,
-						link: `#&tab=${baseTab}`,
+						link: `#&tab=${baseTab}&module=${mod.id}`,
 						icon: mod.icon || '',
 					}));
 			}

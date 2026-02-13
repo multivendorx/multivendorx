@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	BasicInput,
-	ToggleSetting,
+	ToggleSettingUI,
 	getApiLink,
 	SuccessNotice,
 	BlockText,
@@ -11,6 +10,7 @@ import {
 	Card,
 	FormGroupWrapper,
 	FormGroup,
+	BasicInputUI,
 } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 
@@ -172,23 +172,21 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 				<Column grid={8}>
 					<Card title={__('Withdrawal methods', 'multivendorx')}>
 						<FormGroupWrapper>
-							<FormGroup>
-								<ToggleSetting
-									 
-									descClass="settings-metabox-description"
-									description={
-										paymentOptions &&
-											paymentOptions.length === 0
-											? sprintf(
-												/* translators: %s: link to payment integration settings */
-												__(
-													'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
-													'multivendorx'
-												),
-												'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
-											)
-											: ''
-									}
+							<FormGroup
+								desc={
+									paymentOptions &&
+										paymentOptions.length === 0
+										? sprintf(
+											/* translators: %s: link to payment integration settings */
+											__(
+												'You haven’t enabled any payment methods yet. Configure payout options <a href="%s">from here</a> to allow stores to receive their earnings.',
+												'multivendorx'
+											),
+											'?page=multivendorx#&tab=settings&subtab=withdrawal-methods'
+										)
+										: ''
+								}>
+								<ToggleSettingUI
 									options={paymentOptions}
 									value={
 										formData.payment_method || ''
@@ -232,14 +230,9 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								// Render Toggle Settings
 								if (field.type === 'setting-toggle') {
 									return (
-										<FormGroup label={__(field.label, 'multivendorx')} htmlFor={field.key}>
-											<ToggleSetting
+										<FormGroup label={__(field.label, 'multivendorx')} desc= {__(field.desc || '')}htmlFor={field.key}>
+											<ToggleSettingUI
 												key={field.key}
-												description={__(
-													field.desc ||
-													'',
-													'multivendorx'
-												)}
 												options={
 													Array.isArray(
 														field.options
@@ -276,12 +269,12 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								// Default input field rendering
 								return (
 									<FormGroup label={__(field.label, 'multivendorx')} htmlFor={field.key}>
-										<BasicInput
+										<BasicInputUI
 											name={field.key || ''}
 											type={
 												field.type || 'text'
 											}
-											 
+
 											descClass="settings-metabox-description"
 											placeholder={
 												field.placeholder
@@ -318,21 +311,24 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 						/>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Fixed', 'multivendorx')} htmlFor="Fixed">
-								<BasicInput
-									preInsideText="$"
-									postText="+"
+								<BasicInputUI
+									preText={appLocalizer.currency_symbol}
 									name="commission_fixed"
-									 
+									afterElement={{
+										type: 'preposttext',
+										textType: 'post',
+										postText: '+',
+									}}
 									descClass="settings-metabox-description"
 									value={formData.commission_fixed}
 									onChange={handleChange}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('Percentage', 'multivendorx')} htmlFor="Percentage">
-								<BasicInput
-									postInsideText="%"
+								<BasicInputUI
+									postText="%"
 									name="commission_percentage"
-									 
+
 									descClass="settings-metabox-description"
 									value={formData.commission_percentage}
 									onChange={handleChange}

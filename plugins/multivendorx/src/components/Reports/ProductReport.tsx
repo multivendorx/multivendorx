@@ -10,7 +10,7 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, MultiCalendarInput, Table, TableCard, TableCell } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, Table, TableCard, TableCell } from 'zyra';
 import axios from 'axios';
 import { downloadCSV, formatCurrency, formatWcShortDate, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
@@ -617,6 +617,7 @@ const ProductReport: React.FC = () => {
 				filters={filters}
 				buttonActions={buttonActions}
 				rowIds={rowIds}
+				format={appLocalizer.date_format}
 			/>
 		</>
 	);

@@ -3,14 +3,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	CommonPopup,
 	TextArea,
 	getApiLink,
-	AdminButton,
 	FormGroupWrapper,
 	Container,
 	Column,
 	TableCard,
+	AdminButtonUI,
+	TextAreaUI,
+	PopupUI,
 } from 'zyra';
 
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
@@ -128,7 +129,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 	];
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
-	
+
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -146,13 +147,13 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 			})
 			.then((response) => {
 				const items = response.data || [];
-	
+
 				// Extract IDs for selection
 				const ids = items
 					.filter((item: any) => item?.id != null)
 					.map((item: any) => item.id);
 				setRowIds(ids);
-	
+
 				// Map rows according to TableCard headers
 				const mappedRows: any[][] = items.map((store: any) => [
 					{
@@ -175,8 +176,8 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 						display: store.applied_on ? formatWcShortDate(store.applied_on) : '-',
 					}
 				]);
-				
-	
+
+
 				setRows(mappedRows);
 				setTotalRows(Number(response.headers['x-wp-status-pending']) || 0);
 				setIsLoading(false);
@@ -187,10 +188,10 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 				setIsLoading(false);
 			});
 	};
-	
+
 	return (
 		<>
-			<Container general>
+			<Container>
 				<Column>
 					<TableCard
 						headers={headers}
@@ -201,30 +202,31 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 						ids={rowIds}
 						search={{}}
 						filters={filters}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>
 
 			{/* Reject Popup */}
 			{rejectPopupOpen && (
-				<CommonPopup
+				<PopupUI
 					open={rejectPopupOpen}
 					onClose={() => {
 						setRejectPopupOpen(false);
 						setRejectReason('');
 					}}
-					width="31.25rem"
+					width={31.25}
 					header={{
 						icon: 'cart',
 						title: __('Reason', 'multivendorx'),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => {
 										setRejectPopupOpen(false);
 										setRejectReason('');
@@ -233,7 +235,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 								{
 									icon: 'permanently-rejected',
 									text: __('Reject', 'multivendorx'),
-									className: 'red-bg',
+									color: 'red-bg',
 									onClick: () => submitReject(),
 								},
 							]}
@@ -242,7 +244,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 				>
 					<>
 						<FormGroupWrapper>
-							<TextArea
+							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
 								onChange={(
@@ -256,7 +258,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 							/>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

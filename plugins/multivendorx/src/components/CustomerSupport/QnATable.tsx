@@ -4,18 +4,17 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	TextArea,
-	ToggleSetting,
-	BasicInput,
-	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
-	ProPopup,
 	TableCard,
+	BasicInputUI,
+	AdminButtonUI,
+	ToggleSettingUI,
+	TextAreaUI,
+	PopupUI,
 } from 'zyra';
 
-import { Dialog } from '@mui/material';
+import Popup from '../Popup/Popup';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -281,11 +280,14 @@ const Qna: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title="Delete Question"
 					confirmMessage={
@@ -301,7 +303,7 @@ const Qna: React.FC = () => {
 						setSelectedQn(null);
 					}}
 				/>
-			</Dialog>
+			</PopupUI>
 			<TableCard
 				headers={headers}
 				rows={rows}
@@ -312,12 +314,13 @@ const Qna: React.FC = () => {
 				categoryCounts={categoryCounts}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 			{selectedQna && (
-				<CommonPopup
+				<PopupUI
 					open={selectedQna}
 					onClose={() => setSelectedQna(null)}
-					width="30rem"
+					width={30}
 					height="70%"
 					header={{
 						icon: 'question',
@@ -328,18 +331,17 @@ const Qna: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedQna(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save Answer', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSaveAnswer(),
 								},
 							]}
@@ -349,23 +351,21 @@ const Qna: React.FC = () => {
 					<>
 						<FormGroupWrapper>
 							<FormGroup label={__('Question', 'multivendorx')} htmlFor="question">
-								<BasicInput
+								<BasicInputUI
 									name="phone"
 									value={qna}
 									onChange={(e) => setQna(e.target.value)}
 								/>
 							</FormGroup>
 							<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
-								<TextArea
+								<TextAreaUI
 									name="answer"
 									value={answer}
 									onChange={(e) => setAnswer(e.target.value)}
 								/>
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">
-								<ToggleSetting
-
-									descClass="settings-metabox-description"
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'public',
@@ -400,7 +400,7 @@ const Qna: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

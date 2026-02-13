@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, ReactNode } from 'react';
 import '../styles/web/ExpandablePanelGroup.scss';
 import { getApiLink } from '../utils/apiService';
 import axios from 'axios';
@@ -25,15 +25,14 @@ interface PanelFormField {
     key: string;
     type:
     | 'text'
-    | 'multi-checkbox'
-    | 'setup'
+    | 'checkbox'
     | 'setting-toggle'
-    | 'buttons'
-    | 'nested'
     | 'clickable-list'
-    | 'iconlibrary'
     | 'blocktext'
-    | 'multi-select';
+    | 'multi-select'
+    | 'button'
+    | 'nested'
+    | 'iconlibrary';
 
     label: string;
     placeholder?: string;
@@ -56,10 +55,10 @@ interface PanelFormField {
     check?: boolean;
     hideCheckbox?: boolean;
     btnClass?: string;
-    selectType?: string;
     edit?: boolean;
     iconEnable?: boolean;
     iconOptions?: string[];
+    beforeElement?: string | ReactNode;
 }
 
 interface ExpandablePanelMethod {
@@ -100,14 +99,13 @@ interface ExpandablePanelGroupProps {
     value: Record<string, Record<string, unknown>>;
     onChange: (data: Record<string, Record<string, unknown>>) => void;
     isWizardMode?: boolean;
-    setWizardIndex?: (index: number) => void;
     canAccess: boolean;
     addNewBtn?: boolean;
     addNewTemplate?: AddNewTemplate;
     min?: number;
 }
 
-const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
+export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
     methods,
     value,
     onChange,
@@ -129,9 +127,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
         null
     );
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const [iconDropdownOpen, setIconDropdownOpen] = useState<string | null>(
-        null
-    );
+    
     // State for inline editing
     const [editingMethodId, setEditingMethodId] = useState<string | null>(null);
     const [editingField, setEditingField] = useState<'title' | 'description' | null>(null);
@@ -238,7 +234,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
         const initialProgress = methods.map((method) => {
             const countableFields =
                 method.formFields?.filter(
-                    (f) => f.type !== 'buttons' && f.type !== 'blocktext'
+                    (f) => f.type !== 'button' && f.type !== 'blocktext'
                 ) || [];
 
             let filledCount = 0;
@@ -486,7 +482,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                         // Count ONLY real fields (exclude buttons)
                         const countableFields =
                             methods[methodIndex]?.formFields?.filter(
-                                (f) => f.type !== 'buttons' && f.type !== 'blocktext'
+                                (f) => f.type !== 'button' && f.type !== 'blocktext'
                             ) || [];
 
                         const maxFields = countableFields.length;
@@ -529,7 +525,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
     const renderWizardButtons = () => {
         const step = ExpandablePanelMethods[wizardIndex];
         const buttonField = step?.formFields?.find(
-            (f) => f.type === 'buttons'
+            (f) => f.type === 'button'
         );
         if (!buttonField) {
             return null;
@@ -614,21 +610,92 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
     };
 
     const renderField = (
-        methodId: string, 
+        methodId: string,
         field: PanelFormField
-        ): JSX.Element | null => {
+    ): JSX.Element | null => {
 
         const fieldComponent = FIELD_REGISTRY[field.type];
         if (!fieldComponent) return null;
 
         const Render = fieldComponent.render;
         const fieldValue = value[methodId]?.[field.key];
-            
+
         const handleInternalChange = (val: any) => {
             handleInputChange(methodId, field.key, val);
-            return;            
         };
 
+        if (field.type === 'button' && isWizardMode) {
+            const wizardSteps = methods.map((m, i) => ({ ...m, index: i }))
+                        .filter((m) => m.isWizardMode);
+
+            const isLastMethod =
+                wizardIndex === wizardSteps.length - 1;
+            const isFirstMethod = wizardIndex === 0;
+
+            const resolvedButtons = field.options.map((btn) => {
+                if (btn.action === 'back') {
+                    return {
+                        ...btn,
+                        text: btn.label,
+                        onClick: () => {
+                            if (isFirstMethod) return;
+                            const prev = wizardSteps[wizardIndex - 1];
+                            setWizardIndex(prev.index);
+                            setActiveTabs([prev.id]);
+                        },
+                    };
+                }
+
+                if (btn.action === 'next') {
+                    return {
+                        ...btn,
+                        text: btn.label,
+                        onClick: () => {
+                            handleSaveSetupWizard();
+
+                            if (!isLastMethod) {
+                                const next = wizardSteps[wizardIndex + 1];
+                                setWizardIndex(next.index);
+                                setActiveTabs([next.id]);
+                                return;
+                            }
+
+                            if (btn.redirect) {
+                                window.open(btn.redirect, '_self');
+                            }
+                        },
+                    };
+                }
+
+                if (btn.action === 'skip') {
+                    return {
+                        ...btn,
+                        text: btn.label,
+                        onClick: () => {
+                            setWizardIndex(methods.length);
+                            window.open(
+                                appLocalizer.site_url,
+                                '_self'
+                            );
+                        },
+                    };
+                }
+
+                return btn;
+            });
+
+            return (
+                <Render
+                    field={{ ...field, options: resolvedButtons }}
+                    value={fieldValue}
+                    onChange={handleInternalChange}
+                    canAccess={canAccess}
+                    appLocalizer={appLocalizer}
+                />
+            );
+        }
+
+        // NORMAL FIELDS
         return (
             <Render
                 field={field}
@@ -639,6 +706,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
             />
         );
     };
+
 
     const enableMethod = useCallback(
         (id: string) => toggleEnable(id, true),
@@ -866,7 +934,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                             </>
                                         ) : method.countBtn && method.formFields?.length > 0 && (() => {
                                             const countableFields = method.formFields.filter(
-                                                (field) => field.type !== 'buttons' && field.type !== 'blocktext'
+                                                (field) => field.type !== 'button' && field.type !== 'blocktext'
                                             );
 
                                             return (
@@ -988,7 +1056,7 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                         {method.formFields.map((field) => {
                                             if (
                                                 isWizardMode &&
-                                                field.type === 'buttons'
+                                                field.type === 'button'
                                             ) {
                                                 return null;
                                             }
@@ -1022,6 +1090,11 @@ const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                         </label>
                                                     )}
                                                     <div className="input-content">
+                                                        {field.beforeElement &&
+                                                            renderField(
+                                                            method.id,
+                                                            field.beforeElement
+                                                        )}
                                                         {renderField(
                                                             method.id,
                                                             field
@@ -1077,10 +1150,6 @@ const ExpandablePanelGroup: FieldComponent = {
     ),
 
     validate: (field, value) => {
-        if (field.required && !value?.[field.key]) {
-            return `${field.label} is required`;
-        }
-
         return null;
     },
 

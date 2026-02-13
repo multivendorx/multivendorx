@@ -1,8 +1,8 @@
-import "../../styles/web/UI/AdminButton.scss";
+import "../styles/web/UI/AdminButton.scss";
 import React, { useState } from "react";
-import { FieldComponent } from '../types';
+import { FieldComponent } from './types';
 import axios from 'axios';
-import { getApiLink } from '../../utils/apiService';
+import { getApiLink } from '../utils/apiService';
 
 type CustomStyle = {
     button_border_size?: number;
@@ -23,26 +23,28 @@ type CustomStyle = {
 type ButtonConfig = {
     icon?: string;
     text: string; 
-    onClick?: React.MouseEventHandler<HTMLDivElement>; 
-    className?: string;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>; 
+    color?: string;
     children?: React.ReactNode;
     customStyle?: CustomStyle;
+    disabled?: boolean;
 };
 
 type AdminButtonProps = {
   buttons: ButtonConfig | ButtonConfig[];
-  wrapperClass?: 'left' | 'right' | 'center';
+  wrapperClass?: string;
+  position?: 'left' | 'right' | 'center';
 };
 
 export const AdminButtonUI: React.FC<AdminButtonProps> = ({
     buttons,
     wrapperClass = "",
+    position = ""
 }) => {
     const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
 
     const renderedButtons = buttonsArray.map((btn, index) => {
         const [hovered, setHovered] = useState(false);
-
         const baseStyle = btn.customStyle
             ? {
                   border: `${btn.customStyle.button_border_size ?? ""}px solid ${
@@ -61,7 +63,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                   margin: `${btn.customStyle.button_margin ?? ""}px`,
                   padding: `${btn.customStyle.button_padding ?? ""}px`,
               }
-            : undefined;
+            : {};
 
         const hoverStyle =
             btn.customStyle && hovered
@@ -75,15 +77,16 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                           btn.customStyle
                               .button_background_color_onhover ?? "",
                   }
-                : undefined;
+                : {};
 
         return (
-            <div
+            <button
                 key={index}
                 className={`admin-btn ${
-                    btn.className ? `btn-${btn.className}` : ""
+                    btn.color ? `btn-${btn.color}` : "btn-purple-bg"
                 }`}
-                onClick={btn.onClick} // Now TypeScript is happy with this
+                onClick={btn.onClick}
+                disabled={ btn.disabled }
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 style={hoverStyle ?? baseStyle}
@@ -96,7 +99,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                         {btn.customStyle?.button_text ?? btn.text}
                     </>
                 )}
-            </div>
+            </button>
         );
     });
 
@@ -104,7 +107,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
         wrapperClass ? ` ${wrapperClass}` : ""
     }`;
 
-    return <div className={wrapperClasses}>{renderedButtons}</div>;
+    return <div className={wrapperClasses} data-position={position}>{renderedButtons}</div>;
 };
 
 
@@ -146,15 +149,31 @@ const AdminButton: FieldComponent = {
                 });
             }
 
+            if (field.link) {
+                window.open(field.link, '_blank');
+            }
+
         };
+
+        const resolvedButtons: ButtonConfig | ButtonConfig[] =
+            Array.isArray(field.options) && field.options.length > 0
+                ? field.options.map((btn: any) => ({
+                        text: btn.label,
+                        color: field.color,
+                        onClick: (e) => {
+                            btn.onClick?.(e);
+                        },
+                    }))
+                : {
+                        text: field.name,
+                        color: field.color,
+                        onClick: handleClick,
+                    };
 
         return (
             <AdminButtonUI
                 wrapperClass={field.wrapperClass}
-                buttons={{
-                    text: field.name,
-                    onClick: handleClick,
-                }}
+                buttons={resolvedButtons}
             />
         );
     },

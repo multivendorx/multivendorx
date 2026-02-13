@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	BasicInput,
 	getApiLink,
 	SuccessNotice,
-	SelectInput,
 	useModules,
 	EmailsInput,
 	GoogleMap,
@@ -14,6 +12,8 @@ import {
 	Card,
 	FormGroupWrapper,
 	FormGroup,
+	BasicInputUI,
+	SelectInputUI,
 } from 'zyra';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
@@ -434,7 +434,7 @@ const StoreSettings = ({
 						</FormGroup>
 
 						<FormGroup label={__('Phone', 'multivendorx')}>
-							<BasicInput
+							<BasicInputUI
 								name="phone"
 								type="number"
 								value={formData.phone}
@@ -462,7 +462,7 @@ const StoreSettings = ({
 					<Card title={__('Communication address', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Address *', 'multivendorx')} htmlFor="address">
-								<BasicInput
+								<BasicInputUI
 									name="address"
 									value={addressData.address}
 									onChange={handleAddressChange}
@@ -470,14 +470,14 @@ const StoreSettings = ({
 							</FormGroup>
 
 							<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="City">
-								<BasicInput
+								<BasicInputUI
 									name="city"
 									value={addressData.city}
 									onChange={handleAddressChange}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
-								<BasicInput
+								<BasicInputUI
 									name="zip"
 									value={addressData.zip}
 									onChange={handleAddressChange}
@@ -486,22 +486,20 @@ const StoreSettings = ({
 
 							{/* Country and State */}
 							<FormGroup cols={2} label={__('Country', 'multivendorx')} htmlFor="country">
-								<SelectInput
+								<SelectInputUI
 									name="country"
 									value={formData.country}
 									options={
 										appLocalizer.country_list || []
 									}
-									type="single-select"
 									onChange={handleCountryChange}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('State', 'multivendorx')} htmlFor="state">
-								<SelectInput
+								<SelectInputUI
 									name="state"
 									value={formData.state}
 									options={stateOptions}
-									type="single-select"
 									onChange={handleStateChange}
 								/>
 							</FormGroup>
@@ -534,11 +532,10 @@ const StoreSettings = ({
 						<div className="card-body">
 							<FormGroupWrapper>
 								<FormGroup label={__('Current status', 'multivendorx')}>
-									<SelectInput
+									<SelectInputUI
 										name="status"
 										value={formData.status}
 										options={statusOptions}
-										type="single-select"
 										onChange={(newValue: any) => {
 											if (
 												!newValue ||
@@ -574,7 +571,7 @@ const StoreSettings = ({
 						<div className="card-body">
 							<FormGroupWrapper>
 								<FormGroup label={__('Current storefront link', 'multivendorx')}>
-									<BasicInput
+									<BasicInputUI
 										name="slug"
 										value={formData.slug}
 										onChange={handleChange}
@@ -626,7 +623,7 @@ const StoreSettings = ({
 													.toUpperCase() +
 												network.slice(1)}
 										</label>
-										<BasicInput
+										<BasicInputUI
 											name={network}
 											value={
 												formData[network]?.trim() ||

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-	BasicInput,
+import { 
 	TextArea,
 	FileInput,
 	useModules,
@@ -9,6 +8,7 @@ import {
 	SuccessNotice,
 	FormGroupWrapper,
 	FormGroup,
+	BasicInputUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -91,7 +91,7 @@ const ContactInformation = () => {
 					htmlFor="phone"
 					cols={2}
 				>
-					<BasicInput
+					<BasicInputUI
 						name="phone"
 						value={formData.phone}
 						onChange={handleChange}
@@ -103,7 +103,7 @@ const ContactInformation = () => {
 					htmlFor="email"
 					cols={2}
 				>
-					<BasicInput
+					<BasicInputUI
 						type="email"
 						name="email"
 						value={formData.email}
@@ -120,7 +120,7 @@ const ContactInformation = () => {
 						)}
 						htmlFor="live_chat"
 					>
-						<BasicInput
+						<BasicInputUI
 							name="live_chat"
 						/>
 					</FormGroup>

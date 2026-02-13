@@ -6,6 +6,7 @@ import axios from 'axios';
 import '../styles/web/SystemInfoAccordion.scss';
 import { getApiLink } from '../utils/apiService';
 import Skeleton from './UI/Skeleton';
+import { FieldComponent } from './types';
 
 interface AppLocalizer {
     nonce: string;
@@ -28,13 +29,12 @@ interface Field {
 
 interface InfoSection {
     label: string;
-    description?: string;
     fields: Record<string, Field>;
 }
 
 type ApiResponse = Record<string, InfoSection>;
 
-const SystemInfo: React.FC<SystemInfoProps> = ({
+export const SystemInfoUI : React.FC<SystemInfoProps> = ({
     apiLink,
     appLocalizer,
     copyButtonLabel = 'Copy System Info',
@@ -138,9 +138,6 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
 
                         {isOpen && (
                             <div className="content">
-                                {section.description && (
-                                    <p className="des">{section.description}</p>
-                                )}
                                 <table>
                                     <tbody>
                                         {Object.entries(section.fields).map(
@@ -163,7 +160,19 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
                 );
             })}
         </div>
-    )   ;
+    );
+};
+        
+const SystemInfo: FieldComponent = {
+    render: ({ field, appLocalizer }) => (
+        <SystemInfoUI
+            apiLink={field.apiLink}
+            appLocalizer={appLocalizer}
+            copyButtonLabel={field.copyButtonLabel}
+            copiedLabel={field.copiedLabel}
+        />
+    ),
+    validate: () => null,
 };
 
 export default SystemInfo;

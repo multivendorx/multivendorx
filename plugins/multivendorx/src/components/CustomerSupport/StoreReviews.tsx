@@ -3,17 +3,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	CommonPopup,
 	getApiLink,
-	ToggleSetting,
-	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
-	TextArea,
-	ProPopup,
 	TableCard,
+	AdminButtonUI,
+	ToggleSettingUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
-import { Dialog } from '@mui/material';
+import Popup from '../Popup/Popup';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -303,11 +302,14 @@ const StoreReviews: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title="Delete Review"
 					confirmMessage={
@@ -323,8 +325,7 @@ const StoreReviews: React.FC = () => {
 						setSelectedRv(null);
 					}}
 				/>
-			</Dialog>
-
+			</PopupUI>
 			<TableCard
 				headers={headers}
 				rows={rows}
@@ -335,13 +336,14 @@ const StoreReviews: React.FC = () => {
 				categoryCounts={categoryCounts}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 
 			{selectedReview && (
-				<CommonPopup
+				<PopupUI
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
-					width="31.25rem"
+					width={31.25}
 					height="80%"
 					header={{
 						icon: 'store-review',
@@ -352,18 +354,17 @@ const StoreReviews: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedReview(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}
@@ -432,7 +433,7 @@ const StoreReviews: React.FC = () => {
 
 						<FormGroupWrapper>
 							<FormGroup label={__('Respond to customer', 'multivendorx')} htmlFor="reply">
-								<TextArea
+								<TextAreaUI
 									name="reply"
 									value={replyText}
 									onChange={(e) => setReplyText(e.target.value)}
@@ -442,9 +443,7 @@ const StoreReviews: React.FC = () => {
 							</FormGroup>
 
 							<FormGroup label={__('Control if this review appears publicly, stays under moderation, or is excluded from the store page.', 'multivendorx')} htmlFor="control">
-								<ToggleSetting
-									wrapperclassName="setting-form-input"
-									descclassName="settings-metabox-description"
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'pending',
@@ -483,7 +482,7 @@ const StoreReviews: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

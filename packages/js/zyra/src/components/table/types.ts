@@ -244,6 +244,7 @@ export type TableCardProps = CommonTableProps & {
 		value: string | number | boolean;
 	}) => void;
 	buttonActions?:ButtonAction[];
+	format?: string;
 };
 
 export type FilterOption = {

@@ -43,9 +43,8 @@ import type {
 /**
  * Internal dependencies
  */
-import BasicInput from './BasicInput';
+import   { BasicInputUI } from './BasicInput';
 import '../styles/web/Table.scss';
-import { Skeleton } from '@mui/material';
 
 const PENALTY = 28;
 const COOLDOWN = 1;
@@ -184,7 +183,7 @@ export const TableCell: React.FC<TableCellProps> = ({
                 <div className={`${header.class}`}>
                     {type === 'product' && children}
                     <div className="table-data-container">
-                        <BasicInput
+                        <BasicInputUI
                             inputClass="main-input"
                             type={header.type as InputType}
                             value={
@@ -624,9 +623,9 @@ const Table: React.FC<TableProps> = ({
                         <div className="filter-wrapper">
                             {categoryFilter === null ? (
                                 <>
-                                  <div className="filter-item"> <Skeleton variant="text" width={20} /> </div>
+                                  {/* <div className="filter-item"> <Skeleton variant="text" width={20} /> </div>
                                    <div className="filter-item"><Skeleton variant="text" width={30} /></div> 
-                                   <div className="filter-item"> <Skeleton variant="text" width={20} /></div>
+                                   <div className="filter-item"> <Skeleton variant="text" width={20} /></div> */}
                                 </>
                             ) : (
                                 categoryFilter?.map((countInfo, index) => (

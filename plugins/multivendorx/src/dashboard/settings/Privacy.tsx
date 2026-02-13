@@ -5,11 +5,11 @@ import {
 	getApiLink,
 	SuccessNotice,
 	Section,
-	MultiCheckBox,
 	FormGroupWrapper,
 	FormGroup,
-	useModules,
-	AdminButton,
+	useModules, 
+	AdminButtonUI,
+	MultiCheckBoxUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -168,12 +168,8 @@ const Privacy = () => {
 							label={__('Enable Deactivation', 'multivendorx')}
 							htmlFor="enable_deactivation"
 						>
-							<MultiCheckBox
-								wrapperClass="toggle-btn"
-								descClass="settings-metabox-description"
-								inputWrapperClass="toggle-checkbox-header"
-								inputInnerWrapperClass="toggle-checkbox"
-								idPrefix="toggle-switch"
+							<MultiCheckBoxUI
+								look='toggle'
 								key="enable_deactivation"
 								options={[
 									{
@@ -208,14 +204,11 @@ const Privacy = () => {
 										onChange={handleChange}
 									/>
 								</FormGroup>
-								<AdminButton
-									wrapperClass='end'
+								<AdminButtonUI
 									buttons={[
 										{
 											icon: 'save',
 											text: 'Submit',
-											className: 'purple-bg',
-											// disableMultipleClick: true,
 											onClick: () => autoSave(updateData),
 										},
 									]}

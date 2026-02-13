@@ -4,19 +4,19 @@ import axios from 'axios';
 import { __, sprintf } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	BasicInput,
-	TextArea,
 	Column,
 	Card,
 	Container,
 	FormGroupWrapper,
 	FormGroup,
-	AdminButton,
 	MiniCard,
 	MessageState,
 	Skeleton,
-	TableCard
+	TableCard,
+	BasicInputUI,
+	AdminButtonUI,
+	PopupUI,
+	TextAreaUI
 } from 'zyra';
 
 import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
@@ -602,12 +602,11 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 								)}
 							</Column>
-							<AdminButton
+							<AdminButtonUI
 								buttons={
 									{
 										icon: 'wallet',
 										text: __('Disburse Payment', 'multivendorx'),
-										className: 'purple-bg',
 										onClick: () => setRequestWithdrawal(true),
 									}}
 							/>
@@ -615,10 +614,10 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					</Card>
 				</Column>
 
-				<CommonPopup
+				<PopupUI
 					open={requestWithdrawal}
 					onClose={() => setRequestWithdrawal(null)}
-					width="28.125rem"
+					width={28.125}
 					height="75%"
 					header={{
 						icon: 'wallet',
@@ -629,18 +628,17 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'wallet',
 									text: __('Disburse', 'multivendorx'),
-									className: 'purple',
+									color: 'purple',
 									onClick: handleWithdrawal,
 								},
 							]}
 						/>
 					}
-
 				>
 					<>
 						{/* start left section */}
@@ -670,7 +668,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							</FormGroup>
 
 							<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
-								<BasicInput
+								<BasicInputUI
 									type="number"
 									name="amount"
 									value={amount}
@@ -729,7 +727,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								)}
 							</FormGroup>
 							<FormGroup label={__('Note', 'multivendorx')} htmlFor="Note">
-								<TextArea
+								<TextAreaUI
 									name="note"
 									value={note}
 									onChange={(
@@ -739,7 +737,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 
 				<Column>
 					<div className="admin-table-wrapper admin-pt-2">
@@ -758,6 +756,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							onSelectCsvDownloadApply={(selectedIds: []) => {
 								downloadTransactionCSVByIds(selectedIds)
 							}}
+							format={appLocalizer.date_format}
 						/>
 					</div>
 				</Column>

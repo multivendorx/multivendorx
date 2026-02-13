@@ -1,207 +1,168 @@
-// External dependencies
-import React, { useEffect, useState } from 'react';
-import { DialogContent, DialogContentText } from '@mui/material';
-
-// Internal dependencies
+import React, {
+    forwardRef,
+    useRef,
+    useState
+} from 'react';
+import { useOutsideClick } from './useOutsideClick';
+import { FieldComponent } from './types';
 import '../styles/web/Popup.scss';
-import AdminButton from './UI/AdminButton';
 
-export interface PopupMessage {
-    text: string;
-    des?: string;
+export type PopupPosition =
+    | 'menu-dropdown'
+    | 'slide-right-to-left'
+    | 'slide-left-to-right'
+    | 'slide-top-to-bottom'
+    | 'slide-bottom-to-top'
+    | 'lightbox';
+
+export interface PopupHeaderProps {
     icon?: string;
-}
-export interface BtnLink {
-    site: string;
-    price: string;
-    link: string;
-}
-// Types
-export interface PopupProps {
-    proUrl?: string;
     title?: string;
-    messages?: PopupMessage[];
-    moreText?: string;
-    moduleName?: string;
-    settings?: string;
-    plugin?: string;
-    message?: string;
-    moduleButton?: string;
-    pluginDescription?: string;
-    pluginButton?: string;
-    SettingDescription?: string;
-    pluginUrl?: string;
-    modulePageUrl?: string;
-    btnLink?: BtnLink[];
-    upgradeBtnText?: string;
-    confirmMode?: boolean;
-    confirmMessage?: string;
-    confirmYesText?: string;
-    confirmNoText?: string;
-    onConfirm?: () => void;
-    onCancel?: () => void;
+    description?: string;
+    showCloseButton?: boolean;
 }
 
-const ProPopup: React.FC<PopupProps> = (props) => {
-    const { btnLink = [], proUrl = '#' } = props;
+export interface PopupProps {
+    position?: PopupPosition;
+    open?: boolean;
+    toggleIcon?: string;
+    header?: PopupHeaderProps;
+    footer?: React.ReactNode;
+    width?: number | string;
+    height?: number | string;
+    className?: string;
+    showBackdrop?: boolean;
+    onOpen?: () => void;
+    onClose?: () => void;
+    children?: React.ReactNode;
+}
 
-    const [selectedBtn, setSelectedBtn] = useState<BtnLink>(
-        btnLink.length ? btnLink[0] : { site: '', price: '', link: proUrl }
-    );
-    useEffect(() => {
-        setSelectedBtn(
-            btnLink.length
-                ? btnLink[0]
-                : { site: '', price: '', link: proUrl }
-        );
-    }, [btnLink, proUrl]);
+export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
+    (
+        {
+            position = 'slide-right-to-left',
+            open: controlledOpen,
+            toggleIcon,
+            width = 14,
+            height = 'fit-content',
+            className = '',
+            showBackdrop = true,
+            onOpen,
+            onClose,
+            children,
+            header,
+            footer,
+        },
+        ref
+    ) => {
+        const [internalOpen, setInternalOpen] = useState(false);
+        const wrapperRef = useRef<HTMLDivElement>(null);
 
-    return (
-        <DialogContent
-            className={`popup-container ${props.messages ? 'pro-popup-content' : 'module-popup-content'
-                }`}
-        >
-            <DialogContentText sx={{ fontFamily: 'Figtree, sans-serif' }}>
-                <div className="popup-wrapper">
-                    {props.messages && (
-                        <>
-                            <div className="top-section">
-                                <div className="heading">{props.title}</div>
-                                <div className="description">
-                                    {props.moreText}
-                                </div>
-                                <div className="price">
-                                    {selectedBtn.price}
-                                </div>
-                                <div className="select-wrapper">
-                                    For website with
-                                    <select
-                                        value={selectedBtn.link}
-                                        onChange={(e) => {
-                                            const found = btnLink.find(
-                                                (b) =>
-                                                    b.link === e.target.value
-                                            );
-                                            if (found) {
-                                                setSelectedBtn(found);
-                                            }
-                                        }}
-                                    >
-                                        {btnLink.map((b, idx) => (
-                                            <option
-                                                key={idx}
-                                                value={b.link}
-                                            >
-                                                {b.site}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    site license
-                                </div>
-                                <a
-                                    className="admin-btn"
-                                    href={selectedBtn.link}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {props.upgradeBtnText}{' '}
-                                    <i className="adminfont-arrow-right arrow-icon"></i>
-                                </a>
-                            </div>
-                            <div className="popup-content">
-                                <div className="heading-text">
-                                    Why should you upgrade?
-                                </div>
+        const isControlled = controlledOpen !== undefined;
+        const open = isControlled ? controlledOpen : internalOpen;
 
-                                <ul>
-                                    {props.messages?.map(
-                                        (message, index) => (
-                                            <li key={index}>
-                                                <div className="title">
-                                                    <i
-                                                        className={
-                                                            message.icon
-                                                        }
-                                                    ></i>{' '}
-                                                    {message.text}
-                                                </div>
-                                                <div className="sub-text">
-                                                    {message.des}
-                                                </div>
-                                            </li>
-                                        )
-                                    )}
-                                </ul>
-                            </div>
-                        </>
-                    )}
-                    {props.moduleName && (
-                        <>
+        const handleOpen = () => {
+            if (!isControlled) setInternalOpen(true);
+            onOpen?.();
+        };
+
+        const handleClose = () => {
+            if (!isControlled) setInternalOpen(false);
+            onClose?.();
+        };
+
+        const handleToggle = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            open ? handleClose() : handleOpen();
+        };
+
+        useOutsideClick(wrapperRef, () => {
+            if (open) handleClose();
+        });
+
+        const styles: React.CSSProperties = {
+            minWidth: typeof width === 'number' ? `${width}rem` : width,
+            height: typeof height === 'number' ? `${height}rem` : height,
+        };
+
+        return (
+            <div 
+                className={`popup ${className} ${open ? 'popup-open' : ''}`} 
+                ref={wrapperRef}
+            >
+                {toggleIcon && (
+                    <div className="popup-toggle" onClick={handleToggle}>
+                        <i className={toggleIcon} />
+                    </div>
+                )}
+
+                {showBackdrop && !toggleIcon && open && (
+                    <div
+                        className="popup-backdrop"
+                        onClick={handleClose}
+                    />
+                )}
+
+                {open && (
+                    <div
+                        className={`popup-content`}
+                        style={styles}
+                        data-position={position}
+                        onClick={(e) => e.stopPropagation()}
+                        ref={ref}
+                    >
+                        {header && (
                             <div className="popup-header">
-                                <i
-                                    className={`adminfont-${props.moduleName}`}
+                                <div className="popup-title">
+                                    {header.icon && <i className={`adminfont-${header.icon}`}></i>}
+                                    {header.title}
+                                </div>
+                                {header.description && (
+                                    <div className="desc">{header.description}</div>
+                                )}
+                                <i 
+                                    onClick= {handleClose}
+                                    className="icon adminfont-close"
                                 ></i>
                             </div>
-                            <div className="popup-body">
-                                <h2>
-                                    Activate{' '}
-                                    {String(props.moduleName)
-                                        .split('-')
-                                        .map(
-                                            (word: string) =>
-                                                word.charAt(0).toUpperCase() +
-                                                word.slice(1)
-                                        )
-                                        .join(' ')}
-                                </h2>
-                                <p>{props.message}</p>
+                        )}
 
-                                <div className="buttons-wrapper center">
-                                    <a
-                                        className="admin-btn btn-purple"
-                                        href={props.modulePageUrl}
-                                    >
-                                        <i className="adminfont-eye"></i>{' '}
-                                        {props.moduleButton}
-                                    </a>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {props.settings && (
-                        <>
-                            <h2>{props.message}</h2>
-                            <p>{props.SettingDescription}</p>
-                        </>
-                    )}
-                    {props.confirmMode && (
-                        <div className="popup-confirm">
-                            <i className="popup-icon adminfont-suspended admin-badge red"></i>
-                            <h2>{props.title || 'Confirmation'}</h2>
-                            <p className="desc">{props.confirmMessage}</p>
-                            <AdminButton
-                            wrapperClass="center"
-                                buttons={[
-                                    {
-                                        icon: 'close',
-                                        text: props.confirmNoText || 'Cancel',
-                                        className: 'red',
-                                        onClick: props.onCancel,
-                                    },
-                                    {
-                                        icon: 'delete',
-                                        text: props.confirmYesText || 'Confirm',
-                                        className: 'purple-bg',
-                                        onClick: props.onConfirm,
-                                    },
-                                ]}
-                            />
+                        <div className="popup-body">
+                            {children}
                         </div>
-                    )}
-                </div>
-            </DialogContentText>
-        </DialogContent>
-    );
+
+                        {footer && (
+                            <div className="popup-footer">
+                                {footer}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        );
+    }
+);
+
+const Popup: FieldComponent = {
+    render: ({
+        field
+    }) => (
+        <PopupUI
+            position={field.position}
+            toggleIcon={field.toggleIcon}
+            width={field.width}
+            height={field.height}
+            className={field.className}
+            showBackdrop={field.showBackdrop}
+            open={field.open}
+            onClose={field.onClose}
+            onOpen={field.onOpen}
+            header={field.header}
+            footer={field.footer}
+        >
+            {field.children}
+        </PopupUI>
+    ),
 };
 
-export default ProPopup;
+export default Popup;

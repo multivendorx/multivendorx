@@ -5,22 +5,21 @@ import { __ } from '@wordpress/i18n';
 import {
 	Table,
 	TableCell,
-	CommonPopup,
 	getApiLink,
-	ToggleSetting,
-	MultiCalendarInput,
-	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
-	TextArea,
-	ProPopup,
+	AdminButtonUI,
+	ToggleSettingUI,
+	CalendarInput,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { Dialog } from '@mui/material';
+import Popup from '../components/Popup/Popup';
 
 type Review = {
 	review_id: number;
@@ -272,7 +271,7 @@ const SupportTickets: React.FC = () => {
 			name: 'date',
 			render: (updateFilter) => (
 				<div className="right">
-					<MultiCalendarInput
+					<CalendarInput
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -532,11 +531,14 @@ const SupportTickets: React.FC = () => {
 				realtimeFilter={realtimeFilter}
 			/>
 
-			<Dialog
+			<PopupUI
+				position="lightbox"
 				open={deleteReview}
 				onClose={() => setDeleteReview(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					open={!!deleteReview}
 					confirmMode
 					onClose={() => setDeleteReview(null)}
@@ -550,34 +552,32 @@ const SupportTickets: React.FC = () => {
 					confirmNoText={__('Cancel', 'multivendorx')}
 					onCancel={() => {
 						setDeleteReview(false);
-						// setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog>
+			</PopupUI>
 
 			{selectedReview && (
-				<CommonPopup
+				<PopupUI
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					header={{
 						icon: 'store-review',
 						title: `${__('Reply to Review', 'multivendorx')} - ${selectedReview.store_name}`,
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setSelectedReview(null),
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: handleSaveReply,
 								},
 							]}
@@ -637,7 +637,7 @@ const SupportTickets: React.FC = () => {
 							</div>
 
 							<FormGroup label={__('Respond to customer', 'multivendorx')} htmlFor="respond-to-customer">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									value={replyText}
 									onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -648,7 +648,7 @@ const SupportTickets: React.FC = () => {
 
 							{/* Status Toggle */}
 							<FormGroup label={__('Control if this review appears publicly, stays under moderation, or is excluded from the store page.', 'multivendorx')}>
-								<ToggleSetting
+								<ToggleSettingUI
 									options={[
 										{
 											key: 'pending',
@@ -687,7 +687,7 @@ const SupportTickets: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

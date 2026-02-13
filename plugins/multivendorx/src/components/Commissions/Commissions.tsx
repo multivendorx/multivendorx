@@ -4,7 +4,6 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	TableCell,
 	AdminBreadcrumbs,
 	useModules,
 	Container,
@@ -617,8 +616,8 @@ const Commission: React.FC = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-commission"
-				tabTitle={__('Commissions', 'multivendorx')}
+				settingIcon="adminfont-commission"
+				headerTitle={__('Commissions', 'multivendorx')}
 				description={__(
 					'Details of commissions earned by each store for every order, including order amount, commission rate, and payout status.',
 					'multivendorx'
@@ -641,6 +640,7 @@ const Commission: React.FC = () => {
 						onSelectCsvDownloadApply={(selectedIds: []) => {
 							downloadCommissionsCSVByIds(selectedIds)
 						}}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>
