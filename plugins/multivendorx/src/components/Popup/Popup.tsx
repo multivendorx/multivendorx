@@ -10,6 +10,11 @@ interface PopupProps {
 	wooLink?: string;
 	confirmMode?: boolean;
 	title?: string;
+    confirmMessage?: string;
+    confirmYesText?: string;
+    confirmNoText?: string;
+    onConfirm?: () => void;
+    onCancel?: () => void;
 }
 
 export const proPopupContent = {
@@ -157,15 +162,32 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 	return (
 		<>
 			{props.confirmMode ? (
-                <div className="popup-confirm">
+				<div className="popup-confirm">
                     <i className="popup-icon adminfont-suspended admin-badge red"></i>
-                    <h2>{props.title || 'Confirmation'}</h2>
+                    <div className="title">{props.title || 'Confirmation'}</div>
+                    <p className="desc">{props.confirmMessage}</p>
+                    <AdminButtonUI
+                        position="center"
+                        buttons={[
+                            {
+                                icon: 'close',
+                                text: props.confirmNoText || 'Cancel',
+                                color: 'red',
+                                onClick: props.onCancel,
+                            },
+                            {
+                                icon: 'delete',
+                                text: props.confirmYesText || 'Confirm',
+                                onClick: props.onConfirm,
+                            },
+                        ]}
+                    />
                 </div>
-            ) : props.moduleName ? (
+			) : props.moduleName ? (
 
 				<div className="popup-wrapper">
 					<div className="popup-header">
-						<i						
+						<i
 							className={`adminfont-store-seo`}
 						></i>
 					</div>
@@ -188,18 +210,18 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 				</div>
 			) : (
 				<>
-				{/* pro */}
-				<div className="popup-wrapper">
-					<div className="top-section">
-						<div className="heading">Upgrade every marketplace needs!</div>
-						<div className="description"> Recurring revenue for you, empowered stores, automated operations</div>
-						<div className="price">
-							{/* {selectedBtn.price} */}
-							$299
-						</div>
-						<div className="select-wrapper">
-							For website with
-							{/* <select
+					{/* pro */}
+					<div className="popup-wrapper">
+						<div className="top-section">
+							<div className="heading">Upgrade every marketplace needs!</div>
+							<div className="description"> Recurring revenue for you, empowered stores, automated operations</div>
+							<div className="price">
+								{/* {selectedBtn.price} */}
+								$299
+							</div>
+							<div className="select-wrapper">
+								For website with
+								{/* <select
 									value={selectedBtn.link}
 									onChange={(e) => {
 										const found = btnLink.find(
@@ -220,73 +242,51 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 										</option>
 									))}
 								</select> */}
-							1
-							site license
+								1
+								site license
+							</div>
+							<a
+								className="admin-btn"
+								href={typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#'}
+								target="_blank"
+								rel="noreferrer"
+							>
+								Yes, Upgrade Me!
+								<i className="adminfont-arrow-right arrow-icon"></i>
+							</a>
 						</div>
-						<a
-							className="admin-btn"
-							href={typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#'}
-							target="_blank"
-							rel="noreferrer"
-						>
-							Yes, Upgrade Me!
-							<i className="adminfont-arrow-right arrow-icon"></i>
-						</a>
-					</div>
-					<div className="popup-content">
-						<div className="heading-text">
-							Why should you upgrade?
-						</div>
+						<div className="popup-content">
+							<div className="heading-text">
+								Why should you upgrade?
+							</div>
 
-						<ul>
-							{/* {props.messages?.map(
+							<ul>
+								{/* {props.messages?.map(
 									(message, index) => ( */}
-							<li>
-								<div className="title">
-									<i
-										// className={
-										//     message.icon  													
-										// }
-										className='adminfont-commission'
-									></i>
-									{/* {message.text} */}
-									Membership Rewards & Commission
-								</div>
-								<div className="sub-text">
-									{/* {message.des} */}
-									Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.
-								</div>
-							</li>
-							{/* )
+								<li>
+									<div className="title">
+										<i
+											// className={
+											//     message.icon  													
+											// }
+											className='adminfont-commission'
+										></i>
+										{/* {message.text} */}
+										Membership Rewards & Commission
+									</div>
+									<div className="sub-text">
+										{/* {message.des} */}
+										Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.
+									</div>
+								</li>
+								{/* )
 								)} */}
-						</ul>
+							</ul>
+						</div>
 					</div>
-				</div>
 				</>
 			)
-		}
-
-
-			{/* // className={`adminfont-${props.moduleName}`} */}
-			{/* <p>{sprintf(
-						__(
-							'This feature is currently unavailable. To activate it, please enable the %s',
-							'multivendorx'
-						),
-						props.moduleName
-					)}</p> */}
-
-			{/* {String(props.moduleName)
-							.split('-')
-							.map(
-								(word: string) =>
-									word.charAt(0).toUpperCase() +
-									word.slice(1)
-							)
-							.join(' ')} */}
-
-
-			
+			}
 		</>
 	);
 };

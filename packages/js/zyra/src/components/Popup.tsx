@@ -3,9 +3,9 @@ import React, {
     useRef,
     useState
 } from 'react';
-import { useOutsideClick } from '../useOutsideClick';
-import { FieldComponent } from '../types';
-import '../../styles/web/Popup.scss';
+import { useOutsideClick } from './useOutsideClick';
+import { FieldComponent } from './types';
+import '../styles/web/Popup.scss';
 
 export type PopupPosition =
     | 'menu-dropdown'

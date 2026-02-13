@@ -11,7 +11,7 @@ import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import SuccessNotice from './SuccessNotice';
-import Popover, { PopupUI } from './UI/Popup';
+import Popover, { PopupUI } from './Popup';
 
 
 interface InputField {
