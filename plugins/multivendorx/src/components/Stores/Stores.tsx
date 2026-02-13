@@ -284,7 +284,6 @@ const Stores = () => {
 							}
 						]}
 					/>
-
 					{addStore && (
 						<PopupUI
 							open={addStore}

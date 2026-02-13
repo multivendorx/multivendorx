@@ -101,7 +101,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             )}
 
             {/* Input */}
-            <div className={`search-section ${variant === 'mini-search' && isExpanded ? '' : 'mini-search'}`}>
+            <div className={`search-section ${variant === 'mini-search' && isExpanded ? 'mini-search' : ''}`}>
                 <BasicInputUI
                     type={'text'}
                     placeholder={placeholder}

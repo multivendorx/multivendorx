@@ -40,7 +40,12 @@ type SettingsNavigatorProps = {
     appLocalizer: { khali_dabba?: boolean; shop_url?: string };
     menuIcon?: boolean;
     desc?: boolean;
-    variant?: 'default' | 'compact' | 'card' | 'settings'; // default like settings panel   // compact like icon and title compact design  // card like count with title and desc card design  // settings like left side settings tab design
+    variant?: 'default' | 'compact' | 'card' | 'settings';
+     /* - 'default': Standard settings panel layout
+     * - 'compact': Icon and title compact design
+     * - 'card': Card design with count, title and description
+     * - 'settings': Left side settings tab design
+     */
     action?: React.ReactNode;
 };
 

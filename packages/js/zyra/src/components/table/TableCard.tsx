@@ -368,9 +368,7 @@ const TableCard: React.FC<TableCardProps> = ({
 							showDropdown={bulkActions.length > 0}
 						/>
 					)}
-
 				</div>
-
 			</div>
 		</div>
 	);
