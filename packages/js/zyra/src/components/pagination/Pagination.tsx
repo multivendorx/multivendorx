@@ -35,12 +35,11 @@ const Pagination: React.FC<PaginationProps> = ({
 	const endIndex = Math.min(page * perPage, total);
 
 	// --- PageSizePicker Logic ---
-	const handlePerPageChange = (val) => {
-		const newPerPage = parseInt(val, 10);
-		onPerPageChange(newPerPage);
+	const handlePerPageChange = (value:number) => {
+		onPerPageChange(value);
 
 		// Logic to prevent staying on a page that no longer exists
-		const newMaxPage = Math.ceil(total / newPerPage);
+		const newMaxPage = Math.ceil(total / value);
 		if (page > newMaxPage) {
 			onPageChange(newMaxPage, 'goto');
 		}
@@ -55,21 +54,17 @@ const Pagination: React.FC<PaginationProps> = ({
 	const SizePicker = (
 		<div className="showing-number">
 			Show
-			<select value={perPage} onChange={handlePerPageChange}>
-				{perPageOptions.map((option) => (
-					<option key={option} value={option}>
-						{option}
-					</option>
-				))}
-			</select>
 			<SelectInputUI
+				value={perPage}
 				options={
 					perPageOptions.map((option) => ({
-						value: String(option),
-						label: String(option),
+						value: option,
+						label: option,
 					}))
 				}
-				onChange={handlePerPageChange}
+				onChange={(newValue) => {
+					handlePerPageChange(newValue.value);
+				}}
 			/>
 			entries
 		</div>
