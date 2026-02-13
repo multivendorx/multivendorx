@@ -18,11 +18,11 @@ import RadioInput from './RadioInput';
 import FileInput from './FileInput';
 import AddressField from './AddressField';
 import NestedComponent from './NestedComponent';
-import RadioInput from './RadioInput';
 import ColorSettingInput from './ColorSettingInput';
 import Log from './Log';
 import EndpointEditor from './EndpointEditor';
-import ShortCodeTable from './ShortCodeTable';
+import Content from './Content';
+import Divider from './Divider';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -45,7 +45,6 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'checkboxes': MultiCheckBox,
   'system-info': SystemInfo,
   'section': Section,
-  'radio': RadioInput,
   'dropdown': SelectInput,
   'recaptcha': Recaptcha,
   'attachment': FileInput,
@@ -58,5 +57,4 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'color-setting' : ColorSettingInput,
   'log' : Log,
   'endpoint-editor' : EndpointEditor,
-  'shortcode-table' : ShortCodeTable,
 };

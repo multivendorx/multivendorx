@@ -5,7 +5,6 @@ import { ReactSortable } from 'react-sortablejs';
 import {
     Block,
     BlockPatch,
-    normalizeBlock,
     BlockRenderer,
     ColumnRenderer,
     useColumnManager,
@@ -138,7 +137,7 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 
     const reorderBlocks = (newList: Block[]) => {
         if (proSettingChange()) return;
-        updateBlocks(newList.map(normalizeBlock));
+        updateBlocks(newList.map((block) => ({ ...block })));
     };
 
     // Column manager hook

@@ -11,7 +11,6 @@ export interface TextContentBlockData {
   // For heading
   text?: string;
   level?: 1 | 2 | 3;
-  // Common
   style?: BlockStyle;
 }
 
@@ -44,7 +43,7 @@ export const TextContentView: React.FC<{
         suppressContentEditableWarning
         onBlur={handleBlur}
       >
-        {field.text}
+        {field.text || 'Heading Text'}
       </Tag>
     );
   }
@@ -57,7 +56,7 @@ export const TextContentView: React.FC<{
       contentEditable={editable}
       suppressContentEditableWarning
       onBlur={handleBlur}
-      dangerouslySetInnerHTML={{ __html: field.html || '' }}
+      dangerouslySetInnerHTML={{ __html: field.html || 'This is a demo text' }}
     />
   );
 };

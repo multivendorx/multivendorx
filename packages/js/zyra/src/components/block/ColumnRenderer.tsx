@@ -4,7 +4,6 @@ import {
     Block,
     BlockPatch,
     ColumnsBlock,
-    normalizeBlock,
     getColumnCount,
 } from '../block';
 import BlockRenderer from './BlockRenderer';
@@ -56,9 +55,6 @@ export const useColumnManager = ({
 }: UseColumnManagerProps): UseColumnManagerReturn => {
     const [selectedBlockLocation, setSelectedBlockLocation] = useState<SelectedBlockLocation | null>(null);
 
-    /**
-     * Helper: Update parent column block
-     */
     const updateParentBlock = useCallback(
         (parentIndex: number, newBlock: ColumnsBlock) => {
             const updated = [...blocks];
@@ -68,16 +64,13 @@ export const useColumnManager = ({
         [blocks, onBlocksUpdate]
     );
 
-    /**
-     * Update entire column when blocks are reordered via drag & drop
-     */
     const handleColumnUpdate = useCallback(
         (parentIndex: number, columnIndex: number, newList: Block[]) => {
             const parent = blocks[parentIndex] as ColumnsBlock;
             if (parent.type !== 'columns') return;
 
             const columns = [...parent.columns];
-            columns[columnIndex] = newList.map(normalizeBlock);
+            columns[columnIndex] = newList; // No normalization needed - blocks are already valid
 
             updateParentBlock(parentIndex, {
                 ...parent,
@@ -251,7 +244,6 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
     onDelete,
     showMeta = true,
 }) => {
-    // Use the column manager hook
     const {
         selectedBlockLocation,
         handleColumnUpdate,
@@ -270,7 +262,7 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
             className={`form-field ${isActive ? 'active' : ''}`}
             onClick={onSelect}
         >
-            {/* Meta Menu (Drag Handle + Delete Button) */}
+            {/* Meta Menu */}
             {showMeta && (
                 <section className="meta-menu">
                     <span className="drag-handle admin-badge blue">
@@ -296,10 +288,6 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
                         backgroundColor: block.style?.backgroundColor,
                         padding: block.style?.padding,
                         margin: block.style?.margin,
-                        borderWidth: block.style?.borderWidth,
-                        borderColor: block.style?.borderColor,
-                        borderStyle: block.style?.borderStyle,
-                        borderRadius: block.style?.borderRadius,
                     }}
                 >
                     {block.columns.map((column, colIndex) => (

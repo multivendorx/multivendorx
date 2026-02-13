@@ -14,36 +14,6 @@ export interface SelectOption {
     name?: string;
 }
 
-// Style Types
-
-export interface BlockStyle {
-    backgroundColor?: string;
-    padding?: number | string;
-    paddingTop?: number;
-    paddingRight?: number;
-    paddingBottom?: number;
-    paddingLeft?: number;
-    margin?: number | string;
-    marginTop?: number;
-    marginRight?: number;
-    marginBottom?: number;
-    marginLeft?: number;
-    textAlign?: 'left' | 'center' | 'right' | 'justify';
-    fontSize?: number;
-    fontFamily?: string;
-    color?: string;
-    lineHeight?: number;
-    fontWeight?: string;
-    borderWidth?: number;
-    borderColor?: string;
-    borderStyle?: string;
-    borderRadius?: number;
-    width?: string;
-    height?: string;
-    textDecoration?: string;
-    align?: 'left' | 'center' | 'right';
-}
-
 // Block Type Definitions
 
 export type BlockType = 
@@ -171,3 +141,19 @@ export const DEFAULT_BLOCK_STYLES: Partial<BlockStyle> = {
     paddingBottom: 10,
     paddingLeft: 10,
 };
+
+
+export const getColumnCount = (layout: ColumnLayout): number => {
+    switch (layout) {
+        case '1': return 1;
+        case '2-50':
+        case '2-66': return 2;
+        case '3': return 3;
+        case '4': return 4;
+        default: return 2;
+    }
+};
+
+// Simple ID generator - keep this
+let idCounter = Date.now();
+export const generateId = () => ++idCounter;
