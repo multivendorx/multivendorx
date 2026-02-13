@@ -251,7 +251,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
             <AdminBreadcrumbs
                 settingIcon={activeFile?.icon || ''}
-                headerTitle={activeFile?.headerTitle || ''}
+                headerTitle={activeFile?.name || ''}
                 variant={variant}
                 renderBreadcrumb={renderBreadcrumbLinks}
                 renderMenuItems={() => renderAllMenuItems(settingContent)}

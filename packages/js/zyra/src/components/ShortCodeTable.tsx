@@ -20,15 +20,13 @@ interface Option {
 }
 
 interface ShortCodeTableProps {
-    descClass: string;
-    description?: string;
     options: Option[];
     optionLabel?: string[];
     icon?: string; // Icon as string
 }
 
 const ShortCodeTable: React.FC< ShortCodeTableProps > = ( props ) => {
-    const { descClass, description, options, optionLabel, icon } = props;
+    const { options, icon } = props;
 
     const handleCopy = ( text: string ) => {
         navigator.clipboard.writeText( text );
@@ -96,13 +94,6 @@ const ShortCodeTable: React.FC< ShortCodeTableProps > = ( props ) => {
                     </div>
                 </div>
             ) ) }
-
-            { description && (
-                <p
-                    className={ descClass }
-                    dangerouslySetInnerHTML={ { __html: description } }
-                />
-            ) }
         </>
     );
 };
