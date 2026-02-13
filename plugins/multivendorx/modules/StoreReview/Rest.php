@@ -229,7 +229,7 @@ class Rest extends \WP_REST_Controller
                         'reported'       => (int) $review['reported'],
                         'reply'          => $review['reply'] ?? '',
                         'reply_date'     => $review['reply_date'] ?? '',
-                        'date_created'   => Utill::MULTIVENDORX_FORMATED_DATE($review['date_created']),
+                        'date_created'   => Utill::format_date_time($review['date_created']),
                         'date_modified'  => $review['date_modified'],
                     );
                 },
@@ -358,7 +358,7 @@ class Rest extends \WP_REST_Controller
                 'reported'       => (int) $review['reported'],
                 'reply'          => $review['reply'] ?? '',
                 'reply_date'     => $review['reply_date'] ?? '',
-                'date_created'   => Utill::MULTIVENDORX_FORMATED_DATE($review['date_created']),
+                'date_created'   => Utill::format_date_time($review['date_created']),
                 'date_modified'  => $review['date_modified'],
             );
 

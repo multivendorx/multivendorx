@@ -192,8 +192,8 @@ class Rest extends \WP_REST_Controller {
                         'name'          => $r['name'],
                         'email'         => $r['email'],
                         'reason'        => $r['message'],
-                        'created_at'    => Utill::MULTIVENDORX_FORMATED_DATE($r['created_at']),
-                        'updated_at'    => Utill::MULTIVENDORX_FORMATED_DATE($r['updated_at']),
+                        'created_at'    => Utill::format_date_time($r['created_at']),
+                        'updated_at'    => Utill::format_date_time($r['updated_at']),
                     );
                 },
                 $reports
