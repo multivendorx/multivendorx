@@ -317,30 +317,21 @@ export const KnowledgeBase: React.FC = () => {
 			<Popup
 				confirmMode
 				title="Delete Knowledge Base"
+				confirmMessage={
+					selectedKb
+						? `Are you sure you want to delete knowledge base?`
+						: ''
+				}
+				confirmYesText="Delete"
+				confirmNoText="Cancel"
+				onConfirm={handleConfirmDelete}
+				onCancel={() => {
+					setConfirmOpen(false);
+					setSelectedKb(null);
+				}}
 			/>
-
 		</PopupUI>
-			{/* <Dialog
-				open={confirmOpen}
-				onClose={() => setConfirmOpen(false)}
-			>
-				<ProPopup
-					confirmMode
-					title="Delete Knowledge Base"
-					confirmMessage={
-						selectedKb
-							? `Are you sure you want to delete knowledge base?`
-							: ''
-					}
-					confirmYesText="Delete"
-					confirmNoText="Cancel"
-					onConfirm={handleConfirmDelete}
-					onCancel={() => {
-						setConfirmOpen(false);
-						setSelectedKb(null);
-					}}
-				/>
-			</Dialog> */}
+
 			<AdminBreadcrumbs
 				settingIcon="adminfont-book"
 				headerTitle={__('Knowledge Base', 'multivendorx')}
@@ -378,7 +369,7 @@ export const KnowledgeBase: React.FC = () => {
 							'Write and publish a new knowledge base article to help stores navigate their dashboard.',
 							'multivendorx'
 						),
-						showCloseButton: true, // Add this to show close button in header
+						showCloseButton: true, 
 					}}
 					footer={
 						<AdminButtonUI
@@ -490,6 +481,7 @@ export const KnowledgeBase: React.FC = () => {
 						onBulkActionApply={(action: string, selectedIds: []) => {
 							handleBulkAction(action, selectedIds)
 						}}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

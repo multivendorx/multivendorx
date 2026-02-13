@@ -1,6 +1,7 @@
 @use '../../global.scss' as *;
 
 .color-settings-wrapper {
+    width: 100%;
     .tabs-item {
         border-bottom: $border-light-medium;
     }

@@ -6,11 +6,11 @@ import {
 	Table,
 	TableCell,
 	getApiLink,
-	MultiCalendarInput,
 	FormGroupWrapper,
 	FormGroup,
 	AdminButtonUI,
 	ToggleSettingUI,
+	CalendarInput,
 	PopupUI,
 	TextAreaUI,
 } from 'zyra';
@@ -19,6 +19,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
+import Popup from '../components/Popup/Popup';
 
 type Review = {
 	review_id: number;
@@ -270,7 +271,7 @@ const SupportTickets: React.FC = () => {
 			name: 'date',
 			render: (updateFilter) => (
 				<div className="right">
-					<MultiCalendarInput
+					<CalendarInput
 						onChange={(range: any) =>
 							updateFilter('date', {
 								start_date: range.startDate,
@@ -530,11 +531,14 @@ const SupportTickets: React.FC = () => {
 				realtimeFilter={realtimeFilter}
 			/>
 
-			{/* <Dialog
+			<PopupUI
+				position="lightbox"
 				open={deleteReview}
 				onClose={() => setDeleteReview(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					open={!!deleteReview}
 					confirmMode
 					onClose={() => setDeleteReview(null)}
@@ -548,10 +552,9 @@ const SupportTickets: React.FC = () => {
 					confirmNoText={__('Cancel', 'multivendorx')}
 					onCancel={() => {
 						setDeleteReview(false);
-						// setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog> */}
+			</PopupUI>
 
 			{selectedReview && (
 				<PopupUI

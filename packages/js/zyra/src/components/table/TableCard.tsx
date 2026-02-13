@@ -4,11 +4,11 @@ import TableSummary, { TableSummaryPlaceholder } from './summary';
 import Pagination from '../pagination/Pagination';
 import { QueryProps, TableCardProps, TableRow } from './types';
 import BulkActionDropdown from './BulkActionDropdown';
-import TableSearch from './TableSearch';
 import RealtimeFilters from './RealtimeFilter';
 import CategoryFilter from './CategoryFilter';
 import ButtonActions from './ButtonActions';
 import { useOutsideClick } from '../useOutsideClick';
+import HeaderSearch from '../HeaderSearch';
 
 const defaultOnColumnsChange = (
 	showCols: string[],
@@ -46,6 +46,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	onSelectCsvDownloadApply,
 	onCellEdit,
 	buttonActions,
+	format,
 	...props
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -251,13 +252,15 @@ const TableCard: React.FC<TableCardProps> = ({
 					)}
 					{search && (
 						<div className="search-field">
-							<TableSearch
-								placeholder={search.placeholder}
-								options={search.options}
-								onSearch={(text, option) => {
-									onQueryChange('searchValue')(text);
-									if (option !== undefined) {
-										onQueryChange('searchAction')(String(option));
+							<HeaderSearch
+								search={{
+									placeholder: search.placeholder,
+									options: search.options,
+								}}
+								onQueryUpdate={(payload) => {
+									onQueryChange('searchValue')(payload.searchValue);
+									if ('searchAction' in payload) {
+										onQueryChange('searchAction')(String(payload.searchAction));
 									}
 								}}
 							/>
@@ -351,6 +354,7 @@ const TableCard: React.FC<TableCardProps> = ({
 							onResetFilters={() =>
 								setQuery((prev) => ({ ...prev, filter: {}, paged: 1 }))
 							}
+							format={format}
 						/>
 					)}
 
@@ -368,9 +372,7 @@ const TableCard: React.FC<TableCardProps> = ({
 							showDropdown={bulkActions.length > 0}
 						/>
 					)}
-
 				</div>
-
 			</div>
 		</div>
 	);

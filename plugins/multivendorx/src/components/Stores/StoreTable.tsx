@@ -202,6 +202,7 @@ const StoreTable: React.FC = () => {
 					categoryCounts={categoryCounts}
 					search={{}}
 					filters={filters}
+					format={appLocalizer.date_format}
 				/>
 			</div>
 		</div>

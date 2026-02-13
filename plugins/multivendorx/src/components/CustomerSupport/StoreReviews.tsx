@@ -12,6 +12,7 @@ import {
 	PopupUI,
 	TextAreaUI,
 } from 'zyra';
+import Popup from '../Popup/Popup';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -301,11 +302,14 @@ const StoreReviews: React.FC = () => {
 
 	return (
 		<>
-			{/* <Dialog
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title="Delete Review"
 					confirmMessage={
@@ -321,8 +325,7 @@ const StoreReviews: React.FC = () => {
 						setSelectedRv(null);
 					}}
 				/>
-			</Dialog> */}
-
+			</PopupUI>
 			<TableCard
 				headers={headers}
 				rows={rows}
@@ -333,6 +336,7 @@ const StoreReviews: React.FC = () => {
 				categoryCounts={categoryCounts}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 
 			{selectedReview && (

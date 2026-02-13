@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink, Container, Column, TableCard } from 'zyra';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
+import Popup from '../Popup/Popup';
 
 interface Props {
 	onUpdated?: () => void;
@@ -185,11 +186,18 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 						onQueryUpdate={fetchData}
 						ids={rowIds}
 						filters={filters}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>
-			{/* <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-				<ProPopup
+			<PopupUI
+				position="lightbox"
+				open={deleteReview}
+				onClose={() => setDeleteReview(false)}
+				width="31.25rem"
+				height="auto"
+			>
+				<Popup
 					confirmMode
 					title={__('Are you sure?', 'multivendorx')}
 					confirmMessage={__(
@@ -203,7 +211,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 						setConfirmOpen(false);
 					}}
 				/>
-			</Dialog> */}
+			</PopupUI>
 		</>
 	);
 };

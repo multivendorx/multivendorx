@@ -5,7 +5,7 @@ import {
 	BasicInputUI,
 	FormGroup,
 	FormGroupWrapper,
-	MultiCalendarInput,
+	CalendarInput,
 	PopupUI,
 	SelectInputUI,
 	Table,
@@ -19,6 +19,7 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import axios from 'axios';
+import Popup from '../components/Popup/Popup';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 
 type CouponRow = {
@@ -863,7 +864,7 @@ const AllCoupon: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<MultiCalendarInput
+				<CalendarInput
 					value={{
 						startDate: dateFilter.start_date,
 						endDate: dateFilter.end_date,
@@ -1018,11 +1019,15 @@ const AllCoupon: React.FC = () => {
 					</>
 				</PopupUI>
 			)}
-			{/* <Dialog
+
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title={__('Are you sure?', 'multivendorx')}
 					confirmMessage={
@@ -1041,8 +1046,7 @@ const AllCoupon: React.FC = () => {
 						setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog> */}
-
+			</PopupUI>
 			<PopupUI
 				position="lightbox"
 				open={confirmOpen}

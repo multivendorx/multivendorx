@@ -640,6 +640,7 @@ const Commission: React.FC = () => {
 						onSelectCsvDownloadApply={(selectedIds: []) => {
 							downloadCommissionsCSVByIds(selectedIds)
 						}}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

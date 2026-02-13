@@ -17,9 +17,8 @@ import {
 	SelectInputUI,
 	PopupUI,
 } from 'zyra';
-
-
 import './Announcements.scss';
+import Popup from '../Popup/Popup';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -40,8 +39,6 @@ interface StoreOption {
 	value: string;
 	label: string;
 }
-
-
 
 export const Announcements: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -407,18 +404,17 @@ export const Announcements: React.FC = () => {
 
 	return (
 		<>
-			{/* <Dialog
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title="Are you sure"
-					confirmMessage={
-						selectedAn
-							? ``
-							: ''
-					}
+					confirmMessage={ selectedAn ? `` : '' }
 					confirmYesText="Delete"
 					confirmNoText="Cancel"
 					onConfirm={handleConfirmDelete}
@@ -427,38 +423,6 @@ export const Announcements: React.FC = () => {
 						setSelectedAn(null);
 					}}
 				/>
-			</Dialog> */}
-
-			<PopupUI
-				position="lightbox"
-				open={confirmOpen}
-				onClose={() => {
-					setConfirmOpen(false);
-				}}
-				showBackdrop={true}
-				header={{
-					icon: 'warning',
-					title: 'Are you sure'
-				}}
-				footer={
-					<AdminButtonUI
-						buttons={[
-							{
-								icon: 'close',
-								text: __('Cancel', 'multivendorx'),
-								color: 'red',
-								onClick: () => { setConfirmOpen(false) },
-							},
-							{
-								icon: 'cross',
-								text: __('Delete', 'multivendorx'),
-								onClick: () => { handleConfirmDelete }
-							},
-						]}
-					/>
-				}
-			>
-				<p>Are you sure you want to delete Announcement?</p>
 			</PopupUI>
 			<AdminBreadcrumbs
 				settingIcon="adminfont-announcement"
@@ -643,6 +607,7 @@ export const Announcements: React.FC = () => {
 						onBulkActionApply={(action: string, selectedIds: []) => {
 							handleBulkAction(action, selectedIds)
 						}}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

@@ -289,6 +289,7 @@ const StoreReport: React.FC = () => {
 				categoryCounts={categoryCounts}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 		</>
 	);

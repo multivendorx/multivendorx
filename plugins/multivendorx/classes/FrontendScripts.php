@@ -582,6 +582,7 @@ class FrontendScripts {
 								)
 							),
                             'order_meta'               => Utill::ORDER_META_SETTINGS,
+                            'date_format'             => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
                         )
                     ),
                 ),
@@ -688,6 +689,7 @@ class FrontendScripts {
                         'dimension_unit'           => get_option( Utill::WOO_SETTINGS['dimension_unit'] ),
                         'random_string_generate'   => wp_generate_uuid4(),
                         'order_meta'               => Utill::ORDER_META_SETTINGS,
+                        'date_format'              => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
                     ),
                 ),
                 'multivendorx-registration-form-editor-script' => array(
