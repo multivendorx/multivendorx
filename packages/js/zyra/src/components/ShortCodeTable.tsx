@@ -3,6 +3,7 @@ import React from 'react';
 
 // Internal dependencies
 import '../styles/web/ShortCodeTable.scss';
+import { FieldComponent } from './types';
 
 // Types
 interface ArgumentRow {
@@ -25,7 +26,7 @@ interface ShortCodeTableProps {
     icon?: string; // Icon as string
 }
 
-const ShortCodeTable: React.FC< ShortCodeTableProps > = ( props ) => {
+const ShortCodeTableUI: React.FC< ShortCodeTableProps > = ( props ) => {
     const { options, icon } = props;
 
     const handleCopy = ( text: string ) => {
@@ -96,6 +97,22 @@ const ShortCodeTable: React.FC< ShortCodeTableProps > = ( props ) => {
             ) ) }
         </>
     );
+};
+
+const ShortCodeTable: FieldComponent = {
+    render: ({ field }) => (
+        <ShortCodeTableUI
+            key={field.key}
+            icon={field.icon}
+            options={
+                Array.isArray(field.options)
+                    ? field.options
+                    : []
+            }
+            optionLabel={field.optionLabel} // Label header for the options column
+        />
+    ),
+    validate: () => null,
 };
 
 export default ShortCodeTable;
