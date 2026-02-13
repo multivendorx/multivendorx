@@ -1178,7 +1178,13 @@ $index: 1;
       color: $theme-color;
     }
   }
-
+  .search-icon-trigger{
+    font-size: 1.25rem;
+    padding: .45rem;
+    padding-bottom: 0.313rem;
+    color: $theme-color;
+    cursor: pointer;
+  }
   // dropdown style 
   ul {
     position: absolute;

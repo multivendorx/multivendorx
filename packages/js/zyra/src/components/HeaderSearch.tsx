@@ -30,6 +30,7 @@ type HeaderSearchProps = {
     results?: SearchItem[];
     onQueryUpdate: (payload: SearchPayload) => void;
     onResultClick?: (res: SearchItem) => void;
+    variant?: 'default' | 'icon-triggered'; 
 };
 
 const HeaderSearch: React.FC<HeaderSearchProps> = ({
@@ -37,6 +38,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     results,
     onQueryUpdate,
     onResultClick,
+    variant = 'default',
 }) => {
     if (!search) return null;
 
@@ -46,9 +48,15 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     const [query, setQuery] = useState('');
     const [action, setAction] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isSearchExpanded, setIsSearchExpanded] = useState(false); 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    useOutsideClick(wrapperRef, () => setIsOpen(false));
+    useOutsideClick(wrapperRef, () => {
+        setIsOpen(false);
+        if (variant === 'icon-triggered') {
+            setIsSearchExpanded(false);
+        }
+    });
 
     /* Close dropdown when query is cleared */
     useEffect(() => {
@@ -56,7 +64,6 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             setIsOpen(false);
         }
     }, [query]);
-
 
     const triggerSearch = (value: string, newAction = action) => {
         onQueryUpdate({
@@ -66,9 +73,74 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     };
     const showResults = isOpen && results && results.length > 0;
 
+    if (variant === 'icon-triggered') {
+        return (
+            <div className="search-field icon-triggered" ref={wrapperRef}>
+                {!isSearchExpanded ? (
+                    <div 
+                        className="search-icon-trigger"
+                        onClick={() => setIsSearchExpanded(true)}
+                    >
+                        <i className="adminfont-search"></i>
+                    </div>
+                ) : (
+                    <>
+                        {hasDropdown && (
+                            <div className="search-action">
+                                <SelectInputUI
+                                    options={options}
+                                    value={action}
+                                    onChange={(newValue) => {
+                                        const val = newValue.value;
+                                        setAction(val);
+                                        triggerSearch(query, val);
+                                    }}
+                                />
+                            </div>
+                        )}
+
+                        <div className="search-section">
+                            <BasicInputUI
+                                type={'text'}
+                                placeholder={placeholder}
+                                value={query}
+                                onChange={(val: string) => {
+                                    setQuery(val);
+                                    setIsOpen(true);
+                                    triggerSearch(val);
+                                }}
+                                autoFocus 
+                            />
+                            <i className="adminfont-search"></i>
+                        </div>
+
+                        {showResults && (
+                            <ul className="search-dropdown">
+                                <ItemList
+                                    items={results.map((item) => ({
+                                        title: item.name,
+                                        desc: item.desc,
+                                        icon: item.icon,
+                                        action: () => {
+                                            onResultClick(item);
+                                            setIsOpen(false);
+                                            setQuery('');
+                                            setAction('');
+                                            setIsSearchExpanded(false); 
+                                            triggerSearch('', '');
+                                        }
+                                    }))}
+                                />
+                            </ul>
+                        )}
+                    </>
+                )}
+            </div>
+        );
+    }
+
     return (
-        <div className="search-field header-search" ref={wrapperRef}>
-            {/* Search scope dropdown */}
+        <div className="search-field" ref={wrapperRef}>
             {hasDropdown && (
                 <div className="search-action">
                     <SelectInputUI
