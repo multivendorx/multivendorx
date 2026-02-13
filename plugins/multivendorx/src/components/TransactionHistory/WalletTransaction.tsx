@@ -10,7 +10,7 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	MiniCard,
-	MessageState,
+	ComponentStatusView,
 	Skeleton,
 	TableCard,
 	BasicInputUI,
@@ -513,7 +513,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								})}
 							</>
 						) : (
-							<MessageState title={__('No recent payouts transactions found.', 'multivendorx')} />
+							<ComponentStatusView title={__('No recent payouts transactions found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>

@@ -194,7 +194,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				position="lightbox"
 				open={deleteReview}
 				onClose={() => setDeleteReview(false)}
-				width="31.25rem"
+				width={31.25}
 				height="auto"
 			>
 				<Popup

@@ -15,7 +15,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import {  AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, CalendarInput, useModules } from 'zyra';
+import {  AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { formatCurrency, formatTimeAgo } from '@/services/commonFunction';
@@ -575,7 +575,7 @@ const Dashboard: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<MessageState title={__('No sales found.', 'multivendorx')}/>
+							<ComponentStatusView title={__('No sales found.', 'multivendorx')}/>
 						)}
 
 					</Card>

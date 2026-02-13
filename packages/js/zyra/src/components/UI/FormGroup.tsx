@@ -25,7 +25,7 @@ const FormGroup: React.FC<FormGroupProps> = ({
 			data-cols={cols}
 		>
 			{label && <label className="settings-form-label" htmlFor={htmlFor}>
-				{label}
+				<div className="title">{label}</div>
 				{labelDes && <div className="settings-metabox-description">{labelDes}</div>}
 			</label>}
 			<div className="settings-input-content">
