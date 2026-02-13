@@ -5,7 +5,7 @@ import {
 	BasicInputUI,
 	FormGroup,
 	FormGroupWrapper,
-	MultiCalendarInput,
+	CalendarInput,
 	PopupUI,
 	SelectInputUI,
 	Table,
@@ -864,7 +864,7 @@ const AllCoupon: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<MultiCalendarInput
+				<CalendarInput
 					value={{
 						startDate: dateFilter.start_date,
 						endDate: dateFilter.end_date,

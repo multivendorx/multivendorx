@@ -67,6 +67,7 @@ const AnnouncementsTable = (React.FC = () => {
                 totalRows={totalRows}
                 isLoading={isLoading}
                 onQueryUpdate={fetchData}
+                format={appLocalizer.date_format}
             />
         </>
     );

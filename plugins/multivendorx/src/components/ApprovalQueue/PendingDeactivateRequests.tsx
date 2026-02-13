@@ -103,6 +103,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 					isLoading={isLoading}
 					onQueryUpdate={fetchData}
 					ids={rowIds}
+					format={appLocalizer.date_format}
 				/>
 			</div>
 		</>

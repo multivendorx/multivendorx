@@ -9,7 +9,7 @@ interface InputFeedback {
     message: string;
 }
 
-type InputValue = string | number;
+type InputValue = string | number | FileList;
 
 interface BasicInputProps {
     id?: string;
@@ -19,6 +19,7 @@ interface BasicInputProps {
     | 'color'
     | 'password'
     | 'email'
+    | 'file'
     | 'range';
     name?: string;
     placeholder?: string;
@@ -43,6 +44,7 @@ interface BasicInputProps {
     rangeUnit?: string;
     preText?: string;
     postText?: string;
+    multiple?: boolean;
 }
 
 export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
@@ -73,6 +75,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             rangeUnit,
             preText,
             postText,
+            multiple
         },
         ref
     ) => {
@@ -124,6 +127,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
 							disabled={disabled}
 							readOnly={readOnly}
 							required={required}
+							multiple={multiple}
 						/>
 
 						{type === 'color' && (
@@ -169,6 +173,7 @@ const BasicInput: FieldComponent = {
             postText={field.postText}
             value={value}
             size={field.size}
+            multiple={field.multiple}
             onChange={(val) => {
                 if (!canAccess) return;
                 onChange(val)

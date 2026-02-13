@@ -234,6 +234,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				ids={rowIds}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 			{/* Reject Product Popup */}
 			{rejectPopupOpen && (
