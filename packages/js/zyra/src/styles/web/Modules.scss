@@ -3,3 +3,218 @@
 .module-separator+.module-list-item {
   clear: both;
 }
+.module-container {
+    .tab-name {
+        margin-bottom: 1rem;
+
+        h2 {
+            font-size: 1.625rem;
+            line-height: normal;
+            font-weight: 500;
+        }
+    }
+
+    .module-option-row {
+        display: flex;
+        flex-wrap: wrap;
+
+        .module-separator {
+            width: 100%;
+            flex-basis: 100%;
+            margin: 40px 0 1.25rem;
+            border-bottom: 1px solid #ccc;
+
+            .separator-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #333;
+                text-transform: uppercase;
+            }
+        }
+
+        .module-list-item {
+            box-sizing: border-box;
+            border: $border-light-small;
+            border-radius: 0.5rem;
+            background: #fff;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .module-header {
+                display: flex;
+                justify-content: space-between;
+
+                .pro-tag {
+                    i {
+                        color: $accent-color;
+                        font-size: 1.313rem;
+                    }
+                }
+            }
+
+            .module-details {
+                padding-top: 1rem;
+
+                .tag-wrapper {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.313rem;
+                    margin-bottom: 0.625rem;
+
+                    .admin-badge {
+                        padding: 0.313rem 0.5rem;
+                        margin-left: 0.125rem;
+                        font-size: 0.75rem;
+                        display: inline-block;
+                    }
+                }
+
+                .requires {
+                    font-size: 0.85rem;
+                    margin: 0.5rem 0;
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+
+                    div {
+                        color: #000;
+                    }
+                }
+            }
+
+            .footer-wrapper {
+                .requires {
+                    display: flex;
+                    gap: 0.125rem;
+                    flex-wrap: wrap;
+                    padding-top: 0.625rem;
+                    min-height: 2.313rem;
+                    align-items: end;
+
+                    .requires-title {
+                        font-size: 0.9rem;
+                        color: $theme-color;
+                        font-weight: 600;
+                    }
+                }
+
+                .module-footer {
+                    display: flex;
+                    padding-top: 1rem;
+                    align-items: center;
+                    margin-top: 0.5rem;
+                    border-top: $border-light-small;
+
+                    .buttons {
+                        display: flex;
+                        gap: 0.5rem;
+
+                        a {
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        i {
+                            font-size: 1.125rem;
+                            color: $theme-color;
+                        }
+                    }
+                }
+            }
+
+            fieldset {
+                border: $border-light-small;
+                margin-top: .313rem;
+                padding: 0 .5rem .5rem;
+
+                legend {
+                    border-radius: .25rem;
+                    color: #e35047;
+                    margin-left: .25rem;
+                    padding: .188rem .375rem;
+                    text-align: left;
+
+                    &.free {
+                        color: #000;
+                    }
+                }
+            }
+        }
+
+        .module-list-item.highlight {
+            label {
+                border: dashed 0.063rem $theme-color;
+            }
+        }
+    }
+
+    .module-search {
+        display: flex;
+        justify-content: end;
+        margin-bottom: 2rem;
+        gap: 0.5rem;
+
+        .form-select-field-wrapper {
+            background: $background-white;
+        }
+
+        .search-field {
+            margin: 0;
+        }
+    }
+
+    &[data-variant='default'] {
+        .module-option-row {
+            gap: 1rem;
+            margin-top: 1rem;
+
+            .module-list-item {
+                flex: 0 0 19rem;
+
+                .icon {
+                    padding: 0.5rem;
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: #522c8112;
+                    border-radius: 0.4rem;
+
+                    i {
+                        font-size: 1.5rem;
+                        color: $theme-color;
+                    }
+                }
+
+                .meta-name {
+                    font-size: 1.25rem;
+                    line-height: 1;
+                    color: #000;
+                    margin-bottom: 0.625rem;
+                }
+            }
+        }
+    }
+
+    &[data-variant='mini-module'] {
+        .module-list-item {
+            width: 25%;
+
+            .icon {
+                i {
+                    font-size: 1.313rem;
+                    color: $theme-color;
+                }
+            }
+
+            .meta-name {
+                font-size: .9rem;
+                color: #000;
+                margin: 0;
+            }
+        }
+    }
+}
