@@ -80,6 +80,7 @@ declare global {
 		module_page_url: any;
 		current_user: any;
 		order_meta:any;
+		date_format: any;
 	}
 	interface Color {
 		color: any;

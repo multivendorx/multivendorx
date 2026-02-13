@@ -490,6 +490,7 @@ export const KnowledgeBase: React.FC = () => {
 						onBulkActionApply={(action: string, selectedIds: []) => {
 							handleBulkAction(action, selectedIds)
 						}}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

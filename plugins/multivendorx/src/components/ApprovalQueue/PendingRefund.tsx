@@ -328,6 +328,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						ids={rowIds}
 						search={{}}
 						filters={filters}
+						format={appLocalizer.date_format}
 					/>
 					<PopupUI
 						open={popupOpen}

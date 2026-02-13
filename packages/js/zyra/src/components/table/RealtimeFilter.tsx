@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Select from 'react-select';
 import { RealtimeFilterConfig, TableRow } from './types';
-import MultiCalendarInput from '../MultiCalendarInput';
+import CalendarInput, { CalendarRange } from '../CalendarInput';
 
 export type FilterValue =
     | string
@@ -18,6 +18,7 @@ interface RealtimeFiltersProps {
     onFilterChange: (key: string, value: FilterValue) => void;
     rows: TableRow[][];
     onResetFilters: () => void;
+    format?: string;
 }
 
 const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
@@ -26,6 +27,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
     onFilterChange,
     rows,
     onResetFilters,
+    format,
 }) => {
     if (!rows || rows.length === 0 && Object.keys(query).length === 0) return null;
 
@@ -46,16 +48,21 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 
                 // Date filter
                 if (filter.type === 'date') {
+                    const start = new Date();
+                    start.setMonth(start.getMonth() - 1);
+                    const range = value as CalendarRange ?? { startDate: start, endDate: new Date() };
                     return (
-                        <div key={filter.key} className="group-field">
-                            <MultiCalendarInput
-                                value={value as { startDate: Date; endDate: Date } | undefined}
-                                onChange={(range) => onFilterChange(filter.key, range)}
-                                showLabel
-                            />
-                        </div>
+                      <div key={filter.key} className="group-field">
+                        <CalendarInput
+                          value={range}
+                          onChange={(newRange) => {
+                            onFilterChange(filter.key, newRange as { startDate: Date; endDate: Date });
+                          }}
+                          format={format}
+                        />
+                      </div>
                     );
-                }
+                  }                  
 
                 // React select options
                 const options = filter.options?.map((opt) => ({ label: opt.label, value: opt.value })) || [];

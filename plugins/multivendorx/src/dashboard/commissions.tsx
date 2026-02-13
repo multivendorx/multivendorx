@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
+	CalendarInput,
 	getApiLink,
-	MultiCalendarInput,
 	Table,
 	TableCell,
 	useModules,
@@ -667,7 +667,7 @@ const StoreCommission: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<MultiCalendarInput
+				<CalendarInput
 					value={{
 						startDate: dateFilter.start_date,
 						endDate: dateFilter.end_date,

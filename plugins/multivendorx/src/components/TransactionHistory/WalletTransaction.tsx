@@ -756,6 +756,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							onSelectCsvDownloadApply={(selectedIds: []) => {
 								downloadTransactionCSVByIds(selectedIds)
 							}}
+							format={appLocalizer.date_format}
 						/>
 					</div>
 				</Column>
