@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { CalendarInput, Table, TableCell, useModules } from 'zyra';
+import { CalendarInput, Table, TableCard, TableCell, useModules } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,
@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { formatCurrency, formatTimeAgo, formatWcShortDate, toWcIsoDate } from '../services/commonFunction';
+import { downloadCSV, formatCurrency, formatTimeAgo, formatWcShortDate, toWcIsoDate } from '../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 // Type declarations
@@ -714,7 +714,6 @@ const Orders: React.FC = () => {
 				setIsLoading(false);
 			});
 	};
-
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
 
@@ -724,7 +723,7 @@ const Orders: React.FC = () => {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
 				params: {
-					page: query.page,
+					page: query.paged, // Changed from query.page to match your TableCard query state
 					per_page: query.per_page,
 					search: query.searchValue,
 					orderby: query.orderby || 'date',
@@ -740,136 +739,136 @@ const Orders: React.FC = () => {
 				},
 			})
 			.then((response) => {
-				const orders = Array.isArray(response.data)
-					? response.data
-					: [];
+				const orders = Array.isArray(response.data) ? response.data : [];
 
 				setRowIds(orders.map((o: any) => o.id));
 
 				const mappedRows: TableRow[][] = orders.map((order: any) => [
 					{
-						display: {< span
-							className="link"
-							onClick={() => {
-	// Open order in view mode (same as View action)
-	setSelectedOrder(order);
-	window.location.hash = `view/${order.id}`;
-}}
-						>
-							#{ order.number }
-						</span >},
-value: order.id,
+						// FIXED: Removed extra curly braces/brackets around JSX
+						display: (
+							<span
+								className="link"
+								onClick={() => {
+									setSelectedOrder(order);
+									window.location.hash = `view/${order.id}`;
+								}}
+							>
+								#{order.number}
+							</span>
+						),
+						value: order.id,
 					},
-{
-	display: { order.billing?.first_name || order.billing?.last_name ? `${order.billing.first_name || ''} ${order.billing.last_name || ''}` : order.billing?.email || __('Guest', 'multivendorx') },
-	value: order.id || '',
+					{
+						// FIXED: billing logic and string formatting
+						display: (order.billing?.first_name || order.billing?.last_name)
+							? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
+							: (order.billing?.email || __('Guest', 'multivendorx')),
+						value: order.id || '',
 					},
-{
-	display: formatWcShortDate(order.date_created),
-		value: order.date_created,
+					{
+						display: formatWcShortDate(order.date_created),
+						value: order.date_created,
 					},
-{
-	display: order.status,
-		value: order.status,
+					{
+						display: order.status,
+						value: order.status,
 					},
-{
-	display: formatCurrency(order.commission_total || 0),
-		value: order.commission_total || 0,
+					{
+						display: formatCurrency(order.commission_total || 0),
+						value: order.commission_total || 0,
 					},
-{
-	display: formatCurrency(order.total),
-		value: order.total,
+					{
+						display: formatCurrency(order.total),
+						value: order.total,
 					},
-
 				]);
 
-setRows(mappedRows);
-setTotalRows(Number(response.headers['x-wp-total']) || 0);
-setIsLoading(false);
+				setRows(mappedRows);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
 			})
-			.catch ((error) => {
-	console.error('Order fetch failed:', error);
-	setRows([]);
-	setTotalRows(0);
-	setIsLoading(false);
-});
+			.catch((error) => {
+				console.error('Order fetch failed:', error);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
 	};
-
-
-return (
-	<>
-		{!isViewOrder && !isAddOrder && !selectedOrder && (
-			<>
-				<div className="page-title-wrapper">
-					<div className="page-title">
-						<div className="title">
-							{__('Orders', 'multivendorx')}
+	return (
+		<>
+			{!isViewOrder && !isAddOrder && !selectedOrder && (
+				<>
+					<div className="page-title-wrapper">
+						<div className="page-title">
+							<div className="title">
+								{__('Orders', 'multivendorx')}
+							</div>
+							<div className="des">
+								{__(
+									'Manage your store information and preferences',
+									'multivendorx'
+								)}
+							</div>
 						</div>
-						<div className="des">
-							{__(
-								'Manage your store information and preferences',
-								'multivendorx'
-							)}
+						<div className="buttons-wrapper">
+							<div
+								className="admin-btn btn-purple-bg"
+								onClick={exportAllOrders}
+							>
+								<i className="adminfont-export"></i>
+								{__('Export', 'multivendorx')}
+							</div>
+							<div
+								className="admin-btn btn-purple-bg"
+								onClick={() => {
+									window.location.hash = `add`;
+								}}
+							>
+								<i className="adminfont-plus"></i>
+								{__('Add New', 'multivendorx')}
+							</div>
 						</div>
 					</div>
-					<div className="buttons-wrapper">
-						<div
-							className="admin-btn btn-purple-bg"
-							onClick={exportAllOrders}
-						>
-							<i className="adminfont-export"></i>
-							{__('Export', 'multivendorx')}
-						</div>
-						<div
-							className="admin-btn btn-purple-bg"
-							onClick={() => {
-								window.location.hash = `add`;
-							}}
-						>
-							<i className="adminfont-plus"></i>
-							{__('Add New', 'multivendorx')}
-						</div>
-					</div>
-				</div>
 
-				<TableCard
-					headers={headers}
-					rows={rows}
-					totalRows={totalRows}
-					isLoading={isLoading}
-					onQueryUpdate={fetchData}
-					search={{
-						placeholder: 'Search...',
-						options: [
-							{ label: 'All', value: 'all' },
-							{ label: 'Order Id', value: 'order_id' },
-							{ label: 'Products', value: 'products' },
-							{ label: 'Customer Email', value: 'customer_email' },
-							{ label: 'Customer', value: 'customer' },
-						],
+					<TableCard
+						headers={headers}
+						rows={rows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={fetchData}
+						search={{
+							placeholder: 'Search...',
+							options: [
+								{ label: 'All', value: 'all' },
+								{ label: 'Order Id', value: 'order_id' },
+								{ label: 'Products', value: 'products' },
+								{ label: 'Customer Email', value: 'customer_email' },
+								{ label: 'Customer', value: 'customer' },
+							],
+						}}
+						filters={filters}
+						buttonActions={buttonActions}
+						ids={rowIds}
+						// categoryCounts={categoryCounts}
+						bulkActions={[]}
+					/>
+
+				</>
+			)}
+
+			{isAddOrder && <AddOrder />}
+			{isViewOrder && (
+				<OrderDetails
+					order={selectedOrder}
+					onBack={() => {
+						setSelectedOrder(null);
+						window.location.hash = '';
 					}}
-					filters={filters}
-					buttonActions={buttonActions}
-					ids={rowIds}
-					categoryCounts={categoryCounts}
-					bulkActions={[]}
 				/>
-
-			</>
-		)}
-
-		{isAddOrder && <AddOrder />}
-		{isViewOrder && (
-			<OrderDetails
-				order={selectedOrder}
-				onBack={() => {
-					setSelectedOrder(null);
-					window.location.hash = '';
-				}}
-			/>
-		)}
-	</>
-);
+			)}
+		</>
+	);
 };
 
 export default Orders;

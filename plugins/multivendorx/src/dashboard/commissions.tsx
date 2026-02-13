@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {getApiLink,useModules} from 'zyra';
+import {getApiLink,TableCard,useModules} from 'zyra';
 
 import ViewCommission from './viewCommission';
 import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
@@ -227,10 +227,10 @@ const StoreCommission: React.FC = () => {
 						display: (
 							<span
 								className="link-item"
-								onClick={() => {
-									setSelectedCommissionId(ann.id ?? null);
-									setViewCommission(true);
-								}}
+								// onClick={() => {
+								// 	setSelectedCommissionId(ann.id ?? null);
+								// 	setViewCommission(true);
+								// }}
 							>
 								#{ann.id}
 							</span>
@@ -516,7 +516,7 @@ const StoreCommission: React.FC = () => {
 				<div className="buttons-wrapper">
 					<button
 						className="admin-btn btn-purple-bg"
-						onClick={handleExportAll}
+						// onClick={handleExportAll}
 					>
 						<i className="adminfont-export"></i>
 						{__('Export', 'multivendorx')}

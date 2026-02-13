@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Column, Container, getApiLink } from 'zyra';
+import { Column, Container, getApiLink, TableCard } from 'zyra';
 import TransactionDetailsModal from './TransactionDetailsModal';
 import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';

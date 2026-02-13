@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, Table, TableCell } from 'zyra';
+import { getApiLink, Table, TableCard, TableCell } from 'zyra';
 import { formatTimeAgo } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 

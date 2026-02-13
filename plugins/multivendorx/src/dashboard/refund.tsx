@@ -4,6 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
+	TableCard,
 } from 'zyra';
 
 import { formatCurrency, formatLocalDate, formatWcShortDate } from '@/services/commonFunction';

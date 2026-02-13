@@ -11,6 +11,7 @@ import {
 	AdminButtonUI,
 	PopupUI,
 	TextAreaUI,
+	TableCard,
 } from 'zyra';
 
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
