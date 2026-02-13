@@ -172,6 +172,7 @@ const EmailsInput = forwardRef<HTMLInputElement, EmailsInputProps>(
                     <BasicInputUI
                         ref={inputRef}
                         type="text"
+                        inputClass={"email-input"}
                         value={inputValue}
                         placeholder={emails.length === 0 ? placeholder : ''}
                         onChange={(val) => setInputValue(String(val))}

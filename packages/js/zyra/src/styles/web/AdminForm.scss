@@ -1,26 +1,26 @@
 @use '../../global.scss' as *;
 
-.form-group-wrapper  {
-    &.vertical {
-      flex-direction: column;
-      box-sizing: border-box;
+// .form-group-wrapper  {
+//     &.vertical {
+//       flex-direction: column;
+//       box-sizing: border-box;
 
-      &.settings-input-content {
-        width: fit-content;
-      }
+//       &.settings-input-content {
+//         width: fit-content;
+//       }
 
-      .settings-form-label {
-        width: 100%;
-      }
-    }
+//       .settings-form-label {
+//         width: 100%;
+//       }
+//     }
 
-    &.full-width,
-    &:has(.settings-metabox-note){
-      .settings-input-content{
-        width: 100%;
-      }
-    }
-}
+//     &.full-width,
+//     &:has(.settings-metabox-note){
+//       .settings-input-content{
+//         width: 100%;
+//       }
+//     }
+// }
 
 .settings-metabox-description {
   padding-top: 0.45rem;
