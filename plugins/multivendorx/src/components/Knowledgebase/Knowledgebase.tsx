@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
 	AdminBreadcrumbs,
-	TextArea,
+	TextAreaUI,
 	ToggleSettingUI,
 	Container,
 	Column,
@@ -99,10 +99,7 @@ export const KnowledgeBase: React.FC = () => {
 		setValidationErrors({});
 	};
 	// Handle input changes
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
+	const handleChange = (name: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 		// Clear field error when user types
 		if (validationErrors[name]) {
@@ -113,6 +110,7 @@ export const KnowledgeBase: React.FC = () => {
 			});
 		}
 	};
+
 
 	const handleBulkAction = (action: string, selectedIds: any[] = []) => {
 		if (!selectedIds.length) {
@@ -309,7 +307,7 @@ export const KnowledgeBase: React.FC = () => {
 
 	return (
 		<>
-		  {/* <PopupUI
+		  <PopupUI
 			position="lightbox"
 			open={confirmOpen}
 			onClose={() => setConfirmOpen(false)}
@@ -321,7 +319,7 @@ export const KnowledgeBase: React.FC = () => {
 				title="Delete Knowledge Base"
 			/>
 
-		</PopupUI> */}
+		</PopupUI>
 			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
@@ -407,7 +405,7 @@ export const KnowledgeBase: React.FC = () => {
 									type="text"
 									name="title"
 									value={formData.title}
-									onChange={handleChange}
+									onChange={(val) => handleChange('title', val as string)}
 								/>
 								{validationErrors.title && (
 									<p className="invalid-massage">
@@ -416,10 +414,10 @@ export const KnowledgeBase: React.FC = () => {
 								)}
 							</FormGroup>
 							<FormGroup label={__('Content', 'multivendorx')} htmlFor="Content">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									value={formData.content}
-									onChange={handleChange}
+									onChange={(val) => handleChange('content', val as string)}
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[
@@ -465,12 +463,12 @@ export const KnowledgeBase: React.FC = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Add tag', 'multivendorx')} htmlFor="Title">
-								<BasicInputUI
+								{/* <BasicInputUI
 									type="text"
 									name="title"
 								// value={formData.title}
 								// onChange={handleChange}
-								/>
+								/> */}
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
