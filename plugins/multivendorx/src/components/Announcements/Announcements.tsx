@@ -183,7 +183,6 @@ export const Announcements: React.FC = () => {
 			});
 		}
 	};
-	};
 
 	const handleBulkAction = (action: string, selectedIds: []) => {
 		if (!selectedIds.length) {
