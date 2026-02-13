@@ -243,8 +243,8 @@ class Commissions extends \WP_REST_Controller {
                         'currency'              => $commission['currency'],
                         'status'                => $commission['status'],
                         'commissionNote'        => $commission['commission_note'],
-                        'createdAt'             => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime($commission['created_at']) ),
-                        'updatedAt'             => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime($commission['updated_at']) ),
+                        'createdAt'             => Utill::MULTIVENDORX_FORMATED_DATE($commission['created_at'] ),
+                        'updatedAt'             => Utill::MULTIVENDORX_FORMATED_DATE($commission['updated_at']),
                     ),
                     (object) $commission
                 );
@@ -383,7 +383,7 @@ class Commissions extends \WP_REST_Controller {
                 'platform_fee'           => wc_format_decimal( $commission->platform_fee, 2 ),
                 'discount_applied'       => wc_format_decimal( $commission->discount_applied, 2 ),
                 'note'                   => $commission->commission_note,
-                'created'                => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime($commission->created_at) ),
+                'created'                => Utill::MULTIVENDORX_FORMATED_DATE($commission->created_at),
                 'items'                  => $items,
             );
 

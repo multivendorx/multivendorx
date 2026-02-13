@@ -194,7 +194,7 @@ class Rest extends \WP_REST_Controller {
                     'id'      => $post->ID,
                     'title'   => $post->post_title,
                     'content' => $post->post_content,
-                    'date'    => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime(get_the_date( 'Y-m-d H:i:s', $post->ID ) ) ),
+                    'date'    => Utill::MULTIVENDORX_FORMATED_DATE(get_the_date( 'Y-m-d H:i:s', $post->ID ) ),
                     'status'  => $status,
                 );
             }
@@ -407,7 +407,7 @@ class Rest extends \WP_REST_Controller {
                 'title'   => $post->post_title,
                 'content' => $post->post_content,
                 'status'  => $post->post_status,
-                'date'    => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime(get_post_time( 'Y-m-d H:i:s', true, $post ),)  )
+                'date'    => Utill::MULTIVENDORX_FORMATED_DATE(get_post_time( 'Y-m-d H:i:s', true, $post ) ),
             )
         );
     }

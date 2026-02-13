@@ -510,4 +510,8 @@ class Utill {
         return strtr($dateFormat, $map);
     }
 
+    public static function MULTIVENDORX_FORMATED_DATE($date) {
+        return wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime($date) );
+    }
+
 }

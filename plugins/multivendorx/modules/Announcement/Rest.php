@@ -238,7 +238,7 @@ class Rest extends \WP_REST_Controller {
                     'title'      => $post->post_title,
                     'content'    => $post->post_content,
                     'store_name' => implode( ', ', $store_names ),
-                    'date'       => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime(get_the_date( 'Y-m-d H:i:s', $post->ID ) ) ),
+                    'date'       => Utill::MULTIVENDORX_FORMATED_DATE(get_the_date( 'Y-m-d H:i:s', $post->ID ) ),
                     'status'     => $post->post_status === 'publish'
                         ? 'published'
                         : $post->post_status,
@@ -564,7 +564,7 @@ class Rest extends \WP_REST_Controller {
                 'status'  => $post->post_status,
                 'url'     => get_post_meta( $id, Utill::POST_META_SETTINGS['announcement_url'], true ),
                 'stores'  => $stores,
-                'date'    => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime(get_post_time( 'Y-m-d H:i:s', true, $post ) ) ),
+                'date'    => Utill::MULTIVENDORX_FORMATED_DATE(get_post_time( 'Y-m-d H:i:s', true, $post ) ),
             );
 
             return rest_ensure_response( $response );
