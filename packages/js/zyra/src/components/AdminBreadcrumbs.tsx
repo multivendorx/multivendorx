@@ -47,25 +47,21 @@ const AdminBreadcrumbs = <T,>({
                         )}
                         {headerTitle}
                     </div>
-                    <div className="buttons">
-                        {buttons && (
-                            <AdminButtonUI
-                                buttons={buttons.map((button) => ({
-                                    text: button.label,
-                                    icon: button.iconClass?.replace('adminfont-', ''),
-                                    onClick: button.onClick,
-                                    children: (
-                                        <>
-                                            <i className={button.iconClass}></i>
-                                            {button.label}
-                                        </>
-                                    ),
-                                }))}
-                            />
-                        )}
-
-                    </div>
-
+                    {buttons && (
+                        <AdminButtonUI
+                            buttons={buttons.map((button) => ({
+                                text: button.label,
+                                icon: button.iconClass?.replace('adminfont-', ''),
+                                onClick: button.onClick,
+                                children: (
+                                    <>
+                                        <i className={button.iconClass}></i>
+                                        {button.label}
+                                    </>
+                                ),
+                            }))}
+                        />
+                    )}
                     {customContent && (
                         <div className="custom-content">
                             {customContent}

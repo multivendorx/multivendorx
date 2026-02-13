@@ -203,10 +203,23 @@ const Modules: React.FC<ModuleProps> = ({
             {successMsg && (<SuccessNotice title={'Success!'} message={successMsg} />)}
             <div className="module-container" data-variant={variant}>
                 {variant === 'default' && (
-                    <>
+                    <div className="filter-wrapper">
+                        <div className="category-filter">
+                            {modulesArray.category && categories.length > 1 &&
+                                categories.map((category) => (
+                                    <span
+                                        key={category.id}
+                                        className={`category-item ${selectedCategory === category.id ? 'active' : ''}`}
+                                        onClick={() => setSelectedCategory(category.id)}
+                                    >
+                                        {category.label}
+                                    </span>
+                                ))
+                            }
+                        </div>
                         <div className="module-search">
                             <HeaderSearch
-                                variant="icon-triggered"
+                                variant="mini-search"
                                 search={{ placeholder: 'Search .....' }}
                                 onQueryUpdate={(e) => {
                                     setSearchQuery(e.searchValue);
@@ -226,21 +239,7 @@ const Modules: React.FC<ModuleProps> = ({
                                 }}
                             />
                         </div>
-
-                        <div className="category-filter">
-                            {modulesArray.category && categories.length > 1 &&
-                                categories.map((category) => (
-                                    <span
-                                        key={category.id}
-                                        className={`category-item ${selectedCategory === category.id ? 'active' : ''}`}
-                                        onClick={() => setSelectedCategory(category.id)}
-                                    >
-                                        {category.label}
-                                    </span>
-                                ))
-                            }
-                        </div>
-                    </>
+                    </div>
                 )}
 
                 <div className="module-option-row" >

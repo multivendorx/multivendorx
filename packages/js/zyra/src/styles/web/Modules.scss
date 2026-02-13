@@ -1,8 +1,9 @@
 @use '../../global.scss' as *;
 
 .module-separator+.module-list-item {
-  clear: both;
+    clear: both;
 }
+
 .module-container {
     .tab-name {
         margin-bottom: 1rem;
@@ -150,18 +151,29 @@
         }
     }
 
-    .module-search {
+    .filter-wrapper {
         display: flex;
-        justify-content: end;
-        margin-bottom: 2rem;
+        justify-content: space-between;
+        align-items: start;
         gap: 0.5rem;
 
-        .form-select-field-wrapper {
-            background: $background-white;
-        }
+        .module-search {
+            display: flex;
+            justify-content: end;
+            margin-bottom: 2rem;
+            gap: 0.5rem;
+            width: 25rem;
 
-        .search-field {
-            margin: 0;
+            .form-select-field-wrapper {
+                background: $background-white;
+            }
+
+            .search-field {
+                margin: 0;
+                i{
+                    cursor: pointer;
+                }
+            }
         }
     }
 

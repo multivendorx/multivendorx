@@ -30,7 +30,7 @@ type HeaderSearchProps = {
     results?: SearchItem[];
     onQueryUpdate: (payload: SearchPayload) => void;
     onResultClick?: (res: SearchItem) => void;
-    variant?: 'default' | 'icon-triggered'; 
+    variant?: 'default' | 'mini-search'; 
 };
 
 const HeaderSearch: React.FC<HeaderSearchProps> = ({
@@ -48,6 +48,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
     const [query, setQuery] = useState('');
     const [action, setAction] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false); 
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     /* Close dropdown when query is cleared */
@@ -57,6 +58,12 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
         }
     }, [query]);
 
+    useOutsideClick(wrapperRef, () => {
+        if (variant === 'mini-search' && isExpanded && !query) {
+            setIsExpanded(false);
+        }
+    });
+
     const triggerSearch = (value: string, newAction = action) => {
         onQueryUpdate({
             searchValue: value,
@@ -64,6 +71,18 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
         });
     };
     const showResults = isOpen && results && results.length > 0;
+
+    const handleSearchIconClick = () => {
+        if (variant === 'mini-search') {
+            setIsExpanded(!isExpanded);
+            if (!isExpanded) {
+                setTimeout(() => {
+                    const input = wrapperRef.current?.querySelector('input');
+                    input?.focus();
+                }, 100);
+            }
+        }
+    };
 
     return (
         <div className="search-field" ref={wrapperRef}>
@@ -82,7 +101,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             )}
 
             {/* Input */}
-            <div className="search-section">
+            <div className={`search-section ${variant === 'mini-search' && isExpanded ? '' : 'mini-search'}`}>
                 <BasicInputUI
                     type={'text'}
                     placeholder={placeholder}
@@ -93,7 +112,10 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
                         triggerSearch(val);
                     }}
                 />
-                <i className="adminfont-search"></i>
+                <i 
+                    className="adminfont-search" 
+                    onClick={handleSearchIconClick}
+                ></i>
             </div>
 
             {showResults && (
@@ -108,6 +130,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
                                 setIsOpen(false);
                                 setQuery('');
                                 setAction('');
+                                setIsExpanded(false);
                                 triggerSearch('', '');
                             }
                         }))}
