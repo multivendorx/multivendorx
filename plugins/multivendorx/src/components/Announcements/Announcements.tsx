@@ -19,7 +19,7 @@ import {
 } from 'zyra';
 import './Announcements.scss';
 import Popup from '../Popup/Popup';
-import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
+import { formatLocalDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 
@@ -353,7 +353,7 @@ export const Announcements: React.FC = () => {
 							: 'All Stores',
 						value: ann.store_name || '',
 					},
-					{ display: formatWcShortDate(ann.date), value: ann.date },
+					{ display: ann.date, value: ann.date },
 				]);
 
 				setRows(mappedRows);

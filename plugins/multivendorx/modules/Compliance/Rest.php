@@ -192,8 +192,8 @@ class Rest extends \WP_REST_Controller {
                         'name'          => $r['name'],
                         'email'         => $r['email'],
                         'reason'        => $r['message'],
-                        'created_at'    => $r['created_at'],
-                        'updated_at'    => $r['updated_at'],
+                        'created_at'    => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime($r['created_at']) ),
+                        'updated_at'    => wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime($r['updated_at']) ),
                     );
                 },
                 $reports

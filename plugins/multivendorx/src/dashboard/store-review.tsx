@@ -18,7 +18,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
+import { formatLocalDate } from '@/services/commonFunction';
 
 type Review = {
 	review_id: number;
@@ -381,7 +381,7 @@ const StoreReview: React.FC = () => {
 			enableSorting: true,
 			cell: ({ row }) => {
 				return (
-					<TableCell title={formattedDate}>{formatWcShortDate(row.original.date_created)}</TableCell>
+					<TableCell title={formattedDate}>{row.original.date_created}</TableCell>
 				);
 			},
 		},

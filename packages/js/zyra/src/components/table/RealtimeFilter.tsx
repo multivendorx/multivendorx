@@ -62,7 +62,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
                         />
                       </div>
                     );
-                  }                  
+                }                  
 
                 // React select options
                 const options = filter.options?.map((opt) => ({ label: opt.label, value: opt.value })) || [];

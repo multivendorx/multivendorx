@@ -485,7 +485,7 @@ class Utill {
     /**
      * Convert WordPress PHP date format to React date picker format
      */
-    public static function wp_to_react_date_format($format) {
+    public static function wp_to_react_date_format($dateFormat) {
         static $map = [
             'Y' => 'YYYY',
             'y' => 'YY',
@@ -507,7 +507,7 @@ class Utill {
             'a' => 'a',
         ];
 
-        return strtr($format, $map);
+        return strtr($dateFormat, $map);
     }
 
 }

@@ -229,7 +229,7 @@ const Dashboard: React.FC = () => {
 						commission_amount: order.commission_amount
 							? formatCurrency(order.commission_amount)
 							: '-',
-						date: formatWcShortDate(order.date_created),
+						date: order.date_created,
 						status: order.status,
 						currency_symbol: order.currency_symbol,
 					};
@@ -394,15 +394,6 @@ const Dashboard: React.FC = () => {
 			prev30: formatCurrency(store?.commission?.previous_30_days.commission || 0)
 		},
 	];
-
-	const formatWcShortDate = (dateString: any) => {
-		const date = new Date(dateString);
-		return date.toLocaleDateString('en-GB', {
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric',
-		});
-	};
 
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
@@ -599,7 +590,7 @@ const Dashboard: React.FC = () => {
 										}
 										isLoading={isLoading}
 										descriptions={[
-											{ value: formatWcShortDate(item.date) },
+											{ value: item.date },
 										]}
 										amount={formatCurrency(item.amount)}
 									/>
@@ -895,7 +886,7 @@ const Dashboard: React.FC = () => {
 													</div>
 													<div className="order-number">
 														{customer.reason} |{' '}
-														{formatWcShortDate(customer.time)}
+														{customer.time}
 													</div>
 												</div>
 											</div>
@@ -1007,9 +998,9 @@ const Dashboard: React.FC = () => {
 														/>
 													))}
 													<span>
-														{formatWcShortDate(
+														{
 															reviewItem.date_created
-														)}
+														}
 													</span>
 												</div>
 

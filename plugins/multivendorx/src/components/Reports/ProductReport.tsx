@@ -12,7 +12,7 @@ import {
 import { __ } from '@wordpress/i18n';
 import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, Table, TableCard, TableCell } from 'zyra';
 import axios from 'axios';
-import { downloadCSV, formatCurrency, formatWcShortDate, toWcIsoDate } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 import Counter from '@/services/Counter';
 
@@ -292,7 +292,7 @@ const ProductReport: React.FC = () => {
 					},
 					{
 						display: product.date_created
-							? formatWcShortDate(product.date_created)
+							? product.date_created
 							: '-',
 						value: product.date_created,
 					},
@@ -375,7 +375,7 @@ const ProductReport: React.FC = () => {
 							?.map((c: { name: string }) => c.name)
 							.join(', ') || '',
 					Date_Created: product.date_created
-						? formatWcShortDate(product.date_created)
+						? product.date_created
 						: '',
 				}));
 
