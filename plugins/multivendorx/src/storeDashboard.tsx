@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { getApiLink, MessageState, Tabs, PopupUI, useModules } from 'zyra';
+import { getApiLink, ComponentStatusView, Tabs, PopupUI, useModules } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Notifications from './dashboard/notifications';
 import './hooksFilters';
@@ -858,7 +858,7 @@ const Dashboard = () => {
 
 				<div className="content-wrapper">
 					{storeData && storeData.status !== 'active' ? (
-						<MessageState
+						<ComponentStatusView
 							title={
 								<>
 									{storeData.status === 'pending' ? (
@@ -893,7 +893,7 @@ const Dashboard = () => {
 							buttonTarget="_blank"
 						/>
 					) : noPermission ? (
-						<MessageState
+						<ComponentStatusView
 							title={__(
 								'You do not have permission to access this page.',
 								'multivendorx'

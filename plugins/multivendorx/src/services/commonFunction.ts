@@ -48,15 +48,6 @@ export function formatCurrency(amount: number | string): string {
 	return formatted;
 }
 
-export const formatWcShortDate = (dateString: any) => {
-	const date = new Date(dateString);
-	return date.toLocaleDateString('en-GB', {
-		day: '2-digit',
-		month: 'short',
-		year: 'numeric',
-	});
-};
-
 export function formatTimeAgo(dateString: string) {
 	// Force UTC
 	const date = new Date(dateString + 'Z');

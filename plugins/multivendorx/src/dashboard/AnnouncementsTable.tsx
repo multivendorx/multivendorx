@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {  getApiLink, TableCard } from 'zyra';
 
-import { formatWcShortDate, truncateText } from '@/services/commonFunction';
+import {  truncateText } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const AnnouncementsTable = (React.FC = () => {
@@ -42,7 +42,7 @@ const AnnouncementsTable = (React.FC = () => {
                     },
                     { display: ann.status, value: ann.status },
                     {
-                        display: formatWcShortDate(ann.date),
+                        display: ann.date,
                         value: ann.date,
                     },
                 ]);

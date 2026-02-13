@@ -9,6 +9,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
+    width: 100% ;
 
     .email {
         font-size: 0.813rem;
@@ -51,11 +52,11 @@
 
     .input-wrapper {
         position: relative;
-
-        div {
+        .basic-input {
+                width: fit-content;
+        }
+        .inline-suggestion {
             position: absolute;
-
-            // bottom: -100%;
             background: #d7d7d7;
             color: $text-color;
             padding: 0.625rem 0.813rem;

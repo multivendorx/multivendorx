@@ -11,7 +11,7 @@ import {
 	TableCard,
 	TextAreaUI,
 } from 'zyra';
-import { formatCurrency, formatWcShortDate, toWcIsoDate, truncateText } from '../../services/commonFunction';
+import { formatCurrency, toWcIsoDate, truncateText } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 interface StoreRow {
@@ -297,7 +297,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 					},
 					{
 						display: order.date
-							? formatWcShortDate(order.date)
+							? order.date
 							: '-',
 						value: order.date,
 					},

@@ -10,7 +10,7 @@ import {
 	TextAreaUI,
 } from 'zyra';
 
-import { formatWcShortDate, toWcIsoDate } from '@/services/commonFunction';
+import { toWcIsoDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const DISCOUNT_TYPE_LABELS: Record<string, string> = {
@@ -201,7 +201,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					},
 					{
 						display: coupon.date_created
-							? formatWcShortDate(coupon.date_created)
+							? coupon.date_created
 							: '-',
 						value: coupon.date_created,
 					}
