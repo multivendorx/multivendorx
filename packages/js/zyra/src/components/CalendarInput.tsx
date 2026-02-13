@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import DatePicker, { DateObject } from 'react-multi-date-picker';
+import DatePicker, { DateObject, DatePickerRef } from 'react-multi-date-picker';
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
 
 export interface CalendarRange {
@@ -29,11 +29,13 @@ const convertToDateObjectRange = (
   ];
 };
 
-const Presets = ({
-  setValue,
-  pickerRef,
-  format,
-}: any) => {
+interface PresetsProps {
+  setValue: (dates: Date[]) => void;
+  pickerRef: React.RefObject<DatePickerRef>;
+  format: string;
+}
+
+const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
   const now = new Date();
 
   const startOfWeek = (date: Date) => {
@@ -116,16 +118,16 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
   onChange,
   multiple = false,
 }) => {
-  const pickerRef = useRef<any>();
+  const pickerRef = useRef<DatePickerRef>(null);
 
   const [internalValue, setInternalValue] =
-    useState<any>(convertToDateObjectRange(value, format));
+    useState<DateObject[] | DateObject | null>(convertToDateObjectRange(value, format));
 
   useEffect(() => {
     setInternalValue(convertToDateObjectRange(value, format));
   }, [value, format]);
 
-  const handleChange = (val: any) => {
+  const handleChange = (val: DateObject[] | DateObject | null) => {
     setInternalValue(val);
     if (Array.isArray(val) && val.length === 2) {
       const [start, end] = val as DateObject[];
@@ -141,8 +143,6 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
       onChange?.({ startDate: date, endDate: date });
 
       pickerRef.current?.closeCalendar();
-    } else {
-      onChange?.();
     }
   };
 

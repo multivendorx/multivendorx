@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Select from 'react-select';
 import { RealtimeFilterConfig, TableRow } from './types';
-import CalendarInput from '../CalendarInput';
+import CalendarInput, { CalendarRange } from '../CalendarInput';
 
 export type FilterValue =
     | string
@@ -48,15 +48,19 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 
                 // Date filter
                 if (filter.type === 'date') {
-                    const start = new Date();
-                    start.setMonth(start.getMonth() - 1);
-                    const range = (value as { startDate: Date; endDate: Date }) || {startDate: start, endDate: new Date()};
+                    const defaultRange = useMemo(() => {
+                        const start = new Date();
+                        start.setMonth(start.getMonth() - 1);
+                        return { startDate: start, endDate: new Date() };
+                    }, []);
+                      
+                    const range = value as CalendarRange ?? defaultRange;
                     return (
                       <div key={filter.key} className="group-field">
                         <CalendarInput
                           value={range}
                           onChange={(newRange) => {
-                            onFilterChange(filter.key, newRange as any);
+                            onFilterChange(filter.key, newRange as { startDate: Date; endDate: Date });
                           }}
                           format={format}
                         />
