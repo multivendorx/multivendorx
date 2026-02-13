@@ -18,7 +18,7 @@ import {
 } from 'zyra';
 import Popup from '../Popup/Popup';
 import '../Announcements/Announcements.scss';
-import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
+import { formatLocalDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 
@@ -267,7 +267,7 @@ export const KnowledgeBase: React.FC = () => {
 				const mappedRows = items.map((kb: any) => [
 					{ display: kb.title, value: kb.id },
 					{ display: truncateText(kb.content || '', 50), value: kb.content || '' },
-					{ display: formatWcShortDate(kb.date), value: kb.date },
+					{ display: kb.date, value: kb.date },
 					{ display: kb.status, value: kb.status },
 				]);
 

@@ -19,7 +19,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
+import { formatLocalDate } from '@/services/commonFunction';
 export interface RealtimeFilter {
 	name: string;
 	render: (
@@ -317,7 +317,7 @@ const CustomerQuestions: React.FC = () => {
 			enableSorting: true,
 			cell: ({ row }) => {
 				return (
-					<TableCell title={''}>{formatWcShortDate(row.original.question_date)}</TableCell>
+					<TableCell title={''}>{row.original.question_date}</TableCell>
 				);
 			},
 		},

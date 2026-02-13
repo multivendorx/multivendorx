@@ -15,7 +15,7 @@ import {
 	RowSelectionState,
 } from '@tanstack/react-table';
 import ViewCommission from './viewCommission';
-import { formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../services/commonFunction';
 
 export interface RealtimeFilter {
 	name: string;
@@ -621,7 +621,7 @@ const StoreCommission: React.FC = () => {
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell title={''}>
-					{formatWcShortDate(row.original.createdAt)}
+					{row.original.createdAt}
 				</TableCell>
 			),
 		},

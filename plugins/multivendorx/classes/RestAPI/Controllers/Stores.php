@@ -404,7 +404,7 @@ class Stores extends \WP_REST_Controller {
                         'phone'               => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['phone'] ] ?? '',
                         'primary_owner'       => $owner,
                         'primary_owner_image' => get_avatar( $owner_id, 48 ),
-                        'applied_on'          => $store['create_time'],
+                        'applied_on'          => Utill::multivendorx_date_time_format($store['create_time']),
                         'store_image'         => $store_meta->meta_data['image'] ?? '',
                         'store_banner'        => $store_meta->meta_data['banner'] ?? '',
                         'address'             => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['address'] ] ?? '',
@@ -502,7 +502,7 @@ class Stores extends \WP_REST_Controller {
                     'store_name' => $store['name'],
                     'store_slug' => $store['slug'],
                     'status'     => $store['status'],
-                    'applied_on' => $store['create_time'],
+                    'applied_on' => Utill::multivendorx_date_time_format($store['create_time']),
                 )
             );
         }
@@ -1464,7 +1464,7 @@ class Stores extends \WP_REST_Controller {
                     'status'          => $store['status'],
                     'email'           => $store_meta->meta_data['email'] ?? '',
                     'withdraw_amount' => $store_meta->meta_data[ Utill::STORE_SETTINGS_KEYS['request_withdrawal_amount'] ],
-                    'applied_on'      => $store['create_time'],
+                    'applied_on'      => Utill::multivendorx_date_time_format($store['create_time']),
                 );
             }
         }

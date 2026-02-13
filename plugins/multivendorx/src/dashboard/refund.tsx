@@ -13,7 +13,7 @@ import {
 	RowSelectionState,
 	PaginationState,
 } from '@tanstack/react-table';
-import { formatCurrency, formatWcShortDate } from '@/services/commonFunction';
+import { formatCurrency } from '@/services/commonFunction';
 
 type RefundRow = {
 	id: number;
@@ -210,7 +210,7 @@ const Refund: React.FC = () => {
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }: any) => {
 				return (
-					<TableCell title={''}>{formatWcShortDate(row.original.date)}</TableCell>
+					<TableCell title={''}>{row.original.date}</TableCell>
 				);
 			},
 		},

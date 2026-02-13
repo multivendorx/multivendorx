@@ -1,7 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
 import { PopupUI } from 'zyra';
-import { formatCurrency, formatWcShortDate } from '@/services/commonFunction';
+import { formatCurrency } from '@/services/commonFunction';
 
 type TransactionRow = {
 	id: number;
@@ -45,7 +45,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Date', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatWcShortDate(transaction.date)}
+								{transaction.date}
 							</div>
 						</div>
 						<div className="items">
