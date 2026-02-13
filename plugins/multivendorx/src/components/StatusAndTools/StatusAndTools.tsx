@@ -11,7 +11,6 @@ import {
 	getAvailableSettings,
 	getSettingById,
 	Support,
-	AdminForm,
 	Banner,
 	useModules,
 	SettingsNavigator,

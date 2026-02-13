@@ -1,6 +1,6 @@
 import React from 'react';
-import "../../styles/web/UI/InfoItem.scss";
-import Skeleton from './Skeleton';
+import "../styles/web/UI/InfoItem.scss";
+import Skeleton from './UI/Skeleton';
 
 type AvatarProps = {
     image?: string;

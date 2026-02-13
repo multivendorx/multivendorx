@@ -1,6 +1,6 @@
 //External Dependencies
 import React from 'react';
-import { AdminButtonUI } from './UI/AdminButton';
+import { AdminButtonUI } from './AdminButton';
 
 interface button {
     label: string;

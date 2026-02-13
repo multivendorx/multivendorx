@@ -6,7 +6,7 @@ import axios from 'axios';
 import { getApiLink } from '../utils/apiService';
 import '../styles/web/Log.scss';
 import { FieldComponent } from './types';
-import { AdminButtonUI } from './UI/AdminButton';
+import { AdminButtonUI } from './AdminButton';
 
 interface AppLocalizer {
     nonce: string;
