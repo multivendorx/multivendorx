@@ -617,6 +617,7 @@ const ProductReport: React.FC = () => {
 				filters={filters}
 				buttonActions={buttonActions}
 				rowIds={rowIds}
+				format={appLocalizer.date_format}
 			/>
 		</>
 	);

@@ -202,6 +202,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 						ids={rowIds}
 						search={{}}
 						filters={filters}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

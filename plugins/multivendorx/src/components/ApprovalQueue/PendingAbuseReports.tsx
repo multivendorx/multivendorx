@@ -185,6 +185,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 						onQueryUpdate={fetchData}
 						ids={rowIds}
 						filters={filters}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

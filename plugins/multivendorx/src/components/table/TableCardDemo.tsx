@@ -238,6 +238,7 @@ const TableCardDemo: React.FC = () => {
 					onCellEdit={(data)=>{
 						console.log('edit',data);
 					}}
+					format={appLocalizer.date_format}
 				/>
 			</Column>
 		</Container>

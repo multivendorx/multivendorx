@@ -233,6 +233,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					ids={rowIds}
 					search={{}}
 					filters={filters}
+					format={appLocalizer.date_format}
 				/>
 				{/* Reject Coupon Popup */}
 				{rejectPopupOpen && (

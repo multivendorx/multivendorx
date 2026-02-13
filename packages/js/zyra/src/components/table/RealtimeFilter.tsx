@@ -18,6 +18,7 @@ interface RealtimeFiltersProps {
     onFilterChange: (key: string, value: FilterValue) => void;
     rows: TableRow[][];
     onResetFilters: () => void;
+    format?: string;
 }
 
 const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
@@ -26,6 +27,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
     onFilterChange,
     rows,
     onResetFilters,
+    format,
 }) => {
     if (!rows || rows.length === 0 && Object.keys(query).length === 0) return null;
 
@@ -55,6 +57,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
                                 onChange={(newRange) => {
                                     onFilterChange(filter.key, newRange as any);
                                 }}
+                                format={format}
                             />
                         </div>
                     );
