@@ -1,20 +1,12 @@
-// External Dependencies
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ReactSortable } from 'react-sortablejs';
-
 import {
-    Block,
-    BlockPatch,
-    BlockRenderer,
-    ColumnRenderer,
-    useColumnManager,
-    LeftPanel,
+    Block, BlockPatch, BlockType, BlockRenderer, ColumnRenderer,
+    useColumnManager, LeftPanel
 } from '../block';
-
 import SettingMetaBox from '../SettingMetaBox';
 import { FieldComponent } from '../types';
 
-// Types
 export interface EmailTemplate {
     id: string;
     name: string;
@@ -22,14 +14,8 @@ export interface EmailTemplate {
     blocks: Block[];
 }
 
-interface EmailTemplateField {
-    templates?: EmailTemplate[];
-    defaultTemplateId?: string;
-    [key: string]: any;
-}
-
 interface EmailTemplateProps {
-    field: EmailTemplateField;
+    field: any;
     value: any;
     onChange: (value: any) => void;
     canAccess: boolean;
@@ -39,186 +25,93 @@ interface EmailTemplateProps {
     proSettingChange?: () => boolean;
 }
 
-// Constants
-const EMAIL_BLOCKS = [
-    { 
-        id: 'heading', 
-        icon: 'adminfont-form-textarea', 
-        value: 'heading', 
-        label: 'Heading',
-        fixedName: 'email-heading',
-        placeholder: 'Enter your heading here'
-    },
-    { 
-        id: 'richtext', 
-        icon: 'adminfont-t-letter-bold', 
-        value: 'richtext', 
-        label: 'Text',
-        fixedName: 'email-text',
-        placeholder: 'Enter your text content here'
-    },
-    { 
-        id: 'image', 
-        icon: 'adminfont-image', 
-        value: 'image', 
-        label: 'Image',
-        fixedName: 'email-image'
-    },
-    { 
-        id: 'button', 
-        icon: 'adminfont-button', 
-        value: 'button', 
-        label: 'Button',
-        fixedName: 'email-button',
-        placeholder: 'Click me'
-    },
-    { 
-        id: 'divider', 
-        icon: 'adminfont-divider', 
-        value: 'divider', 
-        label: 'Divider',
-        fixedName: 'email-divider'
-    },
-    { 
-        id: 'columns', 
-        icon: 'adminfont-blocks', 
-        value: 'columns', 
-        label: 'Columns',
-        fixedName: 'email-columns'
-    },
-];
-
-const DEFAULT_TEMPLATE: EmailTemplate = {
-    id: 'default',
-    name: 'Default Template',
-    previewText: 'Default email template',
-    blocks: [],
-};
-
-// Simple ID generator
 let idCounter = Date.now();
 const generateId = () => ++idCounter;
 
-// Helper: Create a new block
-const createBlock = (type: Block['type'], fixedName?: string, placeholder?: string, label?: string): Block => {
+const EMAIL_BLOCK_GROUPS = [{
+    id: 'email',
+    label: 'Email Blocks',
+    blocks: [
+        { id: 'heading', icon: 'adminfont-form-textarea', value: 'heading', label: 'Heading', fixedName: 'email-heading', placeholder: 'Enter your heading here' },
+        { id: 'richtext', icon: 'adminfont-t-letter-bold', value: 'richtext', label: 'Text', fixedName: 'email-text', placeholder: '<p>Enter your text content here</p>' },
+        { id: 'image', icon: 'adminfont-image', value: 'image', label: 'Image', fixedName: 'email-image', placeholder: '' },
+        { id: 'button', icon: 'adminfont-button', value: 'button', label: 'Button', fixedName: 'email-button', placeholder: 'Click me' },
+        { id: 'divider', icon: 'adminfont-divider', value: 'divider', label: 'Divider', fixedName: 'email-divider' },
+        { id: 'columns', icon: 'adminfont-blocks', value: 'columns', label: 'Columns', fixedName: 'email-columns' },
+    ]
+}];
+
+const DEFAULT_TEMPLATES: EmailTemplate[] = [{
+    id: 'default',
+    name: 'Default Template',
+    previewText: 'Start with a blank email template',
+    blocks: [],
+}];
+
+const createBlock = (type: BlockType, fixedName?: string, placeholder?: string, label?: string): Block => {
     const id = generateId();
-    const block: any = {
-        id,
-        type,
-        name: fixedName ?? `${type}-${id}`,
-        label: label ?? type.charAt(0).toUpperCase() + type.slice(1),
-    };
-
+    const block: any = { id, type, name: fixedName ?? `${type}-${id.toString(36)}`, label: label ?? type.charAt(0).toUpperCase() + type.slice(1) };
     if (placeholder) block.placeholder = placeholder;
-
-    if (type === 'columns') {
-        block.columns = [[], []];
-        block.layout = '2-50';
-    }
-    if (type === 'heading') {
-        block.text = placeholder || 'Heading Text';
-        block.level = 2;
-    }
-    if (type === 'richtext') {
-        block.html = placeholder || '<p>This is a demo text</p>';
-    }
-    if (type === 'button') {
-        block.text = placeholder || 'Click me';
-        block.url = '#';
-    }
-    if (type === 'image') {
-        block.src = 'https://via.placeholder.com/300x200';
-        block.alt = 'Placeholder image';
-    }
-
+    
+    if (type === 'columns') { block.columns = [[], []]; block.layout = '2-50'; }
+    else if (type === 'heading') { block.text = placeholder || 'Heading Text'; block.level = 2; }
+    else if (type === 'richtext') block.html = placeholder || '<p>This is a demo text</p>';
+    else if (type === 'button') { block.text = placeholder || 'Click me'; block.url = '#'; }
+    
     return block as Block;
 };
 
-// Main Component
+const findBlockConfig = (blockId: string) => 
+    EMAIL_BLOCK_GROUPS[0].blocks.find(b => b.id === blockId);
+
 export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
-    field,
-    value,
-    onChange,
-    proSettingChange = () => false,
-    name = field?.key || 'email-template',
-    setting = {},
+    field, value, onChange, proSettingChange = () => false,
+    name = field?.key || 'email-template', setting = {},
 }) => {
-    // Get saved data
     const savedData = value || setting[name] || {};
-    const savedTemplates = savedData.templates || [];
-    const savedActiveId = savedData.activeTemplateId;
+    const [templates, setTemplates] = useState<EmailTemplate[]>(() => 
+        field?.templates?.length ? field.templates.map(t => ({ 
+            ...t, ...savedData.templates?.find((st: EmailTemplate) => st.id === t.id) 
+        })) : savedData.templates?.length ? savedData.templates : DEFAULT_TEMPLATES
+    );
     
-    // Initialize templates
-    const [templates, setTemplates] = useState<EmailTemplate[]>(() => {
-        // If we have saved templates, use them
-        if (savedTemplates.length > 0) return savedTemplates;
-        
-        // If field provides templates from backend, use those
-        if (field?.templates?.length > 0) return field.templates;
-        
-        // Otherwise use default
-        return [DEFAULT_TEMPLATE];
-    });
-    
-    // Initialize active template ID
-    const [activeTemplateId, setActiveTemplateId] = useState<string>(() => {
-        if (savedActiveId) return savedActiveId;
-        if (field?.defaultTemplateId) return field.defaultTemplateId;
-        return templates[0]?.id || DEFAULT_TEMPLATE.id;
-    });
-    
+    const [activeTemplateId, setActiveTemplateId] = useState<string>(
+        savedData.activeTemplateId || field?.defaultTemplateId || templates[0]?.id || DEFAULT_TEMPLATES[0].id
+    );
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
-    
+    const saveTimeoutRef = useRef<NodeJS.Timeout>();
     const activeTemplate = templates.find(t => t.id === activeTemplateId);
-    
-    if (!activeTemplate) {
-        // Fallback - create a default template
-        const fallbackTemplate = DEFAULT_TEMPLATE;
-        setTemplates([fallbackTemplate]);
-        setActiveTemplateId(fallbackTemplate.id);
-        return <div>Loading template...</div>;
-    }
 
-    // Save to parent
-    const saveToParent = (updatedTemplates: EmailTemplate[], updatedActiveId: string) => {
-        onChange({
-            ...value,
-            [name]: {
-                templates: updatedTemplates,
-                activeTemplateId: updatedActiveId,
-            }
-        });
-    };
+    useEffect(() => {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => onChange({ templates, activeTemplateId }), 300);
+        return () => clearTimeout(saveTimeoutRef.current);
+    }, [templates, activeTemplateId, onChange]);
 
-    const updateBlocks = (blocks: Block[]) => {
-        if (proSettingChange()) return;
-        
-        const updated = templates.map(t =>
-            t.id === activeTemplateId ? { ...t, blocks } : t
-        );
-        
-        setTemplates(updated);
-        saveToParent(updated, activeTemplateId);
-    };
+    const columnManager = useColumnManager({
+        blocks: activeTemplate?.blocks || [],
+        onBlocksUpdate: (blocks) => setTemplates(prev => 
+            prev.map(t => t.id === activeTemplateId ? { ...t, blocks } : t)
+        ),
+        openBlock, setOpenBlock,
+    });
+
+    const updateBlocks = (blocks: Block[]) => setTemplates(prev => 
+        prev.map(t => t.id === activeTemplateId ? { ...t, blocks } : t)
+    );
 
     const updateBlock = (index: number, patch: BlockPatch) => {
-        if (proSettingChange()) return;
-        
+        if (proSettingChange() || !activeTemplate) return;
         const updated = [...activeTemplate.blocks];
         updated[index] = { ...updated[index], ...patch } as Block;
         updateBlocks(updated);
-        
         if (openBlock?.id === updated[index].id) setOpenBlock(updated[index]);
     };
 
     const deleteBlock = (index: number) => {
-        if (proSettingChange()) return;
-        
-        const deletedId = activeTemplate.blocks[index].id;
-        const updated = activeTemplate.blocks.filter((_, i) => i !== index);
-        updateBlocks(updated);
-        
-        if (openBlock?.id === deletedId) {
+        if (proSettingChange() || !activeTemplate) return;
+        updateBlocks(activeTemplate.blocks.filter((_, i) => i !== index));
+        if (openBlock?.id === activeTemplate.blocks[index].id) {
             setOpenBlock(null);
             columnManager.clearSelection();
         }
@@ -226,99 +119,67 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 
     const handleSetList = (newList: any[]) => {
         if (proSettingChange()) return;
-        
-        const processed = newList.map(item => {
-            if (item?.id && item?.type) return item as Block;
-            
-            if (item?.value) {
-                const config = EMAIL_BLOCKS.find(b => b.value === item.value);
-                return createBlock(
-                    item.value,
-                    config?.fixedName,
-                    config?.placeholder,
-                    config?.label
-                );
-            }
-            
-            return item;
-        });
-        
-        updateBlocks(processed);
+        updateBlocks(newList.map(item => 
+            item.id && item.type ? item : createBlock(
+                item.value, findBlockConfig(item.id)?.fixedName,
+                findBlockConfig(item.id)?.placeholder, findBlockConfig(item.id)?.label
+            )
+        ));
     };
 
-    const columnManager = useColumnManager({
-        blocks: activeTemplate.blocks,
-        onBlocksUpdate: updateBlocks,
-        openBlock,
-        setOpenBlock,
-    });
-
     const handleSettingsChange = (key: string, value: any) => {
-        if (proSettingChange()) return;
-
+        if (proSettingChange() || !activeTemplate) return;
+        
         if (columnManager.selectedLocation) {
             const { parentIndex, columnIndex, childIndex } = columnManager.selectedLocation;
-            columnManager.handleChildUpdate(parentIndex, columnIndex, childIndex, { [key]: value } as any);
-        } else {
-            const index = activeTemplate.blocks.findIndex(b => b.id === openBlock?.id);
-            if (index >= 0) {
-                if (key === 'layout' && activeTemplate.blocks[index].type === 'columns') {
-                    columnManager.handleLayoutChange(index, value);
-                } else {
-                    updateBlock(index, { [key]: value } as any);
-                }
+            columnManager.handleChildUpdate(parentIndex, columnIndex, childIndex, { [key]: value });
+            return;
+        }
+
+        const index = activeTemplate.blocks.findIndex(b => b.id === openBlock?.id);
+        if (index >= 0) {
+            if (key === 'layout' && activeTemplate.blocks[index].type === 'columns') {
+                columnManager.handleLayoutChange(index, value);
+            } else {
+                updateBlock(index, { [key]: value });
             }
         }
     };
 
+    if (!activeTemplate) return <div className="email-template-error"><p>No active template found</p></div>;
+
     return (
         <div className="registration-from-wrapper email-builder">
             <LeftPanel
-                blocks={EMAIL_BLOCKS}
+                blockGroups={EMAIL_BLOCK_GROUPS}
                 templates={templates}
                 activeTemplateId={activeTemplateId}
-                onTemplateSelect={setActiveTemplateId}
-                groupName="email"
-                showTemplatesTab={true}
+                onTemplateSelect={(id) => { setActiveTemplateId(id); setOpenBlock(null); columnManager.clearSelection(); }}
+                groupName="email" showTemplatesTab visibleGroups={['email']} collapsible
             />
 
             <div className="registration-form-main-section email-canvas">
                 <ReactSortable
-                    list={activeTemplate.blocks}
-                    setList={handleSetList}
-                    group={{ name: 'email', pull: true, put: true }}
-                    handle=".drag-handle"
-                    animation={150}
-                    className="email-canvas-sortable"
+                    list={activeTemplate.blocks} setList={handleSetList}
+                    group={{ name: 'email', pull: true, put: true }} handle=".drag-handle"
+                    animation={150} fallbackOnBody swapThreshold={0.65} className="email-canvas-sortable"
                 >
                     {activeTemplate.blocks.map((block, index) => (
                         <div className="field-wrapper" key={block.id}>
                             {block.type === 'columns' ? (
                                 <ColumnRenderer
-                                    block={block}
-                                    parentIndex={index}
-                                    blocks={activeTemplate.blocks}
-                                    isActive={openBlock?.id === block.id}
-                                    groupName="email"
-                                    openBlock={openBlock}
-                                    setOpenBlock={setOpenBlock}
+                                    block={block} parentIndex={index} blocks={activeTemplate.blocks}
+                                    isActive={openBlock?.id === block.id} groupName="email"
+                                    openBlock={openBlock} setOpenBlock={setOpenBlock}
                                     onBlocksUpdate={updateBlocks}
-                                    onSelect={() => {
-                                        setOpenBlock(block);
-                                        columnManager.clearSelection();
-                                    }}
+                                    onSelect={() => { setOpenBlock(block); columnManager.clearSelection(); }}
                                     onDelete={() => deleteBlock(index)}
                                 />
                             ) : (
                                 <BlockRenderer
-                                    block={block}
-                                    onSelect={() => {
-                                        setOpenBlock(block);
-                                        columnManager.clearSelection();
-                                    }}
+                                    block={block} onSelect={() => { setOpenBlock(block); columnManager.clearSelection(); }}
                                     onChange={(patch) => updateBlock(index, patch)}
-                                    onDelete={() => deleteBlock(index)}
-                                    isActive={openBlock?.id === block.id}
+                                    onDelete={() => deleteBlock(index)} isActive={openBlock?.id === block.id}
                                 />
                             )}
                         </div>
@@ -328,12 +189,19 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 
             {openBlock && (
                 <div className="registration-edit-form-wrapper">
-                    <SettingMetaBox
-                        formField={openBlock}
-                        opened={{ click: true }}
-                        onChange={handleSettingsChange}
-                        inputTypeList={EMAIL_BLOCKS.map(b => ({ value: b.value, label: b.label }))}
-                    />
+                    <div className="registration-edit-form">
+                        <div className="meta-setting-modal-content">
+                            <div className="block-type-header">
+                                <div className="block-type-title">
+                                    <h3>{openBlock.type.charAt(0).toUpperCase() + openBlock.type.slice(1)} Settings</h3>
+                                </div>
+                            </div>
+                            <SettingMetaBox
+                                formField={openBlock} opened={{ click: true }} onChange={handleSettingsChange}
+                                inputTypeList={EMAIL_BLOCK_GROUPS[0].blocks.map(b => ({ value: b.value, label: b.label }))}
+                            />
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
@@ -342,10 +210,7 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 
 const EmailTemplate: FieldComponent = {
     render: EmailTemplateUI,
-    validate: (field, value) => {
-        if (field.required && !value) return `${field.label} is required`;
-        return null;
-    },
+    validate: (field, value) => field.required && !value ? `${field.label} is required` : null,
 };
 
 export default EmailTemplate;

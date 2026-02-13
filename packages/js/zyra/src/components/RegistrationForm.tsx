@@ -77,7 +77,7 @@ const BLOCK_GROUPS = [
             { id: 'richtext', icon: 'adminfont-text icon-form-textarea', value: 'richtext', label: 'Rich Text Block' },
             { id: 'heading', icon: 'adminfont-form-textarea', value: 'heading', label: 'Heading' },
             { id: 'image', icon: 'adminfont-image', value: 'image', label: 'Image' },
-            { id: 'button', icon: 'adminfont-button', value: 'button', label: 'Button' },
+            { id: 'button', icon: 'adminfont-button', value: 'button', label: 'Button', placeholder: 'Click me' },
             { id: 'divider', icon: 'adminfont-divider', value: 'divider', label: 'Divider' },
             { id: 'columns', icon: 'adminfont-blocks', value: 'columns', label: 'Columns' },
             { id: 'section', icon: 'adminfont-form-section icon-form-section', value: 'section', label: 'Section' },

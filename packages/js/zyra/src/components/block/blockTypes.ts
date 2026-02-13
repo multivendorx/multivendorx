@@ -41,7 +41,7 @@ export interface BlockConfig {
 }
 
 // Helper Types
-export type BlockPatch<T extends Block = Block> = Omit<Partial<T>, 'type' | 'id'>;
+export type BlockPatch<T extends Block = Block> = Partial<T>;
 export type FieldValue = string | number | boolean | FieldValue[] | { [key: string]: FieldValue };
 
 export const getColumnCount = (layout: ColumnLayout): number => {

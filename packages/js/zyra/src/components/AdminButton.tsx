@@ -165,7 +165,7 @@ const AdminButton: FieldComponent = {
                         },
                     }))
                 : {
-                        text: field.name,
+                        text: field.text || field.name || 'Click',
                         color: field.color,
                         onClick: handleClick,
                     };
