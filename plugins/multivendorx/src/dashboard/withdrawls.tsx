@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI, PopupUI } from 'zyra';
-import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
+import { formatCurrency } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
 	const [data, setData] = useState<any>([]);
@@ -139,7 +139,7 @@ const Withdrawls: React.FC = () => {
 									</div>
 									<div className="right">
 										<div className="date">
-											{formatWcShortDate(item.date)}
+											{item.date}
 										</div>
 									</div>
 								</div>

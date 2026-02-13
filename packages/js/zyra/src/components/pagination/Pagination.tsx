@@ -1,7 +1,9 @@
 import React from 'react';
-import PageArrows from './PageArrows';
 import PagePicker from './PagePicker';
-import PageSizePicker, { DEFAULT_PER_PAGE_OPTIONS } from './PageSizePicker';
+import { SelectInputUI } from '../SelectInput';
+
+// Keeping the constant accessible
+export const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 75, 100];
 
 export type PaginationProps = {
 	page: number;
@@ -9,18 +11,11 @@ export type PaginationProps = {
 	total: number;
 	onPageChange?: (page: number, action?: 'previous' | 'next' | 'goto') => void;
 	onPerPageChange?: (perPage: number) => void;
-	className?: string;
 	showPagePicker?: boolean;
 	showPerPagePicker?: boolean;
 	showPageArrowsLabel?: boolean;
 	perPageOptions?: number[];
-	children?: (props: { pageCount: number }) => JSX.Element;
 };
-
-// Simple clsx replacement
-function classNames(...classes: Array<string | undefined | false>) {
-	return classes.filter(Boolean).join(' ');
-}
 
 const Pagination: React.FC<PaginationProps> = ({
 	page,
@@ -31,62 +26,67 @@ const Pagination: React.FC<PaginationProps> = ({
 	showPagePicker = true,
 	showPerPagePicker = true,
 	showPageArrowsLabel = true,
-	className,
 	perPageOptions = DEFAULT_PER_PAGE_OPTIONS,
-	children,
 }) => {
 	const pageCount = Math.ceil(total / perPage);
 
-	// If a render prop is passed
-	if (children && typeof children === 'function') {
-		return children({ pageCount });
-	}
+	// --- PageArrows Logic ---
+	const startIndex = total === 0 ? 0 : (page - 1) * perPage + 1;
+	const endIndex = Math.min(page * perPage, total);
 
+	// --- PageSizePicker Logic ---
+	const handlePerPageChange = (value:number) => {
+		onPerPageChange(value);
 
-	// If only a per-page picker should show
+		// Logic to prevent staying on a page that no longer exists
+		const newMaxPage = Math.ceil(total / value);
+		if (page > newMaxPage) {
+			onPageChange(newMaxPage, 'goto');
+		}
+	};
+
+	const StatusLabel = showPageArrowsLabel && total > 0 && (
+		<span className="show-section" role="status" aria-live="polite">
+			Showing {startIndex} to {endIndex} of {total} entries.
+		</span>
+	);
+
+	const SizePicker = (
+		<div className="showing-number">
+			Show
+			<SelectInputUI
+				value={perPage}
+				options={
+					perPageOptions.map((option) => ({
+						value: option,
+						label: option,
+					}))
+				}
+				onChange={(newValue) => {
+					handlePerPageChange(newValue.value);
+				}}
+			/>
+			entries
+		</div>
+	);
+
+	// Layout for 1 page or less
 	if (pageCount <= 1) {
 		return (
 			<div className="pagination-number-wrapper">
-				<PageArrows
-					currentPage={page}
-					showPageArrowsLabel={showPageArrowsLabel}
-					perPage={perPage}
-					total={total}
-				/>
-	
-				{total > perPageOptions[0] && (
-					<PageSizePicker
-						currentPage={page}
-						perPage={perPage}
-						setCurrentPage={onPageChange}
-						total={total}
-						setPerPageChange={onPerPageChange}
-						perPageOptions={perPageOptions}
-					/>
-				)}
+				{StatusLabel}
+				{/* Only show picker if there's enough data to actually paginate */}
+				{total > perPageOptions[0] && SizePicker}
 			</div>
 		);
 	}
 
+	// Standard Layout
 	return (
 		<>
 			<div className="pagination-number-wrapper">
-				<PageArrows
-					currentPage={page}
-					showPageArrowsLabel={showPageArrowsLabel}
-					perPage={perPage}
-					total={total}
-				/>
-				{showPerPagePicker && (
-					<PageSizePicker
-						currentPage={page}
-						perPage={perPage}
-						setCurrentPage={onPageChange}
-						total={total}
-						setPerPageChange={onPerPageChange}
-						perPageOptions={perPageOptions}
-					/>
-				)}
+				{StatusLabel}
+				{showPerPagePicker && SizePicker}
 			</div>
 			{showPagePicker && (
 				<PagePicker

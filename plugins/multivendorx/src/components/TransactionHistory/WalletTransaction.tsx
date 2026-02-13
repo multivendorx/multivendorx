@@ -19,7 +19,7 @@ import {
 	TextAreaUI
 } from 'zyra';
 
-import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -262,7 +262,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					},
 					{
 						display: product.date
-							? formatWcShortDate(product.date)
+							? product.date
 							: '-',
 						value: product.date,
 					},
@@ -419,7 +419,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			Credit: txn.credit ? formatCurrency(txn.credit) : '',
 			Debit: txn.debit ? formatCurrency(txn.debit) : '',
 			Balance: txn.balance ? formatCurrency(txn.balance) : '',
-			Date: txn.date ? formatWcShortDate(txn.date) : '',
+			Date: txn.date ? txn.date : '',
 			Narration: txn.narration || '',
 		}));
 	const downloadTransactionCSVByIds = (selectedIds: number[]) => {

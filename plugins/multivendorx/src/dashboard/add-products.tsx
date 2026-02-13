@@ -20,7 +20,6 @@ import {
 	useOutsideClick,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
-import { formatWcShortDate } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
 
 const AddProduct = () => {
@@ -1292,7 +1291,7 @@ const AddProduct = () => {
 							<FormGroup row label={__('Cataloged at', 'multivendorx')} htmlFor="status">
 								<div className="catalog-visibility">
 									<span className="catalog-visibility-value">
-										{formatWcShortDate(product?.date_created)} <i className="adminfont-arrow-down-up" />
+										{product?.date_created} <i className="adminfont-arrow-down-up" />
 									</span>
 								</div>
 							</FormGroup>

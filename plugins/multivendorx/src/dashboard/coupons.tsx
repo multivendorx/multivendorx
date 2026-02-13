@@ -20,7 +20,7 @@ import {
 } from '@tanstack/react-table';
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
-import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
+import { formatCurrency} from '../services/commonFunction';
 
 type CouponRow = {
 	id: number;
@@ -760,7 +760,7 @@ const AllCoupon: React.FC = () => {
 			header: __('Expiry Date', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell>
-					{formatWcShortDate(row.original.date_expires)}
+					{row.original.date_expires}
 				</TableCell>
 			),
 		},

@@ -15,7 +15,7 @@ import {
 } from 'zyra';
 
 import Popup from '../Popup/Popup';
-import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
+import { formatLocalDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type StoreQnaRow = {
@@ -69,7 +69,6 @@ const Qna: React.FC = () => {
 	};
 
 	const fetchQnaById = (id: number) => {
-		setIsLoading(true);
 
 		return axios
 			.get(getApiLink(appLocalizer, `qna/${id}`), {
@@ -90,7 +89,6 @@ const Qna: React.FC = () => {
 				setQna(item.question_text);
 				setAnswer(item.answer_text || '');
 			})
-			.finally(() => setIsLoading(false));
 	};
 
 	useEffect(() => {
@@ -242,7 +240,7 @@ const Qna: React.FC = () => {
 							subDescription: `A: ${truncateText(product.answer_text, 50)}`
 						},
 					},
-					{ display: formatWcShortDate(product.question_date), value: product.question_date },
+					{ display: product.question_date, value: product.question_date },
 					{
 						display: product.total_votes,
 						value: product.total_votes || 0,
