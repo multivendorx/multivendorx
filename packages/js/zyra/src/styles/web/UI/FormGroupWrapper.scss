@@ -40,9 +40,6 @@
         }
 
         .settings-form-label {
-            width: 22%;
-            overflow-wrap: break-word;
-
             .title {
                 font-size: 0.95rem;
                 color: $text-color;
@@ -149,6 +146,11 @@
             flex-direction: row;
             gap: 1rem;
             align-items: start;
+
+            .settings-form-label {
+                width: 22%;
+                overflow-wrap: break-word;
+            }
 
             .settings-input-content {
                 width: 72%;

@@ -10,7 +10,7 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, Table, TableCard, TableCell } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, Table, TableCard, TableCell } from 'zyra';
 import axios from 'axios';
 import { downloadCSV, formatCurrency, formatWcShortDate, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
@@ -445,7 +445,7 @@ const ProductReport: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<MessageState title={__('No product sales data found.', 'multivendorx')} />
+							<ComponentStatusView title={__('No product sales data found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>
@@ -569,7 +569,7 @@ const ProductReport: React.FC = () => {
 								</div>
 							))
 						) : (
-							<MessageState title={__('No reviewed products found.', 'multivendorx')} />
+							<ComponentStatusView title={__('No reviewed products found.', 'multivendorx')} />
 						)}
 					</Card>
 					<Card title="Top Selling Products">
@@ -594,7 +594,7 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<MessageState title={__('No top selling products found.', 'multivendorx')} />
+							<ComponentStatusView title={__('No top selling products found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>
