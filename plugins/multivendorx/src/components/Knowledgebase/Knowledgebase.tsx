@@ -16,7 +16,7 @@ import {
 	AdminButtonUI,
 	PopupUI,
 } from 'zyra';
-
+import Popup from '../Popup/Popup';
 import '../Announcements/Announcements.scss';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
@@ -309,6 +309,19 @@ export const KnowledgeBase: React.FC = () => {
 
 	return (
 		<>
+		  {/* <PopupUI
+			position="lightbox"
+			open={confirmOpen}
+			onClose={() => setConfirmOpen(false)}
+			width="31.25rem"
+			height="auto"
+		>
+			<Popup
+				confirmMode
+				title="Delete Knowledge Base"
+			/>
+
+		</PopupUI> */}
 			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
