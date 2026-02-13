@@ -48,20 +48,21 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 
                 // Date filter
                 if (filter.type === 'date') {
-                    const range = value as { startDate: Date; endDate: Date };
-                
+                    const start = new Date();
+                    start.setMonth(start.getMonth() - 1);
+                    const range = (value as { startDate: Date; endDate: Date }) || {startDate: start, endDate: new Date()};
                     return (
-                        <div key={filter.key} className="group-field">
-                            <CalendarInput
-                                value={range}
-                                onChange={(newRange) => {
-                                    onFilterChange(filter.key, newRange as any);
-                                }}
-                                format={format}
-                            />
-                        </div>
+                      <div key={filter.key} className="group-field">
+                        <CalendarInput
+                          value={range}
+                          onChange={(newRange) => {
+                            onFilterChange(filter.key, newRange as any);
+                          }}
+                          format={format}
+                        />
+                      </div>
                     );
-                }                
+                  }                  
 
                 // React select options
                 const options = filter.options?.map((opt) => ({ label: opt.label, value: opt.value })) || [];
