@@ -564,6 +564,7 @@ const AdminDashboard = () => {
 								apiLink="modules"
 								proPopupContent={proPopupContent}
 								pluginName="multivendorx"
+								variant= "mini-module"
 							/>
 						</Card>
 					</Column>

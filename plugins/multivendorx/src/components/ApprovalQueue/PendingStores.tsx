@@ -191,7 +191,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 
 	return (
 		<>
-			<Container general>
+			<Container>
 				<Column>
 					<TableCard
 						headers={headers}

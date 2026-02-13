@@ -495,52 +495,6 @@
 
     }
 }
-
-// mini module start
-.mini-module {
-    display: flex;
-    flex-wrap: wrap;
-
-    .module-list-item {
-        width: calc(100% / 4 - 1.625rem);
-        padding: 0.75rem;
-        border: $border-light-small;
-        border-radius: 0.313rem;
-
-        .module-header {
-            display: flex;
-            justify-content: space-between;
-            align-self: start;
-
-            i.font {
-                font-size: 1.25rem;
-                color: $theme-color;
-            }
-
-            .admin-pro-tag {
-                position: relative !important;
-                transform: translateY(0);
-                font-size: 0.75rem;
-                display: flex;
-                align-items: center;
-                left: 0;
-                top: 0;
-
-                i {
-                    font-size: 0.813rem;
-                    color: #e35047;
-                }
-            }
-        }
-
-        .module-name {
-            font-size: 0.9rem;
-            color: #000;
-            margin-top: 1.25rem;
-        }
-    }
-}
-
 // video section start
 .video-section {
     display: flex;
