@@ -3,16 +3,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	ToggleSettingUI,
 	getApiLink,
-	Tabs,
-	CommonPopup,
 	useModules,
 	SuccessNotice,
 	FormGroupWrapper,
-	FormGroup, 
-	Popover,
+	FormGroup,
 	Skeleton,
 	AdminButtonUI,
-	SelectInputUI
+	SelectInputUI,
+	SettingsNavigator,
+	PopupUI
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -193,14 +192,14 @@ const EditStore = () => {
 		});
 	};
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'store-overview',
 				name: 'Overview',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -210,7 +209,7 @@ const EditStore = () => {
 				id: 'store',
 				name: 'General',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -220,7 +219,7 @@ const EditStore = () => {
 				id: 'payment',
 				name: 'Payment',
 				desc: 'Payment Methods',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -230,7 +229,7 @@ const EditStore = () => {
 				id: 'staff',
 				name: 'Staff',
 				desc: 'Store staff',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -241,7 +240,7 @@ const EditStore = () => {
 				id: 'shipping',
 				name: 'Shipping',
 				desc: 'Store Shipping',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -252,7 +251,7 @@ const EditStore = () => {
 				id: 'store-policy',
 				name: 'Policy',
 				desc: 'Policy',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -262,7 +261,7 @@ const EditStore = () => {
 				id: 'application-details',
 				name: 'Application Details',
 				desc: 'Application',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -273,18 +272,18 @@ const EditStore = () => {
 				id: 'store-facilitator',
 				name: 'Facilitator',
 				desc: 'Facilitator',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
-	].filter((tab) => !tab.module || modules.includes(tab.module));
+	].filter((setting) => !setting.module || modules.includes(setting.module));
 
 	const handleUpdateData = useCallback((updatedFields: any) => {
 		setData((prev) => ({ ...prev, ...updatedFields }));
 	}, []);
 
 	const visibleTabs = useMemo(() => {
-		const updatedTabs = tabData.map((tab) =>
+		const updatedTabs = settingContent.map((tab) =>
 			tab.content.id === 'application-details'
 				? {
 					...tab,
@@ -313,7 +312,7 @@ const EditStore = () => {
 		}
 
 		return updatedTabs;
-	}, [tabData, data?.status]);
+	}, [settingContent, data?.status]);
 
 	const [expanded, setExpanded] = useState(false);
 
@@ -413,13 +412,12 @@ const EditStore = () => {
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
-			<Tabs
-				tabData={visibleTabs}
-				currentTab={currentTab}
+			<SettingsNavigator
+				settingContent={visibleTabs}
+				currentSetting={currentTab}
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
-				premium={false}
 				tabTitleSection={
 					<>
 						<div className="general-wrapper">
@@ -649,7 +647,7 @@ const EditStore = () => {
 													) : data?.name ? (
 														data.name
 													) : (
-														<Skeleton width={150}/>
+														<Skeleton width={150} />
 													)}
 
 													<span
@@ -739,7 +737,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : (
-													<Skeleton width={100}/>
+													<Skeleton width={100} />
 												)}
 
 												{modules.includes(
@@ -796,7 +794,7 @@ const EditStore = () => {
 													/>
 												) : Object.keys(data).length ===
 													0 ? (
-													<Skeleton width={150}/>
+													<Skeleton width={150} />
 												) : data?.description ? (
 													<div>
 														<span>
@@ -973,22 +971,21 @@ const EditStore = () => {
 				}
 				Link={Link}
 				settingName={'Store'}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				action={
-					<Popover
-						className="edit-wrapper"
-						template="action"
-						toggleIcon="adminfont-more-vertical"
-						items={actionItems}
-					/>
+					// <Popover
+					// 	className="edit-wrapper"
+					// 	template="action"
+					// 	toggleIcon="adminfont-more-vertical"
+					// 	items={actionItems}
+					// />
+					<></>
 				}
 			/>
 
-			<CommonPopup
+			<PopupUI
 				open={deleteModal}
 				onClose={() => setDeleteModal(false)}
-				width="37.5rem"
+				width={37.5}
 				height="50%"
 				header={{
 					icon: 'storefront',
@@ -1074,7 +1071,7 @@ const EditStore = () => {
 						)}
 					</FormGroupWrapper>
 				</>
-			</CommonPopup>
+			</PopupUI>
 		</>
 	);
 };

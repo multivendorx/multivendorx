@@ -5,13 +5,13 @@ import { __ } from '@wordpress/i18n';
 import {
 	Table,
 	TableCell,
-	CommonPopup,
 	getApiLink,
 	CalendarInput, 
 	FormGroupWrapper,
 	FormGroup,
-	TextArea,
 	AdminButtonUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -434,10 +434,10 @@ const StoreReview: React.FC = () => {
 				realtimeFilter={realtimeFilter}
 			/>
 			{selectedReview && (
-				<CommonPopup
+				<PopupUI
 					open={!!selectedReview}
 					onClose={() => setSelectedReview(null)}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					header={{
 						icon: 'store-review',
@@ -528,7 +528,7 @@ const StoreReview: React.FC = () => {
 								label={__('Respond to customer', 'multivendorx')}
 								htmlFor="reply"
 							>
-								<TextArea
+								<TextAreaUI
 									name="reply"
 									inputClass="input-text"
 									value={replyText}
@@ -538,7 +538,7 @@ const StoreReview: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

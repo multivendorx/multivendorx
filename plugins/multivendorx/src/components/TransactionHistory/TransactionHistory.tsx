@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import '../Announcements/Announcements.scss';
-import { AdminBreadcrumbs, getApiLink, SelectInputUI, Tabs } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, SelectInputUI, SettingsNavigator } from 'zyra';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';
@@ -40,14 +40,14 @@ export const TransactionHistory: React.FC = () => {
 
 	const locationUrl = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'wallet-transaction',
 				name: __('Wallet Transaction', 'multivendorx'),
 				icon: 'wallet-in',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -56,7 +56,7 @@ export const TransactionHistory: React.FC = () => {
 				id: 'direct-transaction',
 				name: __('Direct Transaction', 'multivendorx'),
 				icon: 'direct-transaction',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 	];
@@ -84,8 +84,8 @@ export const TransactionHistory: React.FC = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-store-reactivated"
-				tabTitle={
+				settingIcon="adminfont-store-reactivated"
+				headerTitle={
 					selectedStore
 						? __(
 								`Storewise Transaction History - ${selectedStore.label}`,
@@ -124,20 +124,16 @@ export const TransactionHistory: React.FC = () => {
 				}
 			/>
 
-			<Tabs
-				tabData={tabData}
-				currentTab={locationUrl.get('subtab') as string}
+			<SettingsNavigator
+				settingContent={settingContent}
+				currentSetting={locationUrl.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]} // keeping your original key
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'compact'}
-				premium={false}
 				menuIcon={true}
 			/>
 		</>

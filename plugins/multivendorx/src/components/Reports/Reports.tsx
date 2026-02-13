@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, Tabs } from 'zyra';
+import { AdminBreadcrumbs, SettingsNavigator,  } from 'zyra';
 import '../../dashboard/dashboardCommon.scss';
 import { useLocation, Link } from 'react-router-dom';
 import MarketplaceReport from './MarketplaceReport';
@@ -74,14 +74,14 @@ const Reports = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'marketplace',
 				name: 'Marketplace',
 				icon: 'marketplace-membership',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -90,7 +90,7 @@ const Reports = () => {
 				id: 'products',
 				name: 'Products',
 				icon: 'multi-product',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -99,7 +99,7 @@ const Reports = () => {
 				id: 'stores',
 				name: 'Stores',
 				icon: 'store-inventory',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -108,7 +108,7 @@ const Reports = () => {
 				id: 'store-orders',
 				name: 'Store Orders',
 				icon: 'order',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -117,7 +117,7 @@ const Reports = () => {
 				id: 'refunded-orders',
 				name: 'Refunded Orders',
 				icon: 'marketplace-refund',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 	];
@@ -148,28 +148,24 @@ const Reports = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-report"
-				tabTitle={__('Reports', 'multivendorx')}
+				settingIcon="adminfont-report"
+				headerTitle={__('Reports', 'multivendorx')}
 				description={__(
 					'Track sales, earnings, and store performance with real-time marketplace insights.',
 					'multivendorx'
 				)}
 			/>
 
-			<Tabs
-				tabData={tabData}
-				currentTab={location.get('subtab') as string}
+			<SettingsNavigator
+				settingContent={settingContent}
+				currentSetting={location.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=reports&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]}
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				variant={'compact'}
-				premium={false}
 				menuIcon={true}
 			/>
 		</>

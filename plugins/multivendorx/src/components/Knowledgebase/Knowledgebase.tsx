@@ -4,22 +4,20 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs, 
+	AdminBreadcrumbs,
 	TextArea,
-	CommonPopup,
 	ToggleSettingUI,
 	Container,
 	Column,
 	FormGroupWrapper,
-	FormGroup, 
-	ProPopup,
+	FormGroup,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
+	PopupUI,
 } from 'zyra';
 
 import '../Announcements/Announcements.scss';
-import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -311,7 +309,7 @@ export const KnowledgeBase: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -331,34 +329,35 @@ export const KnowledgeBase: React.FC = () => {
 						setSelectedKb(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-book"
-				tabTitle={__('Knowledge Base', 'multivendorx')}
+				settingIcon="adminfont-book"
+				headerTitle={__('Knowledge Base', 'multivendorx')}
 				description={__(
 					'Build your knowledge base: add new guides or manage existing ones in one place.',
 					'multivendorx'
 				)}
 				buttons={[
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={() => {
+					{
+						label: __('Add New', 'multivendorx'),
+						className: "admin-btn btn-purple-bg",
+						iconClass: 'adminfont-plus',
+						onClick: () => {
 							setValidationErrors({});
 							setAddEntry(true);
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>,
+						}
+					}
 				]}
 			/>
 
 			{addEntry && (
-				<CommonPopup
+				<PopupUI
 					open={addEntry}
 					onClose={handleCloseForm}
 					width="31.25rem"
 					height="70%"
+					position="slide-right-to-left"
+					showBackdrop={true}
 					header={{
 						icon: 'book',
 						title: editId
@@ -368,6 +367,7 @@ export const KnowledgeBase: React.FC = () => {
 							'Write and publish a new knowledge base article to help stores navigate their dashboard.',
 							'multivendorx'
 						),
+						showCloseButton: true, // Add this to show close button in header
 					}}
 					footer={
 						<AdminButtonUI
@@ -461,7 +461,7 @@ export const KnowledgeBase: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 			<Container general>
 				<Column>

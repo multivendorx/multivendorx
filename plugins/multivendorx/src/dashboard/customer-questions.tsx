@@ -6,13 +6,13 @@ import {
 	Table,
 	getApiLink,
 	TableCell,
-	CommonPopup,
-	TextArea, 
 	CalendarInput,
 	FormGroupWrapper,
-	FormGroup, 
+	FormGroup,
 	BasicInputUI,
 	AdminButtonUI,
+	PopupUI,
+	TextAreaUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -109,13 +109,13 @@ const CustomerQuestions: React.FC = () => {
 
 	// Fetch data from backend.
 	function requestData(
-		rowsPerPage :number,
-		currentPage :number,
+		rowsPerPage: number,
+		currentPage: number,
 		categoryFilter = '',
 		searchField = '',
 		orderBy = '',
 		order = '',
-		startDate = new Date( new Date().getFullYear(), new Date().getMonth() - 1, 1),
+		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
 		endDate = new Date(),
 		question_visibility = ''
 	) {
@@ -154,7 +154,7 @@ const CustomerQuestions: React.FC = () => {
 				];
 
 				setStatus(statuses.filter((status) => status.count > 0));
-				setTotalRows(response.data.all|| 0)
+				setTotalRows(response.data.all || 0)
 				setPageCount(Math.ceil(response.data.all / rowsPerPage));
 			})
 			.catch(() => {
@@ -467,10 +467,10 @@ const CustomerQuestions: React.FC = () => {
 			/>
 
 			{selectedQna && (
-				<CommonPopup
+				<PopupUI
 					open={selectedQna}
 					onClose={() => setSelectedQna(null)}
-					width="30rem"
+					width={30}
 					height="70%"
 					header={{
 						icon: 'question',
@@ -511,14 +511,14 @@ const CustomerQuestions: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
-							<TextArea
+							<TextAreaUI
 								name="answer"
 								value={answer}
 								onChange={(e) => setAnswer(e.target.value)}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
-				</CommonPopup>
+				</PopupUI>
 
 			)}
 		</>

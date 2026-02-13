@@ -38,6 +38,7 @@ interface BasicInputProps {
     onMouseOut?: (e: MouseEvent<HTMLInputElement>) => void;
     onFocus?: (e: FocusEvent<HTMLInputElement>) => void;
     onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     msg?: InputFeedback;
     rangeUnit?: string;
     preText?: string;
@@ -67,6 +68,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             onMouseOut,
             onFocus,
             onBlur,
+            onKeyDown,
             msg,
             rangeUnit,
             preText,
@@ -118,6 +120,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
 							onMouseOut={onMouseOut}
 							onFocus={onFocus}
 							onBlur={onBlur}
+                            onKeyDown={onKeyDown}
 							disabled={disabled}
 							readOnly={readOnly}
 							required={required}

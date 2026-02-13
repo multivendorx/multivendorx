@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, useModules, Tabs, Container, Column, MessageState } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, useModules, Container, Column, MessageState, SettingsNavigator } from 'zyra';
 import './CustomerSupport.scss';
 import '../AdminDashboard/AdminDashboard.scss';
 import Qna from './QnATable';
@@ -11,7 +11,7 @@ const CustomerSupport = () => {
 
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			module: 'question-answer',
@@ -20,8 +20,8 @@ const CustomerSupport = () => {
 				name: 'Questions',
 				desc: 'Waiting for your response',
 				icon: 'question',
-				tabTitle: 'Product questions in queue',
-				tabDes: 'Waiting for your response',
+				title: 'Product questions in queue',
+				settingDes: 'Waiting for your response',
 			},
 		},
 		{
@@ -32,8 +32,8 @@ const CustomerSupport = () => {
 				name: 'Store Reviews',
 				icon: 'store-review',
 				desc: 'Track and manage reviews for all stores.',
-				tabTitle: 'Store reviews at a glance',
-				tabDes: 'Track and manage reviews for all stores.',
+				title: 'Store reviews at a glance',
+				settingDes: 'Track and manage reviews for all stores.',
 			},
 		},
 		{
@@ -75,29 +75,24 @@ const CustomerSupport = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-customer-service"
-				tabTitle={__('Customer Support', 'multivendorx')}
+				settingIcon="adminfont-customer-service"
+				headerTitle={__('Customer Support', 'multivendorx')}
 				description={__(
 					'Manage store reviews, support requests, financial transactions, and reported issues.',
 					'multivendorx'
 				)}
 			/>
-			{tabData.length > 0 ? (
-				<Tabs
-					tabData={tabData}
-					currentTab={location.get('subtab') as string}
+			{settingContent.length > 0 ? (
+				<SettingsNavigator
+					settingContent={settingContent}
+					currentSetting={location.get('subtab') as string}
 					getForm={getForm}
 					prepareUrl={(subTab: string) =>
 						`?page=multivendorx#&tab=customer-support&subtab=${subTab}`
 					}
 					appLocalizer={appLocalizer}
-					supprot={[]}
 					Link={Link}
-					hideTitle={true}
-					hideBreadcrumb={true}
 					variant={'compact'}
-					premium={false}
-					menuIcon={true}
 				/>
 			) : (
 				<Container general>

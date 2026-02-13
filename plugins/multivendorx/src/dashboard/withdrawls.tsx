@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, CommonPopup,   SuccessNotice, Card, Container,  Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI } from 'zyra';
+import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI, PopupUI } from 'zyra';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -248,9 +248,9 @@ const Withdrawls: React.FC = () => {
 			</Container>
 
 			{requestWithdrawal && (
-				<CommonPopup
+				<PopupUI
 					open={requestWithdrawal}
-					width="31.25rem"
+					width={31.25}
 					height="40%"
 					onClose={() => setRequestWithdrawal(false)}
 					header={{
@@ -258,15 +258,13 @@ const Withdrawls: React.FC = () => {
 						title: __('Request Withdrawal', 'multivendorx'),
 					}}
 					footer={
-						<>
-							<AdminButtonUI
-								buttons={{
-									icon: 'withdraw',
-									text: __('Disburse', 'multivendorx'),
-									onClick: () => handleWithdrawal(),
-								}}
-							/>
-						</>
+						<AdminButtonUI
+							buttons={{
+								icon: 'withdraw',
+								text: __('Disburse', 'multivendorx'),
+								onClick: () => handleWithdrawal(),
+							}}
+						/>
 					}
 				>
 					<FormGroupWrapper>
@@ -288,7 +286,7 @@ const Withdrawls: React.FC = () => {
 							)}
 						</FormGroup>
 					</FormGroupWrapper>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

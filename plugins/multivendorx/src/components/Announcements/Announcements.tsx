@@ -4,25 +4,23 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs, 
+	AdminBreadcrumbs,
 	TextArea,
-	CommonPopup,
 	Container,
 	Column,
 	FormGroupWrapper,
-	FormGroup, 
-	ProPopup,
+	FormGroup,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
 	ToggleSettingUI,
 	SelectInputUI,
+	PopupUI,
 } from 'zyra';
 
 
 import './Announcements.scss';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
-import { Dialog } from '@mui/material';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 
@@ -413,7 +411,7 @@ export const Announcements: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
+			{/* <Dialog
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 			>
@@ -422,7 +420,7 @@ export const Announcements: React.FC = () => {
 					title="Are you sure"
 					confirmMessage={
 						selectedAn
-							? `Are you sure you want to delete Announcement?`
+							? ``
 							: ''
 					}
 					confirmYesText="Delete"
@@ -433,32 +431,63 @@ export const Announcements: React.FC = () => {
 						setSelectedAn(null);
 					}}
 				/>
-			</Dialog>
+			</Dialog> */}
+
+			<PopupUI
+				position="lightbox"
+				open={confirmOpen}
+				onClose={() => {
+					setConfirmOpen(false);
+				}}
+				showBackdrop={true}
+				header={{
+					icon: 'warning',
+					title: 'Are you sure'
+				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								onClick: () => { setConfirmOpen(false) },
+							},
+							{
+								icon: 'cross',
+								text: __('Delete', 'multivendorx'),
+								onClick: () => { handleConfirmDelete }
+							},
+						]}
+					/>
+				}
+			>
+				<p>Are you sure you want to delete Announcement?</p>
+			</PopupUI>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-announcement"
+				settingIcon="adminfont-announcement"
 				description={
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
 				}
-				tabTitle="Announcements"
+				headerTitle="Announcements"
 				buttons={[
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={async () => {
+					{
+						label: __('Add New', 'multivendorx'),
+						className: "admin-btn btn-purple-bg",
+						iconClass: 'adminfont-plus',
+						onClick: () => {
 							setValidationErrors({});
-							await fetchStoreOptions();
+							fetchStoreOptions();
 							setAddAnnouncements(true);
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>,
+						}
+					}
 				]}
 			/>
 
-			<CommonPopup
+			<PopupUI
 				open={addAnnouncements}
 				onClose={handleCloseForm}
-				width="31.25rem"
+				width={31.25}
 				height="80%"
 				header={{
 					icon: 'announcement',
@@ -574,7 +603,7 @@ export const Announcements: React.FC = () => {
 								</div>
 							)}
 						</FormGroup>
-						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.','multivendorx')} htmlFor="status">
+						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.', 'multivendorx')} htmlFor="status">
 							<ToggleSettingUI
 								options={[
 									{
@@ -600,7 +629,7 @@ export const Announcements: React.FC = () => {
 					</FormGroupWrapper>
 				</>
 				{error && <p className="error-text">{error}</p>}
-			</CommonPopup>
+			</PopupUI >
 
 			<Container general>
 				<Column>

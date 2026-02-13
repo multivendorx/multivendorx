@@ -4,7 +4,7 @@ import Select from 'react-select';
 import type { MultiValue, SingleValue } from 'react-select';
 
 // Internal dependencies
-import { AdminButtonUI } from './UI/AdminButton';
+import { AdminButtonUI } from './AdminButton';
 
 
 // Types

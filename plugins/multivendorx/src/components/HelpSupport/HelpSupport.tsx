@@ -22,8 +22,8 @@ const HelpSupport: React.FC = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-customer-support"
-				tabTitle="Help & Support"
+				settingIcon="adminfont-customer-support"
+				headerTitle="Help & Support"
 				description={
 					'Get fast help, expert guidance, and easy-to-follow resources - all in one place.'
 				}
