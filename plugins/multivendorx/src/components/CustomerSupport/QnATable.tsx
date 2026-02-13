@@ -14,7 +14,7 @@ import {
 	PopupUI,
 } from 'zyra';
 
-// import { Dialog } from '@mui/material';
+import Popup from '../Popup/Popup';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -282,11 +282,14 @@ const Qna: React.FC = () => {
 
 	return (
 		<>
-			{/* <Dialog
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title="Delete Question"
 					confirmMessage={
@@ -302,7 +305,7 @@ const Qna: React.FC = () => {
 						setSelectedQn(null);
 					}}
 				/>
-			</Dialog> */}
+			</PopupUI>
 			<TableCard
 				headers={headers}
 				rows={rows}

@@ -149,7 +149,8 @@
     align-items: center;
 
     .title {
-        font-size: 1625rem;
+        font-size: 1.625rem;
+        line-height: 1.5;
         color: $text-color;
         padding-top: 0.625rem;
     }
@@ -160,7 +161,7 @@
     }
 
     .buttons-wrapper {
-        padding-top: 0.813rem;
+        padding-top: 1.813rem;
     }
 }
 

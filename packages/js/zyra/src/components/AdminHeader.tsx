@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 
 // Internal Dependencies
-import { PopupUI } from './UI/Popup';
+import { PopupUI } from './Popup';
 import HeaderSearch from './HeaderSearch';
 import ItemList from './ItemList';
 import Tabs from './UI/Tabs';
