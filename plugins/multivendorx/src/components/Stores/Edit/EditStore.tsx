@@ -11,7 +11,8 @@ import {
 	AdminButtonUI,
 	SelectInputUI,
 	SettingsNavigator,
-	PopupUI
+	PopupUI,
+	useOutsideClick
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -20,7 +21,7 @@ import StoreSquad from './StoreStaff';
 import PolicySettings from './PolicySettings';
 import ShippingSettings from './ShippingSettings';
 import StoreRegistration from './StoreRegistrationForm';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import axios from 'axios';
 import Overview from './Overview';
 import '../ViewStore.scss';
@@ -39,7 +40,8 @@ const EditStore = () => {
 	const location = useLocation();
 	const [prevName, setPrevName] = useState('');
 	const [prevDesc, setPrevDesc] = useState('');
-
+	const headerRef = useRef<HTMLDivElement>(null);
+	const storeRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (editName) {
 			setPrevName(data?.name || '');
@@ -49,45 +51,15 @@ const EditStore = () => {
 		}
 	}, [editName, editDesc]);
 
-	useEffect(() => {
-		const handleOutsideClick = (e: MouseEvent) => {
-			const target = e.target as HTMLElement;
+	useOutsideClick(storeRef, () => {
+		if (editName || editDesc) {
+			autoSave({ name: data.name, description: data.description });
+		}
+		setEditName(false);
+		setEditDesc(false);
+	});
 
-			// If clicked inside name or desc editing area, ignore
-			if (target.closest('.store-name') || target.closest('.des')) {
-				return;
-			}
-
-			if (editName || editDesc) {
-				autoSave({ name: data.name, description: data.description });
-			}
-
-			setEditName(false);
-			setEditDesc(false);
-		};
-
-		document.addEventListener('click', handleOutsideClick);
-		return () => document.removeEventListener('click', handleOutsideClick);
-	}, [data]);
-
-	// Close dropdown on click outside
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				(event.target as HTMLElement).closest('.edit-section') ||
-				(event.target as HTMLElement).closest('.edit-wrapper')
-			) {
-				return;
-			}
-			setBannerMenu(false);
-			setLogoMenu(false);
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, []);
+	useOutsideClick(headerRef, () => { setBannerMenu(false); setLogoMenu(false); });
 
 	const hash = location.hash.replace(/^#/, '');
 
@@ -420,7 +392,7 @@ const EditStore = () => {
 				appLocalizer={appLocalizer}
 				settingTitleSection={
 					<>
-						<div className="general-wrapper">
+						<div className="general-wrapper" >
 							<div className="store-header">
 								<div
 									className="banner"
@@ -449,6 +421,7 @@ const EditStore = () => {
 													setBannerMenu(true);
 													setLogoMenu(false);
 												}}
+												ref={headerRef}
 											>
 												<i className="adminfont-edit"></i>
 												{__(
@@ -607,7 +580,7 @@ const EditStore = () => {
 										</div>
 
 										<div className="details">
-											<div className="name">
+											<div className="name" ref={storeRef}>
 												<div
 													className="store-name"
 													onClick={() =>
