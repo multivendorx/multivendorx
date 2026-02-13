@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-	BasicInput,
-	TextArea,
-	FileInput,
-	SelectInput,
-	useModules,
-	getApiLink,
-	Tabs,
-} from 'zyra';
+import { SettingsNavigator, useModules } from 'zyra';
 import GeneralSettings from './settings/general';
 import Appearance from './settings/Appearance';
 import SocialMedia from './settings/SocialMedia';
@@ -18,7 +10,6 @@ import Withdrawl from './settings/withdrawl';
 import Privacy from './settings/Privacy';
 import Verification from './settings/Verification';
 import ShippingDelivery from './settings/ShippingDelivery';
-import LiveChat from './settings/LiveChat';
 import { applyFilters } from '@wordpress/hooks';
 
 const settings = () => {
@@ -57,7 +48,7 @@ const settings = () => {
 	// Build hash URL for a given tab
 	const prepareUrl = (tabId: string) => `#subtab=${tabId}`;
 
-	const tabData = applyFilters(
+	const settingContent = applyFilters(
 		'multivendorx_store_settings_tabs',
 		[
 			{
@@ -201,16 +192,14 @@ const settings = () => {
 	return (
 		<>
 			<div className="horizontal-tabs">
-				<Tabs
-					tabData={tabData}
-					currentTab={currentTab}
+				<SettingsNavigator
+					settingContent={settingContent}
+					currentSetting={currentTab}
 					getForm={getForm}
 					prepareUrl={prepareUrl}
 					appLocalizer={appLocalizer}
 					settingName="Settings"
-					supprot={[]}
 					Link={SimpleLink}
-					submenuRender={true}
 					menuIcon={true}
 				/>
 			</div>

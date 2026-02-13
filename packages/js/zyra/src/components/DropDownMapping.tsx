@@ -10,7 +10,6 @@ interface DropDownMappingProps {
     onChange: ( value: [ string, string ][] ) => void;
     proSetting?: boolean;
     proSettingChanged: () => boolean;
-    description?: string;
     syncFieldsMap: Record<
         string,
         { heading: string; fields: Record< string, string > }
@@ -21,7 +20,6 @@ const DropDownMapping: React.FC< DropDownMappingProps > = ( {
     value = [],
     onChange,
     proSettingChanged,
-    description,
     syncFieldsMap,
 } ) => {
     const systems = useMemo(
@@ -246,12 +244,6 @@ const DropDownMapping: React.FC< DropDownMappingProps > = ( {
                     </button>
                 </div>
             </div>
-            { description && (
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={ { __html: description } }
-                ></p>
-            ) }
         </>
     );
 };

@@ -3,12 +3,14 @@
 	"name": "multivendorx/marketplace-stores",
 	"title": "Stores List",
 	"category": "multivendorx",
-	"icon": "store",
+	"icon": "list-view",
 	"description": "A block that displays stores list using React.",
 	"supports": {
 		"html": false
 	},
 	"textdomain": "multivendorx",
 	"editorScript": "file:./index.js",
-	"script": "file:./index.js"
+	"script": "file:./index.js",
+	"editorStyle": [ "multivendorx-common-block-style" ],
+  	"style": [ "multivendorx-common-block-style" ]
 }

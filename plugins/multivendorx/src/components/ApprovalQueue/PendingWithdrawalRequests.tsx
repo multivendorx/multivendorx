@@ -1,94 +1,28 @@
 /* global appLocalizer */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Table, getApiLink, TableCell } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
-
-type StoreRow = {
-	id?: number;
-	store_name?: string;
-	store_slug?: string;
-	status?: string;
-	withdraw_amount?: any;
-};
+import { getApiLink, TableCard } from 'zyra';
+import { QueryProps, TableRow } from '@/services/type';
+import { formatCurrency } from '@/services/commonFunction';
 
 interface Props {
 	onUpdated?: () => void;
 }
 
 const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
-	const [data, setData] = useState<StoreRow[] | null>(null);
-
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [pageCount, setPageCount] = useState(0);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [rowMap, setRowMap] = useState<Record<number, any>>({}); // map ID → row data
 
-	// Fetch total rows on mount
-	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { count: true, pending_withdraw: true },
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(Math.ceil(response.data / pagination.pageSize));
-			})
-			.catch(() => {});
-	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, [pagination]);
-
-	// Fetch data from backend.
-	function requestData(rowsPerPage :number, currentPage :number) {
-		setData(null);
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				pending_withdraw: true,
-				page: currentPage,
-				row: rowsPerPage,
-			},
-		})
-			.then((response) => {
-				setData(Array.isArray(response.data) ? response.data : []);
-			})
-
-			.catch(() => {
-				setData([]);
-			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (rowsPerPage: number, currentPage: number) => {
-		requestData(rowsPerPage, currentPage);
-	};
 	const handleSingleAction = (action: string, row: any) => {
-		let storeId = row.id;
-		if (!storeId) {
-			return;
-		}
+		if (!row?.id) return;
 
 		axios({
 			method: 'PUT',
-			url: getApiLink(appLocalizer, `transaction/${storeId}`),
+			url: getApiLink(appLocalizer, `transaction/${row.id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: {
 				withdraw: true,
@@ -98,96 +32,89 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 			},
 		})
 			.then(() => {
-				requestData(pagination.pageSize, pagination.pageIndex + 1);
+				fetchData({});
 				onUpdated?.();
 			})
 			.catch(console.error);
 	};
 
-	// Column definitions
-	const columns: ColumnDef<StoreRow>[] = [
+	const headers = [
+		{ key: 'store_name', label: __('Store', 'multivendorx') },
+		{ key: 'status', label: __('Status', 'multivendorx') },
+		{ key: 'withdraw_amount', label: __('Withdraw Amount', 'multivendorx') },
 		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('Store', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.store_name || ''}>
-					{row.original.store_name || '-'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Status', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.status || ''}>
-					{row.original.status || '-'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Withdraw Amount', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.withdraw_amount || ''}>
-					{row.original.withdraw_amount || '-'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.status || ''}>
-					<span
-						className="admin-btn btn-purple"
-						onClick={() => {
-							handleSingleAction('approve', row.original);
-						}}
-					>
-						<i className="adminfont-check"></i> {__('Approve', 'multivendorx')}
-					</span>
-
-					<span
-						className="admin-btn btn-red"
-						onClick={() => handleSingleAction('reject', row.original)}
-					>
-						<i className="adminfont-close"></i> {__('Reject', 'multivendorx')}
-					</span>
-				</TableCell>
-			),
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Approve', 'multivendorx'),
+					icon: 'check',
+					onClick: (id: number) => handleSingleAction('approve', rowMap[id])
+				},
+				{
+					label: __('Reject', 'multivendorx'),
+					icon: 'close',
+					onClick: (id: number) => handleSingleAction('reject', rowMap[id]),
+					className: 'danger',
+				},
+			],
 		},
 	];
 
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: query.paged,
+					per_page: query.per_page,
+					pending_withdraw: true,
+				},
+			})
+			.then((response) => {
+				const stores = Array.isArray(response.data) ? response.data : [];
+
+				const ids = stores.map((s) => s.id);
+				setRowIds(ids);
+
+				const map: Record<number, any> = {};
+				stores.forEach((s) => {
+					map[s.id] = s;
+				});
+				setRowMap(map);
+
+				const mappedRows: any[][] = stores.map((store) => [
+					{ value: store.store_name, display: store.store_name },
+					{ value: store.status, display: store.status },
+					{ value: store.withdraw_amount, display: formatCurrency(store.withdraw_amount) },
+				]);
+
+				setRows(mappedRows);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('Pending withdrawal fetch failed:', error);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
+	};
+
 	return (
-		<>
-			<div className="admin-table-wrapper">
-				<Table
-					data={data}
-					columns={columns as ColumnDef<Record<string, any>, any>[]}
-					rowSelection={rowSelection}
-					onRowSelectionChange={setRowSelection}
-					defaultRowsPerPage={10}
-					pageCount={pageCount}
-					pagination={pagination}
-					onPaginationChange={setPagination}
-					handlePagination={requestApiForData}
-					perPageOption={[10, 25, 50]}
-				/>
-			</div>
-		</>
+		<div className="admin-table-wrapper">
+			<TableCard
+				headers={headers}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={fetchData}
+				ids={rowIds}
+				format={appLocalizer.date_format}
+			/>
+		</div>
 	);
 };
 

@@ -14,7 +14,7 @@
     },
     "iconColor": {
       "type": "string",
-      "default": "#ffffff"
+      "default": "#000"
     },
     "iconGap": {
       "type": "number",
@@ -49,5 +49,7 @@
         "radius": true
       }
     }
-  }
+  },
+  "editorStyle": [ "multivendorx-common-block-style" ],
+  "style": [ "multivendorx-common-block-style" ]
 }

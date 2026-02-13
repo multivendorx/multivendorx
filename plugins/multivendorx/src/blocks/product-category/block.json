@@ -1,0 +1,17 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/product-category",
+  "title": "Product Category(w)",
+  "category": "multivendorx",
+  "icon": "screenoptions",
+  "description": "Allow customers to filter and browse store products by category.",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "align": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "align": true
+  }
+}

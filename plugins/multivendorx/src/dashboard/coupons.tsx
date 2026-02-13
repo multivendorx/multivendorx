@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
-	AdminButton,
-	BasicInput,
-	CommonPopup,
+	AdminButtonUI,
+	BasicInputUI,
 	FormGroup,
 	FormGroupWrapper,
-	getApiLink,
-	MultiCalendarInput,
-	ProPopup,
-	SelectInput,
+	CalendarInput,
+	PopupUI,
+	SelectInputUI,
 	Table,
 	TableCell,
-	TextArea,
-	ToggleSetting,
+	TextAreaUI,
+	ToggleSettingUI,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -21,8 +19,8 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import axios from 'axios';
+import Popup from '../components/Popup/Popup';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
-import { Dialog } from '@mui/material';
 
 type CouponRow = {
 	id: number;
@@ -342,11 +340,10 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Discount type', 'multivendorx')} htmlFor="discount_type">
-							<SelectInput
+							<SelectInputUI
 								name="discount_type"
 								value={formData.discount_type}
 								options={discountOptions}
-								type="single-select"
 								onChange={(val: any) =>
 									setFormData({ ...formData, discount_type: val?.value || '' })
 								}
@@ -357,7 +354,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Coupon amount', 'multivendorx')} htmlFor="coupon_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="coupon_amount"
 								value={formData.coupon_amount}
@@ -368,8 +365,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Allow free shipping', 'multivendorx')} htmlFor="free_shipping">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -380,7 +376,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Coupon expiry date', 'multivendorx')} htmlFor="expiry_date">
-							<BasicInput
+							<BasicInputUI
 								type="date"
 								name="expiry_date"
 								value={formData.expiry_date}
@@ -399,7 +395,7 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Usage limit per coupon', 'multivendorx')} htmlFor="usage_limit">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="usage_limit"
 								value={formData.usage_limit}
@@ -410,7 +406,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Limit usage to X items', 'multivendorx')} htmlFor="limit_usage_to_x_items">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="limit_usage_to_x_items"
 								value={formData.limit_usage_to_x_items}
@@ -421,7 +417,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Usage limit per user', 'multivendorx')} htmlFor="usage_limit_per_user">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="usage_limit_per_user"
 								value={formData.usage_limit_per_user}
@@ -442,7 +438,7 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Minimum spend', 'multivendorx')} htmlFor="minimum_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="minimum_amount"
 								value={formData.minimum_amount}
@@ -453,7 +449,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Maximum spend', 'multivendorx')} htmlFor="maximum_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="maximum_amount"
 								value={formData.maximum_amount}
@@ -464,8 +460,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Individual use only', 'multivendorx')} htmlFor="individual_use">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -478,8 +473,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Exclude sale items', 'multivendorx')} htmlFor="exclude_sale_items">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -492,7 +486,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Allowed emails', 'multivendorx')} htmlFor="customer_email">
-							<BasicInput
+							<BasicInputUI
 								type="text"
 								name="customer_email"
 								value={formData.customer_email}
@@ -870,7 +864,7 @@ const AllCoupon: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<MultiCalendarInput
+				<CalendarInput
 					value={{
 						startDate: dateFilter.start_date,
 						endDate: dateFilter.end_date,
@@ -930,10 +924,10 @@ const AllCoupon: React.FC = () => {
 			</div>
 
 			{AddCoupon && (
-				<CommonPopup
+				<PopupUI
 					open={AddCoupon}
 					onClose={() => setAddCoupon(false)}
-					width="31.25rem"
+					width={31.25}
 					height="100%"
 					header={{
 						icon: 'coupon',
@@ -944,32 +938,29 @@ const AllCoupon: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'contact-form',
 									text: __('Draft', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => handleSave('draft'),
 								},
 								{
 									icon: 'save',
 									text: __('Publish', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSave('publish'),
 								},
 							]}
 						/>
 					}
-
 				>
 					<>
 						<FormGroupWrapper>
 							<FormGroup label={__('Coupon code', 'multivendorx')} htmlFor="title">
-								<BasicInput
+								<BasicInputUI
 									type="text"
 									name="title"
-
 									value={formData.title}
 									generate={true}
 									onChange={(e: any) =>
@@ -987,7 +978,7 @@ const AllCoupon: React.FC = () => {
 							</FormGroup>
 
 							<FormGroup label={__('Description (optional)', 'multivendorx')} htmlFor="title">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									rowNumber={6}
 									value={formData.content}
@@ -1026,13 +1017,17 @@ const AllCoupon: React.FC = () => {
 							)}
 						</div>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
-			<Dialog
+
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width="31.25rem"
+				height="auto"
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title={__('Are you sure?', 'multivendorx')}
 					confirmMessage={
@@ -1051,7 +1046,45 @@ const AllCoupon: React.FC = () => {
 						setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog>
+			</PopupUI>
+			<PopupUI
+				position="lightbox"
+				open={confirmOpen}
+				onClose={() => {
+					setConfirmOpen(false);
+					setSelectedCoupon(null);
+				}}
+				showBackdrop={true}
+				header={{
+					icon: 'warning',
+					title: __('Are you sure?', 'multivendorx'),
+					showCloseButton: true
+				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								onClick: () => {
+									setConfirmOpen(false);
+									setSelectedCoupon(null);
+								},
+							},
+							{
+								icon: 'cross',
+								text: __('Delete', 'multivendorx'),
+								onClick: handleConfirmDelete,
+							},
+						]}
+					/>
+				}
+			>
+				<p>
+					{__('Are you sure you want to delete this coupon?', 'multivendorx')}
+				</p>
+			</PopupUI>
 
 			<Table
 				data={data}

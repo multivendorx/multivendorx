@@ -112,6 +112,7 @@ class Utill {
         'announcement_transient' => 'multivendorx_announcement_data_',
         'review_transient'       => 'multivendorx_review_data_',
         'report_transient'       => 'multivendorx_report_data_',
+        'withdrawal_transient'   => 'multivendorx_withdrawal_data_',
     );
 
     const WOO_SETTINGS = array(
@@ -480,4 +481,33 @@ class Utill {
             'end_date'   => $end_date,
         );
     }
+
+    /**
+     * Convert WordPress PHP date format to React date picker format
+     */
+    public static function wp_to_react_date_format($format) {
+        static $map = [
+            'Y' => 'YYYY',
+            'y' => 'YY',
+            'F' => 'MMMM',
+            'M' => 'MMM',
+            'm' => 'MM',
+            'n' => 'M',
+            'd' => 'DD',
+            'j' => 'D',
+            'l' => 'dddd',
+            'D' => 'ddd',
+            'H' => 'HH',
+            'G' => 'H',
+            'h' => 'hh',
+            'g' => 'h',
+            'i' => 'mm',
+            's' => 'ss',
+            'A' => 'A',
+            'a' => 'a',
+        ];
+
+        return strtr($format, $map);
+    }
+
 }

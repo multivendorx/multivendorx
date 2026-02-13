@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BasicInput, TextArea, SuccessNotice, getApiLink, FormGroupWrapper, FormGroup } from 'zyra';
+import {   TextArea, SuccessNotice, getApiLink, FormGroupWrapper, FormGroup, BasicInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const GeneralSettings = () => {
@@ -63,7 +63,7 @@ const GeneralSettings = () => {
 					label={__('Name', 'multivendorx')}
 					htmlFor="name"
 				>
-					<BasicInput
+					<BasicInputUI
 						name="name"
 						value={formData.name || ''}
 						onChange={handleChange}
@@ -75,7 +75,7 @@ const GeneralSettings = () => {
 					label={__('Storefront link', 'multivendorx')}
 					htmlFor="slug"
 				>
-					<BasicInput
+					<BasicInputUI
 						name="slug"
 						value={formData.slug || ''}
 						onChange={handleChange}
@@ -101,7 +101,7 @@ const GeneralSettings = () => {
 					)}
 					htmlFor="messageToBuyer"
 				>
-					<BasicInput
+					<BasicInputUI
 						name="messageToBuyer"
 						value={formData.messageToBuyer || ''}
 						onChange={handleChange}

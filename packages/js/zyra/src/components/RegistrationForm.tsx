@@ -6,18 +6,12 @@ import { ReactSortable } from 'react-sortablejs';
 import ButtonCustomizer from './ButtonCustomiser';
 import Elements from './Elements';
 import SettingMetaBox from './SettingMetaBox';
-import SimpleInput from './SimpleInput';
 import MultipleOptions from './MultipleOption';
-import Attachment from './Attachment';
-import Recaptcha from './Recaptcha';
-import Datepicker from './DatePicker';
-import TimePicker from './TimePicker';
-import TemplateSection from './EmailTemplate/TemplateSection';
-import BlockLayout from './EmailTemplate/BlockLayout';
-import ImageGallery from './EmailTemplate/ImageGallery';
 import AddressField, { AddressFormField } from './AddressField';
-import TemplateTextArea from './EmailTemplate/TemplateTextArea';
+import TextArea from './TextArea';
+import FileInput from './FileInput';
 import '../styles/web/RegistrationForm.scss';
+import { BasicInputUI } from './BasicInput';
 
 // Types
 export type FieldValue =
@@ -25,7 +19,7 @@ export type FieldValue =
     | number
     | boolean
     | FieldValue[]
-    | { [ key: string ]: FieldValue };
+    | { [key: string]: FieldValue };
 
 export interface Option {
     id: string;
@@ -41,13 +35,6 @@ export interface SelectOption {
     name?: string;
 }
 
-interface ImageItem {
-    id: string;
-    url: string;
-    alt: string;
-    caption?: string;
-}
-
 export interface FormField {
     id: number;
     type: string;
@@ -58,8 +45,6 @@ export interface FormField {
     options?: Option[];
     sitekey?: string;
     readonly?: boolean;
-    images?: ImageItem[];
-    layout?: { blocks?: Array<Record<string, unknown>> };
     charlimit?: number;
     row?: number;
     column?: number;
@@ -264,11 +249,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
     const [opendInput, setOpendInput] = useState<FormField | null>(null);
     const [randMaxId, setRendMaxId] = useState<number>(0);
 
-    // State for image gallery
-    const [showImageGallery, setShowImageGallery] = useState(false);
-    const [selectedFieldForGallery, setSelectedFieldForGallery] =
-        useState<FormField | null>(null);
-
     useEffect(() => {
         setRendMaxId(
             formFieldList.reduce(
@@ -312,12 +292,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
             newFormField.options = DEFAULT_OPTIONS;
         } else if (type === 'title') {
             newFormField.label = DEFAULT_FORM_TITLE;
-        } else if (type === 'image-gallery') {
-            newFormField.label = 'Image Gallery';
-            newFormField.images = [];
-        } else if (type === 'block-layout') {
-            newFormField.label = 'Content Block';
-            newFormField.layout = { blocks: [] };
         } else if (type === 'address') {
             newFormField.label = 'Address';
             newFormField.fields = [
@@ -362,9 +336,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     label: 'Country',
                     type: 'select',
                     options: [
-                        'India', 
-                        'USA', 
-                        'UK', 
+                        'India',
+                        'USA',
+                        'UK',
                         'Canada'
                     ],
                 },
@@ -450,7 +424,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
 
         const newFormFieldList = [...formFieldList];
 
-       if ( parentId !== -1 ) {
+        if (parentId !== -1) {
             // Handle subfield
             const parentIndex = newFormFieldList.findIndex(
                 (f) => f.id === parentId
@@ -521,72 +495,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
         setOpendInput(newFormField);
     };
 
-    const handleImageSelect = (images: ImageItem[]) => {
-        if (!selectedFieldForGallery) {
-            return;
-        }
-
-        const index = formFieldList.findIndex(
-            (f) => f.id === selectedFieldForGallery.id
-        );
-        if (index >= 0) {
-            handleFormFieldChange(index, 'images', images);
-        }
-
-        setShowImageGallery(false);
-        setSelectedFieldForGallery(null);
-    };
-
-    // Image Gallery Field Component
-    const ImageGalleryField: React.FC<{
-        formField: FormField;
-        onChange: (key: string, value: FieldValue) => void;
-    }> = ({ formField, onChange }) => {
-        return (
-            <div className="image-gallery-field">
-                <label>{formField.label}</label>
-                <div className="gallery-preview">
-                    {formField.images && formField.images.length > 0 ? (
-                        <div className="selected-images">
-                            {formField.images.map((image, index) => (
-                                <div key={index} className="image-thumbnail">
-                                    <img src={image.url} alt={image.alt} />
-                                    <button
-                                        className="remove-image"
-                                        onClick={() => {
-                                            const newImages =
-                                                formField.images?.filter(
-                                                    (_, i) => i !== index
-                                                ) || [];
-                                            onChange('images', newImages);
-                                        }}
-                                    >
-                                        <i className="admin-font adminfont-delete"></i>
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="empty-gallery">
-                            <i className="admin-font adminfont-image"></i>
-                            <p>No images selected</p>
-                        </div>
-                    )}
-                </div>
-                <button
-                    className="admin-btn btn-purple"
-                    onClick={() => {
-                        setSelectedFieldForGallery(formField);
-                        setShowImageGallery(true);
-                    }}
-                >
-                    <i className="admin-font adminfont-plus-circle"></i>
-                    Select Images
-                </button>
-            </div>
-        );
-    };
-
     // Tabs configuration
     const activeTab = 'blocks';
     const tabs = [
@@ -651,9 +559,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     className={`form-heading ${formFieldList[0]?.disabled ? 'disable' : ''
                         }`}
                 >
-                    <input
-                        type="text"
-                        className="basic-input"
+                    <BasicInputUI
+                        type= "text"
                         placeholder={formTitlePlaceholder}
                         value={formFieldList[0]?.label}
                         onChange={(e) => {
@@ -749,16 +656,13 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     {['text', 'email', 'number'].includes(
                                         formField.type
                                     ) && (
-                                            <SimpleInput
-                                                formField={formField}
-                                                onChange={(key, value) =>
-                                                    handleFormFieldChange(
-                                                        index,
-                                                        key,
-                                                        value
-                                                    )
-                                                }
-                                            />
+                                            <>
+                                                <p>{formField.label}</p>
+                                                <BasicInputUI
+                                                    type= {formField.type}
+                                                    placeholder= {formField.type}
+                                                />
+                                            </>
                                         )}
                                     {[
                                         'radio',
@@ -768,13 +672,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                     ].includes(formField.type) && (
                                             <MultipleOptions
                                                 formField={formField}
-                                                onChange={(key, value) =>
-                                                    handleFormFieldChange(
-                                                        index,
-                                                        key,
-                                                        value
-                                                    )
-                                                }
                                                 type={
                                                     formField.type as
                                                     | 'radio'
@@ -786,97 +683,70 @@ const CustomForm: React.FC<CustomFormProps> = ({
                                             />
                                         )}
                                     {formField.type === 'datepicker' && (
-                                        <Datepicker
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <BasicInputUI
+                                                type= "date"
+                                                placeholder= {formField.type}
+                                            />
+                                        </>
                                     )}
                                     {formField.type === 'TimePicker' && (
-                                        <TimePicker
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <BasicInputUI
+                                                type= "time"
+                                                placeholder= {formField.type}
+                                            />
+                                        </>
                                     )}
                                     {formField.type === 'attachment' && (
-                                        <Attachment />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <FileInput
+                                                value={''}
+                                                inputClass="form-input"
+                                                name="image"
+                                                type="hidden"
+                                                imageWidth={75}
+                                                imageHeight={75}
+                                            />
+                                        </>
                                     )}
                                     {formField.type === 'section' && (
-                                        <TemplateSection
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
-                                    )}
-                                    {formField.type === 'block-layout' && (
-                                        <BlockLayout />
-                                    )}
-                                    {formField.type === 'image-gallery' && (
-                                        <ImageGalleryField
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <BasicInputUI
+                                                type= "text"
+                                                value={formField.label}
+                                                placeholder= {formField.type}
+                                            />
+                                        </>
                                     )}
                                     {formField.type === 'textarea' && (
-                                        <TemplateTextArea
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <>
+                                            <p>{formField.label}</p>
+                                            <TextArea
+                                                name="content"
+                                            />
+                                        </>
                                     )}
                                     {formField.type === 'recaptcha' && (
-                                        <Recaptcha
-                                            formField={formField}
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                        />
+                                        <div
+                                            className={`main-input-wrapper ${!formField.sitekey ? 'recaptcha' : ''
+                                                }`}
+                                        >
+                                            {formField.sitekey
+                                                ? 'reCAPTCHA has been successfully added to the form.'
+                                                : 'reCAPTCHA is not configured.'}
+                                        </div>
                                     )}
                                     {formField.type === 'address' && (
                                         <AddressField
                                             formField={
                                                 formField as AddressFormField
                                             }
-                                            onChange={(key, value) =>
-                                                handleFormFieldChange(
-                                                    index,
-                                                    key,
-                                                    value
-                                                )
-                                            }
-                                            opendInput={opendInput} // pass current opened input
-                                            setOpendInput={setOpendInput} // allow subfields to set it
+                                            opendInput={opendInput}
+                                            setOpendInput={setOpendInput}
                                         />
                                     )}
                                     {formField.type === 'divider' && (
@@ -1009,33 +879,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                     </>
                 )}
             </div>
-
-            { /* Image Gallery Modal */}
-            {showImageGallery && (
-                <div className="modal-overlay">
-                    <div className="modal-content large">
-                        <div className="modal-header">
-                            <h3>Select Images</h3>
-                            <button
-                                className="close-btn"
-                                onClick={() => {
-                                    setShowImageGallery(false);
-                                    setSelectedFieldForGallery(null);
-                                }}
-                            >
-                                <i className="admin-font adminfont-close"></i>
-                            </button>
-                        </div>
-                        <ImageGallery
-                            onImageSelect={handleImageSelect}
-                            multiple={true}
-                            selectedImages={
-                                selectedFieldForGallery?.images || []
-                            }
-                        />
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

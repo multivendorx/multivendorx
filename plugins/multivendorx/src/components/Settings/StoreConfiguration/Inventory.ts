@@ -4,7 +4,7 @@ export default {
 	id: 'inventory',
 	priority: 6,
 	name: __('Inventory', 'multivendorx'),
-	tabTitle: 'Store Inventory Notifications',
+	headerTitle: 'Store Inventory Notifications',
 	desc: __(
 		'Manage inventory alerts and stock monitoring settings for stores in your marketplace.',
 		'multivendorx'
@@ -44,11 +44,16 @@ export default {
 				{
 					key: 'low_stock_alert_threshold',
 					type: 'number',
-					preText: __(
-						'Notify stores when inventory falls below',
-						'multivendorx'
-					),
-					postText: __('units.', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('Notify stores when inventory reaches below', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __('units.', 'multivendorx'),
+					},
 					size: '8rem',
 					dependent: {
 						key: 'low_stock_alert', // field it depends on
@@ -82,11 +87,16 @@ export default {
 				{
 					key: 'out_of_stock_alert_threshold',
 					type: 'number',
-					preText: __(
-						'Notify stores when inventory reaches below',
-						'multivendorx'
-					),
-					postText: __('units.', 'multivendorx'),
+					beforeElement: {
+						type: 'preposttext',
+						textType: 'pre',
+						preText: __('Notify stores when inventory reaches below', 'multivendorx'),
+					},
+					afterElement: {
+						type: 'preposttext',
+						textType: 'post',
+						postText: __('units.', 'multivendorx'),
+					},
 					size: '8rem',
 					dependent: {
 						key: 'out_of_stock_alert', // depends on checkbox

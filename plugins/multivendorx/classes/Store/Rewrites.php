@@ -228,10 +228,22 @@ class Rewrites {
         if ( ! $store_slug ) {
             return;
         }
-
+        
         FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-email-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-phone-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-social-icons-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-logo-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-banner-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-policy-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-review-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-highlighted-store-products-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-address-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-quick-info-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-product-category-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-tabs-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
@@ -253,17 +265,17 @@ class Rewrites {
             return $filtered_template;
         }
 
-        $store_name = get_query_var( $this->custom_store_url );
+        // $store_name = get_query_var( $this->custom_store_url );
 
-        if ( ! empty( $store_name ) ) {
-            $store = Store::get_store( $store_name, 'slug' );
-        }
+        // if ( ! empty( $store_name ) ) {
+        //     $store = Store::get_store( $store_name, 'slug' );
+        // }
 
-        // Classic theme fallback
-        $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
-        if ( file_exists( $classic_template ) ) {
-			return $classic_template;
-        }
+        // // Classic theme fallback
+        // $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
+        // if ( file_exists( $classic_template ) ) {
+		// 	return $classic_template;
+        // }
 
         return $template;
     }

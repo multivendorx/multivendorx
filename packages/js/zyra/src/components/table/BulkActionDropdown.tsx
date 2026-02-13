@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { AdminButtonUI } from '../AdminButton';
+import { SelectInputUI } from '../SelectInput';
 
 export type BulkAction = {
 	label: string;
@@ -6,71 +8,69 @@ export type BulkAction = {
 };
 
 interface BulkActionDropdownProps {
-	actions: BulkAction[];
+	actions?: BulkAction[]; // optional now
 	selectedIds: number[];
 	totalIds: number[];
-	onApply: (action: string) => void;
+	onApply?: (action: string) => void; // optional
 	onClearSelection: () => void;
 	onSelectCsvDownloadApply?: (selectedIds: number[]) => void;
 	onToggleSelectAll: (select: boolean) => void;
+	showDropdown?: boolean; // new prop to control dropdown visibility
 }
 
 const BulkActionDropdown: React.FC<BulkActionDropdownProps> = ({
-	actions,
+	actions = [],
 	selectedIds,
 	onApply,
 	onClearSelection,
 	onSelectCsvDownloadApply,
 	onToggleSelectAll,
 	totalIds,
+	showDropdown = true,
 }) => {
-
-	const allSelected =
-		totalIds.length > 0 && selectedIds.length === totalIds.length;
-
-	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const action = e.target.value;
-		onApply(action);
-	};
+	const allSelected = totalIds.length > 0 && selectedIds.length === totalIds.length;
 
 	return (
 		<div className="wrap-bulk-all-date bulk">
+			{/* Selected rows count + clear */}
 			<span className="action-item count">
 				{selectedIds.length} Rows selected
 				<i onClick={onClearSelection} className="adminfont-close" />
 			</span>
-			<button
-				type="button"
-				className="link-btn"
-				onClick={() => onToggleSelectAll(!allSelected)}
-			>
-				{allSelected ? 'Deselect All' : 'Select All'}
-			</button>
-			<div className="action">
-				<i className="adminfont-form" />
-				<select
-					onChange={handleChange}
-					value=""
-					disabled={selectedIds.length === 0}
-				>
-					<option value="" disabled>
-						Bulk Actions
-					</option>
-					{actions.map((action) => (
-						<option key={action.value} value={action.value}>
-							{action.label}
-						</option>
-					))}
-				</select>
-			</div>
+
+			<AdminButtonUI
+				buttons={{
+					text: allSelected ? 'Deselect All' : 'Select All',
+					onClick: () => onToggleSelectAll(!allSelected),
+				}}
+			/>
+			{/* Conditional Bulk Actions Dropdown */}
+			{showDropdown && actions.length > 0 && onApply && (
+				<div className="action">
+					<SelectInputUI
+						options={actions}
+						value={""}
+						placeholder="Bulk Actions"
+						disabled={selectedIds.length === 0}
+						onChange={(selected) => {
+							if (selected?.value) {
+								onApply(String(selected.value));
+							}
+						}}
+					/>
+				</div>
+			)}
+
+			{/* Conditional CSV button */}
 			{onSelectCsvDownloadApply && (
-				<button
-					className="admin-badge csv"
-					disabled={selectedIds.length === 0}
-					onClick={() => onSelectCsvDownloadApply(selectedIds)}
-				>
-					<i className="adminfont-download" /> CSV
-				</button>
+				<AdminButtonUI
+					buttons={{
+						text: 'CSV',
+						icon: 'download',
+						disabled: selectedIds.length === 0,
+						onClick: () => onSelectCsvDownloadApply(selectedIds),
+					}}
+				/>
 			)}
 		</div>
 	);

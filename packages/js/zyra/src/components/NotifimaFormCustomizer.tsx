@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
  */
 import ButtonCustomizer, { ButtonSettings } from './ButtonCustomiser';
 import '../styles/web/NotifimaFormCustomizer.scss';
-import BasicInput from './BasicInput';
+import { BasicInputUI } from './BasicInput';
 interface ButtonSetting {
     text?: string;
     color?: string;
@@ -64,8 +64,7 @@ const NotifimaFormCustomizer: React.FC< FormCustomizerProps > = ( {
     return (
         <div className="notifima-form-customizer">
             <div className="label-section">
-                <BasicInput
-                    wrapperClass=""
+                <BasicInputUI
                     inputClass={
                         currentHoverOn === 'description' ? 'active' : ''
                     }
@@ -83,7 +82,7 @@ const NotifimaFormCustomizer: React.FC< FormCustomizerProps > = ( {
                     ref={ currentHoverOn === 'email_input' ? buttonRef : null }
                     className="input-section"
                 >
-                    <BasicInput
+                    <BasicInputUI
                         type="email"
                         wrapperClass="email-input-wrapper"
                         readOnly
@@ -126,7 +125,7 @@ const NotifimaFormCustomizer: React.FC< FormCustomizerProps > = ( {
                                         Placeholder text
                                     </span>
                                     <div className="property-section">
-                                        <BasicInput
+                                        <BasicInputUI
                                             type="text"
                                             value={
                                                 setting?.email_placeholder_text ||

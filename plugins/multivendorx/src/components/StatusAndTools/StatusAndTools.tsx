@@ -11,10 +11,10 @@ import {
 	getAvailableSettings,
 	getSettingById,
 	Support,
-	AdminForm,
 	Banner,
-	Tabs,
 	useModules,
+	SettingsNavigator,
+	RenderComponent,
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
@@ -232,8 +232,8 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<AdminForm
-						settings={settingModal as SettingContent}
+					<RenderComponent
+						settings={settingModal}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
 						updateSetting={updateSetting}
@@ -251,17 +251,14 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<Tabs
-				tabData={settingsArray as any}
-				currentTab={location.get('subtab') as string}
+			<SettingsNavigator
+				settingContent={settingsArray as any}
+				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}
-				BannerSection={getBanner}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=status-tools&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				brandImg={Brand}
-				supprot={supportLink}
 				Link={Link}
 				settingName={'Status & Tools'}
 			/>

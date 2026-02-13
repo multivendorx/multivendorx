@@ -57,17 +57,23 @@ class Block {
             'marketplace-coupons',
             'registration-form',
             'store-coupons',
-            'store-products',
-            'stores',
+            'store-tabs',
             'contact-info',
             'store-name',
             'store-email',
+            'store-address',
             'store-banner',
-            'store-buttons',
+            'store-engagement-tools',
             'store-logo',
             'store-social-icons',
             'store-phone',
             'store-description',
+            'store-review',
+            'store-policy',
+            'highlighted-store-products',
+            'product-category',
+            'store-quick-info',
+            'store-sidebar'
         );
 
         $textdomain = 'multivendorx';

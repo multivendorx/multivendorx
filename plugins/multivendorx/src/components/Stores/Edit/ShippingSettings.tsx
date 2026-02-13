@@ -3,7 +3,7 @@ import ShippingRatesByCountry from '@/dashboard/settings/ShippingRatesByCountry'
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { BasicInput, Card, Column, Container, DynamicRowSetting, FormGroup, FormGroupWrapper, getApiLink, MessageState, SuccessNotice, ToggleSetting } from 'zyra';
+import { BasicInputUI, Card, Column, Container, DynamicRowSetting, FormGroup, FormGroupWrapper, getApiLink, MessageState, SuccessNotice, ToggleSetting } from 'zyra';
 
 const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 	const [formData, setFormData] = useState<{ [key: string]: any }>({}); // Use 'any' for simplicity here
@@ -135,11 +135,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 										<FormGroupWrapper>
 											{/* Default Shipping Price */}
 											<FormGroup row label={__(`Default Shipping Price (${appLocalizer.currency_symbol})`, 'multivendorx')} htmlFor="multivendorx_shipping_type_price">
-												<BasicInput
+												<BasicInputUI
 													type="number"
 													name="multivendorx_shipping_type_price"
-													size="12rem"
-													 
+													size="12rem"													 
 													placeholder={__(
 														'0.00',
 														'multivendorx'
@@ -168,11 +167,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												)}
 												htmlFor="multivendorx_additional_product"
 											>
-												<BasicInput
+												<BasicInputUI
 													type="number"
 													name="multivendorx_additional_product"
-													size="12rem"
-													 
+													size="12rem"													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.multivendorx_additional_product || ''}
 													onChange={handleChange}
@@ -194,11 +192,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												)}
 												htmlFor="multivendorx_additional_qty"
 											>
-												<BasicInput
+												<BasicInputUI
 													type="number"
 													name="multivendorx_additional_qty"
-													size="12rem"
-													 
+													size="12rem"													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.multivendorx_additional_qty || ''}
 													onChange={handleChange}
@@ -220,11 +217,9 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												)}
 												htmlFor="free_shipping_amount"
 											>
-												<BasicInput
+												<BasicInputUI
 													type="number"
-													name="free_shipping_amount"
-
-													 
+													name="free_shipping_amount"													 
 													placeholder={__('NO Free Shipping', 'multivendorx')}
 													value={formData.free_shipping_amount || ''}
 													onChange={handleChange}
@@ -246,11 +241,9 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												)}
 												htmlFor="local_pickup_cost"
 											>
-												<BasicInput
+												<BasicInputUI
 													type="number"
-													name="local_pickup_cost"
-
-													 
+													name="local_pickup_cost"													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.local_pickup_cost || ''}
 													onChange={handleChange}
@@ -304,11 +297,9 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												)}
 												htmlFor="distance_default_cost"
 											>
-												<BasicInput
+												<BasicInputUI
 													type="number"
-													name="distance_default_cost"
-
-													 
+													name="distance_default_cost"													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.distance_default_cost || ''}
 													onChange={handleChange}
@@ -339,7 +330,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												label={__('Max Distance', 'multivendorx')}
 												htmlFor="distance_max"
 											>
-												<BasicInput
+												<BasicInputUI
 													type="number"
 													name="distance_max"
 													placeholder={__('0', 'multivendorx')}
@@ -357,11 +348,9 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												)}
 												htmlFor="distance_local_pickup_cost"
 											>
-												<BasicInput
+												<BasicInputUI
 													type="number"
-													name="distance_local_pickup_cost"
-
-													 
+													name="distance_local_pickup_cost"													 
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.distance_local_pickup_cost || ''}
 													onChange={handleChange}
@@ -375,7 +364,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 													{(formData.distance_rules || []).map((rule, index) => (
 														<div key={index} className="shipping-country rule">
 															<div className="item">
-																<BasicInput
+																<BasicInputUI
 																	type="number"
 																	placeholder={__('Up to', 'multivendorx')}
 																	value={rule.max_distance || ''}
@@ -398,7 +387,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 																	}}
 																/>
 
-																<BasicInput
+																<BasicInputUI
 																	type="number"
 																	placeholder={__('Cost $', 'multivendorx')}
 																	value={rule.cost || ''}

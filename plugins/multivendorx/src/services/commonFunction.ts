@@ -173,3 +173,4 @@ export const downloadCSV = <T extends Record<string, Primitive>>({
 	document.body.removeChild(link);
 	URL.revokeObjectURL(url);
 };
+

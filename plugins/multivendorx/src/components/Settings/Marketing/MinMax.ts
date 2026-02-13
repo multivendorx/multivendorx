@@ -4,7 +4,7 @@ export default {
 	id: 'min-max',
 	priority: 6,
 	name: __('Min/Max', 'multivendorx'),
-	tabTitle: 'Per-product/listing purchase limits',
+	headerTitle: 'Per-product/listing purchase limits',
 	desc: __(
 		'Set purchase limits for individual products to prevent bulk buying or ensure minimum order quantities.',
 		'multivendorx'
@@ -57,14 +57,14 @@ moduleEnabled: 'min-max',
 			nestedFields: [
 				{
 					key: 'product_min_amount',
-					preInsideText: __('Min', 'multivendorx'),
-					postInsideText: __('$', 'multivendorx'),
+					preText: __('Min', 'multivendorx'),
+					postText: appLocalizer.currency_symbol,
 					type: 'number',
 				},
 				{
 					key: 'product_max_amount',
-					preInsideText: __('Max', 'multivendorx'),
-					postInsideText: __('$', 'multivendorx'),
+					preText: __('Max', 'multivendorx'),
+					postText: appLocalizer.currency_symbol,
 					type: 'number',
 				},
 			],
@@ -125,14 +125,14 @@ moduleEnabled: 'min-max',
 			nestedFields: [
 				{
 					key: 'order_min_amount',
-					preInsideText: __('Min', 'multivendorx'),
-					postInsideText: __('$', 'multivendorx'),
+					preText: __('Min', 'multivendorx'),
+					postText: appLocalizer.currency_symbol,
 					type: 'number',
 				},
 				{
 					key: 'order_max_amount',
-					preInsideText: __('Max', 'multivendorx'),
-					postInsideText: __('$', 'multivendorx'),
+					preText: __('Max', 'multivendorx'),
+					postText: appLocalizer.currency_symbol,
 					type: 'number',
 				},
 			],

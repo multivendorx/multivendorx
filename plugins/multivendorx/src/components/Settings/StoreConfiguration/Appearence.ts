@@ -8,7 +8,7 @@ export default {
 	id: 'appearance',
 	priority: 5,
 	name: __('Appearance', 'multivendorx'),
-	tabTitle: 'Marketplace Branding',
+	headerTitle: 'Marketplace Branding',
 	desc: __(
 		'Set a marketplace logo to strengthen brand identity across all connected stores.',
 		'multivendorx'
@@ -71,19 +71,19 @@ export default {
 				{
 					key: 'no-sidebar',
 					label: __('No Sidebar', 'multivendorx'),
-					value: 'No Sidebar',
+					value: 'no',
 					icon: "adminfont-right-sidebar"
 				},
 				{
 					key: 'left',
 					label: __('Left Sidebar', 'multivendorx'),
-					value: 'Left Sidebar',
+					value: 'left',
 					icon: "adminfont-left-sidebar"
 				},
 				{
 					key: 'right',
 					label: __('Right Sidebar', 'multivendorx'),
-					value: 'Right Sidebar',
+					value: 'right',
 					icon: "adminfont-no-sidebar"
 				}
 			]

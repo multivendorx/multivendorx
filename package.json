@@ -48,7 +48,7 @@
     "sass": "^1.88.0",
     "sass-loader": "16.0.x",
     "syncpack": "^13.0.4",
-    "webpack": "5.99.x",
+    "webpack": "5.105.x",
     "wp-readme-to-markdown": "^1.0.1"
   },
   "dependencies": {

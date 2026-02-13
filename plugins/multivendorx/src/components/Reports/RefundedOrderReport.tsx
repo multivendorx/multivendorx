@@ -91,9 +91,7 @@ const RefundedOrderReport: React.FC = () => {
 		},
 	];
 
-	const downloadRefundsCSV = (query: QueryProps) => {
-		setIsLoading(true);
-	
+	const downloadRefundsCSV = (query: QueryProps) => {	
 		axios
 			.get(getApiLink(appLocalizer, 'refund'), {
 				headers: {
@@ -141,12 +139,9 @@ const RefundedOrderReport: React.FC = () => {
 						Date: 'Date',
 					},
 				});
-	
-				setIsLoading(false);
 			})
 			.catch((error) => {
 				console.error('Refund CSV download failed:', error);
-				setIsLoading(false);
 			});
 	};
 
@@ -259,6 +254,7 @@ const RefundedOrderReport: React.FC = () => {
 				filters={filters}
 				buttonActions={buttonActions}
 				rowIds={rowIds}
+				format={appLocalizer.date_format}
 			/>
 		</>
 	);

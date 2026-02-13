@@ -1,24 +1,26 @@
 /*global jQuery followStoreFrontend*/
 jQuery(document).ready(function ($) {
+
 	// Initialize buttons
 	$('.follow-btn').each(function () {
 		var btn = $(this);
 		var store_id = btn.data('store-id');
+		var user_id  = btn.data('user-id');
 
-		$.post(
-			followStoreFrontend.ajaxurl,
-			{
-				action: 'multivendorx_get_store_follow_status',
-				store_id: store_id,
-				nonce: followStoreFrontend.nonce,
+		$.ajax({
+			url: followStoreFrontend.restUrl + 'follow-store/' + store_id,
+			method: 'GET',
+			headers: {
+				'X-WP-Nonce': followStoreFrontend.nonce
 			},
-			function (res) {
-				if (!res.success) {
-					return;
-				}
+			data: {
+				storeId: store_id,
+				userId: user_id
+			},
+			success: function (res) {
 
-				var isFollowing = res.data.follow;
-				var count = parseInt(res.data.follower_count, 10) || 0;
+				var isFollowing = res.follow;
+				var count = parseInt(res.follower_count, 10) || 0;
 
 				/**
 				 * Button text
@@ -31,14 +33,14 @@ jQuery(document).ready(function ($) {
 				var label = count === 1 ? 'Follower' : 'Followers';
 				$('#followers-count-' + store_id).text(count + ' ' + label);
 			}
-		);
+		});
 	});
 
 	// Handle follow/unfollow click
 	$(document).on('click', '.follow-btn', function () {
 		var btn = $(this);
 		var store_id = btn.data('store-id');
-		var user_id = btn.data('user-id');
+		var user_id  = btn.data('user-id');
 
 		if (!user_id) {
 			$('#multivendorx-login-modal').data('store-id', store_id).fadeIn();
@@ -47,22 +49,20 @@ jQuery(document).ready(function ($) {
 
 		btn.prop('disabled', true);
 
-		$.post(
-			followStoreFrontend.ajaxurl,
-			{
-				action: 'multivendorx_follow_store_toggle',
-				store_id: store_id,
-				user_id: user_id,
-				nonce: followStoreFrontend.nonce,
+		$.ajax({
+			url: followStoreFrontend.restUrl + 'follow-store/' + store_id,
+			method: 'POST',
+			headers: {
+				'X-WP-Nonce': followStoreFrontend.nonce
 			},
-			function (res) {
-				if (!res.success) {
-					btn.prop('disabled', false);
-					return;
-				}
+			data: {
+				storeId: store_id,
+				userId: user_id
+			},
+			success: function (res) {
 
-				var isFollowing = res.data.follow;
-				var count = parseInt(res.data.follower_count, 10) || 0;
+				var isFollowing = res.follow;
+				var count = parseInt(res.follower_count, 10) || 0;
 
 				/**
 				 * Button text
@@ -76,9 +76,13 @@ jQuery(document).ready(function ($) {
 				$('#followers-count-' + store_id).text(count + ' ' + label);
 
 				btn.prop('disabled', false);
+			},
+			error: function () {
+				btn.prop('disabled', false);
 			}
-		);
+		});
 	});
+
 	$(document).on('click', '.multivendorx-close', function () {
 		$('#multivendorx-login-modal').fadeOut();
 	});

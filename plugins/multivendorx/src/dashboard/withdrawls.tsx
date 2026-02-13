@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, CommonPopup, BasicInput, SuccessNotice, Card, Container, AdminButton, Column, FormGroupWrapper, FormGroup, MiniCard } from 'zyra';
+import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI, PopupUI } from 'zyra';
 import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -150,12 +150,11 @@ const Withdrawls: React.FC = () => {
 							</div>
 						)}
 
-						<AdminButton
+						<AdminButtonUI
 							buttons={{
 								icon: 'eye',
 								text: __('View transaction history', 'multivendorx'),
 								onClick: () => (window.location.href = `${appLocalizer.site_url}/dashboard/transactions/`),
-								className: 'purple-bg',
 							}}
 						/>
 					</Card>
@@ -236,12 +235,11 @@ const Withdrawls: React.FC = () => {
 
 							</Column>
 
-							<AdminButton
+							<AdminButtonUI
 								buttons={{
 									icon: 'withdraw',
 									text: __('Request Withdrawal', 'multivendorx'),
 									onClick: () => setRequestWithdrawal(true),
-									className: 'purple-bg',
 								}}
 							/>
 						</div>
@@ -250,9 +248,9 @@ const Withdrawls: React.FC = () => {
 			</Container>
 
 			{requestWithdrawal && (
-				<CommonPopup
+				<PopupUI
 					open={requestWithdrawal}
-					width="31.25rem"
+					width={31.25}
 					height="40%"
 					onClose={() => setRequestWithdrawal(false)}
 					header={{
@@ -260,21 +258,18 @@ const Withdrawls: React.FC = () => {
 						title: __('Request Withdrawal', 'multivendorx'),
 					}}
 					footer={
-						<>
-							<AdminButton
-								buttons={{
-									icon: 'withdraw',
-									text: __('Disburse', 'multivendorx'),
-									onClick: () => handleWithdrawal(),
-									className: 'purple-bg',
-								}}
-							/>
-						</>
+						<AdminButtonUI
+							buttons={{
+								icon: 'withdraw',
+								text: __('Disburse', 'multivendorx'),
+								onClick: () => handleWithdrawal(),
+							}}
+						/>
 					}
 				>
 					<FormGroupWrapper>
 						<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="amount"
 								value={amount}
@@ -291,7 +286,7 @@ const Withdrawls: React.FC = () => {
 							)}
 						</FormGroup>
 					</FormGroupWrapper>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

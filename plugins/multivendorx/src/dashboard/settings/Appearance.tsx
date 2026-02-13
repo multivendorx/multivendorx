@@ -2,13 +2,13 @@ import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
-	BasicInput,
 	FileInput,
-	SelectInput,
 	getApiLink,
 	SuccessNotice,
 	FormGroupWrapper,
 	FormGroup,
+	BasicInputUI,
+	SelectInputUI,
 } from 'zyra';
 
 interface FormData {
@@ -148,9 +148,8 @@ const Appearance = () => {
 
 				{/* Banner Type */}
 				<FormGroup label={__('Banner / Cover Image', 'multivendorx')} htmlFor="banner_type">
-					<SelectInput
+					<SelectInputUI
 						name="banner_type"
-						type="single-select"
 						options={storeOptions}
 						value={formData.banner_type || ''}
 						onChange={(newValue: any) => {
@@ -218,7 +217,7 @@ const Appearance = () => {
 				{/* Video Banner */}
 				{formData.banner_type === 'video' && (
 					<FormGroup label={__('Banner Video URL', 'multivendorx')} htmlFor="banner_video">
-						<BasicInput
+						<BasicInputUI
 							name="banner_video"
 							type="text"
 							value={formData.banner_video || ''}

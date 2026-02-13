@@ -19,25 +19,25 @@ export default {
 					type: 'checklist',
 					options: [
 						{
-							label: __(
+							title: __(
 								'Cannot log in to dashboard',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot access selling privileges',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot view or manage product listings',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 					],
 				},

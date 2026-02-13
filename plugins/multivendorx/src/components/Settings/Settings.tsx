@@ -10,17 +10,15 @@ import { getTemplateData } from '../../services/templateService';
 import {
 	getAvailableSettings,
 	getSettingById,
-	Support,
-	AdminForm,
+	RenderComponent,
 	Banner,
-	Tabs,
 	useModules,
+	SettingsNavigator,
 } from 'zyra';
 import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
 import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
-import Invoice from './Finance/Invoices.tsx';
 
 // Types
 type SettingItem = Record<string, any>;
@@ -193,7 +191,7 @@ const Settings: React.FC<SettingsProps> = () => {
 		return (
 			<>
 				{settingName === currentTab ? (
-					<AdminForm
+					<RenderComponent
 						settings={settingModal as SettingContent}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
@@ -212,17 +210,14 @@ const Settings: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<Tabs
-				tabData={settingsArray as any}
-				currentTab={location.get('subtab') as string}
+			<SettingsNavigator
+				settingContent={settingsArray as any}
+				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}
-				BannerSection={getBanner}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=settings&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				brandImg={Brand}
-				supprot={supportLink}
 				Link={Link}
 				settingName={'Settings'}
 			/>

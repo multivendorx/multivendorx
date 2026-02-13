@@ -5,21 +5,19 @@ import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
 	AdminBreadcrumbs,
-	BasicInput,
-	TextArea,
-	CommonPopup,
-	ToggleSetting,
+	TextAreaUI,
+	ToggleSettingUI,
 	Container,
 	Column,
 	FormGroupWrapper,
 	FormGroup,
-	AdminButton,
-	ProPopup,
 	TableCard,
+	BasicInputUI,
+	AdminButtonUI,
+	PopupUI,
 } from 'zyra';
-
+import Popup from '../Popup/Popup';
 import '../Announcements/Announcements.scss';
-import { Dialog } from '@mui/material';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -101,10 +99,7 @@ export const KnowledgeBase: React.FC = () => {
 		setValidationErrors({});
 	};
 	// Handle input changes
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
+	const handleChange = (name: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 		// Clear field error when user types
 		if (validationErrors[name]) {
@@ -115,6 +110,7 @@ export const KnowledgeBase: React.FC = () => {
 			});
 		}
 	};
+
 
 	const handleBulkAction = (action: string, selectedIds: any[] = []) => {
 		if (!selectedIds.length) {
@@ -311,54 +307,59 @@ export const KnowledgeBase: React.FC = () => {
 
 	return (
 		<>
-			<Dialog
-				open={confirmOpen}
-				onClose={() => setConfirmOpen(false)}
-			>
-				<ProPopup
-					confirmMode
-					title="Delete Knowledge Base"
-					confirmMessage={
-						selectedKb
-							? `Are you sure you want to delete knowledge base?`
-							: ''
-					}
-					confirmYesText="Delete"
-					confirmNoText="Cancel"
-					onConfirm={handleConfirmDelete}
-					onCancel={() => {
-						setConfirmOpen(false);
-						setSelectedKb(null);
-					}}
-				/>
-			</Dialog>
+		  <PopupUI
+			position="lightbox"
+			open={confirmOpen}
+			onClose={() => setConfirmOpen(false)}
+			width="31.25rem"
+			height="auto"
+		>
+			<Popup
+				confirmMode
+				title="Delete Knowledge Base"
+				confirmMessage={
+					selectedKb
+						? `Are you sure you want to delete knowledge base?`
+						: ''
+				}
+				confirmYesText="Delete"
+				confirmNoText="Cancel"
+				onConfirm={handleConfirmDelete}
+				onCancel={() => {
+					setConfirmOpen(false);
+					setSelectedKb(null);
+				}}
+			/>
+		</PopupUI>
+
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-book"
-				tabTitle={__('Knowledge Base', 'multivendorx')}
+				settingIcon="adminfont-book"
+				headerTitle={__('Knowledge Base', 'multivendorx')}
 				description={__(
 					'Build your knowledge base: add new guides or manage existing ones in one place.',
 					'multivendorx'
 				)}
 				buttons={[
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={() => {
+					{
+						label: __('Add New', 'multivendorx'),
+						className: "admin-btn btn-purple-bg",
+						iconClass: 'adminfont-plus',
+						onClick: () => {
 							setValidationErrors({});
 							setAddEntry(true);
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>,
+						}
+					}
 				]}
 			/>
 
 			{addEntry && (
-				<CommonPopup
+				<PopupUI
 					open={addEntry}
 					onClose={handleCloseForm}
 					width="31.25rem"
 					height="70%"
+					position="slide-right-to-left"
+					showBackdrop={true}
 					header={{
 						icon: 'book',
 						title: editId
@@ -368,20 +369,20 @@ export const KnowledgeBase: React.FC = () => {
 							'Write and publish a new knowledge base article to help stores navigate their dashboard.',
 							'multivendorx'
 						),
+						showCloseButton: true, 
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: handleCloseForm,
 								},
 								{
 									icon: 'save',
 									text: __('Save', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSubmit(formData.status || 'draft'),
 								},
 							]}
@@ -391,11 +392,11 @@ export const KnowledgeBase: React.FC = () => {
 					<>
 						<FormGroupWrapper>
 							<FormGroup label={__('Title', 'multivendorx')} htmlFor="Title">
-								<BasicInput
+								<BasicInputUI
 									type="text"
 									name="title"
 									value={formData.title}
-									onChange={handleChange}
+									onChange={(val) => handleChange('title', val as string)}
 								/>
 								{validationErrors.title && (
 									<p className="invalid-massage">
@@ -404,10 +405,10 @@ export const KnowledgeBase: React.FC = () => {
 								)}
 							</FormGroup>
 							<FormGroup label={__('Content', 'multivendorx')} htmlFor="Content">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									value={formData.content}
-									onChange={handleChange}
+									onChange={(val) => handleChange('content', val as string)}
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[
@@ -422,7 +423,7 @@ export const KnowledgeBase: React.FC = () => {
 								)}
 							</FormGroup>
 							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-								<ToggleSetting
+								<ToggleSettingUI
 									value={formData.status}
 									options={[
 										{
@@ -453,16 +454,16 @@ export const KnowledgeBase: React.FC = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Add tag', 'multivendorx')} htmlFor="Title">
-								<BasicInput
+								{/* <BasicInputUI
 									type="text"
 									name="title"
 								// value={formData.title}
 								// onChange={handleChange}
-								/>
+								/> */}
 							</FormGroup>
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 			<Container general>
 				<Column>
@@ -480,6 +481,7 @@ export const KnowledgeBase: React.FC = () => {
 						onBulkActionApply={(action: string, selectedIds: []) => {
 							handleBulkAction(action, selectedIds)
 						}}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>

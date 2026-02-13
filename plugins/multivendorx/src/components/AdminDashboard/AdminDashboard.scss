@@ -495,52 +495,6 @@
 
     }
 }
-
-// mini module start
-.mini-module {
-    display: flex;
-    flex-wrap: wrap;
-
-    .module-list-item {
-        width: calc(100% / 4 - 1.625rem);
-        padding: 0.75rem;
-        border: $border-light-small;
-        border-radius: 0.313rem;
-
-        .module-header {
-            display: flex;
-            justify-content: space-between;
-            align-self: start;
-
-            i.font {
-                font-size: 1.25rem;
-                color: $theme-color;
-            }
-
-            .admin-pro-tag {
-                position: relative !important;
-                transform: translateY(0);
-                font-size: 0.75rem;
-                display: flex;
-                align-items: center;
-                left: 0;
-                top: 0;
-
-                i {
-                    font-size: 0.813rem;
-                    color: #e35047;
-                }
-            }
-        }
-
-        .module-name {
-            font-size: 0.9rem;
-            color: #000;
-            margin-top: 1.25rem;
-        }
-    }
-}
-
 // video section start
 .video-section {
     display: flex;
@@ -814,72 +768,6 @@
         .footer {
             padding: 0.75rem;
             border: $border-light-small;
-        }
-
-        &.notification {
-            min-width: 25rem;
-
-            ul {
-                margin: 0;
-                max-height: 20rem;
-                overflow: auto;
-
-                li {
-                    margin: 0;
-                }
-
-                .item,
-                a {
-                    display: flex;
-                    gap: 0.813rem;
-                    padding: 0.75rem;
-                    align-items: start;
-                    border-bottom: $border-light-small;
-
-                    &:hover {
-                        background: #f3f3f3;
-                    }
-
-                    .icon {
-                        padding: 0.313rem;
-                        border-radius: 50%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-
-                        i {
-                            font-size: 1.5rem;
-                        }
-                    }
-
-                    // .check-icon {
-                    //   font-size: 1.125rem;
-                    //   position: absolute;
-                    //   right: 1rem;
-                    // }
-
-                    .details {
-                        span {
-                            display: block;
-                        }
-
-                        .heading {
-                            font-size: 0.95rem;
-                            color: #000;
-                        }
-
-                        .message {
-                            color: #00000082;
-                            padding: 0.313rem 0;
-                        }
-
-                        .time {
-                            font-size: 0.813rem;
-                            color: #0000004a;
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -1243,7 +1131,8 @@
             align-items: center;
             gap: 0.5rem;
         }
-        i{
+
+        i {
             font-size: 1.125rem;
         }
     }
@@ -1251,7 +1140,7 @@
     .setting-group-content {
         padding: 0.5rem;
 
-        .field-group{
+        .field-group {
             display: flex;
             gap: 0.5rem;
         }
@@ -1313,4 +1202,24 @@
         }
     }
 }
+
 // template-list end
+
+// transaction page payment section start
+.payment-method {
+    .method {
+        display: flex;
+        align-items: center;
+        width: fit-content;
+        padding: 0.5rem 0.75rem;
+        gap: 0.45rem;
+        background: $theme-background-color;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 0.313rem;
+        color: $theme-color;
+        border: 0.063rem solid $theme-color;
+    }
+}
+
+// transaction page payment section end

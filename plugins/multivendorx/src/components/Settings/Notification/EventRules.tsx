@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
-import { CommonPopup, getApiLink, TextArea, BasicInput, AdminButton, FormGroupWrapper, FormGroup } from 'zyra';
+import { getApiLink, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, TextAreaUI } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -547,10 +547,10 @@ const EventRules: React.FC = () => {
 			)}
 
 			{openChannel && (
-				<CommonPopup
+				<PopupUI
 					open={!!openChannel}
 					onClose={() => setOpenChannel(null)}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					header={{
 						icon: 'cart',
@@ -561,27 +561,25 @@ const EventRules: React.FC = () => {
 								: __('Email Message', 'multivendorx')
 							} - ${editNotification?.event ?? ''}`,
 					}}
-
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Cancel', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setOpenChannel(null),
 								},
 							]}
 						/>
 					}
-
 				>
 					<>
 						<FormGroupWrapper>
 
 							{openChannel === 'system' && (
 								<FormGroup label={__('System Message', 'multivendorx')} htmlFor="system-message">
-									<TextArea
+									<TextAreaUI
 										name="system_message"
 										value={
 											formData.system_message || ''
@@ -611,7 +609,7 @@ const EventRules: React.FC = () => {
 							)}
 							{openChannel === 'sms' && (
 								<FormGroup label={__('SMS Content', 'multivendorx')} htmlFor="sms-content">
-									<TextArea
+									<TextAreaUI
 										name="sms_content"
 										value={formData.sms_content || ''}
 										onClick={(e) =>
@@ -637,7 +635,7 @@ const EventRules: React.FC = () => {
 							{openChannel === 'mail' && (
 								<>
 									<FormGroup cols={2} label={__('Email Subject', 'multivendorx')} htmlFor="email-subject">
-										<BasicInput
+										<BasicInputUI
 											type="text"
 											name="email_subject"
 											value={formData.email_subject || ''}
@@ -662,7 +660,7 @@ const EventRules: React.FC = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Email Body', 'multivendorx')} htmlFor="email-body">
-										<TextArea
+										<TextAreaUI
 											name="email_body"
 											value={formData.email_body || ''}
 											onClick={(e) =>
@@ -701,22 +699,21 @@ const EventRules: React.FC = () => {
 							)}
 						</FormGroupWrapper>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
 
 			{/* Edit Recipients Popup */}
 			{editingNotification && (
-				<CommonPopup
+				<PopupUI
 					open={!!editingNotification}
 					onClose={() => setEditingNotification(null)}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					header={{
 						icon: 'notification',
 						title: `${__('Settings', 'multivendorx')} - ${editNotification?.event ?? ''}`,
 						description: editNotification?.description,
 					}}
-
 				>
 					<div className="title">Delivery method</div>
 					<div className="drawer-recipients">
@@ -879,7 +876,7 @@ const EventRules: React.FC = () => {
 							Add
 						</button>
 					</div>
-				</CommonPopup>
+				</PopupUI>
 			)}
 
 			{/* Grid View */}

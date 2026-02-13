@@ -572,7 +572,6 @@ const StyleControls = ({
           </div>
         )}
       </div>
-
     </>
   );
 };

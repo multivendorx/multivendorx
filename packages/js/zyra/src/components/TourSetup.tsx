@@ -5,11 +5,12 @@ import { TourProvider, ProviderProps, StepType } from '@reactour/tour';
 // Internal dependencies
 import Tour from './TourSteps';
 
-// AppLocalizer interface
-export interface AppLocalizer {
+interface AppLocalizer {
     enquiry_form_settings_url?: string;
-    module_page_url?: string;
+    page_url?: string;
     settings_page_url?: string;
+    site_url?: string;
+    module_page_url?: string;
     customization_settings_url?: string;
     apiUrl: string;
     nonce: string;

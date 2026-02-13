@@ -380,10 +380,18 @@
         padding: 0.5rem;
         cursor: grabbing;
         border-radius: 0.313rem;
-
+        display: flex;
+        p{
+             width: 30%;
+            font-size: 0.9rem;
+        }
+        .setting-form-input{
+            width: 100%;
+        }
         .basic-input {
             cursor: pointer;
             background: #fff;
+            width: 100%;
         }
 
         .attachment-section {

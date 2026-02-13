@@ -1,13 +1,14 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Table from './table';
 import TableSummary, { TableSummaryPlaceholder } from './summary';
 import Pagination from '../pagination/Pagination';
 import { QueryProps, TableCardProps, TableRow } from './types';
 import BulkActionDropdown from './BulkActionDropdown';
-import TableSearch from './TableSearch';
 import RealtimeFilters from './RealtimeFilter';
 import CategoryFilter from './CategoryFilter';
 import ButtonActions from './ButtonActions';
+import { useOutsideClick } from '../useOutsideClick';
+import HeaderSearch from '../HeaderSearch';
 
 const defaultOnColumnsChange = (
 	showCols: string[],
@@ -45,10 +46,14 @@ const TableCard: React.FC<TableCardProps> = ({
 	onSelectCsvDownloadApply,
 	onCellEdit,
 	buttonActions,
+	format,
 	...props
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
 	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
+	const ref = useRef<HTMLDivElement | null>(null);
+	useOutsideClick(ref, () => setIsPopoverOpen(false));
 
 	const [query, setQuery] = useState<QueryProps>({
 		orderby: 'date',
@@ -97,6 +102,10 @@ const TableCard: React.FC<TableCardProps> = ({
 	useEffect(() => {
 		props.onQueryUpdate?.(query);
 	}, [query]);
+
+	useEffect(() => {
+		setDerivedTotalRows(totalRows);
+	}, [totalRows]);
 
 	// Toggle single row
 	const handleSelectRow = (id: number, selected: boolean) => {
@@ -219,6 +228,12 @@ const TableCard: React.FC<TableCardProps> = ({
 						categories={categoryCounts}
 						activeCategory={query.categoryFilter || activeCategory}
 						onCategoryClick={(value) => {
+
+							const matched = categoryCounts.find(
+								(cat) => cat.value === value
+							);
+							setDerivedTotalRows(matched?.count ?? 0);
+
 							setQuery((prev) => ({
 								...prev,
 								paged: 1,
@@ -237,20 +252,22 @@ const TableCard: React.FC<TableCardProps> = ({
 					)}
 					{search && (
 						<div className="search-field">
-							<TableSearch
-								placeholder={search.placeholder}
-								options={search.options}
-								onSearch={(text, option) => {
-									onQueryChange('searchValue')(text);
-									if (option !== undefined) {
-										onQueryChange('searchAction')(String(option));
+							<HeaderSearch
+								search={{
+									placeholder: search.placeholder,
+									options: search.options,
+								}}
+								onQueryUpdate={(payload) => {
+									onQueryChange('searchValue')(payload.searchValue);
+									if ('searchAction' in payload) {
+										onQueryChange('searchAction')(String(payload.searchAction));
 									}
 								}}
 							/>
 						</div>
 					)}
 					{showMenu && showColumnToggleIcon && (
-						<div className="popover-wrapper">
+						<div className="popover-wrapper" ref={ref}>
 							<div className="popover-toggle" onClick={togglePopover} >
 								<i className="popover-icon adminfont-more-vertical"></i>
 							</div>
@@ -278,7 +295,6 @@ const TableCard: React.FC<TableCardProps> = ({
 									</div>
 								</div>
 							)}
-
 						</div>
 					)}
 				</div>
@@ -303,7 +319,7 @@ const TableCard: React.FC<TableCardProps> = ({
 				onSelectRow={handleSelectRow}
 				onSelectAll={handleSelectAll}
 				onCellEdit={onCellEdit}
-				enableBulkSelect={bulkActions.length > 0}
+				enableBulkSelect={bulkActions.length > 0 || !!onSelectCsvDownloadApply}
 				isLoading={isLoading}
 			/>
 			{/* pagination */}
@@ -315,7 +331,7 @@ const TableCard: React.FC<TableCardProps> = ({
 						<Pagination
 							page={Number(query.paged)}
 							perPage={Number(query.per_page)}
-							total={totalRows}
+							total={derivedTotalRows}
 							onPageChange={onPageChange}
 							onPerPageChange={(perPage) =>
 								onQueryChange('per_page')(String(perPage))
@@ -338,10 +354,11 @@ const TableCard: React.FC<TableCardProps> = ({
 							onResetFilters={() =>
 								setQuery((prev) => ({ ...prev, filter: {}, paged: 1 }))
 							}
+							format={format}
 						/>
 					)}
 
-					{selectedIds.length > 2 && bulkActions.length > 0 && (
+					{selectedIds.length > 2 && (bulkActions.length > 0 || onSelectCsvDownloadApply) && (
 						<BulkActionDropdown
 							actions={bulkActions}
 							selectedIds={selectedIds}
@@ -352,10 +369,10 @@ const TableCard: React.FC<TableCardProps> = ({
 							onToggleSelectAll={(select) =>
 								setSelectedIds(select ? [...ids] : [])
 							}
+							showDropdown={bulkActions.length > 0}
 						/>
 					)}
 				</div>
-
 			</div>
 		</div>
 	);

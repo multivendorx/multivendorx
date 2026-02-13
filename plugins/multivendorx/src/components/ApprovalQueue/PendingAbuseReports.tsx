@@ -2,396 +2,202 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Table, getApiLink, TableCell, MultiCalendarInput, ProPopup, Container, Column } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
-import { Dialog } from '@mui/material';
+import { getApiLink, Container, Column, TableCard } from 'zyra';
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
-
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => React.ReactNode;
-}
-
-type ReportRow = {
-	ID: number;
-	store_id: number;
-	store_name?: string;
-	product_id: number;
-	product_name?: string;
-	product_link?: string;
-	name: string;
-	email: string;
-	reason?: string;
-	message?: string;
-	created_at: string;
-	updated_at: string;
-};
+import { QueryProps, TableRow } from '@/services/type';
+import Popup from '../Popup/Popup';
 
 interface Props {
 	onUpdated?: () => void;
 }
-type FilterData = {
-	searchAction?: string;
-	searchField?: string;
-	typeCount?: any;
-	store?: string;
-	order?: any;
-	orderBy?: any;
-	date?: {
-		start_date: Date;
-		end_date: Date;
-	};
-	transactionType?: string;
-	transactionStatus?: string;
-};
+
 const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
-	const [data, setData] = useState<ReportRow[] | null>(null);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [deleteId, setDeleteId] = useState<number | null>(null);
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [selectedReport, setSelectedReport] = useState<ReportRow | null>(null);
-
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [pageCount, setPageCount] = useState(0);
 	const [store, setStore] = useState<any[] | null>(null);
-	const [dateFilter, setDateFilter] = useState<FilterDate>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
 
-	// delete popup
-	const handleDeleteClick = (rowData: ReportRow) => {
-		setSelectedReport(rowData);
-		setConfirmOpen(true);
-	};
-
-	const handleConfirmDelete = async () => {
-		if (!selectedReport) return;
-
-		try {
-			await axios.delete(
-				getApiLink(appLocalizer, `report-abuse/${selectedReport.ID}`),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
-
-			requestData(
-				pagination.pageSize,
-				pagination.pageIndex + 1
-			);
-
-			onUpdated?.();
-		} catch {
-			alert(__('Failed to delete report', 'multivendorx'));
-		} finally {
-			setConfirmOpen(false);
-			setSelectedReport(null);
-		}
+	const handleConfirmDelete = () => {
+		if (!deleteId) return;
+	
+		axios
+			.delete(getApiLink(appLocalizer, `report-abuse/${deleteId}`), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then(() => {
+				fetchData({});
+				onUpdated?.();
+			})
+			.catch(() => {
+				alert(__('Failed to delete report', 'multivendorx'));
+			})
+			.finally(() => {
+				setConfirmOpen(false);
+				setDeleteId(null);
+			});
 	};
 
 	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'store'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		})
+		axios
+			.get(getApiLink(appLocalizer, 'store'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
 			.then((response) => {
-				setStore(response.data.stores);
+				const options =
+					(response.data || []).map((store: any) => ({
+						label: store.store_name,
+						value: store.id,
+					}));
+
+				options.unshift({
+					label: __('Admin', 'multivendorx'),
+					value: 0,
+				});
+
+				setStore(options);
+				setIsLoading(false);
 			})
 			.catch(() => {
 				setStore([]);
+				setIsLoading(false);
 			});
 	}, []);
 
-	// Fetch total count on mount
-	useEffect(() => {
+	const headers = [
+		{ key: 'product', label: __('Product', 'multivendorx') },
+		{ key: 'email', label: __('Reported By', 'multivendorx') },
+		{ key: 'reason', label: __('Reason', 'multivendorx') },
+		{ key: 'created_at', label: __('Date created', 'multivendorx'), isSortable: true, },
+		{
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Delete', 'multivendorx'),
+					icon: 'delete',
+					onClick: (id: number) => {
+						setDeleteId(id);
+						setConfirmOpen(true);
+					},
+				},
+			],			
+		},
+	];
+
+	const filters = [
+		{
+			key: 'store_id',
+			label: 'Stores',
+			type: 'select',
+			options: store,
+		},
+		{
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		},
+	];
+
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'report-abuse'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { count: true },
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: {
+					page: query.paged,
+					per_page: query.per_page,
+					orderby: query.orderby,
+					order: query.order,
+					store_id: query?.filter?.store_id,
+					startDate: query.filter?.created_at?.startDate
+						? formatLocalDate(query.filter.created_at.startDate)
+						: '',
+					endDate: query.filter?.created_at?.endDate
+						? formatLocalDate(query.filter.created_at.endDate)
+						: '',
+				},
 			})
-			.then((res) => {
-				const total = res.data || 0;
-				setTotalRows(total);
-				setPageCount(Math.ceil(total / pagination.pageSize));
-			})
-			.catch(() => {
-				console.error('Failed to load total rows');
-			});
-	}, []);
-
-	const columns: ColumnDef<ReportRow>[] = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('Product', 'multivendorx'),
-			cell: ({ row }) => {
-				const product = row.original;
-				const image = product.product_image; // fallback to default
-				const productName = product.product_name || '-';
-				const productId = product.product_id; // use ID for admin edit link
-				const productLink = `${window.location.origin}/wp-admin/post.php?post=${productId}&action=edit`;
-				const sku = product.product_sku || '';
-				const storeName = product.store_name;
-				const storeLink = `${window.location.origin}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${product.store_id}`;
-
-				return (
-					<TableCell title={`${productName} - ${storeName}`}>
-						<a
-							href={productLink}
-							target="_blank"
-							rel="noreferrer"
-							className="product-wrapper"
-						>
-							{image ? (
-								<img src={image} alt={productName} />
-							) : (
-								<i className="item-icon adminfont-multi-product"></i>
-							)}
-							<div className="details">
-								<span className="title">{productName}</span>
-								{sku && (
-									<span className="des">
-										SKU: {sku}
-										{storeName !== '' && (
-											<>
-												| By:
-												<a
-													href={storeLink}
-													target="_blank"
-													rel="noreferrer"
-													className="link-item"
-												>
-													{storeName}
-												</a>
-											</>
-										)}
-									</span>
-								)}
-							</div>
-						</a>
-					</TableCell>
-				);
-			},
-		},
-
-		{
-			header: __('Reported By', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					title={`Reported By: ${row.original.name} (${row.original.email})`}
-				>
-					{row.original.name
-						? `${row.original.name} (${row.original.email})`
-						: '-'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Reason', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.reason || '-'}>
-					{row.original.reason ?? '-'}
-				</TableCell>
-			),
-		},
-		{
-			id: 'created_at',
-			accessorKey: 'created_at',
-			enableSorting: true,
-			header: __('Date created', 'multivendorx'),
-			cell: ({ row }) => {
-				return (
-					<TableCell title={''}>{formatWcShortDate(row.original.created_at)}</TableCell>
-				);
-			},
-		},
-		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					type="action-dropdown"
-					rowData={row.original}
-					header={{
-						actions: [
-							{
-								label: __('Delete', 'multivendorx'),
-								icon: 'adminfont-delete',
-								onClick: (rowData: ReportRow) => {
-									handleDeleteClick(rowData);
-								},
-							},
-						],
-					}}
-				/>
-			),
-		},
-	];
-
-	// 🔹 Fetch data from backend
-	function requestData(
-		rowsPerPage: number,
-		currentPage: number,
-		store = '',
-		orderBy = '',
-		order = '',
-		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date()
-	) {
-		setData(null);
-
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'report-abuse'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				store_id: store,
-				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',
-				orderBy,
-				order,
-			},
-		})
 			.then((response) => {
-				setData(response.data || []);
+				const products = Array.isArray(response.data)
+					? response.data
+					: [];
+
+				const ids = products.map((p: any) => p.id);
+				setRowIds(ids);
+
+				const mappedRows: any[][] = products.map((product: any) => [
+					{
+						type: 'product',
+						value: product.product_id,
+						display: product.name,
+						data: {
+							id: product.product_id,
+							name: product.product_name,
+							sku: product.product_sku,
+							image: product.product_image || '',
+							link: `${window.location.origin}/wp-admin/post.php?post=${product.product_id}&action=edit`,
+						},
+					},
+					{
+						display: product.email,
+						value: product.email,
+					},
+					{
+						display: product.reason,
+						value: product.reason,
+					},
+					{
+						display: product.created_at
+							? formatWcShortDate(product.created_at)
+							: '-',
+						value: product.created_at,
+					}
+				]);
+
+				setRows(mappedRows);
+				setTotalRows(
+					Number(response.headers['x-wp-total']) || 0
+				);
+				setIsLoading(false);
 			})
-			.catch(() => setData([]));
-	}
-
-	// 🔹 Handle pagination & date changes
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		requestData(pagination.pageSize, currentPage);
-		setPageCount(Math.ceil(totalRows / pagination.pageSize));
-	}, []);
-
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		const date = filterData?.date || {
-			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-			end_date: new Date(),
-		};
-		setDateFilter(date);
-		requestData(
-			rowsPerPage,
-			currentPage,
-			filterData?.store,
-			filterData?.orderBy,
-			filterData?.order,
-			date?.start_date,
-			date?.end_date
-		);
+			.catch((error) => {
+				console.error('Product fetch failed:', error);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
 	};
-
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'store',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="   group-field">
-					<select
-						name="store"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">All Store</option>
-						<option value="0">Admin</option>
-						{store?.map((s: any) => (
-							<option key={s.id} value={s.id}>
-								{s.store_name.charAt(0).toUpperCase() +
-									s.store_name.slice(1)}
-							</option>
-						))}
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<div className="right">
-					<MultiCalendarInput
-						value={{
-							startDate: dateFilter.start_date!,
-							endDate: dateFilter.end_date!,
-						}}
-						onChange={(range: DateRange) => {
-							const next = {
-								start_date: range.startDate,
-								end_date: range.endDate,
-							};
-
-							setDateFilter(next);
-							updateFilter('date', next);
-						}}
-					/>
-				</div>
-			),
-		},
-	];
 
 	return (
 		<>
 			<Container>
 				<Column>
-					<Table
-						data={data}
-						columns={columns as ColumnDef<Record<string, any>, any>[]}
-						rowSelection={rowSelection}
-						onRowSelectionChange={setRowSelection}
-						defaultRowsPerPage={10}
-						pageCount={pageCount}
-						pagination={pagination}
-						onPaginationChange={setPagination}
-						handlePagination={requestApiForData}
-						perPageOption={[10, 25, 50]}
-						totalCounts={totalRows}
-						realtimeFilter={realtimeFilter}
+					<TableCard
+						headers={headers}
+						rows={rows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={fetchData}
+						ids={rowIds}
+						filters={filters}
+						format={appLocalizer.date_format}
 					/>
 				</Column>
 			</Container>
-			<Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-				<ProPopup
+			<PopupUI
+				position="lightbox"
+				open={deleteReview}
+				onClose={() => setDeleteReview(false)}
+				width="31.25rem"
+				height="auto"
+			>
+				<Popup
 					confirmMode
 					title={__('Are you sure?', 'multivendorx')}
 					confirmMessage={__(
@@ -403,10 +209,9 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 					onConfirm={handleConfirmDelete}
 					onCancel={() => {
 						setConfirmOpen(false);
-						setSelectedReport(null);
 					}}
 				/>
-			</Dialog>
+			</PopupUI>
 		</>
 	);
 };

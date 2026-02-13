@@ -1,6 +1,6 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { CommonPopup, FormGroup, FormGroupWrapper } from 'zyra';
+import { PopupUI } from 'zyra';
 import { formatCurrency, formatWcShortDate } from '@/services/commonFunction';
 
 type TransactionRow = {
@@ -23,10 +23,10 @@ type Props = {
 const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 	return (
 		<>
-			<CommonPopup
+			<PopupUI
 				open={open}
 				onClose={onClose}
-				width="31.25rem"
+				width={31.25}
 				height="70%"
 				header={{
 					icon: 'wallet-in',
@@ -127,7 +127,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 						</div>
 					</div>
 				</>
-			</CommonPopup>
+			</PopupUI>
 		</>
 	);
 };

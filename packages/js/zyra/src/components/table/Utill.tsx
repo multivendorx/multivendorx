@@ -8,14 +8,13 @@ export const renderCell = (cell: TableRow) => {
 			const { id, name, image, link, sku } = cell.data || {};
 			return (
 				<a href={link} className="product-wrapper">
-					{image && (
+					{image ? (
 						<img
 							src={image}
 							alt={name}
 							className="product-image"
 						/>
-					)}
-					<i className="item-icon adminfont-store-inventory" />
+					) : (<i className="item-icon adminfont-store-inventory" />)}
 					<span className="details">
 						<span className="title">{name}</span>
 						{sku && <span className="des">SKU: {sku}</span>}
@@ -39,34 +38,33 @@ export const renderCell = (cell: TableRow) => {
 			return (
 				<Wrapper
 					{...(link ? { href: link } : {})}
-					className="card-cell"
+					className="details-wrapper"
 				>
-					<div className="card-cell-content">
-						{name && (
-							<div className="card-cell-name">{name}</div>
-						)}
-
-						{description && (
-							<div className="card-cell-description">
-								{description}
-							</div>
-						)}
-						{subDescription && (
-							<div className="card-cell-description">
-								{subDescription}
-							</div>
-						)}
-					</div>
-
 					{image ? (
 						<img
 							src={image}
 							alt={name || ''}
-							className="card-cell-image"
+							className="image"
 						/>
 					) : icon ? (
 						<i className={`item-icon ${icon}`} />
 					) : null}
+					<div className="details">
+						{name && (
+							<div className="title">{name}</div>
+						)}
+
+						{description && (
+							<div className="desc">
+								{description}
+							</div>
+						)}
+						{subDescription && (
+							<div className="desc">
+								{subDescription}
+							</div>
+						)}
+					</div>
 				</Wrapper>
 			);
 		}

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import '../Announcements/Announcements.scss';
-import { AdminBreadcrumbs, getApiLink, SelectInput, Tabs } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, SelectInputUI, SettingsNavigator } from 'zyra';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
 import { applyFilters } from '@wordpress/hooks';
@@ -11,13 +11,6 @@ import { applyFilters } from '@wordpress/hooks';
 export const TransactionHistory: React.FC = () => {
 	const [allStores, setAllStores] = useState<any[]>([]);
 	const [selectedStore, setSelectedStore] = useState<any>(null);
-	const [dateRange, setDateRange] = useState<{
-		startDate: Date | null;
-		endDate: Date | null;
-	}>({
-		startDate: null,
-		endDate: null,
-	});
 
 	// Fetch stores on mount
 	useEffect(() => {
@@ -47,14 +40,14 @@ export const TransactionHistory: React.FC = () => {
 
 	const locationUrl = new URLSearchParams(useLocation().hash.substring(1));
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'wallet-transaction',
 				name: __('Wallet Transaction', 'multivendorx'),
 				icon: 'wallet-in',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -63,7 +56,7 @@ export const TransactionHistory: React.FC = () => {
 				id: 'direct-transaction',
 				name: __('Direct Transaction', 'multivendorx'),
 				icon: 'direct-transaction',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 	];
@@ -71,12 +64,9 @@ export const TransactionHistory: React.FC = () => {
 	const getForm = (tabId: string) => {
 		switch (tabId) {
 			case 'wallet-transaction':
-				return (
-					<WalletTransaction
-						storeId={selectedStore?.value}
-						dateRange={dateRange}
-					/>
-				);
+				return selectedStore?.value ? (
+					<WalletTransaction storeId={selectedStore.value} />
+				) : null;
 			case 'direct-transaction':
 				const output = applyFilters(
 					'direct_transaction_output',
@@ -94,8 +84,8 @@ export const TransactionHistory: React.FC = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-store-reactivated"
-				tabTitle={
+				settingIcon="adminfont-store-reactivated"
+				headerTitle={
 					selectedStore
 						? __(
 								`Storewise Transaction History - ${selectedStore.label}`,
@@ -121,11 +111,10 @@ export const TransactionHistory: React.FC = () => {
 							{__('Switch Store', 'multivendorx')}
 						</label>
 
-						<SelectInput
+						<SelectInputUI
 							name="store"
 							value={selectedStore?.value || ''}
 							options={allStores}
-							type="select"
 							onChange={(newValue: any) =>
 								setSelectedStore(newValue)
 							}
@@ -135,20 +124,16 @@ export const TransactionHistory: React.FC = () => {
 				}
 			/>
 
-			<Tabs
-				tabData={tabData}
-				currentTab={locationUrl.get('subtab') as string}
+			<SettingsNavigator
+				settingContent={settingContent}
+				currentSetting={locationUrl.get('subtab') as string}
 				getForm={getForm}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				supprot={[]} // keeping your original key
 				Link={Link}
-				hideTitle={true}
-				hideBreadcrumb={true}
-				template={'template-2'}
-				premium={false}
+				variant={'compact'}
 				menuIcon={true}
 			/>
 		</>

@@ -2,23 +2,22 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-	BasicInput,
 	CalendarInput,
 	FileInput,
-	MultiCheckBox,
 	RadioInput,
-	SelectInput,
 	TextArea,
 	useModules,
-	ToggleSetting,
 	Card,
 	Column,
 	Container,
 	FormGroupWrapper,
 	FormGroup,
-	AdminButton,
 	getApiLink,
-	CommonPopup,
+	BasicInputUI,
+	AdminButtonUI,
+	MultiCheckBoxUI,
+	SelectInputUI,
+	useOutsideClick,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { formatWcShortDate } from '@/services/commonFunction';
@@ -128,40 +127,8 @@ const AddProduct = () => {
 		publish: __('Published', 'multivendorx'),
 		pending: __('Submit', 'multivendorx'),
 	};
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				visibilityRef.current &&
-				!visibilityRef.current.contains(event.target as Node)
-			) {
-				setIsEditingVisibility(false);
-			}
-		};
 
-		document.addEventListener('mousedown', handleClickOutside);
-
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, []);
-
-	// Close on click outside
-	// useEffect(() => {
-	// 	if (!isPyramidEnabled) {
-	// 		return;
-	// 	}
-	// 	const handleClickOutside = (event) => {
-	// 		if (
-	// 			wrapperRef.current &&
-	// 			!wrapperRef.current.contains(event.target)
-	// 		) {
-	// 			resetSelection();
-	// 		}
-	// 	};
-	// 	document.addEventListener('mousedown', handleClickOutside);
-	// 	return () =>
-	// 		document.removeEventListener('mousedown', handleClickOutside);
-	// }, []);
+	useOutsideClick(visibilityRef, () => setIsEditingVisibility(false));
 
 	// Add this useEffect in AddProduct to listen for suggestion clicks
 	useEffect(() => {
@@ -755,7 +722,7 @@ const AddProduct = () => {
 						{__('Publish', 'multivendorx')}
 					</button>
 				</div> */}
-				<AdminButton
+				<AdminButtonUI
 					buttons={[
 						// {
 						// 	icon: 'form',
@@ -766,7 +733,6 @@ const AddProduct = () => {
 						{
 							icon: 'save',
 							text: __('Save', 'multivendorx'),
-							className: 'purple-bg',
 							onClick: () => createProduct(),
 						},
 					]}
@@ -778,7 +744,7 @@ const AddProduct = () => {
 					<Card title={__('Product type', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup desc={__('A standalone product with no variant', 'multivendorx')}>
-								<SelectInput
+								<SelectInputUI
 									name="type"
 									options={typeOptions}
 									value={product.type}
@@ -906,9 +872,8 @@ const AddProduct = () => {
 						<FormGroupWrapper>
 							{/* Product Name */}
 							<FormGroup label={__('Product name', 'multivendorx')} desc={__('A unique name for your product', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="name"
-
 									value={product.name}
 									onChange={(e) => handleChange('name', e.target.value)}
 								/>
@@ -950,9 +915,8 @@ const AddProduct = () => {
 									{/* Regular & Sale Price (Simple Product) */}
 
 									<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="regular_price"
-
 											value={product.regular_price}
 											onChange={(e) =>
 												handleChange('regular_price', e.target.value)
@@ -961,7 +925,7 @@ const AddProduct = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="sale_price"
 
 											value={product.sale_price}
@@ -982,11 +946,8 @@ const AddProduct = () => {
 							<>
 								<div className="field-wrapper">
 									{__('Stock management', 'multivendorx')}
-									<MultiCheckBox
-										wrapperClass="toggle-btn"
-										inputWrapperClass="toggle-checkbox-header"
-										inputInnerWrapperClass="toggle-checkbox"
-										idPrefix="toggle-switch-manage-stock"
+									<MultiCheckBoxUI
+										look="toggle"
 										type="checkbox"
 										value={product.manage_stock ? ['manage_stock'] : []}
 										onChange={(e) =>
@@ -1007,7 +968,7 @@ const AddProduct = () => {
 							{/* <FormGroup cols={2} label={__('Track Quantity', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
-									inputWrapperClass="toggle-checkbox-header"
+									 
 									inputInnerWrapperClass="toggle-checkbox"
 									idPrefix="toggle-switch-sold-individually"
 									type="checkbox"
@@ -1028,7 +989,7 @@ const AddProduct = () => {
 							{/* <FormGroup cols={2} label={__('Sold Individually', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
-									inputWrapperClass="toggle-checkbox-header"
+									 
 									inputInnerWrapperClass="toggle-checkbox"
 									idPrefix="toggle-switch-manage-stock"
 									type="checkbox"
@@ -1046,7 +1007,7 @@ const AddProduct = () => {
 							</FormGroup> */}
 							{/* SKU + Sold Individually */}
 							<FormGroup cols={2} label={__('SKU', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="sku"
 
 									value={product.sku}
@@ -1058,7 +1019,7 @@ const AddProduct = () => {
 							{/* <FormGroup cols={2} label={__('Stock management', 'multivendorx')}>
 								<MultiCheckBox
 									wrapperClass="toggle-btn"
-									inputWrapperClass="toggle-checkbox-header"
+									 
 									inputInnerWrapperClass="toggle-checkbox"
 									idPrefix="toggle-switch-manage-stock"
 									type="checkbox"
@@ -1078,10 +1039,9 @@ const AddProduct = () => {
 							{!product.manage_stock && (
 								<>
 									<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="stock_status"
 											options={stockStatusOptions}
-											type="single-select"
 											value={product.stock_status}
 											onChange={(selected) =>
 												handleChange('stock_status', selected.value)
@@ -1095,7 +1055,7 @@ const AddProduct = () => {
 							{product.manage_stock && (
 								<>
 									<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="stock"
 
 											value={product.stock}
@@ -1106,10 +1066,9 @@ const AddProduct = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('Allow backorders?', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="backorders"
 											options={backorderOptions}
-											type="single-select"
 											value={product.backorders}
 											onChange={(selected) =>
 												handleChange('backorders', selected.value)
@@ -1118,7 +1077,7 @@ const AddProduct = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('Low stock threshold', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="low_stock_amount"
 
 											value={product.low_stock_amount}
@@ -1139,17 +1098,15 @@ const AddProduct = () => {
 					>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="name"
-
 								// value={product.name}
 								// onChange={(e) => handleChange('name', e.target.value)}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('Cross-sells', 'multivendorx')}>
-								<BasicInput
+								<BasicInputUI
 									name="name"
-
 								// value={product.name}
 								// onChange={(e) => handleChange('name', e.target.value)}
 								/>
@@ -1265,9 +1222,8 @@ const AddProduct = () => {
 											</div>
 										)}
 										{isEditingVisibility && (
-											<SelectInput
+											<SelectInputUI
 												name="catalog_visibility"
-												// wrapperClass="fit-content"
 												size="14rem"
 												options={[
 													{ key: 'visible', value: 'visible', label: 'Shop and search results' },
@@ -1304,7 +1260,7 @@ const AddProduct = () => {
 									)}
 									{/* Edit Product Page Status */}
 									{isEditingStatus && (
-										<SelectInput
+										<SelectInputUI
 											name="status"
 											wrapperClass="fit-content"
 											options={[
@@ -1635,14 +1591,14 @@ const AddProduct = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 					</Card>
-					{/* 
-					 <Card
+
+					<Card
 						title={__('Visibility', 'multivendorx')}
 						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
 						toggle
-					> 
-					 <FormGroupWrapper> 
-					 <FormGroup>
+					>
+						<FormGroupWrapper>
+							<FormGroup>
 								<div className="checkbox-wrapper">
 									<div className="item">
 										<input
@@ -1666,9 +1622,9 @@ const AddProduct = () => {
 										{__('Download', 'multivendorx')}
 									</div>
 								</div>
-							</FormGroup> 
+							</FormGroup>
 
-					 <FormGroup>
+							<FormGroup>
 								<div className="catalog-visibility">
 									{__('Catalog Visibility:', 'multivendorx')}
 									<span className="catalog-visibility-value">
@@ -1685,9 +1641,9 @@ const AddProduct = () => {
 										<i className="adminfont-edit" />
 									</span>
 								</div>
-							</FormGroup> 
+							</FormGroup>
 
-					{isEditingVisibility && (
+							{isEditingVisibility && (
 								<>
 									<FormGroup>
 										<RadioInput
@@ -1726,9 +1682,9 @@ const AddProduct = () => {
 										</label>
 									</FormGroup>
 								</>
-							)} 
+							)}
 
-					 <FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
+							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 								<ToggleSetting
 
 									descClass="settings-metabox-description"
@@ -1740,9 +1696,9 @@ const AddProduct = () => {
 									value={product.status}
 									onChange={(value) => handleChange('status', value)}
 								/>
-							</FormGroup> 
+							</FormGroup>
 
-					 {product.status === 'publish' && (
+							{product.status === 'publish' && (
 								<label>{__('Published on Dec 16, 2025', 'multivendorx')}</label>
 							)}
 
@@ -1766,7 +1722,7 @@ const AddProduct = () => {
 													format="YYYY-MM-DD"
 												/>
 
-												<BasicInput
+												<BasicInputUI
 													type="time"
 													value={
 														product.date_created.split('T')[1]?.slice(0, 5) || ''
@@ -1783,9 +1739,9 @@ const AddProduct = () => {
 										)}
 									</div>
 								</FormGroup>
-							)} 
-					</FormGroupWrapper>
-					 </Card>  */}
+							)}
+						</FormGroupWrapper>
+					</Card>
 				</Column>
 			</Container >
 		</>

@@ -1,18 +1,18 @@
 import { __ } from '@wordpress/i18n';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-	ToggleSetting,
+	ToggleSettingUI,
 	getApiLink,
-	SelectInput,
-	Tabs,
-	CommonPopup,
 	useModules,
 	SuccessNotice,
 	FormGroupWrapper,
 	FormGroup,
-	AdminButton,
-	Popover,
-	Skeleton
+	Skeleton,
+	AdminButtonUI,
+	SelectInputUI,
+	SettingsNavigator,
+	PopupUI,
+	useOutsideClick
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -21,7 +21,7 @@ import StoreSquad from './StoreStaff';
 import PolicySettings from './PolicySettings';
 import ShippingSettings from './ShippingSettings';
 import StoreRegistration from './StoreRegistrationForm';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import axios from 'axios';
 import Overview from './Overview';
 import '../ViewStore.scss';
@@ -40,7 +40,8 @@ const EditStore = () => {
 	const location = useLocation();
 	const [prevName, setPrevName] = useState('');
 	const [prevDesc, setPrevDesc] = useState('');
-
+	const headerRef = useRef<HTMLDivElement>(null);
+	const storeRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (editName) {
 			setPrevName(data?.name || '');
@@ -50,45 +51,15 @@ const EditStore = () => {
 		}
 	}, [editName, editDesc]);
 
-	useEffect(() => {
-		const handleOutsideClick = (e: MouseEvent) => {
-			const target = e.target as HTMLElement;
+	useOutsideClick(storeRef, () => {
+		if (editName || editDesc) {
+			autoSave({ name: data.name, description: data.description });
+		}
+		setEditName(false);
+		setEditDesc(false);
+	});
 
-			// If clicked inside name or desc editing area, ignore
-			if (target.closest('.store-name') || target.closest('.des')) {
-				return;
-			}
-
-			if (editName || editDesc) {
-				autoSave({ name: data.name, description: data.description });
-			}
-
-			setEditName(false);
-			setEditDesc(false);
-		};
-
-		document.addEventListener('click', handleOutsideClick);
-		return () => document.removeEventListener('click', handleOutsideClick);
-	}, [data]);
-
-	// Close dropdown on click outside
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				(event.target as HTMLElement).closest('.edit-section') ||
-				(event.target as HTMLElement).closest('.edit-wrapper')
-			) {
-				return;
-			}
-			setBannerMenu(false);
-			setLogoMenu(false);
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, []);
+	useOutsideClick(headerRef, () => { setBannerMenu(false); setLogoMenu(false); });
 
 	const hash = location.hash.replace(/^#/, '');
 
@@ -193,14 +164,14 @@ const EditStore = () => {
 		});
 	};
 
-	const tabData = [
+	const settingContent = [
 		{
 			type: 'file',
 			content: {
 				id: 'store-overview',
 				name: 'Overview',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -210,7 +181,7 @@ const EditStore = () => {
 				id: 'store',
 				name: 'General',
 				desc: 'Store Info',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -220,7 +191,7 @@ const EditStore = () => {
 				id: 'payment',
 				name: 'Payment',
 				desc: 'Payment Methods',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -230,7 +201,7 @@ const EditStore = () => {
 				id: 'staff',
 				name: 'Staff',
 				desc: 'Store staff',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -241,7 +212,7 @@ const EditStore = () => {
 				id: 'shipping',
 				name: 'Shipping',
 				desc: 'Store Shipping',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -252,7 +223,7 @@ const EditStore = () => {
 				id: 'store-policy',
 				name: 'Policy',
 				desc: 'Policy',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -262,7 +233,7 @@ const EditStore = () => {
 				id: 'application-details',
 				name: 'Application Details',
 				desc: 'Application',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
@@ -273,18 +244,18 @@ const EditStore = () => {
 				id: 'store-facilitator',
 				name: 'Facilitator',
 				desc: 'Facilitator',
-				hideTabHeader: true,
+				hideSettingHeader: true,
 				icon: 'adminfont-credit-card',
 			},
 		},
-	].filter((tab) => !tab.module || modules.includes(tab.module));
+	].filter((setting) => !setting.module || modules.includes(setting.module));
 
 	const handleUpdateData = useCallback((updatedFields: any) => {
 		setData((prev) => ({ ...prev, ...updatedFields }));
 	}, []);
 
 	const visibleTabs = useMemo(() => {
-		const updatedTabs = tabData.map((tab) =>
+		const updatedTabs = settingContent.map((tab) =>
 			tab.content.id === 'application-details'
 				? {
 					...tab,
@@ -313,7 +284,7 @@ const EditStore = () => {
 		}
 
 		return updatedTabs;
-	}, [tabData, data?.status]);
+	}, [settingContent, data?.status]);
 
 	const [expanded, setExpanded] = useState(false);
 
@@ -413,16 +384,15 @@ const EditStore = () => {
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
-			<Tabs
-				tabData={visibleTabs}
-				currentTab={currentTab}
+			<SettingsNavigator
+				settingContent={visibleTabs}
+				currentSetting={currentTab}
 				getForm={getForm}
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
-				premium={false}
-				tabTitleSection={
+				settingTitleSection={
 					<>
-						<div className="general-wrapper">
+						<div className="general-wrapper" >
 							<div className="store-header">
 								<div
 									className="banner"
@@ -451,6 +421,7 @@ const EditStore = () => {
 													setBannerMenu(true);
 													setLogoMenu(false);
 												}}
+												ref={headerRef}
 											>
 												<i className="adminfont-edit"></i>
 												{__(
@@ -609,7 +580,7 @@ const EditStore = () => {
 										</div>
 
 										<div className="details">
-											<div className="name">
+											<div className="name" ref={storeRef}>
 												<div
 													className="store-name"
 													onClick={() =>
@@ -649,7 +620,7 @@ const EditStore = () => {
 													) : data?.name ? (
 														data.name
 													) : (
-														<Skeleton width={150}/>
+														<Skeleton width={150} />
 													)}
 
 													<span
@@ -739,7 +710,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : (
-													<Skeleton width={100}/>
+													<Skeleton width={100} />
 												)}
 
 												{modules.includes(
@@ -796,7 +767,7 @@ const EditStore = () => {
 													/>
 												) : Object.keys(data).length ===
 													0 ? (
-													<Skeleton width={150}/>
+													<Skeleton width={150} />
 												) : data?.description ? (
 													<div>
 														<span>
@@ -973,22 +944,21 @@ const EditStore = () => {
 				}
 				Link={Link}
 				settingName={'Store'}
-				hideTitle={true}
-				hideBreadcrumb={true}
 				action={
-					<Popover
-						className="edit-wrapper"
-						template="action"
-						toggleIcon="adminfont-more-vertical"
-						items={actionItems}
-					/>
+					// <Popover
+					// 	className="edit-wrapper"
+					// 	template="action"
+					// 	toggleIcon="adminfont-more-vertical"
+					// 	items={actionItems}
+					// />
+					<></>
 				}
 			/>
 
-			<CommonPopup
+			<PopupUI
 				open={deleteModal}
 				onClose={() => setDeleteModal(false)}
-				width="37.5rem"
+				width={37.5}
 				height="50%"
 				header={{
 					icon: 'storefront',
@@ -999,18 +969,18 @@ const EditStore = () => {
 					),
 				}}
 				footer={
-					<AdminButton
+					<AdminButtonUI
 						buttons={[
 							{
 								icon: 'close',
 								text: 'Cancel',
-								className: 'red',
+								color: 'red',
 								onClick: () => setDeleteModal(false),
 							},
 							{
 								icon: 'delete',
 								text: 'Delete',
-								className: 'red-bg',
+								color: 'red-bg',
 								onClick: () => {
 									if (deleteOption) {
 										deleteStoreApiCall(deleteOption);
@@ -1024,9 +994,7 @@ const EditStore = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Deletion method', 'multivendorx')} htmlFor="deletion-method">
-							<ToggleSetting
-								 
-								descClass="settings-metabox-description"
+							<ToggleSettingUI
 								options={[
 									{
 										value: 'set_store_owner',
@@ -1062,11 +1030,10 @@ const EditStore = () => {
 						</FormGroup>
 						{deleteOption === 'set_store_owner' && (
 							<FormGroup label={__('Assign new store owner', 'multivendorx')}>
-								<SelectInput
+								<SelectInputUI
 									name="new_owner"
 									value={selectedOwner?.value}
 									options={appLocalizer.store_owners}
-									type="single-select"
 									onChange={(val: any) => {
 										if (val) {
 											setSelectedOwner(val);
@@ -1077,7 +1044,7 @@ const EditStore = () => {
 						)}
 					</FormGroupWrapper>
 				</>
-			</CommonPopup>
+			</PopupUI>
 		</>
 	);
 };

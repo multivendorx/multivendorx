@@ -1,4 +1,4 @@
-import { capitalize } from '@mui/material';
+// import { capitalize } from '@mui/material';
 import { __ } from '@wordpress/i18n';
 
 const columns = appLocalizer?.custom_roles

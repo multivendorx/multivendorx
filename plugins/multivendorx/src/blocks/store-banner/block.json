@@ -4,7 +4,7 @@
   "title": "Store Banner",
   "category": "multivendorx-store-shop",
   "icon": "cover-image",
-  "description": "Display store banner with static image and customizable content overlay",
+  "description": "Display a visual banner at the top of the store page to highlight the store’s brand and promotions.",
   "editorScript": "file:./index.js",
   "attributes": {
     "height": {
@@ -37,10 +37,21 @@
     "contentPosition": {
       "type": "string",
       "default": "center center"
+    },
+    "template": {
+      "type": "string",
+      "default": "template-1"
+    },
+    "innerContentEnabled": {
+      "type": "boolean",
+      "default": true
     }
   },
   "supports": {
-    "align": ["wide", "full"],
+    "align": [
+      "wide",
+      "full"
+    ],
     "html": false,
     "spacing": {
       "margin": true,
