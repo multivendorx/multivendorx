@@ -48,13 +48,9 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
 
                 // Date filter
                 if (filter.type === 'date') {
-                    const defaultRange = useMemo(() => {
-                        const start = new Date();
-                        start.setMonth(start.getMonth() - 1);
-                        return { startDate: start, endDate: new Date() };
-                    }, []);
-                      
-                    const range = value as CalendarRange ?? defaultRange;
+                    const start = new Date();
+                    start.setMonth(start.getMonth() - 1);
+                    const range = value as CalendarRange ?? { startDate: start, endDate: new Date() };
                     return (
                       <div key={filter.key} className="group-field">
                         <CalendarInput
