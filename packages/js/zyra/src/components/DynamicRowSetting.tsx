@@ -3,13 +3,13 @@ import React from 'react';
 
 // Internal dependencies
 import '../styles/web/DynamicRowSetting.scss';
-import '../styles/web/ToggleSetting.scss';
-import { SelectInputUI } from './SelectInput';
+import { FIELD_REGISTRY } from './FieldRegistry';
+import { AdminButtonUI } from './AdminButton';
 
 // Types
 type FieldType = 'text' | 'number' | 'file' | 'select' | 'button';
 
-type RowValue = Record< string, string | number | File | RowValue[] | null >;
+type RowValue = Record<string, string | number | File | RowValue[] | null>;
 
 interface FieldConfig {
     key: string;
@@ -18,11 +18,11 @@ interface FieldConfig {
     placeholder?: string;
     options?: { label: string; value: string; children?: RowValue[] }[];
     width?: string;
-    onClick?: ( params: {
+    onClick?: (params: {
         row: RowValue;
         rowIndex: number;
-        updateRow: ( patch: Partial< RowValue > ) => void;
-    } ) => void;
+        updateRow: (patch: Partial<RowValue>) => void;
+    }) => void;
 }
 
 interface RowConfig {
@@ -34,28 +34,30 @@ export interface DynamicRowSettingProps {
     keyName: string;
     template: RowConfig;
     value: RowValue[];
-    onChange: ( rows: RowValue[] ) => void;
+    onChange: (rows: RowValue[]) => void;
     addLabel?: string;
     childrenRenderer?: (
         row: RowValue,
         rowIndex: number
     ) => React.ReactNode | false;
+    canAccess?: boolean;
 }
 
-const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
+const DynamicRowSetting: React.FC<DynamicRowSettingProps> = ({
     wrapperClass = '',
     template,
     value,
     onChange,
     addLabel = 'Add New',
     childrenRenderer = () => false,
-} ) => {
+    canAccess = true
+}) => {
     const handleAdd = () => {
         const emptyRow: RowValue = {};
-        template.fields.forEach( ( field ) => {
-            emptyRow[ field.key ] = field.type === 'file' ? null : '';
-        } );
-        onChange( [ ...value, emptyRow ] );
+        template.fields.forEach((field) => {
+            emptyRow[field.key] = field.type === 'file' ? null : '';
+        });
+        onChange([...value, emptyRow]);
     };
 
     const handleChange = (
@@ -63,158 +65,88 @@ const DynamicRowSetting: React.FC< DynamicRowSettingProps > = ( {
         fieldKey: string,
         newVal: string | number | File | RowValue[] | null
     ) => {
-        const updatedRows = [ ...value ];
-        updatedRows[ rowIndex ] = {
-            ...updatedRows[ rowIndex ],
-            [ fieldKey ]: newVal,
+        const updatedRows = [...value];
+        updatedRows[rowIndex] = {
+            ...updatedRows[rowIndex],
+            [fieldKey]: newVal,
         };
-        onChange( updatedRows );
+        onChange(updatedRows);
     };
 
-    const handleDelete = ( rowIndex: number ) => {
-        onChange( value.filter( ( _, i ) => i !== rowIndex ) );
+    const handleDelete = (rowIndex: number) => {
+        onChange(value.filter((_, i) => i !== rowIndex));
     };
 
-    const renderField = (
-        row: RowValue,
-        field: FieldConfig,
-        rowIndex: number
-    ) => {
-        const val = row[ field.key ];
+    function renderField(field: FieldConfig, row: RowValue, rowIndex: number) {
+        const fieldComponent = FIELD_REGISTRY[field.type];
+        if (!fieldComponent) return null;
+        const Render = fieldComponent.render;
+        const fieldValue = row?.[field.key];
 
-        switch ( field.type ) {
-            case 'text':
-            case 'number':
-                return (
-                    <input
-                        type={ field.type }
-                        placeholder={ field.placeholder }
-                        className="basic-input"
-                        value={ val as string | number }
-                        onChange={ ( e ) =>
-                            handleChange( rowIndex, field.key, e.target.value )
-                        }
-                    />
-                );
+        const handleInternalChange = (val: any) => {
+            handleChange(rowIndex, field.key, val)
+            return;
+        };
 
-            case 'file':
-                return (
-                    <input
-                        type="file"
-                        className="basic-input"
-                        onChange={ (
-                            e: React.ChangeEvent< HTMLInputElement >
-                        ) => {
-                            const file = e.target.files?.[ 0 ] || null;
-                            handleChange( rowIndex, field.key, file );
-                        } }
-                    />
-                );
-
-            // Inside renderField:
-            case 'select':
-                // Transform options to SelectInput format
-                const selectOptions: SelectOptions[] = (
-                    field.options || []
-                ).map( ( opt ) => ( { value: opt.value, label: opt.label } ) );
-
-                return (
-                    <div className="select-wrapper">
-                        <SelectInputUI
-                            name={ field.key }
-                            value={ val as string }
-                            options={ selectOptions }
-                            inputClass="react-select"
-                            onChange={ ( newValue ) => {
-                                // react-select SingleValue type
-                                const selected = newValue as any;
-                                handleChange(
-                                    rowIndex,
-                                    field.key,
-                                    selected?.value || ''
-                                );
-
-                                const children = field.options?.find(
-                                    ( opt ) => opt.value === selected?.value
-                                )?.children;
-
-                                if ( children ) {
-                                    handleChange(
-                                        rowIndex,
-                                        field.key + '_children',
-                                        children
-                                    );
-                                }
-                            } }
-                        />
-                    </div>
-                );
-
-            case 'button':
-                return (
-                    <button
-                        type="button"
-                        className="admin-btn btn-purple"
-                        onClick={ () =>
-                            field.onClick?.( {
-                                row,
-                                rowIndex,
-                                updateRow: ( patch ) => {
-                                    const updatedRows = [ ...value ];
-                                    updatedRows[ rowIndex ] = {
-                                        ...updatedRows[ rowIndex ],
-                                        ...patch,
-                                    };
-                                    onChange( updatedRows );
-                                },
-                            } )
-                        }
-                    >
-                        { field.label }
-                    </button>
-                );
-
-            default:
-                return null;
-        }
-    };
-
+        return (
+            <>
+                <label>{field.label}</label>
+                <Render
+                    field={field}
+                    value={fieldValue}
+                    onChange={handleInternalChange}
+                    canAccess={canAccess}
+                />
+            </>
+        );
+    }
     return (
         <>
-            <div className={ `repeater-field-wrapper ${ wrapperClass }` }>
-                { value.map( ( row, rowIndex ) => (
-                        <div key={ rowIndex } className="repeater-field">
-                            <div className="field">
-                                { template.fields.map( ( field ) => (
-                                    { renderField( row, field, rowIndex ) }
-                                ) ) }
+            <div className={`repeater-field-wrapper ${wrapperClass}`}>
+                {value.map((row, rowIndex) => (
+                    <div key={rowIndex} className="repeater-field">
+                        <div className="field">
+                            {template.fields.map((field) => (
+                                renderField(field, row, rowIndex)
+                            ))}
 
-                                <span
-                                    className="delete-icon adminfont-delete"
-                                    onClick={ () => handleDelete( rowIndex ) }
-                                ></span>
-                            </div>
-                            { ( () => {
-                                const nestedChildren = childrenRenderer?.(
-                                    row,
-                                    rowIndex
-                                );
-                                return nestedChildren ? (
-                                    <div className="repeater-field-nested">
-                                        { nestedChildren }
-                                    </div>
-                                ) : null;
-                            } )() }
+                            <AdminButtonUI
+                                position="left"
+                                buttons={[
+                                    {
+                                        icon: 'delete',
+                                        text: 'Delete',
+                                        color: 'purple',
+                                        onClick: (e) => handleDelete(rowIndex),
+                                    },
+                                ]}
+                            />
                         </div>
-                ) ) }
+                        {(() => {
+                            const nestedChildren = childrenRenderer?.(
+                                row,
+                                rowIndex
+                            );
+                            return nestedChildren ? (
+                                <div className="repeater-field-nested">
+                                    {nestedChildren}
+                                </div>
+                            ) : null;
+                        })()}
+                    </div>
+                ))}
 
-                <button
-                    type="button"
-                    className="admin-btn btn-purple-bg"
-                    onClick={ handleAdd }
-                >
-                    <i className="adminfont-plus"></i> { addLabel }
-                </button>
+                <AdminButtonUI
+                    position="left"
+                    buttons={[
+                        {
+                            icon: 'plus',
+                            text: addLabel,
+                            color: 'purple',
+                            onClick: handleAdd,
+                        },
+                    ]}
+                />
             </div>
         </>
     );

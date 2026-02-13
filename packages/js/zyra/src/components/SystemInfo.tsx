@@ -29,7 +29,6 @@ interface Field {
 
 interface InfoSection {
     label: string;
-    description?: string;
     fields: Record<string, Field>;
 }
 
@@ -139,9 +138,6 @@ export const SystemInfoUI : React.FC<SystemInfoProps> = ({
 
                         {isOpen && (
                             <div className="content">
-                                {section.description && (
-                                    <p className="des">{section.description}</p>
-                                )}
                                 <table>
                                     <tbody>
                                         {Object.entries(section.fields).map(

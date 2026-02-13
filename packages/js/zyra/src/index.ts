@@ -77,7 +77,8 @@ export { SettingProvider, useSetting } from './contexts/SettingContext';
 export type { SettingContextType } from './contexts/SettingContext';
 
 export { default as TableCard } from './components/table/TableCard';
-  
+export { useOutsideClick } from './components/useOutsideClick';
+
 export {
     getApiResponse,
     sendApiResponse,

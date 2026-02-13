@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCell, TextArea, getApiLink } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCell, TextArea, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -29,83 +29,60 @@ const AddOrder = () => {
 		[]
 	);
 
-	useEffect(() => {
-		// if (!showAddressEdit) return;
-
-		function handleClickOutside(e) {
-			if (
-				addressEditRef.current &&
-				!addressEditRef.current.contains(e.target)
-			) {
-				const payload = {
-					billing: {
-						first_name: selectedCustomer?.first_name,
-						last_name: selectedCustomer?.last_name,
-						address_1: billingAddress.address_1,
-						address_2: '',
-						city: billingAddress.city,
-						state: billingAddress.state,
-						postcode: billingAddress.postcode,
-						country: billingAddress.country,
-					},
-				};
-				axios
-					.put(
-						`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
-						payload,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						}
-					)
-					.then((res) => {
-						setBillingAddress(res.data.billing);
-					});
-
-				setShowAddressEdit(false);
-			}
-			if (
-				shippingAddressEditRef.current &&
-				!shippingAddressEditRef.current.contains(e.target)
-			) {
-				const payload = {
-					shipping: {
-						first_name: selectedCustomer?.first_name,
-						last_name: selectedCustomer?.last_name,
-						address_1: shippingAddress.address_1,
-						address_2: '',
-						city: shippingAddress.city,
-						state: shippingAddress.state,
-						postcode: shippingAddress.postcode,
-						country: shippingAddress.country,
-					},
-				};
-				axios
-					.put(
-						`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
-						payload,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						}
-					)
-					.then((res) => {
-						setShippingAddress(res.data.shipping);
-					});
-
-				setShowShippingAddressEdit(false);
-			}
-		}
-
-		document.addEventListener('mousedown', handleClickOutside);
-
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
+	useOutsideClick(addressEditRef, () => {
+		const payload = {
+			billing: {
+				first_name: selectedCustomer?.first_name,
+				last_name: selectedCustomer?.last_name,
+				address_1: billingAddress.address_1,
+				address_2: '',
+				city: billingAddress.city,
+				state: billingAddress.state,
+				postcode: billingAddress.postcode,
+				country: billingAddress.country,
+			},
 		};
-	}, [
-		showAddressEdit,
-		showShippingAddressEdit,
-		shippingAddress,
-		billingAddress,
-	]);
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
+				payload,
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			)
+			.then((res) => {
+				setBillingAddress(res.data.billing);
+			});
+
+		setShowAddressEdit(false);
+	});
+	useOutsideClick(shippingAddressEditRef, () => {
+		const payload = {
+			shipping: {
+				first_name: selectedCustomer?.first_name,
+				last_name: selectedCustomer?.last_name,
+				address_1: shippingAddress.address_1,
+				address_2: '',
+				city: shippingAddress.city,
+				state: shippingAddress.state,
+				postcode: shippingAddress.postcode,
+				country: shippingAddress.country,
+			},
+		};
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
+				payload,
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			)
+			.then((res) => {
+				setShippingAddress(res.data.shipping);
+			});
+
+		setShowShippingAddressEdit(false);
+	});
 
 	useEffect(() => {
 		axios
@@ -943,7 +920,7 @@ const AddOrder = () => {
 												...newCustomer,
 												first_name: e.target.value,
 											})
-										}										 
+										}
 									/>
 								</FormGroup>
 
@@ -956,7 +933,7 @@ const AddOrder = () => {
 												...newCustomer,
 												last_name: e.target.value,
 											})
-										}										 
+										}
 									/>
 								</FormGroup>
 
@@ -969,7 +946,7 @@ const AddOrder = () => {
 												...newCustomer,
 												email: e.target.value,
 											})
-										}										 
+										}
 									/>
 								</FormGroup>
 
@@ -982,7 +959,7 @@ const AddOrder = () => {
 												...newCustomer,
 												phone: e.target.value,
 											})
-										}										 
+										}
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
@@ -1039,7 +1016,7 @@ const AddOrder = () => {
 										<BasicInputUI
 											name="address_1"
 											value={shippingAddress.address_1}
-											 
+
 											onChange={(e) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1051,7 +1028,7 @@ const AddOrder = () => {
 									<FormGroup cols={2} label={__('City', 'multivendorx')}>
 										<BasicInputUI
 											name="city"
-											value={shippingAddress.city || ''}											 
+											value={shippingAddress.city || ''}
 											onChange={(e) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1064,7 +1041,7 @@ const AddOrder = () => {
 										<BasicInputUI
 											name="postcode"
 											value={shippingAddress.postcode || ''}
-											 
+
 											onChange={(e) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1148,7 +1125,7 @@ const AddOrder = () => {
 										<BasicInputUI
 											name="address_1"
 											value={billingAddress.address_1}
-											 
+
 											onChange={(e) =>
 												setBillingAddress(
 													(prev) => ({
@@ -1176,7 +1153,7 @@ const AddOrder = () => {
 													})
 												)
 											}
-											 
+
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Postcode / ZIP', 'multivendorx')} htmlFor="postcode-zip">
@@ -1195,7 +1172,7 @@ const AddOrder = () => {
 													})
 												)
 											}
-											 
+
 										/></FormGroup>
 
 									<FormGroup cols={2} label={__('Country / Region', 'multivendorx')} htmlFor="country-region">

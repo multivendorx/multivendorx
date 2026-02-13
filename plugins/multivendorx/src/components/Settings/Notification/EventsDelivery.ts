@@ -4,7 +4,7 @@ export default {
 	id: 'events-delivery',
 	priority: 1,
 	name: 'Events Delivery',
-	tabTitle: 'Email & SMS delivery',
+	headerTitle: 'Email & SMS delivery',
 	desc: __(
 		'Get notified about important updates. Choose how you want to receive notifications from your marketplace - by email, text message, or both.',
 		'multivendorx'

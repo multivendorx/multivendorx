@@ -53,7 +53,6 @@ interface DoActionBtnProps {
     proSetting: boolean;
     proSettingChanged: () => boolean;
     value: string;
-    description: string;
     apilink: string;
     parameter: string;
     tasks: Task[];
@@ -72,7 +71,6 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
     proSetting,
     proSettingChanged,
     value,
-    description,
     apilink,
     parameter,
     tasks,
@@ -354,11 +352,6 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
                         {failureMessage}
                     </div>
                 )}
-
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={{ __html: description }}
-                />
 
                 {/* Task Progress Display */}
                 {taskSequence.map((task, idx) => (
