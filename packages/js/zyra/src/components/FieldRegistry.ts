@@ -16,6 +16,7 @@ import RadioInput from './RadioInput';
 import ColorSettingInput from './ColorSettingInput';
 import Log from './Log';
 import EndpointEditor from './EndpointEditor';
+import ShortCodeTable from './ShortCodeTable';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -39,4 +40,5 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'color-setting' : ColorSettingInput,
   'log' : Log,
   'endpoint-editor' : EndpointEditor,
+  'shortcode-table' : ShortCodeTable,
 };
