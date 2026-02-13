@@ -31,8 +31,8 @@ const Appearance = () => {
 
 	// Load store data
 	useEffect(() => {
-		if (!appLocalizer.store_id) return console.error('Missing store ID or appLocalizer');
-	
+		if (!appLocalizer.store_id) return;
+
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
@@ -40,33 +40,35 @@ const Appearance = () => {
 		})
 			.then((res) => {
 				const data = res.data || {};
-	
-				// If banner_slider comes as a JSON string, parse it
 				let bannerSliderData: string[] = [];
+
 				if (typeof data.banner_slider === 'string') {
-					try {
-						bannerSliderData = JSON.parse(data.banner_slider);
-					} catch (e) {
-						bannerSliderData = [];
+					if (data.banner_slider.startsWith('a:') || data.banner_slider.startsWith('s:')) {
+						const regex = /"(https?:\/\/[^"]+)"/g;
+						let match;
+						while ((match = regex.exec(data.banner_slider)) !== null) {
+							bannerSliderData.push(match[1]);
+						}
+					} else {
+						try {
+							bannerSliderData = JSON.parse(data.banner_slider);
+						} catch (e) {
+							bannerSliderData = [];
+						}
 					}
 				} else if (Array.isArray(data.banner_slider)) {
 					bannerSliderData = data.banner_slider;
 				}
-	
-				setFormData({
-					...data,
-					banner_slider: bannerSliderData,
-				});
-	
+
+				setFormData({ ...data, banner_slider: bannerSliderData });
 				setImagePreviews({
 					image: data.image || '',
 					banner: data.banner || '',
 					banner_slider: bannerSliderData,
 				});
-			})
-			.catch((error) => console.error('Error loading store data:', error));
+			});
 	}, []);
-	
+
 	// Auto save store data
 	const autoSave = (updatedData: any) => {
 		axios({
@@ -84,41 +86,6 @@ const Appearance = () => {
 			.catch((error) => console.error('Save error:', error));
 	};
 
-	// Open WordPress media uploader
-	const runUploader = (key: string, allowMultiple = false) => {
-		if (!settings.includes('store_images')) return;
-
-		const frame = (window as any).wp.media({
-			title: __('Select or Upload Image', 'multivendorx'),
-			button: { text: __('Use this image', 'multivendorx') },
-			multiple: allowMultiple,
-		});
-
-		frame.on('select', function () {
-			const selection = frame.state().get('selection').toJSON();
-			const urls = selection.map((att: any) => att.url);
-
-			setFormData((prev) => {
-				const prevImages = Array.isArray(prev[key]) ? prev[key] : [];
-				const updatedImages = allowMultiple ? [...prevImages, ...urls] : urls[0];
-				return { ...prev, [key]: updatedImages };
-			});
-
-			setImagePreviews((prev) => {
-				const prevImages = Array.isArray(prev[key]) ? prev[key] : [];
-				const updatedImages = allowMultiple ? [...prevImages, ...urls] : urls[0];
-				return { ...prev, [key]: updatedImages };
-			});
-
-			autoSave({
-				...formData,
-				[key]: allowMultiple ? [...(formData[key] || []), ...urls] : urls[0],
-			});
-		});
-
-		frame.open();
-	};
-
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
@@ -127,22 +94,19 @@ const Appearance = () => {
 				{/* Profile Image */}
 				<FormGroup label={__('Profile Image', 'multivendorx')} htmlFor="image">
 					<FileInput
-						value={formData.image}
-						inputClass="form-input"
-						name="image"
-						type="hidden"
-						onButtonClick={() => runUploader('image')}
+						imageSrc={formData.image} // Provide the current image(s)
 						imageWidth={75}
 						imageHeight={75}
 						openUploader={__('Upload Image', 'multivendorx')}
-						imageSrc={imagePreviews.image}
-						onRemove={() => {
-							const updated = { ...formData, image: '' };
+						inputClass="form-input"
+						name="image"
+						multiple={false} // Set to true if this field supports multiple images
+						onChange={(value) => {
+							const updated = { ...formData, image: value };
 							setFormData(updated);
-							setImagePreviews((prev) => ({ ...prev, image: '' }));
+							setImagePreviews((prev) => ({ ...prev, image: value }));
 							autoSave(updated);
 						}}
-						onReplace={() => runUploader('image')}
 					/>
 				</FormGroup>
 
@@ -164,22 +128,19 @@ const Appearance = () => {
 				{formData.banner_type === 'static_image' && (
 					<FormGroup label={__('Static Banner Image', 'multivendorx')} htmlFor="banner">
 						<FileInput
-							value={formData.banner}
-							inputClass="form-input"
 							name="banner"
-							type="hidden"
-							onButtonClick={() => runUploader('banner')}
+							imageSrc={imagePreviews.banner} // Or formData.banner
 							imageWidth={300}
 							imageHeight={100}
 							openUploader={__('Upload Banner', 'multivendorx')}
-							imageSrc={imagePreviews.banner}
-							onRemove={() => {
-								const updated = { ...formData, banner: '' };
+							inputClass="form-input"
+							multiple={false}
+							onChange={(value: string) => {
+								const updated = { ...formData, banner: value };
 								setFormData(updated);
-								setImagePreviews((prev) => ({ ...prev, banner: '' }));
+								setImagePreviews((prev) => ({ ...prev, banner: value }));
 								autoSave(updated);
 							}}
-							onReplace={() => runUploader('banner')}
 						/>
 					</FormGroup>
 				)}
@@ -189,25 +150,16 @@ const Appearance = () => {
 					<FormGroup label={__('Slider Images', 'multivendorx')} htmlFor="banner_slider">
 						<FileInput
 							multiple={true}
-							value={formData.banner_slider || []}
-							inputClass="form-input"
 							name="banner_slider"
-							type="hidden"
-							onButtonClick={() => runUploader('banner_slider', true)}
+							imageSrc={imagePreviews.banner_slider || []}
 							imageWidth={150}
 							imageHeight={100}
 							openUploader={__('Upload Slider Images', 'multivendorx')}
-							imageSrc={imagePreviews.banner_slider || []}
-							onChange={(images: string[]) => {
-								const updated = { ...formData, banner_slider: images };
+							inputClass="form-input"
+							onChange={(value: string[]) => {
+								const updated = { ...formData, banner_slider: value };
 								setFormData(updated);
-								setImagePreviews((prev) => ({ ...prev, banner_slider: images }));
-								autoSave(updated);
-							}}
-							onRemove={() => {
-								const updated = { ...formData, banner_slider: [] };
-								setFormData(updated);
-								setImagePreviews((prev) => ({ ...prev, banner_slider: [] }));
+								setImagePreviews((prev) => ({ ...prev, banner_slider: value }));
 								autoSave(updated);
 							}}
 						/>
