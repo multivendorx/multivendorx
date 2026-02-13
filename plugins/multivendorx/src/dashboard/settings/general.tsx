@@ -57,7 +57,7 @@ const GeneralSettings = () => {
 
 	return (
 		<>
-			{/* <FormGroupWrapper>
+			<FormGroupWrapper>
 
 				<FormGroup
 					label={__('Name', 'multivendorx')}
@@ -107,7 +107,7 @@ const GeneralSettings = () => {
 						onChange={handleChange}
 					/>
 				</FormGroup>
-			</FormGroupWrapper> */}
+			</FormGroupWrapper>
 
 
 			<SuccessNotice message={successMsg} />
