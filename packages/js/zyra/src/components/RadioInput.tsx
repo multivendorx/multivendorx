@@ -1,56 +1,39 @@
 // External dependencies
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { FieldComponent } from './types';
 
 // Types
 interface RadioOption {
     key: string;
-    keyName?: string;
     value: string | number;
     label?: string;
     name?: string;
-    color?: string[] | string; // Can be an array of colors or an image URL
 }
 
 interface RadioInputProps {
     name?: string;
-    wrapperClass?: string;
-    inputWrapperClass?: string;
-    activeClass?: string;
-    inputClass?: string;
     idPrefix?: string;
     type?: 'default';
     options: RadioOption[];
     value?: string;
-    onChange?: ( e: ChangeEvent< HTMLInputElement > ) => void;
-    radiSelectLabelClass?: string;
-    labelImgClass?: string;
-    labelOverlayClass?: string;
-    labelOverlayText?: string;
-    proSetting?: boolean;
-    description?: string;
-    descClass?: string;
-    keyName?: string;
+    onChange: (val: string | number) => void;
 }
 
-export const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
-    if(!props.options.length){
-        return null;
-    }
+const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
     return (
         <>
-            <div className={ props.wrapperClass }>
+            <div className="settings-form-group-radio">
                 { props.options.map( ( option ) => {
                     const checked = props.value === option.value;
                     return (
                         <div
                             key={ option.key }
-                            className={ `${ props.inputWrapperClass } ${
-                                checked ? props.activeClass : ''
-                            }` }
+                            className={`radio-basic-input-wrap ${
+                                checked ? 'radio-select-active' : ''
+                            }`}
                         >
                             <input
-                                className={ props.inputClass }
+                                className="setting-form-input"
                                 id={ `${ props.idPrefix }-${ option.key }` }
                                 type="radio"
                                 name={ option.name }
@@ -67,41 +50,25 @@ export const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
                     );
                 } ) }
             </div>
-            { props.description && (
-                <p
-                    className={ props.descClass }
-                    dangerouslySetInnerHTML={ { __html: props.description } }
-                ></p>
-            ) }
         </>
     );
 };
 
 const RadioInput: FieldComponent = {
-    render:({ field, value, onChange, canAccess, appLocalizer }) => (
+    render: ({ field, value, onChange, canAccess }) => (
         <RadioInputUI
-            wrapperClass={ field.wrapperClass }
-            inputWrapperClass={ field.inputWrapperClass }
-            activeClass={ field.activeClass }
-            inputClass={ field.className }
-            idPrefix={ field.key }
-            options={
-                Array.isArray( field.options )
-                    ? field.options.map( ( opt ) => ( {
-                          key: String( opt.value ),
-                          value: String( opt.value ) || '',
-                          label: opt.label || String( opt.value ),
-                          name: field.key,
-                      } ) )
-                    : []
+            name={field.name}
+            idPrefix={field.idPrefix}
+            value={
+                typeof value === 'number'
+                    ? value.toString()
+                    : value
             }
-            value={ value }
-            onChange={ ( e ) => {
-                if ( ! canAccess ) return;
-                onChange( e.target.value );
-            } }
-            description={ field.description ? appLocalizer.__( field.description ) : '' }
-            descClass={ field.descClass }
+            options={Array.isArray(value) ? value : []} // array of radio options (ensure it's an array)
+            onChange={(val) => {
+                if (!canAccess) return;
+                onChange(val)
+            }}
         />
     ),
 
