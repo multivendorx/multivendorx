@@ -1,20 +1,9 @@
 // External Dependencies
-import React, { useState, useEffect, useRef } from 'react';
-import { ReactSortable } from 'react-sortablejs';
+import React from 'react';
 
 // Internal Dependencies
-import {
-    Block,
-    BlockPatch,
-    BlockType,
-    BlockRenderer,
-    ColumnRenderer,
-    useColumnManager,
-    LeftPanel,
-    createBlock
-} from './block';
-
-import SettingMetaBox from './SettingMetaBox';
+import { LeftPanel } from './block';
+import CanvasEditor from './CanvasEditor';
 import { FieldComponent } from './types';
 import '../styles/web/RegistrationForm.scss';
 
@@ -69,97 +58,18 @@ export const RegistrationFormUI: React.FC<any> = ({
     setting = {},
     name = field?.key || 'registration-form',
 }) => {
-    // Track if changes have been made
-    const settingHasChanged = useRef(false);
-    
-    // State
-    const [blocks, setBlocks] = useState<Block[]>(() => 
-        Array.isArray(value?.formfieldlist) ? value.formfieldlist : 
-        Array.isArray(setting[name]?.formfieldlist) ? setting[name].formfieldlist : []
-    );
-    
-    const [openBlock, setOpenBlock] = useState<Block | null>(null);
+    // Get initial blocks
+    const initialBlocks = React.useMemo(() => {
+        if (Array.isArray(value?.formfieldlist)) return value.formfieldlist;
+        if (Array.isArray(setting[name]?.formfieldlist)) return setting[name].formfieldlist;
+        return [];
+    }, [value, setting, name]);
+
+    const handleBlocksChange = React.useCallback((blocks: Block[]) => {
+        onChange({ formfieldlist: blocks });
+    }, [onChange]);
+
     const visibleGroups = field?.visibleGroups || ['registration'];
-
-    // Trigger onChange when blocks change (if changes were made)
-    useEffect(() => {
-        if (settingHasChanged.current) {
-            onChange({ formfieldlist: blocks });
-            settingHasChanged.current = false;
-        }
-    }, [blocks, onChange]);
-
-    // Column manager
-    const columnManager = useColumnManager({
-        blocks,
-        onBlocksUpdate: setBlocks,
-        openBlock,
-        setOpenBlock,
-    });
-
-    // Helper to mark that changes have been made
-    const markChanged = () => {
-        settingHasChanged.current = true;
-    };
-
-    // Block operations
-    const updateBlock = (index: number, patch: BlockPatch) => {
-        if (proSettingChange()) return;
-        setBlocks(prev => {
-            const updated = [...prev];
-            updated[index] = { ...updated[index], ...patch } as Block;
-            if (openBlock?.id === updated[index].id) setOpenBlock(updated[index]);
-            markChanged();
-            return updated;
-        });
-    };
-
-    const deleteBlock = (index: number) => {
-        if (proSettingChange()) return;
-        const deletedBlock = blocks[index];
-        setBlocks(prev => {
-            const filtered = prev.filter((_, i) => i !== index);
-            markChanged();
-            return filtered;
-        });
-        if (openBlock?.id === deletedBlock.id) {
-            setOpenBlock(null);
-            columnManager.clearSelection();
-        }
-    };
-
-    // Handle drops with placeholder
-    const handleSetList = (newList: any[]) => {
-        if (proSettingChange()) return;
-        
-        const processedList = newList.map(item => 
-            createBlock(item, 'registration')
-        );
-        
-        setBlocks(processedList);
-        markChanged();
-    };
-
-    // Settings handler
-    const handleSettingsChange = (key: string, value: any) => {
-        if (proSettingChange()) return;
-        
-        if (columnManager.selectedBlockLocation) {
-            const { parentIndex, columnIndex, childIndex } = columnManager.selectedBlockLocation;
-            columnManager.handleColumnChildUpdate(parentIndex, columnIndex, childIndex, { [key]: value });
-            markChanged(); // Mark changed after column child update
-        } else {
-            const index = blocks.findIndex(b => b.id === openBlock?.id);
-            if (index >= 0) {
-                if (key === 'layout' && blocks[index].type === 'columns') {
-                    columnManager.handleLayoutChange(index, value);
-                    markChanged(); // Mark changed after layout change
-                } else {
-                    updateBlock(index, { [key]: value }); // updateBlock already calls markChanged
-                }
-            }
-        }
-    };
 
     return (
         <div className="registration-from-wrapper registration-builder">
@@ -169,66 +79,15 @@ export const RegistrationFormUI: React.FC<any> = ({
                 groupName="registration"
             />
 
-            <div className="registration-form-main-section registration-canvas">
-                <ReactSortable
-                    list={blocks}
-                    setList={handleSetList}
-                    group={{ name: 'registration', pull: true, put: true }}
-                    handle=".drag-handle"
-                    animation={150}
-                    className="registration-canvas-sortable"
-                >
-                    {blocks.map((block, index) => (
-                        <div className="field-wrapper" key={block.id}>
-                            {block.type === 'columns' ? (
-                                <ColumnRenderer
-                                    block={block}
-                                    parentIndex={index}
-                                    blocks={blocks}
-                                    isActive={openBlock?.id === block.id}
-                                    groupName="registration"
-                                    openBlock={openBlock}
-                                    setOpenBlock={setOpenBlock}
-                                    onBlocksUpdate={(updatedBlocks) => {
-                                        setBlocks(updatedBlocks);
-                                        markChanged();
-                                    }}
-                                    onSelect={() => {
-                                        setOpenBlock(block);
-                                        columnManager.clearSelection();
-                                    }}
-                                    onDelete={() => deleteBlock(index)}
-                                />
-                            ) : (
-                                <BlockRenderer
-                                    block={block}
-                                    onSelect={() => {
-                                        setOpenBlock(block);
-                                        columnManager.clearSelection();
-                                    }}
-                                    onChange={(patch) => {
-                                        updateBlock(index, patch);
-                                        // updateBlock already calls markChanged
-                                    }}
-                                    onDelete={() => deleteBlock(index)}
-                                    isActive={openBlock?.id === block.id}
-                                />
-                            )}
-                        </div>
-                    ))}
-                </ReactSortable>
-            </div>
-
-            {openBlock && (
-                <div className="registration-edit-form-wrapper">
-                    <SettingMetaBox
-                        formField={openBlock}
-                        opened={{ click: true }}
-                        onChange={handleSettingsChange}
-                        inputTypeList={BLOCK_GROUPS[0].blocks.map(b => ({ value: b.value, label: b.label }))}
-                    />
-                </div>
-            )}
+            <CanvasEditor
+                blocks={initialBlocks}
+                onChange={handleBlocksChange}
+                groupName="registration"
+                proSettingChange={proSettingChange}
+                context="registration"
+                blockGroups={BLOCK_GROUPS}
+                canvasClassName="registration-form-main-section registration-canvas"
+            />
         </div>
     );
 };

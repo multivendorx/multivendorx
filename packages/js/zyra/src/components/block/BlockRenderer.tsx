@@ -21,14 +21,7 @@ export const createBlockID = (type: BlockType, options?: any): Block => {
         label: label ?? type,
         placeholder,
     };
-
-    // Column
-    if (type === 'columns') {
-        block.columns = [[], []];
-        block.layout = '2-50';
-    }
-    // Address (registration only)
-    else if (type === 'address' && context === 'registration') {
+    if (type === 'address' && context === 'registration') {
         block.fields = [
             { id: generateId() + 1, key: 'address_1', label: 'Address Line 1', type: 'text', placeholder: 'Address Line 1', required: true },
             { id: generateId() + 2, key: 'address_2', label: 'Address Line 2', type: 'text', placeholder: 'Address Line 2' },
@@ -45,14 +38,6 @@ export const createBlockID = (type: BlockType, options?: any): Block => {
             { id: '2', label: 'Trader', value: 'trader' },
             { id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
         ];
-    }
-    // Content blocks
-    else if (type === 'heading') {
-        block.text = placeholder || 'Heading Text';
-        block.level = 2;
-    }
-    else if (type === 'richtext') {
-        block.html = placeholder || '<p>This is a demo text</p>';
     }
     else if (type === 'button') {
         block.text = placeholder || 'Click me';

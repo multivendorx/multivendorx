@@ -44,7 +44,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             {groupsToShow.map(({ id, label, blocks }) => (
                 <aside key={id} className="elements-section">
                     <div className="section-meta" onClick={() => toggleGroup(id)}>
-                        <h2>{label} <span>({blocks.length})</span></h2>
+                        <div>{label} <span>({blocks.length})</span></div>
                         <i className={`adminfont-pagination-right-arrow ${openGroups[id] ? 'rotate' : ''}`} />
                     </div>
                     {openGroups[id] && (

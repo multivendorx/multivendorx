@@ -9,7 +9,7 @@ import ClickableList from './ClickableList';
 import RegistrationForm from './RegistrationForm';
 import MultiCheckBox from './MultiCheckbox';
 import { FieldComponent } from './types';
-import EmailTemplate from './TemplateEditor/EmailTemplate';
+import EmailTemplate from './EmailTemplate';
 import SystemInfo from './SystemInfo';
 import Section from './Section';
 import TextArea from './TextArea';
