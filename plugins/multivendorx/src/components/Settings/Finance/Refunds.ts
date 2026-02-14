@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'refunds',
 	priority: 5,
-	name: __('Refunds', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Refunds', 'multivendorx'),
+	headerDescription: __(
 		'Control refund rules, eligibility stages, and valid claim periods.',
 		'multivendorx'
 	),
-	icon: 'adminfont-marketplace-refund',
+	headerIcon: 'adminfont-marketplace-refund',
 	submitUrl: 'settings',
 	modal: [
 		{

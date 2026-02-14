@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'email-template-customizer',
     priority: 3,
-    name: __('Email Template Customizer', 'multivendorx'),
-    desc: __(
+    headerTitle: __('Email Template Customizer', 'multivendorx'),
+    headerDescription: __(
         'Edit and manage individual email templates used across the marketplace.',
         'multivendorx'
     ),
-    icon: 'adminfont-store-seo',
+    headerIcon: 'adminfont-store-seo',
     submitUrl: 'settings',
     modal: [
         {

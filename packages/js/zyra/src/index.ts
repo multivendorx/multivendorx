@@ -45,7 +45,6 @@ export { default as ToggleSetting } from './components/ToggleSetting';
 export { ToggleSettingUI } from './components/ToggleSetting';
 export { default as Tour } from './components/TourSteps';
 export { default as AdminHeader } from './components/AdminHeader';
-export { default as AdminBreadcrumbs } from './components/AdminBreadcrumbs';
 export { default as NestedComponent } from './components/NestedComponent';
 export { default as ExpandablePanelGroup } from './components/ExpandablePanelGroup';
 export { ExpandablePanelGroupUI } from './components/ExpandablePanelGroup';

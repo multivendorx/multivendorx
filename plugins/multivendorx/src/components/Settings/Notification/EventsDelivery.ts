@@ -4,13 +4,13 @@ import { CountryCodes } from 'zyra';
 export default {
 	id: 'events-delivery',
 	priority: 1,
-	name: 'Events Delivery',
-	headerTitle: 'Email & SMS delivery',
-	desc: __(
+	headerTitle: 'Events Delivery',
+	settingTitle: 'Email & SMS delivery',
+	headerDescription: __(
 		'Get notified about important updates. Choose how you want to receive notifications from your marketplace - by email, text message, or both.',
 		'multivendorx'
 	),
-	icon: 'adminfont-notification',
+	headerIcon: 'adminfont-notification',
 	submitUrl: 'settings',
 	modal: [
 

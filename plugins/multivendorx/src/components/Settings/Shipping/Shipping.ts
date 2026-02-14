@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'shipping',
 	priority: 1,
-	name: __('Shipping', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Shipping', 'multivendorx'),
+	headerDescription: __(
 		'Choose whether stores follow a step-by-step guided process through the category hierarchy or freely select multiple categories & subcategories without restrictions.',
 		'multivendorx'
 	),
-	icon: 'adminfont-shipping',
+	headerIcon: 'adminfont-shipping',
 	submitUrl: 'settings',
 	modal: [
 		{

@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'store-reviews',
 	priority: 4,
-	name: __('Store Reviews', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Store Reviews', 'multivendorx'),
+	headerDescription: __(
 		'Manage how customers rate and review stores on your marketplace.',
 		'multivendorx'
 	),
-	icon: 'adminfont-store-review',
+	headerIcon: 'adminfont-store-review',
 	submitUrl: 'settings',
 	modal: [
 		{

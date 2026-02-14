@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'seo',
 	priority: 7,
-	name: __('SEO', 'multivendorx'),
-	desc: __(
+	headerTitle: __('SEO', 'multivendorx'),
+	headerDescription: __(
 		'Enable stores to enhance their product visibility using advanced third-party SEO plugins.',
 		'multivendorx'
 	),
-	icon: 'adminfont-store-seo',
+	headerIcon: 'adminfont-store-seo',
 	submitUrl: 'settings',
 	modal: [
 		{

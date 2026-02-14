@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'policies',
 	priority: 9,
-	name: __('Policies', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Policies', 'multivendorx'),
+	headerDescription: __(
 		'Define and publish the rules and guidelines that apply to your marketplace.',
 		'multivendorx'
 	),
-	icon: 'adminfont-store-policy',
+	headerIcon: 'adminfont-store-policy',
 	submitUrl: 'settings',
 	modal: [
 		{

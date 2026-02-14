@@ -7,13 +7,13 @@ import DashboardTemplate from '../../../assets/template/Dashboard';
 export default {
 	id: 'appearance',
 	priority: 5,
-	name: __('Appearance', 'multivendorx'),
-	headerTitle: 'Marketplace Branding',
-	desc: __(
+	headerTitle: __('Appearance', 'multivendorx'),
+	settingTitle: 'Marketplace Branding',
+	headerDescription: __(
 		'Set a marketplace logo to strengthen brand identity across all connected stores.',
 		'multivendorx'
 	),
-	icon: 'adminfont-appearance',
+	headerIcon: 'adminfont-appearance',
 	submitUrl: 'settings',
 	modal: [
 		{
