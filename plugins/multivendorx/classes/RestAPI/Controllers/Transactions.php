@@ -395,7 +395,7 @@ class Transactions extends \WP_REST_Controller {
                 'withdrawal_requested',
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phn'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
                     'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                     'store_name'  => $store->get( 'name' ),

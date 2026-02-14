@@ -90,7 +90,7 @@ class Utill {
         'log'                           => 'multivendorx_log_settings',
         'min-max'                       => 'multivendorx_min_max_settings',
         'delivery'                      => 'multivendorx_delivery_settings',
-        'events-delivery'               => 'multivendorx_events-delivery_settings',
+        'events-delivery'               => 'multivendorx_events_delivery_settings',
         'compliance'                    => 'multivendorx_compliance_settings',
         'developer-tools'               => 'multivendorx_developer_tools_settings',
     );

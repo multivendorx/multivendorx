@@ -37,8 +37,7 @@ class Twilio {
         $account_sid = MultiVendorX()->setting->get_setting( 'twilio_account_sid' );
         $auth_token  = MultiVendorX()->setting->get_setting( 'twilio_auth_token' );
         $from_number = MultiVendorX()->setting->get_setting( 'sms_sender_phone_number' );
-        $from_number = $from_number['country_code'] . $from_number['value'];
-        $to          = $to['country_code'] . $to['value'];
+        $from_number = $from_number['country_code'] . $from_number['sms_sender_phone_number'];
         $args = array(
             'headers' => array(
                 'Authorization' => 'Basic ' . base64_encode( $account_sid . ':' . $auth_token ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode

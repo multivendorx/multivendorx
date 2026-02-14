@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { CountryCodes } from 'zyra';
 
 export default {
 	id: 'events-delivery',
@@ -35,13 +36,9 @@ export default {
 			),
 			beforeElement: {
 				type: 'select',
-				key: 'store_base',
-				size: '5.625rem',
-				options: [
-					{ label: '+91', value: 'store' },
-					{ label: '+92', value: 'shop' },
-					{ label: '+93', value: 'vendor' },
-				],
+				key: 'country_code',
+				size: '200px',
+				options: CountryCodes,
 			},
 		},
 		{
@@ -96,6 +93,12 @@ export default {
 				'The phone number SMS messages are sent from. Use country code followed by phone number. Example: +1 – 4151234567, +91 – 9876543210',
 				'multivendorx'
 			),
+			beforeElement: {
+				type: 'select',
+				key: 'country_code',
+				size: '200px',
+				options: CountryCodes,
+			},
 		},
 		{
 			key: 'sms_section',
