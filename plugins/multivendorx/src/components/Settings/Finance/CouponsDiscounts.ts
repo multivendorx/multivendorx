@@ -8,7 +8,7 @@ export default {
 		'Manage how discounts and coupons affect commission calculations.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-coupon',
+	headerIcon: 'coupon',
 	submitUrl: 'settings',
 	modal: [
 		{

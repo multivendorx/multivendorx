@@ -8,7 +8,7 @@ export default {
         'Edit and manage individual email templates used across the marketplace.',
         'multivendorx'
     ),
-    headerIcon: 'adminfont-store-seo',
+    headerIcon: 'store-seo',
     submitUrl: 'settings',
     modal: [
         {

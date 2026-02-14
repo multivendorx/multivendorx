@@ -8,7 +8,7 @@ export default {
 		'Choose which menus to show or hide in the store dashboard and arrange their display order.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-menu-manager',
+	headerIcon: 'menu-manager',
 	submitUrl: 'settings',
 	modal: [
 		{

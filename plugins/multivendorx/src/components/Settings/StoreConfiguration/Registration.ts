@@ -8,7 +8,7 @@ export default {
 		'Customise personalised store registration form for marketplace.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-contact-form',
+	headerIcon: 'contact-form',
 	submitUrl: 'settings',
 	modal: [
 		{

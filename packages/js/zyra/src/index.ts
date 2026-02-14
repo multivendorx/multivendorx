@@ -8,6 +8,7 @@ export { default as Banner } from './components/Banner';
 export { default as BasicInput } from './components/BasicInput';
 export { BasicInputUI } from './components/BasicInput';
 export { default as BlockText } from './components/BlockText';
+// export { BlockTextUI } from './components/BlockText';
 export { default as ButtonCustomizer } from './components/ButtonCustomiser';
 export { default as CalendarInput } from './components/CalendarInput';
 export { default as CatalogCustomizer } from './components/CatalogCustomizer';

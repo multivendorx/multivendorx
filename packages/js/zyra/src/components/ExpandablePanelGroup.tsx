@@ -886,16 +886,16 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                         {method.isCustom && (
                                             <>
                                                 {!method.hideDeleteBtn && canDeleteMethod(method.id) ? (
-                                                    <li
-                                                        onClick={() => {
-                                                            handleDeleteMethod(method.id);
-                                                        }}
-                                                    >
-                                                        <span className="admin-btn red-color">
-                                                            <i className="adminfont-delete"></i>
-                                                            Delete
-                                                        </span>
-                                                    </li>
+                                                    <AdminButtonUI
+                                                        buttons={[
+                                                            {
+                                                                icon: 'delete',
+                                                                text: 'Delete',
+                                                                color: 'red-color',
+                                                                onClick: (e) => { handleDeleteMethod(method.id); },
+                                                            },
+                                                        ]}
+                                                    />
                                                 ) : (
                                                     <span className="delete-text red-color">Not Deletable</span>
                                                 )}
@@ -908,17 +908,16 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                         {method.formFields &&
                                                             method.formFields
                                                                 .length > 0 && (
-                                                                <li
-                                                                    onClick={() => {
-                                                                        canAccess &&
-                                                                            setTabActive(method.id)
-                                                                    }}
-                                                                >
-                                                                    <span className="admin-btn btn-purple">
-                                                                        <i className="adminfont-setting"></i>
-                                                                        Settings
-                                                                    </span>
-                                                                </li>
+                                                                <AdminButtonUI
+                                                                    buttons={[
+                                                                        {
+                                                                            icon: 'setting',
+                                                                            text: 'Settings',
+                                                                            color: 'purple',
+                                                                            onClick: (e) => { canAccess && setTabActive(method.id)},
+                                                                        },
+                                                                    ]}
+                                                                />
                                                             )}
                                                     </>
                                                 ) : (
@@ -948,17 +947,16 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                         })()}
                                         {isEnabled &&
                                             method.isCustom && (
-                                                <li
-                                                    onClick={() => {
-                                                        canAccess &&
-                                                            disableMethod(method.id)
-                                                    }}
-                                                >
-                                                    <div className="admin-btn btn-purple">
-                                                        <i className="adminfont-eye-blocked"></i>
-                                                        Hide
-                                                    </div>
-                                                </li>
+                                                <AdminButtonUI
+                                                    buttons={[
+                                                        {
+                                                            icon: 'eye-blocked',
+                                                            text: 'Hide',
+                                                            color: 'purple',
+                                                            onClick: (e) => { canAccess && disableMethod(method.id)},
+                                                        },
+                                                    ]}
+                                                />
                                             )}
                                     </ul>
                                     { /* show dropdown */}
@@ -1055,7 +1053,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                         className={`${method.wrapperClass || ''
                                             } expandable-panel ${isActive && isEnabled ? 'open' : ((isActive && (method.isCustom || method.openForm)) ? 'open' : '')
                                             } ${method.openForm ? 'open' : ''}`}
-                                    >   
+                                    >
                                         <FormGroupWrapper>
                                             {method.formFields.map((field) => {
                                                 if (
@@ -1103,7 +1101,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                         </div>
                     );
                 })}
-                
+
                 {addNewBtn && (
                     <AdminButtonUI
                         buttons={[
