@@ -512,7 +512,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                             <VisibilityToggle disabled={formField.disabled} onChange={handleDisabledChange} />
                             <FieldWrapper label="Required">
                                 <div className="input-wrapper">
-                                    <MultiCheckBoxUI
+                                    <input
                                         type="checkbox"
                                         checked={formField.required || false}
                                         onChange={handleRequiredChange}

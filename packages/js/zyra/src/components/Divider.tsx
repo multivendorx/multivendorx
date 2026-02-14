@@ -3,7 +3,7 @@ import React from 'react';
 
 // Internal Dependencies
 import { FieldComponent } from './types';
-import { generateBlockStyles, BlockStyle } from './block';
+import { generateBlockStyles, BlockStyle, DEFAULT_BLOCK_STYLES } from './block';
 
 export interface DividerBlockData {
   id: number;
@@ -11,38 +11,54 @@ export interface DividerBlockData {
   style?: BlockStyle;
 }
 
-// View Component
-export const DividerView: React.FC<{
-  field: DividerBlockData;
-  onChange: (updates: Partial<DividerBlockData>) => void;
-  editable?: boolean;
-}> = ({ field, onChange, editable = true }) => {
-  if (!field) return null;
+// Default divider styles to ensure visibility
+const DEFAULT_DIVIDER_STYLES: Partial<BlockStyle> = {
+  backgroundColor: '#000000ff',
+  height: 1,
+  marginTop: 10,
+  marginBottom: 10,
+  width: '100%',
+};
 
-  const styles = generateBlockStyles(field.style, { 
+// View Component - Pure rendering logic
+export const DividerView: React.FC<{
+  block: DividerBlockData;
+}> = ({ block }) => {
+  if (!block) return null;
+
+  // Merge default divider styles with block styles
+  const mergedStyles = {
+    ...DEFAULT_DIVIDER_STYLES,
+    ...block.style,
+  };
+
+  const styles = generateBlockStyles(mergedStyles, { 
     includeText: false,
     includeDimensions: true 
   });
 
   return (
-    <div className="email-divider-container">
+    <div className="email-divider-container" style={{ width: '100%' }}>
       <hr
         className="email-divider"
         style={{
           ...styles,
           border: 'none',
-          backgroundColor: field.style?.backgroundColor || '#cccccc',
-          height: field.style?.height || '1px',
+          backgroundColor: mergedStyles.backgroundColor,
+          height: typeof mergedStyles.height === 'number' 
+            ? `${mergedStyles.height}px` 
+            : mergedStyles.height || '1px',
+          margin: 0, // Reset margin as it's handled by generateBlockStyles
         }}
       />
     </div>
   );
 };
 
-// Main Render Component
+// Main Render Component - Follows FieldComponent pattern
 export const DividerUI: React.FC<{
-  field: DividerBlockData;
-  value?: any;
+  field: DividerBlockData;  // The block data from BlockRenderer
+  value?: any;              // Not used but kept for compatibility
   onChange: (value: any) => void;
   canAccess?: boolean;
   appLocalizer?: any;
@@ -50,24 +66,20 @@ export const DividerUI: React.FC<{
   settings?: Record<string, any>;
   onOptionsChange?: (options: any[]) => void;
   onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
-}> = ({ field, onChange }) => {
-  if (!field) return null;
+}> = ({ field }) => {
+  // Early return if no field data
+  if (!field || field.type !== 'divider') {
+    return null;
+  }
 
-  const handleChange = (updates: Partial<DividerBlockData>) => {
-    onChange(updates);
-  };
-
-  return (
-    <DividerView
-      field={field}
-      onChange={handleChange}
-      editable={true}
-    />
-  );
+  return <DividerView block={field} />;
 };
 
 const Divider: FieldComponent = {
   render: DividerUI,
+  validate: (field, value) => {
+    return null;
+  },
 };
 
 export default Divider;

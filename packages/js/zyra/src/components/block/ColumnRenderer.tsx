@@ -168,15 +168,15 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
             )}
 
             <section className="form-field-container-wrapper">
-                <div className={`email-columns layout-${block.layout || '2-50'}`}>
+                <div className={`canvas-columns layout-${block.layout || '2-50'}`}>
                     {block.columns.map((column, colIdx) => (
-                        <div key={colIdx} className="email-column-wrapper">
+                        <div key={colIdx} className="canvas-column-wrapper">
                             <div className="column-icon"><i className="adminfont-plus" /></div>
                             <ReactSortable
                                 list={column}
                                 setList={(list) => handleColumnUpdate(parentIndex, colIdx, list)}
                                 group={{ name: groupName, pull: true, put: true }}
-                                className="email-column"
+                                className="canvas-column"
                                 animation={150}
                                 handle=".drag-handle"
                             >

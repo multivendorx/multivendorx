@@ -3,26 +3,14 @@ import React, { useState, useCallback } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
 // Internal Dependencies
+import Tabs from '../Tabs';
 import { BlockConfig } from '../block/blockTypes';
 
-interface Template {
-    id: string;
-    name: string;
-    previewText?: string;
-}
-
-interface BlockGroup {
-    id: string;
-    label: string;
-    blocks: BlockConfig[];
-    icon?: string;
-}
-
 interface LeftPanelProps {
-    blockGroups?: BlockGroup[];
-    templates?: Template[];
+    blockGroups?: { id: string; label: string; blocks: BlockConfig[]; icon?: string }[];
+    templates?: { id: string; name: string; previewText?: string }[];
     activeTemplateId?: string;
-    onTemplateSelect?: (templateId: string) => void;
+    onTemplateSelect?: (id: string) => void;
     groupName?: string;
     showTemplatesTab?: boolean;
     visibleGroups?: string[]; // Array of group IDs to display (e.g., ['store', 'registration'])
@@ -37,132 +25,66 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
     showTemplatesTab = false,
     visibleGroups = [],
 }) => {
-    const [activeTab, setActiveTab] = useState(showTemplatesTab ? 'templates' : 'blocks');
-    
-    // Track open/closed state for each group separately
-    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
-        // Initialize all groups as open by default
-        const initialState: Record<string, boolean> = {};
-        const groupsToShow = visibleGroups.length === 0 ? blockGroups : blockGroups.filter(group => visibleGroups.includes(group.id));
-        groupsToShow.forEach(group => {
-            initialState[group.id] = true;
-        });
-        return initialState;
-    });
+    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(
+        () => Object.fromEntries(
+            (visibleGroups.length ? blockGroups.filter(g => visibleGroups.includes(g.id)) : blockGroups)
+                .map(g => [g.id, true])
+        )
+    );
 
-    // Determine which blocks to display
-    const displayGroups = useCallback(() => {
-        if (visibleGroups.length === 0) {
-            return blockGroups;
-        }
-        return blockGroups.filter(group => visibleGroups.includes(group.id));
-    }, [blockGroups, visibleGroups]);
+    const toggleGroup = useCallback((id: string) => 
+        setOpenGroups(prev => ({ ...prev, [id]: !prev[id] })), []);
 
-    const toggleGroup = useCallback((groupId: string, e: React.MouseEvent) => {
-        e.stopPropagation();
-        setOpenGroups(prev => ({
-            ...prev,
-            [groupId]: !prev[groupId]
-        }));
-    }, []);
+    const groupsToShow = visibleGroups.length 
+        ? blockGroups.filter(g => visibleGroups.includes(g.id))
+        : blockGroups;
 
-    const groupsToDisplay = displayGroups();
+    const blocksContent = (
+        <>
+            {groupsToShow.map(({ id, label, blocks }) => (
+                <aside key={id} className="elements-section">
+                    <div className="section-meta" onClick={() => toggleGroup(id)}>
+                        <h2>{label} <span>({blocks.length})</span></h2>
+                        <i className={`adminfont-pagination-right-arrow ${openGroups[id] ? 'rotate' : ''}`} />
+                    </div>
+                    {openGroups[id] && (
+                        <main className="section-container open">
+                            <ReactSortable list={blocks} setList={() => {}} sort={false} 
+                                group={{ name: groupName, pull: 'clone', put: false }}>
+                                {blocks.map(({ value, icon, label }) => (
+                                    <div key={value} className="elements-items">
+                                        <i className={icon} /><p className="list-title">{label}</p>
+                                    </div>
+                                ))}
+                            </ReactSortable>
+                        </main>
+                    )}
+                </aside>
+            ))}
+        </>
+    );
+
+    const templatesContent = showTemplatesTab && (
+        <aside className="elements-section">
+            <div className="section-meta"><h2>Templates <span>({templates.length})</span></h2></div>
+            <main className="section-container open">
+                {templates.map(({ id, name, previewText }) => (
+                    <div key={id} className={`template-item ${id === activeTemplateId ? 'active' : ''}`}
+                        onClick={() => onTemplateSelect?.(id)}>
+                        <div className="template-name">{name}</div>
+                        {previewText && <div className="template-preview">{previewText}</div>}
+                    </div>
+                ))}
+            </main>
+        </aside>
+    );
 
     return (
         <div className="elements-wrapper">
-            <div className="tab-titles">
-                <div 
-                    className={`title ${activeTab === 'blocks' ? 'active' : ''}`} 
-                    onClick={() => setActiveTab('blocks')}
-                >
-                    Blocks
-                </div>
-                
-                {showTemplatesTab && templates.length > 0 && (
-                    <div 
-                        className={`title ${activeTab === 'templates' ? 'active' : ''}`} 
-                        onClick={() => setActiveTab('templates')}
-                    >
-                        Templates
-                    </div>
-                )}
-            </div>
-
-            <div className="tab-contend">
-                {activeTab === 'blocks' && (
-                    <>
-                        {groupsToDisplay.map((group) => {
-                            const isOpen = openGroups[group.id] !== false; // Default to true if not set
-                            const groupBlocks = group.blocks;
-                            
-                            return (
-                                <aside key={group.id} className="elements-section">
-                                    <div
-                                        className="section-meta"
-                                        onClick={(e) => toggleGroup(group.id, e)}
-                                        role="button"
-                                        tabIndex={0}
-                                    >
-                                        <h2>
-                                            {group.label} <span>({groupBlocks.length})</span>
-                                        </h2>
-                                        <i
-                                            className={`adminfont-pagination-right-arrow ${isOpen ? 'rotate' : ''}`}
-                                        ></i>
-                                    </div>
-
-                                    <main
-                                        className={`section-container ${isOpen ? 'open' : 'closed'}`}
-                                    >
-                                        <ReactSortable
-                                            list={groupBlocks}
-                                            setList={() => {}}
-                                            sort={false}
-                                            group={{ name: groupName, pull: 'clone', put: false }}
-                                        >
-                                            {groupBlocks.map((item) => (
-                                                <div
-                                                    key={item.value}
-                                                    role="button"
-                                                    tabIndex={0}
-                                                    className="elements-items"
-                                                >
-                                                    <i className={item.icon} />
-                                                    <p className="list-title">{item.label}</p>
-                                                </div>
-                                            ))}
-                                        </ReactSortable>
-                                    </main>
-                                </aside>
-                            );
-                        })}
-                    </>
-                )}
-                
-                {activeTab === 'templates' && showTemplatesTab && (
-                    <aside className="elements-section">
-                        <div className="section-meta">
-                            <h2>Templates <span>({templates.length})</span></h2>
-                        </div>
-                        <main className="section-container open">
-                            {templates.map((tpl) => (
-                                <div
-                                    key={tpl.id}
-                                    role="button"
-                                    tabIndex={0}
-                                    className={`template-item ${tpl.id === activeTemplateId ? 'active' : ''}`}
-                                    onClick={() => onTemplateSelect?.(tpl.id)}
-                                >
-                                    <div className="template-name">{tpl.name}</div>
-                                    {tpl.previewText && (
-                                        <div className="template-preview">{tpl.previewText}</div>
-                                    )}
-                                </div>
-                            ))}
-                        </main>
-                    </aside>
-                )}
-            </div>
+            <Tabs tabs={[
+                { label: 'Blocks', content: blocksContent },
+                ...(showTemplatesTab && templates.length ? [{ label: 'Templates', content: templatesContent }] : [])
+            ]} />
         </div>
     );
 };
