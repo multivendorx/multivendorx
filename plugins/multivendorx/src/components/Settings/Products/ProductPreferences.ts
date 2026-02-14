@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'product-preferencess',
 	priority: 2,
-	name: __('Product/listing preferences', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Product/listing preferences', 'multivendorx'),
+	headerDescription: __(
 		'Decide which product/listing types, fields, and features stores can access when creating or managing products/listings in their store.',
 		'multivendorx'
 	),
-	icon: 'adminfont-single-product',
+	headerIcon: 'adminfont-single-product',
 	submitUrl: 'settings',
 	modal: [
 		{

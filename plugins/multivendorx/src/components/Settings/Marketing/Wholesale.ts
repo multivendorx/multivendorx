@@ -3,9 +3,9 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'wholesale',
 	priority: 3,
-	name: __('Wholesale', 'multivendorx'),
-	desc: __('Configure rules for wholesale buyers and pricing.', 'multivendorx'),
-	icon: 'adminfont-wholesale1',
+	headerTitle: __('Wholesale', 'multivendorx'),
+	headerDescription: __('Configure rules for wholesale buyers and pricing.', 'multivendorx'),
+	headerIcon: 'adminfont-wholesale1',
 	submitUrl: 'settings',
 	modal: [
 		{

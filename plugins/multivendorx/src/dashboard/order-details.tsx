@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInput, SelectInputUI, SuccessNotice, TextArea, getApiLink, useModules } from 'zyra';
+import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInputUI, SuccessNotice, TextAreaUI, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -823,7 +823,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															{__('Reason for refund (optional):', 'multivendorx')}
 														</td>
 														<td>
-															<TextArea
+															<TextAreaUI
 																value={refundDetails.reason}
 																placeholder={__('Reason for refund', 'multivendorx')}
 																onChange={(e) =>

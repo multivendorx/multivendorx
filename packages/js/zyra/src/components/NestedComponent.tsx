@@ -234,6 +234,7 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
                                     buttons={[
                                         {
                                             icon: 'plus',
+                                            color: 'purple',
                                             text: addButtonLabel,
                                             onClick: addRow,
                                             disabled: !isLastRowComplete()
@@ -249,6 +250,7 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
                                         {
                                             icon: 'delete',
                                             text: deleteButtonLabel,
+                                            color: 'red',
                                             onClick: () => removeRow(rowIndex)
                                         },
                                     ]}

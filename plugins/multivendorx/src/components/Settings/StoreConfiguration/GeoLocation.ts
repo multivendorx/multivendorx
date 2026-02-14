@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'geolocation',
 	priority: 8,
-	name: 'Geolocation',
-	desc: __(
+	headerTitle: 'Geolocation',
+	headerDescription: __(
 		'Help customers discover stores and products/listings near them by enabling location-based search and maps.',
 		'multivendorx'
 	),
-	icon: 'adminfont-location',
+	headerIcon: 'adminfont-location',
 	submitUrl: 'settings',
 	modal: [
 		{

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup } from 'zyra';
+import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShopPolicies = () => {
@@ -90,7 +90,7 @@ const ShopPolicies = () => {
 					<Card title={__('Shipping Policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Title', 'multivendorx')} htmlFor="title">
-								<TextArea
+								<TextAreaUI
 									name="shipping_policy"
 									value={formData.shipping_policy}
 									onChange={handleChange}
@@ -101,7 +101,7 @@ const ShopPolicies = () => {
 
 					<Card title={__('Refund Policy', 'multivendorx')}>
 						<FormGroupWrapper>
-							<TextArea
+							<TextAreaUI
 								name="refund_policy"
 								value={formData.refund_policy}
 								onChange={handleChange}
@@ -111,7 +111,7 @@ const ShopPolicies = () => {
 
 					<Card title={__('Cancellation / Return / Exchange Policy', 'multivendorx')}>
 						<FormGroupWrapper>
-							<TextArea
+							<TextAreaUI
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
 								onChange={handleChange}

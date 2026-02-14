@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'coupons-discounts',
 	priority: 4,
-	name: __('Coupons & Discounts', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Coupons & Discounts', 'multivendorx'),
+	headerDescription: __(
 		'Manage how discounts and coupons affect commission calculations.',
 		'multivendorx'
 	),
-	icon: 'adminfont-coupon',
+	headerIcon: 'adminfont-coupon',
 	submitUrl: 'settings',
 	modal: [
 		{

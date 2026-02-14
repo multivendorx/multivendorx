@@ -5,7 +5,6 @@ import {
 	CalendarInput,
 	FileInput,
 	RadioInput,
-	TextArea,
 	useModules,
 	Card,
 	Column,
@@ -18,6 +17,7 @@ import {
 	MultiCheckBoxUI,
 	SelectInputUI,
 	useOutsideClick,
+	TextAreaUI,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -880,7 +880,7 @@ const AddProduct = () => {
 
 							{/* Short Description */}
 							<FormGroup label={__('Product short description', 'multivendorx')} desc={__('A short description displayed on product and checkout pages', 'multivendorx')}>
-								<TextArea
+								<TextAreaUI
 									name="short_description"
 									value={product.short_description}
 									onChange={(e) =>
@@ -891,7 +891,7 @@ const AddProduct = () => {
 
 							{/* Description */}
 							<FormGroup label={__('Product description', 'multivendorx')}>
-								<TextArea
+								<TextAreaUI
 									name="description"
 									value={product.description}
 									onChange={(e) =>
@@ -1120,7 +1120,7 @@ const AddProduct = () => {
 					>
 						<FormGroupWrapper>
 							<FormGroup label={__('Shipping Policy', 'multivendorx')}>
-								<TextArea
+								<TextAreaUI
 									name="shipping_policy"
 									value={product.shipping_policy}
 									onChange={(e) =>
@@ -1129,7 +1129,7 @@ const AddProduct = () => {
 								/>
 							</FormGroup>
 							<FormGroup label={__('Refund Policy', 'multivendorx')}>
-								<TextArea
+								<TextAreaUI
 									name="refund_policy"
 									value={product.refund_policy}
 									onChange={(e) =>
@@ -1140,7 +1140,7 @@ const AddProduct = () => {
 
 							{/* Description */}
 							<FormGroup label={__('Cancellation Policy', 'multivendorx')}>
-								<TextArea
+								<TextAreaUI
 									name="cancellation_policy"
 									value={product.cancellation_policy}
 									onChange={(e) =>

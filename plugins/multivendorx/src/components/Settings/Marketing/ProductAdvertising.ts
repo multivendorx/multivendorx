@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'product-advertising',
 	priority: 1,
-	name: __('Product Advertising', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Product Advertising', 'multivendorx'),
+	headerDescription: __(
 		'Let stores promote their top products or unique offerings in site-wide placements.',
 		'multivendorx'
 	),
-	icon: 'adminfont-advertise-product',
+	headerIcon: 'adminfont-advertise-product',
 	submitUrl: 'settings',
 	modal: [
 		{

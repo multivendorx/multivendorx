@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup } from 'zyra';
+import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
@@ -60,7 +60,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 				<Column row>
 					<Card title="Store policy">
 						<FormGroupWrapper>
-							<TextArea
+							<TextAreaUI
 								name="store_policy"
 								value={formData.store_policy}
 								onChange={handleChange}
@@ -76,7 +76,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 					</Card>
 					<Card title="Shipping policy">
 						<FormGroupWrapper>
-							<TextArea
+							<TextAreaUI
 								name="shipping_policy"
 								value={formData.shipping_policy}
 								onChange={handleChange}
@@ -94,7 +94,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 				<Column row>
 					<Card title="Refund policy">
 						<FormGroupWrapper>
-							<TextArea
+							<TextAreaUI
 								name="refund_policy"
 								value={formData.refund_policy}
 								onChange={handleChange}
@@ -110,7 +110,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 					</Card>
 					<Card title="Cancellation / return / exchange policy">
 						<FormGroupWrapper>
-							<TextArea
+							<TextAreaUI
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
 								onChange={handleChange}

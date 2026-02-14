@@ -3,13 +3,13 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'onboarding',
 	priority: 1,
-	name: __('Onboarding', 'multivendorx'),
-	headerTitle: 'Approval process for new stores',
-	desc: __(
+	headerTitle: __('Onboarding', 'multivendorx'),
+	settingTitle: 'Approval process for new stores',
+	headerDescription: __(
 		'Choose how new stores enter your marketplace, review them manually or allow instant access.',
 		'multivendorx'
 	),
-	icon: 'adminfont-onboarding',
+	headerIcon: 'adminfont-onboarding',
 	submitUrl: 'settings',
 	modal: [
 		{

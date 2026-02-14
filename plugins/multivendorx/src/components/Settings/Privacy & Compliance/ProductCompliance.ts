@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'product-compliance',
 	priority: 5,
-	name: __('Product Compliance', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Product Compliance', 'multivendorx'),
+	headerDescription: __(
 		'All product listings must follow platform content guidelines and avoid prohibited categories. Branded or regulated products must include authenticity certificates. Optional safety certifications may be uploaded for regulated items.',
 		'multivendorx'
 	),
-	icon: 'adminfont-per-product-shipping',
+	headerIcon: 'adminfont-per-product-shipping',
 	submitUrl: 'settings',
 	modal: [
 		{
@@ -119,14 +119,10 @@ export default {
 			addNewBtn: true,
 			addNewTemplate: {
 				label: 'New Reasons',
-				formFields: [
-					{
-						key: 'label',
-						type: 'text',
-						label: 'Reasons',
-						placeholder: 'Enter Reasons',
-					},
-				],
+				editableFields: {
+					title: true,
+					description: false,
+				},
 			},
 			modal: [],
 		},

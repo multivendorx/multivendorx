@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {   TextArea, SuccessNotice, getApiLink, FormGroupWrapper, FormGroup, BasicInputUI } from 'zyra';
+import {SuccessNotice, getApiLink, FormGroupWrapper, FormGroup, BasicInputUI, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const GeneralSettings = () => {
@@ -86,7 +86,7 @@ const GeneralSettings = () => {
 					label={__('Description', 'multivendorx')}
 					htmlFor="description"
 				>
-					<TextArea
+					<TextAreaUI
 						name="description"
 						value={formData.description || ''}
 						onChange={handleChange}

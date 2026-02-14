@@ -2,12 +2,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'payouts',
 	priority: 2,
-	name: __('Payouts', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Payouts', 'multivendorx'),
+	headerDescription: __(
 		'Tailor your marketplace commission plan to fit your revenue sharing preferences.',
 		'multivendorx'
 	),
-	icon: 'adminfont-dollar',
+	headerIcon: 'adminfont-dollar',
 	submitUrl: 'settings',
 	modal: [
 		{

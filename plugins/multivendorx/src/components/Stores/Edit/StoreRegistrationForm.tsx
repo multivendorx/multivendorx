@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, Skeleton, PdfDownloadButton, AdminButtonUI } from 'zyra';
+import { getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, Skeleton, PdfDownloadButton, AdminButtonUI, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 import { printContent } from '@/services/commonFunction';
@@ -337,7 +337,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 										<Card title="Note">
 											<FormGroupWrapper>
 												<FormGroup>
-													<TextArea
+													<TextAreaUI
 														name="store_application_note"
 														placeholder={__(
 															'Optional note for approval or rejection',
