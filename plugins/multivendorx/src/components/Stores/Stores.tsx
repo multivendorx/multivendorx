@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import StoreTable from './StoreTable';
 import EditStore from './Edit/EditStore';
 import {
-	AdminBreadcrumbs,
 	AdminButtonUI,
 	BasicInputUI,
 	EmailsInput,
@@ -10,6 +9,7 @@ import {
 	FormGroup,
 	FormGroupWrapper,
 	getApiLink,
+	NavigatorHeader,
 	PopupUI,
 	SelectInputUI,
 	TextAreaUI,
@@ -266,10 +266,10 @@ const Stores = () => {
 
 			{!isAddStore && !iseditStore && (
 				<>
-					<AdminBreadcrumbs
-						settingIcon="adminfont-storefront"
+					<NavigatorHeader
+						headerIcon="adminfont-storefront"
 						headerTitle="Stores"
-						description={
+						headerDescription={
 							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'
 						}
 						buttons={[

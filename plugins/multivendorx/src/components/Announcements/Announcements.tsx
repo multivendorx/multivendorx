@@ -16,6 +16,7 @@ import {
 	ToggleSettingUI,
 	SelectInputUI,
 	PopupUI,
+	NavigatorHeader,
 } from 'zyra';
 import './Announcements.scss';
 import Popup from '../Popup/Popup';
@@ -424,9 +425,9 @@ export const Announcements: React.FC = () => {
 					}}
 				/>
 			</PopupUI>
-			<AdminBreadcrumbs
-				settingIcon="adminfont-announcement"
-				description={
+			<NavigatorHeader
+				headerIcon="adminfont-announcement"
+				headerDescription={
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
 				}
 				headerTitle="Announcements"
