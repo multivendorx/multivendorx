@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, SettingsNavigator, useModules } from 'zyra';
+import { NavigatorHeader, getApiLink, SettingsNavigator, useModules } from 'zyra';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
@@ -324,10 +324,10 @@ const ApprovalQueue = () => {
 
 	return (
 		<>
-			{/* <AdminBreadcrumbs
-				settingIcon="adminfont-approval"
+			{/* <NavigatorHeader
+				headerIcon="adminfont-approval"
 				headerTitle="Approval Queue"
-				description={
+				headerDescription={
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'
 				}
 			/> */}

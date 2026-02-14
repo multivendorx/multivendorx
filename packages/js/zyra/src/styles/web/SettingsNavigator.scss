@@ -83,12 +83,26 @@
 // tabs style end
 .settings-wrapper {
   &[data-template="default"] {
+    .title-section {
+      border: none;
+    }
+
+    .tabs-wrapper {
+      border-bottom: $border-light-small;
+      margin: 0 1rem;
+    }
+
+    .breadcrumbs {
+      margin: 0 1rem;
+    }
+
     .general-wrapper {
       border: $border-light-small;
       position: relative;
 
       .tabs-wrapper {
         padding: 0 1rem 1rem;
+        margin: 0;
       }
 
       &.show-menu {
@@ -273,64 +287,62 @@
     width: 100%;
     margin-top: 1rem;
 
-    .title-section {
+
+    .tabs-wrapper {
+      background: transparent;
       width: 25%;
       height: auto;
       padding: 0;
 
-      .tabs-wrapper {
-        background: transparent;
+      .tabs-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        width: 100%;
 
-        .tabs-item {
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
-          width: 100%;
+        .tab {
+          padding: 0.813rem;
+          transition: all 0.3s ease;
+          border-radius: 0.313rem;
+          cursor: pointer;
+          margin: 0;
 
-          .tab {
-            padding: 0.813rem;
-            transition: all 0.3s ease;
-            border-radius: 0.313rem;
-            cursor: pointer;
+          i {
+            padding-right: 0.5rem;
+          }
+
+          p {
             margin: 0;
+            font-weight: 500;
+            font-size: 1.125rem;
+            line-height: 1rem;
+          }
 
-            i {
-              padding-right: 0.5rem;
-            }
+          &:hover {
+            background: $theme-background-color;
+            color: $theme-color;
+          }
 
+          &.active-tab,
+          &.active-tab:hover {
+            background: $theme-color;
+            color: #fff;
+            border: none;
+
+            i,
             p {
-              margin: 0;
-              font-weight: 500;
-              font-size: 1.125rem;
-              line-height: 1rem;
-            }
-
-            &:hover {
-              background: $theme-background-color;
-              color: $theme-color;
-            }
-
-            &.active-tab,
-            &.active-tab:hover {
-              background: $theme-color;
               color: #fff;
-              border: none;
-
-              i,
-              p {
-                color: #fff;
-              }
             }
           }
+        }
 
-          .tab-heading {
-            font-size: 1.063rem;
-            color: #0000008f;
-            font-weight: 600;
-            padding-bottom: 0.313rem;
-            border-bottom: $border-light-small;
-            margin: 0.5rem 0;
-          }
+        .tab-heading {
+          font-size: 1.063rem;
+          color: #0000008f;
+          font-weight: 600;
+          padding-bottom: 0.313rem;
+          border-bottom: $border-light-small;
+          margin: 0.5rem 0;
         }
       }
     }

@@ -164,6 +164,7 @@ const Breadcrumb = <T,>({
 };
 
 // Typesafe check helpers
+const isHeading = (item: SettingContent): item is SettingContent & { content: Content } => item.type === 'heading';
 const isFile = (item: SettingContent): item is SettingContent & { content: Content } => item.type === 'file';
 const isFolder = (item: SettingContent): item is SettingContent & { content: SettingContent[] } => item.type === 'folder';
 
@@ -282,8 +283,9 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     };
 
     const renderSingleMenuItem = (item: SettingContent, index: number) => {
-        if (item.type === 'heading') {
-            return <div key={index} className="tab-heading">{item.name}</div>;
+
+        if (isHeading(item)) {
+            return <div key={index} className="tab-heading">{item.headerTitle}</div>;
         }
 
         if (isFile(item)) {
