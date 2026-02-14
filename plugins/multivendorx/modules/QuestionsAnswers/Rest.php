@@ -243,7 +243,7 @@ class Rest extends \WP_REST_Controller {
                         'answer_text'         => $q['answer_text'],
                         'question_by'         => (int) $q['question_by'],
                         'author_name'         => $author_name,
-                        'question_date'       => $q['question_date'],
+                        'question_date'       => Utill::multivendorx_date_time_format($q['question_date']),
                         'answer_by'           => isset( $q['answer_by'] ) ? (int) $q['answer_by'] : 0,
                         'answer_date'         => $q['answer_date'] ?? '',
                         'time_ago'            => human_time_diff( strtotime( $q['question_date'] ), current_time( 'timestamp' ) ) . ' ago',
@@ -327,16 +327,16 @@ class Rest extends \WP_REST_Controller {
         }
 
         // Permission check.
-        if ( ! in_array( 'administrator', $current_user->roles, true ) ) {
-            if ( in_array( 'store_owner', $current_user->roles, true ) ) {
-                $product = wc_get_product( $q['product_id'] );
-                if ( ! $product || $product->get_author() !== $current_user_id ) {
-                    return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
-                }
-            } else {
-                return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
-            }
-        }
+        // if ( ! in_array( 'administrator', $current_user->roles, true ) ) {
+        //     if ( in_array( 'store_owner', $current_user->roles, true ) ) {
+        //         $product = wc_get_product( $q['product_id'] );
+        //         if ( ! $product || $product->get_author() !== $current_user_id ) {
+        //             return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
+        //         }
+        //     } else {
+        //         return new \WP_Error( 'forbidden', __( 'You are not allowed to view this question', 'multivendorx' ), array( 'status' => 403 ) );
+        //     }
+        // }
 
         $product       = wc_get_product( $q['product_id'] );
         $product_name  = $product ? $product->get_name() : '';
@@ -353,7 +353,7 @@ class Rest extends \WP_REST_Controller {
             'answer_text'         => $q['answer_text'],
             'question_by'         => (int) $q['question_by'],
             'author_name'         => get_the_author_meta( 'display_name', $q['question_by'] ),
-            'question_date'       => $q['question_date'],
+            'question_date'       => Utill::multivendorx_date_time_format($q['question_date']),
             'time_ago'            => human_time_diff( strtotime( $q['question_date'] ), current_time( 'timestamp' ) ) . ' ago',
             'total_votes'         => (int) $q['total_votes'],
             'question_visibility' => $q['question_visibility'],

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, TableCard } from 'zyra';
 import axios from 'axios';
-import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, formatLocalDate,  } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const RefundedOrderReport: React.FC = () => {
@@ -123,7 +123,7 @@ const RefundedOrderReport: React.FC = () => {
 					Amount: formatCurrency(refund.amount),
 					Refund_Reason: refund.customer_reason || '-',
 					Status: refund.status,
-					Date: formatWcShortDate(refund.date),
+					Date: refund.date,
 				}));
 	
 				downloadCSV({
@@ -219,7 +219,7 @@ const RefundedOrderReport: React.FC = () => {
 						type: 'status',
 					},
 					{
-						display: formatWcShortDate(order.date),
+						display: order.date,
 						value: order.date,
 					},
 				]);

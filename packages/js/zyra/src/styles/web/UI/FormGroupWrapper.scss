@@ -21,6 +21,7 @@
         align-items: start;
         width: 100%;
         position: relative;
+        gap: 0.5rem;
 
         &[data-cols='1'] {
             flex: 1 1 100%;
@@ -39,9 +40,6 @@
         }
 
         .settings-form-label {
-            width: 22%;
-            overflow-wrap: break-word;
-
             .title {
                 font-size: 0.95rem;
                 color: $text-color;
@@ -50,7 +48,7 @@
         }
 
         .settings-input-content {
-            width: 72%;
+            width: 100%;
 
             &:has(.setting-form-input) {
                 display: flex;
@@ -58,7 +56,7 @@
                 align-items: center;
                 gap: 0.5rem;
 
-                .settings-metabox-description{
+                .settings-metabox-description {
                     padding: 0;
                 }
             }
@@ -148,6 +146,15 @@
             flex-direction: row;
             gap: 1rem;
             align-items: start;
+
+            .settings-form-label {
+                width: 22%;
+                overflow-wrap: break-word;
+            }
+
+            .settings-input-content {
+                width: 72%;
+            }
         }
 
         &.align-bottom {

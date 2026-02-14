@@ -14,7 +14,7 @@ import {
 } from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
+import { formatCurrency } from '../services/commonFunction';
 import AddProductCom from './add-products';
 import SpmvProducts from './spmv-products';
 import { ReactNode } from 'react';
@@ -526,7 +526,7 @@ const AllProduct: React.FC = () => {
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell>
-					{formatWcShortDate(row.original.date_created)}
+					{row.original.date_created}
 				</TableCell>
 			),
 		},

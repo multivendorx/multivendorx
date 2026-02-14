@@ -216,7 +216,6 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                     </div>
                 </div>
             )}
-            {/* <Tabs tabs={list.tabs} /> */}
             {predefinedOptions.length > 0 && (
                 <div className="color-setting">
                     <div className="color-palette-wrapper">

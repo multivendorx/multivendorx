@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, useModules, Container, Column, MessageState, SettingsNavigator } from 'zyra';
+import { AdminBreadcrumbs, getApiLink, useModules, Container, Column, ComponentStatusView, SettingsNavigator } from 'zyra';
 import './CustomerSupport.scss';
 import '../AdminDashboard/AdminDashboard.scss';
 import Qna from './QnATable';
@@ -97,7 +97,7 @@ const CustomerSupport = () => {
 			) : (
 				<Container general>
 					<Column>
-						<MessageState
+						<ComponentStatusView
 							title={__('Looks like customer support isn’t set up yet!', 'multivendorx')}
 							desc={__('Turn on a support module to start assisting your customers.', 'multivendorx')}
 							buttonText={__('Enable Now', 'multivendorx')}

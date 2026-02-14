@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink,  TableCard } from 'zyra';
 
-import { downloadCSV, formatCurrency, formatWcShortDate, toWcIsoDate } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const OrderReport: React.FC = () => {
@@ -122,7 +122,7 @@ const OrderReport: React.FC = () => {
 					Amount: order.total,
 					Commission: order.commission_total || 0,
 					Status: order.status,
-					Date: formatWcShortDate(order.date_created),
+					Date: order.date_created,
 				}));
 	
 				downloadCSV({
@@ -200,7 +200,7 @@ const OrderReport: React.FC = () => {
 						value: order.commission_total || 0,
 					},
 					{
-						display: formatWcShortDate(order.date_created),
+						display: order.date_created,
 						value: order.date_created,
 					},
 					{

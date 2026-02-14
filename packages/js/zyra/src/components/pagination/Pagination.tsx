@@ -45,7 +45,7 @@ const Pagination: React.FC<PaginationProps> = ({
 		}
 	};
 
-	const StatusLabel = showPageArrowsLabel && (
+	const StatusLabel = showPageArrowsLabel && total > 0 && (
 		<span className="show-section" role="status" aria-live="polite">
 			Showing {startIndex} to {endIndex} of {total} entries.
 		</span>

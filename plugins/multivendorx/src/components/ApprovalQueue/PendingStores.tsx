@@ -14,7 +14,7 @@ import {
 	PopupUI,
 } from 'zyra';
 
-import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
+import { formatLocalDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 
@@ -173,7 +173,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 					},
 					{
 						value: store.applied_on,
-						display: store.applied_on ? formatWcShortDate(store.applied_on) : '-',
+						display: store.applied_on ? store.applied_on : '-',
 					}
 				]);
 

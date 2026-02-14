@@ -220,7 +220,7 @@ class Rest extends \WP_REST_Controller {
                         'customer_reason'    => $order ? $order->get_meta( Utill::ORDER_META_SETTINGS['customer_refund_reason'], true ) : '',
                         'currency'           => $refund->get_currency(),
                         'date'               => $refund->get_date_created()
-                            ? $refund->get_date_created()->date_i18n( 'Y-m-d H:i:s' )
+                            ? Utill::multivendorx_date_time_format($refund->get_date_created()->date_i18n( 'Y-m-d H:i:s' ) )
                             : '',
                         'status'             => $refund->get_status(),
                         'customer_id'        => $customer_id,
