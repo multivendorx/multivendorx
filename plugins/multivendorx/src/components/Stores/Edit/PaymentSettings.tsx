@@ -296,7 +296,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 				{/* Commission Amount */}
 				<Column grid={4}>
 					<Card title={__('Store-specific commission', 'multivendorx')}>
-						{/* <BlockText
+						<BlockText
 							blockTextClass="settings-metabox-note"
 							value={sprintf(
 								__(
@@ -305,7 +305,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								),
 								`${appLocalizer.plugin_url}settings&subtab=store-commissions`
 							)}
-						/> */}
+						/>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Fixed', 'multivendorx')} htmlFor="Fixed">
 								<BasicInputUI

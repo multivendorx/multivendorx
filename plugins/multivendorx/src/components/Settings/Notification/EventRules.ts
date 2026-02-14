@@ -8,7 +8,7 @@ export default {
 		'Help customers discover stores and products near them by enabling location-based search and maps.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-notification',
+	headerIcon: 'notification',
 	submitUrl: 'settings',
 	modal: [],
 };

@@ -118,24 +118,22 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
                 ></i>
             </div>
 
-            {showResults && (
-                // <ul className="search-dropdown">                    
-                    <ItemList
-                        items={results.map((item) => ({
-                            title: item.name,
-                            desc: item.desc,
-                            icon: item.icon,
-                            action: () => {
-                                onResultClick(item);
-                                setIsOpen(false);
-                                setQuery('');
-                                setAction('');
-                                setIsExpanded(false);
-                                triggerSearch('', '');
-                            }
-                        }))}
-                    />
-                // </ul>
+            {showResults && (                  
+                <ItemList
+                    items={results.map((item) => ({
+                        title: item.name,
+                        desc: item.desc,
+                        icon: item.icon,
+                        action: () => {
+                            onResultClick(item);
+                            setIsOpen(false);
+                            setQuery('');
+                            setAction('');
+                            setIsExpanded(false);
+                            triggerSearch('', '');
+                        }
+                    }))}
+                />
             )}
         </div>
     );

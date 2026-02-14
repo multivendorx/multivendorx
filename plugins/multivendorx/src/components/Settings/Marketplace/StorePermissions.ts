@@ -80,7 +80,7 @@ export default {
 		'Control which features and actions are available to each store role.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-wholesale',
+	headerIcon: 'wholesale',
 	submitUrl: 'settings',
 	modal: modalOptions,
 };

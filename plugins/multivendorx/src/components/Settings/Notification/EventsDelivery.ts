@@ -10,7 +10,7 @@ export default {
 		'Get notified about important updates. Choose how you want to receive notifications from your marketplace - by email, text message, or both.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-notification',
+	headerIcon: 'notification',
 	submitUrl: 'settings',
 	modal: [
 

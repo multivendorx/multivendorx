@@ -8,7 +8,7 @@ export default {
 		'Choose whether stores follow a step-by-step guided process through the category hierarchy or freely select multiple categories & subcategories without restrictions.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-shipping',
+	headerIcon: 'shipping',
 	submitUrl: 'settings',
 	modal: [
 		{

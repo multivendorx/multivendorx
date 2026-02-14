@@ -83,8 +83,17 @@ export const TransactionHistory: React.FC = () => {
 
 	return (
 		<>
-			{/* <AdminBreadcrumbs
-				settingIcon="adminfont-store-reactivated"
+			<SettingsNavigator
+				settingContent={settingContent}
+				currentSetting={locationUrl.get('subtab') as string}
+				getForm={getForm}
+				prepareUrl={(subTab: string) =>
+					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`
+				}
+				appLocalizer={appLocalizer}
+				Link={Link}
+				variant={'compact'}
+				menuIcon={true}
 				headerTitle={
 					selectedStore
 						? __(
@@ -93,7 +102,7 @@ export const TransactionHistory: React.FC = () => {
 							)
 						: __('Storewise Transaction History', 'multivendorx')
 				}
-				description={
+				headerDescription={
 					selectedStore
 						? __(
 								`View and manage transactions for ${selectedStore.label} store`,
@@ -107,7 +116,7 @@ export const TransactionHistory: React.FC = () => {
 				customContent={
 					<>
 						<label>
-							<i className="adminfont-switch-store"></i>
+							<i className="switch-store"></i>
 							{__('Switch Store', 'multivendorx')}
 						</label>
 
@@ -122,19 +131,6 @@ export const TransactionHistory: React.FC = () => {
 						/>
 					</>
 				}
-			/> */}
-
-			<SettingsNavigator
-				settingContent={settingContent}
-				currentSetting={locationUrl.get('subtab') as string}
-				getForm={getForm}
-				prepareUrl={(subTab: string) =>
-					`?page=multivendorx#&tab=transaction-history&subtab=${subTab}`
-				}
-				appLocalizer={appLocalizer}
-				Link={Link}
-				variant={'compact'}
-				menuIcon={true}
 			/>
 		</>
 	);

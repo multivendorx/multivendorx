@@ -8,7 +8,7 @@ export default {
 		'Manage how customers rate and review stores on your marketplace.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-store-review',
+	headerIcon: 'store-review',
 	submitUrl: 'settings',
 	modal: [
 		{

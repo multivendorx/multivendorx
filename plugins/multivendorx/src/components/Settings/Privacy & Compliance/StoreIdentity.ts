@@ -8,7 +8,7 @@ export default {
 		'Seller verification confirms a store identity with address, contact, and social profiles-building trust and boosting buyer confidence.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-identity-verification',
+	headerIcon: 'identity-verification',
 	submitUrl: 'settings',
 
 	modal: [
