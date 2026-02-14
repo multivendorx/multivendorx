@@ -39,7 +39,6 @@ type SettingsNavigatorProps = {
     settingTitleSection?: React.ReactNode;
     appLocalizer: { khali_dabba?: boolean; shop_url?: string };
     menuIcon?: boolean;
-    desc?: boolean;
     variant?: 'default' | 'compact' | 'card' | 'settings';
     /* - 'default': Standard settings panel layout
     * - 'compact': Icon and title compact design
@@ -168,7 +167,6 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     appLocalizer,
     variant = 'default',
     menuIcon,
-    desc,
     action,
     headerTitle,
     headerDescription,
