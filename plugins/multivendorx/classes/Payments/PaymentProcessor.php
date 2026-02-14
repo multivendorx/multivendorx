@@ -123,7 +123,7 @@ class PaymentProcessor {
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
                     'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                     'store_name'  => $store->get( 'name' ),
                     'amount'      => $amount,
@@ -196,7 +196,7 @@ class PaymentProcessor {
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
                     'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                     'order_id'    => $order_id,
                     'category'    => 'activity',
@@ -238,7 +238,7 @@ class PaymentProcessor {
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
                     'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                     'store_name'  => $store->get( 'name' ),
                     'amount'      => $amount,

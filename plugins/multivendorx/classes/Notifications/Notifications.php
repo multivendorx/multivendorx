@@ -612,11 +612,11 @@ class Notifications {
             }
 
             if ( $event->store_enabled ) {
-                $receivers[] = $parameters['store_phone']['country_code'] . $parameters['store_phone']['sms_receiver_phone_number'];
+                $receivers[] = $parameters['store_phone'];
             }
 
             if ( $event->customer_enabled ) {
-                $receivers[] = $parameters['customer_phone']['country_code'] . $parameters['customer_phone']['sms_receiver_phone_number'];
+                $receivers[] = $parameters['customer_phone'];
             }
 			
             $message = $event->sms_content;
