@@ -60,7 +60,7 @@ export function formatTimeAgo(dateString: string) {
 	return `${Math.floor(diff / 86400)} day ago`;
 }
 
-
+// This function only removes time from the date-time object and return the formatted date.
 export const formatLocalDate = (date?: Date) =>
 	date ? date.toISOString().split('T')[0] : '';
 

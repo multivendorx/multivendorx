@@ -126,6 +126,10 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
     setInternalValue(convertToDateObjectRange(value, format));
   }, [value, format]);
 
+
+  // This function is not used now if we need time in future then 
+  // we can use the time but if we do not tome in any case then we 
+  // can directly use this fuction here and remove all the convertion in the quiry stage
   // const toDateOnly = (dateObj: DateObject): Date => {
   //   const d = dateObj.toDate();
   //   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
