@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BasicInputUI } from '../BasicInput';
-import { AdminButtonUI } from '../AdminButton';
+import { BasicInputUI } from '../../BasicInput';
+import { AdminButtonUI } from '../../AdminButton';
 
 interface PagePickerProps {
   currentPage: number;

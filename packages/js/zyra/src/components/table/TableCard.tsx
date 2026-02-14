@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Table from './table';
-import TableSummary, { TableSummaryPlaceholder } from './summary';
-import Pagination from '../pagination/Pagination';
+import TableSummary from './summary';
+import Pagination from './pagination/Pagination';
 import { QueryProps, TableCardProps, TableRow } from './types';
 import BulkActionDropdown from './BulkActionDropdown';
 import RealtimeFilters from './RealtimeFilter';
@@ -9,6 +9,7 @@ import CategoryFilter from './CategoryFilter';
 import ButtonActions from './ButtonActions';
 import { useOutsideClick } from '../useOutsideClick';
 import HeaderSearch from '../HeaderSearch';
+import Skeleton from '../UI/Skeleton';
 
 const defaultOnColumnsChange = (
 	showCols: string[],
@@ -19,11 +20,8 @@ const defaultOnColumnsChange = (
  * Pure React TableCard
  */
 const TableCard: React.FC<TableCardProps> = ({
-	actions,
 	className,
 	search,
-	hasSearch,
-	tablePreface,
 	headers = [],
 	ids = [],
 	isLoading = false,
@@ -32,13 +30,10 @@ const TableCard: React.FC<TableCardProps> = ({
 	bulkActions = [],
 	onBulkActionApply,
 	rows = [],
-	rowsPerPage = 10,
 	showMenu = true,
 	summary,
 	title,
 	totalRows = 0,
-	rowKey,
-	emptyMessage,
 	categoryCounts,
 	activeCategory = 'all',
 	filters = [],
@@ -202,9 +197,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	const rootClassName = [
 		'admin-table-wrapper table-card',
 		className,
-		actions ? 'has-actions' : '',
 		showMenu ? 'has-menu' : '',
-		hasSearch ? 'has-search' : '',
 	]
 		.filter(Boolean)
 		.join(' ');
@@ -217,11 +210,6 @@ const TableCard: React.FC<TableCardProps> = ({
 			</div>
 
 			{/* BODY */}
-			{tablePreface && (
-				<div className="table-card__preface">
-					{tablePreface}
-				</div>
-			)}
 			<div className="admin-top-filter">
 				{categoryCounts && categoryCounts.length > 0 && (
 					<CategoryFilter
@@ -245,11 +233,6 @@ const TableCard: React.FC<TableCardProps> = ({
 
 				<div className="table-action-wrapper">
 					{buttonActions && <ButtonActions actions={buttonActions} query={query} />}
-					{actions && (
-						<div className="action-wrapper">
-							{actions}
-						</div>
-					)}
 					{search && (
 						<div className="search-field">
 							<HeaderSearch
@@ -312,8 +295,6 @@ const TableCard: React.FC<TableCardProps> = ({
 						direction: string
 					) => void)
 				}
-				rowKey={rowKey}
-				emptyMessage={emptyMessage}
 				ids={ids}
 				selectedIds={selectedIds}
 				onSelectRow={handleSelectRow}
@@ -325,7 +306,7 @@ const TableCard: React.FC<TableCardProps> = ({
 			{/* pagination */}
 			<div className="admin-pagination">
 				{isLoading ? (
-					<TableSummaryPlaceholder />
+					<Skeleton width="100%" />
 				) : (
 					<Fragment>
 						<Pagination
