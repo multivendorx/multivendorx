@@ -18,11 +18,11 @@ const downloadCSV = <Type extends Record<string, Primitive>>({
   const keys = headers ? (Object.keys(headers) as (keyof Type)[]) : (Object.keys(data[0]) as (keyof Type)[]);
 
   const csvContent = [
-    keys.map(k => `"${headers?.[k] ?? String(k)}"`).join(','),
+    keys.map(Key => `"${headers?.[Key] ?? String(Key)}"`).join(','),
     ...data.map(row =>
       keys
-        .map(k => {
-          const value = row[k];
+        .map(Key => {
+          const value = row[Key];
           const normalized = value instanceof Date ? value.toISOString() : value ?? '';
           return `"${String(normalized).replace(/"/g, '""')}"`;
         })
