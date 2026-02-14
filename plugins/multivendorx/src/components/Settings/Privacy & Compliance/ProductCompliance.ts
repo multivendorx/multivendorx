@@ -118,7 +118,11 @@ export default {
 			moduleEnabled: 'marketplace-compliance',
 			addNewBtn: true,
 			addNewTemplate: {
-				label: 'New Reasons'
+				label: 'New Reasons',
+				editableFields: {
+					title: true,
+					description: false,
+				},
 			},
 			modal: [],
 		},

@@ -76,8 +76,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                           btn.customStyle
                               .button_background_color_onhover ?? "",
                   }
-                : {};
-    console.log( btn.disabled);                
+                : {};              
         return (
             <button
                 key={index}

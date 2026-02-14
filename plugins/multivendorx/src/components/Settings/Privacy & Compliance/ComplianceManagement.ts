@@ -283,7 +283,7 @@ export default {
 						},
 						{
 							key: 'non_compliance_action',
-							type: 'multi-checkbox',
+							type: 'checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
 							options: [
 								{
