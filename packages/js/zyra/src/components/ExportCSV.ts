@@ -9,11 +9,11 @@ export type QueryProps = {
   filter?: Record<string, FilterValue>;
 };
 
-type Primitive = string | number | boolean | null | undefined | Date;
+type Primitive = string | number | boolean | Date;
 
 type ColumnMapping<Type> = {
   [Key in keyof Type]: {
-    display: string;
+    header: string;
     value: Primitive;
   };
 };
@@ -48,7 +48,7 @@ export const ExportCSV = <Type>({
     const keys = Object.keys(mappedData[0]) as (keyof typeof mappedData[0])[];
 
     const csvContent = [
-      keys.map(Key => `"${mappedData[0][Key].display}"`).join(','),
+      keys.map(Key => `"${mappedData[0][Key].header}"`).join(','),
       ...mappedData.map(row =>
         keys
           .map(Key => {
