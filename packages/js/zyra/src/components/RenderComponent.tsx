@@ -86,6 +86,7 @@ interface RenderProps {
     modules: string[];
     appLocalizer: AppLocalizer; // Allows any structure
     Popup: React.ComponentType<PopupProps>;
+    storeTabSetting?: Record<string, string[]>;
 }
 
 const PENALTY = 10;
@@ -96,7 +97,8 @@ const RenderComponent: React.FC<RenderProps> = ({
     updateSetting,
     appLocalizer,
     settings,
-    Popup
+    Popup,
+    storeTabSetting
 }) => {
     const { modal, submitUrl, id } = settings;
     const settingChanged = useRef<boolean>(false);
@@ -397,12 +399,12 @@ const RenderComponent: React.FC<RenderProps> = ({
                     settingChanged.current = true;
                     updateSetting(`${field.key}_options`, opts);
                 }}
-
                 onBlocked={(type: 'pro' | 'module', payload?: string) => {
                     if (type === 'pro') openProPopup();
                     if (type === 'module' && payload)
                         openModulePopup(payload);
                 }}
+                storeTabSetting={storeTabSetting}
             />
         );
     };

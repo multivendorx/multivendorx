@@ -24,6 +24,7 @@ import ShortCodeTable from './ShortCodeTable';
 import FileInput from './FileInput';
 import Content from './Content';
 import Divider from './Divider';
+import MultiCheckboxTable from './MultiCheckboxTable';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -59,4 +60,5 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'color-setting' : ColorSettingInput,
   'endpoint-editor' : EndpointEditor,
   'shortcode-table': ShortCodeTable,
+  'multi-checkbox-table': MultiCheckboxTable,
 };
