@@ -14,6 +14,7 @@ export { default as CatalogCustomizer } from './components/CatalogCustomizer';
 export { default as Table, TableCell } from './components/Table';
 export { default as Elements } from './components/Elements';
 export { default as FileInput } from './components/FileInput';
+export { FileInputUI } from './components/FileInput';
 export { default as FormCustomizer } from './components/NotifimaFormCustomizer';
 export { default as FormViewer } from './components/FormViewer';
 export { default as FreeProFormCustomizer } from './components/FreeProFormCustomizer';
