@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs,
+	NavigatorHeader,
 	useModules,
 	Container,
 	Column,
@@ -614,10 +614,10 @@ const Commission: React.FC = () => {
 
 	return (
 		<>
-			<AdminBreadcrumbs
-				settingIcon="adminfont-commission"
+			<NavigatorHeader
+				headerIcon="commission"
 				headerTitle={__('Commissions', 'multivendorx')}
-				description={__(
+				headerDescription={__(	
 					'Details of commissions earned by each store for every order, including order amount, commission rate, and payout status.',
 					'multivendorx'
 				)}

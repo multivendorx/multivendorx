@@ -16,7 +16,7 @@ export default {
 		'Choose at which order stages invoices should be generated automatically.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-invoice',
+	headerIcon: 'invoice',
 	submitUrl: 'settings',
 	modal: [
          {

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import 'zyra/build/index.css';
-import { ExpandablePanelGroup } from 'zyra';
+import { ExpandablePanelGroup, ExpandablePanelGroupUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 // import img from '../../assets/images/multivendorx-logo.png';
 
@@ -431,30 +431,20 @@ const SetupWizard: React.FC = () => {
                         optional and shouldn’t take longer than five minutes.
                     </div>
                 </div>
-
-                <ExpandablePanelGroup
-                    key={inputField.key}
-                    name={inputField.key}
-                    proSetting={isProSetting(inputField.proSetting ?? false)}
-                    proSettingChanged={() =>
-                        proSettingChanged(inputField.proSetting ?? false)
-                    }
-                    apilink={String(inputField.apiLink)}
-                    appLocalizer={appLocalizer}
-                    methods={methods}
-                    buttonEnable={inputField.buttonEnable}
-                    moduleEnabled={inputField.moduleEnabled}
-                    value={value}
-                    onChange={(data: any) => {
-                        if (hasAccess()) {
-                            settingChanged.current = true;
-                            updateSetting(inputField.key, data);
-                        }
-                    }}
-                    isWizardMode={true}
-                    wizardIndex={currentStep}
-                    setWizardIndex={setCurrentStep}
-                />
+				<ExpandablePanelGroupUI
+					key={inputField.key}
+					name={inputField.key}
+					apilink={String(inputField.apiLink)}
+					appLocalizer={appLocalizer}
+					methods={methods}
+					value={value}
+					onChange={(data: any) => {
+						settingChanged.current = true;
+						updateSetting(inputField.key, data);
+					}}
+					isWizardMode={true}
+					canAccess={true}
+				/>
 
                 {/* <div className="welcome-wrapper">
                     <div className="wizard-title">! Well Done</div>

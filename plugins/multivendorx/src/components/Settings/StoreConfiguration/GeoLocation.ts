@@ -8,7 +8,7 @@ export default {
 		'Help customers discover stores and products/listings near them by enabling location-based search and maps.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-location',
+	headerIcon: 'location',
 	submitUrl: 'settings',
 	modal: [
 		{
@@ -118,15 +118,14 @@ export default {
 			nestedFields: [
 				{
 					key: 'radius_search_min_distance',
-					preInsideText: __('Min', 'multivendorx'),
+					preText: __('Min', 'multivendorx'),
 					type: 'number',
 				},
 				{
 					key: 'radius_search_max_distance',
-					preInsideText: __('Max', 'multivendorx'),
+					preText: __('Max', 'multivendorx'),
 					type: 'number',
 				},
-
 				{
 					key: 'radius_search_unit',
 					type: 'setting-toggle',

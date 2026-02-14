@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'system-status',
 	priority: 1,
-	name: __('System Status', 'multivendorx'),
-	desc: __(
+	settingTitle: __('System Status', 'multivendorx'),
+	headerDescription: __(
 		'Website technical details are displayed to ensure optimal performance and compatibility.',
 		'multivendorx'
 	),
-	icon: 'adminfont-cogs-on-wheels',
+	headerIcon: 'cogs-on-wheels',
 	submitUrl: 'settings',
 	modal: [
 		{

@@ -12,7 +12,7 @@ export default {
     '<b>Note: </b>This setting manages how affiliate payments are handled for each store. To adjust commission rules, payout methods, or other affiliate details, please visit the <b><a href="#&tab=settings&subtab=affiliate">Affiliate Plugin Settings</a></b> section.',
     'multivendorx'
 ),
-	headerIcon: 'adminfont-wp-affiliate',
+	headerIcon: 'wp-affiliate',
 	submitUrl: 'settings',
 	moduleEnabled: 'wp-affiliate',
 	modal: [

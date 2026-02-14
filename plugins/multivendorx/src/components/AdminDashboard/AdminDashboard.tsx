@@ -30,7 +30,7 @@ interface WPPlugin {
 import './AdminDashboard.scss';
 import '../dashboard.scss';
 import { useEffect, useState } from 'react';
-import { Card, Column, Container, getApiLink, MiniCard, Modules, sendApiResponse, SuccessNotice, useModules } from 'zyra';
+import { AdminButtonUI, Card, Column, Container, getApiLink, MiniCard, Modules, sendApiResponse, SuccessNotice, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -522,7 +522,7 @@ const AdminDashboard = () => {
 							</div>
 						</Card>
 						{!appLocalizer.khali_dabba && (
-							<Card
+							<Card 
 								title={__('Build a professional marketplace', 'multivendorx')}
 								badge={[
 									{ text: 'Starting at $299/year', color: 'blue' }
@@ -557,14 +557,28 @@ const AdminDashboard = () => {
 							</Card>
 
 						)}
-						<Card contentHeight title="Modules" buttonLabel="View All" onButtonClick={() => (window.location.href = `?page=multivendorx#&tab=modules`)}>
+						<Card
+							contentHeight
+							title={__('Modules', 'multivendorx')}
+							action={
+								 <AdminButtonUI
+									buttons={[
+										{
+											icon: 'eye',
+											text: __('View All', 'multivendorx'),
+											color: 'purple',
+											onClick: () => { window.open('?page=multivendorx#&tab=modules');}
+										},
+									]}
+								/>
+							}>
 							<Modules
-								modulesArray={{category: false,modules: ModuleList}}
+								modulesArray={{ category: false, modules: ModuleList }}
 								appLocalizer={appLocalizer}
 								apiLink="modules"
 								proPopupContent={proPopupContent}
 								pluginName="multivendorx"
-								variant= "mini-module"
+								variant="mini-module"
 							/>
 						</Card>
 					</Column>
@@ -926,7 +940,7 @@ const AdminDashboard = () => {
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
-			{/* <Container className="general-wrapper admin-dashboard"> */}
+
 			<Container general>
 				<Column>
 					<Card>

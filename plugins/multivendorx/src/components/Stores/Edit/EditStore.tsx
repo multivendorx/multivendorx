@@ -172,7 +172,7 @@ const EditStore = () => {
 				headerTitle: 'Overview',
 				headerDescription: 'Store Info',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -182,7 +182,7 @@ const EditStore = () => {
 				headerTitle: 'General',
 				headerDescription: 'Store Info',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -192,7 +192,7 @@ const EditStore = () => {
 				headerTitle: 'Payment',
 				headerDescription: 'Payment Methods',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -202,7 +202,7 @@ const EditStore = () => {
 				headerTitle: 'Staff',
 				headerDescription: 'Store staff',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -213,7 +213,7 @@ const EditStore = () => {
 				headerTitle: 'Shipping',
 				headerDescription: 'Store Shipping',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -224,7 +224,7 @@ const EditStore = () => {
 				headerTitle: 'Policy',
 				headerDescription: 'Policy',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -234,7 +234,7 @@ const EditStore = () => {
 				headerTitle: 'Application Details',
 				headerDescription: 'Application',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -245,7 +245,7 @@ const EditStore = () => {
 				headerTitle: 'Facilitator',
 				headerDescription: 'Facilitator',
 				hideSettingHeader: true,
-				headerIcon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 	].filter((setting) => !setting.module || modules.includes(setting.module));
@@ -380,7 +380,6 @@ const EditStore = () => {
 			},
 		},
 	].filter(Boolean);
-	console.log(visibleTabs);
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
@@ -954,7 +953,6 @@ const EditStore = () => {
 					<></>
 				}
 			/>
-
 			<PopupUI
 				open={deleteModal}
 				onClose={() => setDeleteModal(false)}

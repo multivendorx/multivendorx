@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, Container, Modules } from 'zyra';
+import { NavigatorHeader, Container, Modules } from 'zyra';
 // import context
 import { __ } from '@wordpress/i18n';
 import { getModuleData } from '../../services/templateService';
@@ -9,10 +9,10 @@ const PluginModules = () => {
 
 	return (
 		<>
-			<AdminBreadcrumbs
-				settingIcon="adminfont-module"
+			<NavigatorHeader
+				headerIcon="module"
 				headerTitle={__('Modules', 'multivendorx')}
-				description={__('Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.', 'multivendorx')}
+				headerDescription={__('Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.', 'multivendorx')}
 			/>
 			<Container general>
 				<Modules

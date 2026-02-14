@@ -9,7 +9,7 @@ export default {
 		'Choose how new stores enter your marketplace, review them manually or allow instant access.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-onboarding',
+	headerIcon: 'onboarding',
 	submitUrl: 'settings',
 	modal: [
 		{

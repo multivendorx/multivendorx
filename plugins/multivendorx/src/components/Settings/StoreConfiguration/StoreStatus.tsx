@@ -26,7 +26,10 @@ const StoreStatus: React.FC = () => {
 	const settingContent = [
 		{
 			type: 'heading',
-			settingName: 'Activation flow',
+			content: {
+				id:'activation_flow',
+			    headerTitle: 'Activation flow',
+			}
 		},
 		{
 			type: 'file',
