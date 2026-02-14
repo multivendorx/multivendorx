@@ -8,15 +8,13 @@ import { AdminButtonUI } from './AdminButton';
 
 type Content = {
     id: string;
-    headerName: string;
+    headerTitle: string;
     headerDescription?: string;
     headerIcon?: string;
     count?: string;
     settingTitle?: string;
     settingSubTitle?: string;
-    link?: string;
     hideSettingHeader?: boolean;
-    proDependent?: boolean;
 };
 
 type SettingContent = {
@@ -247,7 +245,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
         activeSettingPath.forEach(item => {
             crumbs.push({
-                name: isFile(item) ? item.content.headerName : (item.name || ''),
+                name: isFile(item) ? item.content.headerTitle : (item.name || ''),
                 id: isFile(item) ? item.content.id : (item.name || ''),
                 type: item.type
             });
@@ -288,7 +286,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                     <p className="tab-name">
                         {menuIcon && setting.headerIcon && <i className={`adminfont-${setting.headerIcon}`}></i>}
                         <span>{setting.count}</span>
-                        {setting.headerName}
+                        {setting.headerTitle}
                     </p>
                     {variant !== 'default' && variant !== 'settings' && setting.headerDescription && (
                         <div className="des">{setting.headerDescription}</div>
@@ -327,7 +325,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
         return (
             <SectionUI
-                hint={activeFile.settingTitle ?? activeFile.headerName}
+                hint={activeFile.settingTitle ?? activeFile.headerTitle}
                 value={activeFile.settingSubTitle ?? activeFile.headerDescription}
             />
         );
@@ -354,7 +352,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
                 <Breadcrumb
                     headerIcon={variant === 'default' ? activeFile?.headerIcon : headerIcon}
-                    headerTitle={variant === 'default' ? activeFile?.headerName : headerTitle}
+                    headerTitle={variant === 'default' ? activeFile?.headerTitle : headerTitle}
                     headerDescription={headerDescription}
                     renderBreadcrumb={variant === 'default' ? renderBreadcrumbLinks : undefined}
                     renderMenuItems={() => renderAllMenuItems(settingContent)}
