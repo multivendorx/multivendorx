@@ -28,7 +28,11 @@ export default {
 			proSetting: true,
 			addNewBtn: true,
 			addNewTemplate: {
-				label: 'New Product Categories'
+				label: 'New Product Categories',
+				editableFields: {
+					title: true,
+					description: false,
+				},
 			},
 			modal: [],
 		},
