@@ -1,10 +1,12 @@
 import React, {
-	Fragment,
-	useEffect,
-	useRef,
-	useState,
+    Fragment,
+    useEffect,
+    useRef,
+    useState,
+    useMemo,
+    useCallback,
 } from 'react';
-import { TableProps, TableRow } from './types';
+import { TableProps } from './types';
 import TableRowActions from './TableRowActions';
 import { renderCell } from './Utill';
 import { renderEditableCell } from './renderEditableCell';
@@ -14,301 +16,335 @@ const ASC = 'asc';
 const DESC = 'desc';
 
 const Table: React.FC<TableProps> = ({
-	// instanceId,
-	headers = [],
-	rows = [],
-	ariaHidden,
-	caption,
-	className,
-	onSort = () => { },
-	query = {},
-	rowKey,
-	ids = [],
-	selectedIds = [],
-	onSelectRow,
-	onSelectAll,
-	emptyMessage,
-	classNames,
-	onCellEdit,
-	isLoading,
-	enableBulkSelect = false,
+    headers = [],
+    rows = [],
+    caption,
+    className,
+    onSort = () => {},
+    query = {},
+    ids = [],
+    selectedIds = [],
+    onSelectRow,
+    onSelectAll,
+    classNames,
+    onCellEdit,
+    isLoading,
+    enableBulkSelect = false,
 }) => {
-	const allSelected = ids.length > 0 && ids.every((id) => selectedIds.includes(id));
-	const [tabIndex, setTabIndex] = useState<number | undefined>();
-	const [isScrollableRight, setIsScrollableRight] = useState(false);
-	const [isScrollableLeft, setIsScrollableLeft] = useState(false);
-	const [editingCell, setEditingCell] = useState<{
-		id: string | number;
-		key: string;
-	} | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-	const containerRef = useRef<HTMLDivElement>(null);
+    const [isScrollableRight, setIsScrollableRight] = useState(false);
+    const [isScrollableLeft, setIsScrollableLeft] = useState(false);
 
-	const sortedBy =
-		query.orderby ??
-		headers.find((h) => h.defaultSort)?.key;
+    const sortedBy = useMemo(
+        () => query.orderby ?? headers.find((h) => h.defaultSort)?.key,
+        [query.orderby, headers]
+    );
 
-	const sortDir =
-		query.order ??
-		headers.find((h) => h.key === sortedBy)?.defaultOrder ??
-		DESC;
+    const sortDir = useMemo(
+        () =>
+            query.order ??
+            headers.find((h) => h.key === sortedBy)?.defaultOrder ??
+            DESC,
+        [query.order, headers, sortedBy]
+    );
 
-	const hasData = rows.length > 0;
+    const hasData = rows.length > 0;
 
-	const getRowKey = (row: TableRow[], index: number) => {
-		return rowKey ? rowKey(row, index) : index;
-	};
+    const allSelected = useMemo(
+        () => ids.length > 0 && ids.every((id) => selectedIds.includes(id)),
+        [ids, selectedIds]
+    );
 
-	const updateScrollState = () => {
-		const el = containerRef.current;
-		if (!el) return;
+    const tabIndex = isScrollableLeft || isScrollableRight ? 0 : null;
 
-		const { scrollLeft, scrollWidth, clientWidth } = el;
-		const scrollable = scrollWidth > clientWidth;
+    const updateScrollState = useCallback(() => {
+        const el = containerRef.current;
+        if (!el) return;
 
-		if (!scrollable) {
-			setIsScrollableLeft(false);
-			setIsScrollableRight(false);
-			el.scrollLeft = 0;
-			return;
-		}
+        const { scrollLeft, scrollWidth, clientWidth } = el;
+        const scrollable = scrollWidth > clientWidth;
 
-		setIsScrollableLeft(scrollLeft > 0);
-		setIsScrollableRight(scrollLeft + clientWidth < scrollWidth);
-	};
+        if (!scrollable) {
+            setIsScrollableLeft(false);
+            setIsScrollableRight(false);
+            return;
+        }
 
-	useEffect(() => {
-		const el = containerRef.current;
-		if (!el) return;
+        setIsScrollableLeft(scrollLeft > 0);
+        setIsScrollableRight(scrollLeft + clientWidth < scrollWidth);
+    }, []);
 
-		const isScrollable = el.scrollWidth > el.clientWidth;
-		setTabIndex(isScrollable ? 0 : undefined);
-		updateScrollState();
+    useEffect(() => {
+        updateScrollState();
 
-		const onResize = () => requestAnimationFrame(updateScrollState);
-		window.addEventListener('resize', onResize);
+        const onResize = () => requestAnimationFrame(updateScrollState);
 
-		return () => window.removeEventListener('resize', onResize);
-	}, [headers, rows]);
+        window.addEventListener('resize', onResize);
 
-	const sortBy = (key: string) => () => {
-		let direction = DESC;
+        return () => window.removeEventListener('resize', onResize);
+    }, [headers, rows, updateScrollState]);
 
-		if (sortedBy === key) {
-			direction = sortDir === ASC ? DESC : ASC;
-		}
+    const handleSort = useCallback(
+        (key: string) => {
+            let direction = DESC;
 
-		onSort(key, direction);
-	};
+            if (sortedBy === key) {
+                direction = sortDir === ASC ? DESC : ASC;
+            }
 
-	const rootClassName = [
-		'table-wrapper',
-		className,
-		classNames,
-		isScrollableLeft ? 'scroll-left' : '',
-		isScrollableRight ? 'scroll-right' : '',
-	]
-		.filter(Boolean)
-		.join(' ');
+            onSort(key, direction);
+        },
+        [sortedBy, sortDir, onSort]
+    );
 
-	const toggleAllRows = () => {
-		const newState = !allSelected;
-		onSelectAll?.(newState);
-	};
+    const toggleAllRows = useCallback(() => {
+        onSelectAll?.(!allSelected);
+    }, [allSelected, onSelectAll]);
 
-	const toggleRow = (index: number) => {
-		const id = ids[index];
-		const isSelected = selectedIds.includes(id);
-		onSelectRow?.(id, !isSelected);
-	};
-	const getSortIcon = (isSorted: boolean) => {
-		if (!isSorted) return '↕';
-		return sortDir === ASC ? '↑' : '↓';
-	};
-	return (
-		<div
-			ref={containerRef}
-			className={rootClassName}
-			tabIndex={tabIndex}
-			aria-hidden={ariaHidden}
-			role="group"
-			onScroll={updateScrollState}
-		>
-			<table className="admin-table">
-				<caption
-					// id={`caption-${instanceId}`}
-					className="table-caption screen-reader-only"
-				>
-					{caption}
-					{tabIndex === 0 && (
-						<small>(scroll to see more)</small>
-					)}
-				</caption>
-				<thead className="admin-table-header">
-					<tr className="header-row">
-						{enableBulkSelect && (
-							<th className="header-col select">
-								<input
-									type="checkbox"
-									checked={allSelected}
-									onChange={toggleAllRows}
-								/>
-							</th>
-						)}
-						{headers.map((header, i) => {
-							const {
-								key,
-								label,
-								isSortable,
-								isNumeric,
-								isLeftAligned,
-								cellClassName,
-								screenReaderLabel,
-							} = header;
+    const toggleRow = useCallback(
+        (index: number) => {
+            const id = ids[index];
+            const isSelected = selectedIds.includes(id);
 
-							const isSorted = sortedBy === key;
+            onSelectRow?.(id, !isSelected);
+        },
+        [ids, selectedIds, onSelectRow]
+    );
 
-							const thClass = [
-								'header-col',
-								cellClassName,
-								isSortable ? 'sortable' : '',
-								isSorted ? 'sorted' : '',
-								isNumeric ? 'numeric' : '',
-								isLeftAligned || !isNumeric ? 'left' : '',
-							]
-								.filter(Boolean)
-								.join(' ');
+    const getSortIcon = (isSorted: boolean) => {
+        if (!isSorted) return '↕';
+        return sortDir === ASC ? '↑' : '↓';
+    };
 
-							return (
-								<th
-									key={key || i}
-									scope="col"
-									role="columnheader"
-									className={thClass}
-									aria-sort={
-										isSortable && isSorted
-											? sortDir === ASC
-												? 'ascending'
-												: 'descending'
-											: undefined
-									}
-								>
-									{isSortable ? (
-										<span
-											onClick={hasData ? sortBy(key) : undefined}
-											className="sort-button"
-										>
-											<span className="sort-label">{label}</span>
-											<span className="sort-icon">
-												{getSortIcon(isSorted)}
-											</span>
-										</span>
-									) : (
-										<Fragment>
-											<span aria-hidden={!!screenReaderLabel}>
-												{label}
-											</span>
-											{screenReaderLabel && (
-												<span className="screen-reader-only">
-													{screenReaderLabel}
-												</span>
-											)}
-										</Fragment>
-									)}
-								</th>
-							);
-						})}
-					</tr>
-				</thead>
+    const rootClassName = useMemo(
+        () =>
+            [
+                'table-wrapper',
+                className,
+                classNames,
+                isScrollableLeft && 'scroll-left',
+                isScrollableRight && 'scroll-right',
+            ]
+                .filter(Boolean)
+                .join(' '),
+        [className, classNames, isScrollableLeft, isScrollableRight]
+    );
 
-				<tbody className="admin-table-body">
-					{isLoading
-						?
-						Array.from({ length: Number(query.per_page) || 5 }).map((_, rowIndex) => (
-							<tr className="admin-row" key={`skeleton-${rowIndex}`}>
-								{enableBulkSelect && (
-									<td className="admin-column select">
-										<Skeleton width="20px" height="20px" />
-									</td>
-								)}
+    return (
+        <div
+            ref={containerRef}
+            className={rootClassName}
+            tabIndex={tabIndex}
+            role="group"
+            onScroll={updateScrollState}
+        >
+            <table className="admin-table">
+                <caption className="table-caption screen-reader-only">
+                    {caption}
+                    {tabIndex === 0 && <small>(scroll to see more)</small>}
+                </caption>
 
-								{headers.map((header, colIndex) => (
-									<td key={`skeleton-${rowIndex}-${colIndex}`} className="admin-column">
-										<Skeleton width="100%" />
-									</td>
-								))}
-							</tr>
-						))
-						: hasData
-							? rows.map((row, rowIndex) => (
-								<tr className="admin-row" key={getRowKey(row, rowIndex)}>
-									{enableBulkSelect && (
-										<td className="admin-column select">
-											<input
-												type="checkbox"
-												checked={selectedIds.includes(ids[rowIndex])}
-												onChange={() => toggleRow(rowIndex)}
-											/>
-										</td>
-									)}
+                <thead className="admin-table-header">
+                    <tr className="header-row">
+                        {enableBulkSelect && (
+                            <th className="header-col select">
+                                <input
+                                    type="checkbox"
+                                    checked={allSelected}
+                                    onChange={toggleAllRows}
+                                />
+                            </th>
+                        )}
+                        {headers.map((header, i) => {
+                            const {
+                                key,
+                                label,
+                                isSortable,
+                                isNumeric,
+                                isLeftAligned,
+                                cellClassName,
+                                screenReaderLabel,
+                            } = header;
 
-									{row.map((cell, colIndex) => {
-										const header = headers[colIndex];
-										const rowId = ids[rowIndex];
+                            const isSorted = sortedBy === key;
 
-										if (header.type === 'action') {
-											return (
-												<td key={`action-${rowId}`} className="admin-column actions">
-													<TableRowActions rowId={rowId} rowActions={header.actions} />
-												</td>
-											);
-										}
+                            const thClass = [
+                                'header-col',
+                                cellClassName,
+                                isSortable && 'sortable',
+                                isSorted && 'sorted',
+                                isNumeric && 'numeric',
+                                (isLeftAligned || !isNumeric) && 'left',
+                            ]
+                                .filter(Boolean)
+                                .join(' ');
 
-										const displayValue = renderCell(cell);
+                            return (
+                                <th
+                                    key={key || i}
+                                    scope="col"
+                                    role="columnheader"
+                                    className={thClass}
+                                    aria-sort={
+                                        isSortable && isSorted
+                                            ? sortDir === ASC
+                                                ? 'ascending'
+                                                : 'descending'
+                                            : null
+                                    }
+                                >
+                                    {isSortable ? (
+                                        <span
+                                            onClick={
+                                                hasData
+                                                    ? () => handleSort(key)
+                                                    : null
+                                            }
+                                            className="sort-button"
+                                        >
+                                            <span className="sort-label">
+                                                {label}
+                                            </span>
+                                            <span className="sort-icon">
+                                                {getSortIcon(isSorted)}
+                                            </span>
+                                        </span>
+                                    ) : (
+                                        <Fragment>
+                                            <span
+                                                aria-hidden={
+                                                    !!screenReaderLabel
+                                                }
+                                            >
+                                                {label}
+                                            </span>
+                                            {screenReaderLabel && (
+                                                <span className="screen-reader-only">
+                                                    {screenReaderLabel}
+                                                </span>
+                                            )}
+                                        </Fragment>
+                                    )}
+                                </th>
+                            );
+                        })}
+                    </tr>
+                </thead>
 
-										const isStatusColumn = header.key === 'status';
+                <tbody className="admin-table-body">
+                    {isLoading ? (
+                        Array.from({
+                            length: Number(query.per_page) || 5,
+                        }).map((_, rowIndex) => (
+                            <tr
+                                className="admin-row"
+                                key={`skeleton-${rowIndex}`}
+                            >
+                                {enableBulkSelect && (
+                                    <td className="admin-column select">
+                                        <Skeleton width="20px" height="20px" />
+                                    </td>
+                                )}
 
-										const statusClass =
-											isStatusColumn && cell?.value
-												? `admin-badge badge-${String(cell.value).toLowerCase()}`
-												: '';
+                                {headers.map((_, colIndex) => (
+                                    <td
+                                        key={`skeleton-${rowIndex}-${colIndex}`}
+                                        className="admin-column"
+                                    >
+                                        <Skeleton width="100%" />
+                                    </td>
+                                ))}
+                            </tr>
+                        ))
+                    ) : hasData ? (
+                        rows.map((row, rowIndex) => (
+                            <tr
+                                className="admin-row"
+                                key={ids[rowIndex] ?? rowIndex}
+                            >
+                                {enableBulkSelect && (
+                                    <td className="admin-column select">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.includes(
+                                                ids[rowIndex]
+                                            )}
+                                            onChange={() => toggleRow(rowIndex)}
+                                        />
+                                    </td>
+                                )}
 
-										return (
-											<td key={`${getRowKey(row, rowIndex)}-${colIndex}`} className="admin-column">
-												{isStatusColumn ? (
-													<span className={statusClass}>
-														{displayValue}
-													</span>
-												) : header.isEditable ? (
-													renderEditableCell({
-														header,
-														cell,
-														isEditing: false,
-														onSave: () => { },
-													})
-												) : (
-													displayValue
-												)}
-											</td>
-										);
-									})}
-								</tr>
-							))
-							: (
-								<tr className="admin-row">
-									<td
-										colSpan={headers.length + (enableBulkSelect ? 1 : 0)}
-										className="table-empty"
-									>
-										{emptyMessage ?? 'No data to display'}
-									</td>
-								</tr>
-							)}
-				</tbody>
+                                {row.map((cell, colIndex) => {
+                                    const header = headers[colIndex];
+                                    const rowId = ids[rowIndex];
 
-			</table>
-		</div>
-	);
+                                    if (header.type === 'action') {
+                                        return (
+                                            <td
+                                                key={`action-${rowId}`}
+                                                className="admin-column actions"
+                                            >
+                                                <TableRowActions
+                                                    rowId={rowId}
+                                                    rowActions={header.actions}
+                                                />
+                                            </td>
+                                        );
+                                    }
+
+                                    const displayValue = renderCell(cell);
+
+                                    const isStatusColumn =
+                                        header.key === 'status';
+
+                                    const statusClass =
+                                        isStatusColumn && cell?.value
+                                            ? `admin-badge badge-${String(
+                                                  cell.value
+                                              ).toLowerCase()}`
+                                            : '';
+
+                                    return (
+                                        <td
+                                            key={`${rowId}-${colIndex}`}
+                                            className="admin-column"
+                                        >
+                                            {isStatusColumn ? (
+                                                <span className={statusClass}>
+                                                    {displayValue}
+                                                </span>
+                                            ) : header.isEditable ? (
+                                                renderEditableCell({
+                                                    header,
+                                                    cell,
+                                                    isEditing: false,
+                                                    onSave: onCellEdit,
+                                                })
+                                            ) : (
+                                                displayValue
+                                            )}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))
+                    ) : (
+                        <tr className="admin-row">
+                            <td
+                                colSpan={
+                                    headers.length + (enableBulkSelect ? 1 : 0)
+                                }
+                                className="table-empty"
+                            >
+                                No data to display
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
 };
 
 export default Table;
