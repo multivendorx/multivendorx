@@ -1,4 +1,7 @@
+// External Dependencies
 import React from 'react';
+
+// Internal Dependencies
 import { FieldComponent } from './types';
 import { generateBlockStyles, BlockStyle } from './block';
 

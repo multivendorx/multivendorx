@@ -2,7 +2,7 @@
 export * from '../block/blockTypes';
 
 // Block Renderer
-export { BlockRenderer, renderBlockContent } from './BlockRenderer';
+export { BlockRenderer, renderBlockContent, createBlock } from './BlockRenderer';
 
 // Column Block Renderer & Hook
 export { ColumnRenderer, useColumnManager } from './ColumnRenderer';

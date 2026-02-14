@@ -1,5 +1,7 @@
 // External dependencies
 import React, { useState, useEffect } from 'react';
+
+// Internal dependencies
 import { FieldComponent } from './types';
 
 // Types

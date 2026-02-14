@@ -19,25 +19,16 @@ interface BlockGroup {
 }
 
 interface LeftPanelProps {
-    blocks?: BlockConfig[]; // Legacy support
-    blockGroups?: BlockGroup[]; // New grouped approach
+    blockGroups?: BlockGroup[];
     templates?: Template[];
     activeTemplateId?: string;
     onTemplateSelect?: (templateId: string) => void;
     groupName?: string;
     showTemplatesTab?: boolean;
     visibleGroups?: string[]; // Array of group IDs to display (e.g., ['store', 'registration'])
-    onBlockClick?: (value: string, blockItem?: BlockConfig) => void; // Handler for block clicks
-    proSettingChange?: () => boolean; // Function to check if pro settings are allowed
-    createBlock?: (type: any, fixedName?: string, isStore?: boolean, required?: boolean) => any; // Function to create blocks
-    updateBlocks?: (blocks: any[]) => void; // Function to update blocks
-    formFieldList?: any[]; // Current form fields
-    setOpendInput?: (input: any) => void; // Function to set open input
-    setSelectedBlockLocation?: (location: any) => void; // Function to set selected block location
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({
-    blocks = [],
     blockGroups = [],
     templates = [],
     activeTemplateId,
@@ -45,47 +36,27 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
     groupName = 'blocks',
     showTemplatesTab = false,
     visibleGroups = [],
-    onBlockClick,
-    proSettingChange,
-    createBlock,
-    updateBlocks,
-    formFieldList = [],
-    setOpendInput,
-    setSelectedBlockLocation,
 }) => {
     const [activeTab, setActiveTab] = useState(showTemplatesTab ? 'templates' : 'blocks');
+    
     // Track open/closed state for each group separately
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
         // Initialize all groups as open by default
         const initialState: Record<string, boolean> = {};
-        
-        if (blocks.length > 0 && blockGroups.length === 0) {
-            initialState['default'] = true;
-        } else {
-            const groupsToShow = visibleGroups.length === 0 ? blockGroups : blockGroups.filter(group => visibleGroups.includes(group.id));
-            groupsToShow.forEach(group => {
-                initialState[group.id] = true;
-            });
-        }
+        const groupsToShow = visibleGroups.length === 0 ? blockGroups : blockGroups.filter(group => visibleGroups.includes(group.id));
+        groupsToShow.forEach(group => {
+            initialState[group.id] = true;
+        });
         return initialState;
     });
 
     // Determine which blocks to display
     const displayGroups = useCallback(() => {
-        if (blocks.length > 0 && blockGroups.length === 0) {
-            return [{
-                id: 'default',
-                label: 'All Blocks',
-                blocks: blocks,
-            }];
-        }
-
         if (visibleGroups.length === 0) {
             return blockGroups;
         }
-
         return blockGroups.filter(group => visibleGroups.includes(group.id));
-    }, [blocks, blockGroups, visibleGroups]);
+    }, [blockGroups, visibleGroups]);
 
     const toggleGroup = useCallback((groupId: string, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -94,24 +65,6 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             [groupId]: !prev[groupId]
         }));
     }, []);
-
-    const handleBlockClick = useCallback((value: string, blockItem?: BlockConfig) => {
-        // If custom onBlockClick is provided, use it
-        if (onBlockClick) {
-            onBlockClick(value, blockItem);
-            return;
-        }
-
-        // Otherwise use the default behavior from RegistrationForm
-        if (proSettingChange?.()) return;
-        
-        if (createBlock && updateBlocks && formFieldList) {
-            const newField = createBlock(value as any, blockItem?.fixedName);
-            updateBlocks([...formFieldList, newField]);
-            setOpendInput?.(null);
-            setSelectedBlockLocation?.(null);
-        }
-    }, [onBlockClick, proSettingChange, createBlock, updateBlocks, formFieldList, setOpendInput, setSelectedBlockLocation]);
 
     const groupsToDisplay = displayGroups();
 
@@ -173,7 +126,6 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
                                                     role="button"
                                                     tabIndex={0}
                                                     className="elements-items"
-                                                    onClick={() => handleBlockClick(item.value, item)}
                                                 >
                                                     <i className={item.icon} />
                                                     <p className="list-title">{item.label}</p>

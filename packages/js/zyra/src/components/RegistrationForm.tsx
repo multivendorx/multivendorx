@@ -10,56 +10,13 @@ import {
     BlockRenderer,
     ColumnRenderer,
     useColumnManager,
-    LeftPanel
+    LeftPanel,
+    createBlock
 } from './block';
 
 import SettingMetaBox from './SettingMetaBox';
 import { FieldComponent } from './types';
 import '../styles/web/RegistrationForm.scss';
-
-// SIMPLE ID GENERATOR
-let idCounter = Date.now();
-const generateId = () => ++idCounter;
-const createBlock = (type: BlockType, fixedName?: string, placeholder?: string, label?: string): Block => {
-    const id = generateId();
-    const block: any = {
-        id,
-        type,
-        name: fixedName ?? `${type}-${id.toString(36)}`,
-        placeholder,
-        label,
-    };
-
-    if (type === 'columns') {
-        block.columns = [[], []]; // Two empty columns
-        block.layout = '2-50';
-    }
-
-    if (type === 'address') {
-        block.fields = [
-            { id: generateId() + 1, key: 'address_1', label: 'Address Line 1', type: 'text', placeholder: 'Address Line 1', required: true },
-            { id: generateId() + 2, key: 'address_2', label: 'Address Line 2', type: 'text', placeholder: 'Address Line 2' },
-            { id: generateId() + 3, key: 'city', label: 'City', type: 'text', placeholder: 'City', required: true },
-            { id: generateId() + 4, key: 'state', label: 'State', type: 'select', options: ['Karnataka', 'Maharashtra', 'Delhi', 'Tamil Nadu'] },
-            { id: generateId() + 5, key: 'country', label: 'Country', type: 'select', options: ['India', 'USA', 'UK', 'Canada'] },
-            { id: generateId() + 6, key: 'postcode', label: 'Postal Code', type: 'text', placeholder: 'Postal Code', required: true },
-        ];
-    }
-
-    if (type === 'radio' || type === 'checkboxes' || type === 'dropdown' || type === 'multi-select') {
-        block.options = [
-            { id: '1', label: 'Manufacture', value: 'manufacture' },
-            { id: '2', label: 'Trader', value: 'trader' },
-            { id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
-        ];
-    }
-    
-    if (type === 'button') {
-        block.text = placeholder;
-        block.url = '#';
-    }
-    return block as Block;
-};
 
 // BLOCK GROUPS - WITH PLACEHOLDERS
 const BLOCK_GROUPS = [
@@ -112,6 +69,9 @@ export const RegistrationFormUI: React.FC<any> = ({
     setting = {},
     name = field?.key || 'registration-form',
 }) => {
+    // Track if changes have been made
+    const settingHasChanged = useRef(false);
+    
     // State
     const [blocks, setBlocks] = useState<Block[]>(() => 
         Array.isArray(value?.formfieldlist) ? value.formfieldlist : 
@@ -120,15 +80,13 @@ export const RegistrationFormUI: React.FC<any> = ({
     
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
     const visibleGroups = field?.visibleGroups || ['registration'];
-    const saveTimeoutRef = useRef<NodeJS.Timeout>();
 
-    // Auto-save
+    // Trigger onChange when blocks change (if changes were made)
     useEffect(() => {
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(() => {
+        if (settingHasChanged.current) {
             onChange({ formfieldlist: blocks });
-        }, 300);
-        return () => clearTimeout(saveTimeoutRef.current);
+            settingHasChanged.current = false;
+        }
     }, [blocks, onChange]);
 
     // Column manager
@@ -139,6 +97,11 @@ export const RegistrationFormUI: React.FC<any> = ({
         setOpenBlock,
     });
 
+    // Helper to mark that changes have been made
+    const markChanged = () => {
+        settingHasChanged.current = true;
+    };
+
     // Block operations
     const updateBlock = (index: number, patch: BlockPatch) => {
         if (proSettingChange()) return;
@@ -146,6 +109,7 @@ export const RegistrationFormUI: React.FC<any> = ({
             const updated = [...prev];
             updated[index] = { ...updated[index], ...patch } as Block;
             if (openBlock?.id === updated[index].id) setOpenBlock(updated[index]);
+            markChanged();
             return updated;
         });
     };
@@ -153,36 +117,27 @@ export const RegistrationFormUI: React.FC<any> = ({
     const deleteBlock = (index: number) => {
         if (proSettingChange()) return;
         const deletedBlock = blocks[index];
-        setBlocks(prev => prev.filter((_, i) => i !== index));
+        setBlocks(prev => {
+            const filtered = prev.filter((_, i) => i !== index);
+            markChanged();
+            return filtered;
+        });
         if (openBlock?.id === deletedBlock.id) {
             setOpenBlock(null);
             columnManager.clearSelection();
         }
     };
 
-    // UPDATED: Handle drops with placeholder
+    // Handle drops with placeholder
     const handleSetList = (newList: any[]) => {
         if (proSettingChange()) return;
         
-        const processedList = newList.map(item => {
-            if (item.id && item.type) return item;
-            if (item.value) {
-                // Find the original block item to get fixedName and placeholder
-                const registrationItem = BLOCK_GROUPS[0].blocks.find(b => b.id === item.id);
-                const storeItem = BLOCK_GROUPS[1].blocks.find(b => b.id === item.id);
-                const blockItem = storeItem || registrationItem;
-                
-                return createBlock(
-                    item.value, 
-                    blockItem?.fixedName,
-                    blockItem?.placeholder,
-                    blockItem?.label
-                );
-            }
-            return item;
-        });
+        const processedList = newList.map(item => 
+            createBlock(item, 'registration')
+        );
         
         setBlocks(processedList);
+        markChanged();
     };
 
     // Settings handler
@@ -192,13 +147,15 @@ export const RegistrationFormUI: React.FC<any> = ({
         if (columnManager.selectedBlockLocation) {
             const { parentIndex, columnIndex, childIndex } = columnManager.selectedBlockLocation;
             columnManager.handleColumnChildUpdate(parentIndex, columnIndex, childIndex, { [key]: value });
+            markChanged(); // Mark changed after column child update
         } else {
             const index = blocks.findIndex(b => b.id === openBlock?.id);
             if (index >= 0) {
                 if (key === 'layout' && blocks[index].type === 'columns') {
                     columnManager.handleLayoutChange(index, value);
+                    markChanged(); // Mark changed after layout change
                 } else {
-                    updateBlock(index, { [key]: value });
+                    updateBlock(index, { [key]: value }); // updateBlock already calls markChanged
                 }
             }
         }
@@ -232,7 +189,10 @@ export const RegistrationFormUI: React.FC<any> = ({
                                     groupName="registration"
                                     openBlock={openBlock}
                                     setOpenBlock={setOpenBlock}
-                                    onBlocksUpdate={setBlocks}
+                                    onBlocksUpdate={(updatedBlocks) => {
+                                        setBlocks(updatedBlocks);
+                                        markChanged();
+                                    }}
                                     onSelect={() => {
                                         setOpenBlock(block);
                                         columnManager.clearSelection();
@@ -246,7 +206,10 @@ export const RegistrationFormUI: React.FC<any> = ({
                                         setOpenBlock(block);
                                         columnManager.clearSelection();
                                     }}
-                                    onChange={(patch) => updateBlock(index, patch)}
+                                    onChange={(patch) => {
+                                        updateBlock(index, patch);
+                                        // updateBlock already calls markChanged
+                                    }}
                                     onDelete={() => deleteBlock(index)}
                                     isActive={openBlock?.id === block.id}
                                 />

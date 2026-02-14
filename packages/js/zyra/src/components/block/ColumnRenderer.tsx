@@ -9,7 +9,7 @@ import {
     ColumnsBlock,
     getColumnCount,
 } from '../block';
-import BlockRenderer from './BlockRenderer';
+import BlockRenderer,{createBlock} from './BlockRenderer';
 
 // Types
 interface SelectedBlockLocation {
@@ -39,57 +39,6 @@ export interface ColumnRendererProps {
     showMeta?: boolean;
 }
 
-// Simple ID generator (sync with RegistrationForm)
-let idCounter = Date.now();
-const generateId = () => ++idCounter;
-
-const createValidBlock = (item: any): Block => {
-    // If it's already a valid block, return it
-    if (item?.id && item?.type) return item as Block;
-    
-    // If it's a block config from left panel, create a new block
-    if (item?.value) {
-        const id = generateId();
-        const type = item.value;
-        const block: any = {
-            id,
-            type,
-            name: item.fixedName ?? `${type}-${id}`,
-            label: item.label ?? type,
-        };
-
-        // Add placeholder if exists
-        if (item.placeholder) block.placeholder = item.placeholder;
-
-        // Initialize specific block types
-        if (type === 'columns') {
-            block.columns = [[], []];
-            block.layout = '2-50';
-        }
-        if (type === 'heading') {
-            block.text = item.placeholder || 'Heading Text';
-            block.level = 2;
-        }
-        if (type === 'richtext') {
-            block.html = item.placeholder || '<p>This is a demo text</p>';
-        }
-        if (type === 'button') {
-            block.text = item.placeholder || 'Click me';
-            block.url = '#';
-        }
-
-        return block as Block;
-    }
-    
-    // Fallback - create a basic block
-    return {
-        id: generateId(),
-        type: 'text',
-        name: `text-${generateId()}`,
-        label: 'Text',
-    } as Block;
-};
-
 // Hook
 export const useColumnManager = ({
     blocks,
@@ -110,7 +59,7 @@ export const useColumnManager = ({
         if (parent?.type !== 'columns') return;
         
         // Convert any raw items to valid blocks
-        const validBlocks = newList.map(item => createValidBlock(item));
+        const validBlocks = newList.map(item => createBlock(item));
         
         const columns = [...parent.columns];
         columns[colIdx] = validBlocks;

@@ -1,5 +1,7 @@
 // External dependencies
 import React from 'react';
+
+// Internal dependencies
 import { FieldComponent } from './types';
 
 // Types
@@ -13,13 +15,13 @@ interface RadioOption {
 interface RadioInputProps {
     name?: string;
     idPrefix?: string;
-    type?: 'default';
+    type?: 'default' | 'radio';
     options: RadioOption[];
     value?: string;
     onChange: (val: string | number) => void;
 }
 
-const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
+export const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
     return (
         <>
             <div className="settings-form-group-radio">

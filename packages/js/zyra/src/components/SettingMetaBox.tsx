@@ -1,12 +1,15 @@
-/**
- * SettingMetaBox.tsx - UPDATED VERSION
- * Uses centralized style management from blockStyles.ts
- */
-
+// External dependencies
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+
+// Internal dependencies
 import StyleControls from './StyleControl';
 import { BlockStyle } from './block';
+import { BasicInputUI } from './BasicInput';
+import { SelectInputUI } from './SelectInput';
+import { MultiCheckBoxUI } from './MultiCheckbox';
+import { RadioInputUI } from './RadioInput';
+import { ToggleSettingUI } from './ToggleSetting';
 
 // TYPES
 type FormFieldValue = string | number | boolean | Option[] | Record<string, any>;
@@ -107,11 +110,10 @@ const InputField: React.FC<{
     placeholder?: string;
 }> = ({ label, type = 'text', value, onChange, className, readonly = false, placeholder }) => (
     <FieldWrapper label={label} className={className}>
-        <input
-            type={type}
+        <BasicInputUI
+            type="text"
             value={value || ''}
-            className="basic-input"
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(value) => onChange(value)}
             readOnly={readonly}
             placeholder={placeholder}
         />
@@ -124,11 +126,11 @@ const FormFieldSelect: React.FC<{
     onTypeChange: (value: string) => void;
 }> = ({ inputTypeList, formField, onTypeChange }) => (
     <FieldWrapper label="Type">
-        <select onChange={(e) => onTypeChange(e.target.value)} value={formField.type} className="basic-select">
-            {inputTypeList.map(({ value, label }) => (
-                <option key={value} value={value}>{label}</option>
-            ))}
-        </select>
+        <SelectInputUI 
+            onChange={(value) => onTypeChange(value)} 
+            value={formField.type} 
+            options= {inputTypeList}
+        />
     </FieldWrapper>
 );
 
@@ -148,52 +150,19 @@ const VisibilityToggle: React.FC<{ disabled?: boolean; onChange: (disabled: bool
         <FieldWrapper label="Visibility">
             <div className="toggle-setting-container">
                 <div className="toggle-setting-wrapper">
-                    {[
-                        { id: 'visible', label: 'Visible', checked: !disabled, value: false },
-                        { id: 'hidden', label: 'Hidden', checked: disabled, value: true },
-                    ].map(({ id, label, checked, value }) => (
-                        <div key={id}>
-                            <input
-                                type="radio"
-                                id={id}
-                                name="tabs"
-                                checked={checked}
-                                onChange={() => onChange(value)}
-                                className="toggle-setting-form-input"
-                            />
-                            <label htmlFor={id}>{label}</label>
-                        </div>
-                    ))}
+                    <RadioInputUI
+                        type="radio"
+                        name="tabs"
+                        onChange={(label) => onChange(label)}
+                        options={[
+                            { key: 'visible', value: "Visible", label: 'Visible', },
+                            { key: 'hidden', value: "Hidden", label: 'Hidden', },
+                        ]}
+                    />
                 </div>
             </div>
         </FieldWrapper>
     );
-
-const RadioGroup: React.FC<{
-    name: string;
-    options: readonly { id: string; value: number; label: string }[];
-    value: number;
-    onChange: (value: number) => void;
-}> = ({ name, options, value, onChange }) => (
-    <div className="toggle-setting-container">
-        <div className="toggle-setting-wrapper">
-            {options.map(({ id, value: optionValue, label }) => (
-                <div key={id}>
-                    <input
-                        type="radio"
-                        id={`${name}-${id}`}
-                        name={name}
-                        value={optionValue}
-                        checked={value === optionValue}
-                        onChange={(e) => onChange(Number(e.target.value))}
-                        className="toggle-setting-form-input"
-                    />
-                    <label htmlFor={`${name}-${id}`}>{label}</label>
-                </div>
-            ))}
-        </div>
-    </div>
-);
 
 // OPTION EDITOR COMPONENT
 const OptionEditor: React.FC<{ options: Option[]; onChange: (options: Option[]) => void }> = 
@@ -225,11 +194,10 @@ const OptionEditor: React.FC<{ options: Option[]; onChange: (options: Option[]) 
                                 <i className="adminfont-drag" />
                             </div>
                             <div className="option-label">
-                                <input
+                                <BasicInputUI
                                     type="text"
-                                    className="basic-input"
                                     value={opt.label}
-                                    onChange={(e) => updateOption(index, { label: e.target.value })}
+                                    onChange={(value) => updateOption(index, { label: value })}
                                 />
                             </div>
                             <div className="option-icon admin-badge red">
@@ -302,26 +270,23 @@ const createFieldRenderers = (): Record<string, React.FC<{
         </>
     ),
     
-    heading: ({ formField, onChange, expandedGroups, toggleGroup }) => (
-        <>
-            <ContentGroup title="Heading Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
-                <InputField 
-                    label="Heading Text" 
-                    value={formField.text || ''} 
-                    onChange={(v) => onChange('text', v)} 
-                    placeholder="Enter heading text"
+     heading: ({ formField, onChange, expandedGroups, toggleGroup }) => (
+        <ContentGroup title="Heading Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
+            <InputField 
+                label="Heading Text" 
+                value={formField.text || ''} 
+                onChange={(v) => onChange('text', v)} 
+                placeholder="Enter heading text"
+            />
+            <div className="field-wrapper">
+                <label>Heading Level</label>
+                <ToggleSettingUI
+                    options={HEADING_LEVELS}
+                    value={formField.level || 2}
+                    onChange={(val) => onChange('level', Number(val) as 1 | 2 | 3)}
                 />
-                <div className="field-wrapper">
-                    <label>Heading Level</label>
-                    <RadioGroup 
-                        name="heading-level" 
-                        options={HEADING_LEVELS} 
-                        value={formField.level || 2} 
-                        onChange={(v) => onChange('level', v as 1 | 2 | 3)} 
-                    />
-                </div>
-            </ContentGroup>
-        </>
+            </div>
+        </ContentGroup>
     ),
     
     image: ({ formField, onChange, expandedGroups, toggleGroup }) => (
@@ -547,7 +512,7 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                             <VisibilityToggle disabled={formField.disabled} onChange={handleDisabledChange} />
                             <FieldWrapper label="Required">
                                 <div className="input-wrapper">
-                                    <input
+                                    <MultiCheckBoxUI
                                         type="checkbox"
                                         checked={formField.required || false}
                                         onChange={handleRequiredChange}
