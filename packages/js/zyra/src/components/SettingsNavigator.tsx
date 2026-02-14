@@ -8,12 +8,11 @@ import { AdminButtonUI } from './AdminButton';
 
 type Content = {
     id: string;
-    name: string;
-    desc?: string;
+    headerName: string;
+    headerDescription?: string;
     count?: string;
     headerTitle?: string;
-    settingDes?: string;
-    icon?: string;
+    headerIcon?: string;
     link?: string;
     hideSettingHeader?: boolean;
     proDependent?: boolean;
@@ -60,29 +59,27 @@ interface button {
 }
 
 interface BreadcrumbProps<T> {
-    settingIcon?: string;
+    headerIcon?: string;
     headerTitle?: string;
-    hideTitle?: boolean;
-    hideBreadcrumb?: boolean;
+    headerDescription?: string;
     renderBreadcrumb?: () => React.ReactNode;
     renderMenuItems?: (items: T[]) => React.ReactNode;
     settingContent?: T[];
     buttons?: button[];
     showPremiumLink?: string;
-    description?: string;
     customContent?: React.ReactNode;
     action?: React.ReactNode;
 }
 
 export const Breadcrumb = <T,>({
-    settingIcon = '',
+    headerIcon = '',
     headerTitle = '',
+    headerDescription='',
     renderBreadcrumb,
     renderMenuItems,
     settingContent = [],
     buttons = [],
     showPremiumLink,
-    description,
     customContent,
     action,
 }: BreadcrumbProps<T>) => {
@@ -92,8 +89,8 @@ export const Breadcrumb = <T,>({
             <div className="title-section">
                 <div className="title-wrapper">
                     <div className="title">
-                        {settingIcon && (
-                            <i className={settingIcon}></i>
+                        {headerIcon && (
+                            <i className={headerIcon}></i>
                         )}
                         {headerTitle}
                     </div>
@@ -118,8 +115,8 @@ export const Breadcrumb = <T,>({
                         </div>
                     )}
                 </div>
-                {description && (
-                    <div className="description">{description}</div>
+                {headerDescription && (
+                    <div className="description">{headerDescription}</div>
                 )}
                 {renderBreadcrumb && (
                     <div className="breadcrumbs">
@@ -249,7 +246,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
         activeSettingPath.forEach(item => {
             crumbs.push({
-                name: isFile(item) ? item.content.name : (item.name || ''),
+                name: isFile(item) ? item.content.headerName : (item.name || ''),
                 id: isFile(item) ? item.content.id : (item.name || ''),
                 type: item.type
             });
@@ -288,11 +285,11 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                     }}
                 >
                     <p className="tab-name">
-                        {menuIcon && setting.icon && <i className={`adminfont-${setting.icon}`}></i>}
+                        {menuIcon && setting.headerIcon && <i className={`adminfont-${setting.headerIcon}`}></i>}
                         <span>{setting.count}</span>
-                        {setting.name}
+                        {setting.headerName}
                     </p>
-                    { variant !=='default' && setting.desc && <div className="des">{setting.desc}</div>}
+                    { variant !=='default' && setting.headerDescription && <div className="des">{setting.headerDescription}</div>}
                 </Link>
             );
         }
@@ -324,12 +321,11 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
     const renderSettingHeaderInfo = () => {
         if (!activeFile || activeFile.id === 'support' || activeFile.hideSettingHeader) return null;
-        const description = activeFile.settingDes?.trim() || activeFile.desc || '';
 
         return (
             <SectionUI
-                hint={activeFile.headerTitle ?? activeFile.name}
-                value={description}
+                hint={activeFile.headerTitle ?? activeFile.headerName}
+                value={activeFile.headerDescription || ''}
             />
         );
     };
@@ -354,9 +350,9 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                 {settingTitleSection && <>{settingTitleSection}</>}
 
                 <Breadcrumb
-                    settingIcon={ variant === 'default' ? activeFile?.icon : headerIcon}
-                    headerTitle={ variant === 'default' ? activeFile?.name : headerTitle}
-                    description={ headerDescription }
+                    headerIcon={ variant === 'default' ? activeFile?.headerIcon : headerIcon}
+                    headerTitle={ variant === 'default' ? activeFile?.headerName : headerTitle}
+                    headerDescription={ headerDescription }
                     renderBreadcrumb={ variant === 'default' ? renderBreadcrumbLinks : undefined }
                     renderMenuItems={() => renderAllMenuItems(settingContent)}
                     settingContent={settingContent}
