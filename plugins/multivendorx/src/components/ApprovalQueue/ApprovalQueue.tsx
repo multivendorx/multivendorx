@@ -194,11 +194,11 @@ const ApprovalQueue = () => {
 			// condition: settings?.general?.approve_store === 'manually',
 			content: {
 				id: 'stores',
-				name: 'Stores',
-				desc: 'Eager to join the marketplace',
-				icon: 'storefront yellow',
-				// title: 'Store in review queue',
-				settingDes: 'Next in line! Approve or reject new store join requests.',
+				settingName: 'Stores',
+				settingTitle: 'Title test',
+				settingSubTitle: 'Title test sub title',
+				settingDescription: 'Eager to join the marketplace',
+				settingIcon: 'storefront yellow',
 				count: storeCount,
 			},
 		},
@@ -210,11 +210,9 @@ const ApprovalQueue = () => {
 			// 	),
 			content: {
 				id: 'products',
-				name: 'Products',
-				desc: 'Pending your approval',
-				icon: 'multi-product red',
-				title: 'Products awaiting review',
-				settingDes: 'Approve these listings to start generating sales in your marketplace.',
+				settingName: 'Products',
+				settingDescription: 'Pending your approval',
+				settingIcon: 'multi-product red',
 				count: productCount,
 			},
 		},
@@ -226,11 +224,9 @@ const ApprovalQueue = () => {
 			// 	),
 			content: {
 				id: 'coupons',
-				name: 'Coupons',
-				desc: 'Need a quick review',
-				icon: 'coupon green',
-				title: 'Coupons up for review',
-				settingDes: 'Approve, decline, or tweak before they go live.',
+				settingName: 'Coupons',
+				settingDescription: 'Need a quick review',
+				settingIcon: 'coupon green',
 				count: couponCount,
 			},
 		},
@@ -239,9 +235,9 @@ const ApprovalQueue = () => {
 			// module: 'wholesale',
 			content: {
 				id: 'wholesale-customer',
-				name: 'Customers',
-				desc: 'Ready for your approval',
-				icon: 'user-circle pink',
+				settingName: 'Customers',
+				settingDescription: 'Ready for your approval',
+				settingIcon: 'user-circle pink',
 				count: 9,
 			},
 		},
@@ -250,11 +246,9 @@ const ApprovalQueue = () => {
 			// module: 'marketplace-refund',
 			content: {
 				id: 'refund-requests',
-				name: 'Refunds',
-				desc: 'Need your decision',
-				icon: 'marketplace-refund blue',
-				title: 'Refund tracker',
-				settingDes: 'Monitor refund trends and stay informed on store returns.',
+				settingName: 'Refunds',
+				settingDescription: 'Need your decision',
+				settingIcon: 'marketplace-refund blue',
 				count: refundCount,
 			},
 		},
@@ -263,11 +257,9 @@ const ApprovalQueue = () => {
 			// module: 'marketplace-compliance',
 			content: {
 				id: 'report-abuse',
-				name: 'Flagged',
-				desc: 'Product reported for assessment',
-				icon: 'product indigo',
-				title: 'Flagged products awaiting action',
-				settingDes: 'Review reports and maintain quality.',
+				settingName: 'Flagged',
+				settingDescription: 'Product reported for assessment',
+				settingIcon: 'product indigo',
 				count: reportAbuseCount,
 			},
 		},
@@ -276,11 +268,9 @@ const ApprovalQueue = () => {
 			// condition: settings?.disbursement?.withdraw_type === 'manual',
 			content: {
 				id: 'withdrawal',
-				name: 'Withdrawals',
-				desc: 'Queued for disbursement',
-				icon: 'bank orange',
-				title: 'Withdrawals awaiting approval',
-				settingDes: 'Review and process store payouts.',
+				settingName: 'Withdrawals',
+				settingDescription: 'Queued for disbursement',
+				settingIcon: 'bank orange',
 				count: withdrawCount,
 			},
 		},
@@ -288,11 +278,9 @@ const ApprovalQueue = () => {
 			type: 'file',
 			content: {
 				id: 'deactivate-requests',
-				name: 'Deactivations',
-				desc: 'Permanent store closure request',
-				icon: 'rejecte teal',
-				title: 'Stores requesting deactivation',
-				settingDes: 'Approve or reject marketplace joiners.',
+				settingName: 'Deactivations',
+				settingDescription: 'Permanent store closure request',
+				settingIcon: 'rejecte teal',
 				count: deactivateCount,
 			},
 		},
@@ -336,13 +324,13 @@ const ApprovalQueue = () => {
 
 	return (
 		<>
-			<AdminBreadcrumbs
+			{/* <AdminBreadcrumbs
 				settingIcon="adminfont-approval"
 				headerTitle="Approval Queue"
 				description={
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'
 				}
-			/>
+			/> */}
 			<SettingsNavigator
 				settingContent={settingContent}
 				currentSetting={location.get('subtab') as string}

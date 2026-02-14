@@ -12,12 +12,12 @@ const columns = appLocalizer?.custom_roles
 export default {
 	id: 'user-permissions',
 	priority: 3,
-	name: __('User Capabilities', 'multivendorx'),
-	desc: __(
+	headerTitle: __('User Capabilities', 'multivendorx'),
+	headerDescription: __(
 		'Define what each store role can access and manage within the marketplace.',
 		'multivendorx'
 	),
-	icon: 'adminfont-user-network-icon',
+	headerIcon: 'adminfont-user-network-icon',
 	submitUrl: 'settings',
 	modal: [
 		{

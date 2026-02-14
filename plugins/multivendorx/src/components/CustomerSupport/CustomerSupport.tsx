@@ -17,8 +17,8 @@ const CustomerSupport = () => {
 			module: 'question-answer',
 			content: {
 				id: 'questions',
-				name: 'Questions',
-				icon: 'question',
+				settingName: 'Questions',
+				settingIcon: 'question',
 			},
 		},
 		{
@@ -26,8 +26,8 @@ const CustomerSupport = () => {
 			module: 'store-review',
 			content: {
 				id: 'review',
-				name: 'Store Reviews',
-				icon: 'store-review',
+				settingName: 'Store Reviews',
+				settingIcon: 'store-review',
 			},
 		},
 		{
@@ -35,8 +35,8 @@ const CustomerSupport = () => {
 			module: 'store-support',
 			content: {
 				id: 'support-ticket',
-				name: 'Support Ticket',
-				icon: 'vacation',
+				settingName: 'Support Ticket',
+				settingIcon: 'vacation',
 			},
 		},
 	].filter((tab) => !tab.module || modules.includes(tab.module));
@@ -60,21 +60,13 @@ const CustomerSupport = () => {
 		}
 	};
 	const link =
-    typeof appLocalizer?.module_page_url === 'string' &&
-    appLocalizer.module_page_url.trim().length > 0
-        ? appLocalizer.module_page_url
-        : undefined;
+		typeof appLocalizer?.module_page_url === 'string' &&
+			appLocalizer.module_page_url.trim().length > 0
+			? appLocalizer.module_page_url
+			: undefined;
 
 	return (
 		<>
-			<AdminBreadcrumbs
-				settingIcon="adminfont-customer-service"
-				headerTitle={__('Customer Support', 'multivendorx')}
-				description={__(
-					'Manage store reviews, support requests, financial transactions, and reported issues.',
-					'multivendorx'
-				)}
-			/>
 			{settingContent.length > 0 ? (
 				<SettingsNavigator
 					settingContent={settingContent}
@@ -86,6 +78,12 @@ const CustomerSupport = () => {
 					appLocalizer={appLocalizer}
 					Link={Link}
 					variant={'compact'}
+					headerIcon="adminfont-customer-service"
+					headerTitle={__('Customer Support', 'multivendorx')}
+					headerDescription={__(
+						'Manage store reviews, support requests, financial transactions, and reported issues.',
+						'multivendorx'
+					)}
 				/>
 			) : (
 				<Container general>

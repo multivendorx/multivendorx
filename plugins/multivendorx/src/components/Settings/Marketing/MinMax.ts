@@ -3,13 +3,13 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'min-max',
 	priority: 6,
-	name: __('Min/Max', 'multivendorx'),
-	headerTitle: 'Per-product/listing purchase limits',
-	desc: __(
+	headerTitle: __('Min/Max', 'multivendorx'),
+	settingTitle: 'Per-product/listing purchase limits',
+	headerDescription: __(
 		'Set purchase limits for individual products to prevent bulk buying or ensure minimum order quantities.',
 		'multivendorx'
 	),
-	icon: 'adminfont-min-max',
+	headerIcon: 'adminfont-min-max',
 	submitUrl: 'settings',
 	modal: [
 		{

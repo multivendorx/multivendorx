@@ -7,9 +7,9 @@ const methods = appLocalizer?.all_payments
 export default {
 	id: 'overview',
 	priority: 1,
-	name: __('Overview', 'multivendorx'),
-	headerTitle: 'Marketplace pages configuration',
-	desc: __(
+	headerTitle: __('Overview', 'multivendorx'),
+	settingTitle: 'Marketplace pages configuration',
+	headerDescription: __(
 		'Configure the essential system pages required for your marketplace - including store registration, store dashboard.',
 		'multivendorx'
 	),
@@ -21,7 +21,7 @@ export default {
 		icon: 'adminfont-general-tab', // optional icon class
 		link: 'https://example.com/docs/general-settings',
 	},
-	icon: 'adminfont-view-files',
+	headerIcon: 'adminfont-view-files',
 	submitUrl: 'settings',
 	modal: [
 		{

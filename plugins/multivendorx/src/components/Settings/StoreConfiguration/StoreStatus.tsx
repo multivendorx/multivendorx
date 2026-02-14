@@ -26,76 +26,77 @@ const StoreStatus: React.FC = () => {
 	const settingContent = [
 		{
 			type: 'heading',
-			name: 'Activation flow',
+			settingName: 'Activation flow',
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'pending',
-				name: 'Pending Approval',
-				settingDes: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
-				icon: 'in-progress',
+				headerTitle: 'Pending Approval',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerIcon: 'in-progress',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'rejected',
-				name: 'Rejected',
-				settingDes: 'The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.',
-				icon: 'rejected',
+				headerTitle: 'Rejected',
+				headerDescription: 'The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.',
+				headerIcon: 'rejected',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'permanently-rejected',
-				name: 'Permanently Rejected',
-				settingDes: 'The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.',
-				icon: 'permanently-rejected',
+				headerTitle: 'Permanently Rejected',
+				headerDescription: 'The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.',
+				headerIcon: 'permanently-rejected',
 			},
 		},
 		{
 			type: 'heading',
-			name: 'Post-activation flow',
+			settingName: 'Post-activation flow',
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'active',
-				name: 'Active',
-				settingDes: 'The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.',
-				icon: 'verification10',
+				headerTitle: 'Active',
+				headerDescription: 'The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.',
+				headerIcon: 'verification10',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'under-review',
-				name: 'Under Review',
-				settingDes: 'The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.',
-				icon: 'under-review',
+				headerTitle: 'Under Review',
+				headerDescription: 'The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.',
+				headerIcon: 'under-review',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'suspended',
-				name: 'Suspended',
-				settingDes: 'The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.',
-				icon: 'suspended',
+				headerTitle: 'Suspended',
+				headerDescription: 'The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.',
+				headerIcon: 'suspended',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'deactivated',
-				name: 'Permanently Deactivated',
-				settingDes: 'The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.',
-				icon: 'rejecte',
+				headerTitle: 'Permanently Deactivated',
+				headerDescription: 'The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.',
+				headerIcon: 'rejecte',
 			},
 		},
 	];
+
 
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
 		const { setting, settingName, setSetting, updateSetting } =
@@ -151,7 +152,7 @@ const StoreStatus: React.FC = () => {
 				settingName="Settings"
 				Link={Link}
 				menuIcon={true}
-				variant= 'settings'
+				variant='settings'
 			/>
 		</SettingProvider>
 	);

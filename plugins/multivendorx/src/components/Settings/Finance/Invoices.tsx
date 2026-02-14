@@ -28,73 +28,74 @@ const Invoice: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'general',
-				name: 'General',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: 'General',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				// hideSettingHeader: true,
-				icon: 'in-progress',
+				headerIcon: 'in-progress',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'customer-invoice',
-				name: 'Customer Invoice',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: 'Customer Invoice',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				// hideSettingHeader: true,
-				icon: 'in-progress',
+				headerIcon: 'in-progress',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'marketplace-fee-invoice',
-				name: 'Marketplace Fee Invoice',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: 'Marketplace Fee Invoice',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				// hideSettingHeader: true,
-				icon: 'in-progress',
+				headerIcon: 'in-progress',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'store-invoice',
-				name: 'Store Invoice',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: 'Store Invoice',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				// hideSettingHeader: true,
-				icon: 'in-progress',
+				headerIcon: 'in-progress',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'store-subscription',
-				name: 'Store Subscription',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: 'Store Subscription',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				// hideSettingHeader: true,
-				icon: 'in-progress',
+				headerIcon: 'in-progress',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'admin-invoice',
-				name: 'Admin Invoice',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: 'Admin Invoice',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				// hideSettingHeader: true,
-				icon: 'in-progress',
+				headerIcon: 'in-progress',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'packing-slip',
-				name: 'Packing Slip',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				headerTitle: 'Packing Slip',
+				headerDescription: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				// hideSettingHeader: true,
-				icon: 'in-progress',
+				headerIcon: 'in-progress',
 			},
 		},
 	];
+
 
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
 		const { setting, settingName, setSetting, updateSetting } =

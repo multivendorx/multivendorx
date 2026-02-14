@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'legal-compliance',
 	priority: 4,
-	name: __('Legal Compliance', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Legal Compliance', 'multivendorx'),
+	headerDescription: __(
 		'Stores must submit signed agreements, accept platform terms & conditions, consent to the privacy policy, and set up their refund & return policy. Anti-counterfeit or copyright declarations must be submitted for regulated products.',
 		'multivendorx'
 	),
-	icon: 'adminfont-legal-compliance',
+	headerIcon: 'adminfont-legal-compliance',
 	submitUrl: 'settings',
 	modal: [
 		{

@@ -3,13 +3,13 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'inventory',
 	priority: 6,
-	name: __('Inventory', 'multivendorx'),
-	headerTitle: 'Store Inventory Notifications',
-	desc: __(
+	headerTitle: __('Inventory', 'multivendorx'),
+	settingTitle: 'Store Inventory Notifications',
+	headerDescription: __(
 		'Manage inventory alerts and stock monitoring settings for stores in your marketplace.',
 		'multivendorx'
 	),
-	icon: 'adminfont-store-inventory',
+	headerIcon: 'adminfont-store-inventory',
 	submitUrl: 'settings',
 	modal: [
 		{

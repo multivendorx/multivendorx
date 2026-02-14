@@ -6,12 +6,12 @@ const methods = appLocalizer?.all_payments
 export default {
 	id: 'delivery',
 	priority: 2,
-	name: __('Delivery', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Delivery', 'multivendorx'),
+	headerDescription: __(
 		'Define the steps orders follow from purchase to completion. Set what customers see in tracking and choose whether orders complete automatically or after customer confirmation.',
 		'multivendorx'
 	),
-	icon: 'adminfont-delivery',
+	headerIcon: 'adminfont-delivery',
 	submitUrl: 'settings',
 	modal: [
 		{
