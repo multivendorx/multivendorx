@@ -195,7 +195,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<h2>
 							Activate Store Seo
 						</h2>
-						<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Expedita quam maxime dolores itaque nesciunt! Suscipit.</p>
+						<p>This feature is currently unavailable. To activate it, please enable the %s</p>
 
 						<AdminButtonUI
 							position="center"

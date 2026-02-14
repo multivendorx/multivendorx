@@ -90,7 +90,7 @@ class Utill {
         'log'                           => 'multivendorx_log_settings',
         'min-max'                       => 'multivendorx_min_max_settings',
         'delivery'                      => 'multivendorx_delivery_settings',
-        'events-delivery'               => 'multivendorx_events-delivery_settings',
+        'events-delivery'               => 'multivendorx_events_delivery_settings',
         'compliance'                    => 'multivendorx_compliance_settings',
         'developer-tools'               => 'multivendorx_developer_tools_settings',
     );
@@ -518,7 +518,7 @@ class Utill {
      * @return string Formatted date time string as per wordpress settings
      */
     public static function multivendorx_date_time_format($date) {
-        return wp_date( get_option('date_format') . ' ' . get_option('time_format'), strtotime($date) );
+        return wp_date( MultiVendorX()->date_format, strtotime($date) );
     }
 
 }

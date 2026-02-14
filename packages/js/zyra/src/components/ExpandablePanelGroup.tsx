@@ -4,6 +4,9 @@ import { getApiLink } from '../utils/apiService';
 import axios from 'axios';
 import { FieldComponent } from './types';
 import { FIELD_REGISTRY } from './FieldRegistry';
+import FormGroup from './UI/FormGroup';
+import { AdminButtonUI } from './AdminButton';
+import FormGroupWrapper from './UI/FormGroupWrapper';
 
 interface AppLocalizer {
     khali_dabba?: boolean;
@@ -127,7 +130,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
         null
     );
     const wrapperRef = useRef<HTMLDivElement>(null);
-    
+
     // State for inline editing
     const [editingMethodId, setEditingMethodId] = useState<string | null>(null);
     const [editingField, setEditingField] = useState<'title' | 'description' | null>(null);
@@ -626,7 +629,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
 
         if (field.type === 'button' && isWizardMode) {
             const wizardSteps = methods.map((m, i) => ({ ...m, index: i }))
-                        .filter((m) => m.isWizardMode);
+                .filter((m) => m.isWizardMode);
 
             const isLastMethod =
                 wizardIndex === wizardSteps.length - 1;
@@ -768,7 +771,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                 }`}
                                             onClick={() => {
                                                 canAccess &&
-                                                setTabActive(method.id)
+                                                    setTabActive(method.id)
                                             }}
                                         />
                                     </div>
@@ -778,7 +781,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                     className="details"
                                     onClick={() => {
                                         canAccess &&
-                                        setTabActive(method.id)
+                                            setTabActive(method.id)
                                     }}
                                 >
                                     <div className="details-wrapper">
@@ -839,7 +842,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                 {isEditingThisMethod && editingField === 'description' && getIsEditable('description') ? (
                                                     <textarea
                                                         ref={descTextareaRef}
-                                                        className="inline-edit-textarea description-edit"
+                                                        className="description-edit"
                                                         value={tempDescription}
                                                         onChange={(e) => setTempDescription(e.target.value)}
                                                         onKeyDown={(e) => {
@@ -908,7 +911,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                                 <li
                                                                     onClick={() => {
                                                                         canAccess &&
-                                                                        setTabActive(method.id)
+                                                                            setTabActive(method.id)
                                                                     }}
                                                                 >
                                                                     <span className="admin-btn btn-purple">
@@ -922,7 +925,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                     <li
                                                         onClick={() => {
                                                             canAccess &&
-                                                            enableMethod(method.id)
+                                                                enableMethod(method.id)
                                                         }}
                                                     >
                                                         <span className="admin-btn btn-purple-bg">
@@ -948,7 +951,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                 <li
                                                     onClick={() => {
                                                         canAccess &&
-                                                        disableMethod(method.id)
+                                                            disableMethod(method.id)
                                                     }}
                                                 >
                                                     <div className="admin-btn btn-purple">
@@ -997,7 +1000,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                                                     <li
                                                                                         onClick={() => {
                                                                                             canAccess &&
-                                                                                            setTabActive(method.id)
+                                                                                                setTabActive(method.id)
                                                                                         }}
                                                                                     >
                                                                                         <span className="item">
@@ -1011,7 +1014,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                                         <li
                                                                             onClick={() => {
                                                                                 canAccess &&
-                                                                                enableMethod(method.id)
+                                                                                    enableMethod(method.id)
                                                                             }}
                                                                         >
                                                                             <span className="item">
@@ -1028,7 +1031,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                                         className="delete"
                                                                         onClick={() => {
                                                                             canAccess &&
-                                                                            disableMethod(method.id)
+                                                                                disableMethod(method.id)
                                                                         }}
                                                                     >
                                                                         <div className="item">
@@ -1052,72 +1055,66 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                         className={`${method.wrapperClass || ''
                                             } expandable-panel ${isActive && isEnabled ? 'open' : ((isActive && (method.isCustom || method.openForm)) ? 'open' : '')
                                             } ${method.openForm ? 'open' : ''}`}
-                                    >
-                                        {method.formFields.map((field) => {
-                                            if (
-                                                isWizardMode &&
-                                                field.type === 'button'
-                                            ) {
-                                                return null;
-                                            }
-
-                                            const shouldShowField = (() => {
-                                                if (Array.isArray(field.dependent)) {
-                                                    return field.dependent.every((dependent) =>
-                                                        shouldRender(dependent, method.id)
-                                                    );
+                                    >   
+                                        <FormGroupWrapper>
+                                            {method.formFields.map((field) => {
+                                                if (
+                                                    isWizardMode &&
+                                                    field.type === 'button'
+                                                ) {
+                                                    return null;
                                                 }
 
-                                                if (field.dependent) {
-                                                    return shouldRender(field.dependent, method.id);
+                                                const shouldShowField = (() => {
+                                                    if (Array.isArray(field.dependent)) {
+                                                        return field.dependent.every((dependent) =>
+                                                            shouldRender(dependent, method.id)
+                                                        );
+                                                    }
+
+                                                    if (field.dependent) {
+                                                        return shouldRender(field.dependent, method.id);
+                                                    }
+
+                                                    return true;
+                                                })();
+
+                                                if (!shouldShowField) {
+                                                    return null;
                                                 }
 
-                                                return true;
-                                            })();
-
-                                            if (!shouldShowField) {
-                                                return null;
-                                            }
-
-                                            return (
-                                                <div
-                                                    key={field.key}
-                                                    className="form-group"
-                                                >
-                                                    {field.type !== 'blocktext' && field.label && (
-                                                        <label>
-                                                            {field.label}
-                                                        </label>
-                                                    )}
-                                                    <div className="input-content">
+                                                return (
+                                                    <FormGroup row
+                                                        key={field.key}
+                                                        label={field.type !== 'blocktext' ? field.label : undefined}
+                                                        desc={field.desc}
+                                                        htmlFor={field.name}
+                                                    >
                                                         {field.beforeElement &&
-                                                            renderField(
-                                                            method.id,
-                                                            field.beforeElement
-                                                        )}
-                                                        {renderField(
-                                                            method.id,
-                                                            field
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
+                                                            renderField(method.id, field.beforeElement)
+                                                        }
+                                                        {renderField(method.id, field)}
+                                                    </FormGroup>
+                                                );
+                                            })}
+                                        </FormGroupWrapper>
                                     </div>
                                 )}
                         </div>
                     );
                 })}
-                { /* {addNewBtn && ( */}
+                
                 {addNewBtn && (
-                    <div className="buttons-wrapper">
-                        <div
-                            className="admin-btn btn-purple"
-                            onClick={handleAddNewMethod}
-                        >
-                            <i className="adminfont-plus"></i> Add New
-                        </div>
-                    </div>
+                    <AdminButtonUI
+                        buttons={[
+                            {
+                                icon: 'plus',
+                                text: 'Add New',
+                                color: 'purple',
+                                onClick: handleAddNewMethod,
+                            },
+                        ]}
+                    />
                 )}
             </div>
 
@@ -1133,14 +1130,14 @@ const ExpandablePanelGroup: FieldComponent = {
         <ExpandablePanelGroupUI
             key={field.key}
             name={field.key}
-            apilink={ String( field.apiLink ) } //API endpoint used for communication with backend.
-            appLocalizer={ appLocalizer }
-            methods={ field.modal ?? [] } //Array of available payment methods/options.
-            addNewBtn={ field.addNewBtn }
-            addNewTemplate={ field.addNewTemplate ?? [] }
-            iconEnable={ field.iconEnable }
-            iconOptions={ field.iconOptions || [] }
-            value={ value || {} }
+            apilink={String(field.apiLink)} //API endpoint used for communication with backend.
+            appLocalizer={appLocalizer}
+            methods={field.modal ?? []} //Array of available payment methods/options.
+            addNewBtn={field.addNewBtn}
+            addNewTemplate={field.addNewTemplate ?? []}
+            iconEnable={field.iconEnable}
+            iconOptions={field.iconOptions || []}
+            value={value || {}}
             onChange={(val) => {
                 if (!canAccess) return;
                 onChange(val)

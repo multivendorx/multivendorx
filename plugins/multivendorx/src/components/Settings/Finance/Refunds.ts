@@ -58,7 +58,7 @@ export default {
 			moduleEnabled: 'marketplace-refund',
 			size: '8rem',
 			max: 365,
-			postInsideText: 'days',
+			postText: 'days',
 		},
 		{
 			key: 'refund_reasons',
@@ -73,6 +73,11 @@ export default {
 			min: 1,
 			addNewTemplate: {
 				label: 'New Reasons',
+				editableFields: {
+					title: true,
+					description: false,
+				},
+				
 			},
 			modal: [],
 			moduleEnabled: 'marketplace-refund',

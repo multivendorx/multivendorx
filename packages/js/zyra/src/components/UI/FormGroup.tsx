@@ -30,7 +30,12 @@ const FormGroup: React.FC<FormGroupProps> = ({
 			</label>}
 			<div className="settings-input-content">
 				{children}
-				{desc && <div className="settings-metabox-description">{desc}</div>}
+				{desc && (
+					<p
+						className="settings-metabox-description"
+						dangerouslySetInnerHTML={{ __html: desc }}
+					/>
+				)}
 			</div>
 		</div>
 	);

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-	TextArea,
 	getApiLink,
 	SuccessNotice,
 	Section,
@@ -10,6 +9,7 @@ import {
 	useModules, 
 	AdminButtonUI,
 	MultiCheckBoxUI,
+	TextAreaUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -88,7 +88,7 @@ const Privacy = () => {
 				{modules.includes('privacy') && Array.isArray(store_policy) &&
 					store_policy.includes('store') && (
 						<FormGroup label={__('Store policy', 'multivendorx')}>
-							<TextArea
+							<TextAreaUI
 								name="store_policy"
 								value={formData.store_policy}
 								onChange={handleChange}
@@ -105,7 +105,7 @@ const Privacy = () => {
 				{modules.includes('privacy') && Array.isArray(store_policy) &&
 					store_policy.includes('shipping') && (
 						<FormGroup label={__('Shipping policy', 'multivendorx')}>
-							<TextArea
+							<TextAreaUI
 								name="shipping_policy"
 								value={formData.shipping_policy}
 								onChange={handleChange}
@@ -122,7 +122,7 @@ const Privacy = () => {
 				{modules.includes('privacy') && Array.isArray(store_policy) &&
 					store_policy.includes('refund') && (
 						<FormGroup label={__('Refund policy', 'multivendorx')}>
-							<TextArea
+							<TextAreaUI
 								name="refund_policy"
 								value={formData.refund_policy}
 								onChange={handleChange}
@@ -139,7 +139,7 @@ const Privacy = () => {
 				{modules.includes('privacy') && Array.isArray(store_policy) &&
 					store_policy.includes('cancellation_return') && (
 						<FormGroup label={__('Cancellation / return / exchange policy', 'multivendorx')}>
-							<TextArea
+							<TextAreaUI
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
 								onChange={handleChange}
@@ -196,7 +196,7 @@ const Privacy = () => {
 						{formData.enable_deactivation && (
 							<>
 								<FormGroup label={__('Deactivation Reason', 'multivendorx')}>
-									<TextArea
+									<TextAreaUI
 										name="deactivation_reason"
 										value={
 											updateData.deactivation_reason || ''
