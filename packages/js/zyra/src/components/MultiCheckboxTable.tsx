@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 
 // Internal dependencies
 import '../styles/web/MultiCheckboxTable.scss';
+import { FieldComponent } from './types';
 
 // Types
 interface Option {
@@ -365,12 +366,11 @@ interface MultiCheckboxTableProps {
     proSetting?: boolean;
     modules: string[];
     storeTabSetting: Record< string, string[] >;
-    moduleChange: ( module: string ) => void;
-    proChanged?: () => void;
     khali_dabba: boolean;
+    onBlocked?: (type: 'pro' | 'module', payload?: string) => void;
 }
 
-const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
+const MultiCheckboxTableUI: React.FC< MultiCheckboxTableProps > = ( {
     rows,
     columns,
     onChange,
@@ -378,8 +378,7 @@ const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
     storeTabSetting,
     proSetting,
     modules,
-    moduleChange,
-    proChanged,
+    onBlocked,
     khali_dabba,
 } ) => {
     const [ openGroup, setOpenGroup ] = useState< string | null >( () => {
@@ -476,7 +475,7 @@ const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
                                                               column.proSetting &&
                                                               ! khali_dabba
                                                           ) {
-                                                              proChanged?.();
+                                                              onBlocked?.('pro')
                                                               return;
                                                           }
 
@@ -486,9 +485,7 @@ const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
                                                                   column.moduleEnabled
                                                               )
                                                           ) {
-                                                              moduleChange(
-                                                                  column.moduleEnabled
-                                                              );
+                                                              onBlocked?.('module', column.moduleEnabled);
                                                               return;
                                                           }
 
@@ -612,7 +609,7 @@ const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
                                                                                       column.proSetting &&
                                                                                       ! khali_dabba
                                                                                   ) {
-                                                                                      proChanged?.();
+                                                                                      onBlocked?.('pro');
                                                                                       return;
                                                                                   }
                                                                                   if (
@@ -621,10 +618,8 @@ const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
                                                                                           column.moduleEnabled
                                                                                       )
                                                                                   ) {
-                                                                                      moduleChange(
-                                                                                          column.moduleEnabled
-                                                                                      );
-                                                                                      return;
+                                                                                        onBlocked?.('module', column.moduleEnabled);
+                                                                                        return;
                                                                                   }
 
                                                                                   const selectedKeys =
@@ -677,6 +672,31 @@ const MultiCheckboxTable: React.FC< MultiCheckboxTableProps > = ( {
             </table>
         </>
     );
+};
+
+const MultiCheckboxTable: FieldComponent = {
+    render: ({ field, value, onChange, canAccess, appLocalizer, modules, settings, onOptionsChange, onBlocked, storeTabSetting }) => (
+        <MultiCheckboxTableUI
+            khali_dabba={appLocalizer?.khali_dabba ?? false}
+            rows={field.rows ?? []} // row array
+            columns={field.columns ?? []} // columns array
+            description={String(field.desc)}
+            setting={settings}
+            storeTabSetting={storeTabSetting}
+            proSetting={field.proSetting ?? false}
+            modules={modules} //Active module list for dependency validation.
+            onBlocked={onBlocked}
+            onChange={(val) => {
+                if (!canAccess) return;
+                onChange(val)
+            }}
+        />
+    ),
+
+    validate: (field, value) => {
+        return null;
+    },
+
 };
 
 export default MultiCheckboxTable;
