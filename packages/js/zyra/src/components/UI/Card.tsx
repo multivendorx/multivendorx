@@ -9,8 +9,6 @@ export type CardProps = {
   className?: string;
   iconName?: string;
   onIconClick?: () => void;
-  // buttonLabel?: string;
-  // onButtonClick?: () => void;
   action?: React.ReactNode;
   transparent?: boolean;
   contentHeight?: boolean;
@@ -30,8 +28,6 @@ const Card = ({
   className,
   iconName,
   onIconClick,
-  // buttonLabel,
-  // onButtonClick,
   action,
   transparent = false,
   contentHeight = false,
@@ -95,12 +91,6 @@ const Card = ({
                     }}
                   />
                 )}
-
-                {/* {buttonLabel && !action && (
-                  <button className="admin-btn btn-purple" onClick={onButtonClick}>
-                    {buttonLabel}
-                  </button>
-                )} */}
               </div>
             </div>
           )}
