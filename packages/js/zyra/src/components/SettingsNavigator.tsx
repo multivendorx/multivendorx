@@ -59,7 +59,7 @@ interface button {
     className: string;
 }
 
-interface AdminBreadcrumbsProps<T> {
+interface BreadcrumbProps<T> {
     settingIcon?: string;
     headerTitle?: string;
     hideTitle?: boolean;
@@ -74,7 +74,7 @@ interface AdminBreadcrumbsProps<T> {
     action?: React.ReactNode;
 }
 
-export const AdminBreadcrumbs = <T,>({
+export const Breadcrumb = <T,>({
     settingIcon = '',
     headerTitle = '',
     renderBreadcrumb,
@@ -85,7 +85,7 @@ export const AdminBreadcrumbs = <T,>({
     description,
     customContent,
     action,
-}: AdminBreadcrumbsProps<T>) => {
+}: BreadcrumbProps<T>) => {
 
     return (
         <>
@@ -353,7 +353,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             <div className="settings-wrapper" data-template={variant}>
                 {settingTitleSection && <>{settingTitleSection}</>}
 
-                <AdminBreadcrumbs
+                <Breadcrumb
                     settingIcon={ variant === 'default' ? activeFile?.icon : headerIcon}
                     headerTitle={ variant === 'default' ? activeFile?.name : headerTitle}
                     description={ headerDescription }
