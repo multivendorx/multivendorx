@@ -380,7 +380,6 @@ const EditStore = () => {
 			},
 		},
 	].filter(Boolean);
-	console.log(visibleTabs);
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
