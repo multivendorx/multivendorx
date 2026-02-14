@@ -301,7 +301,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 						<BlockText
 							blockTextClass="settings-metabox-note"
 							value={sprintf(
-								/* translators: %s: link to global commission settings */
 								__(
 									'If no store-specific commission is set, the <a href="%s">global commission</a> will automatically apply.',
 									'multivendorx'

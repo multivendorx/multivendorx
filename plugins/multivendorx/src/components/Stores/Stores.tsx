@@ -327,14 +327,6 @@ const Stores = () => {
 						>
 							<FormGroupWrapper>
 								<FormGroup label={__('Store name', 'multivendorx')} htmlFor="store-name">
-									{/* <BasicInputUI
-										type="text"
-										name="name"
-										value={formData.name || ''}
-										onChange={handleChange}
-										required={true}
-										msg={error.name}
-									/> */}
 									<BasicInputUI
 										type="text"
 										name="name"
@@ -345,20 +337,6 @@ const Stores = () => {
 								</FormGroup>
 
 								<FormGroup label={__('Store slug', 'multivendorx')} htmlFor="store-slug">
-									{/* <BasicInputUI
-										type="text"
-										name="slug"
-										value={formData.slug || ''}
-										 
-										onChange={handleChange}
-										required={true}
-										clickBtnName={__(
-											'Check Slug',
-											'multivendorx'
-										)}
-										onclickCallback={handleNameBlur}
-										msg={error.slug}
-									/> */}
 									<BasicInputUI
 										type="text"
 										name="slug"

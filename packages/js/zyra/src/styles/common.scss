@@ -161,6 +161,7 @@ a {
   line-height: 0.95;
   padding: 0.313rem;
   border-radius: $border-radius-small;
+  border: 0.063rem solid;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -626,7 +627,7 @@ $index: 1;
   padding: .125rem .438rem;
   position: absolute;
   right: 1rem;
-  top: 1rem;
+  top: 0.813rem;
   transform: translateY(-50%);
   width: fit-content;
   display: flex;
