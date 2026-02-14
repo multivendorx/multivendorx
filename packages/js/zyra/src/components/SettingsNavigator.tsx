@@ -12,6 +12,7 @@ type Content = {
     settingDescription?: string;
     count?: string;
     settingTitle?: string;
+    settingSubTitle?: string;
     settingIcon?: string;
     link?: string;
     hideSettingHeader?: boolean;
@@ -74,7 +75,7 @@ interface BreadcrumbProps<T> {
 export const Breadcrumb = <T,>({
     headerIcon = '',
     headerTitle = '',
-    headerDescription='',
+    headerDescription = '',
     renderBreadcrumb,
     renderMenuItems,
     settingContent = [],
@@ -289,7 +290,9 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                         <span>{setting.count}</span>
                         {setting.settingName}
                     </p>
-                    { variant !=='default' && setting.settingDescription && <div className="des">{setting.settingDescription}</div>}
+                    {variant !== 'default' && variant !== 'settings' && setting.settingDescription && (
+                        <div className="des">{setting.settingDescription}</div>
+                    )}
                 </Link>
             );
         }
@@ -325,7 +328,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         return (
             <SectionUI
                 hint={activeFile.settingTitle ?? activeFile.settingName}
-                value={activeFile.settingDescription || ''}
+                value={activeFile.settingSubTitle ?? activeFile.settingDescription}
             />
         );
     };
@@ -350,10 +353,10 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                 {settingTitleSection && <>{settingTitleSection}</>}
 
                 <Breadcrumb
-                    headerIcon={ variant === 'default' ? activeFile?.settingIcon : headerIcon}
-                    headerTitle={ variant === 'default' ? activeFile?.settingIcon : headerTitle}
-                    headerDescription={ headerDescription }
-                    renderBreadcrumb={ variant === 'default' ? renderBreadcrumbLinks : undefined }
+                    headerIcon={variant === 'default' ? activeFile?.settingIcon : headerIcon}
+                    headerTitle={variant === 'default' ? activeFile?.settingName : headerTitle}
+                    headerDescription={headerDescription}
+                    renderBreadcrumb={variant === 'default' ? renderBreadcrumbLinks : undefined}
                     renderMenuItems={() => renderAllMenuItems(settingContent)}
                     settingContent={settingContent}
                     showPremiumLink={!appLocalizer.khali_dabba && showPremiumLink ? appLocalizer.shop_url : ''}
