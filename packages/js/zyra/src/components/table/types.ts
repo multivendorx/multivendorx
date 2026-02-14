@@ -1,6 +1,5 @@
 import { ButtonAction } from "./ButtonActions";
 import { ActionItem } from "./TableRowActions";
-import { SearchOption } from "./TableSearch";
 
 export type FilterValue = string | string[] | { startDate: Date; endDate: Date };
 
@@ -198,7 +197,10 @@ export type TableCardProps = CommonTableProps & {
 	onBulkActionApply?: (action: string, selectedIds: number[]) => void;
 	search?: {
 		placeholder?: string;
-		options?: SearchOption[];
+		options?: {
+			label: string;
+			value: string;
+		}[];
 	};
 	onQueryUpdate?: (query: QueryProps) => void;
 	filters?: RealtimeFilterConfig[];
