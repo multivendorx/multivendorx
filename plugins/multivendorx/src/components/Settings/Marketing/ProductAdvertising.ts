@@ -8,7 +8,7 @@ export default {
 		'Let stores promote their top products or unique offerings in site-wide placements.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-advertise-product',
+	headerIcon: 'advertise-product',
 	submitUrl: 'settings',
 	modal: [
 		{
@@ -83,7 +83,7 @@ export default {
 				textType: 'pre',
 				preText: __('Promoted products can stay visible for up to', 'multivendorx'),
 			},
-			postInsideText: __('days', 'multivendorx'),
+			postText: __('days', 'multivendorx'),
 			size: '8rem',
 			moduleEnabled: 'advertisement',
 			proSetting: true,

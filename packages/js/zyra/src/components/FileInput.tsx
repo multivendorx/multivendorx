@@ -25,7 +25,7 @@ interface FileInputProps {
     multiple?: boolean;
 }
 
-const FileInputUI: React.FC<FileInputProps> = (props) => {
+export const FileInputUI: React.FC<FileInputProps> = (props) => {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [isReplacing, setIsReplacing] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement>(null);

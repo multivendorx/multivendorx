@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'migration',
 	priority: 5,
-	name: __('Migration', 'multivendorx'),
-	desc: __(
+	settingTitle: __('Migration', 'multivendorx'),
+	headerDescription: __(
 		'Follow the step-by-step wizard to import products, stores, and settings effortlessly from other multivendor solutions.',
 		'multivendorx'
 	),
-	icon: 'adminfont-migration',
+	headerIcon: 'migration',
 	submitUrl: 'settings',
 	modal: [
 		{

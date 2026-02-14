@@ -8,7 +8,7 @@ export default {
 		'Control access and visibility based on store approval status. Configure how pending, denied, under review, suspended, active, and deactivated stores behave within your marketplace.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-store-inventory',
+	headerIcon: 'store-inventory',
 	submitUrl: 'settings',
 	
 };

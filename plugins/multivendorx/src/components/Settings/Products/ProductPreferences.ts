@@ -8,7 +8,7 @@ export default {
 		'Decide which product/listing types, fields, and features stores can access when creating or managing products/listings in their store.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-single-product',
+	headerIcon: 'single-product',
 	submitUrl: 'settings',
 	modal: [
 		{

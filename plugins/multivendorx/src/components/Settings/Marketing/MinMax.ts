@@ -9,7 +9,7 @@ export default {
 		'Set purchase limits for individual products to prevent bulk buying or ensure minimum order quantities.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-min-max',
+	headerIcon: 'min-max',
 	submitUrl: 'settings',
 	modal: [
 		{

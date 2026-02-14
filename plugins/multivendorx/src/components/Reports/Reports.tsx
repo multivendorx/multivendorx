@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, SettingsNavigator,  } from 'zyra';
+import {SettingsNavigator,  } from 'zyra';
 import '../../dashboard/dashboardCommon.scss';
 import { useLocation, Link } from 'react-router-dom';
 import MarketplaceReport from './MarketplaceReport';
@@ -81,7 +81,7 @@ const Reports = () => {
 				id: 'marketplace',
 				headerTitle: 'Marketplace',
 				headerIcon: 'marketplace-membership',
-				// hideSettingHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -90,7 +90,7 @@ const Reports = () => {
 				id: 'products',
 				headerTitle: 'Products',
 				headerIcon: 'multi-product',
-				// hideSettingHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -99,7 +99,7 @@ const Reports = () => {
 				id: 'stores',
 				headerTitle: 'Stores',
 				headerIcon: 'store-inventory',
-				// hideSettingHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -108,7 +108,7 @@ const Reports = () => {
 				id: 'store-orders',
 				headerTitle: 'Store Orders',
 				headerIcon: 'order',
-				// hideSettingHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{
@@ -117,7 +117,7 @@ const Reports = () => {
 				id: 'refunded-orders',
 				headerTitle: 'Refunded Orders',
 				headerIcon: 'marketplace-refund',
-				// hideSettingHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 	];
@@ -147,15 +147,6 @@ const Reports = () => {
 	};
 	return (
 		<>
-			{/* <AdminBreadcrumbs
-				settingIcon="adminfont-report"
-				headerTitle={__('Reports', 'multivendorx')}
-				description={__(
-					'Track sales, earnings, and store performance with real-time marketplace insights.',
-					'multivendorx'
-				)}
-			/> */}
-
 			<SettingsNavigator
 				settingContent={settingContent}
 				currentSetting={location.get('subtab') as string}
@@ -167,6 +158,9 @@ const Reports = () => {
 				Link={Link}
 				variant={'compact'}
 				menuIcon={true}
+				headerIcon="report"
+				headerTitle={__('Reports', 'multivendorx')}
+				headerDescription={__('Track sales, earnings, and store performance with real-time marketplace insights.', 'multivendorx')}
 			/>
 		</>
 	);

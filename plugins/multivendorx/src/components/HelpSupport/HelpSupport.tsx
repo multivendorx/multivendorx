@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { AdminBreadcrumbs, Card, Column, Container } from 'zyra';
+import {Card, Column, Container, NavigatorHeader } from 'zyra';
 
 const HelpSupport: React.FC = () => {
 	const videos = [
@@ -21,10 +21,10 @@ const HelpSupport: React.FC = () => {
 	];
 	return (
 		<>
-			<AdminBreadcrumbs
-				settingIcon="adminfont-customer-support"
+			<NavigatorHeader
+				headerIcon="customer-support"
 				headerTitle="Help & Support"
-				description={
+				headerDescription={
 					'Get fast help, expert guidance, and easy-to-follow resources - all in one place.'
 				}
 			/>
