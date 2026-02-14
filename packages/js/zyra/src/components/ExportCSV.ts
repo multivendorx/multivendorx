@@ -1,17 +1,6 @@
 import axios from 'axios';
 import { FilterValue } from './table/types';
 
-type Primitive = string | number | boolean | null | undefined | Date;
-
-interface CSVActionProps<Type> {
-  url: string;
-  headers?: Record<string, string>;
-  filename?: string;
-  paramsBuilder?: (query: any) => any;
-  mapFn: (item: Type) => Record<string, Primitive>;
-  csvHeaders?: Record<string, string>;
-}
-
 export type QueryProps = {
   orderby?: string;
   order?: string;
@@ -22,14 +11,30 @@ export type QueryProps = {
   categoryFilter?: string;
 };
 
+type Primitive = string | number | boolean | null | undefined | Date;
+
+type ColumnMapping<Type> = {
+  [Key in keyof Type]: {
+    display: string;
+    value: Primitive;
+  };
+};
+
+interface ExportCSVProps<Type> {
+  url: string;
+  headers?: Record<string, string>;
+  filename?: string;
+  paramsBuilder?: (query: QueryProps) => any;
+  columns: (item: Type) => ColumnMapping<Type>;
+}
+
 export const ExportCSV = <Type>({
   url,
   headers,
   filename,
   paramsBuilder,
-  mapFn,
-  csvHeaders,
-}: CSVActionProps<Type>) => async (query: QueryProps) => {
+  columns,
+}: ExportCSVProps<Type>) => async (query: QueryProps) => {
   try {
     const { data: resData } = await axios.get(url, {
       headers,
@@ -39,17 +44,17 @@ export const ExportCSV = <Type>({
     const dataArray = Array.isArray(resData) ? resData : [];
     if (!dataArray.length) return alert('No data available');
 
-    const mappedData = dataArray.map(mapFn);
-    const keys = csvHeaders
-      ? (Object.keys(csvHeaders) as (keyof typeof mappedData[0])[])
-      : (Object.keys(mappedData[0]) as (keyof typeof mappedData[0])[]);
+    const mappedData = dataArray.map(columns);
+
+    // Use the first item to get headers
+    const keys = Object.keys(mappedData[0]) as (keyof typeof mappedData[0])[];
 
     const csvContent = [
-      keys.map(k => `"${csvHeaders?.[k] ?? String(k)}"`).join(','),
+      keys.map(Key => `"${mappedData[0][Key].display}"`).join(','),
       ...mappedData.map(row =>
         keys
-          .map(k => {
-            const val = row[k];
+          .map(Key => {
+            const val = row[Key].value;
             const normalized = val instanceof Date ? val.toISOString() : val ?? '';
             return `"${String(normalized).replace(/"/g, '""')}"`;
           })
@@ -60,7 +65,7 @@ export const ExportCSV = <Type>({
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = Object.assign(document.createElement('a'), {
       href: URL.createObjectURL(blob),
-      download: filename ?? `${new Date().toISOString().split('Type')[0]}.csv`,
+      download: filename ?? `${new Date().toISOString().split('T')[0]}.csv`,
     });
 
     document.body.appendChild(link);

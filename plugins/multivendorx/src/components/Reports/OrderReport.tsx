@@ -81,13 +81,10 @@ const OrderReport: React.FC = () => {
 		{
 		  label: 'Download CSV',
 		  icon: 'download',
-	  
 		  onClickWithQuery: ExportCSV({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-	  
 			filename: 'orders-report.csv',
-	  
 			paramsBuilder: (query) => ({
 			  per_page: 100,
 			  page: 1,
@@ -95,27 +92,18 @@ const OrderReport: React.FC = () => {
 			  orderby: query.orderby || 'date',
 			  order: query.order || 'desc',
 			}),
-	  
-			csvHeaders: {
-			  Order_ID: 'Order ID',
-			  Store: 'Store',
-			  Amount: 'Amount',
-			  Commission: 'Commission',
-			  Status: 'Status',
-			  Date: 'Date',
-			},
-	  
-			mapFn: (order: any) => ({
-			  Order_ID: order.id,
-			  Store: order.store_name || '',
-			  Amount: order.total,
-			  Commission: order.commission_total || 0,
-			  Status: order.status,
-			  Date: order.date_created,
+			columns: (order: any) => ({
+			  Order_ID: { display: 'Order ID', value: order.id },
+			  Store: { display: 'Store', value: order.store_name || '' },
+			  Amount: { display: 'Amount', value: order.total },
+			  Commission: { display: 'Commission', value: order.commission_total || 0 },
+			  Status: { display: 'Status', value: order.status },
+			  Date: { display: 'Date', value: order.date_created },
 			}),
 		  }),
 		},
-	];
+	  ];
+	  
 	
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
