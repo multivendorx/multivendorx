@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { RealtimeFilterConfig, TableRow } from './types';
 import { SelectInputUI } from '../SelectInput';
 import { AdminButtonUI } from '../AdminButton';
