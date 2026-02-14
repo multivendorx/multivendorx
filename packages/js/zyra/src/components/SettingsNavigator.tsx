@@ -10,10 +10,10 @@ type Content = {
     id: string;
     headerName: string;
     headerDescription?: string;
+    headerIcon?: string;
     count?: string;
     settingTitle?: string;
     settingSubTitle?: string;
-    settingIcon?: string;
     link?: string;
     hideSettingHeader?: boolean;
     proDependent?: boolean;
@@ -286,7 +286,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                     }}
                 >
                     <p className="tab-name">
-                        {menuIcon && setting.settingIcon && <i className={`adminfont-${setting.settingIcon}`}></i>}
+                        {menuIcon && setting.headerIcon && <i className={`adminfont-${setting.headerIcon}`}></i>}
                         <span>{setting.count}</span>
                         {setting.headerName}
                     </p>
@@ -353,7 +353,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                 {settingTitleSection && <>{settingTitleSection}</>}
 
                 <Breadcrumb
-                    headerIcon={variant === 'default' ? activeFile?.settingIcon : headerIcon}
+                    headerIcon={variant === 'default' ? activeFile?.headerIcon : headerIcon}
                     headerTitle={variant === 'default' ? activeFile?.headerName : headerTitle}
                     headerDescription={headerDescription}
                     renderBreadcrumb={variant === 'default' ? renderBreadcrumbLinks : undefined}
