@@ -78,7 +78,7 @@ const CustomerSupport = () => {
 					appLocalizer={appLocalizer}
 					Link={Link}
 					variant={'compact'}
-					headerIcon="adminfont-customer-service"
+					headerIcon="customer-service"
 					headerTitle={__('Customer Support', 'multivendorx')}
 					headerDescription={__(
 						'Manage store reviews, support requests, financial transactions, and reported issues.',

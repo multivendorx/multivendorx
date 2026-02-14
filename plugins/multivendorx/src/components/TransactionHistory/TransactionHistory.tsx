@@ -94,6 +94,7 @@ export const TransactionHistory: React.FC = () => {
 				Link={Link}
 				variant={'compact'}
 				menuIcon={true}
+				headerIcon="store-reactivated"
 				headerTitle={
 					selectedStore
 						? __(
