@@ -6,9 +6,7 @@ export type QueryProps = {
   order?: string;
   page?: string;
   per_page?: number;
-  paged?: number | string;
   filter?: Record<string, FilterValue>;
-  categoryFilter?: string;
 };
 
 type Primitive = string | number | boolean | null | undefined | Date;
