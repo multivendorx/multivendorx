@@ -83,7 +83,7 @@ export const TransactionHistory: React.FC = () => {
 
 	return (
 		<>
-			<AdminBreadcrumbs
+			{/* <AdminBreadcrumbs
 				settingIcon="adminfont-store-reactivated"
 				headerTitle={
 					selectedStore
@@ -122,7 +122,7 @@ export const TransactionHistory: React.FC = () => {
 						/>
 					</>
 				}
-			/>
+			/> */}
 
 			<SettingsNavigator
 				settingContent={settingContent}

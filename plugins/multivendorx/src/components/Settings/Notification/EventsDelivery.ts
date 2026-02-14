@@ -171,7 +171,7 @@ export default {
 			key: 'vonage_api_key',
 			type: 'text',
 			label: __('API Key', 'multivendorx'),
-			desc: __('<ul> Send SMS notifications using Vonage (formerly Nexmo).<br> Get your <strong>API Key</strong> and <strong>API Secret</strong> from your Vonage dashboard: <a href="https://dashboard.nexmo.com" target="_blank">Vonage Dashboard</a>.<br> <strong>Important:</strong> Make sure the API Key and Secret you enter here match your Vonage account details exactly.<br> Follow Vonage’s setup instructions to complete the SMS gateway configuration. </ul>', 'multivendorx'),
+			desc: __('Send SMS notifications using Vonage (formerly Nexmo).<br> Get your <strong>API Key</strong> and <strong>API Secret</strong> from your Vonage dashboard: <a href="https://dashboard.nexmo.com" target="_blank">Vonage Dashboard</a>.<br> <strong>Important:</strong> Make sure the API Key and Secret you enter here match your Vonage account details exactly.<br> Follow Vonage’s setup instructions to complete the SMS gateway configuration.', 'multivendorx'),
 			dependent: {
 				key: 'sms_gateway_selector',
 				set: true,

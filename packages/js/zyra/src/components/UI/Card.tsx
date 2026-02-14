@@ -67,7 +67,7 @@ const Card = ({
         </>
       ) : (
         <>
-          {(title || iconName || buttonLabel || action) && (
+          {(title || iconName || action) && (
             <div className="card-header">
               <div className="left">
                 {title && (

@@ -83,7 +83,7 @@ export default {
 				textType: 'pre',
 				preText: __('Promoted products can stay visible for up to', 'multivendorx'),
 			},
-			postInsideText: __('days', 'multivendorx'),
+			postText: __('days', 'multivendorx'),
 			size: '8rem',
 			moduleEnabled: 'advertisement',
 			proSetting: true,

@@ -118,15 +118,14 @@ export default {
 			nestedFields: [
 				{
 					key: 'radius_search_min_distance',
-					preInsideText: __('Min', 'multivendorx'),
+					preText: __('Min', 'multivendorx'),
 					type: 'number',
 				},
 				{
 					key: 'radius_search_max_distance',
-					preInsideText: __('Max', 'multivendorx'),
+					preText: __('Max', 'multivendorx'),
 					type: 'number',
 				},
-
 				{
 					key: 'radius_search_unit',
 					type: 'setting-toggle',

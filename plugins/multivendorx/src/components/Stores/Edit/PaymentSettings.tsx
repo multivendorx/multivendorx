@@ -274,8 +274,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 											type={
 												field.type || 'text'
 											}
-
-											descClass="settings-metabox-description"
 											placeholder={
 												field.placeholder
 													? __(
@@ -298,7 +296,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 				{/* Commission Amount */}
 				<Column grid={4}>
 					<Card title={__('Store-specific commission', 'multivendorx')}>
-						<BlockText
+						{/* <BlockText
 							blockTextClass="settings-metabox-note"
 							value={sprintf(
 								__(
@@ -307,7 +305,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								),
 								`${appLocalizer.plugin_url}settings&subtab=store-commissions`
 							)}
-						/>
+						/> */}
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Fixed', 'multivendorx')} htmlFor="Fixed">
 								<BasicInputUI
@@ -318,7 +316,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 										textType: 'post',
 										postText: '+',
 									}}
-									descClass="settings-metabox-description"
 									value={formData.commission_fixed}
 									onChange={handleChange}
 								/>
@@ -327,8 +324,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								<BasicInputUI
 									postText="%"
 									name="commission_percentage"
-
-									descClass="settings-metabox-description"
 									value={formData.commission_percentage}
 									onChange={handleChange}
 								/>

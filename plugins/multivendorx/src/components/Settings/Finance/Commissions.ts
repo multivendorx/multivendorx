@@ -439,11 +439,7 @@ export default {
 				{
 					key: 'facilitator_percentage',
 					type: 'number',
-					afterElement: {
-						type: 'preposttext',
-						textType: 'post',
-						postText: __('%'),
-					},
+					postText: __('%'),
 					size: '8rem',
 				},
 			],

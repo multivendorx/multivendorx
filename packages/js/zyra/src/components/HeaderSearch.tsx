@@ -3,6 +3,7 @@ import { useOutsideClick } from './useOutsideClick';
 import { BasicInputUI } from './BasicInput';
 import ItemList from './ItemList';
 import { SelectInputUI } from './SelectInput';
+import { PopupUI } from './Popup';
 
 type SearchItem = {
     icon?: string;
@@ -119,7 +120,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
             </div>
 
             {showResults && (
-                <ul className="search-dropdown">
+                // <ul className="search-dropdown">                    
                     <ItemList
                         items={results.map((item) => ({
                             title: item.name,
@@ -135,7 +136,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
                             }
                         }))}
                     />
-                </ul>
+                // </ul>
             )}
         </div>
     );

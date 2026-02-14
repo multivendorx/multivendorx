@@ -9,11 +9,11 @@ const PluginModules = () => {
 
 	return (
 		<>
-			<AdminBreadcrumbs
+			{/* <AdminBreadcrumbs
 				settingIcon="adminfont-module"
 				headerTitle={__('Modules', 'multivendorx')}
 				description={__('Manage marketplace features by enabling or disabling modules. Turning a module on activates its settings and workflows, while turning it off hides them from admin and stores.', 'multivendorx')}
-			/>
+			/> */}
 			<Container general>
 				<Modules
 					modulesArray={modulesArray}

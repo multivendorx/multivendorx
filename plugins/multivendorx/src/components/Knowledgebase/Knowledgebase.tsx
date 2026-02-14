@@ -332,7 +332,7 @@ export const KnowledgeBase: React.FC = () => {
 			/>
 		</PopupUI>
 
-			<AdminBreadcrumbs
+			{/* <AdminBreadcrumbs
 				settingIcon="adminfont-book"
 				headerTitle={__('Knowledge Base', 'multivendorx')}
 				description={__(
@@ -350,7 +350,7 @@ export const KnowledgeBase: React.FC = () => {
 						}
 					}
 				]}
-			/>
+			/> */}
 
 			{addEntry && (
 				<PopupUI

@@ -954,7 +954,6 @@ const EditStore = () => {
 					<></>
 				}
 			/>
-
 			<PopupUI
 				open={deleteModal}
 				onClose={() => setDeleteModal(false)}
