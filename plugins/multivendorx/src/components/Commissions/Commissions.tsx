@@ -11,7 +11,7 @@ import {
 	TableCard,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
-import { downloadCSV, formatCurrency, formatLocalDate, formatWcShortDate, } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 import { getCommissionSummaryDisplay } from './Utill';
 
@@ -399,12 +399,11 @@ const Commission: React.FC = () => {
 					// Date
 					{
 						display: ann.createdAt
-							? formatWcShortDate(ann.createdAt)
+							? ann.createdAt
 							: '-',
 						value: ann.createdAt ?? '',
 					},
 				]);
-
 
 				setRows(mappedRows);
 
@@ -608,7 +607,7 @@ const Commission: React.FC = () => {
 			'Store Refunded': c.storeRefunded
 				? formatCurrency(c.storeRefunded)
 				: '',
-			Date: c.createdAt ? formatWcShortDate(c.createdAt) : '',
+			Date: c.createdAt ? c.createdAt : '',
 			Note: c.commissionNote || '',
 		}));
 

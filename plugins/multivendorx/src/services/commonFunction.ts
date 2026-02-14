@@ -48,15 +48,6 @@ export function formatCurrency(amount: number | string): string {
 	return formatted;
 }
 
-export const formatWcShortDate = (dateString: any) => {
-	const date = new Date(dateString);
-	return date.toLocaleDateString('en-GB', {
-		day: '2-digit',
-		month: 'short',
-		year: 'numeric',
-	});
-};
-
 export function formatTimeAgo(dateString: string) {
 	// Force UTC
 	const date = new Date(dateString + 'Z');
@@ -69,13 +60,9 @@ export function formatTimeAgo(dateString: string) {
 	return `${Math.floor(diff / 86400)} day ago`;
 }
 
-
-export const formatLocalDate = (date: Date): string => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-};
+// This function only removes time from the date-time object and return the formatted date.
+export const formatLocalDate = (date?: Date) =>
+	date ? date.toISOString().split('T')[0] : '';
 
 export function printContent(divId: string) {
 	const source = document.getElementById(divId) as HTMLElement;

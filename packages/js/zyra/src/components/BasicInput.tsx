@@ -84,13 +84,11 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
                 <div
                     className={`setting-form-input ${wrapperClass || ''} 
                     ${preText || postText ? 'inner-input' : ''}`}
+                    style={{ width: size || '100%' }}
                 >
                     {inputLabel && <label htmlFor={id}>{inputLabel}</label>}
 
-					<div
-						className="input-wrapper"
-						style={{ width: size || '100%' }}
-					>
+					<div className="input-wrapper">
 						{preText && (
 							<span className="pre">
                                 <span dangerouslySetInnerHTML={{ __html: preText }} />

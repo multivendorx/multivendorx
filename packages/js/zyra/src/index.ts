@@ -67,7 +67,7 @@ export { default as Popup } from './components/Popup';
 export { PopupUI } from './components/Popup';
 export { default as InfoItem } from './components/InfoItem';
 export { default as Analytics } from './components/Analytics';
-export { default as MessageState } from './components/UI/MessageState';
+export { default as ComponentStatusView } from './components/UI/ComponentStatusView';
 export { default as Skeleton } from './components/UI/Skeleton';
 export { default as PdfDownloadButton } from './components/PdfDownloadButton';
 export { default as ItemList } from './components/ItemList';

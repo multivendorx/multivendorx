@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, Container, Column, TableCard } from 'zyra';
-import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 import Popup from '../Popup/Popup';
 
@@ -116,10 +115,10 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 					order: query.order,
 					store_id: query?.filter?.store_id,
 					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
+						? query.filter.created_at.startDate
 						: '',
 					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
+						? query.filter.created_at.endDate
 						: '',
 				},
 			})
@@ -154,7 +153,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 					},
 					{
 						display: product.created_at
-							? formatWcShortDate(product.created_at)
+							? product.created_at
 							: '-',
 						value: product.created_at,
 					}
@@ -194,7 +193,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				position="lightbox"
 				open={deleteReview}
 				onClose={() => setDeleteReview(false)}
-				width="31.25rem"
+				width={31.25}
 				height="auto"
 			>
 				<Popup

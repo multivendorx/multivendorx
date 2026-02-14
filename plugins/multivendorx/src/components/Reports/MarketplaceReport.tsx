@@ -9,7 +9,7 @@ import {
 	Cell,
 } from 'recharts';
 import axios from 'axios';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, useModules } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, useModules } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {
@@ -472,7 +472,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 								</div>
 							))
 						) : (
-							<MessageState title={__('No top coupons found.', 'multivendorx')}/>
+							<ComponentStatusView title={__('No top coupons found.', 'multivendorx')}/>
 						)}
 					</Card>
 				</Column>
@@ -591,7 +591,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 								</>
 							))
 						) : (
-							<MessageState title={__('No top stores found.', 'multivendorx')} />
+							<ComponentStatusView title={__('No top stores found.', 'multivendorx')} />
 						)}
 					</Card>
 				</Column>

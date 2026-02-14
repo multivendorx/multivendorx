@@ -1,7 +1,7 @@
 import React from 'react';
-import "../../styles/web/UI/MessageState.scss";
+import "../../styles/web/UI/ComponentStatusView.scss";
 
-interface MessageStateProps {
+interface ComponentStatusViewProps {
 	icon?: string;
 	iconColor?: string;
 	title: React.ReactNode;
@@ -13,7 +13,7 @@ interface MessageStateProps {
 	className?: string;
 }
 
-const MessageState: React.FC<MessageStateProps> = ({
+const ComponentStatusView: React.FC<ComponentStatusViewProps> = ({
 	icon = 'info',
 	iconColor = 'red',
 	title,
@@ -60,4 +60,4 @@ const MessageState: React.FC<MessageStateProps> = ({
 	);
 };
 
-export default MessageState;
+export default ComponentStatusView;

@@ -18,7 +18,7 @@ import {
 } from 'zyra';
 import Popup from '../Popup/Popup';
 import '../Announcements/Announcements.scss';
-import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
+import { formatLocalDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 
@@ -267,7 +267,7 @@ export const KnowledgeBase: React.FC = () => {
 				const mappedRows = items.map((kb: any) => [
 					{ display: kb.title, value: kb.id },
 					{ display: truncateText(kb.content || '', 50), value: kb.content || '' },
-					{ display: formatWcShortDate(kb.date), value: kb.date },
+					{ display: kb.date, value: kb.date },
 					{ display: kb.status, value: kb.status },
 				]);
 
@@ -311,7 +311,7 @@ export const KnowledgeBase: React.FC = () => {
 			position="lightbox"
 			open={confirmOpen}
 			onClose={() => setConfirmOpen(false)}
-			width="31.25rem"
+			width={31.25}
 			height="auto"
 		>
 			<Popup
@@ -356,7 +356,7 @@ export const KnowledgeBase: React.FC = () => {
 				<PopupUI
 					open={addEntry}
 					onClose={handleCloseForm}
-					width="31.25rem"
+					width={31.25}
 					height="70%"
 					position="slide-right-to-left"
 					showBackdrop={true}

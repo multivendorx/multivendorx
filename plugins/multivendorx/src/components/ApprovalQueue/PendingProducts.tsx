@@ -9,7 +9,7 @@ import {
 	PopupUI,
 	TextAreaUI,
 } from 'zyra';
-import { formatCurrency, formatWcShortDate, toWcIsoDate } from '@/services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
@@ -203,7 +203,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 					},
 					{
 						display: product.date_created
-							? formatWcShortDate(product.date_created)
+							? product.date_created
 							: '-',
 						value: product.date_created,
 					}
@@ -245,7 +245,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 						setRejectReason('');
 						setIsSubmitting(false);
 					}}
-					width="31.25rem"
+					width={31.25}
 					header={{
 						icon: 'cart',
 						title: __('Reason', 'multivendorx')

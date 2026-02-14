@@ -363,6 +363,11 @@ $index: 1;
   &.small {
     width: 25%;
   }
+
+  &.email-input,
+  &.email-input:focus{
+    border: none;
+  }
 }
 
 .react-select input:focus {
@@ -375,7 +380,6 @@ $index: 1;
   gap: 0.625rem;
   align-items: center;
   color: $text-color;
-  // width: 100%;
 
   span {
     font-size: 0.95rem;
