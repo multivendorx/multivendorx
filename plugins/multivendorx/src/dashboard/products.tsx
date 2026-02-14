@@ -4,7 +4,7 @@ import {
 	useModules,
 	Table,
 	TableCell,
-	MultiCalendarInput,
+	CalendarInput,
 	getApiLink,
 } from 'zyra';
 import {
@@ -14,7 +14,7 @@ import {
 } from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
+import { formatCurrency } from '../services/commonFunction';
 import AddProductCom from './add-products';
 import SpmvProducts from './spmv-products';
 import { ReactNode } from 'react';
@@ -526,7 +526,7 @@ const AllProduct: React.FC = () => {
 			header: __('Date', 'multivendorx'),
 			cell: ({ row }) => (
 				<TableCell>
-					{formatWcShortDate(row.original.date_created)}
+					{row.original.date_created}
 				</TableCell>
 			),
 		},
@@ -703,7 +703,7 @@ const AllProduct: React.FC = () => {
 		{
 			name: 'date',
 			render: (updateFilter) => (
-				<MultiCalendarInput
+				<CalendarInput
 					value={{
 						startDate: dateFilter.start_date,
 						endDate: dateFilter.end_date,
@@ -802,7 +802,7 @@ const AllProduct: React.FC = () => {
 							<div
 								className="admin-btn btn-purple-bg"
 								onClick={() => {
-									if (modules.includes('spmv')) {
+									if (modules.includes('shared-listing')) {
 										if (appLocalizer.permalink_structure) {
 											navigate(
 												`${basePath}/${appLocalizer.dashboard_slug}/products/add/`

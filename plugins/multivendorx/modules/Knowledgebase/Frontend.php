@@ -7,7 +7,6 @@
 
 namespace MultiVendorX\Knowledgebase;
 
-
 /**
  * Class Frontend for knowledgebase.
  */
@@ -29,22 +28,12 @@ class Frontend {
     public function add_knowledgebase_menu( $submenus ) {
         $new_item = array(
             'knowledgebase' => array(
-                'name'   => __( 'Knowledgebase', 'multivendorx' ),
-                'subtab' => '',
+                'name'     => __( 'Knowledgebase', 'multivendorx' ),
+                'subtab'   => '',
+                'priority' => 95,
             ),
         );
 
-        $ordered = array();
-        foreach ( $submenus as $key => $menu ) {
-            // Copy existing menu.
-            $ordered[ $key ] = $menu;
-
-            // Insert advertisement right after "status-tools".
-            if ( 'announcement' === $key || 'status-tools' === $key ) {
-                $ordered = array_merge( $ordered, $new_item );
-            }
-        }
-
-        return $ordered;
+        return array_merge( $submenus, $new_item );
     }
 }

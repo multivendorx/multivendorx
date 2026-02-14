@@ -52,13 +52,12 @@ class StripeConnect {
     public function get_settings() {
         $redirect_url = admin_url( 'admin-post.php?action=multivendorx_stripe_oauth_callback' );
         return array(
-            'icon'         => 'adminfont-stripe-connect',
-            'id'           => $this->get_id(),
-            'label'        => 'Stripe Connect',
-            'enableOption' => true,
-            'desc'         => __( 'Marketplace payouts via Stripe Connect (OAuth).', 'multivendorx' ),
-            'disableBtn'   => true,
-            'formFields'   => array(
+            'icon'       => 'adminfont-stripe-connect',
+            'id'         => $this->get_id(),
+            'label'      => 'Stripe Connect',
+            'desc'       => __( 'Marketplace payouts via Stripe Connect (OAuth).', 'multivendorx' ),
+            'disableBtn' => true,
+            'formFields' => array(
                 array(
                     'key'     => 'payment_mode',
                     'type'    => 'setting-toggle',
@@ -81,44 +80,44 @@ class StripeConnect {
                     'type'        => 'text',
                     'label'       => __( 'Stripe client ID', 'multivendorx' ),
                     'placeholder' => __( 'Enter Stripe Client ID', 'multivendorx' ),
-                    'dependent'   => [
-                        'key' => 'payment_mode',
-                        'set' => true,
+                    'dependent'   => array(
+                        'key'   => 'payment_mode',
+                        'set'   => true,
                         'value' => 'test',
-                    ],
+                    ),
                 ),
                 array(
                     'key'         => 'live_client_id',
                     'type'        => 'text',
                     'label'       => __( 'Stripe client ID', 'multivendorx' ),
                     'placeholder' => __( 'Enter Stripe Client ID', 'multivendorx' ),
-                    'dependent'   => [
-                        'key' => 'payment_mode',
-                        'set' => true,
+                    'dependent'   => array(
+                        'key'   => 'payment_mode',
+                        'set'   => true,
                         'value' => 'live',
-                    ],
+                    ),
                 ),
                 array(
                     'key'         => 'test_secret_key',
                     'type'        => 'text',
                     'label'       => __( 'Secret key', 'multivendorx' ),
                     'placeholder' => __( 'Enter secret key ', 'multivendorx' ),
-                    'dependent'   => [
-                        'key' => 'payment_mode',
-                        'set' => true,
+                    'dependent'   => array(
+                        'key'   => 'payment_mode',
+                        'set'   => true,
                         'value' => 'test',
-                    ],
+                    ),
                 ),
                 array(
                     'key'         => 'live_secret_key',
                     'type'        => 'text',
                     'label'       => __( 'Secret key', 'multivendorx' ),
                     'placeholder' => __( 'Enter secret key', 'multivendorx' ),
-                    'dependent'   => [
-                        'key' => 'payment_mode',
-                        'set' => true,
+                    'dependent'   => array(
+                        'key'   => 'payment_mode',
+                        'set'   => true,
                         'value' => 'live',
-                    ],
+                    ),
                 ),
                 array(
                     'key'   => 'redirect_url',

@@ -22,8 +22,8 @@ const HelpSupport: React.FC = () => {
 	return (
 		<>
 			<AdminBreadcrumbs
-				activeTabIcon="adminfont-customer-support"
-				tabTitle="Help & Support"
+				settingIcon="adminfont-customer-support"
+				headerTitle="Help & Support"
 				description={
 					'Get fast help, expert guidance, and easy-to-follow resources - all in one place.'
 				}
@@ -256,7 +256,7 @@ const HelpSupport: React.FC = () => {
 								</div>
 								<div className="des">
 									{__(
-										'Watch our top tutorial videos and learn how to set up your marketplace, manage vendors, and enable subscriptions - all in just a few easy steps.',
+										'Watch our top tutorial videos and learn how to set up your marketplace, manage stores, and enable subscriptions - all in just a few easy steps.',
 										'multivendorx'
 									)}
 								</div>

@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'privacy',
 	priority: 1,
-	name: __('Privacy Management', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Privacy Management', 'multivendorx'),
+	headerDescription: __(
 		'Manage how store details are shared with customers, from branding and contact info to policies and profile visibility.',
 		'multivendorx'
 	),
-	icon: 'adminfont-privacy',
+	headerIcon: 'adminfont-privacy',
 	submitUrl: 'settings',
 	modal: [
 		{

@@ -9,8 +9,7 @@ registerBlockType('multivendorx/store-coupons', {
 	apiVersion: 2,
 	title: 'Store Coupons(w)',
 	icon: 'tickets-alt',
-	category: 'widgets',
-
+	category: 'multivendorx',
 	attributes: {
 		store_id: {
 			type: 'string',
@@ -42,22 +41,6 @@ registerBlockType('multivendorx/store-coupons', {
 				<InspectorControls>
 					<PanelBody title="Coupon Settings" initialOpen={true}>
 						<TextControl
-							label="Store ID"
-							value={attributes.store_id}
-							onChange={(value) =>
-								setAttributes({ store_id: value })
-							}
-						/>
-
-						<TextControl
-							label="Store Slug"
-							value={attributes.store_slug}
-							onChange={(value) =>
-								setAttributes({ store_slug: value })
-							}
-						/>
-
-						<TextControl
 							label="Coupons Per Page"
 							type="number"
 							value={attributes.perPage}
@@ -86,7 +69,7 @@ registerBlockType('multivendorx/store-coupons', {
 					</PanelBody>
 				</InspectorControls>
 
-				<StoreCouponList {...attributes} />
+				<StoreCouponList isEditor={true} {...attributes} />
 			</div>
 		);
 	},

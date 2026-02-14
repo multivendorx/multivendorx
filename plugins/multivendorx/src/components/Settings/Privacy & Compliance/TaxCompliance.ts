@@ -3,26 +3,26 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'tax-compliance',
 	priority: 6,
-	name: __('Tax Compliance', 'mvx-pro'),
-	desc: __(
+	headerTitle: __('Tax Compliance', 'multivendorx'),
+	headerDescription: __(
 		'Stores must provide valid bank account details and tax documents (PAN, GST, VAT, TIN) to receive payouts. Payment processor verification may be required. Non-compliant stores may be restricted from payouts.',
-		'mvx-pro'
+		'multivendorx'
 	),
-	icon: 'adminfont-tax-compliance',
+	headerIcon: 'adminfont-tax-compliance',
 	submitUrl: 'settings',
 	modal: [
 		{
 			key: 'financial_tax_required_uploads',
 			type: 'checkbox',
-			label: __('Required store uploads', 'mvx-pro'),
-			desc: __(
-				'Select which financial or tax-related documents stores must upload for compliance verification.',
-				'mvx-pro'
+			label: __('Required store uploads', 'multivendorx'),
+			settingDescription: __(
+				'Specify which financial or tax-related documents stores must upload for compliance verification.',
+				'multivendorx'
 			),
 			options: [
 				{
 					key: 'bank_account_details',
-					label: __('Bank account details', 'mvx-pro'),
+					label: __('Bank account details', 'multivendorx'),
 					value: 'bank_account_details',
 					edit: true,
 				},
@@ -30,14 +30,14 @@ export default {
 					key: 'tax_identification_documents',
 					label: __(
 						'Tax identification documents (TINs/VAT/GST/EIN/SSN/ITIN. etc.)',
-						'mvx-pro'
+						'multivendorx'
 					),
 					value: 'tax_identification_documents',
 					edit: true,
 				},
 				{
 					key: 'business_registration',
-					label: __('Business registration', 'mvx-pro'),
+					label: __('Business registration', 'multivendorx'),
 					value: 'business_registration',
 					edit: true,
 				},

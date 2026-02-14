@@ -1,10 +1,12 @@
+// External Dependencies
 import React, { ChangeEvent, useState, useEffect, useMemo } from 'react';
+
+// Internal Dependencies
 import '../styles/web/ColorSettingInput.scss';
-import ToggleSetting from './ToggleSetting';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import FormGroupWrapper from './UI/FormGroupWrapper';
-import FormGroup from './UI/FormGroup';
-import SelectInput from './SelectInput';
+import { ToggleSettingUI } from './ToggleSetting';
+import { SelectInputUI } from './SelectInput';
+import PdfDownloadButton from './PdfDownloadButton';
+import { FieldComponent } from './types';
 
 interface CustomColors {
     colorPrimary: string;
@@ -41,17 +43,11 @@ interface Template {
     pdf?: React.FC<{ colors: CustomColors }>;
 }
 
-interface PresetTheme {
-    name: string;
-    vars: Partial<ThemeVars>;
-}
 
 interface ColorSettingProps {
+    filedKey: string;
     wrapperClass?: string;
     inputClass?: string;
-    descClass?: string;
-    description?: string;
-
     predefinedOptions: PaletteOption[];
     images: ImagePaletteOption[];
 
@@ -59,7 +55,6 @@ interface ColorSettingProps {
         selectedPalette: string;
         colors: Partial<CustomColors>;
         templateKey?: string;
-        themeVars?: ThemeVars;
     };
 
     onChange?: (e: {
@@ -67,7 +62,7 @@ interface ColorSettingProps {
             name: string;
             value:
             | ColorSettingValue
-            | { templateKey: string; themeVars: ThemeVars };
+            | { templateKey: string; };
         };
     }) => void;
     idPrefix?: string;
@@ -76,48 +71,46 @@ interface ColorSettingProps {
     pdfFileName?: string;
 }
 
-const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
+export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
+    const { filedKey, predefinedOptions = [], images = [], templates = [], value, onChange, showPdfButton } = props;
+
     // Initialize selectedPalette from DB value or default to first option
     const initialPalette =
-        props.value?.selectedPalette ||
-        (props.predefinedOptions[0]?.value ?? '');
-    const initialColors = props.value?.colors || {};
+        value?.selectedPalette ||
+        (predefinedOptions[0]?.value ?? '');
+    const initialColors = value?.colors || {};
     const [templateKey, setTemplateKey] = useState(
-        props.value?.templateKey || props.templates?.[0]?.key
+        value?.templateKey || templates?.[0]?.key
     );
 
     const activeTemplate = useMemo(
-        () => props.templates?.find(t => t.key === templateKey),
-        [props.templates, templateKey]
+        () => templates?.find(t => t.key === templateKey),
+        [templates, templateKey]
     );
     const ActivePdf = activeTemplate?.pdf;
+
+    const emitChange = (payload: any) => {
+        onChange?.({
+            target: {
+                name: filedKey,
+                value: payload
+            }
+        });
+    };
+
     const changeTemplate = (key: string) => {
         setTemplateKey(key);
-
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    templateKey: key,
-                    colors: customColors,
-                },
-            },
+        emitChange({
+            templateKey: key,
+            colors: customColors,
         });
     };
-
-
     const emitTemplateChange = (colors: CustomColors, key?: string) => {
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    templateKey: key || templateKey,
-                    colors,
-                },
-            },
+        emitChange({
+            templateKey: key || templateKey,
+            colors,
         });
     };
-
 
     // 🔹 Determine initial mode based on whether templates are provided
     const initialMode = initialPalette === 'templates'
@@ -141,29 +134,30 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
     });
 
     const [selectedImage, setSelectedImage] = useState<string | null>(
-        props.images?.[0]?.img || null
+        images?.[0]?.img || null
     );
 
     useEffect(() => {
         if (selectedPalette !== 'custom') {
-            const selectedOption = props.predefinedOptions.find(
+            const selectedOption = predefinedOptions.find(
                 (opt) => opt.value === selectedPalette
             );
             setSelectedColors(selectedOption?.colors || {});
         }
-    }, [selectedPalette, props.predefinedOptions]);
+    }, [selectedPalette, predefinedOptions]);
 
     useEffect(() => {
-        const selectedPaletteValue = props.value?.selectedPalette;
-        if (selectedPaletteValue && props.images) {
-            const matchedImage = props.images.find(
-                (img) => img.value === selectedPaletteValue
-            );
-            if (matchedImage?.img) {
-                setSelectedImage(matchedImage.img);
-            }
+        const selectedPaletteValue = value?.selectedPalette;
+        if (!selectedPaletteValue) return;
+
+        const matchedImage = images.find(
+            (img) => img.value === selectedPaletteValue
+        );
+
+        if (matchedImage?.img) {
+            setSelectedImage(matchedImage.img);
         }
-    }, [props.value, props.images]);
+    }, [value?.selectedPalette, images]);
 
     const handlePaletteChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -176,22 +170,15 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
             setMode('predefined');
         }
 
-        const option = props.predefinedOptions.find(
+        const option = predefinedOptions.find(
             (opt) => opt.value === value
         );
         const colors = value === 'custom' ? customColors : option?.colors || {};
 
         setSelectedColors(colors);
-
-        // Use the actual field name from props instead of hardcoded string
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    selectedPalette: value,
-                    colors,
-                },
-            },
+        emitChange({
+            selectedPalette: value,
+            colors,
         });
     };
 
@@ -201,106 +188,20 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
         setSelectedColors(updated);
         setSelectedPalette('custom');
         setMode('custom'); // Ensure mode is set to custom
-
-        props.onChange?.({
-            target: {
-                name: 'store_color_settings',
-                value: {
-                    selectedPalette: 'custom',
-                    colors: updated,
-                },
-            },
+        emitChange({
+            selectedPalette: 'custom',
+            colors: updated,
         });
     };
     return (
-        <>
-            <div className={props.wrapperClass}>
-                { /* Toggle Mode */}
-                {!selectedImage && (
-                    <>
-                        <div className="form-group-setting-wrapper">
-                            <label>Select Color</label>
-                            <ToggleSetting
-                                wrapperClass="setting-form-input"
-                                options={[
-                                    {
-                                        key: 'predefined',
-                                        value: 'predefined',
-                                        label: 'Pre-defined Palette',
-                                    },
-                                    {
-                                        key: 'custom',
-                                        value: 'custom',
-                                        label: 'Custom Palette',
-                                    },
-                                ]}
-                                value={mode}
-                                onChange={(val: string | string[]) => {
-                                    const selectedVal = Array.isArray(val) ? val[0] : val;
-
-                                    if (selectedVal === 'predefined') {
-                                        setMode('predefined');
-
-                                        const value =
-                                            props.predefinedOptions[0]?.value ??
-                                            '';
-
-                                        setSelectedPalette(value);
-
-                                        const option = props.predefinedOptions.find(
-                                            (opt) => opt.value === value
-                                        );
-
-                                        const colors = option?.colors || {};
-
-                                        setSelectedColors(colors);
-
-                                        props.onChange?.({
-                                            target: {
-                                                name: 'store_color_settings',
-                                                value: {
-                                                    selectedPalette: value,
-                                                    colors,
-                                                },
-                                            },
-                                        });
-                                    }
-
-                                    if (selectedVal === 'custom') {
-                                        setMode('custom');
-                                        setSelectedPalette('custom');
-                                        setSelectedColors(customColors);
-
-                                        props.onChange?.({
-                                            target: {
-                                                name: 'store_color_settings',
-                                                value: {
-                                                    selectedPalette: 'custom',
-                                                    colors: customColors,
-                                                },
-                                            },
-                                        });
-                                    }
-                                    if (selectedVal === 'templates') {
-                                        setMode('templates');
-                                        setSelectedPalette('templates');
-                                        setSelectedColors(customColors);
-
-                                        emitTemplateChange(customColors, templateKey);
-                                    }
-                                }}
-                            />
-                        </div>
-                    </>
-                )}
-
-                {(props.templates?.length ?? 0) > 1 && (
+        <div className="color-settings-wrapper">
+            {(templates?.length ?? 0) > 1 && (
+                <div className={props.wrapperClass}>
                     <div className="form-group-setting-wrapper">
                         <label>Select Template</label>
-                        <SelectInput
+                        <SelectInputUI
                             name="dashboard_template"
-                            type="single-select"
-                            options={props.templates!.map((tpl) => ({
+                            options={templates!.map((tpl) => ({
                                 label: tpl.label,
                                 value: tpl.key,
                             }))}
@@ -313,215 +214,254 @@ const ColorSettingInput: React.FC<ColorSettingProps> = (props) => {
                             }}
                         />
                     </div>
-                )}
-            </div>
-
-            <div className="color-setting">
-                <div className="color-palette-wrapper">
-
-                    {/* Predefined Palettes */}
-                    {mode === 'predefined' && (
-                        <div className="predefined">
-                            {props.predefinedOptions.map((option) => {
-                                const checked = selectedPalette === option.value;
-
-                                return (
-                                    <div key={option.key} className="palette">
-                                        <input
-                                            className={props.inputClass}
-                                            id={`${props.idPrefix}-${option.key}`}
-                                            type="radio"
-                                            name="vendor_color_scheme_picker"
-                                            checked={checked}
-                                            value={option.value}
-                                            onChange={handlePaletteChange}
-                                        />
-
-                                        <label htmlFor={`${props.idPrefix}-${option.key}`}>
-                                            {option.colors && (
-                                                <div className="color">
-                                                    {Object.values(option.colors).map((c, i) => (
-                                                        <div
-                                                            key={i}
-                                                            style={{ backgroundColor: c }}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            )}
-
-                                            {option.image && (
-                                                <div className="color">
-                                                    <img src={option.image} alt="" />
-                                                </div>
-                                            )}
-
-                                            <span>{option.label}</span>
-                                        </label>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-
-                    { /* Custom Palette */}
-                    {mode === 'custom' && (
-                        <div className="custom">
-                            <div className="palette">
-                                {Object.entries(customColors).map(
-                                    ([key, val]) => (
-                                        <div
-                                            className="color-wrapper"
-                                            key={key}
-                                        >
-                                            <input
-                                                type="color"
-                                                value={val}
-                                                onChange={(e) =>
-                                                    handleCustomChange(
-                                                        key as keyof CustomColors,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                            <label>
-                                                <div>
-                                                    {key
-                                                        .replace(
-                                                            /([A-Z])/g,
-                                                            ' $1'
-                                                        )
-                                                        .replace(/^./, (s) =>
-                                                            s.toUpperCase()
-                                                        )}
-                                                </div>
-                                                <span>{val}</span>
-                                            </label>
-                                        </div>
-                                    )
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* {mode === 'templates' && (props.templates?.length ?? 0) > 1 && (
-                        <div className="predefined">
-                            {props.templates!.map((tpl) => {
-                                const isActive = tpl.key === templateKey;
-
-                                return (
-                                    <div
-                                        key={tpl.key}
-                                        className={`palette ${isActive ? 'active' : ''}`}
-                                        onClick={() => changeTemplate(tpl.key)}
-                                    >
-                                        <input
-                                            type="radio"
-                                            className="setting-form-input"
-                                            name="dashboard-template"
-                                            checked={isActive}
-                                            readOnly
-                                        />
-                                        <label className="template-label">
-                                            {tpl.label}
-                                        </label>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )} */}
                 </div>
-                <div className="preview-wrapper">
-                    {activeTemplate && (
-                        <activeTemplate.component
-                            colors={{
-                                colorPrimary: selectedColors.colorPrimary ?? customColors.colorPrimary,
-                                colorSecondary: selectedColors.colorSecondary ?? customColors.colorSecondary,
-                                colorAccent: selectedColors.colorAccent ?? customColors.colorAccent,
-                                colorSupport: selectedColors.colorSupport ?? customColors.colorSupport,
-                            }}
-                            isPreview
-                        />
-                    )}
-                </div>
-            </div>
+            )}
+            {predefinedOptions.length > 0 && (
+                <div className="color-setting">
+                    <div className="color-palette-wrapper">
+                        { /* Toggle Mode */}
+                        {!selectedImage && (
+                            <div className="form-group-setting-wrapper">
+                                <label>Color Palette</label>
+                                <ToggleSettingUI
+                                    options={[
+                                        {
+                                            key: 'predefined',
+                                            value: 'predefined',
+                                            label: 'Pre-defined',
+                                        },
+                                        {
+                                            key: 'custom',
+                                            value: 'custom',
+                                            label: 'Custom',
+                                        },
+                                    ]}
+                                    value={mode}
+                                    onChange={(val: string | string[]) => {
+                                        const selectedVal = Array.isArray(val) ? val[0] : val;
 
-            { /* Image Palette List */}
-            <div className="color-setting">
-                <div className="image-list">
-                    {props.images &&
-                        props.images.map((imgOption) => (
-                            <div
-                                key={imgOption.key}
-                                className={`image-thumbnail ${selectedPalette === imgOption.value
-                                    ? 'active'
-                                    : ''
-                                    }`}
-                                onClick={() => {
-                                    const value = imgOption.value || '';
-                                    setSelectedPalette(value);
-                                    setSelectedImage(imgOption.img || null);
-                                    setMode('predefined'); // Set mode to predefined when selecting an image
+                                        if (selectedVal === 'predefined') {
+                                            setMode('predefined');
 
-                                    // You need to get the corresponding predefined option
-                                    const option = props.predefinedOptions.find(
-                                        (opt) => opt.value === value
-                                    );
-                                    const colors = option?.colors || {};
+                                            const value =
+                                                predefinedOptions[0]?.value ??
+                                                '';
 
-                                    props.onChange?.({
-                                        target: {
-                                            name: 'store_color_settings', // Use the correct field name
-                                            value: {
+                                            setSelectedPalette(value);
+
+                                            const option = predefinedOptions.find(
+                                                (opt) => opt.value === value
+                                            );
+
+                                            const colors = option?.colors || {};
+
+                                            setSelectedColors(colors);
+                                            emitChange({
                                                 selectedPalette: value,
                                                 colors,
-                                            },
-                                        },
-                                    });
-                                }}
-                            >
-                                <img
-                                    src={imgOption.img}
-                                    alt={imgOption.label}
-                                />
-                                <p>{imgOption.label}</p>
-                            </div>
-                        ))}
-                </div>
+                                            });
+                                        }
 
-                { /* Right side: preview */}
-                <div className="image-preview">
-                    {selectedImage && (
-                        <img src={selectedImage} alt="Selected Template" />
+                                        if (selectedVal === 'templates') {
+                                            setMode('templates');
+                                            setSelectedPalette('templates');
+                                            setSelectedColors(customColors);
+                                            emitTemplateChange(customColors, templateKey);
+                                        }
+
+                                        if (selectedVal === 'custom') {
+                                            setMode('custom');
+                                            setSelectedPalette('custom');
+                                            setSelectedColors(customColors);
+                                            emitChange({
+                                                selectedPalette: 'custom',
+                                                colors: customColors,
+                                            });
+                                        }
+
+                                    }}
+                                />
+                            </div>
+                        )}
+                        {/* Predefined Palettes */}
+                        {mode === 'predefined' && (
+                            <div className="predefined">
+                                {predefinedOptions.map((option) => {
+                                    const checked = selectedPalette === option.value;
+                                    return (
+                                        <div key={option.key} className="palette">
+                                            <input
+                                                className={props.inputClass}
+                                                id={`${props.idPrefix}-${option.key}`}
+                                                type="radio"
+                                                name="vendor_color_scheme_picker"
+                                                checked={checked}
+                                                value={option.value}
+                                                onChange={handlePaletteChange}
+                                            />
+
+                                            <label htmlFor={`${props.idPrefix}-${option.key}`}>
+                                                {option.colors && (
+                                                    <div className="color">
+                                                        {Object.values(option.colors).map((c, i) => (
+                                                            <div
+                                                                key={i}
+                                                                style={{ backgroundColor: c }}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {option.image && (
+                                                    <div className="color">
+                                                        <img src={option.image} alt="" />
+                                                    </div>
+                                                )}
+
+                                                <span>{option.label}</span>
+                                            </label>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        { /* Custom Palette */}
+                        {mode === 'custom' && (
+                            <div className="custom">
+                                <div className="palette">
+                                    {Object.entries(customColors).map(
+                                        ([key, val]) => (
+                                            <div
+                                                className="color-wrapper"
+                                                key={key}
+                                            >
+                                                <input
+                                                    type="color"
+                                                    value={val}
+                                                    onChange={(e) =>
+                                                        handleCustomChange(
+                                                            key as keyof CustomColors,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                                <label>
+                                                    <div>
+                                                        {key
+                                                            .replace(
+                                                                /([A-Z])/g,
+                                                                ' $1'
+                                                            )
+                                                            .replace(/^./, (s) =>
+                                                                s.toUpperCase()
+                                                            )}
+                                                    </div>
+                                                    <span>{val}</span>
+                                                </label>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {activeTemplate && (
+                        <div className="preview-wrapper">
+                            <activeTemplate.component
+                                colors={{
+                                    colorPrimary: selectedColors.colorPrimary ?? customColors.colorPrimary,
+                                    colorSecondary: selectedColors.colorSecondary ?? customColors.colorSecondary,
+                                    colorAccent: selectedColors.colorAccent ?? customColors.colorAccent,
+                                    colorSupport: selectedColors.colorSupport ?? customColors.colorSupport,
+                                }}
+                                isPreview
+                            />
+                        </div>
                     )}
                 </div>
-            </div>
-
-            {props.description && (
-                <p
-                    className={props.descClass}
-                    dangerouslySetInnerHTML={{ __html: props.description }}
-                ></p>
             )}
 
-            {props.showPdfButton && ActivePdf && (
-                <PDFDownloadLink
-                    document={
-                        <ActivePdf
-                            colors={{
-                                colorPrimary: customColors.colorPrimary ?? '#FF5959',
-                                colorSecondary: customColors.colorSecondary ?? '#FADD3A',
-                                colorAccent: customColors.colorAccent ?? '#49BEB6',
-                                colorSupport: customColors.colorSupport ?? '#075F63',
-                            }}
-                        />
-                    }
+            { /* Image Palette List */}
+            {images.length > 0 && (
+                <div className="color-setting">
+                    <div className="image-list">
+                        {images &&
+                            images.map((imgOption) => (
+                                <div
+                                    key={imgOption.key}
+                                    className={`image-thumbnail ${selectedPalette === imgOption.value
+                                        ? 'active'
+                                        : ''
+                                        }`}
+                                    onClick={() => {
+                                        const value = imgOption.value || '';
+                                        setSelectedPalette(value);
+                                        setSelectedImage(imgOption.img || null);
+                                        setMode('predefined'); // Set mode to predefined when selecting an image
+
+                                        // You need to get the corresponding predefined option
+                                        const option = predefinedOptions.find(
+                                            (opt) => opt.value === value
+                                        );
+                                        const colors = option?.colors || {};
+                                        emitChange({
+                                            selectedPalette: value,
+                                            colors,
+                                        });
+                                    }}
+                                >
+                                    <img
+                                        src={imgOption.img}
+                                        alt={imgOption.label}
+                                    />
+                                    <p>{imgOption.label}</p>
+                                </div>
+                            ))}
+                    </div>
+
+                    { /* Right side: preview */}
+                    <div className="image-preview">
+                        {selectedImage && (
+                            <img src={selectedImage} alt="Selected Template" />
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {showPdfButton && ActivePdf && (
+                <PdfDownloadButton
+                    PdfComponent={() => <ActivePdf colors={selectedColors as CustomColors} />}
                     fileName={`invoice-${templateKey}.pdf`}
-                >
-                    {({ loading }) => (loading ? 'Generating PDF…' : 'Download PDF')}
-                </PDFDownloadLink>
+                />
             )}
-        </>
+        </div>
     );
+};
+
+const ColorSettingInput: FieldComponent = {
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+        <ColorSettingInputUI
+            filedKey={field.key}
+            wrapperClass="form-group-color-setting"
+            inputClass="setting-form-input"
+            predefinedOptions={field.predefinedOptions ?? []}
+            images={field.images ?? []}
+            value={value}
+            templates={field.templates}
+            onChange={(e) => {
+                if (!canAccess) return;
+                onChange(e.target.value)
+            }}
+            idPrefix="color-setting"
+            showPdfButton={field.showPdfButton ?? false}
+        />
+    ),
+
+    validate: (field, value) => {
+        return null;
+    },
+
 };
 
 export default ColorSettingInput;

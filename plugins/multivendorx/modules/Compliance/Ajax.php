@@ -76,22 +76,22 @@ class Ajax {
             wp_send_json_error( 'Something went wrong, please try again.' );
         }
 
-        $store = new Store($store_id);
-        $product = wc_get_product($product_id);
+        $store   = new Store( $store_id );
+        $product = wc_get_product( $product_id );
 
         do_action(
             'multivendorx_notify_report_abuse_submitted',
-                'report_abuse_submitted',
-                array(
-                    'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                    'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                    'customer_email' => $email,
-                    'product_name'    => $product->get_name(),
-                    'category'    => 'activity',
-                )
-            );
+            'report_abuse_submitted',
+            array(
+				'admin_email'    => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
+				'admin_phone'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+				'store_phone'      => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+				'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+				'customer_email' => $email,
+				'product_name'   => $product->get_name(),
+				'category'       => 'activity',
+			)
+        );
 
         wp_send_json_success( 'Your report has been submitted. Thank you!' );
     }

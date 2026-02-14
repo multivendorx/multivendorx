@@ -1,0 +1,35 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-review",
+  "title": "Store Review",
+  "category": "multivendorx",
+  "icon": "star-filled",
+  "description": "Show store ratings and reviews so customers can quickly assess seller credibility.",
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js",
+  "supports": {
+    "align": true,
+    "alignWide": false,
+    "html": false
+  },
+  "attributes": {
+    "reviewsToShow": {
+      "type": "number",
+      "default": 3
+    },
+    "showImages": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAdminReply": {
+      "type": "boolean",
+      "default": true
+    },
+    "sortOrder": {
+      "type": "string",
+      "default": "newest"
+    }
+  },
+  "editorStyle": [ "multivendorx-common-block-style" ],
+  "style": [ "multivendorx-common-block-style" ]
+}

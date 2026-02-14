@@ -83,7 +83,7 @@ class CommissionManager {
             $store_earning          = (float) ( $order->get_subtotal() - $order->get_discount_total() - $commission_amount );
 
             // For migrate users.
-            if ( get_option(Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store']) ) {
+            if ( get_option( Utill::MULTIVENDORX_OTHER_SETTINGS['revenue_mode_store'] ) ) {
                 $marketplace_commission = (float) ( $order->get_subtotal() - $order->get_discount_total() - $commission_amount );
                 $store_earning          = $commission_amount;
             }
@@ -193,8 +193,8 @@ class CommissionManager {
 
         $tax_on_shipping = MultiVendorX()->setting->get_setting( 'taxable' );
         if ( MultiVendorX()->setting->get_setting( 'give_tax' ) === 'no_tax' ) {
-            $admin_tax          = $item_tax_total;
-            $store_tax          = 0;
+            $admin_tax = $item_tax_total;
+            $store_tax = 0;
             if ( empty( $tax_on_shipping ) ) {
                 $admin_shipping_tax = $shipping_tax_total;
                 $store_shipping_tax = 0;
@@ -394,8 +394,8 @@ class CommissionManager {
         $admin_coupon_amount = 0;
         $store_coupon        = false;
         $base_total          = $order->get_subtotal() - $order->get_discount_total();
-        $parent_order = wc_get_order($order->get_parent_id());
-        
+        $parent_order        = wc_get_order( $order->get_parent_id() );
+
         if ( $parent_order->get_coupon_codes() ) {
             foreach ( $parent_order->get_coupon_codes() as $coupon_code ) {
                 $coupon   = new \WC_Coupon( $coupon_code );

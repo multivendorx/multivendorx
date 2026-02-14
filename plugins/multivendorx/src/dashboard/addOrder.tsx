@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButton, BasicInput, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInput, Table, TableCell, TextArea, getApiLink } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCell, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -29,83 +29,60 @@ const AddOrder = () => {
 		[]
 	);
 
-	useEffect(() => {
-		// if (!showAddressEdit) return;
-
-		function handleClickOutside(e) {
-			if (
-				addressEditRef.current &&
-				!addressEditRef.current.contains(e.target)
-			) {
-				const payload = {
-					billing: {
-						first_name: selectedCustomer?.first_name,
-						last_name: selectedCustomer?.last_name,
-						address_1: billingAddress.address_1,
-						address_2: '',
-						city: billingAddress.city,
-						state: billingAddress.state,
-						postcode: billingAddress.postcode,
-						country: billingAddress.country,
-					},
-				};
-				axios
-					.put(
-						`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
-						payload,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						}
-					)
-					.then((res) => {
-						setBillingAddress(res.data.billing);
-					});
-
-				setShowAddressEdit(false);
-			}
-			if (
-				shippingAddressEditRef.current &&
-				!shippingAddressEditRef.current.contains(e.target)
-			) {
-				const payload = {
-					shipping: {
-						first_name: selectedCustomer?.first_name,
-						last_name: selectedCustomer?.last_name,
-						address_1: shippingAddress.address_1,
-						address_2: '',
-						city: shippingAddress.city,
-						state: shippingAddress.state,
-						postcode: shippingAddress.postcode,
-						country: shippingAddress.country,
-					},
-				};
-				axios
-					.put(
-						`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
-						payload,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						}
-					)
-					.then((res) => {
-						setShippingAddress(res.data.shipping);
-					});
-
-				setShowShippingAddressEdit(false);
-			}
-		}
-
-		document.addEventListener('mousedown', handleClickOutside);
-
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
+	useOutsideClick(addressEditRef, () => {
+		const payload = {
+			billing: {
+				first_name: selectedCustomer?.first_name,
+				last_name: selectedCustomer?.last_name,
+				address_1: billingAddress.address_1,
+				address_2: '',
+				city: billingAddress.city,
+				state: billingAddress.state,
+				postcode: billingAddress.postcode,
+				country: billingAddress.country,
+			},
 		};
-	}, [
-		showAddressEdit,
-		showShippingAddressEdit,
-		shippingAddress,
-		billingAddress,
-	]);
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
+				payload,
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			)
+			.then((res) => {
+				setBillingAddress(res.data.billing);
+			});
+
+		setShowAddressEdit(false);
+	});
+	useOutsideClick(shippingAddressEditRef, () => {
+		const payload = {
+			shipping: {
+				first_name: selectedCustomer?.first_name,
+				last_name: selectedCustomer?.last_name,
+				address_1: shippingAddress.address_1,
+				address_2: '',
+				city: shippingAddress.city,
+				state: shippingAddress.state,
+				postcode: shippingAddress.postcode,
+				country: shippingAddress.country,
+			},
+		};
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/customers/${selectedCustomer?.id}`,
+				payload,
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			)
+			.then((res) => {
+				setShippingAddress(res.data.shipping);
+			});
+
+		setShowShippingAddressEdit(false);
+	});
 
 	useEffect(() => {
 		axios
@@ -586,9 +563,8 @@ const AddOrder = () => {
 															)}
 														</div>
 
-														<SelectInput
+														<SelectInputUI
 															name="shipping_method"
-															type="single-select"
 															options={
 																availableShippingMethods
 															}
@@ -709,19 +685,17 @@ const AddOrder = () => {
 								</div>
 							</div>
 							<FormGroupWrapper>
-								<AdminButton
-									wrapperClass="left"
+								<AdminButtonUI
+									position="left"
 									buttons={[
 										{
 											icon: 'plus',
 											text: 'Add Product',
-											className: 'purple-bg',
 											onClick: () => setShowAddProduct(true),
 										},
 										{
 											icon: 'plus',
 											text: 'Add Shipping',
-											className: 'purple-bg',
 											onClick: () =>
 												setShippingLines((prev) => [
 													...prev,
@@ -731,7 +705,6 @@ const AddOrder = () => {
 										{
 											icon: 'plus',
 											text: 'Add Tax',
-											className: 'purple-bg',
 											onClick: () => setShowAddTax(true),
 										},
 									]}
@@ -739,9 +712,8 @@ const AddOrder = () => {
 
 								{showAddProduct && (
 									<FormGroup row label={__('Select Product', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="product_select"
-											type="single-select"
 											options={[
 												{
 													label: __(
@@ -788,12 +760,11 @@ const AddOrder = () => {
 												data={taxRates}
 												columns={taxColumns}
 											/>
-											<AdminButton
+											<AdminButtonUI
 												buttons={[
 													{
 														text: __('Add', 'multivendorx'),
 														icon: 'plus',
-														className: 'purple-bg',
 														onClick: () => {
 															applyTaxToOrder();
 															setShowAddTax(false);
@@ -817,10 +788,9 @@ const AddOrder = () => {
 					<Card title={__('Payment Method', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Select Payment Method', 'multivendorx')} htmlFor="payment-method">
-								<SelectInput
+								<SelectInputUI
 									name="payment_method"
 									options={paymentOptions}
-									type="single-select"
 									value={selectedPayment?.value}
 									onChange={(value) => {
 										const method = paymentMethods.find(
@@ -838,10 +808,9 @@ const AddOrder = () => {
 							<>
 								<FormGroupWrapper>
 									<FormGroup label={__('Select Customer', 'multivendorx')} htmlFor="Select-customer">
-										<SelectInput
+										<SelectInputUI
 											name="new_owner"
 											options={customerOptions}
-											type="single-select"
 											onChange={(value) => {
 												const customer =
 													customers.find(
@@ -868,12 +837,11 @@ const AddOrder = () => {
 									</FormGroup>
 								</FormGroupWrapper>
 
-								<AdminButton
+								<AdminButtonUI
 									buttons={{
 										icon: 'plus',
 										text: __('Add New Customer', 'multivendorx'),
 										onClick: () => setShowCreateCustomer(!showCreateCustomer),
-										className: 'purple-bg',
 									}}
 								/>
 							</>
@@ -944,7 +912,7 @@ const AddOrder = () => {
 
 							<FormGroupWrapper>
 								<FormGroup cols={2} label={__('First name', 'multivendorx')} htmlFor="Select-customer">
-									<BasicInput
+									<BasicInputUI
 										name="first_name"
 										value={newCustomer.first_name}
 										onChange={(e) =>
@@ -953,12 +921,11 @@ const AddOrder = () => {
 												first_name: e.target.value,
 											})
 										}
-										 
 									/>
 								</FormGroup>
 
 								<FormGroup cols={2} label={__('Last name', 'multivendorx')} htmlFor="last-name">
-									<BasicInput
+									<BasicInputUI
 										name="last_name"
 										value={newCustomer.last_name}
 										onChange={(e) =>
@@ -967,12 +934,11 @@ const AddOrder = () => {
 												last_name: e.target.value,
 											})
 										}
-										 
 									/>
 								</FormGroup>
 
 								<FormGroup label={__('Email', 'multivendorx')} htmlFor="email">
-									<BasicInput
+									<BasicInputUI
 										name="email"
 										value={newCustomer.email}
 										onChange={(e) =>
@@ -981,12 +947,11 @@ const AddOrder = () => {
 												email: e.target.value,
 											})
 										}
-										 
 									/>
 								</FormGroup>
 
 								<FormGroup label={__('Phone number', 'multivendorx')} htmlFor="phone-number">
-									<BasicInput
+									<BasicInputUI
 										name="phone"
 										value={newCustomer.phone}
 										onChange={(e) =>
@@ -995,17 +960,15 @@ const AddOrder = () => {
 												phone: e.target.value,
 											})
 										}
-										 
 									/>
 								</FormGroup>
 							</FormGroupWrapper>
 
-							<AdminButton
+							<AdminButtonUI
 								buttons={{
 									icon: 'plus',
 									text: __('Create', 'multivendorx'),
 									onClick: () => createCustomer,
-									className: 'purple-bg',
 								}}
 							/>
 						</Card>
@@ -1050,10 +1013,10 @@ const AddOrder = () => {
 							<div ref={shippingAddressEditRef}>
 								<FormGroupWrapper>
 									<FormGroup label={__('Address', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="address_1"
 											value={shippingAddress.address_1}
-											 
+
 											onChange={(e) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1063,10 +1026,9 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('City', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="city"
 											value={shippingAddress.city || ''}
-											 
 											onChange={(e) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1076,10 +1038,10 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Postcode / ZIP', 'multivendorx')}>
-										<BasicInput
+										<BasicInputUI
 											name="postcode"
 											value={shippingAddress.postcode || ''}
-											 
+
 											onChange={(e) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1089,11 +1051,10 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Country / Region', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="country"
 											value={shippingAddress.country}
 											options={appLocalizer.country_list || []}
-											type="single-select"
 											onChange={(selected) => {
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1105,11 +1066,10 @@ const AddOrder = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('State / County', 'multivendorx')}>
-										<SelectInput
+										<SelectInputUI
 											name="state"
 											value={shippingAddress.state}
 											options={stateOptions}
-											type="single-select"
 											onChange={(selected) =>
 												setShippingAddress((prev) => ({
 													...prev,
@@ -1162,10 +1122,10 @@ const AddOrder = () => {
 							<div ref={addressEditRef}>
 								<FormGroupWrapper>
 									<FormGroup label={__('Address', 'multivendorx')} htmlFor="Address">
-										<BasicInput
+										<BasicInputUI
 											name="address_1"
 											value={billingAddress.address_1}
-											 
+
 											onChange={(e) =>
 												setBillingAddress(
 													(prev) => ({
@@ -1179,7 +1139,7 @@ const AddOrder = () => {
 									</FormGroup>
 
 									<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="city">
-										<BasicInput
+										<BasicInputUI
 											name="city"
 											value={
 												billingAddress.city || ''
@@ -1193,11 +1153,11 @@ const AddOrder = () => {
 													})
 												)
 											}
-											 
+
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('Postcode / ZIP', 'multivendorx')} htmlFor="postcode-zip">
-										<BasicInput
+										<BasicInputUI
 											name="postcode"
 											value={
 												billingAddress.postcode ||
@@ -1212,18 +1172,17 @@ const AddOrder = () => {
 													})
 												)
 											}
-											 
+
 										/></FormGroup>
 
 									<FormGroup cols={2} label={__('Country / Region', 'multivendorx')} htmlFor="country-region">
-										<SelectInput
+										<SelectInputUI
 											name="country"
 											value={billingAddress.country}
 											options={
 												appLocalizer.country_list ||
 												[]
 											}
-											type="single-select"
 											onChange={(selected) => {
 												setBillingAddress(
 													(prev) => ({
@@ -1239,11 +1198,10 @@ const AddOrder = () => {
 										/>
 									</FormGroup>
 									<FormGroup cols={2} label={__('State / County', 'multivendorx')} htmlFor="state-county">
-										<SelectInput
+										<SelectInputUI
 											name="state"
 											value={billingAddress.state}
 											options={stateOptions}
-											type="single-select"
 											onChange={(selected) => {
 												setBillingAddress(
 													(prev) => ({
@@ -1262,7 +1220,7 @@ const AddOrder = () => {
 						title={__('Order note', 'multivendorx')}
 					>
 						<FormGroup>
-							<TextArea
+							<TextAreaUI
 								name="shipping_policy"
 								placeholder={__(
 									'Enter order note...',

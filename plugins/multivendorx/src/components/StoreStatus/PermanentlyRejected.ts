@@ -19,25 +19,25 @@ export default {
 					type: 'checklist',
 					options: [
 						{
-							label: __(
+							title: __(
 								'Can log in to dashboard',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot modify store settings',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 						{
-							label: __(
+							title: __(
 								'Cannot add or edit products',
 								'multivendorx'
 							),
-							check: false,
+							icon: 'close adminfont-cross',
 						},
 					],
 				},

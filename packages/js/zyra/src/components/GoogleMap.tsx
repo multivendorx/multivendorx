@@ -1,7 +1,9 @@
+// External Dependencies
 /* global google */
 /// <reference types="google.maps" />
 import { useEffect, useRef, useState } from 'react';
-import FormGroupWrapper from './UI/FormGroupWrapper';
+
+// Internal Dependencies
 import FormGroup from './UI/FormGroup';
 
 interface GoogleMapComponentProps {
@@ -21,7 +23,6 @@ interface GoogleMapComponentProps {
         zip?: string;
     }) => void;
     labelSearch: string;
-    labelMap: string;
     placeholderSearch: string;
     stores: { data: Store[] } | null;
 }
@@ -50,7 +51,6 @@ const GoogleMap = ({
     isUserLocation,
     onLocationUpdate,
     labelSearch,
-    labelMap,
     placeholderSearch,
     stores,
 }: GoogleMapComponentProps) => {

@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'product-compliance',
 	priority: 5,
-	name: __('Product Compliance', 'mvx-pro'),
-	desc: __(
+	headerTitle: __('Product Compliance', 'multivendorx'),
+	headerDescription: __(
 		'All product listings must follow platform content guidelines and avoid prohibited categories. Branded or regulated products must include authenticity certificates. Optional safety certifications may be uploaded for regulated items.',
-		'mvx-pro'
+		'multivendorx'
 	),
-	icon: 'adminfont-per-product-shipping',
+	headerIcon: 'adminfont-per-product-shipping',
 	submitUrl: 'settings',
 	modal: [
 		{
@@ -28,42 +28,34 @@ export default {
 			proSetting: true,
 			addNewBtn: true,
 			addNewTemplate: {
-				label: 'New Product Categories',
-				formFields: [
-					{
-						key: 'label',
-						type: 'text',
-						label: 'Categories Name',
-						placeholder: 'Enter title',
-					},
-				],
+				label: 'New Product Categories'
 			},
 			modal: [],
 		},
 		{
 			key: 'required_store_uploads',
 			type: 'checkbox',
-			label: __('Required store uploads', 'mvx-pro'),
-			desc: __(
-				'Select which documents or files stores must upload for compliance verification.',
-				'mvx-pro'
+			label: __('Required store uploads', 'multivendorx'),
+			settingDescription: __(
+				'Specify the documents or files stores must provide to ensure their products comply with marketplace rules.',
+				'multivendorx'
 			),
 			moduleEnabled: 'marketplace-compliance',
 			proSetting: true,
 			options: [
 				{
 					key: 'product_authenticity_certificates',
-					label: __('Product authenticity certificates', 'mvx-pro'),
+					label: __('Product authenticity certificates', 'multivendorx'),
 					value: 'product_authenticity_certificates',
 				},
 				{
 					key: 'product_images_descriptions',
-					label: __('Product images & descriptions', 'mvx-pro'),
+					label: __('Product images & descriptions', 'multivendorx'),
 					value: 'product_images_descriptions',
 				},
 				{
 					key: 'safety_certifications',
-					label: __('Safety certifications', 'mvx-pro'),
+					label: __('Safety certifications', 'multivendorx'),
 					value: 'safety_certifications',
 				},
 			],
@@ -127,14 +119,10 @@ export default {
 			addNewBtn: true,
 			addNewTemplate: {
 				label: 'New Reasons',
-				formFields: [
-					{
-						key: 'label',
-						type: 'text',
-						label: 'Reasons',
-						placeholder: 'Enter Reasons',
-					},
-				],
+				editableFields: {
+					title: true,
+					description: false,
+				},
 			},
 			modal: [],
 		},

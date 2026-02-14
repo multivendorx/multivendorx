@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BasicInput, TextArea, SuccessNotice, getApiLink, FormGroupWrapper, FormGroup } from 'zyra';
+import {SuccessNotice, getApiLink, FormGroupWrapper, FormGroup, BasicInputUI, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const GeneralSettings = () => {
@@ -8,7 +8,7 @@ const GeneralSettings = () => {
 	const [formData, setFormData] = useState<{ [key: string]: any }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']
+		appLocalizer.settings_databases_value['store-permissions']
 			?.edit_store_info_activation || [];
 	useEffect(() => {
 		if (!id) {
@@ -63,10 +63,8 @@ const GeneralSettings = () => {
 					label={__('Name', 'multivendorx')}
 					htmlFor="name"
 				>
-					<BasicInput
+					<BasicInputUI
 						name="name"
-						 
-						descClass="settings-metabox-description"
 						value={formData.name || ''}
 						onChange={handleChange}
 						readOnly={!settings.includes('store_name')}
@@ -77,10 +75,8 @@ const GeneralSettings = () => {
 					label={__('Storefront link', 'multivendorx')}
 					htmlFor="slug"
 				>
-					<BasicInput
+					<BasicInputUI
 						name="slug"
-						 
-						descClass="settings-metabox-description"
 						value={formData.slug || ''}
 						onChange={handleChange}
 					/>
@@ -90,7 +86,7 @@ const GeneralSettings = () => {
 					label={__('Description', 'multivendorx')}
 					htmlFor="description"
 				>
-					<TextArea
+					<TextAreaUI
 						name="description"
 						value={formData.description || ''}
 						onChange={handleChange}
@@ -105,10 +101,8 @@ const GeneralSettings = () => {
 					)}
 					htmlFor="messageToBuyer"
 				>
-					<BasicInput
+					<BasicInputUI
 						name="messageToBuyer"
-						 
-						descClass="settings-metabox-description"
 						value={formData.messageToBuyer || ''}
 						onChange={handleChange}
 					/>

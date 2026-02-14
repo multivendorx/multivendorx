@@ -168,12 +168,12 @@ class StoreUtil {
                 'label'      => 'Manage products',
                 'desc'       => 'Allow stores to create, edit, and control their product listings, including uploading media and publishing items for sale.',
                 'capability' => array(
-                    'read_products'    => 'View products',
-                    'add_products'     => 'Add products',
-                    'publish_products' => 'Publish products',
-                    'edit_published_products'   => 'Edit published products',
-                    'edit_approved_products'    => 'Review edits on approved products',
-                    'upload_files'     => 'Upload files',
+                    'read_products'           => 'View products',
+                    'add_products'            => 'Add products',
+                    'publish_products'        => 'Publish products',
+                    'edit_published_products' => 'Edit published products',
+                    'edit_approved_products'  => 'Review edits on approved products',
+                    'upload_files'            => 'Upload files',
                 ),
             ),
             'orders'        => array(
@@ -190,10 +190,10 @@ class StoreUtil {
                 'label'      => 'Coupon management',
                 'desc'       => 'Enable stores to create and manage discount codes, adjust coupon settings, and track active promotions.',
                 'capability' => array(
-                    'add_shop_coupons' => 'Add coupons',
-                    'read_shop_coupons'   => 'View coupons',
-                    'edit_shop_coupons'   => 'Edit coupons',
-                    'publish_coupons'     => 'Publish coupons',
+                    'add_shop_coupons'  => 'Add coupons',
+                    'read_shop_coupons' => 'View coupons',
+                    'edit_shop_coupons' => 'Edit coupons',
+                    'publish_coupons'   => 'Publish coupons',
                 ),
             ),
             'analytics'     => array(
@@ -208,8 +208,8 @@ class StoreUtil {
                 'label'      => 'Inventory management',
                 'desc'       => 'Let stores monitor stock levels, update quantities, and set alerts to prevent overselling or stockouts.',
                 'capability' => array(
-                    'read_inventory'  => 'View inventory',
-                    'edit_inventory'  => 'Track stock',
+                    'read_inventory'    => 'View inventory',
+                    'edit_inventory'    => 'Track stock',
                     'edit_stock_alerts' => 'Set stock alerts',
                 ),
             ),
@@ -356,12 +356,12 @@ class StoreUtil {
                 : ( $option_label_map[ $field_value ] ?? $field_value );
 
             if ( strpos( $field_name, 'attachment' ) !== false ) {
-                $attachment_id = absint( $field_value );
-                $attachment_type = get_post_mime_type($attachment_id);
-                $value      =  [
+                $attachment_id   = absint( $field_value );
+                $attachment_type = get_post_mime_type( $attachment_id );
+                $value           = array(
                     'attachment_type' => $attachment_type,
-                    'attachment' => wp_get_attachment_url( $attachment_id )
-                ];
+                    'attachment'      => wp_get_attachment_url( $attachment_id ),
+                );
             }
 
             $response['all_registration_data'][ $field_name ] = $field_value;
@@ -377,39 +377,39 @@ class StoreUtil {
 
     /**
      * Create atachment from array of fiels.
+     *
      * @param mixed $files_array
      * @return int|\WP_Error
      */
-    public static function create_attachment_from_files_array($files_array) {
-        require_once(ABSPATH . 'wp-admin/includes/file.php');
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
-        require_once(ABSPATH . 'wp-admin/includes/media.php');
-   
+    public static function create_attachment_from_files_array( $files_array ) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+
         // Handle the file upload
-        $upload = wp_handle_upload($files_array, array('test_form' => false));
-    
-        
+        $upload = wp_handle_upload( $files_array, array( 'test_form' => false ) );
+
         // Prepare the attachment
         $file_path = $upload['file'];
-        $file_name = basename($file_path);
-        $file_type = wp_check_filetype($file_name, null);
+        $file_name = basename( $file_path );
+        $file_type = wp_check_filetype( $file_name, null );
 
         // Create attachment post
         $attachment = array(
-            'guid' => $upload['url'],
+            'guid'           => $upload['url'],
             'post_mime_type' => $file_type['type'],
-            'post_title' => preg_replace('/\.[^.]+$/', '', $file_name),
-            'post_content' => '',
-            'post_status' => 'inherit'
+            'post_title'     => preg_replace( '/\.[^.]+$/', '', $file_name ),
+            'post_content'   => '',
+            'post_status'    => 'inherit',
         );
 
         // Insert attachment into the media library
-        $attachment_id = wp_insert_attachment($attachment, $file_path);
+        $attachment_id = wp_insert_attachment( $attachment, $file_path );
 
-        if (!is_wp_error($attachment_id)) {
+        if ( ! is_wp_error( $attachment_id ) ) {
             // Generate metadata for the attachment, and update the attachment
-            $attachment_data = wp_generate_attachment_metadata($attachment_id, $file_path);
-            wp_update_attachment_metadata($attachment_id, $attachment_data);
+            $attachment_data = wp_generate_attachment_metadata( $attachment_id, $file_path );
+            wp_update_attachment_metadata( $attachment_id, $attachment_data );
 
             return $attachment_id; // Return the attachment ID
         }
@@ -657,11 +657,41 @@ class StoreUtil {
             )
         );
 
-        return [
-            'total' => (int) $total_users,
-            'last_30_days' => (int) $last_30_days,
+        return array(
+            'total'            => (int) $total_users,
+            'last_30_days'     => (int) $last_30_days,
             'previous_30_days' => (int) $previous_30_days,
-        ];
+        );
     }
 
+    public static function get_specific_store_info() {
+        $store_slug = get_query_var( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) );
+        if ( empty( $store_slug ) ) {
+            return;
+        }
+        $store_obj = Store::get_store( $store_slug, 'slug' );
+        $info      = array(
+            'storeName'        => $store_obj->get( 'name' ),
+            'storeDescription' => $store_obj->get( 'description' ),
+            'storeSlug'        => $store_slug,
+            'storeId'          => $store_obj->get_id(),
+            'storeEmail'       => $store_obj->get_meta( 'primary_email' ),
+            'storePhone'       => $store_obj->get_meta( 'phone' ),
+            'facebook'         => $store_obj->get_meta( 'facebook' ),
+            'twitter'          => $store_obj->get_meta( 'twitter' ),
+            'linkedin'         => $store_obj->get_meta( 'linkedin' ),
+            'youtube'          => $store_obj->get_meta( 'youtube' ),
+            'instagram'        => $store_obj->get_meta( 'instagram' ),
+            'pinterest'        => $store_obj->get_meta( 'pinterest' ),
+            'storeLogo'        => $store_obj->get_meta( 'image' ),
+            'storeBanner'       => $store_obj->get_meta( 'banner' ),
+            'storePolicy'       => $store_obj->get_meta( 'store_policy' ),
+            'shippingPolicy'    => $store_obj->get_meta( 'shipping_policy' ),
+            'refundPolicy'      => $store_obj->get_meta( 'refund_policy' ),
+            'cancellationPolicy'=> $store_obj->get_meta( 'cancellation_policy' ),
+            'storeAddress'      => $store_obj->get_meta( 'address' ),
+        );
+
+        return $info;
+    }
 }

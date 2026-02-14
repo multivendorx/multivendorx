@@ -1,7 +1,9 @@
+// External Dependencies
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+// Internal Dependencies
 import { getApiLink, sendApiResponse } from '../utils/apiService';
 import '../styles/web/DoActionBtn.scss';
 
@@ -51,7 +53,6 @@ interface DoActionBtnProps {
     proSetting: boolean;
     proSettingChanged: () => boolean;
     value: string;
-    description: string;
     apilink: string;
     parameter: string;
     tasks: Task[];
@@ -70,7 +71,6 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
     proSetting,
     proSettingChanged,
     value,
-    description,
     apilink,
     parameter,
     tasks,
@@ -352,11 +352,6 @@ const DoActionBtn: React.FC<DoActionBtnProps> = ({
                         {failureMessage}
                     </div>
                 )}
-
-                <p
-                    className="settings-metabox-description"
-                    dangerouslySetInnerHTML={{ __html: description }}
-                />
 
                 {/* Task Progress Display */}
                 {taskSequence.map((task, idx) => (

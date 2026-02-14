@@ -1,25 +1,21 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
+import { FieldComponent } from './types';
 
 // Types
 interface SectionProps {
-    wrapperClass: string;
+    wrapperClass?: string;
     hint?: string;
     value?: string;
-    description?: string;
 }
 
-const Section: React.FC< SectionProps > = ( {
+export const SectionUI : React.FC<SectionProps> = ( {
     wrapperClass,
     hint,
     value,
-    description,
 } ) => {
     return (
-        <>
-            <div className={ wrapperClass }>
+            <div className={`divider-wrapper ${wrapperClass}`}>
                 <div className="divider-section">
                     { hint && (
                         <p
@@ -27,17 +23,21 @@ const Section: React.FC< SectionProps > = ( {
                             dangerouslySetInnerHTML={ { __html: hint } }
                         ></p>
                     ) }
-                    { description && (
-                        <div
-                            className="desc"
-                            dangerouslySetInnerHTML={ { __html: description } }
-                        ></div>
-                    ) }
                     { value && <span>{ value }</span> }
                 </div>
             </div>
-        </>
     );
+};
+
+const Section: FieldComponent = {
+    render: ({ field }) => (
+        <SectionUI
+            wrapperClass={field.wrapperClass}
+            hint={field.hint}
+            value={field.value}
+        />
+    ),
+    validate: () => null,
 };
 
 export default Section;

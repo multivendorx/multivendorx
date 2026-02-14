@@ -5,21 +5,20 @@ const methods = appLocalizer?.all_payments
 	: [];
 
 export default {
-	id: 'payment-integration',
+	id: 'withdrawal-methods',
 	priority: 3,
-	name: __('Withdrawal Methods', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Withdrawal Methods', 'multivendorx'),
+	headerDescription: __(
 		'Choose which payment integrations to enable for store payouts.',
 		'multivendorx'
 	),
-	icon: 'adminfont-rules',
+	headerIcon: 'adminfont-rules',
 	submitUrl: 'settings',
 	wrapperClass: 'form-wrapper',
 	modal: [
 		{
 			key: 'payment_methods',
 			type: 'expandable-panel',
-			buttonEnable: true,
 			modal: methods,
 		},
 	],

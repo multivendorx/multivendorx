@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getApiLink, GoogleMap, Mapbox, useModules } from 'zyra';
+import { getApiLink, GoogleMap, Mapbox } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import Select from 'react-select';
 
@@ -14,6 +14,7 @@ type Category = {
 	id: number;
 	name: string;
 };
+
 interface StoresListProps {
 	orderby?: string;
 	order?: string;
@@ -32,10 +33,30 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	const [product, setProduct] = useState<[]>([]);
 	const [page, setPage] = useState(1);
 	const [total, setTotal] = useState(0);
-	const { modules } = useModules();
 	const [apiKey, setApiKey] = useState('');
+	const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
+	const [addressData, setAddressData] = useState({
+		location_lat: '',
+		location_lng: '',
+		address: '',
+		city: '',
+		state: '',
+		country: '',
+		zip: '',
+		timezone: '',
+	});
+	const [filters, setFilters] = useState({
+		address: '',
+		distance: '',
+		miles: '',
+		sort: orderby,
+		order: order,
+		category: category,
+		product: '',
+		location_lat: '',
+		location_lng: '',
+	});
 
-	const storesList = (window as any).storesList;
 	const settings = storesList.settings_databases_value;
 
 	const [isUserLocation, setIsUserLocation] = useState(false);
@@ -52,30 +73,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 		}
 	}, [settings]);
 
-	const [addressData, setAddressData] = useState({
-		location_lat: '',
-		location_lng: '',
-		address: '',
-		city: '',
-		state: '',
-		country: '',
-		zip: '',
-		timezone: '',
-	});
-
 	const totalPages = Math.ceil(total / perPage);
-
-	const [filters, setFilters] = useState({
-		address: '',
-		distance: '',
-		miles: '',
-		sort: orderby,
-		order: order,
-		category: category,
-		product: '',
-		location_lat: '',
-		location_lng: '',
-	});
 
 	useEffect(() => {
 		axios
@@ -109,7 +107,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 					headers: { 'X-WP-Nonce': storesList.nonce },
 					params: {
 						per_page: 10,
-						search: inputValue || undefined,
+						search: inputValue,
 						meta_key: 'multivendorx_store_id',
 					},
 				}
@@ -126,21 +124,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 
 	useEffect(() => {
-		handleSubmit();
-	}, [filters, page, perPage]);
-
-	useEffect(() => {
-		setPage(1);
-	}, [filters.product]);
-
-	const handleInputChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-	) => {
-		const { name, value } = e.target;
-		setFilters((prev) => ({ ...prev, [name]: value }));
-	};
-
-	const handleSubmit = () => {
 		axios({
 			method: 'GET',
 			url: getApiLink(storesList, 'store'),
@@ -153,13 +136,22 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 				},
 			},
 		})
-			.then((response) => {
-				setData(response.data.stores || []);
-				setTotal(response.data.all || 0);
-			})
-			.catch((error) =>
-				console.error('Error fetching filtered stores:', error)
+		.then((response) => {
+			setData(response.data || []);
+			setTotal(
+				Number(response?.headers?.['x-wp-total']) || 0
 			);
+		})
+		.catch((error) =>
+			console.error('Error fetching filtered stores:', error)
+		);
+	}, [filters, page, perPage]);
+
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		setFilters((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleLocationUpdate = (locationData: any) => {
@@ -216,7 +208,7 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 	};
 
 	const renderMapComponent = () => {
-		if (!modules.includes('geo-location') || !apiKey) {
+		if (!apiKey) {
 			return null;
 		}
 
@@ -248,31 +240,19 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 
 	return (
 		<>
-			{renderMapComponent()}
-			<div className="">
-				{/* Filter Bar */}
-				<form className="woocommerce-form woocommerce-form-login login">
-					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-						<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
-							Use My Current Location
-						</button>
-					</p>
-					<div className="clear"></div>
+			<div className="multivendorx-store">
+				{apiKey != '' && (
+					<>
+						<form className="filter-wrapper woocommerce-form woocommerce-form-login login">
 
-					<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-						<input
-							type="text"
-							name="address"
-							value={filters.address}
-							onChange={handleInputChange}
-							placeholder="Enter Address"
-							className="woocommerce-Input woocommerce-Input--text input-text"
-						/>
-					</p>
-					<div className="clear"></div>
-
-					<p className="form-row form-row-wide">
-						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+							<input
+								type="text"
+								name="address"
+								value={filters.address}
+								onChange={handleInputChange}
+								placeholder="Enter Address"
+								className="woocommerce-Input woocommerce-Input--text input-text"
+							/>
 							<select
 								name="distance"
 								value={filters.distance}
@@ -284,9 +264,6 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 								<option value="10">10</option>
 								<option value="25">25</option>
 							</select>
-						</p>
-
-						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
 							<select
 								name="miles"
 								value={filters.miles}
@@ -297,122 +274,153 @@ const MarketplaceStoreList: React.FC<StoresListProps> = ({
 								<option value="km">Kilometers</option>
 								<option value="nm">Nautical miles</option>
 							</select>
-						</p>
+						</form>
 
 						<p className="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-
-							<select
-								name="sort"
-								value={filters.sort}
-								onChange={handleInputChange}
-								className=""
-							>
-								<option value="name">Select</option>
-								<option value="category">By Category</option>
-								<option value="shipping">By Shipping</option>
-							</select>
+							<button className="woocommerce-button button wp-element-button" onClick={requestUserLocation}>
+								Use My Current Location
+							</button>
 						</p>
-					</p>
-				</form>
+					</>
+				)}
+				
+				<div className="filter-wrapper">
+					<div className="left-section">
+						<ul className="view-tabs">
+							<li
+								className={viewMode === 'list' ? 'active' : ''}
+								onClick={() => setViewMode('list')}
+							>
+								List
+							</li>
 
-				{filters.sort == 'category' && (
+							<li
+								className={viewMode === 'split' ? 'active' : ''}
+								onClick={() => setViewMode('split')}
+							>
+								Split
+							</li>
+							<li
+								className={viewMode === 'map' ? 'active' : ''}
+								onClick={() => setViewMode('map')}
+							>
+								Map
+							</li>
+						</ul>
+
+						<div className="">Viewing all {data.length} stores</div>
+					</div>
 					<select
-						name="category"
-						value={filters.category || ''}
+						name="sort"
+						value={filters.sort}
 						onChange={handleInputChange}
 						className=""
 					>
-						<option value="">Select Category</option>
-						{categoryList.map((cat) => (
-							<option key={cat.id} value={cat.id}>
-								{cat.name}
-							</option>
-						))}
+						<option value="name">Select</option>
+						<option value="category">By Category</option>
+						<option value="shipping">By Shipping</option>
 					</select>
-				)}
-				<Select
-					options={product.map((p) => ({
-						label: String(p.name),
-						value: p.id,
-					}))}
-					onInputChange={(value) => {
-						loadProducts(value);
-						return value;
-					}}
-					onChange={(selected) =>
-						setFilters((prev) => ({
-							...prev,
-							product: selected?.value ?? '',
-						}))
-					}
-					isClearable
-				/>
-				<div className="">Viewing all {data.length} stores</div>
+					{filters.sort == 'category' && (
+						<select
+							name="category"
+							value={filters.category || ''}
+							onChange={handleInputChange}
+							className=""
+						>
+							<option value="">Select Category</option>
+							{categoryList.map((cat) => (
+								<option key={cat.id} value={cat.id}>
+									{cat.name}
+								</option>
+							))}
+						</select>
+					)}
 
-				{/* Store Cards */}
-				<div className="">
-					{data &&
-						data.map((store) => (
-							<div key={store.id} className="">
-								<div className="">
-									<div className="">
-										<img src={store.image} />
-									</div>
-
-									<div className="">
-										<span>
-											{store.phone}
-										</span>
-										<span>
-											{store.address}
-										</span>
-									</div>
-								</div>
-
-								<h2 className="">{store.store_name}</h2>
-
-								<div className="">
-									<p className="">Top Products</p>
-									{/* <div className="">
-                {vendor.topProducts && vendor.topProducts.length > 0 ? (
-                  vendor.topProducts.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt="Product"
-                      className=""
-                    />
-                  ))
-                ) : (
-                  <p className="">No products</p>
-                )}
-              </div> */}
-								</div>
-							</div>
-						))}
+					<Select
+						options={product.map((p) => ({
+							label: String(p.name),
+							value: p.id,
+						}))}
+						onInputChange={(value) => {
+							loadProducts(value);
+							return value;
+						}}
+						onChange={(selected) =>
+							setFilters((prev) => ({
+								...prev,
+								product: selected?.value ?? '',
+							}))
+						}
+						isClearable
+					/>
 				</div>
 
+				<div className={`store-list-wrapper ${ viewMode === 'split' ? 'is-split' : 'is-list'}`}>
+					<div className="store-list">
+						{data &&
+							data.map((store) => (
+								<div key={store.id} className="store">
+									<div className="store-image">
+										<img src={store.image} />
+										A
+									</div>
 
-				<div className="pagination">
-					<button
-						disabled={page === 1}
-						onClick={() => setPage((p) => p - 1)}
-						className="woocommerce-button button wp-element-button"
-					>
-						Previous
-					</button>
+									<div className="store-details">
+										<h2>{store.store_name}</h2>
+										<div className="contact-wrapper">
+											{store.phone && (
+												<span> <i className="dashicons dashicons-phone" />	{store.phone}</span>
+											)}
+											{store.address && (
+												<span><i className="dashicons dashicons-location" />{store.address}</span>
+											)}
+										</div>
 
-					<span>
-						Page {page} of {totalPages}
-					</span>
+										{/* <div className="">
+											<p className="">Top Products</p>
+											<div className="">
+												{vendor.topProducts && vendor.topProducts.length > 0 ? (
+													vendor.topProducts.map((img, idx) => (
+														<img
+															key={idx}
+															src={img}
+															alt="Product"
+															className=""
+														/>
+													))
+												) : (
+													<p className="">No products</p>
+												)}
+											</div>
+										</div> */}
+									</div>
+								</div>
+							))
+						}
+					</div>
 
-					<button
-						disabled={page >= totalPages}
-						onClick={() => setPage((p) => p + 1)}
-						className="woocommerce-button button wp-element-button"
-					>
-						Next
-					</button>
+					{renderMapComponent()}
+					<div className="pagination">
+						<button
+							disabled={page === 1}
+							onClick={() => setPage((p) => p - 1)}
+							className="woocommerce-button button wp-element-button"
+						>
+							Previous
+						</button>
+
+						<span>
+							Page {page} of {totalPages}
+						</span>
+
+						<button
+							disabled={page >= totalPages}
+							onClick={() => setPage((p) => p + 1)}
+							className="woocommerce-button button wp-element-button"
+						>
+							Next
+						</button>
+					</div>
 				</div>
 			</div>
 		</>

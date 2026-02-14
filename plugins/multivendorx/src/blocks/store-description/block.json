@@ -1,13 +1,48 @@
 {
-	"apiVersion": 2,
-	"name": "multivendorx/store-description",
-	"title": "Store Description",
-	"category": "multivendorx",
-	"icon": "store",
-	"description": "Displays the store name",
-	"supports": {
-		"html": false
-	},
-	"textdomain": "multivendorx",
-	"editorScript": "file:./index.js"
+  "apiVersion": 2,
+  "name": "multivendorx/store-description",
+  "title": "Store Description",
+  "category": "multivendorx-store-shop",
+  "icon": "text-page",
+  "description": "Show a brief description of the store to help customers understand what the seller offers.",
+  "editorScript": "file:./index.js",
+    "script": "file:./index.js",
+  "supports": {
+    "align": true,
+    "alignWide": false,
+    "html": false,
+    "color": {
+      "text": true,
+      "__experimentalDefaultControls": {
+        "text": true
+      }
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "__experimentalDefaultControls": {
+        "margin": true,
+        "padding": true
+      }
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "style": true,
+        "width": true
+      }
+    }
+  },
+  "editorStyle": [ "multivendorx-common-block-style" ],
+  "style": [ "multivendorx-common-block-style" ]
 }

@@ -1,14 +1,14 @@
 import { __ } from '@wordpress/i18n';
 
 export default {
-	id: 'non-compliance',
+	id: 'compliance',
 	priority: 2,
-	name: __('Compliance Management', 'mvx-pro'),
-	desc: __(
+	headerTitle: __('Compliance Management', 'multivendorx'),
+	headerDescription: __(
 		'Control store access based on verification status. Ensure only compliant stores can operate fully on your marketplace.',
-		'mvx-pro'
+		'multivendorx'
 	),
-	icon: 'adminfont-compliance',
+	headerIcon: 'adminfont-compliance',
 	submitUrl: 'settings',
 	modal: [
 		{
@@ -30,27 +30,26 @@ export default {
 							type: 'setup',
 							title: 'Identity verification',
 							des: 'Store is verified through official business documents like trade license or permit.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=identity-verification`,
+							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity`,
 						},
 						{
 							key: 'display_advertised_product_on_top',
 							type: 'setup',
 							title: 'Social verification',
 							des: 'Store authenticity is validated using connected social media accounts.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=identity-verification`,
+							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity`,
 						},
 						{
 							key: 'out_of_stock_visibility',
 							type: 'setup',
 							title: 'Email verification',
 							des: 'The registered email address is verified to confirm the authenticity.',
-							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=identity-verification`,
+							link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-identity`,
 						},
 						{
 							key: 'required_tasks',
-							type: 'multi-checkbox',
+							type: 'checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-
 							options: [
 								{
 									key: 'block_dashboard_access',
@@ -132,9 +131,8 @@ export default {
 						},
 						{
 							key: 'non_compliance_action',
-							type: 'multi-checkbox',
+							type: 'checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-
 							options: [
 								{
 									key: 'disable_product',
@@ -218,7 +216,6 @@ export default {
 							key: 'non_compliance_action',
 							type: 'multi-checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-
 							options: [
 								{
 									key: 'block_store_access',
@@ -286,9 +283,8 @@ export default {
 						},
 						{
 							key: 'non_compliance_action',
-							type: 'multi-checkbox',
+							type: 'checkbox',
 							label: __('Non-Compliance action', 'multivendorx'),
-
 							options: [
 								{
 									key: 'disable_payouts',

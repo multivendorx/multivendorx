@@ -1,0 +1,61 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-banner",
+  "title": "Store Banner",
+  "category": "multivendorx-store-shop",
+  "icon": "cover-image",
+  "description": "Display a visual banner at the top of the store page to highlight the store’s brand and promotions.",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "height": {
+      "type": "string",
+      "default": "400px"
+    },
+    "minHeight": {
+      "type": "string",
+      "default": "300px"
+    },
+    "overlayColor": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "overlayOpacity": {
+      "type": "number",
+      "default": 30
+    },
+    "contentColor": {
+      "type": "string",
+      "default": "#ffffff"
+    },
+    "align": {
+      "type": "string"
+    },
+    "backgroundPosition": {
+      "type": "string",
+      "default": "center"
+    },
+    "contentPosition": {
+      "type": "string",
+      "default": "center center"
+    },
+    "template": {
+      "type": "string",
+      "default": "template-1"
+    },
+    "innerContentEnabled": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  }
+}

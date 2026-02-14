@@ -6,7 +6,7 @@ body:has(.admin-main-wrapper) {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  background: rgb(246 248 260 / 50%) !important;
+  // background: rgb(246 248 260 / 50%) !important;
 }
 
 .sb-show-main {
@@ -62,15 +62,15 @@ a {
   outline: none;
 }
 
-body:has(.admin-main-wrapper) {
-  background: #f2f5fd8f;
-}
+// body:has(.admin-main-wrapper) {
+//   background: #f2f5fd8f;
+// }
 
 #admin-main-wrapper {
   margin-left: -1.25rem;
 }
 
-.multivendorx-main-wrapper,
+.admin-main-wrapper,
 #multivendorx-setup-wizard {
   font-family: Figtree, sans-serif;
 
@@ -363,6 +363,11 @@ $index: 1;
   &.small {
     width: 25%;
   }
+
+  &.email-input,
+  &.email-input:focus{
+    border: none;
+  }
 }
 
 .react-select input:focus {
@@ -375,7 +380,6 @@ $index: 1;
   gap: 0.625rem;
   align-items: center;
   color: $text-color;
-  // width: 100%;
 
   span {
     font-size: 0.95rem;
@@ -416,6 +420,15 @@ $index: 1;
       .parameter {
         padding-left: 0.313rem;
         border-left: $border-light-small;
+      }
+    }
+
+    &:has(.select-wrapper){
+      .input-wrapper{
+        padding-right: 0;
+      }
+      .parameter{
+        padding-left: 0;
       }
     }
   }
@@ -613,7 +626,7 @@ $index: 1;
   padding: .125rem .438rem;
   position: absolute;
   right: 1rem;
-  top: 0.5rem;
+  top: 1rem;
   transform: translateY(-50%);
   width: fit-content;
   display: flex;
@@ -1108,7 +1121,7 @@ $index: 1;
     display: flex;
     gap: 0.125rem;
 
-    .inline-action-btn:has(.delete) {
+    .inline-action-btn:has(-delete) {
       color: $accent-color;
     }
   }
@@ -1126,7 +1139,6 @@ $index: 1;
   .search-section {
     display: flex;
     align-items: center;
-    width: 100%;
 
     i {
       font-size: 1.25rem;
@@ -1143,6 +1155,13 @@ $index: 1;
         box-shadow: none !important;
       }
     }
+
+    &.mini-search{
+      .input-wrapper{
+        display: none;
+      }
+    }
+    &.mini-search{
   }
 
   select {
@@ -1169,7 +1188,13 @@ $index: 1;
       color: $theme-color;
     }
   }
-
+  .search-icon-trigger{
+    font-size: 1.25rem;
+    padding: .45rem;
+    padding-bottom: 0.313rem;
+    color: $theme-color;
+    cursor: pointer;
+  }
   // dropdown style 
   ul {
     position: absolute;
@@ -1224,6 +1249,7 @@ $index: 1;
       }
     }
   }
+}
 }
 
 .search-section {
@@ -1348,31 +1374,6 @@ $index: 1;
   }
 }
 
-// tabs checklist style start
-.checklist {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-
-  li {
-    font-size: 0.95rem;
-    width: 50%;
-    color: #000000db;
-
-    i {
-      font-size: 1.125rem;
-      padding-right: 0.5rem;
-
-      &.check {
-        color: green;
-      }
-
-      &.close {
-        color: $accent-color;
-      }
-    }
-  }
-}
 
 // highlight section start
 @keyframes animate {

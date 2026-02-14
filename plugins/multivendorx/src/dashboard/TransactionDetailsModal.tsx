@@ -1,7 +1,7 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { CommonPopup, FormGroup, FormGroupWrapper } from 'zyra';
-import { formatCurrency, formatWcShortDate } from '@/services/commonFunction';
+import { PopupUI } from 'zyra';
+import { formatCurrency } from '@/services/commonFunction';
 
 type TransactionRow = {
 	id: number;
@@ -23,10 +23,10 @@ type Props = {
 const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 	return (
 		<>
-			<CommonPopup
+			<PopupUI
 				open={open}
 				onClose={onClose}
-				width="31.25rem"
+				width={31.25}
 				height="70%"
 				header={{
 					icon: 'wallet-in',
@@ -45,7 +45,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Date', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatWcShortDate(transaction.date)}
+								{transaction.date}
 							</div>
 						</div>
 						<div className="items">
@@ -127,7 +127,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 						</div>
 					</div>
 				</>
-			</CommonPopup>
+			</PopupUI>
 		</>
 	);
 };

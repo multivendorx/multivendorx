@@ -2,6 +2,7 @@
 
 .expandable-panel-group {
     margin: 0;
+    width: 100%;
 
     .expandable-item {
         margin-bottom: 1rem;
@@ -116,6 +117,23 @@
             .right-section {
                 display: flex;
                 align-items: center;
+                gap: 0.5rem;
+
+                .price-field {
+                    font-size: 1.25rem;
+                    font-weight: 500;
+                    display: flex;
+                    flex-direction: column;
+
+                    .desc {
+                        padding-left: 0.5rem;
+                    }
+                }
+
+                .settings-btn {
+                    display: flex;
+                    gap: 0.5rem;
+                }
 
                 .disable-icon {
                     color: gray;
@@ -145,64 +163,63 @@
             &.open {
                 opacity: 1;
                 max-height: 50rem;
-                padding: 1rem;
             }
 
-            .form-group {
-                display: flex;
-                gap: 0.5rem;
-                padding: 0.5rem 1rem 0.5rem 0;
-                margin: 0;
-                width: 100%;
+            // .form-group {
+            //     display: flex;
+            //     gap: 0.5rem;
+            //     padding: 0.5rem 1rem 0.5rem 0;
+            //     margin: 0;
+            //     width: 100%;
 
-                label:first-child {
-                    width: 25%;
-                    color: $text-color;
-                    font-size: 0.95rem;
-                }
+            //     label:first-child {
+            //         width: 25%;
+            //         color: $text-color;
+            //         font-size: 0.95rem;
+            //     }
 
-                .input-content {
-                    width: 75%;
-                }
+            //     .input-content {
+            //         width: 75%;
+            //     }
 
-                textarea {
-                    background: $background-white;
-                }
+            //     textarea {
+            //         background: $background-white;
+            //     }
 
-                .expandable-panel-group {
-                    .expandable-item {
-                        background: $background-white;
-                    }
+            //     .expandable-panel-group {
+            //         .expandable-item {
+            //             background: $background-white;
+            //         }
 
-                }
-            }
+            //     }
+            // }
 
-            .form-group:has(.description-wrapper) {
-                .input-content {
-                    width: 100%;
-                }
-            }
+            // .form-group:has(.description-wrapper) {
+            //     .input-content {
+            //         width: 100%;
+            //     }
+            // }
 
-            .form-group:has(.wizard-step) {
-                .input-content {
-                    width: 100%;
-                }
-            }
+            // .form-group:has(.wizard-step) {
+            //     .input-content {
+            //         width: 100%;
+            //     }
+            // }
 
-            &.social-verification {
-                padding-top: 0.5rem;
+            // &.social-verification {
+            //     padding-top: 0.5rem;
 
-                .expandable-header {
-                    background: transparent;
-                    border: $border-light-small;
-                    padding: 0.625rem;
+            //     .expandable-header {
+            //         background: transparent;
+            //         border: $border-light-small;
+            //         padding: 0.625rem;
 
-                    .expandable-header-icon {
-                        width: 2rem;
-                        height: 2rem;
-                    }
-                }
-            }
+            //         .expandable-header-icon {
+            //             width: 2rem;
+            //             height: 2rem;
+            //         }
+            //     }
+            // }
 
             .panel-description {
                 display: flex;
@@ -237,7 +254,7 @@
                 .clickable-items {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 0.5rem;    
+                    gap: 0.5rem;
                 }
             }
         }
@@ -271,99 +288,99 @@
     }
 }
 
-.description-wrapper {
-    padding: 1rem 1.5rem;
-    background: #a7a6a62b;
-    border-radius: 0.313rem;
-    width: 100%;
-    box-sizing: border-box;
+// .description-wrapper {
+//     padding: 1rem 1.5rem;
+//     background: #a7a6a62b;
+//     border-radius: 0.313rem;
+//     width: 100%;
+//     box-sizing: border-box;
 
-    .title {
-        font-size: 1.063rem;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 0.45rem;
+//     .title {
+//         font-size: 1.063rem;
+//         font-weight: 500;
+//         display: flex;
+//         align-items: center;
+//         gap: 0.45rem;
 
-        i {
-            font-size: 1.313rem;
-            padding-right: 0.313rem;
-            color: $theme-color;
-        }
-    }
+//         i {
+//             font-size: 1.313rem;
+//             padding-right: 0.313rem;
+//             color: $theme-color;
+//         }
+//     }
 
-    .des {
-        padding-top: 0.5rem;
-    }
-}
+//     .des {
+//         padding-top: 0.5rem;
+//     }
+// }
 
-.fileds-wrapper {
-    width: 100%;
+// .fileds-wrapper {
+//     width: 100%;
 
-    .fileds {
-        margin: 0;
-        padding-top: 1rem;
+//     .fileds {
+//         margin: 0;
+//         padding-top: 1rem;
 
-        .row-item {
-            padding: 0.875rem;
-            background: #f3f2f2cf;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.5rem;
+//         .row-item {
+//             padding: 0.875rem;
+//             background: #f3f2f2cf;
+//             display: flex;
+//             justify-content: space-between;
+//             align-items: center;
+//             gap: 0.5rem;
 
-            .name {
-                display: flex;
-                gap: 0.5rem;
-                align-items: start;
+//             .name {
+//                 display: flex;
+//                 gap: 0.5rem;
+//                 align-items: start;
 
-                div {
-                    font-size: 1.063rem;
-                    line-height: 1rem;
-                }
+//                 div {
+//                     font-size: 1.063rem;
+//                     line-height: 1rem;
+//                 }
 
-                .edit-row {
-                    display: flex;
-                    align-items: center;
-                    gap: 1rem;
+//                 .edit-row {
+//                     display: flex;
+//                     align-items: center;
+//                     gap: 1rem;
 
-                    button {
-                        border: none;
-                        background: transparent;
-                    }
+//                     button {
+//                         border: none;
+//                         background: transparent;
+//                     }
 
-                    .edit-form {
-                        display: flex;
-                        align-items: center;
-                        gap: 0.5rem;
-                    }
-                }
+//                     .edit-form {
+//                         display: flex;
+//                         align-items: center;
+//                         gap: 0.5rem;
+//                     }
+//                 }
 
-                .admin-badge {
-                    font-size: 0.7rem;
-                    padding: 0.313rem 0.5rem;
-                    line-height: 0.725rem;
-                }
-            }
+//                 .admin-badge {
+//                     font-size: 0.7rem;
+//                     padding: 0.313rem 0.5rem;
+//                     line-height: 0.725rem;
+//                 }
+//             }
 
-            .icon-wrapper {
-                opacity: 0;
-                transition: all 0.5s ease;
+//             .icon-wrapper {
+//                 opacity: 0;
+//                 transition: all 0.5s ease;
 
-                button {
-                    border: none;
-                    background: transparent;
-                    margin-left: 0.5rem;
-                    cursor: pointer;
-                }
-            }
+//                 button {
+//                     border: none;
+//                     background: transparent;
+//                     margin-left: 0.5rem;
+//                     cursor: pointer;
+//                 }
+//             }
 
-            &:hover .icon-wrapper {
-                opacity: 1;
-            }
-        }
-    }
-}
+//             &:hover .icon-wrapper {
+//                 opacity: 1;
+//             }
+//         }
+//     }
+// }
 
 // setup wizard start (clean unuse css)
 .welcome-wrapper {

@@ -1,3 +1,5 @@
+import { DownloadCSVOptions } from "./type";
+
 export function truncateText(text: string, maxLength: number) {
 	if (!text) {
 		return '-';
@@ -46,15 +48,6 @@ export function formatCurrency(amount: number | string): string {
 	return formatted;
 }
 
-export const formatWcShortDate = (dateString: any) => {
-	const date = new Date(dateString);
-	return date.toLocaleDateString('en-GB', {
-		day: '2-digit',
-		month: 'short',
-		year: 'numeric',
-	});
-};
-
 export function formatTimeAgo(dateString: string) {
 	// Force UTC
 	const date = new Date(dateString + 'Z');
@@ -67,10 +60,104 @@ export function formatTimeAgo(dateString: string) {
 	return `${Math.floor(diff / 86400)} day ago`;
 }
 
+// This function only removes time from the date-time object and return the formatted date.
+export const formatLocalDate = (date?: Date) =>
+	date ? date.toISOString().split('T')[0] : '';
 
-export const formatLocalDate = (date: Date): string => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
+export function printContent(divId: string) {
+	const source = document.getElementById(divId) as HTMLElement;
+	const printWindow = window.open('', '_blank');
+	if (!printWindow) {
+		return;
+	}
+	const cloned = source.cloneNode(true) as HTMLElement;
+	printWindow.document.write(cloned.innerHTML);
+	printWindow.focus();
+	printWindow.print();
+	printWindow.close();
+}
+
+export const formatDate = (date?: string): string => {
+	if (!date) return '-';
+
+	const d = new Date(date);
+	if (isNaN(d.getTime())) return '-';
+
+	return new Intl.DateTimeFormat('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+	}).format(d);
 };
+
+export const toWcIsoDate = (
+	date: Date,
+	type: 'start' | 'end'
+): string => {
+	const d = new Date(date);
+
+	if (type === 'start') {
+		d.setHours(0, 0, 0, 0);
+	} else {
+		d.setHours(23, 59, 59, 999);
+	}
+
+	return d.toISOString();
+};
+
+export const downloadCSV = <T extends Record<string, Primitive>>({
+	data,
+	filename = 'data.csv',
+	headers,
+}: DownloadCSVOptions<T>) => {
+	if (!data.length) return;
+
+	const keys = headers
+		? (Object.keys(headers) as (keyof T)[])
+		: (Object.keys(data[0]) as (keyof T)[]);
+
+	const csvRows: string[] = [];
+
+	// Header row
+	csvRows.push(
+		keys
+			.map((key) => `"${headers?.[key] ?? String(key)}"`)
+			.join(',')
+	);
+
+	// Data rows
+	data.forEach((row) => {
+		csvRows.push(
+			keys
+				.map((key) => {
+					const value = row[key];
+
+					const normalized =
+						value instanceof Date
+							? value.toISOString()
+							: value ?? '';
+
+					const escaped = String(normalized).replace(/"/g, '""');
+					return `"${escaped}"`;
+				})
+				.join(',')
+		);
+	});
+
+	const blob = new Blob([csvRows.join('\n')], {
+		type: 'text/csv;charset=utf-8;',
+	});
+
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement('a');
+
+	link.href = url;
+	link.download = filename;
+
+	document.body.appendChild(link);
+	link.click();
+
+	document.body.removeChild(link);
+	URL.revokeObjectURL(url);
+};
+

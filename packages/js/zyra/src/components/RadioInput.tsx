@@ -1,54 +1,39 @@
-/**
- * External dependencies
- */
-import React, { ChangeEvent } from 'react';
+// External dependencies
+import React from 'react';
+import { FieldComponent } from './types';
 
 // Types
 interface RadioOption {
     key: string;
-    keyName?: string;
     value: string | number;
     label?: string;
     name?: string;
-    color?: string[] | string; // Can be an array of colors or an image URL
 }
 
 interface RadioInputProps {
     name?: string;
-    wrapperClass?: string;
-    inputWrapperClass?: string;
-    activeClass?: string;
-    inputClass?: string;
     idPrefix?: string;
-    type?: 'radio-select' | 'radio-color' | 'default';
+    type?: 'default';
     options: RadioOption[];
     value?: string;
-    onChange?: ( e: ChangeEvent< HTMLInputElement > ) => void;
-    radiSelectLabelClass?: string;
-    labelImgClass?: string;
-    labelOverlayClass?: string;
-    labelOverlayText?: string;
-    proSetting?: boolean;
-    description?: string;
-    descClass?: string;
-    keyName?: string;
+    onChange: (val: string | number) => void;
 }
 
-const RadioInput: React.FC< RadioInputProps > = ( props ) => {
+const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
     return (
         <>
-            <div className={ props.wrapperClass }>
+            <div className="settings-form-group-radio">
                 { props.options.map( ( option ) => {
                     const checked = props.value === option.value;
                     return (
                         <div
                             key={ option.key }
-                            className={ `${ props.inputWrapperClass } ${
-                                checked ? props.activeClass : ''
-                            }` }
+                            className={`radio-basic-input-wrap ${
+                                checked ? 'radio-select-active' : ''
+                            }`}
                         >
                             <input
-                                className={ props.inputClass }
+                                className="setting-form-input"
                                 id={ `${ props.idPrefix }-${ option.key }` }
                                 type="radio"
                                 name={ option.name }
@@ -58,64 +43,43 @@ const RadioInput: React.FC< RadioInputProps > = ( props ) => {
                             />
                             <label
                                 htmlFor={ `${ props.idPrefix }-${ option.key }` }
-                                className={
-                                    props.type === 'radio-select'
-                                        ? props.radiSelectLabelClass
-                                        : ''
-                                }
                             >
                                 { option.label }
-                                { props.type === 'radio-color' && (
-                                    <p className="color-palette">
-                                        { Array.isArray( option.color ) &&
-                                            option.color.map(
-                                                ( color, index ) => (
-                                                    <div
-                                                        key={ index }
-                                                        style={ {
-                                                            backgroundColor:
-                                                                color,
-                                                        } }
-                                                    >
-                                                        { ' ' }
-                                                        &nbsp;{ ' ' }
-                                                    </div>
-                                                )
-                                            ) }
-                                    </p>
-                                ) }
-                                { props.type === 'radio-select' &&
-                                    typeof option.color === 'string' && (
-                                        <>
-                                            <img
-                                                src={ option.color }
-                                                alt={ option.label }
-                                                className={
-                                                    props.labelImgClass
-                                                }
-                                            />
-                                            <div
-                                                className={
-                                                    props.labelOverlayClass
-                                                }
-                                            >
-                                                { props.labelOverlayText }
-                                            </div>
-                                        </>
-                                    ) }
                             </label>
                         </div>
                     );
                 } ) }
             </div>
-            { props.description && (
-                <p
-                    className={ props.descClass }
-                    dangerouslySetInnerHTML={ { __html: props.description } }
-                ></p>
-            ) }
         </>
     );
+};
+
+const RadioInput: FieldComponent = {
+    render: ({ field, value, onChange, canAccess }) => (
+        <RadioInputUI
+            name={field.name}
+            idPrefix={field.idPrefix}
+            value={
+                typeof value === 'number'
+                    ? value.toString()
+                    : value
+            }
+            options={Array.isArray(value) ? value : []} // array of radio options (ensure it's an array)
+            onChange={(val) => {
+                if (!canAccess) return;
+                onChange(val)
+            }}
+        />
+    ),
+
+    validate: (field, value) => {
+        if (field.required && !value?.[field.key]) {
+            return `${field.label} is required`;
+        }
+
+        return null;
+    },
+
 };
 
 export default RadioInput;

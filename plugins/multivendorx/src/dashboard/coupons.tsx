@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
-	AdminButton,
-	BasicInput,
-	CommonPopup,
+	AdminButtonUI,
+	BasicInputUI,
 	FormGroup,
 	FormGroupWrapper,
-	getApiLink,
-	MultiCalendarInput,
-	ProPopup,
-	SelectInput,
-	Table,
-	TableCell,
-	TextArea,
-	ToggleSetting,
+	PopupUI,
+	SelectInputUI,
+	TextAreaUI,
+	ToggleSettingUI,
+	TableCard,
 } from 'zyra';
 import {
 	ColumnDef,
@@ -21,8 +17,9 @@ import {
 	PaginationState,
 } from '@tanstack/react-table';
 import axios from 'axios';
-import { formatCurrency, formatWcShortDate } from '../services/commonFunction';
-import { Dialog } from '@mui/material';
+import Popup from '../components/Popup/Popup';
+import { categoryCounts, QueryProps, TableRow } from '@/services/type';
+
 
 type CouponRow = {
 	id: number;
@@ -36,21 +33,12 @@ type CouponRow = {
 	status?: string;
 };
 
-type FilterData = {
-	searchAction?: string;
-	searchField?: string;
-	stock_status?: string;
-	couponType?: string;
-	categoryFilter?: string;
-};
-
-const COUPON_STATUS_LABELS: Record<string, string> = {
+const COUPON_STATUS_MAP: Record<string, string> = {
 	all: __('All', 'multivendorx'),
 	publish: __('Published', 'multivendorx'),
 	draft: __('Draft', 'multivendorx'),
 	pending: __('Pending', 'multivendorx'),
 };
-
 const discountOptions = [
 	{ label: 'Percentage discount', value: 'percent' },
 	// { label: 'Fixed cart discount', value: 'fixed_cart' },
@@ -76,34 +64,20 @@ const formatDateForInput = (dateString?: string | null) => {
 };
 
 const AllCoupon: React.FC = () => {
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalRows, setTotalRows] = useState<number>(0);
+	const [rowIds, setRowIds] = useState<number[]>([]);
+	const [categoryCounts, setCategoryCounts] = useState<
+		categoryCounts[] | null
+	>(null);
+
 	const [validationErrors, setValidationErrors] = useState<{
 		[key: string]: string;
 	}>({});
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [selectedCoupon, setSelectedCoupon] = useState<{
-		id: number;
-		code: string;
-	} | null>(null);
-	const [dateFilter, setDateFilter] = useState<{
-		start_date: Date;
-		end_date: Date;
-	}>({
-		start_date: new Date(
-			new Date().getFullYear(),
-			new Date().getMonth() - 1,
-			1
-		),
-		end_date: new Date(),
-	});
-	const bulkSelectRef = useRef<HTMLSelectElement>(null);
-	// delete popup 
-	const handleDeleteClick = (rowData: CouponRow) => {
-		setSelectedCoupon({
-			id: rowData.id,
-			code: rowData.code,
-		});
-		setConfirmOpen(true);
-	};
+	const [selectedCoupon, setSelectedCoupon] = useState<{id: number;} | null>(null);
+
 
 	const handleConfirmDelete = async () => {
 		if (!selectedCoupon) return;
@@ -117,12 +91,7 @@ const AllCoupon: React.FC = () => {
 					},
 				}
 			);
-
-			// Refresh list
-			requestData(
-				pagination.pageSize,
-				pagination.pageIndex + 1
-			);
+			fetchData({});
 		} catch (err) {
 			console.error('Failed to delete coupon', err);
 		} finally {
@@ -194,19 +163,15 @@ const AllCoupon: React.FC = () => {
 
 	const [data, setData] = useState<CouponRow[]>([]);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	const [totalRows, setTotalRows] = useState<number>(0);
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
 	});
 	const [AddCoupon, setAddCoupon] = useState(false);
 
-	const [pageCount, setPageCount] = useState(0);
 	const [activeTab, setActiveTab] = useState('general');
 
-	const [couponTypeCounts, setCouponTypeCounts] = useState<
-		{ key: string; name: string; count: number }[]
-	>([]);
+
 	const handleEditCoupon = async (couponId: number) => {
 		try {
 			const res = await axios.get(
@@ -326,9 +291,7 @@ const AllCoupon: React.FC = () => {
 				customer_email: '',
 				id: undefined,
 			});
-
-			// Reload list
-			requestData(pagination.pageSize, pagination.pageIndex + 1);
+			fetchData({});
 		} catch (err) {
 			console.error('Error saving coupon:', err);
 		}
@@ -342,11 +305,10 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Discount type', 'multivendorx')} htmlFor="discount_type">
-							<SelectInput
+							<SelectInputUI
 								name="discount_type"
 								value={formData.discount_type}
 								options={discountOptions}
-								type="single-select"
 								onChange={(val: any) =>
 									setFormData({ ...formData, discount_type: val?.value || '' })
 								}
@@ -357,7 +319,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Coupon amount', 'multivendorx')} htmlFor="coupon_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="coupon_amount"
 								value={formData.coupon_amount}
@@ -368,8 +330,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Allow free shipping', 'multivendorx')} htmlFor="free_shipping">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -380,7 +341,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Coupon expiry date', 'multivendorx')} htmlFor="expiry_date">
-							<BasicInput
+							<BasicInputUI
 								type="date"
 								name="expiry_date"
 								value={formData.expiry_date}
@@ -399,7 +360,7 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Usage limit per coupon', 'multivendorx')} htmlFor="usage_limit">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="usage_limit"
 								value={formData.usage_limit}
@@ -410,7 +371,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Limit usage to X items', 'multivendorx')} htmlFor="limit_usage_to_x_items">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="limit_usage_to_x_items"
 								value={formData.limit_usage_to_x_items}
@@ -421,7 +382,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Usage limit per user', 'multivendorx')} htmlFor="usage_limit_per_user">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="usage_limit_per_user"
 								value={formData.usage_limit_per_user}
@@ -442,7 +403,7 @@ const AllCoupon: React.FC = () => {
 				<>
 					<FormGroupWrapper>
 						<FormGroup label={__('Minimum spend', 'multivendorx')} htmlFor="minimum_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="minimum_amount"
 								value={formData.minimum_amount}
@@ -453,7 +414,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Maximum spend', 'multivendorx')} htmlFor="maximum_amount">
-							<BasicInput
+							<BasicInputUI
 								type="number"
 								name="maximum_amount"
 								value={formData.maximum_amount}
@@ -464,8 +425,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Individual use only', 'multivendorx')} htmlFor="individual_use">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -478,8 +438,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Exclude sale items', 'multivendorx')} htmlFor="exclude_sale_items">
-							<ToggleSetting
-
+							<ToggleSettingUI
 								options={[
 									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
 									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
@@ -492,7 +451,7 @@ const AllCoupon: React.FC = () => {
 						</FormGroup>
 
 						<FormGroup label={__('Allowed emails', 'multivendorx')} htmlFor="customer_email">
-							<BasicInput
+							<BasicInputUI
 								type="text"
 								name="customer_email"
 								value={formData.customer_email}
@@ -509,16 +468,13 @@ const AllCoupon: React.FC = () => {
 
 	const fetchCouponStatusCounts = async () => {
 		try {
-			const statuses = ['all', 'publish', 'draft', 'pending'];
-
-			const counts = await Promise.all(
-				statuses.map(async (status) => {
+			const results = await Promise.allSettled(
+				Object.keys(COUPON_STATUS_MAP).map(async (status) => {
 					const params: any = {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
+						status: status === 'all' ? 'any' : status,
 					};
-
-					params.status = status === 'all' ? 'any' : status;
 
 					const res = await axios.get(
 						`${appLocalizer.apiUrl}/wc/v3/coupons`,
@@ -531,130 +487,29 @@ const AllCoupon: React.FC = () => {
 					const total = parseInt(res.headers['x-wp-total'] || '0');
 
 					return {
-						key: status,
-						name: COUPON_STATUS_LABELS[status],
+						value: status,
+						label: COUPON_STATUS_MAP[status],
 						count: total,
 					};
 				})
 			);
 
-			setCouponTypeCounts(
-				counts.filter((c) => c.count > 0)
-			);
+			// Keep only successful ones
+			const counts = results
+				.filter(
+					(result): result is PromiseFulfilledResult<any> =>
+						result.status === 'fulfilled'
+				)
+				.map((result) => result.value);
+
+			setCategoryCounts(counts);
+
 		} catch (error) {
-			console.error('Failed to fetch coupon status counts:', error);
+			console.error('Unexpected error:', error);
 		}
 	};
 
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage: number,
-		currentPage: number,
-		stockStatus?: string,
-		searchField?: string,
-		couponType?: string,
-		categoryFilter?: string,
-		startDate?: Date,
-		endDate?: Date
-	) {
-		// Set default values if undefined
-		stockStatus = stockStatus || '';
-		searchField = searchField || '';
-		couponType = couponType || '';
-		categoryFilter = categoryFilter || 'any';
-		startDate = startDate || new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
-		endDate = endDate || new Date();
-
-		setData(null);
-
-		// Build the base parameters object
-		const params: any = {
-			status: categoryFilter,
-			page: currentPage,
-			row: rowsPerPage,
-			meta_key: 'multivendorx_store_id',
-			value: appLocalizer.store_id,
-		};
-
-		if (startDate && endDate) {
-			params.after = startDate;
-			params.before = endDate;
-		}
-
-		if (stockStatus) {
-			params.stock_status = stockStatus;
-		}
-
-		if (searchField) {
-			params.search = searchField;
-		}
-		if (couponType) {
-			params.discount_type = couponType;
-		}
-		axios({
-			method: 'GET',
-			url: `${appLocalizer.apiUrl}/wc/v3/coupons`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: params, // Use the dynamically built params object
-		})
-			.then((response) => {
-				const total = parseInt(response.headers['x-wp-total']);
-				setTotalRows(total);
-				setPageCount(Math.ceil(total / rowsPerPage));
-
-				// Map WooCommerce coupon data to our table rows
-				const formatted = response.data.map((coupon: any) => ({
-					id: coupon.id,
-					code: coupon.code,
-					discount_type: coupon.discount_type,
-					amount: coupon.amount,
-					usage_count: coupon.usage_count,
-					usage_limit: coupon.usage_limit,
-					date_expires: coupon.date_expires,
-					description: coupon.description,
-					status: coupon.status, // usually 'publish', 'draft', or 'trash'
-				}));
-				setData(formatted);
-				fetchCouponStatusCounts();
-			})
-
-			.catch(() => {
-				setData([]);
-				setTotalRows(0);
-				setPageCount(0);
-			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number,
-		filterData: FilterData
-	) => {
-		const date = filterData?.date || {
-			start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-			end_date: new Date(),
-		};
-		setDateFilter(date);
-		requestData(
-			rowsPerPage, // 1: rowsPerPage
-			currentPage, // 2: currentPage
-			filterData?.stock_status, // 4: stockStatus
-			filterData?.searchField, // 5: searchField (Assuming filterData uses searchField for the search box value)
-			filterData?.couponType,
-			filterData?.categoryFilter, // 6: couponType
-			date.start_date,
-			date.end_date,
-		);
-	};
-	const handleBulkAction = async () => {
-		const action = bulkSelectRef.current?.value;
-		const selectedIds = Object.keys(rowSelection)
-			.map((key) => {
-				const index = Number(key);
-				return data && data[index] ? data[index].id : null;
-			})
-			.filter((id): id is number => id !== null);
+	const handleBulkAction = async (action: string, selectedIds: []) => {
 
 		if (!selectedIds.length) {
 			return;
@@ -663,244 +518,138 @@ const AllCoupon: React.FC = () => {
 		if (!action) {
 			return;
 		}
-		setData(null);
 
 		try {
 			if (action === 'delete') {
 				await axios({
-					method: 'POST', // WooCommerce bulk endpoint uses POST
+					method: 'POST',
 					url: `${appLocalizer.apiUrl}/wc/v3/coupons/batch`,
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
 					data: {
-						delete: selectedIds, // array of product IDs to delete
+						delete: selectedIds,
 					},
 				});
 			}
 
 			// Refresh the data after action
 			fetchCouponStatusCounts();
-			requestData(pagination.pageSize, pagination.pageIndex + 1);
+			fetchData({});
 			setRowSelection({});
 		} catch (err: unknown) {
 			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
 		}
 	};
+
 	useEffect(() => {
 		fetchCouponStatusCounts();
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-	}, [pagination]);
+	}, []);
 
-	const columns: ColumnDef<CouponRow>[] = [
-		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
-		},
-		{
-			header: __('Coupon Code', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.code}>
-					{row.original.code}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Coupon Type', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.discount_type}>
-					{row.original.discount_type === 'percent'
-						? 'Percentage discount'
-						: row.original.discount_type === 'fixed_cart'
-							? 'Fixed cart discount'
-							: row.original.discount_type === 'fixed_product'
-								? 'Fixed product discount'
-								: '-'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Amount', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.amount}>
-					{formatCurrency(row.original.amount)}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Description', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.description || '-'}>
-					{row.original.description || '-'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Usage / Limit', 'multivendorx'),
-			cell: ({ row }) => {
-				const usageCount = row.original.usage_count ?? 0;
-				const usageLimit =
-					row.original.usage_limit && row.original.usage_limit > 0
-						? row.original.usage_limit
-						: '∞';
-				return <TableCell>{`${usageCount} / ${usageLimit}`}</TableCell>;
-			},
-		},
-		{
-			id: 'date_expires',
-			accessorKey: 'date_expires',
-			enableSorting: true,
-			header: __('Expiry Date', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell>
-					{formatWcShortDate(row.original.date_expires)}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Status', 'multivendorx'),
-			cell: ({ row }) => {
-				const statusMap: Record<string, string> = {
-					publish: 'Published',
-					draft: 'Draft',
-					pending: 'Pending',
-					trash: 'Trash',
-				};
+	const bulkActions = [
+		{ label: 'Delete', value: 'delete' },
+	];
 
-				const displayStatus = statusMap[row.original.status] || row.original.status;
-
-				return <TableCell type="status" status={displayStatus} />;
-			},
-		},
+	const headers = [
+		{ key: 'code', label: 'Coupon Code' },
+		{ key: 'discount_type', label: 'Coupon Type' },
+		{ key: 'amount', label: 'Amount' },
+		{ key: 'description', label: 'Description' },
+		{ key: 'usage_limit', label: 'Usage / Limit' },
+		{ key: 'date_expires', label: 'Expiry Date' },
+		{ key: 'status', label: 'Status' },
 		{
-			header: __('Action', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					type="action-dropdown"
-					rowData={row.original}
-					header={{
-						actions: [
-							{
-								label: __('Edit', 'multivendorx'),
-								icon: 'adminfont-edit',
-								onClick: (rowData: any) => {
-									handleEditCoupon(rowData.id);
-								},
-							},
-							{
-								label: __('Delete', 'multivendorx'),
-								icon: 'adminfont-delete delete',
-								onClick: (rowData: CouponRow) => {
-									handleDeleteClick(rowData);
-								},
-							}
-						],
-					}}
-				/>
-			),
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Edit', 'multivendorx'),
+					icon: 'edit',
+					onClick: (id: number) => handleEditCoupon(id),
+				},
+				{
+					label: __('Delete', 'multivendorx'),
+					icon: 'delete',
+					onClick: (id: number) => {
+						setSelectedCoupon({ id: id });
+						setConfirmOpen(true);
+					},
+					className: 'danger',
+				},
+			],
 		},
 	];
 
-	const searchFilter: RealtimeFilter[] = [
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					status: query.categoryFilter || '',
+					search: query.searchValue || '',
+					// after: query.filter?.created_at?.startDate
+					// 	? formatLocalDate(query.filter.created_at.startDate)
+					// 	: '',
+					// before: query.filter?.created_at?.endDate
+					// 	? formatLocalDate(query.filter.created_at.endDate)
+					// 	: '',
+					discount_type: query.filter?.couponType,
+					meta_key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+				},
+			})
+			.then((response) => {
+				const items = response.data || [];
+				const ids = items
+					.filter((ann: any) => ann?.id != null)
+					.map((ann: any) => ann.id);
+
+				setRowIds(ids);
+				const mappedRows: any[][] = items.map((ann: any) => [
+					{ display: ann.code, value: ann.code },
+					{
+						display: ann.discount_type,
+						value: ann.discount_type,
+					},
+					{ display: ann.amount, value: ann.amount },
+					{ display: ann.usage_count, value: ann.usage_count },
+					{ display: ann.usage_limit, value: ann.usage_limit },
+					{ display: ann.date_expires, value: ann.date_expires },
+					{ display: ann.description, value: ann.description },
+					{ display: ann.status, value: ann.status },
+				]);
+				setRows(mappedRows);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('Failed to fetch announcements', error);
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
+	};
+
+	const filters = [
 		{
-			name: 'searchField',
-			render: (updateFilter, filterValue) => (
-				<div className="search-section">
-					<input
-						type="text"
-						name="searchField"
-						placeholder={__('Search', 'multivendorx')}
-						value={filterValue || ''}
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						className="basic-select"
-					/>
-					<i className="adminfont-search"></i>
-				</div>
-			),
+			key: 'couponType',
+			label: 'Status',
+			type: 'select',
+			options: [
+				{ label: 'Percentage Discount', value: 'percent' },
+				{ label: 'Fixed Cart Discount', value: 'fixed_cart' },
+				{ label: 'Fixed Product Discount', value: 'fixed_product' },
+			],
 		},
+		{
+			key: 'created_at',
+			label: 'Created Date',
+			type: 'date',
+		}
 	];
 
-	const realtimeFilter: RealtimeFilter[] = [
-		{
-			name: 'couponType',
-			render: (
-				updateFilter: (key: string, value: string) => void,
-				filterValue: string | undefined
-			) => (
-				<div className="   group-field">
-					<select
-						name="couponType"
-						onChange={(e) =>
-							updateFilter(e.target.name, e.target.value)
-						}
-						value={filterValue || ''}
-						className="basic-select"
-					>
-						<option value="">
-							{__('All Types', 'multivendorx')}
-						</option>
-						<option value="percent">
-							{__('Percentage Discount', 'multivendorx')}
-						</option>
-						<option value="fixed_cart">
-							{__('Fixed Cart Discount', 'multivendorx')}
-						</option>
-						<option value="fixed_product">
-							{__('Fixed Product Discount', 'multivendorx')}
-						</option>
-					</select>
-				</div>
-			),
-		},
-		{
-			name: 'date',
-			render: (updateFilter) => (
-				<MultiCalendarInput
-					value={{
-						startDate: dateFilter.start_date,
-						endDate: dateFilter.end_date,
-					}}
-					onChange={(range: { startDate: Date; endDate: Date }) => {
-						const next = {
-							start_date: range.startDate,
-							end_date: range.endDate,
-						};
-
-						setDateFilter(next);
-						updateFilter('date', next);
-					}}
-				/>
-			),
-		},
-	];
-	const BulkAction: React.FC = () => (
-		<div className="action">
-			<i className="adminfont-form"></i>
-			<select
-				name="action"
-				ref={bulkSelectRef}
-				onChange={handleBulkAction}
-			>
-				<option value="">{__('Bulk actions')}</option>
-				<option value="delete">{__('Delete', 'multivendorx')}</option>
-			</select>
-		</div>
-	);
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -930,10 +679,10 @@ const AllCoupon: React.FC = () => {
 			</div>
 
 			{AddCoupon && (
-				<CommonPopup
+				<PopupUI
 					open={AddCoupon}
 					onClose={() => setAddCoupon(false)}
-					width="31.25rem"
+					width={31.25}
 					height="100%"
 					header={{
 						icon: 'coupon',
@@ -944,32 +693,29 @@ const AllCoupon: React.FC = () => {
 						),
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'contact-form',
 									text: __('Draft', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => handleSave('draft'),
 								},
 								{
 									icon: 'save',
 									text: __('Publish', 'multivendorx'),
-									className: 'purple-bg',
 									onClick: () => handleSave('publish'),
 								},
 							]}
 						/>
 					}
-
 				>
 					<>
 						<FormGroupWrapper>
 							<FormGroup label={__('Coupon code', 'multivendorx')} htmlFor="title">
-								<BasicInput
+								<BasicInputUI
 									type="text"
 									name="title"
-
 									value={formData.title}
 									generate={true}
 									onChange={(e: any) =>
@@ -987,7 +733,7 @@ const AllCoupon: React.FC = () => {
 							</FormGroup>
 
 							<FormGroup label={__('Description (optional)', 'multivendorx')} htmlFor="title">
-								<TextArea
+								<TextAreaUI
 									name="content"
 									rowNumber={6}
 									value={formData.content}
@@ -1026,13 +772,16 @@ const AllCoupon: React.FC = () => {
 							)}
 						</div>
 					</>
-				</CommonPopup>
+				</PopupUI>
 			)}
-			<Dialog
+
+			<PopupUI
+				position="lightbox"
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
+				width={31.25}
 			>
-				<ProPopup
+				<Popup
 					confirmMode
 					title={__('Are you sure?', 'multivendorx')}
 					confirmMessage={
@@ -1051,24 +800,60 @@ const AllCoupon: React.FC = () => {
 						setSelectedCoupon(null);
 					}}
 				/>
-			</Dialog>
-
-			<Table
-				data={data}
-				columns={columns as ColumnDef<Record<string, any>, any>[]}
-				rowSelection={rowSelection}
-				onRowSelectionChange={setRowSelection}
-				defaultRowsPerPage={10}
-				pageCount={pageCount}
-				pagination={pagination}
-				onPaginationChange={setPagination}
-				realtimeFilter={realtimeFilter}
-				perPageOption={[10, 25, 50]}
-				handlePagination={requestApiForData}
-				totalCounts={totalRows}
-				categoryFilter={couponTypeCounts}
-				searchFilter={searchFilter}
-				bulkActionComp={() => <BulkAction />}
+			</PopupUI>
+			<PopupUI
+				position="lightbox"
+				open={confirmOpen}
+				onClose={() => {
+					setConfirmOpen(false);
+					setSelectedCoupon(null);
+				}}
+				showBackdrop={true}
+				header={{
+					icon: 'warning',
+					title: __('Are you sure?', 'multivendorx'),
+					showCloseButton: true
+				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								onClick: () => {
+									setConfirmOpen(false);
+									setSelectedCoupon(null);
+								},
+							},
+							{
+								icon: 'cross',
+								text: __('Delete', 'multivendorx'),
+								onClick: handleConfirmDelete,
+							},
+						]}
+					/>
+				}
+			>
+				<p>
+					{__('Are you sure you want to delete this coupon?', 'multivendorx')}
+				</p>
+			</PopupUI>
+			<TableCard
+				headers={headers}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={fetchData}
+				ids={rowIds}
+				categoryCounts={categoryCounts}
+				search={{}}
+				filters={filters}
+				bulkActions={bulkActions}
+				onBulkActionApply={(action: string, selectedIds: []) => {
+					handleBulkAction(action, selectedIds)
+				}}
+				format={appLocalizer.date_format}
 			/>
 		</>
 	);

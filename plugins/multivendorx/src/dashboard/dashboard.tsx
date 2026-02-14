@@ -15,7 +15,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import { AdminButton, Analytics, Card, Column, Container, getApiLink, InfoItem, MessageState, MultiCalendarInput, useModules } from 'zyra';
+import {  AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { formatCurrency, formatTimeAgo } from '@/services/commonFunction';
@@ -54,6 +54,7 @@ const Dashboard: React.FC = () => {
 	const [customers, setCustomers] = useState<any>([]);
 	const [lastWithdraws, setLastWithdraws] = useState<any>([]);
 	const [activities, setActivities] = useState<any>([]);
+	const [isLoading, setIsLoading] = useState(true);	
 	const [dateRange, setDateRange] = useState<DateRange>({
 		startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
 		endDate: new Date(),
@@ -62,6 +63,7 @@ const Dashboard: React.FC = () => {
 	const { modules } = useModules();
 
 	useEffect(() => {
+		setIsLoading(true);
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, 'review'),
@@ -80,6 +82,8 @@ const Dashboard: React.FC = () => {
 			.then((response) => {
 				const items = response.data.items || [];
 				setReview(items);
+			}).finally(() => {
+				setIsLoading(false);
 			})
 			.catch(() => {
 				setReview([]);
@@ -124,6 +128,9 @@ const Dashboard: React.FC = () => {
 
 				setPendingRefund(formatData);
 			})
+			.finally(() => {
+				setIsLoading(false);
+			})
 			.catch(() => {
 				setPendingRefund([]);
 			});
@@ -138,14 +145,17 @@ const Dashboard: React.FC = () => {
 					row: 5,
 					store_id: appLocalizer.store_id,
 					status: 'publish',
-					startDate: dateRange.startDate,
-					endDate: dateRange.endDate,
-					dashboard: true
+					// startDate: dateRange.startDate,
+					// endDate: dateRange.endDate,
+					// dashboard: true
 				},
 			})
 				.then((response) => {
-					setAnnouncement(response.data.items || []);
-				});
+					console.log("res",response)
+					setAnnouncement(response.data || []);
+				}).finally(() => {
+				setIsLoading(false);
+			});
 		}
 		axios({
 			method: 'GET',
@@ -181,6 +191,8 @@ const Dashboard: React.FC = () => {
 					};
 				});
 				setTopProducts(processed);
+			}).finally(() => {
+				setIsLoading(false);
 			})
 			.catch((error) => {
 				console.error('Error fetching top selling products:', error);
@@ -217,13 +229,15 @@ const Dashboard: React.FC = () => {
 						commission_amount: order.commission_amount
 							? formatCurrency(order.commission_amount)
 							: '-',
-						date: formatWcShortDate(order.date_created),
+						date: order.date_created,
 						status: order.status,
 						currency_symbol: order.currency_symbol,
 					};
 				});
 
 				setRecentOrders(orders);
+			}).finally(() => {
+				setIsLoading(false);
 			});
 
 		axios({
@@ -234,7 +248,9 @@ const Dashboard: React.FC = () => {
 		}).then((res: any) => {
 			const data = res.data || {};
 			setStore(data);
-		});
+		}).finally(() => {
+				setIsLoading(false);
+			});
 
 		axios({
 			method: 'GET',
@@ -254,7 +270,10 @@ const Dashboard: React.FC = () => {
 					parseInt(response.headers['x-wp-total']) || 0;
 				setTotalOrder(totalOrders);
 			})
-			.catch(() => { });
+			.catch(() => { })
+			.finally(() => {
+				setIsLoading(false);
+			});
 
 		axios({
 			method: 'GET',
@@ -275,6 +294,8 @@ const Dashboard: React.FC = () => {
 		})
 			.then((response) => {
 				setLastWithdraws(response.data.transaction || []);
+			}).finally(() => {
+				setIsLoading(false);
 			})
 			.catch(() => setLastWithdraws([]));
 
@@ -315,7 +336,9 @@ const Dashboard: React.FC = () => {
 				.slice(0, 5);
 
 			setCustomers(topCustomers)
-		});
+		}).finally(() => {
+				setIsLoading(false);
+			});
 
 		axios({
 			method: 'GET',
@@ -331,13 +354,15 @@ const Dashboard: React.FC = () => {
 		})
 			.then((response) => {
 				setActivities(response.data || []);
-			})
+			}).finally(() => {
+				setIsLoading(false);
+			});
 
 	}, [dateRange]);
 
 	const analyticsData = [
 		{
-			icon: 'adminfont-dollar',
+			icon: 'dollar',
 			number: formatCurrency(store?.commission?.total_order_amount || 0),
 			text: 'Total Revenue',
 			color: 'primary',
@@ -345,7 +370,7 @@ const Dashboard: React.FC = () => {
 			prev30: formatCurrency(store?.commission?.previous_30_days.total || 0)
 		},
 		{
-			icon: 'adminfont-order',
+			icon: 'order',
 			number: totalOrder,
 			text: 'Total Orders',
 			color: 'secondary',
@@ -353,7 +378,7 @@ const Dashboard: React.FC = () => {
 			prev30: formatCurrency(store?.commission?.previous_30_days.orders || 0)
 		},
 		{
-			icon: 'adminfont-store-seo',
+			icon: 'store-seo',
 			number: store?.visitors?.total || 0,
 			text: 'Store Views',
 			color: 'accent',
@@ -361,7 +386,7 @@ const Dashboard: React.FC = () => {
 			prev30: store?.visitors?.previous_30_days || 0
 		},
 		{
-			icon: 'adminfont-commission',
+			icon: 'commission',
 			number: formatCurrency(store?.commission?.commission_total || 0),
 			text: 'Commission Earned',
 			color: 'support',
@@ -369,15 +394,6 @@ const Dashboard: React.FC = () => {
 			prev30: formatCurrency(store?.commission?.previous_30_days.commission || 0)
 		},
 	];
-
-	const formatWcShortDate = (dateString: any) => {
-		const date = new Date(dateString);
-		return date.toLocaleDateString('en-GB', {
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric',
-		});
-	};
 
 	// Helper function to get dynamic greeting
 	const getGreeting = () => {
@@ -453,7 +469,7 @@ const Dashboard: React.FC = () => {
 				</div>
 
 				<div className="buttons-wrapper">
-					<MultiCalendarInput
+					<CalendarInput
 						onChange={(range: DateRange) => {
 							setDateRange({
 								startDate: range.startDate,
@@ -467,10 +483,11 @@ const Dashboard: React.FC = () => {
 			<Container >
 				<Column>
 					<Analytics
-						template="template-3"
+						variant="dashboard"
 						data={analyticsData.map((item) => ({
 							icon: item.icon,
 							iconClass: `${item.color}-bg`,
+							isLoading: {isLoading},
 							colorClass: item.color,
 							number: item.number,
 							text: __(item.text, 'multivendorx'),
@@ -549,7 +566,7 @@ const Dashboard: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<MessageState title={__('No sales found.', 'multivendorx')}/>
+							<ComponentStatusView title={__('No sales found.', 'multivendorx')}/>
 						)}
 
 					</Card>
@@ -571,8 +588,9 @@ const Dashboard: React.FC = () => {
 														? __('PayPal', 'multivendorx')
 														: ''
 										}
+										isLoading={isLoading}
 										descriptions={[
-											{ value: formatWcShortDate(item.date) },
+											{ value: item.date },
 										]}
 										amount={formatCurrency(item.amount)}
 									/>
@@ -585,12 +603,11 @@ const Dashboard: React.FC = () => {
 						</div>
 
 						{lastWithdraws && lastWithdraws.length > 0 && (
-							<AdminButton
+							<AdminButtonUI
 								buttons={{
 									icon: 'preview',
 									text: __('View transaction history', 'multivendorx'),
 									onClick: window.location.href = '/dashboard/wallet/transactions/',
-									className: 'purple-bg',
 								}}
 							/>
 						)}
@@ -869,7 +886,7 @@ const Dashboard: React.FC = () => {
 													</div>
 													<div className="order-number">
 														{customer.reason} |{' '}
-														{formatWcShortDate(customer.time)}
+														{customer.time}
 													</div>
 												</div>
 											</div>
@@ -898,6 +915,7 @@ const Dashboard: React.FC = () => {
 											text: customer.name?.charAt(0).toUpperCase(),
 											iconClass: 'red-color',
 										}}
+										isLoading={isLoading}
 										descriptions={[
 											{
 												value: `${customer.order_count} ${__('orders', 'multivendorx')}`,
@@ -980,9 +998,9 @@ const Dashboard: React.FC = () => {
 														/>
 													))}
 													<span>
-														{formatWcShortDate(
+														{
 															reviewItem.date_created
-														)}
+														}
 													</span>
 												</div>
 
@@ -1001,7 +1019,6 @@ const Dashboard: React.FC = () => {
 						</Card>
 					</Column>
 				)}
-
 			</Container>
 		</>
 	);

@@ -185,7 +185,7 @@ class Hooks {
 
         remove_action( 'woocommerce_order_status_completed', 'wc_paying_customer' );
 
-        if ($new_status == 'completed') {
+        if ( $new_status == 'completed' ) {
             // Check if order have suborder then sync.
             $suborders = MultiVendorX()->order->get_suborders( $order );
             if ( $suborders ) {
@@ -195,7 +195,7 @@ class Hooks {
                         $updated = true;
                     }
                 }
-    
+
                 if ( $updated ) {
                     $order->update_meta_data( Utill::ORDER_META_SETTINGS['order_status_synchronized'], true );
                     $order->save();
@@ -220,7 +220,7 @@ class Hooks {
 
         $store_id = $order ? absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true ) ) : 0;
 
-        if ($new_status != 'completed') {
+        if ( $new_status != 'completed' ) {
             return;
         }
 
@@ -264,84 +264,82 @@ class Hooks {
 
         $store_id = $order ? absint( $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true ) ) : 0;
 
-        $store = new Store($store_id);
+        $store = new Store( $store_id );
         if ( $order->get_parent_id() > 0 ) {
-            if ($new_status == 'processing') {
+            if ( $new_status == 'processing' ) {
                 do_action(
                     'multivendorx_notify_order_processing',
-                        'order_processing',
-                        array(
-                            'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                            'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                            'customer_email' => $order->get_billing_email(),
-                            'customer_phn' => $order->get_billing_phone(),
-                            'order_id'    => $order->get_id(),
-                            'category'    => 'activity',
-                        )
-                    );
+                    'order_processing',
+                    array(
+						'store_phone'      => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+						'customer_email' => $order->get_billing_email(),
+						'customer_phone'   => $order->get_billing_phone(),
+						'order_id'       => $order->get_id(),
+						'category'       => 'activity',
+					)
+                );
             }
 
-            if ($new_status == 'completed') {
+            if ( $new_status == 'completed' ) {
                 do_action(
                     'multivendorx_notify_order_completed',
-                        'order_completed',
-                        array(
-                            'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                            'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                            'customer_email' => $order->get_billing_email(),
-                            'customer_phn' => $order->get_billing_phone(),
-                            'order_id'    => $order->get_id(),
-                            'category'    => 'activity',
-                        )
-                    );
+                    'order_completed',
+                    array(
+						'store_phone'      => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+						'customer_email' => $order->get_billing_email(),
+						'customer_phone'   => $order->get_billing_phone(),
+						'order_id'       => $order->get_id(),
+						'category'       => 'activity',
+					)
+                );
             }
-            
-            if ($new_status == 'cancelled') {
+
+            if ( $new_status == 'cancelled' ) {
                 do_action(
                     'multivendorx_notify_order_cancelled',
-                        'order_cancelled',
-                        array(
-                            'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                            'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                            'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                            'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                            'customer_email' => $order->get_billing_email(),
-                            'customer_phn' => $order->get_billing_phone(),
-                            'order_id'    => $order->get_id(),
-                            'category'    => 'activity',
-                        )
-                    );
+                    'order_cancelled',
+                    array(
+						'admin_email'    => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
+						'admin_phone'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+						'store_phone'      => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+						'customer_email' => $order->get_billing_email(),
+						'customer_phone'   => $order->get_billing_phone(),
+						'order_id'       => $order->get_id(),
+						'category'       => 'activity',
+					)
+                );
             }
 
-            if ($new_status == 'refunded') {
+            if ( $new_status == 'refunded' ) {
                 do_action(
                     'multivendorx_notify_order_refunded',
-                        'order_refunded',
-                        array(
-                            'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                            'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                            'customer_email' => $order->get_billing_email(),
-                            'customer_phn' => $order->get_billing_phone(),
-                            'order_id'    => $order->get_id(),
-                            'category'    => 'activity',
-                        )
-                    );
+                    'order_refunded',
+                    array(
+						'store_phone'      => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+						'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+						'customer_email' => $order->get_billing_email(),
+						'customer_phone'   => $order->get_billing_phone(),
+						'order_id'       => $order->get_id(),
+						'category'       => 'activity',
+					)
+                );
             }
 
-            if ($old_status == 'refund-requested' && $new_status == 'processing') {
+            if ( $old_status == 'refund-requested' && $new_status == 'processing' ) {
                 do_action(
                     'multivendorx_notify_refund_rejected',
-                        'refund_rejected',
-                        array(
-                            'customer_email' => $order->get_billing_email(),
-                            'customer_phn' => $order->get_billing_phone(),
-                            'order_id'    => $order->get_id(),
-                            'category'    => 'activity',
-                        )
-                    );
+                    'refund_rejected',
+                    array(
+						'customer_email' => $order->get_billing_email(),
+						'customer_phone'   => $order->get_billing_phone(),
+						'order_id'       => $order->get_id(),
+						'category'       => 'activity',
+					)
+                );
             }
-
         }
-
     }
 }

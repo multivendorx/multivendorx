@@ -54,7 +54,7 @@ class PaymentProcessor {
             $payment_method = $store->get_meta( Utill::STORE_SETTINGS_KEYS['payment_method'] ) ?? '';
         }
 
-        if ( !$disbursement && ($payment_method === 'bank-transfer' || $payment_method === 'cash' || $payment_method === 'custom-gateway') ) {
+        if ( ! $disbursement && ( $payment_method === 'bank-transfer' || $payment_method === 'cash' || $payment_method === 'custom-gateway' ) ) {
             return;
         }
 
@@ -116,17 +116,17 @@ class PaymentProcessor {
             if ( ! empty( $wpdb->last_error ) && MultivendorX()->show_advanced_log ) {
                 MultiVendorX()->util->log( 'Database operation failed', 'ERROR' );
             }
-            
+
             do_action(
                 'multivendorx_notify_payout_failed',
                 'payout_failed',
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                    'store_name' => $store->get( 'name' ),
-                    'amount'    => $amount,
+                    'store_name'  => $store->get( 'name' ),
+                    'amount'      => $amount,
                     'category'    => 'activity',
                 )
             );
@@ -195,8 +195,8 @@ class PaymentProcessor {
                 'payout_received',
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                     'order_id'    => $order_id,
                     'category'    => 'activity',
@@ -237,11 +237,11 @@ class PaymentProcessor {
                 'payout_failed',
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                    'store_name' => $store->get( 'name' ),
-                    'amount'    => $amount,
+                    'store_name'  => $store->get( 'name' ),
+                    'amount'      => $amount,
                     'category'    => 'activity',
                 )
             );

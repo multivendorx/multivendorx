@@ -1,0 +1,76 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-engagement-tools",
+  "title": "Store engagement tools",
+  "category": "multivendorx-store-shop",
+  "icon": "button",
+  "description": "Enable interactive features that let customers follow stores, ask questions, and connect with sellers in real time.",
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js",
+  "attributes": {
+    "align": {
+      "type": "string",
+      "default": "center"
+    },
+    "followersCount": {
+      "type": "number",
+      "default": 1250
+    },
+    "showFollowButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "showChatButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "showSupportButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "showFollowerCount": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "align": true,
+    "alignWide": false,
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true,
+      "__experimentalDefaultControls": {
+        "text": true,
+        "background": true
+      }
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "__experimentalDefaultControls": {
+        "margin": true,
+        "padding": true
+      }
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "style": true,
+        "width": true
+      }
+    }
+  },
+  "editorStyle": ["multivendorx-common-block-style"],
+  "style": ["multivendorx-common-block-style"]
+}

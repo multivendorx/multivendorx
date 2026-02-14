@@ -1,7 +1,10 @@
+//External Dependencies
 import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
-import SimpleInput from './SimpleInput';
+
+// Internal Dependencies
 import MultipleOptions from './MultipleOption';
+import { BasicInputUI } from './BasicInput';
 
 interface SubField {
     id: number;
@@ -26,14 +29,14 @@ export interface AddressFormField {
 
 interface AddressFieldProps {
     formField: AddressFormField;
-    onChange: ( key: 'fields', value: SubField[] ) => void;
+    // onChange: ( key: 'fields', value: SubField[] ) => void;
     opendInput: SubField | null;
     setOpendInput: React.Dispatch< React.SetStateAction< SubField | null > >;
 }
 
 const AddressField: React.FC< AddressFieldProps > = ( {
     formField,
-    onChange,
+    // onChange,
     opendInput,
     setOpendInput,
 } ) => {
@@ -48,7 +51,35 @@ const AddressField: React.FC< AddressFieldProps > = ( {
     // Update parent
     const updateParent = ( updated: SubField[] ) => {
         setSubFields( updated );
-        onChange( 'fields', updated );
+        // onChange( 'fields', updated );
+    };
+
+    const FieldRenderers = {
+        text: (f: SubField) => (
+            <>
+                <p>{f.label}</p>
+                <BasicInputUI
+                    type= "text"
+                    placeholder= {f.placeholder}
+                />
+            </>
+        ),
+        select: (f: SubField) => (
+            <MultipleOptions
+                formField={{
+                    label: f.label,
+                    type: 'dropdown',
+                    options: f.options?.map((opt) => ({
+                        id: opt,
+                        value: opt,
+                        label: opt,
+                    })) || [],
+                }}
+                type="dropdown"
+                selected={false}
+                // onChange={() => {}}
+            />
+        ),
     };
 
     return (
@@ -80,32 +111,8 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                             </span>
                         </div>
 
-                        { f.type === 'text' && (
-                            <SimpleInput
-                                formField={ {
-                                    label: f.label,
-                                    placeholder: f.placeholder,
-                                } }
-                            />
-                        ) }
+                        {FieldRenderers[f.type]?.(f)}
 
-                        { f.type === 'select' && (
-                            <MultipleOptions
-                                formField={ {
-                                    label: f.label,
-                                    type: 'dropdown',
-                                    options:
-                                        f.options?.map( ( opt ) => ( {
-                                            id: opt,
-                                            value: opt,
-                                            label: opt,
-                                        } ) ) || [],
-                                } }
-                                type="dropdown"
-                                selected={ false }
-                                onChange={ () => {} }
-                            />
-                        ) }
                     </div>
                 ) ) }
             </ReactSortable>

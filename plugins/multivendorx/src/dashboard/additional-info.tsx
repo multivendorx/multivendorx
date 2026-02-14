@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { TextArea, getApiLink, ToggleSetting, SuccessNotice } from 'zyra';
+import {getApiLink, SuccessNotice, TextAreaUI } from 'zyra';
 
 const AdditionalInformation = () => {
 	const id = appLocalizer.store_id;
@@ -100,7 +100,7 @@ const AdditionalInformation = () => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<TextArea
+								<TextAreaUI
 									name="messageToBuyer"
 									value={formData.messageToBuyer || ''}
 									onChange={handleChange}

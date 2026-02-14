@@ -24,13 +24,18 @@ const FormGroup: React.FC<FormGroupProps> = ({
 			className={`form-group ${row ? "row" : ""} ${className}`}
 			data-cols={cols}
 		>
-			{label && <label className="settings-form-label form-label" htmlFor={htmlFor}>
-				{label}
+			{label && <label className="settings-form-label" htmlFor={htmlFor}>
+				<div className="title">{label}</div>
 				{labelDes && <div className="settings-metabox-description">{labelDes}</div>}
 			</label>}
-			<div className="setting-input">
+			<div className="settings-input-content">
 				{children}
-				{desc && <div className="settings-metabox-description">{desc}</div>}
+				{desc && (
+					<p
+						className="settings-metabox-description"
+						dangerouslySetInnerHTML={{ __html: desc }}
+					/>
+				)}
 			</div>
 		</div>
 	);

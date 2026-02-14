@@ -1,92 +1,51 @@
 import { registerBlockType } from '@wordpress/blocks';
-import { useBlockProps } from '@wordpress/block-editor';
-import { render } from '@wordpress/element';
-
-/**
- * Dummy React component
- * (Later you will replace logic here)
- */
-const StoreName = ({ context, blockProps }) => {
-	const storeName =
-		context === 'editor'
-			? 'Demo Store (Editor)'
-			: 'Live Store (Frontend)';
-
-	return (
-		<h2 {...blockProps} className="multivendorx-store-name">
-			{storeName}
-		</h2>
-	);
-};
+import { __ } from '@wordpress/i18n';
+import { 
+    useBlockProps,
+    BlockControls,
+    AlignmentToolbar
+} from '@wordpress/block-editor';
 
 registerBlockType('multivendorx/store-name', {
-	apiVersion: 2,
-	title: 'Store Name',
-	icon: 'store',
-	category: 'multivendorx',
 
-	/**
-	 * Enable style controls (same as WC Product Title)
-	 */
-	supports: {
-		html: false,
-		color: {
-			text: true,
-			background: false,
-		},
-		typography: {
-			fontSize: true,
-			lineHeight: true,
-			fontFamily: true,
-			fontWeight: true,
-			textTransform: true,
-		},
-		spacing: {
-			margin: true,
-			padding: true,
-		},
-	},
+    edit: ({ attributes, setAttributes }) => {
+        const blockProps = useBlockProps({
+            className: 'multivendorx-store-name-block',
+            style: {
+                fontSize: '2rem',
+            }
+        });
 
-	edit() {
-		const blockProps = useBlockProps();
+        return (
+            <>
+                <BlockControls>
+                    <AlignmentToolbar
+                        value={attributes.align}
+                        onChange={(nextAlign) => {
+                            setAttributes({ align: nextAlign });
+                        }}
+                    />
+                </BlockControls>
 
-		return <StoreName context="editor" blockProps={blockProps} />;
-	},
+                <h2 {...blockProps}>Store Name</h2>
+            </>
+        );
+    },
 
-	save() {
-		/**
-		 * Keep wrapper so Gutenberg saves styles
-		 * React will hydrate inside
-		 */
-		const blockProps = useBlockProps.save();
+    save: () => {
+        const blockProps = useBlockProps.save();
 
-		return (
-			<div
-				{...blockProps}
-				data-mvx-store-name
-			/>
-		);
-	},
+        return (
+            <h2 {...blockProps} className="multivendorx-store-name"></h2>
+        );
+    }
 });
 
-/**
- * Frontend render
- */
 document.addEventListener('DOMContentLoaded', () => {
-	const element = document.querySelector('[data-mvx-store-name]');
-
-	if (!element) {
-		return;
-	}
-
-	render(
-		<StoreName
-			context="frontend"
-			blockProps={{
-				className: element.className,
-				style: element.style,
-			}}
-		/>,
-		element
-	);
+    document
+        .querySelectorAll('.multivendorx-store-name')
+        .forEach(el => {
+            el.textContent = StoreInfo.storeDetails.storeName;
+        });
 });
+

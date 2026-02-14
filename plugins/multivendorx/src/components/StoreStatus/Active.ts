@@ -16,13 +16,13 @@ export default {
 			nestedFields: [
 				{
 					key: 'paid_promotion_limit',
-					type: 'setup',
-					label: __('Configure store permissions', 'multivendorx'),
+					type: 'button',
+					name: __('Configure store permissions', 'multivendorx'),
 					desc: __(
 						'Control what dashboard sections and tools are available to active stores.',
 						'multivendorx'
 					),
-					link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-capability`,
+					link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=store-permissions`,
 				},
 			],
 		},

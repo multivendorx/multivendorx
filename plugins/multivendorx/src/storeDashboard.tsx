@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { getApiLink, MessageState, Popover, useModules } from 'zyra';
+import { getApiLink, ComponentStatusView, Tabs, PopupUI, useModules } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Notifications from './dashboard/notifications';
 import './hooksFilters';
@@ -91,7 +91,7 @@ const Dashboard = () => {
 
 	// dark mode
 	useEffect(() => {
-		document.body.classList.add(appLocalizer.settings_databases_value['store-appearance']
+		document.body.classList.add(appLocalizer.settings_databases_value['appearance']
 			?.store_color_settings?.selectedPalette);
 		document.body.classList.toggle('dark', isDarkMode);
 
@@ -274,7 +274,7 @@ const Dashboard = () => {
 	};
 
 	const store_dashboard_logo =
-		appLocalizer.settings_databases_value['store-appearance']
+		appLocalizer.settings_databases_value['appearance']
 			?.store_dashboard_site_logo || '';
 
 	const availableStores = appLocalizer.store_ids.filter((store) => {
@@ -565,85 +565,47 @@ const Dashboard = () => {
 									{showNotifications && <Notifications type="notification" />}
 								</li> */}
 								<li className="tooltip-wrapper bottom">
-									<Popover
-										template="tab"
-										width="24rem"
+									<PopupUI
+										position="menu-dropdown"
 										toggleIcon="adminfont-notification"
-										toggleContent={<><span className="count">0</span> <span className="tooltip-name">Notification</span></>}
-										onTabChange={(tabId) => {
-											setActiveType(
-												tabId === 'activities' ? 'activity' : 'notification'
-											);
+										width={24}
+										header={{
+											title: __('Notifications', 'multivendorx'),
+											showCloseButton: false, // Add this to your PopupHeaderProps
 										}}
-										header={
-											<div className="title">
-												{__('Notifications', 'multivendorx')}
-												{/* {notifications?.length > 0 && (
-												<span className="admin-badge yellow">
-													{notifications?.length} {__('New', 'multivendorx')}
-												</span>
-											)} */}
-											</div>
-										}
-										tabs={[
-											{
-												id: 'notifications',
-												label: __("Notifications", 'multivendorx'),
-												icon: 'adminfont-notification',
-												content: (
-
-													<ul className="notification-list">
-														{/* {renderContent()} */}
-													</ul>
-												)
-											},
-											{
-												id: 'activities',
-												label: __("Activities", 'multivendorx'),
-												icon: 'adminfont-activity',
-												content: (
-													<ul className="notification-list">
-														{/* {renderContent()} */}
-													</ul>
-												)
-											},
-										]}
 										footer={
-											<div className="footer">
-												{/* {activeType == 'notification' ? (
-
-												<a
-													href={`?page=multivendorx#&tab=notifications&subtab=notifications`}
-													className="admin-btn btn-purple"
-													onClick={() => setIsDropdownOpen(false)}
-												>
-													<i className="adminfont-eye"></i>
-													{__('View all notifications', 'multivendorx')}
-												</a>
-											) : (
-												<a
-													href={`?page=multivendorx#&tab=notifications&subtab=activities`}
-													className="admin-btn btn-purple"
-													onClick={() => setIsDropdownOpen(false)}
-												>
-													<i className="adminfont-eye"></i>
-													{__('View all activities', 'multivendorx')}
-												</a>
-											)} */}
-												<a
-													href={`?page=multivendorx#&tab=notifications&subtab=activities`}
-													className="admin-btn btn-purple"
-												// onClick={() => setIsDropdownOpen(false)}
-												>
-													<i className="adminfont-eye"></i>
-													{__('View all activities', 'multivendorx')}
-												</a>
-											</div>
+											<a
+												href={`?page=multivendorx#&tab=notifications&subtab=activities`}
+												className="admin-btn btn-purple"
+											>
+												<i className="adminfont-eye"></i>
+												{__('View all activities', 'multivendorx')}
+											</a>
 										}
-									/>
+									>
+										<Tabs
+											tabs={[
+												{
+													id: 'notifications',
+													label: __("Notifications", 'multivendorx'),
+													icon: 'adminfont-notification',
+													content: <ul className="notification-list">{/* content */}</ul>
+												},
+												{
+													id: 'activities',
+													label: __("Activities", 'multivendorx'),
+													icon: 'adminfont-activity',
+													content: <ul className="notification-list">{/* content */}</ul>
+												},
+											]}
+											onTabChange={(tabId) => {
+												setActiveType(tabId === 'activities' ? 'activity' : 'notification');
+											}}
+										/>
+									</PopupUI>
 								</li>
 								<li className="tooltip-wrapper bottom">
-									<Popover
+									{/* <Popover
 										toggleIcon="adminfont-announcement"
 										toggleContent={<span className="tooltip-name">Announcements</span>}
 										template="notification"
@@ -684,7 +646,7 @@ const Dashboard = () => {
 												{__('View all announcements', 'multivendorx')}
 											</a>
 										}
-									/>
+									/> */}
 								</li>
 
 								<li
@@ -896,7 +858,7 @@ const Dashboard = () => {
 
 				<div className="content-wrapper">
 					{storeData && storeData.status !== 'active' ? (
-						<MessageState
+						<ComponentStatusView
 							title={
 								<>
 									{storeData.status === 'pending' ? (
@@ -921,22 +883,23 @@ const Dashboard = () => {
 											</a>
 										</>
 									) : (
-										__('You’re almost ready to sell To get started, you need to register your store on the marketplace.', 'multivendorx')
+										__('You’re almost ready to sell.', 'multivendorx')
 									)}
 								</>
 							}
+							desc={__('To get started, you need to register your store on the marketplace.', 'multivendorx')}
 							buttonText={__('Create your store', 'multivendorx')}
 							buttonLink={appLocalizer.registration_page}
 							buttonTarget="_blank"
 						/>
 					) : noPermission ? (
-						<MessageState
+						<ComponentStatusView
 							title={__(
 								'You do not have permission to access this page.',
 								'multivendorx'
 							)}
 							buttonText={__('Contact Admin', 'multivendorx')}
-							onButtonClick={() => {}}  
+							onButtonClick={() => { }}
 						/>
 					) : (
 						loadComponent(currentTab)

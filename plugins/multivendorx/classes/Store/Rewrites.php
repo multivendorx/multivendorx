@@ -8,6 +8,7 @@
 namespace MultiVendorX\Store;
 
 use MultiVendorX\Utill;
+use MultiVendorX\FrontendScripts;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,6 +27,7 @@ class Rewrites {
      * @var string
      */
     public $custom_store_url = '';
+    private $slug            = 'multivendorx-store';
 
     /**
      * Hook into the functions
@@ -35,9 +37,14 @@ class Rewrites {
 
         add_action( 'init', array( $this, 'register_rule' ) );
         add_filter( 'query_vars', array( $this, 'register_query_var' ) );
-        add_filter( 'template_include', array( $this, 'store_template' ), 10 );
         add_action( 'wp', array( $this, 'flash_rewrite_rules' ), 99 );
+        // For PHP template query of products.
         add_action( 'pre_get_posts', array( $this, 'store_query_filter' ) );
+
+        add_filter( 'get_block_templates', array( $this, 'register_block_template' ), 10, 3 );
+        add_filter( 'pre_get_block_file_template', array( $this, 'resolve_template_by_id' ), 10, 3 );
+        add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
+        add_action( 'wp_enqueue_scripts', array( $this, 'register_store_state' ) );
     }
 
     /**
@@ -47,6 +54,10 @@ class Rewrites {
      */
     public function store_query_filter( $query ) {
         if ( is_admin() || ! $query->is_main_query() ) {
+            return;
+        }
+
+        if ( wp_is_block_theme() ) {
             return;
         }
 
@@ -133,23 +144,138 @@ class Rewrites {
         return apply_filters( 'multivendorx_query_vars', $vars, $this );
     }
 
-    /**
-     * Load store template
-     *
-     * @param string $template Template path.
-     * @return string Modified template path.
-     */
-    public function store_template( $template ) {
-        $store_name = get_query_var( $this->custom_store_url );
-
-        if ( ! empty( $store_name ) ) {
-            $store = Store::get_store( $store_name, 'slug' );
-
-            if ( $store ) {
-                MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
-                exit;
+    private function should_load_template() {
+        if ( get_query_var( $this->custom_store_url ) ) {
+			return true;
+        }
+        if ( is_admin() && function_exists( 'get_current_screen' ) ) {
+            $screen = get_current_screen();
+            if ( $screen && $screen->id === 'site-editor' ) {
+				return true;
             }
         }
+        return false;
+    }
+
+    public function register_block_template( $templates, $query, $type ) {
+        if ( 'wp_template' !== $type ) {
+			return $templates;
+        }
+        if ( ! $this->should_load_template() && ! is_admin() ) {
+			return $templates;
+        }
+
+        $id = get_stylesheet() . '//' . $this->slug;
+        foreach ( $templates as $template ) {
+            if ( $template instanceof \WP_Block_Template && $template->id === $id ) {
+				return $templates;
+            }
+        }
+
+        $templates[] = $this->build_template_object();
+        return $templates;
+    }
+
+    public function resolve_template_by_id( $template, $id, $type ) {
+        if ( 'wp_template' !== $type ) {
+			return $template;
+        }
+        if ( $id !== get_stylesheet() . '//' . $this->slug ) {
+			return $template;
+        }
+
+        return $this->build_template_object();
+    }
+
+    private function build_template_object() {
+        $saved = get_posts(
+            array(
+				'post_type'      => 'wp_template',
+				'name'           => $this->slug,
+				'posts_per_page' => 1,
+				'post_status'    => 'publish',
+            )
+        );
+
+        if ( ! empty( $saved ) ) {
+            $content = $saved[0]->post_content;
+        } else {
+            $template_file = MultiVendorX()->plugin_path . 'templates/store/store.html';
+            if ( file_exists( $template_file ) ) {
+                $content = file_get_contents( $template_file );
+            }
+        }
+
+        $template                 = new \WP_Block_Template();
+        $template->id             = get_stylesheet() . '//' . $this->slug;
+        $template->theme          = get_stylesheet();
+        $template->slug           = $this->slug;
+        $template->type           = 'wp_template';
+        $template->title          = __( 'MultiVendorX Store', 'multivendorx' );
+        $template->source         = 'plugin';
+        $template->origin         = 'plugin';
+        $template->status         = 'publish';
+        $template->content        = $content;
+        $template->is_custom      = true;
+        $template->has_theme_file = false;
+
+        return $template;
+    }
+
+    public function register_store_state() {
+        $store_slug = get_query_var( $this->custom_store_url );
+
+        if ( ! $store_slug ) {
+            return;
+        }
+        
+        FrontendScripts::load_scripts();
+        FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-email-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-phone-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-social-icons-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-logo-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-banner-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-policy-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-review-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-highlighted-store-products-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-address-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-quick-info-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-product-category-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-tabs-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-provider-script' );
+        FrontendScripts::enqueue_script( 'multivendorx-store-coupons-script' );
+        FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
+    }
+
+    public function template_loader( $template ) {
+        if ( ! get_query_var( $this->custom_store_url ) ) {
+			return $template;
+        }
+        // Block theme support
+        if ( wp_is_block_theme() ) {
+            return $template;
+        }
+
+        // Check for Elementor template first
+        $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
+
+        if ( $filtered_template && file_exists( $filtered_template ) ) {
+            return $filtered_template;
+        }
+
+        // $store_name = get_query_var( $this->custom_store_url );
+
+        // if ( ! empty( $store_name ) ) {
+        //     $store = Store::get_store( $store_name, 'slug' );
+        // }
+
+        // // Classic theme fallback
+        // $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
+        // if ( file_exists( $classic_template ) ) {
+		// 	return $classic_template;
+        // }
 
         return $template;
     }

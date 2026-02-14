@@ -138,7 +138,7 @@ class Country_Shipping extends \WC_Shipping_Method {
      */
     public static function is_shipping_enabled_for_seller( $store_id ) {
         $store            = new \MultiVendorX\Store\Store( $store_id );
-        $shipping_options = $store->meta_data[Utill::STORE_SETTINGS_KEYS['shipping_options']] ?? '';
+        $shipping_options = $store->meta_data[ Utill::STORE_SETTINGS_KEYS['shipping_options'] ] ?? '';
         return Utill::STORE_SETTINGS_KEYS['shipping_by_country'] === $shipping_options;
     }
 

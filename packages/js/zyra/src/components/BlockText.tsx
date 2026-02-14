@@ -1,8 +1,9 @@
-/**
- * External dependencies
- */
+// External dependencies
 import React from 'react';
+
+// Internal Dependencies
 import '../styles/web/BlockText.scss';
+import { FieldComponent } from './types';
 
 // Types
 interface BlockTextProps {
@@ -11,13 +12,12 @@ interface BlockTextProps {
     title?: string;
 }
 
-const BlockText: React.FC< BlockTextProps > = ( {
+const BlockTextUI: React.FC< BlockTextProps > = ( {
     blockTextClass,
     value,
     title,
 } ) => {
     return (
-        <>
             <div className={ blockTextClass }>
                 <div className="metabox-note-wrapper">
                     <i className="adminfont-info"></i>
@@ -27,8 +27,29 @@ const BlockText: React.FC< BlockTextProps > = ( {
                     </div>
                 </div>
             </div>
-        </>
     );
 };
 
+const BlockText: FieldComponent = {
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+        <BlockTextUI
+            key={field.blocktext}
+            blockTextClass={
+                field.blockTextClass ||
+                'settings-metabox-note'
+            }
+            title={field.title}
+            value={String(field.blocktext)}
+        />
+    ),
+
+    validate: (field, value) => {
+        if (field.required && !value?.[field.key]) {
+            return `${field.label} is required`;
+        }
+
+        return null;
+    },
+
+};
 export default BlockText;

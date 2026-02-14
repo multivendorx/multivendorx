@@ -13,13 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$store_id     = $args['store_id'] ?? 0;
-$is_logged_in = is_user_logged_in();
-$user         = wp_get_current_user();
-$parameters   = MultiVendorX()->setting->get_setting( 'ratings_parameters', array() );
+$store_id               = $args['store_id'] ?? 0;
+$is_logged_in           = is_user_logged_in();
+$user                   = wp_get_current_user();
+$parameters             = MultiVendorX()->setting->get_setting( 'ratings_parameters', array() );
 $review_status          = '';
 $is_verified_buyer      = 0;
-$storereview  = MultiVendorX()->setting->get_setting( 'is_storereview_varified', array() );
+$storereview            = MultiVendorX()->setting->get_setting( 'is_storereview_varified', array() );
 $is_verified_buyer_only = reset( $storereview ) ?? false;
 
 if ( $is_logged_in && $store_id ) {
@@ -79,12 +79,12 @@ if ( $is_logged_in && $store_id ) {
                                 $param_key = sanitize_title( $param_value );
                                 ?>
 
-                                <div class="rating" data-selected="0">
-                                    <i class="adminlib-star-o" data-value="1"></i>
-                                    <i class="adminlib-star-o" data-value="2"></i>
-                                    <i class="adminlib-star-o" data-value="3"></i>
-                                    <i class="adminlib-star-o" data-value="4"></i>
-                                    <i class="adminlib-star-o" data-value="5"></i>
+                                <div class="rating stars" data-selected="0">
+                                    <i class="dashicons-star-empty dashicons" data-value="1"></i>
+                                    <i class="dashicons-star-empty dashicons" data-value="2"></i>
+                                    <i class="dashicons-star-empty dashicons" data-value="3"></i>
+                                    <i class="dashicons-star-empty dashicons" data-value="4"></i>
+                                    <i class="dashicons-star-empty dashicons" data-value="5"></i>
                                     <span class="title"><?php echo esc_html( $param_value ); ?></span>
                                     <input type="hidden" name="rating[<?php echo esc_attr( $param_value ); ?>]" value="0" class="multivendorx-rating-select" />
                                 </div>

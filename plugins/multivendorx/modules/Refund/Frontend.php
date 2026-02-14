@@ -50,27 +50,25 @@ class Frontend {
         $refund_days = (int) MultiVendorX()->setting->get_setting( 'refund_days', 0 );
 
         if ( $refund_days > 0 ) {
-        
             $order_date = $order->get_date_created();
             if ( ! $order_date ) {
                 return;
             }
-        
+
             // Order created timestamp
             $order_ts = $order_date->getTimestamp();
-        
+
             // Expiry timestamp
             $expiry_ts = strtotime( "+{$refund_days} days", $order_ts );
-        
+
             // Current WP time
             $now_ts = current_time( 'timestamp' );
-        
+
             // If expired → stop (no button)
             if ( $now_ts > $expiry_ts ) {
                 return;
             }
         }
-        
 
         $refund_settings       = MultiVendorX()->setting->get_option( 'multivendorx_order_actions_refunds_settings', array() );
         $refund_reason_options = MultiVendorX()->setting->get_setting( 'refund_reasons', array() );
@@ -421,22 +419,22 @@ class Frontend {
         $order->save();
 
         $store_id = $order->get_meta( Utill::POST_META_SETTINGS['store_id'], true );
-        $store = new Store($store_id);
+        $store    = new Store( $store_id );
 
         do_action(
             'multivendorx_notify_refund_requested',
-                'refund_requested',
-                array(
-                    'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phn' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phn' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
-                    'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
-                    'customer_email' => $order->get_billing_email(),
-                    'customer_phn' => $order->get_billing_phone(),
-                    'order_id'    => $order->get_id(),
-                    'category'    => 'activity',
-                )
-            );
+            'refund_requested',
+            array(
+				'admin_email'    => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
+				'admin_phone'      => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+				'store_phone'      => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+				'store_email'    => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
+				'customer_email' => $order->get_billing_email(),
+				'customer_phone'   => $order->get_billing_phone(),
+				'order_id'       => $order->get_id(),
+				'category'       => 'activity',
+			)
+        );
 
         // Add order note with proper escaping.
         $user_info = get_userdata( get_current_user_id() );

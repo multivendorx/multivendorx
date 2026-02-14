@@ -1,82 +1,190 @@
-/**
- * External dependencies
- */
-import React, { useState } from 'react';
-import DatePicker, { DateObject } from 'react-multi-date-picker';
-
-// Types
-type CalendarValue = DateObject | DateObject[] | [ DateObject, DateObject ][];
-
-interface CalendarInputProps {
-    wrapperClass?: string;
-    inputClass?: string;
-    format?: string;
-    multiple?: boolean;
-    range?: boolean;
-    value: string;
-    onChange?: ( date: CalendarValue ) => void;
-    proSetting?: boolean;
+import React, { useEffect, useRef, useState } from 'react';
+import DatePicker, { DateObject, DatePickerRef } from 'react-multi-date-picker';
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
+export interface CalendarRange {
+  startDate: Date;
+  endDate: Date;
 }
 
-const CalendarInput: React.FC< CalendarInputProps > = ( props ) => {
-    let formattedDate: CalendarValue | null = null;
-    const dates = props.value.split( ',' );
+interface CalendarInputProps {
+  wrapperClass?: string;
+  inputClass?: string;
+  format?: string;
+  value?: CalendarRange;
+  onChange?: (range?: CalendarRange) => void;
+  multiple?: boolean;
+  proSetting?: boolean;
+}
 
-    if ( dates.length === 1 && ! dates[ 0 ].includes( ' - ' ) ) {
-        formattedDate = new DateObject( {
-            date: dates[ 0 ].trim(),
-            format: props.format || 'YYYY-MM-DD',
-        } );
-    } else {
-        formattedDate = dates.map( ( date ) => {
-            if ( date.includes( ' - ' ) ) {
-                const [ start, end ] = date.split( ' - ' );
-                return [
-                    new DateObject( {
-                        date: start.trim(),
-                        format: props.format || 'YYYY-MM-DD',
-                    } ),
-                    new DateObject( {
-                        date: end.trim(),
-                        format: props.format || 'YYYY-MM-DD',
-                    } ),
-                ];
-            }
-            return new DateObject( {
-                date: date.trim(),
-                format: props.format || 'YYYY-MM-DD',
-            } );
-        } ) as CalendarValue;
+const convertToDateObjectRange = (
+  range?: CalendarRange,
+  format = 'MMMM DD YYYY'
+) => {
+  if (!range) return null;
+
+  return [
+    new DateObject({ date: range.startDate, format }),
+    new DateObject({ date: range.endDate, format }),
+  ];
+};
+
+interface PresetsProps {
+  setValue: (dates: Date[]) => void;
+  pickerRef: React.RefObject<DatePickerRef>;
+  format: string;
+}
+
+const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
+  const now = new Date();
+
+  const startOfWeek = (date: Date) => {
+    const newdate = new Date(date);
+    const day = newdate.getDay();
+    newdate.setDate(newdate.getDate() - day + 1);
+    return newdate;
+  };
+
+  const endOfWeek = (date: Date) => {
+    const newdate = startOfWeek(date);
+    newdate.setDate(newdate.getDate() + 6);
+    return newdate;
+  };
+
+  const startOfMonth = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth(), 1);
+
+  const endOfMonth = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  const apply = (dates: Date[]) => {
+    const result = dates.map(date => new DateObject({ date, format }));
+    setValue(result.length === 1 ? result[0] : result);
+    pickerRef.current?.closeCalendar();
+  };
+
+  // Yesterday
+  const yesterday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - 1
+  );
+
+  // Last week
+  const lastWeekStart = new Date(
+    startOfWeek(now).getFullYear(),
+    startOfWeek(now).getMonth(),
+    startOfWeek(now).getDate() - 7
+  );
+
+  const lastWeekEnd = endOfWeek(lastWeekStart);
+
+  // Last month
+  const lastMonthStart = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    1
+  );
+
+  const lastMonthEnd = endOfMonth(lastMonthStart);
+
+  return (
+    <div className="range-picker-wrapper">
+      <div onClick={() => apply([now])}>Today</div>
+      <div onClick={() => apply([yesterday])}>Yesterday</div>
+
+      <div onClick={() => apply([startOfWeek(now), endOfWeek(now)])}>
+        This Week
+      </div>
+      <div onClick={() => apply([lastWeekStart, lastWeekEnd])}>
+        Last Week
+      </div>
+
+      <div onClick={() => apply([startOfMonth(now), endOfMonth(now)])}>
+        This Month
+      </div>
+      <div onClick={() => apply([lastMonthStart, lastMonthEnd])}>
+        Last Month
+      </div>
+    </div>
+  );
+};
+
+const CalendarInput: React.FC<CalendarInputProps> = ({
+  wrapperClass = "calender-wrapper",
+  inputClass,
+  format = "MMMM DD YYYY",
+  value,
+  onChange,
+  multiple = false,
+}) => {
+  const pickerRef = useRef<DatePickerRef>(null);
+
+  const [internalValue, setInternalValue] =
+    useState<DateObject[] | DateObject | null>(convertToDateObjectRange(value, format));
+
+  useEffect(() => {
+    setInternalValue(convertToDateObjectRange(value, format));
+  }, [value, format]);
+
+
+  // This function is not used now if we need time in future then 
+  // we can use the time but if we do not tome in any case then we 
+  // can directly use this fuction here and remove all the convertion in the quiry stage
+  // const toDateOnly = (dateObj: DateObject): Date => {
+  //   const d = dateObj.toDate();
+  //   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  // };  
+
+  const handleChange = (val: DateObject[] | DateObject | null) => {
+    setInternalValue(val);
+    if (Array.isArray(val) && val.length === 2) {
+      const [start, end] = val as DateObject[];
+
+      onChange?.({
+        startDate: start.toDate(),
+        endDate: end.toDate(),
+      });
+
+      pickerRef.current?.closeCalendar();
+    } else if (val instanceof DateObject) {
+      const date = val.toDate();
+      onChange?.({ startDate: date, endDate: date });
+
+      pickerRef.current?.closeCalendar();
     }
+  };
 
-    const [ selectedDate, setSelectedDate ] = useState< CalendarValue | null >(
-        formattedDate
+  const plugins = [];
+  if (multiple) {
+    plugins.push(<DatePanel key="date-panel" />);
+  } else {
+    plugins.push(
+      <Presets
+        key="presets"
+        setValue={handleChange}
+        pickerRef={pickerRef}
+        format={format}
+      />
     );
-
-    const handleDateChange = (
-        date: DateObject | DateObject[] | DateObject[][] | null
-    ) => {
-        if ( ! date ) {
-            return;
-        }
-        setSelectedDate( date as CalendarValue );
-        props.onChange?.( date as CalendarValue );
-    };
-
-    return (
-        <div className={ `settings-calender ${ props.wrapperClass || '' }`}>
-            <DatePicker
-                className={`${ props.inputClass || 'teal' }`}
-                format={ props.format || 'YYYY-MM-DD' }
-                multiple={ props.multiple }
-                range={ props.range }
-                value={ selectedDate }
-                placeholder="YYYY-MM-DD"
-                onChange={ handleDateChange }
-            />
-            { props.proSetting && <span className="admin-pro-tag">Pro</span> }
-        </div>
-    );
+  }
+  return (
+    <div className={`settings-calender ${wrapperClass || ''}`}>
+      <DatePicker
+        ref={pickerRef}
+        className={inputClass}
+        value={internalValue}
+        format={format}
+        range={!multiple}
+        numberOfMonths={1}
+        sort
+        placeholder={format}
+        onChange={handleChange}
+        maxDate={new Date()}
+        multiple={multiple}
+        plugins={plugins}
+      />
+    </div>
+  );
 };
 
 export default CalendarInput;

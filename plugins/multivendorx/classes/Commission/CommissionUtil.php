@@ -89,12 +89,12 @@ class CommissionUtil {
             $ids        = implode( ',', array_map( 'intval', $ids ) );
             $or_where[] = "ID IN ($ids)";
         }
-        
+
         if ( isset( $args['order_id'] ) ) {
             $ids        = is_array( $args['order_id'] ) ? $args['order_id'] : array( $args['order_id'] );
             $ids        = implode( ',', array_map( 'intval', $ids ) );
             $or_where[] = "order_id IN ($ids)";
-        }        
+        }
 
         if ( isset( $args['store_id'] ) ) {
             $ids     = is_array( $args['store_id'] ) ? $args['store_id'] : array( $args['store_id'] );
@@ -128,18 +128,18 @@ class CommissionUtil {
 
         if ( ! empty( $where ) || ! empty( $or_where ) ) {
             $query .= ' WHERE ';
-        
+
             if ( ! empty( $where ) ) {
                 $query .= implode( ' AND ', $where );
             }
-        
+
             if ( ! empty( $or_where ) ) {
                 if ( ! empty( $where ) ) {
                     $query .= ' AND ';
                 }
                 $query .= '(' . implode( ' OR ', $or_where ) . ')';
             }
-        }        
+        }
 
         // Sorting
         if ( ! empty( $args['orderBy'] ) && ! $is_count ) {
@@ -179,7 +179,7 @@ class CommissionUtil {
      *
      * @return  array  Array of commission summary.
      */
-    public static function get_commission_summary_for_store( $store_id = null, $dashboard = false, $top_stores = false, $limit = 3, $args = [] ) {
+    public static function get_commission_summary_for_store( $store_id = null, $dashboard = false, $top_stores = false, $limit = 3, $args = array() ) {
         global $wpdb;
 
         $table_name = $wpdb->prefix . Utill::TABLES['commission'];
@@ -245,25 +245,25 @@ class CommissionUtil {
                 WHERE store_id = %d
             ";
 
-            $params = [ $store_id ];
+            $params = array( $store_id );
 
             if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
-                $query   .= " AND DATE(created_at) BETWEEN %s AND %s";
+                $query   .= ' AND DATE(created_at) BETWEEN %s AND %s';
                 $params[] = $args['start_date'];
                 $params[] = $args['end_date'];
             }
 
-            $query .= "
+            $query .= '
                 GROUP BY YEAR(created_at), MONTH(created_at)
                 ORDER BY created_at ASC
-            ";
+            ';
 
             $results = $wpdb->get_results(
                 $wpdb->prepare( $query, $params ),
                 ARRAY_A
             );
 
-            return $results ?? [];
+            return $results ?? array();
         }
 
         // Summary for a specific store.

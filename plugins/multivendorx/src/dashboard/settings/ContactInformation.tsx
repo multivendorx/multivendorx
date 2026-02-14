@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-	BasicInput,
+import { 
 	TextArea,
 	FileInput,
 	useModules,
@@ -9,6 +8,7 @@ import {
 	SuccessNotice,
 	FormGroupWrapper,
 	FormGroup,
+	BasicInputUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -20,7 +20,7 @@ const ContactInformation = () => {
 		{ label: string; value: string }[]
 	>([]);
 	const settings =
-		appLocalizer.settings_databases_value['store-capability']
+		appLocalizer.settings_databases_value['store-permissions']
 			?.edit_store_info_activation || [];
 	const { modules } = useModules();
 
@@ -91,11 +91,9 @@ const ContactInformation = () => {
 					htmlFor="phone"
 					cols={2}
 				>
-					<BasicInput
+					<BasicInputUI
 						name="phone"
 						value={formData.phone}
-						 
-						descClass="settings-metabox-description"
 						onChange={handleChange}
 						readOnly={settings.includes('store_contact')}
 					/>
@@ -105,12 +103,10 @@ const ContactInformation = () => {
 					htmlFor="email"
 					cols={2}
 				>
-					<BasicInput
+					<BasicInputUI
 						type="email"
 						name="email"
 						value={formData.email}
-						 
-						descClass="settings-metabox-description"
 						onChange={handleChange}
 						readOnly={settings.includes('store_contact')}
 					/>
@@ -124,10 +120,8 @@ const ContactInformation = () => {
 						)}
 						htmlFor="live_chat"
 					>
-						<BasicInput
+						<BasicInputUI
 							name="live_chat"
-							 
-							descClass="settings-metabox-description"
 						/>
 					</FormGroup>
 				)}

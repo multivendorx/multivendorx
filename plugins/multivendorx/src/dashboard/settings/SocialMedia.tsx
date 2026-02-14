@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BasicInput, SuccessNotice, getApiLink } from 'zyra';
+import {   BasicInputUI, SuccessNotice, getApiLink } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const SocialMedia = () => {
@@ -61,10 +61,8 @@ const SocialMedia = () => {
 						<i className="adminfont-facebook-fill"></i>{' '}
 						{__('Facebook', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="facebook"
-						 
-						descClass="settings-metabox-description"
 						value={formData.facebook}
 						onChange={handleChange}
 					/>
@@ -78,10 +76,8 @@ const SocialMedia = () => {
 						<i className="adminfont-twitter"></i>{' '}
 						{__('X', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="twitter"
-						 
-						descClass="settings-metabox-description"
 						value={formData.twitter}
 						onChange={handleChange}
 					/>
@@ -95,10 +91,8 @@ const SocialMedia = () => {
 						<i className="adminfont-linkedin-border"></i>{' '}
 						{__('LinkedIn', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="linkedin"
-						 
-						descClass="settings-metabox-description"
 						value={formData.linkedin}
 						onChange={handleChange}
 					/>
@@ -112,10 +106,8 @@ const SocialMedia = () => {
 						<i className="adminfont-youtube"></i>{' '}
 						{__('YouTube', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="youtube"
-						 
-						descClass="settings-metabox-description"
 						value={formData.youtube}
 						onChange={handleChange}
 					/>
@@ -129,10 +121,8 @@ const SocialMedia = () => {
 						<i className="adminfont-mail"></i>{' '}
 						{__('Instagram', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="instagram"
-						 
-						descClass="settings-metabox-description"
 						value={formData.instagram}
 						onChange={handleChange}
 					/>
@@ -145,10 +135,8 @@ const SocialMedia = () => {
 						<i className="adminfont-mail"></i>{' '}
 						{__('Pinterest', 'multivendorx')}
 					</label>
-					<BasicInput
+					<BasicInputUI
 						name="pinterest"
-						 
-						descClass="settings-metabox-description"
 						value={formData.pinterest}
 						onChange={handleChange}
 					/>

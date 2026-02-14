@@ -1,5 +1,7 @@
+// External dependencies
 import { useEffect, useRef, useState } from 'react';
-import FormGroupWrapper from './UI/FormGroupWrapper';
+
+// Internal dependencies
 import FormGroup from './UI/FormGroup';
 
 interface MapboxControl {
@@ -74,6 +76,14 @@ declare global {
     }
 }
 
+interface Store {
+    id: number;
+    store_name: string;
+    address_1?: string;
+    location_lat?: string;
+    location_lng?: string;
+}
+
 interface MapboxComponentProps {
     apiKey: string;
     locationAddress: string;
@@ -91,10 +101,9 @@ interface MapboxComponentProps {
         zip?: string;
     }) => void;
     labelSearch: string;
-    labelMap: string;
     instructionText: string;
     placeholderSearch: string;
-    stores: { data: any[] };
+    stores: { data: Store[] } | null;
 }
 
 const Mapbox = ({
@@ -104,7 +113,6 @@ const Mapbox = ({
     isUserLocation,
     onLocationUpdate,
     labelSearch,
-    labelMap,
     instructionText,
     placeholderSearch,
     stores,
@@ -131,13 +139,13 @@ const Mapbox = ({
                 `<strong>${store.store_name}</strong><br/>${store.address_1 || ''}`
             );
     
-            const m = new window.mapboxgl.Marker()
+            const marker = new window.mapboxgl.Marker()
                 .setLngLat([lng, lat])
                 .setPopup(popup)
                 .addTo(map);
     
             bounds.extend([lng, lat]);
-            storeMarkers.push(m);
+            storeMarkers.push(marker);
         });
     
         if (storeMarkers.length) {
@@ -145,7 +153,7 @@ const Mapbox = ({
         }
     
         return () => {
-            storeMarkers.forEach(m => m.remove());
+            storeMarkers.forEach(marker => marker.remove());
         };
     }, [map, stores]);    
 

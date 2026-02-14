@@ -1,0 +1,9 @@
+{
+  "apiVersion": 2,
+  "name": "multivendorx/store-provider",
+  "title": "Store Provider",
+  "category": "multivendorx-store-shop",
+  "icon": "store",
+  "editorScript": "file:./index.js",
+  "script": "file:./index.js"
+}

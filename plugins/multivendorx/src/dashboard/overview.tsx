@@ -17,7 +17,7 @@ import {
 } from 'recharts';
 import axios from 'axios';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Analytics, Card, Column, Container, getApiLink } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {
@@ -73,49 +73,49 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 						id: 'total_order_amount',
 						label: 'Total Order Amount',
 						count: formatCurrency(data.total_order_amount),
-						icon: 'adminfont-order',
+						icon: 'order',
 					},
 					{
 						id: 'facilitator_fee',
 						label: 'Facilitator Fee',
 						count: formatCurrency(data.facilitator_fee),
-						icon: 'adminfont-facilitator',
+						icon: 'facilitator',
 					},
 					{
 						id: 'gateway_fee',
 						label: 'Gateway Fee',
 						count: formatCurrency(data.gateway_fee),
-						icon: 'adminfont-credit-card',
+						icon: 'credit-card',
 					},
 					{
 						id: 'shipping_amount',
 						label: 'Shipping Amount',
 						count: formatCurrency(data.shipping_amount),
-						icon: 'adminfont-shipping',
+						icon: 'shipping',
 					},
 					{
 						id: 'tax_amount',
 						label: 'Tax Amount',
 						count: formatCurrency(data.tax_amount),
-						icon: 'adminfont-tax-compliance',
+						icon: 'tax-compliance',
 					},
 					{
 						id: 'shipping_tax_amount',
 						label: 'Shipping Tax Amount',
 						count: formatCurrency(data.shipping_tax_amount),
-						icon: 'adminfont-per-product-shipping',
+						icon: 'per-product-shipping',
 					},
 					{
 						id: 'commission_total',
 						label: 'Commission Total',
 						count: formatCurrency(data.commission_total),
-						icon: 'adminfont-commission',
+						icon: 'commission',
 					},
 					{
 						id: 'commission_refunded',
 						label: 'Commission Refunded',
 						count: formatCurrency(data.commission_refunded),
-						icon: 'adminfont-marketplace-refund',
+						icon: 'marketplace-refund',
 					},
 				];
 
@@ -280,8 +280,7 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 			<Container>
 				<Column>
 					<Analytics
-						template="template-2"
-						col3
+						variant="small"
 						data={commissionDetails.map((item, idx) => ({
 							icon: item.icon,
 							iconClass: `admin-color${idx + 1}`,
@@ -293,27 +292,16 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 
 				<Column grid={6}>
 					<Card title={__('Revenue breakdown', 'multivendorx')}>
-						<div className="top-items">
-							{earningSummary.map((product) => (
-								<div className="info-item" key={product.id}>
-									<div className="details-wrapper">
-										<div className="details">
-											<div className="name">
-												{__(
-													product.title,
-													'multivendorx'
-												)}
-											</div>
-										</div>
-									</div>
-									<div className="right-details">
-										<div className="price">
-											{product.price}
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
+						{earningSummary.map((product) => (
+							<>
+								<InfoItem
+									key={product.id}
+									title={product.title}
+									amount={product.price}
+									// isLoading={isLoading}
+								/>
+							</>
+						))}
 					</Card>
 				</Column>
 				<Column grid={6}>

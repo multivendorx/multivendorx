@@ -31,23 +31,13 @@ class Frontend {
      */
     public function add_announcement_menu( $submenus ) {
         $new_item = array(
-            'announcement' => array(
-                'name'   => __( 'Announcement', 'multivendorx' ),
-                'subtab' => '',
+            'announcements' => array(
+                'name'     => __( 'Announcements', 'multivendorx' ),
+                'subtab'   => '',
+                'priority' => 105,
             ),
         );
 
-        $ordered = array();
-        foreach ( $submenus as $key => $menu ) {
-            // Copy existing menu.
-            $ordered[ $key ] = $menu;
-
-            // Insert advertisement right after "status-tools".
-            if ( 'status-tools' === $key ) {
-                $ordered = array_merge( $ordered, $new_item );
-            }
-        }
-
-        return $ordered;
+        return array_merge( $submenus, $new_item );
     }
 }

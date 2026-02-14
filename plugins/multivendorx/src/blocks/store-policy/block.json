@@ -1,0 +1,36 @@
+{
+    "apiVersion": 2,
+    "name": "multivendorx/store-policy",
+    "title": "Store Policy",
+    "category": "multivendorx",
+    "icon": "welcome-write-blog",
+    "description": "Display the store’s policies clearly to set expectations before purchase.",
+    "editorScript": "file:./index.js",
+    "script": "file:./index.js",
+    "supports": {
+        "align": true,
+        "alignWide": false,
+        "html": false,
+        "color": {
+            "text": true,
+            "__experimentalDefaultControls": {
+                "text": true
+            }
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalDefaultControls": {
+                "fontSize": true
+            }
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "__experimentalDefaultControls": {
+                "margin": true,
+                "padding": true
+            }
+        }
+    }
+}

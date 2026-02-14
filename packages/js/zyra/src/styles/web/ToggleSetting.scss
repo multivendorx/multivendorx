@@ -121,7 +121,6 @@
                 gap: 0.625rem;
             }
             .des{
-                color: #9fa1a4;
                 font-size: 0.813rem;
             }
         }
@@ -159,17 +158,14 @@
     &.custom {
         flex-direction: column;
         gap: 0.5rem;
-        width: 60%;
+        width: 80%;
 
         span {
             font-size: 1.125rem;
-            // padding-left: 1.125rem;
             flex-direction: row !important;
+            color: $text-color;
         }
 
-        // i {
-        //     padding-right: 0.5rem;
-        // }
 
         label {
             border: $border-light-medium;
@@ -177,13 +173,6 @@
             align-items: start;
             gap: 0.313rem;
         }
-
-        // input {
-        //     display: block;
-        //     position: absolute;
-        //     top: 1rem;
-        //     left: 0.5rem;
-        // }
 
         input[type=radio]:checked::before {
             color: $theme-color;
@@ -201,10 +190,11 @@
                 }
 
                 ul {
-                    margin: 0 1rem;
+                    margin: 0 2.5rem;
                     list-style: number;
                     font-size: 0.813rem;
                     padding-top: 0.25rem;
+                    color: $sub-text-color;
                 }
             }
         }

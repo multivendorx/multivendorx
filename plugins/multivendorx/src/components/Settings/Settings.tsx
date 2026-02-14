@@ -10,15 +10,14 @@ import { getTemplateData } from '../../services/templateService';
 import {
 	getAvailableSettings,
 	getSettingById,
-	Support,
-	AdminForm,
+	RenderComponent,
 	Banner,
-	Tabs,
 	useModules,
+	SettingsNavigator,
 } from 'zyra';
-import ShowProPopup from '../Popup/popup';
+import ShowProPopup from '../Popup/Popup';
 import { useLocation, Link } from 'react-router-dom';
-import Notifications from './Notification/Notification';
+import EventRules from './Notification/EventRules.tsx';
 import StoreStatus from './StoreConfiguration/StoreStatus.tsx';
 
 // Types
@@ -145,12 +144,12 @@ const Settings: React.FC<SettingsProps> = () => {
 			}
 
 			const storeCapability =
-				appLocalizer.settings_databases_value['store-capability'];
+				appLocalizer.settings_databases_value['store-permissions'];
 
 			if (storeCapability) {
 				setStoreTabSetting(storeCapability);
 				const userCapability =
-					appLocalizer.settings_databases_value['user-capability'] ||
+					appLocalizer.settings_databases_value['user-permissions'] ||
 					{};
 
 				// all capability arrays into one
@@ -171,7 +170,7 @@ const Settings: React.FC<SettingsProps> = () => {
 					}
 				});
 
-				appLocalizer.settings_databases_value['user-capability'] = {
+				appLocalizer.settings_databases_value['user-permissions'] = {
 					...userCapability,
 					...result,
 				};
@@ -179,17 +178,20 @@ const Settings: React.FC<SettingsProps> = () => {
 		}, [setting, settingName, currentTab]);
 
 		// Special component
-		if (currentTab === 'notifications') {
-			return <Notifications />;
+		if (currentTab === 'event-rules') {
+			return <EventRules />;
 		}
-		if (currentTab === 'store-status-control') {
+		if (currentTab === 'store-status') {
 			return <StoreStatus />;
 		}
+		// if (currentTab === 'invoices') {
+		// 	return <Invoice />;
+		// }
 
 		return (
 			<>
 				{settingName === currentTab ? (
-					<AdminForm
+					<RenderComponent
 						settings={settingModal as SettingContent}
 						proSetting={appLocalizer.pro_settings_list}
 						setting={setting}
@@ -208,17 +210,14 @@ const Settings: React.FC<SettingsProps> = () => {
 
 	return (
 		<SettingProvider>
-			<Tabs
-				tabData={settingsArray as any}
-				currentTab={location.get('subtab') as string}
+			<SettingsNavigator
+				settingContent={settingsArray as any}
+				currentSetting={location.get('subtab') as string}
 				getForm={GetForm}
-				BannerSection={getBanner}
 				prepareUrl={(subTab: string) =>
 					`?page=multivendorx#&tab=settings&subtab=${subTab}`
 				}
 				appLocalizer={appLocalizer}
-				brandImg={Brand}
-				supprot={supportLink}
 				Link={Link}
 				settingName={'Settings'}
 			/>

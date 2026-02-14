@@ -25,7 +25,6 @@ body:has(#store-dashboard) input {
     line-height: 0.95rem;
 
     #store-dashboard.collapsed {
-
         &.minimize {
             .dashboard-tabs-wrapper {
                 width: 4rem;

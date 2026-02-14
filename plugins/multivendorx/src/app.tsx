@@ -1,30 +1,28 @@
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { AdminButton, AdminHeader, Banner, CommonPopup, DoActionBtn, FormGroup, FormGroupWrapper, TourSetup } from 'zyra';
+import { applyFilters } from '@wordpress/hooks';
+import { AdminButtonUI, AdminHeader, Banner, DoActionBtn, FormGroup, FormGroupWrapper, PopupUI, TourSetup } from 'zyra';
 
 import Settings from './components/Settings/Settings';
-import Modules from './components/Modules/modules';
-import Store from './components/Store/store';
-import AdminDashboard from './components/AdminDashboard/adminDashboard';
-import StatusAndTools from './components/StatusAndTools/statusAndTools';
-import CustomerServices from './components/CustomerService/customerServices';
-import Memberships from './components/Membership/membership';
-
+import Modules from './components/Modules/Modules';
+import Stores from './components/Stores/Stores';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import StatusAndTools from './components/StatusAndTools/StatusAndTools';
+import CustomerSupport from './components/CustomerSupport/CustomerSupport';
 import Brand from './assets/images/multivendorx-logo.png';
 import { searchIndex, SearchItem } from './searchIndex';
 import { __ } from '@wordpress/i18n';
-import Announcements from './components/Announcements/announcements';
-import Knowledgebase from './components/Knowledgebase/knowledgebase';
-import Commission from './components/Commission/commission';
+import Announcements from './components/Announcements/Announcements';
+import Knowledgebase from './components/Knowledgebase/Knowledgebase';
+import Commissions from './components/Commissions/Commissions';
 import Analytics from './components/Reports/Reports';
-import Advertisement from './components/Advertisement/Advertisement';
 import HelpSupport from './components/HelpSupport/HelpSupport';
-import ApprovalQueue from './components/ApprovalQueue/approvalQueue';
-import HeaderNotification from './components/Notifications/HeaderNotifications';
+import ApprovalQueue from './components/ApprovalQueue/ApprovalQueue';
 import Notifications from './components/Notifications/Notifications';
-import TransactionHistory from './components/TransactionHistory/transactionHistory';
-import { getTourSteps } from './components/Tour/tourSteps';
-import AddMemberships from './components/Membership/add-membership';
+import TransactionHistory from './components/TransactionHistory/TransactionHistory';
+import { getTourSteps } from './components/Tour/TourSteps';
+import TableCardDemo from './components/table/TableCardDemo';
+import NotificationTabContent from './components/Notifications/HeaderNotifications';
 
 localStorage.setItem('force_multivendorx_context_reload', 'true');
 
@@ -35,53 +33,107 @@ interface Products {
 
 const products: Products[] = [
 	{
-		title: __('Double Opt-In', 'multivendorx'),
+		title: __('Marketplace monetization', 'multivendorx'),
 		description: __(
-			'Experience the power of Double Opt-In for our Stock Alert Form!',
+			'Create flexible membership plans that let you charge stores for access, features, and growth opportunities.',
 			'multivendorx'
 		),
 	},
 	{
-		title: __('Your Subscription Hub', 'multivendorx'),
+		title: __('Built-in tax compliance', 'multivendorx'),
 		description: __(
-			'Easily monitor and download lists of out-of-stock subscribers.',
+			'Automatically generate tax-ready invoices for orders, commissions, and payouts to keep your marketplace compliant.',
 			'multivendorx'
 		),
 	},
+	{
+		title: __('Franchise-ready scaling', 'multivendorx'),
+		description: __(
+			'Run multiple regional or franchise marketplaces with centralized control and consistent branding.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Recurring revenue engine', 'multivendorx'),
+		description: __(
+			'Enable subscription-based selling so your marketplace benefits from predictable, recurring income.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Service and booking sales', 'multivendorx'),
+		description: __(
+			'Allow stores to sell bookings for services, appointments, rentals, and experiences on your platform.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('High-value rentals', 'multivendorx'),
+		description: __(
+			'Launch rental marketplace with date-based availability and higher order values.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Verified stores', 'multivendorx'),
+		description: __(
+			'Verify store identities using documents and badges to build trust and reduce risk on your marketplace.',
+			'multivendorx'
+		),
+	},
+	{
+		title: __('Vacation mode', 'multivendorx'),
+		description: __(
+			'Allow stores to temporarily pause their shop during vacations while keeping their listings intact.',
+			'multivendorx'
+		),
+	},
+
+
 ];
 
 const Route = () => {
+	const location = useLocation();
+	const navigate = useNavigate();
 	const currentTab = new URLSearchParams(useLocation().hash);
 	const tab = currentTab.get('tab') || 'dashboard';
 
 	return (
 		<>
 			{tab === 'settings' && <Settings id="settings" />}
-			{tab === 'memberships' && <AddMemberships />}
 			{tab === 'status-tools' && <StatusAndTools id="status-tools" />}
 			{tab === 'modules' && <Modules />}
-			{tab === 'stores' && <Store />}
-			{tab === 'commissions' && <Commission />}
-			{tab === 'customer-support' && <CustomerServices />}
+			{tab === 'stores' && <Stores />}
+			{tab === 'commissions' && <Commissions />}
+			{tab === 'customer-support' && <CustomerSupport />}
 			{tab === 'approval-queue' && <ApprovalQueue />}
 			{tab === 'dashboard' && <AdminDashboard />}
-			{tab === 'announcement' && <Announcements />}
+			{tab === 'announcements' && <Announcements />}
 			{tab === 'knowledgebase' && <Knowledgebase />}
 			{tab === 'transaction-history' && <TransactionHistory />}
 			{tab === 'reports' && <Analytics />}
-			{tab === 'advertisement' && <Advertisement />}
 			{tab === 'help-support' && <HelpSupport />}
 			{tab === 'notifications' && <Notifications />}
+			{tab === 'table-card' && <TableCardDemo />}
+
+			{applyFilters(
+				'multivendorx_admin_submenu_render',
+				null,
+				{
+					tab,
+					location,
+					Link,
+					navigate
+				}
+			)}
 		</>
 	);
 };
 
 const App = () => {
 	const currentTabParams = new URLSearchParams(useLocation().hash);
-	const [query, setQuery] = useState('');
-	const [results, setResults] = useState<SearchItem[]>([]);
-	const [selectValue, setSelectValue] = useState('all');
 	const [openFeaturePopup, setOpenFeaturePopup] = useState(false);
+	const [results, setResults] = useState<SearchItem[]>([]);
 
 	const handleOpenFeaturePopup = () => {
 		setOpenFeaturePopup(true);
@@ -118,47 +170,37 @@ const App = () => {
 			});
 	}, [currentTabParams]);
 
-	// 🔹 Search handlers
-	const handleSearchChange = (value: string) => {
-		setQuery(value);
-
-		if (!value.trim()) {
+	const handleQueryUpdate = ({
+		searchValue,
+		searchAction,
+	}: {
+		searchValue: string;
+		searchAction?: string;
+	}) => {
+		if (!searchValue.trim()) {
 			setResults([]);
 			return;
 		}
 
-		const lowerValue = value.toLowerCase();
+		const lower = searchValue.toLowerCase();
 
 		const filtered = searchIndex.filter((item) => {
-			// Filter by dropdown selection
-			if (selectValue !== 'all' && item.tab !== selectValue) {
+			// Ignore action if "all"
+			if (searchAction && searchAction !== 'all' && item.tab !== searchAction) {
 				return false;
 			}
 
-			// Case-insensitive search
-			const name = item.name?.toLowerCase() || '';
-			const desc = item.desc?.toLowerCase() || '';
-			return name.includes(lowerValue) || desc.includes(lowerValue);
+			return (
+				item.name?.toLowerCase().includes(lower) ||
+				item.desc?.toLowerCase().includes(lower)
+			);
 		});
 
 		setResults(filtered);
 	};
 
-	const handleSelectChange = (value: string) => {
-		setSelectValue(value);
-
-		// Re-run search for current query whenever dropdown changes
-		if (query.trim()) {
-			handleSearchChange(query);
-		} else {
-			setResults([]);
-		}
-	};
-
 	const handleResultClick = (item: SearchItem) => {
 		window.location.hash = item.link;
-		setQuery('');
-		setResults([]);
 	};
 
 	const profileItems = [
@@ -198,66 +240,98 @@ const App = () => {
 			action: handleOpenFeaturePopup,
 		},
 	];
+	const utilityListWithTab = [
+		{
+			toggleIcon: 'adminfont-notification',
+			tabs: [
+				{
+					id: 'notifications',
+					label: __('Notifications', 'multivendorx'),
+					icon: 'adminfont-notification',
+					content: <NotificationTabContent type="notification" />,
+					footer: {
+						url: '?page=multivendorx#&tab=notifications&subtab=notifications',
+						icon: 'adminfont-eye',
+						text: __('View all notifications', 'multivendorx')
+					}
+				},
+				{
+					id: 'activities',
+					label: __('Activities', 'multivendorx'),
+					icon: 'adminfont-activity',
+					content: <NotificationTabContent type="activity" />,
+					footer: {
+						url: '?page=multivendorx#&tab=notifications&subtab=activities',
+						icon: 'adminfont-eye',
+						text: __('View all activities', 'multivendorx')
+					}
+				},
+			],
+		},
+	];
 
+	const utilityList = [
+		{
+			toggleIcon: 'admin-icon adminfont-user-circle',
+			items: profileItems,
+		}
+	];
 	return (
 		<>
 			<Banner
 				products={products}
 				isPro={appLocalizer.khali_dabba}
 				proUrl={appLocalizer.pro_url}
-				tag="Why Premium"
-				buttonText="View Pricing"
-				bgCode="#852aff"
-				textCode="#fff"
-				btnCode="#fff"
-				btnBgCode="#e35047"
 			/>
 			<AdminHeader
 				brandImg={Brand}
-				query={query}
 				results={results}
-				onSearchChange={handleSearchChange}
+				search={{
+					placeholder: 'Search...',
+					options: [
+						{ value: 'all', label: 'Modules & Settings' },
+						{ value: 'modules', label: 'Modules' },
+						{ value: 'settings', label: 'Settings' },
+					],
+				}}
+				onQueryUpdate={handleQueryUpdate}
 				onResultClick={handleResultClick}
-				onSelectChange={handleSelectChange}
-				selectValue={selectValue}
 				free={appLocalizer.freeVersion}
 				pro={appLocalizer.pro_data.version}
-				managePlanUrl={appLocalizer.pro_data.manage_plan_url}
-				chatUrl=""
-				showProfile={true}
-				profileItems={profileItems}
-				showDropdown={true}
-				dropdownOptions={[
-					{ value: 'all', label: 'Modules & Settings' },
-					{ value: 'modules', label: 'Modules' },
-					{ value: 'settings', label: 'Settings' },
-				]}
-				notifications={<HeaderNotification type="notification" />}
-				showNotifications={true}
-				activities={<HeaderNotification type="activity" />}
-				showActivities={true}
-				messages={[
-					{
-						heading: 'Support Ticket #123',
-						message: 'Customer reported an issue',
-						time: '15 mins ago',
-						icon: 'adminfont-user-network-icon',
-						color: 'red',
-						link: '/tickets/123',
-					},
-				]}
-				messagesLink="/messages"
+				utilityList={utilityList}
+				utilityListWithTab={utilityListWithTab}
 			/>
 
-			<CommonPopup
+			<PopupUI
 				open={openFeaturePopup}
 				onClose={handleCloseFeaturePopup}
-				width="31.25rem"
-				height="70%"
+				width={31.25}
 				header={{
-					icon: 'import',
-					title: __('Import Dummy Data', 'multivendorx')
+					icon: 'book',
+					title: __('Import Dummy Data', 'multivendorx'),
+					description: __(
+						'Get a hands-on feel of your marketplace in minutes.',
+						'multivendorx'
+					),
+					showCloseButton: true, // Add this to show close button in header
 				}}
+				footer={
+					<AdminButtonUI
+						buttons={[
+							{
+								icon: 'close',
+								text: __('Cancel', 'multivendorx'),
+								color: 'red',
+								// onClick: handleCloseForm,
+							},
+							{
+								icon: 'save',
+								text: __('Save', 'multivendorx'),
+								// onClick: () => handleSubmit(formData.status || 'draft'),
+							},
+						]}
+					/>
+				}
 			>
 				<FormGroupWrapper>
 					<FormGroup label={__('Import Dummy Data', 'multivendorx')}>
@@ -265,8 +339,8 @@ const App = () => {
 					</FormGroup>
 					<div className="desc">
 						Get a hands-on feel of your marketplace in minutes.
-						 Import demo stores, store owners, products, and commission data to see how everything works together.  
-						 <b>Important: </b>Delete all demo data before going live so your real marketplace data stays clean and reliable.</div>
+						Import demo stores, store owners, products, and commission data to see how everything works together.
+						<b>Important: </b>Delete all demo data before going live so your real marketplace data stays clean and reliable.</div>
 					<DoActionBtn
 						buttonKey="import_dummy_data"
 						value={__('Import Dummy Data', 'multivendorx')}
@@ -327,7 +401,7 @@ const App = () => {
 						}}
 					/>
 				</FormGroupWrapper>
-			</CommonPopup>
+			</PopupUI>
 
 			<TourSetup
 				appLocalizer={appLocalizer}

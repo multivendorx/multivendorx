@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButton, Card, Column, CommonPopup, getApiLink, MessageState, MiniCard } from 'zyra';
+import { AdminButtonUI, Card, getApiLink, ComponentStatusView, MiniCard, PopupUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -32,8 +32,7 @@ const Documentation: React.FC = () => {
 			},
 		})
 			.then((response) => {
-				// response.data.items = array of docs from API
-				const apiData = response.data.items || [];
+				const apiData = response.data || [];
 				setData(apiData);
 			})
 			.catch(() => {
@@ -128,7 +127,7 @@ const Documentation: React.FC = () => {
 				</div>
 				<div className="documentation-wrapper">
 					{filteredDocuments.length === 0 && (
-						<MessageState title={__('No documents found.', 'multivendorx')}/>
+						<ComponentStatusView title={__('No documents found.', 'multivendorx')} />
 					)}
 					{filteredDocuments.map((doc) => (
 						<>
@@ -154,62 +153,62 @@ const Documentation: React.FC = () => {
 										</div>
 									</div>
 								</div> */}
-							
-								<MiniCard
-									background
-									cols={3}
-									header={
-										<>
-											<i className={`icon adminfont-contact-form blue`}></i>
-											<div className="tag">
-												<span className="admin-badge yellow">
-													{__('Products', 'multivendorx')}
-												</span>
-											</div>
-										</>
-									}
-									title={truncateText(doc.title || '', 4)}
-									description={
-										<>
-											{truncateText(doc.content || '', 10)}
-											<a
-												className="read-more"
-												onClick={() =>
-													handleReadMore(doc)
-												}
-											>
-												{__('Read more', 'multivendorx')}
-											</a>
-										</>
-									}
-								/>						
+
+							<MiniCard
+								background
+								cols={3}
+								header={
+									<>
+										<i className={`icon adminfont-contact-form blue`}></i>
+										<div className="tag">
+											<span className="admin-badge yellow">
+												{__('Products', 'multivendorx')}
+											</span>
+										</div>
+									</>
+								}
+								title={truncateText(doc.title || '', 4)}
+								description={
+									<>
+										{truncateText(doc.content || '', 10)}
+										<a
+											className="read-more"
+											onClick={() =>
+												handleReadMore(doc)
+											}
+										>
+											{__('Read more', 'multivendorx')}
+										</a>
+									</>
+								}
+							/>
 						</>
 					))}
 				</div>
 			</Card>
 
 			{activeDocument && (
-				<CommonPopup
+				<PopupUI
 					open={popupOpen}
 					onClose={() => setPopupOpen(false)}
-					width="31.25rem"
+					width={31.25}
 					header={{
 						icon: 'contact-form',
 						title: activeDocument.title,
 					}}
 					footer={
-						<AdminButton
+						<AdminButtonUI
 							buttons={[
 								{
 									icon: 'close',
 									text: __('Close', 'multivendorx'),
-									className: 'red',
+									color: 'red',
 									onClick: () => setPopupOpen(false),
 								},
 								{
 									icon: 'import',
 									text: __('Print', 'multivendorx'),
-									className: 'purple',
+									color: 'purple',
 									onClick: () => handlePrint(activeDocument),
 								},
 							]}
@@ -220,7 +219,7 @@ const Documentation: React.FC = () => {
 						<div className="heading">{activeDocument.title}</div>
 						<p className="des">{activeDocument.content}</p>
 					</div>
-				</CommonPopup>
+				</PopupUI>
 			)}
 		</>
 	);

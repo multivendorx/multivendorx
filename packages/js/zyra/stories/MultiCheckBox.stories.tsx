@@ -120,11 +120,9 @@ const commonProps = {
     descClass: 'settings-metabox-description',
     selectDeselectClass: 'admin-btn btn-purple',
     inputWrapperClass: 'toggle-checkbox-header',
-    hintOuterClass: 'settings-metabox-description',
     hintInnerClass: 'hover-tooltip',
     idPrefix: 'toggle-switch',
     selectDeselectValue: 'Select / Deselect All',
-    rightContentClass: 'settings-checkbox-description',
     onChange: change,
     onMultiSelectDeselectChange: (e) => {
         console.log('Select/Deselect clicked:', e);
