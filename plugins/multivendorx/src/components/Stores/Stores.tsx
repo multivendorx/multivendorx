@@ -11,6 +11,7 @@ import {
 	FormGroupWrapper,
 	getApiLink,
 	PopupUI,
+	SelectInputUI,
 	TextAreaUI,
 } from 'zyra';
 import { useState } from 'react';
@@ -405,7 +406,7 @@ const Stores = () => {
 								</FormGroup>
 
 								<FormGroup label={__('Primary owner', 'multivendorx')} htmlFor="store_owners">
-									{/* <SelectInput
+									<SelectInputUI
 										name="store_owners"
 										options={
 											appLocalizer?.store_owners || []
@@ -426,7 +427,7 @@ const Stores = () => {
 											};
 											setFormData(updated);
 										}}
-									/> */}
+									/>
 									{error?.primary?.message && (
 										<div className="invalid-massage">
 											{error?.primary?.message}
@@ -435,7 +436,7 @@ const Stores = () => {
 								</FormGroup>
 
 								<FormGroup label={__('Profile image', 'multivendorx')} htmlFor="store_owners">
-									<FileInput
+									{/* <FileInput
 										value={formData.image || ''}
 										inputClass="form-input"
 										name="image"
@@ -456,7 +457,7 @@ const Stores = () => {
 										onReplace={() =>
 											handleReplaceImage('image')
 										}
-									/>
+									/> */}
 								</FormGroup>
 							</FormGroupWrapper>
 						</PopupUI>

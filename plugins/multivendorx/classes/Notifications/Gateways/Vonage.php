@@ -37,6 +37,7 @@ class Vonage {
         $api_key     = MultiVendorX()->setting->get_setting( 'vonage_api_key' );
         $api_secret  = MultiVendorX()->setting->get_setting( 'vonage_api_secret' );
         $from_number = MultiVendorX()->setting->get_setting( 'sms_sender_phone_number' );
+        $from_number = $from_number['country_code'] . $from_number['sms_sender_phone_number'];
 
         $args = array(
             'body' => array(
@@ -50,7 +51,6 @@ class Vonage {
 
         $request       = wp_remote_post( self::ENDPOINT . '/sms/json', $args );
         $body          = json_decode( wp_remote_retrieve_body( $request ) );
-        $response_code = wp_remote_retrieve_response_code( $request );
 
         if ( is_wp_error( $request ) ) {
             return $request;
@@ -62,7 +62,6 @@ class Vonage {
                 $body->messages[0]->{'error-text'}
             );
         }
-
         return true;
     }
 }

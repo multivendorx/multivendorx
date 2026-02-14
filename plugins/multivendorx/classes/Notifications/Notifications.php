@@ -607,25 +607,25 @@ class Notifications {
             $receivers = array();
 
             if ( $event->admin_enabled ) {
-                $receivers[] = $parameters['admin_phn'];
+				$parameters['admin_phone'] = $parameters['admin_phone']['country_code'] . $parameters['admin_phone']['sms_receiver_phone_number'];
+                $receivers[] = $parameters['admin_phone'];
             }
 
             if ( $event->store_enabled ) {
-                $receivers[] = $parameters['store_phn'];
+                $receivers[] = $parameters['store_phone'];
             }
 
             if ( $event->customer_enabled ) {
-                $receivers[] = $parameters['customer_phn'];
+                $receivers[] = $parameters['customer_phone'];
             }
-
+			
             $message = $event->sms_content;
-
 			foreach ( $parameters as $key => $value ) {
 				$message = str_replace( '[' . $key . ']', $value, $message );
 			}
 
             $gateway = $this->active_gateway();
-            if ( $gateway ) {
+			if ( $gateway ) {
                 foreach ( $receivers as $number ) {
                     $gateway->send( $number, $message );
                 }
