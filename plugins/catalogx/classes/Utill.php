@@ -154,9 +154,8 @@ class Utill {
     public static function get_translated_string( $context, $name, $default_value ) {
         if ( function_exists( 'icl_t' ) ) {
             return icl_t( $context, $name, $default_value );
-        } else {
-            return __( $default_value, 'catalogx' );
         }
+        return $default_value;
     }
 
     /**

@@ -3,18 +3,18 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'pages',
     priority: 80,
-    name: __( 'Page Endpoint', 'catalogx' ),
+    name: __('Page Endpoint', 'catalogx'),
     desc: __(
         'Manage the endpoints for all pages on the site, ensuring proper routing and access.',
         'catalogx'
     ),
-    icon: 'adminlib-book',
+    icon: 'adminfont-book',
     submitUrl: 'settings',
     modal: [
         {
             key: 'set_enquiry_cart_page',
             type: 'select',
-            label: __( 'Set Enquiry Cart Page', 'catalogx' ),
+            label: __('Set Enquiry Cart Page', 'catalogx'),
             desc: __(
                 'Select the page on which you have inserted <code>[catalogx_enquiry_cart]</code> shortcode.',
                 'catalogx'
@@ -25,7 +25,7 @@ export default {
         {
             key: 'set_request_quote_page',
             type: 'select',
-            label: __( 'Set Request Quote Page', 'catalogx' ),
+            label: __('Set Request Quote Page', 'catalogx'),
             desc: __(
                 'Select the page on which you have inserted <code>[request_quote]</code> shortcode.',
                 'catalogx'
@@ -36,7 +36,7 @@ export default {
         {
             key: 'set_wholesale_products_page',
             type: 'select',
-            label: __( 'Set Wholesale Products Page', 'catalogx' ),
+            label: __('Set Wholesale Products Page', 'catalogx'),
             desc: __(
                 'Select the page on which you have inserted <code>[catalogx_wholesale_products]</code> shortcode.',
                 'catalogx'
@@ -52,9 +52,9 @@ export default {
         {
             key: 'shortCode',
             type: 'shortcode-table',
-            label: __( 'Available Shortcodes', 'catalogx' ),
-            desc: __( '', 'catalogx' ),
-            optionLabel: [ 'Shortcodes', 'Description' ],
+            label: __('Available Shortcodes', 'catalogx'),
+            desc: __('', 'catalogx'),
+            optionLabel: ['Shortcodes', 'Description'],
             options: [
                 {
                     key: '',
@@ -99,10 +99,7 @@ export default {
                 {
                     key: '',
                     label: '[catalogx_quote_button]',
-                    desc: __(
-                        'Displays the "Add to Quote" button.',
-                        'catalogx'
-                    ),
+                    desc: __('Displays the "Add to Quote" button.', 'catalogx'),
                 },
             ],
         },
