@@ -78,7 +78,7 @@ export const NavigatorHeader: React.FC<NavigatorHeaderProps> = ({
         <div className="title-section">
             <div className="title-wrapper">
                 <div className="title">
-                    {headerIcon && <i className={headerIcon}></i>}
+                    {headerIcon && <i className={`adminfont-${headerIcon}`}></i>}
                     {headerTitle}
                 </div>
 

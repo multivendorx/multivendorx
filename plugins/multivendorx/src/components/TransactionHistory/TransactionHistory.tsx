@@ -45,8 +45,8 @@ export const TransactionHistory: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'wallet-transaction',
-				name: __('Wallet Transaction', 'multivendorx'),
-				icon: 'wallet-in',
+				headerTitle: __('Wallet Transaction', 'multivendorx'),
+				headerIcon: 'wallet-in',
 				hideSettingHeader: true,
 			},
 		},
@@ -54,8 +54,8 @@ export const TransactionHistory: React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'direct-transaction',
-				name: __('Direct Transaction', 'multivendorx'),
-				icon: 'direct-transaction',
+				headerTitle: __('Direct Transaction', 'multivendorx'),
+				headerIcon: 'direct-transaction',
 				hideSettingHeader: true,
 			},
 		},

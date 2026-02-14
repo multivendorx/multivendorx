@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs,
+	NavigatorHeader,
 	TextAreaUI,
 	ToggleSettingUI,
 	Container,
@@ -332,10 +332,10 @@ export const KnowledgeBase: React.FC = () => {
 			/>
 		</PopupUI>
 
-			{/* <AdminBreadcrumbs
-				settingIcon="adminfont-book"
+			<NavigatorHeader
+				headerIcon="book"
 				headerTitle={__('Knowledge Base', 'multivendorx')}
-				description={__(
+				headerDescription={__(
 					'Build your knowledge base: add new guides or manage existing ones in one place.',
 					'multivendorx'
 				)}
@@ -350,7 +350,7 @@ export const KnowledgeBase: React.FC = () => {
 						}
 					}
 				]}
-			/> */}
+			/>
 
 			{addEntry && (
 				<PopupUI

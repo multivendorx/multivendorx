@@ -3,7 +3,6 @@ import { useOutsideClick } from './useOutsideClick';
 import { BasicInputUI } from './BasicInput';
 import ItemList from './ItemList';
 import { SelectInputUI } from './SelectInput';
-import { PopupUI } from './Popup';
 
 type SearchItem = {
     icon?: string;

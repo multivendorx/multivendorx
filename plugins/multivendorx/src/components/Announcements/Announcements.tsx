@@ -425,7 +425,7 @@ export const Announcements: React.FC = () => {
 				/>
 			</PopupUI>
 			<NavigatorHeader
-				headerIcon="adminfont-announcement"
+				headerIcon="announcement"
 				headerDescription={
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
 				}

@@ -3,13 +3,13 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'developer-tools',
     priority: 3,
-    name: __('Developer Tools', 'multivendorx'),
+    settingTitle: __('Developer Tools', 'multivendorx'),
     tabTitle: 'Dashboard Caching',
-    desc: __(
+    headerDescription: __(
         'Site errors and events are logged for easy troubleshooting.',
         'multivendorx'
     ),
-    icon: 'adminfont-database',
+    headerIcon: 'database',
     submitUrl: 'settings',
     modal: [
         {

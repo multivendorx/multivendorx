@@ -81,7 +81,7 @@ const Reports = () => {
 				id: 'marketplace',
 				headerTitle: 'Marketplace',
 				headerIcon: 'marketplace-membership',
-				// hideSettingHeader: true,
+				hideSettingHeader: true,
 			},
 		},
 		{

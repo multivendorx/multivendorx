@@ -267,7 +267,7 @@ const Stores = () => {
 			{!isAddStore && !iseditStore && (
 				<>
 					<NavigatorHeader
-						headerIcon="adminfont-storefront"
+						headerIcon="storefront"
 						headerTitle="Stores"
 						headerDescription={
 							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'
