@@ -30,10 +30,6 @@ const PagePicker: React.FC<PagePickerProps> = ({
   const firstPage = () => goToPage(1, 'first');
   const lastPage = () => goToPage(pageCount, 'last');
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(Number(e.target.value));
-  };
-
   const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const newPage = Number(e.target.value);
     if (Number.isFinite(newPage) && newPage >= 1 && newPage <= pageCount) {
@@ -42,8 +38,6 @@ const PagePicker: React.FC<PagePickerProps> = ({
       setInputValue(currentPage); // Reset if invalid
     }
   };
-
-  const selectInputValue = (e: React.MouseEvent<HTMLInputElement>) => e.currentTarget.select();
 
   // Determine visible page numbers with ellipsis
   const getVisiblePages = () => {

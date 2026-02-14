@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'tax-compliance',
 	priority: 6,
-	name: __('Tax Compliance', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Tax Compliance', 'multivendorx'),
+	headerDescription: __(
 		'Stores must provide valid bank account details and tax documents (PAN, GST, VAT, TIN) to receive payouts. Payment processor verification may be required. Non-compliant stores may be restricted from payouts.',
 		'multivendorx'
 	),
-	icon: 'adminfont-tax-compliance',
+	headerIcon: 'adminfont-tax-compliance',
 	submitUrl: 'settings',
 	modal: [
 		{

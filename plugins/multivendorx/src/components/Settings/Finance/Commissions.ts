@@ -65,13 +65,13 @@ const nestedFields = [
 export default {
 	id: 'commissions',
 	priority: 1,
-	name: __('Commissions', 'multivendorx'),
-	tabTitle: 'Commission share from the seller’s product/listing',
-	desc: __(
+	headerTitle: __('Commissions', 'multivendorx'),
+	settingTitle: 'Commission share from the seller’s product/listing',
+	headerDescription: __(
 		'Decide how your marketplace takes commission from sales.',
 		'multivendorx'
 	),
-	icon: 'adminfont-commission',
+	headerIcon: 'adminfont-commission',
 	submitUrl: 'settings',
 	modal: [
 		{

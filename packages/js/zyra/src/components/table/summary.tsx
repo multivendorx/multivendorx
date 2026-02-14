@@ -26,16 +26,3 @@ const TableSummary: React.FC<TableSummaryProps> = ({ data }) => {
 };
 
 export default TableSummary;
-
-/**
- * Placeholder version of TableSummary for loading state.
- */
-export const TableSummaryPlaceholder: React.FC = () => {
-	return (
-		<ul className="table-summary is-loading" role="complementary">
-			<li className="table-summary-item">
-				<span className="is-placeholder" />
-			</li>
-		</ul>
-	);
-};

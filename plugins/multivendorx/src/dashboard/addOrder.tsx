@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCell, TextArea, getApiLink, useOutsideClick } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCell, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -1220,7 +1220,7 @@ const AddOrder = () => {
 						title={__('Order note', 'multivendorx')}
 					>
 						<FormGroup>
-							<TextArea
+							<TextAreaUI
 								name="shipping_policy"
 								placeholder={__(
 									'Enter order note...',

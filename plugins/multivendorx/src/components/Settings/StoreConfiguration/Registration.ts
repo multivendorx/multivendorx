@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'registration',
 	priority: 2,
-	name: 'Registration',
-	desc: __(
+	headerTitle: 'Registration',
+	headerDescription: __(
 		'Customise personalised store registration form for marketplace.',
 		'multivendorx'
 	),
-	icon: 'adminfont-contact-form',
+	headerIcon: 'adminfont-contact-form',
 	submitUrl: 'settings',
 	modal: [
 		{

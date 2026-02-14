@@ -75,12 +75,12 @@ const modalOptions = [...capabilityOptions, ...staticOptions];
 export default {
 	id: 'store-permissions',
 	priority: 2,
-	name: __('Store Permissions', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Store Permissions', 'multivendorx'),
+	headerDescription: __(
 		'Control which features and actions are available to each store role.',
 		'multivendorx'
 	),
-	icon: 'adminfont-wholesale',
+	headerIcon: 'adminfont-wholesale',
 	submitUrl: 'settings',
 	modal: modalOptions,
 };

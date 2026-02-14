@@ -10,13 +10,13 @@ import packingSlip1 from '../../../assets/template/packingSlip/packingSlip1';
 export default {
 	id: 'invoices',
 	priority: 6,
-	name: __('Invoices', 'multivendorx'),
-    headerTitle: 'Automatic invoice generation',
-	desc: __(
+	headerTitle: __('Invoices', 'multivendorx'),
+    settingTitle: 'Automatic invoice generation',
+	headerDescription: __(
 		'Choose at which order stages invoices should be generated automatically.',
 		'multivendorx'
 	),
-	icon: 'adminfont-invoice',
+	headerIcon: 'adminfont-invoice',
 	submitUrl: 'settings',
 	modal: [
          {

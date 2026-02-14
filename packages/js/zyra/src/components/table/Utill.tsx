@@ -107,8 +107,6 @@ export const renderCell = (cell: TableRow) => {
 			);
 		}
 
-
-
 		default:
 			return cell.display ?? null;
 	}

@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'facilitator',
 	priority: 7,
-	name: __('Facilitator', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Facilitator', 'multivendorx'),
+	headerDescription: __(
 		'Facilitators are users who assist stores and earn a commission or fee for their role. You can define a global facilitator, assign store-specific facilitators, and configure payment rules for each.',
 		'multivendorx'
 	),
-	icon: 'adminfont-facilitator',
+	headerIcon: 'adminfont-facilitator',
 	submitUrl: 'settings',
 	moduleEnabled: 'facilitator',
 	proSetting: true,

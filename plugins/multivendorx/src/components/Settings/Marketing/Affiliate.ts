@@ -3,8 +3,8 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'affiliate',
 	priority: 4,
-	name: __('Affiliate', 'multivendorx'),
-	desc: __(
+	headerTitle: __('Affiliate', 'multivendorx'),
+	headerDescription: __(
 		'Decide whose share will be reduced when paying affiliate commissions. The payout can either be deducted from the admin’s commission or from the store’s earnings.',
 		'multivendorx'
 	),
@@ -12,7 +12,7 @@ export default {
     '<b>Note: </b>This setting manages how affiliate payments are handled for each store. To adjust commission rules, payout methods, or other affiliate details, please visit the <b><a href="#&tab=settings&subtab=affiliate">Affiliate Plugin Settings</a></b> section.',
     'multivendorx'
 ),
-	icon: 'adminfont-wp-affiliate',
+	headerIcon: 'adminfont-wp-affiliate',
 	submitUrl: 'settings',
 	moduleEnabled: 'wp-affiliate',
 	modal: [
