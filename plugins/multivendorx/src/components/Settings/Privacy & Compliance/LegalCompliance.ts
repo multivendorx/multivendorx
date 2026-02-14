@@ -56,8 +56,8 @@ export default {
 				'multivendorx'
 			),
 			desc: __(
-				'<li><strong>Download only</strong> - Stores can view and download compliance documents (like Seller Agreement, Terms & Conditions, Anti-Counterfeit Declaration) as PDF for offline reading. No upload or acknowledgment required.</li>' +
-					'<li><strong>Download and re-upload</strong> - Stores can download, sign, and re-upload signed copies as proof of acceptance. This ensures verified consent for all legal and policy agreements.</li>',
+				'<ul><li><strong>Download only</strong> - Stores can view and download compliance documents (like Seller Agreement, Terms & Conditions, Anti-Counterfeit Declaration) as PDF for offline reading. No upload or acknowledgment required.</li>' +
+					'<li><strong>Download and re-upload</strong> - Stores can download, sign, and re-upload signed copies as proof of acceptance. This ensures verified consent for all legal and policy agreements.</li></ul>',
 				'multivendorx'
 			),
 			moduleEnabled: 'marketplace-compliance',

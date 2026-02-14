@@ -42,7 +42,6 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
     position = ""
 }) => {
     const buttonsArray = Array.isArray(buttons) ? buttons : [buttons];
-
     const renderedButtons = buttonsArray.map((btn, index) => {
         const [hovered, setHovered] = useState(false);
         const baseStyle = btn.customStyle
@@ -78,7 +77,7 @@ export const AdminButtonUI: React.FC<AdminButtonProps> = ({
                               .button_background_color_onhover ?? "",
                   }
                 : {};
-
+    console.log( btn.disabled);                
         return (
             <button
                 key={index}

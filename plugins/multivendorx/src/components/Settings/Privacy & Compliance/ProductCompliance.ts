@@ -118,15 +118,7 @@ export default {
 			moduleEnabled: 'marketplace-compliance',
 			addNewBtn: true,
 			addNewTemplate: {
-				label: 'New Reasons',
-				formFields: [
-					{
-						key: 'label',
-						type: 'text',
-						label: 'Reasons',
-						placeholder: 'Enter Reasons',
-					},
-				],
+				label: 'New Reasons'
 			},
 			modal: [],
 		},

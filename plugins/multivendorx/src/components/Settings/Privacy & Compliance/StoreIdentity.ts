@@ -127,7 +127,7 @@ export default {
 						},
 						{
 							key: 'client_secret',
-							type: 'password',
+							type: 'text',
 							label: 'Google Client Secret',
 							placeholder: 'Enter Google Client Secret',
 						},
@@ -157,7 +157,7 @@ export default {
 						},
 						{
 							key: 'api_secret_key',
-							type: 'password',
+							type: 'text',
 							label: 'Twitter API Secret Key',
 							placeholder: 'Enter Twitter API Secret Key',
 						},
@@ -187,7 +187,7 @@ export default {
 						},
 						{
 							key: 'app_secret',
-							type: 'password',
+							type: 'text',
 							label: 'Facebook App Secret',
 							placeholder: 'Enter Facebook App Secret',
 						},
@@ -210,7 +210,7 @@ export default {
 						},
 						{
 							key: 'client_secret',
-							type: 'password',
+							type: 'text',
 							label: 'LinkedIn Client Secret',
 							placeholder: 'Enter LinkedIn Client Secret',
 						},
