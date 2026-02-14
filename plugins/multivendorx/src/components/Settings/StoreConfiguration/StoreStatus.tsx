@@ -33,7 +33,7 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'pending',
 				name: 'Pending Approval',
-				desc: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
+				settingDes: 'The store is awaiting approval. Sellers can log in to their dashboard but cannot configure settings, add products, or begin selling until approved.',
 				icon: 'in-progress',
 			},
 		},
@@ -42,7 +42,7 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'rejected',
 				name: 'Rejected',
-				desc: 'The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.',
+				settingDes: 'The store application has been rejected. Sellers can view the rejection reason and resubmit their application after addressing the issues.',
 				icon: 'rejected',
 			},
 		},
@@ -51,7 +51,7 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'permanently-rejected',
 				name: 'Permanently Rejected',
-				desc: 'The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.',
+				settingDes: 'The store application has been permanently rejected. Sellers can view their dashboard in read-only mode but cannot make changes or reapply without admin intervention.',
 				icon: 'permanently-rejected',
 			},
 		},
@@ -64,7 +64,7 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'active',
 				name: 'Active',
-				desc: 'The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.',
+				settingDes: 'The store is active and fully operational. Stores have complete access to manage products, process orders, receive payouts, and configure all store settings.',
 				icon: 'verification10',
 			},
 		},
@@ -73,7 +73,7 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'under-review',
 				name: 'Under Review',
-				desc: 'The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.',
+				settingDes: 'The store is under review due to compliance concerns. Selling is paused, payouts are held, and new product uploads are restricted until the review is complete.',
 				icon: 'under-review',
 			},
 		},
@@ -82,7 +82,7 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'suspended',
 				name: 'Suspended',
-				desc: 'The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.',
+				settingDes: 'The store has been suspended due to policy violations. Products are hidden, payouts are frozen, and selling is disabled. Sellers can appeal through support.',
 				icon: 'suspended',
 			},
 		},
@@ -91,7 +91,7 @@ const StoreStatus: React.FC = () => {
 			content: {
 				id: 'deactivated',
 				name: 'Permanently Deactivated',
-				desc: 'The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.',
+				settingDes: 'The store has been permanently deactivated. Stores have read-only access to historical data, but the storefront and its product is removed from public view and no changes can be made.',
 				icon: 'rejecte',
 			},
 		},

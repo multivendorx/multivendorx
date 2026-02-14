@@ -353,6 +353,11 @@ const ApprovalQueue = () => {
 				appLocalizer={appLocalizer}
 				Link={Link}
 				variant={'card'}
+				headerIcon="adminfont-approval"
+				headerTitle="Approval Queue"
+				headerDescription={
+					'Manage all pending administrative actions including approvals, payouts, and notifications.'
+				}
 			/>
 		</>
 	);

@@ -18,10 +18,7 @@ const CustomerSupport = () => {
 			content: {
 				id: 'questions',
 				name: 'Questions',
-				desc: 'Waiting for your response',
 				icon: 'question',
-				title: 'Product questions in queue',
-				settingDes: 'Waiting for your response',
 			},
 		},
 		{
@@ -31,9 +28,6 @@ const CustomerSupport = () => {
 				id: 'review',
 				name: 'Store Reviews',
 				icon: 'store-review',
-				desc: 'Track and manage reviews for all stores.',
-				title: 'Store reviews at a glance',
-				settingDes: 'Track and manage reviews for all stores.',
 			},
 		},
 		{
@@ -42,7 +36,6 @@ const CustomerSupport = () => {
 			content: {
 				id: 'support-ticket',
 				name: 'Support Ticket',
-				des: 'Flagged for abuse review',
 				icon: 'vacation',
 			},
 		},
