@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { __ } from '@wordpress/i18n';
 import { FilterValue } from './table/types';
 
 export type QueryProps = {
@@ -26,52 +27,52 @@ interface ExportCSVProps<Type> {
   columns: (item: Type) => ColumnMapping<Type>;
 }
 
-export const ExportCSV = <Type>({
+const formatValue = (value: Primitive) => {
+  const v = value instanceof Date ? value.toISOString() : value ?? '';
+  return `"${String(v).replace(/"/g, '""')}"`;
+};
+
+export const ExportCSV =
+<Type>({
   url,
   headers,
-  filename,
+  filename = `${__('export', 'multivendorx')}-${new Date().toISOString().split('Type')[0]}.csv`,
   paramsBuilder,
   columns,
-}: ExportCSVProps<Type>) => async (query: QueryProps) => {
-  try {
-    const { data: resData } = await axios.get(url, {
-      headers,
-      params: paramsBuilder?.(query),
-    });
+}: ExportCSVProps<Type>) =>
+  async (query: QueryProps) => {
+    try {
+      const { data } = await axios.get<Type[]>(url, {
+        headers,
+        params: paramsBuilder?.(query),
+      });
 
-    const dataArray = Array.isArray(resData) ? resData : [];
-    if (!dataArray.length) return alert('No data available');
+      if (!Array.isArray(data) || !data.length) {
+        console.warn(__('No data available to export.', 'multivendorx'));
+        return;
+      }
 
-    const mappedData = dataArray.map(columns);
+      const mapped = data.map(columns);
+      const keys = Object.keys(mapped[0]);
 
-    // Use the first item to get headers
-    const keys = Object.keys(mappedData[0]) as (keyof typeof mappedData[0])[];
+      const header = keys.map(formatValue).join(',');
 
-    const csvContent = [
-      keys.map(Key => `"${mappedData[0][Key].header}"`).join(','),
-      ...mappedData.map(row =>
-        keys
-          .map(Key => {
-            const val = row[Key].value;
-            const normalized = val instanceof Date ? val.toISOString() : val ?? '';
-            return `"${String(normalized).replace(/"/g, '""')}"`;
-          })
-          .join(',')
-      ),
-    ].join('\n');
+      const rows = mapped.map(row =>
+        keys.map(key => formatValue(row[key])).join(',')
+      );
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(blob),
-      download: filename ?? `${new Date().toISOString().split('T')[0]}.csv`,
-    });
+      const csv = [header, ...rows].join('\n');
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const urlObj = URL.createObjectURL(blob);
 
-  } catch (error) {
-    console.error('CSV Download failed', error);
-  }
+      Object.assign(document.createElement('a'), {
+        href: urlObj,
+        download: filename
+      }).click();
+
+      URL.revokeObjectURL(urlObj);
+    } catch (error) {
+      console.error(__('CSV export failed.', 'multivendorx'), error);
+    }
 };
