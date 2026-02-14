@@ -1,6 +1,6 @@
 import React from 'react';
 import PagePicker from './PagePicker';
-import { SelectInputUI } from '../../SelectInput';
+import { SelectInputUI } from '../SelectInput';
 
 // Keeping the constant accessible
 export const DEFAULT_PER_PAGE_OPTIONS = [10, 25, 50, 75, 100];
