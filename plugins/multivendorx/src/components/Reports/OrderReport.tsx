@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink,  TableCard } from 'zyra';
+import { ExportCSV, getApiLink, TableCard } from 'zyra';
 
-import { downloadCSV, formatCurrency, toWcIsoDate } from '../../services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const OrderReport: React.FC = () => {
@@ -12,7 +12,6 @@ const OrderReport: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState([]);
-
 	/**
 	 * Fetch store list on mount
 	 */
@@ -80,71 +79,43 @@ const OrderReport: React.FC = () => {
 	];
 	const buttonActions = [
 		{
-			label: 'Download CSV',
-			icon: 'download',
-			onClickWithQuery: (query: QueryProps) => {
-				downloadOrdersCSV(query);
+		  label: 'Download CSV',
+		  icon: 'download',
+	  
+		  onClickWithQuery: ExportCSV({
+			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+	  
+			filename: 'orders-report.csv',
+	  
+			paramsBuilder: (query) => ({
+			  per_page: 100,
+			  page: 1,
+			  search: query.searchValue,
+			  orderby: query.orderby || 'date',
+			  order: query.order || 'desc',
+			}),
+	  
+			csvHeaders: {
+			  Order_ID: 'Order ID',
+			  Store: 'Store',
+			  Amount: 'Amount',
+			  Commission: 'Commission',
+			  Status: 'Status',
+			  Date: 'Date',
 			},
+	  
+			mapFn: (order: any) => ({
+			  Order_ID: order.id,
+			  Store: order.store_name || '',
+			  Amount: order.total,
+			  Commission: order.commission_total || 0,
+			  Status: order.status,
+			  Date: order.date_created,
+			}),
+		  }),
 		},
 	];
-	const downloadOrdersCSV = (query: QueryProps) => {
-		setIsLoading(true);
-	
-		axios
-			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-				},
-				params: {
-					per_page: 100,
-					page: 1,
-					search: query.searchValue,
-					orderby: query.orderby || 'date',
-					order: query.order || 'desc',
-					meta_key: 'multivendorx_store_id',
-					value: query.filter?.store_id,
-					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
-						: undefined,
-					before: query.filter?.created_at?.endDate
-						? toWcIsoDate(query.filter.created_at.endDate, 'end')
-						: undefined,
-				},
-			})
-			.then((response) => {
-				const orders = Array.isArray(response.data)
-					? response.data
-					: [];
-	
-				const csvData = orders.map((order: any) => ({
-					Order_ID: order.id,
-					Store: order.store_name || '',
-					Amount: order.total,
-					Commission: order.commission_total || 0,
-					Status: order.status,
-					Date: order.date_created,
-				}));
-	
-				downloadCSV({
-					data: csvData,
-					filename: 'orders-report.csv',
-					headers: {
-						Order_ID: 'Order ID',
-						Store: 'Store',
-						Amount: 'Amount',
-						Commission: 'Commission',
-						Status: 'Status',
-						Date: 'Date',
-					},
-				});
-	
-				setIsLoading(false);
-			})
-			.catch((error) => {
-				console.error('CSV download failed:', error);
-				setIsLoading(false);
-			});
-	};
 	
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);

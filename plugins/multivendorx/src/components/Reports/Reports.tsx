@@ -79,45 +79,45 @@ const Reports = () => {
 			type: 'file',
 			content: {
 				id: 'marketplace',
-				name: 'Marketplace',
-				icon: 'marketplace-membership',
-				hideSettingHeader: true,
+				headerTitle: 'Marketplace',
+				headerIcon: 'marketplace-membership',
+				// hideSettingHeader: true,
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'products',
-				name: 'Products',
-				icon: 'multi-product',
-				hideSettingHeader: true,
+				headerTitle: 'Products',
+				headerIcon: 'multi-product',
+				// hideSettingHeader: true,
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'stores',
-				name: 'Stores',
-				icon: 'store-inventory',
-				hideSettingHeader: true,
+				headerTitle: 'Stores',
+				headerIcon: 'store-inventory',
+				// hideSettingHeader: true,
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'store-orders',
-				name: 'Store Orders',
-				icon: 'order',
-				hideSettingHeader: true,
+				headerTitle: 'Store Orders',
+				headerIcon: 'order',
+				// hideSettingHeader: true,
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'refunded-orders',
-				name: 'Refunded Orders',
-				icon: 'marketplace-refund',
-				hideSettingHeader: true,
+				headerTitle: 'Refunded Orders',
+				headerIcon: 'marketplace-refund',
+				// hideSettingHeader: true,
 			},
 		},
 	];
@@ -147,14 +147,14 @@ const Reports = () => {
 	};
 	return (
 		<>
-			<AdminBreadcrumbs
+			{/* <AdminBreadcrumbs
 				settingIcon="adminfont-report"
 				headerTitle={__('Reports', 'multivendorx')}
 				description={__(
 					'Track sales, earnings, and store performance with real-time marketplace insights.',
 					'multivendorx'
 				)}
-			/>
+			/> */}
 
 			<SettingsNavigator
 				settingContent={settingContent}
