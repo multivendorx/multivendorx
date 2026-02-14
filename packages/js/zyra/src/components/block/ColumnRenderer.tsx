@@ -1,5 +1,8 @@
+// External Dependencies
 import React from 'react';
 import { ReactSortable } from 'react-sortablejs';
+
+// Internal Dependencies
 import {
     Block,
     BlockPatch,

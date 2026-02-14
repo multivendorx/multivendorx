@@ -1,3 +1,4 @@
+// External Dependencies
 import React from 'react';
 
 // Common Block Style Interface
@@ -164,7 +165,7 @@ export const BLOCK_STYLE_PRESETS = {
     align: 'center' as const,
   },
   divider: {
-    backgroundColor: '#cccccc',
+    backgroundColor: '#000000ff',
     height: '1px',
     marginTop: 20,
     marginBottom: 20,

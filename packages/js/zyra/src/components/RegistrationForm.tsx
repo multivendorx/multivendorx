@@ -1,5 +1,8 @@
+// External Dependencies
 import React, { useState, useEffect, useRef } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+
+// Internal Dependencies
 import {
     Block,
     BlockPatch,
@@ -50,9 +53,11 @@ const createBlock = (type: BlockType, fixedName?: string, placeholder?: string, 
             { id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
         ];
     }
-
-
     
+    if (type === 'button') {
+        block.text = placeholder;
+        block.url = '#';
+    }
     return block as Block;
 };
 

@@ -1,5 +1,8 @@
-import React from 'react';
+// External Dependencies
+import React, { useState, useCallback } from 'react';
 import { ReactSortable } from 'react-sortablejs';
+
+// Internal Dependencies
 import { BlockConfig } from '../block/blockTypes';
 
 interface Template {
@@ -24,7 +27,13 @@ interface LeftPanelProps {
     groupName?: string;
     showTemplatesTab?: boolean;
     visibleGroups?: string[]; // Array of group IDs to display (e.g., ['store', 'registration'])
-    collapsible?: boolean; // Whether groups can be collapsed
+    onBlockClick?: (value: string, blockItem?: BlockConfig) => void; // Handler for block clicks
+    proSettingChange?: () => boolean; // Function to check if pro settings are allowed
+    createBlock?: (type: any, fixedName?: string, isStore?: boolean, required?: boolean) => any; // Function to create blocks
+    updateBlocks?: (blocks: any[]) => void; // Function to update blocks
+    formFieldList?: any[]; // Current form fields
+    setOpendInput?: (input: any) => void; // Function to set open input
+    setSelectedBlockLocation?: (location: any) => void; // Function to set selected block location
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({
@@ -35,15 +44,34 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
     onTemplateSelect,
     groupName = 'blocks',
     showTemplatesTab = false,
-    visibleGroups = [], // If empty, show all groups
-    collapsible = true,
+    visibleGroups = [],
+    onBlockClick,
+    proSettingChange,
+    createBlock,
+    updateBlocks,
+    formFieldList = [],
+    setOpendInput,
+    setSelectedBlockLocation,
 }) => {
-    const [activeTab, setActiveTab] = React.useState(showTemplatesTab ? 'blocks' : 'blocks');
-    const [collapsedGroups, setCollapsedGroups] = React.useState<Set<string>>(new Set());
+    const [activeTab, setActiveTab] = useState(showTemplatesTab ? 'templates' : 'blocks');
+    // Track open/closed state for each group separately
+    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+        // Initialize all groups as open by default
+        const initialState: Record<string, boolean> = {};
+        
+        if (blocks.length > 0 && blockGroups.length === 0) {
+            initialState['default'] = true;
+        } else {
+            const groupsToShow = visibleGroups.length === 0 ? blockGroups : blockGroups.filter(group => visibleGroups.includes(group.id));
+            groupsToShow.forEach(group => {
+                initialState[group.id] = true;
+            });
+        }
+        return initialState;
+    });
 
     // Determine which blocks to display
-    const displayGroups = React.useMemo(() => {
-        // Legacy mode: if blocks prop is used, create a single default group
+    const displayGroups = useCallback(() => {
         if (blocks.length > 0 && blockGroups.length === 0) {
             return [{
                 id: 'default',
@@ -52,27 +80,40 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             }];
         }
 
-        // New mode: use blockGroups
         if (visibleGroups.length === 0) {
-            // No filter - show all groups
             return blockGroups;
         }
 
-        // Filter groups based on visibleGroups
         return blockGroups.filter(group => visibleGroups.includes(group.id));
     }, [blocks, blockGroups, visibleGroups]);
 
-    const toggleGroupCollapse = (groupId: string) => {
-        setCollapsedGroups(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(groupId)) {
-                newSet.delete(groupId);
-            } else {
-                newSet.add(groupId);
-            }
-            return newSet;
-        });
-    };
+    const toggleGroup = useCallback((groupId: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setOpenGroups(prev => ({
+            ...prev,
+            [groupId]: !prev[groupId]
+        }));
+    }, []);
+
+    const handleBlockClick = useCallback((value: string, blockItem?: BlockConfig) => {
+        // If custom onBlockClick is provided, use it
+        if (onBlockClick) {
+            onBlockClick(value, blockItem);
+            return;
+        }
+
+        // Otherwise use the default behavior from RegistrationForm
+        if (proSettingChange?.()) return;
+        
+        if (createBlock && updateBlocks && formFieldList) {
+            const newField = createBlock(value as any, blockItem?.fixedName);
+            updateBlocks([...formFieldList, newField]);
+            setOpendInput?.(null);
+            setSelectedBlockLocation?.(null);
+        }
+    }, [onBlockClick, proSettingChange, createBlock, updateBlocks, formFieldList, setOpendInput, setSelectedBlockLocation]);
+
+    const groupsToDisplay = displayGroups();
 
     return (
         <div className="elements-wrapper">
@@ -96,65 +137,77 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
 
             <div className="tab-contend">
                 {activeTab === 'blocks' && (
-                    <aside className="elements-section">
-                        {displayGroups.map((group) => {
-                            const isCollapsed = collapsedGroups.has(group.id);
+                    <>
+                        {groupsToDisplay.map((group) => {
+                            const isOpen = openGroups[group.id] !== false; // Default to true if not set
+                            const groupBlocks = group.blocks;
                             
                             return (
-                                <div key={group.id} className="block-group">
-                                    {/* Group Header - only show if multiple groups */}
-                                    {displayGroups.length > 1 && (
-                                        <div 
-                                            className={`block-group-header ${collapsible ? 'collapsible' : ''}`}
-                                            onClick={() => collapsible && toggleGroupCollapse(group.id)}
-                                        >
-                                            <div className="block-group-title">
-                                                {group.icon && <i className={group.icon} />}
-                                                <span>{group.label}</span>
-                                            </div>
-                                            {collapsible && (
-                                                <i className={`adminfont-${isCollapsed ? 'plus' : 'minus'}`} />
-                                            )}
-                                        </div>
-                                    )}
+                                <aside key={group.id} className="elements-section">
+                                    <div
+                                        className="section-meta"
+                                        onClick={(e) => toggleGroup(group.id, e)}
+                                        role="button"
+                                        tabIndex={0}
+                                    >
+                                        <h2>
+                                            {group.label} <span>({groupBlocks.length})</span>
+                                        </h2>
+                                        <i
+                                            className={`adminfont-pagination-right-arrow ${isOpen ? 'rotate' : ''}`}
+                                        ></i>
+                                    </div>
 
-                                    {/* Group Blocks */}
-                                    {!isCollapsed && (
+                                    <main
+                                        className={`section-container ${isOpen ? 'open' : 'closed'}`}
+                                    >
                                         <ReactSortable
-                                            list={group.blocks}
+                                            list={groupBlocks}
                                             setList={() => {}}
                                             sort={false}
                                             group={{ name: groupName, pull: 'clone', put: false }}
-                                            className={`section-container open ${group.id}-group`}
                                         >
-                                            {group.blocks.map((item) => (
-                                                <div key={item.value} className="elements-items">
+                                            {groupBlocks.map((item) => (
+                                                <div
+                                                    key={item.value}
+                                                    role="button"
+                                                    tabIndex={0}
+                                                    className="elements-items"
+                                                    onClick={() => handleBlockClick(item.value, item)}
+                                                >
                                                     <i className={item.icon} />
                                                     <p className="list-title">{item.label}</p>
                                                 </div>
                                             ))}
                                         </ReactSortable>
-                                    )}
-                                </div>
+                                    </main>
+                                </aside>
                             );
                         })}
-                    </aside>
+                    </>
                 )}
                 
                 {activeTab === 'templates' && showTemplatesTab && (
-                    <aside className="template-list">
-                        {templates.map((tpl) => (
-                            <div
-                                key={tpl.id}
-                                className={`template-item ${tpl.id === activeTemplateId ? 'active' : ''}`}
-                                onClick={() => onTemplateSelect?.(tpl.id)}
-                            >
-                                <div className="template-name">{tpl.name}</div>
-                                {tpl.previewText && (
-                                    <div className="template-preview">{tpl.previewText}</div>
-                                )}
-                            </div>
-                        ))}
+                    <aside className="elements-section">
+                        <div className="section-meta">
+                            <h2>Templates <span>({templates.length})</span></h2>
+                        </div>
+                        <main className="section-container open">
+                            {templates.map((tpl) => (
+                                <div
+                                    key={tpl.id}
+                                    role="button"
+                                    tabIndex={0}
+                                    className={`template-item ${tpl.id === activeTemplateId ? 'active' : ''}`}
+                                    onClick={() => onTemplateSelect?.(tpl.id)}
+                                >
+                                    <div className="template-name">{tpl.name}</div>
+                                    {tpl.previewText && (
+                                        <div className="template-preview">{tpl.previewText}</div>
+                                    )}
+                                </div>
+                            ))}
+                        </main>
                     </aside>
                 )}
             </div>

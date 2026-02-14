@@ -1,4 +1,7 @@
+// External Dependencies
 import React from 'react';
+
+// Internal Dependencies
 import { Block, BlockPatch } from '../block/blockTypes';
 import { FIELD_REGISTRY } from '../FieldRegistry';
 
