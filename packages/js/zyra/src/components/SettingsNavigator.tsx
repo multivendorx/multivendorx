@@ -3,8 +3,8 @@ import { LinkProps } from 'react-router-dom';
 
 // Internal Dependencies
 import '../styles/web/SettingsNavigator.scss';
-import AdminBreadcrumbs from './AdminBreadcrumbs';
 import { SectionUI } from './Section';
+import { AdminButtonUI } from './AdminButton';
 
 type Content = {
     id: string;
@@ -41,12 +41,114 @@ type SettingsNavigatorProps = {
     menuIcon?: boolean;
     desc?: boolean;
     variant?: 'default' | 'compact' | 'card' | 'settings';
-     /* - 'default': Standard settings panel layout
-     * - 'compact': Icon and title compact design
-     * - 'card': Card design with count, title and description
-     * - 'settings': Left side settings tab design
-     */
+    /* - 'default': Standard settings panel layout
+    * - 'compact': Icon and title compact design
+    * - 'card': Card design with count, title and description
+    * - 'settings': Left side settings tab design
+    */
     action?: React.ReactNode;
+    headerTitle?: string;
+    headerDescription?: string;
+    headerIcon?: string;
+    showPremiumLink?: boolean;
+};
+
+interface button {
+    label: string;
+    onClick: () => void;
+    iconClass: string;
+    className: string;
+}
+
+interface AdminBreadcrumbsProps<T> {
+    settingIcon?: string;
+    headerTitle?: string;
+    hideTitle?: boolean;
+    hideBreadcrumb?: boolean;
+    renderBreadcrumb?: () => React.ReactNode;
+    renderMenuItems?: (items: T[]) => React.ReactNode;
+    settingContent?: T[];
+    buttons?: button[];
+    showPremiumLink?: string;
+    description?: string;
+    customContent?: React.ReactNode;
+    action?: React.ReactNode;
+}
+
+export const AdminBreadcrumbs = <T,>({
+    settingIcon = '',
+    headerTitle = '',
+    renderBreadcrumb,
+    renderMenuItems,
+    settingContent = [],
+    buttons = [],
+    showPremiumLink,
+    description,
+    customContent,
+    action,
+}: AdminBreadcrumbsProps<T>) => {
+
+    return (
+        <>
+            <div className="title-section">
+                <div className="title-wrapper">
+                    <div className="title">
+                        {settingIcon && (
+                            <i className={settingIcon}></i>
+                        )}
+                        {headerTitle}
+                    </div>
+                    {buttons && (
+                        <AdminButtonUI
+                            buttons={buttons.map((button) => ({
+                                text: button.label,
+                                icon: button.iconClass?.replace('adminfont-', ''),
+                                onClick: button.onClick,
+                                children: (
+                                    <>
+                                        <i className={button.iconClass}></i>
+                                        {button.label}
+                                    </>
+                                ),
+                            }))}
+                        />
+                    )}
+                    {customContent && (
+                        <div className="custom-content">
+                            {customContent}
+                        </div>
+                    )}
+                </div>
+                {description && (
+                    <div className="description">{description}</div>
+                )}
+                {renderBreadcrumb && (
+                    <div className="breadcrumbs">
+                        {renderBreadcrumb()}
+                    </div>
+                )}
+                {renderMenuItems && settingContent.length > 0 && (
+                    <div className="tabs-wrapper">
+                        <div className="tabs-item" >
+                            {renderMenuItems(settingContent)}
+                        </div>
+                        {showPremiumLink && (
+                            <a
+                                href={showPremiumLink}
+                                className="tab pro-btn"
+                            >
+                                <i className="adminfont-pro-tag"></i> Upgrade
+                                <i className="adminfont-arrow-right"></i>
+                            </a>
+                        )}
+                        {action && (
+                            <div className="action-wrapper">{action}</div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </>
+    );
 };
 
 // Typesafe check helpers
@@ -67,7 +169,11 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     variant = 'default',
     menuIcon,
     desc,
-    action
+    action,
+    headerTitle,
+    headerDescription,
+    headerIcon,
+    showPremiumLink = false,
 }) => {
     const [activeSetting, setActiveSetting] = useState(currentSetting);
     /**
@@ -188,7 +294,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                         <span>{setting.count}</span>
                         {setting.name}
                     </p>
-                    {desc && setting.desc && <div className="des">{setting.desc}</div>}
+                    { variant !=='default' && setting.desc && <div className="des">{setting.desc}</div>}
                 </Link>
             );
         }
@@ -225,7 +331,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
         return (
             <SectionUI
                 hint={activeFile.headerTitle ?? activeFile.name}
-                description={description}
+                value={description}
             />
         );
     };
@@ -250,12 +356,13 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                 {settingTitleSection && <>{settingTitleSection}</>}
 
                 <AdminBreadcrumbs
-                    settingIcon={activeFile?.icon || ''}
-                    headerTitle={activeFile?.headerTitle || ''}
-                    renderBreadcrumb={renderBreadcrumbLinks}
+                    settingIcon={ variant === 'default' ? activeFile?.icon : headerIcon}
+                    headerTitle={ variant === 'default' ? activeFile?.name : headerTitle}
+                    description={ headerDescription }
+                    renderBreadcrumb={ variant === 'default' ? renderBreadcrumbLinks : undefined }
                     renderMenuItems={() => renderAllMenuItems(settingContent)}
                     settingContent={settingContent}
-                    goPremiumLink={!appLocalizer.khali_dabba ? appLocalizer.shop_url : ''}
+                    showPremiumLink={!appLocalizer.khali_dabba && showPremiumLink ? appLocalizer.shop_url : ''}
                     action={action}
                 />
 
