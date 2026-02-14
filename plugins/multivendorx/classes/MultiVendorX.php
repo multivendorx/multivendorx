@@ -58,6 +58,7 @@ final class MultiVendorX {
         $this->container['rest_namespace']        = 'multivendorx/v1';
         $this->container['block_paths']           = array();
         $this->container['is_dev']                = defined( 'WP_ENV' ) && WP_ENV === 'development';
+        $this->container['date_format']           = get_option('date_format') . ' ' . get_option('time_format');
 
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );

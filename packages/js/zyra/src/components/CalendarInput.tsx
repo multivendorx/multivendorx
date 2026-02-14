@@ -126,6 +126,11 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
     setInternalValue(convertToDateObjectRange(value, format));
   }, [value, format]);
 
+  // const toDateOnly = (dateObj: DateObject): Date => {
+  //   const d = dateObj.toDate();
+  //   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  // };  
+
   const handleChange = (val: DateObject[] | DateObject | null) => {
     setInternalValue(val);
     if (Array.isArray(val) && val.length === 2) {
