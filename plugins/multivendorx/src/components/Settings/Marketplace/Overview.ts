@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { CountryCodes } from 'zyra';
 
 const methods = appLocalizer?.all_payments
 	? Object.entries(appLocalizer.all_payments).map(([_, value]) => value)
@@ -54,23 +55,9 @@ export default {
 			moduleEnabled: 'store-policy',
 			beforeElement: {
 				type: 'select',
-				key: 'store_base_pre',
-				size: '90px',
-				options: [
-					{ label: '+91', value: 'store' },
-					{ label: '+92', value: 'shop' },
-					{ label: '+93', value: 'vendor' },
-				],
-			},
-			afterElement: {
-				type: 'select',
-				key: 'store_base_post',
-				size: '90px',
-				options: [
-					{ label: '+91', value: 'store' },
-					{ label: '+92', value: 'shop' },
-					{ label: '+93', value: 'vendor' },
-				],
+				key: 'country_code',
+				size: '200px',
+				options: CountryCodes,
 			},
 		},
 		{

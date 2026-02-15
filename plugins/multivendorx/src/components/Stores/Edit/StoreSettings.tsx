@@ -14,6 +14,7 @@ import {
 	FormGroup,
 	BasicInputUI,
 	SelectInputUI,
+	CountryCodes,
 } from 'zyra';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
@@ -288,68 +289,86 @@ const StoreSettings = ({
 	};
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		eOrName:
+			| React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+			| string,
+		valueArg?: string
 	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
-		setFormData(updated);
-
-		if (name === 'slug') {
-			const cleanValue = value.toLowerCase().replace(/[^a-z0-9-]/g, '');
-
-			const updated = { ...formData, slug: cleanValue };
+		let name: string;
+		let value: string;
+		if (typeof eOrName !== 'string') {
+			name = eOrName.target.name;
+			value = eOrName.target.value;
+		}
+		else {
+			name = eOrName;
+			value = valueArg ?? '';
+		}
+		if (name === 'phone') {
+			const code = formData.country_code || '';
+			// Allow typing naturally, normalize AFTER
+			const updated = {
+				...formData,
+				phone: value,
+			};
 			setFormData(updated);
-
-			if (cleanValue !== value.toLowerCase()) {
-				setErrorMsg((prev) => ({
-					...prev,
-					slug: __(
-						'Special characters are not allowed.',
-						'multivendorx'
-					),
+			const normalized = ensurePhonePrefix(code, value);
+			const isValidPhone = /^\+?[0-9\s\-]{7,15}$/.test(normalized);
+			if (isValidPhone || normalized === '') {
+				autoSave({ ...updated, phone: normalized });
+				setErrorMsg((p) => ({ ...p, phone: '' }));
+			} else {
+				setErrorMsg((p) => ({
+					...p,
+					phone: __('Invalid phone number', 'multivendorx'),
+				}));
+			}
+		
+			return;
+		}
+		if (name === 'slug') {
+			const clean = value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+			setFormData((prev) => ({ ...prev, slug: clean }));
+			if (clean !== value.toLowerCase()) {
+				setErrorMsg((p) => ({
+					...p,
+					slug: __('Special characters are not allowed.', 'multivendorx'),
 				}));
 				return;
 			}
-
 			(async () => {
-				const trimmedValue = cleanValue.trim();
-				if (!trimmedValue) {
-					setErrorMsg((prev) => ({
-						...prev,
+				const trimmed = clean.trim();
+				if (!trimmed) {
+					setErrorMsg((p) => ({
+						...p,
 						slug: __('Slug cannot be blank', 'multivendorx'),
 					}));
 					return;
 				}
-				const exists = await checkSlugExists(trimmedValue);
-
+				const exists = await checkSlugExists(trimmed);
 				if (exists) {
-					setErrorMsg((prev) => ({
-						...prev,
-						slug: `Slug "${trimmedValue}" already exists.`,
+					setErrorMsg((p) => ({
+						...p,
+						slug: `Slug "${trimmed}" already exists.`,
 					}));
 					return;
 				}
-				setErrorMsg((prev) => ({ ...prev, slug: '' }));
+				setErrorMsg((p) => ({ ...p, slug: '' }));
+				const updated = { ...formData, slug: trimmed };
 				autoSave(updated);
-				onUpdate({ slug: trimmedValue });
+				onUpdate({ slug: trimmed });
 			})();
-
 			return;
-		} else if (name === 'phone') {
-			const isValidPhone = /^\+?[0-9\s\-]{7,15}$/.test(value);
-			if (isValidPhone || value == '') {
-				autoSave(updated);
-				setErrorMsg((prev) => ({ ...prev, phone: '' }));
-			} else {
-				setErrorMsg((prev) => ({
-					...prev,
-					phone: __('Invalid phone number', 'multivendorx'),
-				}));
-			}
-		} else if (name !== 'email') {
+		}
+		const updated = {
+			...formData,
+			[name]: value,
+		};
+		setFormData(updated);
+		if (name !== 'email') {
 			autoSave(updated);
 		}
-	};
+	};	
 
 	// Then update your autoSave function:
 	const autoSave = (updatedData: any) => {
@@ -404,6 +423,37 @@ const StoreSettings = ({
 		}
 	};
 
+	const ensurePhonePrefix = (code: string, phone: string) => {
+		if (!code) return phone || '';
+	
+		const raw = phone || '';
+	
+		// If already starts with correct code → keep typing
+		if (raw.startsWith(code)) return raw;
+	
+		// Remove ONLY old prefix (not entire number)
+		const withoutOldPrefix = raw.replace(/^\+\d{1,4}/, '');
+	
+		return code + withoutOldPrefix;
+	};	
+
+	useEffect(() => {
+		if (!data) return;
+	
+		setFormData((prev) => {
+			const code = data.country_code || '';
+			const phone = ensurePhonePrefix(code, data.phone || '');
+	
+			return {
+				...prev,
+				...data,
+				country_code: code,
+				phone,
+			};
+		});
+	}, [data]);
+	
+
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
@@ -434,11 +484,34 @@ const StoreSettings = ({
 						</FormGroup>
 
 						<FormGroup label={__('Phone', 'multivendorx')}>
+							<SelectInputUI
+								name="country_code"
+								value={formData.country_code}
+								options={CountryCodes}
+								onChange={(selected: { value: string }) => {
+									setFormData((prev) => {
+										const newPhone = ensurePhonePrefix(
+											selected.value,
+											prev.phone || ''
+										);
+
+										const updated = {
+											...prev,
+											country_code: selected.value,
+											phone: newPhone,
+										};
+
+										autoSave(updated);
+										return updated;
+									});
+								}}
+							/>
+
 							<BasicInputUI
 								name="phone"
-								type="number"
+								type="text"
 								value={formData.phone}
-								onChange={handleChange}
+								onChange={(val) => handleChange('phone', val as string)}
 							/>
 							{errorMsg.phone && (
 								<p className="invalid-massage">
@@ -574,7 +647,7 @@ const StoreSettings = ({
 									<BasicInputUI
 										name="slug"
 										value={formData.slug}
-										onChange={handleChange}
+										onChange={(val) => handleChange('slug', val as string)}
 									/>
 									<div className="settings-metabox-description slug">
 										{__('Store URL', 'multivendorx')} :{' '}
@@ -629,7 +702,7 @@ const StoreSettings = ({
 												formData[network]?.trim() ||
 												defaultUrl
 											}
-											onChange={handleChange}
+											onChange={(val) => handleChange(network, val as string)}
 										/>
 									</div>
 								</FormGroupWrapper>

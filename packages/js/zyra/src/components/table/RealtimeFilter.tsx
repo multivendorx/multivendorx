@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RealtimeFilterConfig, TableRow } from './types';
 import { SelectInputUI } from '../SelectInput';
 import { AdminButtonUI } from '../AdminButton';
@@ -29,6 +29,20 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
     onResetFilters,
     format,
 }) => {
+    useEffect(() => {
+        filters.forEach((filter) => {
+          if (filter.type === 'date' && !query[filter.key]) {
+            const end = new Date();
+            const start = new Date();
+            start.setMonth(start.getMonth() - 1);
+            onFilterChange(filter.key, {
+              startDate: start,
+              endDate: end,
+            });
+          }
+        });
+    }, []);
+      
     if (!rows || (rows.length === 0 && Object.keys(query).length === 0)) return null;
 
     const showResetButton = Object.values(query || {}).some((value) =>
@@ -56,8 +70,7 @@ const RealtimeFilters: React.FC<RealtimeFiltersProps> = ({
                 const value = query[filter.key];
 
                 if (filter.type === 'date') {
-                    const range =
-						(value as CalendarRange) || getDefaultDateRange();
+                    const range = value as CalendarRange;
                     return (
                       <div key={filter.key} className="group-field">
                         <CalendarInput
