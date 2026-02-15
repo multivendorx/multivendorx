@@ -91,8 +91,8 @@ export const SystemInfoUI : React.FC<SystemInfoProps> = ({
                     </div>
                 </div>
 
-                {Array.from({ length: 10 }).map((_, idx) => (
-                    <div key={idx} className="system-item">
+                {Array.from({ length: 10 }).map((_, index) => (
+                    <div key={index} className="system-item">
                         <div className="name">
                             <Skeleton width={180} />
                             <i className="adminfont-pagination-right-arrow"></i>

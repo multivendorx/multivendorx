@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
 // Internal Dependencies
-import MultipleOptions from './MultipleOption';
+import { SelectInputUI } from './SelectInput';
 import { BasicInputUI } from './BasicInput';
+import { FieldComponent } from './types';
 
 interface SubField {
     id: number;
@@ -16,6 +17,7 @@ interface SubField {
     required?: boolean;
     readonly?: boolean;
     parentId?: number;
+    value?: string | string[]; // Add value to store selected option
 }
 
 export interface AddressFormField {
@@ -29,14 +31,12 @@ export interface AddressFormField {
 
 interface AddressFieldProps {
     formField: AddressFormField;
-    // onChange: ( key: 'fields', value: SubField[] ) => void;
     opendInput: SubField | null;
     setOpendInput: React.Dispatch< React.SetStateAction< SubField | null > >;
 }
 
-const AddressField: React.FC< AddressFieldProps > = ( {
+const AddressFieldUI: React.FC< AddressFieldProps > = ( {
     formField,
-    // onChange,
     opendInput,
     setOpendInput,
 } ) => {
@@ -51,55 +51,56 @@ const AddressField: React.FC< AddressFieldProps > = ( {
     // Update parent
     const updateParent = ( updated: SubField[] ) => {
         setSubFields( updated );
-        // onChange( 'fields', updated );
     };
 
     const FieldRenderers = {
-        text: (f: SubField) => (
+        text: (field: SubField) => (
             <>
-                <p>{f.label}</p>
+                <p>{field.label}</p>
                 <BasicInputUI
                     type= "text"
-                    placeholder= {f.placeholder}
+                    placeholder= {field.placeholder}
                 />
             </>
         ),
-        select: (f: SubField) => (
-            <MultipleOptions
-                formField={{
-                    label: f.label,
-                    type: 'dropdown',
-                    options: f.options?.map((opt) => ({
-                        id: opt,
-                        value: opt,
-                        label: opt,
-                    })) || [],
-                }}
-                type="dropdown"
-                selected={false}
-                // onChange={() => {}}
-            />
-        ),
+        select: (field: SubField) => {
+            return (
+                <div className="address-field-item">
+                    <label className="field-label">{field.label}</label>
+                    <SelectInputUI
+                        options={field.options?.map((opt) => ({
+                            value: opt,
+                            label: opt,
+                        })) || []}
+                    />
+                </div>
+            );
+        }
     };
+
+    if(!subFields.length){
+        return null;
+    }
 
     return (
         <div className="address-field-wrapper">
+            <h4 className="address-section-title">{formField.label}</h4>
             <ReactSortable
                 list={ subFields }
                 setList={ updateParent }
                 handle=".drag-handle"
                 animation={ 150 }
             >
-                { subFields.map( ( f ) => (
+                { subFields.map( ( field ) => (
                     <div
-                        key={ f.id }
+                        key={ field.id }
                         className={ `form-field ${
-                            opendInput?.id === f.id ? 'active' : ''
+                            opendInput?.id === field.id ? 'active' : ''
                         }` }
                         onClick={ ( e ) => {
                             e.stopPropagation();
                             setOpendInput( {
-                                ...f,
+                                ...field,
                                 readonly: formField.readonly,
                                 parentId: formField.id,
                             } );
@@ -111,13 +112,26 @@ const AddressField: React.FC< AddressFieldProps > = ( {
                             </span>
                         </div>
 
-                        {FieldRenderers[f.type]?.(f)}
-
+                        {FieldRenderers[field.type]?.(field)}
                     </div>
                 ) ) }
             </ReactSortable>
         </div>
     );
+};
+
+const AddressField: FieldComponent = {
+    render: ( { field, value, onChange, canAccess, appLocalizer } ) => {
+        const [ openedInput, setOpenedInput ] = useState< SubField | null >( null );
+
+        return (
+            <AddressFieldUI
+                formField={ field as AddressFormField }
+                opendInput={ openedInput }
+                setOpendInput={ setOpenedInput }
+            />
+        );
+    },
 };
 
 export default AddressField;
