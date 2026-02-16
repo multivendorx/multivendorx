@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, ReactNode, JSX } from 'react';
 import { LinkProps } from 'react-router-dom';
+import { applyFilters } from '@wordpress/hooks';
 
 // Internal Dependencies
 import '../styles/web/SettingsNavigator.scss';
@@ -43,12 +44,10 @@ type SettingsNavigatorProps = {
     * - 'card': Card design with count, title and description
     * - 'settings': Left side settings tab design
     */
-    action?: React.ReactNode;
     headerTitle?: string;
     headerDescription?: string;
     headerIcon?: string;
     showPremiumLink?: boolean;
-    customContent?: React.ReactNode;
 };
 
 interface button {
@@ -112,6 +111,10 @@ export const NavigatorHeader: React.FC<NavigatorHeaderProps> = ({
                     {headerDescription}
                 </div>
             )}
+            {applyFilters(
+                'zyra_navigator_header_after',
+                null
+            )}
         </div>
     );
 };
@@ -120,16 +123,12 @@ interface BreadcrumbProps<T> {
     renderBreadcrumb?: () => React.ReactNode;
     renderMenuItems?: (items: T[]) => React.ReactNode;
     settingContent?: T[];
-    customContent?: React.ReactNode;
-    action?: React.ReactNode;
 }
 
 const Breadcrumb = <T,>({
     renderBreadcrumb,
     renderMenuItems,
     settingContent = [],
-    customContent,
-    action,
 }: BreadcrumbProps<T>) => {
 
     return (
@@ -145,19 +144,11 @@ const Breadcrumb = <T,>({
                     <div className="tabs-item">
                         {renderMenuItems(settingContent)}
                     </div>
-
-                    {customContent && (
-                        <div className="custom-content">
-                            {customContent}
-                        </div>
-                    )}
-
-                    {action && (
-                        <div className="action-wrapper">
-                            {action}
-                        </div>
-                    )}
                 </div>
+            )}
+            {applyFilters(
+                'zyra_breadcrumb_after',
+                null
             )}
         </>
     );
@@ -181,12 +172,10 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     appLocalizer,
     variant = 'default',
     menuIcon,
-    action,
     headerTitle,
     headerDescription,
     headerIcon,
     showPremiumLink = false,
-    customContent
 }) => {
     const [activeSetting, setActiveSetting] = useState(currentSetting);
     /**
@@ -381,8 +370,6 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                     renderBreadcrumb={variant === 'default' ? renderBreadcrumbLinks : undefined}
                     renderMenuItems={() => renderAllMenuItems(settingContent)}
                     settingContent={settingContent}
-                    action={action}
-                    customContent={customContent}
                 />
                 <div className="general-wrapper admin-settings">
                     {HeaderSection && <HeaderSection />}
