@@ -48,6 +48,7 @@ type SettingsNavigatorProps = {
     headerDescription?: string;
     headerIcon?: string;
     showPremiumLink?: boolean;
+    customContent?: React.ReactNode;
 };
 
 interface button {
@@ -185,6 +186,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     headerDescription,
     headerIcon,
     showPremiumLink = false,
+    customContent
 }) => {
     const [activeSetting, setActiveSetting] = useState(currentSetting);
     /**
@@ -380,6 +382,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
                     renderMenuItems={() => renderAllMenuItems(settingContent)}
                     settingContent={settingContent}
                     action={action}
+                    customContent={customContent}
                 />
                 <div className="general-wrapper admin-settings">
                     {HeaderSection && <HeaderSection />}
