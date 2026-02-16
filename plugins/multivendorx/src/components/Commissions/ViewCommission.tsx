@@ -1,21 +1,10 @@
 /* global appLocalizer */
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, PopupUI, Table, TableCell } from 'zyra';
-import { ColumnDef } from '@tanstack/react-table';
+import { getApiLink, PopupUI,  TableCard } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../../services/commonFunction';
-
-//Type for an order line
-interface OrderItem {
-	id: number;
-	name: string;
-	sku: string;
-	cost: string;
-	discount?: string;
-	qty: number;
-	total: string;
-}
+import { TableRow } from '@/services/type';
 
 interface ViewCommissionProps {
 	open: boolean;
@@ -31,11 +20,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 	const [commissionData, setCommissionData] = useState<any>(null);
 	const [storeData, setStoreData] = useState<any>(null);
 	const [orderData, setOrderData] = useState<any>(null);
-	const [shippingItems, setShippingItems] = useState<any[]>([]);
+	const [shippingItems, setShippingItems] = useState<TableRow[][]>([]);
 	const [refundMap, setRefundMap] = useState<Record<number, any>>({});
-
-	// Add new state
-	const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+	const [orderItems, setOrderItems] = useState<TableRow[][]>([]);
 
 	useEffect(() => {
 		if (!commissionId) {
@@ -45,7 +32,6 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			setOrderItems([]); // reset
 			return;
 		}
-		setOrderItems(null);
 
 		axios({
 			method: 'GET',
@@ -109,88 +95,71 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							const order = orderRes.data || {};
 
 							setOrderData(order);
-							// Map Shipping Lines into Table Format
 							if (Array.isArray(order.shipping_lines)) {
-								const mappedShipping = order.shipping_lines.map(
-									(ship) => ({
-										id: ship.id,
-										method: ship.method_title || '-',
-										methodId: ship.method_id || '-',
-										total: formatCurrency(ship.total),
-										tax: formatCurrency(ship.total_tax),
-									})
-								);
-
-								setShippingItems(mappedShipping);
+								const mappedRows: TableRow[][] = order.shipping_lines.map((ship: any) => [
+									{ display: ship.method_title, value: ship.method_title },
+									{ display: ship.method_id, value: ship.method_id },
+									{ display: formatCurrency(ship.total), value: ship.total },
+									{ display: formatCurrency(ship.total_tax), value: ship.total_tax },
+								]);
+								setShippingItems(mappedRows);
 							} else {
 								setShippingItems([]);
 							}
-							//Convert WooCommerce line_items → OrderItem[]
+
 							if (Array.isArray(order.line_items)) {
-								const fetchProductImages = order.line_items.map(
-									async (item) => {
-										const subtotal = parseFloat(
-											item.subtotal || '0'
-										);
-										const total = parseFloat(
-											item.total || '0'
-										);
-										const itemTax = item.total_tax
-											? parseFloat(item.total_tax)
-											: 0;
+								const mappedRows: TableRow[][] = order.line_items.map((item: any) => {
+									const total = parseFloat(item.total || '0');
+									const tax = parseFloat(item.total_tax || '0');
 
-										const discount =
-											subtotal > total
-												? `-${formatCurrency(
-													subtotal - total
-												)}`
-												: undefined;
+									return [
+										{
+											type: 'product',
+											value: item.id,
+											data: {
+												id: item.id,
+												name: item.name,
+												sku: item.sku,
+												image: item.images?.src,
+											},
+											display: item.name
+										},
+										{ display: formatCurrency(item.price), value: item.price },
+										{
+											type: 'card',
+											value: item.quantity,
+											data: {
+												name: item.quantity,
+												description: refundMap[item.id]?.qty
+											},
+											display: item.quantity
+										},
+										{
+											type: 'card',
+											value: total,
+											data: {
+												name: total,
+												description: formatCurrency(refundMap[item.id]?.total)
+											},
+											display: total
+										},
+										{
+											type: 'card',
+											value:tax,
+											data: {
+												name: tax,
+												description: formatCurrency(refundMap[item.id]?.tax)
+											},
+											display: tax
+										},
+									];
+								});
 
-										let imageUrl = null;
-
-										//Fetch product image using product_id
-										if (item.product_id) {
-											try {
-												const productRes = await axios({
-													method: 'GET',
-													url: `${appLocalizer.apiUrl}/wc/v3/products/${item.product_id}`,
-													headers: {
-														'X-WP-Nonce':
-															appLocalizer.nonce,
-													},
-												});
-												const product = productRes.data;
-												imageUrl =
-													product?.images?.[0]?.src ||
-													null;
-											} catch (err) {
-												imageUrl = null;
-											}
-										}
-
-										return {
-											id: item.product_id,
-											name: item.name,
-											sku: item.sku || '-',
-											cost: formatCurrency(item.price),
-											discount,
-											qty: item.quantity,
-											total: formatCurrency(item.total),
-											tax: formatCurrency(itemTax),
-											image: imageUrl, //add product image here
-										};
-									}
-								);
-
-								// Wait for all product image requests
-								Promise.all(fetchProductImages).then(
-									(mapped) => {
-										setOrderItems(mapped);
-									}
-								);
+								setOrderItems(mappedRows);
 							} else {
 								setOrderItems([]);
 							}
+
 						})
 						.catch(() => {
 							setOrderData(null);
@@ -206,149 +175,44 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			});
 	}, [commissionId]);
 
-	const popupColumns: ColumnDef<OrderItem>[] = [
+	const popupColumns = [
 		{
-			header: __('Product', 'multivendorx'),
-			cell: ({ row }) => {
-				const productId = row.original.id;
-				const productName = row.original.name ?? '-';
-				const productImage = row.original.image;
-
-				return (
-					<TableCell title={productName}>
-						{productId ? (
-							<a
-								href={`${appLocalizer.site_url.replace(
-									/\/$/,
-									''
-								)}/wp-admin/post.php?post=${productId}&action=edit`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="product-wrapper"
-							>
-								{productImage ? (
-									<img
-										src={productImage}
-										alt={productName}
-										className="product-thumb"
-									/>
-								) : (
-									<i className="item-icon adminfont-multi-product"></i>
-								)}
-
-								<div className="details">
-									{productName}
-									<div className="sub-text">
-										Sku: {row.original.sku ?? '-'}
-									</div>
-								</div>
-							</a>
-						) : (
-							productName
-						)}
-					</TableCell>
-				);
-			},
+			key: 'id',
+			label: 'Product',
 		},
-
-		// COST (unchanged)
 		{
-			header: __('Cost', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.cost}>
-					{row.original.cost ?? '-'}
-				</TableCell>
-			),
+			key: 'cost',
+			label: 'Cost',
 		},
-
-		//QTY WITH REFUND
 		{
-			header: __('Qty', 'multivendorx'),
-			cell: ({ row }) => {
-				const refunded = refundMap[row.original.id]?.qty || 0;
-				return (
-					<TableCell title={row.original.qty}>
-						<div className="cell-wrapper">
-							<span>{row.original.qty}</span>
-
-							{refunded < 0 && (
-								<span className="refunded">{refunded}</span>
-							)}
-						</div>
-					</TableCell>
-				);
-			},
+			key: 'qty',
+			label: 'Qty',
 		},
-
-		//TOTAL WITH REFUND
 		{
-			header: __('Total', 'multivendorx'),
-			cell: ({ row }) => {
-				const refunded = refundMap[row.original.id]?.total || 0;
-				return (
-					<TableCell title={row.original.total}>
-						<div className="cell-wrapper">
-							<span>{row.original.total}</span>
-
-							{refunded < 0 && (
-								<span className="refunded">
-									{formatCurrency(refunded)}
-								</span>
-							)}
-						</div>
-					</TableCell>
-				);
-			},
+			key: 'total',
+			label: 'Total',
 		},
-
-		//TAX WITH REFUND
 		{
-			header: __('Tax', 'multivendorx'),
-			cell: ({ row }) => {
-				const refunded = refundMap[row.original.id]?.tax || 0;
-				return (
-					<TableCell title={row.original.tax}>
-						<div className="cell-wrapper">
-							<span>{row.original.tax}</span>
-
-							{refunded < 0 && (
-								<span className="refunded">
-									{formatCurrency(refunded)}
-								</span>
-							)}
-						</div>
-					</TableCell>
-				);
-			},
-		},
+			key: 'tax',
+			label: 'Tax',
+		}
 	];
 
-	const shippingColumns: ColumnDef<any>[] = [
+	const shippingColumns = [
 		{
-			header: __('Method', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.method}>
-					{row.original.method}
-				</TableCell>
-			),
+			key: 'method',
+			label: 'Method',
 		},
 		{
-			header: __('Amount', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.total}>
-					{row.original.total}
-				</TableCell>
-			),
+			key: 'Amount',
+			label: 'Amount',
 		},
 		{
-			header: __('Tax', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.tax}>
-					{row.original.tax}
-				</TableCell>
-			),
-		},
+			key: 'tax',
+			label: 'Tax',
+		}
 	];
+
 	return (
 		<PopupUI
 			open={open}
@@ -401,16 +265,10 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 					<div className="heading">
 						{__('Order Details', 'multivendorx')}
 					</div>
-					<Table
-						data={orderItems}
-						columns={
-							popupColumns as ColumnDef<
-								Record<string, any>,
-								any
-							>[]
-						}
+					<TableCard
+						headers={popupColumns}
+						rows={orderItems}
 					/>
-
 					{Array.isArray(shippingItems) &&
 						shippingItems.length > 0 && (
 							<>
@@ -418,14 +276,9 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 									{__('Shipping', 'multivendorx')}
 								</div>
 
-								<Table
-									data={shippingItems}
-									columns={
-										shippingColumns as ColumnDef<
-											Record<string, any>,
-											any
-										>[]
-									}
+								<TableCard
+									headers={shippingColumns}
+									rows={shippingItems}
 								/>
 							</>
 						)}

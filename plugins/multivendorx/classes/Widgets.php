@@ -6,35 +6,36 @@ defined( 'ABSPATH' ) || exit;
 class Widgets {
 
     public function __construct() {
-        add_action( 'widgets_init', [ $this, 'register_sidebar' ] );
-        add_filter( 'register_block_type_args',[ $this, 'attach_sidebar_render_callback' ],10,2);
-        
+        add_action( 'widgets_init', array( $this, 'register_sidebar' ) );
+        add_filter( 'register_block_type_args', array( $this, 'attach_sidebar_render_callback' ), 10, 2 );
     }
 
     /**
      * Register classic widget sidebar
      */
     public function register_sidebar() {
-        register_sidebar( [
-            'name'          => __( 'MultiVendorX Store Sidebar', 'multivendorx' ),
-            'id'            => 'multivendorx-store-sidebar',
-            'description'   => __( 'Widgets for MultiVendorX store pages only.', 'multivendorx' ),
-            'before_widget' => '<div class="multivendorx-widget %2$s">',
-            'after_widget'  => '</div>',
-            'before_title'  => '<h3 class="multivendorx-widget-title">',
-            'after_title'   => '</h3>',
-        ] );
+        register_sidebar(
+            array(
+				'name'          => __( 'MultiVendorX Store Sidebar', 'multivendorx' ),
+				'id'            => 'multivendorx-store-sidebar',
+				'description'   => __( 'Widgets for MultiVendorX store pages only.', 'multivendorx' ),
+				'before_widget' => '<div class="multivendorx-widget %2$s">',
+				'after_widget'  => '</div>',
+				'before_title'  => '<h3 class="multivendorx-widget-title">',
+				'after_title'   => '</h3>',
+            )
+        );
     }
-    
+
     public function attach_sidebar_render_callback( $args, $block_type ) {
         if ( isset( $block_type ) && $block_type === 'multivendorx/store-sidebar' ) {
-            $args['render_callback'] = [ $this, 'render_sidebar' ];
+            $args['render_callback'] = array( $this, 'render_sidebar' );
         }
-    
+
         return $args;
     }
-    
-    
+
+
     /**
      * Render sidebar output (used by block templates)
      */
@@ -43,7 +44,7 @@ class Widgets {
             return '';
         }
         $sidebar_position_setting = MultiVendorX()->setting->get_setting( 'store_sidebar', array() );
-        $sidebar_position = is_array( $sidebar_position_setting ) ? reset( $sidebar_position_setting ) : $sidebar_position_setting;
+        $sidebar_position         = is_array( $sidebar_position_setting ) ? reset( $sidebar_position_setting ) : $sidebar_position_setting;
 
         ob_start();
         ?>

@@ -40,11 +40,3 @@ export type categoryCounts = {
 	label: string;
 	count: number;
 };
-
-type Primitive = string | number | boolean | null | undefined | Date;
-
-export type DownloadCSVOptions<T extends Record<string, Primitive>> = {
-	data: T[];
-	filename?: string;
-	headers?: Partial<Record<keyof T, string>>;
-};
