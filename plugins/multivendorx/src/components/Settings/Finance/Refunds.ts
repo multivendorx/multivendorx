@@ -77,7 +77,7 @@ export default {
 					title: true,
 					description: false,
 				},
-				
+				disableBtn: true
 			},
 			modal: [],
 			moduleEnabled: 'marketplace-refund',
