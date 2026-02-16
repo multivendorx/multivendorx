@@ -10,6 +10,7 @@ import ButtonActions from './ButtonActions';
 import { useOutsideClick } from '../useOutsideClick';
 import HeaderSearch from '../HeaderSearch';
 import Skeleton from '../UI/Skeleton';
+import { PopupUI } from '../Popup';
 
 const defaultOnColumnsChange = (
 	showCols: string[],
@@ -234,51 +235,43 @@ const TableCard: React.FC<TableCardProps> = ({
 				<div className="table-action-wrapper">
 					{buttonActions && <ButtonActions actions={buttonActions} query={query} />}
 					{search && (
-						<div className="search-field">
-							<HeaderSearch
-								search={{
-									placeholder: search.placeholder,
-									options: search.options,
-								}}
-								onQueryUpdate={(payload) => {
-									onQueryChange('searchValue')(payload.searchValue);
-									if ('searchAction' in payload) {
-										onQueryChange('searchAction')(String(payload.searchAction));
-									}
-								}}
-							/>
-						</div>
+						<HeaderSearch
+							search={{
+								placeholder: search.placeholder,
+								options: search.options,
+							}}
+							onQueryUpdate={(payload) => {
+								onQueryChange('searchValue')(payload.searchValue);
+								if ('searchAction' in payload) {
+									onQueryChange('searchAction')(String(payload.searchAction));
+								}
+							}}
+						/>
 					)}
 					{showMenu && showColumnToggleIcon && (
-						<div className="popover-wrapper" ref={ref}>
-							<div className="popover-toggle" onClick={togglePopover} >
-								<i className="popover-icon adminfont-more-vertical"></i>
-							</div>
-							{isPopoverOpen && (
-								<div className="popover popover-action checkbox">
-									<div className="popover-body">
-										<ul>
-											{headers.map(({ key, label, required }) => {
-												if (required) return null;
+						<PopupUI
+							position="menu-dropdown"
+							toggleIcon="adminfont-more-vertical"
+						>
+							<ul>
+								{headers.map(({ key, label, required }) => {
+									if (required) return null;
 
-												return (
-													<li key={key}>
-														<label>
-															<input
-																type="checkbox"
-																checked={showCols.includes(key)}
-																onChange={onColumnToggle(key)}
-															/>
-															{label}
-														</label>
-													</li>
-												);
-											})}
-										</ul>
-									</div>
-								</div>
-							)}
-						</div>
+									return (
+										<li key={key}>
+											<label>
+												<input
+													type="checkbox"
+													checked={showCols.includes(key)}
+													onChange={onColumnToggle(key)}
+												/>
+												{label}
+											</label>
+										</li>
+									);
+								})}
+							</ul>
+						</PopupUI>
 					)}
 				</div>
 			</div>
