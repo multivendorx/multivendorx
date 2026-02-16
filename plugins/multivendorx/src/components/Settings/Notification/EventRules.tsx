@@ -591,11 +591,11 @@ const EventRules: React.FC = () => {
 												field: 'system_message',
 											})
 										}
-										onChange={(e) => {
+										onChange={(value) => {
 											setFormData({
 												...formData,
 												system_message:
-													e.target.value,
+													value,
 											});
 										}}
 										onBlur={() => {
@@ -619,10 +619,10 @@ const EventRules: React.FC = () => {
 												field: 'sms_content',
 											})
 										}
-										onChange={(e) => {
+										onChange={(value) => {
 											setFormData({
 												...formData,
-												sms_content: e.target.value,
+												sms_content: value,
 											});
 											handleAutoSave(formData.id);
 										}}
@@ -639,11 +639,11 @@ const EventRules: React.FC = () => {
 											type="text"
 											name="email_subject"
 											value={formData.email_subject || ''}
-											onChange={(e) => {
+											onChange={(value) => {
 												setFormData({
 													...formData,
 													email_subject:
-														e.target.value,
+														value,
 												});
 												handleAutoSave(formData.id);
 											}}
@@ -670,10 +670,10 @@ const EventRules: React.FC = () => {
 													field: 'email_body',
 												})
 											}
-											onChange={(e) => {
+											onChange={(value) => {
 												setFormData({
 													...formData,
-													email_body: e.target.value,
+													email_body: value,
 												});
 												handleAutoSave(formData.id);
 											}}

@@ -3,7 +3,7 @@ import ShippingRatesByCountry from '@/dashboard/settings/ShippingRatesByCountry'
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { BasicInputUI, Card, Column, Container, DynamicRowSetting, FormGroup, FormGroupWrapper, getApiLink, ComponentStatusView, SuccessNotice, ToggleSetting } from 'zyra';
+import { BasicInputUI, Card, Column, Container, DynamicRowSetting, FormGroup, FormGroupWrapper, getApiLink, ComponentStatusView, SuccessNotice, ToggleSettingUI } from 'zyra';
 
 const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 	const [formData, setFormData] = useState<{ [key: string]: any }>({}); // Use 'any' for simplicity here
@@ -89,7 +89,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 						<Card title={__('Method type', 'multivendorx')}>
 							<FormGroupWrapper>
 								<FormGroup row>
-									<ToggleSetting
+									<ToggleSettingUI
 										description="Choose your preferred payment method."
 										options={
 											appLocalizer.shipping_methods
@@ -309,7 +309,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 
 											{/* Distance Type */}
 											<FormGroup row label={__('Distance Type', 'multivendorx')}>
-												<ToggleSetting
+												<ToggleSettingUI
 													description={__(
 														'Choose your preferred shipping method.',
 														'multivendorx'
