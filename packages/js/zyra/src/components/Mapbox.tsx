@@ -3,13 +3,13 @@ import FormGroup from './UI/FormGroup';
 
 interface MapboxControl {
     onAdd: (map: MapboxMap) => HTMLElement;
-    onRemove?: () => void;
+    onRemove: () => void;
 }
 interface MapboxMap {
     setCenter: (center: [number, number]) => void;
     setZoom: (zoom: number) => void;
     remove: () => void;
-    addControl: (control: MapboxControl, position?: string) => void;
+    addControl: (control: MapboxControl, position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right') => void;
     on: (
         event: 'click',
         callback: (event: MapboxClickEvent) => void
