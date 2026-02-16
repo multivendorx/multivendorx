@@ -186,21 +186,21 @@ const Mapbox = ({
             attributionControl: false,
         });
         map.addControl(new window.mapboxgl.NavigationControl(), 'top-right');
-        const mk = new window.mapboxgl.Marker({
+        const marker = new window.mapboxgl.Marker({
             draggable: true,
             color: isUserLocation ? '#1E90FF' : '#4264FB',
         })
             .setLngLat([lng, lat])
             .addTo(map);
-        mk.on('dragend', () => {
-            const ll = mk.getLngLat();
+        marker.on('dragend', () => {
+            const ll = marker.getLngLat();
             reverseGeocode(ll.lat, ll.lng);
         });
         map.on('click', (e) => {
             reverseGeocode(e.lngLat.lat, e.lngLat.lng);
         });
         setMap(map);
-        setMarker(mk);
+        setMarker(marker);
         return () => map.remove();
     }, [loaded, apiKey, locationLat, locationLng, isUserLocation]);
 
