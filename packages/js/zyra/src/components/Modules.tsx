@@ -260,7 +260,7 @@ const Modules: React.FC<ModuleProps> = ({
                                             </div>
                                         )}
                                         {variant === 'mini-module' &&
-                                            ((appLocalizer.khali_dabba && module.proModule) || !module.proModule) && (
+                                            (appLocalizer.khali_dabba  || !module.proModule) && (
                                                 <div className="toggle-checkbox">
                                                     <MultiCheckBoxUI
                                                         look="toggle"
