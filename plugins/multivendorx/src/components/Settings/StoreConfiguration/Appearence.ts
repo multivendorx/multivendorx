@@ -13,7 +13,7 @@ export default {
 		'Set a marketplace logo to strengthen brand identity across all connected stores.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-appearance',
+	headerIcon: 'appearance',
 	submitUrl: 'settings',
 	modal: [
 		{

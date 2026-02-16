@@ -5,7 +5,7 @@ export default {
 	priority: 3,
 	headerTitle: __('Wholesale', 'multivendorx'),
 	headerDescription: __('Configure rules for wholesale buyers and pricing.', 'multivendorx'),
-	headerIcon: 'adminfont-wholesale1',
+	headerIcon: 'wholesale1',
 	submitUrl: 'settings',
 	modal: [
 		{

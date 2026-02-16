@@ -274,8 +274,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 											type={
 												field.type || 'text'
 											}
-
-											descClass="settings-metabox-description"
 											placeholder={
 												field.placeholder
 													? __(
@@ -301,7 +299,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 						<BlockText
 							blockTextClass="settings-metabox-note"
 							value={sprintf(
-								/* translators: %s: link to global commission settings */
 								__(
 									'If no store-specific commission is set, the <a href="%s">global commission</a> will automatically apply.',
 									'multivendorx'
@@ -319,7 +316,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 										textType: 'post',
 										postText: '+',
 									}}
-									descClass="settings-metabox-description"
 									value={formData.commission_fixed}
 									onChange={handleChange}
 								/>
@@ -328,8 +324,6 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 								<BasicInputUI
 									postText="%"
 									name="commission_percentage"
-
-									descClass="settings-metabox-description"
 									value={formData.commission_percentage}
 									onChange={handleChange}
 								/>

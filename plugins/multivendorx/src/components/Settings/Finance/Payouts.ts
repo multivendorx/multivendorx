@@ -7,7 +7,7 @@ export default {
 		'Tailor your marketplace commission plan to fit your revenue sharing preferences.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-dollar',
+	headerIcon: 'dollar',
 	submitUrl: 'settings',
 	modal: [
 		{

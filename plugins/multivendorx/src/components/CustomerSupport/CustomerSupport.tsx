@@ -17,8 +17,8 @@ const CustomerSupport = () => {
 			module: 'question-answer',
 			content: {
 				id: 'questions',
-				settingName: 'Questions',
-				settingIcon: 'question',
+				headerTitle: 'Questions',
+				headerIcon: 'question',
 			},
 		},
 		{
@@ -26,8 +26,8 @@ const CustomerSupport = () => {
 			module: 'store-review',
 			content: {
 				id: 'review',
-				settingName: 'Store Reviews',
-				settingIcon: 'store-review',
+				headerTitle: 'Store Reviews',
+				headerIcon: 'store-review',
 			},
 		},
 		{
@@ -35,8 +35,8 @@ const CustomerSupport = () => {
 			module: 'store-support',
 			content: {
 				id: 'support-ticket',
-				settingName: 'Support Ticket',
-				settingIcon: 'vacation',
+				headerTitle: 'Support Ticket',
+				headerIcon: 'vacation',
 			},
 		},
 	].filter((tab) => !tab.module || modules.includes(tab.module));
@@ -78,7 +78,7 @@ const CustomerSupport = () => {
 					appLocalizer={appLocalizer}
 					Link={Link}
 					variant={'compact'}
-					headerIcon="adminfont-customer-service"
+					headerIcon="customer-service"
 					headerTitle={__('Customer Support', 'multivendorx')}
 					headerDescription={__(
 						'Manage store reviews, support requests, financial transactions, and reported issues.',

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, Container, Column, TableCard } from 'zyra';
+import { getApiLink, Container, Column, TableCard, PopupUI } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
 import Popup from '../Popup/Popup';
 
@@ -191,10 +191,9 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 			</Container>
 			<PopupUI
 				position="lightbox"
-				open={deleteReview}
-				onClose={() => setDeleteReview(false)}
+				// open={deleteReview}
+				// onClose={() => setDeleteReview(false)}
 				width={31.25}
-				height="auto"
 			>
 				<Popup
 					confirmMode

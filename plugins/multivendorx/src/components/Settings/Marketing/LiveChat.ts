@@ -8,7 +8,7 @@ export default {
 		'Set up and manage live chat options for customer interaction.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-live-chat',
+	headerIcon: 'live-chat',
 	submitUrl: 'settings',
 	modal: [
 		{

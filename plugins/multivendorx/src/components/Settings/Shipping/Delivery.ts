@@ -11,7 +11,7 @@ export default {
 		'Define the steps orders follow from purchase to completion. Set what customers see in tracking and choose whether orders complete automatically or after customer confirmation.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-delivery',
+	headerIcon: 'delivery',
 	submitUrl: 'settings',
 	modal: [
 		{

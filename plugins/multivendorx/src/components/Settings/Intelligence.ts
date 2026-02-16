@@ -6,11 +6,11 @@ export default {
 	name: 'Intelligence',
 	headerTitle: 'API Keys',
 	moduleEnabled: 'marketplace-intelligence',
-	desc: __(
+	headerDescription: __(
 		'AI services can be enabled to assist with creating product details and enhancing images automatically. These settings can be configured to control which AI services are used.',
 		'multivendorx'
 	),
-	icon: 'adminfont-ai',
+	headerIcon: 'ai',
 	submitUrl: 'settings',
 	modal: [
 		// --- Gemini API Key Section ---

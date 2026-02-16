@@ -11,27 +11,10 @@ import {
 	ToggleSettingUI,
 	TableCard,
 } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
+
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
-
-
-type CouponRow = {
-	id: number;
-	code: string;
-	discount_type: string;
-	amount: string;
-	usage_count: number;
-	usage_limit?: number | null;
-	date_expires?: string | null;
-	description?: string;
-	status?: string;
-};
 
 const COUPON_STATUS_MAP: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -45,13 +28,7 @@ const discountOptions = [
 	{ label: 'Fixed product discount', value: 'fixed_product' },
 ];
 
-export interface RealtimeFilter {
-	name: string;
-	render: (
-		updateFilter: (key: string, value: any) => void,
-		filterValue: any
-	) => ReactNode;
-}
+
 const formatDateForInput = (dateString?: string | null) => {
 	if (!dateString) {
 		return '';
@@ -161,12 +138,6 @@ const AllCoupon: React.FC = () => {
 		customer_email: '',
 	});
 
-	const [data, setData] = useState<CouponRow[]>([]);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
 	const [AddCoupon, setAddCoupon] = useState(false);
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -534,7 +505,6 @@ const AllCoupon: React.FC = () => {
 			// Refresh the data after action
 			fetchCouponStatusCounts();
 			fetchData({});
-			setRowSelection({});
 		} catch (err: unknown) {
 			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
 		}

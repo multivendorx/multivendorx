@@ -57,96 +57,113 @@ interface button {
     className: string;
 }
 
-interface BreadcrumbProps<T> {
+interface NavigatorHeaderProps {
     headerIcon?: string;
     headerTitle?: string;
     headerDescription?: string;
+    showPremiumLink?: string;
+    buttons?: button[];
+}
+
+export const NavigatorHeader: React.FC<NavigatorHeaderProps> = ({
+    headerIcon,
+    headerTitle,
+    headerDescription,
+    showPremiumLink,
+    buttons = [],
+}) => {
+    if (!headerTitle && !headerDescription) return null;
+
+    return (
+        <div className="title-section">
+            <div className="title-wrapper">
+                <div className="title">
+                    {headerIcon && <i className={`adminfont-${headerIcon}`}></i>}
+                    {headerTitle}
+                </div>
+
+                {showPremiumLink && (
+                    <a href={showPremiumLink} className="tab pro-btn">
+                        <i className="adminfont-pro-tag"></i>
+                        Upgrade
+                        <i className="adminfont-arrow-right"></i>
+                    </a>
+                )}
+                {buttons.length > 0 && (
+                    <AdminButtonUI
+                        buttons={buttons.map((button) => ({
+                            text: button.label,
+                            icon: button.iconClass,
+                            onClick: button.onClick,
+                            children: (
+                                <>
+                                    <i className={button.iconClass}></i>
+                                    {button.label}
+                                </>
+                            ),
+                        }))}
+                    />
+                )}
+            </div>
+
+            {headerDescription && (
+                <div className="description">
+                    {headerDescription}
+                </div>
+            )}
+        </div>
+    );
+};
+
+interface BreadcrumbProps<T> {
     renderBreadcrumb?: () => React.ReactNode;
     renderMenuItems?: (items: T[]) => React.ReactNode;
     settingContent?: T[];
-    buttons?: button[];
-    showPremiumLink?: string;
     customContent?: React.ReactNode;
     action?: React.ReactNode;
 }
 
-export const Breadcrumb = <T,>({
-    headerIcon = '',
-    headerTitle = '',
-    headerDescription = '',
+const Breadcrumb = <T,>({
     renderBreadcrumb,
     renderMenuItems,
     settingContent = [],
-    buttons = [],
-    showPremiumLink,
     customContent,
     action,
 }: BreadcrumbProps<T>) => {
 
     return (
         <>
-            <div className="title-section">
-                <div className="title-wrapper">
-                    <div className="title">
-                        {headerIcon && (
-                            <i className={headerIcon}></i>
-                        )}
-                        {headerTitle}
+            {renderBreadcrumb && (
+                <div className="breadcrumbs">
+                    {renderBreadcrumb()}
+                </div>
+            )}
+
+            {renderMenuItems && settingContent.length > 0 && (
+                <div className="tabs-wrapper">
+                    <div className="tabs-item">
+                        {renderMenuItems(settingContent)}
                     </div>
-                    {buttons && (
-                        <AdminButtonUI
-                            buttons={buttons.map((button) => ({
-                                text: button.label,
-                                icon: button.iconClass?.replace('adminfont-', ''),
-                                onClick: button.onClick,
-                                children: (
-                                    <>
-                                        <i className={button.iconClass}></i>
-                                        {button.label}
-                                    </>
-                                ),
-                            }))}
-                        />
-                    )}
+
                     {customContent && (
                         <div className="custom-content">
                             {customContent}
                         </div>
                     )}
-                </div>
-                {headerDescription && (
-                    <div className="description">{headerDescription}</div>
-                )}
-                {renderBreadcrumb && (
-                    <div className="breadcrumbs">
-                        {renderBreadcrumb()}
-                    </div>
-                )}
-                {renderMenuItems && settingContent.length > 0 && (
-                    <div className="tabs-wrapper">
-                        <div className="tabs-item" >
-                            {renderMenuItems(settingContent)}
+
+                    {action && (
+                        <div className="action-wrapper">
+                            {action}
                         </div>
-                        {showPremiumLink && (
-                            <a
-                                href={showPremiumLink}
-                                className="tab pro-btn"
-                            >
-                                <i className="adminfont-pro-tag"></i> Upgrade
-                                <i className="adminfont-arrow-right"></i>
-                            </a>
-                        )}
-                        {action && (
-                            <div className="action-wrapper">{action}</div>
-                        )}
-                    </div>
-                )}
-            </div>
+                    )}
+                </div>
+            )}
         </>
     );
 };
 
 // Typesafe check helpers
+const isHeading = (item: SettingContent): item is SettingContent & { content: Content } => item.type === 'heading';
 const isFile = (item: SettingContent): item is SettingContent & { content: Content } => item.type === 'file';
 const isFolder = (item: SettingContent): item is SettingContent & { content: SettingContent[] } => item.type === 'folder';
 
@@ -265,8 +282,9 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     };
 
     const renderSingleMenuItem = (item: SettingContent, index: number) => {
-        if (item.type === 'heading') {
-            return <div key={index} className="tab-heading">{item.name}</div>;
+
+        if (isHeading(item)) {
+            return <div key={index} className="tab-heading">{item.headerTitle}</div>;
         }
 
         if (isFile(item)) {
@@ -350,17 +368,19 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             <div className="settings-wrapper" data-template={variant}>
                 {settingTitleSection && <>{settingTitleSection}</>}
 
-                <Breadcrumb
+                <NavigatorHeader
                     headerIcon={variant === 'default' ? activeFile?.headerIcon : headerIcon}
                     headerTitle={variant === 'default' ? activeFile?.headerTitle : headerTitle}
                     headerDescription={headerDescription}
+                    showPremiumLink={!appLocalizer.khali_dabba && showPremiumLink ? appLocalizer.shop_url : undefined}
+                />
+
+                <Breadcrumb
                     renderBreadcrumb={variant === 'default' ? renderBreadcrumbLinks : undefined}
                     renderMenuItems={() => renderAllMenuItems(settingContent)}
                     settingContent={settingContent}
-                    showPremiumLink={!appLocalizer.khali_dabba && showPremiumLink ? appLocalizer.shop_url : ''}
                     action={action}
                 />
-
                 <div className="general-wrapper admin-settings">
                     {HeaderSection && <HeaderSection />}
 

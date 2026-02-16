@@ -8,7 +8,7 @@ export default {
 		'Control store access based on verification status. Ensure only compliant stores can operate fully on your marketplace.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-compliance',
+	headerIcon: 'compliance',
 	submitUrl: 'settings',
 	modal: [
 		{
