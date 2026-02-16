@@ -532,9 +532,9 @@ const AdminDashboard = () => {
 								<ItemList
 									variant="mini-card"
 									items={featuresList.map(({ iconClass, title, desc }) => ({
-										iconClass,
-										title,
-										description: desc,
+										icon: iconClass,
+										title: title,
+										desc: desc
 									}))}
 								/>
 								<div className="pro-banner">
