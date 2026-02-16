@@ -52,12 +52,11 @@
   "author": "MultiVendorX",
   "license": "GPL-2.0-or-later",
   "dependencies": {
-    "@react-pdf/renderer": "^4.3.2",
     "@tanstack/react-table": "^8.21.3",
-    "@wordpress/hooks": "^4.36.0",
     "axios": "^1.13.2",
     "react-modal": "^3.16.3",
-    "zustand": "^5.0.9"
+    "zustand": "^5.0.9",
+    "@react-pdf/renderer": "^4.3.2"
   },
   "peerDependencies": {
     "@emotion/react": "^11.14.0",
