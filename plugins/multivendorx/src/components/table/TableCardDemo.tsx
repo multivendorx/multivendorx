@@ -6,9 +6,6 @@ import { QueryProps, TableHeader, TableRow } from '@/services/type';
 
 
 
-/**
- * Table headers
- */
 const headers: TableHeader[] = [
 	{
 		key: 'id',
