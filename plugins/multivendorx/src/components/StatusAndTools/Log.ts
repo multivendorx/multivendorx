@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'log',
 	priority: 2,
-	settingTitle: __('Log', 'multivendorx'),
+	headerTitle: __('Log', 'multivendorx'),
 	headerDescription: __(
 		'Site errors and events are logged for easy troubleshooting.',
 		'multivendorx'

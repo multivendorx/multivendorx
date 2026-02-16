@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MultiVendorX REST API Notifications controller.
  *
@@ -21,12 +22,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class Notifications extends \WP_REST_Controller {
 
-	/**
-	 * Route base.
-	 *
-	 * @var string
-	 */
-	protected $rest_base = 'notifications';
+
+    /**
+     * Route base.
+     *
+     * @var string
+     */
+    protected $rest_base = 'notifications';
 
     /**
      * Register the routes for notifications.
@@ -36,37 +38,37 @@ class Notifications extends \WP_REST_Controller {
             MultiVendorX()->rest_namespace,
             '/' . $this->rest_base,
             array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				),
-				array(
-					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_items' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				),
-			)
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'get_items' ),
+                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array( $this, 'update_items' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                ),
+            )
         );
 
         register_rest_route(
             MultiVendorX()->rest_namespace,
             '/' . $this->rest_base . '/(?P<id>[\d]+)',
             array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-					'args'                => array(
-						'id' => array( 'required' => true ),
-					),
-				),
-				array(
-					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_item' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				),
-			)
+                array(
+                    'methods'             => \WP_REST_Server::READABLE,
+                    'callback'            => array( $this, 'get_item' ),
+                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'args'                => array(
+                        'id' => array( 'required' => true ),
+                    ),
+                ),
+                array(
+                    'methods'             => \WP_REST_Server::EDITABLE,
+                    'callback'            => array( $this, 'update_item' ),
+                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                ),
+            )
         );
     }
 
@@ -119,14 +121,14 @@ class Notifications extends \WP_REST_Controller {
             $events_notifications = $request->get_param( 'events' );
             $type                 = $request->get_param( 'type' );
 
+            $response = rest_ensure_response( array() );
+
             if ( $header_notifications ) {
                 $store_id = $request->get_param( 'store_id' );
-                $count    = $request->get_param( 'count' );
 
-                if ( $count ) {
-                    $results = MultiVendorX()->notifications->get_all_notifications( array( 'count' => true ) );
-                    return rest_ensure_response( $results );
-                }
+                $all_count = MultiVendorX()->notifications->get_all_notifications( array( 'count' => true ) );
+                $response->header( 'X-WP-Total', (int) $all_count );
+
                 $args = array(
                     'limit'    => 10,
                     'offset'   => 0,
@@ -147,8 +149,8 @@ class Notifications extends \WP_REST_Controller {
                         'time'    => $this->time_ago( $row->created_at ),
                     );
                 }
-
-                return rest_ensure_response( $formated_notifications );
+                $response->set_data( $formated_notifications );
+                return $response;
             }
 
             if ( $events_notifications ) {
@@ -213,17 +215,15 @@ class Notifications extends \WP_REST_Controller {
                 return rest_ensure_response( $formated_notifications );
             }
 
-            $count = $request->get_param( 'count' );
+            $all_count = MultiVendorX()->notifications->get_all_notifications(
+                array(
+                    'count'    => true,
+                    'category' => $request->get_param( 'notification' ) ? 'notification' : 'activity',
+                    'store_id' => $request->get_param( 'store_id' ) ? $request->get_param( 'store_id' ) : '',
+                )
+            );
 
-            if ( $count ) {
-                return MultiVendorX()->notifications->get_all_notifications(
-                    array(
-                        'count'    => true,
-                        'category' => $request->get_param( 'notification' ) ? 'notification' : 'activity',
-                        'store_id' => $request->get_param( 'store_id' ) ? $request->get_param( 'store_id' ) : '',
-                    )
-                );
-            }
+            $response->header( 'X-WP-Total', (int) $all_count );
 
             $limit      = max( intval( $request->get_param( 'row' ) ), 10 );
             $page       = max( intval( $request->get_param( 'page' ) ), 1 );
@@ -233,17 +233,17 @@ class Notifications extends \WP_REST_Controller {
             $start_date = $start_date ? gmdate( 'Y-m-d H:i:s', strtotime( $start_date ) ) : '';
             $end_date   = $end_date ? gmdate( 'Y-m-d H:i:s', strtotime( $end_date ) ) : '';
 
-            $args = array(
+            $args              = array(
                 'limit'      => $limit,
                 'offset'     => $offset,
                 'category'   => $request->get_param( 'notification' ) ? 'notification' : 'activity',
                 'store_id'   => $request->get_param( 'store_id' ) ? $request->get_param( 'store_id' ) : '',
                 'start_date' => $start_date ?: null,
-				'end_date'   => $end_date ?: null,
+                'end_date'   => $end_date ?: null,
             );
-
             $all_notifications = MultiVendorX()->notifications->get_all_notifications( $args );
-            $notifications     = array();
+
+            $notifications = array();
             foreach ( $all_notifications as $notification ) {
                 $store           = new Store( (int) $notification['store_id'] );
                 $notifications[] = apply_filters(
@@ -259,7 +259,8 @@ class Notifications extends \WP_REST_Controller {
                 );
             }
 
-            return rest_ensure_response( $notifications );
+            $response->set_data( $notifications );
+            return $response;
         } catch ( \Exception $e ) {
             MultiVendorX()->util->log( $e );
 
@@ -287,7 +288,7 @@ class Notifications extends \WP_REST_Controller {
      */
     public function time_ago( $datetime ) {
         if ( empty( $datetime ) ) {
-			return '';
+            return '';
         }
 
         $timestamp = strtotime( $datetime );
