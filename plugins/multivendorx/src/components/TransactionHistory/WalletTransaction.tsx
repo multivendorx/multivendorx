@@ -406,18 +406,6 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		},
 	];
 
-	const exportSelectedTransactions = ExportCSV({
-		url: getApiLink(appLocalizer, 'transaction'),
-		headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		filename: `selected-wallet-transactions-${formatLocalDate(new Date())}.csv`,
-	  
-		paramsBuilder: () => ({
-		  ids: rowIds,
-		}),
-	  
-		columns: transactionColumns,
-	});
-
 	return (
 		<>
 			<Container>
@@ -717,10 +705,15 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							ids={rowIds}
 							categoryCounts={categoryCounts}
 							bulkActions={[]}
-							onSelectCsvDownloadApply={(selectedIds: number[]) => {
-								exportSelectedTransactions({ filter: {}, ids: selectedIds });
-							}}							  
-							format={appLocalizer.date_format}
+							onSelectCsvDownloadApply={(selectedIds: number[]) => 
+								ExportCSV({
+									url: getApiLink(appLocalizer, 'transaction'),
+									headers: { 'X-WP-Nonce': appLocalizer.nonce },
+									filename: `selected-wallet-transactions-${formatLocalDate(new Date())}.csv`,
+									paramsBuilder: { ids: selectedIds },
+									columns: transactionColumns,
+								})
+							}
 						/>
 					</div>
 				</Column>
