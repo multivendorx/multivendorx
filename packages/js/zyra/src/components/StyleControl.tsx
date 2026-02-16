@@ -1,40 +1,12 @@
 // External dependencies
 import React, { useState } from 'react';
+import { ToggleSettingUI } from './ToggleSetting';
 
 interface StyleControlsProps {
     style?: any;
     onChange: (style: any) => void;
     includeTextStyles?: boolean;
 }
-
-// Custom icon-based toggle component for alignment
-const IconToggle: React.FC<{
-  options: Array<{ key: string; value: string; icon: string }>;
-  value: string;
-  onChange: (value: string) => void;
-}> = ({ options, value, onChange }) => {
-  return (
-    <div className="toggle-setting-container">
-      <div className="toggle-setting-wrapper">
-        {options.map((option) => (
-          <div key={option.key}>
-            <input
-              type="radio"
-              id={option.key}
-              name="text-align-toggle"
-              checked={value === option.value}
-              onChange={() => onChange(option.value)}
-              className="toggle-setting-form-input"
-            />
-            <label htmlFor={option.key}>
-              <i className={option.icon}></i>
-            </label>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const StyleControls: React.FC<StyleControlsProps> = ({
   style = {},
@@ -72,31 +44,30 @@ const StyleControls: React.FC<StyleControlsProps> = ({
           </div>
           {expandedGroups.text && (
             <div className="setting-group-content">
-
               {/* text align */}
               <div className="field-wrapper">
                 <label>Text Align</label>
-                <IconToggle
+                <ToggleSettingUI
                   options={[
                     {
                       key: 'left',
                       value: 'left',
-                      icon: 'adminfont-left-align'
+                      label: <i className="adminfont-left-align" />
                     },
                     {
                       key: 'center',
                       value: 'center',
-                      icon: 'adminfont-center-align'
+                      label: <i className="adminfont-center-align" />
                     },
                     {
                       key: 'right',
                       value: 'right',
-                      icon: 'adminfont-right-align'
+                      label: <i className="adminfont-right-align" />
                     },
                     {
                       key: 'justify',
                       value: 'justify',
-                      icon: 'adminfont-justify-align'
+                      label: <i className="adminfont-justify-align" />
                     },
                   ]}
                   value={style.textAlign || 'left'}

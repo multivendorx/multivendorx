@@ -144,7 +144,7 @@ export const LogUI: React.FC<LogProps> = ({
                         {
                             icon: 'delete',
                             text: deleteBtnText,
-                            color: 'purple',
+                            color: 'red',
                             onClick: (e) => {
                                 handleClearLog?.(e);
                             },
