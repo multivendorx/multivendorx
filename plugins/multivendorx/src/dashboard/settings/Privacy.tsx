@@ -15,7 +15,6 @@ import {
 import { __ } from '@wordpress/i18n';
 
 const Privacy = () => {
-	console.log('yes')
 	const id = appLocalizer.store_id;
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [updateData, setUpdateData] = useState<{ [key: string]: any }>({});
