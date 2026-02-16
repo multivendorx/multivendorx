@@ -108,7 +108,6 @@ const TableCardDemo: React.FC = () => {
 		}
 	};
 
-
 	const filters = [
 		{
 			key: 'status',
