@@ -24,11 +24,6 @@ export const createBlockID = (type: BlockType, options?: any): Block => {
         options: presetOptions,
     };
 
-        if (type === 'columns') {
-        block.columns = [[], []]; // Default 2 columns
-        block.layout = '2-50';
-    }
-
     return block as Block;
 };
 

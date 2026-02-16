@@ -58,10 +58,13 @@ export const useColumnManager = ({
         const parent = blocks[parentIdx] as ColumnsBlock;
         if (parent?.type !== 'columns') return;
 
+        // Ensure parent.columns exists and is an array
+        const currentColumns = Array.isArray(parent.columns) ? parent.columns : [[], []];
+
         // Convert any raw items to valid blocks
         const validBlocks = newList.map(item => createBlock(item));
 
-        const columns = [...parent.columns];
+        const columns = [...currentColumns];
         columns[colIdx] = validBlocks;
         updateParent(parentIdx, { ...parent, columns });
     };
@@ -156,6 +159,9 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
         handleChildSelect,
     } = useColumnManager({ blocks, onBlocksUpdate, openBlock, setOpenBlock });
 
+    const columns = Array.isArray(block.columns) ? block.columns : [[], []];
+    const layout = block.layout || '2-50';
+
     return (
         <div className={`form-field ${isActive ? 'active' : ''}`} onClick={onSelect}>
             {showMeta && (
@@ -170,8 +176,8 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
             )}
 
             <section className="form-field-container-wrapper">
-                <div className={`email-columns layout-${block.layout || '2-50'}`}>
-                    {block.columns.map((column, colIdx) => (
+                <div className={`email-columns layout-${layout}`}>
+                    {columns.map((column, colIdx) => (
                         <div key={colIdx} className="email-column-wrapper">
                             <ReactSortable
                                 list={column}
