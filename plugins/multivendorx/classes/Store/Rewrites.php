@@ -43,7 +43,9 @@ class Rewrites {
 
         add_filter( 'get_block_templates', array( $this, 'register_block_template' ), 10, 3 );
         add_filter( 'pre_get_block_file_template', array( $this, 'resolve_template_by_id' ), 10, 3 );
-        add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
+        // add_filter( 'template_include', array( $this, 'template_loader' ), 10 );
+        add_filter( 'template_redirect', array( $this, 'template_loader' ), 10 );
+        add_filter( 'body_class', array( $this, 'add_sidebar_class_for_block_template' ), 10 );
         add_action( 'wp_enqueue_scripts', array( $this, 'register_store_state' ) );
     }
 
@@ -249,36 +251,81 @@ class Rewrites {
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
     }
 
-    public function template_loader( $template ) {
-        if ( ! get_query_var( $this->custom_store_url ) ) {
-			return $template;
+    // public function template_loader( $template ) {
+    //     if ( ! get_query_var( $this->custom_store_url ) ) {
+	// 		return $template;
+    //     }
+    //     // Block theme support
+    //     if ( wp_is_block_theme() ) {
+    //         return $template;
+    //     }
+
+    //     // Check for Elementor template first
+    //     $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
+
+    //     if ( $filtered_template && file_exists( $filtered_template ) ) {
+    //         return $filtered_template;
+    //     }
+
+    //     $store_name = get_query_var( $this->custom_store_url );
+
+    //     if ( ! empty( $store_name ) ) {
+    //         $store = Store::get_store( $store_name, 'slug' );
+    //     }
+
+    //     // Classic theme fallback
+    //     $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
+    //     if ( file_exists( $classic_template ) ) {
+	// 		return $classic_template;
+    //     }
+
+    //     return $template;
+    // }
+
+    public function template_loader() {
+
+        $store_name = get_query_var( $this->custom_store_url );
+
+        if ( empty( $store_name ) ) {
+            return;
         }
-        // Block theme support
+
+        //Block theme support
         if ( wp_is_block_theme() ) {
-            return $template;
+            return;
         }
 
         // Check for Elementor template first
         $filtered_template = apply_filters( 'multivendorx_store_elementor_template', '' );
 
         if ( $filtered_template && file_exists( $filtered_template ) ) {
-            return $filtered_template;
+            include $filtered_template;
+            exit;
         }
 
-        // $store_name = get_query_var( $this->custom_store_url );
+        $store = Store::get_store( $store_name, 'slug' );
 
-        // if ( ! empty( $store_name ) ) {
-        //     $store = Store::get_store( $store_name, 'slug' );
-        // }
+        if ( ! $store ) {
+            return;
+        }
 
-        // // Classic theme fallback
-        // $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
-        // if ( file_exists( $classic_template ) ) {
-		// 	return $classic_template;
-        // }
+        MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ));
 
-        return $template;
+        exit; 
     }
+
+
+    public function add_sidebar_class_for_block_template($classes) {
+        $classes = array_filter($classes, function($class) {
+            return strpos($class, 'multivendorx-sidebar-') !== 0;
+        });
+        $position = MultiVendorX()->setting->get_setting( 'store_sidebar', '' );
+        if (!empty($position)) {
+            $classes[] = 'multivendorx-sidebar-' . $position;
+        }
+        return $classes;
+    }
+
 
     /**
      * Flush rewrite rules
