@@ -6,6 +6,7 @@ import {
 	BasicInputUI,
 	EmailsInput,
 	FileInput,
+	FileInputUI,
 	FormGroup,
 	FormGroupWrapper,
 	getApiLink,
@@ -414,11 +415,11 @@ const Stores = () => {
 								</FormGroup>
 
 								<FormGroup label={__('Profile image', 'multivendorx')} htmlFor="store_owners">
-									{/* <FileInput
+									<FileInputUI
 										value={formData.image || ''}
 										inputClass="form-input"
 										name="image"
-										type="hidden"
+										// type="hidden"
 										imageSrc={imagePreview || ''}
 										imageWidth={75}
 										imageHeight={75}
@@ -435,7 +436,7 @@ const Stores = () => {
 										onReplace={() =>
 											handleReplaceImage('image')
 										}
-									/> */}
+									/>
 								</FormGroup>
 							</FormGroupWrapper>
 						</PopupUI>
