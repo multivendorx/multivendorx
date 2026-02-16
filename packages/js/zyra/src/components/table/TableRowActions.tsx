@@ -44,27 +44,23 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
             ))
           ) : (
             <>
-              <div
-                className="inline-action-btn tooltip-wrapper"
-                onClick={() => setOpen((v) => !v)}
-              >
-                <i className="adminfont-more-vertical" />
-              </div>
-
-              {open &&
-                rowActions.map((action, index) => (
-                  <div
-                    key={index}
-                    className="inline-action-btn tooltip-wrapper"
-                    onClick={() => {
-                      action.onClick(rowId);
-                      setOpen(false);
-                    }}
-                  >
-                    <i className={`adminfont-${action.icon}`} />
-                    <span className="tooltip-name">{action.label}</span>
-                  </div>
-                ))}
+              <i className="adminfont-more-vertical" onClick={() => setOpen((v) => !v)} />
+              <div className={`action-dropdown ${open ? 'show' : 'hover'}`}>
+                <ul>
+                {rowActions.map((action, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        action.onClick(rowId);
+                        setOpen(false);
+                      }}
+                    >
+                      <i className={`adminfont-${action.icon}`} />
+                      <span className="tooltip-name">{action.label}</span>
+                    </div>
+                  ))}
+                  </ul>
+                </div>
             </>
           )}
         </div>
