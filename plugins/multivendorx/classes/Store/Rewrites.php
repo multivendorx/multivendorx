@@ -228,7 +228,7 @@ class Rewrites {
         if ( ! $store_slug ) {
             return;
         }
-        
+
         FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );
@@ -268,13 +268,13 @@ class Rewrites {
         // $store_name = get_query_var( $this->custom_store_url );
 
         // if ( ! empty( $store_name ) ) {
-        //     $store = Store::get_store( $store_name, 'slug' );
+        // $store = Store::get_store( $store_name, 'slug' );
         // }
 
         // // Classic theme fallback
         // $classic_template = MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
         // if ( file_exists( $classic_template ) ) {
-		// 	return $classic_template;
+		// return $classic_template;
         // }
 
         return $template;

@@ -484,11 +484,12 @@ class Utill {
 
     /**
      * Convert WordPress PHP date format to React date picker format
+     *
      * @param string $date_format WordPress PHP date format
      * @return string React date picker format
      */
-    public static function wp_to_react_date_format($date_format) {
-        static $map = [
+    public static function wp_to_react_date_format( $date_format ) {
+        static $map = array(
             'Y' => 'YYYY',
             'y' => 'YY',
             'F' => 'MMMM',
@@ -507,18 +508,18 @@ class Utill {
             's' => 'ss',
             'A' => 'A',
             'a' => 'a',
-        ];
+        );
 
-        return strtr($date_format, $map);
+        return strtr( $date_format, $map );
     }
 
     /**
      * Format date time according to WordPress settings
+     *
      * @param string $date Date time string
-     * @return string Formatted date time string as per wordpress settings
+     * @return string Formatted date time string as per WordPress settings
      */
-    public static function multivendorx_date_time_format($date) {
-        return wp_date( MultiVendorX()->date_format, strtotime($date) );
+    public static function multivendorx_date_time_format( $date ) {
+        return wp_date( MultiVendorX()->date_format, strtotime( $date ) );
     }
-
 }
