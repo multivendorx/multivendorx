@@ -33,6 +33,7 @@ export default {
 					title: true,
 					description: false,
 				},
+				disableBtn: true
 			},
 			modal: [],
 		},
@@ -127,6 +128,7 @@ export default {
 					title: true,
 					description: false,
 				},
+				disableBtn: true
 			},
 			modal: [],
 		},

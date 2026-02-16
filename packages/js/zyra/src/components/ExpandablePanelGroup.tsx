@@ -34,8 +34,7 @@ interface PanelFormField {
     | 'blocktext'
     | 'multi-select'
     | 'button'
-    | 'nested'
-    | 'iconlibrary';
+    | 'nested';
 
     label: string;
     placeholder?: string;
@@ -81,6 +80,8 @@ interface ExpandablePanelMethod {
     edit?: boolean;
     isCustom?: boolean;  // for show edit and delete btn 
     required?: boolean;
+    iconEnable?: boolean;
+    iconOptions?: string[];
 }
 interface AddNewTemplate {
     icon?: string;
@@ -88,6 +89,8 @@ interface AddNewTemplate {
     desc?: string;
     formFields?: PanelFormField[];
     disableBtn?: boolean;
+    iconEnable?: boolean;
+    iconOptions?: string[];
     editableFields?: {
         title?: boolean;
         description?: boolean;
@@ -138,6 +141,9 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
     const [tempDescription, setTempDescription] = useState('');
     const titleInputRef = useRef<HTMLInputElement>(null);
     const descTextareaRef = useRef<HTMLTextAreaElement>(null);
+    const [iconDropdownOpen, setIconDropdownOpen] = useState<string | null>(
+        null
+    );
     const [ExpandablePanelMethods, setExpandablePanelMethods] = useState<
         ExpandablePanelMethod[]
     >(() =>
@@ -371,6 +377,8 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
             icon: addNewTemplate.icon || '',
             label: addNewTemplate.label || 'New Item',
             desc: addNewTemplate.desc || '',
+            iconEnable: addNewTemplate.iconEnable || '',
+            iconOptions: addNewTemplate.iconOptions || [],
             connected: false,
             isCustom: true,
             disableBtn: addNewTemplate.disableBtn || false, // Add disableBtn
@@ -400,17 +408,13 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
 
         // Always include icon if it's in the template
         if (addNewTemplate?.icon) {
-            initialValues.icon = newMethod.icon;
+            initialValues.icon = addNewTemplate.icon;
         }
 
         // Handle additional form fields
         newMethod.formFields?.forEach((field) => {
-            if (field.type === 'iconlibrary') {
-                initialValues[field.key] = '';
-            } else {
-                // Set default empty value for other field types
-                initialValues[field.key] = '';
-            }
+            // Set default empty value for other field types
+            initialValues[field.key] = '';
         });
 
         onChange({
@@ -787,10 +791,17 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                     <div className="details-wrapper">
                                         {headerIcon && (
                                             <div className="expandable-header-icon">
-                                                <i className={headerIcon}></i>
+                                                <i className={`${headerIcon} inline-edit-icon`} 
+                                                    onClick={() => {
+                                                        if (method.iconEnable) {
+                                                            console.log('hitttt');                                                            
+                                                        }
+                                                    }}
+                                                ></i>
                                             </div>
                                         )}
                                         <div className="expandable-header-info">
+                                            
                                             <div className="title-wrapper">
                                                 <span className="title">
                                                     {isEditingThisMethod && editingField === 'title' && getIsEditable('title') ? (
