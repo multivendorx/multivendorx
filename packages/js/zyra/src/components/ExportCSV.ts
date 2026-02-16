@@ -28,8 +28,8 @@ interface ExportCSVProps<Type> {
 }
 
 const formatValue = (value: Primitive) => {
-  const v = value instanceof Date ? value.toISOString() : value ?? '';
-  return `"${String(v).replace(/"/g, '""')}"`;
+  const val = value instanceof Date ? value.toISOString() : value ?? '';
+  return `"${String(val).replace(/"/g, '""')}"`;
 };
 
 export const ExportCSV =
