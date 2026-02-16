@@ -12,7 +12,7 @@ interface BlockTextProps {
     title?: string;
 }
 
-const BlockTextUI: React.FC< BlockTextProps > = ( {
+export const BlockTextUI: React.FC< BlockTextProps > = ( {
     blockTextClass,
     value,
     title,
@@ -31,7 +31,7 @@ const BlockTextUI: React.FC< BlockTextProps > = ( {
 };
 
 const BlockText: FieldComponent = {
-    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+    render: ({ field }) => (
         <BlockTextUI
             key={field.blocktext}
             blockTextClass={

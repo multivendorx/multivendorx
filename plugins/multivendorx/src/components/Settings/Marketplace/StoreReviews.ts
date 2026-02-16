@@ -56,6 +56,7 @@ export default {
 					title: true,
 					description: false,
 				},
+				disableBtn: true
 			},
 			modal: [],
 			proSetting: false,

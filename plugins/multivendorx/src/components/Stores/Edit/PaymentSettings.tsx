@@ -4,7 +4,7 @@ import {
 	ToggleSettingUI,
 	getApiLink,
 	SuccessNotice,
-	BlockText,
+	BlockTextUI,
 	Container,
 	Column,
 	Card,
@@ -296,7 +296,7 @@ const PaymentSettings = ({ id, data }: { id: string | null; data: any }) => {
 				{/* Commission Amount */}
 				<Column grid={4}>
 					<Card title={__('Store-specific commission', 'multivendorx')}>
-						<BlockText
+						<BlockTextUI
 							blockTextClass="settings-metabox-note"
 							value={sprintf(
 								__(
