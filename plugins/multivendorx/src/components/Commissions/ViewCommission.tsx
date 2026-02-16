@@ -95,7 +95,6 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 							const order = orderRes.data || {};
 
 							setOrderData(order);
-							// Map Shipping Lines into Table Format
 							if (Array.isArray(order.shipping_lines)) {
 								const mappedRows: TableRow[][] = order.shipping_lines.map((ship: any) => [
 									{ display: ship.method_title, value: ship.method_title },
