@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, TableCard } from 'zyra';
+import { ExportCSV, getApiLink, TableCard } from 'zyra';
 import axios from 'axios';
-import { downloadCSV, formatCurrency, formatLocalDate,  } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate,  } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const RefundedOrderReport: React.FC = () => {
@@ -81,69 +81,48 @@ const RefundedOrderReport: React.FC = () => {
 		},
 	];
 
+	const refundColumns = (refund: any) => ({
+		Order_ID: refund.order_id,
+		Customer: refund.customer_name?.trim() || '',
+		Store: refund.store_name?.trim() || '',
+		Amount: refund.amount || '',
+		Refund_Reason: refund.customer_reason || '',
+		Status: refund.status || '',
+		Date: refund.date || '',
+	});	  
+
 	const buttonActions = [
 		{
-			label: 'Download CSV',
-			icon: 'download',
-			onClickWithQuery: (query: QueryProps) => {
-				downloadRefundsCSV(query);
-			},
+		  label: 'Download CSV',
+		  icon: 'download',
+	  
+		  onClickWithQuery: ExportCSV({
+			url: getApiLink(appLocalizer, 'refund'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			filename: 'refunds-report.csv',
+	  
+			paramsBuilder: (query: QueryProps) => ({
+			  page: 1,
+			  per_page: 100,
+			  searchAction: query.searchAction || 'order_id',
+			  searchValue: query.searchValue,
+			  orderby: query.orderby || 'date',
+			  order: query.order || 'desc',
+			  store_id: query.filter?.store_id,
+	  
+			  startDate: query.filter?.created_at?.startDate
+				? formatLocalDate(query.filter.created_at.startDate)
+				: undefined,
+	  
+			  endDate: query.filter?.created_at?.endDate
+				? formatLocalDate(query.filter.created_at.endDate)
+				: undefined,
+			}),
+	  
+			columns: refundColumns,
+		  }),
 		},
 	];
-
-	const downloadRefundsCSV = (query: QueryProps) => {	
-		axios
-			.get(getApiLink(appLocalizer, 'refund'), {
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-				},
-				params: {
-					per_page: 100,
-					page: 1,
-					searchAction: query.searchAction || 'order_id',
-					searchValue: query.searchValue,
-					orderby: query.orderby || 'date',
-					order: query.order || 'desc',
-					store_id: query.filter?.store_id,
-					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: undefined,
-					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: undefined,
-				},
-			})
-			.then((response) => {
-				const refunds = Array.isArray(response.data) ? response.data : [];
-	
-				const csvData = refunds.map((refund: any) => ({
-					Order_ID: refund.order_id,
-					Customer: refund.customer_name?.trim() || '-',
-					Store: refund.store_name?.trim() || '-',
-					Amount: formatCurrency(refund.amount),
-					Refund_Reason: refund.customer_reason || '-',
-					Status: refund.status,
-					Date: refund.date,
-				}));
-	
-				downloadCSV({
-					data: csvData,
-					filename: 'refunds-report.csv',
-					headers: {
-						Order_ID: 'Order ID',
-						Customer: 'Customer',
-						Store: 'Store',
-						Amount: 'Refund Amount',
-						Refund_Reason: 'Refund Reason',
-						Status: 'Status',
-						Date: 'Date',
-					},
-				});
-			})
-			.catch((error) => {
-				console.error('Refund CSV download failed:', error);
-			});
-	};
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
