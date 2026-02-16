@@ -193,8 +193,8 @@ const Mapbox = ({
             .setLngLat([lng, lat])
             .addTo(map);
         marker.on('dragend', () => {
-            const ll = marker.getLngLat();
-            reverseGeocode(ll.lat, ll.lng);
+            const location = marker.getLngLat();
+            reverseGeocode(location.lat, location.lng);
         });
         map.on('click', (e) => {
             reverseGeocode(e.lngLat.lat, e.lngLat.lng);
@@ -265,7 +265,7 @@ const Mapbox = ({
 
     const extractAddressComponents = (feature: PlaceFeature) => {
         console.log('feature', feature);
-        const ctx = feature.properties.context;
+        const context = feature.properties.context;
         const result: {
             address?: string;
             city?: string;
@@ -273,12 +273,12 @@ const Mapbox = ({
             country?: string;
             zip?: string;
         } = {};
-        if (!ctx) return result;
+        if (!context) return result;
         result.address = feature.properties.full_address;
-        result.zip = ctx.postcode? ctx.postcode.name : '';
-        result.city = ctx.locality? ctx.locality.name : ctx.place?.name;
-        result.state = ctx.region? ctx.region.name : '';
-        result.country = ctx.country? ctx.country.country_code : '';
+        result.zip = context.postcode? context.postcode.name : '';
+        result.city = context.locality? context.locality.name : context.place?.name;
+        result.state = context.region? context.region.name : '';
+        result.country = context.country? context.country.country_code : '';
         return result;
     };    
 
