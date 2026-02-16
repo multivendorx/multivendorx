@@ -10,10 +10,12 @@ import {
 	AdminButtonUI,
 	MultiCheckBoxUI,
 	TextAreaUI,
+	SectionUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const Privacy = () => {
+	console.log('yes')
 	const id = appLocalizer.store_id;
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [updateData, setUpdateData] = useState<{ [key: string]: any }>({});
@@ -153,7 +155,8 @@ const Privacy = () => {
 							/>
 						</FormGroup>
 					)}
-				<Section key="section" hint="Deactivation" />
+
+				<SectionUI key="section" hint="Deactivation" />
 
 				{formData.deactivation_reason ? (
 					<div>

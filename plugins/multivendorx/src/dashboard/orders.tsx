@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { TableCard, useModules } from 'zyra';
+import { PopupUI, TableCard, useModules } from 'zyra';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
 import { downloadCSV, formatCurrency, toWcIsoDate } from '../services/commonFunction';
@@ -16,9 +16,11 @@ const Orders: React.FC = () => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		categoryCounts[] | null
 	>(null);
+	const [orderLookup, setOrderLookup] = useState<Record<number, any>>({});
+	const [confirmOpen, setConfirmOpen] = useState(false);
+	const [message, setMessage] = useState('');
 	const { modules } = useModules();
 	const location = useLocation();
-	const [data, setData] = useState<any[]>([]);
 
 	const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
 	const hash = location.hash.replace(/^#/, '') || '';
@@ -57,16 +59,14 @@ const Orders: React.FC = () => {
 		const orderId = hash.split('view/')[1];
 		if (!orderId) return;
 
-		const foundOrder = data?.find(
-			(o) => o.id.toString() === orderId.toString()
-		);
+		const foundOrder = orderLookup[orderId];
 
 		if (foundOrder) {
 			setSelectedOrder(foundOrder);
 		} else {
 			fetchOrderById(orderId);
 		}
-	}, [hash, data]);
+	}, [hash]);
 
 
 	const exportAllOrders = async () => {
@@ -102,13 +102,14 @@ const Orders: React.FC = () => {
 			}
 
 			if (allOrders.length === 0) {
-				alert('No orders found to export');
+				setMessage('No orders found to export');
+				setConfirmOpen(true);
 				return;
 			}
 
 			// Convert orders to CSV
 			const csvRows: string[] = [];
-			csvRows.push('Order ID,Customer,Email,Total,Status,Date'); // Header
+			csvRows.push('Order ID,Customer,Email,Total,Status,Date');
 
 			allOrders.forEach((order) => {
 				const customer = order.billing?.first_name
@@ -141,7 +142,6 @@ const Orders: React.FC = () => {
 			URL.revokeObjectURL(link.href);
 		} catch (err) {
 			console.error('Failed to export all orders:', err);
-			alert('Failed to export orders, check console for details');
 		}
 	};
 
@@ -251,6 +251,55 @@ const Orders: React.FC = () => {
 			key: 'total',
 			label: __('Total', 'multivendorx'),
 		},
+		{
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				...(appLocalizer.edit_order_capability
+					? [
+						{
+							label: __('View', 'multivendorx'),
+							icon: 'eye',
+							onClick: (id: number) => {
+								setSelectedOrder(orderLookup[id]);
+								window.location.hash = `view/${id}`;
+							},
+						},
+					]
+					: []),
+				{
+					label: __('Download', 'multivendorx'),
+					icon: 'download',
+					onClick: (id: number) => {
+						window.location.href = `?page=multivendorx#&tab=stores&edit/${id}`;
+					},
+				},
+				{
+					label: __('Copy URL', 'multivendorx'),
+					icon: 'eye',
+					onClick: (id: number) => {
+						navigator.clipboard.writeText(
+							window.location.href
+						);
+					},
+				},
+				{
+					label: __('Shipping', 'multivendorx'),
+					icon: 'eye',
+					onClick: (id: number) => {
+						window.location.href = `?page=multivendorx#&tab=stores&edit/${id}`;
+					},
+				},
+				{
+					label: __('PDF', 'multivendorx'),
+					icon: 'eye',
+					onClick: (id: number) => {
+						window.location.href = `?page=multivendorx#&tab=stores&edit/${id}`;
+					},
+				},
+			],
+		},
 	];
 	const filters = [
 		{
@@ -338,7 +387,7 @@ const Orders: React.FC = () => {
 					page: query.paged, // Changed from query.page to match your TableCard query state
 					per_page: query.per_page,
 					search: query.searchValue,
-					status: query.categoryFilter || '',
+					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
 					orderby: query.orderby || 'date',
 					order: query.order || 'desc',
 					meta_key: 'multivendorx_store_id',
@@ -354,11 +403,17 @@ const Orders: React.FC = () => {
 			.then((response) => {
 				const orders = Array.isArray(response.data) ? response.data : [];
 
+				const lookup: Record<number, any> = {};
+				orders.forEach((order: any) => {
+					lookup[order.id] = order;
+				});
+
+				setOrderLookup(lookup);
+
 				setRowIds(orders.map((o: any) => o.id));
 
 				const mappedRows: TableRow[][] = orders.map((order: any) => [
 					{
-						// FIXED: Removed extra curly braces/brackets around JSX
 						display: (
 							<span
 								className="link"
@@ -373,14 +428,13 @@ const Orders: React.FC = () => {
 						value: order.id,
 					},
 					{
-						// FIXED: billing logic and string formatting
 						display: (order.billing?.first_name || order.billing?.last_name)
 							? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
 							: (order.billing?.email || __('Guest', 'multivendorx')),
 						value: order.id || '',
 					},
 					{
-						display: formatWcShortDate(order.date_created),
+						display: (order.date_created),
 						value: order.date_created,
 					},
 					{
@@ -514,6 +568,15 @@ const Orders: React.FC = () => {
 					}}
 				/>
 			)}
+
+			<PopupUI
+				position="lightbox"
+				open={confirmOpen}
+				onClose={() => setConfirmOpen(false)}
+				width={31.25}
+			>
+				{message}
+			</PopupUI>
 		</>
 	);
 };
