@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import FormGroup from './UI/FormGroup';
 
+interface MapboxControl {
+    onAdd: (map: MapboxMap) => HTMLElement;
+    onRemove?: () => void;
+}
 interface MapboxMap {
     setCenter: (center: [number, number]) => void;
     setZoom: (zoom: number) => void;
     remove: () => void;
-    addControl: (control: unknown, position?: string) => void;
+    addControl: (control: MapboxControl, position?: string) => void;
     on: (
         event: 'click',
         callback: (event: MapboxClickEvent) => void
