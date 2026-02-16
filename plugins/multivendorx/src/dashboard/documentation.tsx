@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, getApiLink, ComponentStatusView, MiniCard, PopupUI } from 'zyra';
+import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -153,8 +153,8 @@ const Documentation: React.FC = () => {
 										</div>
 									</div>
 								</div> */}
-
-							<MiniCard
+							<ItemList
+								variant="mini-card"
 								background
 								cols={3}
 								header={

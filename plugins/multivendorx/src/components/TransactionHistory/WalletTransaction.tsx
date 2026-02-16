@@ -9,14 +9,14 @@ import {
 	Container,
 	FormGroupWrapper,
 	FormGroup,
-	MiniCard,
 	ComponentStatusView,
 	Skeleton,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
 	PopupUI,
-	TextAreaUI
+	TextAreaUI,
+	ItemList
 } from 'zyra';
 
 import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
@@ -547,7 +547,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								</div>
 							</div>
 							<Column row>
-								<MiniCard background
+								<ItemList
+									variant="mini-card"
+									background
 									title={__('Upcoming Balance', 'multivendorx')}
 									value={formatCurrency(wallet.locking_balance)}
 									isLoading={walletLoading}
@@ -568,9 +570,10 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								/>
 
 								{wallet?.withdrawal_setting?.length > 0 && (
-									<MiniCard background
+									<ItemList
+										variant="mini-card"
+										background
 										title={__('Free Withdrawals', 'multivendorx')}
-
 										value={
 											<>
 												{Math.max(

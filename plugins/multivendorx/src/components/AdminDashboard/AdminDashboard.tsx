@@ -30,7 +30,7 @@ interface WPPlugin {
 import './AdminDashboard.scss';
 import '../dashboard.scss';
 import { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, Column, Container, getApiLink, MiniCard, Modules, sendApiResponse, SuccessNotice, useModules } from 'zyra';
+import { AdminButtonUI, Card, Column, Container, getApiLink, ItemList, Modules, sendApiResponse, SuccessNotice, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -522,21 +522,21 @@ const AdminDashboard = () => {
 							</div>
 						</Card>
 						{!appLocalizer.khali_dabba && (
-							<Card 
+							<Card
 								title={__('Build a professional marketplace', 'multivendorx')}
 								badge={[
 									{ text: 'Starting at $299/year', color: 'blue' }
 								]}
 								desc={__('Unlock advanced features and premium modules to create a marketplace that stands out.', 'multivendorx')}
 							>
-								<MiniCard
-									items={featuresList.map((res) => ({
-										iconClass: res.iconClass,
-										title: res.title,
-										description: res.desc,
+								<ItemList
+									variant="mini-card"
+									items={featuresList.map(({ iconClass, title, desc }) => ({
+										iconClass,
+										title,
+										description: desc,
 									}))}
 								/>
-
 								<div className="pro-banner">
 									<div className="text">
 										{__('Join 8,000+ successful marketplace owners', 'multivendorx')}
@@ -561,13 +561,13 @@ const AdminDashboard = () => {
 							contentHeight
 							title={__('Modules', 'multivendorx')}
 							action={
-								 <AdminButtonUI
+								<AdminButtonUI
 									buttons={[
 										{
 											icon: 'eye',
 											text: __('View All', 'multivendorx'),
 											color: 'purple',
-											onClick: () => { window.open('?page=multivendorx#&tab=modules');}
+											onClick: () => { window.open('?page=multivendorx#&tab=modules'); }
 										},
 									]}
 								/>
@@ -590,7 +590,9 @@ const AdminDashboard = () => {
 								{pluginStatus[
 									'woocommerce-catalog-enquiry'
 								] ? (
-									<MiniCard background
+									<ItemList
+										variant="mini-card"
+										background
 										header={
 											<>
 												<img src={catalogx} alt="" />
@@ -616,7 +618,9 @@ const AdminDashboard = () => {
 										)}
 									/>
 								) : (
-									<MiniCard background
+									<ItemList
+										variant="mini-card"
+										background
 										header={
 											<>
 												<img src={catalogx} alt="" />
@@ -662,7 +666,9 @@ const AdminDashboard = () => {
 								{pluginStatus[
 									'woocommerce-product-stock-alert'
 								] ? (
-									<MiniCard background
+									<ItemList
+										variant="mini-card"
+										background
 										header={
 											<div className="header">
 												<img src={notifima} alt="" />
@@ -688,7 +694,9 @@ const AdminDashboard = () => {
 										)}
 									/>
 								) : (
-									<MiniCard background
+									<ItemList
+										variant="mini-card"
+										background
 										header={
 											<>
 												<img src={notifima} alt="" />
@@ -729,7 +737,6 @@ const AdminDashboard = () => {
 											'multivendorx'
 										)}
 									/>
-
 								)}
 							</Column>
 						</Card>
