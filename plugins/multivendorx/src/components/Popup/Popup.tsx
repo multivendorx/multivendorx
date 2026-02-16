@@ -188,12 +188,12 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 				<div className="popup-wrapper">
 					<div className="popup-header">
 						<i
-							className={`adminfont-store-seo`}
+							className={`adminfont-${props.moduleName}`}
 						></i>
 					</div>
 					<div className="popup-body">
 						<h2>
-							Activate Store Seo
+							Activate {props.moduleName}
 						</h2>
 						<p>This feature is currently unavailable. To activate it, please enable the %s</p>
 
@@ -203,6 +203,10 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 								{
 									icon: 'eye',
 									text: __('Enable Now', 'multivendorx'),
+									 onClick: () => {
+										window.open(
+											`${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules&module=${props.moduleName}`);
+									}
 								},
 							]}
 						/>

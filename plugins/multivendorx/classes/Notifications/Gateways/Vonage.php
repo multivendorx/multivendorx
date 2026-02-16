@@ -49,8 +49,8 @@ class Vonage {
             ),
         );
 
-        $request       = wp_remote_post( self::ENDPOINT . '/sms/json', $args );
-        $body          = json_decode( wp_remote_retrieve_body( $request ) );
+        $request = wp_remote_post( self::ENDPOINT . '/sms/json', $args );
+        $body    = json_decode( wp_remote_retrieve_body( $request ) );
 
         if ( is_wp_error( $request ) ) {
             return $request;

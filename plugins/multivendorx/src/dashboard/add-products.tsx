@@ -18,6 +18,7 @@ import {
 	SelectInputUI,
 	useOutsideClick,
 	TextAreaUI,
+	ToggleSettingUI,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -1684,9 +1685,7 @@ const AddProduct = () => {
 							)}
 
 							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-								<ToggleSetting
-
-									descClass="settings-metabox-description"
+								<ToggleSettingUI
 									options={[
 										{ key: 'draft', value: 'draft', label: __('Draft', 'multivendorx') },
 										{ key: 'publish', value: 'publish', label: __('Published', 'multivendorx') },

@@ -23,7 +23,7 @@ get_header( 'shop' );
 
 do_action( 'woocommerce_before_main_content' );
 // if ( MultiVendorX()->setting->get_setting( 'store_sidebar' ) == 'left' ) {
-//     get_sidebar();
+// get_sidebar();
 // }
 $sidebar_position = MultiVendorX()->setting->get_setting( 'store_sidebar', array() );
 if ( in_array( $sidebar_position, array( 'left' ), true ) ) {
