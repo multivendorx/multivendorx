@@ -3,9 +3,9 @@ import { __, sprintf } from '@wordpress/i18n';
 export default {
     id: 'wholesale',
     priority: 60,
-    name: __( 'Wholesale', 'catalogx' ),
-    desc: __( 'Wholesale sign up and registration management.', 'catalogx' ),
-    icon: 'adminlib-wholesale',
+    name: __('Wholesale', 'catalogx'),
+    desc: __('Wholesale sign up and registration management.', 'catalogx'),
+    icon: 'adminfont-wholesale',
     submitUrl: 'settings',
     modal: [
         {
@@ -22,12 +22,12 @@ export default {
             options: [
                 {
                     key: 'manual',
-                    label: __( 'Manual', 'catalogx' ),
+                    label: __('Manual', 'catalogx'),
                     value: 'manual',
                 },
                 {
                     key: 'automatic',
-                    label: __( 'Automatic', 'catalogx' ),
+                    label: __('Automatic', 'catalogx'),
                     value: 'automatic',
                 },
             ],
@@ -37,7 +37,7 @@ export default {
         {
             key: 'disable_coupon_for_wholesale',
             type: 'checkbox',
-            label: __( 'Coupon restriction for wholesalers', 'catalogx' ),
+            label: __('Coupon restriction for wholesalers', 'catalogx'),
             desc: __(
                 'Prevent wholesale users from applying any coupon and get addional discount on their orders.',
                 'catalogx'
@@ -45,7 +45,7 @@ export default {
             options: [
                 {
                     key: 'disable_coupon_for_wholesale',
-                    label: __( '', 'catalogx' ),
+                    label: __('', 'catalogx'),
                     value: 'disable_coupon_for_wholesale',
                 },
             ],
@@ -67,7 +67,7 @@ export default {
             options: [
                 {
                     key: 'show_wholesale_price',
-                    label: __( '', 'catalogx' ),
+                    label: __('', 'catalogx'),
                     value: 'show_wholesale_price',
                 },
             ],
@@ -78,7 +78,7 @@ export default {
         {
             key: 'enable_order_form',
             type: 'checkbox',
-            label: __( 'Dedicated wholesale-only product list', 'catalogx' ),
+            label: __('Dedicated wholesale-only product list', 'catalogx'),
             desc: __(
                 'Enables a dedicated wholesale-only page displaying all wholesale products for easy browsing and single-click checkout by logged-in wholesalers.',
                 'catalogx'
@@ -86,7 +86,7 @@ export default {
             options: [
                 {
                     key: 'enable_order_form',
-                    label: __( '', 'catalogx' ),
+                    label: __('', 'catalogx'),
                     value: 'enable_order_form',
                 },
             ],
@@ -97,7 +97,7 @@ export default {
         {
             key: 'enable_global_wholasale',
             type: 'checkbox',
-            label: __( 'Global wholesale discount', 'catalogx' ),
+            label: __('Global wholesale discount', 'catalogx'),
             desc: sprintf(
                 /* translators: %s will be replaced with a link to wholeslale document */
                 __(
@@ -109,7 +109,7 @@ export default {
             options: [
                 {
                     key: 'enable_global_wholasale',
-                    label: __( '', 'catalogx' ),
+                    label: __('', 'catalogx'),
                     value: 'enable_global_wholasale',
                 },
             ],
@@ -120,7 +120,7 @@ export default {
         {
             key: 'wholesale_discount',
             type: 'merge-component',
-            label: __( 'Discount rule', 'catalogx' ),
+            label: __('Discount rule', 'catalogx'),
             desc: __(
                 '<b>Bulk Discount Configuration: </b> Set discount type (percentage/fixed), discount amount, and minimum quantity for wholesellers',
                 'catalogx'

@@ -1,5 +1,5 @@
 module.exports = {
-    extends: [ 'plugin:@wordpress/eslint-plugin/recommended' ],
+    extends: ['plugin:@wordpress/eslint-plugin/recommended'],
     env: {
         browser: true,
         es6: true,

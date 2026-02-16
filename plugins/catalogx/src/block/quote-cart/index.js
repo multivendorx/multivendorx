@@ -7,13 +7,13 @@ import QuoteListTable from './QuoteListTable';
 const EditBlock = () => {
     const blockProps = useBlockProps();
     return (
-        <div { ...blockProps } id="request-quote-list">
-            { QuoteListTable() }
+        <div {...blockProps} id="request-quote-list">
+            {QuoteListTable()}
         </div>
     );
 };
 
-registerBlockType( 'catalogx/quote-cart', {
+registerBlockType('catalogx/quote-cart', {
     apiVersion: 2,
     title: 'Quote Cart',
     icon: 'cart',
@@ -25,11 +25,11 @@ registerBlockType( 'catalogx/quote-cart', {
     save() {
         return <div id="request-quote-list"></div>;
     },
-} );
+});
 
-document.addEventListener( 'DOMContentLoaded', () => {
-    const element = document.getElementById( 'request-quote-list' );
-    if ( element ) {
+document.addEventListener('DOMContentLoaded', () => {
+    const element = document.getElementById('request-quote-list');
+    if (element) {
         render(
             <BrowserRouter>
                 <QuoteListTable />
@@ -37,4 +37,4 @@ document.addEventListener( 'DOMContentLoaded', () => {
             element
         );
     }
-} );
+});

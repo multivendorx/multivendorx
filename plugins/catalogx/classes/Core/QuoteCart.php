@@ -149,7 +149,7 @@ class QuoteCart {
         $set = true;
 
         if ( ! headers_sent() ) {
-            if ( sizeof( $this->quote_cart_content ) > 0 ) {
+            if ( count( $this->quote_cart_content ) > 0 ) {
                 $this->set_cart_cookies( true );
                 $set = true;
             } elseif ( isset( $_COOKIE['quote_items_in_cart'] ) ) {
@@ -192,7 +192,8 @@ class QuoteCart {
         }
 
         $product_id   = absint( $add_to_quote );
-        $variation_id = filter_input( INPUT_GET, 'variation_id', FILTER_SANITIZE_NUMBER_INT ) ?: '';
+        $variation_id = filter_input( INPUT_GET, 'variation_id', FILTER_SANITIZE_NUMBER_INT );
+        $variation_id = ( null !== $variation_id ) ? $variation_id : '';
         $quantity     = filter_input( INPUT_GET, 'quantity', FILTER_SANITIZE_NUMBER_INT );
         $quantity     = empty( $quantity ) ? 1 : wc_stock_amount( intval( $quantity ) );
 
@@ -267,7 +268,7 @@ class QuoteCart {
         if ( 'exists' != $return ) {
             $this->set_session( $this->quote_cart_content );
             $return = 'true';
-            $this->set_cart_cookies( sizeof( $this->quote_cart_content ) > 0 );
+            $this->set_cart_cookies( count( $this->quote_cart_content ) > 0 );
         }
         return $return;
     }

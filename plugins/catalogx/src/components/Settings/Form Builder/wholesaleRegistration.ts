@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'wholesale-registration',
     priority: 70,
-    name: __( 'Wholesale', 'catalogx' ),
+    name: __('Wholesale', 'catalogx'),
     desc: __(
         'Drag-and-drop interface to tailor the wholesale registration form.',
         'catalogx'
     ),
-    icon: 'adminlib-contact-form',
+    icon: 'adminfont-contact-form',
     submitUrl: 'settings',
     modal: [
         {
