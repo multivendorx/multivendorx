@@ -308,12 +308,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											</FormGroup>
 
 											{/* Distance Type */}
-											<FormGroup row label={__('Distance Type', 'multivendorx')}>
+											<FormGroup row label={__('Distance Type', 'multivendorx')} desc={__( 'Choose your preferred shipping method.', 'multivendorx')}>
 												<ToggleSettingUI
-													description={__(
-														'Choose your preferred shipping method.',
-														'multivendorx'
-													)}
 													options={[
 														{ label: 'Kilometers (km)', value: 'K' },
 														{ label: 'Miles (mi)', value: 'M' },

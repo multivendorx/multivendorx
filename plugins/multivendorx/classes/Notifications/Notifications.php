@@ -360,7 +360,7 @@ class Notifications {
 
             if ( $event->admin_enabled ) {
 				$parameters['admin_phone'] = $parameters['admin_phone']['country_code'] . $parameters['admin_phone']['sms_receiver_phone_number'];
-                $receivers[] = $parameters['admin_phone'];
+                $receivers[]               = $parameters['admin_phone'];
             }
 
             if ( $event->store_enabled ) {
@@ -370,7 +370,7 @@ class Notifications {
             if ( $event->customer_enabled ) {
                 $receivers[] = $parameters['customer_phone'];
             }
-			
+
             $message = $event->sms_content;
 			foreach ( $parameters as $key => $value ) {
 				$message = str_replace( '[' . $key . ']', $value, $message );

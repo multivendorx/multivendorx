@@ -10,9 +10,9 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, Table, TableCard, TableCell } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, TableCard, TableCell, ExportCSV } from 'zyra';
 import axios from 'axios';
-import { downloadCSV, formatCurrency, toWcIsoDate } from '../../services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 import Counter from '@/services/Counter';
 
@@ -325,79 +325,52 @@ const ProductReport: React.FC = () => {
 			type: 'date',
 		},
 	];
+
+	const productColumns = (product: any) => ({
+		[__('Product', 'multivendorx')]: product.name ?? '',
+		[__('Store', 'multivendorx')]: product.store_name ?? '',
+		[__('Items sold', 'multivendorx')]: Number(product.total_sales ?? 0),
+		[__('Net sales', 'multivendorx')]: product.price ?? '',
+		[__('Category', 'multivendorx')]:
+			product.categories?.map((c: any) => c.name).join(', ') ?? '',
+		[__('Date Created', 'multivendorx')]: product.date_created ?? '',
+	});	
+	
 	const buttonActions = [
 		{
-			label: 'Download CSV',
-			icon: 'download',
-			onClickWithQuery: (query: QueryProps) => {
-				downloadProductsCSV(query);
-			},
+		  label: __('Download CSV', 'multivendorx'),
+		  icon: 'download',
+		  onClickWithQuery: (query: QueryProps) => ExportCSV({
+			url: `${appLocalizer.apiUrl}/wc/v3/products`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			filename:
+				query.filter?.created_at?.startDate &&
+				query.filter?.created_at?.endDate
+					? `products-${query.filter.created_at.startDate}-${query.filter.created_at.endDate}.csv`
+					: `products-${new Date()}.csv`,
+	  
+			paramsBuilder: ({
+			  page: 1,
+			  per_page: 100,
+			  search: query.searchValue,
+			  orderby: query.orderby,
+			  order: query.order,
+			  meta_key: 'multivendorx_store_id',
+			  value: query?.filter?.store_id,
+	  
+			  after: query.filter?.created_at?.startDate
+				? toWcIsoDate(query.filter.created_at.startDate, 'start')
+				: undefined,
+	  
+			  before: query.filter?.created_at?.endDate
+				? toWcIsoDate(query.filter.created_at.endDate, 'end')
+				: undefined,
+			}),
+	  
+			columns: productColumns,
+		  }),
 		},
 	];
-	const downloadProductsCSV = (query: QueryProps) => {
-		axios
-			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-				},
-				params: {
-					per_page: 100, // WooCommerce max per page
-					page: 1,
-					search: query.searchValue,
-					orderby: query.orderby,
-					order: query.order,
-					meta_key: 'multivendorx_store_id',
-					value: query?.filter?.store_id,
-					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
-						: undefined,
-					before: query.filter?.created_at?.endDate
-						? toWcIsoDate(query.filter.created_at.endDate, 'end')
-						: undefined,
-				},
-			})
-			.then((response) => {
-				const products = Array.isArray(response.data)
-					? response.data
-					: [];
-
-				const csvData = products.map((product) => ({
-					ID: product.id,
-					Product: product.name,
-					SKU: product.sku || '',
-					Store: product.store_name || '',
-					Items_Sold: Number(product.total_sales || 0),
-					Net_Sales: product.price
-						? formatCurrency(product.price)
-						: '',
-					Category:
-						product.categories
-							?.map((c: { name: string }) => c.name)
-							.join(', ') || '',
-					Date_Created: product.date_created
-						? product.date_created
-						: '',
-				}));
-
-				downloadCSV({
-					data: csvData,
-					filename: 'products-report.csv',
-					headers: {
-						ID: 'Product ID',
-						Product: 'Product Name',
-						SKU: 'SKU',
-						Store: 'Store',
-						Items_Sold: 'Items Sold',
-						Net_Sales: 'Net Sales',
-						Category: 'Category',
-						Date_Created: 'Date Created',
-					},
-				});
-			})
-			.catch((error) => {
-				console.error('CSV download failed:', error);
-			});
-	};
 
 	return (
 		<>

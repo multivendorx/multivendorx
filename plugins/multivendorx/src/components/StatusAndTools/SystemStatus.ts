@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'system-status',
 	priority: 1,
-	settingTitle: __('System Status', 'multivendorx'),
+	headerTitle: __('System Status', 'multivendorx'),
 	headerDescription: __(
 		'Website technical details are displayed to ensure optimal performance and compatibility.',
 		'multivendorx'

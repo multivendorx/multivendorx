@@ -25,7 +25,7 @@ const ButtonActions: React.FC<ButtonActionsProps> = ({
     const resolvedButtons = actions.map((action) => ({
         text: action.label,
         icon: action.icon,
-        color: action.color || 'white',
+        color: action.color || '',
         onClick: () => {
             if (action.onClickWithQuery && query) {
                 action.onClickWithQuery(query);

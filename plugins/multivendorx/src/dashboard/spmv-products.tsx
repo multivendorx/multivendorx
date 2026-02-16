@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../services/commonFunction';
-import {  Skeleton } from 'zyra';
+import {  ComponentStatusView, Skeleton } from 'zyra';
+import { __ } from '@wordpress/i18n';
 
 const SpmvProducts: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -231,9 +232,7 @@ const SpmvProducts: React.FC = () => {
 						);
 					})}
 					{!isLoading && paginatedProducts.length === 0 && (
-						<>
-							Not found
-						</>
+						<ComponentStatusView title={__( 'Not found', 'multivendorx' )} />
 					)}
 				</div>
 				<div className="admin-pagination">

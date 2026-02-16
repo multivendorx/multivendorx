@@ -238,7 +238,7 @@ class Rest extends \WP_REST_Controller {
                     'title'      => $post->post_title,
                     'content'    => $post->post_content,
                     'store_name' => implode( ', ', $store_names ),
-                    'date'       => Utill::multivendorx_date_time_format(get_the_date( 'Y-m-d H:i:s', $post->ID ) ),
+                    'date'       => Utill::multivendorx_date_time_format( get_the_date( 'Y-m-d H:i:s', $post->ID ) ),
                     'status'     => $post->post_status === 'publish'
                         ? 'published'
                         : $post->post_status,
@@ -343,10 +343,10 @@ class Rest extends \WP_REST_Controller {
                     'multivendorx_notify_system_announcement',
                     'system_announcement',
                     array(
-                        'store_phone'            => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'store_phone'          => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email'          => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                         'admin_email'          => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                        'admin_phone'            => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                        'admin_phone'          => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
                         'announcement_message' => $content,
                         'category'             => 'activity',
                     )
@@ -564,7 +564,7 @@ class Rest extends \WP_REST_Controller {
                 'status'  => $post->post_status,
                 'url'     => get_post_meta( $id, Utill::POST_META_SETTINGS['announcement_url'], true ),
                 'stores'  => $stores,
-                'date'    => Utill::multivendorx_date_time_format(get_post_time( 'Y-m-d H:i:s', true, $post ) ),
+                'date'    => Utill::multivendorx_date_time_format( get_post_time( 'Y-m-d H:i:s', true, $post ) ),
             );
 
             return rest_ensure_response( $response );
