@@ -30,7 +30,7 @@ export { MultiCheckBoxUI } from './components/MultiCheckbox';
 export { default as MultiCheckboxTable } from './components/MultiCheckboxTable';
 export { default as RadioInput } from './components/RadioInput';
 export { default as CustomFrom } from './components/FormRenderer';
-export { default as Section } from './components/Section';
+export { default as SectionUI } from './components/Section';
 export { default as SelectInput } from './components/SelectInput';
 export { SelectInputUI } from './components/SelectInput';
 export { default as ShortCodeTable } from './components/ShortCodeTable';
