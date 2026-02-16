@@ -6,7 +6,7 @@ import '../Announcements/Announcements.scss';
 import { getApiLink, SelectInputUI, SettingsNavigator } from 'zyra';
 import axios from 'axios';
 import WalletTransaction from './WalletTransaction';
-import { applyFilters } from '@wordpress/hooks';
+import { addFilter, applyFilters, removeFilter } from '@wordpress/hooks';
 
 export const TransactionHistory: React.FC = () => {
 	const [allStores, setAllStores] = useState<any[]>([]);
@@ -60,7 +60,7 @@ export const TransactionHistory: React.FC = () => {
 			},
 		},
 	];
-	
+
 	const getForm = (tabId: string) => {
 		switch (tabId) {
 			case 'wallet-transaction':
@@ -80,6 +80,34 @@ export const TransactionHistory: React.FC = () => {
 				return <div></div>;
 		}
 	};
+	
+	const StoreSwitcher = (
+		<div className="store-switcher-wrapper">
+			<label>
+				<i className="switch-store"></i>
+				{__('Switch Storesss', 'multivendorx')}
+			</label>
+			<SelectInputUI
+				name="store"
+				value={selectedStore?.value || ''}
+				options={allStores}
+				onChange={(newValue: any) => setSelectedStore(newValue)}
+				size="12rem"
+			/>
+		</div>
+	);
+
+	useEffect(() => {
+		addFilter(
+			'zyra_navigator_header_after',
+			'multivendorx/transaction-history-switcher',
+			() => StoreSwitcher
+		);
+
+		return () => {
+			removeFilter('zyra_navigator_header_after', 'multivendorx/transaction-history-switcher');
+		};
+	}, [allStores, selectedStore]);
 
 	return (
 		<>
@@ -98,39 +126,21 @@ export const TransactionHistory: React.FC = () => {
 				headerTitle={
 					selectedStore
 						? __(
-								`Storewise Transaction History - ${selectedStore.label}`,
-								'multivendorx'
-							)
+							`Storewise Transaction History - ${selectedStore.label}`,
+							'multivendorx'
+						)
 						: __('Storewise Transaction History', 'multivendorx')
 				}
 				headerDescription={
 					selectedStore
 						? __(
-								`View and manage transactions for ${selectedStore.label} store`,
-								'multivendorx'
-							)
+							`View and manage transactions for ${selectedStore.label} store`,
+							'multivendorx'
+						)
 						: __(
-								'View and manage storewise transactions',
-								'multivendorx'
-							)
-				}
-				customContent={
-					<>
-						<label>
-							<i className="switch-store"></i>
-							{__('Switch Store', 'multivendorx')}
-						</label>
-
-						<SelectInputUI
-							name="store"
-							value={selectedStore?.value || ''}
-							options={allStores}
-							onChange={(newValue: any) =>
-								setSelectedStore(newValue)
-							}
-							size="12rem"
-						/>
-					</>
+							'View and manage storewise transactions',
+							'multivendorx'
+						)
 				}
 			/>
 		</>
