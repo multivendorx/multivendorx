@@ -5,25 +5,17 @@ import Skeleton from './UI/Skeleton';
 interface Item {
     id?: string;
     title?: string;
-    icon?: string;
-    iconClass?: string;
+    icon?: string;       
     link?: string;
     targetBlank?: boolean;
     action?: (item: Item) => void;
-    desc?: string;
-    description?: string;
+    desc?: string;      
     time?: string;
     className?: string;
 }
 
-interface MiniCardItem {
-    iconClass?: string;
-    title: string;
-    description?: string;
-}
-
 export interface ItemListProps {
-    items: Item[] | MiniCardItem[];
+    items?: Item[];  
     variant?: 'default' | 'notification' | 'checklist' | 'mini-card';
     className?: string;
     header?: React.ReactNode;
@@ -32,7 +24,7 @@ export interface ItemListProps {
     border?: boolean;
     width?: string;
     value?: React.ReactNode;
-    description?: React.ReactNode;
+    description?: React.ReactNode;  
     children?: React.ReactNode;
     isLoading?: boolean;
     cols?: number;
@@ -98,28 +90,27 @@ const ItemList: React.FC<ItemListProps> = ({
             {items.length > 0 && (
                 <div className={isMiniCard ? 'mini-card-items' : ''}>
                     {isMiniCard ? (
-                        items.map((item: any, index) => (
+                        items.map((item: Item, index) => (
                             <div className="mini-card-item" key={item.id || index}>
                                 {isLoading ? (
                                     <Skeleton width={24} height={24} />
                                 ) : (
-                                    (item.iconClass || item.icon) && 
-                                    <i className={item.iconClass || item.icon}></i>
+                                    item.icon && <i className={item.icon}></i>
                                 )}
                                 <div className="content">
                                     <h3>
                                         {isLoading ? <Skeleton width={90} /> : item.title}
                                     </h3>
-                                    {(isLoading || item.description || item.desc) && (
+                                    {(isLoading || item.desc) && (
                                         <p>
-                                            {isLoading ? <Skeleton width={90} /> : (item.description || item.desc)}
+                                            {isLoading ? <Skeleton width={90} /> : item.desc}
                                         </p>
                                     )}
                                 </div>
                             </div>
                         ))
                     ) : (
-                        items.map((item: any, index) => {
+                        items.map((item: Item, index) => {
                             const handleClick = (e: React.MouseEvent) => {
                                 e.stopPropagation();
                                 item.action?.(item);
@@ -134,8 +125,8 @@ const ItemList: React.FC<ItemListProps> = ({
                                             className="item"
                                             onClick={handleClick}
                                         >
-                                            {(item.icon || item.iconClass) && 
-                                                <i className={`item-icon ${item.icon || item.iconClass}`}></i>
+                                            {item.icon && 
+                                                <i className={`item-icon ${item.icon}`}></i>
                                             }
                                             {item.title}
                                         </a>
@@ -144,14 +135,14 @@ const ItemList: React.FC<ItemListProps> = ({
                                             className="item"
                                             onClick={() => item.action?.(item)}
                                         >
-                                            {(item.icon || item.iconClass) && 
-                                                <i className={`item-icon ${item.icon || item.iconClass}`}></i>
+                                            {item.icon && 
+                                                <i className={`item-icon ${item.icon}`}></i>
                                             }
 
                                             <div className="details">
                                                 <div className="heading">{item.title}</div>
-                                                {(item.desc || item.description) && 
-                                                    <div className="desc">{item.desc || item.description}</div>
+                                                {item.desc && 
+                                                    <div className="desc">{item.desc}</div>
                                                 }
                                             </div>
                                             {item.time && <div className="popover-item-time">{item.time}</div>}
