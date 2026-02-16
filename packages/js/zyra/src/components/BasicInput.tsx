@@ -33,6 +33,7 @@ interface BasicInputProps {
     size?: string;
     minNumber?: number;
     maxNumber?: number;
+    accept?: string; // for file input, e.g., "image/*", ".pdf", "image/*,.pdf", ".doc,.docx"
     onChange: (value: InputValue) => void;
     onClick?: (e: MouseEvent<HTMLInputElement>) => void;
     onMouseOver?: (e: MouseEvent<HTMLInputElement>) => void;
@@ -64,6 +65,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
             size,
             minNumber,
             maxNumber,
+            accept,
             onChange,
             onClick,
             onMouseOver,
@@ -111,7 +113,8 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
 									? maxNumber
 									: undefined
 							}
-							value={value}
+							accept={type === 'file' ? accept : undefined}
+                            value={type === 'file' ? undefined : value}
 							onChange={(e) =>
 								onChange(type === 'file' ? e.target.files : e.target.value)
 							}
