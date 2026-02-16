@@ -11,6 +11,7 @@ import Privacy from './settings/Privacy';
 import Verification from './settings/Verification';
 import ShippingDelivery from './settings/ShippingDelivery';
 import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 
 const settings = () => {
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -55,57 +56,84 @@ const settings = () => {
 				type: 'file',
 				content: {
 					id: 'general',
-					name: 'General',
-					desc: 'Update your store’s core information - name, slug, description, and buyer message',
-					icon: 'tools',
+					headerTitle: __('General', 'multivendorx'),
+					headerDescription: __(
+						'Update your store’s core information - name, slug, description, and buyer message',
+						'multivendorx'
+					),
+					headerIcon: 'tools',
 				},
 			},
 			{
 				type: 'file',
-				condition: settings?.['store-permissions'].edit_store_info_activation.includes('store_images'),
+				condition:
+					settings?.['store-permissions'].edit_store_info_activation.includes(
+						'store_images'
+					),
 				content: {
 					id: 'appearance',
-					name: 'Appearance',
-					desc: 'Manage your store’s profile image, banner, and video.',
-					icon: 'appearance',
+					headerTitle: __('Appearance', 'multivendorx'),
+					headerDescription: __(
+						'Manage your store’s profile image, banner, and video.',
+						'multivendorx'
+					),
+					headerIcon: 'appearance',
 				},
 			},
 			{
 				type: 'file',
-				condition: settings?.['store-permissions'].edit_store_info_activation.includes('store_address'),
+				condition:
+					settings?.['store-permissions'].edit_store_info_activation.includes(
+						'store_address'
+					),
 				content: {
 					id: 'business-address',
-					name: 'Business Address',
-					desc: 'Provide your business address, city, zip code, country, state, and timezone to ensure accurate order and location settings.',
-					icon: 'form-address',
+					headerTitle: __('Business Address', 'multivendorx'),
+					headerDescription: __(
+						'Provide your business address, city, zip code, country, state, and timezone to ensure accurate order and location settings.',
+						'multivendorx'
+					),
+					headerIcon: 'form-address',
 				},
 			},
 			{
 				type: 'file',
-				condition: settings?.['store-permissions'].edit_store_info_activation.includes('store_contact'),
+				condition:
+					settings?.['store-permissions'].edit_store_info_activation.includes(
+						'store_contact'
+					),
 				content: {
 					id: 'contact-information',
-					name: 'Contact Information',
-					desc: 'Add your store’s contact details so customers can reach you easily through phone, email.',
-					icon: 'form-phone',
+					headerTitle: __('Contact Information', 'multivendorx'),
+					headerDescription: __(
+						'Add your store’s contact details so customers can reach you easily through phone, email.',
+						'multivendorx'
+					),
+					headerIcon: 'form-phone',
 				},
 			},
 			{
 				type: 'file',
 				content: {
 					id: 'social-media',
-					name: 'Social Media',
-					desc: 'Add your store’s social media links to help buyers connect with you across platforms.',
-					icon: 'cohort',
+					headerTitle: __('Social Media', 'multivendorx'),
+					headerDescription: __(
+						'Add your store’s social media links to help buyers connect with you across platforms.',
+						'multivendorx'
+					),
+					headerIcon: 'cohort',
 				},
 			},
 			{
 				type: 'file',
 				content: {
 					id: 'payout',
-					name: 'Payout',
-					desc: 'Enter your payment information and select the method you’d like to use for receiving store payouts.',
-					icon: 'wallet-open',
+					headerTitle: __('Payout', 'multivendorx'),
+					headerDescription: __(
+						'Enter your payment information and select the method you’d like to use for receiving store payouts.',
+						'multivendorx'
+					),
+					headerIcon: 'wallet-open',
 				},
 			},
 			{
@@ -113,9 +141,12 @@ const settings = () => {
 				module: 'store-policy',
 				content: {
 					id: 'privacy',
-					name: 'Privacy',
-					desc: 'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
-					icon: 'privacy',
+					headerTitle: __('Privacy', 'multivendorx'),
+					headerDescription: __(
+						'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',
+						'multivendorx'
+					),
+					headerIcon: 'privacy',
 				},
 			},
 			{
@@ -123,9 +154,12 @@ const settings = () => {
 				module: 'store-shipping',
 				content: {
 					id: 'shipping',
-					name: 'Shipping',
-					desc: 'Manage your store’s shipping method, pricing rules, and location-based rates.',
-					icon: 'shipping',
+					headerTitle: __('Shipping', 'multivendorx'),
+					headerDescription: __(
+						'Manage your store’s shipping method, pricing rules, and location-based rates.',
+						'multivendorx'
+					),
+					headerIcon: 'shipping',
 				},
 			},
 			{
@@ -133,9 +167,9 @@ const settings = () => {
 				module: 'marketplace-compliance',
 				content: {
 					id: 'verification',
-					name: 'Verification',
-					desc: 'verification',
-					icon: 'verification5',
+					headerTitle: __('Verification', 'multivendorx'),
+					headerDescription: __('Verification', 'multivendorx'),
+					headerIcon: 'verification5',
 				},
 			},
 		].filter(
@@ -144,6 +178,7 @@ const settings = () => {
 				(tab.condition === undefined || tab.condition)
 		)
 	);
+
 
 	const getForm = (tabId: string) => {
 		let form: React.ReactNode;
@@ -198,7 +233,7 @@ const settings = () => {
 					getForm={getForm}
 					prepareUrl={prepareUrl}
 					appLocalizer={appLocalizer}
-					settingName="Settings"
+					variant="settings"
 					Link={SimpleLink}
 					menuIcon={true}
 				/>

@@ -3,13 +3,13 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'developer-tools',
     priority: 3,
-    name: __('Developer Tools', 'multivendorx'),
+    settingTitle: __('Developer Tools', 'multivendorx'),
     tabTitle: 'Dashboard Caching',
-    desc: __(
+    headerDescription: __(
         'Site errors and events are logged for easy troubleshooting.',
         'multivendorx'
     ),
-    icon: 'adminfont-database',
+    headerIcon: 'database',
     submitUrl: 'settings',
     modal: [
         {
@@ -125,7 +125,7 @@ export default {
                     '<ul>MultiVendorX stores system notifications for both admins and stores.<br>By default, notifications are saved for 180 days. Only notifications within this period are retained; older notifications are automatically deleted.<br>You can set a custom retention period, which will override the default.', 'multivendorx'
                 ),
             size: "7rem",
-            postInsideText: __('days', 'multivendorx')
+            postText: __('days', 'multivendorx')
 			
         },
         {

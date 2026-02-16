@@ -4,7 +4,6 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	AdminBreadcrumbs,
 	TextAreaUI,
 	Container,
 	Column,
@@ -16,6 +15,7 @@ import {
 	ToggleSettingUI,
 	SelectInputUI,
 	PopupUI,
+	NavigatorHeader,
 } from 'zyra';
 import './Announcements.scss';
 import Popup from '../Popup/Popup';
@@ -424,9 +424,9 @@ export const Announcements: React.FC = () => {
 					}}
 				/>
 			</PopupUI>
-			<AdminBreadcrumbs
-				settingIcon="adminfont-announcement"
-				description={
+			<NavigatorHeader
+				headerIcon="announcement"
+				headerDescription={
 					'Central hub for managing marketplace announcements. Review past updates and create new ones to keep stores informed.'
 				}
 				headerTitle="Announcements"

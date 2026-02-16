@@ -23,7 +23,7 @@ export const SectionUI : React.FC<SectionProps> = ( {
                             dangerouslySetInnerHTML={ { __html: hint } }
                         ></p>
                     ) }
-                    { value && <span>{ value }</span> }
+                    { value && <span className="desc">{ value }</span> }
                 </div>
             </div>
     );

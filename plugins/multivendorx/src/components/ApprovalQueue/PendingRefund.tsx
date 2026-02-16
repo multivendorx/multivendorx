@@ -8,6 +8,7 @@ import {
 	FormGroup,
 	FormGroupWrapper,
 	getApiLink,
+	PopupUI,
 	TableCard,
 	TextAreaUI,
 } from 'zyra';

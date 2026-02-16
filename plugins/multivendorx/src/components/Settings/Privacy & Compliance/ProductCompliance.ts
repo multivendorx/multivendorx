@@ -8,7 +8,7 @@ export default {
 		'All product listings must follow platform content guidelines and avoid prohibited categories. Branded or regulated products must include authenticity certificates. Optional safety certifications may be uploaded for regulated items.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-per-product-shipping',
+	headerIcon: 'per-product-shipping',
 	submitUrl: 'settings',
 	modal: [
 		{
@@ -28,7 +28,11 @@ export default {
 			proSetting: true,
 			addNewBtn: true,
 			addNewTemplate: {
-				label: 'New Product Categories'
+				label: 'New Product Categories',
+				editableFields: {
+					title: true,
+					description: false,
+				},
 			},
 			modal: [],
 		},

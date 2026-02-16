@@ -260,20 +260,22 @@ const Modules: React.FC<ModuleProps> = ({
                                             </div>
                                         )}
                                         {appLocalizer.khali_dabba && variant === 'mini-module' && (
-                                            <MultiCheckBoxUI
-                                                look="toggle"
-                                                type="checkbox"
-                                                value={modules.includes(module.id) ? [module.id] : []}
-                                                onChange={(e) =>
-                                                    handleOnChange(
-                                                        e,
-                                                        module.id,
-                                                        module.reloadOnChange
-                                                    )}
-                                                options={[
-                                                    { key: module.id, value: module.id },
-                                                ]}
-                                            />
+                                            <div className="toggle-checkbox">
+                                                <MultiCheckBoxUI
+                                                    look="toggle"
+                                                    type="checkbox"
+                                                    value={modules.includes(module.id) ? [module.id] : []}
+                                                    onChange={(e) =>
+                                                        handleOnChange(
+                                                            e,
+                                                            module.id,
+                                                            module.reloadOnChange
+                                                        )}
+                                                    options={[
+                                                        { key: module.id, value: module.id },
+                                                    ]}
+                                                />
+                                            </div>
                                         )}
                                     </div>
                                     <div className="module-details">

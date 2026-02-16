@@ -8,7 +8,7 @@ export default {
 		'Control refund rules, eligibility stages, and valid claim periods.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-marketplace-refund',
+	headerIcon: 'marketplace-refund',
 	submitUrl: 'settings',
 	modal: [
 		{

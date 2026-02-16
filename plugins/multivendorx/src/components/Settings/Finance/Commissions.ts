@@ -71,7 +71,7 @@ export default {
 		'Decide how your marketplace takes commission from sales.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-commission',
+	headerIcon: 'commission',
 	submitUrl: 'settings',
 	modal: [
 		{
@@ -439,11 +439,7 @@ export default {
 				{
 					key: 'facilitator_percentage',
 					type: 'number',
-					afterElement: {
-						type: 'preposttext',
-						textType: 'post',
-						postText: __('%'),
-					},
+					postText: __('%'),
 					size: '8rem',
 				},
 			],

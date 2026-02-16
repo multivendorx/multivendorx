@@ -3,12 +3,12 @@ import { __ } from '@wordpress/i18n';
 export default {
 	id: 'log',
 	priority: 2,
-	name: __('Log', 'multivendorx'),
-	desc: __(
+	settingTitle: __('Log', 'multivendorx'),
+	headerDescription: __(
 		'Site errors and events are logged for easy troubleshooting.',
 		'multivendorx'
 	),
-	icon: 'adminfont-document',
+	headerIcon: 'document',
 	submitUrl: 'settings',
 	modal: [
 		{

@@ -8,7 +8,7 @@ export default {
 		'Define and publish the rules and guidelines that apply to your marketplace.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-store-policy',
+	headerIcon: 'store-policy',
 	submitUrl: 'settings',
 	modal: [
 		{

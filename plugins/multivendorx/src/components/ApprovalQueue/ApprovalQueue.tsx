@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, SettingsNavigator, useModules } from 'zyra';
+import {getApiLink, SettingsNavigator, useModules } from 'zyra';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
@@ -191,86 +191,97 @@ const ApprovalQueue = () => {
 	const settingContent = [
 		{
 			type: 'file',
-			// condition: settings?.general?.approve_store === 'manually',
+			condition: settings?.general?.approve_store === 'manually',
 			content: {
 				id: 'stores',
-				settingName: 'Stores',
-				settingTitle: 'Title test',
-				settingSubTitle: 'Title test sub title',
-				settingDescription: 'Eager to join the marketplace',
-				settingIcon: 'storefront yellow',
+				headerTitle: 'Stores',
+				headerDescription: 'Eager to join the marketplace',
+				settingTitle: 'Store in review queue',
+				settingSubTitle: 'Next in line! Approve or reject new store join requests.',
+				headerIcon: 'storefront yellow',
 				count: storeCount,
 			},
 		},
 		{
 			type: 'file',
-			// condition:
-			// 	!settings?.['store-permissions']?.products?.includes(
-			// 		'publish_products'
-			// 	),
+			condition:
+				!settings?.['store-permissions']?.products?.includes(
+					'publish_products'
+				),
 			content: {
 				id: 'products',
-				settingName: 'Products',
-				settingDescription: 'Pending your approval',
-				settingIcon: 'multi-product red',
+				headerTitle: 'Products',
+				headerDescription: 'Pending your approval',
+				settingTitle: 'Products awaiting review',
+				settingSubTitle: 'Approve these listings to start generating sales in your marketplace.',
+				headerIcon: 'multi-product red',
 				count: productCount,
 			},
 		},
 		{
 			type: 'file',
-			// condition:
-			// 	settings?.['store-permissions']?.coupons?.includes(
-			// 		'publish_coupons'
-			// 	),
+			condition:
+				settings?.['store-permissions']?.coupons?.includes(
+					'publish_coupons'
+				),
 			content: {
 				id: 'coupons',
-				settingName: 'Coupons',
-				settingDescription: 'Need a quick review',
-				settingIcon: 'coupon green',
+				headerTitle: 'Coupons',
+				headerDescription: 'Need a quick review',
+				settingTitle: 'Coupons up for review',
+				settingSubTitle: 'Approve, decline, or tweak before they go live.',
+				headerIcon: 'coupon green',
 				count: couponCount,
 			},
 		},
 		{
 			type: 'file',
-			// module: 'wholesale',
+			module: 'wholesale',
 			content: {
 				id: 'wholesale-customer',
-				settingName: 'Customers',
-				settingDescription: 'Ready for your approval',
-				settingIcon: 'user-circle pink',
+				headerTitle: 'Customers',
+				headerDescription: 'Ready for your approval',
+				settingSubTitle: 'Ready for your approval',
+				headerIcon: 'user-circle pink',
 				count: 9,
 			},
 		},
 		{
 			type: 'file',
-			// module: 'marketplace-refund',
+			module: 'marketplace-refund',
 			content: {
 				id: 'refund-requests',
-				settingName: 'Refunds',
-				settingDescription: 'Need your decision',
-				settingIcon: 'marketplace-refund blue',
+				headerTitle: 'Refunds',
+				headerDescription: 'Need your decision',
+				settingTitle: 'Refund tracker',
+				settingSubTitle: 'Monitor refund trends and stay informed on store returns.',
+				headerIcon: 'marketplace-refund blue',
 				count: refundCount,
 			},
 		},
 		{
 			type: 'file',
-			// module: 'marketplace-compliance',
+			module: 'marketplace-compliance',
 			content: {
 				id: 'report-abuse',
-				settingName: 'Flagged',
-				settingDescription: 'Product reported for assessment',
-				settingIcon: 'product indigo',
+				headerTitle: 'Flagged',
+				headerDescription: 'Product reported for assessment',
+				settingTitle: 'Flagged products awaiting action',
+				settingSubTitle: 'Review reports and maintain quality.',
+				headerIcon: 'product indigo',
 				count: reportAbuseCount,
 			},
 		},
 		{
 			type: 'file',
-			// condition: settings?.disbursement?.withdraw_type === 'manual',
+			condition: settings?.disbursement?.withdraw_type === 'manual',
 			content: {
 				id: 'withdrawal',
-				settingName: 'Withdrawals',
-				settingDescription: 'Queued for disbursement',
-				settingIcon: 'bank orange',
+				headerTitle: 'Withdrawals',
+				headerDescription: 'Queued for disbursement',
+				settingTitle: 'Withdrawals awaiting approval',
+				settingSubTitle: 'Review and process store payouts.',
+				headerIcon: 'bank orange',
 				count: withdrawCount,
 			},
 		},
@@ -278,9 +289,11 @@ const ApprovalQueue = () => {
 			type: 'file',
 			content: {
 				id: 'deactivate-requests',
-				settingName: 'Deactivations',
-				settingDescription: 'Permanent store closure request',
-				settingIcon: 'rejecte teal',
+				headerTitle: 'Deactivations',
+				headerDescription: 'Permanent store closure request',
+				settingTitle: 'Stores requesting deactivation',
+				settingSubTitle: 'Approve or reject marketplace joiners.	',
+				headerIcon: 'rejecte teal',
 				count: deactivateCount,
 			},
 		},
@@ -324,13 +337,6 @@ const ApprovalQueue = () => {
 
 	return (
 		<>
-			{/* <AdminBreadcrumbs
-				settingIcon="adminfont-approval"
-				headerTitle="Approval Queue"
-				description={
-					'Manage all pending administrative actions including approvals, payouts, and notifications.'
-				}
-			/> */}
 			<SettingsNavigator
 				settingContent={settingContent}
 				currentSetting={location.get('subtab') as string}
@@ -341,7 +347,7 @@ const ApprovalQueue = () => {
 				appLocalizer={appLocalizer}
 				Link={Link}
 				variant={'card'}
-				headerIcon="adminfont-approval"
+				headerIcon="approval"
 				headerTitle="Approval Queue"
 				headerDescription={
 					'Manage all pending administrative actions including approvals, payouts, and notifications.'

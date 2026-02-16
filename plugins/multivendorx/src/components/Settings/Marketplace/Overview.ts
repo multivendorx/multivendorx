@@ -22,7 +22,7 @@ export default {
 		icon: 'adminfont-general-tab', // optional icon class
 		link: 'https://example.com/docs/general-settings',
 	},
-	headerIcon: 'adminfont-view-files',
+	headerIcon: 'view-files',
 	submitUrl: 'settings',
 	modal: [
 		{

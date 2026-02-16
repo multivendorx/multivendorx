@@ -2,13 +2,13 @@ import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
-	FileInput,
 	getApiLink,
 	SuccessNotice,
 	FormGroupWrapper,
 	FormGroup,
 	BasicInputUI,
 	SelectInputUI,
+	FileInputUI,
 } from 'zyra';
 
 interface FormData {
@@ -17,7 +17,6 @@ interface FormData {
 
 const Appearance = () => {
 	const [formData, setFormData] = useState<FormData>({});
-	const [imagePreviews, setImagePreviews] = useState<{ [key: string]: string | string[] }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
 	const settings =
@@ -32,7 +31,7 @@ const Appearance = () => {
 	// Load store data
 	useEffect(() => {
 		if (!appLocalizer.store_id) return console.error('Missing store ID or appLocalizer');
-	
+
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
@@ -40,7 +39,7 @@ const Appearance = () => {
 		})
 			.then((res) => {
 				const data = res.data || {};
-	
+
 				// If banner_slider comes as a JSON string, parse it
 				let bannerSliderData: string[] = [];
 				if (typeof data.banner_slider === 'string') {
@@ -52,21 +51,16 @@ const Appearance = () => {
 				} else if (Array.isArray(data.banner_slider)) {
 					bannerSliderData = data.banner_slider;
 				}
-	
+
 				setFormData({
 					...data,
 					banner_slider: bannerSliderData,
 				});
-	
-				setImagePreviews({
-					image: data.image || '',
-					banner: data.banner || '',
-					banner_slider: bannerSliderData,
-				});
+
 			})
 			.catch((error) => console.error('Error loading store data:', error));
 	}, []);
-	
+
 	// Auto save store data
 	const autoSave = (updatedData: any) => {
 		axios({
@@ -84,41 +78,6 @@ const Appearance = () => {
 			.catch((error) => console.error('Save error:', error));
 	};
 
-	// Open WordPress media uploader
-	const runUploader = (key: string, allowMultiple = false) => {
-		if (!settings.includes('store_images')) return;
-
-		const frame = (window as any).wp.media({
-			title: __('Select or Upload Image', 'multivendorx'),
-			button: { text: __('Use this image', 'multivendorx') },
-			multiple: allowMultiple,
-		});
-
-		frame.on('select', function () {
-			const selection = frame.state().get('selection').toJSON();
-			const urls = selection.map((att: any) => att.url);
-
-			setFormData((prev) => {
-				const prevImages = Array.isArray(prev[key]) ? prev[key] : [];
-				const updatedImages = allowMultiple ? [...prevImages, ...urls] : urls[0];
-				return { ...prev, [key]: updatedImages };
-			});
-
-			setImagePreviews((prev) => {
-				const prevImages = Array.isArray(prev[key]) ? prev[key] : [];
-				const updatedImages = allowMultiple ? [...prevImages, ...urls] : urls[0];
-				return { ...prev, [key]: updatedImages };
-			});
-
-			autoSave({
-				...formData,
-				[key]: allowMultiple ? [...(formData[key] || []), ...urls] : urls[0],
-			});
-		});
-
-		frame.open();
-	};
-
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
@@ -126,24 +85,18 @@ const Appearance = () => {
 			<FormGroupWrapper>
 				{/* Profile Image */}
 				<FormGroup label={__('Profile Image', 'multivendorx')} htmlFor="image">
-					<FileInput
-						value={formData.image}
-						inputClass="form-input"
-						name="image"
-						type="hidden"
-						onButtonClick={() => runUploader('image')}
+					<FileInputUI
+						imageSrc={formData.image}
 						imageWidth={75}
 						imageHeight={75}
 						openUploader={__('Upload Image', 'multivendorx')}
-						imageSrc={imagePreviews.image}
-						onRemove={() => {
-							const updated = { ...formData, image: '' };
+						onChange={(val) => {
+							const updated = { ...formData, image: val };
 							setFormData(updated);
-							setImagePreviews((prev) => ({ ...prev, image: '' }));
 							autoSave(updated);
 						}}
-						onReplace={() => runUploader('image')}
 					/>
+
 				</FormGroup>
 
 				{/* Banner Type */}
@@ -163,51 +116,33 @@ const Appearance = () => {
 				{/* Static Banner Image */}
 				{formData.banner_type === 'static_image' && (
 					<FormGroup label={__('Static Banner Image', 'multivendorx')} htmlFor="banner">
-						<FileInput
-							value={formData.banner}
-							inputClass="form-input"
-							name="banner"
-							type="hidden"
-							onButtonClick={() => runUploader('banner')}
+						<FileInputUI
+							imageSrc={formData.banner}
 							imageWidth={300}
 							imageHeight={100}
 							openUploader={__('Upload Banner', 'multivendorx')}
-							imageSrc={imagePreviews.banner}
-							onRemove={() => {
-								const updated = { ...formData, banner: '' };
+							onChange={(val) => {
+								const updated = { ...formData, banner: val };
 								setFormData(updated);
-								setImagePreviews((prev) => ({ ...prev, banner: '' }));
 								autoSave(updated);
 							}}
-							onReplace={() => runUploader('banner')}
 						/>
+
 					</FormGroup>
 				)}
 
 				{/* Slider Images */}
 				{formData.banner_type === 'slider_image' && (
 					<FormGroup label={__('Slider Images', 'multivendorx')} htmlFor="banner_slider">
-						<FileInput
+						<FileInputUI
 							multiple={true}
-							value={formData.banner_slider || []}
-							inputClass="form-input"
-							name="banner_slider"
-							type="hidden"
-							onButtonClick={() => runUploader('banner_slider', true)}
+							imageSrc={formData.banner_slider || []}
 							imageWidth={150}
 							imageHeight={100}
 							openUploader={__('Upload Slider Images', 'multivendorx')}
-							imageSrc={imagePreviews.banner_slider || []}
-							onChange={(images: string[]) => {
+							onChange={(images:string[]) => {
 								const updated = { ...formData, banner_slider: images };
 								setFormData(updated);
-								setImagePreviews((prev) => ({ ...prev, banner_slider: images }));
-								autoSave(updated);
-							}}
-							onRemove={() => {
-								const updated = { ...formData, banner_slider: [] };
-								setFormData(updated);
-								setImagePreviews((prev) => ({ ...prev, banner_slider: [] }));
 								autoSave(updated);
 							}}
 						/>

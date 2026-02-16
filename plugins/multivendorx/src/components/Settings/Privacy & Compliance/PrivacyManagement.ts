@@ -8,7 +8,7 @@ export default {
 		'Manage how store details are shared with customers, from branding and contact info to policies and profile visibility.',
 		'multivendorx'
 	),
-	headerIcon: 'adminfont-privacy',
+	headerIcon: 'privacy',
 	submitUrl: 'settings',
 	modal: [
 		{

@@ -12,7 +12,8 @@ import {
 	SelectInputUI,
 	SettingsNavigator,
 	PopupUI,
-	useOutsideClick
+	useOutsideClick,
+	ItemList
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -169,40 +170,40 @@ const EditStore = () => {
 			type: 'file',
 			content: {
 				id: 'store-overview',
-				name: 'Overview',
-				desc: 'Store Info',
+				headerTitle: 'Overview',
+				headerDescription: 'Store Info',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'store',
-				name: 'General',
-				desc: 'Store Info',
+				headerTitle: 'General',
+				headerDescription: 'Store Info',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'payment',
-				name: 'Payment',
-				desc: 'Payment Methods',
+				headerTitle: 'Payment',
+				headerDescription: 'Payment Methods',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'staff',
-				name: 'Staff',
-				desc: 'Store staff',
+				headerTitle: 'Staff',
+				headerDescription: 'Store staff',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -210,10 +211,10 @@ const EditStore = () => {
 			module: 'store-shipping',
 			content: {
 				id: 'shipping',
-				name: 'Shipping',
-				desc: 'Store Shipping',
+				headerTitle: 'Shipping',
+				headerDescription: 'Store Shipping',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -221,20 +222,20 @@ const EditStore = () => {
 			module: 'store-policy',
 			content: {
 				id: 'store-policy',
-				name: 'Policy',
-				desc: 'Policy',
+				headerTitle: 'Policy',
+				headerDescription: 'Policy',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'application-details',
-				name: 'Application Details',
-				desc: 'Application',
+				headerTitle: 'Application Details',
+				headerDescription: 'Application',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 		{
@@ -242,10 +243,10 @@ const EditStore = () => {
 			module: 'facilitator',
 			content: {
 				id: 'store-facilitator',
-				name: 'Facilitator',
-				desc: 'Facilitator',
+				headerTitle: 'Facilitator',
+				headerDescription: 'Facilitator',
 				hideSettingHeader: true,
-				icon: 'adminfont-credit-card',
+				headerIcon: 'credit-card',
 			},
 		},
 	].filter((setting) => !setting.module || modules.includes(setting.module));
@@ -380,7 +381,6 @@ const EditStore = () => {
 			},
 		},
 	].filter(Boolean);
-
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
@@ -945,16 +945,14 @@ const EditStore = () => {
 				Link={Link}
 				settingName={'Store'}
 				action={
-					// <Popover
-					// 	className="edit-wrapper"
-					// 	template="action"
-					// 	toggleIcon="adminfont-more-vertical"
-					// 	items={actionItems}
-					// />
-					<></>
+					<PopupUI
+						position="menu-dropdown"
+						toggleIcon="adminfont-more-vertical"
+					>
+						<ItemList items={actionItems} />
+					</PopupUI>
 				}
 			/>
-
 			<PopupUI
 				open={deleteModal}
 				onClose={() => setDeleteModal(false)}

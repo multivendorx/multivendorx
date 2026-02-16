@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import StoreTable from './StoreTable';
 import EditStore from './Edit/EditStore';
 import {
-	AdminBreadcrumbs,
 	AdminButtonUI,
 	BasicInputUI,
 	EmailsInput,
@@ -10,6 +9,7 @@ import {
 	FormGroup,
 	FormGroupWrapper,
 	getApiLink,
+	NavigatorHeader,
 	PopupUI,
 	SelectInputUI,
 	TextAreaUI,
@@ -266,10 +266,10 @@ const Stores = () => {
 
 			{!isAddStore && !iseditStore && (
 				<>
-					<AdminBreadcrumbs
-						settingIcon="adminfont-storefront"
+					<NavigatorHeader
+						headerIcon="storefront"
 						headerTitle="Stores"
-						description={
+						headerDescription={
 							'Manage marketplace stores with ease. Review, edit, or add new stores anytime.'
 						}
 						buttons={[
@@ -327,14 +327,6 @@ const Stores = () => {
 						>
 							<FormGroupWrapper>
 								<FormGroup label={__('Store name', 'multivendorx')} htmlFor="store-name">
-									{/* <BasicInputUI
-										type="text"
-										name="name"
-										value={formData.name || ''}
-										onChange={handleChange}
-										required={true}
-										msg={error.name}
-									/> */}
 									<BasicInputUI
 										type="text"
 										name="name"
@@ -345,20 +337,6 @@ const Stores = () => {
 								</FormGroup>
 
 								<FormGroup label={__('Store slug', 'multivendorx')} htmlFor="store-slug">
-									{/* <BasicInputUI
-										type="text"
-										name="slug"
-										value={formData.slug || ''}
-										 
-										onChange={handleChange}
-										required={true}
-										clickBtnName={__(
-											'Check Slug',
-											'multivendorx'
-										)}
-										onclickCallback={handleNameBlur}
-										msg={error.slug}
-									/> */}
 									<BasicInputUI
 										type="text"
 										name="slug"
