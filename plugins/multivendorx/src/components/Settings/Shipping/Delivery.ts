@@ -17,6 +17,7 @@ export default {
 		{
 			key: 'shipping_stage',
 			type: 'expandable-panel',
+			proSetting: true,
 			label: __('Delivery progress stages', 'multivendorx'),	
 			settingDescription: __(
 				'Steps customers see as their order moves toward delivery. These stages show up in order tracking so customers know where their package is.',
@@ -70,6 +71,7 @@ export default {
 				'Specifies how orders are finalized and transitioned from Delivered to Completed after the package has reached the customer',
 				'multivendorx'
 			),
+			proSetting: true,
 			desc: __(
 				'<ul><li>Auto complete on delivery - completes orders automatically when delivery happens (system-controlled).</li><li>Customer confirm delivery - completes orders only if the customer confirms (buyer-controlled).</li></ul>',
 				'multivendorx'
