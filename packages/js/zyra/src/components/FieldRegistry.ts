@@ -51,7 +51,6 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   'system-info': SystemInfo,
   'dropdown': SelectInput,
   'recaptcha': Recaptcha,
-  'file': FileInput,
   'attachment': FileInput,
   'image': FileInput,
   'address': AddressField,

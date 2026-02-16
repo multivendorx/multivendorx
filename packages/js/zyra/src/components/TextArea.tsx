@@ -105,11 +105,11 @@ const TextArea: FieldComponent = {
             colNumber={field.colNumber} // for column number value
             value={value || ''}
             usePlainText={field.usePlainText} // Toggle between textarea and TinyMCE
-            // tinymceApiKey={
-            //     appLocalizer.tinymceApiKey
-            //         ? appLocalizer.tinymceApiKey
-            //         : ''
-            // }
+            tinymceApiKey={
+                appLocalizer.tinymceApiKey
+                    ? appLocalizer.tinymceApiKey
+                    : ''
+            }
             onChange={(val) => {
                 if (!canAccess) return;
                 onChange(val)
