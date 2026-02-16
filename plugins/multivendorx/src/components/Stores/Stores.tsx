@@ -420,7 +420,7 @@ const Stores = () => {
 										inputClass="form-input"
 										name="image"
 										// type="hidden"
-										accept={".jpg,.jpeg,.png,.gif,.pdf"} // Backend controls file types: "image/*", ".pdf", "image/*,.pdf"
+										accept={".jpg,.jpeg,.png,.gif,.pdf,.zip"} // Backend controls file types: "image/*", ".pdf", "image/*,.pdf"
 										imageSrc={imagePreview || ''}
 										imageWidth={75}
 										imageHeight={75}

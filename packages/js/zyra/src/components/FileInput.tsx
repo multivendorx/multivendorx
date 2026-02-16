@@ -158,13 +158,13 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                                     />
                                 ) : (
                                     <div>
-                                        <i className={`adminfont-${getFileIcon(file)}`}/>
+                                        <i className={`adminfont-pdf`}/>
                                         <span>
                                             {getFileName(file).substring(0, 15)}
                                         </span>
                                     </div>
                                 )}
-                                <i className="adminfont-close" onClick={(e) => { e.stopPropagation(); handleRemove(i); }} />
+                                <i className="adminfont-close close-btn" onClick={(e) => { e.stopPropagation(); handleRemove(i); }} />
                             </div>
                         );
                     })}
