@@ -259,24 +259,25 @@ const Modules: React.FC<ModuleProps> = ({
                                                 <i className="adminfont-pro-tag"></i>
                                             </div>
                                         )}
-                                        {appLocalizer.khali_dabba && variant === 'mini-module' && (
-                                            <div className="toggle-checkbox">
-                                                <MultiCheckBoxUI
-                                                    look="toggle"
-                                                    type="checkbox"
-                                                    value={modules.includes(module.id) ? [module.id] : []}
-                                                    onChange={(e) =>
-                                                        handleOnChange(
-                                                            e,
-                                                            module.id,
-                                                            module.reloadOnChange
-                                                        )}
-                                                    options={[
-                                                        { key: module.id, value: module.id },
-                                                    ]}
-                                                />
-                                            </div>
-                                        )}
+                                        {variant === 'mini-module' &&
+                                            ((appLocalizer.khali_dabba && module.proModule) || !module.proModule) && (
+                                                <div className="toggle-checkbox">
+                                                    <MultiCheckBoxUI
+                                                        look="toggle"
+                                                        type="checkbox"
+                                                        value={modules.includes(module.id) ? [module.id] : []}
+                                                        onChange={(e) =>
+                                                            handleOnChange(
+                                                                e,
+                                                                module.id,
+                                                                module.reloadOnChange
+                                                            )}
+                                                        options={[
+                                                            { key: module.id, value: module.id },
+                                                        ]}
+                                                    />
+                                                </div>
+                                            )}
                                     </div>
                                     <div className="module-details">
                                         <div className="meta-name">{module.name}</div>
