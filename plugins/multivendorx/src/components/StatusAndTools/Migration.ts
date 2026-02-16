@@ -16,6 +16,7 @@ export default {
 			type: 'button',
 			name: __('Run Migration Wizard', 'multivendorx'),
 			label: __('Multivendor migration', 'multivendorx'),
+			position: "left",
 			desc: __(
 				'Seamlessly transfer your store data from your previous multivendor plugin (i.e. Dokan, WCFM and WC Vendor) using this migration tool.',
 				'multivendorx'

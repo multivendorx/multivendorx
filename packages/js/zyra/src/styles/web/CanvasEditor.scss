@@ -54,85 +54,7 @@
                 }
             }
             
-            .elements-section {
-                margin-bottom: 16px;
-                
-                .section-meta {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 10px 12px;
-                    background: #f8f9fa;
-                    border: 1px solid #e0e0e0;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    margin-bottom: 8px;
-                    
-                    div {
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        font-weight: 500;
-                        
-                        i {
-                            font-size: 16px;
-                            color: #2271b1;
-                        }
-                        
-                        span {
-                            color: #999;
-                            font-size: 12px;
-                            font-weight: normal;
-                        }
-                    }
-                    
-                    i {
-                        transition: transform 0.2s;
-                        
-                        &.rotate {
-                            transform: rotate(90deg);
-                        }
-                    }
-                }
-                
-                .section-container {
-                    display: none;
-                    
-                    &.open {
-                        display: block;
-                    }
-                    
-                    .elements-items {
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        padding: 10px 12px;
-                        background: #fff;
-                        border: 1px solid #e0e0e0;
-                        border-radius: 4px;
-                        margin-bottom: 6px;
-                        cursor: move;
-                        transition: all 0.2s;
-                        
-                        &:hover {
-                            border-color: #2271b1;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        }
-                        
-                        i {
-                            font-size: 16px;
-                            color: #666;
-                        }
-                        
-                        .list-title {
-                            margin: 0;
-                            font-size: 13px;
-                            color: #333;
-                        }
-                    }
-                }
-            }
-            
+           
             .template-item {
                 padding: 12px;
                 border: 1px solid #e0e0e0;
@@ -301,7 +223,7 @@
         .registration-edit-form {
             height: 100%;
             
-            .meta-setting-modal-content {
+            .setting-panel {
                 padding: 20px;
                 
                 .block-type-header {

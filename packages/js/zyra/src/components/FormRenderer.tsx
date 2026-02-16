@@ -77,17 +77,15 @@ export const RegistrationFormUI: React.FC<any> = ({
     const visibleGroups = field?.visibleGroups || ['registration'];
     
     return (
-        <div className="registration-builder">
-            <CanvasEditor
-                blocks={initialBlocks}
-                onChange={handleBlocksChange}
-                blockGroups={BLOCK_GROUPS}
-                visibleGroups={visibleGroups}
-                groupName="registration"
-                proSettingChange={proSettingChange}
-                context="registration"
-            />
-        </div>
+        <CanvasEditor
+            blocks={initialBlocks}
+            onChange={handleBlocksChange}
+            blockGroups={BLOCK_GROUPS}
+            visibleGroups={visibleGroups}
+            groupName="registration"
+            proSettingChange={proSettingChange}
+            context="registration"
+        />
     );
 };
 
