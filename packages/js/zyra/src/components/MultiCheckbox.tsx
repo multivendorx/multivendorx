@@ -1,5 +1,7 @@
 // External dependencies
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Internal dependencies
 import { FieldComponent } from './types';
 
 // Types
@@ -36,13 +38,16 @@ interface MultiCheckBoxProps {
 }
 
 export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
-    const [localOptions, setLocalOptions] = useState<Option[]>(
-        props.options
-    );
+    const [localOptions, setLocalOptions] = useState<Option[]>(props.options);
     const [showNewInput, setShowNewInput] = useState(false);
     const [newOptionValue, setNewOptionValue] = useState('');
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [editValue, setEditValue] = useState('');
+
+    // Sync localOptions with props.options when they change
+    useEffect(() => {
+        setLocalOptions(props.options);
+    }, [props.options]);
 
     const allSelected = props.value?.length === localOptions.length;
     const selectedCount = props.value?.length ?? 0;
@@ -96,18 +101,17 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
             key: value,
             value: value,
             label: newOptionValue.trim(),
-            edit: true,
+            edit: true, // New options are editable
         };
 
         const updatedOptions = [...localOptions, newOption];
+        
+        // Update parent first, then local state
         props.onOptionsChange?.(updatedOptions);
-
-        setLocalOptions(updatedOptions);
+        
+        // Local state will be updated via useEffect when props.options changes
         setNewOptionValue('');
         setShowNewInput(false);
-
-        const selectedValues = getSelectedValues(updatedOptions);
-        props.onChange?.(selectedValues);
     };
 
     const saveEditedOption = (index: number) => {
@@ -121,25 +125,27 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
             label: editValue.trim(),
         };
 
-        setLocalOptions(updatedOptions);
+        // Update parent first
+        props.onOptionsChange?.(updatedOptions);
+        
+        // Local state will be updated via useEffect
         setEditIndex(null);
         setEditValue('');
-
-        props.onOptionsChange?.(updatedOptions);
     };
 
     const deleteOption = (index: number) => {
         const option = localOptions[index];
 
-       if (block(option)) return;
+        if (block(option)) return;
 
         const updatedOptions = localOptions.filter((_, i) => i !== index);
-        setLocalOptions(updatedOptions);
-
+        
+        // Update parent first
+        props.onOptionsChange?.(updatedOptions);
+        
+        // Also update selected values if needed
         const selectedValues = getSelectedValues(updatedOptions);
         props.onChange?.(selectedValues);
-
-        props.onOptionsChange?.(updatedOptions);
     };
 
     return (
@@ -176,125 +182,126 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
                         props.value?.includes(option.value) ?? false;
 
                     return (
-                        <>
+                        <div
+                            key={option.key || index}
+                            className="toggle-checkbox-header"
+                        >
+                            {props.rightContent && (
+                                <p
+                                    className="settings-metabox-description"
+                                    dangerouslySetInnerHTML={{ __html: option.label ?? '' }}
+                                ></p>
+                            )}
+
                             <div
-                                key={option.key}
-                                className="toggle-checkbox-header"
+                                className={props.inputInnerWrapperClass}
+                                data-tour={props.tour}
                             >
-                                {props.rightContent && (
-                                    <p
-                                        className="settings-metabox-description"
-                                        dangerouslySetInnerHTML={{ __html: option.label ?? '' }}
-                                    ></p>
-                                )}
-
-                                <div
-                                    className={props.inputInnerWrapperClass}
-                                    data-tour={props.tour}
-                                >
-                                    <input
-                                        className={props.inputClass}
-                                        id={`toggle-switch-${option.key}`}
-                                        type={props.type?.split('-')[0] ||'checkbox'}
-                                        name={option.name || 'basic-input'}
-                                        value={option.value}
-                                        checked={checked}
-                                        onChange={() => {
-                                            if (block(option)) return;
-                                            toggle(option.value);
-                                        }}
-                                    />
-
-                                    {editIndex === index ? (
-                                        <div className="edit-option-wrapper">
-                                            <div className="edit-option">
-                                                <input
-                                                    type="text"
-                                                    value={editValue}
-                                                    onChange={(e) =>
-                                                        setEditValue(e.target.value)
+                                {editIndex === index ? (
+                                    // Edit mode - show input field
+                                    <div className="edit-option-wrapper">
+                                        <div className="edit-option">
+                                            <input
+                                                type="text"
+                                                value={editValue}
+                                                onChange={(e) =>
+                                                    setEditValue(e.target.value)
+                                                }
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        saveEditedOption(index);
                                                     }
-                                                    onKeyDown={(e) => {
-                                                        if ( e.key === 'Enter' ) {
-                                                            e.preventDefault();
-                                                            saveEditedOption(index);
-                                                        }
+                                                }}
+                                                className="basic-input"
+                                                autoFocus
+                                            />
+                                            <div className="edit-icon">
+                                                <span
+                                                    className="admin-badge green border adminfont-check"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (block(localOptions[index])) return;
+                                                        saveEditedOption(index);
                                                     }}
-                                                    className="basic-input"
-                                                />
-                                                <div className="edit-icon">
-                                                    <span
-                                                        className="admin-badge green border adminfont-check"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            if (block(localOptions[index])) return;
-                                                            saveEditedOption(index);
-                                                        }}
-                                                    ></span>
-                                                </div>
+                                                ></span>
                                             </div>
                                         </div>
-                                    ) : (
-                                        <>
-                                            <label
-                                                className="checkbox-label"
-                                                htmlFor={`toggle-switch-${option.key}`}
-                                            >
-                                                {option.label}
-                                                {option.proSetting &&
-                                                    !props.appLocalizer.khali_dabba && (
-                                                        <span className="admin-pro-tag">
-                                                            <i className="adminfont-pro-tag"></i>
-                                                            Pro
-                                                        </span>
-                                                    )}
-                                                {(!option.proSetting) && option.moduleEnabled &&
-                                                    !props.modules.includes(option.moduleEnabled) && (
-                                                        <span className="admin-pro-tag module">
-                                                            <i
-                                                                className={`adminfont-${option.moduleEnabled}`}
-                                                            ></i>
-                                                            {String(option.moduleEnabled)
-                                                                .split('-')
-                                                                .map((word: string) =>
-                                                                        word.charAt(0).toUpperCase() + word.slice(1)
-                                                                ).join(' ')}
-                                                            <i className="adminfont-lock"></i>
-                                                        </span>
-                                                    )}
-                                                <div className="label-des">
-                                                    {option.desc}
-                                                </div>
-                                            </label>
-                                            {option.edit && (
-                                                <div className="edit-icon">
-                                                    <span
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setEditIndex( index );
-                                                            setEditValue( option.label || option.value );
-                                                        }}
-                                                        className="admin-badge blue border adminfont-edit"
-                                                    ></span>
-                                                    <span
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            deleteOption( index );
-                                                        }}
-                                                        className="admin-badge red border adminfont-delete"
-                                                    ></span>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-                                </div>
+                                    </div>
+                                ) : (
+                                    // View mode - show checkbox and label
+                                    <>
+                                        <input
+                                            className={props.inputClass}
+                                            id={`toggle-switch-${option.key || index}`}
+                                            type={props.type?.split('-')[0] || 'checkbox'}
+                                            name={option.name || 'basic-input'}
+                                            value={option.value}
+                                            checked={checked}
+                                            onChange={() => {
+                                                if (block(option)) return;
+                                                toggle(option.value);
+                                            }}
+                                        />
+                                        <label
+                                            className="checkbox-label"
+                                            htmlFor={`toggle-switch-${option.key || index}`}
+                                        >
+                                            {option.label}
+                                            {option.proSetting &&
+                                                !props.appLocalizer.khali_dabba && (
+                                                    <span className="admin-pro-tag">
+                                                        <i className="adminfont-pro-tag"></i>
+                                                        Pro
+                                                    </span>
+                                                )}
+                                            {(!option.proSetting) && option.moduleEnabled &&
+                                                !props.modules.includes(option.moduleEnabled) && (
+                                                    <span className="admin-pro-tag module">
+                                                        <i
+                                                            className={`adminfont-${option.moduleEnabled}`}
+                                                        ></i>
+                                                        {String(option.moduleEnabled)
+                                                            .split('-')
+                                                            .map((word: string) =>
+                                                                word.charAt(0).toUpperCase() + word.slice(1)
+                                                            ).join(' ')}
+                                                        <i className="adminfont-lock"></i>
+                                                    </span>
+                                                )}
+                                            <div className="label-des">
+                                                {option.desc}
+                                            </div>
+                                        </label>
+                                        {/* Edit icons for editable options */}
+                                        {option.edit && (
+                                            <div className="edit-icon">
+                                                <span
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setEditIndex(index);
+                                                        setEditValue(option.label || option.value);
+                                                    }}
+                                                    className="admin-badge blue border adminfont-edit"
+                                                ></span>
+                                                <span
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        deleteOption(index);
+                                                    }}
+                                                    className="admin-badge red border adminfont-delete"
+                                                ></span>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
                             </div>
-                        </>
+                        </div>
                     );
                 })}
             </div>
 
-            { /* Add New Section */}
+            {/* Add New Section */}
             {props.addNewBtn &&
                 (showNewInput ? (
                     <div className="add-new-option">
@@ -312,6 +319,7 @@ export const MultiCheckBoxUI: React.FC<MultiCheckBoxProps> = (props) => {
                             }}
                             placeholder="Enter new option"
                             className="basic-input"
+                            autoFocus
                         />
                         <button
                             className="admin-btn btn-green"
@@ -350,24 +358,28 @@ const MultiCheckBox: FieldComponent = {
             normalizedValue = [value];
         }
 
-        const normalizedOptions = Array.isArray(
-            settings?.[`${field.key}_options`]
-        )
-            ? settings[`${field.key}_options`].map((opt) => ({
+        // Get options from settings first (for real-time updates), fallback to field.options
+        const optionsFromSettings = settings?.[`${field.key}_options`];
+        const normalizedOptions = Array.isArray(optionsFromSettings)
+            ? optionsFromSettings.map((opt) => ({
                   ...opt,
                   value: String(opt.value),
+                  // Preserve edit flag from settings
+                  edit: opt.edit !== undefined ? opt.edit : !!field.addNewBtnText,
               }))
             : Array.isArray(field.options)
             ? field.options.map((opt) => ({
                   ...opt,
                   value: String(opt.value),
+                  // Default options should NOT be editable unless addNewBtnText exists
+                  edit: !!field.addNewBtnText,
               }))
             : [];
 
         return (
             <MultiCheckBoxUI
-                wrapperClass={field.look === 'toggle' ? 'toggle-btn' : field.selectDeselect === true ? 'checkbox-list-side-by-side' : 'simple-checkbox' }
-                inputInnerWrapperClass={ field.look === 'toggle' ? 'toggle-checkbox' : 'default-checkbox'}
+                wrapperClass={field.look === 'toggle' ? 'toggle-btn' : field.selectDeselect === true ? 'checkbox-list-side-by-side' : 'simple-checkbox'}
+                inputInnerWrapperClass={field.look === 'toggle' ? 'toggle-checkbox' : 'default-checkbox'}
                 inputClass={field.class}
                 tour={field.tour}
                 selectDeselect={field.selectDeselect}
@@ -381,10 +393,11 @@ const MultiCheckBox: FieldComponent = {
                 modules={modules}
                 onChange={(val) => {
                     if (!canAccess) return;
-                    onChange(val); 
+                    onChange(val);
                 }}
                 onOptionsChange={(opts) => {
                     if (!canAccess) return;
+                    // Make sure to pass the updated options to the parent
                     onOptionsChange?.(opts);
                 }}
                 onBlocked={onBlocked}

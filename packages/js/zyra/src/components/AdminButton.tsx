@@ -119,7 +119,7 @@ const AdminButton: FieldComponent = {
                         },
                     }))
                 : {
-                    text: field.name,
+                    text: field.text || field.placeholder || field.name || 'Click',
                     color: field.color,
                     onClick: (val) => {
                         if (!canAccess) return;

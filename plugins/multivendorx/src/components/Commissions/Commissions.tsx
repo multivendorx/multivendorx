@@ -9,9 +9,10 @@ import {
 	Container,
 	Column,
 	TableCard,
+	ExportCSV,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
-import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 import { getCommissionSummaryDisplay } from './Utill';
 
@@ -62,6 +63,17 @@ const Commission: React.FC = () => {
 		[key: number]: boolean;
 	}>({});
 	const { modules } = useModules();
+
+	const commissionColumns = (commission: CommissionRow) => ({
+		[__('ID', 'multivendorx')]: commission.id ?? '',
+		[__('Order', 'multivendorx')]: commission.orderId ?? '',
+		[__('Order Amount', 'multivendorx')]: commission.totalOrderAmount ?? '',
+		[__('Commission Summary', 'multivendorx')]: commission.commissionTotal ?? '',
+		[__('Store Earning', 'multivendorx')]: commission.storeEarning ?? '',
+		[__('Marketplace Earning', 'multivendorx')]: commission.marketplaceFee ?? '',
+		[__('Status', 'multivendorx')]: commission.status ?? '',
+		[__('Date', 'multivendorx')]: commission.createdAt ?? '',
+	});	
 
 	const handleSingleAction = (action: string, row: any) => {
 		let commissionId = row.id;
@@ -465,152 +477,39 @@ const Commission: React.FC = () => {
 
 	const buttonActions = [
 		{
-			label: 'Download CSV',
-			icon: 'download',
-			onClickWithQuery: (query: QueryProps) => {
-				downloadCommissionCSVByQuery(query);
-			},
+		  label: __('Download CSV', 'multivendorx'),
+		  icon: 'download',
+	  
+		  onClickWithQuery: (query: QueryProps) =>
+			ExportCSV({
+			  url: getApiLink(appLocalizer, 'commission'),
+			  headers: { 'X-WP-Nonce': appLocalizer.nonce },
+	  
+			  filename:
+				query.filter?.created_at?.startDate &&
+				query.filter?.created_at?.endDate
+				  ? `commissions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
+				  : `commissions-${formatLocalDate(new Date())}.csv`,
+			  paramsBuilder: ({
+				page: 1,
+				row: 100,
+				status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+				searchValue: query.searchValue || '',
+				startDate: query.filter?.created_at?.startDate
+				  ? formatLocalDate(query.filter.created_at.startDate)
+				  : '',
+				endDate: query.filter?.created_at?.endDate
+				  ? formatLocalDate(query.filter.created_at.endDate)
+				  : '',
+				store_id: query.filter?.store_id,
+				orderBy: query.orderby,
+				order: query.order,
+			  }),
+	  
+			  columns: commissionColumns,
+			})(query),
 		},
-	];
-	const downloadCommissionCSVByQuery = (query: QueryProps) => {
-		axios
-			.get(getApiLink(appLocalizer, 'commission'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: 1,
-					row: 100,
-					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					searchValue: query.searchValue || '',
-					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: '',
-					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: '',
-					store_id: query.filter?.store_id,
-					orderBy: query.orderby,
-					order: query.order,
-				},
-			})
-			.then((res) => {
-				const data = Array.isArray(res.data) ? res.data : [];
-
-				downloadCSV({
-					data: mapCommissionsToCSV(data),
-					filename: 'commissions.csv',
-					headers: {
-						ID: 'ID',
-						Store: 'Store',
-						Order_ID: 'Order ID',
-						Status: 'Status',
-						'Total Order Amount': 'Total Order Amount',
-						'Net Items Cost': 'Net Items Cost',
-						'Store Earning': 'Store Earning',
-						'Marketplace Commission': 'Marketplace Commission',
-						'Gateway Fee': 'Gateway Fee',
-						'Shipping Amount': 'Shipping Amount',
-						'Tax Amount': 'Tax Amount',
-						'Shipping Tax Amount': 'Shipping Tax Amount',
-						'Store Discount': 'Store Discount',
-						'Admin Discount': 'Admin Discount',
-						'Store Payable': 'Store Payable',
-						'Marketplace Payable': 'Marketplace Payable',
-						'Store Refunded': 'Store Refunded',
-						Date: 'Date',
-						Note: 'Note',
-					},
-				});
-			})
-	};
-
-	const downloadCommissionsCSVByIds = (selectedIds: number[]) => {
-		if (!selectedIds.length) return;
-
-		axios
-			.get(getApiLink(appLocalizer, 'commission'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { ids: selectedIds },
-			})
-			.then((res) => {
-				const data = Array.isArray(res.data) ? res.data : [];
-
-				downloadCSV({
-					data: mapCommissionsToCSV(data),
-					filename: 'selected-commissions.csv',
-					headers: {
-						ID: 'ID',
-						Store: 'Store',
-						Order_ID: 'Order ID',
-						Status: 'Status',
-						'Total Order Amount': 'Total Order Amount',
-						'Net Items Cost': 'Net Items Cost',
-						'Store Earning': 'Store Earning',
-						'Marketplace Commission': 'Marketplace Commission',
-						'Gateway Fee': 'Gateway Fee',
-						'Shipping Amount': 'Shipping Amount',
-						'Tax Amount': 'Tax Amount',
-						'Shipping Tax Amount': 'Shipping Tax Amount',
-						'Store Discount': 'Store Discount',
-						'Admin Discount': 'Admin Discount',
-						'Store Payable': 'Store Payable',
-						'Marketplace Payable': 'Marketplace Payable',
-						'Store Refunded': 'Store Refunded',
-						Date: 'Date',
-						Note: 'Note',
-					},
-				});
-			})
-	};
-
-	const mapCommissionsToCSV = (commissions: any[]) =>
-		commissions.map((c) => ({
-			ID: c.id,
-			Store: c.storeName || '',
-			Order_ID: c.orderId || '',
-			Status: c.status || '',
-			'Total Order Amount': c.totalOrderAmount
-				? formatCurrency(c.totalOrderAmount)
-				: '',
-			'Net Items Cost': c.netItemsCost
-				? formatCurrency(c.netItemsCost)
-				: '',
-			'Store Earning': c.storeEarning
-				? formatCurrency(c.storeEarning)
-				: '',
-			'Marketplace Commission': c.marketplaceCommission
-				? formatCurrency(c.marketplaceCommission)
-				: '',
-			'Gateway Fee': c.gatewayFee
-				? formatCurrency(c.gatewayFee)
-				: '',
-			'Shipping Amount': c.shippingAmount
-				? formatCurrency(c.shippingAmount)
-				: '',
-			'Tax Amount': c.taxAmount
-				? formatCurrency(c.taxAmount)
-				: '',
-			'Shipping Tax Amount': c.shippingTaxAmount
-				? formatCurrency(c.shippingTaxAmount)
-				: '',
-			'Store Discount': c.storeDiscount
-				? formatCurrency(c.storeDiscount)
-				: '',
-			'Admin Discount': c.adminDiscount
-				? formatCurrency(c.adminDiscount)
-				: '',
-			'Store Payable': c.storePayable
-				? formatCurrency(c.storePayable)
-				: '',
-			'Marketplace Payable': c.marketplacePayable
-				? formatCurrency(c.marketplacePayable)
-				: '',
-			'Store Refunded': c.storeRefunded
-				? formatCurrency(c.storeRefunded)
-				: '',
-			Date: c.createdAt ? c.createdAt : '',
-			Note: c.commissionNote || '',
-		}));
-
+	];	  
 
 	return (
 		<>
@@ -636,9 +535,15 @@ const Commission: React.FC = () => {
 						filters={filters}
 						buttonActions={buttonActions}
 						bulkActions={[]}
-						onSelectCsvDownloadApply={(selectedIds: []) => {
-							downloadCommissionsCSVByIds(selectedIds)
-						}}
+						onSelectCsvDownloadApply={(selectedIds: number[]) => {
+							ExportCSV({
+							  url: getApiLink(appLocalizer, 'commission'),
+							  headers: { 'X-WP-Nonce': appLocalizer.nonce },
+							  filename: `selected-commissions-${formatLocalDate(new Date())}.csv`,
+							  paramsBuilder: () => ({ ids: selectedIds }),
+							  columns: commissionColumns,
+							})({});
+						}}						  
 						format={appLocalizer.date_format}
 					/>
 				</Column>

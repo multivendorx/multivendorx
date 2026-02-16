@@ -28,9 +28,9 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
         inputValue.trim() === ''
             ? []
             : suggestions.filter(
-                  (s) =>
-                      s.toLowerCase().includes(inputValue.toLowerCase()) &&
-                      !items.includes(s)
+                  (suggestion) =>
+                      suggestion.toLowerCase().includes(inputValue.toLowerCase()) &&
+                      !items.includes(suggestion)
               );
 
     useEffect( () => {
@@ -60,9 +60,9 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
         }
     };
 
-    const handleSelectSuggestion = ( s: string ) => {
-        if ( ! items.includes( s ) ) {
-            const newList = [ ...items, s ];
+    const handleSelectSuggestion = ( suggestion: string ) => {
+        if ( ! items.includes( suggestion ) ) {
+            const newList = [ ...items, suggestion ];
             setItems( newList );
             if ( onChange ) {
                 onChange( newList );
@@ -96,12 +96,12 @@ const InputWithSuggestions: React.FC< InputWithSuggestionsProps > = ( {
             { /* Suggestions dropdown */ }
             { filteredSuggestions.length > 0 && (
                 <ul className="suggestions-list">
-                    { filteredSuggestions.map( ( s ) => (
+                    { filteredSuggestions.map( ( suggestion ) => (
                         <li
-                            key={ s }
-                            onClick={ () => handleSelectSuggestion( s ) }
+                            key={ suggestion }
+                            onClick={ () => handleSelectSuggestion( suggestion ) }
                         >
-                            { s }
+                            { suggestion }
                         </li>
                     ) ) }
                 </ul>
