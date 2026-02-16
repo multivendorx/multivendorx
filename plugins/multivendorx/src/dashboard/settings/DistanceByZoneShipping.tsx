@@ -487,10 +487,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										name="localPickupCost"
 										placeholder="Enter cost"
 										value={formData.localPickupCost}
-										onChange={(e: any) =>
+										onChange={(val: any) =>
 											handleChange(
 												'localPickupCost',
-												e.target.value
+												val
 											)
 										}
 									/>
@@ -537,10 +537,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 													name="minOrderCost"
 													placeholder="Enter minimum order cost"
 													value={formData.minOrderCost}
-													onChange={(e: any) =>
+													onChange={(value) =>
 														handleChange(
 															'minOrderCost',
-															e.target.value
+															value
 														)
 													}
 												/>
@@ -561,10 +561,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											name="flatRateCost"
 											placeholder="Enter cost"
 											value={formData.flatRateCost}
-											onChange={(e: any) =>
+											onChange={(value) =>
 												handleChange(
 													'flatRateCost',
-													e.target.value
+													 value
 												)
 											}
 										/>
@@ -582,10 +582,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 											name="flatRateClassCost"
 											placeholder="Enter class cost"
 											value={formData.flatRateClassCost}
-											onChange={(e: any) =>
+											onChange={(value) =>
 												handleChange(
 													'flatRateClassCost',
-													e.target.value
+													value
 												)
 											}
 										/>

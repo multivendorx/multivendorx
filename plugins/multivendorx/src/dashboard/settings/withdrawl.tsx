@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { BasicInputUI, FormGroup, FormGroupWrapper, ToggleSettingUI, getApiLink } from 'zyra';
+import { BasicInputUI, FormGroup, FormGroupWrapper, SuccessNotice, ToggleSettingUI, getApiLink } from 'zyra';
 import {
 	ConnectComponentsProvider,
 	ConnectAccountOnboarding,
@@ -33,6 +33,7 @@ interface StorePaymentConfig {
 const Withdrawl: React.FC = () => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const containerRef = useRef<HTMLDivElement>(null);
+	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
 	const storePayment: StorePaymentConfig =
 		(appLocalizer.store_payment_settings as StorePaymentConfig) || {};
@@ -48,13 +49,13 @@ const Withdrawl: React.FC = () => {
 	}));
 
 	const selectedProvider = storePayment[formData.payment_method];
-
-	// useEffect(() => {
-	// 	if (successMsg) {
-	// 		const timer = setTimeout(() => setSuccessMsg(null), 3000);
-	// 		return () => clearTimeout(timer);
-	// 	}
-	// }, [successMsg]);
+	
+	useEffect(() => {
+		if (successMsg) {
+			const timer = setTimeout(() => setSuccessMsg(null), 3000);
+			return () => clearTimeout(timer);
+		}
+	}, [successMsg]);
 
 	useEffect(() => {
 		if (!appLocalizer.store_id) {
@@ -76,10 +77,10 @@ const Withdrawl: React.FC = () => {
 
 	useEffect(() => {
 		if (!containerRef.current || !selectedProvider?.fields) return;
-	
+
 		const field = selectedProvider.fields.find(f => f.type === 'embedded');
 		if (!field?.client_secret || !field?.publish) return;
-	
+
 		(async () => {
 			const instance = await loadConnectAndInitialize({
 				publishableKey: field.publish,
@@ -90,11 +91,11 @@ const Withdrawl: React.FC = () => {
 	}, [selectedProvider]);
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		key: string,
+		value: string
 	) => {
-		const { name, value } = e.target;
 		setFormData((prev) => {
-			const updated = { ...(prev || {}), [name]: value ?? '' };
+			const updated = { ...(prev || {}), [key]: value ?? '' };
 			autoSave(updated);
 			return updated;
 		});
@@ -119,7 +120,7 @@ const Withdrawl: React.FC = () => {
 			data: updatedData,
 		}).then((res) => {
 			if (res.data.success) {
-				console.log('Store saved successfully!');
+				setSuccessMsg('Store saved successfully!');
 			}
 		});
 	};
@@ -143,17 +144,18 @@ const Withdrawl: React.FC = () => {
 
 	return (
 		<>
+			<SuccessNotice message={successMsg} />
 			{/* Payment Method Toggle */}
 			<FormGroupWrapper>
 				<FormGroup
 					label={__('Payment Method', 'multivendorx')}
 					htmlFor="payment_method"
 					desc={paymentOptions && paymentOptions.length === 0
-								? __(
-									'You haven’t enabled any payment methods yet.',
-									'multivendorx'
-								)
-								: '' }						
+						? __(
+							'You haven’t enabled any payment methods yet.',
+							'multivendorx'
+						)
+						: ''}
 				>
 					<ToggleSettingUI
 						options={paymentOptions}
@@ -261,7 +263,7 @@ const Withdrawl: React.FC = () => {
 						}
 						if (field.type === 'setting-toggle') {
 							return (
-								<FormGroup label={__(field.label, 'multivendorx')} desc={field.desc ? __(field.desc, 'multivendorx'): ''} htmlFor={field.key}>
+								<FormGroup label={__(field.label, 'multivendorx')} desc={field.desc ? __(field.desc, 'multivendorx') : ''} htmlFor={field.key}>
 									<ToggleSettingUI
 										key={field.key}
 										options={
@@ -299,7 +301,7 @@ const Withdrawl: React.FC = () => {
 											: ''
 									}
 									value={formData[field.key] || ''}
-									onChange={handleChange}
+									onChange={(value: string) => handleChange(field.key, value)}
 								/>
 							</FormGroup>
 						);

@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
 	getApiLink,
 	SuccessNotice,
-	Section,
 	FormGroupWrapper,
 	FormGroup,
 	useModules, 
@@ -52,11 +51,10 @@ const Privacy = () => {
 	}, [successMsg]);
 
 	// Handle field changes
-	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
+	const handleChange = (key:string,value:string) => {
+		const updated = { ...formData, [key]: value };
 
-		if (name == 'deactivation_reason') {
+		if (key == 'deactivation_reason') {
 			setUpdateData(updated);
 		} else {
 			setFormData(updated);
@@ -92,7 +90,7 @@ const Privacy = () => {
 							<TextAreaUI
 								name="store_policy"
 								value={formData.store_policy}
-								onChange={handleChange}
+								onChange={(value:string)=>handleChange('store_policy',value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -109,7 +107,7 @@ const Privacy = () => {
 							<TextAreaUI
 								name="shipping_policy"
 								value={formData.shipping_policy}
-								onChange={handleChange}
+								onChange={(value:string)=>handleChange('shipping_policy',value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -126,7 +124,7 @@ const Privacy = () => {
 							<TextAreaUI
 								name="refund_policy"
 								value={formData.refund_policy}
-								onChange={handleChange}
+								onChange={(value:string)=>handleChange('refund_policy',value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -143,7 +141,7 @@ const Privacy = () => {
 							<TextAreaUI
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
-								onChange={handleChange}
+								onChange={(value:string)=>handleChange('cancellation_policy',value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -181,13 +179,9 @@ const Privacy = () => {
 								]}
 								value={formData.enable_deactivation || []}
 								onChange={(selected: any) => {
-									const currentValue = formData.enable_deactivation;
-									const newValue = currentValue ? '' : selected.target.value;
-								
 									const updated = {
 										...formData,
-										enable_deactivation: newValue,
-										deactivation_reason: newValue ? formData.deactivation_reason : '',
+										enable_deactivation: selected,
 									};
 									setFormData(updated);
 									autoSave(updated);
@@ -203,7 +197,7 @@ const Privacy = () => {
 										value={
 											updateData.deactivation_reason || ''
 										}
-										onChange={handleChange}
+										onChange={(value:string)=>handleChange('deactivation_reason',value)}
 									/>
 								</FormGroup>
 								<AdminButtonUI
