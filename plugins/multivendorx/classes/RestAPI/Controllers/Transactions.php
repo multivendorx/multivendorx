@@ -145,11 +145,11 @@ class Transactions extends \WP_REST_Controller {
             if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id ) ) {
                 return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['withdrawal_transient'] . $store_id );
             }
-            
+
             if ( ! empty( $search_id ) ) {
                 // Force numeric-only search
                 $args['id'] = is_numeric( $search_id ) ? intval( $search_id ) : 0;
-            
+
                 unset( $args['start_date'], $args['end_date'] );
             }
 
@@ -173,7 +173,7 @@ class Transactions extends \WP_REST_Controller {
                         'account_number'   => $store ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['account_number'] ) : '',
                         'credit'           => 'Cr' === $row['entry_type'] ? $row['amount'] : 0,
                         'debit'            => 'Dr' === $row['entry_type'] ? $row['amount'] : 0,
-                        'date'             => Utill::multivendorx_date_time_format($row['created_at']),
+                        'date'             => Utill::multivendorx_date_time_format( $row['created_at'] ),
                         'order_details'    => $row['order_id'],
                         'transaction_type' => $row['transaction_type'],
                         'narration'        => $row['narration'],
@@ -333,7 +333,7 @@ class Transactions extends \WP_REST_Controller {
                     'multivendorx_notify_withdrawal_released',
                     'withdrawal_released',
                     array(
-                        'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'store_phone' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                         'category'    => 'activity',
                     )
@@ -343,7 +343,7 @@ class Transactions extends \WP_REST_Controller {
                     'multivendorx_notify_withdrawl_rejected',
                     'withdrawl_rejected',
                     array(
-                        'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                        'store_phone' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                         'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                         'amount'      => $amount,
                         'category'    => 'activity',
@@ -395,8 +395,8 @@ class Transactions extends \WP_REST_Controller {
                 'withdrawal_requested',
                 array(
                     'admin_email' => MultiVendorX()->setting->get_setting( 'sender_email_address' ),
-                    'admin_phone'   => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
-                    'store_phone'   => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
+                    'admin_phone' => MultiVendorX()->setting->get_setting( 'sms_receiver_phone_number' ),
+                    'store_phone' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['phone'] ),
                     'store_email' => $store->get_meta( Utill::STORE_SETTINGS_KEYS['primary_email'] ),
                     'store_name'  => $store->get( 'name' ),
                     'amount'      => $amount,

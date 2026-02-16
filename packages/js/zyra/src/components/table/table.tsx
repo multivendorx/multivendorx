@@ -11,6 +11,7 @@ import TableRowActions from './TableRowActions';
 import { renderCell } from './Utill';
 import { renderEditableCell } from './renderEditableCell';
 import Skeleton from '../UI/Skeleton';
+import ComponentStatusView from '../UI/ComponentStatusView';
 
 const ASC = 'asc';
 const DESC = 'desc';
@@ -331,14 +332,7 @@ const Table: React.FC<TableProps> = ({
                         ))
                     ) : (
                         <tr className="admin-row">
-                            <td
-                                colSpan={
-                                    headers.length + (enableBulkSelect ? 1 : 0)
-                                }
-                                className="table-empty"
-                            >
-                                No data to display
-                            </td>
+                            <ComponentStatusView title="No data to display" />
                         </tr>
                     )}
                 </tbody>

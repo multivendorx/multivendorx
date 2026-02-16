@@ -319,7 +319,7 @@ class Notifications {
 				),
 
 				'product_low_stock'             => array(
-					'name'           => 'Low stock alert',
+					'name'           => 'Low stock alert(p)',
 					'desc'           => 'A product stock level is detected below the set threshold.',
 					'store_enabled'  => true,
 					'email_subject'  => 'Low stock alert',
@@ -331,7 +331,7 @@ class Notifications {
 				),
 
 				'product_out_of_stock'          => array(
-					'name'           => 'Out of stock alert',
+					'name'           => 'Out of stock alert(p)',
 					'desc'           => 'A product is detected as out of stock.',
 					'store_enabled'  => true,
 					'email_subject'  => 'Out of stock',
@@ -423,7 +423,7 @@ class Notifications {
 				),
 
 				'policy_update'                 => array(
-					'name'             => 'Policy update',
+					'name'             => 'Policy update(p)',
 					'desc'             => 'Marketplace policies are updated by the admin.',
 					'store_enabled'    => true,
 					'customer_enabled' => true,
@@ -437,7 +437,19 @@ class Notifications {
 
 				// ========== FOLLOWED STORE PRODUCT ACTIVITY ==========
 
-				'followed_store_new_product'    => array(
+				'store_new_follower' => array(
+	'name'             => 'New store follower',
+	'desc'             => 'A customer has started following the store.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'You have a new follower',
+	'email_body'       => 'Customer {follower_name} has started following your store {store_name}.',
+	'sms_content'      => 'New follower: {follower_name} is now following your store.',
+	'system_message'   => '{follower_name} started following your store.',
+	'tag'              => 'Store',
+	'category'         => 'notification',
+),
+
+'followed_store_new_product'    => array(
 					'name'           => 'New product from followed store',
 					'desc'           => 'A new product is added by a store that the user follows.',
 					'admin_enabled'  => false,
@@ -465,10 +477,10 @@ class Notifications {
 				),
 
 				'order_ready_to_ship'           => array(
-					'name'           => 'Order Ready to Ship',
+					'name'           => 'Order ready to ship (P)',
 					'desc'           => 'An order is marked as ready to ship.',
 					'store_enabled'  => true,
-					'email_subject'  => 'Order Ready to Ship',
+					'email_subject'  => 'Order ready to ship',
 					'email_body'     => 'Order #{order_id} is ready to ship.',
 					'sms_content'    => 'Order #{order_id} ready to ship.',
 					'system_message' => 'Order #{order_id} ready to ship.',
@@ -477,10 +489,10 @@ class Notifications {
 				),
 
 				'order_delivered_alt'           => array(
-					'name'             => 'Order delivered',
+					'name'             => 'Order delivered (P)',
 					'desc'             => 'An order is marked as delivered.',
 					'customer_enabled' => true,
-					'email_subject'    => 'Order Delivered',
+					'email_subject'    => 'Order delivered',
 					'email_body'       => 'Order #{order_id} has been delivered.',
 					'sms_content'      => 'Order #{order_id} delivered.',
 					'system_message'   => 'Order #{order_id} delivered.',
@@ -489,17 +501,410 @@ class Notifications {
 				),
 
 				'order_return_requested'        => array(
-					'name'             => 'Return Requested',
+					'name'             => 'Return requested',
 					'desc'             => 'A return request is submitted by the customer.',
 					'store_enabled'    => true,
 					'customer_enabled' => true,
-					'email_subject'    => 'Return Requested',
+					'email_subject'    => 'Return requested',
 					'email_body'       => 'Return request received for order #{order_id}.',
 					'sms_content'      => 'Return request for order #{order_id}.',
 					'system_message'   => 'Return request received for order #{order_id}.',
 					'tag'              => 'Refund',
 					'category'         => 'activity',
 				),
+				// ========== Q&A NOTIFICATION SYSTEM ==========
+
+'question_submitted' => array(
+    'name'             => 'New product question submitted',
+    'desc'             => 'A customer submits a question on a product.',
+    'admin_enabled'    => true,
+    'store_enabled'    => true,
+    'customer_enabled' => false,
+    'email_subject'    => 'New question on “[product_name]”',
+    'email_body'       => 'A new question has been submitted for your product “[product_name]”.',
+    'sms_content'      => 'New question on [product_name].',
+    'system_message'   => 'New question received for “[product_name]”.',
+    'tag'              => 'Product',
+    'category'         => 'activity',
+),
+
+'question_answered' => array(
+    'name'             => 'Product question answered',
+    'desc'             => 'A question on a product receives a reply.',
+    'store_enabled'    => true,
+    'customer_enabled' => true,
+    'email_subject'    => 'Your question has been answered',
+    'email_body'       => 'Your question on “[product_name]” has been answered.',
+    'sms_content'      => 'Answer received for [product_name].',
+    'system_message'   => 'Question answered for “[product_name]”.',
+    'tag'              => 'Product',
+    'category'         => 'notification',
+),
+
+// ========== STORE CONTACT / MESSAGING ==========
+
+'store_contact_message' => array(
+    'name'           => 'New store contact message',
+    'desc'           => 'A customer sends a message to a store.',
+    'store_enabled'  => true,
+    'email_subject'  => 'New message from customer',
+    'email_body'     => 'You have received a new message regarding your store [store_name].',
+    'sms_content'    => 'New customer message received.',
+    'system_message' => 'New message received for store [store_name].',
+    'tag'            => 'Store',
+    'category'       => 'activity',
+),
+
+'store_message_reply' => array(
+    'name'             => 'Store replied to message',
+    'desc'             => 'A store replies to a customer message.',
+    'customer_enabled' => true,
+    'email_subject'    => 'Reply from [store_name]',
+    'email_body'       => '[store_name] has replied to your message.',
+    'sms_content'      => 'Reply from [store_name].',
+    'system_message'   => 'Reply received from [store_name].',
+    'tag'              => 'Store',
+    'category'         => 'notification',
+),
+
+/* =====================================================
+ * WHOLESALE BUYER VERIFICATION
+ * ===================================================== */
+
+'wholesale_buyer_approved' => array(
+	'name'             => 'Wholesale buyer approved (P)',
+	'desc'             => 'User has been approved as a wholesale buyer.',
+	'customer_enabled' => true,
+	'email_subject'    => 'Your wholesale access is approved',
+	'email_body'       => 'Congratulations! You have been approved as a wholesale buyer. You can now access wholesale pricing.',
+	'sms_content'      => 'Wholesale access approved.',
+	'system_message'   => 'Wholesale access approved.',
+	'tag'              => 'Wholesale',
+	'category'         => 'notification',
+),
+
+'wholesale_buyer_rejected' => array(
+	'name'             => 'Wholesale buyer rejected (P)',
+	'desc'             => 'User request for wholesale access has been rejected.',
+	'customer_enabled' => true,
+	'email_subject'    => 'Wholesale access request rejected',
+	'email_body'       => 'Your request for wholesale buyer access has been rejected. Please contact support for more information.',
+	'sms_content'      => 'Wholesale access rejected.',
+	'system_message'   => 'Wholesale access rejected.',
+	'tag'              => 'Wholesale',
+	'category'         => 'notification',
+),
+
+
+/* =====================================================
+ * SELLER VERIFICATION
+ * ===================================================== */
+
+'seller_verification_required' => array(
+	'name'             => 'Seller verification required (P)',
+	'desc'             => 'Store must complete identity or business verification.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Complete your store verification',
+	'email_body'       => 'Your store {store_name} requires verification. Please complete the required steps to avoid restrictions.',
+	'sms_content'      => 'Verification required for {store_name}.',
+	'system_message'   => 'Store verification required.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'seller_verification_submitted' => array(
+	'name'             => 'Seller verification submitted (P)',
+	'desc'             => 'Store submitted verification details for review.',
+	'admin_enabled'    => true,
+	'email_subject'    => 'Verification submitted for review',
+	'email_body'       => 'Store {store_name} has submitted verification documents for approval.',
+	'sms_content'      => '{store_name} submitted verification.',
+	'system_message'   => 'Verification submitted.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'seller_verification_approved' => array(
+	'name'             => 'Seller verification approved (P)',
+	'desc'             => 'Store verification approved successfully.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Your store is now verified',
+	'email_body'       => 'Congratulations! Your store {store_name} has been verified successfully.',
+	'sms_content'      => 'Store verified successfully.',
+	'system_message'   => 'Store verification approved.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'seller_verification_rejected' => array(
+	'name'             => 'Seller verification rejected (P)',
+	'desc'             => 'Store verification was rejected.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Store verification rejected',
+	'email_body'       => 'Your verification was rejected. Please review the feedback and resubmit.',
+	'sms_content'      => 'Verification rejected.',
+	'system_message'   => 'Store verification rejected.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+/* =====================================================
+ * SELLER NON-COMPLIANCE ACTIONS
+ * ===================================================== */
+
+'compliance_dashboard_blocked' => array(
+	'name'             => 'Dashboard access blocked  (P)',
+	'desc'             => 'Dashboard access blocked due to non-compliance.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Dashboard access blocked',
+	'email_body'       => 'Your dashboard access has been blocked until compliance requirements are completed.',
+	'sms_content'      => 'Dashboard access blocked.',
+	'system_message'   => 'Dashboard access restricted.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'compliance_store_hidden' => array(
+	'name'             => 'Store hidden from customers  (P)',
+	'desc'             => 'Store visibility restricted due to compliance issue.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Store hidden from customers',
+	'email_body'       => 'Your store has been hidden from customers until compliance issues are resolved.',
+	'sms_content'      => 'Store hidden temporarily.',
+	'system_message'   => 'Store visibility restricted.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'compliance_product_upload_disabled' => array(
+	'name'             => 'Product upload disabled  (P)',
+	'desc'             => 'Product upload disabled during compliance review.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Product upload disabled',
+	'email_body'       => 'Product upload and order fulfillment are temporarily disabled during compliance review.',
+	'sms_content'      => 'Product upload disabled.',
+	'system_message'   => 'Product upload restricted.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'compliance_store_set_pending' => array(
+	'name'             => 'Store set as pending  (P)',
+	'desc'             => 'Store moved to pending due to compliance issue.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Store moved to pending',
+	'email_body'       => 'Your store has been moved to pending status until compliance issues are resolved.',
+	'sms_content'      => 'Store set to pending.',
+	'system_message'   => 'Store status changed to pending.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+/* =====================================================
+ * PRODUCT COMPLIANCE
+ * ===================================================== */
+
+'product_flagged_compliance' => array(
+	'name'             => 'Product flagged for compliance review  (P)',
+	'desc'             => 'Product flagged due to prohibited item or policy issue.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Product flagged for review',
+	'email_body'       => 'Your product {product_name} has been flagged for compliance review.',
+	'sms_content'      => 'Product flagged for review.',
+	'system_message'   => '{product_name} flagged for compliance.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'admin_product_compliance_alert' => array(
+	'name'             => 'Product compliance issue reported  (P)',
+	'desc'             => 'Admin notified about product compliance issue.',
+	'admin_enabled'    => true,
+	'email_subject'    => 'Product compliance alert',
+	'email_body'       => 'Product {product_name} from {store_name} requires compliance review.',
+	'sms_content'      => 'Product compliance issue reported.',
+	'system_message'   => 'Product compliance alert.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+/* =====================================================
+ * FINANCIAL COMPLIANCE
+ * ===================================================== */
+
+'financial_verification_required' => array(
+	'name'             => 'Financial verification required  (P)',
+	'desc'             => 'Tax or bank information requires verification.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Financial verification required',
+	'email_body'       => 'Please complete your tax information and bank details to continue receiving payouts.',
+	'sms_content'      => 'Financial verification required.',
+	'system_message'   => 'Complete financial verification.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'payouts_disabled_compliance' => array(
+	'name'             => 'Payouts disabled  (P)',
+	'desc'             => 'Payouts suspended due to financial compliance issue.',
+	'vendor_enabled'   => true,
+	'email_subject'    => 'Payouts temporarily suspended',
+	'email_body'       => 'Your payouts are suspended until financial compliance issues are resolved.',
+	'sms_content'      => 'Payouts suspended temporarily.',
+	'system_message'   => 'Payouts disabled due to compliance.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+'admin_financial_compliance_alert' => array(
+	'name'             => 'Financial compliance issue reported  (P)',
+	'desc'             => 'Admin notified about financial compliance issue.',
+	'admin_enabled'    => true,
+	'email_subject'    => 'Financial compliance alert',
+	'email_body'       => 'Store {store_name} has a financial compliance issue requiring review.',
+	'sms_content'      => 'Financial compliance issue reported.',
+	'system_message'   => 'Financial compliance alert.',
+	'tag'              => 'Compliance',
+	'category'         => 'notification',
+),
+
+
+// ========== REVIEW NOTIFICATIONS ==========
+
+'store_review_submitted' => array(
+    'name'           => 'Store review submitted  (P)',
+    'desc'           => 'A customer submits a review for a store.',
+    'store_enabled'  => true,
+    'admin_enabled'  => true,
+    'email_subject'  => 'New review for your store',
+    'email_body'     => 'Your store [store_name] has received a new review.',
+    'sms_content'    => 'New review received.',
+    'system_message' => 'New review submitted for [store_name].',
+    'tag'            => 'Review',
+    'category'       => 'activity',
+),
+
+// ========== REPORTING EMAILS ==========
+
+'store_sales_report' => array(
+    'name'          => 'Store sales report',
+    'desc'          => 'Periodic sales report sent to store owner.',
+    'store_enabled' => true,
+    'email_subject' => 'Your sales summary report',
+    'email_body'    => 'Here is your sales summary. Total Orders: [total_orders], Total Revenue: [total_revenue].',
+    'sms_content'   => 'Sales report available.',
+    'system_message'=> 'Sales report generated.',
+    'tag'           => 'Report',
+    'category'      => 'notification',
+),
+
+'admin_marketplace_report' => array(
+    'name'          => 'Marketplace summary report',
+    'desc'          => 'Periodic marketplace performance report.',
+    'admin_enabled' => true,
+    'email_subject' => 'Marketplace performance report',
+    'email_body'    => 'Marketplace summary: Total Orders: [total_orders], Total Revenue: [total_revenue], Active Stores: [active_stores].',
+    'sms_content'   => 'Marketplace report generated.',
+    'system_message'=> 'Marketplace performance report generated.',
+    'tag'           => 'Report',
+    'category'      => 'notification',
+),
+
+// ========== TRANSACTION-LEVEL EMAILS ==========
+
+'transaction_recorded' => array(
+    'name'           => 'Transaction recorded',
+    'desc'           => 'A new transaction entry is recorded.',
+    'store_enabled'  => true,
+    'admin_enabled'  => true,
+    'email_subject'  => 'New transaction recorded',
+    'email_body'     => 'A transaction of [amount] has been recorded for order [order_id].',
+    'sms_content'    => 'Transaction of [amount] recorded.',
+    'system_message' => 'Transaction recorded for order [order_id].',
+    'tag'            => 'Payment',
+    'category'       => 'activity',
+),
+
+'bank_transfer_initiated' => array(
+    'name'           => 'Bank transfer initiated',
+    'desc'           => 'A manual bank transfer payout is initiated.',
+    'store_enabled'  => true,
+    'admin_enabled'  => true,
+    'email_subject'  => 'Bank transfer initiated',
+    'email_body'     => 'A bank transfer of [amount] has been initiated to your registered account.',
+    'sms_content'    => 'Bank transfer initiated.',
+    'system_message' => 'Bank transfer initiated for [amount].',
+    'tag'            => 'Payment',
+    'category'       => 'notification',
+),
+
+// ========== DEACTIVATION REQUEST WORKFLOW ==========
+
+'store_deactivation_requested' => array(
+    'name'           => 'Store deactivation requested',
+    'desc'           => 'A store requests deactivation.',
+    'admin_enabled'  => true,
+    'store_enabled'  => true,
+    'email_subject'  => 'Store deactivation request submitted',
+    'email_body'     => 'Your request to deactivate store [store_name] has been submitted for review.',
+    'sms_content'    => 'Deactivation request submitted.',
+    'system_message' => 'Deactivation request received for [store_name].',
+    'tag'            => 'Store',
+    'category'       => 'activity',
+),
+
+'store_deactivation_rejected' => array(
+    'name'           => 'Store deactivation rejected',
+    'desc'           => 'Admin rejects store deactivation request.',
+    'store_enabled'  => true,
+    'email_subject'  => 'Store deactivation request rejected',
+    'email_body'     => 'Your deactivation request for [store_name] has been rejected.',
+    'sms_content'    => 'Deactivation request rejected.',
+    'system_message' => 'Deactivation rejected for [store_name].',
+    'tag'            => 'Store',
+    'category'       => 'notification',
+),
+
+// ========== ADMIN COUPON CREATION ALERT ==========
+
+'coupon_created_by_store' => array(
+    'name'           => 'Coupon created by store',
+    'desc'           => 'A store creates a new coupon.',
+    'admin_enabled'  => true,
+    'email_subject'  => 'New coupon created',
+    'email_body'     => 'Store [store_name] has created a new coupon “[coupon_code]”.',
+    'sms_content'    => 'New coupon created by [store_name].',
+    'system_message' => 'Coupon “[coupon_code]” created by [store_name].',
+    'tag'            => 'Coupon',
+    'category'       => 'activity',
+),
+
+// ========== SYSTEM OPERATIONAL EMAILS ==========
+
+'plugin_deactivated' => array(
+    'name'           => 'Plugin deactivated',
+    'desc'           => 'MultiVendorX plugin is deactivated.',
+    'admin_enabled'  => true,
+    'email_subject'  => 'MultiVendorX plugin deactivated',
+    'email_body'     => 'MultiVendorX has been deactivated on your site.',
+    'sms_content'    => 'MultiVendorX plugin deactivated.',
+    'system_message' => 'Plugin deactivated.',
+    'tag'            => 'System',
+    'category'       => 'notification',
+),
+
+'system_error_alert' => array(
+    'name'           => 'System error alert',
+    'desc'           => 'Critical system-level error detected.',
+    'admin_enabled'  => true,
+    'email_subject'  => 'Critical system alert',
+    'email_body'     => 'A critical error has been detected. Error Code: [error_code].',
+    'sms_content'    => 'Critical system alert.',
+    'system_message' => 'Critical system error detected.',
+    'tag'            => 'System',
+    'category'       => 'notification',
+),
+
             )
         );
 
@@ -608,7 +1013,7 @@ class Notifications {
 
             if ( $event->admin_enabled ) {
 				$parameters['admin_phone'] = $parameters['admin_phone']['country_code'] . $parameters['admin_phone']['sms_receiver_phone_number'];
-                $receivers[] = $parameters['admin_phone'];
+                $receivers[]               = $parameters['admin_phone'];
             }
 
             if ( $event->store_enabled ) {
@@ -618,7 +1023,7 @@ class Notifications {
             if ( $event->customer_enabled ) {
                 $receivers[] = $parameters['customer_phone'];
             }
-			
+
             $message = $event->sms_content;
 			foreach ( $parameters as $key => $value ) {
 				$message = str_replace( '[' . $key . ']', $value, $message );

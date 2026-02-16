@@ -47,7 +47,8 @@
             }
         }
 
-        .settings-input-content {
+        .settings-input-content,
+         .setting-form-input{
             width: 100%;
 
             &:has(.setting-form-input) {

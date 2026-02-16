@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 export default {
     id: 'developer-tools',
     priority: 3,
-    settingTitle: __('Developer Tools', 'multivendorx'),
+    headerTitle: __('Developer Tools', 'multivendorx'),
     tabTitle: 'Dashboard Caching',
     headerDescription: __(
         'Site errors and events are logged for easy troubleshooting.',

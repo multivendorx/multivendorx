@@ -11,8 +11,8 @@ import '../styles/web/AdminForm.scss';
 import { FIELD_REGISTRY } from './FieldRegistry';
 import FormGroupWrapper from './UI/FormGroupWrapper';
 import SuccessNotice from './SuccessNotice';
-import Popover, { PopupUI } from './Popup';
-
+import { PopupUI } from './Popup';
+import axios from 'axios';
 
 interface InputField {
     key: string;
@@ -26,6 +26,11 @@ interface InputField {
     desc?: string;
     placeholder?: string;
     moduleEnabled?: string;
+    generate?: string;
+    apilink?: string;
+    method?: string;
+    responseKey?: string;
+    link?: string;
     dependent?: DependentCondition | DependentCondition[];
     proSetting?: boolean;
     dependentPlugin?: boolean;
@@ -352,6 +357,13 @@ const RenderComponent: React.FC<RenderProps> = ({
         setModelOpen(true);
     };
 
+    const randomKey = (len: number): string =>
+            Array.from({ length: len }, () =>
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(
+                    Math.floor(Math.random() * 62)
+                )
+            ).join('');
+
     const renderFieldInternal = (
         field: InputField,
         parentField: InputField,
@@ -367,8 +379,35 @@ const RenderComponent: React.FC<RenderProps> = ({
 
         const handleInternalChange = (val: any) => {
             if (field.type == 'button') {
-                onChange(val.key, val.value);
-                return;
+                if (field.generate) {
+                    const generatedValue = randomKey(8);
+                    onChange(field.responseKey, generatedValue);
+                    return;
+                }
+                
+                if (field.apilink) {
+                    axios({
+                        url: getApiLink(
+                            appLocalizer,
+                            String(field.apilink)
+                        ),
+                        method: field.method ?? 'GET',
+                        headers: {
+                            'X-WP-Nonce': appLocalizer.nonce,
+                        },
+                        params: {
+                            key: field.key,
+                        },
+                    }).then(() => {
+                        console.log('hittt')
+                    });
+                    return;
+                }
+
+                if (field.link) {
+                    window.open(field.link, '_blank');
+                    return;
+                }
             }
 
             if (!isCompositeField(parentField)) {

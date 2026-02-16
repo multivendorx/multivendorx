@@ -73,7 +73,7 @@ class Block {
             'highlighted-store-products',
             'product-category',
             'store-quick-info',
-            'store-sidebar'
+            'store-sidebar',
         );
 
         $textdomain = 'multivendorx';

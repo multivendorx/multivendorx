@@ -660,9 +660,7 @@ const Dashboard = () => {
 									</span>
 								</li>
 
-								<li
-									className="dropdown login-user"
-								>
+								<li className="dropdown login-user">
 									<div
 										className="avatar-wrapper"
 										onClick={toggleUserDropdown}
