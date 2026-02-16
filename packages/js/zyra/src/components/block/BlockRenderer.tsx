@@ -2,7 +2,7 @@
 import React from 'react';
 
 // Internal Dependencies
-import { Block, BlockPatch, BlockType } from '../block/blockTypes';
+import { Block, BlockPatch, BlockType } from './blockTypes';
 import { FIELD_REGISTRY } from '../FieldRegistry';
 
 // SIMPLE ID GENERATOR (shared)
@@ -12,7 +12,7 @@ const generateId = () => ++idCounter;
 // UNIFIED BLOCK CREATION FUNCTION
 export const createBlockID = (type: BlockType, options?: any): Block => {
     const id = generateId();
-    const { fixedName, placeholder, label, context } = options || {};
+    const { fixedName, placeholder, label, context, options: presetOptions } = options || {};
     
     const block: any = {
         id,
@@ -20,28 +20,13 @@ export const createBlockID = (type: BlockType, options?: any): Block => {
         name: fixedName ?? `${type}-${id.toString(36)}`,
         label: label ?? type,
         placeholder,
+        context,
+        options: presetOptions,
     };
-    if (type === 'address' && context === 'registration') {
-        block.fields = [
-            { id: generateId() + 1, key: 'address_1', label: 'Address Line 1', type: 'text', placeholder: 'Address Line 1', required: true },
-            { id: generateId() + 2, key: 'address_2', label: 'Address Line 2', type: 'text', placeholder: 'Address Line 2' },
-            { id: generateId() + 3, key: 'city', label: 'City', type: 'text', placeholder: 'City', required: true },
-            { id: generateId() + 4, key: 'state', label: 'State', type: 'select', options: ['Karnataka', 'Maharashtra', 'Delhi', 'Tamil Nadu'] },
-            { id: generateId() + 5, key: 'country', label: 'Country', type: 'select', options: ['India', 'USA', 'UK', 'Canada'] },
-            { id: generateId() + 6, key: 'postcode', label: 'Postal Code', type: 'text', placeholder: 'Postal Code', required: true },
-        ];
-    }
-    // Selection fields
-    else if (['radio', 'checkboxes', 'dropdown', 'multi-select'].includes(type)) {
-        block.options = [
-            { id: '1', label: 'Manufacture', value: 'manufacture' },
-            { id: '2', label: 'Trader', value: 'trader' },
-            { id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
-        ];
-    }
-    else if (type === 'button') {
-        block.text = placeholder || 'Click me';
-        block.url = '#';
+
+        if (type === 'columns') {
+        block.columns = [[], []]; // Default 2 columns
+        block.layout = '2-50';
     }
 
     return block as Block;
@@ -58,6 +43,7 @@ export const createBlock = (item: any, context?: string): Block => {
             fixedName: item.fixedName,
             placeholder: item.placeholder,
             label: item.label,
+            options: item.options,
             context: context
         });
     }

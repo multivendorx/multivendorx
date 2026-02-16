@@ -2,9 +2,10 @@
 import React from 'react';
 
 // Internal Dependencies
-import { LeftPanel, Block } from './block';
-import CanvasEditor from './CanvasEditor';
+import CanvasEditor from './block/CanvasEditor';
 import { FieldComponent } from './types';
+import { Block } from './block/blockTypes';
+import '../styles/web/RegistrationForm.scss';
 
 export interface EmailTemplate {
     id: string;
@@ -71,43 +72,51 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
 
     const handleTemplateSelect = React.useCallback((id: string) => {
         setActiveTemplateId(id);
-    }, []);
-
-    const handleBlocksChange = React.useCallback((blocks: Block[]) => {
-        setTemplates(prev => 
-            prev.map(t => t.id === activeTemplateId ? { ...t, blocks } : t)
+        // Immediately save when template changes
+        const updatedTemplates = templates.map(t => 
+            t.id === id ? { ...t, blocks: t.blocks || [] } : t
         );
-    }, [activeTemplateId]);
+        onChange({ templates: updatedTemplates, activeTemplateId: id });
+    }, [templates, onChange]);
 
-    // Trigger onChange when templates or activeTemplateId change
+    const handleBlocksChange = React.useCallback((updatedBlocks: Block[]) => {
+        setTemplates(prev => {
+            const updated = prev.map(t => 
+                t.id === activeTemplateId ? { ...t, blocks: updatedBlocks } : t
+            );
+            // Trigger onChange immediately with the updated templates
+            onChange({ templates: updated, activeTemplateId });
+            return updated;
+        });
+    }, [activeTemplateId, onChange]);
+
+    // Also save when templates change (for reordering, etc)
     React.useEffect(() => {
-        onChange({ templates, activeTemplateId });
-    }, [templates, activeTemplateId, onChange]);
+        // Skip if it's the initial load
+        const isInitialLoad = !savedData.templates && templates === DEFAULT_TEMPLATES;
+        if (!isInitialLoad) {
+            onChange({ templates, activeTemplateId });
+        }
+    }, [templates, activeTemplateId]);
 
     if (!activeTemplate) {
         return <div className="email-template-error"><p>No active template found</p></div>;
     }
 
     return (
-        <div className="registration-from-wrapper email-builder">
-            <LeftPanel
+        <div className="email-builder">
+            <CanvasEditor
+                blocks={activeTemplate.blocks || []}
+                onChange={handleBlocksChange}
                 blockGroups={EMAIL_BLOCK_GROUPS}
+                visibleGroups={['email']}
                 templates={templates}
                 activeTemplateId={activeTemplateId}
                 onTemplateSelect={handleTemplateSelect}
-                groupName="email" 
-                showTemplatesTab 
-                visibleGroups={['email']} 
-            />
-
-            <CanvasEditor
-                blocks={activeTemplate.blocks}
-                onChange={handleBlocksChange}
+                showTemplatesTab={true}
                 groupName="email"
                 proSettingChange={proSettingChange}
                 context="email"
-                blockGroups={EMAIL_BLOCK_GROUPS}
-                canvasClassName="registration-form-main-section email-canvas"
             />
         </div>
     );

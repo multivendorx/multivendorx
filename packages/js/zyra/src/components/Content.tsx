@@ -1,6 +1,6 @@
 import React from 'react';
 import { FieldComponent } from './types';
-import { generateBlockStyles, BlockStyle } from './block';
+import { generateBlockStyles, BlockStyle } from './block/blockStyle';
 
 // Unified interface that handles both types
 export interface TextContentBlockData {

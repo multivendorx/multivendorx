@@ -8,8 +8,8 @@ import {
     BlockPatch,
     ColumnsBlock,
     getColumnCount,
-} from '../block';
-import BlockRenderer,{createBlock} from './BlockRenderer';
+} from './blockTypes';
+import BlockRenderer, { createBlock } from './BlockRenderer';
 
 // Types
 interface SelectedBlockLocation {
@@ -57,10 +57,10 @@ export const useColumnManager = ({
     const handleColumnUpdate = (parentIdx: number, colIdx: number, newList: any[]) => {
         const parent = blocks[parentIdx] as ColumnsBlock;
         if (parent?.type !== 'columns') return;
-        
+
         // Convert any raw items to valid blocks
         const validBlocks = newList.map(item => createBlock(item));
-        
+
         const columns = [...parent.columns];
         columns[colIdx] = validBlocks;
         updateParent(parentIdx, { ...parent, columns });
@@ -74,9 +74,9 @@ export const useColumnManager = ({
         const column = [...columns[colIdx]];
         column[childIdx] = { ...column[childIdx], ...patch } as Block;
         columns[colIdx] = column;
-        
+
         updateParent(parentIdx, { ...parent, columns });
-        
+
         if (openBlock?.id === column[childIdx].id) setOpenBlock(column[childIdx]);
     };
 
@@ -87,9 +87,9 @@ export const useColumnManager = ({
         const deleted = parent.columns[colIdx]?.[childIdx];
         const columns = [...parent.columns];
         columns[colIdx] = columns[colIdx].filter((_, i) => i !== childIdx);
-        
+
         updateParent(parentIdx, { ...parent, columns });
-        
+
         if (openBlock?.id === deleted?.id) {
             setOpenBlock(null);
             setSelectedLocation(null);
@@ -160,7 +160,9 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
         <div className={`form-field ${isActive ? 'active' : ''}`} onClick={onSelect}>
             {showMeta && (
                 <section className="meta-menu">
-                    <span className="drag-handle admin-badge blue"><i className="adminfont-drag" /></span>
+                    <span className="drag-handle admin-badge blue">
+                        <i className="adminfont-drag" />
+                    </span>
                     <span className="admin-badge red" onClick={(e) => { e.stopPropagation(); onDelete(); }}>
                         <i className="adminfont-delete" />
                     </span>
@@ -168,33 +170,40 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
             )}
 
             <section className="form-field-container-wrapper">
-                <div className={`canvas-columns layout-${block.layout || '2-50'}`}>
+                <div className={`email-columns layout-${block.layout || '2-50'}`}>
                     {block.columns.map((column, colIdx) => (
-                        <div key={colIdx} className="canvas-column-wrapper">
-                            <div className="column-icon"><i className="adminfont-plus" /></div>
+                        <div key={colIdx} className="email-column-wrapper">
                             <ReactSortable
                                 list={column}
                                 setList={(list) => handleColumnUpdate(parentIndex, colIdx, list)}
                                 group={{ name: groupName, pull: true, put: true }}
-                                className="canvas-column"
+                                className="email-column"
                                 animation={150}
                                 handle=".drag-handle"
+                                emptyInsertThreshold={20}
                             >
-                                {column.map((child, childIdx) => (
-                                    <BlockRenderer
-                                        key={child.id}
-                                        block={child}
-                                        isColumnChild
-                                        isActive={
-                                            selectedLocation?.parentIndex === parentIndex &&
-                                            selectedLocation?.columnIndex === colIdx &&
-                                            selectedLocation?.childIndex === childIdx
-                                        }
-                                        onSelect={() => handleChildSelect(child, parentIndex, colIdx, childIdx)}
-                                        onChange={(patch) => handleChildUpdate(parentIndex, colIdx, childIdx, patch)}
-                                        onDelete={() => handleChildDelete(parentIndex, colIdx, childIdx)}
-                                    />
-                                ))}
+                                {column.length === 0 ? (
+                                    <div className="column-drop-zone">
+                                        <i className="adminfont-plus" />
+                                        <span>Drop blocks here</span>
+                                    </div>
+                                ) : (
+                                    column.map((child, childIdx) => (
+                                        <BlockRenderer
+                                            key={child.id}
+                                            block={child}
+                                            isColumnChild
+                                            isActive={
+                                                selectedLocation?.parentIndex === parentIndex &&
+                                                selectedLocation?.columnIndex === colIdx &&
+                                                selectedLocation?.childIndex === childIdx
+                                            }
+                                            onSelect={() => handleChildSelect(child, parentIndex, colIdx, childIdx)}
+                                            onChange={(patch) => handleChildUpdate(parentIndex, colIdx, childIdx, patch)}
+                                            onDelete={() => handleChildDelete(parentIndex, colIdx, childIdx)}
+                                        />
+                                    ))
+                                )}
                             </ReactSortable>
                         </div>
                     ))}

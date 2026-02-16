@@ -44,15 +44,6 @@ export const formatSpacing = (
   type: 'padding' | 'margin',
   style: BlockStyle
 ): string => {
-  const top = style[`${type}Top`];
-  const right = style[`${type}Right`];
-  const bottom = style[`${type}Bottom`];
-  const left = style[`${type}Left`];
-  
-  if (top !== undefined || right !== undefined || bottom !== undefined || left !== undefined) {
-    return `${top || 0}px ${right || 0}px ${bottom || 0}px ${left || 0}px`;
-  }
-  
   return '0px';
 };
 

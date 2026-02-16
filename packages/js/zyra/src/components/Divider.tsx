@@ -3,7 +3,7 @@ import React from 'react';
 
 // Internal Dependencies
 import { FieldComponent } from './types';
-import { generateBlockStyles, BlockStyle, DEFAULT_BLOCK_STYLES } from './block';
+import { generateBlockStyles, BlockStyle } from './block/blockStyle';
 
 export interface DividerBlockData {
   id: number;

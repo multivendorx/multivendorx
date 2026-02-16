@@ -2,10 +2,15 @@
 import React from 'react';
 
 // Internal Dependencies
-import { LeftPanel } from './block';
-import CanvasEditor from './CanvasEditor';
+import CanvasEditor from './block/CanvasEditor';
 import { FieldComponent } from './types';
 import '../styles/web/RegistrationForm.scss';
+
+const OPTION_PRESETS = [
+            { id: '1', label: 'Manufacture', value: 'manufacture' },
+            { id: '2', label: 'Trader', value: 'trader' },
+            { id: '3', label: 'Authorized Agent', value: 'authorized_agent' },
+];
 
 // BLOCK GROUPS - WITH PLACEHOLDERS
 const BLOCK_GROUPS = [
@@ -19,10 +24,10 @@ const BLOCK_GROUPS = [
             { id: 'textarea', icon: 'adminfont-text icon-form-textarea', value: 'textarea', label: 'Textarea', placeholder: 'Enter your message here' },
             { id: 'datepicker', icon: 'adminfont-calendar icon-form-store-description', value: 'datepicker', label: 'Date Picker', placeholder: 'Select a date' },
             { id: 'timepicker', icon: 'adminfont-alarm icon-form-address', value: 'TimePicker', label: 'Time Picker', placeholder: 'Select a time' },
-            { id: 'checkboxes', icon: 'adminfont-checkbox icon-form-checkboxes', value: 'checkboxes', label: 'Checkboxes' },
-            { id: 'multi-select', icon: 'adminfont-multi-select icon-form-multi-select', value: 'multi-select', label: 'Multi Select' },
-            { id: 'radio', icon: 'adminfont-radio icon-form-radio', value: 'radio', label: 'Radio' },
-            { id: 'dropdown', icon: 'adminfont-dropdown-checklist icon-form-dropdown', value: 'dropdown', label: 'Dropdown' },
+            { id: 'checkboxes', icon: 'adminfont-checkbox icon-form-checkboxes', value: 'checkboxes', label: 'Checkboxes', options: OPTION_PRESETS },
+            { id: 'multi-select', icon: 'adminfont-multi-select icon-form-multi-select', value: 'multi-select', label: 'Multi Select', options: OPTION_PRESETS },
+            { id: 'radio', icon: 'adminfont-radio icon-form-radio', value: 'radio', label: 'Radio', options: OPTION_PRESETS },
+            { id: 'dropdown', icon: 'adminfont-dropdown-checklist icon-form-dropdown', value: 'dropdown', label: 'Dropdown', options: OPTION_PRESETS },
             { id: 'address', icon: 'adminfont-form-address icon-form-address', value: 'address', label: 'Address' },
             { id: 'attachment', icon: 'adminfont-submission-message icon-form-attachment', value: 'attachment', label: 'Attachment' },
             { id: 'richtext', icon: 'adminfont-text icon-form-textarea', value: 'richtext', label: 'Rich Text Block' },
@@ -70,23 +75,17 @@ export const RegistrationFormUI: React.FC<any> = ({
     }, [onChange]);
 
     const visibleGroups = field?.visibleGroups || ['registration'];
-
+    
     return (
-        <div className="registration-from-wrapper registration-builder">
-            <LeftPanel
-                blockGroups={BLOCK_GROUPS}
-                visibleGroups={visibleGroups}
-                groupName="registration"
-            />
-
+        <div className="registration-builder">
             <CanvasEditor
                 blocks={initialBlocks}
                 onChange={handleBlocksChange}
+                blockGroups={BLOCK_GROUPS}
+                visibleGroups={visibleGroups}
                 groupName="registration"
                 proSettingChange={proSettingChange}
                 context="registration"
-                blockGroups={BLOCK_GROUPS}
-                canvasClassName="registration-form-main-section registration-canvas"
             />
         </div>
     );

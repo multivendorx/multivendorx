@@ -4,7 +4,7 @@ import { ReactSortable } from 'react-sortablejs';
 
 // Internal dependencies
 import StyleControls from './StyleControl';
-import { BlockStyle } from './block';
+import { BlockStyle } from './block/blockStyle';
 import { BasicInputUI } from './BasicInput';
 import { SelectInputUI } from './SelectInput';
 import { MultiCheckBoxUI } from './MultiCheckbox';
@@ -301,7 +301,7 @@ const createFieldRenderers = (): Record<string, React.FC<{
     button: ({ formField, onChange, expandedGroups, toggleGroup }) => (
         <>
             <ContentGroup title="Button Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
-                <InputField label="Button Text" value={formField.text || ''} onChange={(v) => onChange('text', v)} />
+                <InputField label="Button Text" value={formField.text || formField.placeholder || ''} onChange={(v) => onChange('text', v)} />
                 <InputField label="Button URL" value={formField.url || ''} onChange={(v) => onChange('url', v)} />
             </ContentGroup>
         </>
@@ -512,10 +512,12 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
                             <VisibilityToggle disabled={formField.disabled} onChange={handleDisabledChange} />
                             <FieldWrapper label="Required">
                                 <div className="input-wrapper">
-                                    <input
-                                        type="checkbox"
-                                        checked={formField.required || false}
-                                        onChange={handleRequiredChange}
+                                    <MultiCheckBoxUI
+                                         options={[
+                                            { key: 'required', value: "Required", label: 'Required', },
+                                        ]}
+                                        value={formField.required ? ['required'] : []}
+                                        onChange={(vals) => onChange('required', vals.includes('required'))}
                                     />
                                 </div>
                             </FieldWrapper>
