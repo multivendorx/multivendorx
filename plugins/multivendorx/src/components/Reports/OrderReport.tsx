@@ -79,13 +79,17 @@ const OrderReport: React.FC = () => {
 	];
 	const buttonActions = [
 		{
-		  label: 'Download CSV',
+		  label: __('Download CSV', 'multivendorx'),
 		  icon: 'download',
-		  onClickWithQuery: ExportCSV({
+		  onClickWithQuery: (query: QueryProps) => ExportCSV({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			filename: 'orders-report.csv',
-			paramsBuilder: (query) => ({
+			filename:
+					query.filter?.created_at?.startDate &&
+					query.filter?.created_at?.endDate
+						? `orders-${(query.filter.created_at.startDate)}-${(query.filter.created_at.endDate)}.csv`
+						: `orders-${(new Date())}.csv`,
+			paramsBuilder: ({
 			  per_page: 100,
 			  page: 1,
 			  search: query.searchValue,

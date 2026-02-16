@@ -359,29 +359,30 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	];
 
 	const transactionColumns = (txn: any) => ({
-		ID: txn.id,
-		Store: txn.store_name || '',
-		Transaction_Type: txn.transaction_type || '',
-		Status: txn.status || '',
-		Order_ID: txn.order_details || '',
-		Credit: txn.credit ?? '',
-		Debit: txn.debit ?? '',
-		Balance: txn.balance ?? '',
-		Date: txn.date || '',
-		Narration: txn.narration || '',
-	});	  
+		[__('ID', 'multivendorx')]: txn.id ?? '',
+		[__('Status', 'multivendorx')]: txn.status ?? '',
+		[__('Transaction Type', 'multivendorx')]: txn.transaction_type ?? '',
+		[__('Date', 'multivendorx')]: txn.date ?? '',
+		[__('Credit', 'multivendorx')]: txn.credit ?? '',
+		[__('Debit', 'multivendorx')]: txn.debit ?? '',
+		[__('Balance', 'multivendorx')]: txn.balance ?? '',
+	});	
 
 	const buttonActions = [
 		{
-		  label: 'Download CSV',
+		  label: __('Download CSV', 'multivendorx'),
 		  icon: 'download',
 	  
-		  onClickWithQuery: ExportCSV({
+		  onClickWithQuery: (query: QueryProps) => ExportCSV({
 			url: getApiLink(appLocalizer, 'transaction'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			filename: 'wallet-transactions.csv',
+			filename:
+				query.filter?.created_at?.startDate &&
+				query.filter?.created_at?.endDate
+				  ? `transactions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
+				  : `transactions-${formatLocalDate(new Date())}.csv`,
 	  
-			paramsBuilder: (query: QueryProps) => ({
+			paramsBuilder: ({
 			  per_page: 1000,
 			  store_id: storeId,
 			  searchValue: query.searchValue,
@@ -408,7 +409,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	const exportSelectedTransactions = ExportCSV({
 		url: getApiLink(appLocalizer, 'transaction'),
 		headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		filename: 'selected-wallet-transactions.csv',
+		filename: `selected-wallet-transactions-${formatLocalDate(new Date())}.csv`,
 	  
 		paramsBuilder: () => ({
 		  ids: rowIds,

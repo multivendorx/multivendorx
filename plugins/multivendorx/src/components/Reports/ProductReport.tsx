@@ -327,27 +327,29 @@ const ProductReport: React.FC = () => {
 	];
 
 	const productColumns = (product: any) => ({
-		ID: product.id,
-		Product: product.name,
-		SKU: product.sku || '',
-		Store: product.store_name || '',
-		Items_Sold: Number(product.total_sales || 0),
-		Net_Sales: product.price || '',
-		Category:
-		  product.categories?.map((c: any) => c.name).join(', ') || '',
-		Date_Created: product.date_created || '',
-	});
+		[__('Product', 'multivendorx')]: product.name ?? '',
+		[__('Store', 'multivendorx')]: product.store_name ?? '',
+		[__('Items sold', 'multivendorx')]: Number(product.total_sales ?? 0),
+		[__('Net sales', 'multivendorx')]: product.price ?? '',
+		[__('Category', 'multivendorx')]:
+			product.categories?.map((c: any) => c.name).join(', ') ?? '',
+		[__('Date Created', 'multivendorx')]: product.date_created ?? '',
+	});	
 	
 	const buttonActions = [
 		{
-		  label: 'Download CSV',
+		  label: __('Download CSV', 'multivendorx'),
 		  icon: 'download',
-		  onClickWithQuery: ExportCSV({
+		  onClickWithQuery: (query: QueryProps) => ExportCSV({
 			url: `${appLocalizer.apiUrl}/wc/v3/products`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			filename: 'products-report.csv',
+			filename:
+				query.filter?.created_at?.startDate &&
+				query.filter?.created_at?.endDate
+					? `products-${query.filter.created_at.startDate}-${query.filter.created_at.endDate}.csv`
+					: `products-${new Date()}.csv`,
 	  
-			paramsBuilder: (query: QueryProps) => ({
+			paramsBuilder: ({
 			  page: 1,
 			  per_page: 100,
 			  search: query.searchValue,

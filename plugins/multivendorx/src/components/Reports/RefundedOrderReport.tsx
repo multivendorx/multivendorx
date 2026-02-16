@@ -82,26 +82,30 @@ const RefundedOrderReport: React.FC = () => {
 	];
 
 	const refundColumns = (refund: any) => ({
-		Order_ID: refund.order_id,
-		Customer: refund.customer_name?.trim() || '',
-		Store: refund.store_name?.trim() || '',
-		Amount: refund.amount || '',
-		Refund_Reason: refund.customer_reason || '',
-		Status: refund.status || '',
-		Date: refund.date || '',
-	});	  
+		[__('Order', 'multivendorx')]: refund.order_id ?? '',
+		[__('Customer', 'multivendorx')]: refund.customer_name?.trim() ?? '',
+		[__('Store', 'multivendorx')]: refund.store_name?.trim() ?? '',
+		[__('Refund Amount', 'multivendorx')]: refund.amount ?? '',
+		[__('Refund Reason', 'multivendorx')]: refund.customer_reason ?? '',
+		[__('Status', 'multivendorx')]: refund.status ?? '',
+		[__('Date', 'multivendorx')]: refund.date ?? '',
+	});	
 
 	const buttonActions = [
 		{
-		  label: 'Download CSV',
+		  label: __('Download CSV', 'multivendorx'),
 		  icon: 'download',
 	  
-		  onClickWithQuery: ExportCSV({
+		  onClickWithQuery: (query: QueryProps) => ExportCSV({
 			url: getApiLink(appLocalizer, 'refund'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			filename: 'refunds-report.csv',
+			filename:
+				query.filter?.created_at?.startDate &&
+				query.filter?.created_at?.endDate
+				  ? `refunds-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
+				  : `refunds-${formatLocalDate(new Date())}.csv`,
 	  
-			paramsBuilder: (query: QueryProps) => ({
+			paramsBuilder: ({
 			  page: 1,
 			  per_page: 100,
 			  searchAction: query.searchAction || 'order_id',
