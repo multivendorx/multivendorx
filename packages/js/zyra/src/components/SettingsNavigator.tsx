@@ -89,23 +89,22 @@ export const NavigatorHeader: React.FC<NavigatorHeaderProps> = ({
                         <i className="adminfont-arrow-right"></i>
                     </a>
                 )}
+                {buttons.length > 0 && (
+                    <AdminButtonUI
+                        buttons={buttons.map((button) => ({
+                            text: button.label,
+                            icon: button.iconClass,
+                            onClick: button.onClick,
+                            children: (
+                                <>
+                                    <i className={button.iconClass}></i>
+                                    {button.label}
+                                </>
+                            ),
+                        }))}
+                    />
+                )}
             </div>
-            
-            {buttons.length > 0 && (
-                <AdminButtonUI
-                    buttons={buttons.map((button) => ({
-                        text: button.label,
-                        icon: button.iconClass?.replace('adminfont-', ''),
-                        onClick: button.onClick,
-                        children: (
-                            <>
-                                <i className={button.iconClass}></i>
-                                {button.label}
-                            </>
-                        ),
-                    }))}
-                />
-            )}
 
             {headerDescription && (
                 <div className="description">

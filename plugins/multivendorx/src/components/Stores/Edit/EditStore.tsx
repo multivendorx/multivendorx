@@ -12,7 +12,8 @@ import {
 	SelectInputUI,
 	SettingsNavigator,
 	PopupUI,
-	useOutsideClick
+	useOutsideClick,
+	ItemList
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -944,13 +945,12 @@ const EditStore = () => {
 				Link={Link}
 				settingName={'Store'}
 				action={
-					// <Popover
-					// 	className="edit-wrapper"
-					// 	template="action"
-					// 	toggleIcon="adminfont-more-vertical"
-					// 	items={actionItems}
-					// />
-					<></>
+					<PopupUI
+						position="menu-dropdown"
+						toggleIcon="adminfont-more-vertical"
+					>
+						<ItemList items={actionItems} />
+					</PopupUI>
 				}
 			/>
 			<PopupUI
