@@ -16,13 +16,15 @@ interface Item {
 
 export interface ItemListProps {
     items: Item[];
-    variant?: 'icon-list' | 'notification' | 'checklist' | 'plugin-card' | 'feature-list' | 'quick-link';
+    className?: string ;
+    background?: boolean;
+    border?: boolean;
 }
 
-const ItemList: React.FC<ItemListProps> = ({ items, variant = 'icon-list' }) => {
+const ItemList: React.FC<ItemListProps> = ({ items, background, border, className }) => {
 
     return (
-        <div className={`item-list`} data-variant={variant}>
+        <div className={`item-list ${className || 'default'}`}>
 
             {items && items.map((item, index) => {
                 const handleClick = (e: React.MouseEvent) => {
@@ -43,7 +45,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, variant = 'icon-list' }) => 
                             </a>
                         ) : (
                             <div
-                                className="item"
+                                className={`item ${background ? 'background' : ''} ${border ? 'border' : ''}`}
                                 onClick={() => {
                                     item.action?.();
                                 }}
@@ -57,7 +59,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, variant = 'icon-list' }) => 
                                 </div>
                                 {item.time && <div className="popover-item-time">{item.time}</div>}
 
-                                {variant === 'notification' && (
+                                {className === 'notification' && (
                                     <>
                                         <i className="check-icon adminfont-check color-green" />
                                         <i className="check-icon adminfont-cross color-red" />

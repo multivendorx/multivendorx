@@ -125,51 +125,29 @@ const Documentation: React.FC = () => {
 						</div>
 					</div>
 				</div>
-				<div className="documentation-wrapper">
-					{filteredDocuments.length === 0 && (
-						<ComponentStatusView title={__('No documents found.', 'multivendorx')} />
-					)}
-					{filteredDocuments.map((doc) => (
-						<>
-							{/* <div key={doc.id} className="document">
-									<div className="document-icon">
-										<i className="adminfont-contact-form"></i>
-									</div>
-									<div className="document-content">
-										<div className="title">{doc.title}</div>
-										<div className="des">
-											{truncateText(doc.content || '', 10)}
-											<a
-												className="read-more"
-												onClick={() =>
-													handleReadMore(doc)
-												}
-											>
-												{__(
-													'Read More',
-													'multivendorx'
-												)}
-											</a>
-										</div>
-									</div>
-								</div> */}
-							<ItemList
-								variant="mini-card"
-								background
-								cols={3}
-								header={
-									<>
-										<i className={`icon adminfont-contact-form blue`}></i>
-										<div className="tag">
-											<span className="admin-badge yellow">
-												{__('Products', 'multivendorx')}
-											</span>
-										</div>
-									</>
-								}
-								title={truncateText(doc.title || '', 4)}
-								description={
-									<>
+				<HeaderSearch
+					variant="mini-search"
+					search={{ placeholder: 'Search .....' }}
+					onQueryUpdate={(e) => {
+						setSearchQuery(e.searchValue);
+						if ('searchAction' in e) {
+							setSelectedFilter(e.searchAction);
+						}
+					}}
+				/>
+				{filteredDocuments.length === 0 && (
+					<ComponentStatusView title={__('No documents found.', 'multivendorx')} />
+				)}
+				{filteredDocuments.map((doc) => (
+					<>
+						<ItemList
+							className="mini-card"
+							border
+							items={[
+								{
+									title: truncateText(doc.title || '', 4),
+									icon: 'icon adminfont-contact-form blue',
+									desc: <>
 										{truncateText(doc.content || '', 10)}
 										<a
 											className="read-more"
@@ -179,12 +157,20 @@ const Documentation: React.FC = () => {
 										>
 											{__('Read more', 'multivendorx')}
 										</a>
-									</>
-								}
-							/>
-						</>
-					))}
-				</div>
+									</>,
+									tags: (
+										<>
+											<div className="tag">
+												<span className="admin-badge yellow">
+													{__('Products', 'multivendorx')}
+												</span>
+											</div>
+										</>
+									)
+								}]}
+						/>
+					</>
+				))}
 			</Card>
 
 			{activeDocument && (

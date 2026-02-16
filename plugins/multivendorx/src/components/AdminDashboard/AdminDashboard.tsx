@@ -530,7 +530,7 @@ const AdminDashboard = () => {
 								desc={__('Unlock advanced features and premium modules to create a marketplace that stands out.', 'multivendorx')}
 							>
 								<ItemList
-									variant="feature-list"
+									className="feature-list"
 									items={featuresList.map(({ icon, title, desc }) => ({
 										icon: icon,
 										title: title,
@@ -590,34 +590,36 @@ const AdminDashboard = () => {
 								{pluginStatus[
 									'woocommerce-catalog-enquiry'
 								] ? (
-									<ItemList
-										variant="plugin-card"
-										items={[
-											{
-												title: __('CatalogX Pro', 'multivendorx'),
-												desc: __('Advanced product catalog with enhanced enquiry features and premium templates', 'multivendorx'),
-												img: catalogx,
-												tags: (
-													<>
-														<span className="admin-badge red">
-															<i className="adminfont-pro-tag"></i>{' '}
-															{__('Pro', 'multivendorx')}
-														</span>
-														<a
-															href="https://catalogx.com/pricing/"
-															target="_blank"
-															rel="noopener noreferrer"
-														>
-															{__('Get Pro', 'multivendorx')}
-														</a>
-													</>
-												)
-											}
-										]}
-									/>
+										<ItemList
+											className="mini-card"
+											background										
+											items={[
+												{
+													title: __('CatalogX Pro', 'multivendorx'),
+													desc: __('Advanced product catalog with enhanced enquiry features and premium templates', 'multivendorx'),
+													img: catalogx,
+													tags: (
+														<>
+															<span className="admin-badge red">
+																<i className="adminfont-pro-tag"></i>{' '}
+																{__('Pro', 'multivendorx')}
+															</span>
+															<a
+																href="https://catalogx.com/pricing/"
+																target="_blank"
+																rel="noopener noreferrer"
+															>
+																{__('Get Pro', 'multivendorx')}
+															</a>
+														</>
+													)
+												}
+											]}
+										/>
 								) : (
 									<ItemList
-										variant="plugin-card"
+										className="mini-card"
+										background
 										items={[
 											{
 												title: __('CatalogX', 'multivendorx'),
@@ -663,7 +665,8 @@ const AdminDashboard = () => {
 									'woocommerce-product-stock-alert'
 								] ? (
 									<ItemList
-										variant="plugin-card"
+										className="mini-card"
+										background
 										items={[
 											{
 												title: __('Notifima Pro', 'multivendorx'),
@@ -688,7 +691,8 @@ const AdminDashboard = () => {
 									/>
 								) : (
 									<ItemList
-										variant="plugin-card"
+										className="mini-card"
+										background
 										items={[
 											{
 												title: __('Notifima', 'multivendorx'),
@@ -727,7 +731,6 @@ const AdminDashboard = () => {
 												)
 											}
 										]}
-
 									/>
 								)}
 							</Column>

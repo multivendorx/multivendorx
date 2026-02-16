@@ -182,8 +182,7 @@ const Withdrawls: React.FC = () => {
 							</div>
 							<Column row>
 								<ItemList
-									variant="mini-card"
-									background
+									className="mini-card"
 									title={__('Upcoming Balance', 'multivendorx')}
 									value={formatCurrency(data.locking_balance)}
 									description={
@@ -203,7 +202,7 @@ const Withdrawls: React.FC = () => {
 								/>
 								{data?.withdrawal_setting?.length > 0 && (
 									<ItemList
-										variant="mini-card"
+										className="mini-card"
 										background
 										title={__('Free Withdrawals', 'multivendorx')}
 										value={
@@ -235,7 +234,6 @@ const Withdrawls: React.FC = () => {
 										}
 									/>
 								)}
-
 							</Column>
 
 							<AdminButtonUI
