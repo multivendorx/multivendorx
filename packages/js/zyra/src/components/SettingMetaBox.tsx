@@ -326,7 +326,7 @@ const createFieldRenderers = (): Record<string, React.FC<{
     
     // Selection fields
     'multi-select': ({ formField, onChange }) => (
-        <OptionEditor options={formField.options || []} onChange={(o) => onChange('options', o)} />
+        <OptionEditor options={formField.options || []} onChange={(o) => { onChange('options', o) }}/>
     ),
     dropdown: ({ formField, onChange }) => (
         <OptionEditor options={formField.options || []} onChange={(o) => onChange('options', o)} />

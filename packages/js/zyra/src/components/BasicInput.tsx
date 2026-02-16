@@ -113,7 +113,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
 							}
 							value={value}
 							onChange={(e) =>
-								onChange(e.target.value)
+								onChange(type === 'file' ? e.target.files : e.target.value)
 							}
 							onClick={onClick}
 							onMouseOver={onMouseOver}

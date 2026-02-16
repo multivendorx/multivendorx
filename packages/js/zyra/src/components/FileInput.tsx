@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FieldComponent } from './types';
 import { BasicInputUI } from './BasicInput';
 import { AdminButtonUI } from './AdminButton';
@@ -7,16 +7,14 @@ interface FileInputProps {
     wrapperClass?: string;
     inputClass?: string;
     id?: string;
-    type?: string;
     name?: string;
     placeholder?: string;
     onChange?: (value: string | string[]) => void;
-    onClick?: (event: MouseEvent<HTMLInputElement>) => void;
-    onMouseOver?: (event: MouseEvent<HTMLInputElement>) => void;
-    onMouseOut?: (event: MouseEvent<HTMLInputElement>) => void;
-    onFocus?: (event: ChangeEvent<HTMLInputElement>) => void;
-    onBlur?: (event: ChangeEvent<HTMLInputElement>) => void;
-    // Image source from parent
+    onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
+    onMouseOver?: (event: React.MouseEvent<HTMLInputElement>) => void;
+    onMouseOut?: (event: React.MouseEvent<HTMLInputElement>) => void;
+    onFocus?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     imageSrc?: string | string[];
     imageWidth?: number;
     imageHeight?: number;
@@ -26,64 +24,45 @@ interface FileInputProps {
 }
 
 export const FileInputUI: React.FC<FileInputProps> = (props) => {
-    const [activeIndex, setActiveIndex] = useState<number>(0);
-    const [isReplacing, setIsReplacing] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [images, setImages] = useState<string[]>([]);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [isReplacing, setIsReplacing] = useState(false);
 
-    // Helper: Normalize incoming props to an array
-    const normalizeImages = useCallback((src?: string | string[]) => {
-        if (!src) return [];
-        return Array.isArray(src) ? src : [src];
-    }, []);
-
-    const [localImages, setLocalImages] = useState<string[]>(() => normalizeImages(props.imageSrc));
-
-    // Sync state when props change
     useEffect(() => {
-        setLocalImages(normalizeImages(props.imageSrc));
+        const src = props.imageSrc;
+        setImages(!src ? [] : Array.isArray(src) ? src : [src]);
         setActiveIndex(0);
-    }, [props.imageSrc, normalizeImages]);
+    }, [props.imageSrc]);
 
-    // Internal function to clean up and notify parent
-    const updateAll = (nextImages: string[]) => {
-        setLocalImages(nextImages);
-        if (props.onChange) {
-            // Send back string if single, array if multiple
-            props.onChange(props.multiple ? nextImages : (nextImages[0] || ''));
-        }
+    const notify = (imgs: string[]) => {
+        setImages(imgs);
+        props.onChange?.(props.multiple ? imgs : (imgs[0] || ''));
     };
 
-    // Helper to clear blob URLs
-    const revoke = (url: string) => {
-        if (url?.startsWith('blob:')) URL.revokeObjectURL(url);
-    };
-
-    const handleNativeChange = (files: FileList | null) => {
-        if (!files) return;
-
-        const newUrls = Array.from(files).map(file => URL.createObjectURL(file));
-        let next: string[];
+    const handleFileChange = (files: FileList | null) => {
+        if (!files?.length) return;
+        
+        const urls = Array.from(files).map(f => URL.createObjectURL(f));
+        let result: string[];
 
         if (isReplacing) {
-            next = [...localImages];
-            revoke(next[activeIndex]);
-            next[activeIndex] = newUrls[0];
+            result = [...images];
+            if (result[activeIndex]?.startsWith('blob:')) URL.revokeObjectURL(result[activeIndex]);
+            result[activeIndex] = urls[0];
             setIsReplacing(false);
         } else {
-            next = props.multiple ? [...localImages, ...newUrls] : [newUrls[0]];
+            result = props.multiple ? [...images, ...urls] : [urls[0]];
             setActiveIndex(0);
         }
 
-        updateAll(next);
-        if (inputRef.current) inputRef.current.value = ''; 
+        notify(result);
+        if (inputRef.current) inputRef.current.value = '';
     };
 
-    const handleWPClick = () => {
-        const wp = (window)?.wp;
-        if (!wp || !wp.media) {
-            inputRef.current?.click();
-            return;
-        }
+    const handleUpload = () => {
+        const wp = (window as any)?.wp;
+        if (!wp?.media) return inputRef.current?.click();
 
         const frame = wp.media({
             title: 'Select or Upload Image',
@@ -92,114 +71,82 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
         });
 
         frame.on('select', () => {
-            const selection = frame.state().get('selection').toJSON();
-            const urls = selection.map((att) => att.url);
-            
-            let next: string[];
+            const urls = frame.state().get('selection').toJSON().map((a: any) => a.url);
+            let result: string[];
+
             if (isReplacing) {
-                next = [...localImages];
-                revoke(next[activeIndex]);
-                next[activeIndex] = urls[0];
+                result = [...images];
+                if (result[activeIndex]?.startsWith('blob:')) URL.revokeObjectURL(result[activeIndex]);
+                result[activeIndex] = urls[0];
                 setIsReplacing(false);
             } else {
-                next = props.multiple ? [...localImages, ...urls] : [urls[0]];
+                result = props.multiple ? [...images, ...urls] : [urls[0]];
             }
-            updateAll(next);
+
+            notify(result);
         });
 
         frame.open();
     };
 
     const handleRemove = (index: number) => {
-        const removedUrl = localImages[index];
-        revoke(removedUrl);
-
-        const next = localImages.filter((_, i) => i !== index);
-        
-        // Adjust active index if we removed the last item or the current item
-        if (activeIndex >= next.length) {
-            setActiveIndex(Math.max(0, next.length - 1));
-        }
-
-        updateAll(next);
+        if (images[index]?.startsWith('blob:')) URL.revokeObjectURL(images[index]);
+        const result = images.filter((_, i) => i !== index);
+        notify(result);
+        if (activeIndex >= result.length) setActiveIndex(Math.max(0, result.length - 1));
     };
 
     return (
         <>
-            <div
-                className={`file-uploader ${props.wrapperClass || ''} ${props.size || ''}`}
-                style={{
-                    backgroundImage: localImages[activeIndex] ? `url(${localImages[activeIndex]})` : '',
-                }}
+            <div 
+                className={`file-uploader ${props.wrapperClass || ''} ${props.size || ''}`.trim()}
+                style={{ backgroundImage: images[activeIndex] ? `url(${images[activeIndex]})` : '' }}
             >
-                {localImages.length === 0 && (
+                {images.length === 0 ? (
                     <>
-                        <i className="upload-icon adminfont-cloud-upload"></i>
-                            <BasicInputUI
-								ref={inputRef}
-                                className={`basic-input ${props.inputClass || ''}`}
-                                id={props.id}
-                                type="file" // Fixed to file for logic
-                                name={props.name || 'file-input'}
-                                placeholder={props.placeholder}
-                                onChange={handleNativeChange}
-                                onClick={props.onClick}
-                                onMouseOver={props.onMouseOver}
-                                onMouseOut={props.onMouseOut}
-                                onFocus={props.onFocus}
-                                onBlur={props.onBlur}
-                                multiple={props.multiple}
-							/>
+                        <i className="upload-icon adminfont-cloud-upload" />
+                        <BasicInputUI 
+                            ref={inputRef} 
+                            inputClass={props.inputClass} 
+                            id={props.id} 
+                            type="file"
+                            name={props.name || 'file-input'} 
+                            placeholder={props.placeholder} 
+                            value=""
+                            onChange={handleFileChange}
+                            onClick={props.onClick} 
+                            onMouseOver={props.onMouseOver} 
+                            onMouseOut={props.onMouseOut}
+                            onFocus={props.onFocus} 
+                            onBlur={props.onBlur} 
+                            multiple={props.multiple} 
+                        />
                         <span className="title">Drag and drop your file here</span>
                         <span>Or</span>
-                        <AdminButtonUI
-                            buttons={[
-                                {
-                                    text: props.openUploader || 'Upload File',
-                                    onClick: handleWPClick
-                                },
-                            ]}
-                        />
+                        <AdminButtonUI buttons={[{ text: props.openUploader || 'Upload File', onClick: handleUpload }]} />
                     </>
-                )}
-                {localImages.length > 0 && (
+                ) : (
                     <div className="overlay">
                         <div className="button-wrapper">
-                            <AdminButtonUI
-                                buttons={[
-                                    {
-                                        text: 'Remove',
-                                        onClick: () => handleRemove(activeIndex)
-                                    },
-                                ]}
-                            />
-                            <AdminButtonUI
-                                buttons={[
-                                    {
-                                        text: 'Replace',
-                                        onClick: () => {
-                                            setIsReplacing(true);
-                                            handleWPClick();
-                                        }
-                                    },
-                                ]}
-                            />
+                            <AdminButtonUI buttons={[{ text: 'Remove', onClick: () => handleRemove(activeIndex) }]} />
+                            <AdminButtonUI buttons={[{ text: 'Replace', onClick: () => { setIsReplacing(true); handleUpload(); } }]} />
                         </div>
                     </div>
                 )}
             </div>
-            {props.multiple && localImages.length > 0 && (
+            
+            {props.multiple && images.length > 0 && (
                 <div className="file-preview-list">
-                    {localImages.map((img, index) => (
-                        <div className={`file-preview-item ${index === activeIndex ? 'active' : ''}`} key={index}>
-                            <img
-                                src={img}
-                                alt={`preview-${index}`}
-                                width={props.imageWidth || 80}
+                    {images.map((img, i) => (
+                        <div key={i} className={`file-preview-item ${i === activeIndex ? 'active' : ''}`}>
+                            <img 
+                                src={img} 
+                                alt={`preview-${i}`} 
+                                width={props.imageWidth || 80} 
                                 height={props.imageHeight || 80}
-                                onClick={() => setActiveIndex(index)}
+                                onClick={() => setActiveIndex(i)} 
                             />
-                            <i className='remove-btn adminfont-close' onClick={() => handleRemove(index)} ></i>
+                            <i className="remove-btn adminfont-close" onClick={() => handleRemove(i)} />
                         </div>
                     ))}
                 </div>
@@ -213,24 +160,16 @@ const FileInput: FieldComponent = {
         <FileInputUI
             inputClass={field.key}
             imageSrc={value ?? appLocalizer?.default_logo}
-            imageWidth={field.width} // Width of the displayed image
-            imageHeight={field.height} // Height of the displayed image
+            imageWidth={field.width}
+            imageHeight={field.height}
             openUploader={appLocalizer?.open_uploader}
-            type="hidden" // Input type; in this case, hidden because the FileInput manages its own display
             name={field.name}
-            multiple={field.multiple} //to add multiple image pass true or false
-            size={field.size} // Size of the input (if used by FileInput for styling)                            
-            onChange={(val) => {
-                if (!canAccess) return;
-                onChange(val)
-            }}
+            multiple={field.multiple}
+            size={field.size}
+            onChange={(val) => canAccess && onChange(val)}
         />
     ),
-
-    validate: (field, value) => {
-        return null;
-    },
-
+    validate: () => null,
 };
 
 export default FileInput;
