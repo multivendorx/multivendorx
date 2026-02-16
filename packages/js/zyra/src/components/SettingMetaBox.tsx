@@ -4,7 +4,7 @@ import { ReactSortable } from 'react-sortablejs';
 
 // Internal dependencies
 import StyleControls from './StyleControl';
-import { BlockStyle } from './block/blockStyle';
+import { BlockStyle } from './CanvasEditor/blockStyle';
 import { BasicInputUI } from './BasicInput';
 import { SelectInputUI } from './SelectInput';
 import { MultiCheckBoxUI } from './MultiCheckbox';

@@ -2,9 +2,9 @@
 import React from 'react';
 
 // Internal Dependencies
-import CanvasEditor from './block/CanvasEditor';
+import CanvasEditor from './CanvasEditor/CanvasEditor';
 import { FieldComponent } from './types';
-import { Block } from './block/blockTypes';
+import { Block } from './CanvasEditor/blockTypes';
 import '../styles/web/RegistrationForm.scss';
 
 export interface EmailTemplate {

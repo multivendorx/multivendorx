@@ -2,7 +2,7 @@
 import React from 'react';
 
 // Internal Dependencies
-import CanvasEditor from './block/CanvasEditor';
+import CanvasEditor from './CanvasEditor/CanvasEditor';
 import { FieldComponent } from './types';
 import '../styles/web/RegistrationForm.scss';
 
