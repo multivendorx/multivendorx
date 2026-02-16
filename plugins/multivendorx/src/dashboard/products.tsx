@@ -394,15 +394,15 @@ const AllProduct: React.FC = () => {
 				setProductMap(productMap);
 				const mappedRows: any[][] = items.map((product: any) => [
 					{
-						type: 'product',
 						value: product.id,
 						display: product.name,
+						type: 'card',
 						data: {
-							id: product.id,
 							name: product.name,
-							sku: product.sku,
 							image: product.images?.[0]?.src || '',
+							description: `SKU: ${product.sku}`,
 							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${product.id}&action=edit`,
+							icon: 'adminfont-store-inventory'
 						},
 					},
 					{
@@ -520,24 +520,22 @@ const AllProduct: React.FC = () => {
 							</div>
 						</div>
 					</div>
-					<div className="admin-table-wrapper">
-						<TableCard
-							headers={headers}
-							rows={rows}
-							totalRows={totalRows}
-							isLoading={isLoading}
-							onQueryUpdate={fetchData}
-							ids={rowIds}
-							categoryCounts={categoryCounts}
-							search={{}}
-							filters={filters}
-							bulkActions={bulkActions}
-							onBulkActionApply={(action: string, selectedIds: []) => {
-								handleBulkAction(action, selectedIds)
-							}}
-							format={appLocalizer.date_format}
-						/>
-					</div>
+					<TableCard
+						headers={headers}
+						rows={rows}
+						totalRows={totalRows}
+						isLoading={isLoading}
+						onQueryUpdate={fetchData}
+						ids={rowIds}
+						categoryCounts={categoryCounts}
+						search={{}}
+						filters={filters}
+						bulkActions={bulkActions}
+						onBulkActionApply={(action: string, selectedIds: []) => {
+							handleBulkAction(action, selectedIds)
+						}}
+						format={appLocalizer.date_format}
+					/>
 				</>
 			)}
 

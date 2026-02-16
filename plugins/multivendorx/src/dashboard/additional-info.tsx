@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {getApiLink, SuccessNotice, TextAreaUI } from 'zyra';
+import {getApiLink, SuccessNotice, TextAreaUI, ToggleSettingUI } from 'zyra';
 
 const AdditionalInformation = () => {
 	const id = appLocalizer.store_id;
@@ -95,7 +95,7 @@ const AdditionalInformation = () => {
 					{/* Message to Buyer */}
 					<div className="card-content">
 						<div className="card-title">
-							{__('Message to Buyer', 'zcrm')}
+							{__('Message to Buyer', 'multivendorx')}
 						</div>
 
 						<div className="form-group-wrapper">
@@ -112,24 +112,23 @@ const AdditionalInformation = () => {
 					{/* Privacy Controls */}
 					<div className="card-content">
 						<div className="card-title">
-							{__('Privacy Controls', 'zcrm')}
+							{__('Privacy Controls', 'multivendorx')}
 						</div>
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label>{__('Hide Address', 'zcrm')}</label>
-								<ToggleSetting
-									 
+								<label>{__('Hide Address', 'multivendorx')}</label>
+								<ToggleSettingUI									 
 									options={[
 										{
 											key: 'yes',
 											value: 'yes',
-											label: __('Yes', 'zcrm'),
+											label: __('Yes', 'multivendorx'),
 										},
 										{
 											key: 'no',
 											value: 'no',
-											label: __('No', 'zcrm'),
+											label: __('No', 'multivendorx'),
 										},
 									]}
 									value={formData.hideAddress || 'no'}
@@ -142,19 +141,18 @@ const AdditionalInformation = () => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label>{__('Hide Phone', 'zcrm')}</label>
-								<ToggleSetting
-									 
+								<label>{__('Hide Phone', 'multivendorx')}</label>
+								<ToggleSettingUI									 
 									options={[
 										{
 											key: 'yes',
 											value: 'yes',
-											label: __('Yes', 'zcrm'),
+											label: __('Yes', 'multivendorx'),
 										},
 										{
 											key: 'no',
 											value: 'no',
-											label: __('No', 'zcrm'),
+											label: __('No', 'multivendorx'),
 										},
 									]}
 									value={formData.hidePhone || 'no'}
@@ -167,19 +165,18 @@ const AdditionalInformation = () => {
 
 						<div className="form-group-wrapper">
 							<div className="form-group">
-								<label>{__('Hide Email', 'zcrm')}</label>
-								<ToggleSetting
-									 
+								<label>{__('Hide Email', 'multivendorx')}</label>
+								<ToggleSettingUI									 
 									options={[
 										{
 											key: 'yes',
 											value: 'yes',
-											label: __('Yes', 'zcrm'),
+											label: __('Yes', 'multivendorx'),
 										},
 										{
 											key: 'no',
 											value: 'no',
-											label: __('No', 'zcrm'),
+											label: __('No', 'multivendorx'),
 										},
 									]}
 									value={formData.hideEmail || 'no'}
