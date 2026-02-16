@@ -166,7 +166,7 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
         if (field.type === 'checklist') {
             return (
                 <ItemList
-                        variant='checklist'
+                        className='checklist'
                         items={field.options}
                     />
             );

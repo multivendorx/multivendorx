@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, MiniCard, BasicInputUI, AdminButtonUI, PopupUI } from 'zyra';
+import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, ItemList } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -181,7 +181,8 @@ const Withdrawls: React.FC = () => {
 								</div>
 							</div>
 							<Column row>
-								<MiniCard background
+								<ItemList
+									className="mini-card"
 									title={__('Upcoming Balance', 'multivendorx')}
 									value={formatCurrency(data.locking_balance)}
 									description={
@@ -200,7 +201,9 @@ const Withdrawls: React.FC = () => {
 									}
 								/>
 								{data?.withdrawal_setting?.length > 0 && (
-									<MiniCard background
+									<ItemList
+										className="mini-card"
+										background
 										title={__('Free Withdrawals', 'multivendorx')}
 										value={
 											<>
@@ -230,9 +233,7 @@ const Withdrawls: React.FC = () => {
 											</>
 										}
 									/>
-
 								)}
-
 							</Column>
 
 							<AdminButtonUI
