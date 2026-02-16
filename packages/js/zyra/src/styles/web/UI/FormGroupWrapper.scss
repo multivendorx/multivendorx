@@ -38,7 +38,6 @@
         &[data-cols='4'] {
             flex: 1 1 calc(25% - 1rem);
         }
-
         .settings-form-label {
             .title {
                 font-size: 0.95rem;
@@ -47,7 +46,8 @@
             }
         }
 
-        .settings-input-content {
+        .settings-input-content,
+         .setting-form-input{
             width: 100%;
 
             &:has(.setting-form-input) {
@@ -156,7 +156,11 @@
                 width: 72%;
             }
         }
-
+        &.full-width{
+            .settings-input-content{
+                width: 100%;
+            }
+        }
         &.align-bottom {
             align-items: end;
         }

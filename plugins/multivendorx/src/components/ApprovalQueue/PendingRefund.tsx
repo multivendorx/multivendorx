@@ -259,7 +259,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 				const ids = normalizedOrders.map((o) => o.id);
 				setRowIds(ids);
 
-				// 🔹 Table rows
 				const mappedRows: TableRow[][] = normalizedOrders.map((order) => [
 					{
 						type: 'card',

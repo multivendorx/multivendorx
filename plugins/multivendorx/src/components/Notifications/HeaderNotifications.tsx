@@ -74,7 +74,7 @@ const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = 
 
   return (
     <ItemList
-      variant="notification"
+      className="notification"
       items={items.map((item) => ({
         id: item.id,
         title: item.title,

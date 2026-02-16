@@ -731,56 +731,6 @@ body.dark {
     }
 }
 
-// documentation start
-.documentation-wrapper {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-
-    // .document {
-    //     padding: 1rem;
-    //     border: $border-light-small;
-    //     border-radius: 0.313rem;
-    //     width: 32.6%;
-    //     box-sizing: border-box;
-
-    //     .document-icon {
-    //         align-items: center;
-    //         background: $theme-background-color;
-    //         border-radius: .4rem;
-    //         display: flex;
-    //         height: 2.5rem;
-    //         justify-content: center;
-    //         padding: .5rem;
-    //         width: 2.5rem;
-
-    //         i {
-    //             color: $theme-color;
-    //             font-size: 1.313rem;
-    //         }
-    //     }
-
-    //     .title {
-    //         font-size: 1.063rem;
-    //         font-weight: 500;
-    //         line-height: 2rem;
-    //         color: $text-color;
-    //         margin-bottom: 0.125rem;
-    //     }
-
-    //     .des {
-    //         .read-more {
-    //             font-weight: 500;
-    //             color: $theme-color;
-    //             cursor: pointer;
-    //         }
-    //     }
-    // }
-    .mini-card{
-        width: 24%;
-    }
-}
 
 .document-popup-wrapper {
     .des {
@@ -1087,6 +1037,9 @@ body.dark {
             padding-bottom: 0.125rem;
             border-bottom: 0.063rem solid $text-color;
             cursor: pointer;
+        }
+        .search-section{
+            width: 100%;
         }
     }
 

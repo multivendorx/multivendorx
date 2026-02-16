@@ -7,6 +7,8 @@ import type {
     ActionMeta,
     StylesConfig,
 } from 'react-select';
+
+// Internal dependencies
 import { FieldComponent } from './types';
 
 // Types

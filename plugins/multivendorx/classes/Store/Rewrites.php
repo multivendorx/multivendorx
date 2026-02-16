@@ -230,7 +230,7 @@ class Rewrites {
         if ( ! $store_slug ) {
             return;
         }
-        
+
         FrontendScripts::load_scripts();
         FrontendScripts::enqueue_script( 'multivendorx-store-name-script' );
         FrontendScripts::enqueue_script( 'multivendorx-store-description-script' );

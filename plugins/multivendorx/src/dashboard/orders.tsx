@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { CalendarInput, Table, TableCard, TableCell, useModules } from 'zyra';
+import { CalendarInput, ExportCSV, getApiLink, Table, TableCard, TableCell, useModules } from 'zyra';
 import {
 	ColumnDef,
 	RowSelectionState,
@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { downloadCSV, formatCurrency, formatTimeAgo, formatWcShortDate, toWcIsoDate } from '../services/commonFunction';
+import { formatCurrency, formatTimeAgo, formatWcShortDate, toWcIsoDate } from '../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 // Type declarations
@@ -647,73 +647,60 @@ const Orders: React.FC = () => {
 			type: 'date',
 		},
 	];
+	
+	const orderColumns = (order: any) => ({
+		[__('Order ID', 'multivendorx')]: order.id ?? '',
+		[__('Customer', 'multivendorx')]:
+			order.billing?.first_name || order.billing?.last_name
+				? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
+				: order.billing?.email || __('Guest', 'multivendorx'),
+		[__('Date', 'multivendorx')]: order.date_created? formatWcShortDate(order.date_created) : '',
+		[__('Status', 'multivendorx')] : order.status ?? '',
+		[__('Total Earning', 'multivendorx')] : order.commission_total ?? '',
+		[__('Total', 'multivendorx')] : order.total ?? '',
+	});	
 	const buttonActions = [
 		{
-			label: 'Download CSV',
+			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: (query: QueryProps) => {
-				downloadOrdersCSV(query);
-			},
-		},
-	];
-	const downloadOrdersCSV = (query: QueryProps) => {
-		setIsLoading(true);
-
-		axios
-			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-				},
-				params: {
-					per_page: 100,
-					page: 1,
-					search: query.searchValue,
-					orderby: query.orderby || 'date',
-					order: query.order || 'desc',
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
-						: undefined,
-					before: query.filter?.created_at?.endDate
-						? toWcIsoDate(query.filter.created_at.endDate, 'end')
-						: undefined,
-				},
-			})
-			.then((response) => {
-				const orders = Array.isArray(response.data)
-					? response.data
-					: [];
-
-				const csvData = orders.map((order: any) => ({
-					Order_ID: order.id,
-					Store: order.store_name || '',
-					Amount: order.total,
-					Commission: order.commission_total || 0,
-					Status: order.status,
-					Date: formatWcShortDate(order.date_created),
-				}));
-
-				downloadCSV({
-					data: csvData,
-					filename: 'orders-report.csv',
-					headers: {
-						Order_ID: 'Order ID',
-						Store: 'Store',
-						Amount: 'Amount',
-						Commission: 'Commission',
-						Status: 'Status',
-						Date: 'Date',
+	
+			onClickWithQuery: (query: QueryProps) =>
+				ExportCSV({
+					url: getApiLink(appLocalizer, 'orders'),
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+	
+					filename:
+						query.filter?.created_at?.startDate &&
+						query.filter?.created_at?.endDate
+							? `orders-${formatWcShortDate(
+									query.filter.created_at.startDate
+							  )}-${formatWcShortDate(
+									query.filter.created_at.endDate
+							  )}.csv`
+							: `orders-${formatWcShortDate(new Date())}.csv`,
+	
+					paramsBuilder: {
+						page: 1,
+						per_page: 100,
+						search: query.searchValue,
+						orderby: query.orderby || 'date',
+						order: query.order || 'desc',
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+	
+						after: query.filter?.created_at?.startDate
+							? toWcIsoDate(query.filter.created_at.startDate, 'start')
+							: undefined,
+	
+						before: query.filter?.created_at?.endDate
+							? toWcIsoDate(query.filter.created_at.endDate, 'end')
+							: undefined,
 					},
-				});
-
-				setIsLoading(false);
-			})
-			.catch((error) => {
-				console.error('CSV download failed:', error);
-				setIsLoading(false);
-			});
-	};
+	
+					columns: orderColumns,
+				}),
+		},
+	];	
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
 

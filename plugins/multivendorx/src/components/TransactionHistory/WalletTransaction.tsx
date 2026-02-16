@@ -9,17 +9,18 @@ import {
 	Container,
 	FormGroupWrapper,
 	FormGroup,
-	MiniCard,
 	ComponentStatusView,
 	Skeleton,
 	TableCard,
 	BasicInputUI,
 	AdminButtonUI,
 	PopupUI,
-	TextAreaUI
+	TextAreaUI,
+	ItemList,
+	ExportCSV
 } from 'zyra';
 
-import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -357,22 +358,32 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		},
 	];
 
+	const transactionColumns = (txn: any) => ({
+		[__('ID', 'multivendorx')]: txn.id ?? '',
+		[__('Status', 'multivendorx')]: txn.status ?? '',
+		[__('Transaction Type', 'multivendorx')]: txn.transaction_type ?? '',
+		[__('Date', 'multivendorx')]: txn.date ?? '',
+		[__('Credit', 'multivendorx')]: txn.credit ?? '',
+		[__('Debit', 'multivendorx')]: txn.debit ?? '',
+		[__('Balance', 'multivendorx')]: txn.balance ?? '',
+	});
+
 	const buttonActions = [
 		{
-			label: 'Download CSV',
+			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: (query: QueryProps) => {
-				downloadTransactionCSVByQuery(query);
-			},
-		},
-	];
 
-	const downloadTransactionCSVByQuery = (query: QueryProps) => {
-		axios
-			.get(getApiLink(appLocalizer, 'transaction'), {
+			onClickWithQuery: (query: QueryProps) => ExportCSV({
+				url: getApiLink(appLocalizer, 'transaction'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					per_page: 1000, // large export
+				filename:
+					query.filter?.created_at?.startDate &&
+						query.filter?.created_at?.endDate
+						? `transactions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
+						: `transactions-${formatLocalDate(new Date())}.csv`,
+
+				paramsBuilder: ({
+					per_page: 1000,
 					store_id: storeId,
 					searchValue: query.searchValue,
 					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
@@ -380,79 +391,20 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					order: query.order,
 					transactionStatus: query?.filter?.transactionStatus,
 					transactionType: query?.filter?.transactionType,
+
 					startDate: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
+
 					endDate: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
-				},
-			})
-			.then((res) => {
-				const data = Array.isArray(res.data) ? res.data : [];
+				}),
 
-				downloadCSV({
-					data: mapTransactionsToCSV(data),
-					filename: 'wallet-transactions.csv',
-					headers: {
-						ID: 'ID',
-						Store: 'Store',
-						Transaction_Type: 'Transaction Type',
-						Status: 'Status',
-						Order_ID: 'Order ID',
-						Credit: 'Credit',
-						Debit: 'Debit',
-						Balance: 'Balance',
-						Date: 'Date',
-						Narration: 'Narration',
-					},
-				});
-			})
-	};
-	const mapTransactionsToCSV = (transactions: any[]) =>
-		transactions.map((txn) => ({
-			ID: txn.id,
-			Store: txn.store_name,
-			Transaction_Type: txn.transaction_type,
-			Status: txn.status,
-			Order_ID: txn.order_details || '',
-			Credit: txn.credit ? formatCurrency(txn.credit) : '',
-			Debit: txn.debit ? formatCurrency(txn.debit) : '',
-			Balance: txn.balance ? formatCurrency(txn.balance) : '',
-			Date: txn.date ? txn.date : '',
-			Narration: txn.narration || '',
-		}));
-	const downloadTransactionCSVByIds = (selectedIds: number[]) => {
-		if (!selectedIds.length) return;
-
-		axios
-			.get(getApiLink(appLocalizer, 'transaction'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					ids: selectedIds,
-				},
-			})
-			.then((res) => {
-				const data = Array.isArray(res.data) ? res.data : [];
-
-				downloadCSV({
-					data: mapTransactionsToCSV(data),
-					filename: 'selected-wallet-transactions.csv',
-					headers: {
-						ID: 'ID',
-						Store: 'Store',
-						Transaction_Type: 'Transaction Type',
-						Status: 'Status',
-						Order_ID: 'Order ID',
-						Credit: 'Credit',
-						Debit: 'Debit',
-						Balance: 'Balance',
-						Date: 'Date',
-						Narration: 'Narration',
-					},
-				});
-			})
-	};
+				columns: transactionColumns,
+			}),
+		},
+	];
 
 	return (
 		<>
@@ -547,30 +499,37 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								</div>
 							</div>
 							<Column row>
-								<MiniCard background
-									title={__('Upcoming Balance', 'multivendorx')}
-									value={formatCurrency(wallet.locking_balance)}
-									isLoading={walletLoading}
-									description={
-										<>
-											{__('This amount is being processed and will be released ', 'multivendorx')}
-											{wallet?.payment_schedules ? (
+								<ItemList
+									className="mini-card"
+									background
+									border
+									items={[
+										{
+											title: __('Upcoming Balance', 'multivendorx'),
+											desc: (
 												<>
-													{wallet.payment_schedules} {__(' by the admin.', 'multivendorx')}
+													{__('This amount is being processed and will be released ', 'multivendorx')}
+													{wallet?.payment_schedules ? (
+														<>
+															{wallet.payment_schedules} {__(' by the admin.', 'multivendorx')}
+														</>
+													) : (
+														<>
+															{__('automatically every hour.', 'multivendorx')}
+														</>
+													)}
 												</>
-											) : (
-												<>
-													{__('automatically every hour.', 'multivendorx')}
-												</>
-											)}
-										</>
-									}
+											),
+											time: formatCurrency(wallet.locking_balance), 
+										}
+									]}
 								/>
 
 								{wallet?.withdrawal_setting?.length > 0 && (
-									<MiniCard background
+									<ItemList
+										variant="mini-card"
+										background
 										title={__('Free Withdrawals', 'multivendorx')}
-
 										value={
 											<>
 												{Math.max(
@@ -753,10 +712,15 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							ids={rowIds}
 							categoryCounts={categoryCounts}
 							bulkActions={[]}
-							onSelectCsvDownloadApply={(selectedIds: []) => {
-								downloadTransactionCSVByIds(selectedIds)
-							}}
-							format={appLocalizer.date_format}
+							onSelectCsvDownloadApply={(selectedIds: number[]) =>
+								ExportCSV({
+									url: getApiLink(appLocalizer, 'transaction'),
+									headers: { 'X-WP-Nonce': appLocalizer.nonce },
+									filename: `selected-wallet-transactions-${formatLocalDate(new Date())}.csv`,
+									paramsBuilder: { ids: selectedIds },
+									columns: transactionColumns,
+								})
+							}
 						/>
 					</div>
 				</Column>
