@@ -134,11 +134,9 @@ const OrderReport: React.FC = () => {
 				},
 			})
 			.then((response) => {
-				console.log('response', response);
 				const orders = Array.isArray(response.data)
 					? response.data
 					: [];
-				console.log('orders', orders);
 				setRowIds(orders.map((o: any) => o.id));
 	
 				const mappedRows: TableRow[][] = orders.map((order: any) => [
