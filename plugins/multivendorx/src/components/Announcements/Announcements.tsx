@@ -448,7 +448,6 @@ export const Announcements: React.FC = () => {
 				open={addAnnouncements}
 				onClose={handleCloseForm}
 				width={31.25}
-				height="80%"
 				header={{
 					icon: 'announcement',
 					title: editId

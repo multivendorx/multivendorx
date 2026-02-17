@@ -4,7 +4,9 @@ interface Item {
     id?: string;
     title?: string;
     icon?: string;
+    img?: string;
     link?: string;
+    tags?: React.ReactNode;
     targetBlank?: boolean;
     action?: (item: Item) => void;
     desc?: string;
@@ -14,13 +16,15 @@ interface Item {
 
 export interface ItemListProps {
     items: Item[];
-    variant?: 'default' | 'notification' | 'checklist';
+    className?: string ;
+    background?: boolean;
+    border?: boolean;
 }
 
-const ItemList: React.FC<ItemListProps> = ({ items, variant }) => {
+const ItemList: React.FC<ItemListProps> = ({ items, background, border, className }) => {
 
     return (
-        <div className={`item-list ${variant || 'default'}`}>
+        <div className={`item-list ${className || 'default'}`}>
 
             {items && items.map((item, index) => {
                 const handleClick = (e: React.MouseEvent) => {
@@ -29,11 +33,6 @@ const ItemList: React.FC<ItemListProps> = ({ items, variant }) => {
                 };
 
                 return (
-                    // <div
-                    //     key={index}
-                    //     className={`item ${item.className || ''}`}
-                    //     onClick={handleClick}
-                    // >
                     <>
                         {item.link ? (
                             <a
@@ -46,12 +45,13 @@ const ItemList: React.FC<ItemListProps> = ({ items, variant }) => {
                             </a>
                         ) : (
                             <div
-                                className="item"
+                                className={`item ${background ? 'background' : ''} ${border ? 'border' : ''}`}
                                 onClick={() => {
                                     item.action?.();
                                 }}
                             >
                                 {item.icon && <i className={`item-icon ${item.icon}`}></i>}
+                                {item.img && <img src={item.img} alt="" /> }
 
                                 <div className="details">
                                     <div className="heading">{item.title}</div>
@@ -59,16 +59,17 @@ const ItemList: React.FC<ItemListProps> = ({ items, variant }) => {
                                 </div>
                                 {item.time && <div className="popover-item-time">{item.time}</div>}
 
-                                {variant === 'notification' && (
+                                {className === 'notification' && (
                                     <>
                                         <i className="check-icon adminfont-check color-green" />
                                         <i className="check-icon adminfont-cross color-red" />
                                     </>
                                 )}
+
+                                {item.tags && <div className="tags"> {item.tags} </div>}
                             </div>
                         )}
                     </>
-                    /* </div> */
                 );
             })}
 

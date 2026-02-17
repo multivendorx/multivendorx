@@ -195,7 +195,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 						<h2>
 							Activate {props.moduleName}
 						</h2>
-						<p>This feature is currently unavailable. To activate it, please enable the %s</p>
+						<p>This feature is currently unavailable. To activate it, please enable the {props.moduleName}</p>
 
 						<AdminButtonUI
 							position="center"
