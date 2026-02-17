@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import React from 'react';
+import React, { useState } from 'react';
 import { AdminButtonUI } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
@@ -17,14 +17,7 @@ interface PopupProps {
     onCancel?: () => void;
 }
 
-export const proPopupContent = {
-	proUrl: typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#',
-	title: __('Upgrade every marketplace needs!', 'multivendorx'),
-	moreText: __(
-		'Recurring revenue for you, empowered stores, automated operations',
-		'multivendorx'
-	),
-	upgradeBtnText: __('Yes, Upgrade Me!', 'multivendorx'),
+const proPopupContent = {
 	messages: [
 		{
 			icon: 'adminfont-commission',
@@ -159,6 +152,8 @@ export const proPopupContent = {
 };
 
 const ShowProPopup: React.FC<PopupProps> = (props) => {
+	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
+
 	return (
 		<>
 			{props.confirmMode ? (
@@ -187,15 +182,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 
 				<div className="popup-wrapper">
 					<div className="popup-header">
-						<i
-							className={`adminfont-${props.moduleName}`}
-						></i>
+						<i className={`adminfont-${props.moduleName}`} />
 					</div>
 					<div className="popup-body">
 						<h2>
-							Activate {props.moduleName}
+						{sprintf( __('Activate %s', 'multivendorx'), props.moduleName)}
 						</h2>
-						<p>This feature is currently unavailable. To activate it, please enable the {props.moduleName}</p>
+						<p>{sprintf( __('This feature is currently unavailable. To activate it, please enable the %s', 'multivendorx'), props.moduleName)}</p>
 
 						<AdminButtonUI
 							position="center"
@@ -217,18 +210,17 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 					{/* pro */}
 					<div className="popup-wrapper">
 						<div className="top-section">
-							<div className="heading">Upgrade every marketplace needs!</div>
-							<div className="description"> Recurring revenue for you, empowered stores, automated operations</div>
+							<div className="heading">{__( 'Upgrade every marketplace needs!', 'multivendorx')}</div>
+							<div className="description">{__( 'Recurring revenue for you, empowered stores, automated operations', 'multivendorx')} </div>
 							<div className="price">
-								{/* {selectedBtn.price} */}
-								$299
+								{selectedBtn.price}
 							</div>
 							<div className="select-wrapper">
-								For website with
-								{/* <select
+								{__('For website with', 'multivendorx')}
+								<select
 									value={selectedBtn.link}
 									onChange={(e) => {
-										const found = btnLink.find(
+										const found = proPopupContent.btnLink.find(
 											(b) =>
 												b.link === e.target.value
 										);
@@ -237,7 +229,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 										}
 									}}
 								>
-									{btnLink.map((b, idx) => (
+									{proPopupContent.btnLink.map((b, idx) => (
 										<option
 											key={idx}
 											value={b.link}
@@ -245,46 +237,36 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 											{b.site}
 										</option>
 									))}
-								</select> */}
-								1
-								site license
+								</select>
+								{__('site license', 'multivendorx')}
 							</div>
 							<a
 								className="admin-btn"
-								href={typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#'}
+								href={selectedBtn.link}
 								target="_blank"
 								rel="noreferrer"
 							>
-								Yes, Upgrade Me!
+								{__( 'Yes, Upgrade Me!', 'multivendorx')}
 								<i className="adminfont-arrow-right arrow-icon"></i>
 							</a>
 						</div>
-						<div className="popup-content">
+						<div className="popup-details">
 							<div className="heading-text">
-								Why should you upgrade?
+								{__( 'Why should you upgrade?', 'multivendorx')}
 							</div>
 
 							<ul>
-								{/* {props.messages?.map(
-									(message, index) => ( */}
-								<li>
+								{proPopupContent.messages.map(
+									(message, index) => (
+								<li key={index}>
 									<div className="title">
-										<i
-											// className={
-											//     message.icon  													
-											// }
-											className='adminfont-commission'
-										></i>
-										{/* {message.text} */}
-										Membership Rewards & Commission
+										<i className={message.icon} />
+										{message.text}
 									</div>
-									<div className="sub-text">
-										{/* {message.des} */}
-										Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.
-									</div>
+									<div className="desc"> {message.des}</div>
 								</li>
-								{/* )
-								)} */}
+								)
+								)}
 							</ul>
 						</div>
 					</div>
