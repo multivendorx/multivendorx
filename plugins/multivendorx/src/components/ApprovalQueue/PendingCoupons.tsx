@@ -26,8 +26,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-
-	// Reject popup state
 	const [rejectPopupOpen, setRejectPopupOpen] = useState(false);
 	const [rejectReason, setRejectReason] = useState('');
 	const [rejectCouponId, setRejectCouponId] = useState<number | null>(null);
@@ -278,9 +276,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(
-									e: React.ChangeEvent<HTMLTextAreaElement>
-								) => setRejectReason(e.target.value)}
+								onChange={(value:string) => setRejectReason(value)}
 								placeholder="Enter reason for rejecting this coupon..."
 								rows={4}
 							/>
