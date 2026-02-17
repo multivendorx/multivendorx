@@ -16,9 +16,6 @@ const ContactInformation = () => {
 	const id = appLocalizer.store_id;
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
-	const [stateOptions, setStateOptions] = useState<
-		{ label: string; value: string }[]
-	>([]);
 	const settings =
 		appLocalizer.settings_databases_value['store-permissions']
 			?.edit_store_info_activation || [];
@@ -45,27 +42,12 @@ const ContactInformation = () => {
 			return () => clearTimeout(timer);
 		}
 	}, [successMsg]);
-	useEffect(() => {
-		if (formData.country) {
-			fetchStatesByCountry(formData.country);
-		}
-	}, [formData.country]);
-
-	const fetchStatesByCountry = (countryCode: string) => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, `states/${countryCode}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((res) => {
-			setStateOptions(res.data || []);
-		});
-	};
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		key:string,
+		value:string
 	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
+		const updated = { ...formData, [key]: value };
 		setFormData(updated);
 		autoSave(updated);
 	};
@@ -92,9 +74,8 @@ const ContactInformation = () => {
 					cols={2}
 				>
 					<BasicInputUI
-						name="phone"
 						value={formData.phone}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('phone',value)}
 						readOnly={settings.includes('store_contact')}
 					/>
 				</FormGroup>
@@ -105,9 +86,8 @@ const ContactInformation = () => {
 				>
 					<BasicInputUI
 						type="email"
-						name="email"
 						value={formData.email}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('phone',value)}
 						readOnly={settings.includes('store_contact')}
 					/>
 				</FormGroup>

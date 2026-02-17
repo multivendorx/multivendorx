@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCell, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCard, TableCell, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
+import { TableRow } from '@/services/type';
 
 const AddOrder = () => {
+	const [taxLookup, setTaxLookup] = useState<Record<number, WCTax>>({});
+	const [rowIds, setRowIds] = useState<number[]>([]);
+
 	const [showAddProduct, setShowAddProduct] = useState(false);
 	const [allProducts, setAllProducts] = useState([]);
 	const [customers, setCustomers] = useState([]);
@@ -182,7 +186,7 @@ const AddOrder = () => {
 		...paymentMethods,
 	];
 
-	const [taxRates, setTaxRates] = useState([]);
+	const [taxRates, setTaxRates] = useState<TableRow[][]>([]);
 
 	useEffect(() => {
 		axios
@@ -190,7 +194,39 @@ const AddOrder = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: { per_page: 100 },
 			})
-			.then((res) => setTaxRates(res.data));
+			.then((res) => {
+				const taxes = Array.isArray(res.data) ? res.data : [];
+				const lookup: Record<string, any> = {};
+				const ids = taxes.map((tax: any) => {
+					lookup[tax.id] = tax;
+					return tax.id;
+				});
+
+				setRowIds(ids);
+				setTaxLookup(lookup);
+
+				// 2. Map your rows for the UI
+				const mappedRows: any[][] = taxes.map((tax: any) => [
+					{
+						value: tax.name,
+						display: tax.name,
+					},
+					{
+						value: tax.class,
+						display: tax.class,
+					},
+					{
+						value: tax.name,
+						display: `${tax.country}-${tax.state}-${tax.name}`,
+					},
+					{
+						value: tax.rate,
+						display: tax.rate,
+					}
+				]);
+
+				setTaxRates(mappedRows);
+			});
 	}, []);
 
 	const [showAddTax, setShowAddTax] = useState(false);
@@ -355,56 +391,25 @@ const AddOrder = () => {
 		}
 	}, [hasCustomer, shippingAddress]);
 
-	const taxColumns: ColumnDef<TaxRateRow>[] = [
+	const headers = [
+		{ key: 'name', label: 'Rate name' },
+		{ key: 'class', label: 'Tax class' },
+		{ key: 'code', label: 'Rate code' },
+		{ key: 'rate', label: 'Rate %' },
 		{
-			id: 'select',
-			header: ' ',
-			cell: ({ row }) => (
-				<input
-					type="radio"
-					name="tax"
-					checked={selectedTaxRate?.id === row.original.id}
-					onChange={() => setSelectedTaxRate(row.original)}
-				/>
-			),
-		},
-		{
-			header: __('Rate name', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.name}>
-					{row.original.name}
-				</TableCell>
-			),
-		},
-		{
-			id: 'class',
-			header: __('Tax class', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.class || 'Standard'}>
-					{row.original.class ||
-						__('Standard', 'multivendorx')}
-				</TableCell>
-			),
-		},
-		{
-			id: 'code',
-			header: __('Rate code', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell
-					title={`${row.original.country}-${row.original.state}-${row.original.name}`}
-				>
-					{`${row.original.country}-${row.original.state}-${row.original.name}`}
-				</TableCell>
-			),
-		},
-		{
-			id: 'rate',
-			header: __('Rate %', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={`${row.original.rate}%`}>
-					{row.original.rate}%
-				</TableCell>
-			),
+			key: 'action',
+			type: 'action',
+			label: 'Action',
+			actions: [
+				{
+					label: __('Click', 'multivendorx'),
+					icon: 'edit',
+					onClick: (id: number) => {
+						let tax = taxLookup[id];
+						if(tax)setSelectedTaxRate(tax)
+					},
+				},
+			],
 		},
 	];
 
@@ -756,9 +761,10 @@ const AddOrder = () => {
 
 									{taxRates.length > 0 ? (
 										<>
-											<Table
-												data={taxRates}
-												columns={taxColumns}
+											<TableCard
+												headers={headers}
+												rows={taxRates}
+												ids={rowIds}
 											/>
 											<AdminButtonUI
 												buttons={[

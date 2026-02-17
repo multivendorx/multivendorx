@@ -573,15 +573,6 @@ const Dashboard = () => {
 											title: __('Notifications', 'multivendorx'),
 											showCloseButton: false, // Add this to your PopupHeaderProps
 										}}
-										footer={
-											<a
-												href={`?page=multivendorx#&tab=notifications&subtab=activities`}
-												className="admin-btn btn-purple"
-											>
-												<i className="adminfont-eye"></i>
-												{__('View all activities', 'multivendorx')}
-											</a>
-										}
 									>
 										<Tabs
 											tabs={[
@@ -589,18 +580,25 @@ const Dashboard = () => {
 													id: 'notifications',
 													label: __("Notifications", 'multivendorx'),
 													icon: 'adminfont-notification',
-													content: <ul className="notification-list">{/* content */}</ul>
+													content: <ul className="notification-list"></ul>,
+													footer: {
+														url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=notifications`,
+														icon: 'adminfont-eye',
+														text: __('View all notifications', 'multivendorx')
+													}
 												},
 												{
 													id: 'activities',
 													label: __("Activities", 'multivendorx'),
 													icon: 'adminfont-activity',
-													content: <ul className="notification-list">{/* content */}</ul>
+													content: <ul className="notification-list"></ul>,
+													footer: {
+														url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=activity`,
+														icon: 'adminfont-eye',
+														text: __('View all activities', 'multivendorx')
+													}
 												},
 											]}
-											onTabChange={(tabId) => {
-												setActiveType(tabId === 'activities' ? 'activity' : 'notification');
-											}}
 										/>
 									</PopupUI>
 								</li>

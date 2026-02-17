@@ -111,7 +111,7 @@ export const BasicInputUI = forwardRef<HTMLInputElement, BasicInputProps>(
 									? maxNumber
 									: undefined
 							}
-							value={value}
+                            value={value}
 							onChange={(e) =>
 								onChange(e.target.value)
 							}
