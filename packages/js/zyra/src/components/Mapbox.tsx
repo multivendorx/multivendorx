@@ -42,7 +42,7 @@ declare global {
                 draggable: boolean;
                 color: string;
             }) => MapboxMarker;
-            NavigationControl: new () => unknown;
+            NavigationControl: new () => MapboxControl;
         };
     }
 }
