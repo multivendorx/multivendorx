@@ -68,7 +68,7 @@ export const Announcements: React.FC = () => {
 				params: { filter_status: 'active' },
 			})
 			.then((response) => {
-				const stores = response.data?.stores || [];
+				const stores = response.data || [];
 
 				const options: StoreOption[] = [
 					{ value: 0, label: __('All Stores', 'multivendorx') },
@@ -83,14 +83,6 @@ export const Announcements: React.FC = () => {
 			.catch(() => {
 				setError(__('Failed to load stores', 'multivendorx'));
 			});
-	};
-
-
-	const handleToggleChange = (value: string) => {
-		setFormData((prev) => ({
-			...prev,
-			status: value as 'draft' | 'pending' | 'publish',
-		}));
 	};
 
 	const [categoryCounts, setCategoryCounts] = useState<
@@ -169,9 +161,8 @@ export const Announcements: React.FC = () => {
 	};
 
 	// Handle form input change
-	const handleChange = (name: string, value: string) => {
+	const handleChange = (name: string, value: string | []) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
-		// Clear field error when user types
 		if (validationErrors[name]) {
 			setValidationErrors((prev) => {
 				const updated = { ...prev };
@@ -414,7 +405,7 @@ export const Announcements: React.FC = () => {
 				<Popup
 					confirmMode
 					title="Are you sure"
-					confirmMessage={ selectedAn ? `` : '' }
+					confirmMessage={selectedAn ? `` : ''}
 					confirmYesText="Delete"
 					confirmNoText="Cancel"
 					onConfirm={handleConfirmDelete}
@@ -476,118 +467,100 @@ export const Announcements: React.FC = () => {
 					/>
 				}
 			>
-				<>
-					<FormGroupWrapper>
-						<FormGroup label={__('Title', 'multivendorx')} htmlFor="title">
-							<BasicInputUI
-								type="text"
-								name="title"
-								value={formData.title}
-								onChange={(val) => handleChange('title', val as string)}
-								msg={error}
-							/>
-							{validationErrors.title && (
-								<div className="invalid-massage">
-									{validationErrors.title}
-								</div>
-							)}
-						</FormGroup>
-						<FormGroup label={__('Announcement message', 'multivendorx')} htmlFor="content">
-							<TextAreaUI
-								name="content"
-								value={formData.content}
-								onChange={(val) => handleChange('content', val as string)}
-								usePlainText={false}
-								tinymceApiKey={
-									appLocalizer.settings_databases_value[
-									'overview'
-									]['tinymce_api_section'] ?? ''
+				<FormGroupWrapper>
+					<FormGroup label={__('Title', 'multivendorx')} htmlFor="title">
+						<BasicInputUI
+							type="text"
+							name="title"
+							value={formData.title}
+							onChange={(val) => handleChange('title', val as string)}
+							msg={{ type: error, message: validationErrors.title }}
+						/>
+					</FormGroup>
+					<FormGroup label={__('Announcement message', 'multivendorx')} htmlFor="content">
+						<TextAreaUI
+							name="content"
+							value={formData.content}
+							onChange={(val) => handleChange('content', val as string)}
+							usePlainText={false}
+							tinymceApiKey={
+								appLocalizer.settings_databases_value[
+								'overview'
+								]['tinymce_api_section'] ?? ''
+							}
+							msg={{ type: error, message: validationErrors.content }}
+						/>
+					</FormGroup>
+					<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores" >
+						<SelectInputUI
+							name="stores"
+							type="multi-select"
+							options={storeOptions}
+							value={formData.stores.map((id) => id)}
+							onChange={(newValue: StoreOption[]) => {
+								if (!Array.isArray(newValue)) {
+									return;
 								}
-							/>
 
-							{validationErrors.content && (
-								<div className="invalid-massage">
-									{validationErrors.content}
-								</div>
-							)}
-						</FormGroup>
-						<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores" >
-							<SelectInputUI
-								name="stores"
-								type="multi-select"
-								options={storeOptions}
-								value={formData.stores.map((id) => id)}
-								onChange={(newValue: StoreOption[]) => {
-									if (!Array.isArray(newValue)) {
-										return;
-									}
+								const selectedIds = newValue.map((opt) =>
+									Number(opt.value)
+								);
+								const prevStores = formData.stores;
 
-									const selectedIds = newValue.map((opt) =>
-										Number(opt.value)
+								let nextStores = selectedIds;
+
+								if (
+									!prevStores.includes(0) &&
+									selectedIds.includes(0)
+								) {
+									nextStores = [0];
+								} else if (
+									prevStores.includes(0) &&
+									selectedIds.length > 1
+								) {
+									nextStores = selectedIds.filter(
+										(id) => id !== 0
 									);
-									const prevStores = formData.stores;
+								}
 
-									let nextStores = selectedIds;
+								setValidationErrors((prev) => {
+									const updated = { ...prev };
+									delete updated.stores;
+									return updated;
+								});
 
-									if (
-										!prevStores.includes(0) &&
-										selectedIds.includes(0)
-									) {
-										nextStores = [0];
-									} else if (
-										prevStores.includes(0) &&
-										selectedIds.length > 1
-									) {
-										nextStores = selectedIds.filter(
-											(id) => id !== 0
-										);
-									}
-
-									setValidationErrors((prev) => {
-										const updated = { ...prev };
-										delete updated.stores;
-										return updated;
-									});
-
-									setFormData((prev) => ({
-										...prev,
-										stores: nextStores,
-									}));
-								}}
-							/>
-
-							{validationErrors.stores && (
-								<div className="invalid-massage">
-									{validationErrors.stores}
-								</div>
-							)}
-						</FormGroup>
-						<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.', 'multivendorx')} htmlFor="status">
-							<ToggleSettingUI
-								options={[
-									{
-										key: 'draft',
-										value: 'draft',
-										label: __('Draft', 'multivendorx'),
-									},
-									{
-										key: 'pending',
-										value: 'pending',
-										label: __('Pending', 'multivendorx'),
-									},
-									{
-										key: 'publish',
-										value: 'publish',
-										label: __('Published', 'multivendorx'),
-									},
-								]}
-								value={formData.status}
-								onChange={handleToggleChange}
-							/>
-						</FormGroup>
-					</FormGroupWrapper>
-				</>
-				{error && <p className="error-text">{error}</p>}
+								setFormData((prev) => ({
+									...prev,
+									stores: nextStores,
+								}));
+							}}
+							msg={{ type: error, message: validationErrors.stores }}
+						/>
+					</FormGroup>
+					<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.', 'multivendorx')} htmlFor="status">
+						<ToggleSettingUI
+							options={[
+								{
+									key: 'draft',
+									value: 'draft',
+									label: __('Draft', 'multivendorx'),
+								},
+								{
+									key: 'pending',
+									value: 'pending',
+									label: __('Pending', 'multivendorx'),
+								},
+								{
+									key: 'publish',
+									value: 'publish',
+									label: __('Published', 'multivendorx'),
+								},
+							]}
+							value={formData.status}
+							onChange={(val: string) => handleChange('status', val)}
+						/>
+					</FormGroup>
+				</FormGroupWrapper>
 			</PopupUI >
 
 			<Container general>
