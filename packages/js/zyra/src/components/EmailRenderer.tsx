@@ -29,12 +29,12 @@ const EMAIL_BLOCK_GROUPS = [{
     id: 'email',
     label: 'Email Blocks',
     blocks: [
-        { id: 'heading', icon: 'adminfont-form-textarea', value: 'heading', label: 'Heading', fixedName: 'email-heading', placeholder: 'Enter your heading here' },
-        { id: 'richtext', icon: 'adminfont-t-letter-bold', value: 'richtext', label: 'Text', fixedName: 'email-text', placeholder: '<p>Enter your text content here</p>' },
-        { id: 'image', icon: 'adminfont-image', value: 'image', label: 'Image', fixedName: 'email-image', placeholder: '' },
-        { id: 'button', icon: 'adminfont-button', value: 'button', label: 'Button', fixedName: 'email-button', placeholder: 'Click me' },
-        { id: 'divider', icon: 'adminfont-divider', value: 'divider', label: 'Divider', fixedName: 'email-divider' },
-        { id: 'columns', icon: 'adminfont-blocks', value: 'columns', label: 'Columns', fixedName: 'email-columns' },
+        { id: 'heading', icon: 'form-textarea', value: 'heading', label: 'Heading', fixedName: 'email-heading', placeholder: 'Enter your heading here' },
+        { id: 'richtext', icon: 't-letter-bold', value: 'richtext', label: 'Text', fixedName: 'email-text', placeholder: '<p>Enter your text content here</p>' },
+        { id: 'image', icon: 'image', value: 'image', label: 'Image', fixedName: 'email-image', placeholder: '' },
+        { id: 'button', icon: 'button', value: 'button', label: 'Button', fixedName: 'email-button', placeholder: 'Click me' },
+        { id: 'divider', icon: 'divider', value: 'divider', label: 'Divider', fixedName: 'email-divider' },
+        { id: 'columns', icon: 'blocks', value: 'columns', label: 'Columns', fixedName: 'email-columns' },
     ]
 }];
 

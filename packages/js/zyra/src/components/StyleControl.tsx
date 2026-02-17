@@ -37,9 +37,9 @@ const StyleControls: React.FC<StyleControlsProps> = ({
       {includeTextStyles && (
         <div className="setting-group">
           <div className="setting-group-header" onClick={() => toggleGroup('text')}>
-            <h4>
+            <div className="group-title">
               Text
-            </h4>
+            </div>
             <i className={` adminfont-${expandedGroups.text ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
           </div>
           {expandedGroups.text && (
@@ -80,7 +80,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
               {/* font-size */}
               <div className="field-group">
                 <div className="field-wrapper">
-                  <label>Font Size (px)</label>
+                  <label>Font Size (rem)</label>
                   <input
                     type="number"
                     min={8}
@@ -160,9 +160,9 @@ const StyleControls: React.FC<StyleControlsProps> = ({
       {/* Background Group */}
       <div className="setting-group">
         <div className="setting-group-header" onClick={() => toggleGroup('background')}>
-          <h4>
+          <div className="group-title">
             Color
-          </h4>
+          </div>
           <i className={` adminfont-${expandedGroups.background ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
         </div>
 
@@ -201,9 +201,9 @@ const StyleControls: React.FC<StyleControlsProps> = ({
       {/* Padding & Margin Group */}
       <div className="setting-group">
         <div className="setting-group-header" onClick={() => toggleGroup('spacing')}>
-          <h4>
+          <div className="group-title">
             Spacing
-          </h4>
+          </div>
           <i className={` adminfont-${expandedGroups.spacing ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
         </div>
         {expandedGroups.spacing && (
@@ -327,16 +327,16 @@ const StyleControls: React.FC<StyleControlsProps> = ({
       {/* Border Group */}
       <div className="setting-group">
         <div className="setting-group-header" onClick={() => toggleGroup('border')}>
-          <h4>
+          <div className="group-title">
             Border
-          </h4>
+          </div>
           <i className={` adminfont-${expandedGroups.border ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
         </div>
         {expandedGroups.border && (
           <div className="setting-group-content">
             <div className="field-group">
               <div className="field-wrapper">
-                <label>Border Width (px)</label>
+                <label>Border Width (rem)</label>
                 <input
                   type="number"
                   min={0}
@@ -348,7 +348,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                 />
               </div>
               <div className="field-wrapper">
-                <label>Border Radius (px)</label>
+                <label>Border Radius (rem)</label>
                 <input
                   type="number"
                   min={0}

@@ -444,7 +444,7 @@
             border-radius: 0.313rem;
             background: #fff;
 
-            p {
+            .elements-name {
                 font-size: 0.84rem;
                 text-align: center;
             }
@@ -452,48 +452,6 @@
     }
 }
 
-/* Heading Block */
-.email-heading {
-    min-height: 30px;
-    border: 1px dashed transparent;
-    cursor: text;
-    outline: none;
-    transition: border-color 0.2s ease;
-    padding: 5px;
-}
-
-.email-heading:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
-}
-
-.email-heading:hover {
-    border-color: #e0e0e0;
-}
-
-/* Button Block */
-.email-button-wrapper {
-    padding: 10px 0;
-}
-
-.email-button {
-    display: inline-block;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-    user-select: none;
-    position: relative;
-}
-
-.email-button:hover {
-    opacity: 0.9;
-}
-
-.email-button:focus {
-    outline: 2px solid #007bff;
-    outline-offset: 2px;
-}
-
-/* Divider Block */
 .email-divider {
     border: none;
     transition: opacity 0.2s ease;
@@ -503,7 +461,6 @@
     opacity: 0.7;
 }
 
-/* Image Block */
 .email-image {
     min-height: 100px;
     display: flex;
@@ -530,13 +487,6 @@
     max-width: 300px;
 }
 
-.email-image input[type="file"]:hover {
-    border-color: #007bff;
-    background-color: #f8f9fa;
-}
-
-/* ==================== COLUMNS BLOCK ==================== */
-
 .email-columns {
     display: flex;
     gap: 10px;
@@ -548,7 +498,6 @@
     min-height: 100px;
 }
 
-/* Layout variations */
 .email-columns.layout-1 {
     flex-direction: column;
 }

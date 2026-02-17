@@ -163,7 +163,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                             className="section-container open">
                             {blocks.map(({ id: blockId, icon, label, value }) => (
                                 <div key={blockId || value} className="elements-items">
-                                    <i className={icon} /><p className="list-title">{label}</p>
+                                    <i className={`adminfont-${icon} `} /><p className="elements-name">{label}</p>
                                 </div>
                             ))}
                         </ReactSortable>
@@ -201,7 +201,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 <ReactSortable list={blocks} setList={handleSetList}
                     group={{ name: groupName, pull: true, put: true }} handle=".drag-handle" animation={150}>
                     {blocks.map((block, index) => (
-                        <div className="field-wrapper" key={block.id}>
+                        <>
+                        {/* // <div className="field-wrapper" key={block.id}> */}
                             {block.type === 'columns' ? (
                                 <ColumnRenderer block={block} parentIndex={index} blocks={blocks}
                                     isActive={openBlock?.id === block.id} groupName={groupName}
@@ -216,7 +217,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                                     onDelete={(e) => deleteBlock(index, e)}
                                     isActive={openBlock?.id === block.id} />
                             )}
-                        </div>
+                        {/* // </div> */}
+                        </>
                     ))}
                 </ReactSortable>
             </div>
