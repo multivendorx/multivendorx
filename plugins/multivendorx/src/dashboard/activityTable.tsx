@@ -1,157 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Table, getApiLink, TableCell } from 'zyra';
-import {
-	ColumnDef,
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
+import { getApiLink, TableCard } from 'zyra';
 
-type ActivitiesStore = {
-	id?: number;
-	store_name?: string;
-	title?: string;
-	type?: string;
-	date?: string; // Add date field
-};
+import { QueryProps, TableRow } from '@/services/type';
 
 const ActivitiesTable = (React.FC = () => {
-	const [data, setData] = useState<ActivitiesStore[] | null>(null);
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [pageCount, setPageCount] = useState(0);
+	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [totalRows, setTotalRows] = useState(0);
+	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	// Fetch total rows on mount
-	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'notifications'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { count: true, store_id: appLocalizer?.store_id },
-		})
-			.then((response) => {
-				setTotalRows(response.data || 0);
-				setPageCount(Math.ceil(response.data / pagination.pageSize));
-			})
-			.catch(() => {
-				setError(__('Failed to load total rows', 'multivendorx'));
-			});
-	}, []);
-
-	useEffect(() => {
-		const currentPage = pagination.pageIndex + 1;
-		const rowsPerPage = pagination.pageSize;
-		requestData(rowsPerPage, currentPage);
-		setPageCount(Math.ceil(totalRows / rowsPerPage));
-	}, [pagination]);
-
-	// Fetch data from backend.
-	function requestData(rowsPerPage = 10, currentPage = 1, typeCount = '') {
-		setData(null);
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'notifications'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				filter_status: typeCount === 'all' ? '' : typeCount,
-				store_id: appLocalizer?.store_id,
-			},
-		})
-			.then((response) => {
-				setData(response.data || []);
-			})
-			.catch(() => {
-				setError(__('Failed to load stores', 'multivendorx'));
-				setData([]);
-			});
-	}
-
-	// Handle pagination and filter changes
-	const requestApiForData = (
-		rowsPerPage: number,
-		currentPage: number
-		// filterData: FilterData
-	) => {
-		setData(null);
-		requestData(
-			rowsPerPage,
-			currentPage
-			// filterData?.typeCount,
-		);
-	};
-
-	// Column definitions with sorting enabled
-	const columns: ColumnDef<ActivitiesStore>[] = [
+	const headers = [
 		{
-			id: 'select',
-			header: ({ table }) => (
-				<input
-					type="checkbox"
-					checked={table.getIsAllRowsSelected()}
-					onChange={table.getToggleAllRowsSelectedHandler()}
-				/>
-			),
-			cell: ({ row }) => (
-				<input
-					type="checkbox"
-					checked={row.getIsSelected()}
-					onChange={row.getToggleSelectedHandler()}
-				/>
-			),
+			key: 'title',
+			label: 'Title',
 		},
 		{
-			header: __('Title', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.title || ''}>
-					{row.original.title || ''}
-				</TableCell>
-			),
-		},
-
-		{
-			header: __('Type', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.type || ''}>
-					{row.original.type || ''}
-				</TableCell>
-			),
+			key: 'type',
+			label: 'Type',
 		},
 		{
-			header: __('Date', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell title={row.original.date || ''}>
-					{row.original.date || ''}
-				</TableCell>
-			),
-		},
+			key: 'date',
+			label: 'Date',
+		}
 	];
+
+	const fetchData = (query: QueryProps) => {
+		setIsLoading(true);
+
+		axios
+			.get(getApiLink(appLocalizer, 'notifications'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: query.paged || 1,
+					row: query.per_page || 10,
+					store_id: appLocalizer?.store_id,
+				},
+			})
+			.then((response) => {
+				const items = response.data || [];
+
+				const mappedRows: any[][] = items.map((item: any) => [
+					{ display: item.title, value: item.title },
+					{ display: item.type, value: item.type },
+					{ display: item.date, value: item.date }
+				]);
+
+				setRows(mappedRows);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('Failed to fetch announcements', error);
+				setError(__('Failed to load announcements', 'multivendorx'));
+				setRows([]);
+				setTotalRows(0);
+				setIsLoading(false);
+			});
+	};
 
 	return (
 		<>
 			{error && <div className="error-notice">{error}</div>}
-			<Table
-				data={data}
-				columns={columns as ColumnDef<Record<string, any>, any>[]}
-				rowSelection={rowSelection}
-				onRowSelectionChange={setRowSelection}
-				defaultRowsPerPage={10}
-				pageCount={pageCount}
-				pagination={pagination}
-				onPaginationChange={setPagination}
-				handlePagination={requestApiForData}
-				perPageOption={[10, 25, 50]}
-				typeCounts={[]}
-				totalCounts={totalRows}
-				// searchFilter={searchFilter}
-				// realtimeFilter={realtimeFilter}
+			<TableCard
+				headers={headers}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={fetchData}
 			/>
 		</>
 	);

@@ -31,10 +31,10 @@ const SocialMedia = () => {
 	}, [successMsg]);
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		key:string,
+		value: string
 	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
+		const updated = { ...formData, [key]: value };
 		setFormData(updated);
 		autoSave(updated);
 	};
@@ -62,9 +62,8 @@ const SocialMedia = () => {
 						{__('Facebook', 'multivendorx')}
 					</label>
 					<BasicInputUI
-						name="facebook"
 						value={formData.facebook}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('facebook',value)}
 					/>
 				</div>
 			</div>
@@ -77,9 +76,8 @@ const SocialMedia = () => {
 						{__('X', 'multivendorx')}
 					</label>
 					<BasicInputUI
-						name="twitter"
 						value={formData.twitter}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('twitter',value)}
 					/>
 				</div>
 			</div>
@@ -92,9 +90,8 @@ const SocialMedia = () => {
 						{__('LinkedIn', 'multivendorx')}
 					</label>
 					<BasicInputUI
-						name="linkedin"
 						value={formData.linkedin}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('linkedin',value)}
 					/>
 				</div>
 			</div>
@@ -107,9 +104,8 @@ const SocialMedia = () => {
 						{__('YouTube', 'multivendorx')}
 					</label>
 					<BasicInputUI
-						name="youtube"
 						value={formData.youtube}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('youtube',value)}
 					/>
 				</div>
 			</div>
@@ -122,9 +118,8 @@ const SocialMedia = () => {
 						{__('Instagram', 'multivendorx')}
 					</label>
 					<BasicInputUI
-						name="instagram"
 						value={formData.instagram}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('instagram',value)}
 					/>
 				</div>
 			</div>
@@ -136,9 +131,8 @@ const SocialMedia = () => {
 						{__('Pinterest', 'multivendorx')}
 					</label>
 					<BasicInputUI
-						name="pinterest"
 						value={formData.pinterest}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('pinterest',value)}
 					/>
 				</div>
 			</div>
