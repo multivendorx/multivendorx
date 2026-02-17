@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../services/commonFunction';
-import {  ComponentStatusView, Skeleton } from 'zyra';
+import {  BasicInputUI, ComponentStatusView, Skeleton } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const SpmvProducts: React.FC = () => {
@@ -15,7 +15,6 @@ const SpmvProducts: React.FC = () => {
 	const ITEMS_PER_PAGE = 12;
 	const [pageIndex, setPageIndex] = useState(0);
 	const [newProductId, setNewProductId] = useState(null);
-	const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -71,10 +70,6 @@ const SpmvProducts: React.FC = () => {
 					setNewProductId(res.data.id);
 				});
 		} catch (err) {
-			console.error(
-				'Error creating auto-draft:',
-				err.response?.data || err
-			);
 		}
 	};
 
@@ -136,12 +131,11 @@ const SpmvProducts: React.FC = () => {
 					<div className="search-section-wrapper">
 						<div className="search-field">
 							<div className="search-section">
-								<input
+								<BasicInputUI
 									type="text"
 									placeholder="Search by an existing listing"
-									className="basic-input"
 									value={query}
-									onChange={(e) => setQuery(e.target.value)}
+									onChange={(value) => setQuery(value)}
 								/>
 								<i className="adminfont-search"></i>
 							</div>

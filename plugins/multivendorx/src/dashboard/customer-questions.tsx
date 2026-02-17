@@ -4,12 +4,8 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	TextArea,
-	BasicInput,
 	FormGroupWrapper,
 	FormGroup,
-	AdminButton,
 	TableCard,
 } from 'zyra';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
@@ -282,7 +278,7 @@ const CustomerQuestions: React.FC = () => {
 							<BasicInputUI
 								name="question"
 								value={qna}
-								onChange={(e) => setQna(e.target.value)}
+								onChange={(value) => setQna(value)}
 							/>
 						</FormGroup>
 
@@ -290,7 +286,7 @@ const CustomerQuestions: React.FC = () => {
 							<TextAreaUI
 								name="answer"
 								value={answer}
-								onChange={(e) => setAnswer(e.target.value)}
+								onChange={(value) => setAnswer(value)}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>

@@ -1,7 +1,6 @@
 import {
 	BarChart,
 	Bar,
-	Line,
 	XAxis,
 	YAxis,
 	CartesianGrid,
@@ -15,7 +14,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules, TableCard, } from 'zyra';
+import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules, TableCard } from 'zyra';
 import { TableRow } from '@/services/type';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -47,11 +46,9 @@ const Dashboard: React.FC = () => {
 	const [review, setReview] = useState<any[]>([]);
 	const [pendingRefund, setPendingRefund] = useState<any[]>([]);
 	const [announcement, setAnnouncement] = useState<any[]>([]);
-	const [topProducts, setTopProducts] = useState([]);
 	const [revenueData, setRevenueData] = useState([]);
-	const [recentOrder, setRecentOrders] = useState<any[]>([]);
 	const [store, setStore] = useState<any[]>([]);
-	const [totalOrder, setTotalOrder] = useState<any>([]);
+	const [totalOrder, setTotalOrder] = useState<number>(0);
 	const [customers, setCustomers] = useState<any>([]);
 	const [lastWithdraws, setLastWithdraws] = useState<any>([]);
 	const [activities, setActivities] = useState<any>([]);
@@ -63,101 +60,102 @@ const Dashboard: React.FC = () => {
 
 	const { modules } = useModules();
 
-	// Table data states
+	// Table data states - only for tables that need TableCard
 	const [recentOrderRows, setRecentOrderRows] = useState<TableRow[][]>([]);
 	const [recentOrderIds, setRecentOrderIds] = useState<number[]>([]);
-	
 	const [topProductRows, setTopProductRows] = useState<TableRow[][]>([]);
 	const [topProductIds, setTopProductIds] = useState<number[]>([]);
-	
-	const [withdrawalRows, setWithdrawalRows] = useState<TableRow[][]>([]);
-	const [withdrawalIds, setWithdrawalIds] = useState<number[]>([]);
-	
-	const [customerRows, setCustomerRows] = useState<TableRow[][]>([]);
-	const [customerIds, setCustomerIds] = useState<number[]>([]);
+
+	const access = appLocalizer.settings_databases_value?.['privacy']?.['customer_information_access'];
+	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
+
+	// Table headers
+	const recentOrderHeaders = [
+		{ key: 'id', label: __('Order Id', 'multivendorx') },
+		{ key: 'date', label: __('Order Date', 'multivendorx') },
+		{ key: 'products', label: __('Product Name', 'multivendorx') },
+		{ key: 'amount', label: __('Total Amount', 'multivendorx'), isNumeric: true },
+		{ key: 'status', label: __('Order Status', 'multivendorx') },
+	];
+
+	const topProductHeaders = [
+		{ key: 'rank', label: '#' },
+		{ key: 'name', label: __('Name', 'multivendorx') },
+		{ key: 'popularity', label: __('Popularity', 'multivendorx') },
+		{ key: 'sales', label: __('Sales', 'multivendorx') },
+	];
+
+	// Helper function to get dynamic greeting
+	const getGreeting = () => {
+		const hour = new Date().getHours();
+		if (hour >= 5 && hour < 12) return 'Good Morning';
+		if (hour >= 12 && hour < 17) return 'Good Afternoon';
+		if (hour >= 17 && hour < 21) return 'Good Evening';
+		return 'Good Night';
+	};
 
 	useEffect(() => {
 		setIsLoading(true);
-		
-		// Fetch all data in parallel for better performance
-		Promise.all([
-			fetchReviews(),
-			fetchPendingRefunds(),
-			fetchAnnouncements(),
-			fetchTopProducts(),
-			fetchRecentOrders(),
-			fetchStoreData(),
-			fetchTotalOrders(),
-			fetchLastWithdrawals(),
-			fetchCustomers(),
-			fetchActivities(),
-			fetchRevenueData()
-		]).finally(() => {
-			setIsLoading(false);
-		});
-	}, [dateRange]);
 
-	const fetchReviews = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'review'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: 1,
-					row: 4,
-					store_id: appLocalizer.store_id,
-					orderBy: 'date_created',
-					order: 'desc',
-					startDate: dateRange.startDate,
-					endDate: dateRange.endDate,
-					dashboard: true
-				},
+		// Reviews
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'review'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				page: 1,
+				row: 4,
+				store_id: appLocalizer.store_id,
+				orderBy: 'date_created',
+				order: 'desc',
+				startDate: dateRange.startDate,
+				endDate: dateRange.endDate,
+				dashboard: true
+			},
+		})
+			.then((response) => {
+				const items = response.data.items || [];
+				setReview(items);
+			})
+			.catch(() => {
+				setReview([]);
 			});
-			setReview(response.data.items || []);
-		} catch {
-			setReview([]);
-		}
-	};
 
-	const fetchPendingRefunds = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-					status: 'refund-requested',
-					page: 1,
-					per_page: 4,
-					orderby: 'date',
-					order: 'desc',
-					after: dateRange.startDate.toISOString().replace('Z', ''),
-					before: dateRange.endDate.toISOString().replace('Z', ''),
-				},
+		// Pending Refunds
+		axios({
+			method: 'GET',
+			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				meta_key: 'multivendorx_store_id',
+				value: appLocalizer.store_id,
+				status: 'refund-requested',
+				page: 1,
+				per_page: 4,
+				orderby: 'date',
+				order: 'desc',
+				after: dateRange.startDate.toISOString().replace('Z', ''),
+				before: dateRange.endDate.toISOString().replace('Z', ''),
+			},
+		})
+			.then((response) => {
+				const items = response.data || [];
+				const formatData = items.map((order) => ({
+					id: order.id,
+					name: `${order.billing.first_name} ${order.billing.last_name}`,
+					reason: order.meta_data.find((m) => m.key === '_customer_refund_reason')?.value || 'No reason',
+					time: order.date_created,
+					amount: order.total,
+				}));
+				setPendingRefund(formatData);
+			})
+			.catch(() => {
+				setPendingRefund([]);
 			});
-			
-			const items = response.data || [];
-			const formatData = items.map((order) => ({
-				id: order.id,
-				name: `${order.billing.first_name} ${order.billing.last_name}`,
-				reason: order.meta_data.find((m) => m.key === '_customer_refund_reason')?.value || 'No reason',
-				time: order.date_created,
-				amount: order.total,
-			}));
-			setPendingRefund(formatData);
-		} catch {
-			setPendingRefund([]);
-		}
-	};
 
-	const fetchAnnouncements = async () => {
-		if (!modules.includes('announcement')) return;
-		
-		try {
-			const response = await axios({
+		// Announcements
+		if (modules.includes('announcement')) {
+			axios({
 				method: 'GET',
 				url: getApiLink(appLocalizer, 'announcement'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -167,373 +165,314 @@ const Dashboard: React.FC = () => {
 					store_id: appLocalizer.store_id,
 					status: 'publish',
 				},
-			});
-			setAnnouncement(response.data || []);
-		} catch {
-			setAnnouncement([]);
+			})
+				.then((response) => {
+					setAnnouncement(response.data || []);
+				})
+				.catch(() => {
+					setAnnouncement([]);
+				});
 		}
-	};
 
-	const fetchTopProducts = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wc/v3/products`,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					per_page: 5,
-					meta_key: 'multivendorx_store_id',
-					orderby: 'popularity',
-					order: 'desc',
-					value: appLocalizer.store_id,
-					after: dateRange.startDate.toISOString().replace('Z', ''),
-					before: dateRange.endDate.toISOString().replace('Z', ''),
-				},
-			});
-			
-			const products = response.data;
-			const maxSales = Math.max(...products.map((p) => parseInt(p.total_sales) || 0));
-			
-			const processed = products.map((p) => {
-				const sales = parseInt(p.total_sales) || 0;
-				const popularity = maxSales > 0 ? Math.round((sales / maxSales) * 100) : 0;
-				return {
-					id: p.id,
-					name: p.name,
-					sales,
-					popularity,
-				};
-			});
-			setTopProducts(processed);
-			
-			// Prepare table rows
-			const rows: TableRow[][] = processed.map((product, index) => [
-				{
-					display: String(index + 1).padStart(2, '0'),
-					value: index + 1
-				},
-				{
-					display: product.name,
-					value: product.name
-				},
-				{
-					display: (
-						<div className="progress-bar">
-							<div className={`progress-bar admin-color${index + 1}`}>
-								<span
-									className={`progress-bar admin-bg-color${index + 1}`}
-									style={{ width: `${product.popularity}%` }}
-								/>
-							</div>
-						</div>
-					),
-					value: product.popularity
-				},
-				{
-					display: (
-						<div className={`admin-badge admin-color${index + 1}`}>
-							{product.popularity}%
-						</div>
-					),
-					value: product.popularity
-				}
-			]);
-			
-			setTopProductRows(rows);
-			setTopProductIds(processed.map(p => p.id));
-			
-		} catch (error) {
-			console.error('Error fetching top selling products:', error);
-		}
-	};
+		// Top Products
+		axios({
+			method: 'GET',
+			url: `${appLocalizer.apiUrl}/wc/v3/products`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				per_page: 5,
+				meta_key: 'multivendorx_store_id',
+				orderby: 'popularity',
+				order: 'desc',
+				value: appLocalizer.store_id,
+				after: dateRange.startDate.toISOString().replace('Z', ''),
+				before: dateRange.endDate.toISOString().replace('Z', ''),
+			},
+		})
+			.then((response) => {
+				const products = response.data;
+				const maxSales = Math.max(...products.map((p) => parseInt(p.total_sales) || 0));
 
-	const fetchRecentOrders = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					per_page: 5,
-					order: 'desc',
-					orderby: 'date',
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-					after: dateRange.startDate.toISOString().replace('Z', ''),
-					before: dateRange.endDate.toISOString().replace('Z', ''),
-				},
-			});
-			
-			const orders = response.data.map((order) => ({
-				id: order.id,
-				products: order.line_items?.map((item) => ({
-					name: item.name,
-					image: item.image?.src || item.image_url || '-',
-				})) || [],
-				store_name: order.store_name || '-',
-				amount: formatCurrency(order.total),
-				commission_amount: order.commission_amount ? formatCurrency(order.commission_amount) : '-',
-				date: order.date_created,
-				status: order.status,
-				currency_symbol: order.currency_symbol,
-			}));
-			
-			setRecentOrders(orders);
-			
-			// Prepare table rows
-			const rows: TableRow[][] = orders.map((item) => {
-				const orderUrl = `/dashboard/sales/orders/#view/${item.id}`;
-				
-				return [
-					{
-						display: (
-							<a href={orderUrl} target="_blank" rel="noopener noreferrer">
-								#{item.id} {__('Customer', 'multivendorx')}
-							</a>
-						),
-						value: item.id
-					},
-					{
-						display: item.date,
-						value: item.date
-					},
-					{
-						display: (
-							<>
-								{item.products && item.products.length > 0 ? (
-									item.products.map((product, index) => (
-										<div key={index} className="product-wrapper">
-											{product.name}
-										</div>
-									))
-								) : (
-									'-'
-								)}
-							</>
-						),
-						value: item.products.map(p => p.name).join(', ')
-					},
-					{
-						display: item.amount,
-						value: item.amount
-					},
-					{
-						display: (
-							<div className="admin-status">
-								{item.status}
-							</div>
-						),
-						value: item.status
-					}
-				];
-			});
-			
-			setRecentOrderRows(rows);
-			setRecentOrderIds(orders.map(o => o.id));
-			
-		} catch (error) {
-			console.error('Error fetching recent orders:', error);
-		}
-	};
-
-	const fetchStoreData = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: { dashboard: true, id: appLocalizer.store_id }
-			});
-			setStore(response.data || {});
-		} catch (error) {
-			console.error('Error fetching store data:', error);
-		}
-	};
-
-	const fetchTotalOrders = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					per_page: 1,
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-					after: dateRange.startDate.toISOString().replace('Z', ''),
-					before: dateRange.endDate.toISOString().replace('Z', ''),
-				},
-			});
-			setTotalOrder(parseInt(response.headers['x-wp-total']) || 0);
-		} catch {
-			setTotalOrder(0);
-		}
-	};
-
-	const fetchLastWithdrawals = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'transaction'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: 1,
-					row: 5,
-					store_id: appLocalizer.store_id,
-					transaction_type: 'Withdrawal',
-					transaction_status: 'Completed',
-					orderBy: 'created_at',
-					order: 'DESC',
-					start_date: dateRange.startDate,
-					end_date: dateRange.endDate,
-					dashboard: true
-				},
-			});
-			
-			const withdrawals = response.data.transaction || [];
-			setLastWithdraws(withdrawals);
-			
-			// Prepare table rows
-			const rows: TableRow[][] = withdrawals.map((item) => [
-				{
-					display: (
-						<InfoItem
-							title={
-								item.payment_method === 'stripe-connect'
-									? __('Stripe', 'multivendorx')
-									: item.payment_method === 'bank-transfer'
-										? __('Direct to Local Bank (INR)', 'multivendorx')
-										: item.payment_method === 'paypal-payout'
-											? __('PayPal', 'multivendorx')
-											: ''
-							}
-							descriptions={[{ value: item.date }]}
-							amount={formatCurrency(item.amount)}
-						/>
-					),
-					value: item.id
-				}
-			]);
-			
-			setWithdrawalRows(rows);
-			setWithdrawalIds(withdrawals.map(w => w.id));
-			
-		} catch {
-			setLastWithdraws([]);
-		}
-	};
-
-	const fetchCustomers = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					per_page: 50,
-					status: ['completed', 'processing'],
-					meta_key: 'multivendorx_store_id',
-					meta_value: appLocalizer.store_id,
-					after: dateRange.startDate.toISOString().replace('Z', ''),
-					before: dateRange.endDate.toISOString().replace('Z', ''),
-				},
-			});
-			
-			const customersMap = {};
-			
-			response.data.forEach((order) => {
-				const key = order.customer_id || order.billing?.email;
-				if (!key) return;
-				
-				if (!customersMap[key]) {
-					customersMap[key] = {
-						id: order.customer_id || key,
-						name: `${order.billing.first_name} ${order.billing.last_name}`,
-						email: order.billing.email,
-						total_spent: 0,
-						order_count: 0,
+				const processed = products.map((p) => {
+					const sales = parseInt(p.total_sales) || 0;
+					const popularity = maxSales > 0 ? Math.round((sales / maxSales) * 100) : 0;
+					return {
+						id: p.id,
+						name: p.name,
+						sales,
+						popularity,
 					};
-				}
-				
-				customersMap[key].total_spent += Number(order.total);
-				customersMap[key].order_count += 1;
-			});
-			
-			const topCustomers = Object.values(customersMap)
-				.sort((a, b) => b.total_spent - a.total_spent)
-				.slice(0, 5);
-			
-			setCustomers(topCustomers);
-			
-			// Prepare table rows
-			const rows: TableRow[][] = topCustomers.map((customer) => [
-				{
-					display: (
-						<InfoItem
-							title={customer.name}
-							avatar={{
-								text: customer.name?.charAt(0).toUpperCase(),
-								iconClass: 'red-color',
-							}}
-							descriptions={[
-								{
-									value: `${customer.order_count} ${__('orders', 'multivendorx')}`,
-								},
-							]}
-							amount={formatCurrency(customer.total_spent)}
-						/>
-					),
-					value: customer.id
-				}
-			]);
-			
-			setCustomerRows(rows);
-			setCustomerIds(topCustomers.map(c => c.id));
-			
-		} catch {
-			setCustomers([]);
-		}
-	};
+				});
 
-	const fetchActivities = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'notifications'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: 1,
-					row: 5,
-					store_id: appLocalizer?.store_id,
-					start_date: dateRange.startDate,
-					end_date: dateRange.endDate,
-				},
+				// Prepare table rows for TableCard
+				const rows = processed.map((product, index) => [
+					{
+						display: String(index + 1).padStart(2, '0'),
+						value: index + 1
+					},
+					{
+						display: product.name,
+						value: product.name
+					},
+					{
+						display: (
+							<div className="progress-bar">
+								<div className={`progress-bar admin-color${index + 1}`}>
+									<span
+										className={`progress-bar admin-bg-color${index + 1}`}
+										style={{ width: `${product.popularity}%` }}
+									/>
+								</div>
+							</div>
+						),
+						value: product.popularity
+					},
+					{
+						display: (
+							<div className={`admin-badge admin-color${index + 1}`}>
+								{product.popularity}%
+							</div>
+						),
+						value: product.popularity
+					}
+				]);
+				setTopProductRows(rows);
+				setTopProductIds(processed.map(p => p.id));
+			})
+			.catch((error) => {
 			});
-			setActivities(response.data || []);
-		} catch {
-			setActivities([]);
-		}
-	};
 
-	const fetchRevenueData = async () => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: getApiLink(appLocalizer, 'commission'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					format: 'reports',
-					store_id: appLocalizer.store_id,
-					dashboard: true,
-					start_date: dateRange.startDate,
-					end_date: dateRange.endDate,
-				},
+		// Recent Orders
+		axios({
+			method: 'GET',
+			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				per_page: 5,
+				order: 'desc',
+				orderby: 'date',
+				meta_key: 'multivendorx_store_id',
+				value: appLocalizer.store_id,
+				after: dateRange.startDate.toISOString().replace('Z', ''),
+				before: dateRange.endDate.toISOString().replace('Z', ''),
+			},
+		})
+			.then((response) => {
+				const orders = response.data.map((order) => ({
+					id: order.id,
+					products: order.line_items?.map((item) => ({
+						name: item.name,
+						image: item.image?.src || item.image_url || '-',
+					})) || [],
+					store_name: order.store_name || '-',
+					amount: formatCurrency(order.total),
+					commission_amount: order.commission_amount ? formatCurrency(order.commission_amount) : '-',
+					date: order.date_created,
+					status: order.status,
+					currency_symbol: order.currency_symbol,
+				}));
+
+				// Prepare table rows for TableCard
+				const rows = orders.map((item) => {
+					const orderUrl = `/dashboard/sales/orders/#view/${item.id}`;
+					return [
+						{
+							display: (
+								<a href={orderUrl} target="_blank" rel="noopener noreferrer">
+									#{item.id} {__('Customer', 'multivendorx')}
+								</a>
+							),
+							value: item.id
+						},
+						{
+							display: item.date,
+							value: item.date
+						},
+						{
+							display: (
+								<>
+									{item.products && item.products.length > 0 ? (
+										item.products.map((product, index) => (
+											<div key={index} className="product-wrapper">
+												{product.name}
+											</div>
+										))
+									) : (
+										'-'
+									)}
+								</>
+							),
+							value: item.products.map(p => p.name).join(', ')
+						},
+						{
+							display: item.amount,
+							value: item.amount
+						},
+						{
+							display: (
+								<div className="admin-status">
+									{item.status}
+								</div>
+							),
+							value: item.status
+						}
+					];
+				});
+				setRecentOrderRows(rows);
+				setRecentOrderIds(orders.map(o => o.id));
+			})
+			.catch((error) => {
 			});
-			setRevenueData(response.data);
-		} catch (error) {
-			console.error('Error fetching revenue data:', error);
-		}
-	};
+
+		// Store Data
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: { dashboard: true, id: appLocalizer.store_id }
+		})
+			.then((res) => {
+				const data = res.data || {};
+				setStore(data);
+			})
+			.catch((error) => {
+				console.error('Error fetching store data:', error);
+			});
+
+		// Total Orders
+		axios({
+			method: 'GET',
+			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				per_page: 1,
+				meta_key: 'multivendorx_store_id',
+				value: appLocalizer.store_id,
+				after: dateRange.startDate.toISOString().replace('Z', ''),
+				before: dateRange.endDate.toISOString().replace('Z', ''),
+			},
+		})
+			.then((response) => {
+				const totalOrders = parseInt(response.headers['x-wp-total']) || 0;
+				setTotalOrder(totalOrders);
+			})
+			.catch(() => {
+				setTotalOrder(0);
+			});
+
+		// Last Withdrawals - keep using InfoItem (no TableCard needed)
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'transaction'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				page: 1,
+				row: 5,
+				store_id: appLocalizer.store_id,
+				transaction_type: 'Withdrawal',
+				transaction_status: 'Completed',
+				orderBy: 'created_at',
+				order: 'DESC',
+				start_date: dateRange.startDate,
+				end_date: dateRange.endDate,
+				dashboard: true
+			},
+		})
+			.then((response) => {
+				const withdrawals = response.data.transaction || [];
+				setLastWithdraws(withdrawals);
+			})
+			.catch(() => setLastWithdraws([]));
+
+		// Customers - keep using InfoItem (no TableCard needed)
+		axios({
+			method: 'GET',
+			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				per_page: 50,
+				status: ['completed', 'processing'],
+				meta_key: 'multivendorx_store_id',
+				meta_value: appLocalizer.store_id,
+				after: dateRange.startDate.toISOString().replace('Z', ''),
+				before: dateRange.endDate.toISOString().replace('Z', ''),
+			},
+		})
+			.then((response) => {
+				const customersMap = {};
+
+				response.data.forEach((order) => {
+					const key = order.customer_id || order.billing?.email;
+					if (!key) return;
+
+					if (!customersMap[key]) {
+						customersMap[key] = {
+							id: order.customer_id || key,
+							name: `${order.billing.first_name} ${order.billing.last_name}`,
+							email: order.billing.email,
+							total_spent: 0,
+							order_count: 0,
+						};
+					}
+
+					customersMap[key].total_spent += Number(order.total);
+					customersMap[key].order_count += 1;
+				});
+
+				const topCustomers = Object.values(customersMap)
+					.sort((a, b) => b.total_spent - a.total_spent)
+					.slice(0, 5);
+
+				setCustomers(topCustomers);
+			})
+			.catch(() => {
+				setCustomers([]);
+			});
+
+		// Activities
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'notifications'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				page: 1,
+				row: 5,
+				store_id: appLocalizer?.store_id,
+				start_date: dateRange.startDate,
+				end_date: dateRange.endDate,
+			},
+		})
+			.then((response) => {
+				setActivities(response.data || []);
+			})
+			.catch(() => {
+				setActivities([]);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
+
+		// Revenue Data
+		axios({
+			method: 'GET',
+			url: getApiLink(appLocalizer, 'commission'),
+			headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			params: {
+				format: 'reports',
+				store_id: appLocalizer.store_id,
+				dashboard: true,
+				start_date: dateRange.startDate,
+				end_date: dateRange.endDate,
+			},
+		})
+			.then((response) => {
+				const data = response.data;
+				setRevenueData(data);
+			})
+			.catch((error) => {
+			});
+
+	}, [dateRange, modules]);
 
 	const analyticsData = [
 		{
@@ -541,16 +480,16 @@ const Dashboard: React.FC = () => {
 			number: formatCurrency(store?.commission?.total_order_amount || 0),
 			text: 'Total Revenue',
 			color: 'primary',
-			last30: formatCurrency(store?.commission?.last_30_days.total || 0),
-			prev30: formatCurrency(store?.commission?.previous_30_days.total || 0)
+			last30: formatCurrency(store?.commission?.last_30_days?.total || 0),
+			prev30: formatCurrency(store?.commission?.previous_30_days?.total || 0)
 		},
 		{
 			icon: 'order',
 			number: totalOrder,
 			text: 'Total Orders',
 			color: 'secondary',
-			last30: formatCurrency(store?.commission?.last_30_days.orders || 0),
-			prev30: formatCurrency(store?.commission?.previous_30_days.orders || 0)
+			last30: store?.commission?.last_30_days?.orders || 0,
+			prev30: store?.commission?.previous_30_days?.orders || 0
 		},
 		{
 			icon: 'store-seo',
@@ -565,18 +504,10 @@ const Dashboard: React.FC = () => {
 			number: formatCurrency(store?.commission?.commission_total || 0),
 			text: 'Commission Earned',
 			color: 'support',
-			last30: formatCurrency(store?.commission?.last_30_days.commission || 0),
-			prev30: formatCurrency(store?.commission?.previous_30_days.commission || 0)
+			last30: formatCurrency(store?.commission?.last_30_days?.commission || 0),
+			prev30: formatCurrency(store?.commission?.previous_30_days?.commission || 0)
 		},
 	];
-
-	const getGreeting = () => {
-		const hour = new Date().getHours();
-		if (hour >= 5 && hour < 12) return 'Good Morning';
-		if (hour >= 12 && hour < 17) return 'Good Afternoon';
-		if (hour >= 17 && hour < 21) return 'Good Evening';
-		return 'Good Night';
-	};
 
 	const chartData = [
 		{
@@ -594,25 +525,6 @@ const Dashboard: React.FC = () => {
 			value: Number(store?.commission?.total_order_amount || 0),
 			color: themeColors[2],
 		},
-	];
-
-	const access = appLocalizer.settings_databases_value['privacy']['customer_information_access'];
-	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
-
-	// Table headers
-	const recentOrderHeaders = [
-		{ key: 'id', label: __('Order Id', 'multivendorx') },
-		{ key: 'date', label: __('Order Date', 'multivendorx') },
-		{ key: 'products', label: __('Product Name', 'multivendorx') },
-		{ key: 'amount', label: __('Total Amount', 'multivendorx'), isNumeric: true },
-		{ key: 'status', label: __('Order Status', 'multivendorx') },
-	];
-
-	const topProductHeaders = [
-		{ key: 'rank', label: '#' },
-		{ key: 'name', label: __('Name', 'multivendorx') },
-		{ key: 'popularity', label: __('Popularity', 'multivendorx') },
-		{ key: 'sales', label: __('Sales', 'multivendorx') },
 	];
 
 	return (
@@ -643,14 +555,14 @@ const Dashboard: React.FC = () => {
 				</div>
 			</div>
 
-			<Container >
+			<Container>
 				<Column>
 					<Analytics
 						variant="dashboard"
 						data={analyticsData.map((item) => ({
 							icon: item.icon,
 							iconClass: `${item.color}-bg`,
-							isLoading: {isLoading},
+							isLoading: isLoading,
 							colorClass: item.color,
 							number: item.number,
 							text: __(item.text, 'multivendorx'),
@@ -720,7 +632,7 @@ const Dashboard: React.FC = () => {
 				</Column>
 
 				<Column grid={4}>
-					<Card title={__('Last Withdrawal', 'multivendorx')} >
+					<Card title={__('Last Withdrawal', 'multivendorx')}>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
 								lastWithdraws.map((item) => (
@@ -736,24 +648,23 @@ const Dashboard: React.FC = () => {
 														: ''
 										}
 										isLoading={isLoading}
-										descriptions={[
-											{ value: item.date },
-										]}
+										descriptions={[{ value: item.date }]}
 										amount={formatCurrency(item.amount)}
 									/>
 								))
-						) : (
-							<div className="no-data">
-								{__('No withdrawals found.', 'multivendorx')}
-							</div>
-						)}
+							) : (
+								<div className="no-data">
+									{__('No withdrawals found.', 'multivendorx')}
+								</div>
+							)}
+						</div>
 
 						{lastWithdraws && lastWithdraws.length > 0 && (
 							<AdminButtonUI
 								buttons={{
 									icon: 'preview',
 									text: __('View transaction history', 'multivendorx'),
-									onClick: window.location.href = '/dashboard/wallet/transactions/',
+									onClick: () => { window.location.href = '/dashboard/wallet/transactions/'; },
 								}}
 							/>
 						)}
@@ -971,7 +882,7 @@ const Dashboard: React.FC = () => {
 												value: `${customer.order_count} ${__('orders', 'multivendorx')}`,
 											},
 										]}
-										amount={customer.total_spent}
+										amount={formatCurrency(customer.total_spent)}
 									/>
 								))
 							) : (

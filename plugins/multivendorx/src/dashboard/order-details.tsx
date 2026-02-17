@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInputUI, SuccessNotice, TextAreaUI, getApiLink, useModules } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInputUI, SuccessNotice, TextAreaUI, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
 
@@ -169,7 +169,6 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 			);
 			setCustomerData(customer.data);
 		} catch (error) {
-			console.error('Error fetching order:', error);
 		}
 	};
 
@@ -323,10 +322,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 												},
 											]}
 											value={orderData?.status}
-											onChange={(newValue: any) => {
-												handleStatusChange(
-													newValue.value
-												);
+											onChange={(value) => {
+												handleStatusChange(value);
 											}}
 										/>
 									</div>
@@ -448,15 +445,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		]
 																			?.quantity ??
 																			0}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'quantity',
-																				+e
-																					.target
-																					.value
+																				+value
 																			)
 																		}
 																	/>
@@ -501,15 +494,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.total ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'total',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -546,15 +535,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.tax ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'tax',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -613,15 +598,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.total ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'total',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -657,15 +638,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.tax ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'tax',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -808,10 +785,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																name="refund-amount"
 																type="number"
 																value={refundDetails.refundAmount}
-																onChange={(e) =>
+																onChange={(value) =>
 																	setRefundDetails({
 																		...refundDetails,
-																		refundAmount: +e.target.value,
+																		refundAmount: +value,
 																	})
 																}
 															/>
@@ -826,10 +803,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															<TextAreaUI
 																value={refundDetails.reason}
 																placeholder={__('Reason for refund', 'multivendorx')}
-																onChange={(e) =>
+																onChange={(value) =>
 																	setRefundDetails({
 																		...refundDetails,
-																		reason: e.target.value,
+																		reason: value,
 																	})
 																}
 															/>
@@ -1124,10 +1101,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									<FormGroup label={__('Enter Tracking Url ', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInputUI
 											value={shipmentData.tracking_url}
-											onChange={(e) =>
+											onChange={(value) =>
 												setShipmentData((prev) => ({
 													...prev,
-													tracking_url: e.target.value,
+													tracking_url: value,
 												}))
 											}
 										/>
@@ -1135,10 +1112,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									<FormGroup label={__('Enter Tracking ID', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInputUI
 											value={shipmentData.tracking_id}
-											onChange={(e) =>
+											onChange={(value) =>
 												setShipmentData((prev) => ({
 													...prev,
-													tracking_id: e.target.value,
+													tracking_id: value,
 												}))
 											}
 										/>

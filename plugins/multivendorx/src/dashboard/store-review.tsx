@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	CommonPopup,
 	getApiLink,
-	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
 	AdminButtonUI,
@@ -355,7 +353,7 @@ const StoreReview: React.FC = () => {
 									name="reply"
 									inputClass="input-text"
 									value={replyText}
-									onChange={(e) => setReplyText(e.target.value)}
+									onChange={(value) => setReplyText(value)}
 									usePlainText={true}
 								/>
 							</FormGroup>

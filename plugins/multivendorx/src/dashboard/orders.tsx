@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { PopupUI, TableCard, useModules } from 'zyra';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { downloadCSV, formatCurrency, toWcIsoDate } from '../services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const Orders: React.FC = () => {
@@ -141,7 +141,6 @@ const Orders: React.FC = () => {
 			link.click();
 			URL.revokeObjectURL(link.href);
 		} catch (err) {
-			console.error('Failed to export all orders:', err);
 		}
 	};
 
@@ -197,7 +196,6 @@ const Orders: React.FC = () => {
 			);
 			setCategoryCounts(counts);
 		} catch (error) {
-			console.error('Failed to fetch order status counts:', error);
 		}
 	};
 
@@ -442,8 +440,7 @@ const Orders: React.FC = () => {
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
-			.catch((error) => {
-				console.error('Order fetch failed:', error);
+			.catch(() => {
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);
@@ -476,7 +473,6 @@ const Orders: React.FC = () => {
 
 			fetchData({});
 		} catch (err) {
-			console.error(err);
 		}
 	};
 

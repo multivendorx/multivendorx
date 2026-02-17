@@ -227,12 +227,9 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 				const sortedCoupons = response.data
 					.sort((a, b) => b.usage_count - a.usage_count)
 					.slice(0, 5); // take top 5 only
-
-				console.log('Top 5 Coupons:', sortedCoupons);
 				setTopCoupons(sortedCoupons);
 			})
 			.catch((error) => {
-				console.error('Error fetching top coupons:', error);
 			});
 
 		axios({
@@ -250,17 +247,13 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 				const sortedCustomers = response.data
 					.sort((a, b) => b.total_spend - a.total_spend)
 					.slice(0, 5); // Top 5 customers only
-
-				console.log('Top 5 Customers:', sortedCustomers);
 				setTopCustomers(sortedCustomers);
 			})
 			.catch((error) => {
-				console.error('Error fetching top customers:', error);
 			});
 
 		fetchCommissionDetails();
 	}, []);
-	console.log('site_url', appLocalizer.site_url);
 	return (
 		<>
 			<div className="page-title-wrapper">

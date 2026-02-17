@@ -276,9 +276,9 @@ const Withdrawls: React.FC = () => {
 								value={amount}
 								min={0}
 								max={data.available_balance}
-								onChange={(e) =>
+								onChange={(value) =>
 									handleAmountChange(
-										Number(e.target.value)
+										Number(value)
 									)
 								}
 							/>

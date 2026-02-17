@@ -96,10 +96,6 @@ const AllProduct: React.FC = () => {
 					setNewProductId(res.data.id);
 				});
 		} catch (err) {
-			console.error(
-				'Error creating auto-draft:',
-				err.response?.data || err
-			);
 		}
 	};
 
@@ -129,7 +125,6 @@ const AllProduct: React.FC = () => {
 			);
 			setCategoriesList(response.data);
 		} catch (error) {
-			console.error('Error fetching categories:', error);
 		}
 	};
 
@@ -186,7 +181,6 @@ const AllProduct: React.FC = () => {
 			setCategoryCounts(counts);
 
 		} catch (error) {
-			console.error('Unexpected error while fetching status counts:', error);
 		}
 	};
 
@@ -208,7 +202,6 @@ const AllProduct: React.FC = () => {
 				fetchLanguageWiseProductCounts(langs);
 			}
 		} catch (err) {
-			console.error('Failed to fetch WPML translations', err);
 		}
 	};
 
@@ -289,7 +282,6 @@ const AllProduct: React.FC = () => {
 			fetchWpmlTranslations();
 			fetchData({});
 		} catch (err: unknown) {
-			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
 		}
 	};
 
@@ -438,7 +430,6 @@ const AllProduct: React.FC = () => {
 				setIsLoading(false);
 			})
 			.catch((error) => {
-				console.error('Failed to fetch announcements', error);
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);

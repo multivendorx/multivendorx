@@ -507,7 +507,6 @@ const AddProduct = () => {
 					window.location.reload();
 				});
 		} catch (error) {
-			console.error('Error:', error.response);
 		}
 	};
 

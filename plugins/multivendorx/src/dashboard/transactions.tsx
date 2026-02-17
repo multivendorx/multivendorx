@@ -268,8 +268,7 @@ const Transactions: React.FC = () => {
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
-			.catch((error) => {
-				console.error('Product fetch failed:', error);
+			.catch(() => {
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);

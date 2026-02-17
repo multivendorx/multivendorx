@@ -70,7 +70,6 @@ const AllCoupon: React.FC = () => {
 			);
 			fetchData({});
 		} catch (err) {
-			console.error('Failed to delete coupon', err);
 		} finally {
 			setConfirmOpen(false);
 			setSelectedCoupon(null);
@@ -180,7 +179,6 @@ const AllCoupon: React.FC = () => {
 			setAddCoupon(true); // open popup
 			setActiveTab('general'); // optional: start with general tab
 		} catch (err) {
-			console.error('Failed to fetch coupon details:', err);
 			alert('Failed to fetch coupon details. Please try again.');
 		}
 	};
@@ -198,14 +196,14 @@ const AllCoupon: React.FC = () => {
 				individual_use: formData.individual_use === 'yes',
 				exclude_sale_items: formData.exclude_sale_items === 'yes',
 				free_shipping: formData.free_shipping === 'yes',
-				minimum_amount: formData.minimum_amount || undefined,
-				maximum_amount: formData.maximum_amount || undefined,
-				usage_limit: formData.usage_limit || undefined,
+				minimum_amount: formData.minimum_amount || '',
+				maximum_amount: formData.maximum_amount || '',
+				usage_limit: formData.usage_limit || '',
 				limit_usage_to_x_items:
-					formData.limit_usage_to_x_items || undefined,
+					formData.limit_usage_to_x_items || '',
 				usage_limit_per_user:
-					formData.usage_limit_per_user || undefined,
-				date_expires: formData.expiry_date || undefined,
+					formData.usage_limit_per_user || '',
+				date_expires: formData.expiry_date || '',
 				email_restrictions: formData.customer_email
 					? formData.customer_email.split(',')
 					: [],
@@ -260,11 +258,10 @@ const AllCoupon: React.FC = () => {
 				product_categories: [],
 				exclude_product_categories: [],
 				customer_email: '',
-				id: undefined,
+				id: '',
 			});
 			fetchData({});
 		} catch (err) {
-			console.error('Error saving coupon:', err);
 		}
 	};
 
@@ -280,8 +277,8 @@ const AllCoupon: React.FC = () => {
 								name="discount_type"
 								value={formData.discount_type}
 								options={discountOptions}
-								onChange={(e) =>
-									setFormData({ ...formData, discount_type: e?.value || '' })
+								onChange={(value) =>
+									setFormData({ ...formData, discount_type: value || '' })
 								}
 							/>
 							{validationErrors.discount_type && (
@@ -476,7 +473,6 @@ const AllCoupon: React.FC = () => {
 			setCategoryCounts(counts);
 
 		} catch (error) {
-			console.error('Unexpected error:', error);
 		}
 	};
 
@@ -506,7 +502,6 @@ const AllCoupon: React.FC = () => {
 			fetchCouponStatusCounts();
 			fetchData({});
 		} catch (err: unknown) {
-			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
 		}
 	};
 
@@ -594,8 +589,7 @@ const AllCoupon: React.FC = () => {
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
-			.catch((error) => {
-				console.error('Failed to fetch announcements', error);
+			.catch(() => {
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);

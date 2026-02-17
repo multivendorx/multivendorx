@@ -295,7 +295,6 @@ const AddOrder = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((res) => {
-				console.log('Order created:', res.data);
 				window.location.assign(window.location.pathname);
 			});
 	};

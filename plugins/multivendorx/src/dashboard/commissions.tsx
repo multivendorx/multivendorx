@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {ExportCSV, getApiLink,TableCard,useModules} from 'zyra';
+import { ExportCSV, getApiLink, TableCard, useModules } from 'zyra';
 
 import ViewCommission from './viewCommission';
 import { formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
@@ -31,9 +31,6 @@ const StoreCommission: React.FC = () => {
 	const [modalCommission, setModalCommission] =
 		useState<CommissionRow | null>(null);
 	const { modules } = useModules();
-	const [expandedRows, setExpandedRows] = useState<{
-		[key: number]: boolean;
-	}>({});
 
 
 	const headers = [
@@ -63,126 +60,6 @@ const StoreCommission: React.FC = () => {
 		},
 	];
 
-	const getCommissionSummaryDisplay = (
-		ann: any,
-		isExpanded: boolean,
-		setExpandedRows: React.Dispatch<
-			React.SetStateAction<Record<number, boolean>>
-		>,
-		modules: string[]
-	) => {
-		return (
-			<ul className={`details ${isExpanded ? '' : 'overflow'}`}>
-				{ann?.storeEarning && (
-					<li>
-						<div className="item">
-							<div className="des">Store Earning</div>
-							<div className="title">
-								{formatCurrency(ann.storeEarning)}
-							</div>
-						</div>
-					</li>
-				)}
-
-				{modules.includes('store-shipping') && ann?.shippingAmount && (
-					<li>
-						<div className="item">
-							<div className="des">Shipping</div>
-							<div className="title">
-								+ {formatCurrency(ann.shippingAmount)}
-							</div>
-						</div>
-					</li>
-				)}
-
-				{ann?.taxAmount &&
-					appLocalizer.settings_databases_value['commissions']
-						?.give_tax !== 'no_tax' && (
-						<li>
-							<div className="item">
-								<div className="des">Tax</div>
-								<div className="title">
-									+ {formatCurrency(ann.taxAmount)}
-								</div>
-							</div>
-						</li>
-					)}
-
-				{ann?.shippingTaxAmount && (
-					<li>
-						<div className="item">
-							<div className="des">Shipping Tax</div>
-							<div className="title">
-								+ {formatCurrency(ann.shippingTaxAmount)}
-							</div>
-						</div>
-					</li>
-				)}
-
-				{((modules.includes('marketplace-gateway') && ann?.gatewayFee) ||
-					(modules.includes('facilitator') && ann?.facilitatorFee) ||
-					(modules.includes('marketplace-fee') && ann?.platformFee)) && (
-						<li>
-							{modules.includes('marketplace-gateway') &&
-								ann?.gatewayFee && (
-									<div className="item">
-										<div className="des">Gateway Fee</div>
-										<div className="title">
-											- {formatCurrency(ann.gatewayFee)}
-										</div>
-									</div>
-								)}
-
-							{modules.includes('facilitator') &&
-								ann?.facilitatorFee && (
-									<div className="item">
-										<div className="des">
-											Facilitator Fee
-										</div>
-										<div className="title">
-											-{' '}
-											{formatCurrency(ann.facilitatorFee)}
-										</div>
-									</div>
-								)}
-
-							{modules.includes('marketplace-fee') &&
-								ann?.platformFee && (
-									<div className="item">
-										<div className="des">Platform Fee</div>
-										<div className="title">
-											-{' '}
-											{formatCurrency(ann.platformFee)}
-										</div>
-									</div>
-								)}
-						</li>
-					)}
-
-				<span
-					className="more-btn"
-					onClick={() =>
-						setExpandedRows((prev) => ({
-							...prev,
-							[ann.id!]: !prev[ann.id!],
-						}))
-					}
-				>
-					{isExpanded ? (
-						<>
-							{__('Less', 'multivendorx')}
-							<i className="adminfont-arrow-up" />
-						</>
-					) : (
-						<>
-							{__('More', 'multivendorx')}
-							<i className="adminfont-arrow-down" />
-						</>
-					)}
-				</span>
-			</ul>
-		);
-	};
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -227,10 +104,10 @@ const StoreCommission: React.FC = () => {
 						display: (
 							<span
 								className="link-item"
-								// onClick={() => {
-								// 	setSelectedCommissionId(ann.id ?? null);
-								// 	setViewCommission(true);
-								// }}
+							// onClick={() => {
+							// 	setSelectedCommissionId(ann.id ?? null);
+							// 	setViewCommission(true);
+							// }}
 							>
 								#{ann.id}
 							</span>
@@ -239,19 +116,12 @@ const StoreCommission: React.FC = () => {
 					},
 					// Order
 					{
-						display: ann.orderId ? (
-							<a
-								href={`/dashboard/sales/orders/#view/${ann.orderId}`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="link-item"
-							>
-								#{ann.orderId}
-							</a>
-						) : (
-							'-'
-						),
-						value: ann.orderId ?? '',
+						type: 'card',
+						data: {
+							name: `#${ann.orderId} – ${ann.storeName || '-'}`,
+							link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${ann.orderId}&action=edit`,
+						},
+						value: ann.orderId
 					},
 					// Order Amount
 					{
@@ -261,12 +131,12 @@ const StoreCommission: React.FC = () => {
 						value: ann.totalOrderAmount ?? 0,
 					},
 					{
-						display: getCommissionSummaryDisplay(
-							ann,
-							!!expandedRows[ann.id],
-							setExpandedRows,
-							modules
-						),
+						type: 'commission',
+						data: {
+							ann: ann,
+							modules: modules,
+							settings: appLocalizer.settings_databases_value['commissions'],
+						},
 						value: ann.id,
 					},
 					// Store Earning
@@ -351,45 +221,45 @@ const StoreCommission: React.FC = () => {
 
 	const commissionColumns = (commission: CommissionRow) => ({
 		[__('ID', 'multivendorx')]: commission.id ?? '',
-	
+
 		[__('Order', 'multivendorx')]: commission.orderId ?? '',
-	
+
 		[__('Order Amount', 'multivendorx')]:
 			commission.totalOrderAmount ?? '',
-	
+
 		[__('Commission Summary', 'multivendorx')]:
 			commission.storeEarning ?? '',
-	
+
 		[__('Total Earned', 'multivendorx')]:
 			commission.storePayable ?? '',
-	
+
 		[__('Status', 'multivendorx')]:
 			commission.status ?? '',
-	
+
 		[__('Date', 'multivendorx')]:
 			commission.createdAt ?? '',
 	});
-	
+
 	const buttonActions = [
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-	
+
 			onClickWithQuery: (query: QueryProps) =>
 				ExportCSV({
 					url: getApiLink(appLocalizer, 'commission'),
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-	
+
 					filename:
 						query.filter?.created_at?.startDate &&
-						query.filter?.created_at?.endDate
+							query.filter?.created_at?.endDate
 							? `commissions-${formatLocalDate(
-									query.filter.created_at.startDate
-							  )}-${formatLocalDate(
-									query.filter.created_at.endDate
-							  )}.csv`
+								query.filter.created_at.startDate
+							)}-${formatLocalDate(
+								query.filter.created_at.endDate
+							)}.csv`
 							: `commissions-${formatLocalDate(new Date())}.csv`,
-	
+
 					paramsBuilder: {
 						page: 1,
 						row: 100,
@@ -400,19 +270,19 @@ const StoreCommission: React.FC = () => {
 						searchValue: query.searchValue || '',
 						startDate: query.filter?.created_at?.startDate
 							? formatLocalDate(
-									query.filter.created_at.startDate
-							  )
+								query.filter.created_at.startDate
+							)
 							: '',
 						endDate: query.filter?.created_at?.endDate
 							? formatLocalDate(
-									query.filter.created_at.endDate
-							  )
+								query.filter.created_at.endDate
+							)
 							: '',
 						store_id: appLocalizer.store_id,
 						orderBy: query.orderby,
 						order: query.order,
 					},
-	
+
 					columns: commissionColumns,
 				}),
 		},
@@ -436,7 +306,7 @@ const StoreCommission: React.FC = () => {
 				<div className="buttons-wrapper">
 					<button
 						className="admin-btn btn-purple-bg"
-						// onClick={handleExportAll}
+					// onClick={handleExportAll}
 					>
 						<i className="adminfont-export"></i>
 						{__('Export', 'multivendorx')}
@@ -469,7 +339,7 @@ const StoreCommission: React.FC = () => {
 						paramsBuilder: { ids: selectedIds },
 						columns: commissionColumns,
 					})
-				}				
+				}
 			/>
 
 			{modalCommission && (
