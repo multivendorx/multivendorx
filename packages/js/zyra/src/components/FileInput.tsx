@@ -130,7 +130,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                     <>
                             {!isCurrentImage &&
                                 <>
-                                    <i className={`upload-icon adminfont-${getFileIcon(currentFile)}`} />
+                                    <i className={`upload-icon adminfont-attachment`} />
                                     <span className="title">{getFileName(currentFile)}
                                     </span>
                                 </>
@@ -158,7 +158,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                                     />
                                 ) : (
                                     <div>
-                                        <i className={`adminfont-pdf`}/>
+                                        <i className={`adminfont-attachment`}/>
                                         <span>
                                             {getFileName(file).substring(0, 15)}
                                         </span>
