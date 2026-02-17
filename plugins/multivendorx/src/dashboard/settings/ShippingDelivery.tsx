@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { 
+import {
 	BasicInputUI,
 	Column,
 	Container,
@@ -56,10 +56,10 @@ const ShippingDelivery = () => {
 	}, [appLocalizer.store_id]);
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		key: string,
+		value: string
 	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
+		const updated = { ...formData, [key]: value };
 		setFormData(updated);
 		autoSave(updated);
 	};
@@ -100,7 +100,7 @@ const ShippingDelivery = () => {
 							<FormGroup
 								label={__('Method Type', 'multivendorx')}
 								htmlFor="shipping_options"
-								desc={__('Choose your preferred shipping method.','multivendorx')}
+								desc={__('Choose your preferred shipping method.', 'multivendorx')}
 							>
 								<ToggleSettingUI
 									options={appLocalizer.shipping_methods}
@@ -151,7 +151,7 @@ const ShippingDelivery = () => {
 
 												placeholder="0.00"
 												value={formData.multivendorx_shipping_type_price || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('multivendorx_shipping_type_price', value)}
 											/>
 											<div className="settings-metabox-description">
 												{__(
@@ -174,7 +174,7 @@ const ShippingDelivery = () => {
 
 												placeholder="0.00"
 												value={formData.multivendorx_additional_product || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('multivendorx_additional_product', value)}
 											/>
 											<div className="settings-metabox-description">
 												{__(
@@ -197,7 +197,7 @@ const ShippingDelivery = () => {
 
 												placeholder="0.00"
 												value={formData.multivendorx_additional_qty || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('multivendorx_additional_qty', value)}
 											/>
 											<div className="settings-metabox-description">
 												{__(
@@ -219,7 +219,7 @@ const ShippingDelivery = () => {
 												name="free_shipping_amount"
 												placeholder={__('NO Free Shipping', 'multivendorx')}
 												value={formData.free_shipping_amount || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('free_shipping_amount', value)}
 											/>
 											<div className="settings-metabox-description">
 												{__(
@@ -241,7 +241,7 @@ const ShippingDelivery = () => {
 												name="local_pickup_cost"
 												placeholder="0.00"
 												value={formData.local_pickup_cost || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('local_pickup_cost', value)}
 											/>
 											<div className="settings-metabox-description">
 												{__(
@@ -301,7 +301,7 @@ const ShippingDelivery = () => {
 
 												placeholder="0.00"
 												value={formData.distance_default_cost || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('distance_default_cost', value)}
 												min="0"
 											/>
 											<div className="settings-metabox-description">
@@ -316,7 +316,7 @@ const ShippingDelivery = () => {
 										<FormGroup
 											label={__('Distance Type', 'multivendorx')}
 											htmlFor="distance_type"
-											desc={__('Choose kilometers or miles based on your region so shipping charges are calculated correctly.','multivendorx')}
+											desc={__('Choose kilometers or miles based on your region so shipping charges are calculated correctly.', 'multivendorx')}
 										>
 											<ToggleSettingUI
 												options={[
@@ -341,15 +341,15 @@ const ShippingDelivery = () => {
 
 												placeholder="0"
 												value={formData.distance_max || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('distance_max', value)}
 												min="0"
 											/>
 											<div className="settings-metabox-description">
-											{__(
-												'Set how far you are willing to deliver orders (leave blank to deliver everywhere).',
-												'multivendorx'
-											)}
-										</div>
+												{__(
+													'Set how far you are willing to deliver orders (leave blank to deliver everywhere).',
+													'multivendorx'
+												)}
+											</div>
 										</FormGroup>
 
 										{/* Local Pickup Cost */}
@@ -365,21 +365,21 @@ const ShippingDelivery = () => {
 												name="distance_local_pickup_cost"
 												placeholder="0.00"
 												value={formData.distance_local_pickup_cost || ''}
-												onChange={handleChange}
+												onChange={(value) => handleChange('distance_local_pickup_cost', value)}
 												min="0"
 											/>
 											<div className="settings-metabox-description">
-											{__(
-												'Set the fee for customers who pick up their order themselves (use 0 for free pickup, or leave blank to turn it off).',
-												'multivendorx'
-											)}
-										</div>
+												{__(
+													'Set the fee for customers who pick up their order themselves (use 0 for free pickup, or leave blank to turn it off).',
+													'multivendorx'
+												)}
+											</div>
 										</FormGroup>
 
 										{/* Distance–Cost Rules */}
 										<FormGroup
 											label={__('Distance–Cost Rules', 'multivendorx')}
-											desc= {__('Create custom shipping rates based on distance ranges. <br> For example, charge $5 for 0–10 km, $10 for 11–25 km, and $15 for 26–50 km. These rates replace the default fee so customers pay according to their delivery distance', 'multivendorx')}
+											desc={__('Create custom shipping rates based on distance ranges. <br> For example, charge $5 for 0–10 km, $10 for 11–25 km, and $15 for 26–50 km. These rates replace the default fee so customers pay according to their delivery distance', 'multivendorx')}
 										>
 											<DynamicRowSetting
 												keyName="distance_rules"
