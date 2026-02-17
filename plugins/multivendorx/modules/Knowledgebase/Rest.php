@@ -194,7 +194,7 @@ class Rest extends \WP_REST_Controller {
                     'id'      => $post->ID,
                     'title'   => $post->post_title,
                     'content' => $post->post_content,
-                    'date'    => Utill::multivendorx_rest_prepare_date_response( get_the_date( 'Y-m-d H:i:s', $post->ID ) ),
+                    'date'    => Utill::multivendorx_rest_prepare_date_response( $post->post_date ),
                     'status'  => $status,
                 );
             }
@@ -407,7 +407,7 @@ class Rest extends \WP_REST_Controller {
                 'title'   => $post->post_title,
                 'content' => $post->post_content,
                 'status'  => $post->post_status,
-                'date'    => Utill::multivendorx_rest_prepare_date_response( get_post_time( 'Y-m-d H:i:s', true, $post ) ),
+                'date'    => Utill::multivendorx_rest_prepare_date_response( $post->post_date ),
             )
         );
     }
