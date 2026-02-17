@@ -162,8 +162,9 @@ class Rewrites {
 
     // Load template
     public function load_store_template( $template ) {
+        $store_name = get_query_var( $this->custom_store_url );
 
-        if ( get_query_var( $this->custom_store_url ) ) {
+        if ( ! empty( $store_name ) ) {
 
             // Path to plugin block template
             $plugin_template = MultiVendorX()->plugin_path . 'templates/store/store.html';
@@ -178,9 +179,11 @@ class Rewrites {
             if ( $filtered_template && file_exists( $filtered_template ) ) {
                 return $filtered_template;
             }
+            
+            $store = Store::get_store( $store_name, 'slug' );
 
             // Classic PHP fallback
-            return MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => 1 ) );
+            return MultiVendorX()->util->get_template( 'store/store.php', array( 'store_id' => $store->get_id() ) );
         }
 
         return $template;
