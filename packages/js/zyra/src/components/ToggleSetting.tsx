@@ -55,7 +55,7 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
             const current = Array.isArray( value ) ? value : [];
             let newValues: string[];
             if ( current.includes( optionValue ) ) {
-                newValues = current.filter( ( v ) => v !== optionValue );
+                newValues = current.filter( ( compareValue ) => compareValue !== optionValue );
             } else {
                 newValues = [ ...current, optionValue ];
             }

@@ -1,5 +1,7 @@
 // External dependencies
 import React from 'react';
+
+// Internal dependencies
 import { FieldComponent } from './types';
 
 // Types
@@ -13,13 +15,13 @@ interface RadioOption {
 interface RadioInputProps {
     name?: string;
     idPrefix?: string;
-    type?: 'default';
+    type?: 'default' | 'radio';
     options: RadioOption[];
     value?: string;
     onChange: (val: string | number) => void;
 }
 
-const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
+export const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
     return (
         <>
             <div className="settings-form-group-radio">
@@ -33,13 +35,12 @@ const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
                             }`}
                         >
                             <input
-                                className="setting-form-input"
                                 id={ `${ props.idPrefix }-${ option.key }` }
                                 type="radio"
                                 name={ option.name }
                                 checked={ checked }
                                 value={ option.value }
-                                onChange={ ( e ) => props.onChange?.( e ) }
+                                onChange={ () => props.onChange?.( option.value ) }
                             />
                             <label
                                 htmlFor={ `${ props.idPrefix }-${ option.key }` }
@@ -55,22 +56,21 @@ const RadioInputUI: React.FC< RadioInputProps > = ( props ) => {
 };
 
 const RadioInput: FieldComponent = {
-    render: ({ field, value, onChange, canAccess }) => (
+    render: ({ field, value, onChange, canAccess }) => {
+        const options = field.options || [];
+        return(
         <RadioInputUI
             name={field.name}
             idPrefix={field.idPrefix}
-            value={
-                typeof value === 'number'
-                    ? value.toString()
-                    : value
-            }
-            options={Array.isArray(value) ? value : []} // array of radio options (ensure it's an array)
+            value={value}
+            options={options} // array of radio options (ensure it's an array)
             onChange={(val) => {
                 if (!canAccess) return;
                 onChange(val)
             }}
         />
-    ),
+        );
+    },
 
     validate: (field, value) => {
         if (field.required && !value?.[field.key]) {

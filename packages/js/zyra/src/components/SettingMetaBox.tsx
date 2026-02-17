@@ -1,15 +1,20 @@
-/**
- * External dependencies
- */
-import React, { useState, useEffect } from 'react';
+// External dependencies
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 
-import '../styles/web/SettingMetaBox.scss';
+// Internal dependencies
+import StyleControls from './StyleControl';
+import { BlockStyle } from './CanvasEditor/blockStyle';
+import { BasicInputUI } from './BasicInput';
+import { SelectInputUI } from './SelectInput';
+import { MultiCheckBoxUI } from './MultiCheckbox';
+import { ToggleSettingUI } from './ToggleSetting';
+import { AdminButtonUI } from './AdminButton';
 
-type FormFieldValue = string | number | boolean | Option[];
-type SettingFieldKey = keyof FormField | 'value';
+// TYPES
+type FormFieldValue = string | number | boolean | Option[] | Record<string, any>;
+type SettingFieldKey = keyof FormField | 'value' | 'style' | 'layout' | 'text' | 'level' | 'src' | 'alt' | 'url' | 'html';
 
-// Types
 interface Option {
     id: string;
     label: string;
@@ -18,6 +23,7 @@ interface Option {
 }
 
 interface FormField {
+    id: number;
     type: string;
     name: string;
     placeholder?: string;
@@ -31,6 +37,14 @@ interface FormField {
     disabled?: boolean;
     readonly?: boolean;
     options?: Option[];
+    html?: string;
+    text?: string;
+    level?: 1 | 2 | 3;
+    src?: string;
+    alt?: string;
+    url?: string;
+    style?: BlockStyle;
+    layout?: '1' | '2-50' | '2-66' | '3' | '4';
 }
 
 interface InputType {
@@ -41,93 +55,329 @@ interface InputType {
 interface SettingMetaBoxProps {
     formField?: FormField;
     inputTypeList?: InputType[];
-    onChange: ( field: SettingFieldKey, value: FormFieldValue ) => void;
-    onTypeChange?: ( value: string ) => void;
+    onChange: (field: SettingFieldKey, value: FormFieldValue) => void;
+    onTypeChange?: (value: string) => void;
     opened: { click: boolean };
     metaType?: string;
     option?: Option;
     setDefaultValue?: () => void;
 }
 
-interface FieldWrapperProps {
-    label: string;
-    className?: string;
-    children: React.ReactNode;
-}
+// CONSTANTS
+const RECAPTCHA_PATTERN = /^6[0-9A-Za-z_-]{39}$/;
 
-interface InputFieldProps {
+const LAYOUT_OPTIONS = [
+    { value: '1', label: '1 Column' },
+    { value: '2-50', label: '50 / 50' },
+    { value: '2-66', label: '66 / 34' },
+    { value: '3', label: '3 Columns' },
+    { value: '4', label: '4 Columns' },
+];
+
+const HEADING_LEVELS = [
+    { id: 'h1', value: 1, label: 'H1' },
+    { id: 'h2', value: 2, label: 'H2' },
+    { id: 'h3', value: 3, label: 'H3' },
+];
+
+// Blocks that have style controls
+const STYLED_BLOCKS = new Set(['richtext', 'heading', 'image', 'button', 'divider', 'columns']);
+
+// Blocks that have text style controls
+const TEXT_STYLED_BLOCKS = new Set(['richtext', 'heading', 'button']);
+
+const DEFAULT_EXPANDED_GROUPS = {
+    content: true,
+    layout: false,
+};
+
+// REUSABLE COMPONENTS
+const FieldWrapper: React.FC<{ label: string; className?: string; children: React.ReactNode }> = 
+    ({ label, children, className }) => (
+        <div className={`edit-field-wrapper ${className || ''}`} onClick={(e) => e.stopPropagation()}>
+            <label>{label}</label>
+            {children}
+        </div>
+    );
+
+const InputField: React.FC<{
     label: string;
     type?: string;
     value: string | number;
-    onChange: ( value: string ) => void;
+    onChange: (value: string) => void;
     className?: string;
     readonly?: boolean;
-}
-
-interface FormFieldSelectProps {
-    inputTypeList: InputType[];
-    formField: FormField;
-    onTypeChange: ( value: string ) => void;
-}
-
-// ---------------- Components ----------------
-
-const FieldWrapper: React.FC< FieldWrapperProps > = ( {
-    label,
-    children,
-    className,
-} ) => (
-    <div
-        className={ `edit-field-wrapper ${ className || '' }` }
-        role="button"
-        tabIndex={ 0 }
-        onClick={ ( e ) => e.stopPropagation() }
-    >
-        <label>{ label }</label>
-        { children }
-    </div>
-);
-
-const InputField: React.FC< InputFieldProps > = ( {
-    label,
-    type = 'text',
-    value,
-    onChange,
-    className,
-    readonly = false,
-} ) => (
-    <FieldWrapper label={ label } className={ className }>
-        <input
-            type={ type }
-            value={ value || '' }
-            className="basic-input"
-            onChange={ ( e ) => onChange( e.target.value ) }
-            readOnly={ readonly }
+    placeholder?: string;
+}> = ({ label, type = 'text', value, onChange, className, readonly = false, placeholder }) => (
+    <FieldWrapper label={label} className={className}>
+        <BasicInputUI
+            type="text"
+            value={value || ''}
+            onChange={(value) => onChange(value)}
+            readOnly={readonly}
+            placeholder={placeholder}
         />
     </FieldWrapper>
 );
 
-const FormFieldSelect: React.FC< FormFieldSelectProps > = ( {
-    inputTypeList,
-    formField,
-    onTypeChange,
-} ) => (
+const FormFieldSelect: React.FC<{
+    inputTypeList: InputType[];
+    formField: FormField;
+    onTypeChange: (value: string) => void;
+}> = ({ inputTypeList, formField, onTypeChange }) => (
     <FieldWrapper label="Type">
-        <select
-            onChange={ ( e ) => onTypeChange( e.target.value ) }
-            value={ formField.type }
-            className="basic-select"
-        >
-            { inputTypeList.map( ( inputType ) => (
-                <option key={ inputType.value } value={ inputType.value }>
-                    { inputType.label }
-                </option>
-            ) ) }
-        </select>
+        <SelectInputUI 
+            onChange={(value) => onTypeChange(value)} 
+            value={formField.type} 
+            options= {inputTypeList}
+        />
     </FieldWrapper>
 );
 
-const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
+const ContentGroup: React.FC<{ title: string; expanded: boolean; onToggle: () => void; children: React.ReactNode }> = 
+    ({ title, expanded, onToggle, children }) => (
+        <div className="setting-group" onClick={(e) => e.stopPropagation()}>
+            <div className="setting-group-header" onClick={(e) => { e.stopPropagation(); onToggle(); }}>
+                <h4>{title}</h4>
+                <i className={`adminfont-${expanded ? 'pagination-right-arrow' : 'keyboard-arrow-down'}`} />
+            </div>
+            {expanded && <div className="setting-group-content">{children}</div>}
+        </div>
+    );
+
+const VisibilityToggle: React.FC<{ disabled?: boolean; onChange: (disabled: boolean) => void }> = 
+    ({ disabled = false, onChange }) => (
+        <FieldWrapper label="Visibility">
+            <ToggleSettingUI
+                options={[
+                    { key: 'visible', value: "Visible", label: 'Visible', },
+                    { key: 'hidden', value: "Hidden", label: 'Hidden', },
+                ]}
+                onChange={(label) => onChange(label)}
+                    />
+        </FieldWrapper>
+    );
+
+// OPTION EDITOR COMPONENT
+const OptionEditor: React.FC<{ options: Option[]; onChange: (options: Option[]) => void }> = 
+    ({ options, onChange }) => {
+        const addOption = useCallback(() => {
+            onChange([
+                ...options,
+                { id: crypto.randomUUID(), label: 'Option value', value: 'value' },
+            ]);
+        }, [options, onChange]);
+
+        const updateOption = useCallback((index: number, updates: Partial<Option>) => {
+            const newOptions = [...options];
+            newOptions[index] = { ...newOptions[index], ...updates };
+            onChange(newOptions);
+        }, [options, onChange]);
+
+        const deleteOption = useCallback((index: number) => {
+            onChange(options.filter((_, i) => i !== index));
+        }, [options, onChange]);
+
+        return (
+            <div className="multioption-wrapper" onClick={(e) => e.stopPropagation()}>
+                <label>Set option</label>
+                <ReactSortable list={options} setList={onChange} handle=".drag-handle-option">
+                    {options.map((opt, index) => (
+                        <div className="option-list-wrapper drag-handle-option" key={opt.id || index}>
+                            <div className="option-icon admin-badge blue">
+                                <i className="adminfont-drag" />
+                            </div>
+                            <div className="option-label">
+                                <BasicInputUI
+                                    type="text"
+                                    value={opt.label}
+                                    onChange={(value) => updateOption(index, { label: value })}
+                                />
+                            </div>
+                            <div className="option-icon admin-badge red">
+                                <div
+                                    role="button"
+                                    className="delete-btn adminfont-delete"
+                                    tabIndex={0}
+                                    onClick={() => deleteOption(index)}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </ReactSortable>
+                 <AdminButtonUI
+                    buttons={[
+                        {
+                            text: 'Add new',
+                            icon: 'plus',
+                            color: 'purple',
+                            onClick: addOption
+                        },
+                    ]}
+                />
+            </div>
+        );
+    };
+
+// FIELD RENDERER FACTORY
+const createFieldRenderers = (): Record<string, React.FC<{
+    formField: FormField;
+    onChange: (key: SettingFieldKey, value: FormFieldValue) => void;
+    expandedGroups: Record<string, boolean>;
+    toggleGroup: (group: string) => void;
+}>> => ({
+    // Basic inputs
+    text: ({ formField, onChange }) => (
+        <>
+            <InputField label="Placeholder" value={formField.placeholder || ''} onChange={(v) => onChange('placeholder', v)} />
+            <InputField label="Character limit" type="number" value={formField.charlimit?.toString() || ''} onChange={(v) => onChange('charlimit', Number(v))} />
+        </>
+    ),
+    
+    email: ({ formField, onChange }) => (
+        <>
+            <InputField label="Placeholder" value={formField.placeholder || ''} onChange={(v) => onChange('placeholder', v)} />
+            <InputField label="Character limit" type="number" value={formField.charlimit?.toString() || ''} onChange={(v) => onChange('charlimit', Number(v))} />
+        </>
+    ),
+    
+    textarea: ({ formField, onChange }) => (
+        <>
+            <InputField label="Placeholder" value={formField.placeholder || ''} onChange={(v) => onChange('placeholder', v)} />
+            <InputField label="Character limit" type="number" value={formField.charlimit?.toString() || ''} onChange={(v) => onChange('charlimit', Number(v))} />
+            <InputField label="Row" type="number" value={formField.row?.toString() || ''} onChange={(v) => onChange('row', Number(v))} />
+            <InputField label="Column" type="number" value={formField.column?.toString() || ''} onChange={(v) => onChange('column', Number(v))} />
+        </>
+    ),
+    
+    // Content blocks
+    richtext: ({ formField, onChange, expandedGroups, toggleGroup }) => (
+        <>
+            <ContentGroup title="Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
+                <div className="field-wrapper">
+                    <label>HTML Content</label>
+                    <textarea
+                        value={formField.html || ''}
+                        onChange={(e) => onChange('html', e.target.value)}
+                        className="basic-input"
+                        placeholder="Enter HTML content"
+                        rows={6}
+                        style={{ fontFamily: 'monospace', width: '100%' }}
+                    />
+                </div>
+            </ContentGroup>
+        </>
+    ),
+    
+     heading: ({ formField, onChange, expandedGroups, toggleGroup }) => (
+        <ContentGroup title="Heading Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
+            <InputField 
+                label="Heading Text" 
+                value={formField.text || ''} 
+                onChange={(v) => onChange('text', v)} 
+                placeholder="Enter heading text"
+            />
+            <div className="field-wrapper">
+                <label>Heading Level</label>
+                <ToggleSettingUI
+                    options={HEADING_LEVELS}
+                    value={formField.level || 2}
+                    onChange={(val) => onChange('level', Number(val) as 1 | 2 | 3)}
+                />
+            </div>
+        </ContentGroup>
+    ),
+    
+    image: ({ formField, onChange, expandedGroups, toggleGroup }) => (
+        <>
+            <ContentGroup title="Image" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
+                <InputField label="Image URL" value={formField.src || ''} onChange={(v) => onChange('src', v)} />
+                <InputField label="Alt Text" value={formField.alt || ''} onChange={(v) => onChange('alt', v)} />
+            </ContentGroup>
+        </>
+    ),
+    
+    button: ({ formField, onChange, expandedGroups, toggleGroup }) => (
+        <>
+            <ContentGroup title="Button Content" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
+                <InputField label="Button Text" value={formField.text || formField.placeholder || ''} onChange={(v) => onChange('text', v)} />
+                <InputField label="Button URL" value={formField.url || ''} onChange={(v) => onChange('url', v)} />
+            </ContentGroup>
+        </>
+    ),
+    
+    divider: () => null, // Divider has no content settings, only style
+    
+    columns: ({ formField, onChange, expandedGroups, toggleGroup }) => (
+        <>
+            <ContentGroup title="Layout" expanded={expandedGroups.layout} onToggle={() => toggleGroup('layout')}>
+                <div className="field-wrapper">
+                    <label>Column Layout</label>
+                    <select value={formField.layout || '2-50'} className="basic-input" onChange={(e) => onChange('layout', e.target.value)}>
+                        {LAYOUT_OPTIONS.map(({ value, label }) => (
+                            <option key={value} value={value}>{label}</option>
+                        ))}
+                    </select>
+                </div>
+            </ContentGroup>
+        </>
+    ),
+    
+    // Selection fields
+    'multi-select': ({ formField, onChange }) => (
+        <OptionEditor options={formField.options || []} onChange={(o) => onChange('options', o)} />
+    ),
+    dropdown: ({ formField, onChange }) => (
+        <OptionEditor options={formField.options || []} onChange={(o) => onChange('options', o)} />
+    ),
+    checkboxes: ({ formField, onChange }) => (
+        <OptionEditor options={formField.options || []} onChange={(o) => onChange('options', o)} />
+    ),
+    radio: ({ formField, onChange }) => (
+        <OptionEditor options={formField.options || []} onChange={(o) => onChange('options', o)} />
+    ),
+    
+    // Special fields
+    recaptcha: ({ formField, onChange }) => {
+        const [isValid, setIsValid] = useState(() => RECAPTCHA_PATTERN.test(formField.sitekey || ''));
+        
+        const handleChange = useCallback((value: string) => {
+            onChange('sitekey', value);
+            setIsValid(RECAPTCHA_PATTERN.test(value));
+        }, [onChange]);
+        
+        return (
+            <>
+                <InputField 
+                    label="Site key" 
+                    value={formField.sitekey || ''} 
+                    onChange={handleChange} 
+                    className={!isValid ? 'highlight' : ''} 
+                />
+                <p>
+                    Register your site with Google to obtain the{' '}
+                    <a href="https://www.google.com/recaptcha" target="_blank" rel="noopener noreferrer">
+                        reCAPTCHA script
+                    </a>.
+                </p>
+            </>
+        );
+    },
+    
+    attachment: ({ formField, onChange }) => (
+        <InputField 
+            label="Max File Size" 
+            type="number" 
+            value={formField.filesize?.toString() || ''} 
+            onChange={(v) => onChange('filesize', Number(v))} 
+        />
+    ),
+    
+    default: () => null,
+});
+
+// MAIN COMPONENT
+const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
     formField,
     inputTypeList = [],
     onChange,
@@ -135,436 +385,146 @@ const SettingMetaBox: React.FC< SettingMetaBoxProps > = ( {
     opened,
     option,
     metaType = 'setting-meta',
-    setDefaultValue,
-} ) => {
-    const [ hasOpened, setHasOpened ] = useState( opened.click );
-
-    const isValidSiteKey = ( key: string ) =>
-        /^6[0-9A-Za-z_-]{39}$/.test( key );
-    const [ isSiteKeyEmpty, setIsSiteKeyEmpty ] = useState(
-        formField?.type === 'recaptcha' &&
-            ! isValidSiteKey( formField.sitekey || '' )
+}) => {
+    const [hasOpened, setHasOpened] = useState(opened.click);
+    const [expandedGroups, setExpandedGroups] = useState(DEFAULT_EXPANDED_GROUPS);
+    
+    const fieldRenderers = useMemo(() => createFieldRenderers(), []);
+    const FieldRenderer = useMemo(
+        () => fieldRenderers[formField?.type || 'default'] || fieldRenderers.default,
+        [fieldRenderers, formField?.type]
+    );
+    
+    useEffect(() => {
+        setHasOpened(opened.click);
+    }, [opened]);
+    
+    const toggleGroup = useCallback((groupName: string) => {
+        setExpandedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }));
+    }, []);
+    
+    const hasStyleControls = useMemo(() => 
+        STYLED_BLOCKS.has(formField?.type || ''), 
+        [formField?.type]
     );
 
-    useEffect( () => {
-        setHasOpened( opened.click );
-    }, [ opened ] );
-
-    useEffect( () => {
-        if ( formField?.type === 'recaptcha' ) {
-            onChange( 'disabled', isSiteKeyEmpty );
+    const hasTextStyles = useMemo(() =>
+        TEXT_STYLED_BLOCKS.has(formField?.type || ''),
+        [formField?.type]
+    );
+    
+    const handleLabelChange = useCallback((value: string) => {
+        onChange('label', value);
+    }, [onChange]);
+    
+    const handleNameChange = useCallback((value: string) => {
+        if (metaType === 'setting-meta') {
+            onChange('name', value);
+        } else {
+            onChange('label', value);
         }
-    }, [ isSiteKeyEmpty ] );
+    }, [metaType, onChange]);
+    
+    const handlePlaceholderChange = useCallback((value: string) => {
+        onChange('placeholder', value);
+    }, [onChange]);
+    
+    const handleDisabledChange = useCallback((disabled: boolean) => {
+        onChange('disabled', disabled);
+    }, [onChange]);
+    
+    const handleRequiredChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange('required', e.target.checked);
+    }, [onChange]);
+    
+    const handleValueChange = useCallback((value: string) => {
+        onChange('value', value);
+    }, [onChange]);
 
-    // ---------------- Conditional fields ----------------
-    const renderConditionalFields = () => {
-        const commonFields = (
-            <>
-                <InputField
-                    label="Placeholder"
-                    value={ formField?.placeholder || '' }
-                    onChange={ ( value ) => onChange( 'placeholder', value ) }
-                />
-                <InputField
-                    label="Character limit"
-                    type="number"
-                    value={ formField?.charlimit?.toString() || '' }
-                    onChange={ ( value ) =>
-                        onChange( 'charlimit', Number( value ) )
-                    }
-                />
-            </>
-        );
-
-        switch ( formField?.type ) {
-            case 'text':
-            case 'email':
-            case 'url':
-            case 'textarea':
-                return (
-                    <>
-                        { commonFields }
-                        { formField.type === 'textarea' && (
-                            <>
-                                <InputField
-                                    label="Row"
-                                    type="number"
-                                    value={ formField.row?.toString() || '' }
-                                    onChange={ ( value ) =>
-                                        onChange( 'row', Number( value ) )
-                                    }
-                                />
-                                <InputField
-                                    label="Column"
-                                    type="number"
-                                    value={ formField.column?.toString() || '' }
-                                    onChange={ ( value ) =>
-                                        onChange( 'column', Number( value ) )
-                                    }
-                                />
-                            </>
-                        ) }
-                    </>
-                );
-
-            case 'recaptcha':
-                return (
-                    <>
-                        <InputField
-                            label="Site key"
-                            value={ formField.sitekey || '' }
-                            className={ isSiteKeyEmpty ? 'highlight' : '' }
-                            onChange={ ( value ) => {
-                                onChange( 'sitekey', value );
-                                setIsSiteKeyEmpty( ! isValidSiteKey( value ) );
-                            } }
-                        />
-                        <p>
-                            Register your site with your Google account to
-                            obtain the{ ' ' }
-                            <a
-                                href="https://www.google.com/recaptcha"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                reCAPTCHA script
-                            </a>
-                            .
-                        </p>
-                    </>
-                );
-
-            case 'multiselect':
-            case 'dropdown':
-            case 'checkboxes':
-            case 'radio':
-                return (
-                    <div
-                        className="multioption-wrapper"
-                        onClick={ ( e ) => e.stopPropagation() }
-                    >
-                        <label htmlFor="">Set option</label>
-                        <ReactSortable
-                            list={ formField.options || [] }
-                            setList={ ( newList: Option[] ) =>
-                                onChange( 'options', newList )
-                            }
-                            handle=".drag-handle-option"
-                        >
-                            { ( formField.options || [] ).map(
-                                ( opt, index ) => (
-                                    <div
-                                        className="option-list-wrapper drag-handle-option"
-                                        key={ opt.id || index }
-                                    >
-                                        <div className="option-icon admin-badge blue">
-                                            <i className="adminfont-drag"></i>
-                                        </div>
-                                        <div className="option-label ">
-                                            <input
-                                                type="text"
-                                                className="basic-input"
-                                                value={ opt.label }
-                                                onChange={ ( e ) => {
-                                                    const newOptions = [
-                                                        ...( formField.options ||
-                                                            [] ),
-                                                    ];
-                                                    newOptions[ index ] = {
-                                                        ...newOptions[ index ],
-                                                        label: e.target.value,
-                                                    };
-                                                    onChange(
-                                                        'options',
-                                                        newOptions
-                                                    );
-                                                } }
-                                            />
-                                        </div>
-                                        <div className="option-icon admin-badge red">
-                                            <div
-                                                role="button"
-                                                className="delete-btn adminfont-delete"
-                                                tabIndex={ 0 }
-                                                onClick={ () => {
-                                                    const newOptions = (
-                                                        formField.options || []
-                                                    ).filter(
-                                                        ( _, i ) => i !== index
-                                                    );
-                                                    onChange(
-                                                        'options',
-                                                        newOptions
-                                                    );
-                                                } }
-                                            ></div>
-                                        </div>
-                                    </div>
-                                )
-                            ) }
-                        </ReactSortable>
-
-                        <div className="buttons-wrapper">
-                            <div
-                                className="add-more-option-section admin-btn btn-purple"
-                                role="button"
-                                tabIndex={ 0 }
-                                onClick={ () => {
-                                    const newOptions = [
-                                        ...( formField.options || [] ),
-                                        {
-                                            id: crypto.randomUUID(),
-                                            label: 'Option value',
-                                            value: 'value',
-                                        },
-                                    ];
-                                    onChange( 'options', newOptions );
-                                } }
-                            >
-                                Add new{ ' ' }
-                                <span>
-                                    <i className="admin-font adminfont-plus"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                );
-
-            case 'attachment':
-                return (
-                    <InputField
-                        label="Max File Size"
-                        type="number"
-                        value={ formField.filesize?.toString() || '' }
-                        onChange={ ( value ) =>
-                            onChange( 'filesize', Number( value ) )
-                        }
-                    />
-                );
-
-            default:
-                return null;
-        }
-    };
-
+    const handleStyleChange = useCallback((style: BlockStyle) => {
+        onChange('style', style);
+    }, [onChange]);
+    
+    if (!hasOpened || !formField) return null;
+    
     return (
-        <div
-            role="button"
-            tabIndex={ 0 }
-            onClick={ () => setHasOpened( ( prev ) => ! prev ) }
-        >
-            { hasOpened && (
-                <main className="meta-setting-modal-content">
-                    <div className="settings-title">
-                        { formField?.type
-                            ? `${
-                                  formField.type.charAt( 0 ).toUpperCase() +
-                                  formField.type.slice( 1 )
-                              } field settings`
-                            : 'Input field settings' }
-                    </div>
-
-                    { /* Always show label */ }
-                    <InputField
-                        label="Field label"
-                        value={ formField?.label || '' }
-                        onChange={ ( value ) => onChange( 'label', value ) }
-                    />
-
-                    { /*If readonly → show only Label, Placeholder, Visibility */ }
-                    { formField?.readonly ? (
-                        <>
-                            <InputField
-                                label="Placeholder"
-                                value={ formField?.placeholder || '' }
-                                onChange={ ( value ) =>
-                                    onChange( 'placeholder', value )
-                                }
-                            />
-
-                            <FieldWrapper label="Visibility">
-                                <div className="toggle-setting-container">
-                                    <div className="toggle-setting-wrapper">
-                                        <div>
-                                            <input
-                                                checked={
-                                                    ! formField?.disabled
-                                                }
-                                                onChange={ ( e ) =>
-                                                    onChange(
-                                                        'disabled',
-                                                        ! e.target.checked
-                                                    )
-                                                }
-                                                type="radio"
-                                                id="visible"
-                                                name="tabs"
-                                                className="toggle-setting-form-input"
-                                            />
-                                            <label htmlFor="visible">
-                                                Visible
-                                            </label>
-                                        </div>
-
-                                        <div>
-                                            <input
-                                                checked={ formField?.disabled }
-                                                onChange={ ( e ) =>
-                                                    onChange(
-                                                        'disabled',
-                                                        e.target.checked
-                                                    )
-                                                }
-                                                type="radio"
-                                                id="hidden"
-                                                name="tabs"
-                                                className="toggle-setting-form-input"
-                                            />
-                                            <label htmlFor="hidden">
-                                                Hidden
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </FieldWrapper>
-                        </>
+        <main className="setting-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="settings-title">
+                {formField.type 
+                    ? `${formField.type.charAt(0).toUpperCase() + formField.type.slice(1)} settings`
+                    : 'Input settings'}
+            </div>
+            
+            {/* Always show label */}
+            <InputField label="Field label" value={formField.label || ''} onChange={handleLabelChange} />
+            
+            {formField.readonly ? (
+                // Readonly mode
+                <>
+                    <InputField label="Placeholder" value={formField.placeholder || ''} onChange={handlePlaceholderChange} />
+                    <VisibilityToggle disabled={formField.disabled} onChange={handleDisabledChange} />
+                </>
+            ) : (
+                // Edit mode
+                <>
+                    {metaType === 'setting-meta' ? (
+                        <FormFieldSelect
+                            inputTypeList={inputTypeList}
+                            formField={formField}
+                            onTypeChange={(type) => onTypeChange?.(type)}
+                        />
                     ) : (
-                        <>
-                            { /*All normal editable fields go here when not readonly */ }
-                            { metaType === 'setting-meta' ? (
-                                <FormFieldSelect
-                                    inputTypeList={ inputTypeList }
-                                    formField={ formField as FormField }
-                                    onTypeChange={ ( type ) =>
-                                        onTypeChange?.( type )
-                                    }
-                                />
-                            ) : (
-                                <InputField
-                                    label="Value"
-                                    value={ option?.value || '' }
-                                    onChange={ ( value ) =>
-                                        onChange( 'value', value )
-                                    }
-                                />
-                            ) }
+                        <InputField label="Value" value={option?.value || ''} onChange={handleValueChange} />
+                    )}
+                    
+                    <InputField
+                        label={metaType === 'setting-meta' ? 'Name' : 'Label'}
+                        value={metaType === 'setting-meta' ? formField.name || '' : option?.label || ''}
+                        readonly={metaType === 'setting-meta' && formField.readonly}
+                        onChange={handleNameChange}
+                    />
+                    
+                    {/* Block-specific content settings */}
+                    {metaType === 'setting-meta' && formField.type && (
+                        <FieldRenderer
+                            formField={formField}
+                            onChange={onChange}
+                            expandedGroups={expandedGroups}
+                            toggleGroup={toggleGroup}
+                        />
+                    )}
 
-                            <InputField
-                                label={
-                                    metaType === 'setting-meta'
-                                        ? 'Name'
-                                        : 'Label'
-                                }
-                                value={
-                                    metaType === 'setting-meta'
-                                        ? formField?.name || ''
-                                        : option?.label || ''
-                                }
-                                readonly={
-                                    metaType === 'setting-meta' &&
-                                    formField?.readonly
-                                }
-                                onChange={ ( value ) => {
-                                    if ( metaType === 'setting-meta' ) {
-                                        onChange( 'name', value );
-                                    } else {
-                                        onChange( 'label', value );
-                                    }
-                                } }
+                    {/* Centralized Style Controls for styled blocks */}
+                    {metaType === 'setting-meta' && hasStyleControls && (
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <StyleControls
+                                style={formField.style || {}}
+                                onChange={handleStyleChange}
+                                includeTextStyles={hasTextStyles}
                             />
-
-                            { metaType === 'setting-meta' &&
-                                renderConditionalFields() }
-
-                            { metaType === 'setting-meta' && (
-                                <FieldWrapper label="Visibility">
-                                    <div className="toggle-setting-container">
-                                        <div className="toggle-setting-wrapper">
-                                            <div>
-                                                <input
-                                                    checked={
-                                                        formField?.type ===
-                                                        'recaptcha'
-                                                            ? ! isSiteKeyEmpty
-                                                            : ! formField?.disabled
-                                                    }
-                                                    onChange={ ( e ) =>
-                                                        onChange(
-                                                            'disabled',
-                                                            ! e.target.checked
-                                                        )
-                                                    }
-                                                    type="radio"
-                                                    id="visible"
-                                                    name="tabs"
-                                                    className="toggle-setting-form-input"
-                                                />
-                                                <label htmlFor="visible">
-                                                    Visible
-                                                </label>
-                                            </div>
-
-                                            <div>
-                                                <input
-                                                    checked={
-                                                        formField?.type ===
-                                                        'recaptcha'
-                                                            ? isSiteKeyEmpty
-                                                            : formField?.disabled
-                                                    }
-                                                    onChange={ ( e ) =>
-                                                        onChange(
-                                                            'disabled',
-                                                            e.target.checked
-                                                        )
-                                                    }
-                                                    type="radio"
-                                                    id="hidden"
-                                                    name="tabs"
-                                                    className="toggle-setting-form-input"
-                                                />
-                                                <label htmlFor="hidden">
-                                                    Hidden
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </FieldWrapper>
-                            ) }
-
-                            <FieldWrapper
-                                label={
-                                    metaType === 'setting-meta'
-                                        ? 'Required'
-                                        : 'Set default'
-                                }
-                            >
+                        </div>
+                    )}
+                    
+                    {/* Visibility and Required for non-styled blocks */}
+                    {metaType === 'setting-meta' && !hasStyleControls && (
+                        <>
+                            <VisibilityToggle disabled={formField.disabled} onChange={handleDisabledChange} />
+                            <FieldWrapper label="Required">
                                 <div className="input-wrapper">
-                                    <input
-                                        type="checkbox"
-                                        checked={
-                                            metaType === 'setting-meta'
-                                                ? formField?.required
-                                                : option?.isdefault
-                                        }
-                                        onChange={ ( e ) => {
-                                            if ( metaType === 'setting-meta' ) {
-                                                onChange(
-                                                    'required',
-                                                    e.target.checked
-                                                );
-                                            } else if ( setDefaultValue ) {
-                                                setDefaultValue();
-                                            }
-                                        } }
+                                    <MultiCheckBoxUI
+                                         options={[
+                                            { key: 'required', value: "Required", label: 'Required', },
+                                        ]}
+                                        value={formField.required ? ['required'] : []}
+                                        onChange={(vals) => onChange('required', vals.includes('required'))}
                                     />
                                 </div>
                             </FieldWrapper>
                         </>
-                    ) }
-                </main>
-            ) }
-        </div>
+                    )}
+                </>
+            )}
+        </main>
     );
 };
 

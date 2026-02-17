@@ -12,21 +12,23 @@ export default {
     headerIcon: 'database',
     submitUrl: 'settings',
     modal: [
-        {
-            key: 'transients',
-            type: 'button',
-            name: __('Clear Transients', 'multivendorx'),
-            label: __('Dashbaord transients', 'multivendorx'),
-            desc: __(
-                'Clear all store dashboards transient cache.',
-                'multivendorx'
-            ),
-            apilink: 'status',
-			method: 'POST'
-        },
+            {
+                key: 'transients',
+                type: 'button',
+                name: __('Clear Transients', 'multivendorx'),
+                label: __('Dashbaord transients', 'multivendorx'),
+                position: "left",
+                desc: __(
+                    'Clear all store dashboards transient cache.',
+                    'multivendorx'
+                ),
+                apilink: 'status',
+                method: 'POST'
+            },
         {
             key: 'visitor',
             type: 'button',
+            position: "left",
             name: __('Reset Database', 'multivendorx'),
             label: __('Reset visitors stats table', 'multivendorx'),
             desc: __(
@@ -45,6 +47,7 @@ export default {
         {
             key: 'default_pages',
             type: 'button',
+            position: "left",
             name: __('Create Default MultiVendorX Page', 'multivendorx'),
             label: __('MultiVendorX page', 'multivendorx'),
             desc: __(
@@ -198,6 +201,7 @@ export default {
         {
             key: 'sync_table',
             type: 'button',
+            position: "left",
             label: ' ',
             name: __('Sync Now', 'multivendorx'),
             apilink: 'notifications',

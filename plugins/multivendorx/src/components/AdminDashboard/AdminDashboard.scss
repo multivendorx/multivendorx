@@ -1173,37 +1173,6 @@
     }
 }
 
-// Edit Field Wrapper
-.field-wrapper {
-    margin-bottom: 1rem;
-    width: 100%;
-
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 0.375rem;
-        font-size: 0.813rem;
-        color: #555;
-    }
-
-    .basic-input {
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        border: 0.063rem solid #ddd;
-        border-radius: 0.25rem;
-        font-size: 0.813rem;
-
-        &:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-    }
-}
-
 // template-list end
 
 // transaction page payment section start
@@ -1297,4 +1266,5 @@
         padding-right: 0.5rem;
     }
 }
+
 // transaction popup style end
