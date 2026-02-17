@@ -139,34 +139,6 @@ const AdminDashboard = () => {
 		}
 	};
 
-	const handleOnChange = async (
-		event: React.ChangeEvent<HTMLInputElement>,
-		moduleId: string
-	) => {
-		const action = event.target.checked ? 'activate' : 'deactivate';
-		try {
-			if (action === 'activate') {
-				insertModule?.(moduleId);
-			} else {
-				removeModule?.(moduleId);
-			}
-			localStorage.setItem(`force_multivendorx_context_reload`, 'true');
-			await sendApiResponse(
-				appLocalizer,
-				getApiLink(appLocalizer, 'modules'),
-				{
-					id: moduleId,
-					action,
-				}
-			);
-			setSuccessMsg(`Module ${action}d`);
-			setTimeout(() => setSuccessMsg(''), 2000);
-		} catch (error) {
-			setSuccessMsg(`Error: Failed to ${error} module`);
-			setTimeout(() => setSuccessMsg(''), 2000);
-		}
-	};
-
 	const resources = [
 		{
 			title: 'Documentation',
@@ -447,7 +419,6 @@ const AdminDashboard = () => {
 			proModule: true,
 		},
 	];
-
 
 	const [activeTab, setActiveTab] = useState('dashboard');
 	const isPro = !!appLocalizer.khali_dabba;
