@@ -44,7 +44,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
         setActiveIndex(0);
     }, [props.imageSrc]);
 
-    const update = (fileList: string[]) => {
+    const updateFile = (fileList: string[]) => {
         setFiles(fileList);
         props.onChange?.(props.multiple ? fileList : (fileList[0] || ''));
     };
@@ -63,7 +63,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
             result = props.multiple ? [...files, ...urls] : [urls[0]];
             setActiveIndex(result.length - 1);
         }
-        update(result);
+        updateFile(result);
         if (inputRef.current) inputRef.current.value = '';
     };
 
@@ -88,7 +88,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
             } else {
                 result = props.multiple ? [...files, ...urls] : [urls[0]];
             }
-            update(result);
+            updateFile(result);
         });
         frame.open();
     };
@@ -97,7 +97,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
         const url = files[index];
         if (url?.startsWith('blob:')) URL.revokeObjectURL(url.split('#')[0]);
         const result = files.filter((_, i) => i !== index);
-        update(result);
+        updateFile(result);
         if (activeIndex >= result.length) setActiveIndex(Math.max(0, result.length - 1));
     };
 
