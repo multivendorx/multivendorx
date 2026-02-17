@@ -182,14 +182,11 @@ const StoreSettings = ({
 		}
 	}, [location.state]);
 
-	const handleAddressChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
+	const handleAddressChange = (key:string,value) => {
 
 		const newAddressData = {
 			...addressData,
-			[name]: value,
+			[key]: value,
 		};
 
 		setAddressData(newAddressData);
@@ -197,7 +194,7 @@ const StoreSettings = ({
 		// Also update formData to maintain consistency
 		const updatedFormData = {
 			...formData,
-			[name]: value,
+			[key]: value,
 		};
 
 		setFormData(updatedFormData);
@@ -287,10 +284,7 @@ const StoreSettings = ({
 		}
 	};
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
+	const handleChange = (name:string,value:string) => {
 		const updated = { ...formData, [name]: value };
 		setFormData(updated);
 
@@ -438,13 +432,9 @@ const StoreSettings = ({
 								name="phone"
 								type="number"
 								value={formData.phone}
-								onChange={handleChange}
+								onChange={(value)=>handleChange('phone',value)}
+								msg={{type:'error',message:errorMsg.phone}}
 							/>
-							{errorMsg.phone && (
-								<p className="invalid-massage">
-									{errorMsg.phone}
-								</p>
-							)}
 						</FormGroup>
 						{/* Hidden coordinates */}
 						<input
@@ -465,7 +455,7 @@ const StoreSettings = ({
 								<BasicInputUI
 									name="address"
 									value={addressData.address}
-									onChange={handleAddressChange}
+									onChange={(value:string)=>handleAddressChange('address',value)}
 								/>
 							</FormGroup>
 
@@ -473,14 +463,14 @@ const StoreSettings = ({
 								<BasicInputUI
 									name="city"
 									value={addressData.city}
-									onChange={handleAddressChange}
+									onChange={(value:string)=>handleAddressChange('city',value)}
 								/>
 							</FormGroup>
 							<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
 								<BasicInputUI
 									name="zip"
 									value={addressData.zip}
-									onChange={handleAddressChange}
+									onChange={(value:string)=>handleAddressChange('zip',value)}
 								/>
 							</FormGroup>
 
@@ -574,7 +564,7 @@ const StoreSettings = ({
 									<BasicInputUI
 										name="slug"
 										value={formData.slug}
-										onChange={handleChange}
+										onChange={(value)=>handleChange('value',value)}
 									/>
 									<div className="settings-metabox-description slug">
 										{__('Store URL', 'multivendorx')} :{' '}
@@ -629,7 +619,7 @@ const StoreSettings = ({
 												formData[network]?.trim() ||
 												defaultUrl
 											}
-											onChange={handleChange}
+											onChange={(value)=>handleChange(network,value)}
 										/>
 									</div>
 								</FormGroupWrapper>

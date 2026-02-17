@@ -3,42 +3,40 @@ import axios from 'axios';
 import { getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, Skeleton, PdfDownloadButton, AdminButtonUI, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
-import { printContent } from '@/services/commonFunction';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 
-
 const styles = StyleSheet.create({
-    page: { padding: 24, fontSize: 12 },
-    title: { fontSize: 16, marginBottom: 12 },
-    row: { marginBottom: 6 },
-    label: { fontWeight: 'bold' },
+	page: { padding: 24, fontSize: 12 },
+	title: { fontSize: 16, marginBottom: 12 },
+	row: { marginBottom: 6 },
+	label: { fontWeight: 'bold' },
 });
 
 
 const RegistrationPdf: React.FC<{ registrationData: any }> = ({ registrationData }) => {
-    const data = registrationData || {};
-    return (
-        <Document>
-            <Page size="A4" style={styles.page}>
-                <Text style={styles.title}>Registration Data</Text>
-                {Object.keys(data).length === 0 ? (
-                    <Text>
-                        Store submitted application without filling out registration form.
-                    </Text>
-                ) : (
-                    Object.entries(data).map(([label, value], index) => (
-                        <View key={index} style={styles.row}>
-                            <Text>
-                                <Text style={styles.label}>{label}: </Text>
-                                {String(value || '[Not Provided]')}
-                            </Text>
-                        </View>
-                    ))
-                )}
-            </Page>
-        </Document>
-    );
+	const data = registrationData || {};
+	return (
+		<Document>
+			<Page size="A4" style={styles.page}>
+				<Text style={styles.title}>Registration Data</Text>
+				{Object.keys(data).length === 0 ? (
+					<Text>
+						Store submitted application without filling out registration form.
+					</Text>
+				) : (
+					Object.entries(data).map(([label, value], index) => (
+						<View key={index} style={styles.row}>
+							<Text>
+								<Text style={styles.label}>{label}: </Text>
+								{String(value || '[Not Provided]')}
+							</Text>
+						</View>
+					))
+				)}
+			</Page>
+		</Document>
+	);
 };
 const StoreRegistration = ({ id }: { id: string | null }) => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({});
@@ -97,14 +95,11 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 		}
 	}, [successMsg]);
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
+	const handleChange = (key: string, value: string) => {
 		setFormData((prev) => {
 			const updated = {
 				...(prev || {}),
-				[name]: value ?? '',
+				[key]: value ?? '',
 			};
 			autoSave(updated);
 			return updated;
@@ -209,14 +204,14 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 								{formData.registration_data &&
 									Object.keys(formData.registration_data)
 										.length > 0 && (
-											<div className="admin-btn btn-purple">
+										<div className="admin-btn btn-purple">
 											<i className="adminfont-download"></i>
 											<PdfDownloadButton
 												PdfComponent={RegistrationPdf}
 												fileName="registration-data.pdf"
 												data={{ registrationData: formData.registration_data }}
 											/>
-										</div>										
+										</div>
 									)
 								}
 							</div>
@@ -347,7 +342,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 															formData.store_application_note ||
 															''
 														}
-														onChange={handleChange}
+														onChange={(value: string) => handleChange('store_application_note', value)}
 													/>
 												</FormGroup>
 												<FormGroup>
@@ -358,7 +353,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 															checked={
 																formData.store_permanent_reject
 															}
-															onChange={handleChange}
+															onChange={(value: string) => handleChange('store_permanent_reject', value)}
 														/>
 														{__(
 															'Reject store permanently',

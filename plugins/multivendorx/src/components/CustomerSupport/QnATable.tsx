@@ -354,14 +354,14 @@ const Qna: React.FC = () => {
 								<BasicInputUI
 									name="phone"
 									value={qna}
-									onChange={(e) => setQna(e.target.value)}
+									onChange={(value:string) => setQna(value)}
 								/>
 							</FormGroup>
 							<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
 								<TextAreaUI
 									name="answer"
 									value={answer}
-									onChange={(e) => setAnswer(e.target.value)}
+									onChange={(value:string) => setAnswer(value)}
 								/>
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">

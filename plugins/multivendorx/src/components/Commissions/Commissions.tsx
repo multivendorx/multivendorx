@@ -14,7 +14,6 @@ import {
 import ViewCommission from './ViewCommission';
 import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
-import { getCommissionSummaryDisplay } from './Utill';
 
 type CommissionRow = {
 	createdAt: string;
@@ -52,16 +51,12 @@ const Commission: React.FC = () => {
 		categoryCounts[] | null
 	>(null);
 	const [store, setStore] = useState<any[] | null>(null);
-
-
-	const [data, setData] = useState<CommissionRow[] | null>(null);
+	const [commissionLookup, setCommissionLookup] = useState<Record<number, WCTax>>({});
 	const [viewCommission, setViewCommission] = useState(false);
 	const [selectedCommissionId, setSelectedCommissionId] = useState<
 		number | null
 	>(null);
-	const [expandedRows, setExpandedRows] = useState<{
-		[key: number]: boolean;
-	}>({});
+
 	const { modules } = useModules();
 
 	const commissionColumns = (commission: CommissionRow) => ({
@@ -73,20 +68,17 @@ const Commission: React.FC = () => {
 		[__('Marketplace Earning', 'multivendorx')]: commission.marketplaceFee ?? '',
 		[__('Status', 'multivendorx')]: commission.status ?? '',
 		[__('Date', 'multivendorx')]: commission.createdAt ?? '',
-	});	
+	});
 
-	const handleSingleAction = (action: string, row: any) => {
-		let commissionId = row.id;
-
-		if (!commissionId) {
+	const handleSingleAction = (action: string, id: number) => {
+		if (!id) {
 			return;
 		}
-
 		axios({
 			method: 'PUT',
-			url: getApiLink(appLocalizer, `commission/${commissionId}`),
+			url: getApiLink(appLocalizer, `commission/${id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: { action, orderId: row?.orderId },
+			data: { action, orderId: commissionLookup[id]?.orderId },
 		})
 			.then(() => {
 				fetchData({})
@@ -94,46 +86,6 @@ const Commission: React.FC = () => {
 			.catch(console.error);
 	};
 
-	// Fetch data from backend.
-	function requestData(
-		rowsPerPage: number,
-		currentPage: number,
-		categoryFilter = '',
-		store = '',
-		orderBy = '',
-		order = '',
-		startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
-		endDate = new Date(),
-		searchAction = '',
-		searchValue = '',
-	) {
-		setData(null);
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'commission'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: currentPage,
-				row: rowsPerPage,
-				status: categoryFilter === 'all' ? '' : categoryFilter,
-				store_id: store,
-				orderBy,
-				order,
-				startDate: startDate ? formatLocalDate(startDate) : '',
-				endDate: endDate ? formatLocalDate(endDate) : '',
-				searchAction,
-				searchValue,
-			},
-		})
-			.then((response) => {
-
-			})
-			.catch(() => {
-				setData([]);
-			});
-	}
-
-	// Fetch total rows on mount
 	useEffect(() => {
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
@@ -185,133 +137,12 @@ const Commission: React.FC = () => {
 					),
 					icon: 'refresh',
 					onClick: (id: number) => {
-						// handleSingleAction('regenerate', rowData);
+						handleSingleAction('regenerate', id);
 					},
 				},
 			],
 		},
 	];
-
-	const getCommissionSummaryDisplay = (
-		ann: any,
-		isExpanded: boolean,
-		setExpandedRows: React.Dispatch<
-			React.SetStateAction<Record<number, boolean>>
-		>,
-		modules: string[]
-	) => {
-		return (
-			<ul className={`details ${isExpanded ? '' : 'overflow'}`}>
-				{ann?.storeEarning && (
-					<li>
-						<div className="item">
-							<div className="des">Store Earning</div>
-							<div className="title">
-								{formatCurrency(ann.storeEarning)}
-							</div>
-						</div>
-					</li>
-				)}
-
-				{modules.includes('store-shipping') && ann?.shippingAmount && (
-					<li>
-						<div className="item">
-							<div className="des">Shipping</div>
-							<div className="title">
-								+ {formatCurrency(ann.shippingAmount)}
-							</div>
-						</div>
-					</li>
-				)}
-
-				{ann?.taxAmount &&
-					appLocalizer.settings_databases_value['commissions']
-						?.give_tax !== 'no_tax' && (
-						<li>
-							<div className="item">
-								<div className="des">Tax</div>
-								<div className="title">
-									+ {formatCurrency(ann.taxAmount)}
-								</div>
-							</div>
-						</li>
-					)}
-
-				{ann?.shippingTaxAmount && (
-					<li>
-						<div className="item">
-							<div className="des">Shipping Tax</div>
-							<div className="title">
-								+ {formatCurrency(ann.shippingTaxAmount)}
-							</div>
-						</div>
-					</li>
-				)}
-
-				{((modules.includes('marketplace-gateway') && ann?.gatewayFee) ||
-					(modules.includes('facilitator') && ann?.facilitatorFee) ||
-					(modules.includes('marketplace-fee') && ann?.platformFee)) && (
-						<li>
-							{modules.includes('marketplace-gateway') &&
-								ann?.gatewayFee && (
-									<div className="item">
-										<div className="des">Gateway Fee</div>
-										<div className="title">
-											- {formatCurrency(ann.gatewayFee)}
-										</div>
-									</div>
-								)}
-
-							{modules.includes('facilitator') &&
-								ann?.facilitatorFee && (
-									<div className="item">
-										<div className="des">
-											Facilitator Fee
-										</div>
-										<div className="title">
-											-{' '}
-											{formatCurrency(ann.facilitatorFee)}
-										</div>
-									</div>
-								)}
-
-							{modules.includes('marketplace-fee') &&
-								ann?.platformFee && (
-									<div className="item">
-										<div className="des">Platform Fee</div>
-										<div className="title">
-											-{' '}
-											{formatCurrency(ann.platformFee)}
-										</div>
-									</div>
-								)}
-						</li>
-					)}
-
-				<span
-					className="more-btn"
-					onClick={() =>
-						setExpandedRows((prev) => ({
-							...prev,
-							[ann.id!]: !prev[ann.id!],
-						}))
-					}
-				>
-					{isExpanded ? (
-						<>
-							{__('Less', 'multivendorx')}
-							<i className="adminfont-arrow-up" />
-						</>
-					) : (
-						<>
-							{__('More', 'multivendorx')}
-							<i className="adminfont-arrow-down" />
-						</>
-					)}
-				</span>
-			</ul>
-		);
-	};
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -337,11 +168,13 @@ const Commission: React.FC = () => {
 			})
 			.then((response) => {
 				const items = response.data || [];
-				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
-
+				const lookup: Record<string, any> = {};
+				const ids = items.map((item: any) => {
+					lookup[item.id] = item;
+					return item.id;
+				});
 				setRowIds(ids);
+				setCommissionLookup(lookup);
 
 				const mappedRows: any[][] = items.map((ann: any) => [
 					{
@@ -360,27 +193,20 @@ const Commission: React.FC = () => {
 					},
 					// Order
 					{
-						display: ann.orderId ? (
-							<a
-								href={`${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${ann.orderId}&action=edit`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="link-item"
-							>
-								#{ann.orderId} – {ann.storeName || '-'}
-							</a>
-						) : (
-							'-'
-						),
-						value: ann.orderId ?? '',
+						type: 'card',
+						data: {
+							name: `#${ann.orderId} – ${ann.storeName || '-'}`,
+							link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${ann.orderId}&action=edit`,
+						},
+						value: ann.orderId
 					},
 					{
-						display: getCommissionSummaryDisplay(
-							ann,
-							!!expandedRows[ann.id],
-							setExpandedRows,
-							modules
-						),
+						type: 'commission',
+						data: {
+							ann: ann,
+							modules: modules,
+							settings: appLocalizer.settings_databases_value['commissions'],
+						},
 						value: ann.id,
 					},
 					// Order Amount
@@ -477,46 +303,46 @@ const Commission: React.FC = () => {
 
 	const buttonActions = [
 		{
-		  label: __('Download CSV', 'multivendorx'),
-		  icon: 'download',
-	  
-		  onClickWithQuery: (query: QueryProps) =>
-			ExportCSV({
-			  url: getApiLink(appLocalizer, 'commission'),
-			  headers: { 'X-WP-Nonce': appLocalizer.nonce },
-	  
-			  filename:
-				query.filter?.created_at?.startDate &&
-				query.filter?.created_at?.endDate
-				  ? `commissions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
-				  : `commissions-${formatLocalDate(new Date())}.csv`,
-			  paramsBuilder: ({
-				page: 1,
-				row: 100,
-				status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-				searchValue: query.searchValue || '',
-				startDate: query.filter?.created_at?.startDate
-				  ? formatLocalDate(query.filter.created_at.startDate)
-				  : '',
-				endDate: query.filter?.created_at?.endDate
-				  ? formatLocalDate(query.filter.created_at.endDate)
-				  : '',
-				store_id: query.filter?.store_id,
-				orderBy: query.orderby,
-				order: query.order,
-			  }),
-	  
-			  columns: commissionColumns,
-			})(query),
+			label: __('Download CSV', 'multivendorx'),
+			icon: 'download',
+
+			onClickWithQuery: (query: QueryProps) =>
+				ExportCSV({
+					url: getApiLink(appLocalizer, 'commission'),
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+
+					filename:
+						query.filter?.created_at?.startDate &&
+							query.filter?.created_at?.endDate
+							? `commissions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
+							: `commissions-${formatLocalDate(new Date())}.csv`,
+					paramsBuilder: ({
+						page: 1,
+						row: 100,
+						status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+						searchValue: query.searchValue || '',
+						startDate: query.filter?.created_at?.startDate
+							? formatLocalDate(query.filter.created_at.startDate)
+							: '',
+						endDate: query.filter?.created_at?.endDate
+							? formatLocalDate(query.filter.created_at.endDate)
+							: '',
+						store_id: query.filter?.store_id,
+						orderBy: query.orderby,
+						order: query.order,
+					}),
+
+					columns: commissionColumns,
+				})(query),
 		},
-	];	  
+	];
 
 	return (
 		<>
 			<NavigatorHeader
 				headerIcon="commission"
 				headerTitle={__('Commissions', 'multivendorx')}
-				headerDescription={__(	
+				headerDescription={__(
 					'Details of commissions earned by each store for every order, including order amount, commission rate, and payout status.',
 					'multivendorx'
 				)}
@@ -537,13 +363,13 @@ const Commission: React.FC = () => {
 						bulkActions={[]}
 						onSelectCsvDownloadApply={(selectedIds: number[]) => {
 							ExportCSV({
-							  url: getApiLink(appLocalizer, 'commission'),
-							  headers: { 'X-WP-Nonce': appLocalizer.nonce },
-							  filename: `selected-commissions-${formatLocalDate(new Date())}.csv`,
-							  paramsBuilder: () => ({ ids: selectedIds }),
-							  columns: commissionColumns,
+								url: getApiLink(appLocalizer, 'commission'),
+								headers: { 'X-WP-Nonce': appLocalizer.nonce },
+								filename: `selected-commissions-${formatLocalDate(new Date())}.csv`,
+								paramsBuilder: () => ({ ids: selectedIds }),
+								columns: commissionColumns,
 							})({});
-						}}						  
+						}}
 						format={appLocalizer.date_format}
 					/>
 				</Column>

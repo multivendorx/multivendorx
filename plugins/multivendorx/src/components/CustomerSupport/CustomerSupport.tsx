@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs, getApiLink, useModules, Container, Column, ComponentStatusView, SettingsNavigator } from 'zyra';
+import { getApiLink, useModules, Container, Column, ComponentStatusView, SettingsNavigator } from 'zyra';
 import './CustomerSupport.scss';
 import '../AdminDashboard/AdminDashboard.scss';
 import Qna from './QnATable';
