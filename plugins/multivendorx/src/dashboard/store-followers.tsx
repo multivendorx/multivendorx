@@ -1,8 +1,8 @@
 /*global  appLocalizer*/
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, Table, TableCard, TableCell } from 'zyra';
+import { getApiLink, TableCard } from 'zyra';
 import { formatWordpressDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 

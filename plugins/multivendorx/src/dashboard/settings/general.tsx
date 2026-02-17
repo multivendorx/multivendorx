@@ -34,10 +34,10 @@ const GeneralSettings = () => {
 
 	//Fixed: Corrected name and dynamic binding
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		key:string,
+		value:string
 	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
+		const updated = { ...formData, [key]: value };
 		setFormData(updated);
 		autoSave(updated);
 	};
@@ -64,9 +64,8 @@ const GeneralSettings = () => {
 					htmlFor="name"
 				>
 					<BasicInputUI
-						name="name"
 						value={formData.name || ''}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('name',value)}
 						readOnly={!settings.includes('store_name')}
 					/>
 				</FormGroup>
@@ -76,9 +75,8 @@ const GeneralSettings = () => {
 					htmlFor="slug"
 				>
 					<BasicInputUI
-						name="slug"
 						value={formData.slug || ''}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('slug',value)}
 					/>
 				</FormGroup>
 
@@ -89,7 +87,7 @@ const GeneralSettings = () => {
 					<TextAreaUI
 						name="description"
 						value={formData.description || ''}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('description',value)}
 						readOnly={!settings.includes('store_description')}
 					/>
 				</FormGroup>
@@ -104,7 +102,7 @@ const GeneralSettings = () => {
 					<BasicInputUI
 						name="messageToBuyer"
 						value={formData.messageToBuyer || ''}
-						onChange={handleChange}
+						onChange={(value:string)=>handleChange('messageToBuyer',value)}
 					/>
 				</FormGroup>
 			</FormGroupWrapper>

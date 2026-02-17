@@ -280,8 +280,8 @@ const AllCoupon: React.FC = () => {
 								name="discount_type"
 								value={formData.discount_type}
 								options={discountOptions}
-								onChange={(val: any) =>
-									setFormData({ ...formData, discount_type: val?.value || '' })
+								onChange={(e) =>
+									setFormData({ ...formData, discount_type: e?.value || '' })
 								}
 							/>
 							{validationErrors.discount_type && (
@@ -294,8 +294,8 @@ const AllCoupon: React.FC = () => {
 								type="number"
 								name="coupon_amount"
 								value={formData.coupon_amount}
-								onChange={(e: any) =>
-									setFormData({ ...formData, coupon_amount: e.target.value })
+								onChange={(value) =>
+									setFormData({ ...formData, coupon_amount: value })
 								}
 							/>
 						</FormGroup>
@@ -316,7 +316,7 @@ const AllCoupon: React.FC = () => {
 								type="date"
 								name="expiry_date"
 								value={formData.expiry_date}
-								onChange={(e: any) => setFormData({ ...formData, expiry_date: e.target.value })}
+								onChange={(value) => setFormData({ ...formData, expiry_date: value })}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
@@ -335,8 +335,8 @@ const AllCoupon: React.FC = () => {
 								type="number"
 								name="usage_limit"
 								value={formData.usage_limit}
-								onChange={(e: any) =>
-									setFormData({ ...formData, usage_limit: e.target.value })
+								onChange={(value) =>
+									setFormData({ ...formData, usage_limit: value })
 								}
 							/>
 						</FormGroup>
@@ -346,8 +346,8 @@ const AllCoupon: React.FC = () => {
 								type="number"
 								name="limit_usage_to_x_items"
 								value={formData.limit_usage_to_x_items}
-								onChange={(e: any) =>
-									setFormData({ ...formData, limit_usage_to_x_items: e.target.value })
+								onChange={(value) =>
+									setFormData({ ...formData, limit_usage_to_x_items: value })
 								}
 							/>
 						</FormGroup>
@@ -357,8 +357,8 @@ const AllCoupon: React.FC = () => {
 								type="number"
 								name="usage_limit_per_user"
 								value={formData.usage_limit_per_user}
-								onChange={(e: any) =>
-									setFormData({ ...formData, usage_limit_per_user: e.target.value })
+								onChange={(value) =>
+									setFormData({ ...formData, usage_limit_per_user: value })
 								}
 							/>
 						</FormGroup>
@@ -378,8 +378,8 @@ const AllCoupon: React.FC = () => {
 								type="number"
 								name="minimum_amount"
 								value={formData.minimum_amount}
-								onChange={(e: any) =>
-									setFormData({ ...formData, minimum_amount: e.target.value })
+								onChange={(value) =>
+									setFormData({ ...formData, minimum_amount: value })
 								}
 							/>
 						</FormGroup>
@@ -389,8 +389,8 @@ const AllCoupon: React.FC = () => {
 								type="number"
 								name="maximum_amount"
 								value={formData.maximum_amount}
-								onChange={(e: any) =>
-									setFormData({ ...formData, maximum_amount: e.target.value })
+								onChange={(value) =>
+									setFormData({ ...formData, maximum_amount: value })
 								}
 							/>
 						</FormGroup>
@@ -426,8 +426,8 @@ const AllCoupon: React.FC = () => {
 								type="text"
 								name="customer_email"
 								value={formData.customer_email}
-								onChange={(e: any) =>
-									setFormData({ ...formData, customer_email: e.target.value })
+								onChange={(value) =>
+									setFormData({ ...formData, customer_email: value })
 								}
 							/>
 						</FormGroup>
@@ -687,10 +687,10 @@ const AllCoupon: React.FC = () => {
 									name="title"
 									value={formData.title}
 									generate={true}
-									onChange={(e: any) =>
+									onChange={(value) =>
 										setFormData({
 											...formData,
-											title: e.target.value,
+											title: value,
 										})
 									}
 								/>
@@ -706,10 +706,10 @@ const AllCoupon: React.FC = () => {
 									name="content"
 									rowNumber={6}
 									value={formData.content}
-									onChange={(e: any) =>
+									onChange={(value) =>
 										setFormData({
 											...formData,
-											content: e.target.value,
+											content:value,
 										})
 									}
 								/>

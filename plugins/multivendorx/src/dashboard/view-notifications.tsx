@@ -34,30 +34,27 @@ const ViewNotifications = (React.FC = () => {
 			type: 'file',
 			content: {
 				id: 'notifications',
-				name: 'Notifications',
-				desc: 'general',
+				headerTitle: 'Notifications',
 				hideSettingHeader: true,
-				icon: 'notification',
+				headerIcon: 'notification',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'activity',
-				name: 'Activities',
-				desc: 'appearance',
+				headerTitle: 'Activities',
 				hideSettingHeader: true,
-				icon: 'tools',
+				headerIcon: 'tools',
 			},
 		},
 		{
 			type: 'file',
 			content: {
 				id: 'announcements',
-				name: 'Announcements',
-				desc: 'Store Info',
+				headerTitle: 'Announcements',
 				hideSettingHeader: true,
-				icon: 'announcement',
+				headerIcon: 'announcement',
 			},
 		},
 	];
@@ -83,12 +80,8 @@ const ViewNotifications = (React.FC = () => {
 				prepareUrl={prepareUrl}
 				appLocalizer={appLocalizer}
 				settingName="Settings"
-				template={'template-2'}
 				variant={'compact'}
 				Link={SimpleLink}
-				hideTitle={true}
-				hideBreadcrumb={true}
-				menuIcon={true}
 			/>
 		</>
 	);

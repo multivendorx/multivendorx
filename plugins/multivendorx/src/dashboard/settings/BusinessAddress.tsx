@@ -167,13 +167,12 @@ const BusinessAddress = () => {
 	}, [formData.country]);
 
 	const handleAddressChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		key:string,
+		value:string
 	) => {
-		const { name, value } = e.target;
-
 		const newAddressData = {
 			...addressData,
-			[name]: value,
+			[key]: value,
 		};
 
 		setAddressData(newAddressData);
@@ -181,7 +180,7 @@ const BusinessAddress = () => {
 		// Also update formData to maintain consistency
 		const updatedFormData = {
 			...formData,
-			[name]: value,
+			[key]: value,
 		};
 
 		setFormData(updatedFormData);
@@ -301,36 +300,32 @@ const BusinessAddress = () => {
 					htmlFor="address"
 				>
 					<BasicInputUI
-						name="address"
 						value={addressData.address}
-						onChange={handleAddressChange}
+						onChange={(value:string)=>handleAddressChange('address',value)}
 					/>
 				</FormGroup>
 				{/* City */}
 				<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="city">
 					<BasicInputUI
-						name="city"
 						value={addressData.city}
-						onChange={handleAddressChange}
+						onChange={(value:string)=>handleAddressChange('city',value)}
 					/>
 				</FormGroup>
 
 				{/* Zip */}
 				<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
 					<BasicInputUI
-						name="zip"
 						value={addressData.zip}
-						onChange={handleAddressChange}
+						onChange={(value:string)=>handleAddressChange('zip',value)}
 					/>
 				</FormGroup>
 
 				{/* Country */}
 				<FormGroup cols={2} label={__('Country', 'multivendorx')} htmlFor="country">
 					<SelectInputUI
-						name="country"
 						value={formData.country}
 						options={appLocalizer.country_list || []}
-						onChange={handleCountryChange}
+						onChange={(e)=>handleAddressChange('country',e.value)}
 					/>
 				</FormGroup>
 
@@ -340,7 +335,7 @@ const BusinessAddress = () => {
 						name="state"
 						value={formData.state}
 						options={stateOptions}
-						onChange={handleStateChange}
+						onChange={(e)=>handleAddressChange('state',e.value)}
 					/>
 				</FormGroup>
 				
