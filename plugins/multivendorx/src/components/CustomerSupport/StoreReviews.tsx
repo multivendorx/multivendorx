@@ -163,7 +163,6 @@ const StoreReviews: React.FC = () => {
 		},
 	];
 
-
 	const filters = [
 		{
 			key: 'storeId',
@@ -307,7 +306,6 @@ const StoreReviews: React.FC = () => {
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 				width={31.25}
-				height="auto"
 			>
 				<Popup
 					confirmMode
@@ -375,7 +373,6 @@ const StoreReviews: React.FC = () => {
 						<div className="review-popup-wrapper">
 							<div className="customer-wrapper">
 								<div className="avatar">
-									{/* <i className="item-icon adminfont-person "></i> */}
 									<span className="purple-bg">
 										{selectedReview.customer_name
 											.charAt(0)
