@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { PopupUI, TableCard, useModules } from 'zyra';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { downloadCSV, formatWordpressDate, toWcIsoDate } from '../services/commonFunction';
+import { downloadCSV, formatCurrency, formatWordpressDate, toWcIsoDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const Orders: React.FC = () => {
@@ -429,11 +429,11 @@ const Orders: React.FC = () => {
 						value: order.status,
 					},
 					{
-						display: (order.currency_symbol + order.commission_total || 0),
+						display: formatCurrency(order.currency_symbol, order.commission_total || 0),
 						value: order.commission_total || 0,
 					},
 					{
-						display: (order.currency_symbol + order.total),
+						display: formatCurrency(order.currency_symbol, order.total),
 						value: order.total,
 					},
 				]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, ItemList } from 'zyra';
-import {  } from '../services/commonFunction';
+import { formatCurrency } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
 	const [data, setData] = useState<any>([]);
@@ -113,7 +113,7 @@ const Withdrawls: React.FC = () => {
 								>
 									<div className="left">
 										<div className="price">
-											{(item.currency_symbol + item.amount)}
+											{formatCurrency(item.currency_symbol, item.amount)}
 										</div>
 										<div className="des">
 											{item.payment_method ===
@@ -170,10 +170,10 @@ const Withdrawls: React.FC = () => {
 									)}
 								</div>
 								<div className="price">
-									{(data?.currency_symbol + data.available_balance)}{' '}
+									{formatCurrency(data?.currency_symbol, data.available_balance)}{' '}
 								</div>
 								<div className="desc">
-									<b>{(data?.currency_symbol + data?.thresold)} </b>{' '}
+									<b>{formatCurrency(data?.currency_symbol, data?.thresold)} </b>{' '}
 									{__(
 										'minimum required to withdraw',
 										'multivendorx'
@@ -184,7 +184,7 @@ const Withdrawls: React.FC = () => {
 								<ItemList
 									className="mini-card"
 									title={__('Upcoming Balance', 'multivendorx')}
-									value={(data.currency_symbol + data.locking_balance)}
+									value={formatCurrency(data.currency_symbol, data.locking_balance)}
 									description={
 										<>
 											{__('This amount is being processed and will be released ', 'multivendorx')}
@@ -223,8 +223,8 @@ const Withdrawls: React.FC = () => {
 														?.withdrawal_percentage
 												) || 0}
 												% +{' '}
-												{(
-													data.currency_symbol +
+												{formatCurrency(
+													data.currency_symbol 
 													Number(
 														data?.withdrawal_setting?.[0]
 															?.withdrawal_fixed

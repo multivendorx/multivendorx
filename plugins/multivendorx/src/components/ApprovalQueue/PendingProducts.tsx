@@ -9,7 +9,7 @@ import {
 	PopupUI,
 	TextAreaUI,
 } from 'zyra';
-import { formatWordpressDate, toWcIsoDate } from '@/services/commonFunction';
+import { formatCurrency, formatWordpressDate, toWcIsoDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
@@ -198,7 +198,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 						value: product.categories?.map((cat: any) => cat.name).join(', ') || '',
 					},
 					{
-						display: product.currency_symbol + product.price,
+						display: formatCurrency(product.currency_symbol, product.price),
 						value: product.price,
 					},
 					{

@@ -7,7 +7,7 @@ import {
 	TableCard,
 } from 'zyra';
 
-import { formatLocalDate, formatWordpressDate } from '@/services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWordpressDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const Refund: React.FC = () => {
@@ -79,7 +79,7 @@ const Refund: React.FC = () => {
 					},
 					{
 						value: item.amount,
-						display: (item.currency_symbol + item.amount),
+						display: formatCurrency(item.currency_symbol, item.amount),
 					},
 					{
 						value: item.customer_reason,

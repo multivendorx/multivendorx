@@ -20,7 +20,7 @@ import {
 	ExportCSV
 } from 'zyra';
 
-import { formatLocalDate } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -269,19 +269,19 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					},
 					{
 						display: product.credit
-							? (product.currency_symbol + product.credit)
+							? formatCurrency(product.currency_symbol, product.credit)
 							: '-',
 						value: product.credit,
 					},
 					{
 						display: product.debit
-							? (product.currency_symbol + product.debit)
+							? formatCurrency(product.currency_symbol, product.debit)
 							: '-',
 						value: product.debit,
 					},
 					{
 						display: product.balance
-							? (product.currency_symbol +product.balance)
+							? formatCurrency(product.currency_symbol,product.balance)
 							: '-',
 						value: product.balance,
 					},
@@ -457,7 +457,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 														: 'color-green'
 														}`}
 												>
-													{(txn.currency_symbol + txn.debit)}
+													{formatCurrency(txn.currency_symbol, txn.debit)}
 												</div>
 											</div>
 										</div>

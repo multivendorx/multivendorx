@@ -87,7 +87,7 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 				const mappedRows: any[][] = stores.map((store) => [
 					{ value: store.store_name, display: store.store_name },
 					{ value: store.status, display: store.status },
-					{ value: store.withdraw_amount, display: store.currency_symbol + store.withdraw_amount },
+					{ value: store.withdraw_amount, display: formatCurrency(store.currency_symbol, store.withdraw_amount) },
 				]);
 
 				setRows(mappedRows);

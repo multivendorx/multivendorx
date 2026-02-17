@@ -15,6 +15,7 @@ import AddProductCom from './add-products';
 import SpmvProducts from './spmv-products';
 import { applyFilters } from '@wordpress/hooks';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
+import { formatCurrency } from '@/services/commonFunction';
 
 type ProductRow = {
 	id: number;
@@ -406,7 +407,7 @@ const AllProduct: React.FC = () => {
 					},
 					{
 						display: product.price
-							? (product.currency_symbol + product.price)
+							? formatCurrency(product.currency_symbol, product.price)
 							: '-',
 						value: product.price,
 					},

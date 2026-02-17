@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { ExportCSV, getApiLink, TableCard } from 'zyra';
 
-import { formatWordpressDate, toWcIsoDate } from '../../services/commonFunction';
+import { formatCurrency, formatWordpressDate, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const OrderReport: React.FC = () => {
@@ -154,11 +154,11 @@ const OrderReport: React.FC = () => {
 						value: order.store_name || '',
 					},
 					{
-						display: (order.currency_symbol + order.total),
+						display: formatCurrency(order.currency_symbol, order.total),
 						value: order.total,
 					},
 					{
-						display: (order.currency_symbol + order.commission_total || 0),
+						display: formatCurrency(order.currency_symbol, order.commission_total || 0),
 						value: order.commission_total || 0,
 					},
 					{

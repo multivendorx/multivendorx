@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import {ExportCSV, getApiLink,TableCard,useModules} from 'zyra';
 
 import ViewCommission from './viewCommission';
-import { formatLocalDate, formatWordpressDate } from '../services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWordpressDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type CommissionRow = {
@@ -78,7 +78,7 @@ const StoreCommission: React.FC = () => {
 						<div className="item">
 							<div className="des">Store Earning</div>
 							<div className="title">
-								{( ann.currency_symbol + ann.storeEarning)}
+								{formatCurrency(ann.currency_symbol, ann.storeEarning)}
 							</div>
 						</div>
 					</li>
@@ -89,7 +89,7 @@ const StoreCommission: React.FC = () => {
 						<div className="item">
 							<div className="des">Shipping</div>
 							<div className="title">
-								+ {(ann.currency_symbol + ann.shippingAmount)}
+								+ {formatCurrency(ann.currency_symbol, ann.shippingAmount)}
 							</div>
 						</div>
 					</li>
@@ -102,7 +102,7 @@ const StoreCommission: React.FC = () => {
 							<div className="item">
 								<div className="des">Tax</div>
 								<div className="title">
-									+ {(ann.currency_symbol + ann.taxAmount)}
+									+ {formatCurrency(ann.currency_symbol, ann.taxAmount)}
 								</div>
 							</div>
 						</li>
@@ -113,7 +113,7 @@ const StoreCommission: React.FC = () => {
 						<div className="item">
 							<div className="des">Shipping Tax</div>
 							<div className="title">
-								+ {(ann.currency_symbol + ann.shippingTaxAmount)}
+								+ {formatCurrency(ann.currency_symbol, ann.shippingTaxAmount)}
 							</div>
 						</div>
 					</li>
@@ -128,7 +128,7 @@ const StoreCommission: React.FC = () => {
 									<div className="item">
 										<div className="des">Gateway Fee</div>
 										<div className="title">
-											- {(ann.currency_symbol + ann.gatewayFee)}
+											- {formatCurrency(ann.currency_symbol, ann.gatewayFee)}
 										</div>
 									</div>
 								)}
@@ -141,7 +141,7 @@ const StoreCommission: React.FC = () => {
 										</div>
 										<div className="title">
 											-{' '}
-											{(ann.currency_symbol + ann.facilitatorFee)}
+											{formatCurrency(ann.currency_symbol, ann.facilitatorFee)}
 										</div>
 									</div>
 								)}
@@ -152,7 +152,7 @@ const StoreCommission: React.FC = () => {
 										<div className="des">Platform Fee</div>
 										<div className="title">
 											-{' '}
-											{(ann.currency_symbol + ann.platformFee)}
+											{formatCurrency(ann.currency_symbol, ann.platformFee)}
 										</div>
 									</div>
 								)}
@@ -256,7 +256,7 @@ const StoreCommission: React.FC = () => {
 					// Order Amount
 					{
 						display: ann.totalOrderAmount
-							? (ann.currency_symbol + ann.totalOrderAmount)
+							? formatCurrency(ann.currency_symbol, ann.totalOrderAmount)
 							: '-',
 						value: ann.totalOrderAmount ?? 0,
 					},
@@ -271,13 +271,13 @@ const StoreCommission: React.FC = () => {
 					},
 					// Store Earning
 					{
-						display: (ann.currency_symbol + ann.storePayable),
+						display: formatCurrency(ann.currency_symbol, ann.storePayable),
 						value: ann.storePayable ?? 0,
 					},
 
 					// Marketplace Earning
 					{
-						display: (ann.currency_symbol + ann.marketplacePayable),
+						display: formatCurrency(ann.currency_symbol, ann.marketplacePayable),
 						value: ann.marketplacePayable ?? 0,
 					},
 

@@ -91,3 +91,45 @@ export function formatWordpressDate(
 	  (token: string | number) => map[token] ?? token
 	);
 }  
+
+export function formatCurrency(currency_symbol: string, amount: number | string): string {
+	if (!amount && amount !== 0) {
+		return '-';
+	}
+
+	const {
+		price_format = '%1$s%2$s',
+		decimal_sep = '.',
+		thousand_sep = ',',
+		decimals = 2,
+	} = appLocalizer || {};
+
+	const currencySymbol = currency_symbol || appLocalizer.currency_symbol;
+
+	const num = parseFloat(String(amount));
+	if (isNaN(num)) {
+		return '-';
+	}
+
+	const isNegative = num < 0;
+	const absNum = Math.abs(num);
+
+	const formattedNumber = absNum
+		.toFixed(decimals)
+		.replace('.', decimal_sep)
+		.replace(/\B(?=(\d{3})+(?!\d))/g, thousand_sep);
+
+	//Apply symbol & number
+	let formatted = price_format
+		.replace('%1$s', currencySymbol)
+		.replace('%2$s', formattedNumber)
+		.replace(/&nbsp;/g, ' ')
+		.trim();
+
+	//For negative numbers, show as "-$271" instead of "$-271"
+	if (isNegative) {
+		formatted = `-${formatted.replace('-', '')}`;
+	}
+
+	return formatted;
+}

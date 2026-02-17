@@ -117,7 +117,6 @@ class Transaction {
             'transaction_type' => 'Commission',
             'amount'           => (float) $commission->store_payable,
             'currency'         => get_woocommerce_currency(),
-            'currency_symbol'  => Utill::multivendorx_get_currency_symbol( get_woocommerce_currency() ),
             'narration'        => 'Commission received for order ' . $order->get_id(),
             'status'           => $status,
             'available_at'     => $time,

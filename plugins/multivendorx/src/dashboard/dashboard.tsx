@@ -18,7 +18,7 @@ import '../dashboard/dashboard1.scss';
 import {  AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { formatTimeAgo } from '@/services/commonFunction';
+import { formatCurrency, formatTimeAgo } from '@/services/commonFunction';
 import VisitorsMap from './visitorsMap';
 
 const getCSSVar = (name) =>
@@ -225,9 +225,9 @@ const Dashboard: React.FC = () => {
 									'-',
 							})) || [],
 						store_name: order.store_name || '-',
-						amount: (order.currency_symbol + order.total),
+						amount: formatCurrency(order.currency_symbol, order.total),
 						commission_amount: order.commission_amount
-							? (order.currency_symbol + order.commission_amount)
+							? formatCurrency(order.currency_symbol, order.commission_amount)
 							: '-',
 						date: order.date_created,
 						status: order.status,
@@ -363,19 +363,19 @@ const Dashboard: React.FC = () => {
 	const analyticsData = [
 		{
 			icon: 'dollar',
-			number: (store?.commission?.currency_symbol + store?.commission?.total_order_amount || 0),
+			number: formatCurrency(store?.commission?.currency_symbol, store?.commission?.total_order_amount || 0),
 			text: 'Total Revenue',
 			color: 'primary',
-			last30: (store?.commission?.currency_symbol +store?.commission?.last_30_days.total || 0),
-			prev30: (store?.commission?.currency_symbol +store?.commission?.previous_30_days.total || 0)
+			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.total || 0),
+			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.total || 0)
 		},
 		{
 			icon: 'order',
 			number: totalOrder,
 			text: 'Total Orders',
 			color: 'secondary',
-			last30: (store?.commission?.currency_symbol +store?.commission?.last_30_days.orders || 0),
-			prev30: (store?.commission?.currency_symbol +store?.commission?.previous_30_days.orders || 0)
+			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.orders || 0),
+			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.orders || 0)
 		},
 		{
 			icon: 'store-seo',
@@ -387,11 +387,11 @@ const Dashboard: React.FC = () => {
 		},
 		{
 			icon: 'commission',
-			number: (store?.commission?.currency_symbol + store?.commission?.commission_total || 0),
+			number: formatCurrency(store?.commission?.currency_symbol, store?.commission?.commission_total || 0),
 			text: 'Commission Earned',
 			color: 'support',
-			last30: (store?.commission?.currency_symbol +store?.commission?.last_30_days.commission || 0),
-			prev30: (store?.commission?.currency_symbol +store?.commission?.previous_30_days.commission || 0)
+			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.commission || 0),
+			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.commission || 0)
 		},
 	];
 
@@ -592,7 +592,7 @@ const Dashboard: React.FC = () => {
 										descriptions={[
 											{ value: item.date },
 										]}
-										amount={(item.currency_symbol + item.amount)}
+										amount={formatCurrency(item.currency_symbol, item.amount)}
 									/>
 								))
 							) : (

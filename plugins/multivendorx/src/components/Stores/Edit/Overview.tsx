@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Analytics, Card, Column, Container, getApiLink, InfoItem, useModules, Skeleton } from 'zyra';
 import LatestReview from './LatestReview';
 import LatestRefundRequest from './LatestRefundRequest';
+import { formatCurrency } from '@/services/commonFunction';
 
 interface OverviewProps {
 	id: string | null;
@@ -95,17 +96,17 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 	const overviewData = [
 		{
 			icon: 'wallet red',
-			number: (storeData.transactions?.currency_symbol + storeData.transactions?.balance ?? 0),
+			number: formatCurrency(storeData.transactions?.currency_symbol , storeData.transactions?.balance ?? 0),
 			text: 'Wallet balance',
 		},
 		{
 			icon: 'dollar yellow',
-			number: (storeData.transactions?.currency_symbol + storeData.transactions?.locking_balance ?? 0),
+			number: formatCurrency(storeData.transactions?.currency_symbol , storeData.transactions?.locking_balance ?? 0),
 			text: 'Upcoming balance',
 		},
 		{
 			icon: 'wallet-in blue',
-			number: (storeData.transactions?.currency_symbol + storeData.request_withdrawal_amount ?? 0),
+			number: formatCurrency(storeData.transactions?.currency_symbol , storeData.request_withdrawal_amount ?? 0),
 			text: 'Requested payout',
 		},
 	];
@@ -146,7 +147,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 												}),
 											},
 										]}
-										amount={(txn.currency_symbol + txn.amount)}
+										amount={formatCurrency(txn.currency_symbol, txn.amount)}
 									/>
 								))
 							) : (
@@ -195,7 +196,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 												value: product.sku,
 											},
 										]}
-										amount={(product.currency_symbol + product.price ?? 0)}
+										amount={(formatCurrency(product.currency_symbol, product.price ?? 0)}
 									/>
 								);
 							})
@@ -315,8 +316,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								</div>
 								<div className="details">
 									<div className="sku">
-										{(
-											storeData.commission?.currency_symbol +
+										{ formatCurrency(
+											storeData.commission?.currency_symbol,
 											storeData.commission
 												?.commission_total ?? 0
 										)}

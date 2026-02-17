@@ -4,7 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, TableCard } from 'zyra';
 import { useNavigate } from 'react-router-dom';
-import { formatDate, formatLocalDate } from '../../services/commonFunction';
+import { formatCurrency, formatDate, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const StoreTable: React.FC = () => {
@@ -79,7 +79,7 @@ const StoreTable: React.FC = () => {
 						}
 					},
 					{
-						display: ( store.commission?.currency_symbol + store.commission?.commission_total),
+						display: formatCurrency( store.commission?.currency_symbol , store.commission?.commission_total),
 						value: store.commission?.commission_total ?? 0,
 					},
 					{
