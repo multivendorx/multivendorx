@@ -82,21 +82,21 @@ const AllProduct: React.FC = () => {
 	};
 
 	const createAutoDraftProduct = () => {
-		try {
-			const payload = {
-				name: 'Auto Draft',
-				status: 'draft',
-			};
+		const payload = {
+			name: 'Auto Draft',
+			status: 'draft',
+		};
 
-			axios
-				.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				})
-				.then((res) => {
-					setNewProductId(res.data.id);
-				});
-		} catch (err) {
-		}
+		axios
+			.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((res) => {
+				setNewProductId(res.data.id);
+			})
+			.catch((err) => {
+				console.error('Error creating auto draft product:', err);
+			});
 	};
 
 	useEffect(() => {
@@ -181,28 +181,27 @@ const AllProduct: React.FC = () => {
 			setCategoryCounts(counts);
 
 		} catch (error) {
+			console.error('Error fetching product status counts:', error);
 		}
 	};
 
-	const fetchWpmlTranslations = async () => {
+	const fetchWpmlTranslations = () => {
 		if (!modules.includes('wpml')) return;
 
-		try {
-			const response = await axios.get(
-				getApiLink(appLocalizer, 'multivendorx-wpml'),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+		axios
+			.get(getApiLink(appLocalizer, 'multivendorx-wpml'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((response) => {
+				const langs = response.data || [];
+
+				if (langs.length) {
+					fetchLanguageWiseProductCounts(langs);
 				}
-			);
-
-			const langs = response.data || [];
-
-			// Directly fetch and merge language-wise product counts
-			if (langs.length) {
-				fetchLanguageWiseProductCounts(langs);
-			}
-		} catch (err) {
-		}
+			})
+			.catch((err) => {
+				console.error('Error fetching WPML translations:', err);
+			});
 	};
 
 	const fetchLanguageWiseProductCounts = async (langs: any[]) => {
@@ -263,25 +262,27 @@ const AllProduct: React.FC = () => {
 		fetchWpmlTranslations();
 	}, []);
 
-	const handleBulkAction = async (action: string, selectedIds: []) => {
-		try {
-			if (action === 'delete') {
-				await axios({
-					method: 'POST', // WooCommerce bulk endpoint uses POST
-					url: `${appLocalizer.apiUrl}/wc/v3/products/batch`,
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					data: {
-						delete: selectedIds, // array of product IDs to delete
+	const handleBulkAction = (action: string, selectedIds: []) => {
+		if (action === 'delete') {
+			axios
+				.post(
+					`${appLocalizer.apiUrl}/wc/v3/products/batch`,
+					{
+						delete: selectedIds,
 					},
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					}
+				)
+				.then(() => {
+					fetchCategories();
+					fetchProductStatusCounts();
+					fetchWpmlTranslations();
+					fetchData({});
+				})
+				.catch((err: unknown) => {
+					console.error('Error performing bulk product action:', err);
 				});
-			}
-
-			// Refresh the data after action
-			fetchCategories();
-			fetchProductStatusCounts();
-			fetchWpmlTranslations();
-			fetchData({});
-		} catch (err: unknown) {
 		}
 	};
 

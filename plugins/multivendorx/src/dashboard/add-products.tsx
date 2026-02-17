@@ -448,66 +448,66 @@ const AddProduct = () => {
 	};
 
 	const createProduct = () => {
-		const imagePayload = [];
+	const imagePayload = [];
 
-		if (featuredImage) {
-			imagePayload.push({ id: featuredImage.id });
-		}
+	if (featuredImage) {
+		imagePayload.push({ id: featuredImage.id });
+	}
 
-		galleryImages.forEach((img) => {
-			imagePayload.push({ id: img.id });
-		});
+	galleryImages.forEach((img) => {
+		imagePayload.push({ id: img.id });
+	});
 
-		const finalCategories =
-			appLocalizer.settings_databases_value['product-preferencess']
-				?.category_selection_method == 'yes'
-				? [
+	const finalCategories =
+		appLocalizer.settings_databases_value['product-preferencess']
+			?.category_selection_method == 'yes'
+			? [
 					{
 						id: Number(
 							selectedChild || selectedSub || selectedCat
 						),
 					},
-				]
-				: selectedCats.map((id) => ({ id }));
+			  ]
+			: selectedCats.map((id) => ({ id }));
 
-		try {
-			const payload = {
-				...product,
-				featured: starFill,
-				images: imagePayload,
-				categories: finalCategories,
-				meta_data: [
-					...product.meta_data,
-					{
-						key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-					},
-					{
-						key: 'multivendorx_shipping_policy',
-						value: product.shipping_policy || '',
-					},
-					{
-						key: 'multivendorx_refund_policy',
-						value: product.refund_policy || '',
-					},
-					{
-						key: 'multivendorx_cancellation_policy',
-						value: product.cancellation_policy || '',
-					},
-				],
-			};
+		const payload = {
+			...product,
+			featured: starFill,
+			images: imagePayload,
+			categories: finalCategories,
+			meta_data: [
+				...product.meta_data,
+				{
+					key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+				},
+				{
+					key: 'multivendorx_shipping_policy',
+					value: product.shipping_policy || '',
+				},
+				{
+					key: 'multivendorx_refund_policy',
+					value: product.refund_policy || '',
+				},
+				{
+					key: 'multivendorx_cancellation_policy',
+					value: product.cancellation_policy || '',
+				},
+			],
+		};
 
-			axios
-				.put(
-					`${appLocalizer.apiUrl}/wc/v3/products/${productId}`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				)
-				.then((res) => {
-					window.location.reload();
-				});
-		} catch (error) {
-		}
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/products/${productId}`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
+			.then(() => {
+				window.location.reload();
+			})
+			.catch((error) => {
+				console.error('Error updating product:', error);
+			});
 	};
 
 	const [tagInput, setTagInput] = useState('');

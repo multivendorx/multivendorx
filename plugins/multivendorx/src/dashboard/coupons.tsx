@@ -56,24 +56,28 @@ const AllCoupon: React.FC = () => {
 	const [selectedCoupon, setSelectedCoupon] = useState<{id: number;} | null>(null);
 
 
-	const handleConfirmDelete = async () => {
+	const handleConfirmDelete = () => {
 		if (!selectedCoupon) return;
 
-		try {
-			await axios.delete(
+		axios
+			.delete(
 				`${appLocalizer.apiUrl}/wc/v3/coupons/${selectedCoupon.id}`,
 				{
 					headers: {
 						'X-WP-Nonce': appLocalizer.nonce,
 					},
 				}
-			);
-			fetchData({});
-		} catch (err) {
-		} finally {
-			setConfirmOpen(false);
-			setSelectedCoupon(null);
-		}
+			)
+			.then(() => {
+				fetchData({});
+			})
+			.catch((err) => {
+				console.error('Error deleting coupon:', err);
+			})
+			.finally(() => {
+				setConfirmOpen(false);
+				setSelectedCoupon(null);
+			});
 	};
 
 	const validateForm = () => {
@@ -183,86 +187,84 @@ const AllCoupon: React.FC = () => {
 		}
 	};
 
-	const handleSave = async (status: 'draft' | 'publish') => {
+	const handleSave = (status: 'draft' | 'publish') => {
 		if (!validateForm()) {
 			return; // Stop submission if errors exist
 		}
-		try {
-			const payload: any = {
-				code: formData.title,
-				description: formData.content,
-				discount_type: formData.discount_type,
-				amount: formData.coupon_amount,
-				individual_use: formData.individual_use === 'yes',
-				exclude_sale_items: formData.exclude_sale_items === 'yes',
-				free_shipping: formData.free_shipping === 'yes',
-				minimum_amount: formData.minimum_amount || '',
-				maximum_amount: formData.maximum_amount || '',
-				usage_limit: formData.usage_limit || '',
-				limit_usage_to_x_items:
-					formData.limit_usage_to_x_items || '',
-				usage_limit_per_user:
-					formData.usage_limit_per_user || '',
-				date_expires: formData.expiry_date || '',
-				email_restrictions: formData.customer_email
-					? formData.customer_email.split(',')
-					: [],
-				product_ids: formData.product_ids || [],
-				excluded_product_ids: formData.exclude_product_ids || [],
-				product_categories: formData.product_categories || [],
-				excluded_product_categories:
-					formData.exclude_product_categories || [],
-				status: status,
-				meta_data: [
-					{
-						key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-					},
-				],
-			};
 
-			if (formData.id) {
-				// Update existing coupon
-				await axios.put(
-					`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				);
-			} else {
-				// Create new coupon
-				await axios.post(
-					`${appLocalizer.apiUrl}/wc/v3/coupons`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				);
-			}
+		const payload: any = {
+			code: formData.title,
+			description: formData.content,
+			discount_type: formData.discount_type,
+			amount: formData.coupon_amount,
+			individual_use: formData.individual_use === 'yes',
+			exclude_sale_items: formData.exclude_sale_items === 'yes',
+			free_shipping: formData.free_shipping === 'yes',
+			minimum_amount: formData.minimum_amount || '',
+			maximum_amount: formData.maximum_amount || '',
+			usage_limit: formData.usage_limit || '',
+			limit_usage_to_x_items: formData.limit_usage_to_x_items || '',
+			usage_limit_per_user: formData.usage_limit_per_user || '',
+			date_expires: formData.expiry_date || '',
+			email_restrictions: formData.customer_email
+				? formData.customer_email.split(',')
+				: [],
+			product_ids: formData.product_ids || [],
+			excluded_product_ids: formData.exclude_product_ids || [],
+			product_categories: formData.product_categories || [],
+			excluded_product_categories:
+				formData.exclude_product_categories || [],
+			status: status,
+			meta_data: [
+				{
+					key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+				},
+			],
+		};
 
-			// Close popup & reset form
-			setAddCoupon(false);
-			setFormData({
-				title: '',
-				content: '',
-				discount_type: '',
-				coupon_amount: '',
-				free_shipping: 'no',
-				expiry_date: '',
-				usage_limit: '',
-				limit_usage_to_x_items: '',
-				usage_limit_per_user: '',
-				minimum_amount: '',
-				maximum_amount: '',
-				individual_use: 'no',
-				exclude_sale_items: 'no',
-				product_ids: [],
-				exclude_product_ids: [],
-				product_categories: [],
-				exclude_product_categories: [],
-				customer_email: '',
-				id: '',
+		const request = formData.id
+			? axios.put(
+				`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
+			: axios.post(
+				`${appLocalizer.apiUrl}/wc/v3/coupons`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			);
+
+		request
+			.then(() => {
+				// Close popup & reset form
+				setAddCoupon(false);
+				setFormData({
+					title: '',
+					content: '',
+					discount_type: '',
+					coupon_amount: '',
+					free_shipping: 'no',
+					expiry_date: '',
+					usage_limit: '',
+					limit_usage_to_x_items: '',
+					usage_limit_per_user: '',
+					minimum_amount: '',
+					maximum_amount: '',
+					individual_use: 'no',
+					exclude_sale_items: 'no',
+					product_ids: [],
+					exclude_product_ids: [],
+					product_categories: [],
+					exclude_product_categories: [],
+					customer_email: '',
+					id: '',
+				});
+				fetchData({});
+			})
+			.catch((err) => {
+				console.error('Error saving coupon:', err);
 			});
-			fetchData({});
-		} catch (err) {
-		}
 	};
 
 	const tabs = [

@@ -230,6 +230,7 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 				setTopCoupons(sortedCoupons);
 			})
 			.catch((error) => {
+				console.error('Error fetching top coupons:', error);
 			});
 
 		axios({
@@ -250,6 +251,7 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 				setTopCustomers(sortedCustomers);
 			})
 			.catch((error) => {
+				console.error('Error fetching top customers:', error);
 			});
 
 		fetchCommissionDetails();

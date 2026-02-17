@@ -149,27 +149,29 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		earned: 50,
 	});
 
-	const fetchOrder = async () => {
-		try {
-			const res = await axios.get(
-				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
-			setOrderData(res.data);
+	const fetchOrder = () => {
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((res) => {
+				setOrderData(res.data);
 
-			const customerId = res.data.customer_id;
+				const customerId = res.data.customer_id;
 
-			const customer = await axios.get(
-				`${appLocalizer.apiUrl}/wc/v3/customers/${customerId}`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
-			setCustomerData(customer.data);
-		} catch (error) {
-		}
+				return axios.get(
+					`${appLocalizer.apiUrl}/wc/v3/customers/${customerId}`,
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					}
+				);
+			})
+			.then((customer) => {
+				setCustomerData(customer.data);
+			})
+			.catch((error) => {
+				console.error('Error fetching order or customer:', error);
+			});
 	};
 
 	useEffect(() => {
@@ -195,25 +197,22 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		return sum + total;
 	}, 0);
 
-	const handleStatusChange = async (newStatus) => {
-		const response = await axios.put(
-			`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-			{ status: newStatus },
-			{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-		);
-
-		if (response) {
-			setStatusSelect(false);
-			fetchOrder();
-		}
-	};
-
-	const handleChange = (field: keyof typeof values, val: number) => {
-		const newVals = { ...values, [field]: val };
-		const baseTotal = 100; // example base price
-		newVals.total = baseTotal - newVals.discount + newVals.shipping;
-		newVals.earned = newVals.commission;
-		setValues(newVals);
+	const handleStatusChange = (newStatus) => {
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+				{ status: newStatus },
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
+			.then((response) => {
+				if (response) {
+					setStatusSelect(false);
+					fetchOrder();
+				}
+			})
+			.catch((error) => {
+				console.error('Error updating order status:', error);
+			});
 	};
 	const formatDateTime = (iso?: string | null) => {
 		if (!iso) {
@@ -254,23 +253,28 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		});
 	}, [orderData]);
 
-	const saveShipmentToOrder = async () => {
-		await axios.put(
-			`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-			{
-				meta_data: [
-					{ key: appLocalizer.order_meta['shipping_provider'], value: shipmentData.provider },
-					{ key: appLocalizer.order_meta['tracking_url'], value: shipmentData.tracking_url },
-					{ key: appLocalizer.order_meta['tracking_id'], value: shipmentData.tracking_id },
-				],
-			},
-			{
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			}
-		);
-
-		// Refresh order data
-		fetchOrder();
+	const saveShipmentToOrder = () => {
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+				{
+					meta_data: [
+						{ key: appLocalizer.order_meta['shipping_provider'], value: shipmentData.provider },
+						{ key: appLocalizer.order_meta['tracking_url'], value: shipmentData.tracking_url },
+						{ key: appLocalizer.order_meta['tracking_id'], value: shipmentData.tracking_id },
+					],
+				},
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			)
+			.then(() => {
+				// Refresh order data
+				fetchOrder();
+			})
+			.catch((error) => {
+				console.error('Error saving shipment to order:', error);
+			});
 	};
 
 	return (

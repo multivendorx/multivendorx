@@ -7,6 +7,10 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	TableCard,
+	BasicInputUI,
+	TextAreaUI,
+	PopupUI,
+	AdminButtonUI,
 } from 'zyra';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';

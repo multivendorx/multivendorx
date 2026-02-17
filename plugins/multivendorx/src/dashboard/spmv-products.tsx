@@ -56,21 +56,25 @@ const SpmvProducts: React.FC = () => {
 	);
 
 	const createAutoDraftProduct = () => {
-		try {
-			const payload = {
-				name: 'Auto Draft',
-				status: 'draft',
-			};
+		const payload = {
+			name: 'Auto Draft',
+			status: 'draft',
+		};
 
-			axios
-				.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
+		axios
+			.post(
+				`${appLocalizer.apiUrl}/wc/v3/products/`,
+				payload,
+				{
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				})
-				.then((res) => {
-					setNewProductId(res.data.id);
-				});
-		} catch (err) {
-		}
+				}
+			)
+			.then((res) => {
+				setNewProductId(res.data.id);
+			})
+			.catch((err) => {
+				console.error('Error creating auto draft product:', err);
+			});
 	};
 
 	useEffect(() => {

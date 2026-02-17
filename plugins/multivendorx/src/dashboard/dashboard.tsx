@@ -98,8 +98,7 @@ const Dashboard: React.FC = () => {
 		setIsLoading(true);
 
 		// Reviews
-		axios({
-			method: 'GET',
+		axios.get({
 			url: getApiLink(appLocalizer, 'review'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -122,8 +121,7 @@ const Dashboard: React.FC = () => {
 			});
 
 		// Pending Refunds
-		axios({
-			method: 'GET',
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -155,8 +153,7 @@ const Dashboard: React.FC = () => {
 
 		// Announcements
 		if (modules.includes('announcement')) {
-			axios({
-				method: 'GET',
+			axios.get({
 				url: getApiLink(appLocalizer, 'announcement'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
@@ -175,8 +172,7 @@ const Dashboard: React.FC = () => {
 		}
 
 		// Top Products
-		axios({
-			method: 'GET',
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/products`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -238,13 +234,10 @@ const Dashboard: React.FC = () => {
 				]);
 				setTopProductRows(rows);
 				setTopProductIds(processed.map(p => p.id));
-			})
-			.catch((error) => {
 			});
 
 		// Recent Orders
-		axios({
-			method: 'GET',
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -320,13 +313,10 @@ const Dashboard: React.FC = () => {
 				});
 				setRecentOrderRows(rows);
 				setRecentOrderIds(orders.map(o => o.id));
-			})
-			.catch((error) => {
 			});
 
 		// Store Data
-		axios({
-			method: 'GET',
+		axios.get({
 			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: { dashboard: true, id: appLocalizer.store_id }
@@ -334,14 +324,10 @@ const Dashboard: React.FC = () => {
 			.then((res) => {
 				const data = res.data || {};
 				setStore(data);
-			})
-			.catch((error) => {
-				console.error('Error fetching store data:', error);
 			});
 
 		// Total Orders
-		axios({
-			method: 'GET',
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -361,8 +347,7 @@ const Dashboard: React.FC = () => {
 			});
 
 		// Last Withdrawals - keep using InfoItem (no TableCard needed)
-		axios({
-			method: 'GET',
+		axios.get({
 			url: getApiLink(appLocalizer, 'transaction'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -385,8 +370,7 @@ const Dashboard: React.FC = () => {
 			.catch(() => setLastWithdraws([]));
 
 		// Customers - keep using InfoItem (no TableCard needed)
-		axios({
-			method: 'GET',
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -430,8 +414,7 @@ const Dashboard: React.FC = () => {
 			});
 
 		// Activities
-		axios({
-			method: 'GET',
+		axios.get({
 			url: getApiLink(appLocalizer, 'notifications'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -453,8 +436,7 @@ const Dashboard: React.FC = () => {
 			});
 
 		// Revenue Data
-		axios({
-			method: 'GET',
+		axios.get({
 			url: getApiLink(appLocalizer, 'commission'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -468,10 +450,7 @@ const Dashboard: React.FC = () => {
 			.then((response) => {
 				const data = response.data;
 				setRevenueData(data);
-			})
-			.catch((error) => {
 			});
-
 	}, [dateRange, modules]);
 
 	const analyticsData = [
@@ -664,7 +643,7 @@ const Dashboard: React.FC = () => {
 								buttons={{
 									icon: 'preview',
 									text: __('View transaction history', 'multivendorx'),
-									onClick: () => { window.location.href = '/dashboard/wallet/transactions/'; },
+									onClick: () => { window.open('/dashboard/wallet/transactions/') },
 								}}
 							/>
 						)}

@@ -69,79 +69,78 @@ const Orders: React.FC = () => {
 	}, [hash]);
 
 
-	const exportAllOrders = async () => {
-		try {
-			let allOrders: any[] = [];
-			let page = 1;
-			const perPage = 100; // WooCommerce API max per page
+	const exportAllOrders = () => {
+		let allOrders: any[] = [];
+		let page = 1;
+		const perPage = 100;
 
-			// Fetch all pages
-			while (true) {
-				const res = await axios.get(
-					`${appLocalizer.apiUrl}/wc/v3/orders`,
-					{
-						headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						params: {
-							per_page: perPage,
-							page,
-							meta_key: 'multivendorx_store_id',
-							value: appLocalizer.store_id,
-						},
+		const fetchPage = () => {
+			return axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						per_page: perPage,
+						page,
+						meta_key: 'multivendorx_store_id',
+						value: appLocalizer.store_id,
+					},
+				})
+				.then((res) => {
+					allOrders = allOrders.concat(res.data);
+
+					const totalPages = parseInt(
+						res.headers['x-wp-totalpages'] || '1'
+					);
+
+					if (page < totalPages) {
+						page++;
+						return fetchPage(); // recursively fetch next page
 					}
-				);
+				});
+		};
 
-				allOrders = allOrders.concat(res.data);
-
-				const totalPages = parseInt(
-					res.headers['x-wp-totalpages'] || '1'
-				);
-				if (page >= totalPages) {
-					break;
+		fetchPage()
+			.then(() => {
+				if (allOrders.length === 0) {
+					setMessage('No orders found to export');
+					setConfirmOpen(true);
+					return;
 				}
-				page++;
-			}
 
-			if (allOrders.length === 0) {
-				setMessage('No orders found to export');
-				setConfirmOpen(true);
-				return;
-			}
+				const csvRows: string[] = [];
+				csvRows.push('Order ID,Customer,Email,Total,Status,Date');
 
-			// Convert orders to CSV
-			const csvRows: string[] = [];
-			csvRows.push('Order ID,Customer,Email,Total,Status,Date');
+				allOrders.forEach((order) => {
+					const customer = order.billing?.first_name
+						? `${order.billing.first_name} ${order.billing.last_name || ''}`
+						: 'Guest';
 
-			allOrders.forEach((order) => {
-				const customer = order.billing?.first_name
-					? `${order.billing.first_name} ${order.billing.last_name || ''
-					}`
-					: 'Guest';
-				const email = order.billing?.email || '';
-				const total = order.total || '';
-				const status = order.status || '';
-				const date = order.date_created || '';
+					const email = order.billing?.email || '';
+					const total = order.total || '';
+					const status = order.status || '';
+					const date = order.date_created || '';
 
-				csvRows.push(
-					[order.id, customer, email, total, status, date]
-						.map((field) => `"${field}"`)
-						.join(',')
-				);
+					csvRows.push(
+						[order.id, customer, email, total, status, date]
+							.map((field) => `"${field}"`)
+							.join(',')
+					);
+				});
+
+				const csvString = csvRows.join('\n');
+
+				const blob = new Blob([csvString], {
+					type: 'text/csv;charset=utf-8;',
+				});
+				const link = document.createElement('a');
+				link.href = URL.createObjectURL(blob);
+				link.download = `orders_${appLocalizer.store_id}_${new Date().toISOString()}.csv`;
+				link.click();
+				URL.revokeObjectURL(link.href);
+			})
+			.catch((err) => {
+				console.error('Error exporting orders:', err);
 			});
-
-			const csvString = csvRows.join('\n');
-
-			// Trigger download
-			const blob = new Blob([csvString], {
-				type: 'text/csv;charset=utf-8;',
-			});
-			const link = document.createElement('a');
-			link.href = URL.createObjectURL(blob);
-			link.download = `orders_${appLocalizer.store_id
-				}_${new Date().toISOString()}.csv`;
-			link.click();
-			URL.revokeObjectURL(link.href);
-		} catch (err) {
-		}
 	};
 
 	const fetchOrderStatusCounts = async () => {
@@ -447,34 +446,37 @@ const Orders: React.FC = () => {
 			});
 	};
 
-	const handleBulkAction = async (
-		action: string,
-		selectedIds: number[]
-	) => {
-		if (!action || selectedIds.length === 0) return;
+	const handleBulkAction = (
+	action: string,
+	selectedIds: number[]
+) => {
+	if (!action || selectedIds.length === 0) return;
 
-		try {
-			const updatePayload = {
-				update: selectedIds.map((id) => ({
-					id,
-					status: action,
-				})),
-			};
-
-			await axios.post(
-				`${appLocalizer.apiUrl}/wc/v3/orders/batch`,
-				updatePayload,
-				{
-					headers: {
-						'X-WP-Nonce': appLocalizer.nonce,
-					},
-				}
-			);
-
-			fetchData({});
-		} catch (err) {
-		}
+	const updatePayload = {
+		update: selectedIds.map((id) => ({
+			id,
+			status: action,
+		})),
 	};
+
+	axios
+		.post(
+			`${appLocalizer.apiUrl}/wc/v3/orders/batch`,
+			updatePayload,
+			{
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+			}
+		)
+		.then(() => {
+			fetchData({});
+		})
+		.catch((err) => {
+			console.error('Error performing bulk action:', err);
+		});
+};
+
 
 	return (
 		<>
