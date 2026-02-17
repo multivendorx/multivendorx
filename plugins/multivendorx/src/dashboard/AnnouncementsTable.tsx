@@ -34,16 +34,16 @@ const AnnouncementsTable = (React.FC = () => {
             .then((response) => {
                 const items = response.data || [];
     
-                const mappedRows: any[][] = items.map((ann: any) => [
-                    { display: ann.title, value: ann.id },
+                const mappedRows: any[][] = items.map((item: any) => [
+                    { display: item.title, value: item.id },
                     {
-                        display: truncateText(ann.content || '', 50),
-                        value: ann.content || '',
+                        display: truncateText(item.content || '', 50),
+                        value: item.content || '',
                     },
-                    { display: ann.status, value: ann.status },
+                    { display: item.status, value: item.status },
                     {
-                        display: ann.date,
-                        value: ann.date,
+                        display: item.date,
+                        value: item.date,
                     },
                 ]);
     

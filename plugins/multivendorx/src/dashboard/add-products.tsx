@@ -67,6 +67,9 @@ const AddProduct = () => {
 				setGalleryImages(images.slice(1));
 				setProduct(res.data);
 				setstarFill(res.data.featured);
+			})
+			.catch((error) => {
+				console.error('Error fetching product:', error);
 			});
 		if (modules.includes('wpml')) {
 			axios({

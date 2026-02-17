@@ -87,8 +87,8 @@ const StoreCommission: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
 
@@ -99,70 +99,84 @@ const StoreCommission: React.FC = () => {
 
 				setCommissionById(comMap);
 
-				const mappedRows: any[][] = items.map((ann: any) => [
+				const mappedRows: any[][] = items.map((item: any) => [
 					{
 						display: (
 							<span
 								className="link-item"
 							// onClick={() => {
-							// 	setSelectedCommissionId(ann.id ?? null);
+							// 	setSelectedCommissionId(item.id ?? null);
 							// 	setViewCommission(true);
 							// }}
 							>
-								#{ann.id}
+								#{item.id}
 							</span>
 						),
-						value: ann.id,
+						value: item.id,
 					},
 					// Order
 					{
 						type: 'card',
 						data: {
-							name: `#${ann.orderId} – ${ann.storeName || '-'}`,
-							link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${ann.orderId}&action=edit`,
+							name: `#${item.orderId} – ${item.storeName || '-'}`,
+							link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${item.orderId}&action=edit`,
 						},
-						value: ann.orderId
+						value: item.orderId
 					},
 					// Order Amount
 					{
-						display: ann.totalOrderAmount
-							? formatCurrency(ann.totalOrderAmount)
+						display: item.totalOrderAmount
+							? formatCurrency(item.totalOrderAmount)
 							: '-',
-						value: ann.totalOrderAmount ?? 0,
+						value: item.totalOrderAmount ?? 0,
 					},
 					{
-						type: 'commission',
-						data: {
-							ann: ann,
-							modules: modules,
-							settings: appLocalizer.settings_databases_value['commissions'],
-						},
-						value: ann.id,
+						display: (
+							<ItemList
+								className="feature-list"
+								items={Object.entries(ann)
+									// Filter only the commission keys you want to show
+									.filter(([key]) => [
+										'storeEarning',
+										'shippingAmount',
+										'taxAmount',
+										'gatewayFee',
+										'marketplaceCommission'
+									].includes(key))
+									.map(([key, val]) => ({
+										icon: 'adminfont-commissions', // Consistent icon
+										title: key.replace(/([A-Z])/g, ' $1').trim(), // Formats 'storeEarning' to 'Store Earning'
+										desc: val // This is your commission value (e.g. "112.00")
+									}))
+								}
+							/>
+						),
+						value: item.id
 					},
 					// Store Earning
 					{
-						display: formatCurrency(ann.storePayable),
-						value: ann.storePayable ?? 0,
+						display: formatCurrency(item.storePayable),
+						value: item.storePayable ?? 0,
 					},
 
 					// Marketplace Earning
 					{
-						display: formatCurrency(ann.marketplacePayable),
-						value: ann.marketplacePayable ?? 0,
+						display: formatCurrency(item.marketplacePayable),
+						value: item.marketplacePayable ?? 0,
 					},
 
 					// Status
 					{
-						display: ann.status,
-						value: ann.status,
+						display: item.status,
+						value: item.status,
 					},
 
 					// Date
 					{
-						display: ann.createdAt
-							? formatWcShortDate(ann.createdAt)
+						display: item.createdAt
+							? formatWcShortDate(item.createdAt)
 							: '-',
-						value: ann.createdAt ?? '',
+						value: item.createdAt ?? '',
 					},
 				]);
 

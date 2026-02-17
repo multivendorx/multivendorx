@@ -570,22 +570,22 @@ const AllCoupon: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
-				const mappedRows: any[][] = items.map((ann: any) => [
-					{ display: ann.code, value: ann.code },
+				const mappedRows: any[][] = items.map((item: any) => [
+					{ display: item.code, value: item.code },
 					{
-						display: ann.discount_type,
-						value: ann.discount_type,
+						display: item.discount_type,
+						value: item.discount_type,
 					},
-					{ display: ann.amount, value: ann.amount },
-					{ display: ann.usage_count, value: ann.usage_count },
-					{ display: ann.usage_limit, value: ann.usage_limit },
-					{ display: ann.date_expires, value: ann.date_expires },
-					{ display: ann.description, value: ann.description },
-					{ display: ann.status, value: ann.status },
+					{ display: item.amount, value: item.amount },
+					{ display: item.usage_count, value: item.usage_count },
+					{ display: item.usage_limit, value: item.usage_limit },
+					{ display: item.date_expires, value: item.date_expires },
+					{ display: item.description, value: item.description },
+					{ display: item.status, value: item.status },
 				]);
 				setRows(mappedRows);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
