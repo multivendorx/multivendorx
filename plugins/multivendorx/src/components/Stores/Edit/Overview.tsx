@@ -196,7 +196,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 												value: product.sku,
 											},
 										]}
-										amount={(formatCurrency(product.currency_symbol, product.price ?? 0)}
+										amount={formatCurrency(product.currency_symbol, product.price ?? 0)}
 									/>
 								);
 							})

@@ -224,7 +224,7 @@ const Withdrawls: React.FC = () => {
 												) || 0}
 												% +{' '}
 												{formatCurrency(
-													data.currency_symbol 
+													data.currency_symbol,
 													Number(
 														data?.withdrawal_setting?.[0]
 															?.withdrawal_fixed
