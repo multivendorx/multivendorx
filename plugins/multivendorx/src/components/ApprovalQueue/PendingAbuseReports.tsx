@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { getApiLink, Container, Column, TableCard, PopupUI } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
 import Popup from '../Popup/Popup';
+import { formatWordpressDate } from '@/services/commonFunction';
 
 interface Props {
 	onUpdated?: () => void;
@@ -153,7 +154,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 					},
 					{
 						display: product.created_at
-							? product.created_at
+							? formatWordpressDate(product.created_at)
 							: '-',
 						value: product.created_at,
 					}

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { formatCurrency } from '@/services/commonFunction';
+import { formatCurrency, formatWordpressDate } from '@/services/commonFunction';
 import { getApiLink, TableCard } from 'zyra';
 import { QueryProps, TableHeader, TableRow } from '@/services/type';
 
@@ -59,7 +59,7 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 					{ display: formatCurrency(item.amount), value: item.amount },
 					{ display: item.reason, value: item.reason },
 					{ display: item.status, value: item.status },
-					{ display: item.date, value: item.date }
+					{ display: formatWordpressDate(item.date), value: item.date },
 				]);
 
 				setRows(mappedRows);

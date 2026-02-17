@@ -102,3 +102,41 @@ export const toWcIsoDate = (
 
 	return d.toISOString();
 };
+
+export function formatWordpressDate(
+	dateString: string | null | undefined,
+  ): string {
+	if (!dateString) return '-';
+	console.log('dateString', dateString);
+	const date = new Date(dateString);
+	console.log('date', date);
+	if (isNaN(date.getTime())) return '-';
+  
+	const map: Record<string, string> = {
+	  YYYY: String(date.getFullYear()),
+	  YY: String(date.getFullYear()).slice(-2),
+  
+	  MMMM: date.toLocaleString(undefined, { month: 'long' }),
+	  MMM: date.toLocaleString(undefined, { month: 'short' }),
+	  MM: String(date.getMonth() + 1).padStart(2, '0'),
+  
+	  DD: String(date.getDate()).padStart(2, '0'),
+	  D: String(date.getDate()),
+  
+	  HH: String(date.getHours()).padStart(2, '0'),
+	  mm: String(date.getMinutes()).padStart(2, '0'),
+	  ss: String(date.getSeconds()).padStart(2, '0'),
+	};
+  
+	const format = appLocalizer.date_format || 'YYYY-MM-DD';
+	console.log('format', format);
+	console.log('map', map);
+	console.log('format.replace', format.replace(
+	  /YYYY|MMMM|MMM|MM|DD|D|YY|HH|mm|ss/g,
+	  (token: string | number) => map[token] ?? token
+	));
+	return format.replace(
+	  /YYYY|MMMM|MMM|MM|DD|D|YY|HH|mm|ss/g,
+	  (token: string | number) => map[token] ?? token
+	);
+}  

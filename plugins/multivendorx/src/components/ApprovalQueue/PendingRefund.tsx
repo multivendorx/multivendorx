@@ -297,7 +297,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 					},
 					{
 						display: order.date
-							? order.date
+							? formatWordpressDate(order.date)
 							: '-',
 						value: order.date,
 					},

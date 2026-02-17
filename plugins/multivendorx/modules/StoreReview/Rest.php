@@ -223,7 +223,7 @@ class Rest extends \WP_REST_Controller {
                         'reported'       => (int) $review['reported'],
                         'reply'          => $review['reply'] ?? '',
                         'reply_date'     => $review['reply_date'] ?? '',
-                        'date_created'   => Utill::multivendorx_date_time_format( $review['date_created'] ),
+                        'date_created'   => Utill::multivendorx_rest_prepare_date_response( $review['date_created'] ),
                         'date_modified'  => $review['date_modified'],
                     );
                 },
@@ -350,7 +350,7 @@ class Rest extends \WP_REST_Controller {
                 'reported'       => (int) $review['reported'],
                 'reply'          => $review['reply'] ?? '',
                 'reply_date'     => $review['reply_date'] ?? '',
-                'date_created'   => Utill::multivendorx_date_time_format( $review['date_created'] ),
+                'date_created'   => Utill::multivendorx_rest_prepare_date_response( $review['date_created'] ),
                 'date_modified'  => $review['date_modified'],
             );
 

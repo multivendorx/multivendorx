@@ -9,7 +9,7 @@ import {
 	PopupUI,
 	TextAreaUI,
 } from 'zyra';
-import { formatCurrency, toWcIsoDate } from '@/services/commonFunction';
+import { formatCurrency, formatWordpressDate, toWcIsoDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
@@ -202,8 +202,8 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 						value: product.price,
 					},
 					{
-						display: product.date_created
-							? product.date_created
+						display:product.date_created
+							? formatWordpressDate(product.date_created)
 							: '-',
 						value: product.date_created,
 					}

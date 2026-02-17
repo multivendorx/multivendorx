@@ -424,7 +424,7 @@ const AllProduct: React.FC = () => {
 					},
 					{
 						display: product.date_created
-							? product.date_created
+							? formatWordpressDate(product.date_created)
 							: '-',
 						value: product.date_created,
 					},

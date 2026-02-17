@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import {ExportCSV, getApiLink,TableCard,useModules} from 'zyra';
 
 import ViewCommission from './viewCommission';
-import { formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWordpressDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type CommissionRow = {
@@ -290,7 +290,7 @@ const StoreCommission: React.FC = () => {
 					// Date
 					{
 						display: ann.createdAt
-							? formatWcShortDate(ann.createdAt)
+							? formatWordpressDate(ann.createdAt)
 							: '-',
 						value: ann.createdAt ?? '',
 					},

@@ -12,7 +12,7 @@ import {
 	ExportCSV,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWordpressDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 import { getCommissionSummaryDisplay } from './Utill';
 
@@ -411,7 +411,7 @@ const Commission: React.FC = () => {
 					// Date
 					{
 						display: ann.createdAt
-							? ann.createdAt
+							? formatWordpressDate(ann.createdAt)
 							: '-',
 						value: ann.createdAt ?? '',
 					},

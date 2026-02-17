@@ -263,7 +263,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					},
 					{
 						display: product.date
-							? product.date
+							? formatWordpressDate(product.date)
 							: '-',
 						value: product.date,
 					},

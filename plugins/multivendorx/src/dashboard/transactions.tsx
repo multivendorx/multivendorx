@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { Column, Container, ExportCSV, getApiLink, TableCard } from 'zyra';
 import TransactionDetailsModal from './TransactionDetailsModal';
-import { formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWordpressDate, formatWordpressDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type TransactionRow = {
@@ -92,7 +92,7 @@ const Transactions: React.FC = () => {
 		[__('ID', 'multivendorx')]: txn.id ?? '',
 		[__('Status', 'multivendorx')]: txn.status ?? '',
 		[__('Date', 'multivendorx')]:
-			txn.date ? formatWcShortDate(txn.date) : '',
+			txn.date ? formatWordpressDate(txn.date) : '',
 		[__('Transaction Type', 'multivendorx')]:
 			txn.transaction_type ?? '',
 		[__('Credit', 'multivendorx')]:
@@ -190,7 +190,7 @@ const Transactions: React.FC = () => {
 					},
 					{
 						display: product.date
-							? formatWcShortDate(product.date)
+							? formatWordpressDate(product.date)
 							: '-',
 						value: product.date,
 					},

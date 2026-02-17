@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { ExportCSV, getApiLink, TableCard } from 'zyra';
 
-import { formatCurrency, toWcIsoDate } from '../../services/commonFunction';
+import { formatCurrency, formatWordpressDate, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const OrderReport: React.FC = () => {
@@ -163,7 +163,7 @@ const OrderReport: React.FC = () => {
 						value: order.commission_total || 0,
 					},
 					{
-						display: order.date_created,
+						display: (formatWordpressDate(order.date_created)),
 						value: order.date_created,
 					},
 					{

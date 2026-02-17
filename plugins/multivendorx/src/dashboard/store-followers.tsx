@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, Table, TableCard, TableCell } from 'zyra';
-import { formatTimeAgo } from '@/services/commonFunction';
+import { formatWordpressDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 
@@ -35,7 +35,7 @@ const StoreFollower: React.FC = () => {
 				const mappedRows: any[][] = items.map((fol: any) => [
 					{ display: fol.name, value:  fol.name },
 					{ display: fol.email, value:  fol.email },
-					{ display: formatTimeAgo(fol.date), value:  fol.date },
+					{ display: formatWordpressDate(fol.date), value:  fol.date },
 				]);
 
 				setRows(mappedRows);

@@ -522,4 +522,21 @@ class Utill {
     public static function multivendorx_date_time_format( $date ) {
         return wp_date( MultiVendorX()->date_format, strtotime( $date ) );
     }
+
+    /**
+     * Prepare date response for REST API
+     *
+     * @param string $date Date time string
+     * @param bool $utc Whether to return in UTC
+     * @return string|null Formatted date time string or null if invalid
+     */
+    public static function multivendorx_rest_prepare_date_response( $date, $utc = false ) {
+        $timestamp = is_numeric( $date ) ? (int) $date : strtotime( $date );
+        if ( ! $timestamp ) {
+            return null;
+        }
+        return $utc
+            ? gmdate( 'Y-m-d\TH:i:s', $timestamp )
+            : wp_date( 'Y-m-d\TH:i:s', $timestamp );
+    }
 }

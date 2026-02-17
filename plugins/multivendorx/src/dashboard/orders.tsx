@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { formatCurrency, formatTimeAgo, formatWcShortDate, toWcIsoDate } from '../services/commonFunction';
+import { formatCurrency, formatTimeAgo, formatWordpressDate, toWcIsoDate } from '../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 // Type declarations
@@ -654,7 +654,7 @@ const Orders: React.FC = () => {
 			order.billing?.first_name || order.billing?.last_name
 				? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
 				: order.billing?.email || __('Guest', 'multivendorx'),
-		[__('Date', 'multivendorx')]: order.date_created? formatWcShortDate(order.date_created) : '',
+		[__('Date', 'multivendorx')]: order.date_created? formatWordpressDate(order.date_created) : '',
 		[__('Status', 'multivendorx')] : order.status ?? '',
 		[__('Total Earning', 'multivendorx')] : order.commission_total ?? '',
 		[__('Total', 'multivendorx')] : order.total ?? '',
@@ -672,12 +672,12 @@ const Orders: React.FC = () => {
 					filename:
 						query.filter?.created_at?.startDate &&
 						query.filter?.created_at?.endDate
-							? `orders-${formatWcShortDate(
+							? `orders-${formatWordpressDate(
 									query.filter.created_at.startDate
-							  )}-${formatWcShortDate(
+							  )}-${formatWordpressDate(
 									query.filter.created_at.endDate
 							  )}.csv`
-							: `orders-${formatWcShortDate(new Date())}.csv`,
+							: `orders-${formatWordpressDate(new Date())}.csv`,
 	
 					paramsBuilder: {
 						page: 1,
@@ -754,7 +754,7 @@ const Orders: React.FC = () => {
 						value: order.id || '',
 					},
 					{
-						display: formatWcShortDate(order.date_created),
+						display: formatWordpressDate(order.date_created),
 						value: order.date_created,
 					},
 					{
