@@ -22,7 +22,6 @@ import Popup from '../Popup/Popup';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
-
 type AnnouncementForm = {
 	title: string;
 	url: string;

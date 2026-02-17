@@ -40,7 +40,7 @@
         align-items: center;
         display: flex;
         flex-direction: column;
-        gap: 0.313rem;
+        gap: 0.625rem;
         background: $theme-color;
 
         .heading {
@@ -97,7 +97,7 @@
         }
     }
 
-    .popup-content {
+    .popup-details {
         padding: 1rem 0 1rem 2rem;
 
         .heading-text {
@@ -107,7 +107,7 @@
         }
 
         ul {
-            max-height: 20vh;
+            max-height: 37vh;
             overflow: auto;
             padding-right: 2rem;
 
@@ -116,11 +116,11 @@
                     font-size: 1.063rem;
                     font-weight: 600;
                     color: #000000e0;
-                }
+                    padding: 0.313rem 0;
 
-                .sub-text {
-                    font-size: 0.95rem;
-                    line-height: 1.313;
+                    i{
+                        padding-right: 0.45rem;
+                    }
                 }
             }
         }

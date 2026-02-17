@@ -285,7 +285,6 @@ const Qna: React.FC = () => {
 				open={confirmOpen}
 				onClose={() => setConfirmOpen(false)}
 				width={31.25}
-				height="auto"
 			>
 				<Popup
 					confirmMode
@@ -350,7 +349,7 @@ const Qna: React.FC = () => {
 				>
 					<>
 						<FormGroupWrapper>
-							<FormGroup label={__('Question', 'multivendorx')} htmlFor="question">
+							<FormGroup label={__('Question', 'multivendorx')} htmlFor="phone">
 								<BasicInputUI
 									name="phone"
 									value={qna}

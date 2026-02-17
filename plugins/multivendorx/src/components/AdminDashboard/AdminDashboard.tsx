@@ -4,7 +4,7 @@ import catalogx from '../../assets/images/catalogx.png';
 import Mascot from '../../assets/images/multivendorx-mascot-scale.png';
 import freePro from '../../assets/images/dashboard-1.png';
 import proPopupContent from '../Popup/Popup';
-
+import { getModuleData } from '../../services/templateService';
 interface Section {
 	title: string;
 	features: Feature[];
@@ -30,7 +30,7 @@ interface WPPlugin {
 import './AdminDashboard.scss';
 import '../dashboard.scss';
 import { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, Column, Container, getApiLink, ItemList, Modules, sendApiResponse, SuccessNotice, useModules } from 'zyra';
+import { AdminButtonUI, Card, Column, Container, ItemList, Modules, SuccessNotice, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -41,6 +41,8 @@ const AdminDashboard = () => {
 		[key: string]: boolean;
 	}>({});
 	const [successMsg, setSuccessMsg] = useState<string>('');
+
+	const modulesArray = getModuleData();
 
 	// Check plugin installation status on component mount
 	useEffect(() => {
@@ -136,34 +138,6 @@ const AdminDashboard = () => {
 		} finally {
 			setTimeout(() => setSuccessMsg(''), 3000);
 			setInstalling('');
-		}
-	};
-
-	const handleOnChange = async (
-		event: React.ChangeEvent<HTMLInputElement>,
-		moduleId: string
-	) => {
-		const action = event.target.checked ? 'activate' : 'deactivate';
-		try {
-			if (action === 'activate') {
-				insertModule?.(moduleId);
-			} else {
-				removeModule?.(moduleId);
-			}
-			localStorage.setItem(`force_multivendorx_context_reload`, 'true');
-			await sendApiResponse(
-				appLocalizer,
-				getApiLink(appLocalizer, 'modules'),
-				{
-					id: moduleId,
-					action,
-				}
-			);
-			setSuccessMsg(`Module ${action}d`);
-			setTimeout(() => setSuccessMsg(''), 2000);
-		} catch (error) {
-			setSuccessMsg(`Error: Failed to ${error} module`);
-			setTimeout(() => setSuccessMsg(''), 2000);
 		}
 	};
 
@@ -373,82 +347,6 @@ const AdminDashboard = () => {
 		return value;
 	};
 
-	const ModuleList: Module[] = [
-		{
-			id: 'shared-listing',
-			name: 'Shared listing',
-			icon: 'adminfont-spmv',
-			proModule: false,
-		},
-		{
-			id: 'staff-manager',
-			name: 'Staff manager',
-			icon: 'adminfont-staff-manager',
-			proModule: true,
-		},
-		{
-			id: 'vacation',
-			name: 'Vacation mode',
-			icon: 'adminfont-vacation',
-			proModule: true,
-		},
-		{
-			id: 'business-hours',
-			name: 'Business hours',
-			icon: 'adminfont-business-hours',
-			proModule: true,
-		},
-		{
-			id: 'store-inventory',
-			name: 'Store inventory',
-			icon: 'adminfont-store-inventory',
-			proModule: true,
-		},
-		{
-			id: 'min-max-quantities',
-			name: 'Min max',
-			icon: 'adminfont-min-max',
-			proModule: false,
-		},
-		{
-			id: 'wholesale',
-			name: 'Wholesale',
-			icon: 'adminfont-wholesale',
-			proModule: true,
-		},
-		{
-			id: 'paypal-marketplace',
-			name: 'PayPal marketplace',
-			icon: 'adminfont-paypal-marketplace',
-			proModule: true,
-		},
-		{
-			id: 'stripe-marketplace',
-			name: 'Stripe marketplace',
-			icon: 'adminfont-stripe-marketplace',
-			proModule: true,
-		},
-		{
-			id: 'facilitator',
-			name: 'Facilitator',
-			icon: 'adminfont-facilitator',
-			proModule: true,
-		},
-		{
-			id: 'franchises-module',
-			name: 'Franchises',
-			icon: 'adminfont-franchises-module',
-			proModule: true,
-		},
-		{
-			id: 'invoice',
-			name: 'Invoice & packing slip',
-			icon: 'adminfont-invoice',
-			proModule: true,
-		},
-	];
-
-
 	const [activeTab, setActiveTab] = useState('dashboard');
 	const isPro = !!appLocalizer.khali_dabba;
 	const renderUpgradeButton = (label = 'Upgrade Now') => {
@@ -573,7 +471,7 @@ const AdminDashboard = () => {
 								/>
 							}>
 							<Modules
-								modulesArray={{ category: false, modules: ModuleList }}
+								modulesArray={modulesArray}
 								appLocalizer={appLocalizer}
 								apiLink="modules"
 								proPopupContent={proPopupContent}

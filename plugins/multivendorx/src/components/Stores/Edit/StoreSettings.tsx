@@ -405,7 +405,24 @@ const StoreSettings = ({
 				<Column grid={8}>
 					{/* Contact Information */}
 					<Card title={__('Contact information', 'multivendorx')}>
-						<FormGroup label={__('Store email(s)', 'multivendorx')}>
+						<FormGroup
+							label={__('Store email(s)', 'multivendorx')}
+							desc={
+								<>
+									<b>{__('Tip:', 'multivendorx')}</b>
+									{__(
+										'You can add multiple email addresses. All added emails will receive notifications.',
+										'multivendorx'
+									)}
+									<br />
+									<b>{__('Primary email:', 'multivendorx')}</b>
+									{__(
+										'Click the star icon to set an email as primary. This email will appear on your storefront, and all other email IDs will be hidden from display.',
+										'multivendorx'
+									)}
+								</>
+							}
+						>
 							<EmailsInput
 								value={emails}
 								primary={primaryEmail}
@@ -414,17 +431,6 @@ const StoreSettings = ({
 									saveEmails(list, primary)
 								}
 							/>
-							<div className="settings-metabox-description">
-								<b>{__('Tip:')}</b>{' '}
-								{__(
-									'You can add multiple email addresses. All added emails will receive notifications.'
-								)}{' '}
-								<br />
-								<b>{__('Primary email:')}</b>{' '}
-								{__(
-									'Click the star icon to set an email as primary. This email will appear on your storefront, and all other email IDs will be hidden from display.'
-								)}
-							</div>
 						</FormGroup>
 
 						<FormGroup label={__('Phone', 'multivendorx')}>
@@ -511,50 +517,52 @@ const StoreSettings = ({
 				</Column>
 				<Column grid={4}>
 					{/* Manage Store Status */}
-					<div id="store-status" className="card-content">
-						<div className="card-header">
-							<div className="left">
-								<div className="title">
-									{__('Manage store status', 'multivendorx')}
-								</div>
-							</div>
-						</div>
-						<div className="card-body">
-							<FormGroupWrapper>
-								<FormGroup label={__('Current status', 'multivendorx')}>
-									<SelectInputUI
-										name="status"
-										value={formData.status}
-										options={statusOptions}
-										onChange={(newValue: any) => {
-											if (
-												!newValue ||
-												Array.isArray(newValue)
-											) {
-												return;
-											}
-											const updated = {
-												...formData,
-												status: newValue.value,
-											};
-											onUpdate({ status: newValue.value });
-											setFormData(updated);
-											autoSave(updated);
-										}}
-									/>
-								</FormGroup>
-							</FormGroupWrapper>
-						</div>
-					</div>
+					<Card id="store-status" title={__('Manage store status', 'multivendorx')}>
+						<FormGroupWrapper>
+							<FormGroup label={__('Current status', 'multivendorx')}>
+								<SelectInputUI
+									name="status"
+									value={formData.status}
+									options={statusOptions}
+									onChange={(newValue: any) => {
+										if (
+											!newValue ||
+											Array.isArray(newValue)
+										) {
+											return;
+										}
+										const updated = {
+											...formData,
+											status: newValue.value,
+										};
+										onUpdate({ status: newValue.value });
+										setFormData(updated);
+										autoSave(updated);
+									}}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</Card>
 					{/* Manage Storefront Link */}
-					<div id="store-slug" className="card-content">
-						<div className="card-header">
-							<div className="left">
-								<div className="title">
-									{__(
-										'Manage storefront link',
-										'multivendorx'
-									)}
+					<Card id="store-slug" title={__('Manage storefront link', 'multivendorx')}>
+						<FormGroupWrapper>
+							<FormGroup label={__('Current storefront link', 'multivendorx')}>
+								<BasicInputUI
+									name="slug"
+									value={formData.slug}
+									onChange={handleChange}
+								/>
+								<div className="settings-metabox-description slug">
+									{__('Store URL', 'multivendorx')} :{' '}
+									<a
+										className="link-item"
+										target="_blank"
+										rel="noopener noreferrer"
+										href={`${appLocalizer.store_page_url}${formData.slug}`}
+									>
+										{`${appLocalizer.store_page_url}${formData.slug}`}{' '}
+										<i className="adminfont-external"></i>
+									</a>
 								</div>
 							</div>
 						</div>

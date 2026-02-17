@@ -40,7 +40,7 @@ class Block {
         // Localize in frontend.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         // Restrict store shop blocks.
-        add_filter( 'allowed_block_types_all', array( $this, 'restrict_block_types' ) );
+        // add_filter( 'allowed_block_types_all', array( $this, 'restrict_block_types' ) );
     }
 
     /**

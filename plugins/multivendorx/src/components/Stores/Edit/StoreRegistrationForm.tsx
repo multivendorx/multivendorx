@@ -54,7 +54,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				return (
 					<div>
 						<a href={fileUrl} target="_blank" rel="noopener noreferrer" download>
-							{__('Download Attachment', 'catalogx-pro')}
+							{__('Download Attachment', 'multivendorx')}
 						</a>
 					</div>
 				);

@@ -90,25 +90,6 @@ const Stores = () => {
 		}
 	};
 
-
-	// update text in state immediately (no API here)
-	// const handleChange = (
-	// 	e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	// ) => {
-	// 	const { name, value } = e.target;
-	// 	const updated = { ...formData, [name]: value };
-
-	// 	if (name === 'slug') {
-	// 		const clean = value.replace(/[^a-zA-Z0-9-]/g, '');
-	// 		updated.slug = clean.toLowerCase();
-	// 	} else if (name === 'name') {
-	// 		updated.name = value;
-	// 		updated.slug = generateSlug(value);
-	// 	}
-
-	// 	setFormData(updated);
-	// };
-
 	const handleChange = (name: 'name' | 'slug', value: string) => {
 		setFormData((prev) => {
 			if (name === 'name') {
@@ -347,7 +328,7 @@ const Stores = () => {
 
 									<AdminButtonUI
 										buttons={{
-											text: 'Check Slug',
+											text: __('Check Slug', 'multivendorx'),
 											onClick: handleSlugCheck,
 										}}
 									/>
@@ -416,7 +397,6 @@ const Stores = () => {
 								<FormGroup label={__('Profile image', 'multivendorx')} htmlFor="store_owners">
 									<FileInputUI
 										value={formData.image || ''}
-										inputClass="form-input"
 										name="image"
 										// type="hidden"
 										accept={".jpg,.jpeg,.png,.gif,.pdf,.zip"} // Backend controls file types: "image/*", ".pdf", "image/*,.pdf"

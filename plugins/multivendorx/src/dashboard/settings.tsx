@@ -12,6 +12,8 @@ import Verification from './settings/Verification';
 import ShippingDelivery from './settings/ShippingDelivery';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+import Availability from './settings/Availability';
+import BusinessHours from './settings/BusinessHours';
 
 const settings = () => {
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -172,6 +174,30 @@ const settings = () => {
 					headerIcon: 'verification5',
 				},
 			},
+			{
+				type: 'file',
+				content: {
+					id: 'availability',
+					headerTitle: __('Availability', 'multivendorx'),
+					headerDescription: __(
+						'Manage your store’s shipping method, pricing rules, and location-based rates.',
+						'multivendorx'
+					),
+					headerIcon: 'shipping',
+				},
+			},
+			{
+				type: 'file',
+				content: {
+					id: 'business-hours',
+					headerTitle: __('Business Hours', 'multivendorx'),
+					headerDescription: __(
+						'Manage your store’s shipping method, pricing rules, and location-based rates.',
+						'multivendorx'
+					),
+					headerIcon: 'shipping',
+				},
+			},
 		].filter(
 			(tab) =>
 				(!tab.module || modules.includes(tab.module)) &&
@@ -210,6 +236,10 @@ const settings = () => {
 				break;
 			case 'verification':
 				form = <Verification />;
+			case 'availability':
+				form = <Availability />;
+			case 'business-hours':
+				form = <BusinessHours />;
 				break;
 			default:
 				form = null;
