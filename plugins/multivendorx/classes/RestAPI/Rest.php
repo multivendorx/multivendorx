@@ -321,7 +321,7 @@ class Rest {
         $user_id = get_current_user_id();
 
         // Fetch custom user meta.
-        $active_store = get_user_meta( $user_id, Utill::USER_SETTINGS_KEYS['active_store'], true );
+        $active_store = MultiVendorX()->active_store;
 
         // Get all users for that store.
         $users = StoreUtil::get_store_users( $active_store );
