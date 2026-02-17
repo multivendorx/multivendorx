@@ -28,11 +28,6 @@ import { AdminButtonUI, Card, Column, Container, ItemList, Modules, SuccessNotic
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
-const REQUIRED_PLUGINS = [
-	'woocommerce-catalog-enquiry',
-	'woocommerce-product-stock-alert',
-];
-
 const AdminDashboard = () => {
 	const [installing, setInstalling] = useState<string>('');
 	const [pluginStatus, setPluginStatus] = useState<{
