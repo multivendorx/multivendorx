@@ -1,102 +1,106 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import {
-    TextArea,
-    FileInput,
-    useModules,
-    getApiLink,
-    SuccessNotice,
     FormGroupWrapper,
     FormGroup,
-    BasicInputUI,
-    ToggleSettingUI,
-    TextAreaUI,
-    CalendarInput,
+    NestedComponentUI,
+    SelectInputUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const BusinessHours = () => {
+    const [rules, setRules] = useState<any[]>([]);
+
+    const nestedFields = [
+        {
+            key: 'facilitator_fixed',
+            type: 'number',
+            size: '5rem',
+            afterElement: {
+                type: 'preposttext',
+                textType: 'post',
+                postText: ':',
+            },
+        },
+        {
+            key: 'facilitator_fixed',
+            type: 'number',
+            size: '5rem',
+            afterElement: {
+                type: 'preposttext',
+                textType: 'post',
+                postText: ':',
+            },
+        },
+        {
+            key: 'facilitator_fixed',
+            type: 'number',
+            size: '2rem',
+            postText: 'AM',
+            afterElement: {
+                type: 'preposttext',
+                textType: 'post',
+                postText: '--',
+            },
+        },
+        {
+            key: 'facilitator_fixed',
+            type: 'number',
+            size: '5rem',
+            afterElement: {
+                type: 'preposttext',
+                textType: 'post',
+                postText: ':',
+            },
+        },
+        {
+            key: 'facilitator_fixed',
+            type: 'number',
+            size: '5rem',
+            afterElement: {
+                type: 'preposttext',
+                textType: 'post',
+                postText: ':',
+            },
+        },
+        {
+            key: 'facilitator_fixed',
+            type: 'number',
+            size: '2rem',
+            postText: 'AM',
+        },
+
+    ];
+    const stockStatusOptions = [
+		{ value: '', label: 'Eastern Time (ET)' },
+		{ value: 'instock', label: 'Central Time (CT)' },
+		{ value: 'outofstock', label: 'Mountain Time (MT)' },
+		{ value: 'onbackorder', label: 'Pacific Time (PT)' },
+		{ value: 'onbackorder', label: 'London (GMT)' },
+
+	];
     return (
         <>
             <FormGroupWrapper>
-                <FormGroup label={__('"Add to Cart" Button Text', 'multivendorx')}>
-                    <BasicInputUI
-                        type={'text'}
-                    // value={query}
-                    // onChange={(val: string) => {
-                    //     setQuery(val);
-                    //     setIsOpen(true);
-                    //     triggerSearch(val);
-                    // }}
+                <FormGroup label={__('Shop Open & Close Timings', 'multivendorx')}>
+                    <SelectInputUI
+                        name="stock_status"
+                        options={stockStatusOptions}
+                        size={'14rem'}
+                        // value={product.stock_status}
+                        // onChange={(selected) =>
+                        //     handleChange('stock_status', selected.value)
+                        // }
                     />
                 </FormGroup>
-                <FormGroup label={__('Notification Message', 'multivendorx')}>
-                    <TextAreaUI
-                        name="content"
+                <FormGroup label={__('Shop Open & Close Timings', 'multivendorx')}>
+                    <NestedComponentUI
+                        id="role_rules"
+                        fields={nestedFields}
+                        value={rules}
+                        addButtonLabel="Add Hours"
+                        deleteButtonLabel="Remove"
+                        onChange={(val) => setRules(val)}
                     />
-                </FormGroup>
-                <FormGroup label={__('Quick presets', 'multivendorx')}>
-                    <ToggleSettingUI
-                        options={[
-                            {
-                                key: 'draft',
-                                value: 'draft',
-                                label: __('1d', 'multivendorx'),
-                                desc: __('Same', 'multivendorx')
-                            },
-                            {
-                                key: 'publish',
-                                value: 'publish',
-                                label: __('3d', 'multivendorx'),
-                                desc: __('Short', 'multivendorx')
-                            },
-                            {
-                                key: 'pending',
-                                value: 'pending',
-                                label: __('7d', 'multivendorx'),
-                                desc: __('1 week', 'multivendorx')
-                            },
-                            {
-                                key: 'pending',
-                                value: 'pending',
-                                label: __('14d', 'multivendorx'),
-                                desc: __('2 week', 'multivendorx')
-                            },
-                            {
-                                key: 'pending',
-                                value: 'pending',
-                                label: __('30d', 'multivendorx'),
-                                desc: __('1 month', 'multivendorx')
-                            },
-                        ]}
-                    // value={product.status}
-                    // onChange={(value) => handleChange('status', value)}
-                    />
-
-                </FormGroup>
-                <FormGroup label={__('Notify via', 'multivendorx')}>
-                    <ToggleSettingUI
-                        options={[
-                            {
-                                key: 'draft',
-                                value: 'draft',
-                                label: __('Store banner', 'multivendorx')
-                            },
-                            {
-                                key: 'publish',
-                                value: 'publish',
-                                label: __('Email', 'multivendorx')
-                            },
-                            {
-                                key: 'pending',
-                                value: 'pending',
-                                label: __('SMS', 'multivendorx')
-                            },
-                        ]}
-                    // value={product.status}
-                    // onChange={(value) => handleChange('status', value)}
-                    />
-
                 </FormGroup>
             </FormGroupWrapper>
         </>

@@ -236,8 +236,10 @@ const settings = () => {
 				break;
 			case 'verification':
 				form = <Verification />;
+				break;
 			case 'availability':
 				form = <Availability />;
+				break;
 			case 'business-hours':
 				form = <BusinessHours />;
 				break;
