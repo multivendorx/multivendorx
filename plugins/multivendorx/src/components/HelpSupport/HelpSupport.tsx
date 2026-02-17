@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import {Card, Column, Container, NavigatorHeader } from 'zyra';
+import { Card, Column, Container, NavigatorHeader } from 'zyra';
 
 const HelpSupport: React.FC = () => {
 	const videos = [
@@ -19,227 +19,114 @@ const HelpSupport: React.FC = () => {
 			des: 'Understand how to set up subscription-based vendor plans.',
 		},
 	];
+	const supportItems = [
+		{
+			icon: 'facebook-fill',
+			name: __('Facebook community', 'multivendorx'),
+			description: __('Connect with other store owners, share tips, and get quick solutions.', 'multivendorx'),
+			link: 'https://www.facebook.com/groups/226246620006065/'
+		},
+		{
+			icon: 'wordpress',
+			name: __('WordPress support forum', 'multivendorx'),
+			description: __('Ask questions and get expert guidance from the WordPress community.', 'multivendorx'),
+			link: 'https://wordpress.org/support/plugin/dc-woocommerce-multi-vendor/'
+		},
+		{
+			icon: 'forum',
+			name: __('Our forum', 'multivendorx'),
+			description: __('Discuss MultiVendorX features, report issues, and collaborate with other users.', 'multivendorx'),
+			link: 'https://multivendorx.com/support-forum/'
+		},
+		{
+			icon: 'live-chat',
+			name: __('Live chat', 'multivendorx'),
+			description: __('Get real-time support from our team for setup, troubleshooting, and guidance.', 'multivendorx'),
+			link: 'https://tawk.to/chat/5d2eebf19b94cd38bbe7c9ad/1fsg8cq8n'
+		}
+	];
+	const DocumentationItems = [
+		{
+			icon: 'document',
+			name: __('Official documentation', 'multivendorx'),
+			description: __('Step-by-step guides for every MultiVendorX feature.', 'multivendorx'),
+			link: 'https://multivendorx.com/docs/knowledgebase/'
+		},
+		{
+			icon: 'youtube',
+			name: __('YouTube tutorials', 'multivendorx'),
+			description: __('Watch videos on marketplace setup, store management, payments, and more.', 'multivendorx'),
+			link: 'https://www.youtube.com/@MultiVendorX/videos'
+		},
+		{
+			icon: 'faq',
+			name: __('FAQs', 'multivendorx'),
+			description: __('Quick answers to the most common questions about features and troubleshooting.', 'multivendorx'),
+			link: 'https://multivendorx.com/docs/faqs/'
+		},
+		{
+			icon: 'coding',
+			name: __('Coding support', 'multivendorx'),
+			description: __('Professional help for customizations, integrations, and technical issues.', 'multivendorx'),
+			link: 'https://discord.com/channels/1376811097134469191/1376811102020829258'
+		}
+	];
 	return (
 		<>
 			<NavigatorHeader
 				headerIcon="customer-support"
-				headerTitle="Help & Support"
-				headerDescription={
-					'Get fast help, expert guidance, and easy-to-follow resources - all in one place.'
-				}
+				headerTitle={__('Help & Support', 'multivendorx')}
+				headerDescription={__('Get fast help, expert guidance, and easy-to-follow resources - all in one place.', 'multivendorx')}
 			/>
 
 			<Container general>
 				<Column row>
-					<Card title="Community & forums">
+					<Card title={__('Community & forums', 'multivendorx')}>
 						<div className="support-wrapper">
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-facebook-fill"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://www.facebook.com/groups/226246620006065/"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__(
-												'Facebook community',
-												'multivendorx'
-											)}
-										</a>
+							{supportItems.map((item, index) => (
+								<div className="support-item" key={index}>
+									<div className="image">
+										<i className={`adminfont-${item.icon}`} />
 									</div>
-									<div className="des">
-										{__(
-											'Connect with other store owners, share tips, and get quick solutions.',
-											'multivendorx'
-										)}
+									<div className="details">
+										<div className="name">
+											<a
+												href={item.link}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												{item.name}
+											</a>
+										</div>
+										<div className="des"> {item.description} </div>
 									</div>
 								</div>
-							</div>
-
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-wordpress"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://wordpress.org/support/plugin/dc-woocommerce-multi-vendor/"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__(
-												'WordPress support forum',
-												'multivendorx'
-											)}
-										</a>
-									</div>
-									<div className="des">
-										{__(
-											'Ask questions and get expert guidance from the WordPress community.',
-											'multivendorx'
-										)}
-									</div>
-								</div>
-							</div>
-
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-forum"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://multivendorx.com/support-forum/"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__(
-												'Our forum',
-												'multivendorx'
-											)}
-										</a>
-									</div>
-									<div className="des">
-										{__(
-											'Discuss MultiVendorX features, report issues, and collaborate with other users.',
-											'multivendorx'
-										)}
-									</div>
-								</div>
-							</div>
-
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-live-chat"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://tawk.to/chat/5d2eebf19b94cd38bbe7c9ad/1fsg8cq8n"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__(
-												'Live chat',
-												'multivendorx'
-											)}
-										</a>
-									</div>
-									<div className="des">
-										{__(
-											'Get real-time support from our team for setup, troubleshooting, and guidance.',
-											'multivendorx'
-										)}
-									</div>
-								</div>
-							</div>
+							))}
 						</div>
 					</Card>
-					<Card title="Documentation & Learning">
+					<Card title={__( 'Documentation & Learning', 'multivendorx' )}>
 						<div className="support-wrapper">
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-document"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://multivendorx.com/docs/knowledgebase/"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__(
-												'Official documentation',
-												'multivendorx'
-											)}
-										</a>
+							{DocumentationItems.map((item, index) => (
+								<div className="support-item" key={index}>
+									<div className="image">
+										<i className={`adminfont-${item.icon}`} />
 									</div>
-									<div className="des">
-										{__(
-											'Step-by-step guides for every MultiVendorX feature.',
-											'multivendorx'
-										)}
+									<div className="details">
+										<div className="name">
+											<a
+												href={item.link}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												{item.name}
+											</a>
+										</div>
+										<div className="des">
+											{item.description}
+										</div>
 									</div>
 								</div>
-							</div>
-
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-youtube"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://www.youtube.com/@MultiVendorX/videos"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__(
-												'YouTube tutorials',
-												'multivendorx'
-											)}
-										</a>
-									</div>
-									<div className="des">
-										{__(
-											'Watch videos on marketplace setup, store management, payments, and more.',
-											'multivendorx'
-										)}
-									</div>
-								</div>
-							</div>
-
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-faq"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://multivendorx.com/docs/faqs/"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__('FAQs', 'multivendorx')}
-										</a>
-									</div>
-									<div className="des">
-										{__(
-											'Quick answers to the most common questions about features and troubleshooting.',
-											'multivendorx'
-										)}
-									</div>
-								</div>
-							</div>
-
-							<div className="support-item">
-								<div className="image">
-									<i className="adminfont-coding"></i>
-								</div>
-								<div className="details">
-									<div className="name">
-										<a
-											href="https://discord.com/channels/1376811097134469191/1376811102020829258"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											{__(
-												'Coding support',
-												'multivendorx'
-											)}
-										</a>
-									</div>
-									<div className="des">
-										{__(
-											'Professional help for customizations, integrations, and technical issues.',
-											'multivendorx'
-										)}
-									</div>
-								</div>
-							</div>
+							))}
 						</div>
 					</Card>
 				</Column>
@@ -266,10 +153,7 @@ const HelpSupport: React.FC = () => {
 									rel="noopener noreferrer"
 									className="admin-btn btn-purple"
 								>
-									{__(
-										'Watch All Tutorials',
-										'multivendorx'
-									)}
+									{__( 'Watch All Tutorials', 'multivendorx' )}
 								</a>
 							</div>
 

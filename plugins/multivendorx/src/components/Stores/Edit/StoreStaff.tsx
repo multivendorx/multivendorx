@@ -48,7 +48,6 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 			<Container>
 				<Column grid={8}>
 					<Card title={__('Store owners', 'multivendorx')}>
-						{/* Store owners multi-select */}
 						<FormGroupWrapper>
 							<SelectInputUI
 								name="store_owners"
@@ -109,40 +108,31 @@ const StoreSquad = ({ id }: { id: string | null }) => {
 				</Column>
 
 				<Column grid={4}>
-					<div id="primary-owner" className="card-content">
-						<div className="card-header">
-							<div className="left">
-								<div className="title">
-									{__('Primary owner', 'multivendorx')}
-								</div>
-							</div>
-						</div>
-						<div className="card-body">
-							<FormGroupWrapper>
-								<FormGroup label={__('Select primary owner', 'multivendorx')} >
-									<SelectInputUI
-										name="primary_owner"
-										options={ appLocalizer?.store_owners || [] }
-										value={formData.primary_owner}
-										onChange={(newValue: any) => {
-											if (
-												!newValue ||
-												Array.isArray(newValue)
-											) {
-												return;
-											}
-											const updated = {
-												...formData,
-												primary_owner: newValue.value,
-											};
-											setFormData(updated);
-											autoSave(updated);
-										}}
-									/>
-								</FormGroup>
-							</FormGroupWrapper>
-						</div>
-					</div>
+					<Card id="primary-owner" title={__('Primary owner', 'multivendorx')}>
+						<FormGroupWrapper>
+							<FormGroup label={__('Select primary owner', 'multivendorx')} >
+								<SelectInputUI
+									name="primary_owner"
+									options={appLocalizer?.store_owners || []}
+									value={formData.primary_owner}
+									onChange={(newValue: any) => {
+										if (
+											!newValue ||
+											Array.isArray(newValue)
+										) {
+											return;
+										}
+										const updated = {
+											...formData,
+											primary_owner: newValue.value,
+										};
+										setFormData(updated);
+										autoSave(updated);
+									}}
+								/>
+							</FormGroup>
+						</FormGroupWrapper>
+					</Card>
 				</Column>
 			</Container>
 		</>

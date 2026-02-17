@@ -14,6 +14,7 @@ interface CalendarInputProps {
   onChange?: (range?: CalendarRange) => void;
   multiple?: boolean;
   proSetting?: boolean;
+  inline?: boolean;
 }
 
 const convertToDateObjectRange = (
@@ -115,6 +116,7 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
   format = "MMMM DD YYYY",
   value,
   onChange,
+  inline,
   multiple = false,
 }) => {
   const pickerRef = useRef<DatePickerRef>(null);
@@ -182,6 +184,7 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
         maxDate={new Date()}
         multiple={multiple}
         plugins={plugins}
+        inline={inline}
       />
     </div>
   );

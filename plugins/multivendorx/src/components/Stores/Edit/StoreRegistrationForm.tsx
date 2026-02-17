@@ -3,10 +3,7 @@ import axios from 'axios';
 import { getApiLink, SuccessNotice, Container, Column, Card, FormGroupWrapper, FormGroup, Skeleton, PdfDownloadButton, AdminButtonUI, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 import React from 'react';
-import { printContent } from '@/services/commonFunction';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-
-
 
 const styles = StyleSheet.create({
     page: { padding: 24, fontSize: 12 },
@@ -56,7 +53,7 @@ const StoreRegistration = ({ id }: { id: string | null }) => {
 				return (
 					<div>
 						<a href={fileUrl} target="_blank" rel="noopener noreferrer" download>
-							{__('Download Attachment', 'catalogx-pro')}
+							{__('Download Attachment', 'multivendorx')}
 						</a>
 					</div>
 				);
