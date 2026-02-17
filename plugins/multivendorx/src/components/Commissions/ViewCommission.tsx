@@ -228,7 +228,6 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			}}
 		>
 			<div className="content multi">
-				{/* your existing code untouched */}
 				<div className="section left">
 					<div className="vendor-details">
 						<div className="name">

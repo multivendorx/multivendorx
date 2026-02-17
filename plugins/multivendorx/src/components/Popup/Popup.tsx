@@ -1,5 +1,5 @@
 /* global appLocalizer */
-import React from 'react';
+import React, { useState } from 'react';
 import { AdminButtonUI } from 'zyra';
 import { __, sprintf } from '@wordpress/i18n';
 import '../Popup/Popup.scss';
@@ -17,126 +17,77 @@ interface PopupProps {
     onCancel?: () => void;
 }
 
-export const proPopupContent = {
-	proUrl: typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#',
-	title: __('Upgrade every marketplace needs!', 'multivendorx'),
-	moreText: __(
-		'Recurring revenue for you, empowered stores, automated operations',
-		'multivendorx'
-	),
-	upgradeBtnText: __('Yes, Upgrade Me!', 'multivendorx'),
+const proPopupContent = {
 	messages: [
 		{
-			icon: 'adminfont-commission',
+			icon: 'commission',
 			text: __('Membership Rewards & Commission', 'multivendorx'),
-			des: __(
-				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
-				'multivendorx'
-			),
+			des: __( 'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.', 'multivendorx'),
 		},
 		{
-			icon: 'adminfont-store-policy',
+			icon: 'store-policy',
 			text: __('Verified Stores Only', 'multivendorx'),
-			des: __(
-				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
-				'multivendorx'
-			),
+			des: __( 'Screen stores with document verification and approval - build a trusted marketplace from day one.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-marketplace',
+			icon: 'marketplace',
 			text: __('Diversified Marketplace', 'multivendorx'),
-			des: __(
-				' Enable bookings, subscriptions, and auctions to boost sales and engagement.',
-				'multivendorx'
-			),
+			des: __( ' Enable bookings, subscriptions, and auctions to boost sales and engagement.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-store-inventory',
+			icon: 'store-inventory',
 			text: __('Vacation Mode for Stores', 'multivendorx'),
-			des: __(
-				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
-				'multivendorx'
-			),
+			des: __( 'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-out-of-stock',
+			icon: 'out-of-stock',
 			text: __('Never Run Out of Stock', 'multivendorx'),
-			des: __(
-				' Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
-				'multivendorx'
-			),
+			des: __(' Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.', 'multivendorx')
 		},
 		{
-			icon: 'adminfont-notification',
+			icon: 'notification',
 			text: __('Autopilot Notifications', 'multivendorx'),
-			des: __(
-				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
-				'multivendorx'
-			),
+			des: __( 'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-staff-manager',
+			icon: 'staff-manager',
 			text: __('Staff Manager', 'multivendorx'),
-			des: __(
-				'Empower stores to manage their team with role-based access and permissions.',
-				'multivendorx'
-			),
+			des: __( 'Empower stores to manage their team with role-based access and permissions.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-business-hours',
+			icon: 'business-hours',
 			text: __('Business Hours', 'multivendorx'),
-			des: __(
-				'Let stores set their operating hours for better customer expectations.',
-				'multivendorx'
-			),
+			des: __('Let stores set their operating hours for better customer expectations.','multivendorx')
 		},
 		{
-			icon: 'adminfont-wholesale',
+			icon: 'wholesale',
 			text: __('Wholesale', 'multivendorx'),
-			des: __(
-				'Enable bulk pricing and wholesale options to attract B2B buyers.',
-				'multivendorx'
-			),
+			des: __('Enable bulk pricing and wholesale options to attract B2B buyers.','multivendorx')
 		},
 		{
-			icon: 'adminfont-paypal-marketplace',
+			icon: 'paypal-marketplace',
 			text: __('PayPal Marketplace', 'multivendorx'),
-			des: __(
-				'Split payments automatically to stores via PayPal - seamless payouts.',
-				'multivendorx'
-			),
+			des: __('Split payments automatically to stores via PayPal - seamless payouts.','multivendorx')
 		},
 		{
-			icon: 'adminfont-stripe-marketplace',
+			icon: 'stripe-marketplace',
 			text: __('Stripe Marketplace', 'multivendorx'),
-			des: __(
-				'Instant vendor payouts with Stripe Connect - fast and secure.',
-				'multivendorx'
-			),
+			des: __('Instant vendor payouts with Stripe Connect - fast and secure.','multivendorx')
 		},
 		{
-			icon: 'adminfont-facilitator',
+			icon: 'facilitator',
 			text: __('Facilitator', 'multivendorx'),
-			des: __(
-				'Manage complex commission structures with advanced calculation rules.',
-				'multivendorx'
-			),
+			des: __('Manage complex commission structures with advanced calculation rules.','multivendorx')
 		},
 		{
-			icon: 'adminfont-user-network-icon',
+			icon: 'user-network-icon',
 			text: __('Franchises', 'multivendorx'),
-			des: __(
-				'Create multi-location marketplace networks with centralized control.',
-				'multivendorx'
-			),
+			des: __('Create multi-location marketplace networks with centralized control.','multivendorx')
 		},
 		{
-			icon: 'adminfont-franchises-module',
+			icon: 'franchises-module',
 			text: __('Invoice & Packing Slip', 'multivendorx'),
-			des: __(
-				'Professional invoices and packing slips for every order - build trust and credibility.',
-				'multivendorx'
-			),
+			des: __('Professional invoices and packing slips for every order - build trust and credibility.','multivendorx')
 		},
 	],
 	btnLink: [
@@ -159,6 +110,8 @@ export const proPopupContent = {
 };
 
 const ShowProPopup: React.FC<PopupProps> = (props) => {
+	const [selectedBtn, setSelectedBtn] = useState(proPopupContent.btnLink[0]);
+
 	return (
 		<>
 			{props.confirmMode ? (
@@ -187,15 +140,13 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 
 				<div className="popup-wrapper">
 					<div className="popup-header">
-						<i
-							className={`adminfont-${props.moduleName}`}
-						></i>
+						<i className={`adminfont-${props.moduleName}`} />
 					</div>
 					<div className="popup-body">
 						<h2>
-							Activate {props.moduleName}
+						{sprintf( __('Activate %s', 'multivendorx'), props.moduleName)}
 						</h2>
-						<p>This feature is currently unavailable. To activate it, please enable the {props.moduleName}</p>
+						<p>{sprintf( __('This feature is currently unavailable. To activate it, please enable the %s', 'multivendorx'), props.moduleName)}</p>
 
 						<AdminButtonUI
 							position="center"
@@ -217,18 +168,17 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 					{/* pro */}
 					<div className="popup-wrapper">
 						<div className="top-section">
-							<div className="heading">Upgrade every marketplace needs!</div>
-							<div className="description"> Recurring revenue for you, empowered stores, automated operations</div>
+							<div className="heading">{__( 'Upgrade every marketplace needs!', 'multivendorx')}</div>
+							<div className="description">{__( 'Recurring revenue for you, empowered stores, automated operations', 'multivendorx')} </div>
 							<div className="price">
-								{/* {selectedBtn.price} */}
-								$299
+								{selectedBtn.price}
 							</div>
 							<div className="select-wrapper">
-								For website with
-								{/* <select
+								{__('For website with', 'multivendorx')}
+								<select
 									value={selectedBtn.link}
 									onChange={(e) => {
-										const found = btnLink.find(
+										const found = proPopupContent.btnLink.find(
 											(b) =>
 												b.link === e.target.value
 										);
@@ -237,7 +187,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 										}
 									}}
 								>
-									{btnLink.map((b, idx) => (
+									{proPopupContent.btnLink.map((b, idx) => (
 										<option
 											key={idx}
 											value={b.link}
@@ -245,46 +195,36 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 											{b.site}
 										</option>
 									))}
-								</select> */}
-								1
-								site license
+								</select>
+								{__('site license', 'multivendorx')}
 							</div>
 							<a
 								className="admin-btn"
-								href={typeof appLocalizer !== 'undefined' ? appLocalizer.pro_url : '#'}
+								href={selectedBtn.link}
 								target="_blank"
 								rel="noreferrer"
 							>
-								Yes, Upgrade Me!
+								{__( 'Yes, Upgrade Me!', 'multivendorx')}
 								<i className="adminfont-arrow-right arrow-icon"></i>
 							</a>
 						</div>
-						<div className="popup-content">
+						<div className="popup-details">
 							<div className="heading-text">
-								Why should you upgrade?
+								{__( 'Why should you upgrade?', 'multivendorx')}
 							</div>
 
 							<ul>
-								{/* {props.messages?.map(
-									(message, index) => ( */}
-								<li>
+								{proPopupContent.messages.map(
+									(message, index) => (
+								<li key={index}>
 									<div className="title">
-										<i
-											// className={
-											//     message.icon  													
-											// }
-											className='adminfont-commission'
-										></i>
-										{/* {message.text} */}
-										Membership Rewards & Commission
+										<i className={`adminfont-${message.icon}`}/>
+										{message.text}
 									</div>
-									<div className="sub-text">
-										{/* {message.des} */}
-										Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.
-									</div>
+									<div className="desc"> {message.des}</div>
 								</li>
-								{/* )
-								)} */}
+								)
+								)}
 							</ul>
 						</div>
 					</div>
