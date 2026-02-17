@@ -559,7 +559,7 @@ class FrontendScripts {
 							'site_url'                 => site_url(),
 							'admin_url'                => admin_url(),
 							'currency'                 => get_woocommerce_currency(),       // E.g., USD.
-							'currency_symbol'          => get_woocommerce_currency_symbol(),
+							'currency_symbol'          => get_woocommerce_currency_symbol(get_woocommerce_currency()),
 							'price_format'             => get_woocommerce_price_format(),
 							'decimal_sep'              => wc_get_price_decimal_separator(),
 							'thousand_sep'             => wc_get_price_thousand_separator(),
@@ -660,7 +660,7 @@ class FrontendScripts {
                         'admin_url'                => admin_url(),
                         'currency'                 => get_woocommerce_currency(),
                         'taxes_enabled'            => get_option( Utill::WOO_SETTINGS['taxes'] ),
-                        'currency_symbol'          => get_woocommerce_currency_symbol(),
+                        'currency_symbol'          => get_woocommerce_currency_symbol(get_woocommerce_currency()),
                         'price_format'             => get_woocommerce_price_format(),
                         'decimal_sep'              => wc_get_price_decimal_separator(),
                         'thousand_sep'             => wc_get_price_thousand_separator(),

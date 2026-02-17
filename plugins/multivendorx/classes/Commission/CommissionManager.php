@@ -132,7 +132,7 @@ class CommissionManager {
                 'store_payable'            => $store_payable,
                 'marketplace_payable'      => $marketplace_payable,
                 'currency'                 => get_woocommerce_currency(),
-                'currency_symbol'          => get_woocommerce_currency_symbol(),
+                'currency_symbol'          => get_woocommerce_currency_symbol(get_woocommerce_currency()),
                 'status'                   => $status,
                 'rules_applied'            => serialize( $rules_array ),
             );
@@ -665,7 +665,7 @@ class CommissionManager {
                 'store_refunded'           => $store_refunded,
                 'marketplace_refunded'     => $marketplace_refunded,
                 'currency'                 => get_woocommerce_currency(),
-                'currency_symbol'          => get_woocommerce_currency_symbol(),
+                'currency_symbol'          => get_woocommerce_currency_symbol(get_woocommerce_currency()),
                 'status'                   => $status,
                 'rules_applied'            => $commission->rules_applied,
             );
@@ -701,7 +701,7 @@ class CommissionManager {
                     'transaction_type' => 'Refund',
                     'amount'           => abs( (float) $commission->store_payable - $store_payable ),
                     'currency'         => get_woocommerce_currency(),
-                    'currency_symbol'  => get_woocommerce_currency_symbol(),
+                    'currency_symbol'  => get_woocommerce_currency_symbol(get_woocommerce_currency()),
                     'payment_method'   => $store->get_meta( 'payment_method' ) ?? '',
                     'narration'        => 'Withdrawal via refund',
                     'status'           => 'Completed',
