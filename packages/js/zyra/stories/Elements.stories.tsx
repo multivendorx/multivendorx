@@ -24,18 +24,18 @@ const selectOptions = [
         label: 'Textarea',
     },
     {
-        icon: 'adminlib-checkbox icon-form-checkboxes',
+        icon: 'adminlib-checkbox',
         value: 'checkboxes',
         label: 'Checkboxes',
     },
     {
-        icon: 'adminlib-multi-select icon-form-multi-select',
+        icon: 'adminlib-multi-select',
         value: 'multiselect',
         label: 'Multi Select',
     },
     { icon: 'adminlib-radio icon-form-radio', value: 'radio', label: 'Radio' },
     {
-        icon: 'adminlib-dropdown-checklist icon-form-dropdown',
+        icon: 'adminlib-dropdown-checklist',
         value: 'dropdown',
         label: 'Dropdown',
     },
@@ -45,7 +45,7 @@ const selectOptions = [
         label: 'reCaptcha v3',
     },
     {
-        icon: 'adminlib-submission-message icon-form-attachment',
+        icon: 'adminlib-submission-message ',
         value: 'attachment',
         label: 'Attachment',
     },
@@ -55,7 +55,7 @@ const selectOptions = [
         label: 'Section',
     },
     {
-        icon: 'adminlib-calendar icon-form-store-description',
+        icon: 'adminlib-calendar',
         value: 'datepicker',
         label: 'Date Picker',
     },

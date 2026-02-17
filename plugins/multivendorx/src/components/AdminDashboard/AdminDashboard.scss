@@ -1081,14 +1081,6 @@
     }
 }
 
-
-
-
-
-
-
-
-
 // Block Type Header
 .block-type-header {
     display: flex;
@@ -1123,7 +1115,7 @@
         cursor: pointer;
         user-select: none;
 
-        h4 {
+         .group-title{
             margin: 0;
             font-size: 0.875rem;
             font-weight: 600;

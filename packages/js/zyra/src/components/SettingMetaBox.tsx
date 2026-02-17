@@ -78,6 +78,9 @@ const HEADING_LEVELS = [
     { id: 'h1', value: 1, label: 'H1' },
     { id: 'h2', value: 2, label: 'H2' },
     { id: 'h3', value: 3, label: 'H3' },
+    { id: 'h4', value: 4, label: 'H4' },
+    { id: 'h5', value: 5, label: 'H5' },
+    { id: 'h6', value: 6, label: 'H6' },
 ];
 
 // Blocks that have style controls
@@ -282,7 +285,7 @@ const createFieldRenderers = (): Record<string, React.FC<{
                 <ToggleSettingUI
                     options={HEADING_LEVELS}
                     value={formField.level || 2}
-                    onChange={(val) => onChange('level', Number(val) as 1 | 2 | 3)}
+                    onChange={(val) => onChange('level', Number(val) as 1 | 2 | 3 | 4 | 5 | 6)}
                 />
             </div>
         </ContentGroup>
