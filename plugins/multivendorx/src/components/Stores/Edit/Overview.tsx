@@ -123,40 +123,38 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							text: item.text,
 						}))}
 					/>
-					<div className="card-wrapper">
-						<Card
-							title={__('Recent payouts', 'multivendorx')}
-							iconName="adminfont-external icon"
-							onIconClick={() => {
-								navigate(
-									`?page=multivendorx#&tab=transaction-history&store_id=${id}`
-								);
-							}}
-						>
-							{recentDebits && recentDebits.length > 0 ? (
-								recentDebits.map((txn) => (
-									<InfoItem
-										key={txn.id}
-										title={__('Bank Transfer', 'multivendorx')}
-										descriptions={[
-											{
-												value: new Date(txn.date).toLocaleDateString('en-US', {
-													month: 'short',
-													day: '2-digit',
-													year: 'numeric',
-												}),
-											},
-										]}
-										amount={formatCurrency(txn.amount)}
-									/>
-								))
-							) : (
-								<div className="no-data">
-									{__('No recent payout', 'multivendorx')}
-								</div>
-							)}
-						</Card>
-					</div>
+					<Card
+						title={__('Recent payouts', 'multivendorx')}
+						iconName="adminfont-external icon"
+						onIconClick={() => {
+							navigate(
+								`?page=multivendorx#&tab=transaction-history&store_id=${id}`
+							);
+						}}
+					>
+						{recentDebits && recentDebits.length > 0 ? (
+							recentDebits.map((txn) => (
+								<InfoItem
+									key={txn.id}
+									title={__('Bank Transfer', 'multivendorx')}
+									descriptions={[
+										{
+											value: new Date(txn.date).toLocaleDateString('en-US', {
+												month: 'short',
+												day: '2-digit',
+												year: 'numeric',
+											}),
+										},
+									]}
+									amount={formatCurrency(txn.amount)}
+								/>
+							))
+						) : (
+							<div className="no-data">
+								{__('No recent payout', 'multivendorx')}
+							</div>
+						)}
+					</Card>
 
 					<Card
 						title={__('Latest products', 'multivendorx')}

@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup, TextAreaUI } from 'zyra';
+import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
@@ -58,7 +58,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 
 			<Container>
 				<Column row>
-					<Card title="Store policy">
+					<Card title={__('Store policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="store_policy"
@@ -74,7 +74,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							/>
 						</FormGroupWrapper>
 					</Card>
-					<Card title="Shipping policy">
+					<Card title={__('Shipping policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="shipping_policy"
@@ -92,7 +92,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 					</Card>
 				</Column>
 				<Column row>
-					<Card title="Refund policy">
+					<Card title={__('Refund policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="refund_policy"
@@ -108,7 +108,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							/>
 						</FormGroupWrapper>
 					</Card>
-					<Card title="Cancellation / return / exchange policy">
+					<Card title={__('Cancellation / return / exchange policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="cancellation_policy"
