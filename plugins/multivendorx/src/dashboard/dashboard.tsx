@@ -15,7 +15,8 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import {  AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules } from 'zyra';
+import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules, TableCard, } from 'zyra';
+import { TableRow } from '@/services/type';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { formatCurrency, formatTimeAgo } from '@/services/commonFunction';
@@ -54,7 +55,7 @@ const Dashboard: React.FC = () => {
 	const [customers, setCustomers] = useState<any>([]);
 	const [lastWithdraws, setLastWithdraws] = useState<any>([]);
 	const [activities, setActivities] = useState<any>([]);
-	const [isLoading, setIsLoading] = useState(true);	
+	const [isLoading, setIsLoading] = useState(true);
 	const [dateRange, setDateRange] = useState<DateRange>({
 		startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
 		endDate: new Date(),
@@ -62,81 +63,101 @@ const Dashboard: React.FC = () => {
 
 	const { modules } = useModules();
 
+	// Table data states
+	const [recentOrderRows, setRecentOrderRows] = useState<TableRow[][]>([]);
+	const [recentOrderIds, setRecentOrderIds] = useState<number[]>([]);
+	
+	const [topProductRows, setTopProductRows] = useState<TableRow[][]>([]);
+	const [topProductIds, setTopProductIds] = useState<number[]>([]);
+	
+	const [withdrawalRows, setWithdrawalRows] = useState<TableRow[][]>([]);
+	const [withdrawalIds, setWithdrawalIds] = useState<number[]>([]);
+	
+	const [customerRows, setCustomerRows] = useState<TableRow[][]>([]);
+	const [customerIds, setCustomerIds] = useState<number[]>([]);
+
 	useEffect(() => {
 		setIsLoading(true);
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'review'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: 1,
-				row: 4,
-				store_id: appLocalizer.store_id,
-				orderBy: 'date_created',
-				order: 'desc',
-				startDate: dateRange.startDate,
-				endDate: dateRange.endDate,
-				dashboard: true
-			},
-		})
-			.then((response) => {
-				const items = response.data.items || [];
-				setReview(items);
-			}).finally(() => {
-				setIsLoading(false);
-			})
-			.catch(() => {
-				setReview([]);
+		
+		// Fetch all data in parallel for better performance
+		Promise.all([
+			fetchReviews(),
+			fetchPendingRefunds(),
+			fetchAnnouncements(),
+			fetchTopProducts(),
+			fetchRecentOrders(),
+			fetchStoreData(),
+			fetchTotalOrders(),
+			fetchLastWithdrawals(),
+			fetchCustomers(),
+			fetchActivities(),
+			fetchRevenueData()
+		]).finally(() => {
+			setIsLoading(false);
+		});
+	}, [dateRange]);
+
+	const fetchReviews = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'review'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: 1,
+					row: 4,
+					store_id: appLocalizer.store_id,
+					orderBy: 'date_created',
+					order: 'desc',
+					startDate: dateRange.startDate,
+					endDate: dateRange.endDate,
+					dashboard: true
+				},
 			});
+			setReview(response.data.items || []);
+		} catch {
+			setReview([]);
+		}
+	};
 
-		axios({
-			method: 'GET',
-			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				meta_key: 'multivendorx_store_id',
-				value: appLocalizer.store_id,
-				status: 'refund-requested',
-				page: 1,
-				per_page: 4,
-				orderby: 'date',
-				order: 'desc',
-				after: dateRange.startDate.toISOString().replace('Z', ''),
-				before: dateRange.endDate.toISOString().replace('Z', ''),
-			},
-		})
-			.then((response) => {
-				const items = response.data || [];
-
-				const formatData = items.map((order) => {
-					// extract refund reason
-					const reasonMeta = order.meta_data.find(
-						(m) => m.key === '_customer_refund_reason'
-					);
-					const refundReason = reasonMeta
-						? reasonMeta.value
-						: 'No reason';
-
-					return {
-						id: order.id,
-						name: `${order.billing.first_name} ${order.billing.last_name}`,
-						reason: refundReason,
-						time: order.date_created, // or format with moment()
-						amount: order.total,
-					};
-				});
-
-				setPendingRefund(formatData);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			})
-			.catch(() => {
-				setPendingRefund([]);
+	const fetchPendingRefunds = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					meta_key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+					status: 'refund-requested',
+					page: 1,
+					per_page: 4,
+					orderby: 'date',
+					order: 'desc',
+					after: dateRange.startDate.toISOString().replace('Z', ''),
+					before: dateRange.endDate.toISOString().replace('Z', ''),
+				},
 			});
+			
+			const items = response.data || [];
+			const formatData = items.map((order) => ({
+				id: order.id,
+				name: `${order.billing.first_name} ${order.billing.last_name}`,
+				reason: order.meta_data.find((m) => m.key === '_customer_refund_reason')?.value || 'No reason',
+				time: order.date_created,
+				amount: order.total,
+			}));
+			setPendingRefund(formatData);
+		} catch {
+			setPendingRefund([]);
+		}
+	};
 
-		if (modules.includes('announcement')) {
-			axios({
+	const fetchAnnouncements = async () => {
+		if (!modules.includes('announcement')) return;
+		
+		try {
+			const response = await axios({
 				method: 'GET',
 				url: getApiLink(appLocalizer, 'announcement'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
@@ -145,220 +166,374 @@ const Dashboard: React.FC = () => {
 					row: 5,
 					store_id: appLocalizer.store_id,
 					status: 'publish',
-					// startDate: dateRange.startDate,
-					// endDate: dateRange.endDate,
-					// dashboard: true
 				},
-			})
-				.then((response) => {
-					console.log("res",response)
-					setAnnouncement(response.data || []);
-				}).finally(() => {
-				setIsLoading(false);
 			});
+			setAnnouncement(response.data || []);
+		} catch {
+			setAnnouncement([]);
 		}
-		axios({
-			method: 'GET',
-			url: `${appLocalizer.apiUrl}/wc/v3/products`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				per_page: 5,
-				meta_key: 'multivendorx_store_id',
-				orderby: 'popularity',
-				order: 'desc',
-				value: appLocalizer.store_id,
-				after: dateRange.startDate.toISOString().replace('Z', ''),
-				before: dateRange.endDate.toISOString().replace('Z', ''),
-			},
-		})
-			.then((response) => {
-				const products = response.data;
+	};
 
-				// Find max sales to calculate popularity %
-				const maxSales = Math.max(
-					...products.map((p) => parseInt(p.total_sales) || 0)
-				);
-
-				const processed = products.map((p) => {
-					const sales = parseInt(p.total_sales) || 0;
-					const popularity =
-						maxSales > 0 ? Math.round((sales / maxSales) * 100) : 0;
-					return {
-						id: p.id,
-						name: p.name,
-						sales,
-						popularity,
-					};
-				});
-				setTopProducts(processed);
-			}).finally(() => {
-				setIsLoading(false);
-			})
-			.catch((error) => {
-				console.error('Error fetching top selling products:', error);
+	const fetchTopProducts = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: `${appLocalizer.apiUrl}/wc/v3/products`,
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					per_page: 5,
+					meta_key: 'multivendorx_store_id',
+					orderby: 'popularity',
+					order: 'desc',
+					value: appLocalizer.store_id,
+					after: dateRange.startDate.toISOString().replace('Z', ''),
+					before: dateRange.endDate.toISOString().replace('Z', ''),
+				},
 			});
-
-		axios({
-			method: 'GET',
-			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				per_page: 5,
-				order: 'desc',
-				orderby: 'date',
-				meta_key: 'multivendorx_store_id',
-				value: appLocalizer.store_id,
-				after: dateRange.startDate.toISOString().replace('Z', ''),
-				before: dateRange.endDate.toISOString().replace('Z', ''),
-			},
-		})
-			.then((response) => {
-				const orders = response.data.map((order) => {
-					return {
-						id: order.id,
-						products:
-							order.line_items?.map((item) => ({
-								name: item.name,
-								image:
-									item.image?.src ||
-									item.image_url ||
-									'-',
-							})) || [],
-						store_name: order.store_name || '-',
-						amount: formatCurrency(order.total),
-						commission_amount: order.commission_amount
-							? formatCurrency(order.commission_amount)
-							: '-',
-						date: order.date_created,
-						status: order.status,
-						currency_symbol: order.currency_symbol,
-					};
-				});
-
-				setRecentOrders(orders);
-			}).finally(() => {
-				setIsLoading(false);
+			
+			const products = response.data;
+			const maxSales = Math.max(...products.map((p) => parseInt(p.total_sales) || 0));
+			
+			const processed = products.map((p) => {
+				const sales = parseInt(p.total_sales) || 0;
+				const popularity = maxSales > 0 ? Math.round((sales / maxSales) * 100) : 0;
+				return {
+					id: p.id,
+					name: p.name,
+					sales,
+					popularity,
+				};
 			});
+			setTopProducts(processed);
+			
+			// Prepare table rows
+			const rows: TableRow[][] = processed.map((product, index) => [
+				{
+					display: String(index + 1).padStart(2, '0'),
+					value: index + 1
+				},
+				{
+					display: product.name,
+					value: product.name
+				},
+				{
+					display: (
+						<div className="progress-bar">
+							<div className={`progress-bar admin-color${index + 1}`}>
+								<span
+									className={`progress-bar admin-bg-color${index + 1}`}
+									style={{ width: `${product.popularity}%` }}
+								/>
+							</div>
+						</div>
+					),
+					value: product.popularity
+				},
+				{
+					display: (
+						<div className={`admin-badge admin-color${index + 1}`}>
+							{product.popularity}%
+						</div>
+					),
+					value: product.popularity
+				}
+			]);
+			
+			setTopProductRows(rows);
+			setTopProductIds(processed.map(p => p.id));
+			
+		} catch (error) {
+			console.error('Error fetching top selling products:', error);
+		}
+	};
 
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: { dashboard: true, id: appLocalizer.store_id }
-		}).then((res: any) => {
-			const data = res.data || {};
-			setStore(data);
-		}).finally(() => {
-				setIsLoading(false);
+	const fetchRecentOrders = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					per_page: 5,
+					order: 'desc',
+					orderby: 'date',
+					meta_key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+					after: dateRange.startDate.toISOString().replace('Z', ''),
+					before: dateRange.endDate.toISOString().replace('Z', ''),
+				},
 			});
-
-		axios({
-			method: 'GET',
-			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				per_page: 1,
-				meta_key: 'multivendorx_store_id',
-				value: appLocalizer.store_id,
-				after: dateRange.startDate.toISOString().replace('Z', ''),
-				before: dateRange.endDate.toISOString().replace('Z', ''),
-			},
-		})
-			.then((response) => {
-				// WooCommerce returns total order count in headers
-				const totalOrders =
-					parseInt(response.headers['x-wp-total']) || 0;
-				setTotalOrder(totalOrders);
-			})
-			.catch(() => { })
-			.finally(() => {
-				setIsLoading(false);
+			
+			const orders = response.data.map((order) => ({
+				id: order.id,
+				products: order.line_items?.map((item) => ({
+					name: item.name,
+					image: item.image?.src || item.image_url || '-',
+				})) || [],
+				store_name: order.store_name || '-',
+				amount: formatCurrency(order.total),
+				commission_amount: order.commission_amount ? formatCurrency(order.commission_amount) : '-',
+				date: order.date_created,
+				status: order.status,
+				currency_symbol: order.currency_symbol,
+			}));
+			
+			setRecentOrders(orders);
+			
+			// Prepare table rows
+			const rows: TableRow[][] = orders.map((item) => {
+				const orderUrl = `/dashboard/sales/orders/#view/${item.id}`;
+				
+				return [
+					{
+						display: (
+							<a href={orderUrl} target="_blank" rel="noopener noreferrer">
+								#{item.id} {__('Customer', 'multivendorx')}
+							</a>
+						),
+						value: item.id
+					},
+					{
+						display: item.date,
+						value: item.date
+					},
+					{
+						display: (
+							<>
+								{item.products && item.products.length > 0 ? (
+									item.products.map((product, index) => (
+										<div key={index} className="product-wrapper">
+											{product.name}
+										</div>
+									))
+								) : (
+									'-'
+								)}
+							</>
+						),
+						value: item.products.map(p => p.name).join(', ')
+					},
+					{
+						display: item.amount,
+						value: item.amount
+					},
+					{
+						display: (
+							<div className="admin-status">
+								{item.status}
+							</div>
+						),
+						value: item.status
+					}
+				];
 			});
+			
+			setRecentOrderRows(rows);
+			setRecentOrderIds(orders.map(o => o.id));
+			
+		} catch (error) {
+			console.error('Error fetching recent orders:', error);
+		}
+	};
 
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'transaction'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: 1,
-				row: 5,
-				store_id: appLocalizer.store_id,
-				transaction_type: 'Withdrawal',
-				transaction_status: 'Completed',
-				orderBy: 'created_at',
-				order: 'DESC',
-				start_date: dateRange.startDate,
-				end_date: dateRange.endDate,
-				dashboard: true
-			},
-		})
-			.then((response) => {
-				setLastWithdraws(response.data.transaction || []);
-			}).finally(() => {
-				setIsLoading(false);
-			})
-			.catch(() => setLastWithdraws([]));
+	const fetchStoreData = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { dashboard: true, id: appLocalizer.store_id }
+			});
+			setStore(response.data || {});
+		} catch (error) {
+			console.error('Error fetching store data:', error);
+		}
+	};
 
-		axios({
-			method: 'GET',
-			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				per_page: 50,
-				status: ['completed', 'processing'],
-				meta_key: 'multivendorx_store_id',
-				meta_value: appLocalizer.store_id,
-				after: dateRange.startDate.toISOString().replace('Z', ''),
-				before: dateRange.endDate.toISOString().replace('Z', ''),
-			},
-		}).then((response) => {
+	const fetchTotalOrders = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					per_page: 1,
+					meta_key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+					after: dateRange.startDate.toISOString().replace('Z', ''),
+					before: dateRange.endDate.toISOString().replace('Z', ''),
+				},
+			});
+			setTotalOrder(parseInt(response.headers['x-wp-total']) || 0);
+		} catch {
+			setTotalOrder(0);
+		}
+	};
+
+	const fetchLastWithdrawals = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'transaction'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: 1,
+					row: 5,
+					store_id: appLocalizer.store_id,
+					transaction_type: 'Withdrawal',
+					transaction_status: 'Completed',
+					orderBy: 'created_at',
+					order: 'DESC',
+					start_date: dateRange.startDate,
+					end_date: dateRange.endDate,
+					dashboard: true
+				},
+			});
+			
+			const withdrawals = response.data.transaction || [];
+			setLastWithdraws(withdrawals);
+			
+			// Prepare table rows
+			const rows: TableRow[][] = withdrawals.map((item) => [
+				{
+					display: (
+						<InfoItem
+							title={
+								item.payment_method === 'stripe-connect'
+									? __('Stripe', 'multivendorx')
+									: item.payment_method === 'bank-transfer'
+										? __('Direct to Local Bank (INR)', 'multivendorx')
+										: item.payment_method === 'paypal-payout'
+											? __('PayPal', 'multivendorx')
+											: ''
+							}
+							descriptions={[{ value: item.date }]}
+							amount={formatCurrency(item.amount)}
+						/>
+					),
+					value: item.id
+				}
+			]);
+			
+			setWithdrawalRows(rows);
+			setWithdrawalIds(withdrawals.map(w => w.id));
+			
+		} catch {
+			setLastWithdraws([]);
+		}
+	};
+
+	const fetchCustomers = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: `${appLocalizer.apiUrl}/wc/v3/orders`,
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					per_page: 50,
+					status: ['completed', 'processing'],
+					meta_key: 'multivendorx_store_id',
+					meta_value: appLocalizer.store_id,
+					after: dateRange.startDate.toISOString().replace('Z', ''),
+					before: dateRange.endDate.toISOString().replace('Z', ''),
+				},
+			});
+			
 			const customersMap = {};
-
+			
 			response.data.forEach((order) => {
 				const key = order.customer_id || order.billing?.email;
 				if (!key) return;
-
+				
 				if (!customersMap[key]) {
 					customersMap[key] = {
+						id: order.customer_id || key,
 						name: `${order.billing.first_name} ${order.billing.last_name}`,
 						email: order.billing.email,
 						total_spent: 0,
 						order_count: 0,
 					};
 				}
-
+				
 				customersMap[key].total_spent += Number(order.total);
 				customersMap[key].order_count += 1;
 			});
-
+			
 			const topCustomers = Object.values(customersMap)
 				.sort((a, b) => b.total_spent - a.total_spent)
 				.slice(0, 5);
+			
+			setCustomers(topCustomers);
+			
+			// Prepare table rows
+			const rows: TableRow[][] = topCustomers.map((customer) => [
+				{
+					display: (
+						<InfoItem
+							title={customer.name}
+							avatar={{
+								text: customer.name?.charAt(0).toUpperCase(),
+								iconClass: 'red-color',
+							}}
+							descriptions={[
+								{
+									value: `${customer.order_count} ${__('orders', 'multivendorx')}`,
+								},
+							]}
+							amount={formatCurrency(customer.total_spent)}
+						/>
+					),
+					value: customer.id
+				}
+			]);
+			
+			setCustomerRows(rows);
+			setCustomerIds(topCustomers.map(c => c.id));
+			
+		} catch {
+			setCustomers([]);
+		}
+	};
 
-			setCustomers(topCustomers)
-		}).finally(() => {
-				setIsLoading(false);
+	const fetchActivities = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'notifications'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					page: 1,
+					row: 5,
+					store_id: appLocalizer?.store_id,
+					start_date: dateRange.startDate,
+					end_date: dateRange.endDate,
+				},
 			});
+			setActivities(response.data || []);
+		} catch {
+			setActivities([]);
+		}
+	};
 
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'notifications'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				page: 1,
-				row: 5,
-				store_id: appLocalizer?.store_id,
-				start_date: dateRange.startDate,
-				end_date: dateRange.endDate,
-			},
-		})
-			.then((response) => {
-				setActivities(response.data || []);
-			}).finally(() => {
-				setIsLoading(false);
+	const fetchRevenueData = async () => {
+		try {
+			const response = await axios({
+				method: 'GET',
+				url: getApiLink(appLocalizer, 'commission'),
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					format: 'reports',
+					store_id: appLocalizer.store_id,
+					dashboard: true,
+					start_date: dateRange.startDate,
+					end_date: dateRange.endDate,
+				},
 			});
-
-	}, [dateRange]);
+			setRevenueData(response.data);
+		} catch (error) {
+			console.error('Error fetching revenue data:', error);
+		}
+	};
 
 	const analyticsData = [
 		{
@@ -395,39 +570,13 @@ const Dashboard: React.FC = () => {
 		},
 	];
 
-	// Helper function to get dynamic greeting
 	const getGreeting = () => {
 		const hour = new Date().getHours();
-
-		if (hour >= 5 && hour < 12) {
-			return 'Good Morning';
-		} else if (hour >= 12 && hour < 17) {
-			return 'Good Afternoon';
-		} else if (hour >= 17 && hour < 21) {
-			return 'Good Evening';
-		} else {
-			return 'Good Night';
-		}
+		if (hour >= 5 && hour < 12) return 'Good Morning';
+		if (hour >= 12 && hour < 17) return 'Good Afternoon';
+		if (hour >= 17 && hour < 21) return 'Good Evening';
+		return 'Good Night';
 	};
-
-	useEffect(() => {
-		axios({
-			method: 'GET',
-			url: getApiLink(appLocalizer, 'commission'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			params: {
-				format: 'reports',
-				store_id: appLocalizer.store_id,
-				dashboard: true,
-				start_date: dateRange.startDate,
-				end_date: dateRange.endDate,
-			},
-		})
-			.then((response) => {
-				const data = response.data;
-				setRevenueData(data);
-			});
-	}, [dateRange]);
 
 	const chartData = [
 		{
@@ -450,6 +599,22 @@ const Dashboard: React.FC = () => {
 	const access = appLocalizer.settings_databases_value['privacy']['customer_information_access'];
 	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
 
+	// Table headers
+	const recentOrderHeaders = [
+		{ key: 'id', label: __('Order Id', 'multivendorx') },
+		{ key: 'date', label: __('Order Date', 'multivendorx') },
+		{ key: 'products', label: __('Product Name', 'multivendorx') },
+		{ key: 'amount', label: __('Total Amount', 'multivendorx'), isNumeric: true },
+		{ key: 'status', label: __('Order Status', 'multivendorx') },
+	];
+
+	const topProductHeaders = [
+		{ key: 'rank', label: '#' },
+		{ key: 'name', label: __('Name', 'multivendorx') },
+		{ key: 'popularity', label: __('Popularity', 'multivendorx') },
+		{ key: 'sales', label: __('Sales', 'multivendorx') },
+	];
+
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -458,7 +623,6 @@ const Dashboard: React.FC = () => {
 						{getGreeting()},{' '}
 						{store?.primary_owner_info?.data?.display_name}!
 					</div>
-
 					<div className="view-des">
 						{__('You’re viewing:', 'multivendorx')}{' '}
 						<b>
@@ -467,7 +631,6 @@ const Dashboard: React.FC = () => {
 						</b>
 					</div>
 				</div>
-
 				<div className="buttons-wrapper">
 					<CalendarInput
 						onChange={(range: DateRange) => {
@@ -510,10 +673,9 @@ const Dashboard: React.FC = () => {
 						}))}
 					/>
 				</Column>
+
 				<Column grid={8}>
-					<Card
-						title={__('Sales Overview', 'multivendorx')}
-					>
+					<Card title={__('Sales Overview', 'multivendorx')}>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer width="100%" height={250}>
 								<BarChart
@@ -524,7 +686,6 @@ const Dashboard: React.FC = () => {
 									<CartesianGrid stroke="#f0f0f0" vertical={false} />
 									<XAxis dataKey="month" axisLine={false} tickLine={false} />
 									<YAxis axisLine={false} tickLine={false} />
-
 									<Tooltip
 										contentStyle={{
 											background: '#fff',
@@ -533,9 +694,7 @@ const Dashboard: React.FC = () => {
 											boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
 										}}
 									/>
-
 									<Legend />
-
 									{BarChartData.map((entry) => (
 										<Bar
 											key={entry.dataKey}
@@ -545,17 +704,6 @@ const Dashboard: React.FC = () => {
 											name={__(entry.name, 'multivendorx')}
 										/>
 									))}
-
-									{/* <Line
-										type="monotone"
-										dataKey="conversion"
-										stroke="#ffa726"
-										strokeWidth={2}
-										dot={{ r: 3 }}
-										name={__('Conversion %', 'multivendorx')}
-										yAxisId={1}
-									/> */}
-
 									<YAxis
 										yAxisId={1}
 										orientation="right"
@@ -566,9 +714,8 @@ const Dashboard: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusView title={__('No sales found.', 'multivendorx')}/>
+							<ComponentStatusView title={__('No sales found.', 'multivendorx')} />
 						)}
-
 					</Card>
 				</Column>
 
@@ -595,12 +742,11 @@ const Dashboard: React.FC = () => {
 										amount={formatCurrency(item.amount)}
 									/>
 								))
-							) : (
-								<div className="no-data">
-									{__('No withdrawals found.', 'multivendorx')}
-								</div>
-							)}
-						</div>
+						) : (
+							<div className="no-data">
+								{__('No withdrawals found.', 'multivendorx')}
+							</div>
+						)}
 
 						{lastWithdraws && lastWithdraws.length > 0 && (
 							<AdminButtonUI
@@ -631,70 +777,22 @@ const Dashboard: React.FC = () => {
 							window.open(url);
 						}}
 					>
-						<div className="table-wrapper">
-							{recentOrder && recentOrder.length > 0 ? (
-								<table>
-									<thead>
-										<tr className="header">
-											<td>{__('Order Id', 'multivendorx')}</td>
-											<td>{__('Order Date', 'multivendorx')}</td>
-											<td>{__('Product Name', 'multivendorx')}</td>
-											<td>{__('Total Amount', 'multivendorx')}</td>
-											<td>{__('Order Status', 'multivendorx')}</td>
-											{/* <td>{__('Delivery Status (P)', 'multivendorx')}</td> */}
-										</tr>
-									</thead>
-
-									<tbody>
-										{recentOrder.map((item) => {
-											const id = item.id;
-											const orderUrl = `/dashboard/sales/orders/#view/${id}`;
-											return (
-												<tr key={id}>
-													<td>
-														<a
-															href={orderUrl}
-															target="_blank"
-															rel="noopener noreferrer"
-														>
-															#{id} {__('Customer', 'multivendorx')}
-														</a>
-													</td>
-													<td>{item.date}</td>
-													<td>
-														{item.products && item.products.length > 0 ? (
-															item.products.map((product, index) => (
-																<div key={index} className="product-wrapper">
-																	{/* <img
-																		src={product.image}
-																		alt={product.name}
-																	/> */}
-																	{product.name}
-																</div>
-
-															))
-														) : (
-															'-'
-														)}
-													</td>
-
-													<td>{item.amount}</td>
-													<td>
-														<div className="admin-status">
-															{item.status}
-														</div>
-													</td>
-												</tr>
-											);
-										})}
-									</tbody>
-								</table>
-							) : (
-								<div className="no-data">
-									{__('No products found.', 'multivendorx')}
-								</div>
-							)}
-						</div>
+						{recentOrderRows.length > 0 ? (
+							<TableCard
+								headers={recentOrderHeaders}
+								rows={recentOrderRows}
+								totalRows={recentOrderRows.length}
+								isLoading={isLoading}
+								ids={recentOrderIds}
+								title=""
+								showMenu={false}
+								showColumnToggleIcon={false}
+							/>
+						) : (
+							<div className="no-data">
+								{__('No products found.', 'multivendorx')}
+							</div>
+						)}
 					</Card>
 				</Column>
 
@@ -706,53 +804,22 @@ const Dashboard: React.FC = () => {
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
 								? `${siteUrl}/${appLocalizer.dashboard_slug}/products`
-								: `${siteUrl}/?page_id=${appLocalizer.dashboard_page_id}&segment=products`
+								: `${siteUrl}/?page_id=${appLocalizer.dashboard_page_id}&segment=products`;
 							window.open(url);
 						}}
 					>
 						<div className="table-wrapper top-products">
-							{topProducts && topProducts.length > 0 ? (
-								<table>
-									<thead>
-										<tr className="header">
-											<td>#</td>
-											<td>{__('Name', 'multivendorx')}</td>
-											<td>{__('Popularity', 'multivendorx')}</td>
-											<td>{__('Sales', 'multivendorx')}</td>
-										</tr>
-									</thead>
-
-									<tbody>
-										{topProducts.map((item, index) => (
-											<tr key={item.id}>
-												<td>
-													{String(index + 1).padStart(2, '0')}
-												</td>
-
-												<td>{item.name}</td>
-
-												<td className="progress-bar">
-													<div
-														className={`progress-bar admin-color${index + 1}`}
-													>
-														<span
-															className={`progress-bar admin-bg-color${index + 1}`}
-															style={{ width: `${item.popularity}%` }}
-														/>
-													</div>
-												</td>
-
-												<td>
-													<div
-														className={`admin-badge admin-color${index + 1}`}
-													>
-														{item.popularity}%
-													</div>
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
+							{topProductRows.length > 0 ? (
+								<TableCard
+									headers={topProductHeaders}
+									rows={topProductRows}
+									totalRows={topProductRows.length}
+									isLoading={isLoading}
+									ids={topProductIds}
+									title=""
+									showMenu={false}
+									showColumnToggleIcon={false}
+								/>
 							) : (
 								<div className="no-data">
 									{__('No products found.', 'multivendorx')}
@@ -798,7 +865,6 @@ const Dashboard: React.FC = () => {
 											/>
 										))}
 									</Pie>
-
 									<Tooltip
 										formatter={(value) => formatCurrency(value)}
 										contentStyle={{
@@ -807,11 +873,7 @@ const Dashboard: React.FC = () => {
 											border: '1px solid #ddd',
 										}}
 									/>
-
-									<Legend
-										verticalAlign="bottom"
-										height={36}
-									/>
+									<Legend verticalAlign="bottom" height={36} />
 								</PieChart>
 							</ResponsiveContainer>
 						</div>
@@ -820,10 +882,7 @@ const Dashboard: React.FC = () => {
 				{/* Admin Announcements */}
 				{modules.includes('announcement') && (
 					<Column grid={4}>
-						<Card
-							title={__('Admin Announcements', 'multivendorx')}
-							iconName="adminfont-external icon"
-						>
+						<Card title={__('Admin Announcements', 'multivendorx')}>
 							<div className="notification-wrapper">
 								{announcement && announcement.length > 0 ? (
 									<ul>
@@ -834,16 +893,13 @@ const Dashboard: React.FC = () => {
 														className={`adminfont-form-paypal-email admin-badge admin-color${index + 2}`}
 													/>
 												</div>
-
 												<div className="details">
 													<div className="notification-title">
 														{item.title}
 													</div>
-
 													<div className="des">
 														{item.content}
 													</div>
-
 													<span>
 														{formatTimeAgo(item.date)}
 													</span>
@@ -875,18 +931,14 @@ const Dashboard: React.FC = () => {
 							<div className="top-customer-wrapper">
 								{pendingRefund && pendingRefund.length > 0 ? (
 									pendingRefund.map((customer) => (
-										<div
-											key={customer.id}
-											className="customer"
-										>
+										<div key={customer.id} className="customer">
 											<div className="left-section">
 												<div className="details">
 													<div className="name">
 														{customer.name}
 													</div>
 													<div className="order-number">
-														{customer.reason} |{' '}
-														{customer.time}
+														{customer.reason} | {customer.time}
 													</div>
 												</div>
 											</div>
@@ -903,9 +955,7 @@ const Dashboard: React.FC = () => {
 				)}
 				{modules.includes('privacy') && Array.isArray(access) && access.includes('name') && (
 					<Column grid={4}>
-						<Card
-							title={__('Top customer', 'multivendorx')}
-						>
+						<Card title={__('Top Customers', 'multivendorx')}>
 							{customers && customers.length > 0 ? (
 								customers.map((customer, index) => (
 									<InfoItem
@@ -933,20 +983,14 @@ const Dashboard: React.FC = () => {
 					</Column>
 				)}
 				<Column grid={4}>
-					<Card
-						title={__('Store Activity', 'multivendorx')}
-					>
+					<Card title={__('Store Activity', 'multivendorx')}>
 						<div className="activity-log">
 							{activities && activities.length > 0 ? (
 								activities.slice(0, 5).map((a, i) => (
 									<div key={i} className="activity">
 										<div className="title">{a.title}</div>
-										<div className="des">
-											{a.message}
-										</div>
-										<span>
-											{a.date}
-										</span>
+										<div className="des">{a.message}</div>
+										<span>{a.date}</span>
 									</div>
 								))
 							) : (
@@ -972,38 +1016,23 @@ const Dashboard: React.FC = () => {
 							<div className="review-wrapper">
 								{review && review.length > 0 ? (
 									review.map((reviewItem) => (
-										<div
-											className="review"
-											key={reviewItem.review_id}
-										>
+										<div className="review" key={reviewItem.review_id}>
 											<div className="details">
 												<div className="title">
 													<div className="avatar">
-														<i className="adminfont-person" />
+															<i className="adminfont-person" />
 													</div>
 													{reviewItem.review_title}
 												</div>
-
 												<div className="star-wrapper">
 													{[...Array(5)].map((_, index) => (
 														<i
 															key={index}
-															className={`star-icon adminfont-star ${index <
-																Math.round(
-																	reviewItem.overall_rating
-																)
-																? 'active'
-																: ''
-																}`}
+															className={`star-icon adminfont-star ${index < Math.round(reviewItem.overall_rating) ? 'active' : ''}`}
 														/>
 													))}
-													<span>
-														{
-															reviewItem.date_created
-														}
-													</span>
+													<span>{reviewItem.date_created}</span>
 												</div>
-
 												<div className="des">
 													{reviewItem.review_content}
 												</div>
