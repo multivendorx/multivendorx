@@ -3,42 +3,49 @@ namespace MultiVendorX\Elementor\Widgets;
 
 defined( 'ABSPATH' ) || exit;
 
-use Elementor\Widget_Heading;
+use Elementor\Widget_Button;
 use MultiVendorX\Elementor\StoreHelper;
 
-class Store_Name extends Widget_Heading {
+class Store_Get_Support extends Widget_Button {
+
     use StoreHelper;
 
     public function get_name() {
-        return 'multivendorx_store_name';
+        return 'multivendorx_store_get_support';
     }
 
     public function get_title() {
-        return __( 'Store Name', 'multivendorx' );
+        return __( 'Store Get Support Button', 'multivendorx' );
     }
 
     public function get_icon() {
-        return 'eicon-store';
+        return 'eicon-help-solid';
     }
 
     public function get_categories() {
-        return array( 'multivendorx' );
+        return [ 'multivendorx' ];
     }
 
     protected function register_controls() {
-
         parent::register_controls();
 
-
         $this->update_control(
-            'title',
+            'text',
             [
-                'label'   => __( 'Placeholder Text', 'multivendorx' ),
-                'default' => __( 'Store Name', 'multivendorx' ),
+                'default' => __( 'Get Support', 'multivendorx' ),
+                'dynamic' => [
+                    'active' => true,
+                ],
             ]
         );
 
-        $this->remove_control( 'link' );
+        $this->update_control(
+            'link',
+            [
+                'dynamic' => ['active' => false],
+                'placeholder' => __( 'Triggers Support Modal', 'multivendorx' ),
+            ]
+        );
     }
 
     protected function render() {
