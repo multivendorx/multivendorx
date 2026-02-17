@@ -4,7 +4,7 @@ import catalogx from '../../assets/images/catalogx.png';
 import Mascot from '../../assets/images/multivendorx-mascot-scale.png';
 import freePro from '../../assets/images/dashboard-1.png';
 import proPopupContent from '../Popup/Popup';
-
+import { getModuleData } from '../../services/templateService';
 interface Section {
 	title: string;
 	features: Feature[];
@@ -30,7 +30,7 @@ interface WPPlugin {
 import './AdminDashboard.scss';
 import '../dashboard.scss';
 import { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, Column, Container, getApiLink, ItemList, Modules, sendApiResponse, SuccessNotice, useModules } from 'zyra';
+import { AdminButtonUI, Card, Column, Container, ItemList, Modules, SuccessNotice, useModules } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
@@ -41,6 +41,8 @@ const AdminDashboard = () => {
 		[key: string]: boolean;
 	}>({});
 	const [successMsg, setSuccessMsg] = useState<string>('');
+
+	const modulesArray = getModuleData();
 
 	// Check plugin installation status on component mount
 	useEffect(() => {
@@ -544,7 +546,8 @@ const AdminDashboard = () => {
 								/>
 							}>
 							<Modules
-								modulesArray={{ category: false, modules: ModuleList }}
+								// modulesArray={{ category: false, modules: ModuleList }}
+								modulesArray={modulesArray}
 								appLocalizer={appLocalizer}
 								apiLink="modules"
 								proPopupContent={proPopupContent}
