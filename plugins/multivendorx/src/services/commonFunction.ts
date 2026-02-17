@@ -9,7 +9,6 @@ export function formatCurrency(amount: number | string): string {
 	if (!amount && amount !== 0) {
 		return '-';
 	}
-
 	const {
 		currency_symbol = '',
 		price_format = '%1$s%2$s',
@@ -107,9 +106,7 @@ export function formatWordpressDate(
 	dateString: string | null | undefined,
   ): string {
 	if (!dateString) return '-';
-	console.log('dateString', dateString);
 	const date = new Date(dateString);
-	console.log('date', date);
 	if (isNaN(date.getTime())) return '-';
   
 	const map: Record<string, string> = {
@@ -129,12 +126,6 @@ export function formatWordpressDate(
 	};
   
 	const format = appLocalizer.date_format || 'YYYY-MM-DD';
-	console.log('format', format);
-	console.log('map', map);
-	console.log('format.replace', format.replace(
-	  /YYYY|MMMM|MMM|MM|DD|D|YY|HH|mm|ss/g,
-	  (token: string | number) => map[token] ?? token
-	));
 	return format.replace(
 	  /YYYY|MMMM|MMM|MM|DD|D|YY|HH|mm|ss/g,
 	  (token: string | number) => map[token] ?? token
