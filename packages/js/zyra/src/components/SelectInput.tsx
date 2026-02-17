@@ -18,11 +18,6 @@ export interface SelectOptions {
     index?: number;
 }
 
-interface InputFeedback {
-    type: string;
-    message: string;
-}
-
 interface SelectInputProps {
     wrapperClass?: string;
     selectDeselect?: boolean;
@@ -48,7 +43,6 @@ interface SelectInputProps {
     menuContent?: React.ReactNode;
     keepMenuOpenOnMenuContentClick?: boolean;
     noOptionsText?: string;
-    msg?: InputFeedback;
 }
 const CustomMenuList = (props: any) => {
     const {
@@ -110,7 +104,6 @@ export const SelectInputUI: React.FC<SelectInputProps> = ({
     size,
     menuContent,
     keepMenuOpenOnMenuContentClick,
-    msg
 }) => {
     const customStyles: StylesConfig<SelectOptions, boolean> = {
         control: (provided, state) => ({
@@ -188,44 +181,41 @@ export const SelectInputUI: React.FC<SelectInputProps> = ({
         : optionsData.find((opt) => opt.value === value) || null;
 
     return (
-        <>
-            <div className={`form-select-field-wrapper ${wrapperClass || ''}`} style={{ width: size || '100%' }}>
-                {selectDeselect && (
-                    <button
-                        className={selectDeselectClass}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            onMultiSelectDeselectChange?.(e);
-                        }}
-                    >
-                        {selectDeselectValue}
-                    </button>
-                )}
+        <div className={`form-select-field-wrapper ${wrapperClass || ''}`} style={{ width: size || '100%' }}>
+            {selectDeselect && (
+                <button
+                    className={selectDeselectClass}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        onMultiSelectDeselectChange?.(e);
+                    }}
+                >
+                    {selectDeselectValue}
+                </button>
+            )}
 
-                <div className="select-wrapper">
-                    {preText && <div className="before">{preText}</div>}
-                    <Select
-                        name={name}
-                        className={`${inputClass} react-select`}
-                        value={defaultValue}
-                        options={optionsData}
-                        onChange={(newValue, actionMeta) => {
-                            onChange?.(newValue, actionMeta);
-                        }}
-                        styles={customStyles}
-                        // closeMenuOnSelect={true}
-                        isMulti={type === 'multi-select'}
-                        components={{ MenuList: CustomMenuList, NoOptionsMessage: CustomNoOptionsMessage, }}
-                        menuContent={menuContent}
-                        keepMenuOpenOnMenuContentClick={
-                            keepMenuOpenOnMenuContentClick
-                        }
-                    />
-                    {postText && <div className="after">{postText}</div>}
-                </div>
+            <div className="select-wrapper">
+                {preText && <div className="before">{preText}</div>}
+                <Select
+                    name={name}
+                    className={`${inputClass} react-select`}
+                    value={defaultValue}
+                    options={optionsData}
+                    onChange={(newValue, actionMeta) => {
+                        onChange?.(newValue, actionMeta);
+                    }}
+                    styles={customStyles}
+                    // closeMenuOnSelect={true}
+                    isMulti={type === 'multi-select'}
+                    components={{ MenuList: CustomMenuList, NoOptionsMessage: CustomNoOptionsMessage, }}
+                    menuContent={menuContent}
+                    keepMenuOpenOnMenuContentClick={
+                        keepMenuOpenOnMenuContentClick
+                    }
+                />
+                {postText && <div className="after">{postText}</div>}
             </div>
-            {msg && <div className={msg.type}>{msg.message}</div>}
-        </>
+        </div>
     );
 };
 

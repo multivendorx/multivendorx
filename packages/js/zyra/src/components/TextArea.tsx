@@ -3,11 +3,6 @@ import React, { ChangeEvent, MouseEvent, FocusEvent } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { FieldComponent } from './types';
 
-interface InputFeedback {
-    type: string;
-    message: string;
-}
-
 interface TextAreaProps {
     id?: string;
     name?: string;
@@ -27,7 +22,6 @@ interface TextAreaProps {
     onMouseOut?: ( e: MouseEvent< HTMLTextAreaElement > ) => void;
     onFocus?: ( e: FocusEvent< HTMLTextAreaElement > ) => void;
     onBlur?: ( e: React.FocusEvent< HTMLTextAreaElement > ) => void;
-    msg?: InputFeedback;
 }
 
 export const TextAreaUI: React.FC< TextAreaProps > = ( {
@@ -47,7 +41,6 @@ export const TextAreaUI: React.FC< TextAreaProps > = ( {
     onMouseOut,
     onFocus,
     onBlur,
-    msg,
 } ) => {
     const handleEditorChange = (content: string) => {
         onChange?.(content);
@@ -96,7 +89,6 @@ export const TextAreaUI: React.FC< TextAreaProps > = ( {
                     readOnly={ readOnly }
                 />
             ) }
-            {msg && <div className={msg.type}>{msg.message}</div>}
         </>
     );
 };
