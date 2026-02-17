@@ -131,6 +131,7 @@ const AdminButton: FieldComponent = {
             <AdminButtonUI
                 wrapperClass={field.wrapperClass}
                 buttons={resolvedButtons}
+                position={field.position}
             />
         );
     },

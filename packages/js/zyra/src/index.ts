@@ -58,7 +58,6 @@ export {NavigatorHeader} from './components/SettingsNavigator';
 export { default as Container } from './components/UI/Container';
 export { default as Column } from './components/UI/Column';
 export { default as Card } from './components/UI/Card';
-export { default as MiniCard } from './components/UI/MiniCard';
 export { default as FormGroup } from './components/UI/FormGroup';
 export { default as FormGroupWrapper } from './components/UI/FormGroupWrapper';
 export { default as AdminButton } from './components/AdminButton';

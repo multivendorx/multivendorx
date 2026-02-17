@@ -34,7 +34,6 @@ interface CanvasEditorProps {
     proSettingChange?: () => boolean;
     context?: string;
     inputTypeList?: Array<{ value: string; label: string }>;
-    canvasClassName?: string;
 }
 
 export const CanvasEditor: React.FC<CanvasEditorProps> = ({
@@ -50,14 +49,13 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     proSettingChange = () => false,
     context = 'default',
     inputTypeList,
-    canvasClassName = 'registration-form-main-section',
 }) => {
     const settingHasChanged = useRef(false);
     const initialLoad = useRef(true);
-    
+
     const [blocks, setBlocks] = useState<Block[]>(externalBlocks);
     const [openBlock, setOpenBlock] = useState<Block | null>(null);
-    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => 
+    const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
         Object.fromEntries(
             (visibleGroups.length ? blockGroups.filter(g => visibleGroups.includes(g.id)) : blockGroups)
                 .map(g => [g.id, true])
@@ -160,20 +158,19 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
             {groupsToShow.map(({ id, label, icon, blocks }) => (
                 <aside key={id} className="elements-section">
                     <div className="section-meta" onClick={() => toggleGroup(id)}>
-                        <div>{icon && <i className={icon} />}{label} <span>({blocks.length})</span></div>
+                        <div className="elements-title">{icon && <i className={icon} />}{label} <span>({blocks.length})</span></div>
                         <i className={`adminfont-pagination-right-arrow ${openGroups[id] ? 'rotate' : ''}`} />
                     </div>
                     {openGroups[id] && (
-                        <main className="section-container open">
-                            <ReactSortable list={blocks} setList={() => {}} sort={false} 
-                                group={{ name: groupName, pull: 'clone', put: false }}>
-                                {blocks.map(({ id: blockId, icon, label, value }) => (
-                                    <div key={blockId || value} className="elements-items">
-                                        <i className={icon} /><p className="list-title">{label}</p>
-                                    </div>
-                                ))}
-                            </ReactSortable>
-                        </main>
+                        <ReactSortable list={blocks} setList={() => { }} sort={false}
+                            group={{ name: groupName, pull: 'clone', put: false }}
+                            className="section-container open">
+                            {blocks.map(({ id: blockId, icon, label, value }) => (
+                                <div key={blockId || value} className="elements-items">
+                                    <i className={icon} /><p className="list-title">{label}</p>
+                                </div>
+                            ))}
+                        </ReactSortable>
                     )}
                 </aside>
             ))}
@@ -204,7 +201,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 ]} />
             </div>
 
-            <div className={canvasClassName}>
+            <div className="canvas-editor">
                 <ReactSortable list={blocks} setList={handleSetList}
                     group={{ name: groupName, pull: true, put: true }} handle=".drag-handle" animation={150}>
                     {blocks.map((block, index) => (
@@ -228,19 +225,12 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                 </ReactSortable>
             </div>
 
-            {openBlock && (
-                <div className="registration-edit-form-wrapper">
-                    <div className="registration-edit-form">
-                        <div className="meta-setting-modal-content">
-                            <div className="settings-title">
-                                <h3>{openBlock.type.charAt(0).toUpperCase() + openBlock.type.slice(1)} Settings</h3>
-                            </div>
-                            <SettingMetaBox formField={openBlock} opened={{ click: true }}
-                                onChange={handleSettingsChange} inputTypeList={getInputTypeList()} />
-                        </div>
-                    </div>
-                </div>
-            )}
+            <div className="settings-panel-wrapper">
+                {openBlock && (
+                    <SettingMetaBox formField={openBlock} opened={{ click: true }}
+                        onChange={handleSettingsChange} inputTypeList={getInputTypeList()} />
+                )}
+            </div>
         </div>
     );
 };

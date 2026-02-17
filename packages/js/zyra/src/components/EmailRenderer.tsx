@@ -104,21 +104,19 @@ export const EmailTemplateUI: React.FC<EmailTemplateProps> = ({
     }
 
     return (
-        <div className="email-builder">
-            <CanvasEditor
-                blocks={activeTemplate.blocks || []}
-                onChange={handleBlocksChange}
-                blockGroups={EMAIL_BLOCK_GROUPS}
-                visibleGroups={['email']}
-                templates={templates}
-                activeTemplateId={activeTemplateId}
-                onTemplateSelect={handleTemplateSelect}
-                showTemplatesTab={true}
-                groupName="email"
-                proSettingChange={proSettingChange}
-                context="email"
-            />
-        </div>
+        <CanvasEditor
+            blocks={activeTemplate.blocks || []}
+            onChange={handleBlocksChange}
+            blockGroups={EMAIL_BLOCK_GROUPS}
+            visibleGroups={['email']}
+            templates={templates}
+            activeTemplateId={activeTemplateId}
+            onTemplateSelect={handleTemplateSelect}
+            showTemplatesTab={true}
+            groupName="email"
+            proSettingChange={proSettingChange}
+            context="email"
+        />
     );
 };
 

@@ -8,8 +8,8 @@ import { BlockStyle } from './CanvasEditor/blockStyle';
 import { BasicInputUI } from './BasicInput';
 import { SelectInputUI } from './SelectInput';
 import { MultiCheckBoxUI } from './MultiCheckbox';
-import { RadioInputUI } from './RadioInput';
 import { ToggleSettingUI } from './ToggleSetting';
+import { AdminButtonUI } from './AdminButton';
 
 // TYPES
 type FormFieldValue = string | number | boolean | Option[] | Record<string, any>;
@@ -148,19 +148,13 @@ const ContentGroup: React.FC<{ title: string; expanded: boolean; onToggle: () =>
 const VisibilityToggle: React.FC<{ disabled?: boolean; onChange: (disabled: boolean) => void }> = 
     ({ disabled = false, onChange }) => (
         <FieldWrapper label="Visibility">
-            <div className="toggle-setting-container">
-                <div className="toggle-setting-wrapper">
-                    <RadioInputUI
-                        type="radio"
-                        name="tabs"
-                        onChange={(label) => onChange(label)}
-                        options={[
-                            { key: 'visible', value: "Visible", label: 'Visible', },
-                            { key: 'hidden', value: "Hidden", label: 'Hidden', },
-                        ]}
+            <ToggleSettingUI
+                options={[
+                    { key: 'visible', value: "Visible", label: 'Visible', },
+                    { key: 'hidden', value: "Hidden", label: 'Hidden', },
+                ]}
+                onChange={(label) => onChange(label)}
                     />
-                </div>
-            </div>
         </FieldWrapper>
     );
 
@@ -211,11 +205,16 @@ const OptionEditor: React.FC<{ options: Option[]; onChange: (options: Option[]) 
                         </div>
                     ))}
                 </ReactSortable>
-                <div className="buttons-wrapper">
-                    <div className="add-more-option-section admin-btn btn-purple" onClick={addOption}>
-                        Add new <span><i className="admin-font adminfont-plus" /></span>
-                    </div>
-                </div>
+                 <AdminButtonUI
+                    buttons={[
+                        {
+                            text: 'Add new',
+                            icon: 'plus',
+                            color: 'purple',
+                            onClick: addOption
+                        },
+                    ]}
+                />
             </div>
         );
     };
@@ -449,11 +448,11 @@ const SettingMetaBox: React.FC<SettingMetaBoxProps> = ({
     if (!hasOpened || !formField) return null;
     
     return (
-        <main className="meta-setting-modal-content" onClick={(e) => e.stopPropagation()}>
+        <main className="setting-panel" onClick={(e) => e.stopPropagation()}>
             <div className="settings-title">
                 {formField.type 
-                    ? `${formField.type.charAt(0).toUpperCase() + formField.type.slice(1)} field settings`
-                    : 'Input field settings'}
+                    ? `${formField.type.charAt(0).toUpperCase() + formField.type.slice(1)} settings`
+                    : 'Input settings'}
             </div>
             
             {/* Always show label */}
