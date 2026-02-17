@@ -1073,6 +1073,26 @@ class Install {
         );
 
         $this->plugin_create_pages_dynamic( $pages_to_create );
+
+        $template_slug = 'store';
+
+        // Check if page already exists
+        $existing = get_page_by_path( $template_slug );
+
+        if ( ! $existing ) {
+            $block_template_path = MultiVendorX()->plugin_path . 'templates/store/store.html';
+            $blocks_html = file_exists( $block_template_path ) ? file_get_contents( $block_template_path ) : '';
+
+            // Insert hidden page with default blocks
+            wp_insert_post([
+                'post_title'   => 'Store Template',
+                'post_name'    => $template_slug,
+                'post_type'    => 'page',
+                'post_status'  => 'private',
+                'post_content' => $blocks_html, // default blocks pre-filled
+            ]);
+        }
+        
     }
 
     /**
