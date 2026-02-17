@@ -9,6 +9,8 @@ import {
 	FormGroupWrapper,
 	FormGroup,
 	BasicInputUI,
+	SelectInputUI,
+	CountryCodes,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -64,6 +66,22 @@ const ContactInformation = () => {
 			}
 		});
 	};
+
+	const ensurePhonePrefix = (code: string, phone: string) => {
+		if (!code) return phone || '';
+	
+		const raw = phone || '';
+	
+		// If already starts with correct code → keep typing
+		if (raw.startsWith(code)) return raw;
+	
+		// Remove ONLY old prefix (not entire number)
+		const withoutOldPrefix = raw.replace(/^\+\d{1,4}/, '');
+	
+		return code + withoutOldPrefix;
+	};	
+
+
 	return (
 		<>
 			<SuccessNotice message={successMsg} />
@@ -73,6 +91,28 @@ const ContactInformation = () => {
 					htmlFor="phone"
 					cols={2}
 				>
+					<SelectInputUI
+						name="country_code"
+						value={formData.country_code}
+						options={CountryCodes}
+						onChange={(selected: { value: string }) => {
+							setFormData((prev) => {
+								const newPhone = ensurePhonePrefix(
+									selected.value,
+									prev.phone || ''
+								);
+
+								const updated = {
+									...prev,
+									country_code: selected.value,
+									phone: newPhone,
+								};
+
+								autoSave(updated);
+								return updated;
+							});
+						}}
+					/>
 					<BasicInputUI
 						value={formData.phone}
 						onChange={(value:string)=>handleChange('phone',value)}
