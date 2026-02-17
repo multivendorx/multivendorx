@@ -20,116 +20,74 @@ interface PopupProps {
 const proPopupContent = {
 	messages: [
 		{
-			icon: 'adminfont-commission',
+			icon: 'commission',
 			text: __('Membership Rewards & Commission', 'multivendorx'),
-			des: __(
-				'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.',
-				'multivendorx'
-			),
+			des: __( 'Charge your sellers a monthly or yearly membership fee to sell on your marketplace - predictable revenue every month.', 'multivendorx'),
 		},
 		{
-			icon: 'adminfont-store-policy',
+			icon: 'store-policy',
 			text: __('Verified Stores Only', 'multivendorx'),
-			des: __(
-				'Screen stores with document verification and approval - build a trusted marketplace from day one.',
-				'multivendorx'
-			),
+			des: __( 'Screen stores with document verification and approval - build a trusted marketplace from day one.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-marketplace',
+			icon: 'marketplace',
 			text: __('Diversified Marketplace', 'multivendorx'),
-			des: __(
-				' Enable bookings, subscriptions, and auctions to boost sales and engagement.',
-				'multivendorx'
-			),
+			des: __( ' Enable bookings, subscriptions, and auctions to boost sales and engagement.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-store-inventory',
+			icon: 'store-inventory',
 			text: __('Vacation Mode for Stores', 'multivendorx'),
-			des: __(
-				'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.',
-				'multivendorx'
-			),
+			des: __( 'Stores can pause their stores temporarily with automatic buyer notifications - no missed messages.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-out-of-stock',
+			icon: 'out-of-stock',
 			text: __('Never Run Out of Stock', 'multivendorx'),
-			des: __(
-				' Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.',
-				'multivendorx'
-			),
+			des: __(' Real-time inventory tracking with automatic low-stock alerts keeps sellers prepared and buyers happy.', 'multivendorx')
 		},
 		{
-			icon: 'adminfont-notification',
+			icon: 'notification',
 			text: __('Autopilot Notifications', 'multivendorx'),
-			des: __(
-				'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.',
-				'multivendorx'
-			),
+			des: __( 'Automatic emails and alerts for every order, refund, and payout - everyone stays in the loop.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-staff-manager',
+			icon: 'staff-manager',
 			text: __('Staff Manager', 'multivendorx'),
-			des: __(
-				'Empower stores to manage their team with role-based access and permissions.',
-				'multivendorx'
-			),
+			des: __( 'Empower stores to manage their team with role-based access and permissions.', 'multivendorx' ),
 		},
 		{
-			icon: 'adminfont-business-hours',
+			icon: 'business-hours',
 			text: __('Business Hours', 'multivendorx'),
-			des: __(
-				'Let stores set their operating hours for better customer expectations.',
-				'multivendorx'
-			),
+			des: __('Let stores set their operating hours for better customer expectations.','multivendorx')
 		},
 		{
-			icon: 'adminfont-wholesale',
+			icon: 'wholesale',
 			text: __('Wholesale', 'multivendorx'),
-			des: __(
-				'Enable bulk pricing and wholesale options to attract B2B buyers.',
-				'multivendorx'
-			),
+			des: __('Enable bulk pricing and wholesale options to attract B2B buyers.','multivendorx')
 		},
 		{
-			icon: 'adminfont-paypal-marketplace',
+			icon: 'paypal-marketplace',
 			text: __('PayPal Marketplace', 'multivendorx'),
-			des: __(
-				'Split payments automatically to stores via PayPal - seamless payouts.',
-				'multivendorx'
-			),
+			des: __('Split payments automatically to stores via PayPal - seamless payouts.','multivendorx')
 		},
 		{
-			icon: 'adminfont-stripe-marketplace',
+			icon: 'stripe-marketplace',
 			text: __('Stripe Marketplace', 'multivendorx'),
-			des: __(
-				'Instant vendor payouts with Stripe Connect - fast and secure.',
-				'multivendorx'
-			),
+			des: __('Instant vendor payouts with Stripe Connect - fast and secure.','multivendorx')
 		},
 		{
-			icon: 'adminfont-facilitator',
+			icon: 'facilitator',
 			text: __('Facilitator', 'multivendorx'),
-			des: __(
-				'Manage complex commission structures with advanced calculation rules.',
-				'multivendorx'
-			),
+			des: __('Manage complex commission structures with advanced calculation rules.','multivendorx')
 		},
 		{
-			icon: 'adminfont-user-network-icon',
+			icon: 'user-network-icon',
 			text: __('Franchises', 'multivendorx'),
-			des: __(
-				'Create multi-location marketplace networks with centralized control.',
-				'multivendorx'
-			),
+			des: __('Create multi-location marketplace networks with centralized control.','multivendorx')
 		},
 		{
-			icon: 'adminfont-franchises-module',
+			icon: 'franchises-module',
 			text: __('Invoice & Packing Slip', 'multivendorx'),
-			des: __(
-				'Professional invoices and packing slips for every order - build trust and credibility.',
-				'multivendorx'
-			),
+			des: __('Professional invoices and packing slips for every order - build trust and credibility.','multivendorx')
 		},
 	],
 	btnLink: [
@@ -260,7 +218,7 @@ const ShowProPopup: React.FC<PopupProps> = (props) => {
 									(message, index) => (
 								<li key={index}>
 									<div className="title">
-										<i className={message.icon} />
+										<i className={`adminfont-${message.icon}`}/>
 										{message.text}
 									</div>
 									<div className="desc"> {message.des}</div>
