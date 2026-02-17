@@ -539,4 +539,11 @@ class Utill {
             ? gmdate( 'Y-m-d\TH:i:s', $timestamp )
             : wp_date( 'Y-m-d\TH:i:s', $timestamp );
     }
+
+    public static function multivendorx_get_currency_symbol( $currency ) {
+        return html_entity_decode(
+            get_woocommerce_currency_symbol( $currency ),
+            ENT_QUOTES
+        );
+    }
 }

@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Analytics, Card, Column, getApiLink, TableCard } from 'zyra';
 import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import axios from 'axios';
-import { formatCurrency, formatDate, formatLocalDate } from '../../services/commonFunction';
+import { formatDate, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 import Counter from '@/services/Counter';
 
@@ -43,7 +43,8 @@ const StoreReport: React.FC = () => {
 							store.commission.commission_total > 0
 					)
 					.map((store: any) => ({
-						name: `${store.store_name} (${formatCurrency(
+						name: `${store.store_name} (${(
+							store.commission.currency_symbol +
 							store.commission.commission_total
 						)})`,
 						value: store.commission.commission_total,
@@ -142,19 +143,19 @@ const StoreReport: React.FC = () => {
 						value: store.status,
 					},
 					{
-						display: formatCurrency(store.commission?.total_order_amount),
+						display: (store.commission?.currency_symbol + store.commission?.total_order_amount),
 						value: store.commission?.total_order_amount ?? 0,
 					},
 					{
-						display: formatCurrency(store.commission?.shipping_amount),
+						display: (store.commission?.currency_symbol + store.commission?.shipping_amount),
 						value: store.commission?.shipping_amount ?? 0,
 					},
 					{
-						display: formatCurrency(store.commission?.tax_amount),
+						display: (store.commission?.currency_symbol + store.commission?.tax_amount),
 						value: store.commission?.tax_amount ?? 0,
 					},
 					{
-						display: formatCurrency(store.commission?.commission_total),
+						display: (store.commission?.currency_symbol + store.commission?.commission_total),
 						value: store.commission?.commission_total ?? 0,
 					},
 					{
@@ -167,11 +168,13 @@ const StoreReport: React.FC = () => {
 						}
 					},
 					{
-						display: formatCurrency(
+						display: (
+							store.commission?.currency_symbol +
 							Number(store.commission?.total_order_amount || 0) -
 							Number(store.commission?.commission_total || 0)
 						),
 						value:
+							store.commission?.currency_symbol +
 							Number(store.commission?.total_order_amount || 0) -
 							Number(store.commission?.commission_total || 0),
 					}
@@ -261,7 +264,7 @@ const StoreReport: React.FC = () => {
 								dataKey="value"
 							/>
 						)}
-						<Tooltip formatter={(value) => formatCurrency(value)} />
+						<Tooltip formatter={(value) => (value)} />
 						<Legend />
 					</PieChart>
 				</ResponsiveContainer>

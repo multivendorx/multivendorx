@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, PopupUI,  TableCard } from 'zyra';
 import axios from 'axios';
-import { formatCurrency } from '../../services/commonFunction';
 import { TableRow } from '@/services/type';
 
 interface ViewCommissionProps {
@@ -99,8 +98,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								const mappedRows: TableRow[][] = order.shipping_lines.map((ship: any) => [
 									{ display: ship.method_title, value: ship.method_title },
 									{ display: ship.method_id, value: ship.method_id },
-									{ display: formatCurrency(ship.total), value: ship.total },
-									{ display: formatCurrency(ship.total_tax), value: ship.total_tax },
+									{ display: (ship.currency_symbol . ship.total), value: ship.total },
+									{ display: (ship.currency_symbol . ship.total_tax), value: ship.total_tax },
 								]);
 								setShippingItems(mappedRows);
 							} else {
@@ -124,7 +123,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 											},
 											display: item.name
 										},
-										{ display: formatCurrency(item.price), value: item.price },
+										{ display: (item.currency_symbol . item.price), value: item.price },
 										{
 											type: 'card',
 											value: item.quantity,
@@ -139,7 +138,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 											value: total,
 											data: {
 												name: total,
-												description: formatCurrency(refundMap[item.id]?.total)
+												description: ( refundMap[item.id]?.currency_symbol . refundMap[item.id]?.total)
 											},
 											display: total
 										},
@@ -148,7 +147,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 											value:tax,
 											data: {
 												name: tax,
-												description: formatCurrency(refundMap[item.id]?.tax)
+												description: ( refundMap[item.id]?.currency_symbol . refundMap[item.id]?.tax)
 											},
 											display: tax
 										},
@@ -364,7 +363,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								{__('Commission Amount', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatCurrency(
+								{(
+									commissionData?.currency_symbol .
 									parseFloat(commissionData?.total ?? 0) +
 									parseFloat(
 										commissionData?.commission_refunded ??
@@ -378,7 +378,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								{__('Shipping', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatCurrency(commissionData?.shipping)}
+								{(commissionData?.currency_symbol . commissionData?.shipping)}
 							</div>
 						</div>
 						<div className="items">
@@ -386,7 +386,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								{__('Tax', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatCurrency(
+								{(
+									commissionData?.currency_symbol .
 									Number(commissionData?.tax || 0) +
 									Number(
 										commissionData?.shipping_tax_amount ||
@@ -401,7 +402,8 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 									{__('Commission refund', 'multivendorx')}
 								</div>
 								<div className="value">
-									{formatCurrency(
+									{(
+										commissionData?.currency_symbol .
 										commissionData.commission_refunded
 									)}
 								</div>
@@ -412,7 +414,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 								{__('Total', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatCurrency(commissionData?.total)}
+								{(commissionData?.currency_symbol . commissionData?.total)}
 							</div>
 						</div>
 					</div>

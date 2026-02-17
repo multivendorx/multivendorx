@@ -241,6 +241,7 @@ class Commissions extends \WP_REST_Controller {
                         'marketplacePayable'    => $commission['marketplace_payable'],
                         'storeRefunded'         => $commission['store_refunded'],
                         'currency'              => $commission['currency'],
+                        'currency_symbol'        => Utill::multivendorx_get_currency_symbol( $commission['currency'] ),
                         'status'                => $commission['status'],
                         'commissionNote'        => $commission['commission_note'],
                         'createdAt'             => Utill::multivendorx_rest_prepare_date_response( $commission['created_at'] ),

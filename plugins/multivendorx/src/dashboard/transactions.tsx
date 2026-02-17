@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { Column, Container, ExportCSV, getApiLink, TableCard } from 'zyra';
 import TransactionDetailsModal from './TransactionDetailsModal';
-import { formatCurrency, formatLocalDate, formatWordpressDate, formatWordpressDate } from '../services/commonFunction';
+import { formatLocalDate, formatWordpressDate, formatWordpressDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type TransactionRow = {
@@ -218,19 +218,19 @@ const Transactions: React.FC = () => {
 					},
 					{
 						display: product.credit
-							? formatCurrency(product.credit)
+							? (product.currency_symbol + product.credit)
 							: '-',
 						value: product.credit,
 					},
 					{
 						display: product.debit
-							? formatCurrency(product.debit)
+							? (product.currency_symbol + product.debit)
 							: '-',
 						value: product.debit,
 					},
 					{
 						display: product.balance
-							? formatCurrency(product.balance)
+							? (product.currency_symbol + product.balance)
 							: '-',
 						value: product.balance,
 					},

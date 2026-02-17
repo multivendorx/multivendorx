@@ -219,6 +219,7 @@ class Rest extends \WP_REST_Controller {
                         'reason'             => $refund->get_reason(),
                         'customer_reason'    => $order ? $order->get_meta( Utill::ORDER_META_SETTINGS['customer_refund_reason'], true ) : '',
                         'currency'           => $refund->get_currency(),
+                        'currency_symbol'    => Utill::multivendorx_get_currency_symbol( $refund->get_currency() ),
                         'date'               => $refund->get_date_created()
                             ? Utill::multivendorx_rest_prepare_date_response( $refund->get_date_created()->date_i18n( 'Y-m-d H:i:s' ) )
                             : '',

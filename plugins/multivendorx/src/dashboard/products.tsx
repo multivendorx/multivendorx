@@ -11,7 +11,6 @@ import {
 } from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { formatCurrency } from '../services/commonFunction';
 import AddProductCom from './add-products';
 import SpmvProducts from './spmv-products';
 import { applyFilters } from '@wordpress/hooks';
@@ -407,7 +406,7 @@ const AllProduct: React.FC = () => {
 					},
 					{
 						display: product.price
-							? formatCurrency(product.price)
+							? (product.currency_symbol + product.price)
 							: '-',
 						value: product.price,
 					},

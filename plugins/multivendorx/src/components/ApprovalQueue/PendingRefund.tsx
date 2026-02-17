@@ -12,7 +12,7 @@ import {
 	TableCard,
 	TextAreaUI,
 } from 'zyra';
-import { formatCurrency, toWcIsoDate, truncateText } from '../../services/commonFunction';
+import { toWcIsoDate, truncateText } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 interface StoreRow {
@@ -282,12 +282,12 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						},
 					},
 					{
-						display: formatCurrency(order.amount),
+						display: order.currency_symbol + order.amount,
 						value: order.amount,
 					},
 					{
 						display: order.commission_amount
-							? formatCurrency(order.commission_amount)
+							? order.currency_symbol + order.commission_amount
 							: '-',
 						value: order.commission_amount,
 					},
