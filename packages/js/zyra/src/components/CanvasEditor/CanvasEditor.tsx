@@ -96,11 +96,13 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
         setBlocks(prev => {
             const updated = [...prev];
             updated[index] = { ...updated[index], ...patch } as Block;
-            if (openBlock?.id === updated[index].id) setOpenBlock(updated[index]);
+            if (openBlock?.id === updated[index].id){
+            setOpenBlock(updated[index]);
+        }
             return updated;
         });
         markChanged();
-    }, [proSettingChange, openBlock?.id, markChanged]);
+    }, [proSettingChange, openBlock?.id, markChanged, setOpenBlock]);
 
     const deleteBlock = useCallback((indexToDelete: number, e?: React.MouseEvent) => {
         if (e) e.stopPropagation();
@@ -133,11 +135,13 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     columnManager.handleLayoutChange(index, value);
                 } else {
                     updateBlock(index, { [key]: value });
+                    const updatedBlock = { ...blocks[index], [key]: value };
+                    setOpenBlock(updatedBlock);
                 }
                 markChanged();
             }
         }
-    }, [proSettingChange, columnManager, blocks, openBlock?.id, updateBlock, markChanged]);
+    }, [proSettingChange, columnManager, blocks, openBlock?.id, updateBlock, markChanged, setOpenBlock]);
 
     const toggleGroup = useCallback((id: string) => setOpenGroups(prev => ({ ...prev, [id]: !prev[id] })), []);
 
