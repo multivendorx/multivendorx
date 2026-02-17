@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { FieldComponent } from './types';
-import { BasicInputUI } from './BasicInput';
 import { AdminButtonUI } from './AdminButton';
 
 interface FileInputProps {
@@ -14,8 +13,8 @@ interface FileInputProps {
     onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
     onMouseOver?: (event: React.MouseEvent<HTMLInputElement>) => void;
     onMouseOut?: (event: React.MouseEvent<HTMLInputElement>) => void;
-    onFocus?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onBlur?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+    onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
     imageSrc?: string | string[];
     imageWidth?: number;
     imageHeight?: number;
@@ -50,7 +49,8 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
         props.onChange?.(props.multiple ? fileList : (fileList[0] || ''));
     };
 
-    const handleFileChange = (fileList: FileList | null) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const fileList = e.target.files;
         if (!fileList?.length) return;
         const urls = Array.from(fileList).map(f => `${URL.createObjectURL(f)}#${f.name}`);
         let result: string[];
@@ -61,7 +61,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
             setIsReplacing(false);
         } else {
             result = props.multiple ? [...files, ...urls] : [urls[0]];
-            setActiveIndex(0);
+            setActiveIndex(result.length - 1);
         }
         notify(result);
         if (inputRef.current) inputRef.current.value = '';
@@ -70,7 +70,13 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
     const handleUpload = () => {
         const wp = (window as any)?.wp;
         if (!wp?.media) return inputRef.current?.click();
-        const frame = wp.media({ title: 'Select or Upload File', button: { text: 'Use this file' }, multiple: props.multiple && !isReplacing });
+        
+        const frame = wp.media({ 
+            title: 'Select or Upload File', 
+            button: { text: 'Use this file' }, 
+            multiple: props.multiple && !isReplacing 
+        });
+        
         frame.on('select', () => {
             const urls = frame.state().get('selection').toJSON().map((a: any) => a.url);
             let result: string[];
@@ -105,40 +111,40 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                 {files.length === 0 ? (
                     <>
                         <i className="upload-icon adminfont-cloud-upload" />
-                        <BasicInputUI 
-                        ref={inputRef} 
-                        inputClass={props.inputClass} 
-                        id={props.id} 
-                        type="file" 
-                        name={props.name || 'file-input'} 
-                        placeholder={props.placeholder} 
-                        value="" accept={props.accept} 
-                        onChange={handleFileChange} 
-                        onClick={props.onClick} 
-                        onMouseOver={props.onMouseOver} 
-                        onMouseOut={props.onMouseOut} 
-                        onFocus={props.onFocus} 
-                        onBlur={props.onBlur} 
-                        multiple={props.multiple} 
+                        <input
+                            ref={inputRef}
+                            className={props.inputClass}
+                            id={props.id}
+                            type="file"
+                            name={props.name || 'file-input'}
+                            placeholder={props.placeholder}
+                            accept={props.accept}
+                            onChange={handleFileChange}
+                            onClick={props.onClick}
+                            onMouseOver={props.onMouseOver}
+                            onMouseOut={props.onMouseOut}
+                            onFocus={props.onFocus}
+                            onBlur={props.onBlur}
+                            multiple={props.multiple}
                         />
-
                         <span className="title">Drag and drop your file here</span>
                         <span>Or</span>
                         <AdminButtonUI buttons={[{ text: props.openUploader || 'Upload File', onClick: handleUpload }]} />
                     </>
                 ) : (
                     <>
-                            {!isCurrentImage &&
-                                <>
-                                    <i className={`upload-icon adminfont-attachment`} />
-                                    <span className="title">{getFileName(currentFile)}
-                                    </span>
-                                </>
-                            }
-                        <div className="overlay"><div className="button-wrapper">
-                            <AdminButtonUI buttons={[{ text: 'Remove', onClick: () => handleRemove(activeIndex) }]} />
-                            <AdminButtonUI buttons={[{ text: 'Replace', onClick: () => { setIsReplacing(true); handleUpload(); } }]} />
-                        </div></div>
+                        {!isCurrentImage && (
+                            <>
+                                <i className={`upload-icon adminfont-attachment`} />
+                                <span className="title">{getFileName(currentFile)}</span>
+                            </>
+                        )}
+                        <div className="overlay">
+                            <div className="button-wrapper">
+                                <AdminButtonUI buttons={[{ text: 'Remove', onClick: () => handleRemove(activeIndex) }]} />
+                                <AdminButtonUI buttons={[{ text: 'Replace', onClick: () => { setIsReplacing(true); handleUpload(); } }]} />
+                            </div>
+                        </div>
                     </>
                 )}
             </div>
@@ -147,8 +153,14 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                 <div className="uploaded-image">
                     {files.map((file, i) => {
                         const fileSrc = file.split('#')[0];
+                        const isActive = i === activeIndex;
+                        
                         return (
-                            <div key={i} className="image" onClick={() => setActiveIndex(i)}>
+                            <div 
+                                key={i} 
+                                className={`image ${isActive ? 'active' : ''}`} 
+                                onClick={() => setActiveIndex(i)}
+                            >
                                 {isImageFile(file) ? (
                                     <img
                                         src={fileSrc}
@@ -160,11 +172,13 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                                     <div>
                                         <i className={`adminfont-attachment`}/>
                                         <span>
-                                            {getFileName(file).substring(0, 15)}
+                                            {getFileName(file).substring(0, 12)}
                                         </span>
                                     </div>
                                 )}
-                                <i className="adminfont-close close-btn" onClick={(e) => { e.stopPropagation(); handleRemove(i); }} />
+                                <i className="adminfont-close close-btn" 
+                                    onClick={(e) => { e.stopPropagation(); handleRemove(i); }}
+                                />
                             </div>
                         );
                     })}
@@ -177,7 +191,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
 const FileInput: FieldComponent = {
     render: ({ field, value, onChange, canAccess, appLocalizer }) => (
         <FileInputUI
-            inputClass={field.key}
+            inputClass={field.class}
             imageSrc={value ?? appLocalizer?.default_logo}
             imageWidth={field.width}
             imageHeight={field.height}
