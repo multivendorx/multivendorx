@@ -41,7 +41,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 	const { modules } = useModules();
 	const [isLoading, setIsLoading] = useState(true);
 
-	const Counter = ({ value, duration = 1200, format }) => {
+	const Counter = ({ value, duration = 1200, currency }) => {
 		const [count, setCount] = React.useState(0);
 
 		React.useEffect(() => {
@@ -65,7 +65,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 			return () => clearInterval(timer);
 		}, [value]);
 
-		return <>{format ? format(count) : Math.floor(count)}</>;
+		return <>{currency ? currency + (count) : Math.floor(count)}</>;
 	};
 
 	const fetchCommissionDetails = async () => {
@@ -320,7 +320,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 							number: (
 								<Counter
 									value={item.count}
-									format={}
+									currency={item.currency_symbol}
 								/>
 							),
 							text: __(item.label, 'multivendorx'),
