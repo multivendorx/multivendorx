@@ -94,7 +94,6 @@ export default {
 			id: 'auction',
 			name: __('Auction', 'multivendorx'),
 			desc: 'Enable an auction-style selling system similar to eBay.',
-			icon: 'auction',
 			docLink:
 				'https://multivendorx.com/docs/knowledgebase/auction-product',
 			proModule: true,
