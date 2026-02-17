@@ -227,7 +227,6 @@ const Mapbox = ({
 
         const res = await fetch(url);
         const data: RetrieveResponse = await res.json();
-        console.log('data', data);
         const feature = data.features[0];
         if (!feature) return;
         handlePlaceSelect(feature);
@@ -264,7 +263,6 @@ const Mapbox = ({
     };
 
     const extractAddressComponents = (feature: PlaceFeature) => {
-        console.log('feature', feature);
         const context = feature.properties.context;
         const result: {
             address?: string;
