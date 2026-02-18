@@ -2,21 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
 	ResponsiveContainer,
-	LineChart,
-	Line,
-	CartesianGrid,
-	XAxis,
-	YAxis,
 	Tooltip,
 	Legend,
-	BarChart,
-	Bar,
 	PieChart,
 	Pie,
 	Cell,
 } from 'recharts';
 import axios from 'axios';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Analytics, Card, Column, Container, getApiLink, InfoItem } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 
@@ -25,11 +17,6 @@ type Stat = {
 	count: number | string;
 	icon: string;
 	label: string;
-};
-type Product = {
-	id: number;
-	title: string;
-	price: string;
 };
 type OverviewProps = {
 	overview: Stat[];
@@ -227,8 +214,6 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 				const sortedCoupons = response.data
 					.sort((a, b) => b.usage_count - a.usage_count)
 					.slice(0, 5); // take top 5 only
-
-				console.log('Top 5 Coupons:', sortedCoupons);
 				setTopCoupons(sortedCoupons);
 			})
 			.catch((error) => {
@@ -250,8 +235,6 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 				const sortedCustomers = response.data
 					.sort((a, b) => b.total_spend - a.total_spend)
 					.slice(0, 5); // Top 5 customers only
-
-				console.log('Top 5 Customers:', sortedCustomers);
 				setTopCustomers(sortedCustomers);
 			})
 			.catch((error) => {
@@ -260,7 +243,6 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 
 		fetchCommissionDetails();
 	}, []);
-	console.log('site_url', appLocalizer.site_url);
 	return (
 		<>
 			<div className="page-title-wrapper">

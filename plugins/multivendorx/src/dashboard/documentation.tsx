@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList } from 'zyra';
+import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, BasicInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -36,7 +36,6 @@ const Documentation: React.FC = () => {
 				setData(apiData);
 			})
 			.catch(() => {
-				console.error(__('Failed to load documents', 'multivendorx'));
 				setData([]);
 			});
 	}
@@ -109,17 +108,14 @@ const Documentation: React.FC = () => {
 				<div className="buttons-wrapper">
 					<div className="search-field">
 						<div className="search-section">
-							<input
+							<BasicInputUI
 								type="text"
 								placeholder={__(
 									'Search documents...',
 									'multivendorx'
 								)}
 								value={searchText}
-								onChange={(e) =>
-									setSearchText(e.target.value)
-								}
-								className="basic-input"
+								onChange={(value) => setSearchText(value)}
 							/>
 							<i className="adminfont-search"></i>
 						</div>

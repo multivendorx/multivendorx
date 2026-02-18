@@ -5,29 +5,13 @@ import {
 	getApiLink,
 	TableCard,
 } from 'zyra';
-import {
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
-import AddProductCom from './add-products';
-import SpmvProducts from './spmv-products';
+import AddProductCom from './addProducts';
+import SpmvProducts from './spmvProducts';
 import { applyFilters } from '@wordpress/hooks';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
-
-type ProductRow = {
-	id: number;
-	product_name?: string;
-	product_sku?: string;
-	price?: string;
-	stock?: string;
-	categories?: string;
-	date?: string;
-	status?: string;
-};
-
 
 const STATUS_LABELS: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -82,25 +66,21 @@ const AllProduct: React.FC = () => {
 	};
 
 	const createAutoDraftProduct = () => {
-		try {
-			const payload = {
-				name: 'Auto Draft',
-				status: 'draft',
-			};
+		const payload = {
+			name: 'Auto Draft',
+			status: 'draft',
+		};
 
-			axios
-				.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				})
-				.then((res) => {
-					setNewProductId(res.data.id);
-				});
-		} catch (err) {
-			console.error(
-				'Error creating auto-draft:',
-				err.response?.data || err
-			);
-		}
+		axios
+			.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((res) => {
+				setNewProductId(res.data.id);
+			})
+			.catch((err) => {
+				console.error('Error creating auto draft product:', err);
+			});
 	};
 
 	useEffect(() => {
@@ -129,7 +109,6 @@ const AllProduct: React.FC = () => {
 			);
 			setCategoriesList(response.data);
 		} catch (error) {
-			console.error('Error fetching categories:', error);
 		}
 	};
 
@@ -186,30 +165,27 @@ const AllProduct: React.FC = () => {
 			setCategoryCounts(counts);
 
 		} catch (error) {
-			console.error('Unexpected error while fetching status counts:', error);
+			console.error('Error fetching product status counts:', error);
 		}
 	};
 
-	const fetchWpmlTranslations = async () => {
+	const fetchWpmlTranslations = () => {
 		if (!modules.includes('wpml')) return;
 
-		try {
-			const response = await axios.get(
-				getApiLink(appLocalizer, 'multivendorx-wpml'),
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+		axios
+			.get(getApiLink(appLocalizer, 'multivendorx-wpml'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((response) => {
+				const langs = response.data || [];
+
+				if (langs.length) {
+					fetchLanguageWiseProductCounts(langs);
 				}
-			);
-
-			const langs = response.data || [];
-
-			// Directly fetch and merge language-wise product counts
-			if (langs.length) {
-				fetchLanguageWiseProductCounts(langs);
-			}
-		} catch (err) {
-			console.error('Failed to fetch WPML translations', err);
-		}
+			})
+			.catch((err) => {
+				console.error('Error fetching WPML translations:', err);
+			});
 	};
 
 	const fetchLanguageWiseProductCounts = async (langs: any[]) => {
@@ -270,26 +246,27 @@ const AllProduct: React.FC = () => {
 		fetchWpmlTranslations();
 	}, []);
 
-	const handleBulkAction = async (action: string, selectedIds: []) => {
-		try {
-			if (action === 'delete') {
-				await axios({
-					method: 'POST', // WooCommerce bulk endpoint uses POST
-					url: `${appLocalizer.apiUrl}/wc/v3/products/batch`,
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					data: {
-						delete: selectedIds, // array of product IDs to delete
+	const handleBulkAction = (action: string, selectedIds: []) => {
+		if (action === 'delete') {
+			axios
+				.post(
+					`${appLocalizer.apiUrl}/wc/v3/products/batch`,
+					{
+						delete: selectedIds,
 					},
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					}
+				)
+				.then(() => {
+					fetchCategories();
+					fetchProductStatusCounts();
+					fetchWpmlTranslations();
+					fetchData({});
+				})
+				.catch((err: unknown) => {
+					console.error('Error performing bulk product action:', err);
 				});
-			}
-
-			// Refresh the data after action
-			fetchCategories();
-			fetchProductStatusCounts();
-			fetchWpmlTranslations();
-			fetchData({});
-		} catch (err: unknown) {
-			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
 		}
 	};
 
@@ -382,8 +359,8 @@ const AllProduct: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
 				const productMap = items.reduce((acc: any, product: any) => {
@@ -438,7 +415,6 @@ const AllProduct: React.FC = () => {
 				setIsLoading(false);
 			})
 			.catch((error) => {
-				console.error('Failed to fetch announcements', error);
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);

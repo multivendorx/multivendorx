@@ -56,25 +56,28 @@ const AllCoupon: React.FC = () => {
 	const [selectedCoupon, setSelectedCoupon] = useState<{id: number;} | null>(null);
 
 
-	const handleConfirmDelete = async () => {
+	const handleConfirmDelete = () => {
 		if (!selectedCoupon) return;
 
-		try {
-			await axios.delete(
+		axios
+			.delete(
 				`${appLocalizer.apiUrl}/wc/v3/coupons/${selectedCoupon.id}`,
 				{
 					headers: {
 						'X-WP-Nonce': appLocalizer.nonce,
 					},
 				}
-			);
-			fetchData({});
-		} catch (err) {
-			console.error('Failed to delete coupon', err);
-		} finally {
-			setConfirmOpen(false);
-			setSelectedCoupon(null);
-		}
+			)
+			.then(() => {
+				fetchData({});
+			})
+			.catch((err) => {
+				console.error('Error deleting coupon:', err);
+			})
+			.finally(() => {
+				setConfirmOpen(false);
+				setSelectedCoupon(null);
+			});
 	};
 
 	const validateForm = () => {
@@ -143,129 +146,126 @@ const AllCoupon: React.FC = () => {
 	const [activeTab, setActiveTab] = useState('general');
 
 
-	const handleEditCoupon = async (couponId: number) => {
-		try {
-			const res = await axios.get(
+	const handleEditCoupon = (couponId: number) => {
+		axios
+			.get(
 				`${appLocalizer.apiUrl}/wc/v3/coupons/${couponId}`,
 				{
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				}
-			);
+			)
+			.then((res) => {
+				const coupon = res.data;
 
-			const coupon = res.data;
+				setFormData({
+					title: coupon.code,
+					content: coupon.description || '',
+					discount_type: coupon.discount_type,
+					coupon_amount: coupon.amount,
+					free_shipping: coupon.free_shipping ? 'yes' : 'no',
+					expiry_date: formatDateForInput(coupon.date_expires),
+					usage_limit: coupon.usage_limit || '',
+					limit_usage_to_x_items: coupon.limit_usage_to_x_items || '',
+					usage_limit_per_user: coupon.usage_limit_per_user || '',
+					minimum_amount: coupon.minimum_amount || '',
+					maximum_amount: coupon.maximum_amount || '',
+					individual_use: coupon.individual_use ? 'yes' : 'no',
+					exclude_sale_items: coupon.exclude_sale_items ? 'yes' : 'no',
+					product_ids: coupon.product_ids || [],
+					exclude_product_ids: coupon.excluded_product_ids || [],
+					product_categories: coupon.product_categories || [],
+					exclude_product_categories:
+						coupon.excluded_product_categories || [],
+					customer_email: (coupon.email_restrictions || []).join(','),
+					id: coupon.id,
+				});
 
-			setFormData({
-				title: coupon.code,
-				content: coupon.description || '',
-				discount_type: coupon.discount_type,
-				coupon_amount: coupon.amount,
-				free_shipping: coupon.free_shipping ? 'yes' : 'no',
-				expiry_date: formatDateForInput(coupon.date_expires), // <-- fix date
-				usage_limit: coupon.usage_limit || '',
-				limit_usage_to_x_items: coupon.limit_usage_to_x_items || '',
-				usage_limit_per_user: coupon.usage_limit_per_user || '',
-				minimum_amount: coupon.minimum_amount || '',
-				maximum_amount: coupon.maximum_amount || '',
-				individual_use: coupon.individual_use ? 'yes' : 'no',
-				exclude_sale_items: coupon.exclude_sale_items ? 'yes' : 'no',
-				product_ids: coupon.product_ids || [],
-				exclude_product_ids: coupon.excluded_product_ids || [],
-				product_categories: coupon.product_categories || [],
-				exclude_product_categories:
-					coupon.excluded_product_categories || [],
-				customer_email: (coupon.email_restrictions || []).join(','),
-				id: coupon.id,
+				setAddCoupon(true);
+				setActiveTab('general');
+			})
+			.catch(() => {
+				alert('Failed to fetch coupon details. Please try again.');
 			});
-
-			setAddCoupon(true); // open popup
-			setActiveTab('general'); // optional: start with general tab
-		} catch (err) {
-			console.error('Failed to fetch coupon details:', err);
-			alert('Failed to fetch coupon details. Please try again.');
-		}
 	};
 
-	const handleSave = async (status: 'draft' | 'publish') => {
+	const handleSave = (status: 'draft' | 'publish') => {
 		if (!validateForm()) {
 			return; // Stop submission if errors exist
 		}
-		try {
-			const payload: any = {
-				code: formData.title,
-				description: formData.content,
-				discount_type: formData.discount_type,
-				amount: formData.coupon_amount,
-				individual_use: formData.individual_use === 'yes',
-				exclude_sale_items: formData.exclude_sale_items === 'yes',
-				free_shipping: formData.free_shipping === 'yes',
-				minimum_amount: formData.minimum_amount || undefined,
-				maximum_amount: formData.maximum_amount || undefined,
-				usage_limit: formData.usage_limit || undefined,
-				limit_usage_to_x_items:
-					formData.limit_usage_to_x_items || undefined,
-				usage_limit_per_user:
-					formData.usage_limit_per_user || undefined,
-				date_expires: formData.expiry_date || undefined,
-				email_restrictions: formData.customer_email
-					? formData.customer_email.split(',')
-					: [],
-				product_ids: formData.product_ids || [],
-				excluded_product_ids: formData.exclude_product_ids || [],
-				product_categories: formData.product_categories || [],
-				excluded_product_categories:
-					formData.exclude_product_categories || [],
-				status: status,
-				meta_data: [
-					{
-						key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-					},
-				],
-			};
 
-			if (formData.id) {
-				// Update existing coupon
-				await axios.put(
-					`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				);
-			} else {
-				// Create new coupon
-				await axios.post(
-					`${appLocalizer.apiUrl}/wc/v3/coupons`,
-					payload,
-					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-				);
-			}
+		const payload: any = {
+			code: formData.title,
+			description: formData.content,
+			discount_type: formData.discount_type,
+			amount: formData.coupon_amount,
+			individual_use: formData.individual_use === 'yes',
+			exclude_sale_items: formData.exclude_sale_items === 'yes',
+			free_shipping: formData.free_shipping === 'yes',
+			minimum_amount: formData.minimum_amount || '',
+			maximum_amount: formData.maximum_amount || '',
+			usage_limit: formData.usage_limit || '',
+			limit_usage_to_x_items: formData.limit_usage_to_x_items || '',
+			usage_limit_per_user: formData.usage_limit_per_user || '',
+			date_expires: formData.expiry_date || '',
+			email_restrictions: formData.customer_email
+				? formData.customer_email.split(',')
+				: [],
+			product_ids: formData.product_ids || [],
+			excluded_product_ids: formData.exclude_product_ids || [],
+			product_categories: formData.product_categories || [],
+			excluded_product_categories:
+				formData.exclude_product_categories || [],
+			status: status,
+			meta_data: [
+				{
+					key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+				},
+			],
+		};
 
-			// Close popup & reset form
-			setAddCoupon(false);
-			setFormData({
-				title: '',
-				content: '',
-				discount_type: '',
-				coupon_amount: '',
-				free_shipping: 'no',
-				expiry_date: '',
-				usage_limit: '',
-				limit_usage_to_x_items: '',
-				usage_limit_per_user: '',
-				minimum_amount: '',
-				maximum_amount: '',
-				individual_use: 'no',
-				exclude_sale_items: 'no',
-				product_ids: [],
-				exclude_product_ids: [],
-				product_categories: [],
-				exclude_product_categories: [],
-				customer_email: '',
-				id: undefined,
+		const request = formData.id
+			? axios.put(
+				`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
+			: axios.post(
+				`${appLocalizer.apiUrl}/wc/v3/coupons`,
+				payload,
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			);
+
+		request
+			.then(() => {
+				// Close popup & reset form
+				setAddCoupon(false);
+				setFormData({
+					title: '',
+					content: '',
+					discount_type: '',
+					coupon_amount: '',
+					free_shipping: 'no',
+					expiry_date: '',
+					usage_limit: '',
+					limit_usage_to_x_items: '',
+					usage_limit_per_user: '',
+					minimum_amount: '',
+					maximum_amount: '',
+					individual_use: 'no',
+					exclude_sale_items: 'no',
+					product_ids: [],
+					exclude_product_ids: [],
+					product_categories: [],
+					exclude_product_categories: [],
+					customer_email: '',
+					id: '',
+				});
+				fetchData({});
+			})
+			.catch((err) => {
+				console.error('Error saving coupon:', err);
 			});
-			fetchData({});
-		} catch (err) {
-			console.error('Error saving coupon:', err);
-		}
 	};
 
 	const tabs = [
@@ -280,8 +280,8 @@ const AllCoupon: React.FC = () => {
 								name="discount_type"
 								value={formData.discount_type}
 								options={discountOptions}
-								onChange={(e) =>
-									setFormData({ ...formData, discount_type: e?.value || '' })
+								onChange={(value) =>
+									setFormData({ ...formData, discount_type: value || '' })
 								}
 							/>
 							{validationErrors.discount_type && (
@@ -437,24 +437,20 @@ const AllCoupon: React.FC = () => {
 		},
 	];
 
-	const fetchCouponStatusCounts = async () => {
-		try {
-			const results = await Promise.allSettled(
-				Object.keys(COUPON_STATUS_MAP).map(async (status) => {
-					const params: any = {
-						meta_key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-						status: status === 'all' ? 'any' : status,
-					};
+	const fetchCouponStatusCounts = () => {
+		const requests = Object.keys(COUPON_STATUS_MAP).map((status) => {
+			const params: any = {
+				meta_key: 'multivendorx_store_id',
+				value: appLocalizer.store_id,
+				status: status === 'all' ? 'any' : status,
+			};
 
-					const res = await axios.get(
-						`${appLocalizer.apiUrl}/wc/v3/coupons`,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-							params,
-						}
-					);
-
+			return axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params,
+				})
+				.then((res) => {
 					const total = parseInt(res.headers['x-wp-total'] || '0');
 
 					return {
@@ -462,26 +458,26 @@ const AllCoupon: React.FC = () => {
 						label: COUPON_STATUS_MAP[status],
 						count: total,
 					};
-				})
-			);
+				});
+		});
 
-			// Keep only successful ones
-			const counts = results
-				.filter(
-					(result): result is PromiseFulfilledResult<any> =>
-						result.status === 'fulfilled'
-				)
-				.map((result) => result.value);
+		Promise.allSettled(requests)
+			.then((results) => {
+				const counts = results
+					.filter(
+						(result): result is PromiseFulfilledResult<any> =>
+							result.status === 'fulfilled'
+					)
+					.map((result) => result.value);
 
-			setCategoryCounts(counts);
-
-		} catch (error) {
-			console.error('Unexpected error:', error);
-		}
+				setCategoryCounts(counts);
+			})
+			.catch((error) => {
+				console.error('Error fetching coupon status counts:', error);
+			});
 	};
 
-	const handleBulkAction = async (action: string, selectedIds: []) => {
-
+	const handleBulkAction = (action: string, selectedIds: []) => {
 		if (!selectedIds.length) {
 			return;
 		}
@@ -490,25 +486,28 @@ const AllCoupon: React.FC = () => {
 			return;
 		}
 
-		try {
-			if (action === 'delete') {
-				await axios({
-					method: 'POST',
-					url: `${appLocalizer.apiUrl}/wc/v3/coupons/batch`,
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					data: {
+		if (action === 'delete') {
+			axios
+				.post(
+					`${appLocalizer.apiUrl}/wc/v3/coupons/batch`,
+					{
 						delete: selectedIds,
 					},
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					}
+				)
+				.then(() => {
+					// Refresh the data after action
+					fetchCouponStatusCounts();
+					fetchData({});
+				})
+				.catch((err: unknown) => {
+					console.error('Error performing bulk coupon action:', err);
 				});
-			}
-
-			// Refresh the data after action
-			fetchCouponStatusCounts();
-			fetchData({});
-		} catch (err: unknown) {
-			console.log(__(`Failed to perform bulk action ${err}`, 'multivendorx'));
 		}
 	};
+
 
 	useEffect(() => {
 		fetchCouponStatusCounts();
@@ -573,29 +572,28 @@ const AllCoupon: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
-				const mappedRows: any[][] = items.map((ann: any) => [
-					{ display: ann.code, value: ann.code },
+				const mappedRows: any[][] = items.map((item: any) => [
+					{ display: item.code, value: item.code },
 					{
-						display: ann.discount_type,
-						value: ann.discount_type,
+						display: item.discount_type,
+						value: item.discount_type,
 					},
-					{ display: ann.amount, value: ann.amount },
-					{ display: ann.usage_count, value: ann.usage_count },
-					{ display: ann.usage_limit, value: ann.usage_limit },
-					{ display: ann.date_expires, value: ann.date_expires },
-					{ display: ann.description, value: ann.description },
-					{ display: ann.status, value: ann.status },
+					{ display: item.amount, value: item.amount },
+					{ display: item.usage_count, value: item.usage_count },
+					{ display: item.usage_limit, value: item.usage_limit },
+					{ display: item.date_expires, value: item.date_expires },
+					{ display: item.description, value: item.description },
+					{ display: item.status, value: item.status },
 				]);
 				setRows(mappedRows);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
-			.catch((error) => {
-				console.error('Failed to fetch announcements', error);
+			.catch(() => {
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);

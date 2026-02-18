@@ -43,7 +43,13 @@ const Dashboard = () => {
 				return <CustomComponent />;
 			}
 
-			const DefaultComponent = require(`./dashboard/${key}.tsx`).default;
+			const kebabToCamelCase = (str) => {
+				return str.replace(/-([a-z])/g, (match, letter) =>
+					letter.toUpperCase()
+				);
+			}
+			const convertedKey = kebabToCamelCase(key);
+			const DefaultComponent = require(`./dashboard/${convertedKey}.tsx`).default;
 			return <DefaultComponent />;
 		} catch {
 			return <div>404 not found</div>;

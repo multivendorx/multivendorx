@@ -51,7 +51,7 @@ const CountrySalesMap = ({ apiKey, salesData }: Props) => {
     });
 
     // Inject sales data
-    map.on('mousemove', 'country-sales-layer', (e: any) => {
+    map.on('mousemove', 'country-sales-layer', () => {
       map.getCanvas().style.cursor = 'pointer';
     });
 
