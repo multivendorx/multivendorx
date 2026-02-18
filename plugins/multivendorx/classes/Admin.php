@@ -76,12 +76,6 @@ class Admin {
                 50
             );
 
-            $commission_count = CommissionUtil::get_commission_information(
-                array(
-                    'status' => 'unpaid',
-                    'count'  => true,
-                )
-            );
             // Array contain multivendorx submenu.
             $submenus = apply_filters(
                 'multivendorx_submenus',
@@ -99,7 +93,6 @@ class Admin {
                     'commissions'         => array(
                         'name'     => __( 'Commissions', 'multivendorx' ),
                         'subtab'   => '',
-                        'count'    => $commission_count,
                         'priority' => 30,
                     ),
                     'transaction-history' => array(
@@ -166,12 +159,6 @@ class Admin {
                 }
 
                 $menu_name = $submenu['name'];
-
-                if ( ( $submenu['count'] ?? 0 ) > 0 ) {
-                    $menu_name = $menu_name . " <span class='update-plugins count-" . intval( $submenu['count'] ) . "' style='margin-left:0.313rem'>
-                                    <span class='plugin-count'>" . intval( $submenu['count'] ) . '</span>
-                                 </span>';
-                }
 
                 add_submenu_page(
                     'multivendorx',

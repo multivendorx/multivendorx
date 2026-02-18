@@ -214,8 +214,8 @@ const Qna: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
 				const mappedRows: any[][] = items.map((product: any) => [
@@ -353,14 +353,14 @@ const Qna: React.FC = () => {
 								<BasicInputUI
 									name="phone"
 									value={qna}
-									onChange={(e) => setQna(e.target.value)}
+									onChange={(value:string) => setQna(value)}
 								/>
 							</FormGroup>
 							<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
 								<TextAreaUI
 									name="answer"
 									value={answer}
-									onChange={(e) => setAnswer(e.target.value)}
+									onChange={(value:string) => setAnswer(value)}
 								/>
 							</FormGroup>
 							<FormGroup label={__('Decide whether this Q&A is visible to everyone or only to the store team', 'multivendorx')} htmlFor="visibility">

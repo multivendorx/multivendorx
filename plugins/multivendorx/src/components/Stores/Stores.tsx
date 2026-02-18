@@ -5,7 +5,6 @@ import {
 	AdminButtonUI,
 	BasicInputUI,
 	EmailsInput,
-	FileInput,
 	FileInputUI,
 	FormGroup,
 	FormGroupWrapper,

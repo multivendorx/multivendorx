@@ -7,6 +7,7 @@
 
 namespace MultiVendorX;
 
+use MultiVendorX\Notifications\Notifications;
 use MultiVendorX\Utill;
 use MultiVendorX\Store\Store;
 use MultiVendorX\Store\StoreUtil;
@@ -1052,6 +1053,9 @@ class Install {
         update_option( Utill::MULTIVENDORX_SETTINGS['product-compliance'], $product_compliance_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['store-reviews'], $review_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['compliance'], $compliance_settings );
+
+        $notifications = new Notifications;
+        $notifications->insert_system_events();
     }
 
     /**

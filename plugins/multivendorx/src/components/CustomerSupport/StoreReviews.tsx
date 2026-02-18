@@ -433,7 +433,7 @@ const StoreReviews: React.FC = () => {
 								<TextAreaUI
 									name="reply"
 									value={replyText}
-									onChange={(e) => setReplyText(e.target.value)}
+									onChange={(value:string) => setReplyText(value)}
 									usePlainText={true}
 								/>
 
