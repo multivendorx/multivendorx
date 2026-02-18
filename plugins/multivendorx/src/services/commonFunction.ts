@@ -103,12 +103,6 @@ export const toWcIsoDate = (
 	return d.toISOString();
 };
 
-/**
- * Download CSV for given headers and rows
- * @param headers - Headers object with CSV metadata
- * @param rows - Array of row objects
- * @param filename - Optional CSV filename
- */
 export const downloadCSV = (
   headers: Record<string, any>,
   rows: Record<string, any>[],
@@ -116,27 +110,18 @@ export const downloadCSV = (
 ) => {
   if (!rows || rows.length === 0) return;
 
-  // Prepare CSV columns
+  // Only include headers with csv: true
   const csvColumns = Object.entries(headers)
-    .filter(([_, h]) => !h.csv?.skip)
-    .map(([key, h]) => ({
-      label: h.label,
-      keys: h.csv?.keys || (h.csv?.key ? [h.csv.key] : [key]),
-      joinWith: h.csv?.joinWith || ', ',
-    }));
-
-  // Generate CSV content
-  const csvRows: string[] = [];
+    .filter(([_, h]) => h.csv === true)
+    .map(([key, h]) => ({ key, label: h.label }));
 
   // Header row
-  csvRows.push(csvColumns.map(c => `"${c.label}"`).join(','));
+  const csvRows = [csvColumns.map(c => `"${c.label}"`).join(',')];
 
   // Data rows
   rows.forEach(row => {
     const rowData = csvColumns
-      .map(col =>
-        `"${col.keys.map(k => (row[k] != null ? row[k] : '')).join(col.joinWith)}"`
-      )
+      .map(col => `"${row[col.key] != null ? row[col.key] : ''}"`)
       .join(',');
     csvRows.push(rowData);
   });
