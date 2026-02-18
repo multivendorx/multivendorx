@@ -81,8 +81,12 @@ const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = 
         desc: item.message,
         icon: item.icon,
         time: item.time,
-        action: (item) => {
-          markRead(item.id)
+        onApprove: (item) => {
+          markRead(item.id);
+        },
+
+        onReject: (item) => {
+          dismissItem(item.id);
         }
       }))}
     />
