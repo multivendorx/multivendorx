@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
-import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInputUI, SuccessNotice, TextAreaUI, getApiLink, useModules } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInputUI, SuccessNotice, TextAreaUI, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
-import { formatCurrency } from '@/services/commonFunction';
+import { formatCurrency } from '../services/commonFunction';
 
 interface OrderDetailsProps {
 	order?: any; // optionally pass order data
@@ -149,28 +149,29 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		earned: 50,
 	});
 
-	const fetchOrder = async () => {
-		try {
-			const res = await axios.get(
-				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
-			setOrderData(res.data);
+	const fetchOrder = () => {
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((res) => {
+				setOrderData(res.data);
 
-			const customerId = res.data.customer_id;
+				const customerId = res.data.customer_id;
 
-			const customer = await axios.get(
-				`${appLocalizer.apiUrl}/wc/v3/customers/${customerId}`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
-			setCustomerData(customer.data);
-		} catch (error) {
-			console.error('Error fetching order:', error);
-		}
+				return axios.get(
+					`${appLocalizer.apiUrl}/wc/v3/customers/${customerId}`,
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					}
+				);
+			})
+			.then((customer) => {
+				setCustomerData(customer.data);
+			})
+			.catch((error) => {
+				console.error('Error fetching order or customer:', error);
+			});
 	};
 
 	useEffect(() => {
@@ -196,25 +197,20 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		return sum + total;
 	}, 0);
 
-	const handleStatusChange = async (newStatus) => {
-		const response = await axios.put(
-			`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-			{ status: newStatus },
-			{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-		);
-
-		if (response) {
-			setStatusSelect(false);
-			fetchOrder();
-		}
-	};
-
-	const handleChange = (field: keyof typeof values, val: number) => {
-		const newVals = { ...values, [field]: val };
-		const baseTotal = 100; // example base price
-		newVals.total = baseTotal - newVals.discount + newVals.shipping;
-		newVals.earned = newVals.commission;
-		setValues(newVals);
+	const handleStatusChange = (newStatus) => {
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+				{ status: newStatus },
+				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+			)
+			.then(() => {
+				setStatusSelect(false);
+				fetchOrder();
+			})
+			.catch((error) => {
+				console.error('Error updating order status:', error);
+			});
 	};
 	const formatDateTime = (iso?: string | null) => {
 		if (!iso) {
@@ -255,23 +251,28 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 		});
 	}, [orderData]);
 
-	const saveShipmentToOrder = async () => {
-		await axios.put(
-			`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-			{
-				meta_data: [
-					{ key: appLocalizer.order_meta['shipping_provider'], value: shipmentData.provider },
-					{ key: appLocalizer.order_meta['tracking_url'], value: shipmentData.tracking_url },
-					{ key: appLocalizer.order_meta['tracking_id'], value: shipmentData.tracking_id },
-				],
-			},
-			{
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			}
-		);
-
-		// Refresh order data
-		fetchOrder();
+	const saveShipmentToOrder = () => {
+		axios
+			.put(
+				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
+				{
+					meta_data: [
+						{ key: appLocalizer.order_meta['shipping_provider'], value: shipmentData.provider },
+						{ key: appLocalizer.order_meta['tracking_url'], value: shipmentData.tracking_url },
+						{ key: appLocalizer.order_meta['tracking_id'], value: shipmentData.tracking_id },
+					],
+				},
+				{
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				}
+			)
+			.then(() => {
+				// Refresh order data
+				fetchOrder();
+			})
+			.catch((error) => {
+				console.error('Error saving shipment to order:', error);
+			});
 	};
 
 	return (
@@ -323,10 +324,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 												},
 											]}
 											value={orderData?.status}
-											onChange={(newValue: any) => {
-												handleStatusChange(
-													newValue.value
-												);
+											onChange={(value) => {
+												handleStatusChange(value);
 											}}
 										/>
 									</div>
@@ -448,15 +447,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		]
 																			?.quantity ??
 																			0}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'quantity',
-																				+e
-																					.target
-																					.value
+																				+value
 																			)
 																		}
 																	/>
@@ -501,15 +496,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.total ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'total',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -546,15 +537,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.tax ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'tax',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -613,15 +600,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.total ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'total',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -657,15 +640,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																				?.tax ??
 																			0
 																		}
-																		onChange={(
-																			e
-																		) =>
+																		onChange={(value) =>
 																			handleItemChange(
 																				item.id,
 																				'tax',
-																				e
-																					.target
-																					.value
+																				value
 																			)
 																		}
 																	/>
@@ -784,7 +763,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															{__('Amount already refunded:', 'multivendorx')}
 														</td>
 														<td>
-															- {formatCurrency(orderData.currency_symbol, totalRefunded)}
+															- {formatCurrency(totalRefunded)}
 														</td>
 													</tr>
 
@@ -794,7 +773,6 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 														</td>
 														<td>
 															{formatCurrency(
-																orderData.currency_symbol,
 																orderData.commission_total - totalRefunded
 															)}
 														</td>
@@ -809,10 +787,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																name="refund-amount"
 																type="number"
 																value={refundDetails.refundAmount}
-																onChange={(e) =>
+																onChange={(value) =>
 																	setRefundDetails({
 																		...refundDetails,
-																		refundAmount: +e.target.value,
+																		refundAmount: +value,
 																	})
 																}
 															/>
@@ -827,10 +805,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															<TextAreaUI
 																value={refundDetails.reason}
 																placeholder={__('Reason for refund', 'multivendorx')}
-																onChange={(e) =>
+																onChange={(value) =>
 																	setRefundDetails({
 																		...refundDetails,
-																		reason: e.target.value,
+																		reason: value,
 																	})
 																}
 															/>
@@ -848,7 +826,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													<tr>
 														<td>{__('Commission:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData.currency_symbol, orderData?.commission_amount)}
+															{formatCurrency(orderData?.commission_amount)}
 														</td>
 													</tr>
 
@@ -856,7 +834,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 														<tr>
 															<td>{__('Shipping:', 'multivendorx')}</td>
 															<td>
-																{formatCurrency(orderData.currency_symbol, orderData?.shipping_total)}
+																{formatCurrency(orderData?.shipping_total)}
 															</td>
 														</tr>
 													)}
@@ -864,14 +842,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													<tr>
 														<td>{__('Total:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData.currency_symbol, orderData?.total)}
+															{formatCurrency(orderData?.total)}
 														</td>
 													</tr>
 
 													<tr>
 														<td>{__('Total Earned:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData.currency_symbol, orderData?.commission_total)}
+															{formatCurrency(orderData?.commission_total)}
 														</td>
 													</tr>
 												</tbody>
@@ -1125,10 +1103,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									<FormGroup label={__('Enter Tracking Url ', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInputUI
 											value={shipmentData.tracking_url}
-											onChange={(e) =>
+											onChange={(value) =>
 												setShipmentData((prev) => ({
 													...prev,
-													tracking_url: e.target.value,
+													tracking_url: value,
 												}))
 											}
 										/>
@@ -1136,10 +1114,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 									<FormGroup label={__('Enter Tracking ID', 'multivendorx')} htmlFor="tracking-number">
 										<BasicInputUI
 											value={shipmentData.tracking_id}
-											onChange={(e) =>
+											onChange={(value) =>
 												setShipmentData((prev) => ({
 													...prev,
-													tracking_id: e.target.value,
+													tracking_id: value,
 												}))
 											}
 										/>

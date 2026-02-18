@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import { ExportCSV, getApiLink, TableCard } from 'zyra';
 import axios from 'axios';
-import { formatCurrency, formatLocalDate, formatWordpressDate,  } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate,  } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const RefundedOrderReport: React.FC = () => {
@@ -190,7 +190,7 @@ const RefundedOrderReport: React.FC = () => {
 						},
 					},					
 					{
-						display: formatCurrency(order.currency_symbol, order.amount),
+						display: formatCurrency(order.amount),
 						value: order.amount,
 					},
 					{
@@ -203,7 +203,7 @@ const RefundedOrderReport: React.FC = () => {
 						type: 'status',
 					},
 					{
-						display: formatWordpressDate(order.date),
+						display: order.date,
 						value: order.date,
 					},
 				]);

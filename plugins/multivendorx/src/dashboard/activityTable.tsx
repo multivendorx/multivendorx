@@ -51,9 +51,8 @@ const ActivitiesTable = (React.FC = () => {
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
-			.catch((error) => {
-				console.error('Failed to fetch announcements', error);
-				setError(__('Failed to load announcements', 'multivendorx'));
+			.catch(() => {
+				setError(__('Failed to load activities', 'multivendorx'));
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);

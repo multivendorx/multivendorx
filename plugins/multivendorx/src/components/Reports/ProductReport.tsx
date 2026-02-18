@@ -12,7 +12,7 @@ import {
 import { __ } from '@wordpress/i18n';
 import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, TableCard, TableCell, ExportCSV } from 'zyra';
 import axios from 'axios';
-import { formatCurrency, formatWordpressDate, toWcIsoDate } from '../../services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 import Counter from '@/services/Counter';
 
@@ -280,7 +280,7 @@ const ProductReport: React.FC = () => {
 					},
 					{
 						display: product.price
-							? formatCurrency(product.currency_symbol, product.price)
+							? formatCurrency(product.price)
 							: '-',
 						value: product.price,
 					},
@@ -293,7 +293,7 @@ const ProductReport: React.FC = () => {
 					},
 					{
 						display: product.date_created
-							? formatWordpressDate(product.date_created)
+							? product.date_created
 							: '-',
 						value: product.date_created,
 					},

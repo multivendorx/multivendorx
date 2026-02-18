@@ -4,7 +4,6 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, TableCard } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
-import { formatWordpressDate } from '@/services/commonFunction';
 
 interface Props {
 	onUpdated?: () => void;
@@ -78,7 +77,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 				const mappedRows: any[][] = stores.map((store) => [
 					{ value: store.store_name, display: store.store_name },
 					{ value: store.reason, display: store.reason },
-					{ value: store.date, display: formatWordpressDate(store.date) },
+					{ value: store.date, display: store.date },
 				]);
 
 				setRows(mappedRows);

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import 'zyra/build/index.css';
-import { ExpandablePanelGroup, ExpandablePanelGroupUI } from 'zyra';
+import { ExpandablePanelGroupUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 // import img from '../../assets/images/multivendorx-logo.png';
 
@@ -19,10 +19,7 @@ const SetupWizard: React.FC = () => {
     });
     const settingChanged = useRef(false);
 
-    // NEW: Wizard step control
-    const [currentStep, setCurrentStep] = useState(0);
-
-    const appLocalizer = (window as any).appLocalizer;
+    const appLocalizer = (window).appLocalizer;
 
     const inputField = {
         key: 'setup_wizard',
@@ -34,8 +31,6 @@ const SetupWizard: React.FC = () => {
         modal: [],
         buttonEnable: true,
     };
-
-    const isProSetting = (pro: boolean) => pro === true;
 
     const methods = [
         {
@@ -405,10 +400,6 @@ const SetupWizard: React.FC = () => {
             ],
         },
     ];
-
-    const proSettingChanged = (pro: boolean) => {
-        console.log('Pro setting change triggered', pro);
-    };
 
     const updateSetting = (key: string, data: any) => {
         setValue(data);

@@ -79,7 +79,7 @@ const StoreTable: React.FC = () => {
 						}
 					},
 					{
-						display: formatCurrency( store.commission?.currency_symbol , store.commission?.commission_total),
+						display: formatCurrency(store.commission?.commission_total),
 						value: store.commission?.commission_total ?? 0,
 					},
 					{

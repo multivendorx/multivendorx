@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {  getApiLink, TableCard } from 'zyra';
 
-import {  formatWordpressDate, truncateText } from '@/services/commonFunction';
+import {  truncateText } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const AnnouncementsTable = (React.FC = () => {
@@ -34,16 +34,16 @@ const AnnouncementsTable = (React.FC = () => {
             .then((response) => {
                 const items = response.data || [];
     
-                const mappedRows: any[][] = items.map((ann: any) => [
-                    { display: ann.title, value: ann.id },
+                const mappedRows: any[][] = items.map((item: any) => [
+                    { display: item.title, value: item.id },
                     {
-                        display: truncateText(ann.content || '', 50),
-                        value: ann.content || '',
+                        display: truncateText(item.content || '', 50),
+                        value: item.content || '',
                     },
-                    { display: ann.status, value: ann.status },
+                    { display: item.status, value: item.status },
                     {
-                        display: formatWordpressDate(ann.date),
-                        value: ann.date,
+                        display: item.date,
+                        value: item.date,
                     },
                 ]);
     

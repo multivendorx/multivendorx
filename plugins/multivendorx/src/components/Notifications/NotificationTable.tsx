@@ -29,7 +29,7 @@ const NotificationTable = (React.FC = () => {
 					{ display: item.store_name, value: item.store_name },
 					{ display: item.title, value: item.title },
 					{ display: item.type, value: item.type },
-					{ display: formatWordpressDate(item.date), value: item.date }
+					{ display: item.date, value: item.date }
 				]);
 
 				setRows(mappedRows);

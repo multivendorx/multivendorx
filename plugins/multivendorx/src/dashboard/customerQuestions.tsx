@@ -4,15 +4,15 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
-	CommonPopup,
-	TextArea,
-	BasicInput,
 	FormGroupWrapper,
 	FormGroup,
-	AdminButton,
 	TableCard,
+	BasicInputUI,
+	TextAreaUI,
+	PopupUI,
+	AdminButtonUI,
 } from 'zyra';
-import { formatLocalDate, formatWordpressDate, truncateText } from '@/services/commonFunction';
+import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type StoreQnaRow = {
@@ -152,8 +152,8 @@ const CustomerQuestions: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
 				const mappedRows: any[][] = items.map((product: any) => [
@@ -178,7 +178,7 @@ const CustomerQuestions: React.FC = () => {
 							subDescription: `A: ${truncateText(product.answer_text, 50)}`
 						},
 					},
-					{ display: formatWordpressDate(product.question_date), value: product.question_date },
+					{ display: formatWcShortDate(product.question_date), value: product.question_date },
 					{
 						display: product.total_votes,
 						value: product.total_votes || 0,
@@ -282,7 +282,7 @@ const CustomerQuestions: React.FC = () => {
 							<BasicInputUI
 								name="question"
 								value={qna}
-								onChange={(e) => setQna(e.target.value)}
+								onChange={(value) => setQna(value)}
 							/>
 						</FormGroup>
 
@@ -290,7 +290,7 @@ const CustomerQuestions: React.FC = () => {
 							<TextAreaUI
 								name="answer"
 								value={answer}
-								onChange={(e) => setAnswer(e.target.value)}
+								onChange={(value) => setAnswer(value)}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
