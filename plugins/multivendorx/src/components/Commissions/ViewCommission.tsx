@@ -9,7 +9,7 @@ import { TableRow } from '@/services/type';
 interface ViewCommissionProps {
 	open: boolean;
 	onClose: () => void;
-	commissionId?: number | null;
+	commissionId?: number | string | null;
 }
 
 const ViewCommission: React.FC<ViewCommissionProps> = ({

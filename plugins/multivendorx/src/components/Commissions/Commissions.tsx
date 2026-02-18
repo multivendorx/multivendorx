@@ -54,10 +54,7 @@ const Commission: React.FC = () => {
 	const [store, setStore] = useState<any[] | null>(null);
 	const [commissionLookup, setCommissionLookup] = useState<Record<number, WCTax>>({});
 	const [viewCommission, setViewCommission] = useState(false);
-	const [selectedCommissionId, setSelectedCommissionId] = useState<
-		number | null
-	>(null);
-
+	const [selectedCommissionId, setSelectedCommissionId] = useState<number | string | null>(null);
 	const { modules } = useModules();
 
 	const commissionColumns = (commission: CommissionRow) => ({
@@ -109,41 +106,65 @@ const Commission: React.FC = () => {
 
 	}, []);
 
-	const headers = [
-		{ key: 'id', label: 'ID' },
-		{ key: 'order_id', label: 'Order' },
-		{ key: 'order_amount', label: 'Order Amount' },
-		{ key: 'commission_summary', label: 'Commission Summary' },
-		{ key: 'store_earning', label: 'Store Earning' },
-		{ key: 'marketplace_earning', label: 'Marketplace Earning' },
-		{ key: 'status', label: 'Status' },
-		{ key: 'created_at', label: 'Date', isSorting: true },
-		{
-			key: 'action',
-			type: 'action',
+	const headers = {
+		id: { label: 'ID', isSortable: true },
+		order_id: { label: 'Order', isSortable: true },
+		total_order_amount: { label: 'Order Amount', isSortable: true, type: 'currency' },
+		commission_summary: {
+			label: 'Commission Summary',
+			render: (row) => (
+				<ItemList
+					className="feature-list"
+					items={Object.entries(row)
+						.filter(([key]) =>
+							[
+								'store_earning',
+								'shipping_amount',
+								'tax_amount',
+								'gateway_fee',
+								'marketplace_commission',
+							].includes(key)
+						)
+						.map(([key, val]) => ({
+							icon: 'adminfont-commissions',
+							title: key
+								.split('_')
+								.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+								.join(' '),
+							desc: val,
+						}))
+					}
+				/>
+			),
+
+		},
+		store_payable: { label: 'Store Earning', isSortable: true, type: 'currency' },
+		marketplace_payable: { label: 'Marketplace Earning', isSortable: true, type: 'currency' },
+		status: { label: 'Status', type: 'status' },
+		created_at: { label: 'Date', isSortable: true, type: 'date' },
+		action: {
 			label: 'Action',
+			type: 'action',
 			actions: [
 				{
 					label: __('View Commission', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id: number) => {
-						setSelectedCommissionId(id);
+					onClick: (row) => {
+						setSelectedCommissionId(row.id);
 						setViewCommission(true);
 					},
 				},
 				{
-					label: __(
-						'Regenerate Commission',
-						'multivendorx'
-					),
+					label: __('Regenerate Commission', 'multivendorx'),
 					icon: 'refresh',
-					onClick: (id: number) => {
-						handleSingleAction('regenerate', id);
+					onClick: (row) => {
+						handleSingleAction('regenerate', row.id);
 					},
 				},
 			],
 		},
-	];
+	};
+
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -177,88 +198,88 @@ const Commission: React.FC = () => {
 				setRowIds(ids);
 				setCommissionLookup(lookup);
 
-				const mappedRows: any[][] = items.map((item: any) => [
-					{
-						display: (
-							<span
-								className="link-item"
-								onClick={() => {
-									setSelectedCommissionId(item.id ?? null);
-									setViewCommission(true);
-								}}
-							>
-								#{item.id}
-							</span>
-						),
-						value: item.id,
-					},
-					// Order
-					{
-						type: 'card',
-						data: {
-							name: `#${item.orderId} – ${item.storeName || '-'}`,
-							link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${item.orderId}&action=edit`,
-						},
-						value: item.orderId
-					},
-					{
-						display: (
-							<ItemList
-								className="feature-list"
-								items={Object.entries(item)
-									// Filter only the commission keys you want to show
-									.filter(([key]) => [
-										'storeEarning',
-										'shippingAmount',
-										'taxAmount',
-										'gatewayFee',
-										'marketplaceCommission'
-									].includes(key))
-									.map(([key, val]) => ({
-										icon: 'adminfont-commissions', // Consistent icon
-										title: key.replace(/([A-Z])/g, ' $1').trim(), // Formats 'storeEarning' to 'Store Earning'
-										desc: val // This is your commission value (e.g. "112.00")
-									}))
-								}
-							/>
-						),
-						value: item.id
-					},
-					// Order Amount
-					{
-						display: item.totalOrderAmount
-							? formatCurrency(item.totalOrderAmount)
-							: '-',
-						value: item.totalOrderAmount ?? 0,
-					},
-					// Store Earning
-					{
-						display: formatCurrency(item.storePayable),
-						value: item.storePayable ?? 0,
-					},
+				// const mappedRows: any[][] = items.map((item: any) => [
+				// 	{
+				// 		display: (
+				// 			<span
+				// 				className="link-item"
+				// 				onClick={() => {
+				// 					setSelectedCommissionId(item.id ?? null);
+				// 					setViewCommission(true);
+				// 				}}
+				// 			>
+				// 				#{item.id}
+				// 			</span>
+				// 		),
+				// 		value: item.id,
+				// 	},
+				// 	// Order
+				// 	{
+				// 		type: 'card',
+				// 		data: {
+				// 			name: `#${item.orderId} – ${item.storeName || '-'}`,
+				// 			link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${item.orderId}&action=edit`,
+				// 		},
+				// 		value: item.orderId
+				// 	},
+				// 	{
+				// 		display: (
+				// 			<ItemList
+				// 				className="feature-list"
+				// 				items={Object.entries(item)
+				// 					// Filter only the commission keys you want to show
+				// 					.filter(([key]) => [
+				// 						'storeEarning',
+				// 						'shippingAmount',
+				// 						'taxAmount',
+				// 						'gatewayFee',
+				// 						'marketplaceCommission'
+				// 					].includes(key))
+				// 					.map(([key, val]) => ({
+				// 						icon: 'adminfont-commissions', // Consistent icon
+				// 						title: key.replace(/([A-Z])/g, ' $1').trim(), // Formats 'storeEarning' to 'Store Earning'
+				// 						desc: val // This is your commission value (e.g. "112.00")
+				// 					}))
+				// 				}
+				// 			/>
+				// 		),
+				// 		value: item.id
+				// 	},
+				// 	// Order Amount
+				// 	{
+				// 		display: item.totalOrderAmount
+				// 			? formatCurrency(item.totalOrderAmount)
+				// 			: '-',
+				// 		value: item.totalOrderAmount ?? 0,
+				// 	},
+				// 	// Store Earning
+				// 	{
+				// 		display: formatCurrency(item.storePayable),
+				// 		value: item.storePayable ?? 0,
+				// 	},
 
-					// Marketplace Earning
-					{
-						display: formatCurrency(item.marketplacePayable),
-						value: item.marketplacePayable ?? 0,
-					},
+				// 	// Marketplace Earning
+				// 	{
+				// 		display: formatCurrency(item.marketplacePayable),
+				// 		value: item.marketplacePayable ?? 0,
+				// 	},
 
-					// Status
-					{
-						display: item.status,
-						value: item.status,
-					},
+				// 	// Status
+				// 	{
+				// 		display: item.status,
+				// 		value: item.status,
+				// 	},
 
-					// Date
-					{
-						display: item.createdAt
-							? item.createdAt
-							: '-',
-						value: item.createdAt ?? '',
-					},
-				]);
+				// 	// Date
+				// 	{
+				// 		display: item.createdAt
+				// 			? item.createdAt
+				// 			: '-',
+				// 		value: item.createdAt ?? '',
+				// 	},
+				// ]);
 
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
@@ -386,6 +407,7 @@ const Commission: React.FC = () => {
 							})({});
 						}}
 						format={appLocalizer.date_format}
+						currencySymbol={appLocalizer.currency_symbol}
 					/>
 				</Column>
 			</Container>
