@@ -5,15 +5,11 @@ import {
 	getApiLink,
 	TableCard,
 } from 'zyra';
-import {
-	RowSelectionState,
-	PaginationState,
-} from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { formatCurrency } from '../services/commonFunction';
-import AddProductCom from './add-products';
-import SpmvProducts from './spmv-products';
+import AddProductCom from './addProducts';
+import SpmvProducts from './spmvProducts';
 import { applyFilters } from '@wordpress/hooks';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 

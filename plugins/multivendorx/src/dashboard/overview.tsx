@@ -2,21 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import {
 	ResponsiveContainer,
-	LineChart,
-	Line,
-	CartesianGrid,
-	XAxis,
-	YAxis,
 	Tooltip,
 	Legend,
-	BarChart,
-	Bar,
 	PieChart,
 	Pie,
 	Cell,
 } from 'recharts';
 import axios from 'axios';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Analytics, Card, Column, Container, getApiLink, InfoItem } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 

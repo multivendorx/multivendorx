@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { PopupUI, TableCard, useModules } from 'zyra';
-import OrderDetails from './order-details';
+import OrderDetails from './orderDetails';
 import AddOrder from './addOrder';
 import { formatCurrency, toWcIsoDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
