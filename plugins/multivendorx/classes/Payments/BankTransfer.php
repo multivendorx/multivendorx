@@ -43,7 +43,7 @@ class BankTransfer {
      */
     public function get_settings() {
         return array(
-            'icon'       => 'adminfont-bank',
+            'icon'       => 'bank',
             'id'         => $this->get_id(),
             'label'      => 'Bank Transfer',
             'disableBtn' => true,

@@ -9,6 +9,7 @@ import SuccessNotice from './SuccessNotice';
 import { MultiCheckBoxUI } from './MultiCheckbox';
 import HeaderSearch from './HeaderSearch';
 import { SelectInputUI } from './SelectInput';
+import { PopupUI } from './Popup';
 
 // Types
 interface Module {
@@ -68,6 +69,7 @@ const Modules: React.FC<ModuleProps> = ({
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedFilter, setSelectedFilter] = useState<string>('All');
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
     const { modules, insertModule, removeModule } = useModules();
     const totalCount = modulesArray.modules.filter(isModule).length;
@@ -130,6 +132,11 @@ const Modules: React.FC<ModuleProps> = ({
         moduleId: string,
         reloadOnChange = false
     ) => {
+        const highlightedEl = document.querySelector('.module-list-item.highlight');
+        if (highlightedEl) {
+            highlightedEl.classList.remove('highlight');
+        }
+
         if (!isModuleAvailable(moduleId)) {
             setModelOpen(true);
             return;
@@ -179,6 +186,16 @@ const Modules: React.FC<ModuleProps> = ({
         };
 
         const handleClickAnywhere = (e: Event) => {
+            const toggleCheckbox = (e.target as HTMLElement).closest('.toggle-checkbox');
+            if (toggleCheckbox) {
+                const highlightedModule = document.querySelector('.module-list-item.highlight');
+                if (highlightedModule) {
+                    highlightedModule.classList.remove('highlight');
+                    highlightedElement = null;
+                }
+                return;
+            }
+
             if (highlightedElement && !highlightedElement.contains(e.target as Node)) {
                 highlightedElement.classList.remove('highlight');
                 highlightedElement = null;
@@ -198,14 +215,17 @@ const Modules: React.FC<ModuleProps> = ({
 
     return (
         <>
-            {/* <Dialog className="admin-module-popup" open={modelOpen} onClose={() => setModelOpen(false)}>
-                <button
-                    className="admin-font adminfont-cross"
-                    onClick={() => setModelOpen(false)}
-                    aria-label="Close dialog"
-                ></button>
-                {ProPopupComponent && <ProPopupComponent />}
-            </Dialog> */}
+            {modelOpen && (
+                <PopupUI
+                    position="lightbox"
+                    open={modelOpen}
+                    onClose={() => setModelOpen(false)}
+                    width={31.25}
+                    height="auto"
+                >
+                    {ProPopupComponent && <ProPopupComponent />}
+                </PopupUI>
+            )}
 
             {successMsg && (<SuccessNotice title={'Success!'} message={successMsg} />)}
             <div className="module-container" data-variant={variant}>
@@ -267,7 +287,7 @@ const Modules: React.FC<ModuleProps> = ({
                                             </div>
                                         )}
                                         {variant === 'mini-module' &&
-                                            (appLocalizer.khali_dabba  || !module.proModule) && (
+                                            (appLocalizer.khali_dabba || !module.proModule) && (
                                                 <div className="toggle-checkbox">
                                                     <MultiCheckBoxUI
                                                         look="toggle"
