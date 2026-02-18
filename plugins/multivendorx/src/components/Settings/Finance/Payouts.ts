@@ -435,7 +435,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('Withdrawal Rules & Limits', 'multivendorx'),
+			title: __('Withdrawal Rules & Limits', 'multivendorx'),
 		},
 		{
 			key: 'withdraw_type',

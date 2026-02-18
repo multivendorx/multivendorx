@@ -39,6 +39,7 @@ interface InputField {
     postText?: string | ReactNode;
     beforeElement?: string | ReactNode;
     afterElement?: string | ReactNode;
+    row?: boolean;
 }
 
 interface SettingsType {
@@ -545,7 +546,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                 ) : (
                     <div
                         key={inputField.key}
-                        className={`form-group row ${inputField.classes ? inputField.classes : ''
+                        className={`form-group ${inputField.row === false ? '' : 'row'}  ${inputField.classes ? inputField.classes : ''
                             } ${inputField.proSetting ? 'pro-setting' : ''} ${inputField.moduleEnabled &&
                                 !modules.includes(inputField.moduleEnabled)
                                 ? 'module-enabled'

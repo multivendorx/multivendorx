@@ -74,7 +74,7 @@ export default {
 				'Set rules and options for product abuse reporting.',
 				'multivendorx'
 			),
-			hint: __('Product Report Abuse', 'multivendorx'),
+			title: __('Product Report Abuse', 'multivendorx'),
 		},
 		{
 			key: 'who_can_report',

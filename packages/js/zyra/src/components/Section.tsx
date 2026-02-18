@@ -7,25 +7,25 @@ import { FieldComponent } from './types';
 // Types
 interface SectionProps {
     wrapperClass?: string;
-    hint?: string;
-    value?: string;
+    title?: string;
+    desc?: string;
 }
 
 export const SectionUI : React.FC<SectionProps> = ( {
-    wrapperClass,
-    hint,
-    value,
+    wrapperClass='',
+    title,
+    desc,
 } ) => {
     return (
             <div className={`divider-wrapper ${wrapperClass}`}>
                 <div className="divider-section">
-                    { hint && (
+                    { title && (
                         <p
                             className="title"
-                            dangerouslySetInnerHTML={ { __html: hint } }
+                            dangerouslySetInnerHTML={ { __html: title } }
                         ></p>
                     ) }
-                    { value && <span className="desc">{ value }</span> }
+                    { desc && <span className="desc">{ desc }</span> }
                 </div>
             </div>
     );

@@ -58,7 +58,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
-			hint: __('Identity Verification', 'multivendorx'),
+			title: __('Identity Verification', 'multivendorx'),
 			desc: __(
 				'Verify store identity using government-issued documents or facial recognition. Ensures authenticity of users.'
 			),
@@ -98,7 +98,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
-			hint: __('Social Verification', 'multivendorx'),
+			title: __('Social Verification', 'multivendorx'),
 			desc: __(
 				'Allow stores to verify their identity by connecting social media accounts.'
 			),

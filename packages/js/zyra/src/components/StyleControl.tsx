@@ -1,11 +1,12 @@
 // External dependencies
 import React, { useState } from 'react';
 import { ToggleSettingUI } from './ToggleSetting';
+import { BasicInputUI } from './BasicInput';
 
 interface StyleControlsProps {
-    style?: any;
-    onChange: (style: any) => void;
-    includeTextStyles?: boolean;
+  style?: any;
+  onChange: (style: any) => void;
+  includeTextStyles?: boolean;
 }
 
 const StyleControls: React.FC<StyleControlsProps> = ({
@@ -52,22 +53,22 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                     {
                       key: 'left',
                       value: 'left',
-                      label: <i className="adminfont-left-align" />
+                      icon: 'left-align'
                     },
                     {
                       key: 'center',
                       value: 'center',
-                      label: <i className="adminfont-center-align" />
+                      icon: 'center-align'
                     },
                     {
                       key: 'right',
                       value: 'right',
-                      label: <i className="adminfont-right-align" />
+                      icon: 'right-align'
                     },
                     {
                       key: 'justify',
                       value: 'justify',
-                      label: <i className="adminfont-justify-align" />
+                      icon: 'justify-align'
                     },
                   ]}
                   value={style.textAlign || 'left'}
@@ -83,8 +84,7 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                   <label>Font Size (rem)</label>
                   <input
                     type="number"
-                    min={8}
-                    max={72}
+                    
                     value={style.fontSize || 16}
                     className="basic-input"
                     onChange={(e) =>
@@ -126,17 +126,6 @@ const StyleControls: React.FC<StyleControlsProps> = ({
                     <option value="bold">Bold (700)</option>
                   </select>
                 </div>
-                {/* <div className="field-wrapper">
-                  <label>Font Family</label>
-                  <input
-                    type="text"
-                    value={style.fontFamily || 'Arial'}
-                    className="basic-input"
-                    onChange={(e) =>
-                      onChange({ ...style, fontFamily: e.target.value })
-                    }
-                  />
-                </div> */}
                 <div className="field-wrapper">
                   <label>Text Decoration</label>
                   <select
