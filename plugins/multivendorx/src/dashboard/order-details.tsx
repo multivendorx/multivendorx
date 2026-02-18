@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { __ } from '@wordpress/i18n';
 import {  AdminButtonUI,   BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, InfoItem, SelectInputUI, SuccessNotice, TextAreaUI, getApiLink, useModules } from 'zyra';
 import axios from 'axios';
-import { formatCurrency } from '../services/commonFunction';
+import { formatCurrency } from '@/services/commonFunction';
 
 interface OrderDetailsProps {
 	order?: any; // optionally pass order data
@@ -784,7 +784,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 															{__('Amount already refunded:', 'multivendorx')}
 														</td>
 														<td>
-															- {formatCurrency(totalRefunded)}
+															- {formatCurrency(orderData.currency_symbol, totalRefunded)}
 														</td>
 													</tr>
 
@@ -794,6 +794,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 														</td>
 														<td>
 															{formatCurrency(
+																orderData.currency_symbol,
 																orderData.commission_total - totalRefunded
 															)}
 														</td>
@@ -847,7 +848,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													<tr>
 														<td>{__('Commission:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData?.commission_amount)}
+															{formatCurrency(orderData.currency_symbol, orderData?.commission_amount)}
 														</td>
 													</tr>
 
@@ -855,7 +856,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 														<tr>
 															<td>{__('Shipping:', 'multivendorx')}</td>
 															<td>
-																{formatCurrency(orderData?.shipping_total)}
+																{formatCurrency(orderData.currency_symbol, orderData?.shipping_total)}
 															</td>
 														</tr>
 													)}
@@ -863,14 +864,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 													<tr>
 														<td>{__('Total:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData?.total)}
+															{formatCurrency(orderData.currency_symbol, orderData?.total)}
 														</td>
 													</tr>
 
 													<tr>
 														<td>{__('Total Earned:', 'multivendorx')}</td>
 														<td>
-															{formatCurrency(orderData?.commission_total)}
+															{formatCurrency(orderData.currency_symbol, orderData?.commission_total)}
 														</td>
 													</tr>
 												</tbody>

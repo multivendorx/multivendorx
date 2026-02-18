@@ -13,7 +13,7 @@ import {
 	ItemList,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import { formatCurrency, formatLocalDate, formatWordpressDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type CommissionRow = {
@@ -226,20 +226,20 @@ const Commission: React.FC = () => {
 					},
 					// Order Amount
 					{
-						display: item.totalOrderAmount
-							? formatCurrency(item.totalOrderAmount)
+						display: ann.totalOrderAmount
+							? formatCurrency(item.currency_symbol , item.totalOrderAmount)
 							: '-',
 						value: item.totalOrderAmount ?? 0,
 					},
 					// Store Earning
 					{
-						display: formatCurrency(item.storePayable),
+						display: formatCurrency(item.currency_symbol , item.storePayable),
 						value: item.storePayable ?? 0,
 					},
 
 					// Marketplace Earning
 					{
-						display: formatCurrency(item.marketplacePayable),
+						display: formatCurrency(item.currency_symbol , item.marketplacePayable),
 						value: item.marketplacePayable ?? 0,
 					},
 
@@ -252,7 +252,7 @@ const Commission: React.FC = () => {
 					// Date
 					{
 						display: item.createdAt
-							? item.createdAt
+							? formatWordpressDate(item.createdAt)
 							: '-',
 						value: item.createdAt ?? '',
 					},

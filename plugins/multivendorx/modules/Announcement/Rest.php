@@ -238,7 +238,7 @@ class Rest extends \WP_REST_Controller {
                     'title'      => $post->post_title,
                     'content'    => $post->post_content,
                     'store_name' => implode( ', ', $store_names ),
-                    'date'       => Utill::multivendorx_date_time_format( get_the_date( 'Y-m-d H:i:s', $post->ID ) ),
+                    'date'       => Utill::multivendorx_rest_prepare_date_response( $post->post_date ),
                     'status'     => $post->post_status === 'publish'
                         ? 'published'
                         : $post->post_status,
@@ -564,7 +564,7 @@ class Rest extends \WP_REST_Controller {
                 'status'  => $post->post_status,
                 'url'     => get_post_meta( $id, Utill::POST_META_SETTINGS['announcement_url'], true ),
                 'stores'  => $stores,
-                'date'    => Utill::multivendorx_date_time_format( get_post_time( 'Y-m-d H:i:s', true, $post ) ),
+                'date'    => Utill::multivendorx_rest_prepare_date_response( $post->post_date ),
             );
 
             return rest_ensure_response( $response );
