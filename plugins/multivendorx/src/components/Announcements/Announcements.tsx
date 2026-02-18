@@ -19,7 +19,7 @@ import {
 } from 'zyra';
 import './Announcements.scss';
 import Popup from '../Popup/Popup';
-import { formatLocalDate, formatWordpressDate, truncateText } from '@/services/commonFunction';
+import { formatLocalDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type AnnouncementForm = {
@@ -343,7 +343,7 @@ export const Announcements: React.FC = () => {
 							: 'All Stores',
 						value: ann.store_name || '',
 					},
-					{ display: formatWordpressDate(ann.date), value: ann.date },
+					{ display: ann.date, value: ann.date },
 				]);
 
 				setRows(mappedRows);

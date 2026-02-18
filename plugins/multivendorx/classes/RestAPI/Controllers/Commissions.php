@@ -241,11 +241,10 @@ class Commissions extends \WP_REST_Controller {
                         'marketplacePayable'    => $commission['marketplace_payable'],
                         'storeRefunded'         => $commission['store_refunded'],
                         'currency'              => $commission['currency'],
-                        'currency_symbol'        => Utill::multivendorx_get_currency_symbol( $commission['currency'] ),
                         'status'                => $commission['status'],
                         'commissionNote'        => $commission['commission_note'],
-                        'createdAt'             => Utill::multivendorx_rest_prepare_date_response( $commission['created_at'] ),
-                        'updatedAt'             => Utill::multivendorx_rest_prepare_date_response( $commission['updated_at'] ),
+                        'createdAt'             => Utill::multivendorx_date_time_format( $commission['created_at'] ),
+                        'updatedAt'             => Utill::multivendorx_date_time_format( $commission['updated_at'] ),
                     ),
                     (object) $commission
                 );
@@ -384,7 +383,7 @@ class Commissions extends \WP_REST_Controller {
                 'platform_fee'           => wc_format_decimal( $commission->platform_fee, 2 ),
                 'discount_applied'       => wc_format_decimal( $commission->discount_applied, 2 ),
                 'note'                   => $commission->commission_note,
-                'created'                => Utill::multivendorx_rest_prepare_date_response( $commission->created_at ),
+                'created'                => Utill::multivendorx_date_time_format( $commission->created_at ),
                 'items'                  => $items,
             );
 

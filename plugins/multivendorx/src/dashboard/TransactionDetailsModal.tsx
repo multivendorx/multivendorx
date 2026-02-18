@@ -4,7 +4,6 @@ import { PopupUI } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 
 type TransactionRow = {
-	currency_symbol: string;
 	id: number;
 	date: string;
 	order_details: string;
@@ -84,7 +83,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Credit', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatCurrency(transaction.currency_symbol, transaction.credit)}
+								{formatCurrency(transaction.credit)}
 							</div>
 						</div>
 						<div className="items">
@@ -92,7 +91,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Debit', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatCurrency(transaction.currency_symbol, transaction.debit)}
+								{formatCurrency(transaction.debit)}
 							</div>
 						</div>
 						<div className="items">
@@ -100,7 +99,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 								{__('Balance', 'multivendorx')}
 							</div>
 							<div className="value">
-								{formatCurrency(transaction.currency_symbol, transaction.balance)}
+								{formatCurrency(transaction.balance)}
 
 							</div>
 						</div>

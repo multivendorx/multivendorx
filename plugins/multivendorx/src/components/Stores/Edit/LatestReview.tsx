@@ -50,7 +50,7 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 							description:item.review_content
 						}
 					},
-					{ display: formatWordpressDate(item.date_created), value: item.date_created }
+					{ display: item.date_created, value: item.date_created }
 				]);
 
 				setRows(mappedRows);

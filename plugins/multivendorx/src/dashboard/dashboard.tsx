@@ -225,9 +225,9 @@ const Dashboard: React.FC = () => {
 									'-',
 							})) || [],
 						store_name: order.store_name || '-',
-						amount: formatCurrency(order.currency_symbol, order.total),
+						amount: formatCurrency(order.total),
 						commission_amount: order.commission_amount
-							? formatCurrency(order.currency_symbol, order.commission_amount)
+							? formatCurrency(order.commission_amount)
 							: '-',
 						date: order.date_created,
 						status: order.status,
@@ -363,19 +363,19 @@ const Dashboard: React.FC = () => {
 	const analyticsData = [
 		{
 			icon: 'dollar',
-			number: formatCurrency(store?.commission?.currency_symbol, store?.commission?.total_order_amount || 0),
+			number: formatCurrency(store?.commission?.total_order_amount || 0),
 			text: 'Total Revenue',
 			color: 'primary',
-			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.total || 0),
-			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.total || 0)
+			last30: formatCurrency(store?.commission?.last_30_days.total || 0),
+			prev30: formatCurrency(store?.commission?.previous_30_days.total || 0)
 		},
 		{
 			icon: 'order',
 			number: totalOrder,
 			text: 'Total Orders',
 			color: 'secondary',
-			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.orders || 0),
-			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.orders || 0)
+			last30: formatCurrency(store?.commission?.last_30_days.orders || 0),
+			prev30: formatCurrency(store?.commission?.previous_30_days.orders || 0)
 		},
 		{
 			icon: 'store-seo',
@@ -387,11 +387,11 @@ const Dashboard: React.FC = () => {
 		},
 		{
 			icon: 'commission',
-			number: formatCurrency(store?.commission?.currency_symbol, store?.commission?.commission_total || 0),
+			number: formatCurrency(store?.commission?.commission_total || 0),
 			text: 'Commission Earned',
 			color: 'support',
-			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.commission || 0),
-			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.commission || 0)
+			last30: formatCurrency(store?.commission?.last_30_days.commission || 0),
+			prev30: formatCurrency(store?.commission?.previous_30_days.commission || 0)
 		},
 	];
 
@@ -592,7 +592,7 @@ const Dashboard: React.FC = () => {
 										descriptions={[
 											{ value: item.date },
 										]}
-										amount={formatCurrency(item.currency_symbol, item.amount)}
+										amount={formatCurrency(item.amount)}
 									/>
 								))
 							) : (
@@ -800,7 +800,7 @@ const Dashboard: React.FC = () => {
 									</Pie>
 
 									<Tooltip
-										formatter={(value) => (value)}
+										formatter={(value) => formatCurrency(value)}
 										contentStyle={{
 											backgroundColor: '#fff',
 											borderRadius: '8px',
