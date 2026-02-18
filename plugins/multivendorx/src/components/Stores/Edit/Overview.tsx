@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { Analytics, Card, Column, Container, getApiLink, InfoItem, useModules, Skeleton } from 'zyra';
-import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './LatestReview';
 import LatestRefundRequest from './LatestRefundRequest';
+import { formatCurrency } from '@/services/commonFunction';
 
 interface OverviewProps {
 	id: string | null;
@@ -96,17 +96,17 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 	const overviewData = [
 		{
 			icon: 'wallet red',
-			number: formatCurrency(storeData.transactions?.balance ?? 0),
+			number: formatCurrency(storeData.transactions?.currency_symbol , storeData.transactions?.balance ?? 0),
 			text: 'Wallet balance',
 		},
 		{
 			icon: 'dollar yellow',
-			number: formatCurrency(storeData.transactions?.locking_balance ?? 0),
+			number: formatCurrency(storeData.transactions?.currency_symbol , storeData.transactions?.locking_balance ?? 0),
 			text: 'Upcoming balance',
 		},
 		{
 			icon: 'wallet-in blue',
-			number: formatCurrency(storeData.request_withdrawal_amount ?? 0),
+			number: formatCurrency(storeData.transactions?.currency_symbol , storeData.request_withdrawal_amount ?? 0),
 			text: 'Requested payout',
 		},
 	];
@@ -194,7 +194,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 												value: product.sku,
 											},
 										]}
-										amount={formatCurrency(product.price ?? 0)}
+										amount={formatCurrency(product.currency_symbol, product.price ?? 0)}
 									/>
 								);
 							})
@@ -314,7 +314,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 								</div>
 								<div className="details">
 									<div className="sku">
-										{formatCurrency(
+										{ formatCurrency(
+											storeData.commission?.currency_symbol,
 											storeData.commission
 												?.commission_total ?? 0
 										)}

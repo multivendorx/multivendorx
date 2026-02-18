@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { PopupUI, TableCard, useModules } from 'zyra';
 import OrderDetails from './order-details';
 import AddOrder from './addOrder';
-import { downloadCSV, formatCurrency, toWcIsoDate } from '../services/commonFunction';
+import { downloadCSV, formatCurrency, formatWordpressDate, toWcIsoDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const Orders: React.FC = () => {
@@ -315,7 +315,7 @@ const Orders: React.FC = () => {
 			order.billing?.first_name || order.billing?.last_name
 				? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
 				: order.billing?.email || __('Guest', 'multivendorx'),
-		[__('Date', 'multivendorx')]: order.date_created? formatWcShortDate(order.date_created) : '',
+		[__('Date', 'multivendorx')]: order.date_created? formatWordpressDate(order.date_created) : '',
 		[__('Status', 'multivendorx')] : order.status ?? '',
 		[__('Total Earning', 'multivendorx')] : order.commission_total ?? '',
 		[__('Total', 'multivendorx')] : order.total ?? '',
@@ -333,12 +333,12 @@ const Orders: React.FC = () => {
 					filename:
 						query.filter?.created_at?.startDate &&
 						query.filter?.created_at?.endDate
-							? `orders-${formatWcShortDate(
+							? `orders-${formatWordpressDate(
 									query.filter.created_at.startDate
-							  )}-${formatWcShortDate(
+							  )}-${formatWordpressDate(
 									query.filter.created_at.endDate
 							  )}.csv`
-							: `orders-${formatWcShortDate(new Date())}.csv`,
+							: `orders-${formatWordpressDate(new Date())}.csv`,
 	
 					paramsBuilder: {
 						page: 1,
@@ -421,7 +421,7 @@ const Orders: React.FC = () => {
 						value: order.id || '',
 					},
 					{
-						display: (order.date_created),
+						display: formatWordpressDate(order.date_created),
 						value: order.date_created,
 					},
 					{
@@ -429,11 +429,11 @@ const Orders: React.FC = () => {
 						value: order.status,
 					},
 					{
-						display: formatCurrency(order.commission_total || 0),
+						display: formatCurrency(order.currency_symbol, order.commission_total || 0),
 						value: order.commission_total || 0,
 					},
 					{
-						display: formatCurrency(order.total),
+						display: formatCurrency(order.currency_symbol, order.total),
 						value: order.total,
 					},
 				]);

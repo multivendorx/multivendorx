@@ -586,7 +586,7 @@ const AllCoupon: React.FC = () => {
 					{ display: ann.amount, value: ann.amount },
 					{ display: ann.usage_count, value: ann.usage_count },
 					{ display: ann.usage_limit, value: ann.usage_limit },
-					{ display: ann.date_expires, value: ann.date_expires },
+					{ display: formatWordpressDate(ann.date_expires), value: ann.date_expires },
 					{ display: ann.description, value: ann.description },
 					{ display: ann.status, value: ann.status },
 				]);

@@ -192,8 +192,8 @@ class Rest extends \WP_REST_Controller {
                         'name'          => $r['name'],
                         'email'         => $r['email'],
                         'reason'        => $r['message'],
-                        'created_at'    => Utill::multivendorx_date_time_format( $r['created_at'] ),
-                        'updated_at'    => Utill::multivendorx_date_time_format( $r['updated_at'] ),
+                        'created_at'    => Utill::multivendorx_rest_prepare_date_response( $r['created_at'] ),
+                        'updated_at'    => Utill::multivendorx_rest_prepare_date_response( $r['updated_at'] ),
                     );
                 },
                 $reports
