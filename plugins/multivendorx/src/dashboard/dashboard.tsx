@@ -43,15 +43,15 @@ interface DateRange {
 }
 
 const Dashboard: React.FC = () => {
-	const [review, setReview] = useState<any[]>([]);
-	const [pendingRefund, setPendingRefund] = useState<any[]>([]);
-	const [announcement, setAnnouncement] = useState<any[]>([]);
+	const [review, setReview] = useState<[]>([]);
+	const [pendingRefund, setPendingRefund] = useState<[]>([]);
+	const [announcement, setAnnouncement] = useState<[]>([]);
 	const [revenueData, setRevenueData] = useState([]);
-	const [store, setStore] = useState<any[]>([]);
+	const [store, setStore] = useState<[]>([]);
 	const [totalOrder, setTotalOrder] = useState<number>(0);
-	const [customers, setCustomers] = useState<any>([]);
-	const [lastWithdraws, setLastWithdraws] = useState<any>([]);
-	const [activities, setActivities] = useState<any>([]);
+	const [customers, setCustomers] = useState<[]>([]);
+	const [lastWithdraws, setLastWithdraws] = useState<[]>([]);
+	const [activities, setActivities] = useState<[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [dateRange, setDateRange] = useState<DateRange>({
 		startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),

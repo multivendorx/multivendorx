@@ -18,11 +18,6 @@ type Stat = {
 	icon: string;
 	label: string;
 };
-type Product = {
-	id: number;
-	title: string;
-	price: string;
-};
 type OverviewProps = {
 	overview: Stat[];
 	data: {

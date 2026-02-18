@@ -19,7 +19,7 @@ const SetupWizard: React.FC = () => {
     });
     const settingChanged = useRef(false);
 
-    const appLocalizer = (window as any).appLocalizer;
+    const appLocalizer = (window).appLocalizer;
 
     const inputField = {
         key: 'setup_wizard',

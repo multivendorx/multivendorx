@@ -13,18 +13,6 @@ import SpmvProducts from './spmvProducts';
 import { applyFilters } from '@wordpress/hooks';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
-type ProductRow = {
-	id: number;
-	product_name?: string;
-	product_sku?: string;
-	price?: string;
-	stock?: string;
-	categories?: string;
-	date?: string;
-	status?: string;
-};
-
-
 const STATUS_LABELS: Record<string, string> = {
 	all: __('All', 'multivendorx'),
 	publish: __('Published', 'multivendorx'),
