@@ -9,11 +9,10 @@ import {
 	Container,
 	Column,
 	TableCard,
-	ExportCSV,
 	ItemList,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type CommissionRow = {
@@ -107,9 +106,9 @@ const Commission: React.FC = () => {
 	}, []);
 
 	const headers = {
-		id: { label: 'ID', isSortable: true },
-		order_id: { label: 'Order', isSortable: true },
-		total_order_amount: { label: 'Order Amount', isSortable: true, type: 'currency' },
+		id: { label: 'ID', isSortable: true, csv: { key: 'id' } },
+		order_id: { label: 'Order', isSortable: true, csv: { key: 'order_id' } },
+		total_order_amount: { label: 'Order Amount', isSortable: true, type: 'currency', csv: { key: 'total_order_amount' } },
 		commission_summary: {
 			label: 'Commission Summary',
 			render: (row) => (
@@ -117,54 +116,87 @@ const Commission: React.FC = () => {
 					className="feature-list"
 					items={Object.entries(row)
 						.filter(([key]) =>
-							[
-								'store_earning',
-								'shipping_amount',
-								'tax_amount',
-								'gateway_fee',
-								'marketplace_commission',
-							].includes(key)
+							['store_earning', 'shipping_amount', 'tax_amount', 'gateway_fee', 'marketplace_commission'].includes(key)
 						)
 						.map(([key, val]) => ({
 							icon: 'adminfont-commissions',
-							title: key
-								.split('_')
-								.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-								.join(' '),
+							title: key.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
 							desc: val,
 						}))
 					}
 				/>
 			),
-
+			csv: {
+				keys: ['store_earning', 'shipping_amount', 'tax_amount', 'gateway_fee', 'marketplace_commission'],
+				joinWith: ', ', // will join multiple key-values as string
+			},
 		},
-		store_payable: { label: 'Store Earning', isSortable: true, type: 'currency' },
-		marketplace_payable: { label: 'Marketplace Earning', isSortable: true, type: 'currency' },
-		status: { label: 'Status', type: 'status' },
-		created_at: { label: 'Date', isSortable: true, type: 'date' },
-		action: {
-			label: 'Action',
-			type: 'action',
-			actions: [
-				{
-					label: __('View Commission', 'multivendorx'),
-					icon: 'eye',
-					onClick: (row) => {
-						setSelectedCommissionId(row.id);
-						setViewCommission(true);
-					},
-				},
-				{
-					label: __('Regenerate Commission', 'multivendorx'),
-					icon: 'refresh',
-					onClick: (row) => {
-						handleSingleAction('regenerate', row.id);
-					},
-				},
-			],
-		},
+		store_payable: { label: 'Store Earning', isSortable: true, type: 'currency', csv: { key: 'store_payable' } },
+		marketplace_payable: { label: 'Marketplace Earning', isSortable: true, type: 'currency', csv: { key: 'marketplace_payable' } },
+		status: { label: 'Status', type: 'status', csv: { key: 'status' } },
+		created_at: { label: 'Date', isSortable: true, type: 'date', csv: { key: 'created_at' } },
+		action: { label: 'Action', type: 'action', csv: { skip: true } } // don't include action column in CSV
 	};
 
+
+	// const headers = {
+	// 	id: { label: 'ID', isSortable: true },
+	// 	order_id: { label: 'Order', isSortable: true },
+	// 	total_order_amount: { label: 'Order Amount', isSortable: true, type: 'currency' },
+	// 	commission_summary: {
+	// 		label: 'Commission Summary',
+	// 		render: (row) => (
+	// 			<ItemList
+	// 				className="feature-list"
+	// 				items={Object.entries(row)
+	// 					.filter(([key]) =>
+	// 						[
+	// 							'store_earning',
+	// 							'shipping_amount',
+	// 							'tax_amount',
+	// 							'gateway_fee',
+	// 							'marketplace_commission',
+	// 						].includes(key)
+	// 					)
+	// 					.map(([key, val]) => ({
+	// 						icon: 'adminfont-commissions',
+	// 						title: key
+	// 							.split('_')
+	// 							.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+	// 							.join(' '),
+	// 						desc: val,
+	// 					}))
+	// 				}
+	// 			/>
+	// 		),
+
+	// 	},
+	// 	store_payable: { label: 'Store Earning', isSortable: true, type: 'currency' },
+	// 	marketplace_payable: { label: 'Marketplace Earning', isSortable: true, type: 'currency' },
+	// 	status: { label: 'Status', type: 'status' },
+	// 	created_at: { label: 'Date', isSortable: true, type: 'date' },
+	// 	action: {
+	// 		label: 'Action',
+	// 		type: 'action',
+	// 		actions: [
+	// 			{
+	// 				label: __('View Commission', 'multivendorx'),
+	// 				icon: 'eye',
+	// 				onClick: (row) => {
+	// 					setSelectedCommissionId(row.id);
+	// 					setViewCommission(true);
+	// 				},
+	// 			},
+	// 			{
+	// 				label: __('Regenerate Commission', 'multivendorx'),
+	// 				icon: 'refresh',
+	// 				onClick: (row) => {
+	// 					handleSingleAction('regenerate', row.id);
+	// 				},
+	// 			},
+	// 		],
+	// 	},
+	// };
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -342,37 +374,56 @@ const Commission: React.FC = () => {
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
 
-			onClickWithQuery: (query: QueryProps) =>
-				ExportCSV({
-					url: getApiLink(appLocalizer, 'commission'),
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			// onClickWithQuery: (query: QueryProps) =>
+			// 	ExportCSV({
+			// 		url: getApiLink(appLocalizer, 'commission'),
+			// 		headers: { 'X-WP-Nonce': appLocalizer.nonce },
 
-					filename:
-						query.filter?.created_at?.startDate &&
-							query.filter?.created_at?.endDate
-							? `commissions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
-							: `commissions-${formatLocalDate(new Date())}.csv`,
-					paramsBuilder: ({
-						page: 1,
-						row: 100,
-						status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-						searchValue: query.searchValue || '',
-						startDate: query.filter?.created_at?.startDate
-							? formatLocalDate(query.filter.created_at.startDate)
-							: '',
-						endDate: query.filter?.created_at?.endDate
-							? formatLocalDate(query.filter.created_at.endDate)
-							: '',
-						store_id: query.filter?.store_id,
-						orderBy: query.orderby,
-						order: query.order,
-					}),
+			// 		filename:
+			// 			query.filter?.created_at?.startDate &&
+			// 				query.filter?.created_at?.endDate
+			// 				? `commissions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
+			// 				: `commissions-${formatLocalDate(new Date())}.csv`,
+			// 		paramsBuilder: ({
+			// 			page: 1,
+			// 			row: 100,
+			// 			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			// 			searchValue: query.searchValue || '',
+			// 			startDate: query.filter?.created_at?.startDate
+			// 				? formatLocalDate(query.filter.created_at.startDate)
+			// 				: '',
+			// 			endDate: query.filter?.created_at?.endDate
+			// 				? formatLocalDate(query.filter.created_at.endDate)
+			// 				: '',
+			// 			store_id: query.filter?.store_id,
+			// 			orderBy: query.orderby,
+			// 			order: query.order,
+			// 		}),
 
-					columns: commissionColumns,
-				})(query),
+			// 		columns: commissionColumns,
+			// 	})(query),
 		},
 	];
+	const downloadCommissionsCSV = (selectedIds: number[]) => {
+		if (!selectedIds) return;
 
+		axios
+			.get(getApiLink(appLocalizer, 'commission'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { ids: selectedIds },
+			})
+			.then(response => {
+				const rows = response.data || [];
+				downloadCSV(
+					headers,
+					rows,
+					`selected-commissions-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch(error => {
+				console.error('CSV download failed:', error);
+			});
+	};
 	return (
 		<>
 			<NavigatorHeader
@@ -397,15 +448,7 @@ const Commission: React.FC = () => {
 						filters={filters}
 						buttonActions={buttonActions}
 						bulkActions={[]}
-						onSelectCsvDownloadApply={(selectedIds: number[]) => {
-							ExportCSV({
-								url: getApiLink(appLocalizer, 'commission'),
-								headers: { 'X-WP-Nonce': appLocalizer.nonce },
-								filename: `selected-commissions-${formatLocalDate(new Date())}.csv`,
-								paramsBuilder: () => ({ ids: selectedIds }),
-								columns: commissionColumns,
-							})({});
-						}}
+						onSelectCsvDownloadApply={downloadCommissionsCSV}
 						format={appLocalizer.date_format}
 						currencySymbol={appLocalizer.currency_symbol}
 					/>

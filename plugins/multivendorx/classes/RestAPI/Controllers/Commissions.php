@@ -390,7 +390,7 @@ class Commissions extends \WP_REST_Controller
                 'platform_fee'           => wc_format_decimal($commission->platform_fee, 2),
                 'discount_applied'       => wc_format_decimal($commission->discount_applied, 2),
                 'note'                   => $commission->commission_note,
-                'created'                => Utill::multivendorx_date_time_format($commission->created_at),
+                'created'                => Utill::multivendorx_rest_prepare_date_response($commission->created_at),
                 'items'                  => $items,
             );
 
