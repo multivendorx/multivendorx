@@ -278,7 +278,7 @@ const Table: React.FC<TableProps> = ({
                                         <input
                                             type="checkbox"
                                             checked={selectedIds.includes(row.id)}
-                                            onChange={() => toggleRow(row.id)}
+                                            onChange={() => toggleRow(rowIndex)}
                                         />
                                     </td>
                                 )}

@@ -47,10 +47,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	...props
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
-	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
-	const ref = useRef<HTMLDivElement | null>(null);
-	useOutsideClick(ref, () => setIsPopoverOpen(false));
 
 	const [query, setQuery] = useState<QueryProps>({
 		orderby: 'date',
@@ -81,8 +78,6 @@ const TableCard: React.FC<TableCardProps> = ({
 							: prev.orderby,
 				}));
 			};
-
-	const togglePopover = () => setIsPopoverOpen((prev) => !prev);
 
 	const onFilterChange = (key: string, value: string | string[] | { startDate: Date; endDate: Date }) => {
 		setQuery((prev) => ({
@@ -177,12 +172,13 @@ const TableCard: React.FC<TableCardProps> = ({
 	 * Derived visible headers & rows
 	 */
 	const visibleHeaders = Object.entries(headers)
-		.filter(([key]) => showCols.includes(key))
-		.map(([key, config]) => ({
+		.filter(([key, config]) =>
+			showCols.includes(key) && (config.table !== false) // only include if table !== false (default true)
+		)
+		.map(([key, { csv, table, ...rest }]) => ({
 			key,
-			...config,
+			...rest, // spread everything else except csv and table
 		}));
-
 	/**
 	 * Root className (manual)
 	 */

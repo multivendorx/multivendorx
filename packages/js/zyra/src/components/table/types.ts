@@ -74,6 +74,8 @@ export type TableHeaderConfig = {
 	 * Action column config
 	 */
 	actions?: ActionItem[];
+	csv?: boolean,
+	table?: boolean,
 };
 
 
