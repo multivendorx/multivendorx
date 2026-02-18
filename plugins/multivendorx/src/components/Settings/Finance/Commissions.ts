@@ -272,7 +272,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
-			hint: __(
+			title: __(
 				'Shipping & tax distribution in store earnings',
 				'multivendorx'
 			),
@@ -341,7 +341,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
-			hint: __('Fees deducted from store earnings', 'multivendorx'),
+			title: __('Fees deducted from store earnings', 'multivendorx'),
 			desc: __(
 				'Determine which fees to deduct from the store earning.',
 				'multivendorx'

@@ -149,3 +149,49 @@
         }
     }
 }
+
+
+.calender-wrapper .rmdp-wrapper {
+    .range-picker-wrapper {
+        width: 10rem;
+        padding-top: 0.625rem;
+
+        div {
+            padding: 0.625rem;
+            font-size: 0.813rem;
+            border-bottom: $border-light-small;
+            cursor: pointer;
+
+            &:hover {
+                background: $theme-background-color;
+            }
+        }
+    }
+
+    .rmdp-calendar {
+
+        .rmdp-week-day,
+        .rmdp-week .rmdp-week-day {
+            color: $theme-color;
+        }
+
+        // date
+        .rmdp-day-picker {
+            .rmdp-day {
+                span:hover {
+                    background: $theme-background-color !important;
+                }
+            }
+
+            .rmdp-range {
+                background: $theme-color;
+            }
+        }
+
+    }
+}
+
+.settings-calender:has(.calender){
+    width: 100%;
+        
+}

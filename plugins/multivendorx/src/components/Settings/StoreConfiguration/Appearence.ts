@@ -29,7 +29,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('Store Customizer', 'multivendorx'),
+			title: __('Store Customizer', 'multivendorx'),
 			desc: __(
 				'Control how your store looks and feels. Set the banner style, logo placement, and customize the dashboard color scheme to match your brand identity.',
 				'multivendorx'

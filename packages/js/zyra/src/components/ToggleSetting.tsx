@@ -109,7 +109,7 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
                                             </>
                                         ) : option.icon ? (
                                             <>
-                                                <i className={ option.icon }></i>
+                                                <i className={`adminfont-${option.icon} `}></i>
                                                 { option.label }
                                             </>
                                         ) : (

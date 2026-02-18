@@ -315,6 +315,7 @@ const BusinessAddress = () => {
 				{/* Zip */}
 				<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
 					<BasicInputUI
+						type="number"
 						value={addressData.zip}
 						onChange={(value:string)=>handleAddressChange('zip',value)}
 					/>

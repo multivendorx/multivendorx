@@ -35,7 +35,6 @@ export default {
 				},
 				disableBtn: true
 			},
-			modal: [],
 		},
 		{
 			key: 'required_store_uploads',
@@ -74,7 +73,7 @@ export default {
 				'Set rules and options for product abuse reporting.',
 				'multivendorx'
 			),
-			hint: __('Product Report Abuse', 'multivendorx'),
+			title: __('Product Report Abuse', 'multivendorx'),
 		},
 		{
 			key: 'who_can_report',
@@ -130,7 +129,6 @@ export default {
 				},
 				disableBtn: true
 			},
-			modal: [],
 		},
 	],
 };

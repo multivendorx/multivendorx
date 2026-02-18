@@ -76,7 +76,7 @@ moduleEnabled: 'min-max',
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('Order Purchase Limits', 'multivendorx'),
+			title: __('Order Purchase Limits', 'multivendorx'),
 			desc: __(
 				'Set limits on the total quantity or total value of an order to control bulk purchases or enforce minimum order requirements.',
 				'multivendorx'

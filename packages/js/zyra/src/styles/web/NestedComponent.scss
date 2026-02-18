@@ -60,12 +60,16 @@
             width: fit-content;
         }
 
-        .buttons-wrapper {
+        .button-wrapper {
             width: 100%;
-            padding-top: 0;
+            display: flex;
+            justify-content: end;
+            gap: 0.5rem;
         }
 
         .setting-form-input {
+            width: fit-content;
+
             .basic-input {
                 width: 100%;
             }
@@ -76,13 +80,15 @@
         }
 
         .toggle-btn {
+
             label,
             .toggle-checkbox-header {
                 margin: 0;
             }
         }
+
         .select-wrapper {
-            .react-select{
+            .react-select {
                 width: 8rem;
             }
         }

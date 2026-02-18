@@ -153,7 +153,7 @@ const Privacy = () => {
 						</FormGroup>
 					)}
 
-				<SectionUI key="section" hint="Deactivation" />
+				<SectionUI key="section" title="Deactivation" />
 
 				{formData.deactivation_reason ? (
 					<div>
