@@ -114,7 +114,6 @@ const Route = () => {
 			{tab === 'reports' && <Analytics />}
 			{tab === 'help-support' && <HelpSupport />}
 			{tab === 'notifications' && <Notifications />}
-			{tab === 'table-card' && <TableCardDemo />}
 
 			{applyFilters(
 				'multivendorx_admin_submenu_render',

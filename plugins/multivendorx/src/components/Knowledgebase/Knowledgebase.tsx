@@ -397,12 +397,8 @@ export const KnowledgeBase: React.FC = () => {
 									name="title"
 									value={formData.title}
 									onChange={(val) => handleChange('title', val as string)}
+									msg={ {type:'error',massage:validationErrors.title}}
 								/>
-								{validationErrors.title && (
-									<p className="invalid-massage">
-										{validationErrors.title}
-									</p>
-								)}
 							</FormGroup>
 							<FormGroup label={__('Content', 'multivendorx')} htmlFor="Content">
 								<TextAreaUI
@@ -415,12 +411,8 @@ export const KnowledgeBase: React.FC = () => {
 										'overview'
 										]['tinymce_api_section'] ?? ''
 									}
+									msg={ {type:'error',massage:validationErrors.content}}
 								/>
-								{validationErrors.content && (
-									<p className="invalid-massage">
-										{validationErrors.content}
-									</p>
-								)}
 							</FormGroup>
 							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
 								<ToggleSettingUI

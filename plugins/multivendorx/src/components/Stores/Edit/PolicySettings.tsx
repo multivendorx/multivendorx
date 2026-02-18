@@ -1,7 +1,7 @@
 /* global appLocalizer */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup, TextAreaUI } from 'zyra';
+import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, TextAreaUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
@@ -24,15 +24,12 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 		}
 	}, [successMsg]);
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e?.target;
+	const handleChange = (key: string, value: string) => {
 
 		setFormData((prev) => {
 			const updated = {
 				...(prev || {}),
-				[name]: value ?? '',
+				[key]: value ?? '',
 			};
 			autoSave(updated);
 			return updated;
@@ -58,12 +55,12 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 
 			<Container>
 				<Column row>
-					<Card title="Store policy">
+					<Card title={__('Store policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="store_policy"
 								value={formData.store_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('store_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -74,12 +71,12 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							/>
 						</FormGroupWrapper>
 					</Card>
-					<Card title="Shipping policy">
+					<Card title={__('Shipping policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="shipping_policy"
 								value={formData.shipping_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('shipping_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -92,12 +89,12 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 					</Card>
 				</Column>
 				<Column row>
-					<Card title="Refund policy">
+					<Card title={__('Refund policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="refund_policy"
 								value={formData.refund_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('refund_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -108,12 +105,12 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							/>
 						</FormGroupWrapper>
 					</Card>
-					<Card title="Cancellation / return / exchange policy">
+					<Card title={__('Cancellation / return / exchange policy', 'multivendorx')}>
 						<FormGroupWrapper>
 							<TextAreaUI
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('cancellation_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer

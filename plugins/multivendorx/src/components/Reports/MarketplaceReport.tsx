@@ -42,10 +42,10 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 	const { modules } = useModules();
 	const [isLoading, setIsLoading] = useState(true);
 
-	const Counter = ({ value, duration = 1200, currency }) => {
-		const [count, setCount] = React.useState(0);
+	const Counter = ({ value, duration = 1200, format }) => {
+		const [count, setCount] = useState(0);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			let start = 0;
 			const end = Number(value);
 			if (isNaN(end)) {

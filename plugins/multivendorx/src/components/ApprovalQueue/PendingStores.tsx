@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	TextArea,
 	getApiLink,
 	FormGroupWrapper,
 	Container,
@@ -23,8 +22,6 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-
-	// Reject popup state
 	const [rejectPopupOpen, setRejectPopupOpen] = useState(false);
 	const [rejectReason, setRejectReason] = useState('');
 	const [rejectStoreId, setRejectStoreId] = useState<number | null>(null);
@@ -247,9 +244,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(
-									e: React.ChangeEvent<HTMLTextAreaElement>
-								) => setRejectReason(e.target.value)}
+								onChange={(value:string) => setRejectReason(value)}
 								placeholder={__(
 									'Enter reason for rejecting this store...',
 									'multivendorx'

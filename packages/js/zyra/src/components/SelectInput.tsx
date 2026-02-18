@@ -140,9 +140,9 @@ export const SelectInputUI: React.FC<SelectInputProps> = ({
                 : state.isFocused
                     ? 'var(--backgroundColor)'
                     : 'var(--backgroundWhite)',
-            color: state.isSelected 
-            ? 'var(--textColor)' 
-            : 'var(--themeColor)',
+            color: state.isSelected
+                ? 'var(--textColor)'
+                : 'var(--themeColor)',
             cursor: 'pointer',
         }),
         menu: (provided) => ({
@@ -220,49 +220,49 @@ export const SelectInputUI: React.FC<SelectInputProps> = ({
 };
 
 const SelectInput: FieldComponent = {
-  render: ({ field, value, onChange, canAccess, appLocalizer }) => (
-    <SelectInputUI
-        wrapperClass={field.wrapperClass}
-        name={field.key}
-        inputClass={field.className}
-        size={field.size}
-        type={field.type}
-        selectDeselect={field.selectDeselect}
-        selectDeselectValue="Select / Deselect All"
-        options={
-            Array.isArray(field.options)
-                ? field.options.map((opt) => ({
-                    value: String(opt.value),
-                    label: opt.label ?? String(opt.value),
-                }))
-                : []
-        }
-        value={
-            typeof value === 'number'
-                ? value.toString()
-                : value
-        }
-        onChange={(newValue) => {
-            if (!canAccess) return;
-
-            if (Array.isArray(newValue)) {
-            // multi-select
-            const values = newValue.map((opt) => opt.value);
-            onChange(values);
-            } else {
-            // single-select
-            onChange(newValue.value);
+    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+        <SelectInputUI
+            wrapperClass={field.wrapperClass}
+            name={field.key}
+            inputClass={field.className}
+            size={field.size}
+            type={field.type}
+            selectDeselect={field.selectDeselect}
+            selectDeselectValue="Select / Deselect All"
+            options={
+                Array.isArray(field.options)
+                    ? field.options.map((opt) => ({
+                        value: String(opt.value),
+                        label: opt.label ?? String(opt.value),
+                    }))
+                    : []
             }
-      }}
-    />
-  ),
+            value={
+                typeof value === 'number'
+                    ? value.toString()
+                    : value
+            }
+            onChange={(newValue) => {
+                if (!canAccess) return;
 
-  validate: (field, value) => {
-    if (field.required && !value?.[field.key]) {
-      return `${field.label} is required`;
-    }
-    return null;
-  },
+                if (Array.isArray(newValue)) {
+                    // multi-select
+                    const values = newValue.map((opt) => opt.value);
+                    onChange(values);
+                } else {
+                    // single-select
+                    onChange(newValue.value);
+                }
+            }}
+        />
+    ),
+
+    validate: (field, value) => {
+        if (field.required && !value?.[field.key]) {
+            return `${field.label} is required`;
+        }
+        return null;
+    },
 };
 
 export default SelectInput;

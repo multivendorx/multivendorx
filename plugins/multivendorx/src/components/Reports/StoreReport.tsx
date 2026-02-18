@@ -109,8 +109,8 @@ const StoreReport: React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((ann: any) => ann?.id != null)
-					.map((ann: any) => ann.id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
 

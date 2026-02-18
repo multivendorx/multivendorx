@@ -469,20 +469,22 @@ class FrontendScripts {
             );
         }
 
-        $store_owners = get_users(
-            array(
-				'role'    => 'store_owner',
-				'orderby' => 'ID',
-				'order'   => 'ASC',
-            )
-        );
-
         $owners_list = array();
-        foreach ( $store_owners as $owner ) {
-            $owners_list[] = array(
-                'label' => $owner->display_name,
-                'value' => $owner->ID,
+        if (is_admin()) {
+            $store_owners = get_users(
+                array(
+                    'role'    => 'store_owner',
+                    'orderby' => 'ID',
+                    'order'   => 'ASC',
+                )
             );
+    
+            foreach ( $store_owners as $owner ) {
+                $owners_list[] = array(
+                    'label' => $owner->display_name,
+                    'value' => $owner->ID,
+                );
+            }
         }
 
         $gateways     = WC()->payment_gateways->payment_gateways();
@@ -510,14 +512,17 @@ class FrontendScripts {
             ),
         );
 
-        $store_ids    = Store::get_store( get_current_user_id(), 'user' );
-        $active_store = get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
-
-        if ( empty( $active_store ) && ! empty( $store_ids ) ) {
-            $first_store = reset( $store_ids );
-
-            if ( ! empty( $first_store['id'] ) ) {
-                update_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], $first_store['id'] );
+        $store_ids = array();
+        if (! is_admin()) {
+            $store_ids    = Store::get_store( get_current_user_id(), 'user' );
+            $active_store = MultiVendorX()->active_store;
+    
+            if ( empty( $active_store ) && ! empty( $store_ids ) ) {
+                $first_store = reset( $store_ids );
+    
+                if ( ! empty( $first_store['id'] ) ) {
+                    update_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], $first_store['id'] );
+                }
             }
         }
 
@@ -655,7 +660,7 @@ class FrontendScripts {
                         'mapbox_api_key'           => MultiVendorX()->setting->get_setting( 'mapbox_api_key' ),
                         'tinymceApiKey'            => MultiVendorX()->setting->get_setting( 'tinymce_api_section' ),
                         'store_payment_settings'   => MultiVendorX()->payments->get_all_store_payment_settings(),
-                        'store_id'                 => get_user_meta( wp_get_current_user()->ID, Utill::USER_SETTINGS_KEYS['active_store'], true ),
+                        'store_id'                 => MultiVendorX()->active_store,
                         'ajaxurl'                  => admin_url( 'admin-ajax.php' ),
                         'admin_url'                => admin_url(),
                         'currency'                 => get_woocommerce_currency(),
@@ -681,7 +686,7 @@ class FrontendScripts {
                         'current_user_image'       => get_avatar_url( get_current_user_id(), array( 'size' => 48 ) ),
                         'user_logout_url'          => esc_url( wp_logout_url( get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ) ) ),
                         'store_ids'                => $store_ids,
-                        'active_store'             => get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true ),
+                        'active_store'             => MultiVendorX()->active_store,
                         'dashboard_page_id'        => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ),
                         'dashboard_slug'           => (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ? get_post_field( 'post_name', (int) MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) ) : 'dashboard',
                         'registration_page'        => esc_url( get_permalink( (int) MultiVendorX()->setting->get_setting( 'store_registration_page' ) ) ),

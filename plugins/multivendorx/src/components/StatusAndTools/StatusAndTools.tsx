@@ -25,110 +25,42 @@ type SettingItem = Record<string, any>;
 interface SettingsProps {
 	id: string;
 }
-
-interface Products {
-	title: string;
-	description: string;
-}
-
-const supportLink = [
-	{
-		title: __('Get in touch with Support', 'notifima'),
-		icon: 'adminfont-mail',
-		description: __(
-			'Reach out to the support team for assistance or guidance.',
-			'notifima'
-		),
-		link: 'https://notifima.com/contact-us/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
-	},
-	{
-		title: __('Explore Documentation', 'notifima'),
-		icon: 'adminfont-submission-message',
-		description: __('Understand the plugin and its settings.', 'notifima'),
-		link: 'https://notifima.com/docs/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima',
-	},
-	{
-		title: __('Contribute Here', 'notifima'),
-		icon: 'adminfont-support',
-		description: __('Participate in product enhancement.', 'notifima'),
-		link: 'https://github.com/multivendorx/multivendorx/issues/',
-	},
-];
-
-const products: Products[] = [
-	{
-		title: __('Double Opt-In', 'notifima'),
-		description: __(
-			'Experience the power of Double Opt-In for our Stock Alert Form - Guaranteed precision in every notification!',
-			'notifima'
-		),
-	},
-	{
-		title: __('Your Subscription Hub', 'notifima'),
-		description: __(
-			'Subscription Dashboard - Easily monitor and download lists of out-of-stock subscribers for seamless management.',
-			'notifima'
-		),
-	},
-	{
-		title: __('Mailchimp Bridge', 'notifima'),
-		description: __(
-			'Seamlessly link WooCommerce out-of-stock subscriptions with Mailchimp for effective marketing.',
-			'notifima'
-		),
-	},
-	{
-		title: __('Unsubscribe Notifications', 'notifima'),
-		description: __(
-			'User-Initiated Unsubscribe from In-Stock Notifications.',
-			'notifima'
-		),
-	},
-	{
-		title: __('Ban Spam Emails', 'notifima'),
-		description: __(
-			'Email and Domain Blacklist for Spam Prevention.',
-			'notifima'
-		),
-	},
-];
-
 const faqs = [
 	{
 		question: __(
 			'Why am I not receiving any emails when a customer subscribes for an out-of-stock product?',
-			'notifima'
+			'multivendorx'
 		),
 		answer: __(
 			'Please install a plugin like Email Log and perform a test subscription.',
-			'notifima'
+			'multivendorx'
 		),
 		open: true,
 	},
 	{
-		question: __('Why is the out-of-stock form not appearing?', 'notifima'),
+		question: __('Why is the out-of-stock form not appearing?', 'multivendorx'),
 		answer: __(
 			'There might be a theme conflict issue. To troubleshoot, switch to a default theme like Twenty Twenty-Four and check if the form appears.',
-			'notifima'
+			'multivendorx'
 		),
 		open: false,
 	},
 	{
-		question: __('Does Notifima support product variations?', 'notifima'),
+		question: __('Does Notifima support product variations?', 'multivendorx'),
 		answer: __(
 			'Yes, product variations are fully supported and editable from the Inventory Manager. Notifima handles variable products with ease and uses an expandable feature to make managing variations clear and straightforward.',
-			'notifima'
+			'multivendorx'
 		),
 		open: false,
 	},
 	{
 		question: __(
 			'Do you support Google reCaptcha for the out-of-stock form?',
-			'notifima'
+			'multivendorx'
 		),
 		answer: __(
 			'Yes, <a href="https://notifima.com/pricing/?utm_source=wpadmin&utm_medium=pluginsettings&utm_campaign=notifima" target="_blank">Notifima Pro</a> has support for reCaptcha.',
-			'notifima'
+			'multivendorx'
 		),
 		open: false,
 	},
@@ -141,21 +73,6 @@ const StatusAndTools: React.FC<SettingsProps> = () => {
 	);
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 
-	const getBanner = () => {
-		return (
-			<Banner
-				products={products}
-				isPro={appLocalizer.khali_dabba}
-				proUrl={appLocalizer.pro_url}
-				tag="Why Premium"
-				buttonText="View Pricing"
-				bgCode="#852aff" // backgroud color
-				textCode="#fff" // text code
-				btnCode="#fff" // button color
-				btnBgCode="#e35047" // button backgroud color
-			/>
-		);
-	};
 	// Render the dynamic form
 	const GetForm = (currentTab: string | null): JSX.Element | null => {
 		// get the setting context

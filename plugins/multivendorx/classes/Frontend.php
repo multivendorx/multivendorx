@@ -282,7 +282,7 @@ class Frontend {
      * @return string
      */
     public function redirect_store_dashboard( $redirect ) {
-        if ( in_array( 'store_owner', wp_get_current_user()->roles, true ) && get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true ) ) {
+        if ( in_array( 'store_owner', wp_get_current_user()->roles, true ) && MultiVendorX()->active_store ) {
             return get_permalink( MultiVendorX()->setting->get_setting( 'store_dashboard_page' ) );
         }
         return $redirect;

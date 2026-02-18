@@ -24,6 +24,7 @@ interface Module {
     category?: string | string[];
     type?: string;
     reloadOnChange?: boolean;
+    miniModule?: boolean;
 }
 
 interface Separator {
@@ -104,6 +105,11 @@ const Modules: React.FC<ModuleProps> = ({
         }
 
         // Module logic
+        // For mini-module variant, only show modules with miniModule: true
+        if (variant === 'mini-module' && !item.miniModule) {
+            return false;
+        }
+
         const modCats = getCategories(item.category);
         if (selectedCategory !== 'All' && !modCats.includes(selectedCategory)) return false;
         if (selectedFilter === 'Active' && !modules.includes(item.id)) return false;
@@ -183,6 +189,7 @@ const Modules: React.FC<ModuleProps> = ({
         document.addEventListener('pointerdown', handleClickAnywhere);
         return () => document.removeEventListener('pointerdown', handleClickAnywhere);
     }, []);
+
     const statusOptions = [
         { label: `All (${totalCount})`, value: 'All' },
         { label: `Active (${activeCount})`, value: 'Active' },
@@ -253,7 +260,7 @@ const Modules: React.FC<ModuleProps> = ({
                             <div data-index={index} className="module-list-item" key={module.id} id={module.id}>
                                 <div className="module-body">
                                     <div className="module-header">
-                                        <div className="icon"><i className={`font ${module.icon}`}></i></div>
+                                        <div className="icon"><i className={`font adminfont-${module.id}`}></i></div>
                                         {module.proModule && !appLocalizer.khali_dabba && (
                                             <div className="pro-tag">
                                                 <i className="adminfont-pro-tag"></i>
@@ -281,16 +288,20 @@ const Modules: React.FC<ModuleProps> = ({
                                     </div>
                                     <div className="module-details">
                                         <div className="meta-name">{module.name}</div>
-                                        {getCategories(module.category).length > 0 && (
-                                            <div className="tag-wrapper">
-                                                {getCategories(module.category).map((cat, idx) => (
-                                                    <span key={idx} className="admin-badge blue">
-                                                        {formatCategory(cat)}
-                                                    </span>
-                                                ))}
-                                            </div>
+                                        {variant === 'default' && (
+                                            <>
+                                                {getCategories(module.category).length > 0 && (
+                                                    <div className="tag-wrapper">
+                                                        {getCategories(module.category).map((cat, idx) => (
+                                                            <span key={idx} className="admin-badge blue">
+                                                                {formatCategory(cat)}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                <p className="meta-description" dangerouslySetInnerHTML={{ __html: module.desc || '' }}></p>
+                                            </>
                                         )}
-                                        <p className="meta-description" dangerouslySetInnerHTML={{ __html: module.desc || '' }}></p>
                                     </div>
                                 </div>
                                 {variant === 'default' && (
