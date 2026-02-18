@@ -87,7 +87,7 @@ class PaypalPayout {
                 'fields' => array(
                     array(
                         'key'         => 'paypal_email',
-                        'type'        => 'email',
+                        'type'        => 'text',
                         'label'       => __( 'PayPal Email', 'multivendorx' ),
                         'placeholder' => __( 'Enter your PayPal email address', 'multivendorx' ),
                     ),

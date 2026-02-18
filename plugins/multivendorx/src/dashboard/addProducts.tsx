@@ -916,12 +916,11 @@ const AddProduct = () => {
 									{__('Stock management', 'multivendorx')}
 									<MultiCheckBoxUI
 										look="toggle"
-										type="checkbox"
 										value={product.manage_stock ? ['manage_stock'] : []}
 										onChange={(e) =>
 											handleChange(
 												'manage_stock',
-												(e as React.ChangeEvent<HTMLInputElement>).target.checked
+												(e as React.ChangeEvent<HTMLInputElement>).target
 											)
 										}
 										options={[
