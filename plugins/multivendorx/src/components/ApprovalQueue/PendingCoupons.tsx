@@ -10,7 +10,7 @@ import {
 	TextAreaUI,
 } from 'zyra';
 
-import { toWcIsoDate } from '@/services/commonFunction';
+import { formatWordpressDate, toWcIsoDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const DISCOUNT_TYPE_LABELS: Record<string, string> = {
@@ -199,7 +199,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					},
 					{
 						display: coupon.date_created
-							? coupon.date_created
+							? formatWordpressDate(coupon.date_created)
 							: '-',
 						value: coupon.date_created,
 					}

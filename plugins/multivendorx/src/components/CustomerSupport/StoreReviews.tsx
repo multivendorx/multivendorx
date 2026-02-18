@@ -13,7 +13,7 @@ import {
 	TextAreaUI,
 } from 'zyra';
 import Popup from '../Popup/Popup';
-import { formatLocalDate } from '@/services/commonFunction';
+import { formatLocalDate, formatWordpressDate } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type Review = {
@@ -260,7 +260,7 @@ const StoreReviews: React.FC = () => {
 					},
 					{
 						value: item.date_created,
-						display: item.date_created,
+						display: formatWordpressDate(item.date_created),
 					}
 				]);
 

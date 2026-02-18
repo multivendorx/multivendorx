@@ -173,7 +173,7 @@ class Transactions extends \WP_REST_Controller {
                         'account_number'   => $store ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['account_number'] ) : '',
                         'credit'           => 'Cr' === $row['entry_type'] ? $row['amount'] : 0,
                         'debit'            => 'Dr' === $row['entry_type'] ? $row['amount'] : 0,
-                        'date'             => Utill::multivendorx_date_time_format( $row['created_at'] ),
+                        'date'             => Utill::multivendorx_rest_prepare_date_response( $row['created_at'] ),
                         'order_details'    => $row['order_id'],
                         'transaction_type' => $row['transaction_type'],
                         'narration'        => $row['narration'],

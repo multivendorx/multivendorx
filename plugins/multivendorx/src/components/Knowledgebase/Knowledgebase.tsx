@@ -267,7 +267,7 @@ export const KnowledgeBase: React.FC = () => {
 				const mappedRows = items.map((kb: any) => [
 					{ display: kb.title, value: kb.id },
 					{ display: truncateText(kb.content || '', 50), value: kb.content || '' },
-					{ display: kb.date, value: kb.date },
+					{ display: formatWordpressDate(kb.date), value: kb.date },
 					{ display: kb.status, value: kb.status },
 				]);
 

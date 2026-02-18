@@ -3,6 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {  getApiLink, Container, Column, TableCard } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
+import { formatWordpressDate } from '@/services/commonFunction';
 
 const ActivityTable = (React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -28,7 +29,7 @@ const ActivityTable = (React.FC = () => {
 					{ display: item.store_name, value: item.store_name },
 					{ display: item.title, value: item.title },
 					{ display: item.type, value: item.type },
-					{ display: item.date, value: item.date }
+					{ display: formatWordpressDate(item.date), value: item.date }
 				]);
 
 				setRows(mappedRows);

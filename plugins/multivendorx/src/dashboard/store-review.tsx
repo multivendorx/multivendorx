@@ -14,7 +14,7 @@ import {
 	TableCard,
 } from 'zyra';
 
-import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
+import { formatLocalDate, formatWordpressDate } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type Review = {
@@ -195,7 +195,7 @@ const StoreReview: React.FC = () => {
 					},
 					{
 						value: item.date_created,
-						display: formatWcShortDate(item.date_created),
+						display: formatWordpressDate(item.date_created),
 					}
 				]);
 

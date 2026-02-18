@@ -13,7 +13,7 @@ import {
 	PopupUI,
 } from 'zyra';
 
-import { formatLocalDate } from '@/services/commonFunction';
+import { formatLocalDate, formatWordpressDate } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 
@@ -170,7 +170,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 					},
 					{
 						value: store.applied_on,
-						display: store.applied_on ? store.applied_on : '-',
+						display: store.applied_on ? formatWordpressDate(store.applied_on) : '-',
 					}
 				]);
 

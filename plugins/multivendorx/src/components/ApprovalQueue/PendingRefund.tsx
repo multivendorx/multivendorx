@@ -281,12 +281,12 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						},
 					},
 					{
-						display: formatCurrency(order.amount),
+						display: formatCurrency(order.currency_symbol, order.amount),
 						value: order.amount,
 					},
 					{
 						display: order.commission_amount
-							? formatCurrency(order.commission_amount)
+							? formatCurrency(order.currency_symbol, order.commission_amount)
 							: '-',
 						value: order.commission_amount,
 					},
@@ -296,7 +296,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 					},
 					{
 						display: order.date
-							? order.date
+							? formatWordpressDate(order.date)
 							: '-',
 						value: order.date,
 					},

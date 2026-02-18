@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { formatCurrency } from '../services/commonFunction';
 import {  ComponentStatusView, Skeleton } from 'zyra';
 import { __ } from '@wordpress/i18n';
+import { formatCurrency } from '@/services/commonFunction';
 
 const SpmvProducts: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -226,7 +226,7 @@ const SpmvProducts: React.FC = () => {
 								</div>
 
 								<div className="price">
-									{formatCurrency(product.price || '0.00')}
+									{formatCurrency(product.currency_symbol, product.price || '0.00')}
 								</div>
 							</div>
 						);

@@ -115,7 +115,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		if (!amount || amount <= 0) {
 			newErrors.amount = 'Please enter a valid amount.';
 		} else if (amount > (wallet.available_balance ?? 0)) {
-			newErrors.amount = `Amount cannot be greater than available balance (${formatCurrency(
+			newErrors.amount = `Amount cannot be greater than available balance (${(
 				wallet.available_balance
 			)})`;
 		}
@@ -263,25 +263,25 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					},
 					{
 						display: product.date
-							? product.date
+							? formatWordpressDate(product.date)
 							: '-',
 						value: product.date,
 					},
 					{
 						display: product.credit
-							? formatCurrency(product.credit)
+							? formatCurrency(product.currency_symbol, product.credit)
 							: '-',
 						value: product.credit,
 					},
 					{
 						display: product.debit
-							? formatCurrency(product.debit)
+							? formatCurrency(product.currency_symbol, product.debit)
 							: '-',
 						value: product.debit,
 					},
 					{
 						display: product.balance
-							? formatCurrency(product.balance)
+							? formatCurrency(product.currency_symbol,product.balance)
 							: '-',
 						value: product.balance,
 					},
@@ -457,7 +457,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 														: 'color-green'
 														}`}
 												>
-													{formatCurrency(txn.debit)}
+													{formatCurrency(txn.currency_symbol, txn.debit)}
 												</div>
 											</div>
 										</div>
@@ -484,7 +484,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									{walletLoading ? (
 										<Skeleton width={140} />
 									) : (
-										formatCurrency(wallet.available_balance)
+										(wallet.available_balance)
 									)}
 								</div>
 								<div className="desc">
@@ -492,7 +492,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										<Skeleton width={250} />
 									) : (
 										<>
-											<b> {formatCurrency(wallet?.thresold)} </b>
+											<b> {(wallet?.thresold)} </b>
 											{__('minimum required to withdraw', 'multivendorx')}
 										</>
 									)}
@@ -520,7 +520,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 													)}
 												</>
 											),
-											time: formatCurrency(wallet.locking_balance), 
+											time: (wallet.locking_balance), 
 										}
 									]}
 								/>
@@ -548,7 +548,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 														?.withdrawal_percentage
 												) || 0}
 												% +{' '}
-												{formatCurrency(
+												{(
 													Number(
 														wallet?.withdrawal_setting?.[0]
 															?.withdrawal_fixed
@@ -605,7 +605,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							<div className="available-balance">
 								{__('Withdrawable balance', 'multivendorx')}{' '}
 								<div>
-									{formatCurrency(wallet.available_balance)}
+									{(wallet.available_balance)}
 								</div>
 							</div>
 							<FormGroup label={__('Payment Processor', 'multivendorx')} htmlFor="payment_method">
@@ -661,11 +661,11 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 											)}
 											<span>
 												{__('Total:', 'multivendorx')}{' '}
-												{formatCurrency(amount || 0)}
+												{(amount || 0)}
 											</span>
 											<span>
 												{__('Fee:', 'multivendorx')}{' '}
-												{formatCurrency(fee)}
+												{(fee)}
 											</span>
 										</>
 									) : (
@@ -674,7 +674,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 												'Actual withdrawal:',
 												'multivendorx'
 											)}{' '}
-											{formatCurrency(amount || 0)}
+											{(amount || 0)}
 										</span>
 									)}
 								</div>
