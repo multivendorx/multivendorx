@@ -697,7 +697,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                     <div className="details-wrapper">
                                         {headerIcon && (
                                             <div
-                                                className={`expandable-header-icon ${method.iconEnable ? 'icon-picker-trigger' : ''}`}
+                                                className={`expandable-header-icon`}
                                                 ref={iconDropdownOpen === method.id ? iconPickerRef : null}
                                                 onClick={(e) => {
                                                     if (!method.iconEnable || !canAccess) return;
@@ -706,10 +706,11 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                         prev === method.id ? null : method.id
                                                     );
                                                 }}
-                                                title={method.iconEnable ? 'Click to change icon' : undefined}
                                             >
-                                                <i className={`adminfont-${headerIcon}`} />
-
+                                                <i className={`adminfont-${headerIcon} icon`} />
+                                                {method.iconEnable && iconDropdownOpen !== method.id && (
+                                                    <i className="adminfont-edit edit-icon" />
+                                                )}
                                                 {method.iconEnable && iconDropdownOpen === method.id && (
                                                     <div
                                                         className="icon-options-list"
