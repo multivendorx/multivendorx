@@ -600,7 +600,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                 if (btn.action === 'next') {
                     return {
                         ...btn,
-                        text: 'nnnext',
+                        text: btn.label,
                         color: 'purple',
                         onClick: () => {
                             handleSaveSetupWizard();
