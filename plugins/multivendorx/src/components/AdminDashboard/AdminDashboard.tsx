@@ -9,13 +9,7 @@ interface Section {
 	title: string;
 	features: Feature[];
 }
-interface Module {
-	id: string;
-	name: string;
-	icon: string;
-	proModule?: boolean;
-	hasToggle?: boolean;
-}
+
 interface Feature {
 	name: string;
 	free: boolean | string;
@@ -35,110 +29,108 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
 const AdminDashboard = () => {
-	const { modules, insertModule, removeModule } = useModules();
 	const [installing, setInstalling] = useState<string>('');
 	const [pluginStatus, setPluginStatus] = useState<{
 		[key: string]: boolean;
 	}>({});
 	const [successMsg, setSuccessMsg] = useState<string>('');
+	const [plugins, setPlugins] = useState<WPPlugin[]>([]);
 
 	const modulesArray = getModuleData();
 
-	// Check plugin installation status on component mount
 	useEffect(() => {
-		checkPluginStatus('woocommerce-catalog-enquiry');
-		checkPluginStatus('woocommerce-product-stock-alert');
+		fetchPlugins();
 	}, []);
 
-	// Function to check if plugin is installed and active
-	const checkPluginStatus = async (slug: string) => {
-		try {
-			const response = await axios({
-				method: 'GET',
-				url: `${appLocalizer.apiUrl}/wp/v2/plugins`,
-				headers: {
-					'X-WP-Nonce': appLocalizer.nonce,
-				},
+	const fetchPlugins = () => {
+		axios
+			.get(`${appLocalizer.apiUrl}/wp/v2/plugins`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((response) => {
+				const pluginList = response.data;
+
+				setPlugins(pluginList);
+
+				const statusMap: Record<string, boolean> = {};
+
+				[
+					'woocommerce-catalog-enquiry',
+					'woocommerce-product-stock-alert',
+				].forEach((slug) => {
+					statusMap[slug] = pluginList.some(
+						(plugin: WPPlugin) =>
+							plugin.plugin.includes(slug) &&
+							plugin.status === 'active'
+					);
+				});
+
+				setPluginStatus(statusMap);
+			})
+			.catch((error) => {
+				console.error('Failed to fetch plugins:', error);
 			});
-
-			// Check if our plugin exists and is active
-			const plugins = response.data;
-			const pluginExists = plugins.some(
-				(plugin: WPPlugin) =>
-					plugin.plugin.includes(slug) && plugin.status === 'active'
-			);
-
-			setPluginStatus((prev) => ({
-				...prev,
-				[slug]: pluginExists,
-			}));
-		} catch (error) {
-			console.error(`Failed to check plugin status "${slug}":`, error);
-			setPluginStatus((prev) => ({
-				...prev,
-				[slug]: false,
-			}));
-		}
 	};
 
-	const installOrActivatePlugin = async (slug: string) => {
-		if (!slug || installing) {
-			return;
-		} // prevent multiple clicks
+
+	const installOrActivatePlugin = (slug: string) => {
+		if (!slug || installing) return;
+
 		setInstalling(slug);
 
-		try {
-			// Step 1: Get current plugins
-			const { data: plugins } = await axios.get(
-				`${appLocalizer.apiUrl}/wp/v2/plugins`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			);
+		let apiUrl = `${appLocalizer.apiUrl}/wp/v2/plugins`;
+		let requestData: any = { status: 'active' };
 
-			// Step 2: Find if plugin exists
-			const existingPlugin = plugins.find((plugin: WPPlugin) =>
-				plugin.plugin.includes(slug)
-			);
-			const pluginFilePath =
-				existingPlugin?.plugin || `${slug}/${slug}.php`;
+		const existingPlugin = plugins.find((plugin) =>
+			plugin.plugin.includes(slug)
+		);
 
-			// Step 3: Determine action
-			let apiUrl = `${appLocalizer.apiUrl}/wp/v2/plugins`;
-			let requestData: WPPlugin = { status: 'active' }; // default request for activation
-
-			if (!existingPlugin) {
-				// Plugin not installed → install & activate
-				requestData.slug = slug;
-			} else if (existingPlugin.status === 'active') {
-				setSuccessMsg(`Plugin "${slug}" is already active.`);
-				await checkPluginStatus(slug);
-				return;
-			} else {
-				// Plugin installed but inactive → just activate
-				const encodedFile = encodeURIComponent(pluginFilePath);
-				apiUrl += `/${encodedFile}`;
-			}
-
-			// Step 4: Call API
-			await axios.post(apiUrl, requestData, {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			});
-
-			// Step 5: Refresh status
-			await checkPluginStatus(slug);
-
-			setSuccessMsg(
-				`Plugin "${slug}" ${existingPlugin ? 'activated' : 'installed & activated'
-				} successfully!`
-			);
-		} catch (error) {
-			console.error(error);
-			setSuccessMsg(`Failed to install/activate plugin "${slug}".`);
-		} finally {
-			setTimeout(() => setSuccessMsg(''), 3000);
+		if (!existingPlugin) {
+			requestData.slug = slug;
+		} else if (existingPlugin.status === 'active') {
+			setSuccessMsg(`Plugin "${slug}" is already active.`);
 			setInstalling('');
+			return;
+		} else {
+			const encodedFile = encodeURIComponent(existingPlugin.plugin);
+			apiUrl += `/${encodedFile}`;
 		}
+
+		axios
+			.post(apiUrl, requestData, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((response) => {
+				if (!existingPlugin) {
+					setPlugins((prev) => [...prev, response.data]);
+				} else {
+					setPlugins((prev) =>
+						prev.map((p) =>
+							p.plugin === existingPlugin.plugin
+								? { ...p, status: 'active' }
+								: p
+						)
+					);
+				}
+
+				setPluginStatus((prev) => ({
+					...prev,
+					[slug]: true,
+				}));
+
+				setSuccessMsg(
+					`Plugin "${slug}" ${existingPlugin ? 'activated' : 'installed & activated'
+					} successfully!`
+				);
+			})
+			.catch((error) => {
+				console.error(error);
+				setSuccessMsg(`Failed to install/activate plugin "${slug}".`);
+			})
+			.finally(() => {
+				setTimeout(() => setSuccessMsg(''), 3000);
+				setInstalling('');
+			});
 	};
 
 	const resources = [
@@ -488,32 +480,32 @@ const AdminDashboard = () => {
 								{pluginStatus[
 									'woocommerce-catalog-enquiry'
 								] ? (
-										<ItemList
-											className="mini-card"
-											background										
-											items={[
-												{
-													title: __('CatalogX Pro', 'multivendorx'),
-													desc: __('Advanced product catalog with enhanced enquiry features and premium templates', 'multivendorx'),
-													img: catalogx,
-													tags: (
-														<>
-															<span className="admin-badge red">
-																<i className="adminfont-pro-tag"></i>{' '}
-																{__('Pro', 'multivendorx')}
-															</span>
-															<a
-																href="https://catalogx.com/pricing/"
-																target="_blank"
-																rel="noopener noreferrer"
-															>
-																{__('Get Pro', 'multivendorx')}
-															</a>
-														</>
-													)
-												}
-											]}
-										/>
+									<ItemList
+										className="mini-card"
+										background
+										items={[
+											{
+												title: __('CatalogX Pro', 'multivendorx'),
+												desc: __('Advanced product catalog with enhanced enquiry features and premium templates', 'multivendorx'),
+												img: catalogx,
+												tags: (
+													<>
+														<span className="admin-badge red">
+															<i className="adminfont-pro-tag"></i>{' '}
+															{__('Pro', 'multivendorx')}
+														</span>
+														<a
+															href="https://catalogx.com/pricing/"
+															target="_blank"
+															rel="noopener noreferrer"
+														>
+															{__('Get Pro', 'multivendorx')}
+														</a>
+													</>
+												)
+											}
+										]}
+									/>
 								) : (
 									<ItemList
 										className="mini-card"
@@ -585,7 +577,7 @@ const AdminDashboard = () => {
 														</a>
 													</>
 												)
-										}]}
+											}]}
 									/>
 								) : (
 									<ItemList

@@ -45,11 +45,8 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 			});
 	}, [id]);
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
-		const updated = { ...formData, [name]: value };
+	const handleChange = (key: string, value: string) => {
+		const updated = { ...formData, [key]: value };
 		setFormData(updated);
 		autoSave(updated);
 	};
@@ -137,7 +134,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInputUI
 													type="number"
 													name="multivendorx_shipping_type_price"
-													size="12rem"													 
+													size="12rem"
 													placeholder={__(
 														'0.00',
 														'multivendorx'
@@ -146,7 +143,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 														formData.multivendorx_shipping_type_price ||
 														''
 													}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('multivendorx_shipping_type_price', value)}
 													desc={__('This is the shipping cost applied to every order.',
 														'multivendorx'
 													)}
@@ -170,10 +167,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInputUI
 													type="number"
 													name="multivendorx_additional_product"
-													size="12rem"													 
+													size="12rem"
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.multivendorx_additional_product || ''}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('multivendorx_additional_product', value)}
 												/>
 											</FormGroup>
 
@@ -189,10 +186,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 												<BasicInputUI
 													type="number"
 													name="multivendorx_additional_qty"
-													size="12rem"													 
+													size="12rem"
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.multivendorx_additional_qty || ''}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('multivendorx_additional_qty', value)}
 												/>
 											</FormGroup>
 
@@ -210,10 +207,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											>
 												<BasicInputUI
 													type="number"
-													name="free_shipping_amount"													 
+													name="free_shipping_amount"
 													placeholder={__('NO Free Shipping', 'multivendorx')}
 													value={formData.free_shipping_amount || ''}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('free_shipping_amount', value)}
 												/>
 											</FormGroup>
 
@@ -231,10 +228,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											>
 												<BasicInputUI
 													type="number"
-													name="local_pickup_cost"													 
+													name="local_pickup_cost"
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.local_pickup_cost || ''}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('local_pickup_cost', value)}
 												/>
 											</FormGroup>
 										</FormGroupWrapper>
@@ -280,16 +277,16 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											>
 												<BasicInputUI
 													type="number"
-													name="distance_default_cost"													 
+													name="distance_default_cost"
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.distance_default_cost || ''}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('distance_default_cost', value)}
 													min="0"
 												/>
 											</FormGroup>
 
 											{/* Distance Type */}
-											<FormGroup row label={__('Distance Type', 'multivendorx')} desc={__( 'Choose your preferred shipping method.', 'multivendorx')}>
+											<FormGroup row label={__('Distance Type', 'multivendorx')} desc={__('Choose your preferred shipping method.', 'multivendorx')}>
 												<ToggleSettingUI
 													options={[
 														{ label: 'Kilometers (km)', value: 'K' },
@@ -312,7 +309,7 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 													name="distance_max"
 													placeholder={__('0', 'multivendorx')}
 													value={formData.distance_max || ''}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('distance_max', value)}
 													min="0"
 												/>
 											</FormGroup>
@@ -327,10 +324,10 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 											>
 												<BasicInputUI
 													type="number"
-													name="distance_local_pickup_cost"													 
+													name="distance_local_pickup_cost"
 													placeholder={__('0.00', 'multivendorx')}
 													value={formData.distance_local_pickup_cost || ''}
-													onChange={handleChange}
+													onChange={(value: string) => handleChange('distance_local_pickup_cost', value)}
 													min="0"
 												/>
 											</FormGroup>
@@ -384,9 +381,9 @@ const ShippingSettings = ({ id, data }: { id: string | null; data: any }) => {
 						</Card>
 					</Column>
 				) : (
-					<ComponentStatusView 
-					title={__('No shipping methods are available at the moment.', 'multivendorx')} 
-					desc={__('Please enable or configure shipping methods to continue.', 'multivendorx')}/>
+					<ComponentStatusView
+						title={__('No shipping methods are available at the moment.', 'multivendorx')}
+						desc={__('Please enable or configure shipping methods to continue.', 'multivendorx')} />
 				)}
 			</Container >
 		</>

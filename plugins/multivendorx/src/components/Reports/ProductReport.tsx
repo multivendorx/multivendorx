@@ -51,6 +51,7 @@ const ProductReport: React.FC = () => {
 				axios
 					.get(getApiLink(appLocalizer, 'store'), {
 						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+						params: { options: true },
 					})
 					.then((response) => {
 						const options =

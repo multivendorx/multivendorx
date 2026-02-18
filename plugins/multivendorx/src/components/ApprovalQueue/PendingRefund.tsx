@@ -74,8 +74,8 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		setFormData({ content: '' });
 	};
 
-	const handleChange = (e: any) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
+	const handleChange = (key:string,value:string) => {
+		setFormData({ ...formData, [key]: value });
 	};
 
 	const handleSubmit = async (orderId: number) => {
@@ -246,7 +246,6 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 							) || [],
 					};
 
-					// ✅ critical for View Details
 					orderById[normalized.id] = normalized;
 
 					return normalized;
@@ -405,7 +404,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 								<TextAreaUI
 									name="content"
 									value={formData.content}
-									onChange={handleChange}
+									onChange={(value:string)=>handleChange('content',value)}
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[

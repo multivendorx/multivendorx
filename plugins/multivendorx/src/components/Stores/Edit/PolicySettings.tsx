@@ -24,15 +24,12 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 		}
 	}, [successMsg]);
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e?.target;
+	const handleChange = (key: string, value: string) => {
 
 		setFormData((prev) => {
 			const updated = {
 				...(prev || {}),
-				[name]: value ?? '',
+				[key]: value ?? '',
 			};
 			autoSave(updated);
 			return updated;
@@ -63,7 +60,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							<TextAreaUI
 								name="store_policy"
 								value={formData.store_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('store_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -79,7 +76,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							<TextAreaUI
 								name="shipping_policy"
 								value={formData.shipping_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('shipping_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -97,7 +94,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							<TextAreaUI
 								name="refund_policy"
 								value={formData.refund_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('refund_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
@@ -113,7 +110,7 @@ const PolicySettings = ({ id, data }: { id: string | null; data: any }) => {
 							<TextAreaUI
 								name="cancellation_policy"
 								value={formData.cancellation_policy}
-								onChange={handleChange}
+								onChange={(value: string) => handleChange('cancellation_policy', value)}
 								usePlainText={false}
 								tinymceApiKey={
 									appLocalizer
