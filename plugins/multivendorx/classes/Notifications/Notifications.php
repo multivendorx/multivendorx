@@ -577,10 +577,10 @@ class Notifications {
             }
 
             $table = $wpdb->prefix . Utill::TABLES['notifications'];
+            $where[] = 'is_dismissed = 0 AND is_read = 0';
 
             if ( isset( $args['count'] ) ) {
                 $query   = "SELECT COUNT(*) FROM {$table}";
-				$where[] = 'is_dismissed = 0 AND is_read = 0';
             } else {
                 $query = "SELECT * FROM {$table}";
             }
