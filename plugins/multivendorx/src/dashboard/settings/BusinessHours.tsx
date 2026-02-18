@@ -4,6 +4,7 @@ import {
     FormGroup,
     NestedComponentUI,
     SelectInputUI,
+    TextAreaUI,
 } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
@@ -81,7 +82,7 @@ const BusinessHours = () => {
     return (
         <>
             <FormGroupWrapper>
-                <FormGroup label={__('Shop Open & Close Timings', 'multivendorx')}>
+                <FormGroup label={__('Store Timezone', 'multivendorx')}>
                     <SelectInputUI
                         name="stock_status"
                         options={stockStatusOptions}
@@ -100,6 +101,11 @@ const BusinessHours = () => {
                         addButtonLabel="Add Hours"
                         deleteButtonLabel="Remove"
                         onChange={(val) => setRules(val)}
+                    />
+                </FormGroup>
+                <FormGroup label={__('Message When Shop is Closed', 'multivendorx')}>
+                    <TextAreaUI
+                        name="content"
                     />
                 </FormGroup>
             </FormGroupWrapper>

@@ -57,6 +57,7 @@ export { default as TourSetup } from './components/TourSetup';
 export { default as DynamicRowSetting } from './components/DynamicRowSetting';
 export { default as InputWithSuggestions } from './components/InputWithSuggestions';
 export {NavigatorHeader} from './components/SettingsNavigator';
+export {default as HeaderSearch} from './components/HeaderSearch';
 
 export { default as Container } from './components/UI/Container';
 export { default as Column } from './components/UI/Column';

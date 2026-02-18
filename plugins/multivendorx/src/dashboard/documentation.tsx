@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList } from 'zyra';
+import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, HeaderSearch } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -116,9 +116,7 @@ const Documentation: React.FC = () => {
 									'multivendorx'
 								)}
 								value={searchText}
-								onChange={(e) =>
-									setSearchText(e.target.value)
-								}
+								
 								className="basic-input"
 							/>
 							<i className="adminfont-search"></i>
