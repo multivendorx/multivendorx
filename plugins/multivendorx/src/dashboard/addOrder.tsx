@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCard, TableCell, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
+import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
 import { TableRow } from '@/services/type';
 
@@ -675,7 +676,7 @@ const AddOrder = () => {
 										{__('Shipping:', 'multivendorx')}
 									</span>
 									<span>
-										{(totalShipping)}
+										{formatCurrency(totalShipping)}
 									</span>
 								</div>
 

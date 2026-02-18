@@ -11,11 +11,11 @@ import {
 } from '@tanstack/react-table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { formatCurrency } from '../services/commonFunction';
 import AddProductCom from './add-products';
 import SpmvProducts from './spmv-products';
 import { applyFilters } from '@wordpress/hooks';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
-import { formatCurrency } from '@/services/commonFunction';
 
 type ProductRow = {
 	id: number;
@@ -407,7 +407,7 @@ const AllProduct: React.FC = () => {
 					},
 					{
 						display: product.price
-							? formatCurrency(product.currency_symbol, product.price)
+							? formatCurrency(product.price)
 							: '-',
 						value: product.price,
 					},
@@ -424,7 +424,7 @@ const AllProduct: React.FC = () => {
 					},
 					{
 						display: product.date_created
-							? formatWordpressDate(product.date_created)
+							? product.date_created
 							: '-',
 						value: product.date_created,
 					},

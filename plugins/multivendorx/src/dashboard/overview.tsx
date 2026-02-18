@@ -19,6 +19,7 @@ import axios from 'axios';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Analytics, Card, Column, Container, getApiLink, InfoItem } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
+
 type Stat = {
 	id: string | number;
 	count: number | string;
@@ -71,49 +72,49 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 					{
 						id: 'total_order_amount',
 						label: 'Total Order Amount',
-						count: formatCurrency(data.currency_symbol, data.total_order_amount),
+						count: formatCurrency(data.total_order_amount),
 						icon: 'order',
 					},
 					{
 						id: 'facilitator_fee',
 						label: 'Facilitator Fee',
-						count: formatCurrency(data.currency_symbol, data.facilitator_fee),
+						count: formatCurrency(data.facilitator_fee),
 						icon: 'facilitator',
 					},
 					{
 						id: 'gateway_fee',
 						label: 'Gateway Fee',
-						count: formatCurrency(data.currency_symbol, data.gateway_fee),
+						count: formatCurrency(data.gateway_fee),
 						icon: 'credit-card',
 					},
 					{
 						id: 'shipping_amount',
 						label: 'Shipping Amount',
-						count: formatCurrency(data.currency_symbol, data.shipping_amount),
+						count: formatCurrency(data.shipping_amount),
 						icon: 'shipping',
 					},
 					{
 						id: 'tax_amount',
 						label: 'Tax Amount',
-						count: formatCurrency(data.currency_symbol, data.tax_amount),
+						count: formatCurrency(data.tax_amount),
 						icon: 'tax-compliance',
 					},
 					{
 						id: 'shipping_tax_amount',
 						label: 'Shipping Tax Amount',
-						count: formatCurrency(data.currency_symbol, data.shipping_tax_amount),
+						count: formatCurrency(data.shipping_tax_amount),
 						icon: 'per-product-shipping',
 					},
 					{
 						id: 'commission_total',
 						label: 'Commission Total',
-						count: formatCurrency(data.currency_symbol, data.commission_total),
+						count: formatCurrency(data.commission_total),
 						icon: 'commission',
 					},
 					{
 						id: 'commission_refunded',
 						label: 'Commission Refunded',
-						count: formatCurrency(data.currency_symbol, data.commission_refunded),
+						count: formatCurrency(data.commission_refunded),
 						icon: 'marketplace-refund',
 					},
 				];
@@ -123,57 +124,57 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 					{
 						id: 'total_order_amount',
 						title: 'Total Order Amount',
-						price: formatCurrency(data.currency_symbol, data.total_order_amount),
+						price: formatCurrency(data.total_order_amount),
 					},
 					{
 						id: 'admin_earning',
 						title: 'Admin Net Earning',
-						price: (adminEarning),
+						price: formatCurrency(adminEarning),
 					},
 					{
 						id: 'store_earning',
 						title: 'Store Net Earning',
-						price: (storeEarning),
+						price: formatCurrency(storeEarning),
 					},
 					{
 						id: 'facilitator_fee',
 						title: 'Facilitator Fee',
-						price: formatCurrency(data.currency_symbol, data.facilitator_fee),
+						price: formatCurrency(data.facilitator_fee),
 					},
 					{
 						id: 'gateway_fee',
 						title: 'Gateway Fee',
-						price: formatCurrency(data.currency_symbol, data.gateway_fee),
+						price: formatCurrency(data.gateway_fee),
 					},
 					{
 						id: 'shipping_amount',
 						title: 'Shipping Amount',
-						price: formatCurrency(data.currency_symbol, data.shipping_amount),
+						price: formatCurrency(data.shipping_amount),
 					},
 					{
 						id: 'tax_amount',
 						title: 'Tax Amount',
-						price: formatCurrency(data.currency_symbol, data.tax_amount),
+						price: formatCurrency(data.tax_amount),
 					},
 					{
 						id: 'shipping_tax_amount',
 						title: 'Shipping Tax Amount',
-						price: formatCurrency(data.currency_symbol, data.shipping_tax_amount),
+						price: formatCurrency(data.shipping_tax_amount),
 					},
 					{
 						id: 'commission_total',
 						title: 'Commission Total',
-						price: formatCurrency(data.currency_symbol, data.commission_total),
+						price: formatCurrency(data.commission_total),
 					},
 					{
 						id: 'commission_refunded',
 						title: 'Commission Refunded',
-						price: formatCurrency(data.currency_symbol, data.commission_refunded),
+						price: formatCurrency(data.commission_refunded),
 					},
 					{
 						id: 'grand_total',
 						title: 'Grand Total',
-						price: formatCurrency(data.currency_symbol, adminEarning + storeEarning),
+						price: formatCurrency(adminEarning + storeEarning),
 					},
 				];
 
@@ -339,7 +340,7 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 									</Pie>
 									<Tooltip
 										formatter={(value) =>
-											(value)
+											formatCurrency(value)
 										}
 										contentStyle={{
 											backgroundColor: '#fff',
