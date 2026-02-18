@@ -205,6 +205,7 @@ const SetupWizard: React.FC = () => {
 					options: [
 						{
 							label: 'Back',
+							color: 'red',
 							action: 'back',
 						},
 						{
