@@ -31,6 +31,8 @@ const Table: React.FC<TableProps> = ({
     onCellEdit,
     isLoading,
     enableBulkSelect = false,
+    format,
+    currencySymbol
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -310,13 +312,7 @@ const Table: React.FC<TableProps> = ({
                                         );
                                     }
 
-                                    let displayValue;
-
-                                    if (header.type && cell) {
-                                        displayValue = renderCell(cell, header.type, row);
-                                    } else {
-                                        displayValue = renderCell(cell);
-                                    }
+                                    let displayValue = renderCell(row,header,key,format,currencySymbol);
 
                                     return (
                                         <td
