@@ -285,8 +285,7 @@ const Table: React.FC<TableProps> = ({
 
                                 {Object.entries(headers).map(([key, header], colIndex) => {
                                     const rowId = row.id;
-                                    const cell = row[key];
-
+                                    const cell = row[header.key];
                                     if (typeof header.render === "function") {
                                         return (
                                             <td
@@ -312,7 +311,7 @@ const Table: React.FC<TableProps> = ({
                                         );
                                     }
 
-                                    let displayValue = renderCell(row,header,key,format,currencySymbol);
+                                    let displayValue = renderCell(row,header,format,currencySymbol);
 
                                     return (
                                         <td

@@ -4,11 +4,10 @@ import { TableRow, TableHeaderConfig } from "./types"; // keep types if you have
 export const renderCell = (
 	row: TableRow = {},
 	header: TableHeaderConfig = {},
-	keyName: string,
 	format = "",
 	currencySymbol = ""
 ) => {
-	const value = row[keyName];
+	const value = row[header.key];
 
 	if (!header?.type) return value ?? null;
 

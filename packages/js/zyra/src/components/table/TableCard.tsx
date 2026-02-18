@@ -178,11 +178,10 @@ const TableCard: React.FC<TableCardProps> = ({
 	 */
 	const visibleHeaders = Object.entries(headers)
 		.filter(([key]) => showCols.includes(key))
-		.map(([_, config]) => config);
-
-	const visibleRows = rows.map((row) =>
-		showCols.map((colKey) => row[colKey])
-	);
+		.map(([key, config]) => ({
+			key,
+			...config,
+		}));
 
 	/**
 	 * Root className (manual)
@@ -270,7 +269,7 @@ const TableCard: React.FC<TableCardProps> = ({
 			</div>
 
 			<Table
-				rows={visibleRows}
+				rows={rows}
 				headers={visibleHeaders}
 				caption={title}
 				query={query}

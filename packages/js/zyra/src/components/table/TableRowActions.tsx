@@ -1,17 +1,16 @@
 import React, { useState, useRef } from 'react';
 import { useOutsideClick } from '../useOutsideClick';
-import { TableRow } from './types';
 
 export interface ActionItem {
   label?: string;
   icon?: React.ReactNode;
-  onClick: (row?: TableRow) => void;
+  onClick: (row?: {}) => void;
   className?: string;
   type?:string;
 }
 
 interface TableRowActionsProps {
-  row?: TableRow;
+  row: {}
   rowActions: ActionItem[];
 }
 

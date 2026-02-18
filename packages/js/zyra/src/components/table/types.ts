@@ -56,7 +56,7 @@ export type TableHeaderConfig = {
 	 * Custom renderer (overrides type)
 	 */
 	render?: (
-		row: TableRow
+		row?:{}
 	) => React.ReactNode;
 
 	/**
@@ -103,7 +103,7 @@ type CommonTableProps = {
 	/**
 	 * An array of arrays of display/value object pairs (see `Table` props).
 	 */
-	rows?: Array<TableRow>;
+	rows?: Array<{}>;
 	/**
 	 * Additional CSS classes.
 	 */
