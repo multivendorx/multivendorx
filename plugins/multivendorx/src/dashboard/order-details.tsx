@@ -204,11 +204,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 				{ status: newStatus },
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
-			.then((response) => {
-				if (response) {
-					setStatusSelect(false);
-					fetchOrder();
-				}
+			.then(() => {
+				setStatusSelect(false);
+				fetchOrder();
 			})
 			.catch((error) => {
 				console.error('Error updating order status:', error);

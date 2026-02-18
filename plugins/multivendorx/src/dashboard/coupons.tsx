@@ -146,45 +146,46 @@ const AllCoupon: React.FC = () => {
 	const [activeTab, setActiveTab] = useState('general');
 
 
-	const handleEditCoupon = async (couponId: number) => {
-		try {
-			const res = await axios.get(
+	const handleEditCoupon = (couponId: number) => {
+		axios
+			.get(
 				`${appLocalizer.apiUrl}/wc/v3/coupons/${couponId}`,
 				{
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				}
-			);
+			)
+			.then((res) => {
+				const coupon = res.data;
 
-			const coupon = res.data;
+				setFormData({
+					title: coupon.code,
+					content: coupon.description || '',
+					discount_type: coupon.discount_type,
+					coupon_amount: coupon.amount,
+					free_shipping: coupon.free_shipping ? 'yes' : 'no',
+					expiry_date: formatDateForInput(coupon.date_expires),
+					usage_limit: coupon.usage_limit || '',
+					limit_usage_to_x_items: coupon.limit_usage_to_x_items || '',
+					usage_limit_per_user: coupon.usage_limit_per_user || '',
+					minimum_amount: coupon.minimum_amount || '',
+					maximum_amount: coupon.maximum_amount || '',
+					individual_use: coupon.individual_use ? 'yes' : 'no',
+					exclude_sale_items: coupon.exclude_sale_items ? 'yes' : 'no',
+					product_ids: coupon.product_ids || [],
+					exclude_product_ids: coupon.excluded_product_ids || [],
+					product_categories: coupon.product_categories || [],
+					exclude_product_categories:
+						coupon.excluded_product_categories || [],
+					customer_email: (coupon.email_restrictions || []).join(','),
+					id: coupon.id,
+				});
 
-			setFormData({
-				title: coupon.code,
-				content: coupon.description || '',
-				discount_type: coupon.discount_type,
-				coupon_amount: coupon.amount,
-				free_shipping: coupon.free_shipping ? 'yes' : 'no',
-				expiry_date: formatDateForInput(coupon.date_expires), // <-- fix date
-				usage_limit: coupon.usage_limit || '',
-				limit_usage_to_x_items: coupon.limit_usage_to_x_items || '',
-				usage_limit_per_user: coupon.usage_limit_per_user || '',
-				minimum_amount: coupon.minimum_amount || '',
-				maximum_amount: coupon.maximum_amount || '',
-				individual_use: coupon.individual_use ? 'yes' : 'no',
-				exclude_sale_items: coupon.exclude_sale_items ? 'yes' : 'no',
-				product_ids: coupon.product_ids || [],
-				exclude_product_ids: coupon.excluded_product_ids || [],
-				product_categories: coupon.product_categories || [],
-				exclude_product_categories:
-					coupon.excluded_product_categories || [],
-				customer_email: (coupon.email_restrictions || []).join(','),
-				id: coupon.id,
+				setAddCoupon(true);
+				setActiveTab('general');
+			})
+			.catch(() => {
+				alert('Failed to fetch coupon details. Please try again.');
 			});
-
-			setAddCoupon(true); // open popup
-			setActiveTab('general'); // optional: start with general tab
-		} catch (err) {
-			alert('Failed to fetch coupon details. Please try again.');
-		}
 	};
 
 	const handleSave = (status: 'draft' | 'publish') => {
@@ -436,24 +437,20 @@ const AllCoupon: React.FC = () => {
 		},
 	];
 
-	const fetchCouponStatusCounts = async () => {
-		try {
-			const results = await Promise.allSettled(
-				Object.keys(COUPON_STATUS_MAP).map(async (status) => {
-					const params: any = {
-						meta_key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-						status: status === 'all' ? 'any' : status,
-					};
+	const fetchCouponStatusCounts = () => {
+		const requests = Object.keys(COUPON_STATUS_MAP).map((status) => {
+			const params: any = {
+				meta_key: 'multivendorx_store_id',
+				value: appLocalizer.store_id,
+				status: status === 'all' ? 'any' : status,
+			};
 
-					const res = await axios.get(
-						`${appLocalizer.apiUrl}/wc/v3/coupons`,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-							params,
-						}
-					);
-
+			return axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params,
+				})
+				.then((res) => {
 					const total = parseInt(res.headers['x-wp-total'] || '0');
 
 					return {
@@ -461,25 +458,26 @@ const AllCoupon: React.FC = () => {
 						label: COUPON_STATUS_MAP[status],
 						count: total,
 					};
-				})
-			);
+				});
+		});
 
-			// Keep only successful ones
-			const counts = results
-				.filter(
-					(result): result is PromiseFulfilledResult<any> =>
-						result.status === 'fulfilled'
-				)
-				.map((result) => result.value);
+		Promise.allSettled(requests)
+			.then((results) => {
+				const counts = results
+					.filter(
+						(result): result is PromiseFulfilledResult<any> =>
+							result.status === 'fulfilled'
+					)
+					.map((result) => result.value);
 
-			setCategoryCounts(counts);
-
-		} catch (error) {
-		}
+				setCategoryCounts(counts);
+			})
+			.catch((error) => {
+				console.error('Error fetching coupon status counts:', error);
+			});
 	};
 
-	const handleBulkAction = async (action: string, selectedIds: []) => {
-
+	const handleBulkAction = (action: string, selectedIds: []) => {
 		if (!selectedIds.length) {
 			return;
 		}
@@ -488,24 +486,28 @@ const AllCoupon: React.FC = () => {
 			return;
 		}
 
-		try {
-			if (action === 'delete') {
-				await axios({
-					method: 'POST',
-					url: `${appLocalizer.apiUrl}/wc/v3/coupons/batch`,
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					data: {
+		if (action === 'delete') {
+			axios
+				.post(
+					`${appLocalizer.apiUrl}/wc/v3/coupons/batch`,
+					{
 						delete: selectedIds,
 					},
+					{
+						headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					}
+				)
+				.then(() => {
+					// Refresh the data after action
+					fetchCouponStatusCounts();
+					fetchData({});
+				})
+				.catch((err: unknown) => {
+					console.error('Error performing bulk coupon action:', err);
 				});
-			}
-
-			// Refresh the data after action
-			fetchCouponStatusCounts();
-			fetchData({});
-		} catch (err: unknown) {
 		}
 	};
+
 
 	useEffect(() => {
 		fetchCouponStatusCounts();

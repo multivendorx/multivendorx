@@ -28,26 +28,25 @@ const Orders: React.FC = () => {
 	const isViewOrder = hash.includes('view');
 	const isAddOrder = hash.includes('add');
 
-	const fetchOrderById = async (orderId: string | number) => {
-		try {
-			const res = await axios.get(
+	const fetchOrderById = (orderId: string | number) => {
+		axios
+			.get(
 				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
 				{
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
 					params: {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
-					}
+					},
 				}
-			);
-
-			const order = res.data;
-
-			setSelectedOrder(order);
-
-		} catch (error) {
-			setSelectedOrder(null);
-		}
+			)
+			.then((res) => {
+				const order = res.data;
+				setSelectedOrder(order);
+			})
+			.catch(() => {
+				setSelectedOrder(null);
+			});
 	};
 
 	useEffect(() => {
@@ -143,43 +142,40 @@ const Orders: React.FC = () => {
 			});
 	};
 
-	const fetchOrderStatusCounts = async () => {
-		try {
-			const statuses = [
-				'all',
-				'pending',
-				'processing',
-				'on-hold',
-				'completed',
-				'cancelled',
-				'refunded',
-				'failed',
-				'trash',
-			];
+	const fetchOrderStatusCounts = () => {
+		const statuses = [
+			'all',
+			'pending',
+			'processing',
+			'on-hold',
+			'completed',
+			'cancelled',
+			'refunded',
+			'failed',
+			'trash',
+		];
 
-			if (modules.includes('marketplace-refund')) {
-				statuses.push('refund-requested');
+		if (modules.includes('marketplace-refund')) {
+			statuses.push('refund-requested');
+		}
+
+		const requests = statuses.map((status) => {
+			const params: any = {
+				per_page: 1,
+				meta_key: 'multivendorx_store_id',
+				value: appLocalizer.store_id,
+			};
+
+			if (status !== 'all') {
+				params.status = status;
 			}
 
-			const counts = await Promise.all(
-				statuses.map(async (status) => {
-					const params: any = {
-						per_page: 1,
-						meta_key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-					};
-					if (status !== 'all') {
-						params.status = status;
-					}
-
-					const res = await axios.get(
-						`${appLocalizer.apiUrl}/wc/v3/orders`,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-							params,
-						}
-					);
-
+			return axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params,
+				})
+				.then((res) => {
 					const total = parseInt(res.headers['x-wp-total'] || '0');
 
 					return {
@@ -191,11 +187,16 @@ const Orders: React.FC = () => {
 								status.slice(1),
 						count: total,
 					};
-				})
-			);
-			setCategoryCounts(counts);
-		} catch (error) {
-		}
+				});
+		});
+
+		Promise.all(requests)
+			.then((counts) => {
+				setCategoryCounts(counts);
+			})
+			.catch((error) => {
+				console.error('Error fetching order status counts:', error);
+			});
 	};
 
 	// Fetch dynamic order status counts for typeCounts filter
