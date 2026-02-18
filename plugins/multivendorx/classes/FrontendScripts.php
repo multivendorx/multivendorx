@@ -661,6 +661,7 @@ class FrontendScripts {
                         'tinymceApiKey'            => MultiVendorX()->setting->get_setting( 'tinymce_api_section' ),
                         'store_payment_settings'   => MultiVendorX()->payments->get_all_store_payment_settings(),
                         'store_id'                 => MultiVendorX()->active_store,
+						'store_page_url'           => get_option( Utill::WORDPRESS_SETTINGS['permalink'] ) ? trailingslashit( site_url() ) . untrailingslashit( MultiVendorX()->setting->get_setting( 'store_url', 'store' ) ) . '/' : site_url( '/?' . MultiVendorX()->setting->get_setting( 'store_url', 'store' ) . '=' ),
                         'ajaxurl'                  => admin_url( 'admin-ajax.php' ),
                         'admin_url'                => admin_url(),
                         'currency'                 => get_woocommerce_currency(),
