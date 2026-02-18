@@ -19,6 +19,7 @@
             border-radius: 0.313rem;
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
+            position: relative;
 
             .toggle-icon {
                 padding-right: 0.5rem;
@@ -165,62 +166,6 @@
                 max-height: 50rem;
             }
 
-            // .form-group {
-            //     display: flex;
-            //     gap: 0.5rem;
-            //     padding: 0.5rem 1rem 0.5rem 0;
-            //     margin: 0;
-            //     width: 100%;
-
-            //     label:first-child {
-            //         width: 25%;
-            //         color: $text-color;
-            //         font-size: 0.95rem;
-            //     }
-
-            //     .input-content {
-            //         width: 75%;
-            //     }
-
-            //     textarea {
-            //         background: $background-white;
-            //     }
-
-            //     .expandable-panel-group {
-            //         .expandable-item {
-            //             background: $background-white;
-            //         }
-
-            //     }
-            // }
-
-            // .form-group:has(.description-wrapper) {
-            //     .input-content {
-            //         width: 100%;
-            //     }
-            // }
-
-            // .form-group:has(.wizard-step) {
-            //     .input-content {
-            //         width: 100%;
-            //     }
-            // }
-
-            // &.social-verification {
-            //     padding-top: 0.5rem;
-
-            //     .expandable-header {
-            //         background: transparent;
-            //         border: $border-light-small;
-            //         padding: 0.625rem;
-
-            //         .expandable-header-icon {
-            //             width: 2rem;
-            //             height: 2rem;
-            //         }
-            //     }
-            // }
-
             .panel-description {
                 display: flex;
                 flex-wrap: wrap;
@@ -288,238 +233,7 @@
     }
 }
 
-// .description-wrapper {
-//     padding: 1rem 1.5rem;
-//     background: #a7a6a62b;
-//     border-radius: 0.313rem;
-//     width: 100%;
-//     box-sizing: border-box;
-
-//     .title {
-//         font-size: 1.063rem;
-//         font-weight: 500;
-//         display: flex;
-//         align-items: center;
-//         gap: 0.45rem;
-
-//         i {
-//             font-size: 1.313rem;
-//             padding-right: 0.313rem;
-//             color: $theme-color;
-//         }
-//     }
-
-//     .des {
-//         padding-top: 0.5rem;
-//     }
-// }
-
-// .fileds-wrapper {
-//     width: 100%;
-
-//     .fileds {
-//         margin: 0;
-//         padding-top: 1rem;
-
-//         .row-item {
-//             padding: 0.875rem;
-//             background: #f3f2f2cf;
-//             display: flex;
-//             justify-content: space-between;
-//             align-items: center;
-//             gap: 0.5rem;
-
-//             .name {
-//                 display: flex;
-//                 gap: 0.5rem;
-//                 align-items: start;
-
-//                 div {
-//                     font-size: 1.063rem;
-//                     line-height: 1rem;
-//                 }
-
-//                 .edit-row {
-//                     display: flex;
-//                     align-items: center;
-//                     gap: 1rem;
-
-//                     button {
-//                         border: none;
-//                         background: transparent;
-//                     }
-
-//                     .edit-form {
-//                         display: flex;
-//                         align-items: center;
-//                         gap: 0.5rem;
-//                     }
-//                 }
-
-//                 .admin-badge {
-//                     font-size: 0.7rem;
-//                     padding: 0.313rem 0.5rem;
-//                     line-height: 0.725rem;
-//                 }
-//             }
-
-//             .icon-wrapper {
-//                 opacity: 0;
-//                 transition: all 0.5s ease;
-
-//                 button {
-//                     border: none;
-//                     background: transparent;
-//                     margin-left: 0.5rem;
-//                     cursor: pointer;
-//                 }
-//             }
-
-//             &:hover .icon-wrapper {
-//                 opacity: 1;
-//             }
-//         }
-//     }
-// }
-
-// setup wizard start (clean unuse css)
-.welcome-wrapper {
-    text-align: center;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-
-    img {
-        width: 11rem;
-    }
-
-    .des {
-        text-align: center;
-        padding: 0 3rem;
-    }
-}
-
-.finish-wrapper {
-    padding: 1rem;
-
-    .title {
-        font-size: 1.125rem;
-    }
-}
-
-.wizard-container {
-    width: 100%;
-    max-width: 50rem;
-    margin: 2rem auto;
-    padding: 1.5rem;
-    background: $background-white;
-    border-radius: 0.313rem;
-
-    .wizard-section {
-        border: $border-light-small;
-        margin: 0.625rem;
-        border-radius: 0.313rem;
-    }
-}
-
-.wizard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.25rem;
-    cursor: pointer;
-}
-
-.wizard-title {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    font-size: 1.45rem;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-
-    span {
-        font-size: 1.4rem;
-        transition: transform 0.2s;
-
-        &.rotate {
-            transform: rotate(90deg);
-        }
-    }
-}
-
-.wizard-steps {
-    padding: 0.625rem 1.25rem;
-    border-top: $border-light-small;
-}
-
-.wizard-step {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.wizard-step:first-child {
-    border-top: none;
-}
-
-.step-info {
-    display: flex;
-    align-items: start;
-    gap: 0.625rem;
-}
-
-.step-status {
-    width: 1.25rem;
-    height: 1.25rem;
-    border: $border-light-small;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.step-status.completed {
-    background-color: #4caf50;
-    border-color: #4caf50;
-    color: white;
-}
-
-.check {
-    font-size: 0.75rem;
-    font-weight: bold;
-}
-
-.step-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.step-title {
-    font-weight: 500;
-    font-size: 0.95rem;
-    line-height: 0.95rem;
-}
-
-
-// setup wizard start
-
-
 // custom icon dropdown start
-.selected-icon {
-    width: 3rem;
-    padding: 0.313rem 0.5rem;
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    border: $border-light-small;
-
-    i {
-        font-size: 1.063rem;
-    }
-}
-
 .icon-options-list {
     position: absolute;
     width: 40%;
@@ -530,8 +244,11 @@
     gap: 0.5rem;
     flex-wrap: wrap;
     padding: 0.5rem;
+    left: 0;
+    top: 100%;
+    z-index: 999;
 
-    li.icon-option {
+    .icon-option {
         padding: 0.313rem 0;
         text-align: center;
         font-size: 1.125rem;

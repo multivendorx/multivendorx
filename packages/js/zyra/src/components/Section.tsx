@@ -35,8 +35,8 @@ const Section: FieldComponent = {
     render: ({ field }) => (
         <SectionUI
             wrapperClass={field.wrapperClass}
-            hint={field.hint}
-            value={field.value}
+            title={field.hint}
+            desc={field.value}
         />
     ),
     validate: () => null,

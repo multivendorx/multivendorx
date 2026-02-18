@@ -18,7 +18,7 @@ export default {
 			modal: [
 				{
 					id: 'seller-verification',
-					icon: 'adminfont-seller-verification',
+					icon: 'seller-verification',
 					label: 'Seller verification',
 					connected: true,
 					disableBtn: true,
@@ -94,7 +94,7 @@ export default {
 				},
 				{
 					id: 'product-compliance',
-					icon: 'adminfont-product',
+					icon: 'product',
 					label: 'Product compliance',
 					disableBtn: true,
 					desc: 'Ensure product listings meet marketplace standards',
@@ -177,7 +177,7 @@ export default {
 				},
 				{
 					id: 'legal-policy',
-					icon: 'adminfont-verification3',
+					icon: 'verification3',
 					label: 'Legal & policy',
 					moduleEnabled: 'marketplace-compliance',
 					proSetting: true,
@@ -260,7 +260,7 @@ export default {
 				},
 				{
 					id: 'financial-compliance',
-					icon: 'adminfont-dollar',
+					icon: 'dollar',
 					label: 'Financial compliance',
 					disableBtn: true,
 					moduleEnabled: 'marketplace-compliance',

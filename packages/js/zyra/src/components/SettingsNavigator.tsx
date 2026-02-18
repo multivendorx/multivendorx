@@ -345,8 +345,8 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 
         return (
             <SectionUI
-                hint={activeFile.settingTitle ?? activeFile.headerTitle}
-                value={activeFile.settingSubTitle ?? activeFile.headerDescription}
+                title={activeFile.settingTitle ?? activeFile.headerTitle}
+                desc={activeFile.settingSubTitle ?? activeFile.headerDescription}
             />
         );
     };

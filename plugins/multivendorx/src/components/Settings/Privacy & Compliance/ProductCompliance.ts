@@ -35,7 +35,6 @@ export default {
 				},
 				disableBtn: true
 			},
-			modal: [],
 		},
 		{
 			key: 'required_store_uploads',
@@ -130,7 +129,6 @@ export default {
 				},
 				disableBtn: true
 			},
-			modal: [],
 		},
 	],
 };

@@ -708,39 +708,27 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                 }}
                                                 title={method.iconEnable ? 'Click to change icon' : undefined}
                                             >
-                                                <i className={`${headerIcon}`} />
+                                                <i className={`adminfont-${headerIcon}`} />
 
                                                 {method.iconEnable && iconDropdownOpen === method.id && (
                                                     <div
-                                                        className="icon-picker-dropdown"
+                                                        className="icon-options-list"
                                                         onClick={(e) => e.stopPropagation()}
                                                     >
-                                                        <div className="icon-picker-header">
-                                                            <span>Choose Icon</span>
+                                                        {(method.iconOptions ?? addNewTemplate?.iconOptions ?? []).map((iconClass) => (
                                                             <button
-                                                                className="icon-picker-close"
-                                                                onClick={() => setIconDropdownOpen(null)}
-                                                                aria-label="Close icon picker"
+                                                                key={iconClass}
+                                                                className={`icon-option ${headerIcon === iconClass ? 'selected' : ''}`}
+                                                                onClick={() => {
+                                                                    handleInputChange(method.id, 'icon', iconClass);
+                                                                    setIconDropdownOpen(null);
+                                                                }}
+                                                                title={iconClass}
+                                                                type="button"
                                                             >
-                                                                <i className="adminfont-close" />
+                                                                <i className={`adminfont-${iconClass}`} />
                                                             </button>
-                                                        </div>
-                                                        <div className="icon-picker-grid">
-                                                            {(method.iconOptions ?? addNewTemplate?.iconOptions ?? []).map((iconClass) => (
-                                                                <button
-                                                                    key={iconClass}
-                                                                    className={`icon-picker-item ${headerIcon === iconClass ? 'active' : ''}`}
-                                                                    onClick={() => {
-                                                                        handleInputChange(method.id, 'icon', iconClass);
-                                                                        setIconDropdownOpen(null);
-                                                                    }}
-                                                                    title={iconClass.replace(/^adminfont-/, '')}
-                                                                    type="button"
-                                                                >
-                                                                    <i className={iconClass} />
-                                                                </button>
-                                                            ))}
-                                                        </div>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </div>
