@@ -5,6 +5,47 @@ export function truncateText(text: string, maxLength: number) {
 	return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
 }
 
+export function formatCurrency(amount: number | string): string {
+	if (!amount && amount !== 0) {
+		return '-';
+	}
+
+	const {
+		currency_symbol = '',
+		price_format = '%1$s%2$s',
+		decimal_sep = '.',
+		thousand_sep = ',',
+		decimals = 2,
+	} = appLocalizer || {};
+
+	const num = parseFloat(String(amount));
+	if (isNaN(num)) {
+		return '-';
+	}
+
+	const isNegative = num < 0;
+	const absNum = Math.abs(num);
+
+	const formattedNumber = absNum
+		.toFixed(decimals)
+		.replace('.', decimal_sep)
+		.replace(/\B(?=(\d{3})+(?!\d))/g, thousand_sep);
+
+	//Apply symbol & number
+	let formatted = price_format
+		.replace('%1$s', currency_symbol)
+		.replace('%2$s', formattedNumber)
+		.replace(/&nbsp;/g, ' ')
+		.trim();
+
+	//For negative numbers, show as "-$271" instead of "$-271"
+	if (isNegative) {
+		formatted = `-${formatted.replace('-', '')}`;
+	}
+
+	return formatted;
+}
+
 export function formatTimeAgo(dateString: string) {
 	// Force UTC
 	const date = new Date(dateString + 'Z');
@@ -61,75 +102,3 @@ export const toWcIsoDate = (
 
 	return d.toISOString();
 };
-
-export function formatWordpressDate(
-	dateString: string | null | undefined,
-  ): string {
-	if (!dateString) return '-';
-	const date = new Date(dateString);
-	if (isNaN(date.getTime())) return '-';
-  
-	const map: Record<string, string> = {
-	  YYYY: String(date.getFullYear()),
-	  YY: String(date.getFullYear()).slice(-2),
-  
-	  MMMM: date.toLocaleString(undefined, { month: 'long' }),
-	  MMM: date.toLocaleString(undefined, { month: 'short' }),
-	  MM: String(date.getMonth() + 1).padStart(2, '0'),
-  
-	  DD: String(date.getDate()).padStart(2, '0'),
-	  D: String(date.getDate()),
-  
-	  HH: String(date.getHours()).padStart(2, '0'),
-	  mm: String(date.getMinutes()).padStart(2, '0'),
-	  ss: String(date.getSeconds()).padStart(2, '0'),
-	};
-  
-	const format = appLocalizer.date_format || 'YYYY-MM-DD';
-	return format.replace(
-	  /YYYY|MMMM|MMM|MM|DD|D|YY|HH|mm|ss/g,
-	  (token: string | number) => map[token] ?? token
-	);
-}  
-
-export function formatCurrency(currency_symbol: string, amount: number | string): string {
-	if (!amount && amount !== 0) {
-		return '-';
-	}
-
-	const {
-		price_format = '%1$s%2$s',
-		decimal_sep = '.',
-		thousand_sep = ',',
-		decimals = 2,
-	} = appLocalizer || {};
-
-	const currencySymbol = currency_symbol || appLocalizer.currency_symbol;
-
-	const num = parseFloat(String(amount));
-	if (isNaN(num)) {
-		return '-';
-	}
-
-	const isNegative = num < 0;
-	const absNum = Math.abs(num);
-
-	const formattedNumber = absNum
-		.toFixed(decimals)
-		.replace('.', decimal_sep)
-		.replace(/\B(?=(\d{3})+(?!\d))/g, thousand_sep);
-
-	//Apply symbol & number
-	let formatted = price_format
-		.replace('%1$s', currencySymbol)
-		.replace('%2$s', formattedNumber)
-		.replace(/&nbsp;/g, ' ')
-		.trim();
-
-	//For negative numbers, show as "-$271" instead of "$-271"
-	if (isNegative) {
-		formatted = `-${formatted.replace('-', '')}`;
-	}
-
-	return formatted;
-}

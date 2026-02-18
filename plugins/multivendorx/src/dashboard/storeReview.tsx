@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
-	CommonPopup,
 	getApiLink,
-	AdminButton,
 	FormGroupWrapper,
 	FormGroup,
 	AdminButtonUI,
@@ -14,7 +12,7 @@ import {
 	TableCard,
 } from 'zyra';
 
-import { formatLocalDate, formatWordpressDate } from '@/services/commonFunction';
+import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type Review = {
@@ -195,7 +193,7 @@ const StoreReview: React.FC = () => {
 					},
 					{
 						value: item.date_created,
-						display: formatWordpressDate(item.date_created),
+						display: formatWcShortDate(item.date_created),
 					}
 				]);
 
@@ -355,7 +353,7 @@ const StoreReview: React.FC = () => {
 									name="reply"
 									inputClass="input-text"
 									value={replyText}
-									onChange={(e) => setReplyText(e.target.value)}
+									onChange={(value) => setReplyText(value)}
 									usePlainText={true}
 								/>
 							</FormGroup>

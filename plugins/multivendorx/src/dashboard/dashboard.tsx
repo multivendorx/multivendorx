@@ -1,7 +1,6 @@
 import {
 	BarChart,
 	Bar,
-	Line,
 	XAxis,
 	YAxis,
 	CartesianGrid,
@@ -15,7 +14,8 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import {  AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules } from 'zyra';
+import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules, TableCard } from 'zyra';
+import { TableRow } from '@/services/type';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { formatCurrency, formatTimeAgo } from '@/services/commonFunction';
@@ -43,18 +43,16 @@ interface DateRange {
 }
 
 const Dashboard: React.FC = () => {
-	const [review, setReview] = useState<any[]>([]);
-	const [pendingRefund, setPendingRefund] = useState<any[]>([]);
-	const [announcement, setAnnouncement] = useState<any[]>([]);
-	const [topProducts, setTopProducts] = useState([]);
+	const [review, setReview] = useState<[]>([]);
+	const [pendingRefund, setPendingRefund] = useState<[]>([]);
+	const [announcement, setAnnouncement] = useState<[]>([]);
 	const [revenueData, setRevenueData] = useState([]);
-	const [recentOrder, setRecentOrders] = useState<any[]>([]);
-	const [store, setStore] = useState<any[]>([]);
-	const [totalOrder, setTotalOrder] = useState<any>([]);
-	const [customers, setCustomers] = useState<any>([]);
-	const [lastWithdraws, setLastWithdraws] = useState<any>([]);
-	const [activities, setActivities] = useState<any>([]);
-	const [isLoading, setIsLoading] = useState(true);	
+	const [store, setStore] = useState<[]>([]);
+	const [totalOrder, setTotalOrder] = useState<number>(0);
+	const [customers, setCustomers] = useState<[]>([]);
+	const [lastWithdraws, setLastWithdraws] = useState<[]>([]);
+	const [activities, setActivities] = useState<[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const [dateRange, setDateRange] = useState<DateRange>({
 		startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
 		endDate: new Date(),
@@ -62,10 +60,45 @@ const Dashboard: React.FC = () => {
 
 	const { modules } = useModules();
 
+	// Table data states - only for tables that need TableCard
+	const [recentOrderRows, setRecentOrderRows] = useState<TableRow[][]>([]);
+	const [recentOrderIds, setRecentOrderIds] = useState<number[]>([]);
+	const [topProductRows, setTopProductRows] = useState<TableRow[][]>([]);
+	const [topProductIds, setTopProductIds] = useState<number[]>([]);
+
+	const access = appLocalizer.settings_databases_value?.['privacy']?.['customer_information_access'];
+	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
+
+	// Table headers
+	const recentOrderHeaders = [
+		{ key: 'id', label: __('Order Id', 'multivendorx') },
+		{ key: 'date', label: __('Order Date', 'multivendorx') },
+		{ key: 'products', label: __('Product Name', 'multivendorx') },
+		{ key: 'amount', label: __('Total Amount', 'multivendorx'), isNumeric: true },
+		{ key: 'status', label: __('Order Status', 'multivendorx') },
+	];
+
+	const topProductHeaders = [
+		{ key: 'rank', label: '#' },
+		{ key: 'name', label: __('Name', 'multivendorx') },
+		{ key: 'popularity', label: __('Popularity', 'multivendorx') },
+		{ key: 'sales', label: __('Sales', 'multivendorx') },
+	];
+
+	// Helper function to get dynamic greeting
+	const getGreeting = () => {
+		const hour = new Date().getHours();
+		if (hour >= 5 && hour < 12) return 'Good Morning';
+		if (hour >= 12 && hour < 17) return 'Good Afternoon';
+		if (hour >= 17 && hour < 21) return 'Good Evening';
+		return 'Good Night';
+	};
+
 	useEffect(() => {
 		setIsLoading(true);
-		axios({
-			method: 'GET',
+
+		// Reviews
+		axios.get({
 			url: getApiLink(appLocalizer, 'review'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -82,15 +115,13 @@ const Dashboard: React.FC = () => {
 			.then((response) => {
 				const items = response.data.items || [];
 				setReview(items);
-			}).finally(() => {
-				setIsLoading(false);
 			})
 			.catch(() => {
 				setReview([]);
 			});
 
-		axios({
-			method: 'GET',
+		// Pending Refunds
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -107,37 +138,22 @@ const Dashboard: React.FC = () => {
 		})
 			.then((response) => {
 				const items = response.data || [];
-
-				const formatData = items.map((order) => {
-					// extract refund reason
-					const reasonMeta = order.meta_data.find(
-						(m) => m.key === '_customer_refund_reason'
-					);
-					const refundReason = reasonMeta
-						? reasonMeta.value
-						: 'No reason';
-
-					return {
-						id: order.id,
-						name: `${order.billing.first_name} ${order.billing.last_name}`,
-						reason: refundReason,
-						time: order.date_created, // or format with moment()
-						amount: order.total,
-					};
-				});
-
+				const formatData = items.map((order) => ({
+					id: order.id,
+					name: `${order.billing.first_name} ${order.billing.last_name}`,
+					reason: order.meta_data.find((m) => m.key === '_customer_refund_reason')?.value || 'No reason',
+					time: order.date_created,
+					amount: order.total,
+				}));
 				setPendingRefund(formatData);
-			})
-			.finally(() => {
-				setIsLoading(false);
 			})
 			.catch(() => {
 				setPendingRefund([]);
 			});
 
+		// Announcements
 		if (modules.includes('announcement')) {
-			axios({
-				method: 'GET',
+			axios.get({
 				url: getApiLink(appLocalizer, 'announcement'),
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: {
@@ -145,20 +161,18 @@ const Dashboard: React.FC = () => {
 					row: 5,
 					store_id: appLocalizer.store_id,
 					status: 'publish',
-					// startDate: dateRange.startDate,
-					// endDate: dateRange.endDate,
-					// dashboard: true
 				},
 			})
 				.then((response) => {
-					console.log("res",response)
 					setAnnouncement(response.data || []);
-				}).finally(() => {
-				setIsLoading(false);
-			});
+				})
+				.catch(() => {
+					setAnnouncement([]);
+				});
 		}
-		axios({
-			method: 'GET',
+
+		// Top Products
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/products`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -173,16 +187,11 @@ const Dashboard: React.FC = () => {
 		})
 			.then((response) => {
 				const products = response.data;
-
-				// Find max sales to calculate popularity %
-				const maxSales = Math.max(
-					...products.map((p) => parseInt(p.total_sales) || 0)
-				);
+				const maxSales = Math.max(...products.map((p) => parseInt(p.total_sales) || 0));
 
 				const processed = products.map((p) => {
 					const sales = parseInt(p.total_sales) || 0;
-					const popularity =
-						maxSales > 0 ? Math.round((sales / maxSales) * 100) : 0;
+					const popularity = maxSales > 0 ? Math.round((sales / maxSales) * 100) : 0;
 					return {
 						id: p.id,
 						name: p.name,
@@ -190,16 +199,45 @@ const Dashboard: React.FC = () => {
 						popularity,
 					};
 				});
-				setTopProducts(processed);
-			}).finally(() => {
-				setIsLoading(false);
-			})
-			.catch((error) => {
-				console.error('Error fetching top selling products:', error);
+
+				// Prepare table rows for TableCard
+				const rows = processed.map((product, index) => [
+					{
+						display: String(index + 1).padStart(2, '0'),
+						value: index + 1
+					},
+					{
+						display: product.name,
+						value: product.name
+					},
+					{
+						display: (
+							<div className="progress-bar">
+								<div className={`progress-bar admin-color${index + 1}`}>
+									<span
+										className={`progress-bar admin-bg-color${index + 1}`}
+										style={{ width: `${product.popularity}%` }}
+									/>
+								</div>
+							</div>
+						),
+						value: product.popularity
+					},
+					{
+						display: (
+							<div className={`admin-badge admin-color${index + 1}`}>
+								{product.popularity}%
+							</div>
+						),
+						value: product.popularity
+					}
+				]);
+				setTopProductRows(rows);
+				setTopProductIds(processed.map(p => p.id));
 			});
 
-		axios({
-			method: 'GET',
+		// Recent Orders
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -213,47 +251,83 @@ const Dashboard: React.FC = () => {
 			},
 		})
 			.then((response) => {
-				const orders = response.data.map((order) => {
-					return {
-						id: order.id,
-						products:
-							order.line_items?.map((item) => ({
-								name: item.name,
-								image:
-									item.image?.src ||
-									item.image_url ||
-									'-',
-							})) || [],
-						store_name: order.store_name || '-',
-						amount: formatCurrency(order.currency_symbol, order.total),
-						commission_amount: order.commission_amount
-							? formatCurrency(order.currency_symbol, order.commission_amount)
-							: '-',
-						date: order.date_created,
-						status: order.status,
-						currency_symbol: order.currency_symbol,
-					};
-				});
+				const orders = response.data.map((order) => ({
+					id: order.id,
+					products: order.line_items?.map((item) => ({
+						name: item.name,
+						image: item.image?.src || item.image_url || '-',
+					})) || [],
+					store_name: order.store_name || '-',
+					amount: formatCurrency(order.total),
+					commission_amount: order.commission_amount ? formatCurrency(order.commission_amount) : '-',
+					date: order.date_created,
+					status: order.status,
+					currency_symbol: order.currency_symbol,
+				}));
 
-				setRecentOrders(orders);
-			}).finally(() => {
-				setIsLoading(false);
+				// Prepare table rows for TableCard
+				const rows = orders.map((item) => {
+					const orderUrl = `/dashboard/sales/orders/#view/${item.id}`;
+					return [
+						{
+							display: (
+								<a href={orderUrl} target="_blank" rel="noopener noreferrer">
+									#{item.id} {__('Customer', 'multivendorx')}
+								</a>
+							),
+							value: item.id
+						},
+						{
+							display: item.date,
+							value: item.date
+						},
+						{
+							display: (
+								<>
+									{item.products && item.products.length > 0 ? (
+										item.products.map((product, index) => (
+											<div key={index} className="product-wrapper">
+												{product.name}
+											</div>
+										))
+									) : (
+										'-'
+									)}
+								</>
+							),
+							value: item.products.map(p => p.name).join(', ')
+						},
+						{
+							display: item.amount,
+							value: item.amount
+						},
+						{
+							display: (
+								<div className="admin-status">
+									{item.status}
+								</div>
+							),
+							value: item.status
+						}
+					];
+				});
+				setRecentOrderRows(rows);
+				setRecentOrderIds(orders.map(o => o.id));
 			});
 
-		axios({
-			method: 'GET',
+		// Store Data
+		axios.get({
 			url: getApiLink(appLocalizer, `store/${appLocalizer.store_id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: { dashboard: true, id: appLocalizer.store_id }
-		}).then((res: any) => {
-			const data = res.data || {};
-			setStore(data);
-		}).finally(() => {
-				setIsLoading(false);
+		})
+			.then((res) => {
+				const data = res.data || {};
+				setStore(data);
 			});
 
-		axios({
-			method: 'GET',
+		// Total Orders
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -265,18 +339,15 @@ const Dashboard: React.FC = () => {
 			},
 		})
 			.then((response) => {
-				// WooCommerce returns total order count in headers
-				const totalOrders =
-					parseInt(response.headers['x-wp-total']) || 0;
+				const totalOrders = parseInt(response.headers['x-wp-total']) || 0;
 				setTotalOrder(totalOrders);
 			})
-			.catch(() => { })
-			.finally(() => {
-				setIsLoading(false);
+			.catch(() => {
+				setTotalOrder(0);
 			});
 
-		axios({
-			method: 'GET',
+		// Last Withdrawals - keep using InfoItem (no TableCard needed)
+		axios.get({
 			url: getApiLink(appLocalizer, 'transaction'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -293,14 +364,13 @@ const Dashboard: React.FC = () => {
 			},
 		})
 			.then((response) => {
-				setLastWithdraws(response.data.transaction || []);
-			}).finally(() => {
-				setIsLoading(false);
+				const withdrawals = response.data.transaction || [];
+				setLastWithdraws(withdrawals);
 			})
 			.catch(() => setLastWithdraws([]));
 
-		axios({
-			method: 'GET',
+		// Customers - keep using InfoItem (no TableCard needed)
+		axios.get({
 			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -311,37 +381,40 @@ const Dashboard: React.FC = () => {
 				after: dateRange.startDate.toISOString().replace('Z', ''),
 				before: dateRange.endDate.toISOString().replace('Z', ''),
 			},
-		}).then((response) => {
-			const customersMap = {};
+		})
+			.then((response) => {
+				const customersMap = {};
 
-			response.data.forEach((order) => {
-				const key = order.customer_id || order.billing?.email;
-				if (!key) return;
+				response.data.forEach((order) => {
+					const key = order.customer_id || order.billing?.email;
+					if (!key) return;
 
-				if (!customersMap[key]) {
-					customersMap[key] = {
-						name: `${order.billing.first_name} ${order.billing.last_name}`,
-						email: order.billing.email,
-						total_spent: 0,
-						order_count: 0,
-					};
-				}
+					if (!customersMap[key]) {
+						customersMap[key] = {
+							id: order.customer_id || key,
+							name: `${order.billing.first_name} ${order.billing.last_name}`,
+							email: order.billing.email,
+							total_spent: 0,
+							order_count: 0,
+						};
+					}
 
-				customersMap[key].total_spent += Number(order.total);
-				customersMap[key].order_count += 1;
+					customersMap[key].total_spent += Number(order.total);
+					customersMap[key].order_count += 1;
+				});
+
+				const topCustomers = Object.values(customersMap)
+					.sort((a, b) => b.total_spent - a.total_spent)
+					.slice(0, 5);
+
+				setCustomers(topCustomers);
+			})
+			.catch(() => {
+				setCustomers([]);
 			});
 
-			const topCustomers = Object.values(customersMap)
-				.sort((a, b) => b.total_spent - a.total_spent)
-				.slice(0, 5);
-
-			setCustomers(topCustomers)
-		}).finally(() => {
-				setIsLoading(false);
-			});
-
-		axios({
-			method: 'GET',
+		// Activities
+		axios.get({
 			url: getApiLink(appLocalizer, 'notifications'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -354,65 +427,16 @@ const Dashboard: React.FC = () => {
 		})
 			.then((response) => {
 				setActivities(response.data || []);
-			}).finally(() => {
+			})
+			.catch(() => {
+				setActivities([]);
+			})
+			.finally(() => {
 				setIsLoading(false);
 			});
 
-	}, [dateRange]);
-
-	const analyticsData = [
-		{
-			icon: 'dollar',
-			number: formatCurrency(store?.commission?.currency_symbol, store?.commission?.total_order_amount || 0),
-			text: 'Total Revenue',
-			color: 'primary',
-			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.total || 0),
-			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.total || 0)
-		},
-		{
-			icon: 'order',
-			number: totalOrder,
-			text: 'Total Orders',
-			color: 'secondary',
-			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.orders || 0),
-			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.orders || 0)
-		},
-		{
-			icon: 'store-seo',
-			number: store?.visitors?.total || 0,
-			text: 'Store Views',
-			color: 'accent',
-			last30: store?.visitors?.last_30_days || 0,
-			prev30: store?.visitors?.previous_30_days || 0
-		},
-		{
-			icon: 'commission',
-			number: formatCurrency(store?.commission?.currency_symbol, store?.commission?.commission_total || 0),
-			text: 'Commission Earned',
-			color: 'support',
-			last30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.last_30_days.commission || 0),
-			prev30: formatCurrency(store?.commission?.currency_symbol,store?.commission?.previous_30_days.commission || 0)
-		},
-	];
-
-	// Helper function to get dynamic greeting
-	const getGreeting = () => {
-		const hour = new Date().getHours();
-
-		if (hour >= 5 && hour < 12) {
-			return 'Good Morning';
-		} else if (hour >= 12 && hour < 17) {
-			return 'Good Afternoon';
-		} else if (hour >= 17 && hour < 21) {
-			return 'Good Evening';
-		} else {
-			return 'Good Night';
-		}
-	};
-
-	useEffect(() => {
-		axios({
-			method: 'GET',
+		// Revenue Data
+		axios.get({
 			url: getApiLink(appLocalizer, 'commission'),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
@@ -427,7 +451,42 @@ const Dashboard: React.FC = () => {
 				const data = response.data;
 				setRevenueData(data);
 			});
-	}, [dateRange]);
+	}, [dateRange, modules]);
+
+	const analyticsData = [
+		{
+			icon: 'dollar',
+			number: formatCurrency(store?.commission?.total_order_amount || 0),
+			text: 'Total Revenue',
+			color: 'primary',
+			last30: formatCurrency(store?.commission?.last_30_days?.total || 0),
+			prev30: formatCurrency(store?.commission?.previous_30_days?.total || 0)
+		},
+		{
+			icon: 'order',
+			number: totalOrder,
+			text: 'Total Orders',
+			color: 'secondary',
+			last30: store?.commission?.last_30_days?.orders || 0,
+			prev30: store?.commission?.previous_30_days?.orders || 0
+		},
+		{
+			icon: 'store-seo',
+			number: store?.visitors?.total || 0,
+			text: 'Store Views',
+			color: 'accent',
+			last30: store?.visitors?.last_30_days || 0,
+			prev30: store?.visitors?.previous_30_days || 0
+		},
+		{
+			icon: 'commission',
+			number: formatCurrency(store?.commission?.commission_total || 0),
+			text: 'Commission Earned',
+			color: 'support',
+			last30: formatCurrency(store?.commission?.last_30_days?.commission || 0),
+			prev30: formatCurrency(store?.commission?.previous_30_days?.commission || 0)
+		},
+	];
 
 	const chartData = [
 		{
@@ -447,9 +506,6 @@ const Dashboard: React.FC = () => {
 		},
 	];
 
-	const access = appLocalizer.settings_databases_value['privacy']['customer_information_access'];
-	const siteUrl = appLocalizer.site_url.replace(/\/$/, '');
-
 	return (
 		<>
 			<div className="page-title-wrapper">
@@ -458,7 +514,6 @@ const Dashboard: React.FC = () => {
 						{getGreeting()},{' '}
 						{store?.primary_owner_info?.data?.display_name}!
 					</div>
-
 					<div className="view-des">
 						{__('You’re viewing:', 'multivendorx')}{' '}
 						<b>
@@ -467,7 +522,6 @@ const Dashboard: React.FC = () => {
 						</b>
 					</div>
 				</div>
-
 				<div className="buttons-wrapper">
 					<CalendarInput
 						onChange={(range: DateRange) => {
@@ -480,14 +534,14 @@ const Dashboard: React.FC = () => {
 				</div>
 			</div>
 
-			<Container >
+			<Container>
 				<Column>
 					<Analytics
 						variant="dashboard"
 						data={analyticsData.map((item) => ({
 							icon: item.icon,
 							iconClass: `${item.color}-bg`,
-							isLoading: {isLoading},
+							isLoading: isLoading,
 							colorClass: item.color,
 							number: item.number,
 							text: __(item.text, 'multivendorx'),
@@ -510,10 +564,9 @@ const Dashboard: React.FC = () => {
 						}))}
 					/>
 				</Column>
+
 				<Column grid={8}>
-					<Card
-						title={__('Sales Overview', 'multivendorx')}
-					>
+					<Card title={__('Sales Overview', 'multivendorx')}>
 						{revenueData && revenueData.length > 0 ? (
 							<ResponsiveContainer width="100%" height={250}>
 								<BarChart
@@ -524,7 +577,6 @@ const Dashboard: React.FC = () => {
 									<CartesianGrid stroke="#f0f0f0" vertical={false} />
 									<XAxis dataKey="month" axisLine={false} tickLine={false} />
 									<YAxis axisLine={false} tickLine={false} />
-
 									<Tooltip
 										contentStyle={{
 											background: '#fff',
@@ -533,9 +585,7 @@ const Dashboard: React.FC = () => {
 											boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
 										}}
 									/>
-
 									<Legend />
-
 									{BarChartData.map((entry) => (
 										<Bar
 											key={entry.dataKey}
@@ -545,17 +595,6 @@ const Dashboard: React.FC = () => {
 											name={__(entry.name, 'multivendorx')}
 										/>
 									))}
-
-									{/* <Line
-										type="monotone"
-										dataKey="conversion"
-										stroke="#ffa726"
-										strokeWidth={2}
-										dot={{ r: 3 }}
-										name={__('Conversion %', 'multivendorx')}
-										yAxisId={1}
-									/> */}
-
 									<YAxis
 										yAxisId={1}
 										orientation="right"
@@ -566,14 +605,13 @@ const Dashboard: React.FC = () => {
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusView title={__('No sales found.', 'multivendorx')}/>
+							<ComponentStatusView title={__('No sales found.', 'multivendorx')} />
 						)}
-
 					</Card>
 				</Column>
 
 				<Column grid={4}>
-					<Card title={__('Last Withdrawal', 'multivendorx')} >
+					<Card title={__('Last Withdrawal', 'multivendorx')}>
 						<div className="top-customer-wrapper">
 							{lastWithdraws && lastWithdraws.length > 0 ? (
 								lastWithdraws.map((item) => (
@@ -589,10 +627,8 @@ const Dashboard: React.FC = () => {
 														: ''
 										}
 										isLoading={isLoading}
-										descriptions={[
-											{ value: item.date },
-										]}
-										amount={formatCurrency(item.currency_symbol, item.amount)}
+										descriptions={[{ value: item.date }]}
+										amount={formatCurrency(item.amount)}
 									/>
 								))
 							) : (
@@ -607,7 +643,7 @@ const Dashboard: React.FC = () => {
 								buttons={{
 									icon: 'preview',
 									text: __('View transaction history', 'multivendorx'),
-									onClick: window.location.href = '/dashboard/wallet/transactions/',
+									onClick: () => { window.open('/dashboard/wallet/transactions/') },
 								}}
 							/>
 						)}
@@ -631,70 +667,22 @@ const Dashboard: React.FC = () => {
 							window.open(url);
 						}}
 					>
-						<div className="table-wrapper">
-							{recentOrder && recentOrder.length > 0 ? (
-								<table>
-									<thead>
-										<tr className="header">
-											<td>{__('Order Id', 'multivendorx')}</td>
-											<td>{__('Order Date', 'multivendorx')}</td>
-											<td>{__('Product Name', 'multivendorx')}</td>
-											<td>{__('Total Amount', 'multivendorx')}</td>
-											<td>{__('Order Status', 'multivendorx')}</td>
-											{/* <td>{__('Delivery Status (P)', 'multivendorx')}</td> */}
-										</tr>
-									</thead>
-
-									<tbody>
-										{recentOrder.map((item) => {
-											const id = item.id;
-											const orderUrl = `/dashboard/sales/orders/#view/${id}`;
-											return (
-												<tr key={id}>
-													<td>
-														<a
-															href={orderUrl}
-															target="_blank"
-															rel="noopener noreferrer"
-														>
-															#{id} {__('Customer', 'multivendorx')}
-														</a>
-													</td>
-													<td>{item.date}</td>
-													<td>
-														{item.products && item.products.length > 0 ? (
-															item.products.map((product, index) => (
-																<div key={index} className="product-wrapper">
-																	{/* <img
-																		src={product.image}
-																		alt={product.name}
-																	/> */}
-																	{product.name}
-																</div>
-
-															))
-														) : (
-															'-'
-														)}
-													</td>
-
-													<td>{item.amount}</td>
-													<td>
-														<div className="admin-status">
-															{item.status}
-														</div>
-													</td>
-												</tr>
-											);
-										})}
-									</tbody>
-								</table>
-							) : (
-								<div className="no-data">
-									{__('No products found.', 'multivendorx')}
-								</div>
-							)}
-						</div>
+						{recentOrderRows.length > 0 ? (
+							<TableCard
+								headers={recentOrderHeaders}
+								rows={recentOrderRows}
+								totalRows={recentOrderRows.length}
+								isLoading={isLoading}
+								ids={recentOrderIds}
+								title=""
+								showMenu={false}
+								showColumnToggleIcon={false}
+							/>
+						) : (
+							<div className="no-data">
+								{__('No products found.', 'multivendorx')}
+							</div>
+						)}
 					</Card>
 				</Column>
 
@@ -706,53 +694,22 @@ const Dashboard: React.FC = () => {
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
 								? `${siteUrl}/${appLocalizer.dashboard_slug}/products`
-								: `${siteUrl}/?page_id=${appLocalizer.dashboard_page_id}&segment=products`
+								: `${siteUrl}/?page_id=${appLocalizer.dashboard_page_id}&segment=products`;
 							window.open(url);
 						}}
 					>
 						<div className="table-wrapper top-products">
-							{topProducts && topProducts.length > 0 ? (
-								<table>
-									<thead>
-										<tr className="header">
-											<td>#</td>
-											<td>{__('Name', 'multivendorx')}</td>
-											<td>{__('Popularity', 'multivendorx')}</td>
-											<td>{__('Sales', 'multivendorx')}</td>
-										</tr>
-									</thead>
-
-									<tbody>
-										{topProducts.map((item, index) => (
-											<tr key={item.id}>
-												<td>
-													{String(index + 1).padStart(2, '0')}
-												</td>
-
-												<td>{item.name}</td>
-
-												<td className="progress-bar">
-													<div
-														className={`progress-bar admin-color${index + 1}`}
-													>
-														<span
-															className={`progress-bar admin-bg-color${index + 1}`}
-															style={{ width: `${item.popularity}%` }}
-														/>
-													</div>
-												</td>
-
-												<td>
-													<div
-														className={`admin-badge admin-color${index + 1}`}
-													>
-														{item.popularity}%
-													</div>
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
+							{topProductRows.length > 0 ? (
+								<TableCard
+									headers={topProductHeaders}
+									rows={topProductRows}
+									totalRows={topProductRows.length}
+									isLoading={isLoading}
+									ids={topProductIds}
+									title=""
+									showMenu={false}
+									showColumnToggleIcon={false}
+								/>
 							) : (
 								<div className="no-data">
 									{__('No products found.', 'multivendorx')}
@@ -798,20 +755,15 @@ const Dashboard: React.FC = () => {
 											/>
 										))}
 									</Pie>
-
 									<Tooltip
-										formatter={(value) => (value)}
+										formatter={(value) => formatCurrency(value)}
 										contentStyle={{
 											backgroundColor: '#fff',
 											borderRadius: '8px',
 											border: '1px solid #ddd',
 										}}
 									/>
-
-									<Legend
-										verticalAlign="bottom"
-										height={36}
-									/>
+									<Legend verticalAlign="bottom" height={36} />
 								</PieChart>
 							</ResponsiveContainer>
 						</div>
@@ -820,10 +772,7 @@ const Dashboard: React.FC = () => {
 				{/* Admin Announcements */}
 				{modules.includes('announcement') && (
 					<Column grid={4}>
-						<Card
-							title={__('Admin Announcements', 'multivendorx')}
-							iconName="adminfont-external icon"
-						>
+						<Card title={__('Admin Announcements', 'multivendorx')}>
 							<div className="notification-wrapper">
 								{announcement && announcement.length > 0 ? (
 									<ul>
@@ -834,16 +783,13 @@ const Dashboard: React.FC = () => {
 														className={`adminfont-form-paypal-email admin-badge admin-color${index + 2}`}
 													/>
 												</div>
-
 												<div className="details">
 													<div className="notification-title">
 														{item.title}
 													</div>
-
 													<div className="des">
 														{item.content}
 													</div>
-
 													<span>
 														{formatTimeAgo(item.date)}
 													</span>
@@ -875,18 +821,14 @@ const Dashboard: React.FC = () => {
 							<div className="top-customer-wrapper">
 								{pendingRefund && pendingRefund.length > 0 ? (
 									pendingRefund.map((customer) => (
-										<div
-											key={customer.id}
-											className="customer"
-										>
+										<div key={customer.id} className="customer">
 											<div className="left-section">
 												<div className="details">
 													<div className="name">
 														{customer.name}
 													</div>
 													<div className="order-number">
-														{customer.reason} |{' '}
-														{customer.time}
+														{customer.reason} | {customer.time}
 													</div>
 												</div>
 											</div>
@@ -903,9 +845,7 @@ const Dashboard: React.FC = () => {
 				)}
 				{modules.includes('privacy') && Array.isArray(access) && access.includes('name') && (
 					<Column grid={4}>
-						<Card
-							title={__('Top customer', 'multivendorx')}
-						>
+						<Card title={__('Top Customers', 'multivendorx')}>
 							{customers && customers.length > 0 ? (
 								customers.map((customer, index) => (
 									<InfoItem
@@ -921,7 +861,7 @@ const Dashboard: React.FC = () => {
 												value: `${customer.order_count} ${__('orders', 'multivendorx')}`,
 											},
 										]}
-										amount={customer.total_spent}
+										amount={formatCurrency(customer.total_spent)}
 									/>
 								))
 							) : (
@@ -933,20 +873,14 @@ const Dashboard: React.FC = () => {
 					</Column>
 				)}
 				<Column grid={4}>
-					<Card
-						title={__('Store Activity', 'multivendorx')}
-					>
+					<Card title={__('Store Activity', 'multivendorx')}>
 						<div className="activity-log">
 							{activities && activities.length > 0 ? (
 								activities.slice(0, 5).map((a, i) => (
 									<div key={i} className="activity">
 										<div className="title">{a.title}</div>
-										<div className="des">
-											{a.message}
-										</div>
-										<span>
-											{a.date}
-										</span>
+										<div className="des">{a.message}</div>
+										<span>{a.date}</span>
 									</div>
 								))
 							) : (
@@ -972,38 +906,23 @@ const Dashboard: React.FC = () => {
 							<div className="review-wrapper">
 								{review && review.length > 0 ? (
 									review.map((reviewItem) => (
-										<div
-											className="review"
-											key={reviewItem.review_id}
-										>
+										<div className="review" key={reviewItem.review_id}>
 											<div className="details">
 												<div className="title">
 													<div className="avatar">
-														<i className="adminfont-person" />
+															<i className="adminfont-person" />
 													</div>
 													{reviewItem.review_title}
 												</div>
-
 												<div className="star-wrapper">
 													{[...Array(5)].map((_, index) => (
 														<i
 															key={index}
-															className={`star-icon adminfont-star ${index <
-																Math.round(
-																	reviewItem.overall_rating
-																)
-																? 'active'
-																: ''
-																}`}
+															className={`star-icon adminfont-star ${index < Math.round(reviewItem.overall_rating) ? 'active' : ''}`}
 														/>
 													))}
-													<span>
-														{
-															reviewItem.date_created
-														}
-													</span>
+													<span>{reviewItem.date_created}</span>
 												</div>
-
 												<div className="des">
 													{reviewItem.review_content}
 												</div>

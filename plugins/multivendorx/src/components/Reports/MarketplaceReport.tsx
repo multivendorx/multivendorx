@@ -66,7 +66,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 			return () => clearInterval(timer);
 		}, [value]);
 
-		return <>{currency ? currency + (count) : Math.floor(count)}</>;
+		return <>{format ? format(count) : Math.floor(count)}</>;
 	};
 
 	const fetchCommissionDetails = async () => {
@@ -91,14 +91,14 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'total_order_amount',
 						label: 'Total Order Amount',
 						count: Number(data.total_order_amount),
-						formatted: formatCurrency(data.currency_symbol, data.total_order_amount),
+						formatted: formatCurrency(data.total_order_amount),
 						icon: 'order',
 					},
 					{
 						id: 'facilitator_fee',
 						label: 'Facilitator Fee',
 						count: Number(data.facilitator_fee),
-						formatted: formatCurrency(data.currency_symbol, data.facilitator_fee),
+						formatted: formatCurrency(data.facilitator_fee),
 						icon: 'facilitator',
 						module: 'facilitator',
 					},
@@ -106,7 +106,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'gateway_fee',
 						label: 'Gateway Fee',
 						count: Number(data.gateway_fee),
-						formatted: formatCurrency(data.currency_symbol, data.gateway_fee),
+						formatted: formatCurrency(data.gateway_fee),
 						icon: 'credit-card',
 						condition: false,
 					},
@@ -114,7 +114,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'shipping_amount',
 						label: 'Shipping Amount',
 						count: Number(data.shipping_amount),
-						formatted: formatCurrency(data.currency_symbol, data.shipping_amount),
+						formatted: formatCurrency(data.shipping_amount),
 						icon: 'shipping',
 						module: 'store-shipping',
 					},
@@ -122,7 +122,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'tax_amount',
 						label: 'Tax Amount',
 						count: Number(data.tax_amount),
-						formatted: formatCurrency(data.currency_symbol, data.tax_amount),
+						formatted: formatCurrency(data.tax_amount),
 						icon: 'tax-compliance',
 						module: 'store-shipping',
 					},
@@ -130,7 +130,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'shipping_tax_amount',
 						label: 'Shipping Tax Amount',
 						count: Number(data.shipping_tax_amount),
-						formatted: formatCurrency(data.currency_symbol, data.shipping_tax_amount),
+						formatted: formatCurrency(data.shipping_tax_amount),
 						icon: 'per-product-shipping',
 						module: 'store-shipping',
 					},
@@ -138,14 +138,14 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'commission_total',
 						label: 'Commission Total',
 						count: Number(data.commission_total),
-						formatted: formatCurrency(data.currency_symbol, data.commission_total),
+						formatted: formatCurrency(data.commission_total),
 						icon: 'commission',
 					},
 					{
 						id: 'commission_refunded',
 						label: 'Commission Refunded',
 						count: Number(data.commission_refunded),
-						formatted: formatCurrency(data.currency_symbol, data.commission_refunded),
+						formatted: formatCurrency(data.commission_refunded),
 						icon: 'marketplace-refund',
 						module: 'marketplace-refund'
 					},
@@ -161,63 +161,63 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 					{
 						id: 'total_order_amount',
 						title: 'Total Order Amount',
-						price: formatCurrency(data.currency_symbol, data.total_order_amount),
+						price: formatCurrency(data.total_order_amount),
 					},
 					{
 						id: 'admin_earning',
 						title: 'Admin Net Earning',
-						price: formatCurrency(data.currency_symbol, adminEarning),
+						price: formatCurrency(adminEarning),
 					},
 					{
 						id: 'store_earning',
 						title: 'Store Net Earning',
-						price: formatCurrency(data.currency_symbol, storeEarning),
+						price: formatCurrency(storeEarning),
 					},
 					{
 						id: 'facilitator_fee',
 						title: 'Facilitator Fee',
-						price: formatCurrency(data.currency_symbol, data.facilitator_fee),
+						price: formatCurrency(data.facilitator_fee),
 						module: 'facilitator',
 					},
 					{
 						id: 'gateway_fee',
 						title: 'Gateway Fee',
-						price: formatCurrency(data.currency_symbol, data.gateway_fee),
+						price: formatCurrency(data.gateway_fee),
 						condition: false
 					},
 					{
 						id: 'shipping_amount',
 						title: 'Shipping Amount',
-						price: formatCurrency(data.currency_symbol, data.shipping_amount),
+						price: formatCurrency(data.shipping_amount),
 						module: 'store-shipping',
 					},
 					{
 						id: 'tax_amount',
 						title: 'Tax Amount',
-						price: formatCurrency(data.currency_symbol, data.tax_amount),
+						price: formatCurrency(data.tax_amount),
 						module: 'store-shipping',
 					},
 					{
 						id: 'shipping_tax_amount',
 						title: 'Shipping Tax Amount',
-						price: formatCurrency(data.currency_symbol, data.shipping_tax_amount),
+						price: formatCurrency(data.shipping_tax_amount),
 						module: 'store-shipping',
 					},
 					{
 						id: 'commission_total',
 						title: 'Commission Total',
-						price: formatCurrency(data.currency_symbol, data.commission_total),
+						price: formatCurrency(data.commission_total),
 					},
 					{
 						id: 'commission_refunded',
 						title: 'Commission Refunded',
-						price: formatCurrency(data.currency_symbol, data.commission_refunded),
+						price: formatCurrency(data.commission_refunded),
 						module: 'marketplace-refund'
 					},
 					{
 						id: 'grand_total',
 						title: 'Grand Total',
-						price: formatCurrency(data.currency_symbol, adminEarning + storeEarning),
+						price: formatCurrency(adminEarning + storeEarning),
 					},
 				].filter(
 					(data) =>
@@ -321,7 +321,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 							number: (
 								<Counter
 									value={item.count}
-									currency={item.currency_symbol}
+									format={formatCurrency}
 								/>
 							),
 							text: __(item.label, 'multivendorx'),
@@ -378,7 +378,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 									</Pie>
 									<Tooltip
 										formatter={(value) =>
-											(value)
+											formatCurrency(value)
 										}
 										contentStyle={{
 											backgroundColor: '#fff',
@@ -463,7 +463,6 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 														'percent'
 														? `${coupon.amount}%`
 														: formatCurrency(
-															coupon.currency_symbol,
 															coupon.amount
 														)
 													: '-'}
@@ -542,8 +541,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 										<div className="right-details">
 											<div className="price">
 												<span>
-													{ formatCurrency(
-														customer.currency_symbol,
+													{formatCurrency(
 														customer.total_spend ||
 														0
 													)}
@@ -581,14 +579,14 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 										descriptions={[
 											{
 												label: __('Commission', 'multivendorx'),
-												value: (store.commission_total || 0),
+												value: formatCurrency(store.commission_total || 0),
 											},
 											{
 												label: __('Refunded', 'multivendorx'),
-												value: (store.commission_refunded || 0),
+												value: formatCurrency(store.commission_refunded || 0),
 											},
 										]}
-										amount={(store.total_order_amount || 0)}
+										amount={formatCurrency(store.total_order_amount || 0)}
 									/>
 								</>
 							))

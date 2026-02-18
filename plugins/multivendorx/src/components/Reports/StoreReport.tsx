@@ -43,8 +43,7 @@ const StoreReport: React.FC = () => {
 							store.commission.commission_total > 0
 					)
 					.map((store: any) => ({
-						name: `${store.store_name} (${ formatCurrency(
-							store.commission.currency_symbol, 
+						name: `${store.store_name} (${formatCurrency(
 							store.commission.commission_total
 						)})`,
 						value: store.commission.commission_total,
@@ -143,19 +142,19 @@ const StoreReport: React.FC = () => {
 						value: store.status,
 					},
 					{
-						display: formatCurrency(store.commission?.currency_symbol, store.commission?.total_order_amount),
+						display: formatCurrency(store.commission?.total_order_amount),
 						value: store.commission?.total_order_amount ?? 0,
 					},
 					{
-						display: formatCurrency(store.commission?.currency_symbol, store.commission?.shipping_amount),
+						display: formatCurrency(store.commission?.shipping_amount),
 						value: store.commission?.shipping_amount ?? 0,
 					},
 					{
-						display: formatCurrency(store.commission?.currency_symbol, store.commission?.tax_amount),
+						display: formatCurrency(store.commission?.tax_amount),
 						value: store.commission?.tax_amount ?? 0,
 					},
 					{
-						display: formatCurrency(store.commission?.currency_symbol, store.commission?.commission_total),
+						display: formatCurrency(store.commission?.commission_total),
 						value: store.commission?.commission_total ?? 0,
 					},
 					{
@@ -169,7 +168,6 @@ const StoreReport: React.FC = () => {
 					},
 					{
 						display: formatCurrency(
-							store.commission?.currency_symbol, 
 							Number(store.commission?.total_order_amount || 0) -
 							Number(store.commission?.commission_total || 0)
 						),
@@ -263,7 +261,7 @@ const StoreReport: React.FC = () => {
 								dataKey="value"
 							/>
 						)}
-						<Tooltip formatter={(value) => (value)} />
+						<Tooltip formatter={(value) => formatCurrency(value)} />
 						<Legend />
 					</PieChart>
 				</ResponsiveContainer>

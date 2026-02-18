@@ -59,8 +59,7 @@ final class MultiVendorX {
         $this->container['block_paths']           = array();
         $this->container['is_dev']                = defined( 'WP_ENV' ) && WP_ENV === 'development';
         $this->container['date_format']           = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
-        $this->container['active_store']          = get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
-
+        
         register_activation_hook( $file, array( $this, 'activate' ) );
         register_deactivation_hook( $file, array( $this, 'deactivate' ) );
 
@@ -159,6 +158,8 @@ final class MultiVendorX {
         $this->container['modules']->load_active_modules();
 
         $this->initialize_multivendorx_log();
+
+        $this->container['active_store']  = get_user_meta( get_current_user_id(), Utill::USER_SETTINGS_KEYS['active_store'], true );
 
         flush_rewrite_rules();
     }

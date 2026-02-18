@@ -113,7 +113,7 @@ const Withdrawls: React.FC = () => {
 								>
 									<div className="left">
 										<div className="price">
-											{formatCurrency(item.currency_symbol, item.amount)}
+											{formatCurrency(item.amount)}
 										</div>
 										<div className="des">
 											{item.payment_method ===
@@ -170,10 +170,10 @@ const Withdrawls: React.FC = () => {
 									)}
 								</div>
 								<div className="price">
-									{formatCurrency(data?.currency_symbol, data.available_balance)}{' '}
+									{formatCurrency(data.available_balance)}{' '}
 								</div>
 								<div className="desc">
-									<b>{formatCurrency(data?.currency_symbol, data?.thresold)} </b>{' '}
+									<b>{formatCurrency(data?.thresold)} </b>{' '}
 									{__(
 										'minimum required to withdraw',
 										'multivendorx'
@@ -184,7 +184,7 @@ const Withdrawls: React.FC = () => {
 								<ItemList
 									className="mini-card"
 									title={__('Upcoming Balance', 'multivendorx')}
-									value={formatCurrency(data.currency_symbol, data.locking_balance)}
+									value={formatCurrency(data.locking_balance)}
 									description={
 										<>
 											{__('This amount is being processed and will be released ', 'multivendorx')}
@@ -224,7 +224,6 @@ const Withdrawls: React.FC = () => {
 												) || 0}
 												% +{' '}
 												{formatCurrency(
-													data.currency_symbol,
 													Number(
 														data?.withdrawal_setting?.[0]
 															?.withdrawal_fixed
@@ -277,9 +276,9 @@ const Withdrawls: React.FC = () => {
 								value={amount}
 								min={0}
 								max={data.available_balance}
-								onChange={(e) =>
+								onChange={(value) =>
 									handleAmountChange(
-										Number(e.target.value)
+										Number(value)
 									)
 								}
 							/>

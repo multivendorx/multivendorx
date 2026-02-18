@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, Table, TableCard, TableCell, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, TableCard, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
+import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
 import { TableRow } from '@/services/type';
 
@@ -294,7 +295,6 @@ const AddOrder = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((res) => {
-				console.log('Order created:', res.data);
 				window.location.assign(window.location.pathname);
 			});
 	};
@@ -508,17 +508,13 @@ const AddOrder = () => {
 												</td>
 
 												<td className="admin-column">
-													<input
+													<BasicInputUI
 														type="number"
 														min="1"
-														className="basic-input"
-														value={
-															item.qty || 1
-														}
-														onChange={(e) => {
+														value={item.qty || 1}
+														onChange={(value) => {
 															const qty =
-																+e.target
-																	.value;
+																+value;
 															setAddedProducts(
 																(prev) =>
 																	prev.map(
@@ -613,16 +609,14 @@ const AddOrder = () => {
 											<td className="admin-column"></td>
 
 											<td className="admin-column">
-												<input
+												<BasicInputUI
 													type="number"
 													min="0"
-													className="basic-input"
 													value={ship.cost}
-													onChange={(e) => {
+													onChange={(value) => {
 														const cost =
 															parseFloat(
-																e.target
-																	.value
+																value
 															) || 0;
 														setShippingLines(
 															(prev) =>
@@ -675,7 +669,7 @@ const AddOrder = () => {
 										{__('Shipping:', 'multivendorx')}
 									</span>
 									<span>
-										{(totalShipping)}
+										{formatCurrency(totalShipping)}
 									</span>
 								</div>
 

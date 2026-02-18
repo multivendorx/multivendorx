@@ -37,7 +37,6 @@ const NotificationsTable = (React.FC = () => {
 				setIsLoading(false);
 			})
 			.catch((error) => {
-				console.error('Failed to fetch announcements', error);
 				setError(__('Failed to load announcements', 'multivendorx'));
 				setRows([]);
 				setTotalRows(0);

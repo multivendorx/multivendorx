@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { ExportCSV, getApiLink, TableCard } from 'zyra';
 
-import { formatCurrency, formatWordpressDate, toWcIsoDate } from '../../services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const OrderReport: React.FC = () => {
@@ -138,6 +138,7 @@ const OrderReport: React.FC = () => {
 				const orders = Array.isArray(response.data)
 					? response.data
 					: [];
+	
 				setRowIds(orders.map((o: any) => o.id));
 	
 				const mappedRows: TableRow[][] = orders.map((order: any) => [
@@ -155,15 +156,15 @@ const OrderReport: React.FC = () => {
 						value: order.store_name || '',
 					},
 					{
-						display: formatCurrency(order.currency_symbol, order.total),
+						display: formatCurrency(order.total),
 						value: order.total,
 					},
 					{
-						display: formatCurrency(order.currency_symbol, order.commission_total || 0),
+						display: formatCurrency(order.commission_total || 0),
 						value: order.commission_total || 0,
 					},
 					{
-						display: (formatWordpressDate(order.date_created)),
+						display: order.date_created,
 						value: order.date_created,
 					},
 					{

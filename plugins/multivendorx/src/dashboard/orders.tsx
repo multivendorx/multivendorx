@@ -3,9 +3,9 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { PopupUI, TableCard, useModules } from 'zyra';
-import OrderDetails from './order-details';
+import OrderDetails from './orderDetails';
 import AddOrder from './addOrder';
-import { downloadCSV, formatCurrency, formatWordpressDate, toWcIsoDate } from '../services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const Orders: React.FC = () => {
@@ -28,26 +28,25 @@ const Orders: React.FC = () => {
 	const isViewOrder = hash.includes('view');
 	const isAddOrder = hash.includes('add');
 
-	const fetchOrderById = async (orderId: string | number) => {
-		try {
-			const res = await axios.get(
+	const fetchOrderById = (orderId: string | number) => {
+		axios
+			.get(
 				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
 				{
 					headers: { 'X-WP-Nonce': appLocalizer.nonce },
 					params: {
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
-					}
+					},
 				}
-			);
-
-			const order = res.data;
-
-			setSelectedOrder(order);
-
-		} catch (error) {
-			setSelectedOrder(null);
-		}
+			)
+			.then((res) => {
+				const order = res.data;
+				setSelectedOrder(order);
+			})
+			.catch(() => {
+				setSelectedOrder(null);
+			});
 	};
 
 	useEffect(() => {
@@ -69,119 +68,114 @@ const Orders: React.FC = () => {
 	}, [hash]);
 
 
-	const exportAllOrders = async () => {
-		try {
-			let allOrders: any[] = [];
-			let page = 1;
-			const perPage = 100; // WooCommerce API max per page
+	const exportAllOrders = () => {
+		let allOrders: any[] = [];
+		let page = 1;
+		const perPage = 100;
 
-			// Fetch all pages
-			while (true) {
-				const res = await axios.get(
-					`${appLocalizer.apiUrl}/wc/v3/orders`,
-					{
-						headers: { 'X-WP-Nonce': appLocalizer.nonce },
-						params: {
-							per_page: perPage,
-							page,
-							meta_key: 'multivendorx_store_id',
-							value: appLocalizer.store_id,
-						},
-					}
-				);
-
-				allOrders = allOrders.concat(res.data);
-
-				const totalPages = parseInt(
-					res.headers['x-wp-totalpages'] || '1'
-				);
-				if (page >= totalPages) {
-					break;
-				}
-				page++;
-			}
-
-			if (allOrders.length === 0) {
-				setMessage('No orders found to export');
-				setConfirmOpen(true);
-				return;
-			}
-
-			// Convert orders to CSV
-			const csvRows: string[] = [];
-			csvRows.push('Order ID,Customer,Email,Total,Status,Date');
-
-			allOrders.forEach((order) => {
-				const customer = order.billing?.first_name
-					? `${order.billing.first_name} ${order.billing.last_name || ''
-					}`
-					: 'Guest';
-				const email = order.billing?.email || '';
-				const total = order.total || '';
-				const status = order.status || '';
-				const date = order.date_created || '';
-
-				csvRows.push(
-					[order.id, customer, email, total, status, date]
-						.map((field) => `"${field}"`)
-						.join(',')
-				);
-			});
-
-			const csvString = csvRows.join('\n');
-
-			// Trigger download
-			const blob = new Blob([csvString], {
-				type: 'text/csv;charset=utf-8;',
-			});
-			const link = document.createElement('a');
-			link.href = URL.createObjectURL(blob);
-			link.download = `orders_${appLocalizer.store_id
-				}_${new Date().toISOString()}.csv`;
-			link.click();
-			URL.revokeObjectURL(link.href);
-		} catch (err) {
-			console.error('Failed to export all orders:', err);
-		}
-	};
-
-	const fetchOrderStatusCounts = async () => {
-		try {
-			const statuses = [
-				'all',
-				'pending',
-				'processing',
-				'on-hold',
-				'completed',
-				'cancelled',
-				'refunded',
-				'failed',
-				'trash',
-			];
-
-			if (modules.includes('marketplace-refund')) {
-				statuses.push('refund-requested');
-			}
-
-			const counts = await Promise.all(
-				statuses.map(async (status) => {
-					const params: any = {
-						per_page: 1,
+		const fetchPage = () => {
+			return axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params: {
+						per_page: perPage,
+						page,
 						meta_key: 'multivendorx_store_id',
 						value: appLocalizer.store_id,
-					};
-					if (status !== 'all') {
-						params.status = status;
-					}
+					},
+				})
+				.then((res) => {
+					allOrders = allOrders.concat(res.data);
 
-					const res = await axios.get(
-						`${appLocalizer.apiUrl}/wc/v3/orders`,
-						{
-							headers: { 'X-WP-Nonce': appLocalizer.nonce },
-							params,
-						}
+					const totalPages = parseInt(
+						res.headers['x-wp-totalpages'] || '1'
 					);
 
+					if (page < totalPages) {
+						page++;
+						return fetchPage(); // recursively fetch next page
+					}
+				});
+		};
+
+		fetchPage()
+			.then(() => {
+				if (allOrders.length === 0) {
+					setMessage('No orders found to export');
+					setConfirmOpen(true);
+					return;
+				}
+
+				const csvRows: string[] = [];
+				csvRows.push('Order ID,Customer,Email,Total,Status,Date');
+
+				allOrders.forEach((order) => {
+					const customer = order.billing?.first_name
+						? `${order.billing.first_name} ${order.billing.last_name || ''}`
+						: 'Guest';
+
+					const email = order.billing?.email || '';
+					const total = order.total || '';
+					const status = order.status || '';
+					const date = order.date_created || '';
+
+					csvRows.push(
+						[order.id, customer, email, total, status, date]
+							.map((field) => `"${field}"`)
+							.join(',')
+					);
+				});
+
+				const csvString = csvRows.join('\n');
+
+				const blob = new Blob([csvString], {
+					type: 'text/csv;charset=utf-8;',
+				});
+				const link = document.createElement('a');
+				link.href = URL.createObjectURL(blob);
+				link.download = `orders_${appLocalizer.store_id}_${new Date().toISOString()}.csv`;
+				link.click();
+				URL.revokeObjectURL(link.href);
+			})
+			.catch((err) => {
+				console.error('Error exporting orders:', err);
+			});
+	};
+
+	const fetchOrderStatusCounts = () => {
+		const statuses = [
+			'all',
+			'pending',
+			'processing',
+			'on-hold',
+			'completed',
+			'cancelled',
+			'refunded',
+			'failed',
+			'trash',
+		];
+
+		if (modules.includes('marketplace-refund')) {
+			statuses.push('refund-requested');
+		}
+
+		const requests = statuses.map((status) => {
+			const params: any = {
+				per_page: 1,
+				meta_key: 'multivendorx_store_id',
+				value: appLocalizer.store_id,
+			};
+
+			if (status !== 'all') {
+				params.status = status;
+			}
+
+			return axios
+				.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+					params,
+				})
+				.then((res) => {
 					const total = parseInt(res.headers['x-wp-total'] || '0');
 
 					return {
@@ -193,12 +187,16 @@ const Orders: React.FC = () => {
 								status.slice(1),
 						count: total,
 					};
-				})
-			);
-			setCategoryCounts(counts);
-		} catch (error) {
-			console.error('Failed to fetch order status counts:', error);
-		}
+				});
+		});
+
+		Promise.all(requests)
+			.then((counts) => {
+				setCategoryCounts(counts);
+			})
+			.catch((error) => {
+				console.error('Error fetching order status counts:', error);
+			});
 	};
 
 	// Fetch dynamic order status counts for typeCounts filter
@@ -315,7 +313,7 @@ const Orders: React.FC = () => {
 			order.billing?.first_name || order.billing?.last_name
 				? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
 				: order.billing?.email || __('Guest', 'multivendorx'),
-		[__('Date', 'multivendorx')]: order.date_created? formatWordpressDate(order.date_created) : '',
+		[__('Date', 'multivendorx')]: order.date_created? formatWcShortDate(order.date_created) : '',
 		[__('Status', 'multivendorx')] : order.status ?? '',
 		[__('Total Earning', 'multivendorx')] : order.commission_total ?? '',
 		[__('Total', 'multivendorx')] : order.total ?? '',
@@ -333,12 +331,12 @@ const Orders: React.FC = () => {
 					filename:
 						query.filter?.created_at?.startDate &&
 						query.filter?.created_at?.endDate
-							? `orders-${formatWordpressDate(
+							? `orders-${formatWcShortDate(
 									query.filter.created_at.startDate
-							  )}-${formatWordpressDate(
+							  )}-${formatWcShortDate(
 									query.filter.created_at.endDate
 							  )}.csv`
-							: `orders-${formatWordpressDate(new Date())}.csv`,
+							: `orders-${formatWcShortDate(new Date())}.csv`,
 	
 					paramsBuilder: {
 						page: 1,
@@ -421,7 +419,7 @@ const Orders: React.FC = () => {
 						value: order.id || '',
 					},
 					{
-						display: formatWordpressDate(order.date_created),
+						display: (order.date_created),
 						value: order.date_created,
 					},
 					{
@@ -429,11 +427,11 @@ const Orders: React.FC = () => {
 						value: order.status,
 					},
 					{
-						display: formatCurrency(order.currency_symbol, order.commission_total || 0),
+						display: formatCurrency(order.commission_total || 0),
 						value: order.commission_total || 0,
 					},
 					{
-						display: formatCurrency(order.currency_symbol, order.total),
+						display: formatCurrency(order.total),
 						value: order.total,
 					},
 				]);
@@ -442,43 +440,44 @@ const Orders: React.FC = () => {
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
-			.catch((error) => {
-				console.error('Order fetch failed:', error);
+			.catch(() => {
 				setRows([]);
 				setTotalRows(0);
 				setIsLoading(false);
 			});
 	};
 
-	const handleBulkAction = async (
-		action: string,
-		selectedIds: number[]
-	) => {
-		if (!action || selectedIds.length === 0) return;
+	const handleBulkAction = (
+	action: string,
+	selectedIds: number[]
+) => {
+	if (!action || selectedIds.length === 0) return;
 
-		try {
-			const updatePayload = {
-				update: selectedIds.map((id) => ({
-					id,
-					status: action,
-				})),
-			};
-
-			await axios.post(
-				`${appLocalizer.apiUrl}/wc/v3/orders/batch`,
-				updatePayload,
-				{
-					headers: {
-						'X-WP-Nonce': appLocalizer.nonce,
-					},
-				}
-			);
-
-			fetchData({});
-		} catch (err) {
-			console.error(err);
-		}
+	const updatePayload = {
+		update: selectedIds.map((id) => ({
+			id,
+			status: action,
+		})),
 	};
+
+	axios
+		.post(
+			`${appLocalizer.apiUrl}/wc/v3/orders/batch`,
+			updatePayload,
+			{
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+			}
+		)
+		.then(() => {
+			fetchData({});
+		})
+		.catch((err) => {
+			console.error('Error performing bulk action:', err);
+		});
+};
+
 
 	return (
 		<>

@@ -36,7 +36,6 @@ const Documentation: React.FC = () => {
 				setData(apiData);
 			})
 			.catch(() => {
-				console.error(__('Failed to load documents', 'multivendorx'));
 				setData([]);
 			});
 	}
@@ -109,15 +108,14 @@ const Documentation: React.FC = () => {
 				<div className="buttons-wrapper">
 					<div className="search-field">
 						<div className="search-section">
-							<input
+							<BasicInputUI
 								type="text"
 								placeholder={__(
 									'Search documents...',
 									'multivendorx'
 								)}
 								value={searchText}
-								
-								className="basic-input"
+								onChange={(value) => setSearchText(value)}
 							/>
 							<i className="adminfont-search"></i>
 						</div>

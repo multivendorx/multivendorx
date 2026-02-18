@@ -228,7 +228,6 @@ class CommissionUtil {
                         'shipping_tax_amount' => floatval( $row->shipping_tax_amount ),
                         'commission_total'    => floatval( $row->commission_total ),
                         'commission_refunded' => floatval( $row->commission_refunded ),
-                        'currency_symbol'     => Utill::multivendorx_get_currency_symbol($row->currency),
                     );
                 },
                 $results
@@ -336,7 +335,6 @@ class CommissionUtil {
             'shipping_tax_amount' => floatval( $result->shipping_tax_amount ),
             'commission_total'    => floatval( $result->commission_total ),
             'commission_refunded' => floatval( $result->commission_refunded ),
-            'currency_symbol'     => Utill::multivendorx_get_currency_symbol($result->currency),
             'last_30_days'        => $last_30_days,
             'previous_30_days'    => $previous_30_days,
         );
