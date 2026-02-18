@@ -283,3 +283,41 @@
 }
 
 // custom icon dropdown end
+
+// setup wizard start
+.wizard-container {
+    width: 100%;
+    max-width: 50rem;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: $background-white;
+    border-radius: 0.313rem;
+
+    .welcome-wrapper {
+        text-align: center;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+
+        .wizard-title {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.45rem;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+
+        img {
+            width: 11rem;
+        }
+
+        .des {
+            text-align: center;
+            padding: 0 3rem;
+        }
+    }
+    .form-group{
+        padding: 1rem;
+    }
+}

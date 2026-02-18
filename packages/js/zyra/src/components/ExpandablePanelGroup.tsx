@@ -589,6 +589,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                     return {
                         ...btn,
                         text: btn.label,
+                        color: 'red',
                         onClick: () => {
                             if (isFirstMethod) return;
                             const prev = wizardSteps[wizardIndex - 1];
@@ -602,6 +603,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                     return {
                         ...btn,
                         text: btn.label,
+                        color: 'purple',
                         onClick: () => {
                             handleSaveSetupWizard();
                             if (!isLastMethod) {
@@ -619,6 +621,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                     return {
                         ...btn,
                         text: btn.label,
+                        color: 'blue',
                         onClick: () => {
                             setWizardIndex(methods.length);
                             window.open(appLocalizer.site_url, '_self');
@@ -992,7 +995,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
             </div>
 
             {isWizardMode && (
-                <div className="buttons-wrapper">{renderWizardButtons()}</div>
+                {renderWizardButtons()}
             )}
         </>
     );
