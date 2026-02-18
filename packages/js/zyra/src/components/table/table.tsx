@@ -17,11 +17,11 @@ const ASC = 'asc';
 const DESC = 'desc';
 
 const Table: React.FC<TableProps> = ({
-    headers = [],
+    headers = {},
     rows = [],
     caption,
     className,
-    onSort = () => {},
+    onSort = () => { },
     query = {},
     ids = [],
     selectedIds = [],
@@ -37,18 +37,26 @@ const Table: React.FC<TableProps> = ({
     const [isScrollableRight, setIsScrollableRight] = useState(false);
     const [isScrollableLeft, setIsScrollableLeft] = useState(false);
 
-    const sortedBy = useMemo(
-        () => query.orderby ?? headers.find((h) => h.defaultSort)?.key,
-        [query.orderby, headers]
-    );
+    const sortedBy = useMemo(() => {
+        if (query.orderby) return query.orderby;
 
-    const sortDir = useMemo(
-        () =>
-            query.order ??
-            headers.find((h) => h.key === sortedBy)?.defaultOrder ??
-            DESC,
-        [query.order, headers, sortedBy]
-    );
+        const defaultHeader = Object.entries(headers).find(
+            ([, config]) => config.defaultSort
+        );
+
+        return defaultHeader?.[0];
+    }, [query.orderby, headers]);
+
+    const sortDir = useMemo(() => {
+        if (query.order) return query.order;
+
+        const currentHeader = Object.entries(headers).find(
+            ([key]) => key === sortedBy
+        );
+
+        return currentHeader?.[1]?.defaultOrder ?? DESC;
+    }, [query.order, headers, sortedBy]);
+
 
     const hasData = rows.length > 0;
 
@@ -157,16 +165,16 @@ const Table: React.FC<TableProps> = ({
                                 />
                             </th>
                         )}
-                        {headers.map((header, i) => {
+
+                        {Object.entries(headers).map(([key, config], i) => {
                             const {
-                                key,
                                 label,
                                 isSortable,
                                 isNumeric,
                                 isLeftAligned,
                                 cellClassName,
                                 screenReaderLabel,
-                            } = header;
+                            } = config;
 
                             const isSorted = sortedBy === key;
 
@@ -192,7 +200,7 @@ const Table: React.FC<TableProps> = ({
                                             ? sortDir === ASC
                                                 ? 'ascending'
                                                 : 'descending'
-                                            : null
+                                            : undefined
                                     }
                                 >
                                     {isSortable ? (
@@ -200,7 +208,7 @@ const Table: React.FC<TableProps> = ({
                                             onClick={
                                                 hasData
                                                     ? () => handleSort(key)
-                                                    : null
+                                                    : undefined
                                             }
                                             className="sort-button"
                                         >
@@ -214,9 +222,7 @@ const Table: React.FC<TableProps> = ({
                                     ) : (
                                         <Fragment>
                                             <span
-                                                aria-hidden={
-                                                    !!screenReaderLabel
-                                                }
+                                                aria-hidden={!!screenReaderLabel}
                                             >
                                                 {label}
                                             </span>
@@ -248,7 +254,7 @@ const Table: React.FC<TableProps> = ({
                                     </td>
                                 )}
 
-                                {headers.map((_, colIndex) => (
+                                {Object.entries(headers).map(([key], colIndex) => (
                                     <td
                                         key={`skeleton-${rowIndex}-${colIndex}`}
                                         className="admin-column"
@@ -259,26 +265,36 @@ const Table: React.FC<TableProps> = ({
                             </tr>
                         ))
                     ) : hasData ? (
+
                         rows.map((row, rowIndex) => (
                             <tr
                                 className="admin-row"
-                                key={ids[rowIndex] ?? rowIndex}
+                                key={row.id ?? rowIndex}
                             >
                                 {enableBulkSelect && (
                                     <td className="admin-column select">
                                         <input
                                             type="checkbox"
-                                            checked={selectedIds.includes(
-                                                ids[rowIndex]
-                                            )}
-                                            onChange={() => toggleRow(rowIndex)}
+                                            checked={selectedIds.includes(row.id)}
+                                            onChange={() => toggleRow(row.id)}
                                         />
                                     </td>
                                 )}
 
-                                {row.map((cell, colIndex) => {
-                                    const header = headers[colIndex];
-                                    const rowId = ids[rowIndex];
+                                {Object.entries(headers).map(([key, header], colIndex) => {
+                                    const rowId = row.id;
+                                    const cell = row[key];
+
+                                    if (typeof header.render === "function") {
+                                        return (
+                                            <td
+                                                key={`${rowId}-${colIndex}`}
+                                                className="admin-column"
+                                            >
+                                                {header.render(row)}
+                                            </td>
+                                        );
+                                    }
 
                                     if (header.type === 'action') {
                                         return (
@@ -287,47 +303,41 @@ const Table: React.FC<TableProps> = ({
                                                 className="admin-column actions"
                                             >
                                                 <TableRowActions
-                                                    rowId={rowId}
+                                                    row={row}
                                                     rowActions={header.actions}
                                                 />
                                             </td>
                                         );
                                     }
 
-                                    const displayValue = renderCell(cell);
+                                    let displayValue;
 
-                                    const isStatusColumn =
-                                        header.key === 'status';
-
-                                    const statusClass =
-                                        isStatusColumn && cell?.value
-                                            ? `admin-badge badge-${String(
-                                                  cell.value
-                                              ).toLowerCase()}`
-                                            : '';
+                                    if (header.type && cell) {
+                                        displayValue = renderCell(cell, header.type, row);
+                                    } else {
+                                        displayValue = renderCell(cell);
+                                    }
 
                                     return (
                                         <td
                                             key={`${rowId}-${colIndex}`}
                                             className="admin-column"
                                         >
-                                            {isStatusColumn ? (
-                                                <span className={statusClass}>
-                                                    {displayValue}
-                                                </span>
-                                            ) : header.isEditable ? (
-                                                renderEditableCell({
-                                                    header,
-                                                    cell,
-                                                    isEditing: false,
-                                                    onSave: onCellEdit,
-                                                })
-                                            ) : (
-                                                displayValue
-                                            )}
+                                            {
+                                                header.isEditable ? (
+                                                    renderEditableCell({
+                                                        header,
+                                                        cell,
+                                                        isEditing: false,
+                                                        onSave: onCellEdit,
+                                                    })
+                                                ) : (
+                                                    displayValue
+                                                )}
                                         </td>
                                     );
                                 })}
+
                             </tr>
                         ))
                     ) : (

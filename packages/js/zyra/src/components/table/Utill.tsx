@@ -1,11 +1,11 @@
 import React from "react";
 import { TableRow } from "./types";
 
-export const renderCell = (cell: TableRow) => {
+export const renderCell = (cell, type = '', row = {}) => {
 	if (!cell) return null;
-	switch (cell.type) {
+	switch (type) {
 		case 'product': {
-			const { id, name, image, link, sku } = cell.data || {};
+			const { id, name, image, link, sku } = row;
 			return (
 				<a href={link} className="product-wrapper">
 					{image ? (
@@ -31,7 +31,7 @@ export const renderCell = (cell: TableRow) => {
 				image,
 				icon,
 				subDescription
-			} = cell.data || {};
+			} = row;
 
 			const Wrapper: React.ElementType = link ? 'a' : 'div';
 
@@ -68,46 +68,15 @@ export const renderCell = (cell: TableRow) => {
 				</Wrapper>
 			);
 		}
-		case 'commission': {
-			const { items = [] } = cell.data || {};
-			const [isExpanded, setIsExpanded] = React.useState(false);
-
-			if (!items.length) return null;
-
+		case 'status': {
 			return (
-				<ul className={`commission-details ${isExpanded ? '' : 'overflow'}`}>
-					{items.map((item, idx) => (
-						<li key={idx}>
-							<div className="item">
-								<div className="des">{item.label}</div>
-								<div className="title">
-									{item.isPositive ? '+' : '-'} {item.value}
-								</div>
-							</div>
-						</li>
-					))}
-
-					{items.length > 2 && (
-						<span
-							className="more-btn"
-							onClick={() => setIsExpanded(prev => !prev)}
-						>
-							{isExpanded ? (
-								<>
-									Less <i className="adminfont-arrow-up"></i>
-								</>
-							) : (
-								<>
-									More <i className="adminfont-arrow-down"></i>
-								</>
-							)}
-						</span>
-					)}
-				</ul>
+				<span className={`admin-badge badge-${String(cell).toLowerCase()}`}>
+					{cell}
+				</span>
 			);
 		}
 
 		default:
-			return cell.display ?? null;
+			return cell ?? null;
 	}
 };

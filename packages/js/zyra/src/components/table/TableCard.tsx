@@ -23,7 +23,7 @@ const defaultOnColumnsChange = (
 const TableCard: React.FC<TableCardProps> = ({
 	className,
 	search,
-	headers = [],
+	headers = {},
 	ids = [],
 	isLoading = false,
 	onColumnsChange = defaultOnColumnsChange,
@@ -120,51 +120,51 @@ const TableCard: React.FC<TableCardProps> = ({
 		onBulkActionApply?.(action, selectedIds);
 		setSelectedIds([]);
 	};
-	/**
-	 * Determine default visible columns
-	 */
-	const getShowCols = (headersList: TableCardProps['headers'] = []) => {
-		return headersList
-			.map(({ key, visible }) =>
-				visible === false ? null : key
-			)
-			.filter((k): k is string => Boolean(k));
-	};
+	// /**
+	//  * Determine default visible columns
+	//  */
+	// const getShowCols = (headersList: TableCardProps['headers'] = []) => {
+	// 	return headersList
+	// 		.map(({ key, visible }) =>
+	// 			visible === false ? null : key
+	// 		)
+	// 		.filter((k): k is string => Boolean(k));
+	// };
 
-	const [showCols, setShowCols] = useState<string[]>(
-		getShowCols(headers)
-	);
+	// const [showCols, setShowCols] = useState<string[]>(
+	// 	getShowCols(headers)
+	// );
 
 	/**
 	 * Toggle column visibility
 	 */
-	const onColumnToggle = (key: string) => () => {
-		const isVisible = showCols.includes(key);
+	// const onColumnToggle = (key: string) => () => {
+	// 	const isVisible = showCols.includes(key);
 
-		if (isVisible) {
-			if (showCols.length <= 1) {
-				return; // do nothing if it's the last visible column
-			}
-			// Reset sorting if hiding sorted column
-			if (query.orderby === key) {
-				const defaultSort =
-					headers.find((h) => h.defaultSort) ||
-					headers[0];
+	// 	if (isVisible) {
+	// 		if (showCols.length <= 1) {
+	// 			return; // do nothing if it's the last visible column
+	// 		}
+	// 		// Reset sorting if hiding sorted column
+	// 		if (query.orderby === key) {
+	// 			const defaultSort =
+	// 				headers.find((h) => h.defaultSort) ||
+	// 				headers[0];
 
-				if (defaultSort?.key) {
-					onQueryChange('sort')(defaultSort.key, 'desc');
-				}
-			}
+	// 			if (defaultSort?.key) {
+	// 				onQueryChange('sort')(defaultSort.key, 'desc');
+	// 			}
+	// 		}
 
-			const updated = showCols.filter((c) => c !== key);
-			setShowCols(updated);
-			onColumnsChange(updated, key);
-		} else {
-			const updated = [...showCols, key];
-			setShowCols(updated);
-			onColumnsChange(updated, key);
-		}
-	};
+	// 		const updated = showCols.filter((c) => c !== key);
+	// 		setShowCols(updated);
+	// 		onColumnsChange(updated, key);
+	// 	} else {
+	// 		const updated = [...showCols, key];
+	// 		setShowCols(updated);
+	// 		onColumnsChange(updated, key);
+	// 	}
+	// };
 
 	/**
 	 * Pagination handler
@@ -180,17 +180,17 @@ const TableCard: React.FC<TableCardProps> = ({
 	/**
 	 * Derived visible headers & rows
 	 */
-	const visibleHeaders = headers.filter(({ key }) =>
-		showCols.includes(key)
-	);
+	// const visibleHeaders = headers.filter(({ key }) =>
+	// 	showCols.includes(key)
+	// );
 
-	const visibleRows: TableRow[][] = rows.map((row) =>
-		headers
-			.map(({ key }, index) =>
-				showCols.includes(key) ? row[index] : null
-			)
-			.filter((cell): cell is TableRow => cell !== null)
-	);
+	// const visibleRows: TableRow[][] = rows.map((row) =>
+	// 	headers
+	// 		.map(({ key }, index) =>
+	// 			showCols.includes(key) ? row[index] : null
+	// 		)
+	// 		.filter((cell): cell is TableRow => cell !== null)
+	// );
 
 	/**
 	 * Root className (manual)
@@ -248,7 +248,7 @@ const TableCard: React.FC<TableCardProps> = ({
 							}}
 						/>
 					)}
-					{showMenu && showColumnToggleIcon && (
+					{/* {showMenu && showColumnToggleIcon && (
 						<PopupUI
 							position="menu-dropdown"
 							toggleIcon="adminfont-more-vertical"
@@ -272,13 +272,13 @@ const TableCard: React.FC<TableCardProps> = ({
 								})}
 							</ul>
 						</PopupUI>
-					)}
+					)} */}
 				</div>
 			</div>
 
 			<Table
-				rows={visibleRows}
-				headers={visibleHeaders}
+				rows={rows}
+				headers={headers}
 				caption={title}
 				query={query}
 				onSort={

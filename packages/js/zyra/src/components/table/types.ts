@@ -16,79 +16,75 @@ export type QueryProps = {
 	categoryFilter?: string;
 };
 
-export type TableHeader = {
+export type TableHeaderConfig = {
 	/**
-	 * Boolean, true if this column is the default for sorting. Only one column should have this set.
-	 */
-	defaultSort?: boolean;
-	/**
-	 * String, asc|desc if this column is the default for sorting. Only one column should have this set.
-	 */
-	defaultOrder?: string;
-	/**
-	 * Boolean, true if this column should be aligned to the left.
-	 */
-	isLeftAligned?: boolean;
-	/**
-	 * Boolean, true if this column is a number value.
-	 */
-	isNumeric?: boolean;
-	/**
-	 * Boolean, true if this column is sortable.
-	 */
-	isSortable?: boolean;
-	/**
-	 * The API parameter name for this column, passed to `orderby` when sorting via API.
-	 */
-	key: string;
-	/**
-	 * The display label for this column.
+	 * Display label
 	 */
 	label?: React.ReactNode;
+
 	/**
-	 * Boolean, true if this column should always display in the table (not shown in toggle-able list).
+	 * Sorting
+	 */
+	isSortable?: boolean;
+	defaultSort?: boolean;
+	defaultOrder?: 'asc' | 'desc';
+
+	/**
+	 * Alignment
+	 */
+	isNumeric?: boolean;
+	isLeftAligned?: boolean;
+
+	/**
+	 * Visibility control
 	 */
 	required?: boolean;
+	visible?: boolean;
+
 	/**
-	 * The label used for screen readers for this column.
+	 * Accessibility
 	 */
 	screenReaderLabel?: string;
-	/**
-	 * Additional classname for the header cell
-	 */
 	cellClassName?: string;
+
 	/**
-	 * Boolean value to control visibility of a header
+	 * Built-in renderer type
 	 */
-	visible?: boolean;
-	type?: string;
+	type?: 'text' | 'currency' | 'date' | 'badge' | 'action';
+
+	/**
+	 * Custom renderer (overrides type)
+	 */
+	render?: (
+		row: TableRow
+	) => React.ReactNode;
+
+	/**
+	 * Inline editing
+	 */
 	isEditable?: boolean;
-	editType?: string;
-	options?: { label: string; value: string | number }[];
+	editType?: 'text' | 'number' | 'select';
+
+	options?: {
+		label: string;
+		value: string | number;
+	}[];
+
+	/**
+	 * Action column config
+	 */
 	actions?: ActionItem[];
 };
 
+
 export type TableRow = {
-	/**
-	 * Display value (optional if rendered via type + data)
-	 */
-	display?: React.ReactNode;
-
-	/**
-	 * Real value used for sorting
-	 */
-	value?: string | number | boolean;
-
-	/**
-	 * Cell rendering type
-	 * e.g. 'product', 'price', 'status'
-	 */
-	type?: string;
-
-	/**
-	 * Extra payload used by renderer based on `type`
-	 */
-	data?: Record<string, string | number>;
+	id?: string | number;
+	[key: string]:
+		| string
+		| number
+		| boolean
+		| React.ReactNode
+		| undefined;
 };
 
 
@@ -103,11 +99,11 @@ type CommonTableProps = {
 	/**
 	 * An array of column headers (see `Table` props).
 	 */
-	headers?: Array<TableHeader>;
+	headers?: Record<string, TableHeaderConfig>;
 	/**
 	 * An array of arrays of display/value object pairs (see `Table` props).
 	 */
-	rows?: Array<Array<TableRow>>;
+	rows?: Array<TableRow>;
 	/**
 	 * Additional CSS classes.
 	 */
