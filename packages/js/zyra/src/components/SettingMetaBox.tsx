@@ -321,7 +321,6 @@ const createFieldRenderers = (): Record<string, React.FC<{
                             <option key={value} value={value}>{label}</option>
                         ))}
                     </select>
-                    <label>Color</label>
                 </div>
             </ContentGroup>
         </>
