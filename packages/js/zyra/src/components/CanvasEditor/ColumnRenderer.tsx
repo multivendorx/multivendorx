@@ -191,7 +191,6 @@ export const ColumnRenderer: React.FC<ColumnRendererProps> = ({
                                 {column.length === 0 ? (
                                     <div className="column-drop-zone">
                                         <i className="adminfont-plus" />
-                                        <span>Drop blocks here</span>
                                     </div>
                                 ) : (
                                     column.map((child, childIdx) => (

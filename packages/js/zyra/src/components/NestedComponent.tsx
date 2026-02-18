@@ -227,7 +227,7 @@ export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
                     })}
 
                     { ! single && (
-                        <div className="buttons-wrapper">
+                        <div className="button-wrapper">
                             { /* Add button only on last row */ }
                             { rowIndex === rows.length - 1 && (
                                 <AdminButtonUI

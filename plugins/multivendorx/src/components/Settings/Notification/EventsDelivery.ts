@@ -44,7 +44,7 @@ export default {
 		{
 			key: 'sms_section',
 			type: 'section',
-			hint: __('Email delivery settings', 'multivendorx'),
+			title: __('Email delivery settings', 'multivendorx'),
 		},
 		{
 			key: 'email_provider',
@@ -82,7 +82,7 @@ export default {
 		{
 			key: 'sms_section',
 			type: 'section',
-			hint: __('SMS delivery settings', 'multivendorx'),
+			title: __('SMS delivery settings', 'multivendorx'),
 		},
 		{
 			key: 'sms_sender_phone_number',
@@ -103,7 +103,7 @@ export default {
 		{
 			key: 'sms_section',
 			type: 'section',
-			hint: __('SMS configuration', 'multivendorx'),
+			title: __('SMS configuration', 'multivendorx'),
 		},
 		{
 			key: 'sms_gateway_selector',

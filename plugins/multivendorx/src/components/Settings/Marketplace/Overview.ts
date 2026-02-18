@@ -440,7 +440,7 @@ export default {
 		// {
 		// 	key: 'section',
 		// 	type: 'section',
-		// 	hint: __('Customer-facing order presentation & invoicing', 'multivendorx'),
+		// 	title: __('Customer-facing order presentation & invoicing', 'multivendorx'),
 		// },
 		// {
 		// 	key: 'display_customer_order',
@@ -501,7 +501,7 @@ export default {
 		// {
 		// 	key: 'section',
 		// 	type: 'section',
-		// 	hint: __('Enable content styling tools for stores', 'multivendorx'),
+		// 	title: __('Enable content styling tools for stores', 'multivendorx'),
 		// },
 		// {
 		// 	key: 'tinymce_api_section',
@@ -515,7 +515,7 @@ export default {
 		// {
 		// 	key: 'section',
 		// 	type: 'section',
-		// 	hint: __('Shortcode library', 'multivendorx'),
+		// 	title: __('Shortcode library', 'multivendorx'),
 		// },
 		// {
 		// 	key: 'available_shortcodes',

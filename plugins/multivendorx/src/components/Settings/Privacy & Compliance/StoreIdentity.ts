@@ -26,39 +26,39 @@ export default {
 				{
 					key: 'adminfont-verification1',
 					value: __('adminfont-verification1', 'multivendorx'),
-					icon: 'adminfont-verification1',
+					icon: 'verification1',
 				},
 				{
 					key: 'adminfont-verification2',
 					value: __('adminfont-verification2', 'multivendorx'),
-					icon: 'adminfont-verification2',
+					icon: 'verification2',
 				},
 				{
 					key: 'adminfont-verification3',
 					value: __('adminfont-verification3', 'multivendorx'),
-					icon: 'adminfont-verification3',
+					icon: 'verification3',
 				},
 				{
 					key: 'adminfont-verification5',
 					value: __('adminfont-verification5', 'multivendorx'),
-					icon: 'adminfont-verification5',
+					icon: 'verification5',
 				},
 				{
 					key: 'adminfont-verification7',
 					value: __('adminfont-verification7', 'multivendorx'),
-					icon: 'adminfont-verification7',
+					icon: 'verification7',
 				},
 				{
 					key: 'adminfont-verification9',
 					value: __('adminfont-verification9', 'multivendorx'),
-					icon: 'adminfont-verification9',
+					icon: 'verification9',
 				},
 			],
 		},
 		{
 			key: 'separator_content',
 			type: 'section',
-			hint: __('Identity Verification', 'multivendorx'),
+			title: __('Identity Verification', 'multivendorx'),
 			desc: __(
 				'Verify store identity using government-issued documents or facial recognition. Ensures authenticity of users.'
 			),
@@ -98,7 +98,7 @@ export default {
 		{
 			key: 'separator_content',
 			type: 'section',
-			hint: __('Social Verification', 'multivendorx'),
+			title: __('Social Verification', 'multivendorx'),
 			desc: __(
 				'Allow stores to verify their identity by connecting social media accounts.'
 			),
@@ -112,7 +112,7 @@ export default {
 			modal: [
 				{
 					id: 'google-connect',
-					icon: 'adminfont-google',
+					icon: 'google',
 					label: 'Google',
 					connected: false,
 					disableBtn: true,
@@ -141,7 +141,7 @@ export default {
 				},
 				{
 					id: 'twitter-connect',
-					icon: 'adminfont-twitter',
+					icon: 'twitter',
 					label: 'Twitter',
 					connected: false,
 					disableBtn: true,
@@ -171,7 +171,7 @@ export default {
 				},
 				{
 					id: 'facebook-connect',
-					icon: 'adminfont-facebook',
+					icon: 'facebook',
 					label: 'Facebook',
 					connected: false,
 					disableBtn: true,
@@ -195,7 +195,7 @@ export default {
 				},
 				{
 					id: 'linkedin-connect',
-					icon: 'adminfont-linkedin',
+					icon: 'linkedin',
 					label: 'LinkedIn',
 					disableBtn: true,
 					countBtn: false,
