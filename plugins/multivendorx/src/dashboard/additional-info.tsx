@@ -4,7 +4,7 @@ import {getApiLink, SuccessNotice, TextAreaUI, ToggleSettingUI } from 'zyra';
 
 const AdditionalInformation = () => {
 	const id = appLocalizer.store_id;
-	const [formData, setFormData] = useState<{ [key: string]: any }>({});
+	const [formData, setFormData] = useState<{ [key: string] }>({});
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const [stateOptions, setStateOptions] = useState<
 		{ label: string; value: string }[]
@@ -63,7 +63,7 @@ const AdditionalInformation = () => {
 	};
 
 	// Handle toggle changes (always save yes/no string)
-	const handleToggleChange = (field: string, val: any) => {
+	const handleToggleChange = (field: string, val) => {
 		const newValue = typeof val === 'string' ? val : val?.value || 'no';
 		setFormData((prev) => {
 			const updated = { ...prev, [field]: newValue };
@@ -73,17 +73,16 @@ const AdditionalInformation = () => {
 	};
 
 	// Auto-save to backend
-	const autoSave = (updatedData: { [key: string]: any }) => {
-		axios({
-			method: 'PUT',
-			url: getApiLink(appLocalizer, `store/${id}`),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: updatedData,
-		}).then((res) => {
-			if (res.data.success) {
-				setSuccessMsg('Store saved successfully!');
-			}
-		});
+	const autoSave = (updatedData: { [key: string] }) => {
+		axios
+			.put(getApiLink(appLocalizer, `store/${id}`), updatedData, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((res) => {
+				if (res.data.success) {
+					setSuccessMsg('Store saved successfully!');
+				}
+			});
 	};
 
 	return (
@@ -132,7 +131,7 @@ const AdditionalInformation = () => {
 										},
 									]}
 									value={formData.hideAddress || 'no'}
-									onChange={(val: any) =>
+									onChange={(val) =>
 										handleToggleChange('hideAddress', val)
 									}
 								/>
@@ -156,7 +155,7 @@ const AdditionalInformation = () => {
 										},
 									]}
 									value={formData.hidePhone || 'no'}
-									onChange={(val: any) =>
+									onChange={(val) =>
 										handleToggleChange('hidePhone', val)
 									}
 								/>
@@ -180,7 +179,7 @@ const AdditionalInformation = () => {
 										},
 									]}
 									value={formData.hideEmail || 'no'}
-									onChange={(val: any) =>
+									onChange={(val) =>
 										handleToggleChange('hideEmail', val)
 									}
 								/>

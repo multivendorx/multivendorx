@@ -10,32 +10,38 @@ export default {
     ),
     headerIcon: 'tools',
     submitUrl: `store/${appLocalizer.store_id}`,
-    modal: [
-        {
-			key: 'product_page_chat',
-			type: 'setting-toggle',
-			label: __('Chat button position', 'multivendorx'),
-			desc: __(
-				'Choose where the chat button will appear on product/listing pages.',
-				'multivendorx'
-			),
-			options: [
+	modal: [
 				{
-					key: 'add_to_cart_button',
-					label: __('Next to Add to Cart button', 'multivendorx'),
-					value: 'add_to_cart_button',
+					type: 'text',
+					name: 'name',
+					label: __('Name', 'multivendorx'),
+					key: 'name',
+					value: '',
+					
+
 				},
 				{
-					key: 'store_info',
-					label: __('Inside Store details tab', 'multivendorx'),
-					value: 'store_info',
+					type: 'text',
+					name: 'slug',
+					label: __('Storefront link', 'multivendorx'),
+					key: 'slug',
+					value: '',
+					
 				},
 				{
-					key: 'none',
-					label: __('Both', 'multivendorx'),
-					value: 'none',
+					type: 'textarea',
+					name: 'description',
+					label: __('Description', 'multivendorx'),
+					key: 'description',
+					value: '',
+					
 				},
-			],
-		},
-    ],
+				{
+					type: 'text',
+					name: 'messageToBuyer',
+					label: __('Buyer welcome message after purchase', 'multivendorx'),
+					key: 'messageToBuyer',
+					value: '',
+				}
+			]
 };

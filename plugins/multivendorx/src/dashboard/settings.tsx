@@ -13,6 +13,7 @@ import {
 	SettingsNavigator,
 } from 'zyra';
 import ShowProPopup from '../components/Popup/Popup';
+import ShippingDelivery from './settings/ShippingDelivery';
 
 type SettingItem = Record<string, any>;
 
@@ -226,6 +227,9 @@ const settings: React.FC<SettingsProps> = () => {
 			if (!currentTab) {
 				return null;
 			}
+			if (currentTab === 'shipping') {
+			return <ShippingDelivery />;
+		}
 			const settingModal = getSettingById(settingsArray as any, currentTab);
 			
 			// Ensure settings context is initialized
