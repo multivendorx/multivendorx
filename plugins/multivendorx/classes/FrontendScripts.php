@@ -588,6 +588,9 @@ class FrontendScripts {
 							),
                             'order_meta'               => Utill::ORDER_META_SETTINGS,
                             'date_format'              => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
+                            'price_decimals'           => wc_get_price_decimals(),
+                            'decimal_separator'        => wc_get_price_decimal_separator(),
+                            'thousand_separator'       => wc_get_price_thousand_separator(),
                         )
                     ),
                 ),
@@ -696,6 +699,10 @@ class FrontendScripts {
                         'random_string_generate'   => wp_generate_uuid4(),
                         'order_meta'               => Utill::ORDER_META_SETTINGS,
                         'date_format'              => Utill::wp_to_react_date_format( get_option( 'date_format' ) ),
+                        'price_decimals'           => wc_get_price_decimals(),
+                        'decimal_separator'        => wc_get_price_decimal_separator(),
+                        'thousand_separator'       => wc_get_price_thousand_separator(),
+
                     ),
                 ),
                 'multivendorx-registration-form-editor-script' => array(

@@ -81,6 +81,9 @@ declare global {
 		current_user: any;
 		order_meta:any;
 		date_format: any;
+		price_decimals: string;
+		decimal_separator:string;
+		thousand_separator:string;
 	}
 	interface Color {
 		color: any;
