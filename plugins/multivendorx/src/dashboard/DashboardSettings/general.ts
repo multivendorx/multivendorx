@@ -9,7 +9,7 @@ export default {
         'multivendorx'
     ),
     headerIcon: 'tools',
-    submitUrl: 'settings',
+    submitUrl: 'dashboard-settings',
     modal: [
         {
 			key: 'product_page_chat',
