@@ -517,6 +517,9 @@ class FrontendScripts {
             $store_ids    = Store::get_store( get_current_user_id(), 'user' );
             $active_store = MultiVendorX()->active_store;
     
+            $store = new Store( $active_store );
+            $all_meta = $store->get_all_meta();
+
             if ( empty( $active_store ) && ! empty( $store_ids ) ) {
                 $first_store = reset( $store_ids );
     
@@ -682,6 +685,7 @@ class FrontendScripts {
                         'whatsapp_opening_pattern' => MultiVendorX()->setting->get_setting( ' whatsapp_opening_pattern' ),
                         'whatsapp_pre_filled'      => MultiVendorX()->setting->get_setting( ' whatsapp_pre_filled' ),
                         'settings_databases_value' => $settings_databases_value,
+                        'settings_all_meta' => $all_meta,
                         'site_name'                => get_bloginfo( 'name' ),
                         'current_user'             => wp_get_current_user(),
                         'current_user_image'       => get_avatar_url( get_current_user_id(), array( 'size' => 48 ) ),

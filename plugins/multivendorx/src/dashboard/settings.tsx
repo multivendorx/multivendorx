@@ -26,11 +26,10 @@ const settings: React.FC<SettingsProps> = () => {
 		getTemplateData('dashboardSettings'),
 		[]
 	);
-console.log(getTemplateData('dashboardSettings'))
-console.log(settingsArray)
+
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const { modules } = useModules();
-	const settings = appLocalizer.settings_databases_value || {};
+	const settings = appLocalizer.settings_all_meta || {};
 
 	useEffect(() => {
 		if (successMsg) {
@@ -237,14 +236,14 @@ console.log(settingsArray)
 			if (settingName !== currentTab) {
 				setSetting(
 					currentTab,
-					appLocalizer.settings_databases_value[currentTab] || {}
+					appLocalizer.settings_all_meta || {}
 				);
 			}
 	
 			// eslint-disable-next-line react-hooks/rules-of-hooks
 			useEffect(() => {
 				if (settingName === currentTab) {
-					appLocalizer.settings_databases_value[settingName] = setting;
+					appLocalizer.settings_all_meta = setting;
 				}
 			}, [setting, settingName, currentTab]);
 		
