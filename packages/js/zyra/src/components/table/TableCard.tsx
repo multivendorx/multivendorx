@@ -173,9 +173,9 @@ const TableCard: React.FC<TableCardProps> = ({
 	 */
 	const visibleHeaders = Object.entries(headers)
 		.filter(([key, config]) =>
-			showCols.includes(key) && (config.table !== false) // only include if table !== false (default true)
+			showCols.includes(key) && (config.tableDisplay !== false) // only include if table !== false (default true)
 		)
-		.map(([key, { csv, table, ...rest }]) => ({
+		.map(([key, { csvDisplay, tableDisplay, ...rest }]) => ({
 			key,
 			...rest, // spread everything else except csv and table
 		}));
