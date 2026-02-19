@@ -427,13 +427,10 @@ body.dark {
         left: 0;
         top: 100%;
         width: 100%;
-        display: none;
-
-        ul {
-            margin: 0;
-            list-style-type: none;
-            background: $background-white;
-            border-radius: 0.313rem;
+        margin: 0;
+        list-style-type: none;
+        background: $background-white;
+        border-radius: 0.313rem;
 
             li {
                 padding: 0.5rem 1rem;
@@ -445,7 +442,6 @@ body.dark {
                     color: #fff;
                 }
             }
-        }
     }
 }
 
