@@ -19,7 +19,7 @@ const BLOCK_GROUPS = [
         label: 'Registration Fields',
         icon: 'user',
         blocks: [
-            { id: 'text', icon: 't-letter-bold', value: 'text', label: 'Textbox', placeholder: 'Enter your text here' },
+            { id: 'text', icon: 't-letter-bold', type: 'text', label: 'Textbox', placeholder: 'Enter your text here' },
             { id: 'email', icon: 'unread', value: 'email', label: 'Email', placeholder: 'Enter your email here' },
             { id: 'textarea', icon: 'text', value: 'textarea', label: 'Enter your text', placeholder: 'Enter your message here' },
             { id: 'datepicker', icon: 'calendar', value: 'datepicker', label: 'Date Picker', placeholder: 'Select a date' },
