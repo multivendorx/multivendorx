@@ -664,9 +664,9 @@ class Rest extends \WP_REST_Controller
             'id'         => $post->ID,
             'title'      => $post->post_title,
             'content'    => $post->post_content,
-            'status'     => $post->post_status === 'publish'
-                ? 'published'
-                : $post->post_status,
+            'status'     => $post->post_status,
+            'status'       => $post->post_status,
+            'status_label' => ucfirst( get_post_status_object( $post->post_status )->label ),
             'stores'     => $store_ids,
             'store_name' => ! empty($store_names)? implode(', ', $store_names): 'All Stores',
             'url'        => get_post_meta(

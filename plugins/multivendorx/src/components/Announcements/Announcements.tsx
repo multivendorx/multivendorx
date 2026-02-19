@@ -275,14 +275,14 @@ export const Announcements: React.FC = () => {
 	];
 
 	const headers = {
-		title:{  label: 'Title' },
-		content:{  label: 'Content' },
-		status:{  label: 'Status',type:'status' },
-		store_name:{  label: 'Recipients' },
-		date:{ label: 'Date',type:'date' },
-		action:{
+		title: { label: __('Title', 'multivendorx') },
+		content: { label: __('Content', 'multivendorx') },
+		status_label: { label: __('Status', 'multivendorx'), type: 'status' },
+		store_name: { label: __('Recipients', 'multivendorx') },
+		date: { label: __('Date', 'multivendorx'), type: 'date' },
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Edit', 'multivendorx'),
@@ -301,6 +301,7 @@ export const Announcements: React.FC = () => {
 			],
 		},
 	};
+
 
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);

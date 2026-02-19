@@ -131,11 +131,11 @@ class Rest extends \WP_REST_Controller {
             $offset = ( $page - 1 ) * $limit;
 
             $status_param = $request->get_param( 'status' );
-            $search_value = sanitize_text_field( $request->get_param( 'searchValue' ) );
+            $search_value = sanitize_text_field( $request->get_param( 'search_value' ) );
 
             $dates = Utill::normalize_date_range(
-                $request->get_param( 'startDate' ),
-                $request->get_param( 'endDate' )
+                $request->get_param( 'start_date' ),
+                $request->get_param( 'end_date' )
             );
 
             $args = array(
@@ -188,17 +188,9 @@ class Rest extends \WP_REST_Controller {
             $posts = get_posts( $args );
             $items = array();
 
-            foreach ( $posts as $post ) {
-                $status  = $post->post_status === 'publish' ? 'published' : $post->post_status;
-                $items[] = array(
-                    'id'      => $post->ID,
-                    'title'   => $post->post_title,
-                    'content' => $post->post_content,
-                    'date'    => Utill::multivendorx_rest_prepare_date_response( get_the_date( 'Y-m-d H:i:s', $post->ID ) ),
-                    'status'  => $status,
-                );
+            foreach ($posts as $post) {
+                $items[] = $this->prepare_item_for_response($post, $request);
             }
-
             $response->set_data( $items );
             return $response;
         } catch ( \Exception $e ) {
@@ -207,7 +199,35 @@ class Rest extends \WP_REST_Controller {
             return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
         }
     }
+    /**
+     * Get a knowledge base item from the database.
+     *
+     * @param object $request The request object.
+     */
+    public function get_item( $request ) {
 
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            return new \WP_Error(
+                'invalid_nonce',
+                __( 'Invalid nonce', 'multivendorx' ),
+                array( 'status' => 403 )
+            );
+        }
+
+        $id   = absint( $request->get_param( 'id' ) );
+        $post = get_post( $id );
+
+        if ( ! $post || Utill::POST_TYPES['knowledge'] !== $post->post_type ) {
+            return new \WP_Error(
+                'not_found',
+                __( 'Knowledge Base article not found', 'multivendorx' ),
+                array( 'status' => 404 )
+            );
+        }
+
+        return rest_ensure_response( $this->prepare_item_for_response($post, $request) );
+    }
 
     /**
      * Create a knowledge base article.
@@ -375,43 +395,6 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Get a knowledge base item from the database.
-     *
-     * @param object $request The request object.
-     */
-    public function get_item( $request ) {
-
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error(
-                'invalid_nonce',
-                __( 'Invalid nonce', 'multivendorx' ),
-                array( 'status' => 403 )
-            );
-        }
-
-        $id   = absint( $request->get_param( 'id' ) );
-        $post = get_post( $id );
-
-        if ( ! $post || Utill::POST_TYPES['knowledge'] !== $post->post_type ) {
-            return new \WP_Error(
-                'not_found',
-                __( 'Knowledge Base article not found', 'multivendorx' ),
-                array( 'status' => 404 )
-            );
-        }
-
-        return rest_ensure_response(
-            array(
-                'id'      => $id,
-                'title'   => $post->post_title,
-                'content' => $post->post_content,
-                'status'  => $post->post_status,
-                'date'    => Utill::multivendorx_rest_prepare_date_response( get_post_time( 'Y-m-d H:i:s', true, $post ) ),
-            )
-        );
-    }
-    /**
      * Delete a knowledge base item from the database.
      *
      * @param object $request The request object.
@@ -456,4 +439,23 @@ class Rest extends \WP_REST_Controller {
             )
         );
     }
+    /**
+     * Prepare knowledge base object for REST response.
+     *
+     * @param WP_Post         $post
+     * @param WP_REST_Request $request
+     * @return array
+     */
+    public function prepare_item_for_response( $post, $request ) {
+
+        return array(
+            'id'           => $post->ID,
+            'title'        => $post->post_title,
+            'content'      => $post->post_content,
+            'status'       => $post->post_status,
+            'status_label' => get_post_status_object( $post->post_status )->label,
+            'date'         => get_post_time( 'Y-m-d\TH:i:s', true, $post ),
+        );
+    }
+
 }
