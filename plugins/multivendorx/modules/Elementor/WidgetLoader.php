@@ -8,7 +8,7 @@ class WidgetLoader {
 	public function __construct() {
 		// add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
-		// add_action( 'elementor/dynamic_tags/register_tags', [ $this, 'register_dynamic_tags' ] );
+		add_action( 'elementor/dynamic_tags/register_tags', [ $this, 'register_dynamic_tags' ] );
 	}
 
 	public function register_category( $elements_manager ) {
@@ -55,15 +55,29 @@ class WidgetLoader {
 		);
 
 		// Include Tag File
-		$path = MultiVendorX()->plugin_path . 'modules/Elementor/Tags/StoreName.php';
+		// $path = MultiVendorX()->plugin_path . 'modules/Elementor/Tags/StoreName.php';
 
-		if ( file_exists( $path ) ) {
-			require_once $path;
+		// if ( file_exists( $path ) ) {
+		// 	require_once $path;
 
-			if ( class_exists( '\MultiVendorX\Elementor\Tags\StoreName' ) ) {
-				$dynamic_tags->register(
-					new \MultiVendorX\Elementor\Tags\StoreName()
-				);
+		// 	if ( class_exists( '\MultiVendorX\Elementor\Tags\StoreName' ) ) {
+		// 		$dynamic_tags->register(
+		// 			new \MultiVendorX\Elementor\Tags\StoreName()
+		// 		);
+		// 	}
+		// }
+		$tags_path = MultiVendorX()->plugin_path . 'modules/Elementor/Tags/';
+
+		foreach ( glob( $tags_path . '*.php' ) as $file ) {
+
+			require_once $file;
+
+			// Get class name from file name
+			$class_name = basename( $file, '.php' );
+			$full_class = '\\MultiVendorX\\Elementor\\Tags\\' . $class_name;
+
+			if ( class_exists( $full_class ) ) {
+				$dynamic_tags->register( new $full_class() );
 			}
 		}
 	}

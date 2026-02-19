@@ -69,7 +69,6 @@ class Settings extends \WP_REST_Controller {
         );
     }
 
-
     /**
      * Check if a given request has access to update settings.
      *

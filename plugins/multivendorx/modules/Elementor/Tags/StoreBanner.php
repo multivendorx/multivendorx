@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 namespace MultiVendorX\Elementor\Tags;
 use Elementor\Controls_Manager;
 use Elementor\Core\DynamicTags\Tag;
@@ -97,4 +97,4 @@ class StoreBanner extends Tag {
             ]
         );
     }
-} -->
+}
