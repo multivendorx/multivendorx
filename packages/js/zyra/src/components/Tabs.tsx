@@ -40,7 +40,6 @@ export const TabsUI: React.FC<TabsProps> = ({
         const Render = registeredField?.render;
         
         if (!registeredField || !Render) {
-            console.warn(`Field type "${fieldConfig.type}" not found in registry`);
             return null;
         }
         
