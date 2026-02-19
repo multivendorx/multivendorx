@@ -57,15 +57,15 @@ export const TabsUI: React.FC<TabsProps> = ({
         };
         
         return (
-            <div key={fieldConfig.key || index} className="tab-field-wrapper">
-                {fieldConfig.label && <label className="tab-field-label">{fieldConfig.label}</label>}
+            // <div key={fieldConfig.key || index} className="tab-field-wrapper">
+            //     {fieldConfig.label && <label className="tab-field-label">{fieldConfig.label}</label>}
                 <Render
                     field={fieldConfig}
                     value={fieldValue}
                     onChange={handleFieldChange}
                     canAccess={canAccess}
                 />
-            </div>
+            // </div>
         );
     };
     
@@ -155,9 +155,7 @@ export const TabsUI: React.FC<TabsProps> = ({
                 </div>
             </div>
             
-            <div className="tabs-content">
-                {renderTabContent()}
-            </div>
+            {renderTabContent()}
 
             {/* Footer */}
             {tabs[activeIndex]?.footer && (

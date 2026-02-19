@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './EventRules.scss';
-import { getApiLink, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, TextAreaUI } from 'zyra';
+import { getApiLink, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, TextAreaUI, Skeleton } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
 const RECIPIENT_CONFIG: Record<string, { icon: string; badge: string }> = {
-	Store:    { icon: 'adminfont-storefront', badge: 'blue' },
-	Admin:    { icon: 'adminfont-person',      badge: ' green' },
-	Customer: { icon: 'adminfont-user-circle', badge: 'yellow' },
-	default:  { icon: 'adminfont-mail',        badge: ' default-badge' },
+	Store: { icon: 'storefront', badge: 'blue' },
+	Admin: { icon: 'person', badge: ' green' },
+	Customer: { icon: 'user-circle', badge: 'yellow' },
+	default: { icon: 'mail', badge: ' default-badge' },
 };
 
 const CHANNEL_CONFIG: Record<string, { icon: string; badge: string; label: string }> = {
-	mail:   { icon: 'adminfont-mail',        badge: 'yellow', label: 'Mail' },
-	sms:    { icon: 'adminfont-enquiry',      badge: 'green',  label: 'SMS' },
-	system: { icon: 'adminfont-notification', badge: 'blue',   label: 'System' },
+	mail: { icon: 'mail', badge: 'yellow', label: 'Mail' },
+	sms: { icon: 'enquiry', badge: 'green', label: 'SMS' },
+	system: { icon: 'notification', badge: 'blue', label: 'System' },
 };
 
 const DEFAULT_RECIPIENT_TYPES = ['Store', 'Admin', 'Customer'];
@@ -47,28 +47,37 @@ const RecipientBadge: React.FC<RecipientBadgeProps> = ({ recipient }) => {
 	const { icon, badge } = RECIPIENT_CONFIG[recipient.label] ?? RECIPIENT_CONFIG.default;
 	return (
 		<div className={`admin-badge ${badge}`} role="button" tabIndex={0}>
-			<i className={icon}></i>
+			<i className={`adminfont-${icon}`}></i>
 			<span>{recipient.label}</span>
 		</div>
 	);
 };
 
 const EventRules: React.FC = () => {
-	const [notifications, setNotifications]             = useState<any[]>([]);
-	const [systemTags, setSystemTags]                   = useState<string[]>([]);
-	const [openChannel, setOpenChannel]                 = useState<string | null>(null);
-	const [newRecipientValue, setNewRecipientValue]     = useState('');
-	const [viewMode, setViewMode]                       = useState<'list' | 'grid'>('list');
+	const [notifications, setNotifications] = useState<any[]>([]);
+	const [systemTags, setSystemTags] = useState<string[]>([]);
+	const [openChannel, setOpenChannel] = useState<string | null>(null);
+	const [newRecipientValue, setNewRecipientValue] = useState('');
+	const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 	const [editingNotification, setEditingNotification] = useState<number | null>(null);
-	const [notificationId, setNotificationId]           = useState<number | null>(null);
-	const [formData, setFormData]                       = useState<Record<string, any>>({});
-	const [activeTag, setActiveTag]                     = useState<string>('All');
-	const [cursorPos, setCursorPos]                     = useState<{ start: number; end: number; field: string | null }>({ start: 0, end: 0, field: null });
+	const [notificationId, setNotificationId] = useState<number | null>(null);
+	const [formData, setFormData] = useState<Record<string, any>>({});
+	const [activeTag, setActiveTag] = useState<string>('All');
+	const [cursorPos, setCursorPos] = useState<{ start: number; end: number; field: string | null }>({ start: 0, end: 0, field: null });
+	const [isLoading, setIsLoading] = useState(true);
 
 	// Fetch notifications on mount
 	useEffect(() => {
+		setIsLoading(true);
 		apiRequest('GET', 'notifications', undefined, { events: true })
-			.then((response) => setNotifications(response.data || []));
+			.then((response) => {
+				setNotifications(response.data || []);
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error('Error fetching notifications:', error);
+				setIsLoading(false);
+			});
 	}, []);
 
 	// Autosave when notificationId changes (triggered by list-row click)
@@ -102,9 +111,9 @@ const EventRules: React.FC = () => {
 		return notifications.filter((n) => n.tag === activeTag);
 	}, [notifications, activeTag]);
 
-	const editNotification  = notifications.find((item) => item.id === notificationId);
+	const editNotification = notifications.find((item) => item.id === notificationId);
 	const defaultRecipients = editNotification?.recipients.filter((r: Recipient) => DEFAULT_RECIPIENT_TYPES.includes(r.type));
-	const customRecipients  = editNotification?.recipients.filter((r: Recipient) => !DEFAULT_RECIPIENT_TYPES.includes(r.type));
+	const customRecipients = editNotification?.recipients.filter((r: Recipient) => !DEFAULT_RECIPIENT_TYPES.includes(r.type));
 
 	const updateNotification = (id: number, updater: (n: any) => any) =>
 		setNotifications((prev) => prev.map((n) => (n.id === id ? updater(n) : n)));
@@ -181,7 +190,6 @@ const EventRules: React.FC = () => {
 
 	return (
 		<div className="notification-container tab-bg">
-
 			{/* View Toggle + Category Filter */}
 			<div className="toggle-setting-wrapper view-toggle">
 				<div className="category-filter">
@@ -237,74 +245,134 @@ const EventRules: React.FC = () => {
 							</tr>
 						</thead>
 						<tbody className="admin-table-body">
-							{filteredNotifications.map((notif: any) => (
-								<tr
-									className="admin-row"
-									key={notif.id}
-									onClick={() => {
-										setEditingNotification(notif.id);
-										setNotificationId(notif.id);
-									}}
-								>
-									<td className="admin-column notificaton">
-										<div className="table-row-custom">
-											<div className="product-wrapper notification">
-												<span className={`item-icon notification-icon adminfonts adminicon-${notif.icon}`}></span>
-												<div className="details">
-													<div className="title">
-														{notif.event}
-														<span className={`admin-badge yellow ${notif.tag}`}>{notif.tag} </span>
-														<span className={`admin-badge blue ${notif.category}`}> {notif.category} </span>
-													</div>
-													<div className="des">{notif.description}</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td className="admin-column">
-										<div className="table-row-custom">
-											<div className="recipients-list">
-												{(notif.recipients || []).map((r: any) => (
-													<RecipientBadge key={r.id} recipient={r} />
-												))}
-											</div>
-										</div>
-									</td>
-									<td className="admin-column">
-										<div className="table-row-custom">
-											<div className="system-column">
-												{Object.entries(notif.channels || {}).map(([channel, enabled]: any) => {
-													const cfg = CHANNEL_CONFIG[channel];
-													if (!cfg || !enabled) return null;
-													return (
-														<i
-															key={channel}
-															className={`${cfg.icon} admin-badge ${cfg.badge}`}
-															onClick={(e) => {
-																e.stopPropagation();
-																setNotificationId(notif.id);
-																openEditPannel(notif.id, channel);
-															}}
-														/>
-													);
-												})}
-											</div>
-										</div>
-									</td>
-									<td className="admin-column action">
-										<div className="action-section">
-											<div className="action-icons">
-												<div className="inline-actions">
-													<div className="inline-action-btn tooltip-wrapper">
-														<i className="adminfont-edit"></i>
-														<span className="tooltip-name">Edit</span>
+							{isLoading ? (
+								Array.from({ length: 5 }).map((_, index) => (
+									<tr key={`skeleton-${index}`} className="admin-row skeleton-row">
+										<td className="admin-column notificaton">
+											<div className="table-row-custom">
+												<div className="product-wrapper notification">
+													<Skeleton width={40} height={40} />
+													<div className="details">
+														<div className="title">
+															<Skeleton width={200} height={20} />
+															<Skeleton width={60} height={24}  />
+															<Skeleton width={60} height={24}  />
+														</div>
+														<div className="des">
+															<Skeleton width={300} height={16} />
+														</div>
 													</div>
 												</div>
 											</div>
+										</td>
+										<td className="admin-column">
+											<div className="table-row-custom">
+												<div className="recipients-list">
+													<Skeleton width={80} height={24}  />
+													<Skeleton width={80} height={24}  />
+													<Skeleton width={80} height={24} />
+												</div>
+											</div>
+										</td>
+										<td className="admin-column">
+											<div className="table-row-custom">
+												<div className="system-column">
+													<Skeleton width={24} height={24}  />
+													<Skeleton width={24} height={24}  />
+													<Skeleton width={24} height={24} />
+												</div>
+											</div>
+										</td>
+										<td className="admin-column action">
+											<div className="action-section">
+												<div className="action-icons">
+													<div className="inline-actions">
+														<Skeleton width={24} height={24} />
+													</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+								))
+							) : filteredNotifications.length === 0 ? (
+								<tr className="admin-row no-results">
+									<td colSpan={4} className="admin-column text-center">
+										<div className="no-results-message">
+											<i className="adminfont-inbox"></i>
+											<p>No notifications found</p>
 										</div>
 									</td>
 								</tr>
-							))}
+							) : (
+								filteredNotifications.map((notif: any) => (
+									<tr
+										className="admin-row"
+										key={notif.id}
+										onClick={() => {
+											setEditingNotification(notif.id);
+											setNotificationId(notif.id);
+										}}
+									>
+										<td className="admin-column notificaton">
+											<div className="table-row-custom">
+												<div className="product-wrapper notification">
+													<span className={`notification-icon ${notif.icon}`}></span>
+													<div className="details">
+														<div className="title">
+															{notif.event}
+															<span className={`admin-badge yellow ${notif.tag}`}>{notif.tag} </span>
+															<span className={`admin-badge blue ${notif.category}`}> {notif.category} </span>
+														</div>
+														<div className="des">{notif.description}</div>
+													</div>
+												</div>
+											</div>
+										</td>
+										<td className="admin-column">
+											<div className="table-row-custom">
+												<div className="recipients-list">
+													{(notif.recipients || []).map((r: any) => (
+														<RecipientBadge key={r.id} recipient={r} />
+													))}
+												</div>
+											</div>
+										</td>
+										<td className="admin-column">
+											<div className="table-row-custom">
+												<div className="system-column">
+													{Object.entries(notif.channels || {}).map(([channel, enabled]: any) => {
+														const cfg = CHANNEL_CONFIG[channel];
+														if (!cfg || !enabled) return null;
+														return (
+															<i
+																key={channel}
+																className={`adminfont-${cfg.icon} admin-badge ${cfg.badge}`}
+																onClick={(e) => {
+																	e.stopPropagation();
+																	setNotificationId(notif.id);
+																	openEditPannel(notif.id, channel);
+																}}
+															/>
+														);
+													})}
+												</div>
+											</div>
+										</td>
+										<td className="admin-column action">
+											<div className="action-section">
+												<div className="action-icons">
+													<div className="inline-actions">
+														<div className="inline-action-btn tooltip-wrapper">
+															<i className="adminfont-edit"></i>
+															<span className="tooltip-name">Edit</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+								))
+							)}
 						</tbody>
 					</table>
 				</div>
@@ -318,11 +386,10 @@ const EventRules: React.FC = () => {
 					height="70%"
 					header={{
 						icon: 'cart',
-						title: `${
-							openChannel === 'system' ? __('System Notification', 'multivendorx')
-							: openChannel === 'sms'  ? __('SMS Message', 'multivendorx')
-							:                          __('Email Message', 'multivendorx')
-						} - ${editNotification?.event ?? ''}`,
+						title: `${openChannel === 'system' ? __('System Notification', 'multivendorx')
+							: openChannel === 'sms' ? __('SMS Message', 'multivendorx')
+								: __('Email Message', 'multivendorx')
+							} - ${editNotification?.event ?? ''}`,
 					}}
 					footer={
 						<AdminButtonUI
@@ -488,7 +555,7 @@ const EventRules: React.FC = () => {
 						/>
 						<AdminButtonUI
 							buttons={[{
-								icon: 'impplusort',
+								icon: 'plus',
 								text: __('Add', 'multivendorx'),
 								color: 'purple',
 								onClick: () => addRecipient(editingNotification),
@@ -529,7 +596,7 @@ const EventRules: React.FC = () => {
 										return (
 											<i
 												key={channel}
-												className={`${cfg.icon} admin-badge ${cfg.badge} ${!enabled ? 'disable' : ''}`}
+												className={`adminfont-${cfg.icon} admin-badge ${cfg.badge} ${!enabled ? 'disable' : ''}`}
 												onClick={(e) => {
 													e.stopPropagation();
 													toggleChannel(notif.id, channel);
@@ -538,13 +605,19 @@ const EventRules: React.FC = () => {
 										);
 									})}
 								</div>
-								<div className="admin-btn btn-purple" 
-									onClick={() => {
-										setEditingNotification(notif.id)
-										setNotificationId(notif.id);
-									}}>
-									Manage <i className="adminfont-edit"></i>
-								</div>
+								<AdminButtonUI
+									buttons={[
+										{
+											icon: 'edit',
+											text: 'Manage',
+											color: 'purple',
+											onClick: (e) => {
+												setEditingNotification(notif.id)
+												setNotificationId(notif.id);
+											},
+										},
+									]}
+								/>
 							</div>
 						</div>
 					))}

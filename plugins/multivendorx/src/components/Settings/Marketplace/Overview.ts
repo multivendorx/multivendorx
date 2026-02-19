@@ -96,7 +96,6 @@ export default {
 			),
 			size: "30rem",
 			options: appLocalizer.pages_list,
-			// proSetting: true,
 		},
 		{
 			key: 'sms_receiver_phone_number',
