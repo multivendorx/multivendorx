@@ -112,7 +112,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 			});
 
 			handleCloseForm();
-			fetchData({});
+			doRefreshTableData({});
 			onUpdated?.();
 		} catch (err) {
 			console.log(err)
@@ -192,7 +192,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	const getMetaValue = (metaData: any[], key: string) =>
 		metaData.find((m: any) => m.key === key)?.value;
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -247,7 +247,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						search={{}}
 						filters={filters}

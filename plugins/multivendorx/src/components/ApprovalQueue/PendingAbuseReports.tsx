@@ -27,7 +27,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(() => {
@@ -111,7 +111,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'report-abuse'), {
@@ -163,7 +163,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						filters={filters}
 						format={appLocalizer.date_format}

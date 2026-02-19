@@ -16,7 +16,7 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		if (!store_id) return;
 		setIsLoading(true);
 
@@ -105,7 +105,7 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 			headers={headers}
 			rows={rows}
 			isLoading={isLoading}
-			onQueryUpdate={fetchData}
+			onQueryUpdate={doRefreshTableData}
 		/>
 	</>
 };

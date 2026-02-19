@@ -60,7 +60,7 @@ const Qna: React.FC = () => {
 			},
 		})
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 			})
 			.finally(() => {
 				setConfirmOpen(false);
@@ -126,7 +126,7 @@ const Qna: React.FC = () => {
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 				// Reset popup
 				setSelectedQna(null);
 				setAnswer('');
@@ -203,7 +203,7 @@ const Qna: React.FC = () => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'qna'), {
@@ -292,7 +292,7 @@ const Qna: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
 				search={{}}

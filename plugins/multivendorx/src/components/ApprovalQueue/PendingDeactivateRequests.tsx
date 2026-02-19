@@ -27,7 +27,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 			data: { deactivate: true, action, id: storeId },
 		})
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(console.error);
@@ -65,7 +65,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 	};
 
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
@@ -102,7 +102,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 					rows={rows}
 					totalRows={totalRows}
 					isLoading={isLoading}
-					onQueryUpdate={fetchData}
+					onQueryUpdate={doRefreshTableData}
 					ids={rowIds}
 					format={appLocalizer.date_format}
 				/>

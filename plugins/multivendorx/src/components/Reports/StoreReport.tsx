@@ -85,7 +85,7 @@ const StoreReport: React.FC = () => {
 		fetchOverviewAndPie();
 	}, []);
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
@@ -112,71 +112,6 @@ const StoreReport: React.FC = () => {
 					.map((item: any) => item.id);
 
 				setRowIds(ids);
-
-				// const mappedRows: any[][] = items.map((store: any) => [
-				// 	{
-				// 		display: store.store_name,
-				// 		value: store.id,
-				// 		type: 'card',
-				// 		data: {
-				// 			name: store.store_name,
-				// 			image: store.image,
-				// 			description: `Since ${formatDate(store.applied_on)}`,
-				// 			link: `?page=multivendorx#&tab=stores&edit/${store.id}`,
-				// 			icon: 'adminfont-store-inventory'
-				// 		},
-				// 	},
-				// 	{
-				// 		display: store.primary_owner?.data?.display_name || '—',
-				// 		value: store.primary_owner?.ID || null,
-				// 		type: 'card',
-				// 		data: {
-				// 			name: store.primary_owner?.data?.display_name,
-				// 			image: store.primary_owner?.data?.primary_owner_image,
-				// 			icon: 'adminfont-person',
-				// 			description: store.primary_owner?.data?.user_email
-				// 		}
-				// 	},
-				// 	{
-				// 		display: store.status,
-				// 		value: store.status,
-				// 	},
-				// 	{
-				// 		display: formatCurrency(store.commission?.total_order_amount),
-				// 		value: store.commission?.total_order_amount ?? 0,
-				// 	},
-				// 	{
-				// 		display: formatCurrency(store.commission?.shipping_amount),
-				// 		value: store.commission?.shipping_amount ?? 0,
-				// 	},
-				// 	{
-				// 		display: formatCurrency(store.commission?.tax_amount),
-				// 		value: store.commission?.tax_amount ?? 0,
-				// 	},
-				// 	{
-				// 		display: formatCurrency(store.commission?.commission_total),
-				// 		value: store.commission?.commission_total ?? 0,
-				// 	},
-				// 	{
-				// 		display: store.email,
-				// 		value: store.email,
-				// 		type: 'card',
-				// 		data: {
-				// 			name: store.email,
-				// 			icon: 'adminfont-mail',
-				// 		}
-				// 	},
-				// 	{
-				// 		display: formatCurrency(
-				// 			Number(store.commission?.total_order_amount || 0) -
-				// 			Number(store.commission?.commission_total || 0)
-				// 		),
-				// 		value:
-				// 			Number(store.commission?.total_order_amount || 0) -
-				// 			Number(store.commission?.commission_total || 0),
-				// 	}
-
-				// ]);
 
 				setRows(items);
 
@@ -315,7 +250,7 @@ const StoreReport: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
 				search={{}}

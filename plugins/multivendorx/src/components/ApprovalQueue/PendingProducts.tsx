@@ -71,7 +71,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 			)
 			.then(() => {
 				onUpdated?.();
-				fetchData({})
+				doRefreshTableData({})
 			})
 			.catch(console.error);
 	};
@@ -98,7 +98,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectProductId(null);
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(console.error)
@@ -157,7 +157,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
@@ -212,7 +212,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				search={{}}
 				filters={filters}

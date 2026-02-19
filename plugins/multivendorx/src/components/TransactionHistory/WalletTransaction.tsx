@@ -197,7 +197,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		{ key: 'balance', label: __('Balance', 'multivendorx'), isSortable: true, },
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'transaction'), {
@@ -705,7 +705,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							rows={rows}
 							totalRows={totalRows}
 							isLoading={isLoading}
-							onQueryUpdate={fetchData}
+							onQueryUpdate={doRefreshTableData}
 							search={{ placeholder: 'Search...' }}
 							filters={filters}
 							buttonActions={buttonActions}

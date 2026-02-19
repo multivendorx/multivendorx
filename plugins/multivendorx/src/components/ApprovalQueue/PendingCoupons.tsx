@@ -76,7 +76,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				fetchData({})
+				doRefreshTableData({})
 				onUpdated?.();
 			})
 			.catch(console.error);
@@ -104,7 +104,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectCouponId(null);
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(console.error)
@@ -164,7 +164,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
@@ -219,7 +219,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					rows={rows}
 					totalRows={totalRows}
 					isLoading={isLoading}
-					onQueryUpdate={fetchData}
+					onQueryUpdate={doRefreshTableData}
 					ids={rowIds}
 					search={{}}
 					filters={filters}

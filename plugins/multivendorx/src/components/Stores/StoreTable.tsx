@@ -19,7 +19,7 @@ const StoreTable: React.FC = () => {
 
 	const navigate = useNavigate();
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
@@ -197,7 +197,7 @@ const StoreTable: React.FC = () => {
 					rows={rows}
 					totalRows={totalRows}
 					isLoading={isLoading}
-					onQueryUpdate={fetchData}
+					onQueryUpdate={doRefreshTableData}
 					ids={rowIds}
 					categoryCounts={categoryCounts}
 					search={{}}

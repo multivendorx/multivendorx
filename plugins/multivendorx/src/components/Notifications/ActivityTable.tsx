@@ -10,7 +10,7 @@ const ActivityTable = (React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -72,7 +72,7 @@ const ActivityTable = (React.FC = () => {
 					rows={rows}
 					totalRows={totalRows}
 					isLoading={isLoading}
-					onQueryUpdate={fetchData}
+					onQueryUpdate={doRefreshTableData}
 				/>
 			</Column>
 		</Container>
