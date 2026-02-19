@@ -163,13 +163,13 @@ const StoreReviews: React.FC = () => {
 		action: {
 			label: __('Action', 'multivendorx'),
 			type: 'action',
-			actions: {
-				reply_edit: {
+			actions: [
+				{
 					label: __('Reply / Edit', 'multivendorx'),
 					icon: 'edit',
 					onClick: (row) => fetchReviewById(row.id),
 				},
-				delete: {
+				{
 					label: __('Delete', 'multivendorx'),
 					icon: 'delete',
 					onClick: (row) => {
@@ -177,7 +177,7 @@ const StoreReviews: React.FC = () => {
 						setConfirmOpen(true);
 					},
 				},
-			},
+			]
 		},
 	};
 

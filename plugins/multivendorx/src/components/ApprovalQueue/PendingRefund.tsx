@@ -39,13 +39,11 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-
 	const [store, setStore] = useState<any[]>([]);
 	const [popupOpen, setPopupOpen] = useState(false);
 	const [formData, setFormData] = useState({ content: '' });
 	const [viewOrder, setViewOrder] = useState<StoreRow | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [orderMap, setOrderMap] = useState<Record<number, StoreRow>>({});
 
 	useEffect(() => {
 		axios
@@ -74,7 +72,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		setFormData({ content: '' });
 	};
 
-	const handleChange = (key:string,value:string) => {
+	const handleChange = (key: string, value: string) => {
 		setFormData({ ...formData, [key]: value });
 	};
 
@@ -123,40 +121,59 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 		}
 	};
 
-	const headers = [
-		{ key: 'order', label: __('Order', 'multivendorx') },
-		{ key: 'store', label: __('Store', 'multivendorx') },
-		{ key: 'amount', label: __('Amount', 'multivendorx') },
-		{ key: 'commission', label: __('Commission', 'multivendorx') },
-		{ key: 'reason', label: __('Refund Reason', 'multivendorx') },
-		{ key: 'date', label: __('Date', 'multivendorx'), isSortable: true, },
-		{
-			key: 'action',
+	const headers = {
+		id: {
+			label: __('Order', 'multivendorx'),
+		},
+		store_name: {
+			label: __('Store', 'multivendorx'),
+		},
+		amount: {
+			label: __('Amount', 'multivendorx'),
+			type: 'currency'
+
+		},
+		commission_amount: {
+			label: __('Commission', 'multivendorx'),
+			type: 'currency'
+		},
+		reason: {
+			label: __('Refund Reason', 'multivendorx'),
+			render: (row: any) => {
+				getMetaValue(
+					row.meta_data,
+					appLocalizer.order_meta.customer_refund_reason
+				) || ''
+			},
+		},
+		date_created: {
+			label: __('Date', 'multivendorx'),
+			isSortable: true,
+			type: 'date'
+		},
+		action: {
 			type: 'action',
 			label: 'Action',
 			actions: [
 				{
 					label: __('View Details', 'multivendorx'),
 					icon: 'preview',
-					onClick: (id: number) => {
-						const order = orderMap[id];
-						console.log(order)
-						if (!order) return;
-
-						setViewOrder(order);
+					onClick: (row) => {
+						setViewOrder(row);
 						setPopupOpen(true);
 					},
 				},
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: (id: number) => {
-						handleSubmit(id);
+					onClick: (row) => {
+						handleSubmit(row.id);
 					},
 				},
 			],
 		},
-	];
+	};
+
 
 	const filters = [
 		{
@@ -205,104 +222,11 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 					? response.data
 					: [];
 
-				const orderById: Record<number, StoreRow> = {};
-
-				// 🔹 Normalize API response + build order map
-				const normalizedOrders: StoreRow[] = orders.map((order: any) => {
-					const metaData = order.meta_data || [];
-
-					const normalized: StoreRow = {
-						id: order.id,
-						store_id: getMetaValue(metaData, 'multivendorx_store_id'),
-						store_name: order.store_name || '-',
-						amount: order.total,
-						commission_amount: order.commission_amount,
-						date: order.date_created,
-						status: order.status,
-						currency_symbol: order.currency_symbol,
-
-						reason:
-							getMetaValue(
-								metaData,
-								appLocalizer.order_meta.customer_refund_reason
-							) || '',
-
-						addi_info:
-							getMetaValue(
-								metaData,
-								appLocalizer.order_meta.customer_refund_addi_info
-							) || '',
-
-						refund_images:
-							getMetaValue(
-								metaData,
-								appLocalizer.order_meta.customer_refund_product_imgs
-							) || [],
-
-						refund_products:
-							getMetaValue(
-								metaData,
-								appLocalizer.order_meta.customer_refund_product
-							) || [],
-					};
-
-					orderById[normalized.id] = normalized;
-
-					return normalized;
-				});
-
-				// 🔹 Save map for action handlers
-				setOrderMap(orderById);
-
 				// 🔹 Row IDs
-				const ids = normalizedOrders.map((o) => o.id);
+				const ids = orders.map((o) => o.id);
 				setRowIds(ids);
 
-				const mappedRows: TableRow[][] = normalizedOrders.map((order) => [
-					{
-						type: 'card',
-						value: order.id,
-						display: order.id,
-						data: {
-							name: `# ${order.id}`,
-							link: `${appLocalizer.site_url.replace(
-								/\/$/,
-								''
-							)}/wp-admin/post.php?post=${order.id}&action=edit`,
-						},
-					},
-					{
-						type: 'card',
-						value: order.store_id,
-						display: order.store_name,
-						data: {
-							name: order.store_name,
-							link: `${window.location.origin}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${order.store_id}/&subtab=store-overview`,
-						},
-					},
-					{
-						display: formatCurrency(order.amount),
-						value: order.amount,
-					},
-					{
-						display: order.commission_amount
-							? formatCurrency(order.commission_amount)
-							: '-',
-						value: order.commission_amount,
-					},
-					{
-						display: truncateText(order.reason, 30),
-						value: order.reason,
-					},
-					{
-						display: order.date
-							? order.date
-							: '-',
-						value: order.date,
-					},
-				]);
-
-				setRows(mappedRows);
+				setRows(orders);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -328,11 +252,18 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 						search={{}}
 						filters={filters}
 						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position
+						}}
 					/>
 					<PopupUI
 						open={popupOpen}
 						onClose={handleCloseForm}
-						width={40}  
+						width={40}
 						height="80%"
 						header={{
 							icon: 'announcement',
@@ -404,7 +335,7 @@ const PendingRefund: React.FC<Props> = ({ onUpdated }) => {
 								<TextAreaUI
 									name="content"
 									value={formData.content}
-									onChange={(value:string)=>handleChange('content',value)}
+									onChange={(value: string) => handleChange('content', value)}
 									usePlainText={false}
 									tinymceApiKey={
 										appLocalizer.settings_databases_value[

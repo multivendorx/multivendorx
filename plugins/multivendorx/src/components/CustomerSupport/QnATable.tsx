@@ -149,7 +149,7 @@ const Qna: React.FC = () => {
 		},
 		question_date: {
 			label: 'Date',
-			type:'date'
+			type: 'date'
 		},
 		total_votes: {
 			label: 'Votes',
@@ -160,13 +160,13 @@ const Qna: React.FC = () => {
 		action: {
 			type: 'action',
 			label: 'Action',
-			actions: {
-				answer: {
+			actions: [
+				{
 					label: __('Answer', 'multivendorx'),
 					icon: 'eye',
 					onClick: (row) => fetchQnaById(row.id),
 				},
-				delete: {
+				{
 					label: __('Delete', 'multivendorx'),
 					icon: 'delete',
 					onClick: (row) => {
@@ -174,7 +174,7 @@ const Qna: React.FC = () => {
 						setConfirmOpen(true);
 					},
 				},
-			},
+			]
 		},
 	};
 

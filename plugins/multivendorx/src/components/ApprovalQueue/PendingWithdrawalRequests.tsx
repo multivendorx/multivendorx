@@ -15,7 +15,6 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
-	const [rowMap, setRowMap] = useState<Record<number, any>>({}); // map ID → row data
 
 	const handleSingleAction = (action: string, row: any) => {
 		if (!row?.id) return;
@@ -38,29 +37,37 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 			.catch(console.error);
 	};
 
-	const headers = [
-		{ key: 'store_name', label: __('Store', 'multivendorx') },
-		{ key: 'status', label: __('Status', 'multivendorx') },
-		{ key: 'withdraw_amount', label: __('Withdraw Amount', 'multivendorx') },
-		{
-			key: 'action',
+	const headers = {
+		store_name: {
+			label: __('Store', 'multivendorx'),
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status'
+		},
+		withdraw_amount: {
+			label: __('Withdraw Amount', 'multivendorx'),
+			type: 'currency'
+		},
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Approve', 'multivendorx'),
 					icon: 'check',
-					onClick: (id: number) => handleSingleAction('approve', rowMap[id])
+					onClick: (row: any) => handleSingleAction('approve', row),
 				},
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: (id: number) => handleSingleAction('reject', rowMap[id]),
 					className: 'danger',
+					onClick: (row: any) => handleSingleAction('reject', row),
 				},
-			],
+			]
 		},
-	];
+	};
+
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -79,19 +86,7 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 				const ids = stores.map((s) => s.id);
 				setRowIds(ids);
 
-				const map: Record<number, any> = {};
-				stores.forEach((s) => {
-					map[s.id] = s;
-				});
-				setRowMap(map);
-
-				const mappedRows: any[][] = stores.map((store) => [
-					{ value: store.store_name, display: store.store_name },
-					{ value: store.status, display: store.status },
-					{ value: store.withdraw_amount, display: formatCurrency(store.withdraw_amount) },
-				]);
-
-				setRows(mappedRows);
+				setRows(stores);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -113,6 +108,13 @@ const PendingWithdrawal: React.FC<Props> = ({ onUpdated }) => {
 				onQueryUpdate={fetchData}
 				ids={rowIds}
 				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position
+				}}
 			/>
 		</div>
 	);

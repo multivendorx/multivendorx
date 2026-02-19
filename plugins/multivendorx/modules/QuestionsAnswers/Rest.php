@@ -126,7 +126,7 @@ class Rest extends \WP_REST_Controller {
             $page                = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset              = ( $page - 1 ) * $limit;
             $status              = sanitize_text_field( $request->get_param( 'status' ) );
-            $search              = sanitize_text_field( $request->get_param( 'search_vield' ) );
+            $search              = sanitize_text_field( $request->get_param( 'search_value' ) );
             $order_by            = sanitize_text_field( $request->get_param( 'order_by' ) );
             $order               = sanitize_text_field( $request->get_param( 'order' ) );
             $question_visibility = sanitize_text_field( $request->get_param( 'question_visibility' ) );

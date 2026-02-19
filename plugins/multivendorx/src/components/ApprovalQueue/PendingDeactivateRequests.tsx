@@ -15,7 +15,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 
-	const handleSingleAction = (action: string, storeId:number) => {
+	const handleSingleAction = (action: string, storeId: number) => {
 		if (!storeId) {
 			return;
 		}
@@ -32,30 +32,38 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 			})
 			.catch(console.error);
 	};
-	
-	const headers = [
-		{ key: 'store', label: __('Store', 'multivendorx') },
-		{ key: 'reason', label: __('Reason', 'multivendorx') },
-		{ key: 'date', label: __('Date', 'multivendorx'), isSortable: true, },
-		{
-			key: 'action',
+
+	const headers = {
+		store_name: {
+			label: __('Store', 'multivendorx'),
+		},
+		reason: {
+			label: __('Reason', 'multivendorx'),
+		},
+		date: {
+			label: __('Date', 'multivendorx'),
+			isSortable: true,
+			type:'date'
+		},
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Approve', 'multivendorx'),
 					icon: 'check',
-					onClick: (id: number) => handleSingleAction('approve', id)
+					onClick: (row: any) => handleSingleAction('approve', row),
 				},
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: (id: number) => handleSingleAction('reject', id),
 					className: 'danger',
+					onClick: (row: any) => handleSingleAction('reject', row),
 				},
-			],
+			]
 		},
-	];
+	};
+
 
 	const fetchData = (query: QueryProps) => {
 		setIsLoading(true);
@@ -74,13 +82,7 @@ const PendingDeactivateRequests: React.FC<Props> = ({ onUpdated }) => {
 				const ids = stores.map((s) => s.id);
 				setRowIds(ids);
 
-				const mappedRows: any[][] = stores.map((store) => [
-					{ value: store.store_name, display: store.store_name },
-					{ value: store.reason, display: store.reason },
-					{ value: store.date, display: store.date },
-				]);
-
-				setRows(mappedRows);
+				setRows(stores);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})

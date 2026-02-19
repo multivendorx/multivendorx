@@ -105,30 +105,43 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 			.finally(() => setIsSubmitting(false)); // enable button again
 	};
 
-	const headers = [
-		{ key: 'product', label: __('Product', 'multivendorx') },
-		{ key: 'category', label: __('Category', 'multivendorx') },
-		{ key: 'price', label: __('Price', 'multivendorx') },
-		{ key: 'date', label: __('Date', 'multivendorx'), isSortable: true, },
-		{
-			key: 'action',
+	const headers = {
+		name: {
+			label: __('Product', 'multivendorx'),
+		},
+		category: {
+			label: __('Category', 'multivendorx'),
+			render: (row: any) =>
+				row.categories?.map((c: any) => c.name).join(', ') || '-',
+		},
+		price: {
+			label: __('Price', 'multivendorx'),
+			type: 'currency'
+		},
+		date_created: {
+			label: __('Date', 'multivendorx'),
+			isSortable: true,
+			type: 'date'
+		},
+		action: {
 			type: 'action',
 			label: 'Action',
 			actions: [
 				{
 					label: __('Approve', 'multivendorx'),
 					icon: 'check',
-					onClick: (id: number) => handleSingleAction('approve_product', id)
+					onClick: (row) => handleSingleAction('approve_product', row.id),
 				},
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: (id: number) => handleSingleAction('reject_product', id),
+					onClick: (row) => handleSingleAction('reject_product', row.id),
 					className: 'danger',
 				},
 			],
 		},
-	];
+	};
+
 
 	const filters = [
 		{
@@ -178,36 +191,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				const ids = products.map((p: any) => p.id);
 				setRowIds(ids);
 
-				const mappedRows: any[][] = products.map((product: any) => [
-					{
-						type: 'product',
-						value: product.id,
-						display: product.name,
-						data: {
-							id: product.id,
-							name: product.name,
-							sku: product.sku,
-							image: product.images?.[0]?.src || '',
-							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${product.id}&action=edit`,
-						},
-					},
-					{
-						display: product.categories?.map((cat: any) => cat.name).join(', ') || '—',
-						value: product.categories?.map((cat: any) => cat.name).join(', ') || '',
-					},
-					{
-						display: formatCurrency(product.price),
-						value: product.price,
-					},
-					{
-						display: product.date_created
-							? product.date_created
-							: '-',
-						value: product.date_created,
-					}
-				]);
-
-				setRows(mappedRows);
+				setRows(products);
 				setTotalRows(
 					Number(response.headers['x-wp-total']) || 0
 				);
@@ -233,6 +217,13 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 				search={{}}
 				filters={filters}
 				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position
+				}}
 			/>
 			{/* Reject Product Popup */}
 			{rejectPopupOpen && (
@@ -276,7 +267,7 @@ const PendingProducts: React.FC<{ onUpdated?: () => void }> = ({
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(value:string) => setRejectReason(value)}
+								onChange={(value: string) => setRejectReason(value)}
 								placeholder="Enter reason for rejecting this product..."
 								rows={4}
 							/>
