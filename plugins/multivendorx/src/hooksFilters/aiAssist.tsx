@@ -174,7 +174,7 @@ const AICard = () => {
 			className="theme-bg"
 			title={__('AI assist', 'multivendorx')}
 			desc={__('Get help creating your product listing', 'multivendorx')}
-		// iconName="adminfont-pagination-right-arrow arrow-icon"
+		// iconName="pagination-right-arrow arrow-icon"
 		// toggle
 		>
 			<div className="ai-assist-wrapper">

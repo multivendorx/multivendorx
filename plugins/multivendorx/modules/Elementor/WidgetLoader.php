@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class WidgetLoader {
 
 	public function __construct() {
-		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
+		// add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
 		add_action( 'elementor/dynamic_tags/register_tags', [ $this, 'register_dynamic_tags' ] );
 	}

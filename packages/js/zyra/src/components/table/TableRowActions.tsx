@@ -4,18 +4,18 @@ import { useOutsideClick } from '../useOutsideClick';
 export interface ActionItem {
   label?: string;
   icon?: React.ReactNode;
-  onClick: (rowId?: string | number) => void;
+  onClick: (row?: {}) => void;
   className?: string;
   type?:string;
 }
 
 interface TableRowActionsProps {
-  rowId?: string | number;
+  row: {}
   rowActions: ActionItem[];
 }
 
 const TableRowActions: React.FC<TableRowActionsProps> = ({
-  rowId,
+  row,
   rowActions,
 }) => {
   const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
               <div
                 key={index}
                 className="inline-action-btn tooltip-wrapper"
-                onClick={() => action.onClick(rowId)}
+                onClick={() => action.onClick(row)}
               >
                 <i className={`adminfont-${action.icon}`} />
                 <span className="tooltip-name">{action.label}</span>
@@ -51,7 +51,7 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
                     <div
                       key={index}
                       onClick={() => {
-                        action.onClick(rowId);
+                        action.onClick(row);
                         setOpen(false);
                       }}
                     >

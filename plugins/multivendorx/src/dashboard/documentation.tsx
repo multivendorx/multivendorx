@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, HeaderSearch } from 'zyra';
+import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, HeaderSearch, NavigatorHeader } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -93,16 +93,10 @@ const Documentation: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Documentation', 'multivendorx')}
-					</div>
-					<div className="des">
-						{__('Everything you need to know about store operations', 'multivendorx')}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Documentation', 'multivendorx')}
+				headerDescription={__('Everything you need to know about store operations', 'multivendorx')}
+			/>
 
 			<Card>
 				<div className="buttons-wrapper">

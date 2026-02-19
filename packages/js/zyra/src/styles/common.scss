@@ -298,51 +298,7 @@ $index: 1;
     }
   }
 }
-
 // copy btn end
-
-// hover tooltip start
-.tooltip-wrapper {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-
-  .tooltip-name {
-    position: absolute;
-    top: -1.125rem;
-    left: -100%;
-    width: 6rem;
-    text-align: center;
-    display: none;
-    transition: all 0.4s ease;
-  }
-
-  &:hover {
-    .tooltip-name {
-      display: block;
-      background-color: #2e2e2e;
-      color: #fff;
-      text-align: center;
-      padding: 0.313rem;
-      border-radius: 0.375rem;
-      position: absolute;
-      z-index: 1;
-      font-size: 0.8rem;
-      inset: 0 auto auto 0;
-      transform: translate(-2rem, -2.313rem);
-    }
-  }
-
-  &.bottom {
-    &:hover {
-      .tooltip-name {
-        transform: translate(-2rem, 1.687rem);
-      }
-    }
-  }
-}
-
-// hover tooltip end
 
 
 // all input style start
@@ -1359,23 +1315,23 @@ $index: 1;
   }
 }
 
-.success-massage {
-  color: #008000;
-  position: relative;
-  padding-left: 1.125rem;
-  font-weight: 500;
-  padding-top: 0.125rem;
-  margin: 0;
+// .success-massage {
+//   color: #008000;
+//   position: relative;
+//   padding-left: 1.125rem;
+//   font-weight: 500;
+//   padding-top: 0.125rem;
+//   margin: 0;
 
-  &::before {
-    font-family: adminfonts, sans-serif;
-    position: absolute;
-    content: "\e809";
-    top: 0.125rem;
-    left: 0;
-    font-size: 1rem;
-  }
-}
+//   &::before {
+//     font-family: adminfonts, sans-serif;
+//     position: absolute;
+//     content: "\e809";
+//     top: 0.125rem;
+//     left: 0;
+//     font-size: 1rem;
+//   }
+// }
 
 // filter tabs (module , notification)
 .category-filter {
@@ -1441,58 +1397,6 @@ $index: 1;
   }
 }
 
-
-// page title start (dashboard)
-.page-title-wrapper {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  align-items: center;
-
-  .page-title {
-    display: flex;
-    flex-direction: column;
-
-    .title {
-      font-size: 1.625rem;
-      line-height: 1.25;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      font-weight: 600;
-    }
-
-    .view-des {
-      color: $text-color;
-      font-size: 1.125rem;
-      line-height: 1.25;
-    }
-
-    .des {
-      b {
-        color: $text-color;
-      }
-    }
-  }
-
-  .breadcrumbs {
-    span {
-      a {
-        color: $theme-color;
-      }
-
-      &:last-child {
-        a {
-          color: #0000007a;
-        }
-      }
-    }
-  }
-}
-
-// page title end
-
 // avatar style start
 .avatar {
   img {
@@ -1513,7 +1417,6 @@ $index: 1;
     color: #fff;
   }
 }
-
 // avatar style start
 
 
@@ -1593,5 +1496,4 @@ $index: 1;
     }
   }
 }
-
 // pagination end

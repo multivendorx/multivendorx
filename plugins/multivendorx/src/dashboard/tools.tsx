@@ -1,33 +1,31 @@
 import { __ } from '@wordpress/i18n';
-import { Card } from 'zyra';
+import { AdminButtonUI, Card, NavigatorHeader } from 'zyra';
 
 const Tools: React.FC = () => {
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">{__('Tools', 'multivendorx')}</div>
-					<div className="des">
-						{__(
-							'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Debitis, perferendis.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Tools', 'multivendorx')}
+				headerDescription={__('Lorem ipsum dolor sit amet consectetur, adipisicing elit. Debitis, perferendis.', 'multivendorx')}
+			/>
 
-			<div className="card-wrapper">
-				<Card
-					title={__('Vendor Dashboard transients', 'multivendorx')}
-					desc={__('Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, nesciunt?', 'multivendorx' )}
-				>
-					<div className="admin-btn btn-purple">
-						<i className="adminfont-delete"></i>
-						{__('Clear Transients', 'multivendorx')}
-					</div>
-				</Card>
-
-			</div>
+			<Card
+				title={__('Vendor Dashboard transients', 'multivendorx')}
+				desc={__('Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, nesciunt?', 'multivendorx' )}
+			>
+				<AdminButtonUI
+                    buttons={[
+                        {
+                            icon: 'delete',
+                            text: __('Clear Transients', 'multivendorx'),
+                            color: 'purple',
+                            // onClick: (e) => {
+                            //     handleDownloadLog?.(e);
+                            // },
+                        },
+                    ]}
+                />
+			</Card>
 		</>
 	);
 };

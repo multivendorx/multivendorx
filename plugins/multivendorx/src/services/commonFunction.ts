@@ -102,3 +102,38 @@ export const toWcIsoDate = (
 
 	return d.toISOString();
 };
+
+export const downloadCSV = (
+  headers: Record<string, any>,
+  rows: Record<string, any>[],
+  filename: string = 'export.csv'
+) => {
+  if (!rows || rows.length === 0) return;
+
+  // Only include headers with csv: true
+  const csvColumns = Object.entries(headers)
+    .filter(([_, h]) => h.csvDisplay !== false)
+    .map(([key, h]) => ({ key, label: h.label }));
+
+  // Header row
+  const csvRows = [csvColumns.map(c => `"${c.label}"`).join(',')];
+
+  // Data rows
+  rows.forEach(row => {
+    const rowData = csvColumns
+      .map(col => `"${row[col.key] != null ? row[col.key] : ''}"`)
+      .join(',');
+    csvRows.push(rowData);
+  });
+
+  // Trigger download
+  const csvContent = csvRows.join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};

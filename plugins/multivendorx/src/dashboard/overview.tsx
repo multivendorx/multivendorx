@@ -9,7 +9,7 @@ import {
 	Cell,
 } from 'recharts';
 import axios from 'axios';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, NavigatorHeader } from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {
@@ -245,19 +245,10 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 	}, []);
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Overview', 'multivendorx')}
-					</div>
-					<div className="des">
-						{__(
-							'Manage your store information and preferences',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Overview', 'multivendorx')}
+				headerDescription={__('Manage your store information and preferences', 'multivendorx')}
+			/>
 
 			<Container>
 				<Column>

@@ -114,7 +114,7 @@ export const Announcements: React.FC = () => {
 			},
 		})
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 			})
 			.finally(() => {
 				setConfirmOpen(false);
@@ -187,7 +187,7 @@ export const Announcements: React.FC = () => {
 			data: { bulk: true, action, ids: selectedIds },
 		})
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 			})
 			.catch((err) => {
 				setError(
@@ -250,7 +250,7 @@ export const Announcements: React.FC = () => {
 						status: 'draft',
 					});
 					setEditId(null);
-					fetchData({});
+					doRefreshTableData({});
 				} else {
 					setError(__('Failed to save announcement', 'multivendorx'));
 				}
@@ -274,36 +274,36 @@ export const Announcements: React.FC = () => {
 		{ label: 'Delete', value: 'delete' },
 	];
 
-	const headers = [
-		{ key: 'title', label: 'Title' },
-		{ key: 'content', label: 'Content' },
-		{ key: 'status', label: 'Status' },
-		{ key: 'recipients', label: 'Recipients' },
-		{ key: 'date', label: 'Date' },
-		{
-			key: 'action',
+	const headers = {
+		title: { label: __('Title', 'multivendorx') },
+		content: { label: __('Content', 'multivendorx') },
+		status_label: { label: __('Status', 'multivendorx'), type: 'status' },
+		store_name: { label: __('Recipients', 'multivendorx') },
+		date: { label: __('Date', 'multivendorx'), type: 'date' },
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Edit', 'multivendorx'),
 					icon: 'edit',
-					onClick: (id: number) => handleEdit(id),
+					onClick: (row) => handleEdit(row.id),
 				},
 				{
 					label: __('Delete', 'multivendorx'),
 					icon: 'delete',
-					onClick: (id: number) => {
-						setSelectedAn({ id: id });
+					onClick: (row) => {
+						setSelectedAn({ id: row.id });
 						setConfirmOpen(true);
 					},
 					className: 'danger',
 				},
 			],
 		},
-	];
+	};
 
-	const fetchData = (query: QueryProps) => {
+
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -313,11 +313,11 @@ export const Announcements: React.FC = () => {
 					page: query.paged || 1,
 					row: query.per_page || 10,
 					status: query.categoryFilter || '',
-					searchValue: query.searchValue || '',
-					startDate: query.filter?.created_at?.startDate
+					search_value: query.searchValue || '',
+					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
 				},
@@ -329,24 +329,7 @@ export const Announcements: React.FC = () => {
 					.map((ann: any) => ann.id);
 
 				setRowIds(ids);
-				const mappedRows: any[][] = items.map((ann: any) => [
-					{ display: ann.title, value: ann.id },
-					{
-						display: truncateText(ann.content || '', 50),
-						value: ann.content || '',
-					},
-					{ display: ann.status, value: ann.status },
-					{
-						display: ann.store_name
-							? ann.store_name.split(',').slice(0, 2).join(',') +
-							(ann.store_name.split(',').length > 2 ? ', ...' : '')
-							: 'All Stores',
-						value: ann.store_name || '',
-					},
-					{ display: ann.date, value: ann.date },
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
@@ -569,7 +552,7 @@ export const Announcements: React.FC = () => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						categoryCounts={categoryCounts}
 						search={{}}

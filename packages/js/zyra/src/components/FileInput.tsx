@@ -115,7 +115,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                             ref={inputRef}
                             className={props.inputClass}
                             id={props.id}
-                            type="file"
+                            type="hidden"
                             name={props.name || 'file-input'}
                             placeholder={props.placeholder}
                             accept={props.accept}
@@ -129,7 +129,7 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                         />
                         <span className="title">Drag and drop your file here</span>
                         <span>Or</span>
-                        <AdminButtonUI buttons={[{ text: props.openUploader || 'Upload File', onClick: handleUpload }]} />
+                        <AdminButtonUI buttons={[{ text: props.openUploader || 'Upload File', color: 'purple', onClick: handleUpload }]} />
                     </>
                 ) : (
                     <>
@@ -141,8 +141,8 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
                         )}
                         <div className="overlay">
                             <div className="button-wrapper">
-                                <AdminButtonUI buttons={[{ text: 'Remove', onClick: () => handleRemove(activeIndex) }]} />
-                                <AdminButtonUI buttons={[{ text: 'Replace', onClick: () => { setIsReplacing(true); handleUpload(); } }]} />
+                                <AdminButtonUI buttons={[{ text: 'Remove', color: 'red' , onClick: () => handleRemove(activeIndex) }]} />
+                                <AdminButtonUI buttons={[{ text: 'Replace', color: 'purple', onClick: () => { setIsReplacing(true); handleUpload(); } }]} />
                             </div>
                         </div>
                     </>
