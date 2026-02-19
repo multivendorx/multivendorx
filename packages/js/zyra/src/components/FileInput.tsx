@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { FieldComponent } from './types';
 import { AdminButtonUI } from './AdminButton';
+import { BlockStyle, generateBorderStyles } from './CanvasEditor/blockStyle';
 
 interface FileInputProps {
     wrapperClass?: string;
@@ -31,6 +32,30 @@ const getFileIcon = (url: string): string => {
 
 const getFileName = (url: string): string => url.includes('#') ? url.split('#')[1].split('?')[0] : url.split('/').pop()?.split('?')[0] || 'File';
 const isImageFile = (url: string): boolean => (url.includes('#') ? url.split('#')[1] : url).match(/\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i) !== null;
+
+const buildWrapperStyle = (
+    blockStyle: BlockStyle | undefined,
+    backgroundImage: string
+): React.CSSProperties => {
+    const base: React.CSSProperties = { backgroundImage };
+
+    if (!blockStyle) return base;
+
+    const borderStyles = generateBorderStyles(blockStyle);
+
+    return {
+        ...base,
+        ...borderStyles,
+        // Dimensions — width accepts CSS strings ("100%", "300px", etc.)
+        // height accepts either a CSS string or a pixel number
+        ...(blockStyle.width  ? { width:  blockStyle.width }  : {}),
+        ...(blockStyle.height !== undefined
+            ? { height: typeof blockStyle.height === 'number'
+                    ? `${blockStyle.height}px`
+                    : blockStyle.height }
+            : {}),
+    };
+};
 
 export const FileInputUI: React.FC<FileInputProps> = (props) => {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -105,9 +130,14 @@ export const FileInputUI: React.FC<FileInputProps> = (props) => {
     const isCurrentImage = currentFile && isImageFile(currentFile);
     const currentSrc = currentFile?.split('#')[0] || currentFile;
 
+    const wrapperStyle = buildWrapperStyle(
+        props.style,
+        isCurrentImage ? `url(${currentSrc})` : 'none'
+    );
+
     return (
         <>
-            <div className={`file-uploader ${props.wrapperClass || ''} ${props.size || ''}`.trim()} style={{ backgroundImage: isCurrentImage ? `url(${currentSrc})` : 'none' }}>
+            <div className={`file-uploader ${props.wrapperClass || ''} ${props.size || ''}`.trim()} style={wrapperStyle}>
                 {files.length === 0 ? (
                     <>
                         <i className="upload-icon adminfont-cloud-upload" />
@@ -200,6 +230,7 @@ const FileInput: FieldComponent = {
             accept={field.accept}
             multiple={field.multiple}
             size={field.size}
+            style={field.style}
             onChange={(val) => canAccess && onChange(val)}
         />
     ),
