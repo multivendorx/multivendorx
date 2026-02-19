@@ -35,7 +35,6 @@ class Settings extends \WP_REST_Controller {
 	 * @var string
 	 */
 	protected $modules_base = 'modules';
-	protected $dashboard_settings_base = 'dashboard-settings';
 
     /**
      * Register the routes for settings.
@@ -69,77 +68,6 @@ class Settings extends \WP_REST_Controller {
                 ),
             )
         );
-        register_rest_route(
-            MultiVendorX()->rest_namespace,
-            '/' . $this->dashboard_settings_base,
-            array(
-				array(
-					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'set_settings' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				),
-			)
-        );
-    }
-
-    public function set_settings( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-        try {
-            $all_details       = array();
-            $get_settings_data = $request->get_param( 'setting' );
-
-            $store = new Store( MultiVendorX()->active_store );
-            // Core fields update.
-            $core_fields = array(
-                Utill::STORE_SETTINGS_KEYS['name'],
-                Utill::STORE_SETTINGS_KEYS['slug'],
-                Utill::STORE_SETTINGS_KEYS['description'],
-                Utill::STORE_SETTINGS_KEYS['status'],
-                Utill::STORE_SETTINGS_KEYS['create_time'],
-            );
-
-            foreach ( $core_fields as $field ) {
-                if ( array_key_exists( $field, $get_settings_data ) ) {
-                    $store->set( $field, $get_settings_data[ $field ] );
-                    unset( $get_settings_data[ $field ] );
-                }
-            }
-
-            $store->set( Utill::STORE_SETTINGS_KEYS['who_created'], 'admin' );
-
-            foreach ( $get_settings_data as $key => $value ) {
-                
-                $store->update_meta( $key, $value );
-
-                if ( Utill::STORE_SETTINGS_KEYS['deactivation_reason'] === $key ) {
-                    $store->update_meta(
-                        Utill::STORE_SETTINGS_KEYS['deactivation_request_date'],
-                        current_time( 'mysql' )
-                    );
-                }
-            }
-
-            $store->save();
-
-            $all_details['error'] = __( 'Settings Saved', 'multivendorx' );
-
-
-            return $all_details;
-        } catch ( \Exception $e ) {
-            MultiVendorX()->util->log( $e );
-
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
-        }
     }
 
     /**
