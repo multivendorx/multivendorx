@@ -591,6 +591,7 @@ class FrontendScripts {
                             'price_decimals'           => wc_get_price_decimals(),
                             'decimal_separator'        => wc_get_price_decimal_separator(),
                             'thousand_separator'       => wc_get_price_thousand_separator(),
+                            'currency_position'        => get_option('woocommerce_currency_pos'),
                         )
                     ),
                 ),
@@ -702,6 +703,7 @@ class FrontendScripts {
                         'price_decimals'           => wc_get_price_decimals(),
                         'decimal_separator'        => wc_get_price_decimal_separator(),
                         'thousand_separator'       => wc_get_price_thousand_separator(),
+                        'currency_position'        => get_option('woocommerce_currency_pos'),
 
                     ),
                 ),

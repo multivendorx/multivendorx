@@ -346,11 +346,12 @@ const Commission: React.FC = () => {
 						onSelectCsvDownloadApply={downloadCommissionsCSV}
 						format={appLocalizer.date_format}
 						currency={{
-								currencySymbol:appLocalizer.currency_symbol,
-								priceDecimals:appLocalizer.price_decimals,
-                                decimalSeparator:appLocalizer.decimal_separator,
-								thousandSeparator:appLocalizer.thousand_separator
-							}}
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+						    currencyPosition: appLocalizer.currency_position	
+						}}
 					/>
 				</Column>
 			</Container>

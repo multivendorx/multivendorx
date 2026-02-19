@@ -84,6 +84,7 @@ declare global {
 		price_decimals: string;
 		decimal_separator:string;
 		thousand_separator:string;
+		currency_position:string;
 	}
 	interface Color {
 		color: any;
