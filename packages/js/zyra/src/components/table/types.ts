@@ -86,7 +86,6 @@ export type TableRow = {
 		| number
 		| boolean
 		| React.ReactNode
-		| undefined;
 };
 
 
