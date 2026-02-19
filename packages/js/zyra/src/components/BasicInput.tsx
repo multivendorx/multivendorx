@@ -171,6 +171,7 @@ const BasicInput: FieldComponent = {
             value={value}
             size={field.size}
             multiple={field.multiple}
+            readOnly={field.readOnly}
             onChange={(val) => {
                 if (!canAccess) return;
                 onChange(val)

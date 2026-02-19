@@ -8,59 +8,54 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'cohort',
-  submitUrl: `store/${appLocalizer.store_id}`,
+	submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
-  // Facebook
-  {
-    type: 'text',
-    name: 'facebook',
-    icon: 'facebook-fill',
-    label: __('Facebook', 'multivendorx'),
-  },
+		// Facebook
+		{
+			type: 'text',
+			key: 'facebook',
+			icon: 'facebook-fill',
+			label: __('Facebook', 'multivendorx'),
+		},
 
-  // X / Twitter
-  {
-    type: 'text',
-    wrapperClass: 'form-group-wrapper',
-    name: 'twitter',
-    icon: 'adminfont-twitter',
-    label: __('X', 'multivendorx')
-  },
+		// X / Twitter
+		{
+			type: 'text',
+			key: 'twitter',
+			icon: 'twitter',
+			label: __('X', 'multivendorx')
+		},
 
-  // LinkedIn
-  {
-    type: 'text',
-    wrapperClass: 'form-group-wrapper',
-    name: 'linkedin',
-    icon: 'adminfont-linkedin-border',
-    label: __('LinkedIn', 'multivendorx')
-  },
+		// LinkedIn
+		{
+			type: 'text',
+			key: 'linkedin',
+			icon: 'linkedin-border',
+			label: __('LinkedIn', 'multivendorx')
+		},
 
-  // YouTube
-  {
-    type: 'text',
-    wrapperClass: 'form-group-wrapper',
-    name: 'youtube',
-    icon: 'adminfont-youtube',
-    label: __('YouTube', 'multivendorx')
-  },
+		// YouTube
+		{
+			type: 'text',
+			key: 'youtube',
+			icon: 'adminfont-youtube',
+			label: __('YouTube', 'multivendorx')
+		},
 
-  // Instagram
-  {
-    type: 'text',
-    wrapperClass: 'form-group-wrapper',
-    name: 'instagram',
-    icon: 'adminfont-mail',
-	  label: __('Instagram', 'multivendorx')
-  },
+		// Instagram
+		{
+			type: 'text',
+			key: 'instagram',
+			icon: 'mail',
+			label: __('Instagram', 'multivendorx')
+		},
 
-  // Pinterest
-  {
-    type: 'text',
-    wrapperClass: 'form-group-wrapper',
-    name: 'pinterest',
-    icon: 'adminfont-mail',
-	  label: __('Pinterest', 'multivendorx')
-  },
-],
+		// Pinterest
+		{
+			type: 'text',
+			key: 'pinterest',
+			icon: 'mail',
+			label: __('Pinterest', 'multivendorx')
+		},
+	],
 };
