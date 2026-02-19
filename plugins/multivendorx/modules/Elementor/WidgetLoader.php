@@ -6,8 +6,9 @@ defined( 'ABSPATH' ) || exit;
 class WidgetLoader {
 
 	public function __construct() {
-		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
+		// add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
+		add_action( 'elementor/dynamic_tags/register_tags', [ $this, 'register_dynamic_tags' ] );
 	}
 
 	public function register_category( $elements_manager ) {
@@ -25,6 +26,9 @@ class WidgetLoader {
 		$widgets = array(
 			'StoreName'        => 'MultiVendorX\Elementor\Widgets\Store_Name',
 			'StoreDescription' => 'MultiVendorX\Elementor\Widgets\Store_Description',
+			// 'StoreBanner' => 'MultiVendorX\Elementor\Widgets\Store_Banner',
+			// 'StoreChat' => 'MultiVendorX\Elementor\Widgets\Store_Chat_Button',
+			// 'StoreFollow' => 'MultiVendorX\Elementor\Widgets\Store_Follow_Button',
 		);
 
 		foreach ( $widgets as $file => $class ) {
@@ -39,4 +43,43 @@ class WidgetLoader {
 			}
 		}
 	}
+
+	public function register_dynamic_tags( $dynamic_tags ) {
+
+		// Register Group
+		$dynamic_tags->register_group(
+			'multivendorx',
+			[
+				'title' => __( 'MultiVendorX', 'multivendorx' ),
+			]
+		);
+
+		// Include Tag File
+		// $path = MultiVendorX()->plugin_path . 'modules/Elementor/Tags/StoreName.php';
+
+		// if ( file_exists( $path ) ) {
+		// 	require_once $path;
+
+		// 	if ( class_exists( '\MultiVendorX\Elementor\Tags\StoreName' ) ) {
+		// 		$dynamic_tags->register(
+		// 			new \MultiVendorX\Elementor\Tags\StoreName()
+		// 		);
+		// 	}
+		// }
+		$tags_path = MultiVendorX()->plugin_path . 'modules/Elementor/Tags/';
+
+		foreach ( glob( $tags_path . '*.php' ) as $file ) {
+
+			require_once $file;
+
+			// Get class name from file name
+			$class_name = basename( $file, '.php' );
+			$full_class = '\\MultiVendorX\\Elementor\\Tags\\' . $class_name;
+
+			if ( class_exists( $full_class ) ) {
+				$dynamic_tags->register( new $full_class() );
+			}
+		}
+	}
+
 }

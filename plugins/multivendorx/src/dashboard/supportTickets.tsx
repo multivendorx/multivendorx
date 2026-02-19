@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
 
 import { TableRow } from '@/services/type';
-import { TableCard } from 'zyra';
+import { NavigatorHeader, TableCard } from 'zyra';
 
 const SupportTickets: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -19,14 +19,10 @@ const SupportTickets: React.FC = () => {
 	];
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">Support Tickets</div>
-					<div className="des">
-						Manage your store information and preferences
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle="Support Tickets"
+				headerDescription="Manage your store information and preferences"
+			/>
 
 			<TableCard
 				headers={headers}

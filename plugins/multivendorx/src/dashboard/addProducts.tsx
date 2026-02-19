@@ -2,9 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-	CalendarInput,
-	FileInput,
-	RadioInput,
 	useModules,
 	Card,
 	Column,
@@ -13,13 +10,13 @@ import {
 	FormGroup,
 	getApiLink,
 	BasicInputUI,
-	AdminButtonUI,
 	MultiCheckBoxUI,
 	SelectInputUI,
 	useOutsideClick,
 	TextAreaUI,
-	ToggleSettingUI,
 	FileInputUI,
+	NavigatorHeader,
+	InputWithSuggestions,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -102,22 +99,16 @@ const AddProduct = () => {
 		}));
 	}, [product?.meta_data]);
 
-
 	const [categories, setCategories] = useState([]);
 	const [selectedCats, setSelectedCats] = useState([]);
-
-	const isPyramidEnabled =
-		appLocalizer.settings_databases_value['product-preferencess']
-			?.category_selection_method === 'yes';
-
+	const isPyramidEnabled = appLocalizer.settings_databases_value['product-preferencess'] ?.category_selection_method === 'yes';
 	const wrapperRef = useRef(null);
-
 	const [selectedCat, setSelectedCat] = useState(null);
 	const [selectedSub, setSelectedSub] = useState(null);
 	const [selectedChild, setSelectedChild] = useState(null);
-
 	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
 	const [isEditingStatus, setIsEditingStatus] = useState(false);
+	const [existingTags, setExistingTags] = useState([]);
 
 	const VISIBILITY_LABELS: Record<string, string> = {
 		visible: 'Shop and search results',
@@ -396,7 +387,6 @@ const AddProduct = () => {
 
 	const CategoryTree = ({ categories, selectedCats, toggleCategory }) => {
 		const nestedCategories = buildCategoryTree(categories);
-
 		return (
 			<div className="category-wrapper">
 				<ul>
@@ -411,18 +401,6 @@ const AddProduct = () => {
 				</ul>
 			</div>
 		);
-	};
-
-	const toggleCard = (cardId) => {
-		const body = document.querySelector(`#${cardId} .card-body`);
-		const arrow = document.querySelector(`#${cardId} i.icon`);
-
-		if (!body || !arrow) {
-			return;
-		}
-
-		body.classList.toggle('hide-body');
-		arrow.classList.toggle('rotate');
 	};
 
 	const typeOptions = [
@@ -451,27 +429,27 @@ const AddProduct = () => {
 	};
 
 	const createProduct = () => {
-	const imagePayload = [];
+		const imagePayload = [];
 
-	if (featuredImage) {
-		imagePayload.push({ id: featuredImage.id });
-	}
+		if (featuredImage) {
+			imagePayload.push({ id: featuredImage.id });
+		}
 
-	galleryImages.forEach((img) => {
-		imagePayload.push({ id: img.id });
-	});
+		galleryImages.forEach((img) => {
+			imagePayload.push({ id: img.id });
+		});
 
-	const finalCategories =
-		appLocalizer.settings_databases_value['product-preferencess']
-			?.category_selection_method == 'yes'
-			? [
+		const finalCategories =
+			appLocalizer.settings_databases_value['product-preferencess']
+				?.category_selection_method == 'yes'
+				? [
 					{
 						id: Number(
 							selectedChild || selectedSub || selectedCat
 						),
 					},
-			  ]
-			: selectedCats.map((id) => ({ id }));
+				]
+				: selectedCats.map((id) => ({ id }));
 
 		const payload = {
 			...product,
@@ -513,10 +491,6 @@ const AddProduct = () => {
 			});
 	};
 
-	const [tagInput, setTagInput] = useState('');
-	const [suggestions, setSuggestions] = useState([]);
-	const [existingTags, setExistingTags] = useState([]);
-
 	useEffect(() => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products/tags`, {
@@ -524,90 +498,8 @@ const AddProduct = () => {
 			})
 			.then((res) => {
 				setExistingTags(res.data);
-			});
+			})
 	}, []);
-
-	const handleTagInput = (value) => {
-		setTagInput(value);
-
-		if (!value.trim()) {
-			setSuggestions([]);
-			return;
-		}
-
-		const filtered = existingTags.filter(
-			(tag) =>
-				tag &&
-				tag.name &&
-				tag.name.toLowerCase().includes(value.toLowerCase())
-		);
-
-		setSuggestions(filtered);
-	};
-
-	const addTag = (tag) => {
-		let newTag = tag;
-
-		if (typeof tag === 'string') {
-			newTag = { name: tag };
-		}
-
-		if (!product.tags.find((t) => t.name === newTag.name)) {
-			setProduct({
-				...product,
-				tags: [...product.tags, newTag],
-			});
-		}
-
-		setTagInput('');
-		setSuggestions([]);
-	};
-
-	const openFeaturedUploader = () => {
-		const frame = wp.media({
-			title: 'Select Featured Image',
-			button: { text: 'Use this image' },
-			multiple: false,
-			library: { type: 'image' },
-		});
-
-		frame.on('select', () => {
-			const attachment = frame.state().get('selection').first().toJSON();
-
-			const img = {
-				id: attachment.id,
-				src: attachment.url,
-				thumbnail: attachment.sizes?.thumbnail?.url || attachment.url,
-			};
-
-			setFeaturedImage(img);
-		});
-
-		frame.open();
-	};
-
-	const openGalleryUploader = () => {
-		const frame = wp.media({
-			title: 'Select Gallery Images',
-			button: { text: 'Add to gallery' },
-			multiple: true,
-			library: { type: 'image' },
-		});
-
-		frame.on('select', () => {
-			const selection = frame.state().get('selection').toJSON();
-
-			const newImages = selection.map((img) => ({
-				id: img.id,
-				src: img.url,
-				thumbnail: img.sizes?.thumbnail?.url || img.url,
-			}));
-
-			setGalleryImages((prev) => [...prev, ...newImages]);
-		});
-
-		frame.open();
-	};
 
 	const [checklist, setChecklist] = useState({
 		name: false,
@@ -684,43 +576,25 @@ const AddProduct = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Add Product', 'multivendorx')}
-						{translation
-							?.filter((lang) => lang.is_default) // only include default language
-							.map((lang) => (
-								<div key={lang.code} className="mvx-translation-row">
-									<div>
-										<img
-											src={lang.flag_url}
-											alt={lang.code}
-										/>
-										<strong>{lang.native_name}</strong>
-									</div>
-								</div>
-							))}
+			{translation
+				?.filter((lang) => lang.is_default) // only include default language
+				.map((lang) => (
+					<div key={lang.code} className="multivendorx-translation-row">
+						<div>
+							<img src={lang.flag_url} alt={lang.code}/>
+							<strong>{lang.native_name}</strong>
+						</div>
 					</div>
-
-					<div className="des">
-						{__(
-							'Enter your product details - name, price, stock, and image & publish.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-				<AdminButtonUI
-					buttons={[
-						{
-							icon: 'save',
-							text: __('Save', 'multivendorx'),
-							onClick: () => createProduct(),
-						},
-					]}
-				/>
-			</div>
-
+				))}
+			<NavigatorHeader
+				headerTitle={__('Add Product', 'multivendorx')}
+				headerDescription={__('Enter your product details - name, price, stock, and image & publish.', 'multivendorx')}
+				buttons={[{
+						label: __('Save', 'multivendorx'),
+						icon: 'save',
+						onClick: () => createProduct()
+				}]}
+			/>
 			<Container>
 				<Column grid={3}>
 					<Card title={__('Product type', 'multivendorx')}>
@@ -740,22 +614,16 @@ const AddProduct = () => {
 					<Card
 						title={__('Recommended', 'multivendorx')}
 						action={
-							<>
-								<div className="admin-badge blue">
-									{completedCount}/{totalCount}
-								</div>
-							</>
+							<div className="admin-badge blue">
+								{completedCount}/{totalCount}
+							</div>
 						}
 					>
 						<FormGroupWrapper>
 							<FormGroup>
 								<div className="checklist-wrapper">
 									<ul>
-										<li
-											className={
-												checklist.name ? 'checked' : ''
-											}
-										>
+										<li className={ checklist.name ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Product Name</div>
@@ -764,13 +632,7 @@ const AddProduct = () => {
 										</li>
 										{product.type === 'simple' && (
 											<>
-												<li
-													className={
-														checklist.price
-															? 'checked'
-															: ''
-													}
-												>
+												<li className={ checklist.price ? 'checked' : '' }>
 													<div className="check-icon"><span></span></div>
 													<div className="details">
 														<div className="title">Price</div>
@@ -778,13 +640,7 @@ const AddProduct = () => {
 													</div>
 												</li>
 
-												<li
-													className={
-														checklist.stock
-															? 'checked'
-															: ''
-													}
-												>
+												<li className={checklist.stock ? 'checked' : ''}>
 													<div className="check-icon"><span></span></div>
 													<div className="details">
 														<div className="title">Stock</div>
@@ -793,11 +649,7 @@ const AddProduct = () => {
 												</li>
 											</>
 										)}
-										<li
-											className={
-												checklist.image ? 'checked' : ''
-											}
-										>
+										<li className={checklist.image ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Product Images</div>
@@ -805,11 +657,7 @@ const AddProduct = () => {
 											</div>
 										</li>
 
-										<li
-											className={
-												checklist.categories ? 'checked' : ''
-											}
-										>
+										<li className={checklist.categories ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Category</div>
@@ -817,11 +665,7 @@ const AddProduct = () => {
 											</div>
 										</li>
 
-										<li
-											className={
-												checklist.policies ? 'checked' : ''
-											}
-										>
+										<li className={checklist.policies ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Policies</div>
@@ -843,9 +687,7 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
-					<Card contentHeight
-						title={__('General information', 'multivendorx')}
-					>
+					<Card contentHeight title={__('General information', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Product name', 'multivendorx')} desc={__('A unique name for your product', 'multivendorx')}>
 								<BasicInputUI
@@ -878,35 +720,29 @@ const AddProduct = () => {
 					</Card>
 
 					{product?.type === 'simple' && (
-						<>
-							<Card contentHeight
-								title={__('Price', 'multivendorx')}
-							>
-								<FormGroupWrapper>
+						<Card contentHeight title={__('Price', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
+									<BasicInputUI
+										name="regular_price"
+										value={product.regular_price}
+										onChange={(value) =>
+											handleChange('regular_price', value)
+										}
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
+									<BasicInputUI
+										name="sale_price"
 
-									<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
-										<BasicInputUI
-											name="regular_price"
-											value={product.regular_price}
-											onChange={(value) =>
-												handleChange('regular_price', value)
-											}
-										/>
-									</FormGroup>
-
-									<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
-										<BasicInputUI
-											name="sale_price"
-
-											value={product.sale_price}
-											onChange={(value) =>
-												handleChange('sale_price', value)
-											}
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
-						</>
+										value={product.sale_price}
+										onChange={(value) =>
+											handleChange('sale_price', value)
+										}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
 					)}
 					<Card contentHeight
 						title={__('Inventory', 'multivendorx')}
@@ -916,12 +752,11 @@ const AddProduct = () => {
 									{__('Stock management', 'multivendorx')}
 									<MultiCheckBoxUI
 										look="toggle"
-										type="checkbox"
 										value={product.manage_stock ? ['manage_stock'] : []}
 										onChange={(e) =>
 											handleChange(
 												'manage_stock',
-												(e as React.ChangeEvent<HTMLInputElement>).target.checked
+												(e as React.ChangeEvent<HTMLInputElement>).target
 											)
 										}
 										options={[
@@ -941,22 +776,18 @@ const AddProduct = () => {
 									onChange={(value) => handleChange('sku', value)}
 								/>
 							</FormGroup>
-
 							{!product.manage_stock && (
-								<>
-									<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
-										<SelectInputUI
-											name="stock_status"
-											options={stockStatusOptions}
-											value={product.stock_status}
-											onChange={(selected) =>
-												handleChange('stock_status', selected.value)
-											}
-										/>
-									</FormGroup>
-								</>
+								<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
+									<SelectInputUI
+										name="stock_status"
+										options={stockStatusOptions}
+										value={product.stock_status}
+										onChange={(selected) =>
+											handleChange('stock_status', selected.value)
+										}
+									/>
+								</FormGroup>
 							)}
-
 							{product.manage_stock && (
 								<>
 									<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
@@ -969,7 +800,6 @@ const AddProduct = () => {
 											}
 										/>
 									</FormGroup>
-
 									<FormGroup cols={2} label={__('Allow backorders?', 'multivendorx')}>
 										<SelectInputUI
 											name="backorders"
@@ -980,7 +810,6 @@ const AddProduct = () => {
 											}
 										/>
 									</FormGroup>
-
 									<FormGroup cols={2} label={__('Low stock threshold', 'multivendorx')}>
 										<BasicInputUI
 											name="low_stock_amount"
@@ -996,9 +825,7 @@ const AddProduct = () => {
 						</FormGroupWrapper>
 					</Card>
 
-					<Card contentHeight
-						title={__('Related listings', 'multivendorx')}
-					>
+					<Card contentHeight title={__('Related listings', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
 								<BasicInputUI
@@ -1017,9 +844,7 @@ const AddProduct = () => {
 						</FormGroupWrapper>
 					</Card>
 
-					<Card contentHeight
-						title={__('Policies', 'multivendorx')}
-					>
+					<Card contentHeight title={__('Policies', 'multivendorx')} >
 						<FormGroupWrapper>
 							<FormGroup label={__('Shipping Policy', 'multivendorx')}>
 								<TextAreaUI
@@ -1039,8 +864,6 @@ const AddProduct = () => {
 									}
 								/>
 							</FormGroup>
-
-
 							<FormGroup label={__('Cancellation Policy', 'multivendorx')}>
 								<TextAreaUI
 									name="cancellation_policy"
@@ -1309,17 +1132,13 @@ const AddProduct = () => {
 						)}
 					</Card>
 					{modules.includes('wpml') && (
-						<Card
-							title={__('Translations', 'multivendorx')}
-							iconName="adminfont-translate"
-							toggle={true}
-						>
+						<Card title={__('Translations', 'multivendorx')} iconName="translate" toggle={true}>
 							<FormGroupWrapper>
-								<div className="mvx-translation-list">
+								<div className="multivendorx-translation-list">
 									{translation
 										?.filter((lang) => !lang.is_default)
 										.map((lang) => (
-											<div key={lang.code} className="mvx-translation-row">
+											<div key={lang.code} className="multivendorx-translation-row">
 												<div>
 													<img
 														src={lang.flag_url}
@@ -1336,130 +1155,64 @@ const AddProduct = () => {
 												</button>
 											</div>
 										))}
-
 								</div>
 							</FormGroupWrapper>
 						</Card>
 					)}
-					<Card contentHeight
-						title="Product tag"
-					>
+					<Card contentHeight title={__('Product tag', 'multivendorx')}>
 						<FormGroupWrapper>
-
-							{product.tags?.map((tag) => (
-								<div className="tag-list">
-									<span className="admin-badge blue" key={tag.id}>
-										{tag.name}
-										<span
-											onClick={() =>
-												setProduct((prev) => ({
-													...prev,
-													tags: prev.tags.filter(
-														(t) => t.name !== tag.name
-													),
-												}))
-											}
-										>
-											<i className="delete-icon adminfont-delete" />
-										</span>
-									</span>
-								</div>
-							))}
-
-
-							<div className="dropdown-field">
-								<input
-									type="text"
-									value={tagInput}
-									onChange={(e) => handleTagInput(e.target.value)}
-									onKeyDown={(e) =>
-										e.key === 'Enter' && addTag(tagInput)
-									}
-									placeholder={__('Type tag…', 'multivendorx')}
-									className="basic-input dropdown-input"
-								/>
-
-								<button
-									className="admin-btn btn-green"
-									onClick={() => addTag(tagInput)}
-								>
-									<i className="adminfont-plus" />{' '}
-									{__('Add', 'multivendorx')}
-								</button>
-
-								{suggestions.length > 0 && (
-									<div className="input-dropdown">
-										<ul>
-											{suggestions.map((tag) => (
-												<li
-													key={tag.id || tag.name}
-													className="dropdown-item"
-													onMouseDown={() => addTag(tag)}
-												>
-													{tag.name}
-												</li>
-											))}
-										</ul>
-									</div>
-								)}
-							</div>
+							<InputWithSuggestions
+								suggestions={existingTags.map((tag) => tag.name)} 
+								value={product.tags?.map((tag) => tag.name) || []}
+								onChange={(list) => {
+									console.log('Tags updated:', list);
+									const updatedTags = list.map((name) => {
+										const existing = existingTags.find(
+											(tag) => tag.name === name
+										);
+										return existing ? existing  : { name }; 
+									});
+									setProduct((prev) => ({
+										...prev,
+										tags: updatedTags,
+									}));
+								}}
+								placeholder={__('Type tag…', 'multivendorx')}
+								addButtonLabel={__('Add', 'multivendorx')}
+							/>
 						</FormGroupWrapper>
 					</Card>
 
-					<Card contentHeight
-						title="Upload image"
-					>
+					<Card contentHeight title={__('Upload image', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Features Image', 'multivendorx')}>
-								<div>
-									{/* <FileInput
-										type="hidden"
-										imageSrc={featuredImage?.thumbnail}
-										openUploader={__('Select Featured Image', 'multivendorx')}
-										onButtonClick={openFeaturedUploader}
-										onRemove={() => setFeaturedImage(null)}
-										onReplace={openFeaturedUploader}
-									/> */}
-									<FileInputUI
-										type="hidden"
-										imageSrc={featuredImage?.thumbnail || ''}
-										multiple={false}
-										openUploader={__('Select Featured Image', 'multivendorx')}
-										onChange={(val) => {
-											if (!val) {
-												setFeaturedImage(null);
-												return;
-											}
+								<FileInputUI
+									imageSrc={featuredImage?.thumbnail || ''}
+									multiple={false}
+									openUploader={__('Select Featured Image', 'multivendorx')}
+									onChange={(val) => {
+										if (!val) {
+											setFeaturedImage(null);
+											return;
+										}
+										const url = val as string;
+										setFeaturedImage({
+											id: 0, // wp.media id not available from current FileInput
+											src: url,
+											thumbnail: url,
+										});
+									}}
+								/>
 
-											const url = val as string;
-
-											setFeaturedImage({
-												id: 0, // wp.media id not available from current FileInput
-												src: url,
-												thumbnail: url,
-											});
-										}}
-									/>
-
-									<div className="buttons-wrapper">
-										{applyFilters('product_image_enhancement', null, {
-											currentImage: featuredImage ?? null,
-											isFeaturedImage: true,
-											setImage: setFeaturedImage,
-										})}
-									</div>
-								</div>
+								{applyFilters('product_image_enhancement', null, {
+									currentImage: featuredImage ?? null,
+									isFeaturedImage: true,
+									setImage: setFeaturedImage,
+								})}
 							</FormGroup>
 
 							<FormGroup label={__('Product gallery', 'multivendorx')}>
-								{/* <FileInput
-									type="hidden"
-									imageSrc={null}
-									openUploader="Add Gallery Image"
-									onButtonClick={openGalleryUploader}
-								/> */}
 								<FileInputUI
-									type="hidden"
 									imageSrc={galleryImages.map(img => img.thumbnail)}
 									multiple={true}
 									openUploader="Add Gallery Image"
@@ -1480,182 +1233,7 @@ const AddProduct = () => {
 										setGalleryImages(formatted);
 									}}
 								/>
-
-								<div className="uploaded-image">
-									{galleryImages.map((img, index) => (
-										<div className="image" key={img.id}>
-											<img src={img.thumbnail} alt="" />
-
-											<div className="buttons-wrapper">
-												{applyFilters('product_image_enhancement', null, {
-													currentImage: img,
-													isFeaturedImage: false,
-													setImage: setGalleryImages,
-												})}
-											</div>
-										</div>
-									))}
-
-									{galleryImages.length === 0 && (
-										<div className="buttons-wrapper">
-											{applyFilters('product_image_enhancement', null, {
-												currentImage: null,
-												isFeaturedImage: false,
-												setImage: setGalleryImages,
-												featuredImage: featuredImage ?? null,
-											})}
-										</div>
-									)}
-								</div>
 							</FormGroup>
-						</FormGroupWrapper>
-					</Card>
-
-					<Card
-						title={__('Visibility', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
-						toggle
-					>
-						<FormGroupWrapper>
-							<FormGroup>
-								<div className="checkbox-wrapper">
-									<div className="item">
-										<input
-											type="checkbox"
-											checked={product.virtual}
-											onChange={(e) =>
-												handleChange('virtual', e.target.checked)
-											}
-										/>
-										{__('Virtual', 'multivendorx')}
-									</div>
-
-									<div className="item">
-										<input
-											type="checkbox"
-											checked={product.downloadable}
-											onChange={(e) =>
-												handleChange('downloadable', e.target.checked)
-											}
-										/>
-										{__('Download', 'multivendorx')}
-									</div>
-								</div>
-							</FormGroup>
-
-							<FormGroup>
-								<div className="catalog-visibility">
-									{__('Catalog Visibility:', 'multivendorx')}
-									<span className="catalog-visibility-value">
-										{VISIBILITY_LABELS[product.catalog_visibility]}
-									</span>
-									<span
-										className="admin-badge blue"
-										onClick={() => {
-											setIsEditingVisibility((prev) => !prev);
-											setIsEditingStatus(false);
-										}}
-
-									>
-										<i className="adminfont-edit" />
-									</span>
-								</div>
-							</FormGroup>
-
-							{isEditingVisibility && (
-								<>
-									<FormGroup>
-										<RadioInput
-											name="catalog_visibility"
-											idPrefix="catalog_visibility"
-											type="radio"
-											wrapperClass="settings-form-group-radio"
-											inputWrapperClass="radio-basic-input-wrap"
-											inputClass="setting-form-input"
-											descClass="settings-metabox-description"
-											activeClass="radio-select-active"
-											radiSelectLabelClass="radio-label"
-											options={[
-												{ key: 'vs1', value: 'visible', label: 'Shop and search results' },
-												{ key: 'vs2', value: 'catalog', label: 'Shop only' },
-												{ key: 'vs3', value: 'search', label: 'Search results only' },
-												{ key: 'vs4', value: 'hidden', label: 'Hidden' },
-											]}
-											value={product.catalog_visibility}
-											onChange={(e) => {
-												handleChange('catalog_visibility', e.target.value);
-												setIsEditingVisibility(false);
-											}}
-										/>
-									</FormGroup>
-									<FormGroup>
-										<label
-											onClick={() => setstarFill((prev) => !prev)}
-											style={{ cursor: 'pointer' }}
-										>
-											<i
-												className={`star-icon ${starFill ? 'adminfont-star' : 'adminfont-star-o'
-													}`}
-											/>
-											{__('This is a featured product', 'multivendorx')}
-										</label>
-									</FormGroup>
-								</>
-							)}
-
-							<FormGroup label={__('Status', 'multivendorx')} htmlFor="status">
-								<ToggleSettingUI
-									options={[
-										{ key: 'draft', value: 'draft', label: __('Draft', 'multivendorx') },
-										{ key: 'publish', value: 'publish', label: __('Published', 'multivendorx') },
-										{ key: 'pending', value: 'pending', label: __('Pending Review', 'multivendorx') },
-									]}
-									value={product.status}
-									onChange={(value) => handleChange('status', value)}
-								/>
-							</FormGroup>
-
-							{product.status === 'publish' && (
-								<label>{__('Published on Dec 16, 2025', 'multivendorx')}</label>
-							)}
-
-							{product.status === 'pending' && (
-								<FormGroup label={__('Published on', 'multivendorx')} htmlFor="published-on">
-									<div className="date-field-wrapper">
-										{product.date_created && (
-											<>
-												<CalendarInput
-													wrapperClass="calendar-wrapper"
-													inputClass="calendar-input"
-													value={product.date_created.split('T')[0]}
-													onChange={(date: any) => {
-														const dateStr = date?.toString();
-														setProduct((prev) => ({
-															...prev,
-															date_created: `${dateStr}T${prev.date_created?.split('T')[1] || '00:00:00'
-																}`,
-														}));
-													}}
-													format="YYYY-MM-DD"
-												/>
-
-												<BasicInputUI
-													type="time"
-													value={
-														product.date_created.split('T')[1]?.slice(0, 5) || ''
-													}
-													onChange={(value) => {
-														setProduct((prev) => ({
-															...prev,
-															date_created: `${prev.date_created?.split('T')[0]}T${value}:00`,
-														}));
-													}}
-												/>
-											</>
-										)}
-									</div>
-								</FormGroup>
-							)}
 						</FormGroupWrapper>
 					</Card>
 				</Column>

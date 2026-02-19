@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, TableCard } from 'zyra';
+import { getApiLink, NavigatorHeader, TableCard } from 'zyra';
 import { formatTimeAgo } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
@@ -52,29 +52,18 @@ const StoreFollower: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Store Followers', 'multivendorx')}
-					</div>
-					<div className="des">
-						{__(
-							'See all your store followers, engage with them, and grow your loyal customer base.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Store Followers', 'multivendorx')}
+				headerDescription={__('See all your store followers, engage with them, and grow your loyal customer base.', 'multivendorx')}
+			/>
 
-			<div className="admin-table-wrapper">
-				<TableCard
-					headers={headers}
-					rows={rows}
-					totalRows={totalRows}
-					isLoading={isLoading}
-					onQueryUpdate={fetchData}
-				/>
-			</div>
+			<TableCard
+				headers={headers}
+				rows={rows}
+				totalRows={totalRows}
+				isLoading={isLoading}
+				onQueryUpdate={fetchData}
+			/>
 		</>
 	);
 };

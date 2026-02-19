@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { Column, Container, ExportCSV, getApiLink, TableCard } from 'zyra';
+import { Column, Container, ExportCSV, getApiLink, NavigatorHeader, TableCard } from 'zyra';
 import TransactionDetailsModal from './TransactionDetailsModal';
 import { formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
@@ -278,19 +278,10 @@ const Transactions: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Transactions', 'multivendorx')}
-					</div>
-					<div className="des">
-						{__(
-							'Track your earnings, withdrawals, and current balance at a glance.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Transactions', 'multivendorx')}
+				headerDescription={__('Track your earnings, withdrawals, and current balance at a glance.', 'multivendorx')}
+			/>
 
 			<Container general>
 				<Column>

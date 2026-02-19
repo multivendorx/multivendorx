@@ -14,7 +14,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import '../components/dashboard.scss';
 import '../dashboard/dashboard1.scss';
-import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules, TableCard } from 'zyra';
+import { AdminButtonUI, Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, CalendarInput, useModules, TableCard, NavigatorHeader } from 'zyra';
 import { TableRow } from '@/services/type';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
@@ -508,31 +508,32 @@ const Dashboard: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{getGreeting()},{' '}
-						{store?.primary_owner_info?.data?.display_name}!
-					</div>
-					<div className="view-des">
+			<NavigatorHeader
+				headerTitle={`${getGreeting()}, ${store?.primary_owner_info?.data?.display_name}!`}
+				headerDescription={
+					<>
 						{__('You’re viewing:', 'multivendorx')}{' '}
 						<b>
 							{store?.primary_owner_info?.data?.display_name}’s{' '}
 							{store?.name || '-'}
 						</b>
-					</div>
-				</div>
-				<div className="buttons-wrapper">
-					<CalendarInput
-						onChange={(range: DateRange) => {
-							setDateRange({
-								startDate: range.startDate,
-								endDate: range.endDate,
-							});
-						}}
-					/>
-				</div>
-			</div>
+					</>
+				}
+				buttons={[
+					{
+						// custom: (
+						// 	<CalendarInput
+						// 		onChange={(range: DateRange) => {
+						// 			setDateRange({
+						// 				startDate: range.startDate,
+						// 				endDate: range.endDate,
+						// 			});
+						// 		}}
+						// 	/>
+						// ),
+					},
+				]}
+			/>
 
 			<Container>
 				<Column>
@@ -659,7 +660,7 @@ const Dashboard: React.FC = () => {
 				<Column grid={8}>
 					<Card
 						title={__('Recent Orders', 'multivendorx')}
-						iconName="adminfont-external icon"
+						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
 								? `${siteUrl}/${appLocalizer.dashboard_slug}/orders`
@@ -690,7 +691,7 @@ const Dashboard: React.FC = () => {
 				<Column grid={6}>
 					<Card
 						title={__('Best-Selling Products', 'multivendorx')}
-						iconName="adminfont-external icon"
+						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
 								? `${siteUrl}/${appLocalizer.dashboard_slug}/products`
@@ -723,7 +724,7 @@ const Dashboard: React.FC = () => {
 				<Column grid={6}>
 					<Card
 						title={__('Commission Overview', 'multivendorx')}
-						iconName="adminfont-external icon"
+						iconName="external icon"
 						onIconClick={() => {
 							const url = appLocalizer.permalink_structure
 								? `${siteUrl}/${appLocalizer.dashboard_slug}/overview`
@@ -810,7 +811,7 @@ const Dashboard: React.FC = () => {
 					<Column grid={4}>
 						<Card
 							title={__('Pending Refunds', 'multivendorx')}
-							iconName="adminfont-external icon"
+							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
 									? `${siteUrl}/${appLocalizer.dashboard_slug}/refund`
@@ -895,7 +896,7 @@ const Dashboard: React.FC = () => {
 					<Column grid={4}>
 						<Card
 							title={__('Latest Reviews', 'multivendorx')}
-							iconName="adminfont-external icon"
+							iconName="external icon"
 							onIconClick={() => {
 								const url = appLocalizer.permalink_structure
 									? `${siteUrl}/${appLocalizer.dashboard_slug}/store-review`
@@ -910,7 +911,7 @@ const Dashboard: React.FC = () => {
 											<div className="details">
 												<div className="title">
 													<div className="avatar">
-															<i className="adminfont-person" />
+														<i className="adminfont-person" />
 													</div>
 													{reviewItem.review_title}
 												</div>

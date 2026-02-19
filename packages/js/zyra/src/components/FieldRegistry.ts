@@ -25,6 +25,7 @@ import FileInput from './FileInput';
 import Content from './Content';
 import Divider from './Divider';
 import MultiCheckboxTable from './MultiCheckboxTable';
+import Tabs from './Tabs';
 
 export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   text: BasicInput,
@@ -41,6 +42,7 @@ export const FIELD_REGISTRY: Record<string, FieldComponent> = {
   section: Section,
   checkbox: MultiCheckBox,
   log: Log,
+  tab: Tabs,
   'multi-select': SelectInput,
   'expandable-panel': ExpandablePanelGroup,
   'setting-toggle': ToggleSetting,

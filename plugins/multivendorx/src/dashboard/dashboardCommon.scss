@@ -427,13 +427,10 @@ body.dark {
         left: 0;
         top: 100%;
         width: 100%;
-        display: none;
-
-        ul {
-            margin: 0;
-            list-style-type: none;
-            background: $background-white;
-            border-radius: 0.313rem;
+        margin: 0;
+        list-style-type: none;
+        background: $background-white;
+        border-radius: 0.313rem;
 
             li {
                 padding: 0.5rem 1rem;
@@ -445,7 +442,6 @@ body.dark {
                     color: #fff;
                 }
             }
-        }
     }
 }
 
@@ -914,99 +910,6 @@ body.dark {
 // attribute style end
 
 
-// variant style start
-// .variant-wrapper {
-//     display: flex;
-//     flex-wrap: wrap;
-//     gap: 0.813rem;
-//     margin: 1rem 0;
-
-//     .variant-box {
-//         width: calc(33% - 0.625rem);
-//         padding: 1rem;
-//         border: $border-light-small;
-//         box-sizing: border-box;
-//         border-radius: 0.313rem;
-//         position: relative;
-
-//         .variant-items {
-//             display: flex;
-//             flex-wrap: wrap;
-//             gap: 0.625rem;
-//             margin-bottom: 0.813rem;
-
-//             .variant {
-//                 width: fit-content;
-//                 padding: 0.5rem;
-//                 min-width: 3rem;
-//                 border-radius: 0.313rem;
-//                 border: $border-light-small;
-
-//                 .value {
-//                     font-size: 1.125rem;
-//                     line-height: 1.25;
-//                 }
-
-//                 .name {
-//                     color: #a7a5a5;
-//                     font-size: 0.813rem;
-//                     padding-top: 0.125rem;
-//                 }
-//             }
-//         }
-
-//         .edit-icon {
-//             position: absolute;
-//             top: 1rem;
-//             right: 1rem;
-//             display: none;
-//             transition: all 0.4s ease;
-//         }
-
-//         &:hover {
-//             .edit-icon {
-//                 display: block;
-//             }
-//         }
-
-//         .sku {
-//             font-size: 1rem;
-//             color: #a7a5a5;
-//         }
-
-//         .price {
-//             font-size: 1.25rem;
-//             line-height: 1.5rem;
-//             padding: 0.25rem 0;
-//         }
-
-//         .stock {
-//             color: rgba(0, 128, 0, 0.918);
-//         }
-
-//         .product {
-//             display: flex;
-//             align-items: start;
-//             gap: 0.625rem;
-
-//             .image-section {
-//                 margin-top: 0.5rem;
-
-//                 i {
-//                     padding: 0.625rem;
-//                     font-size: 1.5rem;
-//                     background: $theme-background-color;
-//                     color: $theme-color;
-//                     border-radius: 0.313rem;
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// variant style end
-
-
 // add product category page start
 .product-category-select-wrapper {
     width: 70%;
@@ -1293,38 +1196,6 @@ body.dark {
     border-bottom: $border-light-small;
     padding-bottom: 1rem;
 }
-
-// .add-dropdown-wrapper {
-//     position: relative;
-
-//     .add-dropdown {
-//         position: absolute;
-//         background: $background-white;
-//         box-shadow: 0 0.125rem 0.5rem 0 #dfdee16e;
-//         width: 100%;
-//         z-index: 99;
-//         // border: 0.063rem solid;
-//         border-radius: $border-radius-small;
-//         // padding: 1rem;
-
-//         ul {
-//             list-style-type: none;
-//             margin: 0;
-//             height: 14rem;
-//             overflow: auto;
-
-//             li {
-//                 padding: 0.725rem;
-//                 border-bottom: $border-light-small;
-//                 font-size: 1.063rem;
-//             }
-
-//             .add-btn {
-//                 position: inherit;
-//             }
-//         }
-//     }
-// }
 
 // variant style end
 

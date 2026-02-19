@@ -282,7 +282,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 				<p>No access to view the order</p>
 			) : (
 				<>
-					<div className="page-title-wrapper">
+					{/* <div className="page-title-wrapper">
 						<div className="page-title">
 							<div className="title">
 								Order #{orderData?.number ?? orderId ?? '—'}
@@ -298,7 +298,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 											.replace(/\b\w/g, (c) =>
 												c.toUpperCase()
 											)}
-											<i className="adminfont-keyboard-arrow-down"></i>
+										<i className="adminfont-keyboard-arrow-down"></i>
 									</div>
 								)}
 								{statusSelect && (
@@ -350,7 +350,53 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								</button>
 							)}
 						</div>
-					</div>
+					</div> */}
+
+					<NavigatorHeader
+						headerTitle={
+							<>
+								Order #{orderData?.number ?? orderId ?? '—'}
+								
+								{!statusSelect && orderData?.status?.trim() && (
+									<div
+										className={statusBadgeClass(orderData?.status)}
+										onClick={() => setStatusSelect(true)}
+									>
+										{(orderData?.status || '')
+											.replace(/-/g, ' ')
+											.replace(/\b\w/g, (c) => c.toUpperCase())}
+										<i className="adminfont-keyboard-arrow-down"></i>
+									</div>
+								)}
+
+								{statusSelect && (
+									<div className="status-edit">
+										<SelectInputUI
+											name="status"
+											options={[
+												{ label: 'Processing', value: 'processing' },
+												{ label: 'On Hold', value: 'on-hold' },
+												{ label: 'Completed', value: 'completed' },
+												{ label: 'Cancelled', value: 'cancelled' },
+											]}
+											value={orderData?.status}
+											onChange={(value) => {
+												handleStatusChange(value);
+											}}
+										/>
+									</div>
+								)}
+							</>
+						}
+						headerDescription={formatDateTime(orderData?.date_created)}
+						buttons={[
+							{
+								label: __('Back to Orders', 'multivendorx'),
+								icon: 'arrow-right',
+								onClick: () => onBack()
+							}
+						]}
+					/>
 
 					<Container>
 						<Column grid={8}>
@@ -683,7 +729,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 																		<i className="adminfont-cart green"></i>
 																	</div>
 																	{item.label}
-																	
+
 																</div>
 																<div>{item.reason}</div>
 															</td>

@@ -11,6 +11,7 @@ import {
 	TextAreaUI,
 	PopupUI,
 	AdminButtonUI,
+	NavigatorHeader,
 } from 'zyra';
 import { formatLocalDate, formatWcShortDate, truncateText } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
@@ -217,20 +218,11 @@ const CustomerQuestions: React.FC = () => {
 	};
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Customer questions', 'multivendorx')}
-					</div>
+			<NavigatorHeader
+				headerTitle={__('Customer questions', 'multivendorx')}
+				headerDescription={__('Track and respond to customer product questions.', 'multivendorx')}
+			/>
 
-					<div className="des">
-						{__(
-							'Track and respond to customer product questions.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
 			<TableCard
 				headers={headers}
 				rows={rows}

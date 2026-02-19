@@ -256,8 +256,7 @@ const Stores = () => {
 						buttons={[
 							{
 								label: __('Add Store', 'multivendorx'),
-								className: "admin-btn btn-purple-bg",
-								iconClass: 'adminfont-plus',
+								icon: 'plus',
 								onClick: () => {
 									setFormData({});
 									setImagePreview('');
@@ -398,7 +397,6 @@ const Stores = () => {
 									<FileInputUI
 										value={formData.image || ''}
 										name="image"
-										// type="hidden"
 										accept={".jpg,.jpeg,.png,.gif,.pdf,.zip"} // Backend controls file types: "image/*", ".pdf", "image/*,.pdf"
 										imageSrc={imagePreview || ''}
 										imageWidth={75}

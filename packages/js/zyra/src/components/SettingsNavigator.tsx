@@ -54,8 +54,8 @@ type SettingsNavigatorProps = {
 interface button {
     label: string;
     onClick: () => void;
-    iconClass: string;
-    className: string;
+    icon: string;
+    color: string;
 }
 
 interface NavigatorHeaderProps {
@@ -94,14 +94,9 @@ export const NavigatorHeader: React.FC<NavigatorHeaderProps> = ({
                     <AdminButtonUI
                         buttons={buttons.map((button) => ({
                             text: button.label,
-                            icon: button.iconClass,
+                            icon: button.icon,
+                            color: button.color,
                             onClick: button.onClick,
-                            children: (
-                                <>
-                                    <i className={button.iconClass}></i>
-                                    {button.label}
-                                </>
-                            ),
                         }))}
                     />
                 )}

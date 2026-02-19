@@ -25,6 +25,7 @@ declare global {
 		khali_dabba: any;
 		tab_name: string;
 		settings_databases_value: any;
+		settings_all_meta: any;
 		pages_list: any;
 		pro_url: string;
 		pro_settings_list: any;

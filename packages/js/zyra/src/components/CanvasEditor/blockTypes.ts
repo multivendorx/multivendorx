@@ -27,9 +27,44 @@ export type ColumnLayout = '1' | '2-50' | '2-66' | '3' | '4';
 export interface TitleBlock {
     type: 'title';
 }
+export interface Option {
+    id: string;
+    label: string;
+    value: string;
+    isdefault?: boolean;
+}
 
-// Union Type for All Blocks
-export type Block =TitleBlock;
+export interface Block {
+    id: number;
+    type: BlockType;
+    name: string;
+    label?: string;
+    placeholder?: string;
+    context?: string;
+    required?: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+    options?: Option[];
+    charlimit?: number;
+    row?: number;
+    column?: number;
+    filesize?: number;
+    sitekey?: string;   
+    text?: string;                          
+    level?: 1 | 2 | 3 | 4 | 5 | 6;       
+    html?: string;                          
+    src?: string;                           
+    alt?: string;                           
+    url?: string;                          
+    style?: import('./blockStyle').BlockStyle;
+    layout?: ColumnLayout;
+    columns?: Block[][];
+}
+export interface ColumnsBlock extends Block {
+    type: 'columns';
+    layout: ColumnLayout;
+    columns: Block[][];
+}
 
 // Block Configuration
 export interface BlockConfig {
@@ -38,6 +73,9 @@ export interface BlockConfig {
     value: BlockType;
     label: string;
     name?: string;
+    fixedName?: string;
+    placeholder?: string;
+    options?: Option[];
 }
 
 // Helper Types

@@ -10,6 +10,22 @@
   }
 }
 
+// breadcrumbs style start
+.breadcrumbs {
+    span {
+      a {
+        color: $theme-color;
+      }
+
+      &:last-child {
+        a {
+          color: #0000007a;
+        }
+      }
+    }
+  }
+// breadcrumbs style end
+
 // tabs style start
 .title-section {
   .title-wrapper {
@@ -84,7 +100,6 @@
   border-bottom: $border-light-small;
   margin: 0 1rem;
 }
-
 // tabs style end
 .settings-wrapper {
   &[data-template="default"] {
