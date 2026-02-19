@@ -1125,6 +1125,11 @@ class Stores extends \WP_REST_Controller {
                 $data['total_reviews']
             );
 
+            if ( !empty($data['setting']) ) {
+                $data = $data['setting'];
+                unset($data['setting'], $data['settingName']);
+            }
+
             // Core fields update.
             $core_fields = array(
                 Utill::STORE_SETTINGS_KEYS['name'],
@@ -1253,6 +1258,7 @@ class Stores extends \WP_REST_Controller {
                 array(
                     'success' => true,
                     'id'      => $store->get_id(),
+                    'error'   => __( 'Settings Saved', 'multivendorx' )
                 )
             );
         } catch ( \Exception $e ) {
