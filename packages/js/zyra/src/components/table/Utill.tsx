@@ -96,7 +96,6 @@ export const renderCell = (
 
 		case "currency": {
 			if (value == null) return null;
-			const position = header.currencyPosition === "after" ? "after" : "before";
 
 			const numberValue =
 				typeof value === "number"
@@ -105,28 +104,52 @@ export const renderCell = (
 
 			if (isNaN(numberValue)) return <span>{value}</span>;
 
-			// 🔹 WooCommerce dynamic settings
-			const decimals = Number(currency?.priceDecimals ?? 2);
-			const decimalSeparator = currency?.decimalSeparator ?? ".";
-			const thousandSeparator = currency?.thousandSeparator ?? ",";
+			const {
+				currencySymbol,
+				priceDecimals,
+				decimalSeparator,
+				thousandSeparator,
+				currencyPosition
+			} = currency;
+
+			const decimals = Number(priceDecimals ?? 2);
 
 			const fixed = numberValue.toFixed(decimals);
 
 			const parts = fixed.split(".");
-			parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+			parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator ?? ",");
 
-			const formatted = parts.join(decimalSeparator);
+			const formattedNumber =
+				decimals > 0
+					? parts.join(decimalSeparator ?? ".")
+					: parts[0];
 
-			return (
-				<span>
-					{currency.currencySymbol
-						? position === "before"
-							? `${currency.currencySymbol}${formatted}`
-							: `${formatted}${currency.currencySymbol}`
-						: formatted}
-				</span>
-			);
+			let finalValue = formattedNumber;
+
+			switch (currencyPosition) {
+				case "left":
+					finalValue = `${currencySymbol}${formattedNumber}`;
+					break;
+
+				case "left_space":
+					finalValue = `${currencySymbol} ${formattedNumber}`;
+					break;
+
+				case "right":
+					finalValue = `${formattedNumber}${currencySymbol}`;
+					break;
+
+				case "right_space":
+					finalValue = `${formattedNumber} ${currencySymbol}`;
+					break;
+
+				default:
+					finalValue = `${currencySymbol}${formattedNumber}`;
+			}
+
+			return <span>{finalValue}</span>;
 		}
+
 
 
 		default:
