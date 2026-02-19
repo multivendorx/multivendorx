@@ -210,7 +210,7 @@ const Table: React.FC<TableProps> = ({
                                             onClick={
                                                 hasData
                                                     ? () => handleSort(key)
-                                                    : undefined
+                                                    : null
                                             }
                                             className="sort-button"
                                         >

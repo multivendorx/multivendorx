@@ -116,9 +116,9 @@ const TableCard: React.FC<TableCardProps> = ({
 		onBulkActionApply?.(action, selectedIds);
 		setSelectedIds([]);
 	};
-	// /**
-	//  * Determine default visible columns
-	//  */
+	/**
+	 * Determine default visible columns
+	 */
 	const getShowCols = (headersObj: TableCardProps['headers'] = {}) => {
 		return Object.entries(headersObj)
 			.filter(([_, config]) => config.visible !== false)
