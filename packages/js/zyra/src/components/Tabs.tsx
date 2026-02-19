@@ -25,7 +25,7 @@ interface TabsProps {
     canAccess?: (capability: string) => boolean;
 }
 
-const TabsUI: React.FC<TabsProps> = ({ 
+export const TabsUI: React.FC<TabsProps> = ({ 
     tabs, 
     defaultActiveIndex = 0, 
     value, 

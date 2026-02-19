@@ -7,7 +7,7 @@ import { BlockRenderer, createBlock } from './BlockRenderer';
 import { Block, BlockPatch, ColumnsBlock } from './blockTypes';
 import { ColumnRenderer, useColumnManager, safeColumns } from './ColumnRenderer';
 import SettingMetaBox from '../SettingMetaBox';
-import TabsUI from '../Tabs';
+import {TabsUI} from '../Tabs';
 
 interface CanvasEditorProps {
     blocks: Block[];
@@ -50,8 +50,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     context = 'default',
     inputTypeList,
 }) => {
-    const [blocks,     setBlocks]     = useState<Block[]>(externalBlocks);
-    const [openBlock,  setOpenBlock]  = useState<Block | null>(null);
+    const [blocks, setBlocks] = useState<Block[]>(externalBlocks);
+    const [openBlock, setOpenBlock] = useState<Block | null>(null);
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
         Object.fromEntries(
             (visibleGroups.length
@@ -62,8 +62,8 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     );
 
     const settingHasChanged = useRef(false);
-    const initialLoad       = useRef(true);
-    const blocksRef         = useRef(blocks);
+    const initialLoad = useRef(true);
+    const blocksRef = useRef(blocks);
     blocksRef.current = blocks;
     useEffect(() => {
         if (JSON.stringify(externalBlocks) !== JSON.stringify(blocks)) {
@@ -89,16 +89,16 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     });
 
     const pendingDrag = useRef<{
-        canvas?:  Block[];
+        canvas?: Block[];
         /** key: `${parentIdx}-${colIdx}` */
-        columns:  Map<string, Block[]>;
+        columns: Map<string, Block[]>;
     } | null>(null);
     const dragFlushPending = useRef(false);
 
     const flushDrag = useCallback(() => {
         if (!pendingDrag.current) return;
         const { canvas, columns } = pendingDrag.current;
-        pendingDrag.current      = null;
+        pendingDrag.current = null;
         dragFlushPending.current = false;
 
         // 1. Start from new canvas list or current state
@@ -227,7 +227,7 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                     {openGroups[id] && (
                         <ReactSortable
                             list={palette}
-                            setList={() => {}}
+                            setList={() => { }}
                             sort={false}
                             group={{ name: groupName, pull: 'clone', put: false }}
                             className="section-container open"
@@ -268,12 +268,20 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
     return (
         <div className="registration-from-wrapper">
             <div className="elements-wrapper">
-                <TabsUI tabs={[
-                    { label: 'Blocks', content: renderBlocksContent() },
-                    ...(showTemplatesTab && templates.length
-                        ? [{ label: 'Templates', content: renderTemplatesContent() }]
-                        : []),
-                ]} />
+                <TabsUI
+                    tabs={[
+                        {
+                            label: 'Blocks',
+                            content: renderBlocksContent()
+                        },
+                        ...(showTemplatesTab && templates.length
+                            ? [{
+                                label: 'Templates',
+                                content: renderTemplatesContent()
+                            }]
+                            : []),
+                    ]}
+                />
             </div>
 
             <div className="canvas-editor">
