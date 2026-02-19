@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, ItemList } from 'zyra';
+import { getApiLink, SuccessNotice, Card, Container, Column, FormGroupWrapper, FormGroup, BasicInputUI, AdminButtonUI, PopupUI, ItemList, NavigatorHeader } from 'zyra';
 import { formatCurrency } from '../services/commonFunction';
 
 const Withdrawls: React.FC = () => {
@@ -88,19 +88,10 @@ const Withdrawls: React.FC = () => {
 	return (
 		<>
 			<SuccessNotice message={message} />
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Withdrawals', 'multivendorx')}
-					</div>
-					<div className="des">
-						{__(
-							'View and keep track of your withdrawals.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Withdrawals', 'multivendorx')}
+				headerDescription={__('View and keep track of your withdrawals.', 'multivendorx')}
+			/>
 
 			<Container >
 				<Column grid={6}>

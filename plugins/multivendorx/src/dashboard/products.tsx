@@ -4,6 +4,7 @@ import {
 	useModules,
 	getApiLink,
 	TableCard,
+	NavigatorHeader,
 } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -55,7 +56,7 @@ const AllProduct: React.FC = () => {
 	const isAddProduct = element === 'edit';
 	const isSpmvOn = element === 'add';
 
-	const handleDelete = async (productId:number) => {
+	const handleDelete = async (productId: number) => {
 		const res = await axios.delete(
 			`${appLocalizer.apiUrl}/wc/v3/products/${productId}`,
 			{
@@ -289,7 +290,7 @@ const AllProduct: React.FC = () => {
 				{
 					label: __('Edit', 'multivendorx'),
 					icon: 'edit',
-					onClick: (id:number) => {
+					onClick: (id: number) => {
 						if (appLocalizer.permalink_structure) {
 							navigate(
 								`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${id}/`
@@ -304,7 +305,7 @@ const AllProduct: React.FC = () => {
 				{
 					label: __('View', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id:number) => {
+					onClick: (id: number) => {
 						const product = productMap[id];
 						window.location.assign(
 							`${product.permalink}`
@@ -314,7 +315,7 @@ const AllProduct: React.FC = () => {
 				{
 					label: __('Copy URL', 'multivendorx'),
 					icon: 'copy',
-					onClick: (id:number) => {
+					onClick: (id: number) => {
 						const url = productMap[id].permalink;
 						navigator.clipboard
 							.writeText(url)
@@ -460,7 +461,7 @@ const AllProduct: React.FC = () => {
 		<>
 			{!isAddProduct && !isSpmvOn && (
 				<>
-					<div className="page-title-wrapper">
+					{/* <div className="page-title-wrapper">
 						<div className="page-title">
 							<div className="title">{__('All Products', 'multivendorx')}</div>
 							<div className="des">
@@ -495,7 +496,44 @@ const AllProduct: React.FC = () => {
 								<i className="adminfont-plus"></i> {__('Add New', 'multivendorx')}
 							</div>
 						</div>
-					</div>
+					</div> */}
+					<NavigatorHeader
+						headerTitle={__('All Products', 'multivendorx')}
+						headerDescription={__('Manage your store products', 'multivendorx')}
+						buttons={[
+							...(modules.includes('import-export')
+								? [
+									{
+										custom: applyFilters(
+											'product_import_export',
+											null
+										),
+									},
+								]
+								: []),
+
+							{
+								label: __('Add New', 'multivendorx'),
+								icon: 'plus',
+								onClick: () => {
+									if (modules.includes('shared-listing')) {
+										if (appLocalizer.permalink_structure) {
+											navigate(
+												`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
+											);
+										} else {
+											navigate(
+												`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
+											);
+										}
+									} else {
+										createAutoDraftProduct();
+									}
+								},
+							},
+						]}
+					/>
+
 					<TableCard
 						headers={headers}
 						rows={rows}

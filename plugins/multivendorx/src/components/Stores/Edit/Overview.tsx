@@ -125,7 +125,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 					/>
 					<Card
 						title={__('Recent payouts', 'multivendorx')}
-						iconName="adminfont-external icon"
+						iconName="external icon"
 						onIconClick={() => {
 							navigate(
 								`?page=multivendorx#&tab=transaction-history&store_id=${id}`
@@ -158,7 +158,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 
 					<Card
 						title={__('Latest products', 'multivendorx')}
-						iconName="adminfont-external icon"
+						iconName="external icon"
 						onIconClick={() => {
 							window.open(
 								`${appLocalizer.admin_url}edit.php?post_type=product`,
@@ -211,7 +211,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 					{modules.includes('store-review') && (
 						<Card
 							title={__('Latest reviews', 'multivendorx')}
-							iconName="adminfont-external icon"
+							iconName="external icon"
 							onIconClick={() => {
 								navigate(
 									`?page=multivendorx#&tab=customer-support&subtab=review`
@@ -225,7 +225,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 					{modules.includes('marketplace-refund') && (
 						<Card
 							title={__('Latest refunds', 'multivendorx')}
-							iconName="adminfont-external icon"
+							iconName="external icon"
 							onIconClick={() => {
 								navigate(
 									`?page=multivendorx#&tab=customer-support&subtab=refund-requests`
@@ -276,7 +276,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 					)}
 					<Card
 						title={__('Store information', 'multivendorx')}
-						iconName="adminfont-external icon"
+						iconName="external icon"
 						contentHeight
 						onIconClick={() => {
 							navigate(
@@ -355,7 +355,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 
 					<Card
 						title={__('Store staff', 'multivendorx')}
-						iconName="adminfont-external icon"
+						iconName="external icon"
 						contentHeight
 						onIconClick={() => {
 							navigate(

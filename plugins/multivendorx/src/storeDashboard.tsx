@@ -494,7 +494,7 @@ const Dashboard = () => {
 												}
 											}}
 										>
-											<i className={item.icon}></i>
+											<i className={`adminfont-${item.icon}`}></i>
 											<span>{item.name}</span>
 
 											{hasSubmenu && (
@@ -577,9 +577,9 @@ const Dashboard = () => {
 									}
 								>
 									<div
-										className={`adminfont-icon admin-icon dark-icon ${isDarkMode
-											? 'adminfont-light'
-											: 'adminfont-moon'
+										className={`adminfont-icon admin-icon dark-icon adminfont-${isDarkMode
+											? 'light'
+											: 'moon'
 											}`}
 									></div>
 								</li>

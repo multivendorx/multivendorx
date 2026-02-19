@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { useEffect, useState } from 'react';
-import { NestedComponent,   Card, BasicInputUI } from 'zyra';
+import { NestedComponent, Card, BasicInputUI, FormGroup, FormGroupWrapper } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const MinMax = ({ product, setProduct }) => {
@@ -83,16 +83,15 @@ const MinMax = ({ product, setProduct }) => {
 	return (
 		<Card
 			title={__('Min/Max', 'multivendorx')}
-			iconName="adminfont-pagination-right-arrow arrow-icon"
+			iconName="pagination-right-arrow arrow-icon"
 			toggle
 		>
-			<div className="form-group-wrapper">
+			<FormGroupWrapper>
 				{/* Quantity */}
-				<div className="form-group">
-					<label>{__('Quantity', 'multivendorx')}</label>
+				<FormGroup label={__('Quantity', 'multivendorx')}>
 					<BasicInputUI
 						name="min_quantity"
-						type="number"						 
+						type="number"
 						preText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_quantity}
 						onChange={(e) =>
@@ -105,7 +104,7 @@ const MinMax = ({ product, setProduct }) => {
 
 					<BasicInputUI
 						name="max_quantity"
-						type="number"						 
+						type="number"
 						preText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_quantity}
 						onChange={(e) =>
@@ -115,15 +114,13 @@ const MinMax = ({ product, setProduct }) => {
 							)
 						}
 					/>
-				</div>
+				</FormGroup>
 
 				{/* Amount */}
-				<div className="form-group">
-					<label>{__('Amount', 'multivendorx')}</label>
-
+				<FormGroup label={__('Amount', 'multivendorx')}>
 					<BasicInputUI
 						name="min_amount"
-						type="number"						 
+						type="number"
 						preText={__('Min', 'multivendorx')}
 						value={minMaxMeta.min_amount}
 						onChange={(e) =>
@@ -136,7 +133,7 @@ const MinMax = ({ product, setProduct }) => {
 
 					<BasicInputUI
 						name="max_amount"
-						type="number"						 
+						type="number"
 						preText={__('Max', 'multivendorx')}
 						value={minMaxMeta.max_amount}
 						onChange={(e) =>
@@ -146,10 +143,9 @@ const MinMax = ({ product, setProduct }) => {
 							)
 						}
 					/>
-				</div>
-			</div>
+				</FormGroup>
+			</FormGroupWrapper>
 		</Card>
-
 	);
 };
 

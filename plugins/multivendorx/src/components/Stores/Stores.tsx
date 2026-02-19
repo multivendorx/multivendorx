@@ -256,8 +256,7 @@ const Stores = () => {
 						buttons={[
 							{
 								label: __('Add Store', 'multivendorx'),
-								className: "admin-btn btn-purple-bg",
-								iconClass: 'adminfont-plus',
+								icon: 'plus',
 								onClick: () => {
 									setFormData({});
 									setImagePreview('');

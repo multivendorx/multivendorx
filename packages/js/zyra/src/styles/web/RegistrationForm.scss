@@ -19,29 +19,29 @@
         max-height: 80vh;
         overflow: auto;
 
-        .tab-titles {
-            padding: 0;
-            margin-bottom: 1.125rem;
-            border-bottom: $border-light-small;
-            display: flex;
+        // .tab-titles {
+        //     padding: 0;
+        //     margin-bottom: 1.125rem;
+        //     border-bottom: $border-light-small;
+        //     display: flex;
 
-            .title {
-                text-align: center;
-                width: 50%;
-                padding: 1rem;
-                padding-top: 0;
-                cursor: pointer;
+        //     .title {
+        //         text-align: center;
+        //         width: 50%;
+        //         padding: 1rem;
+        //         padding-top: 0;
+        //         cursor: pointer;
 
-                p {
-                    font-size: 1.063rem;
-                }
+        //         p {
+        //             font-size: 1.063rem;
+        //         }
 
-                &.active {
-                    color: $theme-color;
-                    border-bottom: 0.125rem solid $theme-color;
-                }
-            }
-        }
+        //         &.active {
+        //             color: $theme-color;
+        //             border-bottom: 0.125rem solid $theme-color;
+        //         }
+        //     }
+        // }
 
         .tab-contend {
             min-height: 80vh;

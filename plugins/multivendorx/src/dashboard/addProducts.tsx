@@ -20,6 +20,7 @@ import {
 	TextAreaUI,
 	ToggleSettingUI,
 	FileInputUI,
+	NavigatorHeader,
 } from 'zyra';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -451,27 +452,27 @@ const AddProduct = () => {
 	};
 
 	const createProduct = () => {
-	const imagePayload = [];
+		const imagePayload = [];
 
-	if (featuredImage) {
-		imagePayload.push({ id: featuredImage.id });
-	}
+		if (featuredImage) {
+			imagePayload.push({ id: featuredImage.id });
+		}
 
-	galleryImages.forEach((img) => {
-		imagePayload.push({ id: img.id });
-	});
+		galleryImages.forEach((img) => {
+			imagePayload.push({ id: img.id });
+		});
 
-	const finalCategories =
-		appLocalizer.settings_databases_value['product-preferencess']
-			?.category_selection_method == 'yes'
-			? [
+		const finalCategories =
+			appLocalizer.settings_databases_value['product-preferencess']
+				?.category_selection_method == 'yes'
+				? [
 					{
 						id: Number(
 							selectedChild || selectedSub || selectedCat
 						),
 					},
-			  ]
-			: selectedCats.map((id) => ({ id }));
+				]
+				: selectedCats.map((id) => ({ id }));
 
 		const payload = {
 			...product,
@@ -684,43 +685,30 @@ const AddProduct = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Add Product', 'multivendorx')}
-						{translation
-							?.filter((lang) => lang.is_default) // only include default language
-							.map((lang) => (
-								<div key={lang.code} className="mvx-translation-row">
-									<div>
-										<img
-											src={lang.flag_url}
-											alt={lang.code}
-										/>
-										<strong>{lang.native_name}</strong>
-									</div>
-								</div>
-							))}
+			{translation
+				?.filter((lang) => lang.is_default) // only include default language
+				.map((lang) => (
+					<div key={lang.code} className="mvx-translation-row">
+						<div>
+							<img
+								src={lang.flag_url}
+								alt={lang.code}
+							/>
+							<strong>{lang.native_name}</strong>
+						</div>
 					</div>
-
-					<div className="des">
-						{__(
-							'Enter your product details - name, price, stock, and image & publish.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-				<AdminButtonUI
-					buttons={[
-						{
-							icon: 'save',
-							text: __('Save', 'multivendorx'),
-							onClick: () => createProduct(),
-						},
-					]}
-				/>
-			</div>
-
+				))}
+			<NavigatorHeader
+				headerTitle={__('Add Product', 'multivendorx')}
+				headerDescription={__('Enter your product details - name, price, stock, and image & publish.', 'multivendorx')}
+				buttons={[
+					{
+						label: __('Save', 'multivendorx'),
+						icon: 'save',
+						onClick: () => createProduct()
+					}
+				]}
+			/>
 			<Container>
 				<Column grid={3}>
 					<Card title={__('Product type', 'multivendorx')}>
@@ -1311,7 +1299,7 @@ const AddProduct = () => {
 					{modules.includes('wpml') && (
 						<Card
 							title={__('Translations', 'multivendorx')}
-							iconName="adminfont-translate"
+							iconName="translate"
 							toggle={true}
 						>
 							<FormGroupWrapper>
@@ -1513,7 +1501,7 @@ const AddProduct = () => {
 
 					<Card
 						title={__('Visibility', 'multivendorx')}
-						iconName="adminfont-keyboard-arrow-down arrow-icon icon"
+						iconName="keyboard-arrow-down arrow-icon icon"
 						toggle
 					>
 						<FormGroupWrapper>

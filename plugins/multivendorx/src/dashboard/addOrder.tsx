@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, SelectInputUI, TableCard, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
+import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, NavigatorHeader, SelectInputUI, TableCard, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
@@ -405,7 +405,7 @@ const AddOrder = () => {
 					icon: 'edit',
 					onClick: (id: number) => {
 						let tax = taxLookup[id];
-						if(tax)setSelectedTaxRate(tax)
+						if (tax) setSelectedTaxRate(tax)
 					},
 				},
 			],
@@ -414,30 +414,17 @@ const AddOrder = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Add Order', 'multivendorx')}
-					</div>
-
-					<div className="des">
-						{__(
-							'Create a new order manually by adding products, charges, and customer details.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-
-				<div className="buttons">
-					<button
-						className="admin-btn btn-purple-bg"
-						onClick={createOrder}
-					>
-						{__('Create Order', 'multivendorx')}
-					</button>
-				</div>
-			</div>
-
+			<NavigatorHeader
+				headerTitle={__('Add Order', 'multivendorx')}
+				headerDescription={__('Create a new order manually by adding products, charges, and customer details.', 'multivendorx')}
+				buttons={[
+					{
+						label: __('Create Order', 'multivendorx'),
+						icon: 'plus',
+						onClick: () => createOrder
+					}
+				]}
+			/>
 			<Container>
 				<Column grid={8}>
 					<Card contentHeight>
@@ -908,7 +895,6 @@ const AddOrder = () => {
 
 					{showCreateCustomer && !selectedCustomer && (
 						<Card title={__('Create customer', 'multivendorx')}>
-
 							<FormGroupWrapper>
 								<FormGroup cols={2} label={__('First name', 'multivendorx')} htmlFor="Select-customer">
 									<BasicInputUI

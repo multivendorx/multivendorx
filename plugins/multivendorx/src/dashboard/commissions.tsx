@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { ExportCSV, getApiLink, TableCard, useModules } from 'zyra';
+import { ExportCSV, getApiLink, NavigatorHeader, TableCard, useModules } from 'zyra';
 
 import ViewCommission from './viewCommission';
 import { formatCurrency, formatLocalDate, formatWcShortDate } from '../services/commonFunction';
@@ -304,29 +304,18 @@ const StoreCommission: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">
-						{__('Commission', 'multivendorx')}
-					</div>
-					<div className="des">
-						{__(
-							'Details of commissions earned by your store for every order, including order amount, commission rate and payout status.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
+			<NavigatorHeader
+				headerTitle={__('Commission', 'multivendorx')}
+				headerDescription={__( 'Details of commissions earned by your store for every order, including order amount, commission rate and payout status.', 'multivendorx')}
+				buttons={[
+					{
+						label: __('Export', 'multivendorx'),
+						icon: 'export',
+						onClick: handleExportAll
+					},
+				]}
+			/>
 
-				<div className="buttons-wrapper">
-					<button
-						className="admin-btn btn-purple-bg"
-					// onClick={handleExportAll}
-					>
-						<i className="adminfont-export"></i>
-						{__('Export', 'multivendorx')}
-					</button>
-				</div>
-			</div>
 			<TableCard
 				headers={headers}
 				rows={rows}

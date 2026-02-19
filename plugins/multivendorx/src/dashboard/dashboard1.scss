@@ -266,14 +266,9 @@ a {
                         position: relative;
                         cursor: pointer;
 
-                        .adminfont-icon {
-                            // color: $sub-text-color;
-                            // font-size: 1.25rem;
-
                             &.dark-icon {
                                 font-size: 1.625rem;
                             }
-                        }
                     }
 
                     // user dropdown start
@@ -307,22 +302,22 @@ a {
         min-height: 100vh;
         padding: 7rem 3rem;
 
-        .title-wrapper {
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 1.75rem;
+        // .title-wrapper {
+        //     display: flex;
+        //     justify-content: space-between;
+        //     padding-bottom: 1.75rem;
 
-            h2 {
-                font-size: 2rem;
-                font-weight: 700;
-                color: #364a63;
-            }
+        //     h2 {
+        //         font-size: 2rem;
+        //         font-weight: 700;
+        //         color: #364a63;
+        //     }
 
-            .action-wrapper {
-                display: flex;
-                gap: 0.625rem;
-            }
-        }
+        //     .action-wrapper {
+        //         display: flex;
+        //         gap: 0.625rem;
+        //     }
+        // }
     }
 }
 
@@ -411,40 +406,6 @@ a {
 
 .content {
     flex-direction: column;
-}
-
-.tab-titles {
-    display: flex;
-    gap: 1rem;
-    padding-bottom: 1rem;
-
-    .title {
-        padding-bottom: 0.313rem;
-        cursor: pointer;
-
-        h2 {
-            font-size: 1rem;
-            margin-bottom: 0;
-            font-weight: 500;
-        }
-
-        p {
-            font-size: .938rem;
-            line-height: 1.5;
-            color: #000;
-            font-weight: 500;
-            margin: 0;
-        }
-
-        &.active {
-            color: $theme-color;
-            border-bottom: 0.126rem solid $theme-color;
-
-            p {
-                color: $theme-color;
-            }
-        }
-    }
 }
 
 // dropdown style common start  common 
@@ -662,8 +623,6 @@ a {
         }
     }
 }
-
-
 
 // dropdown style common end
 
