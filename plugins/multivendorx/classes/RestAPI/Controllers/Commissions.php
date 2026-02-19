@@ -157,15 +157,15 @@ class Commissions extends \WP_REST_Controller
             $ids    = $request->get_param('ids');
 
             $range = Utill::normalize_date_range(
-                $request->get_param('startDate'),
-                $request->get_param('endDate')
+                $request->get_param('start_date'),
+                $request->get_param('end_date')
             );
 
             // Sorting params.
-            $order_by      = sanitize_text_field($request->get_param('orderBy'));
+            $order_by      = sanitize_text_field($request->get_param('order_by'));
             $order         = sanitize_text_field($request->get_param('order'));
-            $search_action = sanitize_text_field($request->get_param('searchAction'));
-            $search_value  = sanitize_text_field($request->get_param('searchValue'));
+            $search_action = sanitize_text_field($request->get_param('search_action'));
+            $search_value  = sanitize_text_field($request->get_param('search_value'));
 
             // Prepare filter.
             $filter = array();
@@ -222,38 +222,7 @@ class Commissions extends \WP_REST_Controller
             $formatted_commissions = array();
 
             foreach ($commissions as $commission) {
-                $store      = new Store($commission['store_id']);
-                $store_name = $store ? $store->get(Utill::STORE_SETTINGS_KEYS['name']) : '';
-
-                $formatted_commissions[] = apply_filters(
-                    'multivendorx_commission_table',
-                    array(
-                        'id'                      => (int) $commission['ID'],
-                        'order_id'                => (int) $commission['order_id'],
-                        'store_id'                => (int) $commission['store_id'],
-                        'store_name'              => $store_name,
-                        'total_order_amount'      => $commission['total_order_value'],
-                        'net_items_cost'          => $commission['net_items_cost'],
-                        'marketplace_commission'  => $commission['marketplace_commission'],
-                        'store_earning'           => $commission['store_earning'],
-                        'gateway_fee'             => $commission['gateway_fee'],
-                        'shipping_amount'         => $commission['store_shipping'],
-                        'tax_amount'              => $commission['store_tax'],
-                        'shipping_tax_amount'     => $commission['store_shipping_tax'],
-                        'store_discount'          => $commission['store_discount'],
-                        'admin_discount'          => $commission['admin_discount'],
-                        'store_payable'           => $commission['store_payable'],
-                        'marketplace_payable'     => $commission['marketplace_payable'],
-                        'store_refunded'          => $commission['store_refunded'],
-                        'currency'                => $commission['currency'],
-                        'status'                  => $commission['status'],
-                        'commission_note'         => $commission['commission_note'],
-                        'created_at'              => Utill::multivendorx_rest_prepare_date_response($commission['created_at']),
-                        'updated_at'              => Utill::multivendorx_rest_prepare_date_response($commission['updated_at']),
-                    ),
-
-                    (object) $commission
-                );
+                $formatted_commissions[] = $this->prepare_item_for_response($commission, $request);
             }
 
             // Base filter for counts.
@@ -311,96 +280,37 @@ class Commissions extends \WP_REST_Controller
      */
     public function get_item($request)
     {
-        // Verify nonce.
         $nonce = $request->get_header('X-WP-Nonce');
         if (! wp_verify_nonce($nonce, 'wp_rest')) {
-            $error = new \WP_Error('invalid_nonce', __('Invalid nonce', 'multivendorx'), array('status' => 403));
-
-            // Log the error.
-            if (is_wp_error($error)) {
-                MultiVendorX()->util->log($error);
-            }
-
-            return $error;
-        }
-        try {
-            // Get commission ID from request.
-            $id = absint($request->get_param('id'));
-
-            // Fetch raw commission data (stdClass).
-            $commission = CommissionUtil::get_commission_db($id);
-            if (! $commission || empty($commission->ID)) {
-                return new \WP_Error(
-                    'not_found',
-                    __('Commission not found', 'multivendorx'),
-                    array('status' => 404)
-                );
-            }
-
-            // Validate order ID.
-            if (empty($commission->order_id)) {
-                return new \WP_Error(
-                    'missing_order',
-                    __('Order ID missing in commission data', 'multivendorx'),
-                    array('status' => 400)
-                );
-            }
-
-            $order_id = absint($commission->order_id);
-            $order    = wc_get_order($order_id);
-
-            if (! $order) {
-                return new \WP_Error(
-                    'order_not_found',
-                    __('Order not found', 'multivendorx'),
-                    array('status' => 404)
-                );
-            }
-
-            // Build line items.
-            $items = array();
-            foreach ($order->get_items() as $item_id => $item) {
-                $product = $item->get_product();
-
-                $items[] = array(
-                    'product_id' => $item->get_product_id(),
-                    'name'       => $item->get_name(),
-                    'sku'        => $product ? $product->get_sku() : '',
-                    'price'      => wc_price($order->get_item_subtotal($item, false, true)),
-                    'qty'        => $item->get_quantity(),
-                    'total'      => wc_price($order->get_line_total($item, true, true)),
-                );
-            }
-
-            // Prepare response.
-            $response = array(
-                'commission_id'          => absint($commission->ID),
-                'order_id'               => $order_id,
-                'store_id'               => absint($commission->store_id),
-                'status'                 => $commission->status,
-                'amount'                 => wc_format_decimal($commission->store_earning, 2),
-                'shipping'               => wc_format_decimal($commission->store_shipping, 2),
-                'tax'                    => wc_format_decimal($commission->store_tax, 2),
-                'shipping_tax_amount'    => wc_format_decimal($commission->store_shipping_tax, 2),
-                'total'                  => wc_format_decimal($commission->store_payable, 2),
-                'commission_refunded'    => wc_format_decimal($commission->store_refunded ?? 0, 2),
-                'marketplace_commission' => wc_format_decimal($commission->marketplace_commission, 2),
-                'facilitator_fee'        => wc_format_decimal($commission->facilitator_fee, 2),
-                'gateway_fee'            => wc_format_decimal($commission->gateway_fee, 2),
-                'platform_fee'           => wc_format_decimal($commission->platform_fee, 2),
-                'discount_applied'       => wc_format_decimal($commission->discount_applied, 2),
-                'note'                   => $commission->commission_note,
-                'created'                => Utill::multivendorx_rest_prepare_date_response($commission->created_at),
-                'items'                  => $items,
+            $error = new \WP_Error(
+                'invalid_nonce',
+                __('Invalid nonce', 'multivendorx'),
+                array('status' => 403)
             );
 
-            return rest_ensure_response($response);
+            MultiVendorX()->util->log($error);
+            return $error;
+        }
+
+        try {
+            $id = absint($request->get_param('id'));
+
+            $commission = CommissionUtil::get_commission_information(array('ID'=>$id));
+
+            $data = $this->prepare_item_for_response($commission, true);
+
+            return rest_ensure_response($data);
         } catch (\Exception $e) {
             MultiVendorX()->util->log($e);
 
-            return new \WP_Error('server_error', __('Unexpected server error', 'multivendorx'), array('status' => 500));
+            return new \WP_Error(
+                'server_error',
+                __('Unexpected server error', 'multivendorx'),
+                array('status' => 500)
+            );
         }
     }
+
 
     /**
      * Update a commission.
@@ -436,5 +346,75 @@ class Commissions extends \WP_REST_Controller
 
             return new \WP_Error('server_error', __('Unexpected server error', 'multivendorx'), array('status' => 500));
         }
+    }
+    public function prepare_item_for_response($commission, $with_items = false)
+    {
+
+        $store      = new Store($commission['store_id'] ?? 0);
+        $store_name = $store ? $store->get(Utill::STORE_SETTINGS_KEYS['name']) : '';
+
+        $data = array(
+            'id'                     => (int) ($commission['ID'] ?? 0),
+            'order_id'               => (int) ($commission['order_id'] ?? 0),
+            'store_id'               => (int) ($commission['store_id'] ?? 0),
+            'store_name'             => $store_name,
+            'status'                 => $commission['status'] ?? '',
+            'currency'               => $commission['currency'] ?? '',
+
+            'total_order_amount'     => (float) ($commission['total_order_value'] ?? 0),
+            'net_items_cost'         => (float) ($commission['net_items_cost'] ?? 0),
+
+            'marketplace_commission' => (float) ($commission['marketplace_commission'] ?? 0),
+            'marketplace_payable'    => (float) ($commission['marketplace_payable'] ?? 0),
+
+            'store_earning'          => (float) ($commission['store_earning'] ?? 0),
+            'store_payable'          => (float) ($commission['store_payable'] ?? 0),
+            'store_refunded'         => (float) ($commission['store_refunded'] ?? 0),
+
+            'shipping_amount'        => (float) ($commission['store_shipping'] ?? 0),
+            'tax_amount'             => (float) ($commission['store_tax'] ?? 0),
+            'shipping_tax_amount'    => (float) ($commission['store_shipping_tax'] ?? 0),
+
+            'store_discount'         => (float) ($commission['store_discount'] ?? 0),
+            'admin_discount'         => (float) ($commission['admin_discount'] ?? 0),
+            'discount_applied'       => (float) ($commission['discount_applied'] ?? 0),
+
+            'gateway_fee'            => (float) ($commission['gateway_fee'] ?? 0),
+            'facilitator_fee'        => (float) ($commission['facilitator_fee'] ?? 0),
+            'platform_fee'           => (float) ($commission['platform_fee'] ?? 0),
+
+            'commission_note'        => $commission['commission_note'] ?? '',
+            'created_at'             => Utill::multivendorx_rest_prepare_date_response($commission['created_at'] ?? ''),
+            'updated_at'             => Utill::multivendorx_rest_prepare_date_response($commission['updated_at'] ?? ''),
+        );
+
+        if ($with_items && ! empty($commission['order_id'])) {
+
+            $order = wc_get_order(absint($commission['order_id']));
+            $items = array();
+
+            if ($order) {
+                foreach ($order->get_items() as $item_id => $item) {
+                    $product = $item->get_product();
+
+                    $items[] = array(
+                        'product_id' => $item->get_product_id(),
+                        'name'       => $item->get_name(),
+                        'sku'        => $product ? $product->get_sku() : '',
+                        'price'      => (float) $order->get_item_subtotal($item, false, true),
+                        'quantity'   => (int) $item->get_quantity(),
+                        'total'      => (float) $order->get_line_total($item, true, true),
+                    );
+                }
+            }
+
+            $data['items'] = $items;
+        }
+
+        return apply_filters(
+            'multivendorx_commission_formatted',
+            $data,
+            $commission
+        );
     }
 }

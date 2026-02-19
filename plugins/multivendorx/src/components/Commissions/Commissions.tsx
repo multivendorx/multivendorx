@@ -163,15 +163,15 @@ const Commission: React.FC = () => {
 					page: query.paged || 1,
 					row: query.per_page || 10,
 					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					searchValue: query.searchValue || '',
-					startDate: query.filter?.created_at?.startDate
+					search_value: query.searchValue || '',
+					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
 					store_id: query.filter?.store_id,
-					orderBy: query.orderby,
+					order_by: query.orderby,
 					order: query.order,
 				},
 			})
@@ -265,15 +265,15 @@ const Commission: React.FC = () => {
 	const downloadCommissionsCSVByQuery = (query: QueryProps) => {
 		const params = {
 			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-			searchValue: query.searchValue || '',
-			startDate: query.filter?.created_at?.startDate
+			search_value: query.searchValue || '',
+			start_date: query.filter?.created_at?.startDate
 				? formatLocalDate(query.filter.created_at.startDate)
 				: '',
-			endDate: query.filter?.created_at?.endDate
+			end_date: query.filter?.created_at?.endDate
 				? formatLocalDate(query.filter.created_at.endDate)
 				: '',
 			store_id: query.filter?.store_id,
-			orderBy: query.orderby,
+			order_by: query.orderby,
 			order: query.order,
 		};
 
