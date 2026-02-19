@@ -125,32 +125,20 @@ export const renderCell = (
 					: parts[0];
 
 			let finalValue = formattedNumber;
-
-			switch (currencyPosition) {
-				case "left":
-					finalValue = `${currencySymbol}${formattedNumber}`;
-					break;
-
-				case "left_space":
-					finalValue = `${currencySymbol} ${formattedNumber}`;
-					break;
-
-				case "right":
-					finalValue = `${formattedNumber}${currencySymbol}`;
-					break;
-
-				case "right_space":
-					finalValue = `${formattedNumber} ${currencySymbol}`;
-					break;
-
-				default:
-					finalValue = `${currencySymbol}${formattedNumber}`;
+			if ("left" === currencyPosition) {
+				finalValue = `${currencySymbol}${formattedNumber}`;
+			} else if ("left_space" === currencyPosition) {
+				finalValue = `${currencySymbol} ${formattedNumber}`;
+			} else if ("right" === currencyPosition) {
+				finalValue = `${formattedNumber}${currencySymbol}`;
+			} else if ("right_space" === currencyPosition) {
+				finalValue = `${formattedNumber} ${currencySymbol}`;
+			} else {
+				finalValue = `${currencySymbol}${formattedNumber}`;
 			}
 
 			return <span>{finalValue}</span>;
 		}
-
-
 
 		default:
 			return value ?? null;
