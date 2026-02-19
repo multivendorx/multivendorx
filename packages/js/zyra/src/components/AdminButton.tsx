@@ -143,7 +143,6 @@ const AdminButton: FieldComponent = {
 
         return null;
     },
-
 };
 
 export default AdminButton;

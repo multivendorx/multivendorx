@@ -10,6 +10,7 @@ import {
 	PopupUI,
 	TextAreaUI,
 	TableCard,
+	NavigatorHeader,
 } from 'zyra';
 
 import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
@@ -235,14 +236,11 @@ const StoreReview: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">{__('Store Review', 'multivendorx')}</div>
-					<div className="des">
-						{__('See all customer reviews and ratings submitted for your store in one centralized list.', 'multivendorx')}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Store Review', 'multivendorx')}
+				headerDescription={__('See all customer reviews and ratings submitted for your store in one centralized list.', 'multivendorx')}
+			/>
+
 			<TableCard
 				headers={headers}
 				rows={rows}

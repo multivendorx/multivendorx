@@ -10,6 +10,8 @@ import {
 	TextAreaUI,
 	ToggleSettingUI,
 	TableCard,
+	NavigatorHeader,
+	Tabs,
 } from 'zyra';
 
 import axios from 'axios';
@@ -53,7 +55,7 @@ const AllCoupon: React.FC = () => {
 		[key: string]: string;
 	}>({});
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [selectedCoupon, setSelectedCoupon] = useState<{id: number;} | null>(null);
+	const [selectedCoupon, setSelectedCoupon] = useState<{ id: number; } | null>(null);
 
 
 	const handleConfirmDelete = () => {
@@ -363,7 +365,6 @@ const AllCoupon: React.FC = () => {
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
-
 				</>
 			),
 		},
@@ -620,31 +621,21 @@ const AllCoupon: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">{__('Coupons', 'multivendorx')}</div>
-					<div className="des">
-						{__(
-							'Manage your store information and preferences',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-
-				<div className="button-wrapper">
-					<div
-						className="admin-btn btn-purple-bg"
-						onClick={() => {
-							setFormData({ ...defaultFormData }); // reset form
-							setActiveTab('general'); // start with General tab
-							setAddCoupon(true); // open popup
-						}}
-					>
-						<i className="adminfont-plus"></i>
-						{__('Add New', 'multivendorx')}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Coupons', 'multivendorx')}
+				headerDescription={__('Manage your store information and preferences', 'multivendorx')}
+				buttons={[
+					{
+						label: __('Add New', 'multivendorx'),
+						icon: 'plus',
+						onClick: () => {
+							setFormData({ ...defaultFormData });
+							setActiveTab('general');
+							setAddCoupon(true);
+						},
+					},
+				]}
+			/>
 
 			{AddCoupon && (
 				<PopupUI
@@ -707,37 +698,18 @@ const AllCoupon: React.FC = () => {
 									onChange={(value) =>
 										setFormData({
 											...formData,
-											content:value,
+											content: value,
 										})
 									}
 								/>
 							</FormGroup>
 						</FormGroupWrapper>
-						{/* Tabs */}
-						<div className="tab-titles">
-							{tabs.map((tab) => (
-								<div
-									key={tab.id}
-									className={`title ${activeTab === tab.id ? 'active' : ''
-										}`}
-									onClick={() => setActiveTab(tab.id)}
-								>
-									<h2>{__(tab.label, 'multivendorx')}</h2>
-								</div>
-							))}
-						</div>
-
-						{/* Tab Content */}
-						<div className="tab-content">
-							{tabs.map(
-								(tab) =>
-									activeTab === tab.id && (
-										<div key={tab.id} className="tab-panel">
-											{tab.content}
-										</div>
-									)
-							)}
-						</div>
+						<Tabs
+							tabs={tabs.map(tab => ({
+								label: __(tab.label, 'multivendorx'),
+								content: tab.content
+							}))}
+						/>
 					</>
 				</PopupUI>
 			)}

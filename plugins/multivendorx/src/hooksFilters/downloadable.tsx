@@ -62,7 +62,7 @@ const Downloadable = ({ product, setProduct, handleChange }) => {
 	return (
 		// <Card contentHeight
 		// 	title={__('Downloadable', 'multivendorx')}
-		// 	iconName="adminfont-pagination-right-arrow arrow-icon"
+		// 	iconName="pagination-right-arrow arrow-icon"
 		// 	toggle
 		// >
 		<>

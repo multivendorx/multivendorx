@@ -4,6 +4,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import {
 	getApiLink,
+	NavigatorHeader,
 	TableCard,
 } from 'zyra';
 
@@ -109,17 +110,10 @@ const Refund: React.FC = () => {
 
 	return (
 		<>
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">{__('Refund', 'multivendorx')}</div>
-					<div className="des">
-						{__(
-							'Manage and process refund requests from customers.',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Refund', 'multivendorx')}
+				headerDescription={__('Manage and process refund requests from customers.', 'multivendorx')}
+			/>
 			<TableCard
 				headers={headers}
 				rows={rows}

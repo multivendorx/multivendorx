@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup, TextAreaUI } from 'zyra';
+import { SuccessNotice, getApiLink, Container, Column, Card, FormGroupWrapper, FormGroup, TextAreaUI, NavigatorHeader } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 const ShopPolicies = () => {
@@ -74,17 +74,11 @@ const ShopPolicies = () => {
 		<>
 			<SuccessNotice message={successMsg} />
 
-			<div className="page-title-wrapper">
-				<div className="page-title">
-					<div className="title">{__('Policy', 'multivendorx')}</div>
-					<div className="des">
-						{__(
-							'Manage your store information and preferences',
-							'multivendorx'
-						)}
-					</div>
-				</div>
-			</div>
+			<NavigatorHeader
+				headerTitle={__('Policy', 'multivendorx')}
+				headerDescription={__('Manage your store information and preferences', 'multivendorx')}
+			/>
+
 			<Container>
 				<Column>
 					<Card title={__('Shipping Policy', 'multivendorx')}>

@@ -86,7 +86,7 @@ const Card = ({
 
                 {iconName && !action && (
                   <i
-                    className={iconName}
+                    className={`adminfont-${iconName}`}
                     onClick={() => {
                       if (toggle) setBodyVisible(!bodyVisible);
                       onIconClick?.();
