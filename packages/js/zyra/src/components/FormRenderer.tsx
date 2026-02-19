@@ -21,10 +21,10 @@ const BLOCK_GROUPS = [
         blocks: [
             { id: 'text', icon: 't-letter-bold', value: 'text', label: 'Textbox', placeholder: 'Enter your text here' },
             { id: 'email', icon: 'unread', value: 'email', label: 'Email', placeholder: 'Enter your email here' },
-            { id: 'textarea', icon: 'text', value: 'textarea', label: 'Textarea', placeholder: 'Enter your message here' },
+            { id: 'textarea', icon: 'text', value: 'textarea', label: 'Enter your text', placeholder: 'Enter your message here' },
             { id: 'datepicker', icon: 'calendar', value: 'datepicker', label: 'Date Picker', placeholder: 'Select a date' },
             { id: 'timepicker', icon: 'alarm ', value: 'TimePicker', label: 'Time Picker', placeholder: 'Select a time' },
-            { id: 'checkboxes', icon: 'checkbox', value: 'checkboxes', label: 'Checkboxes', options: OPTION_PRESETS },
+            { id: 'checkboxes', icon: 'checkbox', value: 'checkboxes', label: 'Nature Of Business', options: OPTION_PRESETS },
             { id: 'multi-select', icon: 'multi-select', value: 'multi-select', label: 'Multi Select', options: OPTION_PRESETS },
             { id: 'radio', icon: 'radio icon-form-radio', value: 'radio', label: 'Radio', options: OPTION_PRESETS },
             { id: 'dropdown', icon: 'dropdown-checklist', value: 'dropdown', label: 'Dropdown', options: OPTION_PRESETS },

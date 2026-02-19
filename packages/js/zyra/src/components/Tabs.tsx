@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FieldComponent } from './types';
 interface TabFooter {
     url: string;
     icon?: string;
@@ -16,7 +17,7 @@ interface TabsProps {
     defaultActiveIndex?: number;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs, defaultActiveIndex = 0 }) => {
+const TabsUI: React.FC<TabsProps> = ({ tabs, defaultActiveIndex = 0 }) => {
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
     return (
         <>
@@ -54,6 +55,12 @@ const Tabs: React.FC<TabsProps> = ({ tabs, defaultActiveIndex = 0 }) => {
             )}
         </>
     );
+};
+
+const Tabs: FieldComponent = {
+    render: ({ field }) => {
+        return <TabsUI tabs={field.options || []} />;
+    },
 };
 
 export default Tabs;
