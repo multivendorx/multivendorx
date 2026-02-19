@@ -424,7 +424,7 @@ class Install {
      */
     private function set_default_settings() {
         $settings = array(
-            'badge_img'                => 'adminfont-verification1',
+            'badge_img'                => 'verification1',
             'all_verification_methods' => array(
                 'google-connect' => array(
                     'enable' => true,
@@ -948,14 +948,14 @@ class Install {
                 'delivered' => array(
                     'label'    => 'Delivered',
                     'desc'     => 'Order is received by store',
-					'icon'     => 'adminfont-delivery',
+					'icon'     => 'delivery',
 					'required' => true,
 					'isCustom' => true,
                 ),
                 'shipped'   => array(
                     'label'    => 'shipped',
                     'desc'     => 'Order is shipped',
-					'icon'     => 'adminfont-rejecte',
+					'icon'     => 'rejecte',
 					'required' => true,
 					'isCustom' => true,
                 ),

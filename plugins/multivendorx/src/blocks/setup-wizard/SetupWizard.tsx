@@ -14,7 +14,7 @@ const SetupWizard: React.FC = () => {
 			'disbursement_order_status': ['completed']
 		},
 		'store_setup': {
-			'approve_store' : 'manually'
+			'approve_store': 'manually'
 		}
 	});
 	const settingChanged = useRef(false);
@@ -37,11 +37,11 @@ const SetupWizard: React.FC = () => {
 		{
 			id: 'marketplace_setup',
 			label: 'Choose what kind of marketplace you are building',
-			icon: 'adminfont-storefront',
+			icon: 'storefront',
 			desc: 'This helps us tailor features for your business.',
 			countBtn: true,
 			isWizardMode: true,
-			openForm:true,
+			openForm: true,
 			formFields: [
 				{
 					key: 'marketplace_model',
@@ -205,13 +205,12 @@ const SetupWizard: React.FC = () => {
 					options: [
 						{
 							label: 'Back',
+							color: 'red',
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: 'Next',
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
@@ -220,11 +219,11 @@ const SetupWizard: React.FC = () => {
 		{
 			id: 'store_setup',
 			label: 'Configure Your Store',
-			icon: 'adminfont-storefront',
+			icon: 'storefront',
 			desc: 'How stores sell on your marketplace.',
 			countBtn: true,
 			isWizardMode: true,
-			openForm:true,
+			openForm: true,
 			formFields: [
 				{
 					key: 'approve_store',
@@ -253,12 +252,10 @@ const SetupWizard: React.FC = () => {
 						{
 							label: 'Back',
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: 'Next',
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
@@ -267,11 +264,11 @@ const SetupWizard: React.FC = () => {
 		{
 			id: 'commission_setup',
 			label: 'How marketplace commission is calculated',
-			icon: 'adminfont-storefront',
+			icon: 'storefront',
 			desc: 'Decide how your marketplace earns money.',
 			countBtn: true,
 			isWizardMode: true,
-			openForm:true,
+			openForm: true,
 			formFields: [
 				{
 					key: 'commission_type',
@@ -343,7 +340,7 @@ const SetupWizard: React.FC = () => {
 						'Choose when store earnings are added to their wallet.',
 						'multivendorx'
 					),
-					 
+
 					options: [
 						{
 							key: 'completed',
@@ -377,12 +374,10 @@ const SetupWizard: React.FC = () => {
 						{
 							label: 'Back',
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: 'Next',
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 						},
 					],
 				},
@@ -391,11 +386,11 @@ const SetupWizard: React.FC = () => {
 		{
 			id: 'more_settings',
 			label: 'Want to configure more settings?',
-			icon: 'adminfont-storefront',
+			icon: 'storefront',
 			desc: "You're all set with the basics! Use the quick links below to fine-tune your marketplace now — or come back later anytime.",
 			countBtn: true,
 			isWizardMode: true,
-			openForm:true,
+			openForm: true,
 			formFields: [
 				{
 					key: 'commission_settings',
@@ -436,12 +431,10 @@ const SetupWizard: React.FC = () => {
 						{
 							label: 'Back',
 							action: 'back',
-							btnClass: 'admin-btn btn-red',
 						},
 						{
 							label: 'Finish',
 							action: 'next',
-							btnClass: 'admin-btn btn-purple',
 							redirect: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=modules`,
 						},
 					],
@@ -456,40 +449,35 @@ const SetupWizard: React.FC = () => {
 
 	return (
 		<div className="wizard-container">
-			<div>
-				<div className="welcome-wrapper">
-					<img src={img} alt="" />
-					<h4 className="wizard-title">
-						Welcome to the MultivendorX family!
-					</h4>
-					<div className="des">
-						Thank you for choosing MultiVendorX! This quick setup
-						wizard will help you configure the basic settings and
-						have your marketplace ready in no time. It’s completely
-						optional and shouldn’t take longer than five minutes.
-					</div>
+			<div className="welcome-wrapper">
+				<img src={img} alt="" />
+				<div className="wizard-title">
+					{__('Welcome to the MultivendorX family!', 'multivendorx')}
 				</div>
+				<div className="des">
+					{__('Thank you for choosing MultiVendorX! This quick setup wizard will help you configure the basic settings and have your marketplace ready in no time. It’s completely optional and shouldn’t take longer than five minutes.', 'multivendorx')}
+				</div>
+			</div>
 
-				<ExpandablePanelGroupUI
-					key={inputField.key}
-					name={inputField.key}
-					apilink={String(inputField.apiLink)}
-					appLocalizer={appLocalizer}
-					methods={methods}
-					value={value}
-					onChange={(data: any) => {
-						settingChanged.current = true;
-						updateSetting(inputField.key, data);
-					}}
-					isWizardMode={true}
-					canAccess={true}
-				/>
+			<ExpandablePanelGroupUI
+				key={inputField.key}
+				name={inputField.key}
+				apilink={String(inputField.apiLink)}
+				appLocalizer={appLocalizer}
+				methods={methods}
+				value={value}
+				onChange={(data: any) => {
+					settingChanged.current = true;
+					updateSetting(inputField.key, data);
+				}}
+				isWizardMode={true}
+				canAccess={true}
+			/>
 
-				{/* <div className="welcome-wrapper">
+			{/* <div className="welcome-wrapper">
                     <div className="wizard-title">! Well Done</div>
                     <div className="des">Thank you for choosing MultiVendorX!</div>
                 </div> */}
-			</div>
 		</div>
 	);
 };
