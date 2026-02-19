@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { ExportCSV, getApiLink, TableCard } from 'zyra';
+import { getApiLink, TableCard } from 'zyra';
 
-import { formatCurrency, toWcIsoDate } from '../../services/commonFunction';
+import { downloadCSV, formatLocalDate, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const OrderReport: React.FC = () => {
@@ -38,33 +38,32 @@ const OrderReport: React.FC = () => {
 			});
 	}, []);
 
-	const headers = [
-		{
-			key: 'order_id',
+	const headers = {
+		id: {
 			label: __('Order', 'multivendorx'),
 		},
-		{
-			key: 'store',
+		store_name: {
 			label: __('Store', 'multivendorx'),
 		},
-		{
-			key: 'amount',
+		total: {
 			label: __('Amount', 'multivendorx'),
+			type: 'currency',
 		},
-		{
-			key: 'commission_amount',
+		commission_total: {
 			label: __('Commission', 'multivendorx'),
+			type: 'currency',
 		},
-		{
-			key: 'date',
+		date_created: {
 			label: __('Date', 'multivendorx'),
+			type: 'date',
 			isSortable: true,
 		},
-		{
-			key: 'status',
+		status: {
 			label: __('Status', 'multivendorx'),
-		},
-	];
+			type: 'status',
+		}
+	};
+
 	const filters = [
 		{
 			key: 'store_id',
@@ -78,103 +77,54 @@ const OrderReport: React.FC = () => {
 			type: 'date',
 		},
 	];
-	const buttonActions = [
-		{
-		  label: __('Download CSV', 'multivendorx'),
-		  icon: 'download',
-		  onClickWithQuery: (query: QueryProps) => ExportCSV({
-			url: `${appLocalizer.apiUrl}/wc/v3/orders`,
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			filename:
-					query.filter?.created_at?.startDate &&
-					query.filter?.created_at?.endDate
-						? `orders-${(query.filter.created_at.startDate)}-${(query.filter.created_at.endDate)}.csv`
-						: `orders-${(new Date())}.csv`,
-			paramsBuilder: ({
-			  per_page: 100,
-			  page: 1,
-			  search: query.searchValue,
-			  orderby: query.orderby || 'date',
-			  order: query.order || 'desc',
-			}),
-			columns: (item) => ({
-			  [__('Order ID', 'multivendorx')]: item.id,
-			  [__('Store', 'multivendorx')]: item.store_name || '',
-			  [__('Amount', 'multivendorx')]: item.total,
-			  [__('Commission', 'multivendorx')]: item.commission_total || 0,
-			  [__('Status', 'multivendorx')]: item.status,
-			  [__('Date', 'multivendorx')]: item.date_created,
-			}),
-		  }),
-		},
-	  ];
-	  
-	
-	const fetchData = (query: QueryProps) => {
-		setIsLoading(true);
-	
+
+	const downloadCSVByQuery = (query: QueryProps) => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: {
-					page: query.page,
-					per_page: query.per_page,
-					search: query.searchValue,
-					orderby: query.orderby || 'date',
-					order: query.order || 'desc',
-					meta_key: 'multivendorx_store_id',
-					value: query.filter?.store_id,
-					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
-						: undefined,
-					before: query.filter?.created_at?.endDate
-						? toWcIsoDate(query.filter.created_at.endDate, 'end')
-						: undefined,
+				params: buildOrderQueryParams(query,false)
+			})
+			.then((response) => {
+				const rows = response.data || [];
+
+				downloadCSV(
+					headers,
+					rows,
+					`order-report-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch((error) => {
+				console.error('CSV download failed:', error);
+			});
+	};
+	const buttonActions = [
+		{
+			label: __('Download CSV', 'multivendorx'),
+			icon: 'download',
+			onClickWithQuery: downloadCSVByQuery
+		},
+	];
+
+	const doRefreshTableData = (query: QueryProps) => {
+		setIsLoading(true);
+
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
 				},
+				params: buildOrderQueryParams(query)
 			})
 			.then((response) => {
 				const orders = Array.isArray(response.data)
 					? response.data
 					: [];
-	
+
 				setRowIds(orders.map((o: any) => o.id));
-	
-				const mappedRows: TableRow[][] = orders.map((order: any) => [
-					{
-						display: `#${order.id}`,
-						value: order.id,
-						type: 'card',
-						data: {
-							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${order.id}&action=edit`,
-							name:`#${order.id}`
-						},
-					},
-					{
-						display: order.store_name || '-',
-						value: order.store_name || '',
-					},
-					{
-						display: formatCurrency(order.total),
-						value: order.total,
-					},
-					{
-						display: formatCurrency(order.commission_total || 0),
-						value: order.commission_total || 0,
-					},
-					{
-						display: order.date_created,
-						value: order.date_created,
-					},
-					{
-						display: order.status,
-						value: order.status,
-						type: 'status',
-					},
-				]);
-	
-				setRows(mappedRows);
+
+				setRows(orders);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -185,7 +135,33 @@ const OrderReport: React.FC = () => {
 				setIsLoading(false);
 			});
 	};
-	
+
+	const buildOrderQueryParams = (
+		query: QueryProps,
+		includePagination: boolean = true
+	) => {
+		const params: Record<string, any> = {
+			search: query.searchValue || '',
+			orderby: query.orderby || 'date',
+			order: query.order || 'desc',
+			meta_key: 'multivendorx_store_id',
+			value: query.filter?.store_id || undefined,
+			after: query.filter?.created_at?.startDate
+				? toWcIsoDate(query.filter.created_at.startDate, 'start')
+				: undefined,
+			before: query.filter?.created_at?.endDate
+				? toWcIsoDate(query.filter.created_at.endDate, 'end')
+				: undefined,
+		};
+
+		if (includePagination) {
+			params.page = query.page || 1;
+			params.per_page = query.per_page || 10;
+		}
+
+		return params;
+	};
+
 
 	return (
 		<>
@@ -194,12 +170,19 @@ const OrderReport: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				search={{ placeholder: 'Search Products...' }}
 				filters={filters}
 				buttonActions={buttonActions}
 				rowIds={rowIds}
 				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position
+				}}
 			/>
 		</>
 	);
