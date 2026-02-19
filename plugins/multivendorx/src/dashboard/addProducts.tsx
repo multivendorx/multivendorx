@@ -99,22 +99,16 @@ const AddProduct = () => {
 		}));
 	}, [product?.meta_data]);
 
-
 	const [categories, setCategories] = useState([]);
 	const [selectedCats, setSelectedCats] = useState([]);
-
-	const isPyramidEnabled =
-		appLocalizer.settings_databases_value['product-preferencess']
-			?.category_selection_method === 'yes';
-
+	const isPyramidEnabled = appLocalizer.settings_databases_value['product-preferencess'] ?.category_selection_method === 'yes';
 	const wrapperRef = useRef(null);
-
 	const [selectedCat, setSelectedCat] = useState(null);
 	const [selectedSub, setSelectedSub] = useState(null);
 	const [selectedChild, setSelectedChild] = useState(null);
-
 	const [isEditingVisibility, setIsEditingVisibility] = useState(false);
 	const [isEditingStatus, setIsEditingStatus] = useState(false);
+	const [existingTags, setExistingTags] = useState([]);
 
 	const VISIBILITY_LABELS: Record<string, string> = {
 		visible: 'Shop and search results',
@@ -497,10 +491,6 @@ const AddProduct = () => {
 			});
 	};
 
-	const [tagInput, setTagInput] = useState('');
-	const [suggestions, setSuggestions] = useState([]);
-	const [existingTags, setExistingTags] = useState([]);
-
 	useEffect(() => {
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products/tags`, {
@@ -508,44 +498,8 @@ const AddProduct = () => {
 			})
 			.then((res) => {
 				setExistingTags(res.data);
-			});
+			})
 	}, []);
-
-	const handleTagInput = (value) => {
-		setTagInput(value);
-
-		if (!value.trim()) {
-			setSuggestions([]);
-			return;
-		}
-
-		const filtered = existingTags.filter(
-			(tag) =>
-				tag &&
-				tag.name &&
-				tag.name.toLowerCase().includes(value.toLowerCase())
-		);
-
-		setSuggestions(filtered);
-	};
-
-	const addTag = (tag) => {
-		let newTag = tag;
-
-		if (typeof tag === 'string') {
-			newTag = { name: tag };
-		}
-
-		if (!product.tags.find((t) => t.name === newTag.name)) {
-			setProduct({
-				...product,
-				tags: [...product.tags, newTag],
-			});
-		}
-
-		setTagInput('');
-		setSuggestions([]);
-	};
 
 	const [checklist, setChecklist] = useState({
 		name: false,
@@ -627,10 +581,7 @@ const AddProduct = () => {
 				.map((lang) => (
 					<div key={lang.code} className="multivendorx-translation-row">
 						<div>
-							<img
-								src={lang.flag_url}
-								alt={lang.code}
-							/>
+							<img src={lang.flag_url} alt={lang.code}/>
 							<strong>{lang.native_name}</strong>
 						</div>
 					</div>
@@ -638,13 +589,11 @@ const AddProduct = () => {
 			<NavigatorHeader
 				headerTitle={__('Add Product', 'multivendorx')}
 				headerDescription={__('Enter your product details - name, price, stock, and image & publish.', 'multivendorx')}
-				buttons={[
-					{
+				buttons={[{
 						label: __('Save', 'multivendorx'),
 						icon: 'save',
 						onClick: () => createProduct()
-					}
-				]}
+				}]}
 			/>
 			<Container>
 				<Column grid={3}>
@@ -665,22 +614,16 @@ const AddProduct = () => {
 					<Card
 						title={__('Recommended', 'multivendorx')}
 						action={
-							<>
-								<div className="admin-badge blue">
-									{completedCount}/{totalCount}
-								</div>
-							</>
+							<div className="admin-badge blue">
+								{completedCount}/{totalCount}
+							</div>
 						}
 					>
 						<FormGroupWrapper>
 							<FormGroup>
 								<div className="checklist-wrapper">
 									<ul>
-										<li
-											className={
-												checklist.name ? 'checked' : ''
-											}
-										>
+										<li className={ checklist.name ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Product Name</div>
@@ -689,13 +632,7 @@ const AddProduct = () => {
 										</li>
 										{product.type === 'simple' && (
 											<>
-												<li
-													className={
-														checklist.price
-															? 'checked'
-															: ''
-													}
-												>
+												<li className={ checklist.price ? 'checked' : '' }>
 													<div className="check-icon"><span></span></div>
 													<div className="details">
 														<div className="title">Price</div>
@@ -703,13 +640,7 @@ const AddProduct = () => {
 													</div>
 												</li>
 
-												<li
-													className={
-														checklist.stock
-															? 'checked'
-															: ''
-													}
-												>
+												<li className={checklist.stock ? 'checked' : ''}>
 													<div className="check-icon"><span></span></div>
 													<div className="details">
 														<div className="title">Stock</div>
@@ -718,11 +649,7 @@ const AddProduct = () => {
 												</li>
 											</>
 										)}
-										<li
-											className={
-												checklist.image ? 'checked' : ''
-											}
-										>
+										<li className={checklist.image ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Product Images</div>
@@ -730,11 +657,7 @@ const AddProduct = () => {
 											</div>
 										</li>
 
-										<li
-											className={
-												checklist.categories ? 'checked' : ''
-											}
-										>
+										<li className={checklist.categories ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Category</div>
@@ -742,11 +665,7 @@ const AddProduct = () => {
 											</div>
 										</li>
 
-										<li
-											className={
-												checklist.policies ? 'checked' : ''
-											}
-										>
+										<li className={checklist.policies ? 'checked' : ''}>
 											<div className="check-icon"><span></span></div>
 											<div className="details">
 												<div className="title">Policies</div>
@@ -768,9 +687,7 @@ const AddProduct = () => {
 				</Column>
 
 				<Column grid={6}>
-					<Card contentHeight
-						title={__('General information', 'multivendorx')}
-					>
+					<Card contentHeight title={__('General information', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup label={__('Product name', 'multivendorx')} desc={__('A unique name for your product', 'multivendorx')}>
 								<BasicInputUI
@@ -803,35 +720,29 @@ const AddProduct = () => {
 					</Card>
 
 					{product?.type === 'simple' && (
-						<>
-							<Card contentHeight
-								title={__('Price', 'multivendorx')}
-							>
-								<FormGroupWrapper>
+						<Card contentHeight title={__('Price', 'multivendorx')}>
+							<FormGroupWrapper>
+								<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
+									<BasicInputUI
+										name="regular_price"
+										value={product.regular_price}
+										onChange={(value) =>
+											handleChange('regular_price', value)
+										}
+									/>
+								</FormGroup>
+								<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
+									<BasicInputUI
+										name="sale_price"
 
-									<FormGroup cols={2} label={__('Regular price', 'multivendorx')}>
-										<BasicInputUI
-											name="regular_price"
-											value={product.regular_price}
-											onChange={(value) =>
-												handleChange('regular_price', value)
-											}
-										/>
-									</FormGroup>
-
-									<FormGroup cols={2} label={__('Sale price', 'multivendorx')}>
-										<BasicInputUI
-											name="sale_price"
-
-											value={product.sale_price}
-											onChange={(value) =>
-												handleChange('sale_price', value)
-											}
-										/>
-									</FormGroup>
-								</FormGroupWrapper>
-							</Card>
-						</>
+										value={product.sale_price}
+										onChange={(value) =>
+											handleChange('sale_price', value)
+										}
+									/>
+								</FormGroup>
+							</FormGroupWrapper>
+						</Card>
 					)}
 					<Card contentHeight
 						title={__('Inventory', 'multivendorx')}
@@ -865,22 +776,18 @@ const AddProduct = () => {
 									onChange={(value) => handleChange('sku', value)}
 								/>
 							</FormGroup>
-
 							{!product.manage_stock && (
-								<>
-									<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
-										<SelectInputUI
-											name="stock_status"
-											options={stockStatusOptions}
-											value={product.stock_status}
-											onChange={(selected) =>
-												handleChange('stock_status', selected.value)
-											}
-										/>
-									</FormGroup>
-								</>
+								<FormGroup cols={2} label={__('Stock Status', 'multivendorx')}>
+									<SelectInputUI
+										name="stock_status"
+										options={stockStatusOptions}
+										value={product.stock_status}
+										onChange={(selected) =>
+											handleChange('stock_status', selected.value)
+										}
+									/>
+								</FormGroup>
 							)}
-
 							{product.manage_stock && (
 								<>
 									<FormGroup cols={2} label={__('Quantity', 'multivendorx')}>
@@ -893,7 +800,6 @@ const AddProduct = () => {
 											}
 										/>
 									</FormGroup>
-
 									<FormGroup cols={2} label={__('Allow backorders?', 'multivendorx')}>
 										<SelectInputUI
 											name="backorders"
@@ -904,7 +810,6 @@ const AddProduct = () => {
 											}
 										/>
 									</FormGroup>
-
 									<FormGroup cols={2} label={__('Low stock threshold', 'multivendorx')}>
 										<BasicInputUI
 											name="low_stock_amount"
@@ -920,9 +825,7 @@ const AddProduct = () => {
 						</FormGroupWrapper>
 					</Card>
 
-					<Card contentHeight
-						title={__('Related listings', 'multivendorx')}
-					>
+					<Card contentHeight title={__('Related listings', 'multivendorx')}>
 						<FormGroupWrapper>
 							<FormGroup cols={2} label={__('Upsells', 'multivendorx')}>
 								<BasicInputUI
@@ -941,9 +844,7 @@ const AddProduct = () => {
 						</FormGroupWrapper>
 					</Card>
 
-					<Card contentHeight
-						title={__('Policies', 'multivendorx')}
-					>
+					<Card contentHeight title={__('Policies', 'multivendorx')} >
 						<FormGroupWrapper>
 							<FormGroup label={__('Shipping Policy', 'multivendorx')}>
 								<TextAreaUI
@@ -963,8 +864,6 @@ const AddProduct = () => {
 									}
 								/>
 							</FormGroup>
-
-
 							<FormGroup label={__('Cancellation Policy', 'multivendorx')}>
 								<TextAreaUI
 									name="cancellation_policy"
@@ -1233,11 +1132,7 @@ const AddProduct = () => {
 						)}
 					</Card>
 					{modules.includes('wpml') && (
-						<Card
-							title={__('Translations', 'multivendorx')}
-							iconName="translate"
-							toggle={true}
-						>
+						<Card title={__('Translations', 'multivendorx')} iconName="translate" toggle={true}>
 							<FormGroupWrapper>
 								<div className="multivendorx-translation-list">
 									{translation
@@ -1260,48 +1155,23 @@ const AddProduct = () => {
 												</button>
 											</div>
 										))}
-
 								</div>
 							</FormGroupWrapper>
 						</Card>
 					)}
-					<Card contentHeight title="Product tag">
+					<Card contentHeight title={__('Product tag', 'multivendorx')}>
 						<FormGroupWrapper>
-							{product.tags?.map((tag) => (
-								<div className="tag-list" key={tag.id}>
-									<span className="admin-badge blue">
-										{tag.name}
-										<span
-											onClick={() =>
-												setProduct((prev) => ({
-													...prev,
-													tags: prev.tags.filter(
-														(t) => t.name !== tag.name
-													),
-												}))
-											}
-										>
-											<i className="delete-icon adminfont-delete" />
-										</span>
-									</span>
-								</div>
-							))}
-
-							{/* Replace the custom dropdown-field with InputWithSuggestions */}
 							<InputWithSuggestions
-								suggestions={suggestions.map((tag) => tag.name)}
+								suggestions={existingTags.map((tag) => tag.name)} 
 								value={product.tags?.map((tag) => tag.name) || []}
 								onChange={(list) => {
+									console.log('Tags updated:', list);
 									const updatedTags = list.map((name) => {
 										const existing = existingTags.find(
 											(tag) => tag.name === name
 										);
-
-										return existing
-											? existing // existing WP tag
-											: { name }; // new custom tag
+										return existing ? existing  : { name }; 
 									});
-
 									setProduct((prev) => ({
 										...prev,
 										tags: updatedTags,
@@ -1310,9 +1180,6 @@ const AddProduct = () => {
 								placeholder={__('Type tag…', 'multivendorx')}
 								addButtonLabel={__('Add', 'multivendorx')}
 							/>
-
-
-
 						</FormGroupWrapper>
 					</Card>
 
