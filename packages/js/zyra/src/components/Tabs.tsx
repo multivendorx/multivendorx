@@ -34,29 +34,86 @@ export const TabsUI: React.FC<TabsProps> = ({
 }) => {
     const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
     
+    // Helper function to render a field from configuration
+    const renderFieldFromConfig = (fieldConfig: any, index: number) => {
+        const registeredField = FIELD_REGISTRY[fieldConfig.type];
+        const Render = registeredField?.render;
+        
+        if (!registeredField || !Render) {
+            console.warn(`Field type "${fieldConfig.type}" not found in registry`);
+            return null;
+        }
+        
+        // Get the value for this specific field
+        const fieldValue = value?.[fieldConfig.key] || '';
+        
+        // Handle onChange for this specific field
+        const handleFieldChange = (newValue: any) => {
+            if (onChange) {
+                onChange({
+                    ...value,
+                    [fieldConfig.key]: newValue
+                });
+            }
+        };
+        
+        return (
+            <div key={fieldConfig.key || index} className="tab-field-wrapper">
+                {fieldConfig.label && <label className="tab-field-label">{fieldConfig.label}</label>}
+                <Render
+                    field={fieldConfig}
+                    value={fieldValue}
+                    onChange={handleFieldChange}
+                    canAccess={canAccess}
+                />
+            </div>
+        );
+    };
+    
+    // Helper function to process content recursively
+    const processContent = (content: any): React.ReactNode => {
+        // If content is an array, map through it
+        if (Array.isArray(content)) {
+            return content.map((item, index) => {
+                // Only treat plain objects with a string `type` as field configs.
+                // React elements also have `.type` but React.isValidElement catches those.
+                if (item && typeof item === 'object' && !React.isValidElement(item) && typeof item.type === 'string') {
+                    return renderFieldFromConfig(item, index);
+                }
+                // React element, primitive, etc. — render as-is
+                return item;
+            });
+        }
+        
+        // If content is a plain field config object (not a React element)
+        if (content && typeof content === 'object' && !React.isValidElement(content) && typeof content.type === 'string') {
+            return renderFieldFromConfig(content, 0);
+        }
+        
+        // Return as is (string, number, React element, etc.)
+        return content;
+    };
+    
     // Helper function to render tab content
     const renderTabContent = () => {
         const currentTab = tabs[activeIndex];
         
         if (!currentTab) return null;
         
-        // If type exists, render the registered field component
+        // If type exists (legacy support), render the registered field component
         if (currentTab.type) {
             const registeredField = FIELD_REGISTRY[currentTab.type];
             const Render = registeredField?.render;
             
             if (registeredField && Render) {
-                // Create a field object that combines tab data with field properties
                 const tabAsField = {
                     ...currentTab,
                     type: currentTab.type,
                     key: currentTab.key || `tab-${activeIndex}`,
                 };
                 
-                // Get the value for this specific tab from the parent value
                 const tabValue = value?.[currentTab.key || `tab-${activeIndex}`] || currentTab.value || '';
                 
-                // Handle onChange for this specific tab
                 const handleTabChange = (newValue: any) => {
                     if (onChange) {
                         onChange({
@@ -79,8 +136,8 @@ export const TabsUI: React.FC<TabsProps> = ({
             return null;
         }
         
-        // Otherwise render the content directly
-        return currentTab.content;
+        // Process the content (can be array of fields, single field, or any React node)
+        return processContent(currentTab.content);
     };
     
     return (
