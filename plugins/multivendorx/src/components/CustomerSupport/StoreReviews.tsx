@@ -64,7 +64,7 @@ const StoreReviews: React.FC = () => {
 		})
 			.then(() => {
 				// refresh table after deletion
-				fetchData({});
+				doRefreshTableData({});
 			})
 			.finally(() => {
 				setConfirmOpen(false);
@@ -108,7 +108,7 @@ const StoreReviews: React.FC = () => {
 		})
 			.then(() => {
 				// Refresh table data after saving
-				fetchData({});
+				doRefreshTableData({});
 				setSelectedReview(null);
 				setReplyText('');
 			})
@@ -135,33 +135,51 @@ const StoreReviews: React.FC = () => {
 			})
 	};
 
-	const headers = [
-		{ key: 'customer', label: __('Customer', 'multivendorx') },
-		{ key: 'store', label: __('Store', 'multivendorx') },
-		{ key: 'details', label: __('Details', 'multivendorx'), type: 'card' },
-		{ key: 'status', label: __('Status', 'multivendorx'), type: 'status' },
-		{ key: 'date_created', label: __('Date', 'multivendorx'), sortable: true },
-		{
-			key: 'action',
+	const headers = {
+		customer_name: {
+			label: __('Customer', 'multivendorx'),
+		},
+		store_name: {
+			label: __('Store', 'multivendorx'),
+		},
+		overall_rating: {
+			label: __('Ratings', 'multivendorx'),
+		},
+		review_title: {
+			label: __('Title', 'multivendorx'),
+		},
+		review_content: {
+			label: __('Content', 'multivendorx'),
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status',
+		},
+		date_created: {
+			label: __('Date', 'multivendorx'),
+			sortable: true,
+			type: 'date'
+		},
+		action: {
 			label: __('Action', 'multivendorx'),
 			type: 'action',
-			actions: [
-				{
+			actions: {
+				reply_edit: {
 					label: __('Reply / Edit', 'multivendorx'),
 					icon: 'edit',
-					onClick: (id: number) => fetchReviewById(id), // Only returns ID for fetching
+					onClick: (row) => fetchReviewById(row.id),
 				},
-				{
+				delete: {
 					label: __('Delete', 'multivendorx'),
 					icon: 'delete',
-					onClick: (id: number) => {
-						setSelectedRv({ id });
+					onClick: (row) => {
+						setSelectedRv({ id: row.id });
 						setConfirmOpen(true);
 					},
 				},
-			],
+			},
 		},
-	];
+	};
 
 	const filters = [
 		{
@@ -190,7 +208,7 @@ const StoreReviews: React.FC = () => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -200,71 +218,28 @@ const StoreReviews: React.FC = () => {
 					page: query.paged || 1,
 					row: query.per_page || 10,
 					status: query.categoryFilter || '',
-					searchValue: query.searchValue || '',
-					storeId: query?.filter?.storeId,
-					startDate: query.filter?.created_at?.startDate
+					search_value: query.searchValue || '',
+					store_id: query?.filter?.storeId,
+					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
-					overallRating: query?.filter?.rating,
-					orderBy: query.orderby,
+					overall_rating: query?.filter?.rating,
+					order_by: query.orderby,
 					order: query.order,
 				},
 			})
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((item: any) => item?.review_id != null)
-					.map((item: any) => item.review_id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
 
-				const mappedRows: any[][] = items.map((item: any) => [
-					{
-						value: item.customer_id,
-						display: item.customer_name || '-',
-						type: 'card',
-						data: {
-							name: item.customer_name,
-							link: item.customer_id
-								? `${window.location.origin}/wp-admin/user-edit.php?user_id=${item.customer_id}`
-								: null,
-						},
-					},
-					{
-						type: 'card',
-						value: item.store_id,
-						display: item.store_name || '-',
-						data: {
-							name: item.store_name,
-							link: item.store_id
-								? `${window.location.origin}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${item.store_id}/&subtab=application-details`
-								: null,
-						},
-					},
-					{
-						type: 'card',
-						value: item.id,
-						display: item.id || '-',
-						data: {
-							name: item.overall_rating || 0,
-							description: item.review_title || '-',
-							subDescription: item.review_content || '',
-						},
-					},
-					{
-						value: item.status,
-						display: item.status,
-					},
-					{
-						value: item.date_created,
-						display: item.date_created,
-					}
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
@@ -329,7 +304,7 @@ const StoreReviews: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
 				search={{}}
@@ -433,7 +408,7 @@ const StoreReviews: React.FC = () => {
 								<TextAreaUI
 									name="reply"
 									value={replyText}
-									onChange={(value:string) => setReplyText(value)}
+									onChange={(value: string) => setReplyText(value)}
 									usePlainText={true}
 								/>
 

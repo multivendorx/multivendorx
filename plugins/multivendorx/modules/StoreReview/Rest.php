@@ -11,7 +11,7 @@ namespace MultiVendorX\StoreReview;
 use MultiVendorX\StoreReview\Util;
 use MultiVendorX\Utill;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * MultiVendorX REST API Store Review Controller.
@@ -20,7 +20,8 @@ defined( 'ABSPATH' ) || exit;
  * @version     PRODUCT_VERSION
  * @author      MultiVendorX
  */
-class Rest extends \WP_REST_Controller {
+class Rest extends \WP_REST_Controller
+{
 
 
     /**
@@ -33,28 +34,25 @@ class Rest extends \WP_REST_Controller {
     /**
      * Constructor.
      */
-    public function __construct() {
-        add_action( 'rest_api_init', array( $this, 'register_routes' ), 10 );
+    public function __construct()
+    {
+        add_action('rest_api_init', array($this, 'register_routes'), 10);
     }
 
     /**
      * Register the routes for store reviews.
      */
-    public function register_routes() {
+    public function register_routes()
+    {
         register_rest_route(
             MultiVendorX()->rest_namespace,
             '/' . $this->rest_base,
             array(
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'get_items' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
-                ),
-                array(
-                    'methods'             => \WP_REST_Server::CREATABLE,
-                    'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
-                ),
+                    'callback'            => array($this, 'get_items'),
+                    'permission_callback' => array($this, 'get_items_permissions_check'),
+                )
             )
         );
 
@@ -64,23 +62,23 @@ class Rest extends \WP_REST_Controller {
             array(
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
+                    'callback'            => array($this, 'get_item'),
+                    'permission_callback' => array($this, 'get_items_permissions_check'),
                     'args'                => array(
-                        'id' => array( 'required' => true ),
+                        'id' => array('required' => true),
                     ),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::EDITABLE,
-                    'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'callback'            => array($this, 'update_item'),
+                    'permission_callback' => array($this, 'update_item_permissions_check'),
                 ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
-                    'callback'            => array( $this, 'delete_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
+                    'callback'            => array($this, 'delete_item'),
+                    'permission_callback' => array($this, 'update_item_permissions_check'),
                     'args'                => array(
-                        'id' => array( 'required' => true ),
+                        'id' => array('required' => true),
                     ),
                 ),
             )
@@ -93,19 +91,11 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Request data.
      * @return bool
      */
-    public function get_items_permissions_check( $request ) {
-        return current_user_can( 'read' ) || current_user_can( 'edit_stores' );
+    public function get_items_permissions_check($request)
+    {
+        return current_user_can('read') || current_user_can('edit_stores');
     }
 
-    /**
-     * POST permission.
-     *
-     * @param object $request Request data.
-     * @return bool
-     */
-    public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );
-    }
 
     /**
      * PUT permission.
@@ -113,8 +103,9 @@ class Rest extends \WP_REST_Controller {
      * @param object $request Request data.
      * @return bool
      */
-    public function update_item_permissions_check( $request ) {
-        return current_user_can( 'edit_stores' );
+    public function update_item_permissions_check($request)
+    {
+        return current_user_can('edit_stores');
     }
 
     /**
@@ -122,63 +113,64 @@ class Rest extends \WP_REST_Controller {
      *
      * @param object $request Request data.
      */
-    public function get_items( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+    public function get_items($request)
+    {
+        $nonce = $request->get_header('X-WP-Nonce');
+        if (! wp_verify_nonce($nonce, 'wp_rest')) {
+            $error = new \WP_Error('invalid_nonce', __('Invalid nonce', 'multivendorx'), array('status' => 403));
 
             // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
+            if (is_wp_error($error)) {
+                MultiVendorX()->util->log($error);
             }
 
             return $error;
         }
         try {
-            $store_id       = $request->get_param( 'storeId' );
-            $limit          = intval( $request->get_param( 'row' ) ) ?: 0;
-            $page           = intval( $request->get_param( 'page' ) ) ?: 1;
-            $offset         = ( $page - 1 ) * $limit;
-            $status         = sanitize_text_field( $request->get_param( 'status' ) );
-            $orderBy        = sanitize_text_field( $request->get_param( 'orderBy' ) );
-            $order          = sanitize_text_field( $request->get_param( 'order' ) );
-            $overall_rating = $request->get_param( 'overallRating' );
-            $sec_fetch_site = $request->get_header( 'sec_fetch_site' );
-            $referer        = $request->get_header( 'referer' );
+            $store_id       = $request->get_param('store_id');
+            $limit          = intval($request->get_param('row')) ?: 0;
+            $page           = intval($request->get_param('page')) ?: 1;
+            $offset         = ($page - 1) * $limit;
+            $status         = sanitize_text_field($request->get_param('status'));
+            $order_by        = sanitize_text_field($request->get_param('order_by'));
+            $order          = sanitize_text_field($request->get_param('order'));
+            $overall_rating = $request->get_param('overall_rating');
+            $sec_fetch_site = $request->get_header('sec_fetch_site');
+            $referer        = $request->get_header('referer');
 
             $range = Utill::normalize_date_range(
-                $request->get_param( 'startDate' ),
-                $request->get_param( 'endDate' )
+                $request->get_param('start_date'),
+                $request->get_param('end_date')
             );
             $args  = array();
 
             // --- Step 3: Apply Store Filter ---.
-            if ( $store_id ) {
-                $args['store_id'] = intval( $store_id );
+            if ($store_id) {
+                $args['store_id'] = intval($store_id);
             }
 
             // --- Step 5: Add Filters (status, date, pagination) ---.
-            if ( $status ) {
+            if ($status) {
                 $args['status'] = $status;
             }
 
             $args['limit']  = $limit;
             $args['offset'] = $offset;
 
-            if ( ! empty( $range['start_date'] ) ) {
+            if (! empty($range['start_date'])) {
                 $args['start_date'] = $range['start_date'];
             }
 
-            if ( ! empty( $range['end_date'] ) ) {
+            if (! empty($range['end_date'])) {
                 $args['end_date'] = $range['end_date'];
             }
 
             // --- Step 5.2: Filter by Overall Rating (like "4 stars & up") ---.
-            if ( null !== $overall_rating && '' !== $overall_rating ) {
-                $rating = floatval( $overall_rating );
+            if (null !== $overall_rating && '' !== $overall_rating) {
+                $rating = floatval($overall_rating);
 
                 // Prevent invalid or below 1 ratings.
-                if ( $rating < 1 ) {
+                if ($rating < 1) {
                     $rating = 1;
                 }
 
@@ -187,81 +179,56 @@ class Rest extends \WP_REST_Controller {
             }
 
             // --- Step 5.1: Add Sorting ---.
-            if ( ! empty( $orderBy ) && ! empty( $order ) ) {
-                $args['order_by']  = $orderBy;
-                $args['order_dir'] = ! empty( $order ) ? strtoupper( $order ) : 'DESC';
+            if (! empty($order_by) && ! empty($order)) {
+                $args['order_by']  = $order_by;
+                $args['order_dir'] = ! empty($order) ? strtoupper($order) : 'DESC';
             } else {
                 // Fallback default sort.
                 $args['order_by']  = 'date_created';
                 $args['order_dir'] = 'DESC';
             }
 
-            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) && get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id ) ) {
-                return get_transient( Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id );
+            if ($sec_fetch_site === 'same-origin' && preg_match('#/dashboard/?$#', $referer) && get_transient(Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id)) {
+                return get_transient(Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id);
             }
             // --- Step 6: Fetch Review Data ---.
-            $reviews = Util::get_review_information( $args );
+            $reviews = Util::get_review_information($args);
 
             // --- Step 7: Format Data for Response ---.
-            $formatted = array_map(
-                function ( $review ) {
-                    $customer      = get_userdata( $review['customer_id'] );
-                    $customer_name = $customer ? $customer->display_name : __( 'Guest', 'multivendorx' );
-                    $store_obj     = MultivendorX()->store->get_store( (int) $review['store_id'] );
-
-                    return array(
-                        'review_id'      => (int) $review['review_id'],
-                        'store_id'       => (int) $review['store_id'],
-                        'store_name'     => $store_obj->get( 'name' ),
-                        'customer_id'    => (int) $review['customer_id'],
-                        'customer_name'  => $customer_name,
-                        'order_id'       => (int) $review['order_id'],
-                        'overall_rating' => round( floatval( $review['overall_rating'] ), 2 ),
-                        'review_title'   => sanitize_text_field( $review['review_title'] ),
-                        'review_content' => wp_strip_all_tags( $review['review_content'] ),
-                        'status'         => ucfirst( sanitize_text_field( $review['status'] ) ),
-                        'reported'       => (int) $review['reported'],
-                        'reply'          => $review['reply'] ?? '',
-                        'reply_date'     => $review['reply_date'] ?? '',
-                        'date_created'   => Utill::multivendorx_rest_prepare_date_response( $review['date_created'] ),
-                        'date_modified'  => $review['date_modified'],
-                    );
-                },
-                $reviews ? $reviews : array()
-            );
+            $formatted = array_map([$this, 'prepare_rest_item_for_response'], $reviews ? $reviews : array());
 
             // --- Step 8: Get Status Counters ---.
             $base_args = $args;
-            unset( $base_args['limit'], $base_args['offset'], $base_args['status'] );
+            unset($base_args['limit'], $base_args['offset'], $base_args['status']);
 
-            if ( current_user_can( 'manage_options' ) ) {
-                unset( $base_args['store_id'] );
+            if (current_user_can('manage_options')) {
+                unset($base_args['store_id']);
             }
 
             $base_args['count'] = true;
 
             $all_args  = $base_args;
-            $all_count = Util::get_review_information( $all_args );
+            $all_count = Util::get_review_information($all_args);
 
             $pending_args           = $base_args;
             $pending_args['status'] = 'pending';
-            $pending_count          = Util::get_review_information( $pending_args );
+            $pending_count          = Util::get_review_information($pending_args);
 
             $approved_args           = $base_args;
             $approved_args['status'] = 'approved';
-            $approved_count          = Util::get_review_information( $approved_args );
+            $approved_count          = Util::get_review_information($approved_args);
 
             $rejected_args           = $base_args;
             $rejected_args['status'] = 'rejected';
-            $rejected_count          = Util::get_review_information( $rejected_args );
+            $rejected_count          = Util::get_review_information($rejected_args);
 
-            $response = rest_ensure_response( $formatted );
-            $response->header( 'X-WP-Total', $all_count );
-            $response->header( 'X-WP-Status-Pending', $pending_count );
-            $response->header( 'X-WP-Status-Approved', $approved_count );
-            $response->header( 'X-WP-Status-Rejected', $rejected_count );
+            $response = rest_ensure_response($formatted);
+            $response->header('X-WP-Total', $all_count);
+            $response->header('X-WP-Status-Pending', $pending_count);
+            $response->header('X-WP-Status-Approved', $approved_count);
+            $response->header('X-WP-Status-Rejected', $rejected_count);
 
-            if ( $sec_fetch_site === 'same-origin' && preg_match( '#/dashboard/?$#', $referer ) ) {
+            if ($sec_fetch_site === 'same-origin' && preg_match('#/dashboard/?$#', $referer)) {
                 set_transient(
                     Utill::MULTIVENDORX_TRANSIENT_KEYS['review_transient'] . $store_id,
                     $response,
@@ -270,29 +237,10 @@ class Rest extends \WP_REST_Controller {
             }
 
             return $response;
-        } catch ( \Exception $e ) {
-            MultiVendorX()->util->log( $e );
+        } catch (\Exception $e) {
+            MultiVendorX()->util->log($e);
 
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
-        }
-    }
-
-    /**
-     * Create a single item.
-     *
-     * @param object $request Full data about the request.
-     */
-    public function create_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
+            return new \WP_Error('server_error', __('Unexpected server error', 'multivendorx'), array('status' => 500));
         }
     }
 
@@ -301,64 +249,44 @@ class Rest extends \WP_REST_Controller {
      *
      * @param object $request Full data about the request.
      */
-    public function get_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+    public function get_item($request)
+    {
+        $nonce = $request->get_header('X-WP-Nonce');
+        if (! wp_verify_nonce($nonce, 'wp_rest')) {
+            $error = new \WP_Error('invalid_nonce', __('Invalid nonce', 'multivendorx'), array('status' => 403));
 
             // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
+            if (is_wp_error($error)) {
+                MultiVendorX()->util->log($error);
             }
 
             return $error;
         }
         try {
-            $store_id = $request->get_param( 'storeId' );
-            if ( $store_id ) {
-                $overall = Util::get_overall_rating( $store_id );
-                return rest_ensure_response( $overall );
+            $store_id = $request->get_param('storeId');
+            if ($store_id) {
+                $overall = Util::get_overall_rating($store_id);
+                return rest_ensure_response($overall);
             }
 
-            $review_id = $request->get_param( 'id' );
+            $review_id = $request->get_param('id');
 
             // --- Step 6: Fetch Review Data ---.
-            $review = reset( Util::get_review_information( array( 'review_id' => $review_id ) ) );
+            $review = reset(Util::get_review_information(array('review_id' => $review_id)));
 
-            if ( ! $review ) {
+            if (! $review) {
                 return new \WP_Error(
                     'not_found',
-                    __( 'Review not found', 'multivendorx' ),
-                    array( 'status' => 404 )
+                    __('Review not found', 'multivendorx'),
+                    array('status' => 404)
                 );
             }
-            $customer      = get_userdata( $review['customer_id'] );
-            $customer_name = $customer ? $customer->display_name : __( 'Guest', 'multivendorx' );
-            $store_obj     = MultivendorX()->store->get_store( (int) $review['store_id'] );
+ 
+            return rest_ensure_response($this->prepare_rest_item_for_response($review));
+        } catch (\Exception $e) {
+            MultiVendorX()->util->log($e);
 
-            $formatted = array(
-                'review_id'      => (int) $review['review_id'],
-                'store_id'       => (int) $review['store_id'],
-                'store_name'     => $store_obj->get( 'name' ),
-                'customer_id'    => (int) $review['customer_id'],
-                'customer_name'  => $customer_name,
-                'order_id'       => (int) $review['order_id'],
-                'overall_rating' => round( (float) $review['overall_rating'], 2 ),
-                'review_title'   => sanitize_text_field( $review['review_title'] ),
-                'review_content' => wp_strip_all_tags( $review['review_content'] ),
-                'status'         => ucfirst( sanitize_text_field( $review['status'] ) ),
-                'reported'       => (int) $review['reported'],
-                'reply'          => $review['reply'] ?? '',
-                'reply_date'     => $review['reply_date'] ?? '',
-                'date_created'   => Utill::multivendorx_rest_prepare_date_response( $review['date_created'] ),
-                'date_modified'  => $review['date_modified'],
-            );
-
-            return rest_ensure_response( $formatted );
-        } catch ( \Exception $e ) {
-            MultiVendorX()->util->log( $e );
-
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+            return new \WP_Error('server_error', __('Unexpected server error', 'multivendorx'), array('status' => 500));
         }
     }
 
@@ -367,78 +295,79 @@ class Rest extends \WP_REST_Controller {
      *
      * @param object $request Full data about the request.
      */
-    public function update_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+    public function update_item($request)
+    {
+        $nonce = $request->get_header('X-WP-Nonce');
+        if (! wp_verify_nonce($nonce, 'wp_rest')) {
+            $error = new \WP_Error('invalid_nonce', __('Invalid nonce', 'multivendorx'), array('status' => 403));
 
             // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
+            if (is_wp_error($error)) {
+                MultiVendorX()->util->log($error);
             }
 
             return $error;
         }
         try {
             // Get review ID.
-            $id = absint( $request->get_param( 'id' ) );
-            if ( ! $id ) {
+            $id = absint($request->get_param('id'));
+            if (! $id) {
                 return new \WP_Error(
                     'invalid_id',
-                    __( 'Invalid review ID', 'multivendorx' ),
-                    array( 'status' => 400 )
+                    __('Invalid review ID', 'multivendorx'),
+                    array('status' => 400)
                 );
             }
 
             // Fetch review info (replace this with your correct util function).
-            $review = reset( Util::get_review_information( array( 'id' => $id ) ) );
-            if ( ! $review ) {
+            $review = reset(Util::get_review_information(array('id' => $id)));
+            if (! $review) {
                 return new \WP_Error(
                     'not_found',
-                    __( 'Review not found', 'multivendorx' ),
-                    array( 'status' => 404 )
+                    __('Review not found', 'multivendorx'),
+                    array('status' => 404)
                 );
             }
 
             // Fields that can be updated.
-            $reply  = $request->get_param( 'reply' );
-            $status = $request->get_param( 'status' );
+            $reply  = $request->get_param('reply');
+            $status = $request->get_param('status');
 
             $data_to_update = array();
 
             // Save reply text.
-            if ( isset( $reply ) ) {
-                $data_to_update['reply']      = sanitize_textarea_field( $reply );
-                $data_to_update['reply_date'] = current_time( 'mysql' );
+            if (isset($reply)) {
+                $data_to_update['reply']      = sanitize_textarea_field($reply);
+                $data_to_update['reply_date'] = current_time('mysql');
             }
 
             // Save status (Pending / Approved / Rejected).
-            if ( isset( $status ) ) {
-                $allowed = array( 'Pending', 'Approved', 'Rejected' );
-                if ( in_array( $status, $allowed, true ) ) {
-                    $data_to_update['status'] = sanitize_text_field( $status );
+            if (isset($status)) {
+                $allowed = array('Pending', 'Approved', 'Rejected');
+                if (in_array($status, $allowed, true)) {
+                    $data_to_update['status'] = sanitize_text_field($status);
                 } else {
                     return new \WP_Error(
                         'invalid_status',
-                        __( 'Invalid status value', 'multivendorx' ),
-                        array( 'status' => 400 )
+                        __('Invalid status value', 'multivendorx'),
+                        array('status' => 400)
                     );
                 }
             }
 
-            if ( empty( $data_to_update ) ) {
+            if (empty($data_to_update)) {
                 return new \WP_Error(
                     'nothing_to_update',
-                    __( 'No valid fields to update', 'multivendorx' ),
-                    array( 'status' => 400 )
+                    __('No valid fields to update', 'multivendorx'),
+                    array('status' => 400)
                 );
             }
 
             // 💾 Save to DB (replace with your helper function).
-            $updated = Util::update_review( $id, $data_to_update );
+            $updated = Util::update_review($id, $data_to_update);
 
-            if ( ! $updated ) {
-                return rest_ensure_response( array( 'success' => false ) );
+            if (! $updated) {
+                return rest_ensure_response(array('success' => false));
             }
 
             return rest_ensure_response(
@@ -450,10 +379,10 @@ class Rest extends \WP_REST_Controller {
                     ),
                 )
             );
-        } catch ( \Exception $e ) {
-            MultiVendorX()->util->log( $e );
+        } catch (\Exception $e) {
+            MultiVendorX()->util->log($e);
 
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+            return new \WP_Error('server_error', __('Unexpected server error', 'multivendorx'), array('status' => 500));
         }
     }
 
@@ -462,56 +391,87 @@ class Rest extends \WP_REST_Controller {
      *
      * @param object $request Full data about the request.
      */
-    public function delete_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
+    public function delete_item($request)
+    {
+        $nonce = $request->get_header('X-WP-Nonce');
+        if (! wp_verify_nonce($nonce, 'wp_rest')) {
+            $error = new \WP_Error('invalid_nonce', __('Invalid nonce', 'multivendorx'), array('status' => 403));
 
             // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
+            if (is_wp_error($error)) {
+                MultiVendorX()->util->log($error);
             }
 
             return $error;
         }
         try {
             // 🔹 Get review ID.
-            $id = absint( $request->get_param( 'id' ) );
-            if ( ! $id ) {
+            $id = absint($request->get_param('id'));
+            if (! $id) {
                 return new \WP_Error(
                     'invalid_id',
-                    __( 'Invalid review ID', 'multivendorx' ),
-                    array( 'status' => 400 )
+                    __('Invalid review ID', 'multivendorx'),
+                    array('status' => 400)
                 );
             }
 
             // 🔹 Fetch the review (to confirm it exists).
-            $review = reset( Util::get_review_information( array( 'review_id' => $id ) ) );
-            if ( ! $review ) {
+            $review = reset(Util::get_review_information(array('review_id' => $id)));
+            if (! $review) {
                 return new \WP_Error(
                     'not_found',
-                    __( 'Review not found', 'multivendorx' ),
-                    array( 'status' => 404 )
+                    __('Review not found', 'multivendorx'),
+                    array('status' => 404)
                 );
             }
 
             // Delete via Util helper (this also deletes rating rows).
-            $deleted = Util::delete_review( $id );
+            $deleted = Util::delete_review($id);
 
-            if ( ! $deleted ) {
+            if (! $deleted) {
                 return new \WP_Error(
                     'delete_failed',
-                    __( 'Failed to delete review', 'multivendorx' ),
-                    array( 'status' => 500 )
+                    __('Failed to delete review', 'multivendorx'),
+                    array('status' => 500)
                 );
             }
 
             // Success response.
-            return rest_ensure_response( array( 'success' => true ) );
-        } catch ( \Exception $e ) {
-            MultiVendorX()->util->log( $e );
+            return rest_ensure_response(array('success' => true));
+        } catch (\Exception $e) {
+            MultiVendorX()->util->log($e);
 
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
+            return new \WP_Error('server_error', __('Unexpected server error', 'multivendorx'), array('status' => 500));
         }
+    }
+    /**
+     * Prepare a review item for REST API response.
+     *
+     * @param array $review Review data array.
+     * @return array Formatted review data.
+     */
+    public function prepare_rest_item_for_response($review)
+    {
+        $customer      = get_userdata($review['customer_id']);
+        $customer_name = $customer ? $customer->display_name : __('Guest', 'multivendorx');
+        $store_obj     = MultivendorX()->store->get_store((int) $review['store_id']);
+
+        return array(
+            'id'      => (int) $review['review_id'],
+            'store_id'       => (int) $review['store_id'],
+            'store_name'     => $store_obj->get('name'),
+            'customer_id'    => (int) $review['customer_id'],
+            'customer_name'  => $customer_name,
+            'order_id'       => (int) $review['order_id'],
+            'overall_rating' => round(floatval($review['overall_rating']), 2),
+            'review_title'   => sanitize_text_field($review['review_title']),
+            'review_content' => wp_strip_all_tags($review['review_content']),
+            'status'         => ucfirst(sanitize_text_field($review['status'])),
+            'reported'       => (int) $review['reported'],
+            'reply'          => $review['reply'] ?? '',
+            'reply_date'     => $review['reply_date'] ?? '',
+            'date_created'   => Utill::multivendorx_rest_prepare_date_response($review['date_created']),
+            'date_modified'  => $review['date_modified'],
+        );
     }
 }

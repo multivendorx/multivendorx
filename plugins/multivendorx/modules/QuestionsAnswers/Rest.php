@@ -51,11 +51,6 @@ class Rest extends \WP_REST_Controller {
                     'callback'            => array( $this, 'get_items' ),
                     'permission_callback' => array( $this, 'get_items_permissions_check' ),
                 ),
-                array(
-                    'methods'             => \WP_REST_Server::CREATABLE,
-                    'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
-                ),
             )
         );
 
@@ -97,14 +92,6 @@ class Rest extends \WP_REST_Controller {
         return current_user_can( 'read' ) || current_user_can( 'edit_stores' );
     }
 
-    /**
-     * Create permissions check.
-     *
-     * @param  object $request Full data about the request.
-     */
-    public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );
-    }
 
     /**
      * Update permissions check.
@@ -134,18 +121,18 @@ class Rest extends \WP_REST_Controller {
             return $error;
         }
         try {
-            $store_id            = $request->get_param( 'storeId' );
+            $store_id            = $request->get_param( 'store_id' );
             $limit               = max( intval( $request->get_param( 'row' ) ), 10 );
             $page                = max( intval( $request->get_param( 'page' ) ), 1 );
             $offset              = ( $page - 1 ) * $limit;
             $status              = sanitize_text_field( $request->get_param( 'status' ) );
-            $search              = sanitize_text_field( $request->get_param( 'searchVield' ) );
-            $order_by            = sanitize_text_field( $request->get_param( 'orderBy' ) );
+            $search              = sanitize_text_field( $request->get_param( 'search_vield' ) );
+            $order_by            = sanitize_text_field( $request->get_param( 'order_by' ) );
             $order               = sanitize_text_field( $request->get_param( 'order' ) );
-            $question_visibility = sanitize_text_field( $request->get_param( 'questionVisibility' ) );
+            $question_visibility = sanitize_text_field( $request->get_param( 'question_visibility' ) );
             $range               = Utill::normalize_date_range(
-                $request->get_param( 'startDate' ),
-                $request->get_param( 'endDate' )
+                $request->get_param( 'start_date' ),
+                $request->get_param( 'end_date' )
             );
             $args                = array();
 
@@ -210,49 +197,7 @@ class Rest extends \WP_REST_Controller {
             // --- Step 7: Fetch Question Data ---
             $questions = Util::get_question_information( $args );
 
-            // --- Step 8: Format Data ---
-            $formatted = array_map(
-                function ( $q ) {
-                    $product     = wc_get_product( $q['product_id'] );
-                    $first_name  = get_the_author_meta( 'first_name', $q['question_by'] );
-                    $last_name   = get_the_author_meta( 'last_name', $q['question_by'] );
-                    $author_name = ( $first_name && $last_name )
-                        ? $first_name . ' ' . $last_name
-                        : get_the_author_meta( 'display_name', $q['question_by'] );
-
-                    $store_obj = MultivendorX()->store->get_store( $q['store_id'] );
-
-                    // Get product image.
-                    $product_image = '';
-                    if ( $product ) {
-                        $image_id = $product->get_image_id(); // Get featured image ID.
-                        if ( $image_id ) {
-                            $product_image = wp_get_attachment_image_url( $image_id, 'thumbnail' ); // or 'full'.
-                        }
-                    }
-
-                    return array(
-                        'id'                  => (int) $q['id'],
-                        'product_id'          => (int) $q['product_id'],
-                        'product_name'        => $product ? $product->get_name() : '',
-                        'product_link'        => $product ? get_permalink( $product->get_id() ) : '',
-                        'product_image'       => $product_image, // added product image.
-                        'store_id'            => $q['store_id'],
-                        'store_name'          => $store_obj->get( 'name' ),
-                        'question_text'       => $q['question_text'],
-                        'answer_text'         => $q['answer_text'],
-                        'question_by'         => (int) $q['question_by'],
-                        'author_name'         => $author_name,
-                        'question_date'       => Utill::multivendorx_rest_prepare_date_response( $q['question_date'] ),
-                        'answer_by'           => isset( $q['answer_by'] ) ? (int) $q['answer_by'] : 0,
-                        'answer_date'         => $q['answer_date'] ?? '',
-                        'time_ago'            => human_time_diff( strtotime( $q['question_date'] ), current_time( 'timestamp' ) ) . ' ago',
-                        'total_votes'         => (int) $q['total_votes'],
-                        'question_visibility' => $q['question_visibility'],
-                    );
-                },
-                $questions ? $questions : array()
-            );
+            $formatted = array_map( [ $this, 'prepare_rest_item_for_response' ], $questions );
 
             // --- Step 9: Get Counters ---
             $base_args = $args;
@@ -287,18 +232,6 @@ class Rest extends \WP_REST_Controller {
     }
 
     /**
-     * Create a single question item.
-     *
-     * @param  object $request Full data about the request.
-     */
-    public function create_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-        }
-    }
-
-    /**
      * Retrieve a single question item.
      *
      * @param  object $request Full data about the request.
@@ -321,8 +254,8 @@ class Rest extends \WP_REST_Controller {
             return new \WP_Error( 'invalid_id', __( 'Invalid ID', 'multivendorx' ), array( 'status' => 400 ) );
         }
 
-        $q = reset( Util::get_question_information( array( 'id' => $id ) ) );
-        if ( ! $q ) {
+        $question = reset( Util::get_question_information( array( 'id' => $id ) ) );
+        if ( ! $question ) {
             return new \WP_Error( 'not_found', __( 'Question not found', 'multivendorx' ), array( 'status' => 404 ) );
         }
 
@@ -338,28 +271,7 @@ class Rest extends \WP_REST_Controller {
         // }
         // }
 
-        $product       = wc_get_product( $q['product_id'] );
-        $product_name  = $product ? $product->get_name() : '';
-        $product_link  = $product ? get_permalink( $product->get_id() ) : '';
-        $product_image = $product ? wp_get_attachment_url( $product->get_image_id() ) : '';
-
-        $data = array(
-            'id'                  => (int) $q['id'],
-            'product_id'          => (int) $q['product_id'],
-            'product_name'        => $product_name,
-            'product_link'        => $product_link,
-            'product_image'       => $product_image,
-            'question_text'       => $q['question_text'],
-            'answer_text'         => $q['answer_text'],
-            'question_by'         => (int) $q['question_by'],
-            'author_name'         => get_the_author_meta( 'display_name', $q['question_by'] ),
-            'question_date'       => Utill::multivendorx_rest_prepare_date_response( $q['question_date'] ),
-            'time_ago'            => human_time_diff( strtotime( $q['question_date'] ), current_time( 'timestamp' ) ) . ' ago',
-            'total_votes'         => (int) $q['total_votes'],
-            'question_visibility' => $q['question_visibility'],
-        );
-
-        return rest_ensure_response( $data );
+        return rest_ensure_response( $this->prepare_rest_item_for_response( $question ) );
     }
 
     /**
@@ -519,4 +431,57 @@ class Rest extends \WP_REST_Controller {
 
         return rest_ensure_response( array( 'success' => true ) );
     }
+    /**
+     * Prepare a single QnA item for REST response.
+     *
+     * @param array $q QnA item data.
+     * @return array Formatted QnA item for REST.
+     */
+    public function prepare_rest_item_for_response( $q ) {
+       
+        $product = wc_get_product( $q['product_id'] );
+
+        $product_name = $product ? $product->get_name() : '';
+        $product_link = $product ? get_permalink( $product->get_id() ) : '';
+
+        // Product thumbnail in WooCommerce way
+        $product_image = '';
+        if ( $product ) {
+            $image_id = $product->get_image_id();
+            if ( $image_id ) {
+                $product_image = wp_get_attachment_image_url( $image_id, 'woocommerce_thumbnail' );
+            }
+        }
+
+        // Author info using WordPress get_userdata
+        $author_data = get_userdata( $q['question_by'] );
+        $author_name = $author_data
+            ? trim( $author_data->first_name . ' ' . $author_data->last_name ) ?: $author_data->display_name
+            : '';
+
+        // Store object using MVX store API
+        $store_obj  = MultivendorX()->store->get_store( $q['store_id'] );
+        $store_name = $store_obj ? $store_obj->get( 'name' ) : '';
+
+        return array(
+            'id'                  => (int) $q['id'],
+            'product_id'          => (int) $q['product_id'],
+            'product_name'        => $product_name,
+            'product_link'        => $product_link,
+            'product_image'       => $product_image,
+            'store_id'            => $q['store_id'],
+            'store_name'          => $store_name,
+            'question_text'       => $q['question_text'],
+            'answer_text'         => $q['answer_text'],
+            'question_by'         => (int) $q['question_by'],
+            'author_name'         => $author_name,
+            'question_date'       => Utill::multivendorx_rest_prepare_date_response( $q['question_date'] ),
+            'answer_by'           => isset( $q['answer_by'] ) ? (int) $q['answer_by'] : 0,
+            'answer_date'         => $q['answer_date'] ?? '',
+            'time_ago'            => human_time_diff( strtotime( $q['question_date'] ), current_time( 'timestamp' ) ) . ' ago',
+            'total_votes'         => (int) $q['total_votes'],
+            'question_visibility' => $q['question_visibility'],
+        );
+    }
+
 }
