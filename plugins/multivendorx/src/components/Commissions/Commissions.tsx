@@ -9,39 +9,11 @@ import {
 	Container,
 	Column,
 	TableCard,
-	ExportCSV,
 	ItemList,
 } from 'zyra';
 import ViewCommission from './ViewCommission';
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import { downloadCSV, formatLocalDate } from '../../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
-
-type CommissionRow = {
-	createdAt: string;
-	id?: number;
-	orderId?: number;
-	storeId?: number;
-	storeName?: string;
-	commissionAmount?: string;
-	shipping?: string;
-	tax?: string;
-	commissionTotal?: string;
-	commissionRefunded?: string;
-	paidStatus?: 'paid' | 'unpaid' | string;
-	commissionNote?: string | null;
-	createTime?: string;
-	totalOrderAmount?: any;
-	facilitatorFee?: string;
-	marketplaceFee?: string;
-	gatewayFee?: string;
-	shippingAmount?: string;
-	taxAmount?: string;
-	status?: string;
-	storeEarning?: any;
-	shippingTaxAmount?: any;
-	platformFee?: any;
-};
-
 
 const Commission: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -54,35 +26,21 @@ const Commission: React.FC = () => {
 	const [store, setStore] = useState<any[] | null>(null);
 	const [commissionLookup, setCommissionLookup] = useState<Record<number, WCTax>>({});
 	const [viewCommission, setViewCommission] = useState(false);
-	const [selectedCommissionId, setSelectedCommissionId] = useState<
-		number | null
-	>(null);
-
+	const [selectedCommissionId, setSelectedCommissionId] = useState<number | string | null>(null);
 	const { modules } = useModules();
 
-	const commissionColumns = (commission: CommissionRow) => ({
-		[__('ID', 'multivendorx')]: commission.id ?? '',
-		[__('Order', 'multivendorx')]: commission.orderId ?? '',
-		[__('Order Amount', 'multivendorx')]: commission.totalOrderAmount ?? '',
-		[__('Commission Summary', 'multivendorx')]: commission.commissionTotal ?? '',
-		[__('Store Earning', 'multivendorx')]: commission.storeEarning ?? '',
-		[__('Marketplace Earning', 'multivendorx')]: commission.marketplaceFee ?? '',
-		[__('Status', 'multivendorx')]: commission.status ?? '',
-		[__('Date', 'multivendorx')]: commission.createdAt ?? '',
-	});
-
-	const handleSingleAction = (action: string, id: number) => {
-		if (!id) {
+	const handleSingleAction = (action: string, row) => {
+		if (!row.id) {
 			return;
 		}
 		axios({
 			method: 'PUT',
-			url: getApiLink(appLocalizer, `commission/${id}`),
+			url: getApiLink(appLocalizer, `commission/${row.id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: { action, orderId: commissionLookup[id]?.orderId },
+			data: { action, orderId: row.orderId },
 		})
 			.then(() => {
-				fetchData({})
+				doRefreshTableData({})
 			})
 			.catch(console.error);
 	};
@@ -109,156 +67,101 @@ const Commission: React.FC = () => {
 
 	}, []);
 
-	const headers = [
-		{ key: 'id', label: 'ID' },
-		{ key: 'order_id', label: 'Order' },
-		{ key: 'order_amount', label: 'Order Amount' },
-		{ key: 'commission_summary', label: 'Commission Summary' },
-		{ key: 'store_earning', label: 'Store Earning' },
-		{ key: 'marketplace_earning', label: 'Marketplace Earning' },
-		{ key: 'status', label: 'Status' },
-		{ key: 'created_at', label: 'Date', isSorting: true },
-		{
-			key: 'action',
+	const headers = {
+		id: {
+			label: __('ID', 'multivendorx'),
+			isSortable: true,
+		},
+		order_id: {
+			label: __('Order', 'multivendorx'),
+			isSortable: true,
+		},
+		total_order_amount: {
+			label: __('Order Amount', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
+		},
+		commission_summary: {
+			label: __('Commission Summary', 'multivendorx'),
+			render: (row) => (
+				<ItemList
+					className="feature-list"
+					items={Object.entries(row)
+						.filter(([key]) =>
+							['store_earning', 'shipping_amount', 'tax_amount', 'gateway_fee', 'marketplace_commission'].includes(key)
+						)
+						.map(([key, val]) => ({
+							icon: 'adminfont-commissions',
+							title: key
+								.split('_')
+								.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+								.join(' '),
+							desc: val,
+						}))
+					}
+				/>
+			),
+			csvDisplay: false,
+		},
+		store_payable: {
+			label: __('Store Earning', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
+		},
+		marketplace_payable: {
+			label: __('Marketplace Earning', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status',
+		},
+		created_at: {
+			label: __('Date', 'multivendorx'),
+			isSortable: true,
+			type: 'date',
+		},
+		action: {
+			label: __('Action', 'multivendorx'),
 			type: 'action',
-			label: 'Action',
+			csvDisplay: false,
 			actions: [
 				{
 					label: __('View Commission', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id: number) => {
-						setSelectedCommissionId(id);
+					onClick: (row) => {
+						setSelectedCommissionId(row.id);
 						setViewCommission(true);
 					},
 				},
 				{
-					label: __(
-						'Regenerate Commission',
-						'multivendorx'
-					),
+					label: __('Regenerate Commission', 'multivendorx'),
 					icon: 'refresh',
-					onClick: (id: number) => {
-						handleSingleAction('regenerate', id);
+					onClick: (row) => {
+						handleSingleAction('regenerate', row);
 					},
 				},
 			],
 		},
-	];
+	};
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: query.paged || 1,
-					row: query.per_page || 10,
-					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					searchValue: query.searchValue || '',
-					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: '',
-					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: '',
-					store_id: query.filter?.store_id,
-					orderBy: query.orderby,
-					order: query.order,
-				},
+				params: buildCommissionQueryParams(query),
 			})
 			.then((response) => {
 				const items = response.data || [];
-				const lookup: Record<string, any> = {};
 				const ids = items.map((item: any) => {
-					lookup[item.id] = item;
 					return item.id;
 				});
 				setRowIds(ids);
-				setCommissionLookup(lookup);
 
-				const mappedRows: any[][] = items.map((item: any) => [
-					{
-						display: (
-							<span
-								className="link-item"
-								onClick={() => {
-									setSelectedCommissionId(item.id ?? null);
-									setViewCommission(true);
-								}}
-							>
-								#{item.id}
-							</span>
-						),
-						value: item.id,
-					},
-					// Order
-					{
-						type: 'card',
-						data: {
-							name: `#${item.orderId} – ${item.storeName || '-'}`,
-							link: `${appLocalizer.site_url.replace(/\/$/, '')}/wp-admin/post.php?post=${item.orderId}&action=edit`,
-						},
-						value: item.orderId
-					},
-					{
-						display: (
-							<ItemList
-								className="feature-list"
-								items={Object.entries(item)
-									// Filter only the commission keys you want to show
-									.filter(([key]) => [
-										'storeEarning',
-										'shippingAmount',
-										'taxAmount',
-										'gatewayFee',
-										'marketplaceCommission'
-									].includes(key))
-									.map(([key, val]) => ({
-										icon: 'adminfont-commissions', // Consistent icon
-										title: key.replace(/([A-Z])/g, ' $1').trim(), // Formats 'storeEarning' to 'Store Earning'
-										desc: val // This is your commission value (e.g. "112.00")
-									}))
-								}
-							/>
-						),
-						value: item.id
-					},
-					// Order Amount
-					{
-						display: item.totalOrderAmount
-							? formatCurrency(item.totalOrderAmount)
-							: '-',
-						value: item.totalOrderAmount ?? 0,
-					},
-					// Store Earning
-					{
-						display: formatCurrency(item.storePayable),
-						value: item.storePayable ?? 0,
-					},
-
-					// Marketplace Earning
-					{
-						display: formatCurrency(item.marketplacePayable),
-						value: item.marketplacePayable ?? 0,
-					},
-
-					// Status
-					{
-						display: item.status,
-						value: item.status,
-					},
-
-					// Date
-					{
-						display: item.createdAt
-							? item.createdAt
-							: '-',
-						value: item.createdAt ?? '',
-					},
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
@@ -316,39 +219,80 @@ const Commission: React.FC = () => {
 		},
 	];
 
+
+
+	const downloadCommissionsCSV = (selectedIds: number[]) => {
+		if (!selectedIds) return;
+
+		axios
+			.get(getApiLink(appLocalizer, 'commission'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { ids: selectedIds },
+			})
+			.then(response => {
+				const rows = response.data || [];
+				downloadCSV(
+					headers,
+					rows,
+					`selected-commissions-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch(error => {
+				console.error('CSV download failed:', error);
+			});
+	};
+	const downloadCommissionsCSVByQuery = (query: QueryProps) => {
+		// Call the API
+		axios
+			.get(getApiLink(appLocalizer, 'commission'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params:buildCommissionQueryParams(query,false),
+			})
+			.then((response) => {
+				const rows = response.data || [];
+
+				downloadCSV(
+					headers,
+					rows,
+					`commissions-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch((error) => {
+				console.error('CSV download failed:', error);
+			});
+	};
+
+	const buildCommissionQueryParams = (
+		query: QueryProps,
+		includePagination: boolean = true
+	) => {
+		const params: Record<string, any> = {
+			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			search_value: query.searchValue || '',
+			start_date: query.filter?.created_at?.startDate
+				? formatLocalDate(query.filter.created_at.startDate)
+				: '',
+			end_date: query.filter?.created_at?.endDate
+				? formatLocalDate(query.filter.created_at.endDate)
+				: '',
+			store_id: query.filter?.store_id || '',
+			order_by: query.orderby,
+			order: query.order,
+		};
+
+		if (includePagination) {
+			params.page = query.paged || 1;
+			params.row = query.per_page || 10;
+		}
+
+		return params;
+	};
+
 	const buttonActions = [
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-
-			onClickWithQuery: (query: QueryProps) =>
-				ExportCSV({
-					url: getApiLink(appLocalizer, 'commission'),
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-
-					filename:
-						query.filter?.created_at?.startDate &&
-							query.filter?.created_at?.endDate
-							? `commissions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
-							: `commissions-${formatLocalDate(new Date())}.csv`,
-					paramsBuilder: ({
-						page: 1,
-						row: 100,
-						status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-						searchValue: query.searchValue || '',
-						startDate: query.filter?.created_at?.startDate
-							? formatLocalDate(query.filter.created_at.startDate)
-							: '',
-						endDate: query.filter?.created_at?.endDate
-							? formatLocalDate(query.filter.created_at.endDate)
-							: '',
-						store_id: query.filter?.store_id,
-						orderBy: query.orderby,
-						order: query.order,
-					}),
-
-					columns: commissionColumns,
-				})(query),
+			onClickWithQuery: downloadCommissionsCSVByQuery
 		},
 	];
 
@@ -369,23 +313,22 @@ const Commission: React.FC = () => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						categoryCounts={categoryCounts}
 						search={{}}
 						filters={filters}
 						buttonActions={buttonActions}
 						bulkActions={[]}
-						onSelectCsvDownloadApply={(selectedIds: number[]) => {
-							ExportCSV({
-								url: getApiLink(appLocalizer, 'commission'),
-								headers: { 'X-WP-Nonce': appLocalizer.nonce },
-								filename: `selected-commissions-${formatLocalDate(new Date())}.csv`,
-								paramsBuilder: () => ({ ids: selectedIds }),
-								columns: commissionColumns,
-							})({});
-						}}
+						onSelectCsvDownloadApply={downloadCommissionsCSV}
 						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position
+						}}
 					/>
 				</Column>
 			</Container>

@@ -1,20 +1,26 @@
 import React from "react";
-import { TableRow } from "./types";
+import { TableRow, TableHeaderConfig } from "./types"; // keep types if you have them
 
-export const renderCell = (cell: TableRow) => {
-	if (!cell) return null;
-	switch (cell.type) {
-		case 'product': {
-			const { id, name, image, link, sku } = cell.data || {};
+export const renderCell = (
+	row: TableRow = {},
+	header: TableHeaderConfig = {},
+	format = "",
+	currency = {}
+) => {
+	const value = row[header.key];
+
+	if (!header?.type) return value ?? null;
+
+	switch (header.type) {
+		case "product": {
+			const { id, name, image, link, sku } = row as any;
 			return (
 				<a href={link} className="product-wrapper">
 					{image ? (
-						<img
-							src={image}
-							alt={name}
-							className="product-image"
-						/>
-					) : (<i className="item-icon adminfont-store-inventory" />)}
+						<img src={image} alt={name} className="product-image" />
+					) : (
+						<i className="item-icon adminfont-store-inventory" />
+					)}
 					<span className="details">
 						<span className="title">{name}</span>
 						{sku && <span className="des">SKU: {sku}</span>}
@@ -23,91 +29,118 @@ export const renderCell = (cell: TableRow) => {
 				</a>
 			);
 		}
-		case 'card': {
-			const {
-				link,
-				name,
-				description,
-				image,
-				icon,
-				subDescription
-			} = cell.data || {};
 
-			const Wrapper: React.ElementType = link ? 'a' : 'div';
+		case "card": {
+			const { link, name, description, image, icon, subDescription } =
+				row as any;
+
+			const Wrapper: React.ElementType = link ? "a" : "div";
 
 			return (
-				<Wrapper
-					{...(link ? { href: link } : {})}
-					className="details-wrapper"
-				>
+				<Wrapper {...(link ? { href: link } : {})} className="details-wrapper">
 					{image ? (
-						<img
-							src={image}
-							alt={name || ''}
-							className="image"
-						/>
+						<img src={image} alt={name || ""} className="image" />
 					) : icon ? (
 						<i className={`item-icon ${icon}`} />
 					) : null}
 					<div className="details">
-						{name && (
-							<div className="title">{name}</div>
-						)}
-
-						{description && (
-							<div className="desc">
-								{description}
-							</div>
-						)}
-						{subDescription && (
-							<div className="desc">
-								{subDescription}
-							</div>
-						)}
+						{name && <div className="title">{name}</div>}
+						{description && <div className="desc">{description}</div>}
+						{subDescription && <div className="desc">{subDescription}</div>}
 					</div>
 				</Wrapper>
 			);
 		}
-		case 'commission': {
-			const { items = [] } = cell.data || {};
-			const [isExpanded, setIsExpanded] = React.useState(false);
 
-			if (!items.length) return null;
-
+		case "status": {
 			return (
-				<ul className={`commission-details ${isExpanded ? '' : 'overflow'}`}>
-					{items.map((item, idx) => (
-						<li key={idx}>
-							<div className="item">
-								<div className="des">{item.label}</div>
-								<div className="title">
-									{item.isPositive ? '+' : '-'} {item.value}
-								</div>
-							</div>
-						</li>
-					))}
-
-					{items.length > 2 && (
-						<span
-							className="more-btn"
-							onClick={() => setIsExpanded(prev => !prev)}
-						>
-							{isExpanded ? (
-								<>
-									Less <i className="adminfont-arrow-up"></i>
-								</>
-							) : (
-								<>
-									More <i className="adminfont-arrow-down"></i>
-								</>
-							)}
-						</span>
-					)}
-				</ul>
+				<span className={`admin-badge badge-${String(value).toLowerCase()}`}>
+					{value}
+				</span>
 			);
 		}
 
+		case "date": {
+			if (!value) return null;
+
+			const dateObj = new Date(value);
+			if (isNaN(dateObj.getTime())) return <span>{value}</span>;
+
+			const map: Record<string, string> = {
+				YYYY: String(dateObj.getFullYear()),
+				YY: String(dateObj.getFullYear()).slice(-2),
+
+				MMMM: dateObj.toLocaleString(undefined, { month: "long" }),
+				MMM: dateObj.toLocaleString(undefined, { month: "short" }),
+				MM: String(dateObj.getMonth() + 1).padStart(2, "0"),
+
+				DD: String(dateObj.getDate()).padStart(2, "0"),
+				D: String(dateObj.getDate()),
+
+				HH: String(dateObj.getHours()).padStart(2, "0"),
+				mm: String(dateObj.getMinutes()).padStart(2, "0"),
+				ss: String(dateObj.getSeconds()).padStart(2, "0"),
+			};
+
+			// Use header.format if provided, otherwise default
+			const dateFormat = format || "YYYY-MM-DD";
+
+			const formattedDate = dateFormat.replace(
+				/YYYY|YY|MMMM|MMM|MM|DD|D|HH|mm|ss/g,
+				(token) => map[token] ?? token
+			);
+
+			return <span>{formattedDate}</span>;
+		}
+
+
+		case "currency": {
+			if (value == null) return null;
+
+			const numberValue =
+				typeof value === "number"
+					? value
+					: parseFloat(value.toString().replace(/[^0-9.-]+/g, ""));
+
+			if (isNaN(numberValue)) return <span>{value}</span>;
+
+			const {
+				currencySymbol,
+				priceDecimals,
+				decimalSeparator,
+				thousandSeparator,
+				currencyPosition
+			} = currency;
+
+			const decimals = Number(priceDecimals ?? 2);
+
+			const fixed = numberValue.toFixed(decimals);
+
+			const parts = fixed.split(".");
+			parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator ?? ",");
+
+			const formattedNumber =
+				decimals > 0
+					? parts.join(decimalSeparator ?? ".")
+					: parts[0];
+
+			let finalValue = formattedNumber;
+			if ("left" === currencyPosition) {
+				finalValue = `${currencySymbol}${formattedNumber}`;
+			} else if ("left_space" === currencyPosition) {
+				finalValue = `${currencySymbol} ${formattedNumber}`;
+			} else if ("right" === currencyPosition) {
+				finalValue = `${formattedNumber}${currencySymbol}`;
+			} else if ("right_space" === currencyPosition) {
+				finalValue = `${formattedNumber} ${currencySymbol}`;
+			} else {
+				finalValue = `${currencySymbol}${formattedNumber}`;
+			}
+
+			return <span>{finalValue}</span>;
+		}
+
 		default:
-			return cell.display ?? null;
+			return value ?? null;
 	}
 };

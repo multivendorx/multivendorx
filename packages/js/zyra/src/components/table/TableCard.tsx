@@ -23,7 +23,7 @@ const defaultOnColumnsChange = (
 const TableCard: React.FC<TableCardProps> = ({
 	className,
 	search,
-	headers = [],
+	headers = {},
 	ids = [],
 	isLoading = false,
 	onColumnsChange = defaultOnColumnsChange,
@@ -43,13 +43,11 @@ const TableCard: React.FC<TableCardProps> = ({
 	onCellEdit,
 	buttonActions,
 	format,
+	currency,
 	...props
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
-	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
-	const ref = useRef<HTMLDivElement | null>(null);
-	useOutsideClick(ref, () => setIsPopoverOpen(false));
 
 	const [query, setQuery] = useState<QueryProps>({
 		orderby: 'date',
@@ -80,8 +78,6 @@ const TableCard: React.FC<TableCardProps> = ({
 							: prev.orderby,
 				}));
 			};
-
-	const togglePopover = () => setIsPopoverOpen((prev) => !prev);
 
 	const onFilterChange = (key: string, value: string | string[] | { startDate: Date; endDate: Date }) => {
 		setQuery((prev) => ({
@@ -123,47 +119,42 @@ const TableCard: React.FC<TableCardProps> = ({
 	/**
 	 * Determine default visible columns
 	 */
-	const getShowCols = (headersList: TableCardProps['headers'] = []) => {
-		return headersList
-			.map(({ key, visible }) =>
-				visible === false ? null : key
-			)
-			.filter((k): k is string => Boolean(k));
+	const getShowCols = (headersObj: TableCardProps['headers'] = {}) => {
+		return Object.entries(headersObj)
+			.filter(([_, config]) => config.visible !== false)
+			.map(([key]) => key);
 	};
 
-	const [showCols, setShowCols] = useState<string[]>(
-		getShowCols(headers)
-	);
+	const [showCols, setShowCols] = useState<string[]>(getShowCols(headers));
 
 	/**
 	 * Toggle column visibility
 	 */
-	const onColumnToggle = (key: string) => () => {
+	const onColumnToggle = (key: string) => {
 		const isVisible = showCols.includes(key);
+		let updated: string[];
 
 		if (isVisible) {
-			if (showCols.length <= 1) {
-				return; // do nothing if it's the last visible column
-			}
-			// Reset sorting if hiding sorted column
-			if (query.orderby === key) {
-				const defaultSort =
-					headers.find((h) => h.defaultSort) ||
-					headers[0];
+			if (showCols.length <= 1) return; // don't hide last column
 
-				if (defaultSort?.key) {
-					onQueryChange('sort')(defaultSort.key, 'desc');
+			// Reset sorting if hiding currently sorted column
+			if (query.orderby === key) {
+				const defaultSort = Object.entries(headers).find(
+					([_, config]) => config.defaultSort
+				);
+
+				if (defaultSort) {
+					onQueryChange('sort')(defaultSort[0], 'desc');
 				}
 			}
 
-			const updated = showCols.filter((c) => c !== key);
-			setShowCols(updated);
-			onColumnsChange(updated, key);
+			updated = showCols.filter((c) => c !== key);
 		} else {
-			const updated = [...showCols, key];
-			setShowCols(updated);
-			onColumnsChange(updated, key);
+			updated = [...showCols, key];
 		}
+
+		setShowCols(updated);
+		onColumnsChange(updated, key);
 	};
 
 	/**
@@ -180,18 +171,14 @@ const TableCard: React.FC<TableCardProps> = ({
 	/**
 	 * Derived visible headers & rows
 	 */
-	const visibleHeaders = headers.filter(({ key }) =>
-		showCols.includes(key)
-	);
-
-	const visibleRows: TableRow[][] = rows.map((row) =>
-		headers
-			.map(({ key }, index) =>
-				showCols.includes(key) ? row[index] : null
-			)
-			.filter((cell): cell is TableRow => cell !== null)
-	);
-
+	const visibleHeaders = Object.entries(headers)
+		.filter(([key, config]) =>
+			showCols.includes(key) && (config.tableDisplay !== false) // only include if table !== false (default true)
+		)
+		.map(([key, { csvDisplay, tableDisplay, ...rest }]) => ({
+			key,
+			...rest, // spread everything else except csv and table
+		}));
 	/**
 	 * Root className (manual)
 	 */
@@ -254,7 +241,8 @@ const TableCard: React.FC<TableCardProps> = ({
 							toggleIcon="adminfont-more-vertical"
 						>
 							<ul>
-								{headers.map(({ key, label, required }) => {
+								{Object.entries(headers).map(([key, config]) => {
+									const { label, required } = config;
 									if (required) return null;
 
 									return (
@@ -263,7 +251,7 @@ const TableCard: React.FC<TableCardProps> = ({
 												<input
 													type="checkbox"
 													checked={showCols.includes(key)}
-													onChange={onColumnToggle(key)}
+													onChange={() => onColumnToggle(key)}
 												/>
 												{label}
 											</label>
@@ -277,7 +265,7 @@ const TableCard: React.FC<TableCardProps> = ({
 			</div>
 
 			<Table
-				rows={visibleRows}
+				rows={rows}
 				headers={visibleHeaders}
 				caption={title}
 				query={query}
@@ -295,6 +283,8 @@ const TableCard: React.FC<TableCardProps> = ({
 				onCellEdit={onCellEdit}
 				enableBulkSelect={bulkActions.length > 0 || !!onSelectCsvDownloadApply}
 				isLoading={isLoading}
+				format={format}
+				currency={currency}
 			/>
 			{/* pagination */}
 			<div className="admin-pagination">

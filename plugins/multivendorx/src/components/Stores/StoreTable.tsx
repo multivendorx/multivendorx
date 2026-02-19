@@ -203,6 +203,7 @@ const StoreTable: React.FC = () => {
 					search={{}}
 					filters={filters}
 					format={appLocalizer.date_format}
+					currencySymbol={appLocalizer.currency_symbol}
 				/>
 			</div>
 		</div>
