@@ -71,21 +71,18 @@ const Commission: React.FC = () => {
 		id: {
 			label: __('ID', 'multivendorx'),
 			isSortable: true,
-			csv: true,
-			table: true
+			csvDisplay: true,
 		},
 		order_id: {
 			label: __('Order', 'multivendorx'),
 			isSortable: true,
-			csv: true,
-			table: true
+			csvDisplay: true,
 		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
 			isSortable: true,
 			type: 'currency',
-			csv: true,
-			table: true
+			csvDisplay: true,
 		},
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
@@ -107,41 +104,35 @@ const Commission: React.FC = () => {
 					}
 				/>
 			),
-			csv: false,
-			table: true,
+			csvDisplay: false,
 		},
 		store_payable: {
 			label: __('Store Earning', 'multivendorx'),
 			isSortable: true,
 			type: 'currency',
-			csv: true,
-			table: true
+			csvDisplay: true,
 		},
 		marketplace_payable: {
 			label: __('Marketplace Earning', 'multivendorx'),
 			isSortable: true,
 			type: 'currency',
-			csv: true,
-			table: true
+			csvDisplay: true,
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
 			type: 'status',
-			csv: true,
-			table: true
+			csvDisplay: true,
 		},
 		created_at: {
 			label: __('Date', 'multivendorx'),
 			isSortable: true,
 			type: 'date',
-			csv: true,
-			table: true
+			csvDisplay: true,
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
 			type: 'action',
-			csv: false,
-			table: true,
+			csvDisplay: false,
 			actions: [
 				{
 					label: __('View Commission', 'multivendorx'),
@@ -295,13 +286,8 @@ const Commission: React.FC = () => {
 			.then((response) => {
 				const rows = response.data || [];
 
-				// Prepare headers: only include csv: true
-				const csvHeaders = Object.fromEntries(
-					Object.entries(headers).filter(([_, h]) => h.csv !== false)
-				);
-
 				downloadCSV(
-					csvHeaders,
+					headers,
 					rows,
 					`commissions-${formatLocalDate(new Date())}.csv`
 				);
