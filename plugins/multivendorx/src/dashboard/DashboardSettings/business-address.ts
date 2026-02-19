@@ -8,5 +8,6 @@ export default {
         'multivendorx'
     ),
     headerIcon: 'form-address',
+    submitUrl: `store/${appLocalizer.store_id}`,
     modals: []
 }

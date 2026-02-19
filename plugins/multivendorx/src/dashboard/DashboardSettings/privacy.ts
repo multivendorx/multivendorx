@@ -8,6 +8,7 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'privacy',
+	submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
 		// Store Policy
 		{

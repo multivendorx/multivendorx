@@ -9,6 +9,7 @@ export default {
         'multivendorx'
     ),
     headerIcon: 'appearance',
+    submitUrl: `store/${appLocalizer.store_id}`,
     modal: [
         // Form Group Wrapper
                 {

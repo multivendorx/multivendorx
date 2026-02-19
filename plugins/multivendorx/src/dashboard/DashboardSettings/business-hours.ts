@@ -9,6 +9,7 @@ export default {
     'multivendorx'
   ),
   headerIcon: 'shipping',
+  submitUrl: `store/${appLocalizer.store_id}`,
   modal: [
     // Add to Cart Button Text
     {

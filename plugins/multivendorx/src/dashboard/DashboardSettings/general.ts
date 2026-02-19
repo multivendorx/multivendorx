@@ -9,7 +9,7 @@ export default {
         'multivendorx'
     ),
     headerIcon: 'tools',
-    submitUrl: 'settings',
+    submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
 				{
 					type: 'text',

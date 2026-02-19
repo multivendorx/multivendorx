@@ -8,6 +8,7 @@ export default {
 		'multivendorx'
 	),
 	headerIcon: 'cohort',
+  submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
   // Facebook
   {

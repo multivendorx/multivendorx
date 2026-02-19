@@ -9,6 +9,7 @@ export default {
         'multivendorx'
     ),
     headerIcon: 'form-phone',
+    submitUrl: `store/${appLocalizer.store_id}`,
     modal: [
         {
             type: 'number',

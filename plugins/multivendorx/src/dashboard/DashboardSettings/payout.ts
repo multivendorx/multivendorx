@@ -69,6 +69,7 @@ export default {
         'multivendorx'
     ),
     headerIcon: 'wallet-open',
+	
     modal: [
         {
             key: 'payment_method',

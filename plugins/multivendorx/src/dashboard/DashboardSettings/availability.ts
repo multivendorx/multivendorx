@@ -9,6 +9,7 @@ export default {
         'multivendorx'
     ),
     headerIcon: 'availability',
+    submitUrl: `store/${appLocalizer.store_id}`,
     modal: [
                 // Calendar Input
                 {
