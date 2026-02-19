@@ -29,7 +29,7 @@ const staticOptions = [
 	{
 		key: 'section',
 		type: 'section',
-		hint: __('What stores can change after approval', 'multivendorx'),
+		title: __('What stores can change after approval', 'multivendorx'),
 	},
 	{
 		key: 'edit_store_info_activation',

@@ -23,15 +23,18 @@ const Availability = () => {
     return (
         <>
             <FormGroupWrapper>
-                <CalendarInput
-                    format="YYYY-MM-DD"
-                    multiple={true}
-                    value={dateRange}
-                    onChange={(newRange) => {
-                        setDateRange(newRange);
-                        onFilterChange(filter.key, newRange);
-                    }}
-                />
+                <FormGroup label={__('"Add to Cart" Button Text', 'multivendorx')}>
+                    <CalendarInput
+                        value={dateRange}
+                        onChange={(newRange) => {
+                            setDateRange(newRange);
+                            onFilterChange(filter.key, newRange);
+                        }}
+                        multiple={true}
+                        showInput={false}
+                        fullYear= {true}
+                    />
+                </FormGroup>
                 <FormGroup label={__('"Add to Cart" Button Text', 'multivendorx')}>
                     <BasicInputUI
                         type={'text'}

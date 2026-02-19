@@ -130,7 +130,7 @@ export default {
 				'Control how stores select categories while adding products/listing.',
 				'multivendorx'
 			),
-			hint: __('How stores choose product/listing categories', 'multivendorx'),
+			title: __('How stores choose product/listing categories', 'multivendorx'),
 		},
 		{
 			key: 'category_selection_method',
@@ -165,7 +165,7 @@ export default {
 				'Control how SKUs are handled for products/listing.',
 				'multivendorx'
 			),
-			hint: __('SKU generation', 'multivendorx'),
+			title: __('SKU generation', 'multivendorx'),
 		},
 		{
 			key: 'sku_generator',
@@ -226,7 +226,7 @@ export default {
 				'Products/listings similar in type, category, or stores are displayed as related items to guide customers toward additional purchases.',
 				'multivendorx'
 			),
-			hint: __('Related products/listings source', 'multivendorx'),
+			title: __('Related products/listings source', 'multivendorx'),
 		},
 		{
 			key: 'recommendation_source',

@@ -29,7 +29,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('Store Customizer', 'multivendorx'),
+			title: __('Store Customizer', 'multivendorx'),
 			desc: __(
 				'Control how your store looks and feels. Set the banner style, logo placement, and customize the dashboard color scheme to match your brand identity.',
 				'multivendorx'
@@ -72,19 +72,19 @@ export default {
 					key: 'no-sidebar',
 					label: __('No Sidebar', 'multivendorx'),
 					value: 'no',
-					icon: "adminfont-right-sidebar"
+					icon: "right-sidebar"
 				},
 				{
 					key: 'left',
 					label: __('Left Sidebar', 'multivendorx'),
 					value: 'left',
-					icon: "adminfont-left-sidebar"
+					icon: "left-sidebar"
 				},
 				{
 					key: 'right',
 					label: __('Right Sidebar', 'multivendorx'),
 					value: 'right',
-					icon: "adminfont-no-sidebar"
+					icon: "no-sidebar"
 				}
 			]
 		},

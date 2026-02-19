@@ -37,7 +37,7 @@ class CustomPayment {
      */
     public function get_settings() {
         return array(
-            'icon'       => 'adminfont-cogs-on-wheels',
+            'icon'       => 'cogs-on-wheels',
             'id'         => $this->get_id(),
             'label'      => 'Custom Gateway',
             'disableBtn' => true,

@@ -19,7 +19,6 @@ interface FieldOption {
     desc?: string;
     check?: boolean;
     action?: string;
-    btnClass?: string;
     url?: string;
     redirect?: string;
 }
@@ -56,7 +55,6 @@ interface PanelFormField {
     link?: string;
     check?: boolean;
     hideCheckbox?: boolean;
-    btnClass?: string;
     edit?: boolean;
     iconEnable?: boolean;
     iconOptions?: string[];
@@ -487,12 +485,12 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
 
     const toggleActiveTab = (methodId: string) => {
         if (isWizardMode) {
-        // In wizard mode, only allow one active tab at a time
-        setActiveTabs([methodId]);
-    } else {
-        // In normal mode, toggle as before
-        setActiveTabs((prev) => (prev[0] === methodId ? [] : [methodId]));
-    }
+            // In wizard mode, only allow one active tab at a time
+            setActiveTabs([methodId]);
+        } else {
+            // In normal mode, toggle as before
+            setActiveTabs((prev) => (prev[0] === methodId ? [] : [methodId]));
+        }
     };
 
     const enableMethod = useCallback(
@@ -589,6 +587,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                     return {
                         ...btn,
                         text: btn.label,
+                        color: 'red',
                         onClick: () => {
                             if (isFirstMethod) return;
                             const prev = wizardSteps[wizardIndex - 1];
@@ -602,6 +601,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                     return {
                         ...btn,
                         text: btn.label,
+                        color: 'purple',
                         onClick: () => {
                             handleSaveSetupWizard();
                             if (!isLastMethod) {
@@ -619,6 +619,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                     return {
                         ...btn,
                         text: btn.label,
+                        color: 'blue',
                         onClick: () => {
                             setWizardIndex(methods.length);
                             window.open(appLocalizer.site_url, '_self');
@@ -678,13 +679,12 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                 {method.formFields && method.formFields.length > 0 && (
                                     <div className="toggle-icon">
                                         <i
-                                            className={`adminfont-${
-                                                isActive && isEnabled
+                                            className={`adminfont-${isActive && isEnabled
                                                     ? 'keyboard-arrow-down'
                                                     : isActive && method.isCustom && isWizardMode
-                                                    ? 'keyboard-arrow-down'
-                                                    : 'pagination-right-arrow'
-                                            }`}
+                                                        ? 'keyboard-arrow-down'
+                                                        : 'pagination-right-arrow'
+                                                }`}
                                             onClick={() => canAccess && setTabActive(method.id)}
                                         />
                                     </div>
@@ -697,7 +697,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                     <div className="details-wrapper">
                                         {headerIcon && (
                                             <div
-                                                className={`expandable-header-icon ${method.iconEnable ? 'icon-picker-trigger' : ''}`}
+                                                className={`expandable-header-icon`}
                                                 ref={iconDropdownOpen === method.id ? iconPickerRef : null}
                                                 onClick={(e) => {
                                                     if (!method.iconEnable || !canAccess) return;
@@ -706,41 +706,30 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                                         prev === method.id ? null : method.id
                                                     );
                                                 }}
-                                                title={method.iconEnable ? 'Click to change icon' : undefined}
                                             >
-                                                <i className={`${headerIcon}`} />
-
+                                                <i className={`adminfont-${headerIcon} icon`} />
+                                                {method.iconEnable && iconDropdownOpen !== method.id && (
+                                                    <i className="adminfont-edit edit-icon" />
+                                                )}
                                                 {method.iconEnable && iconDropdownOpen === method.id && (
                                                     <div
-                                                        className="icon-picker-dropdown"
+                                                        className="icon-options-list"
                                                         onClick={(e) => e.stopPropagation()}
                                                     >
-                                                        <div className="icon-picker-header">
-                                                            <span>Choose Icon</span>
+                                                        {(method.iconOptions ?? addNewTemplate?.iconOptions ?? []).map((iconClass) => (
                                                             <button
-                                                                className="icon-picker-close"
-                                                                onClick={() => setIconDropdownOpen(null)}
-                                                                aria-label="Close icon picker"
+                                                                key={iconClass}
+                                                                className={`icon-option ${headerIcon === iconClass ? 'selected' : ''}`}
+                                                                onClick={() => {
+                                                                    handleInputChange(method.id, 'icon', iconClass);
+                                                                    setIconDropdownOpen(null);
+                                                                }}
+                                                                title={iconClass}
+                                                                type="button"
                                                             >
-                                                                <i className="adminfont-close" />
+                                                                <i className={`adminfont-${iconClass}`} />
                                                             </button>
-                                                        </div>
-                                                        <div className="icon-picker-grid">
-                                                            {(method.iconOptions ?? addNewTemplate?.iconOptions ?? []).map((iconClass) => (
-                                                                <button
-                                                                    key={iconClass}
-                                                                    className={`icon-picker-item ${headerIcon === iconClass ? 'active' : ''}`}
-                                                                    onClick={() => {
-                                                                        handleInputChange(method.id, 'icon', iconClass);
-                                                                        setIconDropdownOpen(null);
-                                                                    }}
-                                                                    title={iconClass.replace(/^adminfont-/, '')}
-                                                                    type="button"
-                                                                >
-                                                                    <i className={iconClass} />
-                                                                </button>
-                                                            ))}
-                                                        </div>
+                                                        ))}
                                                     </div>
                                                 )}
                                             </div>
@@ -954,9 +943,8 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
 
                             {method.formFields && method.formFields.length > 0 && (
                                 <div
-                                    className={`${method.wrapperClass || ''} expandable-panel ${
-                                        (isActive && isEnabled) || (isActive && (method.isCustom || method.openForm)) ? 'open' : ''
-                                    } ${method.openForm ? 'open' : ''}`}
+                                    className={`${method.wrapperClass || ''} expandable-panel ${(isActive && isEnabled) || (isActive && (method.isCustom || method.openForm)) ? 'open' : ''
+                                        } ${method.openForm ? 'open' : ''}`}
                                 >
                                     <FormGroupWrapper>
                                         {method.formFields.map((field) => {
@@ -965,8 +953,8 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                                             const shouldShowField = Array.isArray(field.dependent)
                                                 ? field.dependent.every((dep) => shouldRender(dep, method.id))
                                                 : field.dependent
-                                                ? shouldRender(field.dependent, method.id)
-                                                : true;
+                                                    ? shouldRender(field.dependent, method.id)
+                                                    : true;
 
                                             if (!shouldShowField) return null;
 
@@ -1002,9 +990,7 @@ export const ExpandablePanelGroupUI: React.FC<ExpandablePanelGroupProps> = ({
                 )}
             </div>
 
-            {isWizardMode && (
-                <div className="buttons-wrapper">{renderWizardButtons()}</div>
-            )}
+            {isWizardMode && ( renderWizardButtons() )}
         </>
     );
 };

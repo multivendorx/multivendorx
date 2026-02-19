@@ -58,7 +58,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('Product AI', 'multivendorx'),
+			title: __('Product AI', 'multivendorx'),
 			desc: __(
 				'AI can be used to suggest product titles, descriptions, and other details automatically. The AI provider and model can be selected here.',
 				'multivendorx'
@@ -138,7 +138,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('Image AI', 'multivendorx'),
+			title: __('Image AI', 'multivendorx'),
 			moduleEnabled: 'marketplace-intelligence',
 			desc: __(
 				'Product images can be enhanced automatically to look professional, improving visual appeal and customer engagement.',

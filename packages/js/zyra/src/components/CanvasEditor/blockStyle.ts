@@ -44,7 +44,7 @@ export const formatSpacing = (
   type: 'padding' | 'margin',
   style: BlockStyle
 ): string => {
-  return '0px';
+  return '0';
 };
 
 // Generate CSS properties for color styles

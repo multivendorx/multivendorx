@@ -8,22 +8,21 @@ import adminInvoice1 from '../../../assets/template/adminInvoice/adminInvoice1';
 import packingSlip1 from '../../../assets/template/packingSlip/packingSlip1';
 
 export default {
-	id: 'invoices',
-	priority: 6,
-	headerTitle: __('Invoices', 'multivendorx'),
+    id: 'invoices',
+    priority: 6,
+    headerTitle: __('Invoices', 'multivendorx'),
     settingTitle: 'Automatic invoice generation',
-	headerDescription: __(
-		'Choose at which order stages invoices should be generated automatically.',
-		'multivendorx'
-	),
-	headerIcon: 'invoice',
-	submitUrl: 'settings',
-	modal: [
-         {
+    headerDescription: __(
+        'Choose at which order stages invoices should be generated automatically.',
+        'multivendorx'
+    ),
+    headerIcon: 'invoice',
+    submitUrl: 'settings',
+    modal: [
+        {
             key: 'type_options',
             type: 'checkbox',
             label: __('Order stages', 'multivendorx'),
-            classes: 'vertical w-50',
             // desc: __(
             //     'Select which invoices your marketplace should generate. Most stores only need the first option.',
             //     'multivendorx'
@@ -69,74 +68,8 @@ export default {
                 'Control when invoices are automatically created based on order status.',
                 'multivendorx'
             ),
-            hint: __('Automatic invoice generation', 'multivendorx'),
+            title: __('Automatic invoice generation', 'multivendorx'),
         },
-       
-        // {
-        //     key: 'display_customer_order',
-        //     type: 'setting-toggle',
-        //     classes: 'vertical full-width w-50',
-        //     label: __('Customers will see information for', 'multivendorx'),
-        //     custom: true,
-        //     options: [
-        //         {
-        //             key: 'mainorder',
-        //             label: __('Customer Purchase Invoices (Recommended)', 'multivendorx'),
-        //             // desc: __('Customer receives separate emails and sees individual store orders', 'multivendorx'),
-        //             icon: 'adminfont-cart',
-        //             value: 'mainorder',
-        //             customHtml: `<div class="toggle-notice">
-		// 							<ul>
-		// 								<li><b> What it does: </b>  Creates invoices for customers when they buy products</li>
-		// 								<li><b> Example: </b> Customer Jane buys a product → She receives invoice #INV-001</li>
-		// 								<li><b> Use this if:</b> You want customers to get invoices for their purchases (most common) </li>
-		// 							</ul>
-		// 						</div>`
-        //         },
-        //         {
-        //             key: 'suborder',
-        //             icon: 'adminfont-cart',
-        //             label: __('Vendor Payout Statements', 'multivendorx'),
-        //             desc: __('Customer receives separate emails and sees individual store orders', 'multivendorx'),
-        //             value: 'suborder',
-        //             customHtml: `<div class="toggle-notice">
-		// 							<ul>
-		// 								<li><b> What it does: </b>  Creates payment statements when you pay vendors their earnings</li>
-		// 								<li><b> Example: </b> Vendor John earned $500, you take $50 commission → John receives statement showing $450 payout</li>
-		// 								<li><b> Use this if:</b> You want to document vendor payments and commissions </li>
-		// 							</ul>
-		// 						</div>`
-        //         },
-        //         {
-        //             key: 'mainnsub',
-        //             icon: 'adminfont-cart',
-        //             label: __('Marketplace Fee Invoices (Admin to Vendor)', 'multivendorx'),
-        //             desc: __('Customer receives multiple emails and sees all order versions', 'multivendorx'),
-        //             value: 'mainnsub',
-        //             customHtml: `<div class="toggle-notice">
-		// 							<ul>
-		// 								<li><b> What it does: </b> Creates invoices you send TO vendors for marketplace fees</li>
-		// 								<li><b> Example: </b>  You charge vendors a monthly $20 listing fee → They receive invoice for $20</li>
-		// 								<li><b> Use this if:</b> You charge vendors subscription fees, listing fees, or other platform charges </li>
-		// 							</ul>
-		// 						</div>`
-        //         },
-        //         {
-        //             key: 'wholesale',
-        //             icon: 'adminfont-cart',
-        //             label: __('Wholesale / B2B Invoices', 'multivendorx'),
-        //             desc: __('Customer receives multiple emails and sees all order versions', 'multivendorx'),
-        //             value: 'wholesale',
-        //             customHtml: `<div class="toggle-notice">
-		// 							<ul>
-		// 								<li><b> What it does: </b> Creates special invoices for bulk business orders</li>
-		// 								<li><b> Example: </b>  A company orders 100 units at wholesale price → They receive B2B invoice</li>
-		// 								<li><b> You have wholesale customers who buy in bulk with special terms </li>
-		// 							</ul>
-		// 						</div>`
-        //         },
-        //     ],
-        // },
         {
             key: 'separator_content',
             type: 'section',
@@ -144,18 +77,17 @@ export default {
                 'Set up how your invoice numbers are formatted. This helps with organization and makes invoices easier to track for accounting.',
                 'multivendorx'
             ),
-            hint: __('Invoice numbering', 'multivendorx'),
+            title: __('Invoice numbering', 'multivendorx'),
         },
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'text',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Numbering format', 'multivendorx'),
             desc: __(
                 'Choose how invoice numbers increase over time.',
                 'multivendorx'
             ),
-            // placeholder: 'Enter GST registration number',
             moduleEnabled: 'invoice',
             size: '25rem',
             proSetting: true,
@@ -163,7 +95,7 @@ export default {
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'text',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Starting number', 'multivendorx'),
             placeholder: 'The first invoice number (usually 1 or 1000)',
             size: '25rem',
@@ -173,7 +105,7 @@ export default {
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'text',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Invoice prefix', 'multivendorx'),
             placeholder: 'Text that appears before the number. Example results: INV-2026-0001, INV-MVX-0001',
             size: '25rem',
@@ -183,7 +115,7 @@ export default {
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'text',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Preview: Next Invoice Number', 'multivendorx'),
             placeholder: 'Text that appears before the number. Example results: INV-2026-0001, INV-MVX-0001',
             size: '25rem',
@@ -197,12 +129,12 @@ export default {
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __('Invoice delivery via email', 'multivendorx'),
+            title: __('Invoice delivery via email', 'multivendorx'),
         },
         {
             key: 'type_options',
             type: 'checkbox',
-            classes: 'vertical',
+            row: false,
             label: __('When to send invoice emails  ', 'multivendorx'),
 
             desc: __(
@@ -252,12 +184,12 @@ export default {
                 'This controls where customers can find invoices later.',
                 'multivendorx'
             ),
-            hint: __('Customer access to invoices', 'multivendorx'),
+            title: __('Customer access to invoices', 'multivendorx'),
         },
         {
             key: 'customer_access',
             type: 'checkbox',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Customer Access', 'multivendorx'),
             desc: __(
                 'Control how customers can access their invoices.',
@@ -287,20 +219,12 @@ export default {
                 'Add your business registration numbers and tax IDs that must appear on invoices.',
                 'multivendorx'
             ),
-            hint: __('Legal and tax information', 'multivendorx'),
+            title: __('Legal and tax information', 'multivendorx'),
         },
         {
             key: 'tax_information',
             type: 'expandable-panel',
             label: __('Legal and tax information', 'multivendorx'),
-            // settingDescription: __(
-            //     'Define the key factors customers will use to evaluate each store.',
-            //     'multivendorx'
-            // ),
-            // desc: __(
-            //     'Give customers a fair way to share feedback! Define what they rate, like product/listing quality, delivery, or service. You’ll start with five default parameters that can be edited or removed, but make sure at least three stay active for balanced, detailed reviews.',
-            //     'multivendorx'
-            // ),
             addNewBtn: true,
             addNewTemplate: {
                 label: 'New Tax information',
@@ -318,7 +242,7 @@ export default {
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'number',
-            classes: 'vertical w-50',
+            row: false,
             label: __('VAT / Tax number', 'multivendorx'),
             placeholder: 'e.g., GB123456789, DE987654321',
             desc: __('Your VAT registration (Europe) or tax ID number.', 'multivendorx'),
@@ -328,7 +252,7 @@ export default {
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'number',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Additional Tax ID', 'multivendorx'),
             placeholder: 'e.g., EIN, ABN, GST Number',
             desc: __('Other tax IDs: EIN (US), ABN (Australia), GST (India), etc.', 'multivendorx'),
@@ -338,7 +262,7 @@ export default {
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'number',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Company registration number', 'multivendorx'),
             placeholder: 'e.g., Company No. 12345678',
             desc: __('Your official company registration number.', 'multivendorx'),
@@ -348,13 +272,13 @@ export default {
         {
             key: 'multivendorx_tinymce_api_section',
             type: 'number',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Trade License Number', 'multivendorx'),
             placeholder: 'e.g., License No. ABC-2024-12345',
             desc: __('Business license or permit number (if required).', 'multivendorx'),
             moduleEnabled: 'invoice',
             proSetting: true,
-        },  
+        },
         {
             key: 'separator_content',
             type: 'section',
@@ -362,11 +286,11 @@ export default {
                 'Add your business registration numbers and tax IDs that must appear on invoices.',
                 'multivendorx'
             ),
-            hint: __('Legal and tax information', 'multivendorx'),
+            title: __('Legal and tax information', 'multivendorx'),
         },
-         {
+        {
             key: 'company_logo',
-            classes: 'vertical w-50',
+            row: false,
             type: 'file',
             label: __('Company logo', 'multivendorx'),
             desc: __('Upload your company logo for invoices', 'multivendorx'),
@@ -375,32 +299,28 @@ export default {
         },
         {
             key: 'company_logo',
-            classes: 'vertical w-50',
+            row: false,
             type: 'file',
             label: __('Invoice signature', 'multivendorx'),
             desc: __('Optional signature image that adds authenticity to your invoices.', 'multivendorx'),
             proSetting: true,
             moduleEnabled: 'invoice',
-        },        
+        },
         {
             key: 'separator_content',
             type: 'section',
-            // desc: __(
-            // 	'Add legal details and tax information to invoices',
-            // 	'multivendorx'
-            // ),
-            hint: __('Invoice Content Controls', 'multivendorx'),
+            title: __('Invoice Content Controls', 'multivendorx'),
         },
         {
             key: 'seller_agreement',
             type: 'textarea',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Invoice footer text', 'multivendorx'),
         },
         {
             key: 'seller_agreement',
             type: 'textarea',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Terms and conditions', 'multivendorx'),
         },
         {
@@ -410,12 +330,12 @@ export default {
                 'A4 is standard internationally, Letter is standard in North America',
                 'multivendorx'
             ),
-            hint: __('PDF format', 'multivendorx'),
+            title: __('PDF format', 'multivendorx'),
         },
         {
             key: 'commission_type',
             type: 'setting-toggle',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Page size', 'multivendorx'),
             moduleEnabled: 'invoice',
             options: [
@@ -439,7 +359,7 @@ export default {
         {
             key: 'commission_type',
             type: 'setting-toggle',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Orientation', 'multivendorx'),
             moduleEnabled: 'invoice',
             options: [
@@ -462,12 +382,12 @@ export default {
                 'Used only during order fulfillment.',
                 'multivendorx'
             ),
-            hint: __('Packing slips', 'multivendorx'),
+            title: __('Packing slips', 'multivendorx'),
         },
         {
             key: 'packing_slips',
             type: 'checkbox',
-            classes: 'vertical w-50',
+            row: false,
             label: __('Packing slip settings', 'multivendorx'),
             desc: __(
                 'Configure packing slip display options',
@@ -493,23 +413,23 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-			wrapperClass: 'bg-color',
+            wrapperClass: 'bg-color',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __(' Invoice', 'multivendorx'),
+            title: __(' Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __('Customer Invoice', 'multivendorx'),
+            title: __('Customer Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'invoice_template_builder',
             type: 'color-setting',
             label: __('Templates and design', 'multivendorx'),
@@ -619,26 +539,26 @@ export default {
                 },
             ],
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
-			wrapperClass: 'bg-color',
+            wrapperClass: 'bg-color',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __(' Invoice', 'multivendorx'),
+            title: __(' Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __('Marketplace Fee Invoice', 'multivendorx'),
+            title: __('Marketplace Fee Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'invoice_template_builder',
             type: 'color-setting',
             label: __('Templates and design', 'multivendorx'),
@@ -745,26 +665,26 @@ export default {
                 },
             ],
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
-			wrapperClass: 'bg-color',
+            wrapperClass: 'bg-color',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __(' Invoice', 'multivendorx'),
+            title: __(' Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __('Store Invoice', 'multivendorx'),
+            title: __('Store Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'invoice_template_builder',
             type: 'color-setting',
             label: __('Templates and design', 'multivendorx'),
@@ -772,13 +692,13 @@ export default {
             moduleEnabled: 'invoice',
             showPdfButton: true,
             templates: [
-                 {
-					key: 'invoice_1',
-					label: __('Invoice 1', 'multivendorx'),
-					preview: Invoice1,
-					component: Invoice1,
-					pdf: Invoice1,
-				}
+                {
+                    key: 'invoice_1',
+                    label: __('Invoice 1', 'multivendorx'),
+                    preview: Invoice1,
+                    component: Invoice1,
+                    pdf: Invoice1,
+                }
             ],
             predefinedOptions: [
                 {
@@ -871,26 +791,26 @@ export default {
                 },
             ],
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
-			wrapperClass: 'bg-color',
+            wrapperClass: 'bg-color',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __(' Invoice', 'multivendorx'),
+            title: __(' Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __('Store Subscription', 'multivendorx'),
+            title: __('Store Subscription', 'multivendorx'),
         },
-		{
+        {
             key: 'invoice_template_builder',
             type: 'color-setting',
             label: __('Templates and design', 'multivendorx'),
@@ -899,12 +819,12 @@ export default {
             showPdfButton: true,
             templates: [
                 {
-					key: 'subscription_invoice',
-					label: __('Subscription Invoice', 'multivendorx'),
-					preview: subscriptionInvoice1,
-					component: subscriptionInvoice1,
-					pdf: subscriptionInvoice1,
-				},
+                    key: 'subscription_invoice',
+                    label: __('Subscription Invoice', 'multivendorx'),
+                    preview: subscriptionInvoice1,
+                    component: subscriptionInvoice1,
+                    pdf: subscriptionInvoice1,
+                },
             ],
             predefinedOptions: [
                 {
@@ -997,26 +917,26 @@ export default {
                 },
             ],
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
-			wrapperClass: 'bg-color',
+            wrapperClass: 'bg-color',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __(' Invoice', 'multivendorx'),
+            title: __(' Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __('Admin Invoice', 'multivendorx'),
+            title: __('Admin Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'invoice_template_builder',
             type: 'color-setting',
             label: __('Templates and design', 'multivendorx'),
@@ -1123,26 +1043,26 @@ export default {
                 },
             ],
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
-			wrapperClass: 'bg-color',
+            wrapperClass: 'bg-color',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __(' Invoice', 'multivendorx'),
+            title: __(' Invoice', 'multivendorx'),
         },
-		{
+        {
             key: 'separator_content',
             type: 'section',
             desc: __(
                 'Choose when and how invoices are automatically emailed to customers and vendors.',
                 'multivendorx'
             ),
-            hint: __('Packing Slip', 'multivendorx'),
+            title: __('Packing Slip', 'multivendorx'),
         },
-		{
+        {
             key: 'invoice_template_builder',
             type: 'color-setting',
             label: __('Templates and design', 'multivendorx'),
@@ -1150,7 +1070,7 @@ export default {
             moduleEnabled: 'invoice',
             showPdfButton: true,
             templates: [
-                 {
+                {
                     key: 'packing_slip',
                     label: __('Packing Slip Invoice', 'multivendorx'),
                     preview: packingSlip1,

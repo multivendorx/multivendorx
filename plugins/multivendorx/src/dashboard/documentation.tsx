@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, BasicInputUI } from 'zyra';
+import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, HeaderSearch } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {

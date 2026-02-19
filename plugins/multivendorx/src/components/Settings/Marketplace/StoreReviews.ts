@@ -58,7 +58,6 @@ export default {
 				},
 				disableBtn: true
 			},
-			modal: [],
 			proSetting: false,
 			moduleEnabled: 'store-review',
 		},

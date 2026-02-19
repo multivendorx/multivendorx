@@ -576,7 +576,6 @@ const EventRules: React.FC = () => {
 				>
 					<>
 						<FormGroupWrapper>
-
 							{openChannel === 'system' && (
 								<FormGroup label={__('System Message', 'multivendorx')} htmlFor="system-message">
 									<TextAreaUI
@@ -875,6 +874,16 @@ const EventRules: React.FC = () => {
 							<i className="adminfont-plus"></i>
 							Add
 						</button>
+						<AdminButtonUI
+							buttons={[
+								{
+									icon: 'impplusort',
+									text: __('Add', 'multivendorx'),
+									color: 'purple',
+									onClick: (e) => addRecipient(editingNotification),
+								},
+							]}
+						/>
 					</div>
 				</PopupUI>
 			)}

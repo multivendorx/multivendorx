@@ -9,6 +9,8 @@ interface Item {
     tags?: React.ReactNode;
     targetBlank?: boolean;
     action?: (item: Item) => void;
+    onApprove?: (item: Item) => void;
+    onReject?: (item: Item) => void;
     desc?: string;
     time?: string;
     className?: string;
@@ -61,8 +63,20 @@ const ItemList: React.FC<ItemListProps> = ({ items, background, border, classNam
 
                                 {className === 'notification' && (
                                     <>
-                                        <i className="check-icon adminfont-check color-green" />
-                                        <i className="check-icon adminfont-cross color-red" />
+                                        <i
+                                            className="check-icon adminfont-check color-green"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                item.onApprove?.(item);
+                                            }}
+                                        />
+                                        <i
+                                            className="check-icon adminfont-cross color-red"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                item.onReject?.(item);
+                                            }}
+                                        />
                                     </>
                                 )}
 

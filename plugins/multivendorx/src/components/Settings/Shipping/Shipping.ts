@@ -27,7 +27,7 @@ export default {
 			modal: [
 				{
 					id: 'zone-wise-shipping',
-					icon: 'adminfont-zone-wise-shipping',
+					icon: 'zone-wise-shipping',
 					label: 'Zone based shipping',
 					disableBtn: true,
 					moduleEnabled: 'store-shipping',
@@ -48,7 +48,7 @@ export default {
 				},
 				{
 					id: 'country-wise-shipping',
-					icon: 'adminfont-country-shipping',
+					icon: 'country-shipping',
 					label: 'Country-wise shipping',
 					moduleEnabled: 'store-shipping',
 					disableBtn: true,
@@ -64,7 +64,7 @@ export default {
 				},
 				{
 					id: 'distance-based-shipping',
-					icon: 'adminfont-store-shipping',
+					icon: 'store-shipping',
 					label: 'Distance-based shipping',
 					disableBtn: true,
 					moduleEnabled: 'store-shipping',

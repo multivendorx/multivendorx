@@ -36,7 +36,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('Setup wizard for stores', 'multivendorx'),
+			title: __('Setup wizard for stores', 'multivendorx'),
 		},
 		{
 			key: 'disable_setup_wizard',
@@ -151,7 +151,7 @@ export default {
 		{
 			key: 'section',
 			type: 'section',
-			hint: __('How stores sell products/listings', 'multivendorx'),
+			title: __('How stores sell products/listings', 'multivendorx'),
 		},
 		{
 			key: 'store_selling_mode',

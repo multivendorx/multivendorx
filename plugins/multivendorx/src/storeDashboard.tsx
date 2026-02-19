@@ -24,9 +24,49 @@ const Dashboard = () => {
 	const [isMenuMinmize, setisMenuMinmize] = useState(false);
 	const { modules } = useModules();
 	const [activeType, setActiveType] = useState<'notification' | 'activity'>('notification');
+	const [newProductId, setNewProductId] = useState(null);
 
 	const location = useLocation();
 	const navigate = useNavigate();
+	const getBasePath = () => {
+		const sitePath = new URL(appLocalizer.site_url).pathname;
+		return sitePath.replace(/\/$/, '');
+	};
+	const basePath = getBasePath();
+
+	const createAutoDraftProduct = () => {
+		const payload = {
+			name: 'Auto Draft',
+			status: 'draft',
+		};
+
+		axios
+			.post(`${appLocalizer.apiUrl}/wc/v3/products/`, payload, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
+			.then((res) => {
+				setNewProductId(res.data.id);
+			})
+			.catch((err) => {
+				console.error('Error creating auto draft product:', err);
+			});
+	};
+
+	useEffect(() => {
+		if (!newProductId) {
+			return;
+		}
+
+		if (appLocalizer.permalink_structure) {
+			navigate(
+				`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${newProductId}`
+			);
+		} else {
+			navigate(
+				`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${newProductId}`
+			);
+		}
+	}, [newProductId]);
 
 	const loadComponent = (key) => {
 		if (!endpoints || endpoints.length === 0) {
@@ -170,11 +210,6 @@ const Dashboard = () => {
 
 		return list;
 	}, [menu]);
-
-	const getBasePath = () => {
-		const sitePath = new URL(appLocalizer.site_url).pathname;
-		return sitePath.replace(/\/$/, '');
-	};
 
 	const DEFAULT_TAB = 'dashboard';
 
@@ -549,13 +584,37 @@ const Dashboard = () => {
 									></div>
 								</li>
 
-								<li className="tooltip-wrapper bottom">
+								<li className="tooltip-wrapper bottom"
+									onClick={() => {
+										if (modules.includes('shared-listing')) {
+
+											if (appLocalizer.permalink_structure) {
+												navigate(
+													`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
+												);
+											} else {
+												navigate(
+													`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
+												);
+											}
+										} else {
+											createAutoDraftProduct();
+										}
+									}}
+								>
 									<i className="admin-icon adminfont-product-addon"></i>
 									<span className="tooltip-name">
 										Add product
 									</span>
 								</li>
-								<li className="tooltip-wrapper bottom">
+								<li className="tooltip-wrapper bottom"
+									onClick={() =>
+										window.open(
+										`${appLocalizer.store_page_url}${storeData?.slug}`,
+										'_blank'
+										)
+									}
+								>
 									<i className="admin-icon adminfont-storefront"></i>
 									<span className="tooltip-name">view storefront</span>
 								</li>

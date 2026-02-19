@@ -6,6 +6,7 @@ import React, {
 import { useOutsideClick } from './useOutsideClick';
 import { FieldComponent } from './types';
 import '../styles/web/Popup.scss';
+import Tooltip from './UI/Tooltip';
 
 export type PopupPosition =
     | 'menu-dropdown'
@@ -86,14 +87,19 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
         };
 
         return (
-            <div 
-                className={`popup ${className} ${open ? 'popup-open' : ''}`} 
+            <div
+                className={`popup ${className} ${open ? 'popup-open' : ''}`}
                 ref={wrapperRef}
             >
                 {toggleIcon && (
-                    <div className="popup-toggle" onClick={handleToggle}>
-                        <i className={toggleIcon} />
-                    </div>
+                    <Tooltip
+                        text="Menu"
+                        position="bottom"
+                    >
+                        <div className="popup-toggle" onClick={handleToggle}>
+                            <i className={toggleIcon} />
+                        </div>
+                    </Tooltip>
                 )}
 
                 {showBackdrop && !toggleIcon && open && (
@@ -120,8 +126,8 @@ export const PopupUI = forwardRef<HTMLDivElement, PopupProps>(
                                 {header.description && (
                                     <div className="desc">{header.description}</div>
                                 )}
-                                <i 
-                                    onClick= {handleClose}
+                                <i
+                                    onClick={handleClose}
                                     className="icon adminfont-close"
                                 ></i>
                             </div>

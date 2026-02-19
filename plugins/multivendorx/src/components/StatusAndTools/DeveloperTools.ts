@@ -41,7 +41,7 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            hint: __('Maintenance Tools', 'multivendorx'),
+            title: __('Maintenance Tools', 'multivendorx'),
             desc: __('', 'multivendorx'),
         },
         {
@@ -76,7 +76,7 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            hint: __('Version Control', 'multivendorx'),
+            title: __('Version Control', 'multivendorx'),
             desc: __('', 'multivendorx'),
         },
         {
@@ -100,7 +100,7 @@ export default {
         {
             key: 'separator_content',
             type: 'section',
-            hint: __('Store dashboard styling', 'multivendorx'),
+            title: __('Store dashboard styling', 'multivendorx'),
             desc: __('', 'multivendorx'),
         },
         {
@@ -116,7 +116,7 @@ export default {
             key: 'separator_content',
             type: 'section',
             wrapperClass: 'divider-wrapper red',
-            hint: __('Notification Events Handling', 'multivendorx'),
+            title: __('Notification Events Handling', 'multivendorx'),
             desc: __('', 'multivendorx'),
         },
         {
