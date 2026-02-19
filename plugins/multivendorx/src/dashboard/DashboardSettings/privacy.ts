@@ -16,7 +16,6 @@ export default {
 			name: 'store_policy',
 			label: __('Store policy', 'multivendorx'),
 			usePlainText: false,
-			tinymceApiKey: appLocalizer?.settings_databases_value?.['overview']?.['tinymce_api_section'] ?? ''
 		},
 
 		// Shipping Policy
@@ -26,7 +25,6 @@ export default {
 			name: 'shipping_policy',
 			label: __('Shipping policy', 'multivendorx'),
 			usePlainText: false,
-			tinymceApiKey: appLocalizer?.settings_databases_value?.['overview']?.['tinymce_api_section'] ?? ''
 		},
 
 		// Refund Policy
@@ -36,7 +34,6 @@ export default {
 			name: 'refund_policy',
 			label: __('Refund policy', 'multivendorx'),
 			usePlainText: false,
-			tinymceApiKey: appLocalizer?.settings_databases_value?.['overview']?.['tinymce_api_section'] ?? ''
 		},
 
 		// Cancellation Policy
@@ -45,7 +42,6 @@ export default {
 			name: 'cancellation_policy',
 			label: __('Cancellation / return / exchange policy', 'multivendorx'),
 			usePlainText: false,
-			tinymceApiKey: appLocalizer?.settings_databases_value?.['overview']?.['tinymce_api_section'] ?? ''
 		},
 
 		// Section UI
