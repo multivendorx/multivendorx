@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { getApiLink, ComponentStatusView, Tabs, PopupUI, useModules } from 'zyra';
+import { getApiLink, ComponentStatusView, Tabs, PopupUI, useModules, Tooltip } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Notifications from './dashboard/notifications';
 import './hooksFilters';
@@ -584,40 +584,41 @@ const Dashboard = () => {
 									></div>
 								</li>
 
-								<li className="tooltip-wrapper bottom"
-									onClick={() => {
-										if (modules.includes('shared-listing')) {
+								<Tooltip text={__('Add product', 'multivendorx')}>
+									<li
+										onClick={() => {
+											if (modules.includes('shared-listing')) {
 
-											if (appLocalizer.permalink_structure) {
-												navigate(
-													`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
-												);
+												if (appLocalizer.permalink_structure) {
+													navigate(
+														`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
+													);
+												} else {
+													navigate(
+														`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
+													);
+												}
 											} else {
-												navigate(
-													`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
-												);
+												createAutoDraftProduct();
 											}
-										} else {
-											createAutoDraftProduct();
+										}}
+									>
+										<i className="admin-icon adminfont-product-addon"></i>
+									</li>
+								</Tooltip>
+
+								<Tooltip text={__('view storefront', 'multivendorx')}>
+									<li
+										onClick={() =>
+											window.open(
+												`${appLocalizer.store_page_url}${storeData?.slug}`,
+												'_blank'
+											)
 										}
-									}}
-								>
-									<i className="admin-icon adminfont-product-addon"></i>
-									<span className="tooltip-name">
-										Add product
-									</span>
-								</li>
-								<li className="tooltip-wrapper bottom"
-									onClick={() =>
-										window.open(
-										`${appLocalizer.store_page_url}${storeData?.slug}`,
-										'_blank'
-										)
-									}
-								>
-									<i className="admin-icon adminfont-storefront"></i>
-									<span className="tooltip-name">view storefront</span>
-								</li>
+									>
+										<i className="admin-icon adminfont-storefront"></i>
+									</li>
+								</Tooltip>
 								{/* <li className="tooltip-wrapper bottom">
 									<i
 										className="adminfont-icon notification adminfont-notification"
@@ -629,45 +630,49 @@ const Dashboard = () => {
 
 									{showNotifications && <Notifications type="notification" />}
 								</li> */}
-								<li className="tooltip-wrapper bottom">
-									<PopupUI
-										position="menu-dropdown"
-										toggleIcon="adminfont-notification"
-										width={24}
-										header={{
-											title: __('Notifications', 'multivendorx'),
-											showCloseButton: false, // Add this to your PopupHeaderProps
-										}}
-									>
-										<Tabs
-											tabs={[
-												{
-													id: 'notifications',
-													label: __("Notifications", 'multivendorx'),
-													icon: 'adminfont-notification',
-													content: <ul className="notification-list"></ul>,
-													footer: {
-														url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=notifications`,
-														icon: 'adminfont-eye',
-														text: __('View all notifications', 'multivendorx')
-													}
-												},
-												{
-													id: 'activities',
-													label: __("Activities", 'multivendorx'),
-													icon: 'adminfont-activity',
-													content: <ul className="notification-list"></ul>,
-													footer: {
-														url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=activity`,
-														icon: 'adminfont-eye',
-														text: __('View all activities', 'multivendorx')
-													}
-												},
-											]}
-										/>
-									</PopupUI>
-								</li>
-								<li className="tooltip-wrapper bottom">
+								<Tooltip text={__('Notifications', 'multivendorx')}>
+									<li>
+										<PopupUI
+											position="menu-dropdown"
+											toggleIcon="adminfont-notification"
+											width={24}
+											header={{
+												title: __('Notifications', 'multivendorx'),
+												showCloseButton: false, // Add this to your PopupHeaderProps
+											}}
+										>
+											<Tabs
+												tabs={[
+													{
+														id: 'notifications',
+														label: __("Notifications", 'multivendorx'),
+														icon: 'adminfont-notification',
+														content: <ul className="notification-list"></ul>,
+														footer: {
+															url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=notifications`,
+															icon: 'adminfont-eye',
+															text: __('View all notifications', 'multivendorx')
+														}
+													},
+													{
+														id: 'activities',
+														label: __("Activities", 'multivendorx'),
+														icon: 'adminfont-activity',
+														content: <ul className="notification-list"></ul>,
+														footer: {
+															url: `${appLocalizer.site_url.replace(/\/$/, '')}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=activity`,
+															icon: 'adminfont-eye',
+															text: __('View all activities', 'multivendorx')
+														}
+													},
+												]}
+											/>
+										</PopupUI>
+									</li>
+								</Tooltip>
+
+								<Tooltip text={__('Announcement', 'multivendorx')}>
+								<li>
 									{/* <Popover
 										toggleIcon="adminfont-announcement"
 										toggleContent={<span className="tooltip-name">Announcements</span>}
@@ -711,206 +716,210 @@ const Dashboard = () => {
 										}
 									/> */}
 								</li>
-
+								</Tooltip>
+								
+								<Tooltip text={__('Full Screen', 'multivendorx')}>
 								<li
 									id="fullscreenToggle"
 									onClick={toggleFullscreen}
-									className="tooltip-wrapper bottom"
 								>
 									<i className="admin-icon adminfont-crop-free"></i>
 									<span className="tooltip-name">
 										Full Screen
 									</span>
 								</li>
+								</Tooltip>
+								
+								<Tooltip text={__('Settings', 'multivendorx')}>
+									<li className="dropdown login-user">
+										<div
+											className="avatar-wrapper"
+											onClick={toggleUserDropdown}
+										>
+											<i className="admin-icon adminfont-person"></i>
+										</div>
+										{showUserDropdown && (
+											<div className="dropdown-menu" ref={userDropdownRef}>
+												<div className="dropdown-header">
+													<div className="user-card">
+														<div className="user-avatar">
+															<img
+																src={
+																	appLocalizer.current_user_image
+																}
+																alt={
+																	appLocalizer
+																		.current_user
+																		?.data
+																		?.display_name
+																}
+																width={48}
+																height={48}
+															/>
+														</div>
 
-								<li className="dropdown login-user">
-									<div
-										className="avatar-wrapper"
-										onClick={toggleUserDropdown}
-									>
-										<i className="admin-icon adminfont-person"></i>
-									</div>
-									{showUserDropdown && (
-										<div className="dropdown-menu" ref={userDropdownRef}>
-											<div className="dropdown-header">
-												<div className="user-card">
-													<div className="user-avatar">
-														<img
-															src={
-																appLocalizer.current_user_image
-															}
-															alt={
-																appLocalizer
-																	.current_user
-																	?.data
-																	?.display_name
-															}
-															width={48}
-															height={48}
-														/>
-													</div>
-
-													<div className="user-info">
-														<span className="user-name">
-															{
-																appLocalizer
-																	.current_user
-																	?.data
-																	?.display_name
-															}
-														</span>
-														<span className="user-email">
-															{
-																appLocalizer
-																	.current_user
-																	?.data
-																	?.user_email
-															}
-														</span>
+														<div className="user-info">
+															<span className="user-name">
+																{
+																	appLocalizer
+																		.current_user
+																		?.data
+																		?.display_name
+																}
+															</span>
+															<span className="user-email">
+																{
+																	appLocalizer
+																		.current_user
+																		?.data
+																		?.user_email
+																}
+															</span>
+														</div>
 													</div>
 												</div>
-											</div>
 
-											<div className="dropdown-body">
-												<ul>
-													<li>
-														<a href="#">
-															<i className="adminfont-person"></i>
-															My Profile
-														</a>
-													</li>
+												<div className="dropdown-body">
+													<ul>
+														<li>
+															<a href="#">
+																<i className="adminfont-person"></i>
+																My Profile
+															</a>
+														</li>
 
-													<li>
-														<a href="#">
-															<i className="adminfont-setting"></i>
-															Account Setting
-														</a>
-													</li>
-													{availableStores.length >
-														0 && (
-															<li className="switch-store-wrapper">
-																<a
-																	href="#"
-																	onClick={(
-																		e
-																	) => {
-																		e.preventDefault();
-																		setShowStoreList(
-																			(
-																				prev
-																			) =>
-																				!prev
-																		);
-																	}}
-																>
-																	<i className="adminfont-switch-store"></i>
-																	Switch stores
-																	{firstTwoStores.length >
-																		0 && (
-																			<span className="switch-store-preview">
-																				{!showStoreList && (
-																					<>
-																						{firstTwoStores.map(
-																							(
-																								store,
-																								index
-																							) => (
-																								<span
-																									className={`store-icon admin-color${index + 2}`}
-																									key={
-																										store.id
-																									}
-																								>
-																									{store.name
-																										.charAt(
-																											0
-																										)
-																										.toUpperCase()}
-																								</span>
-																							)
-																						)}
-
-																						{availableStores.length >
-																							2 && (
-																								<span className="store-icon number">
-																									+
-																									{availableStores.length -
-																										2}
-																								</span>
-																							)}
-																					</>
-																				)}
-																				<span className="adminfont-keyboard-arrow-down arrow-icon"></span>
-																			</span>
-																		)}
-																</a>
-
-																{showStoreList && (
-																	<div className="switch-store-list">
-																		{availableStores.map(
-																			(
-																				store,
-																				index
-																			) => (
-																				<div
-																					className="store"
-																					key={
-																						store.id
-																					}
-																				>
-																					<a
-																						href="#"
-																						className="switch-store"
-																						onClick={(
-																							e
-																						) => {
-																							e.preventDefault();
-																							switchStore(
-																								store.id
-																							);
-																						}}
-																					>
-																						<span
-																							className={`store-icon admin-color${index + 2}`}
-																						>
-																							{store.name
-																								.charAt(
-																									0
+														<li>
+															<a href="#">
+																<i className="adminfont-setting"></i>
+																Account Setting
+															</a>
+														</li>
+														{availableStores.length >
+															0 && (
+																<li className="switch-store-wrapper">
+																	<a
+																		href="#"
+																		onClick={(
+																			e
+																		) => {
+																			e.preventDefault();
+																			setShowStoreList(
+																				(
+																					prev
+																				) =>
+																					!prev
+																			);
+																		}}
+																	>
+																		<i className="adminfont-switch-store"></i>
+																		Switch stores
+																		{firstTwoStores.length >
+																			0 && (
+																				<span className="switch-store-preview">
+																					{!showStoreList && (
+																						<>
+																							{firstTwoStores.map(
+																								(
+																									store,
+																									index
+																								) => (
+																									<span
+																										className={`store-icon admin-color${index + 2}`}
+																										key={
+																											store.id
+																										}
+																									>
+																										{store.name
+																											.charAt(
+																												0
+																											)
+																											.toUpperCase()}
+																									</span>
 																								)
-																								.toUpperCase()}
-																						</span>
-																						<div className="details-wrapper">
-																							<div className="store-name">
-																								{
-																									store.name
-																								}
-																							</div>
-																						</div>
-																					</a>
-																				</div>
-																			)
-																		)}
-																	</div>
-																)}
-															</li>
-														)}
-												</ul>
-											</div>
+																							)}
 
-											<div className="footer">
-												<a
-													className="admin-btn btn-red"
-													href={
-														appLocalizer.user_logout_url
-													}
-												>
-													<i className="adminfont-import"></i>{' '}
-													Sign Out
-												</a>
+																							{availableStores.length >
+																								2 && (
+																									<span className="store-icon number">
+																										+
+																										{availableStores.length -
+																											2}
+																									</span>
+																								)}
+																						</>
+																					)}
+																					<span className="adminfont-keyboard-arrow-down arrow-icon"></span>
+																				</span>
+																			)}
+																	</a>
+
+																	{showStoreList && (
+																		<div className="switch-store-list">
+																			{availableStores.map(
+																				(
+																					store,
+																					index
+																				) => (
+																					<div
+																						className="store"
+																						key={
+																							store.id
+																						}
+																					>
+																						<a
+																							href="#"
+																							className="switch-store"
+																							onClick={(
+																								e
+																							) => {
+																								e.preventDefault();
+																								switchStore(
+																									store.id
+																								);
+																							}}
+																						>
+																							<span
+																								className={`store-icon admin-color${index + 2}`}
+																							>
+																								{store.name
+																									.charAt(
+																										0
+																									)
+																									.toUpperCase()}
+																							</span>
+																							<div className="details-wrapper">
+																								<div className="store-name">
+																									{
+																										store.name
+																									}
+																								</div>
+																							</div>
+																						</a>
+																					</div>
+																				)
+																			)}
+																		</div>
+																	)}
+																</li>
+															)}
+													</ul>
+												</div>
+
+												<div className="footer">
+													<a
+														className="admin-btn btn-red"
+														href={
+															appLocalizer.user_logout_url
+														}
+													>
+														<i className="adminfont-import"></i>{' '}
+														Sign Out
+													</a>
+												</div>
 											</div>
-										</div>
-									)}
-								</li>
+										)}
+									</li>
+								</Tooltip>
 							</ul>
 						</div>
 					</div>

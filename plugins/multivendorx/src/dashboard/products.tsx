@@ -461,42 +461,6 @@ const AllProduct: React.FC = () => {
 		<>
 			{!isAddProduct && !isSpmvOn && (
 				<>
-					{/* <div className="page-title-wrapper">
-						<div className="page-title">
-							<div className="title">{__('All Products', 'multivendorx')}</div>
-							<div className="des">
-								{__('Manage your store products', 'multivendorx')}
-							</div>
-						</div>
-						<div className="buttons-wrapper">
-							{modules.includes('import-export') &&
-								applyFilters(
-									'product_import_export',
-									null,
-								)
-							}
-							<div
-								className="admin-btn btn-purple-bg"
-								onClick={() => {
-									if (modules.includes('shared-listing')) {
-										if (appLocalizer.permalink_structure) {
-											navigate(
-												`${basePath}/${appLocalizer.dashboard_slug}/products/add/`
-											);
-										} else {
-											navigate(
-												`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=add`
-											);
-										}
-									} else {
-										createAutoDraftProduct();
-									}
-								}}
-							>
-								<i className="adminfont-plus"></i> {__('Add New', 'multivendorx')}
-							</div>
-						</div>
-					</div> */}
 					<NavigatorHeader
 						headerTitle={__('All Products', 'multivendorx')}
 						headerDescription={__('Manage your store products', 'multivendorx')}
