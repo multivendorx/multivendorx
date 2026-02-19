@@ -112,7 +112,7 @@ export const downloadCSV = (
 
   // Only include headers with csv: true
   const csvColumns = Object.entries(headers)
-    .filter(([_, h]) => h.csvDisplay === true)
+    .filter(([_, h]) => h.csvDisplay !== false)
     .map(([key, h]) => ({ key, label: h.label }));
 
   // Header row

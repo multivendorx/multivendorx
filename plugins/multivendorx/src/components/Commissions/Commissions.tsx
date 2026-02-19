@@ -40,7 +40,7 @@ const Commission: React.FC = () => {
 			data: { action, orderId: row.orderId },
 		})
 			.then(() => {
-				fetchData({})
+				doRefreshTableData({})
 			})
 			.catch(console.error);
 	};
@@ -71,18 +71,15 @@ const Commission: React.FC = () => {
 		id: {
 			label: __('ID', 'multivendorx'),
 			isSortable: true,
-			csvDisplay: true,
 		},
 		order_id: {
 			label: __('Order', 'multivendorx'),
 			isSortable: true,
-			csvDisplay: true,
 		},
 		total_order_amount: {
 			label: __('Order Amount', 'multivendorx'),
 			isSortable: true,
 			type: 'currency',
-			csvDisplay: true,
 		},
 		commission_summary: {
 			label: __('Commission Summary', 'multivendorx'),
@@ -110,24 +107,20 @@ const Commission: React.FC = () => {
 			label: __('Store Earning', 'multivendorx'),
 			isSortable: true,
 			type: 'currency',
-			csvDisplay: true,
 		},
 		marketplace_payable: {
 			label: __('Marketplace Earning', 'multivendorx'),
 			isSortable: true,
 			type: 'currency',
-			csvDisplay: true,
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
 			type: 'status',
-			csvDisplay: true,
 		},
 		created_at: {
 			label: __('Date', 'multivendorx'),
 			isSortable: true,
 			type: 'date',
-			csvDisplay: true,
 		},
 		action: {
 			label: __('Action', 'multivendorx'),
@@ -153,27 +146,13 @@ const Commission: React.FC = () => {
 		},
 	};
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params: {
-					page: query.paged || 1,
-					row: query.per_page || 10,
-					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					search_value: query.searchValue || '',
-					start_date: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: '',
-					end_date: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: '',
-					store_id: query.filter?.store_id,
-					order_by: query.orderby,
-					order: query.order,
-				},
+				params: buildCommissionQueryParams(query),
 			})
 			.then((response) => {
 				const items = response.data || [];
@@ -263,25 +242,11 @@ const Commission: React.FC = () => {
 			});
 	};
 	const downloadCommissionsCSVByQuery = (query: QueryProps) => {
-		const params = {
-			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-			search_value: query.searchValue || '',
-			start_date: query.filter?.created_at?.startDate
-				? formatLocalDate(query.filter.created_at.startDate)
-				: '',
-			end_date: query.filter?.created_at?.endDate
-				? formatLocalDate(query.filter.created_at.endDate)
-				: '',
-			store_id: query.filter?.store_id,
-			order_by: query.orderby,
-			order: query.order,
-		};
-
 		// Call the API
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params,
+				params:buildCommissionQueryParams(query,false),
 			})
 			.then((response) => {
 				const rows = response.data || [];
@@ -295,6 +260,32 @@ const Commission: React.FC = () => {
 			.catch((error) => {
 				console.error('CSV download failed:', error);
 			});
+	};
+
+	const buildCommissionQueryParams = (
+		query: QueryProps,
+		includePagination: boolean = true
+	) => {
+		const params: Record<string, any> = {
+			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			search_value: query.searchValue || '',
+			start_date: query.filter?.created_at?.startDate
+				? formatLocalDate(query.filter.created_at.startDate)
+				: '',
+			end_date: query.filter?.created_at?.endDate
+				? formatLocalDate(query.filter.created_at.endDate)
+				: '',
+			store_id: query.filter?.store_id || '',
+			order_by: query.orderby,
+			order: query.order,
+		};
+
+		if (includePagination) {
+			params.page = query.paged || 1;
+			params.row = query.per_page || 10;
+		}
+
+		return params;
 	};
 
 	const buttonActions = [
@@ -322,7 +313,7 @@ const Commission: React.FC = () => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						categoryCounts={categoryCounts}
 						search={{}}
@@ -336,7 +327,7 @@ const Commission: React.FC = () => {
 							priceDecimals: appLocalizer.price_decimals,
 							decimalSeparator: appLocalizer.decimal_separator,
 							thousandSeparator: appLocalizer.thousand_separator,
-						    currencyPosition: appLocalizer.currency_position	
+							currencyPosition: appLocalizer.currency_position
 						}}
 					/>
 				</Column>
