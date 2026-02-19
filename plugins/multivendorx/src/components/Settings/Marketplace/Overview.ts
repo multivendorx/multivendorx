@@ -25,6 +25,57 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
+    key: 'test',
+    type: 'tab',
+    label: 'Test Tabs',
+    tabs: [
+        {
+            label: 'Tab 1',
+            content: 'Simple text content for Tab 1',
+        },
+        {
+            label: 'Tab 2',
+            // Content can be an array of field configurations
+            content: [
+                {
+                    type: 'text',
+                    key: 'username',
+                    label: 'Username',
+                    placeholder: 'Enter username',
+                },
+                {
+                    type: 'email',
+                    key: 'email',
+                    label: 'Email Address',
+                    placeholder: 'Enter email',
+                },
+                {
+                    type: 'select',
+                    key: 'role',
+                    label: 'User Role',
+                    options: [
+                        { value: 'admin', label: 'Administrator' },
+                        { value: 'editor', label: 'Editor' },
+                    ]
+                }
+            ]
+        },
+        {
+            label: 'Tab 3',
+            // Mix of string and fields
+            content:[
+                    "Custom Section This is custom content before fields",
+                        {
+                            type: 'text',
+                            key: 'title',
+                            label: 'Title',
+                            placeholder: 'Enter title',
+                        }
+					]
+        }
+    ]
+},
+		{
 			key: 'store_registration_page',
 			type: 'select',
 			label: __('Store registration page', 'multivendorx'),

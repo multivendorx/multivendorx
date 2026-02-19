@@ -106,11 +106,11 @@ const TextArea: FieldComponent = {
             readOnly={field.readOnly}
             value={value || ''}
             usePlainText={field.usePlainText} // Toggle between textarea and TinyMCE
-            tinymceApiKey={
-                appLocalizer.tinymceApiKey
-                    ? appLocalizer.tinymceApiKey
-                    : ''
-            }
+            // tinymceApiKey={
+            //     appLocalizer.tinymceApiKey
+            //         ? appLocalizer.tinymceApiKey
+            //         : ''
+            // }
             onChange={(val) => {
                 if (!canAccess) return;
                 onChange(val)
