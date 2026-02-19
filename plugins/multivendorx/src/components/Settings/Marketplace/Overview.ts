@@ -25,6 +25,32 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
+			key: 'test',
+			type: 'tab',
+			label: 'Test Tabs',
+			tabs: [
+				{
+					label: 'Tab 1',
+					content: 'Content for Tab 1', // Simple content
+				},
+				{
+					label: 'Tab 2',
+					type: 'text', // Will render text input
+					key: 'tab2Value', // Key to store this value under
+					placeholder: 'Enter text here',
+				},
+				{
+					label: 'Tab 3',
+					type: 'select', // Will render select dropdown
+					key: 'tab3Value',
+					options: [
+						{ value: 'option1', label: 'Option 1' },
+						{ value: 'option2', label: 'Option 2' },
+					]
+				}
+			]
+		},
+		{
 			key: 'store_registration_page',
 			type: 'select',
 			label: __('Store registration page', 'multivendorx'),
