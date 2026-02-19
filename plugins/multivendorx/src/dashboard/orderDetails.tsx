@@ -282,7 +282,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 				<p>No access to view the order</p>
 			) : (
 				<>
-					<div className="page-title-wrapper">
+					{/* <div className="page-title-wrapper">
 						<div className="page-title">
 							<div className="title">
 								Order #{orderData?.number ?? orderId ?? '—'}
@@ -350,7 +350,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
 								</button>
 							)}
 						</div>
-					</div>
+					</div> */}
 
 					<NavigatorHeader
 						headerTitle={
