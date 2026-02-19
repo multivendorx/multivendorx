@@ -32,7 +32,7 @@ const Table: React.FC<TableProps> = ({
     isLoading,
     enableBulkSelect = false,
     format,
-    currencySymbol
+    currency
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -311,7 +311,7 @@ const Table: React.FC<TableProps> = ({
                                         );
                                     }
 
-                                    let displayValue = renderCell(row,header,format,currencySymbol);
+                                    let displayValue = renderCell(row,header,format,currency);
 
                                     return (
                                         <td

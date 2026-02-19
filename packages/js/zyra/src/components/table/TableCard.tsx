@@ -43,7 +43,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	onCellEdit,
 	buttonActions,
 	format,
-	currencySymbol,
+	currency,
 	...props
 }) => {
 	const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -284,7 +284,7 @@ const TableCard: React.FC<TableCardProps> = ({
 				enableBulkSelect={bulkActions.length > 0 || !!onSelectCsvDownloadApply}
 				isLoading={isLoading}
 				format={format}
-				currencySymbol={currencySymbol}
+				currency={currency}
 			/>
 			{/* pagination */}
 			<div className="admin-pagination">

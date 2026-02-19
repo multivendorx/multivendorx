@@ -140,7 +140,7 @@ export type TableProps = CommonTableProps & {
 	isLoading?:boolean;
 	enableBulkSelect?: boolean; 
 	format?: string,
-	currencySymbol?:string;
+	currency?:{};
 };
 
 export type TableSummaryProps = {
@@ -217,7 +217,7 @@ export type TableCardProps = CommonTableProps & {
 	}) => void;
 	buttonActions?:ButtonAction[];
 	format?: string;
-	currencySymbol?: string;
+	currency?: {};
 };
 
 export type FilterOption = {

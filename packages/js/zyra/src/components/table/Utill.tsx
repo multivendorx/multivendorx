@@ -5,7 +5,7 @@ export const renderCell = (
 	row: TableRow = {},
 	header: TableHeaderConfig = {},
 	format = "",
-	currencySymbol = ""
+	currency = {}
 ) => {
 	const value = row[header.key];
 
@@ -96,10 +96,8 @@ export const renderCell = (
 
 		case "currency": {
 			if (value == null) return null;
-
 			const position = header.currencyPosition === "after" ? "after" : "before";
 
-			// Ensure numeric formatting
 			const numberValue =
 				typeof value === "number"
 					? value
@@ -107,10 +105,29 @@ export const renderCell = (
 
 			if (isNaN(numberValue)) return <span>{value}</span>;
 
-			const formatted = numberValue.toFixed(2);
+			// 🔹 WooCommerce dynamic settings
+			const decimals = Number(currency?.priceDecimals ?? 2);
+			const decimalSeparator = currency?.decimalSeparator ?? ".";
+			const thousandSeparator = currency?.thousandSeparator ?? ",";
 
-			return <span>{currencySymbol ? (position === "before" ? `${currencySymbol}${formatted}` : `${formatted}${currencySymbol}`) : formatted}</span>;
+			const fixed = numberValue.toFixed(decimals);
+
+			const parts = fixed.split(".");
+			parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+
+			const formatted = parts.join(decimalSeparator);
+
+			return (
+				<span>
+					{currency.currencySymbol
+						? position === "before"
+							? `${currency.currencySymbol}${formatted}`
+							: `${formatted}${currency.currencySymbol}`
+						: formatted}
+				</span>
+			);
 		}
+
 
 		default:
 			return value ?? null;
