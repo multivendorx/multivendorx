@@ -291,33 +291,12 @@ const createFieldRenderers = (): Record<string, React.FC<{
         </ContentGroup>
     ),
     
-    image: ({ formField, onChange }) => (
+    image: ({ formField, onChange, expandedGroups, toggleGroup }) => (
         <>
-            <InputField
-                label="Max File Size (MB)"
-                type="number"
-                value={formField.filesize?.toString() || ''}
-                onChange={(v) => onChange('filesize', Number(v))}
-            />
-            {/* Dimensions — stored inside style so FileInputUI can read them */}
-            <div className="field-group">
-                <InputField
-                    label="Width"
-                    value={formField.style?.width?.toString() || ''}
-                    onChange={(v) =>
-                        onChange('style', { ...(formField.style || {}), width: v || undefined })
-                    }
-                    placeholder="e.g. 100% or 300px"
-                />
-                <InputField
-                    label="Height"
-                    value={formField.style?.height?.toString() || ''}
-                    onChange={(v) =>
-                        onChange('style', { ...(formField.style || {}), height: v || undefined })
-                    }
-                    placeholder="e.g. 200px"
-                />
-            </div>
+            <ContentGroup title="Image" expanded={expandedGroups.content} onToggle={() => toggleGroup('content')}>
+                <InputField label="Image URL" value={formField.src || ''} onChange={(v) => onChange('src', v)} />
+                <InputField label="Alt Text" value={formField.alt || ''} onChange={(v) => onChange('alt', v)} />
+            </ContentGroup>
         </>
     ),
     
