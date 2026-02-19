@@ -92,7 +92,7 @@ const OrderReport: React.FC = () => {
 				downloadCSV(
 					headers,
 					rows,
-					`order-report-${formatLocalDate(new Date())}.csv`
+					`order-${formatLocalDate(new Date())}.csv`
 				);
 			})
 			.catch((error) => {

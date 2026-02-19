@@ -113,72 +113,72 @@ const StoreReport: React.FC = () => {
 
 				setRowIds(ids);
 
-				const mappedRows: any[][] = items.map((store: any) => [
-					{
-						display: store.store_name,
-						value: store.id,
-						type: 'card',
-						data: {
-							name: store.store_name,
-							image: store.image,
-							description: `Since ${formatDate(store.applied_on)}`,
-							link: `?page=multivendorx#&tab=stores&edit/${store.id}`,
-							icon: 'adminfont-store-inventory'
-						},
-					},
-					{
-						display: store.primary_owner?.data?.display_name || '—',
-						value: store.primary_owner?.ID || null,
-						type: 'card',
-						data: {
-							name: store.primary_owner?.data?.display_name,
-							image: store.primary_owner?.data?.primary_owner_image,
-							icon: 'adminfont-person',
-							description: store.primary_owner?.data?.user_email
-						}
-					},
-					{
-						display: store.status,
-						value: store.status,
-					},
-					{
-						display: formatCurrency(store.commission?.total_order_amount),
-						value: store.commission?.total_order_amount ?? 0,
-					},
-					{
-						display: formatCurrency(store.commission?.shipping_amount),
-						value: store.commission?.shipping_amount ?? 0,
-					},
-					{
-						display: formatCurrency(store.commission?.tax_amount),
-						value: store.commission?.tax_amount ?? 0,
-					},
-					{
-						display: formatCurrency(store.commission?.commission_total),
-						value: store.commission?.commission_total ?? 0,
-					},
-					{
-						display: store.email,
-						value: store.email,
-						type: 'card',
-						data: {
-							name: store.email,
-							icon: 'adminfont-mail',
-						}
-					},
-					{
-						display: formatCurrency(
-							Number(store.commission?.total_order_amount || 0) -
-							Number(store.commission?.commission_total || 0)
-						),
-						value:
-							Number(store.commission?.total_order_amount || 0) -
-							Number(store.commission?.commission_total || 0),
-					}
+				// const mappedRows: any[][] = items.map((store: any) => [
+				// 	{
+				// 		display: store.store_name,
+				// 		value: store.id,
+				// 		type: 'card',
+				// 		data: {
+				// 			name: store.store_name,
+				// 			image: store.image,
+				// 			description: `Since ${formatDate(store.applied_on)}`,
+				// 			link: `?page=multivendorx#&tab=stores&edit/${store.id}`,
+				// 			icon: 'adminfont-store-inventory'
+				// 		},
+				// 	},
+				// 	{
+				// 		display: store.primary_owner?.data?.display_name || '—',
+				// 		value: store.primary_owner?.ID || null,
+				// 		type: 'card',
+				// 		data: {
+				// 			name: store.primary_owner?.data?.display_name,
+				// 			image: store.primary_owner?.data?.primary_owner_image,
+				// 			icon: 'adminfont-person',
+				// 			description: store.primary_owner?.data?.user_email
+				// 		}
+				// 	},
+				// 	{
+				// 		display: store.status,
+				// 		value: store.status,
+				// 	},
+				// 	{
+				// 		display: formatCurrency(store.commission?.total_order_amount),
+				// 		value: store.commission?.total_order_amount ?? 0,
+				// 	},
+				// 	{
+				// 		display: formatCurrency(store.commission?.shipping_amount),
+				// 		value: store.commission?.shipping_amount ?? 0,
+				// 	},
+				// 	{
+				// 		display: formatCurrency(store.commission?.tax_amount),
+				// 		value: store.commission?.tax_amount ?? 0,
+				// 	},
+				// 	{
+				// 		display: formatCurrency(store.commission?.commission_total),
+				// 		value: store.commission?.commission_total ?? 0,
+				// 	},
+				// 	{
+				// 		display: store.email,
+				// 		value: store.email,
+				// 		type: 'card',
+				// 		data: {
+				// 			name: store.email,
+				// 			icon: 'adminfont-mail',
+				// 		}
+				// 	},
+				// 	{
+				// 		display: formatCurrency(
+				// 			Number(store.commission?.total_order_amount || 0) -
+				// 			Number(store.commission?.commission_total || 0)
+				// 		),
+				// 		value:
+				// 			Number(store.commission?.total_order_amount || 0) -
+				// 			Number(store.commission?.commission_total || 0),
+				// 	}
 
-				]);
+				// ]);
 
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
@@ -218,17 +218,48 @@ const StoreReport: React.FC = () => {
 			});
 	};
 
-	const headers = [
-		{ key: 'store_name', label: 'Store', isSortable: true, },
-		{ key: 'primary_owner', label: 'Primary Owner' },
-		{ key: 'status', label: 'Status' },
-		{ key: 'order_total', label: 'Order Total' },
-		{ key: 'shipping', label: 'Shipping' },
-		{ key: 'tax', label: 'Tax' },
-		{ key: 'store_ommission', label: 'Store Commission' },
-		{ key: 'contact', label: 'Contact' },
-		{ key: 'admin_earning', label: 'Admin Earnings' },
-	];
+	const headers = {
+		store_name: { label: __('Store', 'multivendorx') },
+		primary_owner: {
+			key: 'primary_owner',
+			label: __('Primary Owner', 'multivendorx'),
+			render: (row: any) => row.primary_owner?.data?.display_name,
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status',
+		},
+		order_total: {
+			key: 'order_total',
+			label: __('Order Total', 'multivendorx'),
+			render: (row: any) => formatCurrency(row.commission?.total_order_amount)
+		},
+		shipping: {
+			key: 'shipping',
+			label: __('Shipping', 'multivendorx'),
+			render: (row: any) => formatCurrency(row.commission?.shipping_amount)
+		},
+		tax: {
+			label: __('Tax', 'multivendorx'),
+			render: (row: any) => formatCurrency(row.commission?.tax_amount)
+		},
+		store_ommission: {
+			label: __('Store Commission', 'multivendorx'),
+			render: (row: any) => formatCurrency(row.commission?.commission_total)
+		},
+		email: { label: __('Contact', 'multivendorx') },
+		admin_earning: {
+			label: __('Admin Earnings', 'multivendorx'),
+			render: (row: any) =>
+				formatCurrency(
+					Number(row.commission?.total_order_amount || 0) -
+					Number(row.commission?.commission_total || 0)
+				),
+		},
+	};
+
+
+
 	const filters = [
 		{
 			key: 'created_at',
@@ -290,6 +321,13 @@ const StoreReport: React.FC = () => {
 				search={{}}
 				filters={filters}
 				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position
+				}}
 			/>
 		</>
 	);
