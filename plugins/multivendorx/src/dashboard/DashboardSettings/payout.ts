@@ -75,8 +75,6 @@ export default {
             type: 'setting-toggle',
             label: __('Payment Method', 'multivendorx'),
             options: paymentOptions,
-            // value: formData.payment_method,
-            // onChange: (value) => handlePaymentMethodChange(value)
         },
         ...renderPaymentFields()
     ],

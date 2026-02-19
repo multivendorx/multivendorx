@@ -17,10 +17,6 @@ export default {
                     format: 'YYYY-MM-DD',
                     multiple: true,
                     value: '',
-                    // onChange: (newRange) => {
-                    //     setDateRange(newRange);
-                    //     onFilterChange(filter.key, newRange);
-                    // }
                 },
 
                 // Add to Cart Button Text
@@ -29,12 +25,6 @@ export default {
                     name: 'addToCartText',
                     label: __('"Add to Cart" Button Text', 'multivendorx'),
                     inputType: 'text',
-                    // value: query,
-                    // onChange: (val: string) => {
-                    //     setQuery(val);
-                    //     setIsOpen(true);
-                    //     triggerSearch(val);
-                    // }
                 },
 
                 // Notification Message
@@ -42,8 +32,6 @@ export default {
                     type: 'textarea',
                     name: 'notificationMessage',
                     label: __('Notification Message', 'multivendorx'),
-                    // value: content,
-                    // onChange: (value) => handleChange('content', value)
                 },
 
                 // Quick Presets Toggle
@@ -83,8 +71,6 @@ export default {
                             desc: __('1 month', 'multivendorx')
                         }
                     ]
-                    // value: product.status,
-                    // onChange: (value) => handleChange('status', value)
                 },
 
                 // Notify Via Toggle
@@ -109,8 +95,6 @@ export default {
                             label: __('SMS', 'multivendorx')
                         }
                     ]
-                    // value: product.status,
-                    // onChange: (value) => handleChange('status', value)
                 }
     ],
 };

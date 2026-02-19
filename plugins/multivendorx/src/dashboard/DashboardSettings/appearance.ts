@@ -20,11 +20,6 @@ export default {
                     imageWidth: 75,
                     imageHeight: 75,
                     openUploader: __('Upload Image', 'multivendorx'),
-                    // onChange={(val) => {
-					// 		const updated = { ...formData, image: val };
-					// 		setFormData(updated);
-					// 		autoSave(updated);
-					// 	}}
 
                 },
 
@@ -36,11 +31,6 @@ export default {
                     key: 'banner_type',
                     options: [],
                     value: '',
-                    // onChange={(newValue: any) => {
-					// 		const updated = { ...formData, banner_type: newValue?.value || '' };
-					// 		setFormData(updated);
-					// 		autoSave(updated);
-					// 	}}
                 },
 
                 // Static Banner Image (conditional)
@@ -52,11 +42,6 @@ export default {
                     imageWidth: 300,
                     imageHeight: 100,
                     openUploader: __('Upload Banner', 'multivendorx'),
-                    // onChange={(val) => {
-					// 			const updated = { ...formData, banner: val };
-					// 			setFormData(updated);
-					// 			autoSave(updated);
-					// 		}}
                 },
 
                 // Slider Images (conditional)
@@ -70,11 +55,6 @@ export default {
                     imageWidth: 150,
                     imageHeight: 100,
                     openUploader: __('Upload Slider Images', 'multivendorx'),
-                    // onChange={(images:string[]) => {
-					// 			const updated = { ...formData, banner_slider: images };
-					// 			setFormData(updated);
-					// 			autoSave(updated);
-					// 		}}
                     },
 
                 // Video Banner (conditional)
@@ -85,12 +65,6 @@ export default {
                     key: 'banner_video',
                     inputType: 'text',
                     value: '',
-                    // onChange={(e: any) => {
-					// 			const updated = { ...formData, banner_video: e.target.value };
-					// 			setFormData(updated);
-					// 			autoSave(updated);
-					// 		}}
-					// 		readOnly={!settings.includes('store_images')}
                 }
     ],
 };

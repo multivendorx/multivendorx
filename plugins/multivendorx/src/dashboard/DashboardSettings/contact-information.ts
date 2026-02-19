@@ -10,35 +10,22 @@ export default {
     ),
     headerIcon: 'form-phone',
     modal: [
-        //   // Success Notice
-        //   {
-        //     type: 'notice',
-        //     name: 'successNotice',
-        //     message: successMsg
-        //   },
-
         {
-            type: 'text',
+            type: 'number',
             name: 'phone',
             label: __('Phone', 'multivendorx'),
             key: 'phone',
-            cols: 2,
-            // value: formData.phone,
-            // onChange: (value: string) => handleChange('phone', value),
-            // readOnly: settings.includes('store_contact')
+            readOnly: true,
         },
 
         // Email / Additional Email
         {
-            type: 'text',
+            type: 'email',
             name: 'email',
             label: __('Email / Additional Email', 'multivendorx'),
             key: 'email',
-            cols: 2,
             inputType: 'email',
-            // value: formData.email,
-            // onChange: (value: string) => handleChange('phone', value), // Note: This currently updates 'phone' - might need to be fixed
-            // readOnly: settings.includes('store_contact')
+            readOnly: true,
         },
 
         // Live Chat (conditional)
@@ -47,9 +34,6 @@ export default {
             name: 'live_chat',
             label: __('Live Chat (Enable, WhatsApp, etc.)', 'multivendorx'),
             key: 'live_chat',
-            // condition: modules.includes('live-chat'),
-            // value: formData.live_chat,
-            // onChange: (value: string) => handleChange('live_chat', value)
         }
     ],
 };

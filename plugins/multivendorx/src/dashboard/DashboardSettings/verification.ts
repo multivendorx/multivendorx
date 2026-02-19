@@ -7,13 +7,6 @@ export default {
 	headerDescription: __('Verification', 'multivendorx'),
 	headerIcon: 'verification5',
 	modal: [
-  // Status Message (conditional)
-  {
-    type: 'custom',
-    name: 'statusMessage',
-    // condition: statusMessage,
-  },
-
   // Card Wrapper
   {
     type: 'card',
