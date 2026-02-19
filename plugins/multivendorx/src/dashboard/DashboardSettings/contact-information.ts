@@ -1,5 +1,9 @@
 import { __ } from '@wordpress/i18n';
 
+const settings =
+		appLocalizer.settings_databases_value['store-permissions']
+			?.edit_store_info_activation || [];
+
 export default {
     id: 'contact-information',
     priority: 6,
@@ -13,28 +17,25 @@ export default {
     modal: [
         {
             type: 'number',
-            name: 'phone',
             label: __('Phone', 'multivendorx'),
             key: 'phone',
-            readOnly: true,
+            readOnly: !settings.includes('store_contact')
         },
 
         // Email / Additional Email
         {
             type: 'email',
-            name: 'email',
             label: __('Email / Additional Email', 'multivendorx'),
             key: 'email',
-            inputType: 'email',
-            readOnly: true,
+            readOnly: !settings.includes('store_contact')
         },
 
         // Live Chat (conditional)
         {
             type: 'text',
-            name: 'live_chat',
             label: __('Live Chat (Enable, WhatsApp, etc.)', 'multivendorx'),
             key: 'live_chat',
+            moduleEnabled: 'live-chat',
         }
     ],
 };
