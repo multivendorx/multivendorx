@@ -202,7 +202,7 @@ const Table: React.FC<TableProps> = ({
                                             ? sortDir === ASC
                                                 ? 'ascending'
                                                 : 'descending'
-                                            : undefined
+                                            : null
                                     }
                                 >
                                     {isSortable ? (
