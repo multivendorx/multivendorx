@@ -179,22 +179,12 @@ const TableCard: React.FC<TableCardProps> = ({
 			key,
 			...rest, // spread everything else except csv and table
 		}));
-	/**
-	 * Root className (manual)
-	 */
-	const rootClassName = [
-		'admin-table-wrapper table-card',
-		className,
-		showMenu ? 'has-menu' : '',
-	]
-		.filter(Boolean)
-		.join(' ');
 
 	return (
-		<div className={rootClassName}>
+		<div className="admin-table-wrapper">
 			{/* HEADER */}
-			<div className="table-card__header">
-				<h2 className="table-card__title">{title}</h2>
+			<div className="table-card-header">
+				<div className="table-card-title">{title}</div>
 			</div>
 
 			{/* BODY */}
