@@ -8,7 +8,7 @@ import {
 } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { formatCurrency } from '../services/commonFunction';
+import { formatCurrency, toWcIsoDate } from '../services/commonFunction';
 import AddProductCom from './addProducts';
 import SpmvProducts from './spmvProducts';
 import { applyFilters } from '@wordpress/hooks';
@@ -31,7 +31,6 @@ const AllProduct: React.FC = () => {
 	const [categoryCounts, setCategoryCounts] = useState<
 		categoryCounts[] | null
 	>(null);
-	const [productMap, setProductMap] = useState<Record<number, any>>({});
 	const [categoriesList, setCategoriesList] = useState<
 		{ id: number; name: string }[]
 	>([]);
@@ -63,7 +62,7 @@ const AllProduct: React.FC = () => {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			}
 		);
-		fetchData({});
+		doRefreshTableData({});
 	};
 
 	const createAutoDraftProduct = () => {
@@ -263,7 +262,7 @@ const AllProduct: React.FC = () => {
 					fetchCategories();
 					fetchProductStatusCounts();
 					fetchWpmlTranslations();
-					fetchData({});
+					doRefreshTableData({});
 				})
 				.catch((err: unknown) => {
 					console.error('Error performing bulk product action:', err);
@@ -275,29 +274,59 @@ const AllProduct: React.FC = () => {
 		{ label: 'Delete', value: 'delete' },
 	];
 
-	const headers = [
-		{ key: 'id', label: 'Product Name' },
-		{ key: 'price', label: 'Price' },
-		{ key: 'stock_status', label: 'Stock' },
-		{ key: 'category', label: 'Categories' },
-		{ key: 'date_created', label: 'Date' },
-		{ key: 'status', label: 'Status' },
-		{
-			key: 'action',
+	const headers = {
+		name: {
+			label: __('Product Name', 'multivendorx'),
+		},
+
+		price: {
+			label: __('Price', 'multivendorx'),
+			type: 'currency',
+		},
+
+		stock_status: {
+			label: __('Stock', 'multivendorx'),
+			render: (row: any) =>
+				row.stock_status === 'instock'
+					? __('In stock', 'multivendorx')
+					: row.stock_status === 'outofstock'
+						? __('Out of stock', 'multivendorx')
+						: row.stock_status,
+		},
+
+		categories: {
+			label: __('Categories', 'multivendorx'),
+			render: (row: any) =>
+				Array.isArray(row.categories) && row.categories.length
+					? row.categories.map((c: any) => c.name).join(', ')
+					: __('-', 'multivendorx'),
+		},
+
+		date_created: {
+			label: __('Date', 'multivendorx'),
+			type: 'date',
+		},
+
+		status: {
+			label: __('Status', 'multivendorx'),
+			type:'status'
+		},
+
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Edit', 'multivendorx'),
 					icon: 'edit',
-					onClick: (id: number) => {
+					onClick: (row) => {
 						if (appLocalizer.permalink_structure) {
 							navigate(
-								`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${id}/`
+								`${basePath}/${appLocalizer.dashboard_slug}/products/edit/${row.id}/`
 							);
 						} else {
 							navigate(
-								`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${id}`
+								`${basePath}/?page_id=${appLocalizer.dashboard_page_id}&segment=products&element=edit&context_id=${row.id}`
 							);
 						}
 					},
@@ -305,36 +334,29 @@ const AllProduct: React.FC = () => {
 				{
 					label: __('View', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id: number) => {
-						const product = productMap[id];
-						window.location.assign(
-							`${product.permalink}`
-						);
+					onClick: (row) => {
+						window.location.assign(row.permalink);
 					},
 				},
 				{
 					label: __('Copy URL', 'multivendorx'),
 					icon: 'copy',
-					onClick: (id: number) => {
-						const url = productMap[id].permalink;
-						navigator.clipboard
-							.writeText(url)
-							.catch(() => { });
+					onClick: (row) => {
+						navigator.clipboard.writeText(row.permalink).catch(() => { });
 					},
 				},
 				{
 					label: __('Delete', 'multivendorx'),
 					icon: 'adminfont-delete delete',
-					onClick: (id: number) => {
-						handleDelete(id);
+					onClick: (row) => {
+						handleDelete(row.id);
 					},
-
 				},
 			],
 		},
-	];
+	};
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/products`, {
@@ -347,12 +369,12 @@ const AllProduct: React.FC = () => {
 					type: query.filter?.productType,
 					category: query.filter?.category,
 					stock_status: query.filter?.stockStatus,
-					// after: query.filter?.created_at?.startDate
-					// 	? formatLocalDate(query.filter.created_at.startDate)
-					// 	: '',
-					// before: query.filter?.created_at?.endDate
-					// 	? formatLocalDate(query.filter.created_at.endDate)
-					// 	: '',
+					after: query.filter?.created_at?.startDate
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: '',
+					before: query.filter?.created_at?.endDate
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: '',
 					meta_key: 'multivendorx_store_id',
 					value: appLocalizer.store_id,
 				},
@@ -364,54 +386,8 @@ const AllProduct: React.FC = () => {
 					.map((item: any) => item.id);
 
 				setRowIds(ids);
-				const productMap = items.reduce((acc: any, product: any) => {
-					acc[product.id] = product;
-					return acc;
-				}, {});
 
-				setProductMap(productMap);
-				const mappedRows: any[][] = items.map((product: any) => [
-					{
-						value: product.id,
-						display: product.name,
-						type: 'card',
-						data: {
-							name: product.name,
-							image: product.images?.[0]?.src || '',
-							description: `SKU: ${product.sku}`,
-							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${product.id}&action=edit`,
-							icon: 'adminfont-store-inventory'
-						},
-					},
-					{
-						display: product.price
-							? formatCurrency(product.price)
-							: '-',
-						value: product.price,
-					},
-					{
-						display: product.stock_status,
-						value: product.stock_status,
-					},
-					{
-						display: product.categories
-							?.map((c: any) => c.name)
-							.join(', ') || '-',
-						value: product.id,
-
-					},
-					{
-						display: product.date_created
-							? product.date_created
-							: '-',
-						value: product.date_created,
-					},
-					{
-						display: product.status,
-						value: product.status,
-					},
-				]);
-				setRows(mappedRows);
+				setRows(items);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -503,7 +479,7 @@ const AllProduct: React.FC = () => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						categoryCounts={categoryCounts}
 						search={{}}

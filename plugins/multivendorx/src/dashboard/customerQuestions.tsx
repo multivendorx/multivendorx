@@ -57,7 +57,7 @@ const CustomerQuestions: React.FC = () => {
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 				setSelectedQna(null);
 				setAnswer('');
 				setSaving(false);
@@ -128,7 +128,7 @@ const CustomerQuestions: React.FC = () => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'qna'), {
@@ -228,7 +228,7 @@ const CustomerQuestions: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
 				search={{}}

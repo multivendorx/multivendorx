@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { PopupUI, TableCard, useModules } from 'zyra';
 import OrderDetails from './orderDetails';
 import AddOrder from './addOrder';
-import { formatCurrency, toWcIsoDate } from '../services/commonFunction';
+import { downloadCSV, formatLocalDate, toWcIsoDate } from '../services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const Orders: React.FC = () => {
@@ -207,9 +207,9 @@ const Orders: React.FC = () => {
 	// Fetch orders
 	useEffect(() => {
 		if (hash === 'refund-requested') {
-			fetchData({ categoryFilter: 'refund-requested', });
+			doRefreshTableData({ categoryFilter: 'refund-requested', });
 		} else {
-			fetchData({});
+			doRefreshTableData({});
 		}
 	}, []);
 
@@ -223,34 +223,36 @@ const Orders: React.FC = () => {
 		{ label: 'Failed', value: 'failed' },
 	];
 
-	const headers = [
-		{
-			key: 'id',
+	const headers = {
+		id: {
 			label: __('Order ID', 'multivendorx'),
 		},
-		{
-			key: 'customer',
+
+		customer: {
 			label: __('Customer', 'multivendorx'),
 		},
-		{
-			key: 'date_created',
+
+		date_created: {
 			label: __('Date', 'multivendorx'),
-			isSortable: true,
+			type: 'date'
 		},
-		{
-			key: 'status',
+
+		status: {
 			label: __('Status', 'multivendorx'),
+			type: 'status'
 		},
-		{
-			key: 'commission_total',
+
+		commission_total: {
 			label: __('Total Earning', 'multivendorx'),
+			type: 'currency'
 		},
-		{
-			key: 'total',
+
+		total: {
 			label: __('Total', 'multivendorx'),
+			type: 'currency'
 		},
-		{
-			key: 'action',
+
+		action: {
 			type: 'action',
 			label: 'Action',
 			actions: [
@@ -259,46 +261,48 @@ const Orders: React.FC = () => {
 						{
 							label: __('View', 'multivendorx'),
 							icon: 'eye',
-							onClick: (id: number) => {
-								setSelectedOrder(orderLookup[id]);
-								window.location.hash = `view/${id}`;
+							onClick: (row) => {
+								setSelectedOrder(row);
+								window.location.hash = `view/${row.id}`;
 							},
 						},
 					]
 					: []),
+
 				{
 					label: __('Download', 'multivendorx'),
 					icon: 'download',
-					onClick: (id: number) => {
-						window.location.href = `?page=multivendorx#&tab=stores&edit/${id}`;
+					onClick: (row) => {
+						window.location.href = `?page=multivendorx#&tab=stores&edit/${rowIds.id}`;
 					},
 				},
+
 				{
 					label: __('Copy URL', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id: number) => {
-						navigator.clipboard.writeText(
-							window.location.href
-						);
+					onClick: () => {
+						navigator.clipboard.writeText(window.location.href);
 					},
 				},
+
 				{
 					label: __('Shipping', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id: number) => {
-						window.location.href = `?page=multivendorx#&tab=stores&edit/${id}`;
+					onClick: (row) => {
+						window.location.href = `?page=multivendorx#&tab=stores&edit/${row.id}`;
 					},
 				},
+
 				{
 					label: __('PDF', 'multivendorx'),
 					icon: 'eye',
-					onClick: (id: number) => {
-						window.location.href = `?page=multivendorx#&tab=stores&edit/${id}`;
+					onClick: (row) => {
+						window.location.href = `?page=multivendorx#&tab=stores&edit/${row.id}`;
 					},
 				},
 			],
 		},
-	];
+	};
 	const filters = [
 		{
 			key: 'created_at',
@@ -306,61 +310,8 @@ const Orders: React.FC = () => {
 			type: 'date',
 		},
 	];
-	
-	const orderColumns = (order: any) => ({
-		[__('Order ID', 'multivendorx')]: order.id ?? '',
-		[__('Customer', 'multivendorx')]:
-			order.billing?.first_name || order.billing?.last_name
-				? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
-				: order.billing?.email || __('Guest', 'multivendorx'),
-		[__('Date', 'multivendorx')]: order.date_created? formatWcShortDate(order.date_created) : '',
-		[__('Status', 'multivendorx')] : order.status ?? '',
-		[__('Total Earning', 'multivendorx')] : order.commission_total ?? '',
-		[__('Total', 'multivendorx')] : order.total ?? '',
-	});	
-	const buttonActions = [
-		{
-			label: __('Download CSV', 'multivendorx'),
-			icon: 'download',
-	
-			onClickWithQuery: (query: QueryProps) =>
-				ExportCSV({
-					url: getApiLink(appLocalizer, 'orders'),
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-	
-					filename:
-						query.filter?.created_at?.startDate &&
-						query.filter?.created_at?.endDate
-							? `orders-${formatWcShortDate(
-									query.filter.created_at.startDate
-							  )}-${formatWcShortDate(
-									query.filter.created_at.endDate
-							  )}.csv`
-							: `orders-${formatWcShortDate(new Date())}.csv`,
-	
-					paramsBuilder: {
-						page: 1,
-						per_page: 100,
-						search: query.searchValue,
-						orderby: query.orderby || 'date',
-						order: query.order || 'desc',
-						meta_key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-	
-						after: query.filter?.created_at?.startDate
-							? toWcIsoDate(query.filter.created_at.startDate, 'start')
-							: undefined,
-	
-						before: query.filter?.created_at?.endDate
-							? toWcIsoDate(query.filter.created_at.endDate, 'end')
-							: undefined,
-					},
-	
-					columns: orderColumns,
-				}),
-		},
-	];	
-	const fetchData = (query: QueryProps) => {
+
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -368,75 +319,18 @@ const Orders: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: {
-					page: query.paged, // Changed from query.page to match your TableCard query state
-					per_page: query.per_page,
-					search: query.searchValue,
-					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					orderby: query.orderby || 'date',
-					order: query.order || 'desc',
-					meta_key: 'multivendorx_store_id',
-					value: appLocalizer.store_id,
-					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
-						: undefined,
-					before: query.filter?.created_at?.endDate
-						? toWcIsoDate(query.filter.created_at.endDate, 'end')
-						: undefined,
-				},
+				params: buildOrderQueryParams(query)
 			})
 			.then((response) => {
 				const orders = Array.isArray(response.data) ? response.data : [];
-
+				setRowIds(orders.map((o: any) => o.id));
 				const lookup: Record<number, any> = {};
 				orders.forEach((order: any) => {
 					lookup[order.id] = order;
 				});
 
 				setOrderLookup(lookup);
-
-				setRowIds(orders.map((o: any) => o.id));
-
-				const mappedRows: TableRow[][] = orders.map((order: any) => [
-					{
-						display: (
-							<span
-								className="link"
-								onClick={() => {
-									setSelectedOrder(order);
-									window.location.hash = `view/${order.id}`;
-								}}
-							>
-								#{order.number}
-							</span>
-						),
-						value: order.id,
-					},
-					{
-						display: (order.billing?.first_name || order.billing?.last_name)
-							? `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim()
-							: (order.billing?.email || __('Guest', 'multivendorx')),
-						value: order.id || '',
-					},
-					{
-						display: (order.date_created),
-						value: order.date_created,
-					},
-					{
-						display: order.status,
-						value: order.status,
-					},
-					{
-						display: formatCurrency(order.commission_total || 0),
-						value: order.commission_total || 0,
-					},
-					{
-						display: formatCurrency(order.total),
-						value: order.total,
-					},
-				]);
-
-				setRows(mappedRows);
+				setRows(orders);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -448,35 +342,91 @@ const Orders: React.FC = () => {
 	};
 
 	const handleBulkAction = (
-	action: string,
-	selectedIds: number[]
-) => {
-	if (!action || selectedIds.length === 0) return;
+		action: string,
+		selectedIds: number[]
+	) => {
+		if (!action || selectedIds.length === 0) return;
 
-	const updatePayload = {
-		update: selectedIds.map((id) => ({
-			id,
-			status: action,
-		})),
+		const updatePayload = {
+			update: selectedIds.map((id) => ({
+				id,
+				status: action,
+			})),
+		};
+
+		axios
+			.post(
+				`${appLocalizer.apiUrl}/wc/v3/orders/batch`,
+				updatePayload,
+				{
+					headers: {
+						'X-WP-Nonce': appLocalizer.nonce,
+					},
+				}
+			)
+			.then(() => {
+				doRefreshTableData({});
+			})
+			.catch((err) => {
+				console.error('Error performing bulk action:', err);
+			});
 	};
 
-	axios
-		.post(
-			`${appLocalizer.apiUrl}/wc/v3/orders/batch`,
-			updatePayload,
-			{
+	const buildOrderQueryParams = (
+		query: QueryProps,
+		includePagination: boolean = true
+	) => {
+		const params: Record<string, any> = {
+			search: query.searchValue,
+			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			orderby: query.orderby || 'date',
+			order: query.order || 'desc',
+			meta_key: 'multivendorx_store_id',
+			value: appLocalizer.store_id,
+			after: query.filter?.created_at?.startDate
+				? toWcIsoDate(query.filter.created_at.startDate, 'start')
+				: undefined,
+			before: query.filter?.created_at?.endDate
+				? toWcIsoDate(query.filter.created_at.endDate, 'end')
+				: undefined,
+		};
+
+		if (includePagination) {
+			params.page = query.page || 1;
+			params.per_page = query.per_page || 10;
+		}
+
+		return params;
+	};
+
+	const downloadCSVByQuery = (query: QueryProps) => {
+		axios
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders`, {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-			}
-		)
-		.then(() => {
-			fetchData({});
-		})
-		.catch((err) => {
-			console.error('Error performing bulk action:', err);
-		});
-};
+				params: buildOrderQueryParams(query,false)
+			})
+			.then((response) => {
+				const rows = response.data || [];
+
+				downloadCSV(
+					headers,
+					rows,
+					`order-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch((error) => {
+				console.error('CSV download failed:', error);
+			});
+	};
+	const buttonActions = [
+		{
+			label: __('Download CSV', 'multivendorx'),
+			icon: 'download',
+			onClickWithQuery: downloadCSVByQuery
+		},
+	];
 
 
 	return (
@@ -520,7 +470,7 @@ const Orders: React.FC = () => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						search={{
 							placeholder: 'Search...',
 							options: [
@@ -538,6 +488,14 @@ const Orders: React.FC = () => {
 						bulkActions={bulkActions}
 						onBulkActionApply={(action: string, selectedIds: []) => {
 							handleBulkAction(action, selectedIds)
+						}}
+						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position
 						}}
 					/>
 

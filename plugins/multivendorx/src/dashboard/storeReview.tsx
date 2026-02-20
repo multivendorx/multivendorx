@@ -13,7 +13,7 @@ import {
 	NavigatorHeader,
 } from 'zyra';
 
-import { formatLocalDate, formatWcShortDate } from '@/services/commonFunction';
+import { formatLocalDate } from '@/services/commonFunction';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type Review = {
@@ -66,7 +66,7 @@ const StoreReview: React.FC = () => {
 					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 				)
 				.then(() => {
-					fetchData({});
+					doRefreshTableData({});
 				});
 
 			setSelectedReview(null);
@@ -95,24 +95,40 @@ const StoreReview: React.FC = () => {
 			})
 	};
 
-	const headers = [
-		{ key: 'customer', label: __('Customer', 'multivendorx') },
-		{ key: 'details', label: __('Details', 'multivendorx'), type: 'card' },
-		{ key: 'status', label: __('Status', 'multivendorx'), type: 'status' },
-		{ key: 'date_created', label: __('Date', 'multivendorx'), sortable: true },
-		{
-			key: 'action',
+	const headers = {
+		customer_name: {
+			label: __('Customer', 'multivendorx'),
+		},
+		overall_rating: {
+			label: __('Ratings', 'multivendorx'),
+		},
+		review_title: {
+			label: __('Title', 'multivendorx'),
+		},
+		review_content: {
+			label: __('Content', 'multivendorx'),
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status',
+		},
+		date_created: {
+			label: __('Date', 'multivendorx'),
+			sortable: true,
+			type: 'date'
+		},
+		action: {
 			label: __('Action', 'multivendorx'),
 			type: 'action',
 			actions: [
 				{
 					label: __('Reply / Edit', 'multivendorx'),
 					icon: 'edit',
-					onClick: (id: number) => fetchReviewById(id),
+					onClick: (row) => fetchReviewById(row.id),
 				},
-			],
+			]
 		},
-	];
+	};
 
 	const filters = [
 		{
@@ -135,7 +151,7 @@ const StoreReview: React.FC = () => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -145,60 +161,28 @@ const StoreReview: React.FC = () => {
 					page: query.paged || 1,
 					row: query.per_page || 10,
 					status: query.categoryFilter || '',
-					searchValue: query.searchValue || '',
-					storeId: appLocalizer.store_id,
-					startDate: query.filter?.created_at?.startDate
+					search_value: query.searchValue || '',
+					store_id: appLocalizer.store_id,
+					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
-					overallRating: query?.filter?.rating,
-					orderBy: query.orderby,
+					overall_rating: query?.filter?.rating,
+					order_by: query.orderby,
 					order: query.order,
 				},
 			})
 			.then((response) => {
 				const items = response.data || [];
 				const ids = items
-					.filter((item: any) => item?.review_id != null)
-					.map((item: any) => item.review_id);
+					.filter((item: any) => item?.id != null)
+					.map((item: any) => item.id);
 
 				setRowIds(ids);
 
-				const mappedRows: any[][] = items.map((item: any) => [
-					{
-						value: item.customer_id,
-						display: item.customer_name || '-',
-						type: 'card',
-						data: {
-							name: item.customer_name,
-							link: item.customer_id
-								? `${window.location.origin}/wp-admin/user-edit.php?user_id=${item.customer_id}`
-								: null,
-						},
-					},
-					{
-						type: 'card',
-						value: item.id,
-						display: item.id || '-',
-						data: {
-							name: item.overall_rating || 0,
-							description: item.review_title || '-',
-							subDescription: item.review_content || '',
-						},
-					},
-					{
-						value: item.status,
-						display: item.status,
-					},
-					{
-						value: item.date_created,
-						display: formatWcShortDate(item.date_created),
-					}
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
@@ -246,11 +230,12 @@ const StoreReview: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				ids={rowIds}
 				categoryCounts={categoryCounts}
 				search={{}}
 				filters={filters}
+				format={appLocalizer.date_format}
 			/>
 			{selectedReview && (
 				<PopupUI

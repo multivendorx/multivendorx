@@ -6,7 +6,6 @@ import { __ } from '@wordpress/i18n';
 import { TableRow } from '@/services/type';
 
 const AddOrder = () => {
-	const [taxLookup, setTaxLookup] = useState<Record<number, WCTax>>({});
 	const [rowIds, setRowIds] = useState<number[]>([]);
 
 	const [showAddProduct, setShowAddProduct] = useState(false);
@@ -196,36 +195,13 @@ const AddOrder = () => {
 			})
 			.then((res) => {
 				const taxes = Array.isArray(res.data) ? res.data : [];
-				const lookup: Record<string, any> = {};
 				const ids = taxes.map((tax: any) => {
-					lookup[tax.id] = tax;
 					return tax.id;
 				});
 
 				setRowIds(ids);
-				setTaxLookup(lookup);
 
-				// 2. Map your rows for the UI
-				const mappedRows: any[][] = taxes.map((tax: any) => [
-					{
-						value: tax.name,
-						display: tax.name,
-					},
-					{
-						value: tax.class,
-						display: tax.class,
-					},
-					{
-						value: tax.name,
-						display: `${tax.country}-${tax.state}-${tax.name}`,
-					},
-					{
-						value: tax.rate,
-						display: tax.rate,
-					}
-				]);
-
-				setTaxRates(mappedRows);
+				setTaxRates(taxes);
 			});
 	}, []);
 
@@ -390,27 +366,33 @@ const AddOrder = () => {
 		}
 	}, [hasCustomer, shippingAddress]);
 
-	const headers = [
-		{ key: 'name', label: 'Rate name' },
-		{ key: 'class', label: 'Tax class' },
-		{ key: 'code', label: 'Rate code' },
-		{ key: 'rate', label: 'Rate %' },
-		{
-			key: 'action',
+	const headers = {
+		name: {
+			label: __('Rate name', 'multivendorx'),
+		},
+		class: {
+			label: __('Tax class', 'multivendorx'),
+		},
+		code: {
+			label: __('Rate code', 'multivendorx'),
+		},
+		rate: {
+			label: __('Rate %', 'multivendorx'),
+		},
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Click', 'multivendorx'),
 					icon: 'edit',
-					onClick: (id: number) => {
-						let tax = taxLookup[id];
-						if (tax) setSelectedTaxRate(tax)
+					onClick: (row) => {
+						if (tax) setSelectedTaxRate(row);
 					},
 				},
 			],
 		},
-	];
+	};
 
 	return (
 		<>

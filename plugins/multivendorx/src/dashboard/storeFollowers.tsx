@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 import { getApiLink, NavigatorHeader, TableCard } from 'zyra';
-import { formatTimeAgo } from '@/services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 
@@ -12,13 +11,22 @@ const StoreFollower: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 
-	const headers = [
-		{ key: 'name', label: 'Name' },
-		{ key: 'email', label: 'Email' },
-		{ key: 'date', label: 'Followed On' }
-	];
+	const headers = {
+		name: {
+			label: __('Name', 'multivendorx'),
+		},
 
-	const fetchData = (query: QueryProps) => {
+		email: {
+			label: __('Email', 'multivendorx'),
+		},
+
+		date: {
+			label: __('Followed On', 'multivendorx'),
+			type: 'date',
+		},
+	};
+
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'follow-store'), {
@@ -26,19 +34,12 @@ const StoreFollower: React.FC = () => {
 				params: {
 					store_id: appLocalizer.store_id,
 					page: query.paged || 1,
-					row:query.per_page || 10,
+					row: query.per_page || 10,
 				},
 			})
 			.then((response) => {
 				const items = response.data || [];
-
-				const mappedRows: any[][] = items.map((fol: any) => [
-					{ display: fol.name, value:  fol.name },
-					{ display: fol.email, value:  fol.email },
-					{ display: formatTimeAgo(fol.date), value:  fol.date },
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
@@ -62,7 +63,8 @@ const StoreFollower: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
+				format={appLocalizer.date_format}
 			/>
 		</>
 	);
