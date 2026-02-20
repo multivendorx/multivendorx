@@ -5,14 +5,16 @@ import {
 	getApiLink,
 	TableCard,
 	NavigatorHeader,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { formatCurrency, toWcIsoDate } from '../services/commonFunction';
+import { toWcIsoDate } from '../services/commonFunction';
 import AddProductCom from './addProducts';
 import SpmvProducts from './spmvProducts';
 import { applyFilters } from '@wordpress/hooks';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const STATUS_LABELS: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -29,7 +31,7 @@ const AllProduct: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 	const [categoriesList, setCategoriesList] = useState<
 		{ id: number; name: string }[]

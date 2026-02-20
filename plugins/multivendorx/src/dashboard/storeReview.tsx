@@ -11,10 +11,12 @@ import {
 	TextAreaUI,
 	TableCard,
 	NavigatorHeader,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 
 import { formatLocalDate } from '@/services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type Review = {
 	review_id: number;
@@ -42,7 +44,7 @@ const StoreReview: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 	const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 	const [replyText, setReplyText] = useState<string>('');

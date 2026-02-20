@@ -12,11 +12,13 @@ import {
 	ToggleSettingUI,
 	TextAreaUI,
 	PopupUI,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 
 import Popup from '../Popup/Popup';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type StoreQnaRow = {
 	id: number;
@@ -37,7 +39,7 @@ const Qna: React.FC = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState<any[] | null>(null);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 
 	const [selectedQna, setSelectedQna] = useState<StoreQnaRow | null>(null);

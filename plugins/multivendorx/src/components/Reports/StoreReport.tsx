@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, getApiLink, TableCard } from 'zyra';
+import { Analytics, Card, Column, getApiLink, TableCard, TableRow,QueryProps,CategoryCount} from 'zyra';
 import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import axios from 'axios';
 import { formatCurrency, formatDate, formatLocalDate } from '../../services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 import Counter from '@/services/Counter';
 
 const StoreReport: React.FC = () => {
@@ -13,7 +12,7 @@ const StoreReport: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 	const [overviewData, setOverviewData] = useState<any[]>([]);
 	const [pieData, setPieData] = useState<{ name: string; value: number }[]>(

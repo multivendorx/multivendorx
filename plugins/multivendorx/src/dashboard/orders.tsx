@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { PopupUI, TableCard, useModules } from 'zyra';
+import { PopupUI, TableCard, useModules, TableRow, QueryProps, CategoryCount } from 'zyra';
 import OrderDetails from './orderDetails';
 import AddOrder from './addOrder';
 import { downloadCSV, formatLocalDate, toWcIsoDate } from '../services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const Orders: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -14,7 +13,7 @@ const Orders: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 	const [orderLookup, setOrderLookup] = useState<Record<number, any>>({});
 	const [confirmOpen, setConfirmOpen] = useState(false);
@@ -405,7 +404,7 @@ const Orders: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildOrderQueryParams(query,false)
+				params: buildOrderQueryParams(query, false)
 			})
 			.then((response) => {
 				const rows = response.data || [];

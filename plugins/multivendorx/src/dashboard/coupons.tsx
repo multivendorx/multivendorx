@@ -12,11 +12,13 @@ import {
 	TableCard,
 	NavigatorHeader,
 	Tabs,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 import { formatLocalDate, toWcIsoDate } from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
@@ -49,7 +51,7 @@ const AllCoupon: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 
 	const [validationErrors, setValidationErrors] = useState<{
