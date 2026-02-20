@@ -477,7 +477,7 @@ class Rest extends \WP_REST_Controller {
             'author_name'         => $author_name,
             'question_date'       => Utill::multivendorx_rest_prepare_date_response( $q['question_date'] ),
             'answer_by'           => isset( $q['answer_by'] ) ? (int) $q['answer_by'] : 0,
-            'answer_date'         => $q['answer_date'] ?? '',
+            'answer_date'         => Utill::multivendorx_rest_prepare_date_response( $q['answer_date'] ) ?? '',
             'time_ago'            => human_time_diff( strtotime( $q['question_date'] ), current_time( 'timestamp' ) ) . ' ago',
             'total_votes'         => (int) $q['total_votes'],
             'question_visibility' => $q['question_visibility'],

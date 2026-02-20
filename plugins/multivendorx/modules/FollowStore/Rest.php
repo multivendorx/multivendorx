@@ -174,7 +174,7 @@ class Rest extends \WP_REST_Controller {
                         'id'    => $user_id,
                         'name'  => $full_name,
                         'email' => $user->user_email,
-                        'date'  => $follow_date,
+                        'date'  => Utill::multivendorx_rest_prepare_date_response( $follow_date ),
                     );
                 }
             }

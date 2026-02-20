@@ -90,31 +90,31 @@ const StoreTable: React.FC = () => {
 
 	const headers = {
 		store_name: {
-			label: 'Store',
+			label: __('Store', 'multivendorx'),
 		},
 		email: {
-			label: 'Contact',
+			label: __('Contact', 'multivendorx'),
 		},
 		lifetime_earning: {
-			label: 'Lifetime Earning',
+			label: __('Lifetime Earning', 'multivendorx'),
 			render: (row) => (
 				formatCurrency(row.commission?.commission_total)
 			),
 		},
 		primary_owner: {
-			label: 'Primary Owner',
+			label: __('Primary Owner', 'multivendorx'),
 			render: (row) => (
 				row.primary_owner?.data?.display_name
 			),
 		},
 		status: {
-			label: 'Status',
-			type:'status'
+			label: __('Status', 'multivendorx'),
+			type: 'status',
 		},
 		action: {
 			key: 'action',
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Settings', 'multivendorx'),

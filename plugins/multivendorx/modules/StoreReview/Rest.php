@@ -469,7 +469,7 @@ class Rest extends \WP_REST_Controller
             'status'         => ucfirst(sanitize_text_field($review['status'])),
             'reported'       => (int) $review['reported'],
             'reply'          => $review['reply'] ?? '',
-            'reply_date'     => $review['reply_date'] ?? '',
+            'reply_date'     => Utill::multivendorx_rest_prepare_date_response($review['reply_date']) ?? '',
             'date_created'   => Utill::multivendorx_rest_prepare_date_response($review['date_created']),
             'date_modified'  => $review['date_modified'],
         );

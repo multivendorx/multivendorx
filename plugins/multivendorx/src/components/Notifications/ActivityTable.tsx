@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {  getApiLink, Container, Column, TableCard } from 'zyra';
+import { getApiLink, Container, Column, TableCard } from 'zyra';
 import { QueryProps, TableRow } from '@/services/type';
 
 const ActivityTable = (React.FC = () => {
@@ -24,14 +24,7 @@ const ActivityTable = (React.FC = () => {
 			.then((response) => {
 				const items = response.data || [];
 
-				const mappedRows: any[][] = items.map((item: any) => [
-					{ display: item.store_name, value: item.store_name },
-					{ display: item.title, value: item.title },
-					{ display: item.type, value: item.type },
-					{ display: item.date, value: item.date }
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -44,24 +37,21 @@ const ActivityTable = (React.FC = () => {
 			});
 	};
 
-	const headers = [
-		{
-			key: 'store_name',
-			label: 'Store Name',
+	const headers = {
+		store_name: {
+			label: __('Store Name', 'multivendorx'),
 		},
-		{
-			key: 'title',
-			label: 'Title',
+		title: {
+			label: __('Title', 'multivendorx'),
 		},
-		{
-			key: 'type',
-			label: 'Type',
+		type: {
+			label: __('Type', 'multivendorx'),
 		},
-		{
-			key: 'date',
-			label: 'Date',
-		}
-	];
+		date: {
+			label: __('Date', 'multivendorx'),
+			type:'date'
+		},
+	};
 
 	return (
 		<Container general>

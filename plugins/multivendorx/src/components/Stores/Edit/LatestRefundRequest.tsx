@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { formatCurrency } from '@/services/commonFunction';
 import { getApiLink, TableCard } from 'zyra';
-import { QueryProps, TableHeader, TableRow } from '@/services/type';
+import { QueryProps, TableRow } from '@/services/type';
 
 interface LatestRefundRequestProps {
 	store_id: number;
@@ -27,42 +26,14 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 					page: query.paged || 1,
 					row: 3,
 					store_id: store_id,
-					orderBy: 'date',
+					order_by: 'date',
 					order: 'desc',
 				},
 			})
 			.then((response) => {
 				const items = response.data || [];
 
-				const mappedRows: any[][] = items.map((item: any) => [
-					{
-						type: 'card',
-						display: `#${item.order_id}`,
-						value: item.order_id,
-						data: {
-							name: `#${item.order_id}`,
-							link: `${appLocalizer.site_url.replace(
-								/\/$/,
-								''
-							)}/wp-admin/post.php?post=${item.order_id}&action=edit`
-						}
-					},
-					{
-						type: 'card',
-						display: item.customer_name,
-						value: item.customer_name,
-						data: {
-							name: item.customer_name,
-							link: item.customer_edit_link,
-						}
-					},
-					{ display: formatCurrency(item.amount), value: item.amount },
-					{ display: item.reason, value: item.reason },
-					{ display: item.status, value: item.status },
-					{ display: item.date, value: item.date }
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -72,32 +43,26 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 			});
 	};
 
-	const headers: TableHeader[] = [
-		{
-			key: 'order_id',
-			label: 'Order',
+	const headers = {
+		order_id: {
+			label: __('Order', 'multivendorx'),
 		},
-		{
-			key: 'customer',
-			label: 'Customer',
+		customer_name: {
+			label: __('Customer', 'multivendorx'),
 		},
-		{
-			key: 'amount',
-			label: 'Refund Amount',
+		amount: {
+			label: __('Refund Amount', 'multivendorx'),
 		},
-		{
-			key: 'reason',
-			label: 'Refund Reason',
+		reason: {
+			label: __('Refund Reason', 'multivendorx'),
 		},
-		{
-			key: 'status',
-			label: 'Status',
+		status: {
+			label: __('Status', 'multivendorx'),
 		},
-		{
-			key: 'date',
-			label: 'Date',
-		}
-	];
+		date: {
+			label: __('Date', 'multivendorx'),
+		},
+	};
 
 	return <>
 
