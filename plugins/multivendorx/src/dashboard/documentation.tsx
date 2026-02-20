@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, HeaderSearch, NavigatorHeader } from 'zyra';
+import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, HeaderSearch, NavigatorHeader, BasicInputUI } from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -99,30 +99,11 @@ const Documentation: React.FC = () => {
 			/>
 
 			<Card>
-				<div className="buttons-wrapper">
-					<div className="search-field">
-						<div className="search-section">
-							<BasicInputUI
-								type="text"
-								placeholder={__(
-									'Search documents...',
-									'multivendorx'
-								)}
-								value={searchText}
-								onChange={(value) => setSearchText(value)}
-							/>
-							<i className="adminfont-search"></i>
-						</div>
-					</div>
-				</div>
 				<HeaderSearch
 					variant="mini-search"
 					search={{ placeholder: 'Search .....' }}
 					onQueryUpdate={(e) => {
-						setSearchQuery(e.searchValue);
-						if ('searchAction' in e) {
-							setSelectedFilter(e.searchAction);
-						}
+						setSearchText(e.searchValue);
 					}}
 				/>
 				{filteredDocuments.length === 0 && (

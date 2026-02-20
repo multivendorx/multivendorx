@@ -281,7 +281,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     const renderSingleMenuItem = (item: SettingContent, index: number) => {
 
         if (isHeading(item)) {
-            return <div key={index} className="tab-heading">{item.headerTitle}</div>;
+            return <div key={index} className="tab-heading">{item.content.headerTitle}</div>;
         }
 
         if (isFile(item)) {

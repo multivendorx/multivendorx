@@ -16,11 +16,13 @@ import {
 	SelectInputUI,
 	PopupUI,
 	NavigatorHeader,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 import './Announcements.scss';
 import Popup from '../Popup/Popup';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 type AnnouncementForm = {
 	title: string;
@@ -85,7 +87,7 @@ export const Announcements: React.FC = () => {
 	};
 
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 	const [storeOptions, setStoreOptions] = useState<
 		{ value: string; label: string }[]

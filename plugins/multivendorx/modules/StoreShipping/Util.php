@@ -102,10 +102,7 @@ class Util {
     public static function get_shipping_method( $store_id, $method_id, $zone_id ) {
         $store = new \MultiVendorX\Store\Store( $store_id );
 
-        // Build the meta key.
         $meta_key = $method_id . '_' . $zone_id;
-
-        // Get the meta value.
         $settings = $store->get_meta( $meta_key );
 
         if ( empty( $settings ) ) {
@@ -116,16 +113,14 @@ class Util {
             );
         }
 
-        // Decode JSON if stored as string.
-        if ( is_string( $settings ) ) {
-            $settings = json_decode( $settings, true );
-        }
+        // Proper way for WP meta
+        $settings = maybe_unserialize( $settings );
 
         return array(
             'method_id' => $method_id,
             'zone_id'   => $zone_id,
             'settings'  => $settings,
-            'enabled'   => 'yes', // Keep previous behavior.
+            'enabled'   => 'yes',
         );
     }
 

@@ -15,11 +15,13 @@ import {
 	BasicInputUI,
 	AdminButtonUI,
 	PopupUI,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 import Popup from '../Popup/Popup';
 import '../Announcements/Announcements.scss';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 
 type KBForm = {
@@ -34,7 +36,7 @@ export const KnowledgeBase: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 
 	const [submitting, setSubmitting] = useState(false);
@@ -203,7 +205,7 @@ export const KnowledgeBase: React.FC = () => {
 			label: __('Status', 'multivendorx'),
 			type: 'status'
 		},
-		date: {
+		date_created: {
 			label: __('Date', 'multivendorx'),
 			type: 'date'
 		},

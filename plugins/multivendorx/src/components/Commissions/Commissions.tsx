@@ -10,10 +10,12 @@ import {
 	Column,
 	TableCard,
 	ItemList,
+	TableRow,
+	QueryProps,
+	CategoryCount
 } from 'zyra';
 import ViewCommission from './ViewCommission';
 import { downloadCSV, formatLocalDate } from '../../services/commonFunction';
-import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
 const Commission: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -21,7 +23,7 @@ const Commission: React.FC = () => {
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [categoryCounts, setCategoryCounts] = useState<
-		categoryCounts[] | null
+		CategoryCount[] | null
 	>(null);
 	const [store, setStore] = useState<any[] | null>(null);
 	const [commissionLookup, setCommissionLookup] = useState<Record<number, WCTax>>({});
@@ -246,7 +248,7 @@ const Commission: React.FC = () => {
 		axios
 			.get(getApiLink(appLocalizer, 'commission'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				params:buildCommissionQueryParams(query,false),
+				params: buildCommissionQueryParams(query, false),
 			})
 			.then((response) => {
 				const rows = response.data || [];
