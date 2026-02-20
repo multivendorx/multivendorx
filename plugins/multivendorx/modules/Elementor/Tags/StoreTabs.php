@@ -1,5 +1,6 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
+
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 
@@ -34,7 +35,7 @@ class StoreTabs extends Tag {
     }
 
     public function get_categories() {
-        return [ Module::TEXT_CATEGORY ];
+        return array( Module::TEXT_CATEGORY );
     }
 
     /**
@@ -49,48 +50,48 @@ class StoreTabs extends Tag {
         // $store_id = 0;
 
         // if ( mvx_is_store_page() ) {
-        //     $store = mvx_find_shop_page_vendor();
+        // $store = mvx_find_shop_page_vendor();
 
-        //     if ( $store ) {
-        //         $store_id = $store;
-        //     }
-
-        //    $store_tab_items = $MVX->frontend->mvx_get_store_tabs($store_id);
-        // } else {
-        //     $store_tab_items = $this->get_store_tab_items();
+        // if ( $store ) {
+        // $store_id = $store;
         // }
-        
+
+        // $store_tab_items = $MVX->frontend->mvx_get_store_tabs($store_id);
+        // } else {
+        // $store_tab_items = $this->get_store_tab_items();
+        // }
+
         // $tab_items = [];
 
         // foreach( $store_tab_items as $item_key => $item ) {
-        //     $url = $item['url'];
+        // $url = $item['url'];
 
-        //     if ( empty( $url ) && ! $store_id ) {
-        //         $url = '#';
-        //     }
+        // if ( empty( $url ) && ! $store_id ) {
+        // $url = '#';
+        // }
 
-        //     $tab_items[] = [
-        //         'key'         => $item['id'],
-        //         'title'       => $item['title'],
-        //         'text'        => $item['title'],
-        //         'url'         => $url,
-        //         'icon'        => '',
-        //         'show'        => true,
-        //         '__dynamic__' => [
-        //             'text' => $item['title'],
-        //             'url'  => $url,
-        //         ]
-        //     ];
+        // $tab_items[] = [
+        // 'key'         => $item['id'],
+        // 'title'       => $item['title'],
+        // 'text'        => $item['title'],
+        // 'url'         => $url,
+        // 'icon'        => '',
+        // 'show'        => true,
+        // '__dynamic__' => [
+        // 'text' => $item['title'],
+        // 'url'  => $url,
+        // ]
+        // ];
         // }
         // /**
-        //  * Filter to modify tag values
-        //  *
-        //  * @since 1.0.0
-        //  *
-        //  * @param array $tab_items
-        //  */
+        // * Filter to modify tag values
+        // *
+        // * @since 1.0.0
+        // *
+        // * @param array $tab_items
+        // */
         // return apply_filters( 'mvx_elementor_tags_store_tab_items_value', $tab_items );
-        return [];
+        return array();
     }
 
     /**
@@ -101,26 +102,26 @@ class StoreTabs extends Tag {
      * @return array
      */
     protected function get_store_tab_items() {
-        return [
-            [
-                'id'              => 'products',
+        return array(
+            array(
+                'id'    => 'products',
                 'title' => __( 'Products', 'multivendorx' ),
-                'show'        => true,
+                'show'  => true,
                 'url'   => '#',
-            ],
-            [
-                'id'              => 'policies',
+            ),
+            array(
+                'id'    => 'policies',
                 'title' => __( 'Policies', 'multivendorx' ),
-                'show'        => true,
+                'show'  => true,
                 'url'   => '#',
-            ],
-            [
-                'id'              => 'reviews',
+            ),
+            array(
+                'id'    => 'reviews',
                 'title' => __( 'Reviews', 'multivendorx' ),
-                'show'        => true,
-                'url'   => '#'
-            ],
-        ];
+                'show'  => true,
+                'url'   => '#',
+            ),
+        );
     }
 
     protected function render() {

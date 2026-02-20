@@ -1,5 +1,6 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
+
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 
@@ -12,7 +13,7 @@ class StoreChat extends Tag {
      *
      * @param array $data
      */
-    public function __construct( $data = [] ) {
+    public function __construct( $data = array() ) {
         parent::__construct( $data );
     }
 
@@ -43,7 +44,7 @@ class StoreChat extends Tag {
     }
 
     public function get_categories() {
-        return [ Module::TEXT_CATEGORY ];
+        return array( Module::TEXT_CATEGORY );
     }
 
 
@@ -57,16 +58,16 @@ class StoreChat extends Tag {
     public function render() {
         global $product;
         // if (mvx_is_store_page()) {
-        //     $vendor_id = mvx_find_shop_page_vendor();
+        // $vendor_id = mvx_find_shop_page_vendor();
         // } else {
-        //     $vendor = get_mvx_product_vendors($product->get_id());
-        //     $vendor_id = $vendor->id;
+        // $vendor = get_mvx_product_vendors($product->get_id());
+        // $vendor_id = $vendor->id;
         // }
         // $enable_vendor_chat = !empty(get_user_meta($vendor_id, 'vendor_chat_enable', true)) ? get_user_meta($vendor_id, 'vendor_chat_enable', true) : '';
         // if( get_live_chat_settings('enable_chat') != 'Enable' ) {
-        //     esc_html_e( 'Chat module is not active', 'multivendorx' );
-        //     return;
+        // esc_html_e( 'Chat module is not active', 'multivendorx' );
+        // return;
         // }
-        return esc_html_e('Chat Now', 'multivendorx');
+        return esc_html_e( 'Chat Now', 'multivendorx' );
     }
 }

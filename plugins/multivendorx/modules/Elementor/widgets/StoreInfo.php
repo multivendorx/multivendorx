@@ -25,11 +25,11 @@ class Store_Info extends Widget_Icon_List {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	public function get_keywords() {
-		return [ 'multivendorx', 'store', 'store', 'info', 'address', 'location' ];
+		return array( 'multivendorx', 'store', 'store', 'info', 'address', 'location' );
 	}
 
 	protected function register_controls() {
@@ -37,52 +37,70 @@ class Store_Info extends Widget_Icon_List {
 
 		$this->update_control(
 			'section_icon',
-			[
+			array(
 				'label' => __( 'Store Info Details', 'multivendorx' ),
-			]
+			)
 		);
 
 		$repeater = new Repeater();
 
 		$repeater->add_control(
 			'key',
-			[
+			array(
 				'label'   => __( 'Info Type', 'multivendorx' ),
 				'type'    => Controls_Manager::SELECT,
-				'options' => [
+				'options' => array(
 					'address' => __( 'Address', 'multivendorx' ),
 					'phone'   => __( 'Phone', 'multivendorx' ),
 					'email'   => __( 'Email', 'multivendorx' ),
 					'rating'  => __( 'Rating', 'multivendorx' ),
-				],
+				),
 				'default' => 'address',
-			]
+			)
 		);
 
 		$repeater->add_control(
 			'selected_icon',
-			[
+			array(
 				'label'   => __( 'Icon', 'multivendorx' ),
 				'type'    => Controls_Manager::ICONS,
-				'default' => [
+				'default' => array(
 					'value'   => 'fas fa-map-marker-alt',
 					'library' => 'fa-solid',
-				],
-			]
+				),
+			)
 		);
 
 		// Override the default icon_list control to use our logic
 		$this->update_control(
 			'icon_list',
-			[
+			array(
 				'fields'      => $repeater->get_controls(),
 				'title_field' => '{{{ key.charAt(0).toUpperCase() + key.slice(1) }}}',
-				'default'     => [
-					[ 'key' => 'address', 'selected_icon' => [ 'value' => 'fas fa-map-marker-alt', 'library' => 'fa-solid' ] ],
-					[ 'key' => 'phone',   'selected_icon' => [ 'value' => 'fas fa-phone', 'library' => 'fa-solid' ] ],
-					[ 'key' => 'email',   'selected_icon' => [ 'value' => 'fas fa-envelope', 'library' => 'fa-solid' ] ],
-				],
-			]
+				'default'     => array(
+					array(
+						'key'           => 'address',
+						'selected_icon' => array(
+							'value'   => 'fas fa-map-marker-alt',
+							'library' => 'fa-solid',
+						),
+					),
+					array(
+						'key'           => 'phone',
+						'selected_icon' => array(
+							'value'   => 'fas fa-phone',
+							'library' => 'fa-solid',
+						),
+					),
+					array(
+						'key'           => 'email',
+						'selected_icon' => array(
+							'value'   => 'fas fa-envelope',
+							'library' => 'fa-solid',
+						),
+					),
+				),
+			)
 		);
 	}
 
@@ -93,7 +111,7 @@ class Store_Info extends Widget_Icon_List {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

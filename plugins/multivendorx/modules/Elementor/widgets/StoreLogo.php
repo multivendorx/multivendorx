@@ -23,11 +23,11 @@ class Store_Logo extends Widget_Image {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	public function get_keywords() {
-		return [ 'multivendorx', 'store', 'store', 'logo', 'avatar', 'profile' ];
+		return array( 'multivendorx', 'store', 'store', 'logo', 'avatar', 'profile' );
 	}
 
 	protected function register_controls() {
@@ -35,19 +35,19 @@ class Store_Logo extends Widget_Image {
 
 		$this->update_control(
 			'section_image',
-			[
+			array(
 				'label' => __( 'Store Logo Settings', 'multivendorx' ),
-			]
+			)
 		);
 
 		// Automatically link the image control to the store logo dynamic tag
 		$this->update_control(
 			'image',
-			[
-				'dynamic' => [
-					'active'  => true,
-				],
-			]
+			array(
+				'dynamic' => array(
+					'active' => true,
+				),
+			)
 		);
 
 		// Clean up unnecessary controls for a Store Logo
@@ -62,7 +62,7 @@ class Store_Logo extends Widget_Image {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

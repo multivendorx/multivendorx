@@ -64,11 +64,12 @@ class Notifications {
         $this->events = apply_filters(
             'multivendorx_system_events',
             array(
-				/* =====================================================
+				/*
+				=====================================================
 				* STORE STATUS & LIFECYCLE
 				* ===================================================== */
 
-				'store_pending_approval' => array(
+				'store_pending_approval'   => array(
 					'name'             => 'Store pending approval',
 					'desc'             => 'Store application is submitted and awaiting admin review.',
 					'customer_enabled' => true,
@@ -80,7 +81,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'store_activated' => array(
+				'store_activated'          => array(
 					'name'             => 'Store activated',
 					'desc'             => 'Store has been approved and activated.',
 					'customer_enabled' => true,
@@ -92,7 +93,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'store_rejected' => array(
+				'store_rejected'           => array(
 					'name'             => 'Store rejected',
 					'desc'             => 'Store application has been rejected.',
 					'customer_enabled' => true,
@@ -104,7 +105,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'store_suspended' => array(
+				'store_suspended'          => array(
 					'name'             => 'Store suspended',
 					'desc'             => 'Store has been suspended.',
 					'customer_enabled' => true,
@@ -116,11 +117,12 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				/* =====================================================
+				/*
+				=====================================================
 				* ORDER NOTIFICATIONS
 				* ===================================================== */
 
-				'new_order' => array(
+				'new_order'                => array(
 					'name'             => 'New order',
 					'desc'             => 'A new order has been placed.',
 					'customer_enabled' => true,
@@ -132,7 +134,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'order_completed' => array(
+				'order_completed'          => array(
 					'name'             => 'Order completed',
 					'desc'             => 'An order has been marked as completed.',
 					'customer_enabled' => true,
@@ -144,7 +146,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'order_cancelled' => array(
+				'order_cancelled'          => array(
 					'name'             => 'Order cancelled',
 					'desc'             => 'An order has been cancelled.',
 					'customer_enabled' => true,
@@ -156,7 +158,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'order_delivered_alt' => array(
+				'order_delivered_alt'      => array(
 					'name'             => 'Order delivered',
 					'desc'             => 'An order is marked as delivered.',
 					'customer_enabled' => true,
@@ -168,11 +170,12 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				/* =====================================================
+				/*
+				=====================================================
 				* PRODUCT NOTIFICATIONS
 				* ===================================================== */
 
-				'product_approved' => array(
+				'product_approved'         => array(
 					'name'             => 'Product approved',
 					'desc'             => 'Product has been approved by admin.',
 					'customer_enabled' => true,
@@ -184,7 +187,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'product_rejected' => array(
+				'product_rejected'         => array(
 					'name'             => 'Product rejected',
 					'desc'             => 'Product has been rejected.',
 					'customer_enabled' => true,
@@ -196,11 +199,12 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				/* =====================================================
+				/*
+				=====================================================
 				* PAYOUT & WITHDRAWAL
 				* ===================================================== */
 
-				'payout_received' => array(
+				'payout_received'          => array(
 					'name'             => 'Payout received',
 					'desc'             => 'Vendor payout has been processed.',
 					'customer_enabled' => true,
@@ -212,7 +216,7 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				'withdrawal_requested' => array(
+				'withdrawal_requested'     => array(
 					'name'             => 'Withdrawal requested',
 					'desc'             => 'Vendor requested withdrawal.',
 					'customer_enabled' => false,
@@ -224,7 +228,8 @@ class Notifications {
 					'category'         => 'notification',
 				),
 
-				/* =====================================================
+				/*
+				=====================================================
 				* WHOLESALE BUYER
 				* ===================================================== */
 
@@ -576,11 +581,11 @@ class Notifications {
                 $where[] = "created_at BETWEEN '" . esc_sql( $args['start_date'] ) . "' AND '" . esc_sql( $args['end_date'] ) . "'";
             }
 
-            $table = $wpdb->prefix . Utill::TABLES['notifications'];
+            $table   = $wpdb->prefix . Utill::TABLES['notifications'];
             $where[] = 'is_dismissed = 0 AND is_read = 0';
 
             if ( isset( $args['count'] ) ) {
-                $query   = "SELECT COUNT(*) FROM {$table}";
+                $query = "SELECT COUNT(*) FROM {$table}";
             } else {
                 $query = "SELECT * FROM {$table}";
             }

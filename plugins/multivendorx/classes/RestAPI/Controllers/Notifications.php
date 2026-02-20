@@ -202,7 +202,7 @@ class Notifications extends \WP_REST_Controller {
 
                     $formated_notifications[] = array(
                         'id'          => (int) $row->id,
-                        'icon' => str_replace('_', '-', $row->system_action),
+                        'icon'        => str_replace( '_', '-', $row->system_action ),
                         'event'       => $row->event_name,
                         'description' => $row->description,
                         'tag'         => $row->tag,

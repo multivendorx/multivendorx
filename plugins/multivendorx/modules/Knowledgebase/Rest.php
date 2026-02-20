@@ -188,8 +188,8 @@ class Rest extends \WP_REST_Controller {
             $posts = get_posts( $args );
             $items = array();
 
-            foreach ($posts as $post) {
-                $items[] = $this->prepare_item_for_response($post, $request);
+            foreach ( $posts as $post ) {
+                $items[] = $this->prepare_item_for_response( $post, $request );
             }
             $response->set_data( $items );
             return $response;
@@ -226,7 +226,7 @@ class Rest extends \WP_REST_Controller {
             );
         }
 
-        return rest_ensure_response( $this->prepare_item_for_response($post, $request) );
+        return rest_ensure_response( $this->prepare_item_for_response( $post, $request ) );
     }
 
     /**
@@ -457,5 +457,4 @@ class Rest extends \WP_REST_Controller {
             'date_created' => get_post_time( 'Y-m-d\TH:i:s', true, $post ),
         );
     }
-
 }

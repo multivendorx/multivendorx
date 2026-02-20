@@ -197,7 +197,7 @@ class Rest extends \WP_REST_Controller {
             // --- Step 7: Fetch Question Data ---
             $questions = Util::get_question_information( $args );
 
-            $formatted = array_map( [ $this, 'prepare_rest_item_for_response' ], $questions );
+            $formatted = array_map( array( $this, 'prepare_rest_item_for_response' ), $questions );
 
             // --- Step 9: Get Counters ---
             $base_args = $args;
@@ -438,7 +438,7 @@ class Rest extends \WP_REST_Controller {
      * @return array Formatted QnA item for REST.
      */
     public function prepare_rest_item_for_response( $q ) {
-       
+
         $product = wc_get_product( $q['product_id'] );
 
         $product_name = $product ? $product->get_name() : '';
@@ -483,5 +483,4 @@ class Rest extends \WP_REST_Controller {
             'question_visibility' => $q['question_visibility'],
         );
     }
-
 }

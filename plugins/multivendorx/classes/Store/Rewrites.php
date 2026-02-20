@@ -37,12 +37,12 @@ class Rewrites {
         add_action( 'init', array( $this, 'register_rule' ) );
         add_filter( 'query_vars', array( $this, 'register_query_var' ) );
         add_action( 'wp', array( $this, 'flash_rewrite_rules' ), 99 );
-        
+
         // Make endpoint behave like a page
-        add_action( 'pre_get_posts', [ $this, 'make_endpoint_virtual_page' ] );
+        add_action( 'pre_get_posts', array( $this, 'make_endpoint_virtual_page' ) );
 
         // Load correct template
-        add_filter( 'template_include', [ $this, 'load_store_template' ] );
+        add_filter( 'template_include', array( $this, 'load_store_template' ) );
         // For PHP template query of products.
         // add_action( 'pre_get_posts', array( $this, 'store_query_filter' ) );
         add_filter( 'body_class', array( $this, 'add_sidebar_class_for_block_template' ), 10 );
@@ -155,7 +155,7 @@ class Rewrites {
                 $query->is_page     = true;
                 $query->is_singular = true;
                 $query->post_type   = 'page';
-                $query->posts       = [ $page ];
+                $query->posts       = array( $page );
             }
         }
     }
@@ -179,7 +179,7 @@ class Rewrites {
             if ( $filtered_template && file_exists( $filtered_template ) ) {
                 return $filtered_template;
             }
-            
+
             $store = Store::get_store( $store_name, 'slug' );
 
             // Classic PHP fallback
@@ -216,12 +216,15 @@ class Rewrites {
         FrontendScripts::localize_scripts( 'multivendorx-store-provider-script' );
     }
 
-    public function add_sidebar_class_for_block_template($classes) {
-        $classes = array_filter($classes, function($class) {
-            return strpos($class, 'multivendorx-sidebar-') !== 0;
-        });
+    public function add_sidebar_class_for_block_template( $classes ) {
+        $classes  = array_filter(
+            $classes,
+            function ( $class ) {
+				return strpos( $class, 'multivendorx-sidebar-' ) !== 0;
+			}
+        );
         $position = MultiVendorX()->setting->get_setting( 'store_sidebar', '' );
-        if (!empty($position)) {
+        if ( ! empty( $position ) ) {
             $classes[] = 'multivendorx-sidebar-' . $position;
         }
         return $classes;

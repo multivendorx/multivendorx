@@ -1,5 +1,6 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
+
 use Elementor\Controls_Manager;
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
@@ -13,7 +14,7 @@ class StoreBanner extends Tag {
      *
      * @param array $data
      */
-    public function __construct( $data = [] ) {
+    public function __construct( $data = array() ) {
         parent::__construct( $data );
     }
 
@@ -51,7 +52,7 @@ class StoreBanner extends Tag {
      * @return array
      */
     public function get_categories() {
-        return [ Module::IMAGE_CATEGORY ];
+        return array( Module::IMAGE_CATEGORY );
     }
 
     /**
@@ -61,16 +62,16 @@ class StoreBanner extends Tag {
      *
      * @return void
      */
-    protected function get_value( array $options = [] ) {
+    protected function get_value( array $options = array() ) {
     	// global $mvx_elementor;
         // $banner = $mvx_elementor->get_mvx_store_data( 'banner' );
-        
+
         // if ( empty( $banner['id'] ) ) {
             $settings = $this->get_settings();
 
-            if ( ! empty( $settings['fallback']['id'] ) ) {
-                $banner = $settings['fallback'];
-            }
+		if ( ! empty( $settings['fallback']['id'] ) ) {
+			$banner = $settings['fallback'];
+		}
         // }
 
         return $banner;
@@ -85,16 +86,16 @@ class StoreBanner extends Tag {
      */
     protected function _register_controls() {
     	// global $MVX;
-    	  
+
         $this->add_control(
             'fallback',
-            [
-                'label' => __( 'Fallback', 'multivendorx' ),
-                'type' => Controls_Manager::MEDIA,
-                'default' => [
+            array(
+                'label'   => __( 'Fallback', 'multivendorx' ),
+                'type'    => Controls_Manager::MEDIA,
+                'default' => array(
                     'url' => '',
-                ]
-            ]
+                ),
+            )
         );
     }
 }

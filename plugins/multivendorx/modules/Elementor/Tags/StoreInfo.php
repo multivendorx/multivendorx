@@ -1,5 +1,6 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
+
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 
@@ -34,7 +35,7 @@ class StoreInfo extends Tag {
     }
 
     public function get_categories() {
-        return [ Module::TEXT_CATEGORY ];
+        return array( Module::TEXT_CATEGORY );
     }
 
     /**
@@ -49,50 +50,50 @@ class StoreInfo extends Tag {
         // $store_data = $mvx_elementor->get_mvx_store_data();
 
         // $store_info = [
-        //     [
-        //         'key'         => 'address',
-        //         'title'       => __( 'Address', 'multivendorx' ),
-        //         'text'        => $store_data['address'],
-        //         'icon'        => 'mvx-font ico-location-icon',
-        //         'show'        => true,
-        //         '__dynamic__' => [
-        //             'text' => $store_data['address'],
-        //         ]
-        //     ],
-        //     [
-        //         'key'         => 'email',
-        //         'title'       => __( 'Email', 'multivendorx' ),
-        //         'text'        => $store_data['email'],
-        //         'icon'        => 'mvx-font ico-mail-icon',
-        //         'show'        => true,
-        //         '__dynamic__' => [
-        //             'text' => $store_data['email'],
-        //         ]
-        //     ],
-        //     [
-        //         'key'         => 'phone',
-        //         'title'       => __( 'Phone No', 'multivendorx' ),
-        //         'text'        => $store_data['phone'],
-        //         'icon'        => 'mvx-font ico-call-icon',
-        //         'show'        => true,
-        //         '__dynamic__' => [
-        //             'text' => $store_data['phone'],
-        //         ]
-        //     ],
-        //     [
-        //         'key'         => 'store_description',
-        //         'title'       => __( 'Store Description', 'multivendorx' ),
-        //         'text'        => $store_data['store_description'],
-        //         'icon'        => 'mvx-font ico-location-icon',
-        //         'show'        => true,
-        //         '__dynamic__' => [
-        //             'text' => $store_data['store_description'],
-        //         ]
-        //     ],
+        // [
+        // 'key'         => 'address',
+        // 'title'       => __( 'Address', 'multivendorx' ),
+        // 'text'        => $store_data['address'],
+        // 'icon'        => 'mvx-font ico-location-icon',
+        // 'show'        => true,
+        // '__dynamic__' => [
+        // 'text' => $store_data['address'],
+        // ]
+        // ],
+        // [
+        // 'key'         => 'email',
+        // 'title'       => __( 'Email', 'multivendorx' ),
+        // 'text'        => $store_data['email'],
+        // 'icon'        => 'mvx-font ico-mail-icon',
+        // 'show'        => true,
+        // '__dynamic__' => [
+        // 'text' => $store_data['email'],
+        // ]
+        // ],
+        // [
+        // 'key'         => 'phone',
+        // 'title'       => __( 'Phone No', 'multivendorx' ),
+        // 'text'        => $store_data['phone'],
+        // 'icon'        => 'mvx-font ico-call-icon',
+        // 'show'        => true,
+        // '__dynamic__' => [
+        // 'text' => $store_data['phone'],
+        // ]
+        // ],
+        // [
+        // 'key'         => 'store_description',
+        // 'title'       => __( 'Store Description', 'multivendorx' ),
+        // 'text'        => $store_data['store_description'],
+        // 'icon'        => 'mvx-font ico-location-icon',
+        // 'show'        => true,
+        // '__dynamic__' => [
+        // 'text' => $store_data['store_description'],
+        // ]
+        // ],
         // ];
 
         // return apply_filters( 'mvx_elementor_tags_store_info_value', $store_info );
-        return [];
+        return array();
     }
 
     protected function render() {
