@@ -184,6 +184,7 @@ const ViewCommission: React.FC<ViewCommissionProps> = ({
 			open={open}
 			onClose={onClose}
 			width="70%"
+			height="70%"
 			header={{
 				icon: 'commission',
 				title: `${__('View Commission', 'multivendorx')}${commissionId ? ` #${commissionId}` : ''}`,

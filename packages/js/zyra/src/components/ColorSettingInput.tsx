@@ -216,73 +216,72 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                     </div>
                 </div>
             )}
-            {predefinedOptions.length > 0 && (
-                <div className="color-setting">
+            <div className="color-setting">
+                {predefinedOptions.length > 0 && (
                     <div className="color-palette-wrapper">
                         { /* Toggle Mode */}
-                        {!selectedImage && (
-                            <div className="form-group-setting-wrapper">
-                                <label>Color Palette</label>
-                                <ToggleSettingUI
-                                    options={[
-                                        {
-                                            key: 'predefined',
-                                            value: 'predefined',
-                                            label: 'Pre-defined',
-                                        },
-                                        {
-                                            key: 'custom',
-                                            value: 'custom',
-                                            label: 'Custom',
-                                        },
-                                    ]}
-                                    value={mode}
-                                    onChange={(val: string | string[]) => {
-                                        const selectedVal = Array.isArray(val) ? val[0] : val;
+                        <div className="form-group-setting-wrapper">
+                            <label>Color Palette</label>
+                            <ToggleSettingUI
+                                options={[
+                                    {
+                                        key: 'predefined',
+                                        value: 'predefined',
+                                        label: 'Pre-defined',
+                                    },
+                                    {
+                                        key: 'custom',
+                                        value: 'custom',
+                                        label: 'Custom',
+                                    },
+                                ]}
+                                value={mode}
+                                onChange={(val: string | string[]) => {
+                                    const selectedVal = Array.isArray(val) ? val[0] : val;
 
-                                        if (selectedVal === 'predefined') {
-                                            setMode('predefined');
+                                    if (selectedVal === 'predefined') {
+                                        setMode('predefined');
 
-                                            const value =
-                                                predefinedOptions[0]?.value ??
-                                                '';
+                                        const value =
+                                            predefinedOptions[0]?.value ??
+                                            '';
 
-                                            setSelectedPalette(value);
+                                        setSelectedPalette(value);
 
-                                            const option = predefinedOptions.find(
-                                                (opt) => opt.value === value
-                                            );
+                                        const option = predefinedOptions.find(
+                                            (opt) => opt.value === value
+                                        );
 
-                                            const colors = option?.colors || {};
+                                        const colors = option?.colors || {};
 
-                                            setSelectedColors(colors);
-                                            emitChange({
-                                                selectedPalette: value,
-                                                colors,
-                                            });
-                                        }
+                                        setSelectedColors(colors);
+                                        emitChange({
+                                            selectedPalette: value,
+                                            colors,
+                                        });
+                                    }
 
-                                        if (selectedVal === 'templates') {
-                                            setMode('templates');
-                                            setSelectedPalette('templates');
-                                            setSelectedColors(customColors);
-                                            emitTemplateChange(customColors, templateKey);
-                                        }
+                                    if (selectedVal === 'templates') {
+                                        setMode('templates');
+                                        setSelectedPalette('templates');
+                                        setSelectedColors(customColors);
+                                        emitTemplateChange(customColors, templateKey);
+                                    }
 
-                                        if (selectedVal === 'custom') {
-                                            setMode('custom');
-                                            setSelectedPalette('custom');
-                                            setSelectedColors(customColors);
-                                            emitChange({
-                                                selectedPalette: 'custom',
-                                                colors: customColors,
-                                            });
-                                        }
+                                    if (selectedVal === 'custom') {
+                                        setMode('custom');
+                                        setSelectedPalette('custom');
+                                        setSelectedColors(customColors);
+                                        emitChange({
+                                            selectedPalette: 'custom',
+                                            colors: customColors,
+                                        });
+                                    }
 
-                                    }}
-                                />
-                            </div>
-                        )}
+                                }}
+                            />
+                        </div>
+
                         {/* Predefined Palettes */}
                         {mode === 'predefined' && (
                             <div className="predefined">
@@ -366,21 +365,21 @@ export const ColorSettingInputUI: React.FC<ColorSettingProps> = (props) => {
                             </div>
                         )}
                     </div>
-                    {activeTemplate && (
-                        <div className="preview-wrapper">
-                            <activeTemplate.component
-                                colors={{
-                                    colorPrimary: selectedColors.colorPrimary ?? customColors.colorPrimary,
-                                    colorSecondary: selectedColors.colorSecondary ?? customColors.colorSecondary,
-                                    colorAccent: selectedColors.colorAccent ?? customColors.colorAccent,
-                                    colorSupport: selectedColors.colorSupport ?? customColors.colorSupport,
-                                }}
-                                isPreview
-                            />
-                        </div>
-                    )}
-                </div>
-            )}
+                )}
+                {activeTemplate && (
+                    <div className="preview-wrapper">
+                        <activeTemplate.component
+                            colors={{
+                                colorPrimary: selectedColors.colorPrimary ?? customColors.colorPrimary,
+                                colorSecondary: selectedColors.colorSecondary ?? customColors.colorSecondary,
+                                colorAccent: selectedColors.colorAccent ?? customColors.colorAccent,
+                                colorSupport: selectedColors.colorSupport ?? customColors.colorSupport,
+                            }}
+                            isPreview
+                        />
+                    </div>
+                )}
+            </div>
 
             { /* Image Palette List */}
             {images.length > 0 && (

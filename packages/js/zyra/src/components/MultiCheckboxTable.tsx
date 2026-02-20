@@ -424,10 +424,7 @@ const MultiCheckboxTableUI: React.FC< MultiCheckboxTableProps > = ( {
                                   { columns.map( ( column ) => {
                                       if ( column.type === 'description' ) {
                                           return (
-                                              <td
-                                                  key={ `desc_${ row.key }` }
-                                                  className="grid-table-cell-class description-cell"
-                                              >
+                                              <td key={ `desc_${ row.key }` }>
                                                   { row.description || '—' }
                                               </td>
                                           );
@@ -438,11 +435,7 @@ const MultiCheckboxTableUI: React.FC< MultiCheckboxTableProps > = ( {
                                           ( setting[ key ] as Option[] ) || [];
 
                                       return (
-                                          <td
-                                              id="grid-table-cell"
-                                              className="grid-table-cell-class"
-                                              key={ `${ column.key }_${ row.key }` }
-                                          >
+                                          <td key={ `${ column.key }_${ row.key }` }>
                                               { row.options ? (
                                                   <Select
                                                       values={ value }
@@ -540,7 +533,7 @@ const MultiCheckboxTableUI: React.FC< MultiCheckboxTableProps > = ( {
                                                   )
                                               }
                                           >
-                                              <h1>
+                                              <div className="header-title">
                                                   { group.label }
                                                   <i
                                                       className={ `adminfont-${
@@ -549,7 +542,7 @@ const MultiCheckboxTableUI: React.FC< MultiCheckboxTableProps > = ( {
                                                               : 'pagination-right-arrow'
                                                       }` }
                                                   ></i>
-                                              </h1>
+                                              </div>
                                           </div>
 
                                           { isOpen &&
@@ -575,11 +568,7 @@ const MultiCheckboxTableUI: React.FC< MultiCheckboxTableProps > = ( {
                                                                       );
 
                                                                   return (
-                                                                      <td
-                                                                          id="grid-table-cell"
-                                                                          className="grid-table-cell-class"
-                                                                          key={ `${ column.key }_${ capKey }` }
-                                                                      >
+                                                                      <td key={ `${ column.key }_${ capKey }` }>
                                                                           <input
                                                                               placeholder="select"
                                                                               type="checkbox"

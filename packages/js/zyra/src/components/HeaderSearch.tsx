@@ -121,6 +121,7 @@ const HeaderSearch: React.FC<HeaderSearchProps> = ({
 
             {showResults && (                  
                 <ItemList
+                    className="search-results"
                     items={results.map((item) => ({
                         title: item.name,
                         desc: item.desc,

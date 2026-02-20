@@ -4,11 +4,11 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
 type NotificationItem = {
-	id: number;
-	icon?: string;
-	title: string;
-	message: string;
-	time: string;
+  id: number;
+  icon?: string;
+  title: string;
+  message: string;
+  value: string;
 };
 
 const NotificationTabContent: React.FC<{
@@ -90,18 +90,18 @@ const NotificationTabContent: React.FC<{
 		return <div>{__('No notifications', 'multivendorx')}</div>;
 	}
 
-	return (
-		<ItemList
-			className="notification"
-			items={items.map((item) => ({
-				id: item.id,
-				title: item.title,
-				desc: item.message,
-				icon: item.icon,
-				time: item.time,
-				onApprove: (item) => {
-					markRead(item.id);
-				},
+  return (
+    <ItemList
+      className="notification"
+      items={items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        desc: item.message,
+        icon: item.icon,
+        value: item.value,
+        onApprove: (item) => {
+          markRead(item.id);
+        },
 
 				onReject: (item) => {
 					dismissItem(item.id);

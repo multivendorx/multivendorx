@@ -26,6 +26,7 @@ interface InputField {
     desc?: string;
     placeholder?: string;
     moduleEnabled?: string;
+    cols?: number;
     generate?: string;
     apilink?: string;
     method?: string;
@@ -552,6 +553,7 @@ const RenderComponent: React.FC<RenderProps> = ({
                                 ? 'module-enabled'
                                 : ''
                             }`}
+                            data-cols={inputField.cols}
                         onClick={(e) => handleGroupClick(e, inputField)}
                     >
                         {inputField.icon && (

@@ -129,7 +129,7 @@ a {
     width: 1rem !important;
     height: 1rem !important;
     margin: -0.063rem .3rem 0 0 !important;
-    border-radius: 0.25rem;
+    border-radius: $border-radius-small;
     font-size: 0.95rem;
     height: 1.125rem;
     width: 1.125rem;
@@ -257,7 +257,7 @@ $index: 1;
   width: 2.2rem;
   height: 2.2rem;
   padding: 0;
-  border-radius: 0.25rem;
+  border-radius: $border-radius-small;
   background: $background-white;
   border: none;
   position: relative;
@@ -268,7 +268,7 @@ $index: 1;
     background: $theme-color;
     padding: 0.5rem 0.75rem;
     top: -2rem;
-    border-radius: 0.25rem;
+    border-radius: $border-radius-small;
     color: $background-white;
     display: none;
     width: 5.125rem;
@@ -308,7 +308,7 @@ $index: 1;
 .rmdp-input {
   width: 100%;
   border: $border-light-small !important; // for overwrite wordpress style
-  border-radius: 0.25rem;
+  border-radius: $border-radius-small;
   padding: 0.313rem 0.5rem;
   background: transparent !important; // for overwrite theme style
   font-size: 0.875rem;
@@ -352,8 +352,7 @@ $index: 1;
     position: relative;
   }
 
-  &.inner-input {
-    .input-wrapper {
+    &.input-wrapper {
       display: flex;
       border: $border-light-small;
       border-radius: 0.313rem;
@@ -395,7 +394,7 @@ $index: 1;
         padding-left: 0;
       }
     }
-  }
+  
 
   &.input-button {
     .input-wrapper {
@@ -1111,7 +1110,8 @@ $index: 1;
 
     }
 
-    input {
+    input,
+    .input-wrapper {
       border: none !important;
 
       &:focus {
@@ -1226,9 +1226,7 @@ $index: 1;
     max-height: 20rem;
     overflow: auto;
     box-shadow: $box-shadow;
-    border-radius: 0.313rem;
-
-    
+    border-radius: 0.313rem;    
   }
 }
 

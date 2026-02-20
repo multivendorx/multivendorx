@@ -351,8 +351,7 @@ export const KnowledgeBase: React.FC = () => {
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),
-						className: 'admin-btn btn-purple-bg',
-						iconClass: 'adminfont-plus',
+						icon: 'plus',
 						onClick: () => {
 							setValidationErrors({});
 							setAddEntry(true);
@@ -474,17 +473,6 @@ export const KnowledgeBase: React.FC = () => {
 											status: value,
 										}))
 									}
-								/>
-							</FormGroup>
-							<FormGroup
-								label={__('Add tag', 'multivendorx')}
-								htmlFor="Title"
-							>
-								<BasicInputUI
-									type="text"
-									name="title"
-									// value={formData.title}
-									// onChange={handleChange}
 								/>
 							</FormGroup>
 						</FormGroupWrapper>

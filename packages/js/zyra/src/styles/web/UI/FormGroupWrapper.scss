@@ -46,8 +46,7 @@
             }
         }
 
-        .settings-input-content,
-         .setting-form-input{
+        .settings-input-content{
             width: 100%;
 
             &:has(.setting-form-input) {
@@ -61,7 +60,8 @@
                 }
             }
 
-            .after {
+            .after,
+            .before {
                 font-size: 0.95rem;
                 color: #0000009c;
             }

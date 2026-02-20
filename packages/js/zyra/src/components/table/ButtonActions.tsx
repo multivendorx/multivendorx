@@ -36,12 +36,10 @@ const ButtonActions: React.FC<ButtonActionsProps> = ({
     }));
 
     return (
-        <div className="table-button-actions">
-            <AdminButtonUI 
-                buttons={resolvedButtons} 
-                position="left" 
-            />
-        </div>
+        <AdminButtonUI 
+            buttons={resolvedButtons} 
+            position="left" 
+        />
     );
 };
 
