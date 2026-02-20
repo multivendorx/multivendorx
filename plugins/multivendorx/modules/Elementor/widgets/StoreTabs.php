@@ -24,41 +24,41 @@ class Store_Tabs extends Widget_Base {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	public function get_keywords() {
-		return [ 'store', 'tab', 'menu' ];
+		return array( 'store', 'tab', 'menu' );
 	}
 
 	protected function register_controls() {
 		$this->start_controls_section(
 			'section_tabs_content',
-			[
+			array(
 				'label' => __( 'Tabs Setup', 'multivendorx' ),
-			]
+			)
 		);
 
 		$this->add_control(
 			'tabs_view',
-			[
+			array(
 				'label'   => __( 'Layout', 'multivendorx' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'inline',
-				'options' => [
+				'options' => array(
 					'block'  => __( 'Vertical', 'multivendorx' ),
 					'inline' => __( 'Horizontal', 'multivendorx' ),
-				],
-			]
+				),
+			)
 		);
 
 		$this->add_control(
 			'dummy_info',
-			[
-				'type' => Controls_Manager::RAW_HTML,
-				'raw'  => __( 'Note: Tabs are currently showing dummy links for design preview.', 'multivendorx' ),
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => __( 'Note: Tabs are currently showing dummy links for design preview.', 'multivendorx' ),
 				'content_classes' => 'elementor-descriptor',
-			]
+			)
 		);
 
 		$this->end_controls_section();
@@ -71,7 +71,7 @@ class Store_Tabs extends Widget_Base {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

@@ -1054,7 +1054,7 @@ class Install {
         update_option( Utill::MULTIVENDORX_SETTINGS['store-reviews'], $review_settings );
         update_option( Utill::MULTIVENDORX_SETTINGS['compliance'], $compliance_settings );
 
-        $notifications = new Notifications;
+        $notifications = new Notifications();
         $notifications->insert_system_events();
     }
 
@@ -1085,18 +1085,19 @@ class Install {
 
         if ( ! $existing ) {
             $block_template_path = MultiVendorX()->plugin_path . 'templates/store/store.html';
-            $blocks_html = file_exists( $block_template_path ) ? file_get_contents( $block_template_path ) : '';
+            $blocks_html         = file_exists( $block_template_path ) ? file_get_contents( $block_template_path ) : '';
 
             // Insert hidden page with default blocks
-            wp_insert_post([
-                'post_title'   => 'Store Template',
-                'post_name'    => $template_slug,
-                'post_type'    => 'page',
-                'post_status'  => 'private',
-                'post_content' => $blocks_html, // default blocks pre-filled
-            ]);
+            wp_insert_post(
+                array(
+					'post_title'   => 'Store Template',
+					'post_name'    => $template_slug,
+					'post_type'    => 'page',
+					'post_status'  => 'private',
+					'post_content' => $blocks_html, // default blocks pre-filled
+                )
+            );
         }
-        
     }
 
     /**

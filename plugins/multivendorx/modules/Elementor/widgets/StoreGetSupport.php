@@ -23,7 +23,7 @@ class Store_Get_Support extends Widget_Button {
     }
 
     public function get_categories() {
-        return [ 'multivendorx' ];
+        return array( 'multivendorx' );
     }
 
     protected function register_controls() {
@@ -31,20 +31,20 @@ class Store_Get_Support extends Widget_Button {
 
         $this->update_control(
             'text',
-            [
+            array(
                 'default' => __( 'Get Support', 'multivendorx' ),
-                'dynamic' => [
+                'dynamic' => array(
                     'active' => true,
-                ],
-            ]
+                ),
+            )
         );
 
         $this->update_control(
             'link',
-            [
-                'dynamic' => ['active' => false],
+            array(
+                'dynamic'     => array( 'active' => false ),
                 'placeholder' => __( 'Triggers Support Modal', 'multivendorx' ),
-            ]
+            )
         );
     }
 
@@ -55,7 +55,7 @@ class Store_Get_Support extends Widget_Button {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

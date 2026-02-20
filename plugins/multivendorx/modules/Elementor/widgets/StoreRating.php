@@ -25,52 +25,52 @@ class Store_Rating extends Widget_Base {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	public function get_keywords() {
-		return [ 'multivendorx', 'store', 'store', 'rating', 'stars', 'reviews' ];
+		return array( 'multivendorx', 'store', 'store', 'rating', 'stars', 'reviews' );
 	}
 
 	protected function register_controls() {
 		$this->start_controls_section(
 			'section_rating_style',
-			[
+			array(
 				'label' => __( 'Rating Style', 'multivendorx' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
-			]
+			)
 		);
 
 		$this->add_control(
 			'star_color',
-			[
+			array(
 				'label'     => __( 'Star Color', 'multivendorx' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#ffcc00',
-				'selectors' => [
+				'selectors' => array(
 					'{{WRAPPER}} .star-rating' => 'color: {{VALUE}};',
-				],
-			]
+				),
+			)
 		);
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
-			[
+			array(
 				'name'     => 'text_typography',
 				'label'    => __( 'Count Typography', 'multivendorx' ),
 				'selector' => '{{WRAPPER}} .multivendorx-rating-count',
-			]
+			)
 		);
 
 		$this->add_control(
 			'text_color',
-			[
+			array(
 				'label'     => __( 'Count Color', 'multivendorx' ),
 				'type'      => Controls_Manager::COLOR,
-				'selectors' => [
+				'selectors' => array(
 					'{{WRAPPER}} .multivendorx-rating-count' => 'color: {{VALUE}};',
-				],
-			]
+				),
+			)
 		);
 
 		$this->end_controls_section();
@@ -83,7 +83,7 @@ class Store_Rating extends Widget_Base {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

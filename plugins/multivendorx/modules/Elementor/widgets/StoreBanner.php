@@ -23,7 +23,7 @@ class Store_Banner extends Widget_Image {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	protected function register_controls() {
@@ -31,12 +31,12 @@ class Store_Banner extends Widget_Image {
 
 		$this->update_control(
 			'image',
-			[
-				'label' => __( 'Choose Banner', 'multivendorx' ),
-				'dynamic' => [
+			array(
+				'label'   => __( 'Choose Banner', 'multivendorx' ),
+				'dynamic' => array(
 					'active' => true,
-				],
-			]
+				),
+			)
 		);
 
 		// Hide controls that might break a banner layout
@@ -52,7 +52,7 @@ class Store_Banner extends Widget_Image {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

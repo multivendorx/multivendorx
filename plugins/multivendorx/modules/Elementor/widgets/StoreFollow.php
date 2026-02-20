@@ -23,7 +23,7 @@ class Store_Follow_Button extends Widget_Button {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	protected function register_controls() {
@@ -31,27 +31,27 @@ class Store_Follow_Button extends Widget_Button {
 
 		$this->update_control(
 			'text',
-			[
+			array(
 				'default' => __( 'Follow', 'multivendorx' ),
-				'dynamic' => [
+				'dynamic' => array(
 					'active' => true,
-				],
-			]
+				),
+			)
 		);
 
 		$this->update_control(
 			'button_background_color',
-			[
+			array(
 				'default' => '#17a2b8',
-			]
+			)
 		);
 
 		$this->update_control(
 			'link',
-			[
-				'dynamic' => ['active' => false],
+			array(
+				'dynamic'     => array( 'active' => false ),
 				'placeholder' => __( 'Handled by Follow logic', 'multivendorx' ),
-			]
+			)
 		);
 	}
 
@@ -62,7 +62,7 @@ class Store_Follow_Button extends Widget_Button {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

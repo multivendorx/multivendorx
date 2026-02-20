@@ -105,9 +105,9 @@ class Transactions extends \WP_REST_Controller {
 
         try {
             // Pagination & basic params
-            $limit = max( 1, (int) $request->get_param( 'row' ) ?: 10 ); 
-            $page = max( 1, (int) $request->get_param( 'page' ) ?: 1 ); 
-            $offset = ( $page - 1 ) * $limit;
+            $limit              = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
+            $page               = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
+            $offset             = ( $page - 1 ) * $limit;
             $store_id           = (int) $request->get_param( 'store_id' );
             $status             = $request->get_param( 'status' );
             $transaction_type   = $request->get_param( 'transaction_type' );
@@ -158,7 +158,7 @@ class Transactions extends \WP_REST_Controller {
             }
 
             $transactions = Transaction::get_transaction_information( $args );
-            $formatted = array_map(
+            $formatted    = array_map(
                 function ( $row ) {
                     $store = new Store( $row['store_id'] );
                     return array(

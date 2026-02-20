@@ -24,28 +24,28 @@ class Store_Tab_Contents extends Widget_Base {
 	}
 
 	public function get_categories() {
-		return [ 'multivendorx' ];
+		return array( 'multivendorx' );
 	}
 
 	public function get_keywords() {
-		return [ 'store', 'tab', 'content', 'products' ];
+		return array( 'store', 'tab', 'content', 'products' );
 	}
 
 	protected function register_controls() {
 		$this->start_controls_section(
 			'section_dummy_style',
-			[
+			array(
 				'label' => __( 'Dummy Content Settings', 'multivendorx' ),
-			]
+			)
 		);
 
 		$this->add_control(
 			'dummy_text',
-			[
+			array(
 				'label'   => __( 'Placeholder Text', 'multivendorx' ),
 				'type'    => Controls_Manager::TEXT,
 				'default' => __( 'Store products will be displayed here.', 'multivendorx' ),
-			]
+			)
 		);
 
 		$this->end_controls_section();
@@ -58,7 +58,7 @@ class Store_Tab_Contents extends Widget_Base {
         }
 
         $settings = $this->get_settings_for_display();
-        
+
         // 5. Logic: Use the dynamic store name
         $name = ! empty( $store['storeName'] ) ? $store['storeName'] : $settings['title'];
 

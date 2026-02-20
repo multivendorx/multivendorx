@@ -1,5 +1,6 @@
 <?php
 namespace MultiVendorX\Elementor\Tags;
+
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Modules\DynamicTags\Module;
 use Elementor\Controls_Manager;
@@ -13,7 +14,7 @@ class StoreLogo extends Tag {
      *
      * @param array $data
      */
-    public function __construct( $data = [] ) {
+    public function __construct( $data = array() ) {
         parent::__construct( $data );
     }
 
@@ -44,7 +45,7 @@ class StoreLogo extends Tag {
     }
 
     public function get_categories() {
-        return [ Module::IMAGE_CATEGORY ];
+        return array( Module::IMAGE_CATEGORY );
     }
 
     /**
@@ -54,16 +55,16 @@ class StoreLogo extends Tag {
      *
      * @return void
      */
-    protected function get_value( array $options = [] ) {
+    protected function get_value( array $options = array() ) {
     	// global $mvx_elementor;
         // $picture = $mvx_elementor->get_mvx_store_data( 'logo' );
 
         // if ( empty( $picture['id'] ) ) {
             $settings = $this->get_settings();
 
-        //     if ( ! empty( $settings['fallback']['id'] ) ) {
+        // if ( ! empty( $settings['fallback']['id'] ) ) {
                 $picture = $settings['fallback'];
-        //     }
+        // }
         // }
 
         return $picture;
@@ -78,17 +79,17 @@ class StoreLogo extends Tag {
      */
     protected function _register_controls() {
     	global $MVX;
-    		
+
         $this->add_control(
             'fallback',
-            [
-                'label' => __( 'Fallback', 'multivendorx' ),
-                'type' => Controls_Manager::MEDIA,
-                'default' => [
+            array(
+                'label'   => __( 'Fallback', 'multivendorx' ),
+                'type'    => Controls_Manager::MEDIA,
+                'default' => array(
                     'id'  => 0,
                     'url' => '',
-                ]
-            ]
+                ),
+            )
         );
     }
 }
