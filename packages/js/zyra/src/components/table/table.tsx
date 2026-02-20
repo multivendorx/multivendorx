@@ -209,7 +209,7 @@ const Table: React.FC<TableProps> = ({
                                         <span
                                             onClick={
                                                 hasData
-                                                    ? () => handleSort(key)
+                                                    ? () => handleSort(config.key)
                                                     : null
                                             }
                                             className="sort-button"

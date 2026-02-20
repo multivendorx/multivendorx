@@ -50,7 +50,7 @@ const TableCard: React.FC<TableCardProps> = ({
 	const [derivedTotalRows, setDerivedTotalRows] = useState<number>(totalRows);
 
 	const [query, setQuery] = useState<QueryProps>({
-		orderby: 'date',
+		orderby: '',
 		order: 'desc',
 		paged: 1,
 		per_page: 10,
