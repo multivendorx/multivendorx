@@ -73,7 +73,8 @@ export default {
 			afterElement: {
 				type: 'preposttext',
 				textType: 'post',
-				postText: 'as the clearance period before pending earnings become available for payout.',
+				postText:
+					'as the clearance period before pending earnings become available for payout.',
 			},
 			postText: __('days', 'multivendorx'),
 		},
@@ -496,9 +497,9 @@ export default {
 						type: 'preposttext',
 						textType: 'post',
 						postText: __(
-						'free withdrawals. After that, each withdrawal costs',
-						'multivendorx'
-					),
+							'free withdrawals. After that, each withdrawal costs',
+							'multivendorx'
+						),
 					},
 				},
 				{
@@ -514,10 +515,7 @@ export default {
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
-						postText: __(
-						'+',
-						'multivendorx'
-					),
+						postText: __('+', 'multivendorx'),
 					},
 				},
 				{

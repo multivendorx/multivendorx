@@ -19,10 +19,14 @@ import {
 	ItemList,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 
-import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import {
+	downloadCSV,
+	formatCurrency,
+	formatLocalDate,
+} from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
 
 interface WalletTransactionProps {
@@ -65,22 +69,26 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			method: 'GET',
 			url: getApiLink(appLocalizer, `transaction/${storeId}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((response) => {
-			setWallet(response?.data || {});
-			setAmount(response?.data.available_balance);
-		}).finally(() => {
-			setWalletLoading(false);
-		});
+		})
+			.then((response) => {
+				setWallet(response?.data || {});
+				setAmount(response?.data.available_balance);
+			})
+			.finally(() => {
+				setWalletLoading(false);
+			});
 
 		axios({
 			method: 'GET',
 			url: getApiLink(appLocalizer, `store/${storeId}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-		}).then((response) => {
-			setStoreData(response.data || {});
-		}).finally(() => {
-			setWalletLoading(false);
-		});
+		})
+			.then((response) => {
+				setStoreData(response.data || {});
+			})
+			.finally(() => {
+				setWalletLoading(false);
+			});
 
 		axios({
 			method: 'GET',
@@ -94,12 +102,13 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				transactionType: 'Withdrawal',
 				orderBy: 'created_at',
 				order: 'DESC',
-				status: 'Completed'
+				status: 'Completed',
 			},
 		})
 			.then((response) => {
 				setRecentDebits(response.data.transaction || []);
-			}).finally(() => {
+			})
+			.finally(() => {
 				setWalletLoading(false);
 			})
 			.catch((error) => {
@@ -135,10 +144,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		// Submit request
 		axios({
 			method: 'PUT',
-			url: getApiLink(
-				appLocalizer,
-				`transaction/${storeId}`
-			),
+			url: getApiLink(appLocalizer, `transaction/${storeId}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			data: {
 				disbursement: true,
@@ -193,8 +199,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		status: { label: __('Status', 'multivendorx'), type: 'status' },
 		transaction_type: {
 			label: __('Transaction Type', 'multivendorx'),
-			render: (row) => (
-				row.transaction_type?.toLowerCase() === 'commission' && row.commission_id ? (
+			render: (row) =>
+				row.transaction_type?.toLowerCase() === 'commission' &&
+				row.commission_id ? (
 					<span
 						className="link-item"
 						onClick={() => {
@@ -208,15 +215,19 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					<span>
 						{row.narration
 							?.replace(/-/g, ' ')
-							.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-'}
+							.replace(/\b\w/g, (c: string) => c.toUpperCase()) ||
+							'-'}
 					</span>
-				)
-			),
+				),
 		},
 		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
 		credit: { label: __('Credit', 'multivendorx'), type: 'currency' },
 		debit: { label: __('Debit', 'multivendorx'), type: 'currency' },
-		balance: { label: __('Balance', 'multivendorx'), isSortable: true, type: 'currency' },
+		balance: {
+			label: __('Balance', 'multivendorx'),
+			isSortable: true,
+			type: 'currency',
+		},
 	};
 
 	const doRefreshTableData = (query: QueryProps) => {
@@ -227,12 +238,14 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildQueryParams(query)
+				params: buildQueryParams(query),
 			})
 			.then((response) => {
 				const transactions = response.data || [];
 
-				const ids: number[] = transactions.map((t: any) => Number(t.id));
+				const ids: number[] = transactions.map((t: any) =>
+					Number(t.id)
+				);
 				setRowIds(ids);
 				setRows(transactions);
 				setCategoryCounts([
@@ -244,23 +257,30 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					{
 						value: 'completed',
 						label: 'Completed',
-						count: Number(response.headers['x-wp-status-completed']) || 0,
+						count:
+							Number(response.headers['x-wp-status-completed']) ||
+							0,
 					},
 					{
 						value: 'processed',
 						label: 'Processed',
-						count: Number(response.headers['x-wp-status-processed']) || 0,
+						count:
+							Number(response.headers['x-wp-status-processed']) ||
+							0,
 					},
 					{
 						value: 'upcoming',
 						label: 'Upcoming',
-						count: Number(response.headers['x-wp-status-upcoming']) || 0,
+						count:
+							Number(response.headers['x-wp-status-upcoming']) ||
+							0,
 					},
 					{
 						value: 'vailed',
 						label: 'Failed',
-						count: Number(response.headers['x-wp-status-failed']) || 0,
-					}
+						count:
+							Number(response.headers['x-wp-status-failed']) || 0,
+					},
 				]);
 
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
@@ -281,22 +301,34 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 			type: 'select',
 			options: [
 				{ label: __('Transaction Type', 'multivendorx'), value: '' },
-				{ label: __('Commission', 'multivendorx'), value: 'Commission' },
-				{ label: __('Withdrawal', 'multivendorx'), value: 'Withdrawal' },
+				{
+					label: __('Commission', 'multivendorx'),
+					value: 'Commission',
+				},
+				{
+					label: __('Withdrawal', 'multivendorx'),
+					value: 'Withdrawal',
+				},
 				{ label: __('Refund', 'multivendorx'), value: 'Refund' },
 				{ label: __('Reversed', 'multivendorx'), value: 'Reversed' },
-				{ label: __('COD received', 'multivendorx'), value: 'COD received' }
-			]
+				{
+					label: __('COD received', 'multivendorx'),
+					value: 'COD received',
+				},
+			],
 		},
 		{
 			key: 'transactionStatus',
 			label: 'Financial Transactions',
 			type: 'select',
 			options: [
-				{ label: __('Financial Transactions', 'multivendorx'), value: '' },
+				{
+					label: __('Financial Transactions', 'multivendorx'),
+					value: '',
+				},
 				{ label: __('Credit', 'multivendorx'), value: 'Cr' },
-				{ label: __('Debit', 'multivendorx'), value: 'Dr' }
-			]
+				{ label: __('Debit', 'multivendorx'), value: 'Dr' },
+			],
 		},
 		{
 			key: 'created_at',
@@ -306,14 +338,16 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	];
 
 	const downloadTransactionCSV = (selectedIds: number[]) => {
-		if (!selectedIds) return;
+		if (!selectedIds) {
+			return;
+		}
 
 		axios
 			.get(getApiLink(appLocalizer, 'transaction'), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 				params: { ids: selectedIds },
 			})
-			.then(response => {
+			.then((response) => {
 				const rows = response.data || [];
 				downloadCSV(
 					headers,
@@ -321,7 +355,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 					`selected-commissions-${formatLocalDate(new Date())}.csv`
 				);
 			})
-			.catch(error => {
+			.catch((error) => {
 				console.error('CSV download failed:', error);
 			});
 	};
@@ -378,7 +412,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: downloadTransactionCSVByQuery
+			onClickWithQuery: downloadTransactionCSVByQuery,
 		},
 	];
 	return (
@@ -393,11 +427,14 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									const formattedPaymentMethod =
 										txn.payment_method
 											? txn.payment_method
-												.replace(/[-_]/g, ' ') // replace - and _ with spaces
-												.replace(/\b\w/g, (char) =>
-													char.toUpperCase()
-												) // capitalize each word
-											: __('No Payment Method Selected', 'multivendorx');
+													.replace(/[-_]/g, ' ') // replace - and _ with spaces
+													.replace(/\b\w/g, (char) =>
+														char.toUpperCase()
+													) // capitalize each word
+											: __(
+													'No Payment Method Selected',
+													'multivendorx'
+												);
 
 									return (
 										<div key={txn.id} className="info-item">
@@ -405,7 +442,9 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 												<div className="details">
 													<div className="name">
 														{formattedPaymentMethod}
-														<div className="admin-badge green">Completed</div>
+														<div className="admin-badge green">
+															Completed
+														</div>
 													</div>
 													<div className="des">
 														{new Date(
@@ -422,15 +461,14 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 												</div>
 											</div>
 
-											<div
-												className="right-details"
-											>
+											<div className="right-details">
 												<div
-													className={`price ${parseFloat(txn.debit) <
+													className={`price ${
+														parseFloat(txn.debit) <
 														0
-														? 'color-red'
-														: 'color-green'
-														}`}
+															? 'color-red'
+															: 'color-green'
+													}`}
 												>
 													{formatCurrency(txn.debit)}
 												</div>
@@ -440,7 +478,12 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								})}
 							</>
 						) : (
-							<ComponentStatusView title={__('No recent payouts transactions found.', 'multivendorx')} />
+							<ComponentStatusView
+								title={__(
+									'No recent payouts transactions found.',
+									'multivendorx'
+								)}
+							/>
 						)}
 					</Card>
 				</Column>
@@ -450,10 +493,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 						<div className="payout-card-wrapper">
 							<div className="price-wrapper">
 								<div className="admin-badge green">
-									{__(
-										'Ready to withdraw',
-										'multivendorx'
-									)}
+									{__('Ready to withdraw', 'multivendorx')}
 								</div>
 								<div className="price">
 									{walletLoading ? (
@@ -467,8 +507,16 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 										<Skeleton width={250} />
 									) : (
 										<>
-											<b> {formatCurrency(wallet?.thresold)} </b>
-											{__('minimum required to withdraw', 'multivendorx')}
+											<b>
+												{' '}
+												{formatCurrency(
+													wallet?.thresold
+												)}{' '}
+											</b>
+											{__(
+												'minimum required to withdraw',
+												'multivendorx'
+											)}
 										</>
 									)}
 								</div>
@@ -480,23 +528,40 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									border
 									items={[
 										{
-											title: __('Upcoming Balance', 'multivendorx'),
+											title: __(
+												'Upcoming Balance',
+												'multivendorx'
+											),
 											desc: (
 												<>
-													{__('This amount is being processed and will be released ', 'multivendorx')}
+													{__(
+														'This amount is being processed and will be released ',
+														'multivendorx'
+													)}
 													{wallet?.payment_schedules ? (
 														<>
-															{wallet.payment_schedules} {__(' by the admin.', 'multivendorx')}
+															{
+																wallet.payment_schedules
+															}{' '}
+															{__(
+																' by the admin.',
+																'multivendorx'
+															)}
 														</>
 													) : (
 														<>
-															{__('automatically every hour.', 'multivendorx')}
+															{__(
+																'automatically every hour.',
+																'multivendorx'
+															)}
 														</>
 													)}
 												</>
 											),
-											time: formatCurrency(wallet.locking_balance),
-										}
+											time: formatCurrency(
+												wallet.locking_balance
+											),
+										},
 									]}
 								/>
 
@@ -504,28 +569,39 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									<ItemList
 										variant="mini-card"
 										background
-										title={__('Free Withdrawals', 'multivendorx')}
+										title={__(
+											'Free Withdrawals',
+											'multivendorx'
+										)}
 										value={
 											<>
 												{Math.max(
 													0,
-													(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-													(wallet?.free_withdrawal ?? 0)
+													(wallet
+														?.withdrawal_setting?.[0]
+														?.free_withdrawals ??
+														0) -
+														(wallet?.free_withdrawal ??
+															0)
 												)}{' '}
-												<span>{__('Left', 'multivendorx')}</span>
+												<span>
+													{__('Left', 'multivendorx')}
+												</span>
 											</>
 										}
 										description={
 											<>
 												{__('Then', 'multivendorx')}{' '}
 												{Number(
-													wallet?.withdrawal_setting?.[0]
+													wallet
+														?.withdrawal_setting?.[0]
 														?.withdrawal_percentage
 												) || 0}
 												% +{' '}
 												{formatCurrency(
 													Number(
-														wallet?.withdrawal_setting?.[0]
+														wallet
+															?.withdrawal_setting?.[0]
 															?.withdrawal_fixed
 													) || 0
 												)}{' '}
@@ -533,16 +609,17 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 											</>
 										}
 									/>
-
 								)}
 							</Column>
 							<AdminButtonUI
-								buttons={
-									{
-										icon: 'wallet',
-										text: __('Disburse Payment', 'multivendorx'),
-										onClick: () => setRequestWithdrawal(true),
-									}}
+								buttons={{
+									icon: 'wallet',
+									text: __(
+										'Disburse Payment',
+										'multivendorx'
+									),
+									onClick: () => setRequestWithdrawal(true),
+								}}
 							/>
 						</div>
 					</Card>
@@ -583,12 +660,17 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									{formatCurrency(wallet.available_balance)}
 								</div>
 							</div>
-							<FormGroup label={__('Payment Processor', 'multivendorx')} htmlFor="payment_method">
+							<FormGroup
+								label={__('Payment Processor', 'multivendorx')}
+								htmlFor="payment_method"
+							>
 								<div className="payment-method">
 									{storeData?.payment_method ? (
 										<div className="method">
 											<i className="adminfont-bank"></i>
-											{formatMethod(storeData.payment_method)}
+											{formatMethod(
+												storeData.payment_method
+											)}
 										</div>
 									) : (
 										<span>
@@ -601,7 +683,10 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								</div>
 							</FormGroup>
 
-							<FormGroup label={__('Amount', 'multivendorx')} htmlFor="Amount">
+							<FormGroup
+								label={__('Amount', 'multivendorx')}
+								htmlFor="Amount"
+							>
 								<BasicInputUI
 									type="number"
 									name="amount"
@@ -613,8 +698,8 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 
 								<div className="free-wrapper">
 									{wallet?.withdrawal_setting?.length > 0 &&
-										wallet?.withdrawal_setting?.[0]
-											?.free_withdrawals ? (
+									wallet?.withdrawal_setting?.[0]
+										?.free_withdrawals ? (
 										<>
 											{freeLeft > 0 ? (
 												<span>
@@ -660,7 +745,10 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 									</div>
 								)}
 							</FormGroup>
-							<FormGroup label={__('Note', 'multivendorx')} htmlFor="Note">
+							<FormGroup
+								label={__('Note', 'multivendorx')}
+								htmlFor="Note"
+							>
 								<TextAreaUI
 									name="note"
 									value={note}
@@ -692,9 +780,12 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							currency={{
 								currencySymbol: appLocalizer.currency_symbol,
 								priceDecimals: appLocalizer.price_decimals,
-								decimalSeparator: appLocalizer.decimal_separator,
-								thousandSeparator: appLocalizer.thousand_separator,
-								currencyPosition: appLocalizer.currency_position
+								decimalSeparator:
+									appLocalizer.decimal_separator,
+								thousandSeparator:
+									appLocalizer.thousand_separator,
+								currencyPosition:
+									appLocalizer.currency_position,
 							}}
 						/>
 					</div>

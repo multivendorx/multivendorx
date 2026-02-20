@@ -9,7 +9,15 @@ import {
 	Cell,
 } from 'recharts';
 import axios from 'axios';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, NavigatorHeader } from 'zyra';
+import {
+	Analytics,
+	Card,
+	Column,
+	Container,
+	getApiLink,
+	InfoItem,
+	NavigatorHeader,
+} from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {
@@ -31,7 +39,7 @@ type OverviewProps = {
 	COLORS?: string[];
 };
 
-const Overview: React.FC<OverviewProps> = ({ }) => {
+const Overview: React.FC<OverviewProps> = ({}) => {
 	const [commissionDetails, setCommissionDeatils] = useState<any[]>([]);
 	const [earningSummary, setEarningSummary] = useState<any[]>([]);
 	const [pieData, setPieData] = useState<any>([]);
@@ -247,7 +255,10 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 		<>
 			<NavigatorHeader
 				headerTitle={__('Overview', 'multivendorx')}
-				headerDescription={__('Manage your store information and preferences', 'multivendorx')}
+				headerDescription={__(
+					'Manage your store information and preferences',
+					'multivendorx'
+				)}
 			/>
 
 			<Container>
@@ -330,7 +341,7 @@ const Overview: React.FC<OverviewProps> = ({ }) => {
 						</div>
 					</Card>
 				</Column>
-			</Container >
+			</Container>
 		</>
 	);
 };

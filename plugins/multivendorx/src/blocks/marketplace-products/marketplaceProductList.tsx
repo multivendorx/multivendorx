@@ -17,7 +17,7 @@ interface MarketplaceProductListProps {
 	operator?: string;
 	product_visibility?: string;
 	store_id?: string;
-	store_slug?: string,
+	store_slug?: string;
 }
 
 const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
@@ -53,7 +53,7 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 						product_visibility,
 						meta_key: 'multivendorx_store_id',
 						value: store_id,
-						store_slug
+						store_slug,
 					},
 				}
 			);
@@ -73,7 +73,10 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 		<>
 			<div>
 				{products.map((product) => (
-					<li key={product.id} className="wc-block-product product type-product status-publish instock">
+					<li
+						key={product.id}
+						className="wc-block-product product type-product status-publish instock"
+					>
 						<a href={product.permalink} className="product-card">
 							<img
 								src={
@@ -82,15 +85,19 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 								}
 								alt={product.name}
 							/>
-							<h2 className="has-text-align-center">{product.name}</h2>
+							<h2 className="has-text-align-center">
+								{product.name}
+							</h2>
 						</a>
 					</li>
 				))}
 			</div>
 
-
-			<div >
-				<button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+			<div>
+				<button
+					disabled={page === 1}
+					onClick={() => setPage((p) => p - 1)}
+				>
 					Previous
 				</button>
 
@@ -98,7 +105,10 @@ const MarketplaceProductList: React.FC<MarketplaceProductListProps> = ({
 					Page {page} of {totalPages}
 				</span>
 
-				<button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>
+				<button
+					disabled={page >= totalPages}
+					onClick={() => setPage((p) => p + 1)}
+				>
 					Next
 				</button>
 			</div>

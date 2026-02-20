@@ -16,7 +16,9 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 	const [isLoading, setIsLoading] = useState(false);
 
 	const doRefreshTableData = (query: QueryProps) => {
-		if (!store_id) return;
+		if (!store_id) {
+			return;
+		}
 		setIsLoading(true);
 
 		axios
@@ -64,15 +66,16 @@ const LatestRefundRequest: React.FC<LatestRefundRequestProps> = ({
 		},
 	};
 
-	return <>
-
-		<TableCard
-			headers={headers}
-			rows={rows}
-			isLoading={isLoading}
-			onQueryUpdate={doRefreshTableData}
-		/>
-	</>
+	return (
+		<>
+			<TableCard
+				headers={headers}
+				rows={rows}
+				isLoading={isLoading}
+				onQueryUpdate={doRefreshTableData}
+			/>
+		</>
+	);
 };
 
 export default LatestRefundRequest;

@@ -31,7 +31,10 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 				header={{
 					icon: 'wallet-in',
 					title: __('Transaction Details', 'multivendorx'),
-					description: __('Track your order commissions and watch your earnings grow.', 'multivendorx'),
+					description: __(
+						'Track your order commissions and watch your earnings grow.',
+						'multivendorx'
+					),
 				}}
 			>
 				<>
@@ -44,9 +47,7 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 							<div className="text">
 								{__('Date', 'multivendorx')}
 							</div>
-							<div className="value">
-								{transaction.date}
-							</div>
+							<div className="value">{transaction.date}</div>
 						</div>
 						<div className="items">
 							<div className="text">
@@ -54,7 +55,9 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 							</div>
 							<div className="value">
 								{transaction.order_details ? (
-									<a href={`/dashboard/orders/#view/${transaction.order_details}`}>
+									<a
+										href={`/dashboard/orders/#view/${transaction.order_details}`}
+									>
 										#{transaction.order_details}
 									</a>
 								) : (
@@ -100,7 +103,6 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 							</div>
 							<div className="value">
 								{formatCurrency(transaction.balance)}
-
 							</div>
 						</div>
 						<div className="items">
@@ -109,18 +111,19 @@ const TransactionDetailsModal: React.FC<Props> = ({ transaction, onClose }) => {
 							</div>
 							<div className="value">
 								<span
-									className={`admin-badge ${transaction.status === 'Completed'
-										? 'green'
-										: 'red'
-										}`}
+									className={`admin-badge ${
+										transaction.status === 'Completed'
+											? 'green'
+											: 'red'
+									}`}
 								>
 									{transaction.status
 										? transaction.status
-											.replace(/^wc-/, '') // remove prefix
-											.replace(/_/g, ' ') // underscores → spaces
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											) // capitalize
+												.replace(/^wc-/, '') // remove prefix
+												.replace(/_/g, ' ') // underscores → spaces
+												.replace(/\b\w/g, (c) =>
+													c.toUpperCase()
+												) // capitalize
 										: ''}
 								</span>
 							</div>

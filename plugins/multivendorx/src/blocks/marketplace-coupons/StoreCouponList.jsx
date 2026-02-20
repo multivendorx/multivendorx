@@ -52,8 +52,7 @@ const StoreCouponList = ({
 					<h4>{coupon.code}</h4>
 
 					<p>
-						<strong>Usage Count:</strong>{' '}
-						{coupon.usage_count ?? 0}
+						<strong>Usage Count:</strong> {coupon.usage_count ?? 0}
 					</p>
 				</div>
 			))}

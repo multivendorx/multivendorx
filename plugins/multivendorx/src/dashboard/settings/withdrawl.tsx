@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import { BasicInputUI, FormGroup, FormGroupWrapper, SuccessNotice, ToggleSettingUI, getApiLink } from 'zyra';
+import {
+	BasicInputUI,
+	FormGroup,
+	FormGroupWrapper,
+	SuccessNotice,
+	ToggleSettingUI,
+	getApiLink,
+} from 'zyra';
 import {
 	ConnectComponentsProvider,
 	ConnectAccountOnboarding,
@@ -49,7 +56,7 @@ const Withdrawl: React.FC = () => {
 	}));
 
 	const selectedProvider = storePayment[formData.payment_method];
-	
+
 	useEffect(() => {
 		if (successMsg) {
 			const timer = setTimeout(() => setSuccessMsg(null), 3000);
@@ -76,10 +83,16 @@ const Withdrawl: React.FC = () => {
 		useState<any>(null);
 
 	useEffect(() => {
-		if (!containerRef.current || !selectedProvider?.fields) return;
+		if (!containerRef.current || !selectedProvider?.fields) {
+			return;
+		}
 
-		const field = selectedProvider.fields.find(f => f.type === 'embedded');
-		if (!field?.client_secret || !field?.publish) return;
+		const field = selectedProvider.fields.find(
+			(f) => f.type === 'embedded'
+		);
+		if (!field?.client_secret || !field?.publish) {
+			return;
+		}
 
 		(async () => {
 			const instance = await loadConnectAndInitialize({
@@ -90,10 +103,7 @@ const Withdrawl: React.FC = () => {
 		})();
 	}, [selectedProvider]);
 
-	const handleChange = (
-		key: string,
-		value: string
-	) => {
+	const handleChange = (key: string, value: string) => {
 		setFormData((prev) => {
 			const updated = { ...(prev || {}), [key]: value ?? '' };
 			autoSave(updated);
@@ -150,12 +160,14 @@ const Withdrawl: React.FC = () => {
 				<FormGroup
 					label={__('Payment Method', 'multivendorx')}
 					htmlFor="payment_method"
-					desc={paymentOptions && paymentOptions.length === 0
-						? __(
-							'You haven’t enabled any payment methods yet.',
-							'multivendorx'
-						)
-						: ''}
+					desc={
+						paymentOptions && paymentOptions.length === 0
+							? __(
+									'You haven’t enabled any payment methods yet.',
+									'multivendorx'
+								)
+							: ''
+					}
 				>
 					<ToggleSettingUI
 						options={paymentOptions}
@@ -181,14 +193,21 @@ const Withdrawl: React.FC = () => {
 
 						if (field.type === 'embedded') {
 							return (
-								<div ref={containerRef} key={`embedded-${index}`}>
+								<div
+									ref={containerRef}
+									key={`embedded-${index}`}
+								>
 									{stripeConnectInstance && (
 										<ConnectComponentsProvider
-											connectInstance={stripeConnectInstance}
+											connectInstance={
+												stripeConnectInstance
+											}
 										>
 											<ConnectAccountOnboarding
 												onExit={() =>
-													console.log('Onboarding exited')
+													console.log(
+														'Onboarding exited'
+													)
 												}
 												onStepChange={({ step }) => {
 													console.log(
@@ -211,7 +230,8 @@ const Withdrawl: React.FC = () => {
 															)
 															.then((res) => {
 																if (
-																	res.data.success
+																	res.data
+																		.success
 																) {
 																	console.log(
 																		__(
@@ -234,7 +254,8 @@ const Withdrawl: React.FC = () => {
 												}}
 												collectionOptions={{
 													fields: 'eventually_due',
-													futureRequirements: 'include',
+													futureRequirements:
+														'include',
 												}}
 											/>
 										</ConnectComponentsProvider>
@@ -263,17 +284,25 @@ const Withdrawl: React.FC = () => {
 						}
 						if (field.type === 'setting-toggle') {
 							return (
-								<FormGroup label={__(field.label, 'multivendorx')} desc={field.desc ? __(field.desc, 'multivendorx') : ''} htmlFor={field.key}>
+								<FormGroup
+									label={__(field.label, 'multivendorx')}
+									desc={
+										field.desc
+											? __(field.desc, 'multivendorx')
+											: ''
+									}
+									htmlFor={field.key}
+								>
 									<ToggleSettingUI
 										key={field.key}
 										options={
 											Array.isArray(field.options)
 												? field.options.map((opt) => ({
-													...opt,
-													value: String(
-														opt.value
-													),
-												}))
+														...opt,
+														value: String(
+															opt.value
+														),
+													}))
 												: []
 										}
 										value={formData[field.key || ''] || ''}
@@ -287,7 +316,9 @@ const Withdrawl: React.FC = () => {
 
 						return (
 							<FormGroup
-								label={__(field.label, 'multivendorx')} htmlFor={field.key}>
+								label={__(field.label, 'multivendorx')}
+								htmlFor={field.key}
+							>
 								<BasicInputUI
 									key={field.key || ''}
 									name={field.key}
@@ -295,13 +326,15 @@ const Withdrawl: React.FC = () => {
 									placeholder={
 										field.placeholder
 											? __(
-												field.placeholder,
-												'multivendorx'
-											)
+													field.placeholder,
+													'multivendorx'
+												)
 											: ''
 									}
 									value={formData[field.key] || ''}
-									onChange={(value: string) => handleChange(field.key, value)}
+									onChange={(value: string) =>
+										handleChange(field.key, value)
+									}
 								/>
 							</FormGroup>
 						);

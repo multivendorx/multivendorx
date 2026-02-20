@@ -10,13 +10,25 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, TableCard } from 'zyra';
+import {
+	Analytics,
+	Card,
+	Column,
+	Container,
+	getApiLink,
+	InfoItem,
+	ComponentStatusView,
+	TableCard,
+} from 'zyra';
 import axios from 'axios';
-import { downloadCSV, formatCurrency, formatLocalDate, toWcIsoDate } from '../../services/commonFunction';
+import {
+	downloadCSV,
+	formatCurrency,
+	formatLocalDate,
+	toWcIsoDate,
+} from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 import Counter from '@/services/Counter';
-
-
 
 type ToggleState = { [key: string]: boolean };
 
@@ -54,11 +66,12 @@ const ProductReport: React.FC = () => {
 						params: { options: true },
 					})
 					.then((response) => {
-						const options =
-							(response.data || []).map((store: any) => ({
+						const options = (response.data || []).map(
+							(store: any) => ({
 								label: store.store_name,
 								value: store.id,
-							}));
+							})
+						);
 
 						setStore(options);
 						setIsDashboardLoading(false);
@@ -89,7 +102,9 @@ const ProductReport: React.FC = () => {
 							}));
 						setChartData(data);
 					})
-					.finally(() => { setIsDashboardLoading(false); })
+					.finally(() => {
+						setIsDashboardLoading(false);
+					})
 					.catch(() => setError('Failed to load product sales data'));
 
 				// 4. Top reviewed products
@@ -112,7 +127,9 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
-					.finally(() => { setIsDashboardLoading(false); })
+					.finally(() => {
+						setIsDashboardLoading(false);
+					})
 					.catch((error) =>
 						console.error(
 							'Error fetching top reviewed products:',
@@ -140,7 +157,9 @@ const ProductReport: React.FC = () => {
 							)
 						)
 					)
-					.finally(() => { setIsDashboardLoading(false); })
+					.finally(() => {
+						setIsDashboardLoading(false);
+					})
 					.catch((error) =>
 						console.error(
 							'Error fetching top selling products:',
@@ -172,7 +191,9 @@ const ProductReport: React.FC = () => {
 								setOnBackorderCount(count);
 							}
 						})
-						.finally(() => { setIsDashboardLoading(false); })
+						.finally(() => {
+							setIsDashboardLoading(false);
+						})
 						.catch((error) =>
 							console.error(
 								`Error fetching ${status} count:`,
@@ -228,7 +249,7 @@ const ProductReport: React.FC = () => {
 		},
 		price: {
 			label: __('Net sales', 'multivendorx'),
-			type: 'currency'
+			type: 'currency',
 		},
 		category: {
 			label: __('Category', 'multivendorx'),
@@ -238,7 +259,7 @@ const ProductReport: React.FC = () => {
 		date_created: {
 			label: __('Date Created', 'multivendorx'),
 			isSortable: true,
-			type: 'date'
+			type: 'date',
 		},
 	};
 
@@ -249,7 +270,7 @@ const ProductReport: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildProductQueryParams(query)
+				params: buildProductQueryParams(query),
 			})
 			.then((response) => {
 				const products = Array.isArray(response.data)
@@ -260,9 +281,7 @@ const ProductReport: React.FC = () => {
 				setRowIds(ids);
 
 				setRows(products);
-				setTotalRows(
-					Number(response.headers['x-wp-total']) || 0
-				);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsTableLoading(false);
 			})
 			.catch((error) => {
@@ -293,7 +312,7 @@ const ProductReport: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildProductQueryParams(query, false)
+				params: buildProductQueryParams(query, false),
 			})
 			.then((response) => {
 				const rows = response.data || [];
@@ -312,7 +331,7 @@ const ProductReport: React.FC = () => {
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: downloadCSVByQuery
+			onClickWithQuery: downloadCSVByQuery,
 		},
 	];
 	const buildProductQueryParams = (
@@ -371,23 +390,22 @@ const ProductReport: React.FC = () => {
 									<Bar
 										dataKey="net_sales"
 										fill="#5007aa"
-										name={__(
-											'Net Sales',
-											'multivendorx'
-										)}
+										name={__('Net Sales', 'multivendorx')}
 									/>
 									<Bar
 										dataKey="items_sold"
 										fill="#00c49f"
-										name={__(
-											'Items Sold',
-											'multivendorx'
-										)}
+										name={__('Items Sold', 'multivendorx')}
 									/>
 								</BarChart>
 							</ResponsiveContainer>
 						) : (
-							<ComponentStatusView title={__('No product sales data found.', 'multivendorx')} />
+							<ComponentStatusView
+								title={__(
+									'No product sales data found.',
+									'multivendorx'
+								)}
+							/>
 						)}
 					</Card>
 				</Column>
@@ -421,19 +439,19 @@ const ProductReport: React.FC = () => {
 														'multivendorx'
 													)}
 												</b>{' '}
-												{product.average_rating ||
-													'0'}
+												{product.average_rating || '0'}
 												<i className="adminfont-card"></i>
 											</div>
 										</div>
 										<div className="right">
 											<i
-												className={`adminfont-pagination-right-arrow ${openReviewedCards[
-													product.id
-												]
-													? 'rotate-90 transition-transform'
-													: ''
-													}`}
+												className={`adminfont-pagination-right-arrow ${
+													openReviewedCards[
+														product.id
+													]
+														? 'rotate-90 transition-transform'
+														: ''
+												}`}
 											></i>
 										</div>
 									</div>
@@ -494,14 +512,11 @@ const ProductReport: React.FC = () => {
 															)}
 															{product.categories
 																?.map(
-																	(
-																		c: any
-																	) =>
+																	(c: any) =>
 																		c.name
 																)
-																.join(
-																	', '
-																) || '-'}
+																.join(', ') ||
+																'-'}
 														</div>
 													</div>
 												</div>
@@ -511,7 +526,12 @@ const ProductReport: React.FC = () => {
 								</div>
 							))
 						) : (
-							<ComponentStatusView title={__('No reviewed products found.', 'multivendorx')} />
+							<ComponentStatusView
+								title={__(
+									'No reviewed products found.',
+									'multivendorx'
+								)}
+							/>
 						)}
 					</Card>
 					<Card title="Top Selling Products">
@@ -523,12 +543,16 @@ const ProductReport: React.FC = () => {
 										title={product.name}
 										avatar={{
 											image: product.images?.[0]?.src,
-											text: product.name?.charAt(0) || '?',
+											text:
+												product.name?.charAt(0) || '?',
 											iconClass: `admin-color${index + 1}`,
 										}}
 										descriptions={[
 											{
-												label: __('Total Sales:', 'multivendorx'),
+												label: __(
+													'Total Sales:',
+													'multivendorx'
+												),
 												value: product.total_sales || 0,
 											},
 										]}
@@ -536,7 +560,12 @@ const ProductReport: React.FC = () => {
 								)
 							)
 						) : (
-							<ComponentStatusView title={__('No top selling products found.', 'multivendorx')} />
+							<ComponentStatusView
+								title={__(
+									'No top selling products found.',
+									'multivendorx'
+								)}
+							/>
 						)}
 					</Card>
 				</Column>
@@ -565,7 +594,7 @@ const ProductReport: React.FC = () => {
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 		</>

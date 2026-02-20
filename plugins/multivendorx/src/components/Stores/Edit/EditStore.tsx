@@ -13,7 +13,7 @@ import {
 	SettingsNavigator,
 	PopupUI,
 	useOutsideClick,
-	ItemList
+	ItemList,
 } from 'zyra';
 
 import StoreSettings from './StoreSettings';
@@ -60,7 +60,10 @@ const EditStore = () => {
 		setEditDesc(false);
 	});
 
-	useOutsideClick(headerRef, () => { setBannerMenu(false); setLogoMenu(false); });
+	useOutsideClick(headerRef, () => {
+		setBannerMenu(false);
+		setLogoMenu(false);
+	});
 
 	const hash = location.hash.replace(/^#/, '');
 
@@ -259,18 +262,18 @@ const EditStore = () => {
 		const updatedTabs = settingContent.map((tab) =>
 			tab.content.id === 'application-details'
 				? {
-					...tab,
-					content: {
-						...tab.content,
-						name:
-							data?.status === 'pending' ||
+						...tab,
+						content: {
+							...tab.content,
+							name:
+								data?.status === 'pending' ||
 								data?.status === 'rejected' ||
 								data?.status === 'permanently_rejected'
-								? // data?.status === 'active'
-								'Application Details'
-								: 'Archive Data',
-					},
-				}
+									? // data?.status === 'active'
+										'Application Details'
+									: 'Archive Data',
+						},
+					}
 				: tab
 		);
 
@@ -392,7 +395,7 @@ const EditStore = () => {
 				appLocalizer={appLocalizer}
 				settingTitleSection={
 					<>
-						<div className="general-wrapper" >
+						<div className="general-wrapper">
 							<div className="store-header">
 								<div
 									className="banner"
@@ -461,10 +464,10 @@ const EditStore = () => {
 																) => {
 																	e.stopPropagation();
 																	const updated =
-																	{
-																		...data,
-																		banner: '',
-																	};
+																		{
+																			...data,
+																			banner: '',
+																		};
 																	setData(
 																		updated
 																	);
@@ -548,10 +551,10 @@ const EditStore = () => {
 																		) => {
 																			e.stopPropagation();
 																			const updated =
-																			{
-																				...data,
-																				image: '',
-																			};
+																				{
+																					...data,
+																					image: '',
+																				};
 																			setData(
 																				updated
 																			);
@@ -580,7 +583,10 @@ const EditStore = () => {
 										</div>
 
 										<div className="details">
-											<div className="name" ref={storeRef}>
+											<div
+												className="name"
+												ref={storeRef}
+											>
 												<div
 													className="store-name"
 													onClick={() =>
@@ -624,10 +630,11 @@ const EditStore = () => {
 													)}
 
 													<span
-														className={`edit-icon  ${editName
-															? ''
-															: 'admin-badge blue'
-															}`}
+														className={`edit-icon  ${
+															editName
+																? ''
+																: 'admin-badge blue'
+														}`}
 														onClick={(e) => {
 															e.stopPropagation();
 															if (
@@ -662,7 +669,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-													'pending' ? (
+												  'pending' ? (
 													<span className="status admin-badge yellow">
 														{__(
 															'Pending',
@@ -670,7 +677,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-													'rejected' ? (
+												  'rejected' ? (
 													<span className="status admin-badge red">
 														{__(
 															'Rejected',
@@ -678,7 +685,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-													'suspended' ? (
+												  'suspended' ? (
 													<span className="status admin-badge blue">
 														{__(
 															'Suspended',
@@ -686,7 +693,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-													'permanently_rejected' ? (
+												  'permanently_rejected' ? (
 													<span className="status admin-badge red">
 														{__(
 															'Permanently Rejected',
@@ -694,7 +701,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-													'under_review' ? (
+												  'under_review' ? (
 													<span className="status admin-badge yellow">
 														{__(
 															'Under Review',
@@ -702,7 +709,7 @@ const EditStore = () => {
 														)}
 													</span>
 												) : data.status ===
-													'deactivated' ? (
+												  'deactivated' ? (
 													<span className="status admin-badge red">
 														{__(
 															'Permanently Deactivated',
@@ -716,18 +723,18 @@ const EditStore = () => {
 												{modules.includes(
 													'marketplace-compliance'
 												) && (
-														<>
-															<div className="admin-badge green">
-																<i className="adminfont-store-inventory"></i>
-															</div>
-															<div className="admin-badge blue">
-																<i className="adminfont-geo-my-wp"></i>
-															</div>
-															<div className="admin-badge yellow">
-																<i className="adminfont-staff-manager"></i>
-															</div>
-														</>
-													)}
+													<>
+														<div className="admin-badge green">
+															<i className="adminfont-store-inventory"></i>
+														</div>
+														<div className="admin-badge blue">
+															<i className="adminfont-geo-my-wp"></i>
+														</div>
+														<div className="admin-badge yellow">
+															<i className="adminfont-staff-manager"></i>
+														</div>
+													</>
+												)}
 											</div>
 
 											<div
@@ -766,14 +773,14 @@ const EditStore = () => {
 														autoFocus
 													/>
 												) : Object.keys(data).length ===
-													0 ? (
+												  0 ? (
 													<Skeleton width={150} />
 												) : data?.description ? (
 													<div>
 														<span>
 															{displayText}
 															{shouldTruncate &&
-																!expanded
+															!expanded
 																? '...'
 																: ''}
 														</span>
@@ -788,13 +795,13 @@ const EditStore = () => {
 															>
 																{expanded
 																	? __(
-																		'Read less',
-																		'multivendorx'
-																	)
+																			'Read less',
+																			'multivendorx'
+																		)
 																	: __(
-																		'Read more',
-																		'multivendorx'
-																	)}
+																			'Read more',
+																			'multivendorx'
+																		)}
 															</button>
 														)}
 													</div>
@@ -808,10 +815,11 @@ const EditStore = () => {
 												)}
 
 												<span
-													className={`edit-icon ${editDesc
-														? ''
-														: 'admin-badge blue'
-														}`}
+													className={`edit-icon ${
+														editDesc
+															? ''
+															: 'admin-badge blue'
+													}`}
 													onClick={(e) => {
 														e.stopPropagation();
 														if (
@@ -840,46 +848,50 @@ const EditStore = () => {
 											{modules.includes(
 												'store-review'
 											) && (
-													<div className="reviews-wrapper">
-														{[...Array(5)].map(
-															(_, i) => (
-																<i
-																	key={i}
-																	className={`review adminfont-star${data.total_reviews >
+												<div className="reviews-wrapper">
+													{[...Array(5)].map(
+														(_, i) => (
+															<i
+																key={i}
+																className={`review adminfont-star${
+																	data.total_reviews >
 																		0 &&
-																		i <
+																	i <
 																		Math.round(
 																			data.overall_reviews
 																		)
 																		? ''
 																		: '-o'
-																		}`}
-																></i>
-															)
-														)}
+																}`}
+															></i>
+														)
+													)}
 
-														<span>
-															{data.total_reviews > 0
-																? `${data.overall_reviews
-																} (${data.total_reviews
-																} ${data.total_reviews ===
+													<span>
+														{data.total_reviews > 0
+															? `${
+																	data.overall_reviews
+																} (${
+																	data.total_reviews
+																} ${
+																	data.total_reviews ===
 																	1
-																	? __(
-																		'Review',
-																		'multivendorx'
-																	)
-																	: __(
-																		'Reviews',
-																		'multivendorx'
-																	)
+																		? __(
+																				'Review',
+																				'multivendorx'
+																			)
+																		: __(
+																				'Reviews',
+																				'multivendorx'
+																			)
 																})`
-																: `(${__(
+															: `(${__(
 																	'0 Review',
 																	'multivendorx'
 																)})`}
-														</span>
-													</div>
-												)}
+													</span>
+												</div>
+											)}
 
 											<div className="des">
 												<b>
@@ -895,9 +907,9 @@ const EditStore = () => {
 														{data?.status !=
 															'pending' &&
 															data?.status !=
-															'rejected' &&
+																'rejected' &&
 															data?.status !=
-															'permanently_rejected' && (
+																'permanently_rejected' && (
 																<span
 																	className="edit-icon admin-badge blue"
 																	onClick={() => {
@@ -991,7 +1003,10 @@ const EditStore = () => {
 			>
 				<>
 					<FormGroupWrapper>
-						<FormGroup label={__('Deletion method', 'multivendorx')} htmlFor="deletion-method">
+						<FormGroup
+							label={__('Deletion method', 'multivendorx')}
+							htmlFor="deletion-method"
+						>
 							<ToggleSettingUI
 								options={[
 									{
@@ -1027,7 +1042,12 @@ const EditStore = () => {
 							/>
 						</FormGroup>
 						{deleteOption === 'set_store_owner' && (
-							<FormGroup label={__('Assign new store owner', 'multivendorx')}>
+							<FormGroup
+								label={__(
+									'Assign new store owner',
+									'multivendorx'
+								)}
+							>
 								<SelectInputUI
 									name="new_owner"
 									value={selectedOwner?.value}

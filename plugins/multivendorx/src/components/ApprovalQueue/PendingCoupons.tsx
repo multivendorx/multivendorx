@@ -38,11 +38,10 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then((response) => {
-				const options =
-					(response.data || []).map((store: any) => ({
-						label: store.store_name,
-						value: store.id,
-					}));
+				const options = (response.data || []).map((store: any) => ({
+					label: store.store_name,
+					value: store.id,
+				}));
 
 				setStore(options);
 				setIsLoading(false);
@@ -76,7 +75,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				doRefreshTableData({})
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(console.error);
@@ -123,12 +122,12 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 		},
 		amount: {
 			label: __('Amount', 'multivendorx'),
-			type:'currency'
+			type: 'currency',
 		},
 		date_created: {
 			label: __('Date created', 'multivendorx'),
 			isSortable: true,
-			type:'date'
+			type: 'date',
 		},
 		action: {
 			type: 'action',
@@ -148,7 +147,6 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 			],
 		},
 	};
-
 
 	const filters = [
 		{
@@ -180,7 +178,10 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					meta_key: 'multivendorx_store_id',
 					value: query?.filter?.store_id,
 					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						? toWcIsoDate(
+								query.filter.created_at.startDate,
+								'start'
+							)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -198,9 +199,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				setRowIds(ids);
 
 				setRows(coupons);
-				setTotalRows(
-					Number(response.headers['x-wp-total']) || 0
-				);
+				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -229,7 +228,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 						priceDecimals: appLocalizer.price_decimals,
 						decimalSeparator: appLocalizer.decimal_separator,
 						thousandSeparator: appLocalizer.thousand_separator,
-						currencyPosition: appLocalizer.currency_position
+						currencyPosition: appLocalizer.currency_position,
 					}}
 				/>
 				{/* Reject Coupon Popup */}
@@ -262,7 +261,10 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 									{
 										icon: 'cross',
 										text: isSubmitting
-											? __('Submitting...', 'multivendorx')
+											? __(
+													'Submitting...',
+													'multivendorx'
+												)
 											: __('Reject', 'multivendorx'),
 										disabled: isSubmitting,
 										onClick: submitReject,
@@ -275,7 +277,9 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(value: string) => setRejectReason(value)}
+								onChange={(value: string) =>
+									setRejectReason(value)
+								}
 								placeholder="Enter reason for rejecting this coupon..."
 								rows={4}
 							/>

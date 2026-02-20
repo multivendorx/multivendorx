@@ -25,56 +25,56 @@ export default {
 	submitUrl: 'settings',
 	modal: [
 		{
-    key: 'test',
-    type: 'tab',
-    label: 'Test Tabs',
-    tabs: [
-        {
-            label: 'Tab 1',
-            content: 'Simple text content for Tab 1',
-        },
-        {
-            label: 'Tab 2',
-            // Content can be an array of field configurations
-            content: [
-                {
-                    type: 'text',
-                    key: 'username',
-                    label: 'Username',
-                    placeholder: 'Enter username',
-                },
-                {
-                    type: 'email',
-                    key: 'email',
-                    label: 'Email Address',
-                    placeholder: 'Enter email',
-                },
-                {
-                    type: 'select',
-                    key: 'role',
-                    label: 'User Role',
-                    options: [
-                        { value: 'admin', label: 'Administrator' },
-                        { value: 'editor', label: 'Editor' },
-                    ]
-                }
-            ]
-        },
-        {
-            label: 'Tab 3',
-            // Mix of string and fields
-            content:[
-                    "Custom Section This is custom content before fields",
-                        {
-                            type: 'text',
-                            key: 'title',
-                            label: 'Title',
-                            placeholder: 'Enter title',
-                        }
-					]
-        }
-    ]
-},
+			key: 'test',
+			type: 'tab',
+			label: 'Test Tabs',
+			tabs: [
+				{
+					label: 'Tab 1',
+					content: 'Simple text content for Tab 1',
+				},
+				{
+					label: 'Tab 2',
+					// Content can be an array of field configurations
+					content: [
+						{
+							type: 'text',
+							key: 'username',
+							label: 'Username',
+							placeholder: 'Enter username',
+						},
+						{
+							type: 'email',
+							key: 'email',
+							label: 'Email Address',
+							placeholder: 'Enter email',
+						},
+						{
+							type: 'select',
+							key: 'role',
+							label: 'User Role',
+							options: [
+								{ value: 'admin', label: 'Administrator' },
+								{ value: 'editor', label: 'Editor' },
+							],
+						},
+					],
+				},
+				{
+					label: 'Tab 3',
+					// Mix of string and fields
+					content: [
+						'Custom Section This is custom content before fields',
+						{
+							type: 'text',
+							key: 'title',
+							label: 'Title',
+							placeholder: 'Enter title',
+						},
+					],
+				},
+			],
+		},
 		{
 			key: 'store_registration_page',
 			type: 'select',
@@ -83,7 +83,7 @@ export default {
 				'Choose the page with [store_registration] shortcode, this is where stores sign up.',
 				'multivendorx'
 			),
-			size: "30rem",
+			size: '30rem',
 			options: appLocalizer.pages_list,
 		},
 		{
@@ -94,7 +94,7 @@ export default {
 				'The page with [marketplace_store] shortcode will act as the store’s control center.',
 				'multivendorx'
 			),
-			size: "30rem",
+			size: '30rem',
 			options: appLocalizer.pages_list,
 		},
 		{
@@ -142,7 +142,7 @@ export default {
 				textType: 'post',
 				postText: '/sample-store/',
 			},
-			required: true
+			required: true,
 		},
 		{
 			key: 'marketplace_model',
@@ -186,23 +186,23 @@ export default {
 					key: 'mixed',
 					label: __('Mixed marketplace', 'multivendorx'),
 					value: 'mixed',
-				}
+				},
 			],
 		},
 		{
-            key: 'default_pages',
-            type: 'button',
+			key: 'default_pages',
+			type: 'button',
 			wrapperClass: 'left',
-            name: __('Create Default MultiVendorX Page', 'multivendorx'),
+			name: __('Create Default MultiVendorX Page', 'multivendorx'),
 			className: 'purple',
-            label: __('MultiVendorX page', 'multivendorx'),
-            desc: __(
-                'This tool will install all the missing MultiVendorX pages. Pages already defined and set up will not be replaced.',
-                'multivendorx'
-            ),
-            apilink: 'status',
-            method: 'GET'
-        },
+			label: __('MultiVendorX page', 'multivendorx'),
+			desc: __(
+				'This tool will install all the missing MultiVendorX pages. Pages already defined and set up will not be replaced.',
+				'multivendorx'
+			),
+			apilink: 'status',
+			method: 'GET',
+		},
 		{
 			key: 'generate_key',
 			type: 'text',
@@ -210,9 +210,9 @@ export default {
 			afterElement: {
 				type: 'button',
 				key: 'generate_button',
-				name: "Generate",
+				name: 'Generate',
 				generate: true,
-				responseKey: 'generate_key',				 
+				responseKey: 'generate_key',
 			},
 		},
 		{
@@ -255,26 +255,26 @@ export default {
 			addNewTemplate: {
 				label: 'New Reasons',
 			},
-			modal: []
+			modal: [],
 		},
 		{
-            key: 'tax_information',
-            type: 'expandable-panel',
-            label: __('Legal and tax information', 'multivendorx'),
-            addNewBtn: true,
-            addNewTemplate: {
-                label: 'New Tax information',
-                formFields: [
-                    {
-                        key: 'label',
-                        type: 'text',
-                        label: 'Tax information',
-                        placeholder: 'Enter tax information',
-                    },
-                ],
-            },
-            modal: [],
-        },
+			key: 'tax_information',
+			type: 'expandable-panel',
+			label: __('Legal and tax information', 'multivendorx'),
+			addNewBtn: true,
+			addNewTemplate: {
+				label: 'New Tax information',
+				formFields: [
+					{
+						key: 'label',
+						type: 'text',
+						label: 'Tax information',
+						placeholder: 'Enter tax information',
+					},
+				],
+			},
+			modal: [],
+		},
 		{
 			key: 'payment_methods',
 			type: 'expandable-panel',
@@ -342,8 +342,14 @@ export default {
 							link: `${appLocalizer.admin_url}admin.php?page=multivendorx#&tab=settings&subtab=commissions`,
 							beforeElement: {
 								key: 'taxable',
-								label: __('Charge tax on shipping cost', 'multivendorx'),
-								desc: __('Shipping charges will be treated as taxable items during checkout', 'multivendorx'),
+								label: __(
+									'Charge tax on shipping cost',
+									'multivendorx'
+								),
+								desc: __(
+									'Shipping charges will be treated as taxable items during checkout',
+									'multivendorx'
+								),
 								type: 'checkbox',
 								options: [
 									{
@@ -353,58 +359,63 @@ export default {
 								],
 							},
 						},
-						
 					],
 				},
-			]
+			],
 		},
-		
-		{
-            key: 'type_options',
-            type: 'checkbox',
-            classes: 'vertical',
-            label: __('When to send invoice emails  ', 'multivendorx'),
 
-            desc: __(
-                'Choose how invoices are automatically sent to customers and stores',
-                'multivendorx'
-            ),
-            // moduleEnabled: 'invoice',
-            options: [
-                {
-                    key: 'virtual',
-                    label: __(
-                        'Attach to order confirmation email',
-                        'multivendorx'
-                    ),
-                    desc: __('Include invoice PDF with the order confirmation customers already receive.', 'multivendorx'),
-                    value: 'virtual',
-            		proSetting: true,
-                },
-                {
-                    key: 'Send Separate Invoice Email',
-                    label: __('Send separate invoice email', 'multivendorx'),
-                    desc: __('Dedicated email with invoice', 'multivendorx'),
-                    value: 'downloadable',
-                },
-                {
-                    key: 'Notify Stores of Invoice Generation',
-                    label: __(
-                        'Notify stores',
-                        'multivendorx'
-                    ),
-                    desc: __('Send a copy to the vendor when their sale generates an invoice.', 'multivendorx'),
-                    value: 'downloadable',
-                },
-                {
-                    key: 'Generate Packing Slips',
-                    label: __('Include packing slip', 'multivendorx'),
-                    desc: __('Also generate and attach a packing slip with the invoice.', 'multivendorx'),
-                    value: 'downloadable',
-                },
-            ],
-            selectDeselect: true,
-        },
+		{
+			key: 'type_options',
+			type: 'checkbox',
+			classes: 'vertical',
+			label: __('When to send invoice emails  ', 'multivendorx'),
+
+			desc: __(
+				'Choose how invoices are automatically sent to customers and stores',
+				'multivendorx'
+			),
+			// moduleEnabled: 'invoice',
+			options: [
+				{
+					key: 'virtual',
+					label: __(
+						'Attach to order confirmation email',
+						'multivendorx'
+					),
+					desc: __(
+						'Include invoice PDF with the order confirmation customers already receive.',
+						'multivendorx'
+					),
+					value: 'virtual',
+					proSetting: true,
+				},
+				{
+					key: 'Send Separate Invoice Email',
+					label: __('Send separate invoice email', 'multivendorx'),
+					desc: __('Dedicated email with invoice', 'multivendorx'),
+					value: 'downloadable',
+				},
+				{
+					key: 'Notify Stores of Invoice Generation',
+					label: __('Notify stores', 'multivendorx'),
+					desc: __(
+						'Send a copy to the vendor when their sale generates an invoice.',
+						'multivendorx'
+					),
+					value: 'downloadable',
+				},
+				{
+					key: 'Generate Packing Slips',
+					label: __('Include packing slip', 'multivendorx'),
+					desc: __(
+						'Also generate and attach a packing slip with the invoice.',
+						'multivendorx'
+					),
+					value: 'downloadable',
+				},
+			],
+			selectDeselect: true,
+		},
 		{
 			key: 'shipping_providers',
 			type: 'checkbox',
@@ -414,56 +425,56 @@ export default {
 				' Choose which shipping providers stores can use. Only the carriers you enable will be available for sellers to ship their products and add tracking details. This helps keep all shipments through trusted, approved providers.',
 				'multivendorx'
 			),
-			 
+
 			addNewBtnText: 'Add Custom Provider',
 			options: [
 				{
 					key: 'australia_post',
 					label: __('Australia post', 'multivendorx'),
 					value: 'australia_post',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'canada_post',
 					label: __('Canada post', 'multivendorx'),
 					value: 'canada_post',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'city_link',
 					label: __('City link', 'multivendorx'),
 					value: 'city_link',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'dhl',
 					label: __('DHL', 'multivendorx'),
 					value: 'dhl',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'fastway_south_africa',
 					label: __('Fastway South Africa', 'multivendorx'),
 					value: 'fastway_south_africa',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'fedex',
 					label: __('FedEx', 'multivendorx'),
 					value: 'fedex',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'ontrac',
 					label: __('OnTrac', 'multivendorx'),
 					value: 'ontrac',
-					edit : true,
+					edit: true,
 				},
 				{
 					key: 'polish_shipping',
 					label: __('Polish shipping providers', 'multivendorx'),
 					value: 'polish_shipping',
-					edit : true,
+					edit: true,
 				},
 			],
 			selectDeselect: true,

@@ -23,7 +23,7 @@ export default {
 			type: 'text',
 			key: 'twitter',
 			icon: 'twitter',
-			label: __('X', 'multivendorx')
+			label: __('X', 'multivendorx'),
 		},
 
 		// LinkedIn
@@ -31,7 +31,7 @@ export default {
 			type: 'text',
 			key: 'linkedin',
 			icon: 'linkedin-border',
-			label: __('LinkedIn', 'multivendorx')
+			label: __('LinkedIn', 'multivendorx'),
 		},
 
 		// YouTube
@@ -39,7 +39,7 @@ export default {
 			type: 'text',
 			key: 'youtube',
 			icon: 'adminfont-youtube',
-			label: __('YouTube', 'multivendorx')
+			label: __('YouTube', 'multivendorx'),
 		},
 
 		// Instagram
@@ -47,7 +47,7 @@ export default {
 			type: 'text',
 			key: 'instagram',
 			icon: 'mail',
-			label: __('Instagram', 'multivendorx')
+			label: __('Instagram', 'multivendorx'),
 		},
 
 		// Pinterest
@@ -55,7 +55,7 @@ export default {
 			type: 'text',
 			key: 'pinterest',
 			icon: 'mail',
-			label: __('Pinterest', 'multivendorx')
+			label: __('Pinterest', 'multivendorx'),
 		},
 	],
 };

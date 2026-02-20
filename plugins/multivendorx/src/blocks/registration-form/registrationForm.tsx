@@ -130,7 +130,10 @@ const RegistrationForm = () => {
 			});
 	}, []);
 
-	const memoizedCountryList = useMemo(() => registrationForm.country_list, []);
+	const memoizedCountryList = useMemo(
+		() => registrationForm.country_list,
+		[]
+	);
 	const memoizedStateList = useMemo(() => registrationForm.state_list, []);
 
 	return (
@@ -148,7 +151,6 @@ const RegistrationForm = () => {
 				<>
 					<div className="store-selector">
 						<ToggleSetting
-							 
 							options={stores}
 							value={selectedStore?.value || ''}
 							onChange={(val: any) => handleStoreChange(val)}

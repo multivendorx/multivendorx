@@ -1,5 +1,5 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 interface Product {
 	id: number;
@@ -85,7 +85,10 @@ const ProductList: React.FC<ProductListProps> = ({
 				<div className="top-products-inner">
 					{products.map((product) => (
 						<div className="product-item" key={product.id}>
-							<a href={product.permalink} className="product-card">
+							<a
+								href={product.permalink}
+								className="product-card"
+							>
 								<div className="product-image">
 									<div className="image-placeholder">
 										<img
@@ -104,11 +107,17 @@ const ProductList: React.FC<ProductListProps> = ({
 									<div className="product-price">
 										{product.salePrice ? (
 											<>
-												<del className="regular-price">{product.price}</del>
-												<div className="sale-price">{product.salePrice}</div>
+												<del className="regular-price">
+													{product.price}
+												</del>
+												<div className="sale-price">
+													{product.salePrice}
+												</div>
 											</>
 										) : (
-											<span className="regular-price">{product.price}</span>
+											<span className="regular-price">
+												{product.price}
+											</span>
 										)}
 									</div>
 								</div>

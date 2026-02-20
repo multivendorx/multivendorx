@@ -2,10 +2,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
-import { PopupUI, TableCard, useModules, TableRow, QueryProps, CategoryCount } from 'zyra';
+import {
+	PopupUI,
+	TableCard,
+	useModules,
+	TableRow,
+	QueryProps,
+	CategoryCount,
+} from 'zyra';
 import OrderDetails from './orderDetails';
 import AddOrder from './addOrder';
-import { downloadCSV, formatLocalDate, toWcIsoDate } from '../services/commonFunction';
+import {
+	downloadCSV,
+	formatLocalDate,
+	toWcIsoDate,
+} from '../services/commonFunction';
 
 const Orders: React.FC = () => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
@@ -29,16 +40,13 @@ const Orders: React.FC = () => {
 
 	const fetchOrderById = (orderId: string | number) => {
 		axios
-			.get(
-				`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-					params: {
-						meta_key: 'multivendorx_store_id',
-						value: appLocalizer.store_id,
-					},
-				}
-			)
+			.get(`${appLocalizer.apiUrl}/wc/v3/orders/${orderId}`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: {
+					meta_key: 'multivendorx_store_id',
+					value: appLocalizer.store_id,
+				},
+			})
 			.then((res) => {
 				const order = res.data;
 				setSelectedOrder(order);
@@ -55,7 +63,9 @@ const Orders: React.FC = () => {
 		}
 
 		const orderId = hash.split('view/')[1];
-		if (!orderId) return;
+		if (!orderId) {
+			return;
+		}
 
 		const foundOrder = orderLookup[orderId];
 
@@ -65,7 +75,6 @@ const Orders: React.FC = () => {
 			fetchOrderById(orderId);
 		}
 	}, [hash]);
-
 
 	const exportAllOrders = () => {
 		let allOrders: any[] = [];
@@ -183,7 +192,7 @@ const Orders: React.FC = () => {
 							status === 'all'
 								? __('All', 'multivendorx')
 								: status.charAt(0).toUpperCase() +
-								status.slice(1),
+									status.slice(1),
 						count: total,
 					};
 				});
@@ -206,7 +215,7 @@ const Orders: React.FC = () => {
 	// Fetch orders
 	useEffect(() => {
 		if (hash === 'refund-requested') {
-			doRefreshTableData({ categoryFilter: 'refund-requested', });
+			doRefreshTableData({ categoryFilter: 'refund-requested' });
 		} else {
 			doRefreshTableData({});
 		}
@@ -233,22 +242,22 @@ const Orders: React.FC = () => {
 
 		date_created: {
 			label: __('Date', 'multivendorx'),
-			type: 'date'
+			type: 'date',
 		},
 
 		status: {
 			label: __('Status', 'multivendorx'),
-			type: 'status'
+			type: 'status',
 		},
 
 		commission_total: {
 			label: __('Total Earning', 'multivendorx'),
-			type: 'currency'
+			type: 'currency',
 		},
 
 		total: {
 			label: __('Total', 'multivendorx'),
-			type: 'currency'
+			type: 'currency',
 		},
 
 		action: {
@@ -257,15 +266,15 @@ const Orders: React.FC = () => {
 			actions: [
 				...(appLocalizer.edit_order_capability
 					? [
-						{
-							label: __('View', 'multivendorx'),
-							icon: 'eye',
-							onClick: (row) => {
-								setSelectedOrder(row);
-								window.location.hash = `view/${row.id}`;
+							{
+								label: __('View', 'multivendorx'),
+								icon: 'eye',
+								onClick: (row) => {
+									setSelectedOrder(row);
+									window.location.hash = `view/${row.id}`;
+								},
 							},
-						},
-					]
+						]
 					: []),
 
 				{
@@ -318,10 +327,12 @@ const Orders: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildOrderQueryParams(query)
+				params: buildOrderQueryParams(query),
 			})
 			.then((response) => {
-				const orders = Array.isArray(response.data) ? response.data : [];
+				const orders = Array.isArray(response.data)
+					? response.data
+					: [];
 				setRowIds(orders.map((o: any) => o.id));
 				const lookup: Record<number, any> = {};
 				orders.forEach((order: any) => {
@@ -340,11 +351,10 @@ const Orders: React.FC = () => {
 			});
 	};
 
-	const handleBulkAction = (
-		action: string,
-		selectedIds: number[]
-	) => {
-		if (!action || selectedIds.length === 0) return;
+	const handleBulkAction = (action: string, selectedIds: number[]) => {
+		if (!action || selectedIds.length === 0) {
+			return;
+		}
 
 		const updatePayload = {
 			update: selectedIds.map((id) => ({
@@ -354,15 +364,11 @@ const Orders: React.FC = () => {
 		};
 
 		axios
-			.post(
-				`${appLocalizer.apiUrl}/wc/v3/orders/batch`,
-				updatePayload,
-				{
-					headers: {
-						'X-WP-Nonce': appLocalizer.nonce,
-					},
-				}
-			)
+			.post(`${appLocalizer.apiUrl}/wc/v3/orders/batch`, updatePayload, {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+			})
 			.then(() => {
 				doRefreshTableData({});
 			})
@@ -404,7 +410,7 @@ const Orders: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: buildOrderQueryParams(query, false)
+				params: buildOrderQueryParams(query, false),
 			})
 			.then((response) => {
 				const rows = response.data || [];
@@ -423,10 +429,9 @@ const Orders: React.FC = () => {
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-			onClickWithQuery: downloadCSVByQuery
+			onClickWithQuery: downloadCSVByQuery,
 		},
 	];
-
 
 	return (
 		<>
@@ -476,7 +481,10 @@ const Orders: React.FC = () => {
 								{ label: 'All', value: 'all' },
 								{ label: 'Order Id', value: 'order_id' },
 								{ label: 'Products', value: 'products' },
-								{ label: 'Customer Email', value: 'customer_email' },
+								{
+									label: 'Customer Email',
+									value: 'customer_email',
+								},
 								{ label: 'Customer', value: 'customer' },
 							],
 						}}
@@ -485,8 +493,11 @@ const Orders: React.FC = () => {
 						ids={rowIds}
 						categoryCounts={categoryCounts}
 						bulkActions={bulkActions}
-						onBulkActionApply={(action: string, selectedIds: []) => {
-							handleBulkAction(action, selectedIds)
+						onBulkActionApply={(
+							action: string,
+							selectedIds: []
+						) => {
+							handleBulkAction(action, selectedIds);
 						}}
 						format={appLocalizer.date_format}
 						currency={{
@@ -494,10 +505,9 @@ const Orders: React.FC = () => {
 							priceDecimals: appLocalizer.price_decimals,
 							decimalSeparator: appLocalizer.decimal_separator,
 							thousandSeparator: appLocalizer.thousand_separator,
-							currencyPosition: appLocalizer.currency_position
+							currencyPosition: appLocalizer.currency_position,
 						}}
 					/>
-
 				</>
 			)}
 

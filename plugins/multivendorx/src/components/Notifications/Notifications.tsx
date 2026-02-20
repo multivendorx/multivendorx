@@ -45,7 +45,9 @@ const Notifications = () => {
 			settingContent={settingContent}
 			currentSetting={location.get('subtab') as string}
 			getForm={getForm}
-			prepareUrl={(tabid: string) => `?page=multivendorx#&tab=notifications&subtab=${tabid}`}
+			prepareUrl={(tabid: string) =>
+				`?page=multivendorx#&tab=notifications&subtab=${tabid}`
+			}
 			appLocalizer={appLocalizer}
 			variant={'compact'}
 			Link={Link}

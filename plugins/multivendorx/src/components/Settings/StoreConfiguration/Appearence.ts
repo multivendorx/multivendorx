@@ -72,21 +72,21 @@ export default {
 					key: 'no-sidebar',
 					label: __('No Sidebar', 'multivendorx'),
 					value: 'no',
-					icon: "right-sidebar"
+					icon: 'right-sidebar',
 				},
 				{
 					key: 'left',
 					label: __('Left Sidebar', 'multivendorx'),
 					value: 'left',
-					icon: "left-sidebar"
+					icon: 'left-sidebar',
 				},
 				{
 					key: 'right',
 					label: __('Right Sidebar', 'multivendorx'),
 					value: 'right',
-					icon: "no-sidebar"
-				}
-			]
+					icon: 'no-sidebar',
+				},
+			],
 		},
 		{
 			key: 'store_color_settings',
@@ -100,7 +100,7 @@ export default {
 					label: __('dashboard', 'multivendorx'),
 					preview: DashboardTemplate,
 					component: DashboardTemplate,
-				}
+				},
 			],
 			predefinedOptions: [
 				{

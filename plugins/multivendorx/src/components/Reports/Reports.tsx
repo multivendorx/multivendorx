@@ -1,4 +1,4 @@
-import {SettingsNavigator,  } from 'zyra';
+import { SettingsNavigator } from 'zyra';
 import '../../dashboard/dashboardCommon.scss';
 import { useLocation, Link } from 'react-router-dom';
 import MarketplaceReport from './MarketplaceReport';
@@ -160,7 +160,10 @@ const Reports = () => {
 				menuIcon={true}
 				headerIcon="report"
 				headerTitle={__('Reports', 'multivendorx')}
-				headerDescription={__('Track sales, earnings, and store performance with real-time marketplace insights.', 'multivendorx')}
+				headerDescription={__(
+					'Track sales, earnings, and store performance with real-time marketplace insights.',
+					'multivendorx'
+				)}
 			/>
 		</>
 	);

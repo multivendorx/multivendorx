@@ -1,6 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { AdminButtonUI, Card, getApiLink, ComponentStatusView, PopupUI, ItemList, HeaderSearch, NavigatorHeader, BasicInputUI } from 'zyra';
+import {
+	AdminButtonUI,
+	Card,
+	getApiLink,
+	ComponentStatusView,
+	PopupUI,
+	ItemList,
+	HeaderSearch,
+	NavigatorHeader,
+	BasicInputUI,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 type DocumentItem = {
@@ -95,7 +105,10 @@ const Documentation: React.FC = () => {
 		<>
 			<NavigatorHeader
 				headerTitle={__('Documentation', 'multivendorx')}
-				headerDescription={__('Everything you need to know about store operations', 'multivendorx')}
+				headerDescription={__(
+					'Everything you need to know about store operations',
+					'multivendorx'
+				)}
 			/>
 
 			<Card>
@@ -107,7 +120,9 @@ const Documentation: React.FC = () => {
 					}}
 				/>
 				{filteredDocuments.length === 0 && (
-					<ComponentStatusView title={__('No documents found.', 'multivendorx')} />
+					<ComponentStatusView
+						title={__('No documents found.', 'multivendorx')}
+					/>
 				)}
 				{filteredDocuments.map((doc) => (
 					<>
@@ -118,27 +133,39 @@ const Documentation: React.FC = () => {
 								{
 									title: truncateText(doc.title || '', 4),
 									icon: 'icon adminfont-contact-form blue',
-									desc: <>
-										{truncateText(doc.content || '', 10)}
-										<a
-											className="read-more"
-											onClick={() =>
-												handleReadMore(doc)
-											}
-										>
-											{__('Read more', 'multivendorx')}
-										</a>
-									</>,
+									desc: (
+										<>
+											{truncateText(
+												doc.content || '',
+												10
+											)}
+											<a
+												className="read-more"
+												onClick={() =>
+													handleReadMore(doc)
+												}
+											>
+												{__(
+													'Read more',
+													'multivendorx'
+												)}
+											</a>
+										</>
+									),
 									tags: (
 										<>
 											<div className="tag">
 												<span className="admin-badge yellow">
-													{__('Products', 'multivendorx')}
+													{__(
+														'Products',
+														'multivendorx'
+													)}
 												</span>
 											</div>
 										</>
-									)
-								}]}
+									),
+								},
+							]}
 						/>
 					</>
 				))}

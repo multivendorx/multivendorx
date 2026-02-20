@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import {getApiLink, Skeleton } from 'zyra';
+import { getApiLink, Skeleton } from 'zyra';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
 type NotificationsProps = {
-    type?: 'notification' | 'activity';
+	type?: 'notification' | 'activity';
 };
 
-const Notifications : React.FC<NotificationsProps> = ({ type }) => {
+const Notifications: React.FC<NotificationsProps> = ({ type }) => {
 	const [notifications, setNotifications] = useState<[] | null>(null);
 
 	useEffect(() => {
@@ -18,7 +18,7 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 			params: {
 				header: true,
 				store_id: appLocalizer.store_id,
-				type: type
+				type: type,
 			},
 		}).then((response) => {
 			setNotifications(response.data || []);
@@ -30,8 +30,8 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 			method: 'POST',
 			url: getApiLink(appLocalizer, `notifications/${id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: { 
-				id, 
+			data: {
+				id,
 				is_read: true,
 				store_id: appLocalizer.store_id,
 			},
@@ -45,8 +45,8 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 			method: 'POST',
 			url: getApiLink(appLocalizer, `notifications/${id}`),
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			data: { 
-				id, 
+			data: {
+				id,
 				is_dismissed: true,
 				store_id: appLocalizer.store_id,
 			},
@@ -89,10 +89,11 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 
 		return notifications.map((item, idx) => (
 			<li key={idx}>
-				<div className="item"
+				<div
+					className="item"
 					onClick={() => handleNotificationClick(item.id)}
 				>
-					<div className={`icon admin-badge admin-color${item.id}`} >
+					<div className={`icon admin-badge admin-color${item.id}`}>
 						<i
 							className={
 								item.icon || 'adminfont-user-network-icon'
@@ -105,11 +106,13 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 						<span className="time">{item.time}</span>
 					</div>
 					<i className="check-icon adminfont-check color-green"></i>
-					<i className="check-icon adminfont-cross color-red"  
+					<i
+						className="check-icon adminfont-cross color-red"
 						onClick={(e) => {
 							e.stopPropagation();
-							dismissNotification(item.id)
-						}}></i>
+							dismissNotification(item.id);
+						}}
+					></i>
 				</div>
 			</li>
 		));
@@ -122,7 +125,6 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 	const url = appLocalizer.permalink_structure
 		? `${baseUrl}/${appLocalizer.dashboard_slug}/view-notifications/#subtab=${subtab}`
 		: `${baseUrl}/?page_id=${appLocalizer.dashboard_page_id}&segment=view-notifications#subtab=${subtab}`;
-
 
 	return (
 		<>
@@ -149,7 +151,6 @@ const Notifications : React.FC<NotificationsProps> = ({ type }) => {
 							? __('View all notifications', 'multivendorx')
 							: __('View all activities', 'multivendorx')}
 					</a>
-
 				</div>
 			</div>
 		</>

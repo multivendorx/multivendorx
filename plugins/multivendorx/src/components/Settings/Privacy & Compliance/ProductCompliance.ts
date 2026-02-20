@@ -33,7 +33,7 @@ export default {
 					title: true,
 					description: false,
 				},
-				disableBtn: true
+				disableBtn: true,
 			},
 		},
 		{
@@ -49,7 +49,10 @@ export default {
 			options: [
 				{
 					key: 'product_authenticity_certificates',
-					label: __('Product authenticity certificates', 'multivendorx'),
+					label: __(
+						'Product authenticity certificates',
+						'multivendorx'
+					),
 					value: 'product_authenticity_certificates',
 				},
 				{
@@ -127,7 +130,7 @@ export default {
 					title: true,
 					description: false,
 				},
-				disableBtn: true
+				disableBtn: true,
 			},
 		},
 	],

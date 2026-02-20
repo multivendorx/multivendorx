@@ -14,7 +14,9 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const doRefreshTableData = (query: QueryProps) => {
-		if (!store_id) return;
+		if (!store_id) {
+			return;
+		}
 		setIsLoading(true);
 
 		axios
@@ -39,7 +41,6 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 				setIsLoading(false);
 			});
 	};
-
 
 	const headers = {
 		customer_name: {

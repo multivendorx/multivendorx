@@ -81,11 +81,11 @@ export default {
 					isCustom: true,
 					desc: 'Confirms the store is legally registered as a business entity.',
 				},
-				{	
+				{
 					id: 'trade-license',
 					label: 'Trade license or permit',
 					isCustom: true,
-					desc: 'Validates that the store is authorized to operate and conduct business legally.'
+					desc: 'Validates that the store is authorized to operate and conduct business legally.',
 				},
 				{
 					id: 'address-proof',
@@ -123,7 +123,10 @@ export default {
 							type: 'text',
 							label: 'Google Client ID',
 							placeholder: 'Enter Google Client ID',
-							desc: __( '<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>', 'multivendorx' ),
+							desc: __(
+								'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
+								'multivendorx'
+							),
 						},
 						{
 							key: 'client_secret',
@@ -153,7 +156,10 @@ export default {
 							type: 'text',
 							label: 'Twitter API Key',
 							placeholder: 'Enter Twitter API Key',
-							desc: __( '<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>', 'multivendorx' ),
+							desc: __(
+								'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
+								'multivendorx'
+							),
 						},
 						{
 							key: 'api_secret_key',
@@ -183,7 +189,10 @@ export default {
 							type: 'text',
 							label: 'Facebook App ID',
 							placeholder: 'Enter Facebook App ID',
-							desc: __( '<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>', 'multivendorx' ),
+							desc: __(
+								'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
+								'multivendorx'
+							),
 						},
 						{
 							key: 'app_secret',
@@ -206,7 +215,10 @@ export default {
 							type: 'text',
 							label: 'LinkedIn Client ID',
 							placeholder: 'Enter LinkedIn Client ID',
-							desc: __( '<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>', 'multivendorx' ),
+							desc: __(
+								'<a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">Click here to generate access token.</a>',
+								'multivendorx'
+							),
 						},
 						{
 							key: 'client_secret',

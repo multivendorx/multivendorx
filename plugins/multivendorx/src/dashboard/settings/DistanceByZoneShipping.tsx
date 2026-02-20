@@ -220,9 +220,9 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			const method = isUpdate ? 'PUT' : 'POST';
 			const url = isUpdate
 				? getApiLink(
-					appLocalizer,
-					`zone-shipping/${selectedZone.zone_id}`
-				)
+						appLocalizer,
+						`zone-shipping/${selectedZone.zone_id}`
+					)
 				: getApiLink(appLocalizer, 'zone-shipping');
 
 			const requestData: any = {
@@ -266,8 +266,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 				alert(
 					__(
 						'Failed to ' +
-						(isUpdate ? 'update' : 'add') +
-						' shipping method',
+							(isUpdate ? 'update' : 'add') +
+							' shipping method',
 						'multivendorx'
 					)
 				);
@@ -275,15 +275,15 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		} catch (err) {
 			console.error(
 				'Error ' +
-				(isEditing ? 'updating' : 'adding') +
-				' shipping method:',
+					(isEditing ? 'updating' : 'adding') +
+					' shipping method:',
 				err
 			);
 			alert(
 				__(
 					'Error ' +
-					(isEditing ? 'updating' : 'adding') +
-					' shipping method',
+						(isEditing ? 'updating' : 'adding') +
+						' shipping method',
 					'multivendorx'
 				)
 			);
@@ -311,13 +311,8 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		return (
 			<div className="shipping-method-wrapper">
 				{methodsArray.map((method: any) => (
-					<div
-						key={method.instance_id}
-						className="shipping-method"
-					>
-						<div className="admin-badge yellow">
-							{method.title}
-						</div>
+					<div key={method.instance_id} className="shipping-method">
+						<div className="admin-badge yellow">{method.title}</div>
 						<i
 							onClick={() => handleEdit(method)}
 							className="admin-badge blue adminfont-edit"
@@ -367,7 +362,12 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 						{data.length === 0 ? (
 							<tr>
 								<td colSpan={3} className="no-data">
-									<p>{__('No shipping zones found', 'multivendorx')}</p>
+									<p>
+										{__(
+											'No shipping zones found',
+											'multivendorx'
+										)}
+									</p>
 								</td>
 							</tr>
 						) : (
@@ -397,10 +397,11 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 					onClose={() => setAddShipping(false)}
 					header={{
 						icon: 'shipping',
-						title: `${isEditing
-							? __('Edit Shipping', 'multivendorx')
-							: __('Add Shipping', 'multivendorx')
-							} — ${selectedZone.zone_name}`,
+						title: `${
+							isEditing
+								? __('Edit Shipping', 'multivendorx')
+								: __('Add Shipping', 'multivendorx')
+						} — ${selectedZone.zone_name}`,
 					}}
 					footer={
 						<AdminButtonUI
@@ -437,35 +438,33 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								options={
 									isEditing
 										? [
-											{
-												key: formData.shippingMethod,
-												value: formData.shippingMethod,
-												label: formData.shippingMethod
-													.replace('_', ' ')
-													.replace(
-														/\b\w/g,
-														(c) =>
+												{
+													key: formData.shippingMethod,
+													value: formData.shippingMethod,
+													label: formData.shippingMethod
+														.replace('_', ' ')
+														.replace(/\b\w/g, (c) =>
 															c.toUpperCase()
-													),
-											},
-										]
+														),
+												},
+											]
 										: [
-											{
-												key: 'local_pickup',
-												value: 'local_pickup',
-												label: 'Local pickup',
-											},
-											{
-												key: 'free_shipping',
-												value: 'free_shipping',
-												label: 'Free shipping',
-											},
-											{
-												key: 'flat_rate',
-												value: 'flat_rate',
-												label: 'Flat Rate',
-											},
-										]
+												{
+													key: 'local_pickup',
+													value: 'local_pickup',
+													label: 'Local pickup',
+												},
+												{
+													key: 'free_shipping',
+													value: 'free_shipping',
+													label: 'Free shipping',
+												},
+												{
+													key: 'flat_rate',
+													value: 'flat_rate',
+													label: 'Flat Rate',
+												},
+											]
 								}
 								disabled={isEditing}
 							/>
@@ -481,10 +480,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 									placeholder="Enter cost"
 									value={formData.localPickupCost}
 									onChange={(val: any) =>
-										handleChange(
-											'localPickupCost',
-											val
-										)
+										handleChange('localPickupCost', val)
 									}
 								/>
 							</div>
@@ -516,29 +512,28 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										]}
 									/>
 								</div>
-								{formData.freeShippingType ===
-									'min_order' && (
-										<div className="form-group">
-											<label className="font-medium">
-												{__(
-													'Minimum Order Cost',
-													'multivendorx'
-												)}
-											</label>
-											<BasicInputUI
-												type="number"
-												name="minOrderCost"
-												placeholder="Enter minimum order cost"
-												value={formData.minOrderCost}
-												onChange={(value) =>
-													handleChange(
-														'minOrderCost',
-														value
-													)
-												}
-											/>
-										</div>
-									)}
+								{formData.freeShippingType === 'min_order' && (
+									<div className="form-group">
+										<label className="font-medium">
+											{__(
+												'Minimum Order Cost',
+												'multivendorx'
+											)}
+										</label>
+										<BasicInputUI
+											type="number"
+											name="minOrderCost"
+											placeholder="Enter minimum order cost"
+											value={formData.minOrderCost}
+											onChange={(value) =>
+												handleChange(
+													'minOrderCost',
+													value
+												)
+											}
+										/>
+									</div>
+								)}
 							</>
 						)}
 
@@ -555,10 +550,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 										placeholder="Enter cost"
 										value={formData.flatRateCost}
 										onChange={(value) =>
-											handleChange(
-												'flatRateCost',
-												value
-											)
+											handleChange('flatRateCost', value)
 										}
 									/>
 								</div>
@@ -586,15 +578,10 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 
 								<div className="form-group">
 									<label className="font-medium">
-										{__(
-											'Calculation Type',
-											'multivendorx'
-										)}
+										{__('Calculation Type', 'multivendorx')}
 									</label>
 									<ToggleSettingUI
-										value={
-											formData.flatRateCalculationType
-										}
+										value={formData.flatRateCalculationType}
 										onChange={(val: string) =>
 											handleChange(
 												'flatRateCalculationType',

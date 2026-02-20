@@ -18,7 +18,7 @@ import {
 	NavigatorHeader,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 import './Announcements.scss';
 import Popup from '../Popup/Popup';
@@ -107,10 +107,7 @@ export const Announcements: React.FC = () => {
 
 		axios({
 			method: 'DELETE',
-			url: getApiLink(
-				appLocalizer,
-				`announcement/${selectedAn.id}`
-			),
+			url: getApiLink(appLocalizer, `announcement/${selectedAn.id}`),
 			headers: {
 				'X-WP-Nonce': appLocalizer.nonce,
 			},
@@ -123,7 +120,6 @@ export const Announcements: React.FC = () => {
 				setSelectedAn(null);
 			});
 	};
-
 
 	const validateForm = () => {
 		const errors: { [key: string]: string } = {};
@@ -199,28 +195,31 @@ export const Announcements: React.FC = () => {
 	};
 
 	const handleEdit = (id: number) => {
-		axios.get(
-			getApiLink(appLocalizer, `announcement/${id}`),
-			{
+		axios
+			.get(getApiLink(appLocalizer, `announcement/${id}`), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			}
-		).then((response) => {
-			fetchStoreOptions();
-			setFormData({
-				title: response.data.title || '',
-				url: response.data.url || '',
-				content: response.data.content || '',
-				stores: response.data.stores ?? [],
-				status: response.data.status || 'draft',
+			})
+			.then((response) => {
+				fetchStoreOptions();
+				setFormData({
+					title: response.data.title || '',
+					url: response.data.url || '',
+					content: response.data.content || '',
+					stores: response.data.stores ?? [],
+					status: response.data.status || 'draft',
+				});
+				setEditId(id);
+				setAddAnnouncements(true);
 			});
-			setEditId(id);
-			setAddAnnouncements(true);
-		})
 	};
 
 	const handleSubmit = () => {
-		if (submitting) return;
-		if (!validateForm()) return;
+		if (submitting) {
+			return;
+		}
+		if (!validateForm()) {
+			return;
+		}
 
 		setSubmitting(true);
 
@@ -304,13 +303,15 @@ export const Announcements: React.FC = () => {
 		},
 	};
 
-
 	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
 			.get(getApiLink(appLocalizer, 'announcement'), {
-				headers: { 'X-WP-Nonce': appLocalizer.nonce, withCredentials: true },
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+					withCredentials: true,
+				},
 				params: {
 					page: query.paged || 1,
 					row: query.per_page || 10,
@@ -342,17 +343,22 @@ export const Announcements: React.FC = () => {
 					{
 						value: 'publish',
 						label: 'Published',
-						count: Number(response.headers['x-wp-status-publish']) || 0,
+						count:
+							Number(response.headers['x-wp-status-publish']) ||
+							0,
 					},
 					{
 						value: 'pending',
 						label: 'Pending',
-						count: Number(response.headers['x-wp-status-pending']) || 0,
+						count:
+							Number(response.headers['x-wp-status-pending']) ||
+							0,
 					},
 					{
 						value: 'draft',
 						label: 'Draft',
-						count: Number(response.headers['x-wp-status-draft']) || 0,
+						count:
+							Number(response.headers['x-wp-status-draft']) || 0,
 					},
 				]);
 
@@ -368,13 +374,12 @@ export const Announcements: React.FC = () => {
 			});
 	};
 
-
 	const filters = [
 		{
 			key: 'created_at',
 			label: 'Created Date',
 			type: 'date',
-		}
+		},
 	];
 
 	return (
@@ -408,14 +413,14 @@ export const Announcements: React.FC = () => {
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),
-						className: "admin-btn btn-purple-bg",
+						className: 'admin-btn btn-purple-bg',
 						iconClass: 'adminfont-plus',
 						onClick: () => {
 							setValidationErrors({});
 							fetchStoreOptions();
 							setAddAnnouncements(true);
-						}
-					}
+						},
+					},
 				]}
 			/>
 
@@ -452,30 +457,49 @@ export const Announcements: React.FC = () => {
 				}
 			>
 				<FormGroupWrapper>
-					<FormGroup label={__('Title', 'multivendorx')} htmlFor="title">
+					<FormGroup
+						label={__('Title', 'multivendorx')}
+						htmlFor="title"
+					>
 						<BasicInputUI
 							type="text"
 							name="title"
 							value={formData.title}
-							onChange={(val) => handleChange('title', val as string)}
-							msg={{ type: error, message: validationErrors.title }}
+							onChange={(val) =>
+								handleChange('title', val as string)
+							}
+							msg={{
+								type: error,
+								message: validationErrors.title,
+							}}
 						/>
 					</FormGroup>
-					<FormGroup label={__('Announcement message', 'multivendorx')} htmlFor="content">
+					<FormGroup
+						label={__('Announcement message', 'multivendorx')}
+						htmlFor="content"
+					>
 						<TextAreaUI
 							name="content"
 							value={formData.content}
-							onChange={(val) => handleChange('content', val as string)}
+							onChange={(val) =>
+								handleChange('content', val as string)
+							}
 							usePlainText={false}
 							tinymceApiKey={
 								appLocalizer.settings_databases_value[
-								'overview'
+									'overview'
 								]['tinymce_api_section'] ?? ''
 							}
-							msg={{ type: error, message: validationErrors.content }}
+							msg={{
+								type: error,
+								message: validationErrors.content,
+							}}
 						/>
 					</FormGroup>
-					<FormGroup label={__('Stores', 'multivendorx')} htmlFor="stores" >
+					<FormGroup
+						label={__('Stores', 'multivendorx')}
+						htmlFor="stores"
+					>
 						<SelectInputUI
 							name="stores"
 							type="multi-select"
@@ -518,10 +542,20 @@ export const Announcements: React.FC = () => {
 									stores: nextStores,
 								}));
 							}}
-							msg={{ type: error, message: validationErrors.stores }}
+							msg={{
+								type: error,
+								message: validationErrors.stores,
+							}}
 						/>
 					</FormGroup>
-					<FormGroup label={__('Status', 'multivendorx')} desc={__('Select the status of the announcement.', 'multivendorx')} htmlFor="status">
+					<FormGroup
+						label={__('Status', 'multivendorx')}
+						desc={__(
+							'Select the status of the announcement.',
+							'multivendorx'
+						)}
+						htmlFor="status"
+					>
 						<ToggleSettingUI
 							options={[
 								{
@@ -541,11 +575,13 @@ export const Announcements: React.FC = () => {
 								},
 							]}
 							value={formData.status}
-							onChange={(val: string) => handleChange('status', val)}
+							onChange={(val: string) =>
+								handleChange('status', val)
+							}
 						/>
 					</FormGroup>
 				</FormGroupWrapper>
-			</PopupUI >
+			</PopupUI>
 
 			<Container general>
 				<Column>
@@ -560,8 +596,11 @@ export const Announcements: React.FC = () => {
 						search={{}}
 						filters={filters}
 						bulkActions={bulkActions}
-						onBulkActionApply={(action: string, selectedIds: []) => {
-							handleBulkAction(action, selectedIds)
+						onBulkActionApply={(
+							action: string,
+							selectedIds: []
+						) => {
+							handleBulkAction(action, selectedIds);
 						}}
 						format={appLocalizer.date_format}
 					/>

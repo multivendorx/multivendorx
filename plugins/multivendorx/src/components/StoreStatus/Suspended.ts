@@ -12,7 +12,7 @@ export default {
 			key: 'restriction_for_suspended',
 			type: 'checkbox',
 			label: __('Account capabilities', 'multivendorx'),
-			 
+
 			options: [
 				{
 					key: 'store_visible_in_checkout',

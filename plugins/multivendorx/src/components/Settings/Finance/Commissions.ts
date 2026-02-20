@@ -125,7 +125,10 @@ export default {
 					label: 'If',
 					options: [
 						{ value: 'price', label: 'Product/listing price' },
-						{ value: 'quantity', label: 'Product/listing quantity' },
+						{
+							value: 'quantity',
+							label: 'Product/listing quantity',
+						},
 						{ value: 'order_value', label: 'Order value' },
 					],
 					skipFirstRow: true,
@@ -250,10 +253,7 @@ export default {
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
-						postText: __(
-							'+',
-							'multivendorx'
-						),
+						postText: __('+', 'multivendorx'),
 					},
 				},
 				{
@@ -292,7 +292,10 @@ export default {
 				'Configure how taxes are treated in commission calculations.',
 				'multivendorx'
 			),
-			desc: __('<strong>Example setup:</strong><br> Product price = $1,000<br> Tax rate = 10% → $100<br> Marketplace commission rate = 10%<ul> <li><strong>Marketplace share</strong><br> Customer pays = $1,100 ($1,000 + $100 tax)<br> Marketplace commission = 10% of $1,000 = $100<br> Marketplace receives tax = $100<br> Marketplace total earning = $200 (commission + tax)<br> Store payout = $900 (tax not included)</li> <li><strong>Store share</strong><br> Customer pays = $1,100 ($1,000 + $100 tax)<br> Marketplace commission = 10% of $1,000 = $100<br> Store earnings before tax = $900<br> Tax added to store earnings = $100<br> Final store payout = $1,000<br> Marketplace earning = $100 (commission only)</li> <li><strong>Commission based tax</strong><br> Customer pays = $1,100 ($1,000 + $100 tax)<br> Marketplace commission = 10% of $1,000 = $100<br> Tax on marketplace commission = $10<br> Tax on store earnings = $90<br> Marketplace total earning = $110 (commission + tax share)<br> Store payout = $990 (earnings + tax share)</li> </ul>', 'multivendorx'),
+			desc: __(
+				'<strong>Example setup:</strong><br> Product price = $1,000<br> Tax rate = 10% → $100<br> Marketplace commission rate = 10%<ul> <li><strong>Marketplace share</strong><br> Customer pays = $1,100 ($1,000 + $100 tax)<br> Marketplace commission = 10% of $1,000 = $100<br> Marketplace receives tax = $100<br> Marketplace total earning = $200 (commission + tax)<br> Store payout = $900 (tax not included)</li> <li><strong>Store share</strong><br> Customer pays = $1,100 ($1,000 + $100 tax)<br> Marketplace commission = 10% of $1,000 = $100<br> Store earnings before tax = $900<br> Tax added to store earnings = $100<br> Final store payout = $1,000<br> Marketplace earning = $100 (commission only)</li> <li><strong>Commission based tax</strong><br> Customer pays = $1,100 ($1,000 + $100 tax)<br> Marketplace commission = 10% of $1,000 = $100<br> Tax on marketplace commission = $10<br> Tax on store earnings = $90<br> Marketplace total earning = $110 (commission + tax share)<br> Store payout = $990 (earnings + tax share)</li> </ul>',
+				'multivendorx'
+			),
 			options: [
 				{
 					key: 'no_tax',
@@ -316,8 +319,8 @@ export default {
 			type: 'blocktext',
 			blocktext: __(
 				'Allow each store to manage its own shipping methods, zones, and rates, and to pass shipping amounts to stores, please enable the <a href="' +
-				appLocalizer.site_url +
-				'/wp-admin/admin.php?page=multivendorx#&tab=modules"> "Shipping module".</a></b>',
+					appLocalizer.site_url +
+					'/wp-admin/admin.php?page=multivendorx#&tab=modules"> "Shipping module".</a></b>',
 				'multivendorx'
 			),
 		},
@@ -357,7 +360,25 @@ export default {
 				'Set a platform fee as a fixed, percentage, or combined rate calculated on the product/listing price. Choose whether the fee is paid by the customer at checkout or deducted from the store’s commission.',
 				'multivendorx'
 			),
-			desc: __('<strong>Example setup:</strong><br>' + 'Total product/listing price = $100<br>' + 'Marketplace commission = $2 + 10%<br>' + 'Platform fee = 5%<br>' + '<em>(Platform fee is calculated on the total product/listing price)</em><br>' + '<ul>' + '<li><strong>Option 1 – Added to the customer’s order total:</strong><br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Customer pays = $100 + $5 = $105<br>' + 'Store receives = $100 − $12 = $88</li>' + '<li><strong>Option 2 – Deducted from the store’s commission:</strong><br>' + 'Customer pays = $100<br>' + 'Marketplace commission = $2 + 10% of $100 = $12<br>' + 'Platform fee = 5% of $100 = $5<br>' + 'Store receives = $100 − (12 + 5) = $83</li>' + '</ul>', 'multivendorx'),
+			desc: __(
+				'<strong>Example setup:</strong><br>' +
+					'Total product/listing price = $100<br>' +
+					'Marketplace commission = $2 + 10%<br>' +
+					'Platform fee = 5%<br>' +
+					'<em>(Platform fee is calculated on the total product/listing price)</em><br>' +
+					'<ul>' +
+					'<li><strong>Option 1 – Added to the customer’s order total:</strong><br>' +
+					'Platform fee = 5% of $100 = $5<br>' +
+					'Customer pays = $100 + $5 = $105<br>' +
+					'Store receives = $100 − $12 = $88</li>' +
+					'<li><strong>Option 2 – Deducted from the store’s commission:</strong><br>' +
+					'Customer pays = $100<br>' +
+					'Marketplace commission = $2 + 10% of $100 = $12<br>' +
+					'Platform fee = 5% of $100 = $5<br>' +
+					'Store receives = $100 − (12 + 5) = $83</li>' +
+					'</ul>',
+				'multivendorx'
+			),
 			nestedFields: [
 				{
 					key: 'commission_fixed',
@@ -412,9 +433,9 @@ export default {
 			),
 			desc: __(
 				'<strong>Global facilitator:</strong> Assign a single facilitator for the entire marketplace from <a href="' +
-				appLocalizer.site_url +
-				'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=facilitator">here</a>.<br><strong>Individual facilitators:</strong> Set facilitators for specific stores from the <em>Facilitator Settings</em> section or the <em>Store Edit</em> page.<br>	Marketplace commission = 20%<br>Facilitator fee = $50 + 5%<br><em>(Facilitator fee is calculated on the total product/listing price)</em><ul><li><strong>Marketplace commission :</strong> = 20% of $1,000 = $200</li><li><strong>Facilitator fee :</strong> $50 + 5% of $1,000 = $100</li><li><strong>Final store payout:</strong> = $1,000 − ($200 + $100) = $700</li></ul>',
-				'multivendorx',
+					appLocalizer.site_url +
+					'/wp-admin/admin.php?page=multivendorx#&tab=settings&subtab=facilitator">here</a>.<br><strong>Individual facilitators:</strong> Set facilitators for specific stores from the <em>Facilitator Settings</em> section or the <em>Store Edit</em> page.<br>	Marketplace commission = 20%<br>Facilitator fee = $50 + 5%<br><em>(Facilitator fee is calculated on the total product/listing price)</em><ul><li><strong>Marketplace commission :</strong> = 20% of $1,000 = $200</li><li><strong>Facilitator fee :</strong> $50 + 5% of $1,000 = $100</li><li><strong>Final store payout:</strong> = $1,000 − ($200 + $100) = $700</li></ul>',
+				'multivendorx'
 			),
 			nestedFields: [
 				{
@@ -430,10 +451,7 @@ export default {
 					afterElement: {
 						type: 'preposttext',
 						textType: 'post',
-						postText: __(
-							'+',
-							'multivendorx'
-						),
+						postText: __('+', 'multivendorx'),
 					},
 				},
 				{

@@ -1,7 +1,16 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { applyFilters } from '@wordpress/hooks';
-import { AdminButtonUI, AdminHeader, Banner, DoActionBtn, FormGroup, FormGroupWrapper, PopupUI, TourSetup } from 'zyra';
+import {
+	AdminButtonUI,
+	AdminHeader,
+	Banner,
+	DoActionBtn,
+	FormGroup,
+	FormGroupWrapper,
+	PopupUI,
+	TourSetup,
+} from 'zyra';
 
 import Settings from './components/Settings/Settings';
 import Modules from './components/Modules/Modules';
@@ -88,8 +97,6 @@ const products: Products[] = [
 			'multivendorx'
 		),
 	},
-
-
 ];
 
 const Route = () => {
@@ -115,16 +122,12 @@ const Route = () => {
 			{tab === 'help-support' && <HelpSupport />}
 			{tab === 'notifications' && <Notifications />}
 
-			{applyFilters(
-				'multivendorx_admin_submenu_render',
-				null,
-				{
-					tab,
-					location,
-					Link,
-					navigate
-				}
-			)}
+			{applyFilters('multivendorx_admin_submenu_render', null, {
+				tab,
+				location,
+				Link,
+				navigate,
+			})}
 		</>
 	);
 };
@@ -185,7 +188,11 @@ const App = () => {
 
 		const filtered = searchIndex.filter((item) => {
 			// Ignore action if "all"
-			if (searchAction && searchAction !== 'all' && item.tab !== searchAction) {
+			if (
+				searchAction &&
+				searchAction !== 'all' &&
+				item.tab !== searchAction
+			) {
 				return false;
 			}
 
@@ -251,8 +258,8 @@ const App = () => {
 					footer: {
 						url: '?page=multivendorx#&tab=notifications&subtab=notifications',
 						icon: 'adminfont-eye',
-						text: __('View all notifications', 'multivendorx')
-					}
+						text: __('View all notifications', 'multivendorx'),
+					},
 				},
 				{
 					id: 'activities',
@@ -262,8 +269,8 @@ const App = () => {
 					footer: {
 						url: '?page=multivendorx#&tab=notifications&subtab=activities',
 						icon: 'adminfont-eye',
-						text: __('View all activities', 'multivendorx')
-					}
+						text: __('View all activities', 'multivendorx'),
+					},
 				},
 			],
 		},
@@ -273,7 +280,7 @@ const App = () => {
 		{
 			toggleIcon: 'admin-icon adminfont-user-circle',
 			items: profileItems,
-		}
+		},
 	];
 	return (
 		<>
@@ -333,13 +340,16 @@ const App = () => {
 				}
 			>
 				<FormGroupWrapper>
-					<FormGroup label={__('Import Dummy Data', 'multivendorx')}>
-
-					</FormGroup>
+					<FormGroup
+						label={__('Import Dummy Data', 'multivendorx')}
+					></FormGroup>
 					<div className="desc">
 						Get a hands-on feel of your marketplace in minutes.
-						Import demo stores, store owners, products, and commission data to see how everything works together.
-						<b>Important: </b>Delete all demo data before going live so your real marketplace data stays clean and reliable.</div>
+						Import demo stores, store owners, products, and
+						commission data to see how everything works together.
+						<b>Important: </b>Delete all demo data before going live
+						so your real marketplace data stays clean and reliable.
+					</div>
 					<DoActionBtn
 						buttonKey="import_dummy_data"
 						value={__('Import Dummy Data', 'multivendorx')}
@@ -349,47 +359,107 @@ const App = () => {
 						proSetting={false}
 						proSettingChanged={() => false}
 						appLocalizer={appLocalizer}
-						successMessage={__('Dummy data imported successfully!', 'multivendorx')}
-						failureMessage={__('Failed to import dummy data.', 'multivendorx')}
+						successMessage={__(
+							'Dummy data imported successfully!',
+							'multivendorx'
+						)}
+						failureMessage={__(
+							'Failed to import dummy data.',
+							'multivendorx'
+						)}
 						tasks={[
 							{
 								action: 'import_store_owners',
-								message: __('Importing store owners...', 'multivendorx'),
+								message: __(
+									'Importing store owners...',
+									'multivendorx'
+								),
 								cacheKey: 'store_owners',
-								successMessage: __('Store owners imported', 'multivendorx'),
-								failureMessage: __('Failed to import store owners', 'multivendorx'),
+								successMessage: __(
+									'Store owners imported',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to import store owners',
+									'multivendorx'
+								),
 							},
 							{
 								action: 'import_stores',
-								message: __('Creating stores...', 'multivendorx'),
+								message: __(
+									'Creating stores...',
+									'multivendorx'
+								),
 								cacheKey: 'store_ids',
-								successMessage: __('Stores created', 'multivendorx'),
-								failureMessage: __('Failed to create stores', 'multivendorx'),
+								successMessage: __(
+									'Stores created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create stores',
+									'multivendorx'
+								),
 							},
 							{
 								action: 'import_products',
-								message: __('Importing products...', 'multivendorx'),
+								message: __(
+									'Importing products...',
+									'multivendorx'
+								),
 								cacheKey: 'product_ids',
-								successMessage: __('Products imported', 'multivendorx'),
-								failureMessage: __('Failed to import products', 'multivendorx'),
+								successMessage: __(
+									'Products imported',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to import products',
+									'multivendorx'
+								),
 							},
 							{
 								action: 'import_commissions',
-								message: __('Creating commissions...', 'multivendorx'),
-								successMessage: __('Commissions created', 'multivendorx'),
-								failureMessage: __('Failed to create commissions', 'multivendorx'),
+								message: __(
+									'Creating commissions...',
+									'multivendorx'
+								),
+								successMessage: __(
+									'Commissions created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create commissions',
+									'multivendorx'
+								),
 							},
 							{
 								action: 'import_orders',
-								message: __('Creating orders...', 'multivendorx'),
-								successMessage: __('Orders created', 'multivendorx'),
-								failureMessage: __('Failed to create orders', 'multivendorx'),
+								message: __(
+									'Creating orders...',
+									'multivendorx'
+								),
+								successMessage: __(
+									'Orders created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create orders',
+									'multivendorx'
+								),
 							},
 							{
 								action: 'import_reviews',
-								message: __('Creating reviews...', 'multivendorx'),
-								successMessage: __('Reviews created', 'multivendorx'),
-								failureMessage: __('Failed to create reviews', 'multivendorx'),
+								message: __(
+									'Creating reviews...',
+									'multivendorx'
+								),
+								successMessage: __(
+									'Reviews created',
+									'multivendorx'
+								),
+								failureMessage: __(
+									'Failed to create reviews',
+									'multivendorx'
+								),
 							},
 						]}
 						onComplete={(data) => {

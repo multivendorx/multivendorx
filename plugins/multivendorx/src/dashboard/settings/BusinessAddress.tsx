@@ -1,6 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { BasicInputUI, FormGroup, FormGroupWrapper, getApiLink, GoogleMap, Mapbox, SelectInputUI, SuccessNotice, useModules } from 'zyra';
+import {
+	BasicInputUI,
+	FormGroup,
+	FormGroupWrapper,
+	getApiLink,
+	GoogleMap,
+	Mapbox,
+	SelectInputUI,
+	SuccessNotice,
+	useModules,
+} from 'zyra';
 import { __ } from '@wordpress/i18n';
 
 declare global {
@@ -43,8 +53,12 @@ const BusinessAddress = () => {
 	const [newAddress, setNewAddress] = useState<any>(null);
 
 	useEffect(() => {
-		if (!newAddress) return;
-		if (!stateOptions.length) return;
+		if (!newAddress) {
+			return;
+		}
+		if (!stateOptions.length) {
+			return;
+		}
 
 		const foundState = stateOptions.find(
 			(item) =>
@@ -81,7 +95,9 @@ const BusinessAddress = () => {
 
 	// Get REST API base URL
 	useEffect(() => {
-		if (!settings?.geolocation) return;
+		if (!settings?.geolocation) {
+			return;
+		}
 
 		const provider = settings.geolocation.choose_map_api;
 
@@ -166,10 +182,7 @@ const BusinessAddress = () => {
 		}
 	}, [formData.country]);
 
-	const handleAddressChange = (
-		key:string,
-		value:string
-	) => {
+	const handleAddressChange = (key: string, value: string) => {
 		const newAddressData = {
 			...addressData,
 			[key]: value,
@@ -235,8 +248,10 @@ const BusinessAddress = () => {
 
 	// Then update your autoSave function:
 	const autoSave = (updatedData: any) => {
-		if (settings['store-permissions']
-			?.edit_store_info_activation || [].includes('store_address')) {
+		if (
+			settings['store-permissions']?.edit_store_info_activation ||
+			[].includes('store_address')
+		) {
 			return;
 		}
 		// Format email data for backend
@@ -271,7 +286,9 @@ const BusinessAddress = () => {
 			onLocationUpdate: handleLocationUpdate,
 			labelSearch: __('Search for a location'),
 			labelMap: __('Drag or click on the map to choose a location'),
-			instructionText: __('Enter a search term or drag/drop a pin on the map.'),
+			instructionText: __(
+				'Enter a search term or drag/drop a pin on the map.'
+			),
 			placeholderSearch: __('Search for a location...'),
 		};
 
@@ -301,45 +318,69 @@ const BusinessAddress = () => {
 				>
 					<BasicInputUI
 						value={addressData.address}
-						onChange={(value:string)=>handleAddressChange('address',value)}
+						onChange={(value: string) =>
+							handleAddressChange('address', value)
+						}
 					/>
 				</FormGroup>
 				{/* City */}
-				<FormGroup cols={2} label={__('City', 'multivendorx')} htmlFor="city">
+				<FormGroup
+					cols={2}
+					label={__('City', 'multivendorx')}
+					htmlFor="city"
+				>
 					<BasicInputUI
 						value={addressData.city}
-						onChange={(value:string)=>handleAddressChange('city',value)}
+						onChange={(value: string) =>
+							handleAddressChange('city', value)
+						}
 					/>
 				</FormGroup>
 
 				{/* Zip */}
-				<FormGroup cols={2} label={__('Zip code', 'multivendorx')} htmlFor="zip">
+				<FormGroup
+					cols={2}
+					label={__('Zip code', 'multivendorx')}
+					htmlFor="zip"
+				>
 					<BasicInputUI
 						type="number"
 						value={addressData.zip}
-						onChange={(value:string)=>handleAddressChange('zip',value)}
+						onChange={(value: string) =>
+							handleAddressChange('zip', value)
+						}
 					/>
 				</FormGroup>
 
 				{/* Country */}
-				<FormGroup cols={2} label={__('Country', 'multivendorx')} htmlFor="country">
+				<FormGroup
+					cols={2}
+					label={__('Country', 'multivendorx')}
+					htmlFor="country"
+				>
 					<SelectInputUI
 						value={formData.country}
 						options={appLocalizer.country_list || []}
-						onChange={(e)=>handleAddressChange('country',e.value)}
+						onChange={(e) =>
+							handleAddressChange('country', e.value)
+						}
 					/>
 				</FormGroup>
 
 				{/* State */}
-				<FormGroup cols={2} label={__('State', 'multivendorx')} htmlFor="state">
+				<FormGroup
+					cols={2}
+					label={__('State', 'multivendorx')}
+					htmlFor="state"
+				>
 					<SelectInputUI
 						name="state"
 						value={formData.state}
 						options={stateOptions}
-						onChange={(e)=>handleAddressChange('state',e.value)}
+						onChange={(e) => handleAddressChange('state', e.value)}
 					/>
 				</FormGroup>
-				
+
 				{/* Map Component */}
 				{renderMapComponent()}
 				{/* Hidden coordinates */}

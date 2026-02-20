@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, getApiLink, TableCard, TableRow,QueryProps,CategoryCount} from 'zyra';
+import {
+	Analytics,
+	Card,
+	Column,
+	getApiLink,
+	TableCard,
+	TableRow,
+	QueryProps,
+	CategoryCount,
+} from 'zyra';
 import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import axios from 'axios';
-import { formatCurrency, formatDate, formatLocalDate } from '../../services/commonFunction';
+import {
+	formatCurrency,
+	formatDate,
+	formatLocalDate,
+} from '../../services/commonFunction';
 import Counter from '@/services/Counter';
 
 const StoreReport: React.FC = () => {
@@ -59,19 +72,25 @@ const StoreReport: React.FC = () => {
 					{
 						id: 'active',
 						label: 'Active Stores',
-						count: Number(response.headers['x-wp-status-active']) || 0,
+						count:
+							Number(response.headers['x-wp-status-active']) || 0,
 						icon: 'store-policy green',
 					},
 					{
 						id: 'pending',
 						label: 'Pending Stores',
-						count: Number(response.headers['x-wp-status-pending']) || 0,
+						count:
+							Number(response.headers['x-wp-status-pending']) ||
+							0,
 						icon: 'pending yellow',
 					},
 					{
 						id: 'deactivated',
 						label: 'Deactivated Stores',
-						count: Number(response.headers['x-wp-status-deactivated']) || 0,
+						count:
+							Number(
+								response.headers['x-wp-status-deactivated']
+							) || 0,
 						icon: 'close-delete red',
 					},
 				]);
@@ -92,7 +111,10 @@ const StoreReport: React.FC = () => {
 				params: {
 					page: query.paged || 1,
 					row: query.per_page || 10,
-					filterStatus: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+					filterStatus:
+						query.categoryFilter === 'all'
+							? ''
+							: query.categoryFilter,
 					searchValue: query.searchValue || '',
 					startDate: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
@@ -123,22 +145,31 @@ const StoreReport: React.FC = () => {
 					{
 						value: 'active',
 						label: 'Active',
-						count: Number(response.headers['x-wp-status-active']) || 0,
+						count:
+							Number(response.headers['x-wp-status-active']) || 0,
 					},
 					{
 						value: 'under_review',
 						label: 'Under Review',
-						count: Number(response.headers['x-wp-status-under-review']) || 0,
+						count:
+							Number(
+								response.headers['x-wp-status-under-review']
+							) || 0,
 					},
 					{
 						value: 'suspended',
 						label: 'Suspended',
-						count: Number(response.headers['x-wp-status-suspended']) || 0,
+						count:
+							Number(response.headers['x-wp-status-suspended']) ||
+							0,
 					},
 					{
 						value: 'deactivated',
 						label: 'Deactivated',
-						count: Number(response.headers['x-wp-status-deactivated']) || 0,
+						count:
+							Number(
+								response.headers['x-wp-status-deactivated']
+							) || 0,
 					},
 				]);
 
@@ -166,20 +197,23 @@ const StoreReport: React.FC = () => {
 		order_total: {
 			key: 'order_total',
 			label: __('Order Total', 'multivendorx'),
-			render: (row: any) => formatCurrency(row.commission?.total_order_amount)
+			render: (row: any) =>
+				formatCurrency(row.commission?.total_order_amount),
 		},
 		shipping: {
 			key: 'shipping',
 			label: __('Shipping', 'multivendorx'),
-			render: (row: any) => formatCurrency(row.commission?.shipping_amount)
+			render: (row: any) =>
+				formatCurrency(row.commission?.shipping_amount),
 		},
 		tax: {
 			label: __('Tax', 'multivendorx'),
-			render: (row: any) => formatCurrency(row.commission?.tax_amount)
+			render: (row: any) => formatCurrency(row.commission?.tax_amount),
 		},
 		store_ommission: {
 			label: __('Store Commission', 'multivendorx'),
-			render: (row: any) => formatCurrency(row.commission?.commission_total)
+			render: (row: any) =>
+				formatCurrency(row.commission?.commission_total),
 		},
 		email: { label: __('Contact', 'multivendorx') },
 		admin_earning: {
@@ -187,19 +221,17 @@ const StoreReport: React.FC = () => {
 			render: (row: any) =>
 				formatCurrency(
 					Number(row.commission?.total_order_amount || 0) -
-					Number(row.commission?.commission_total || 0)
+						Number(row.commission?.commission_total || 0)
 				),
 		},
 	};
-
-
 
 	const filters = [
 		{
 			key: 'created_at',
 			label: 'Created Date',
 			type: 'date',
-		}
+		},
 	];
 
 	return (
@@ -230,7 +262,6 @@ const StoreReport: React.FC = () => {
 						<Legend />
 					</PieChart>
 				</ResponsiveContainer>
-
 			</Card>
 
 			<div className="card-header admin-pt-2">
@@ -260,7 +291,7 @@ const StoreReport: React.FC = () => {
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 		</>

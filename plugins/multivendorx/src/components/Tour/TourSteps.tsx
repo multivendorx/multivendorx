@@ -62,7 +62,8 @@ export const getTourSteps = (appLocalizer: any) => [
 		),
 	},
 	{
-		selector: '.form-group:has(.settings-form-label[for="commission_type"])',
+		selector:
+			'.form-group:has(.settings-form-label[for="commission_type"])',
 		placement: 'right',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">
@@ -93,7 +94,8 @@ export const getTourSteps = (appLocalizer: any) => [
 		),
 	},
 	{
-		selector: '.form-group:has(.settings-form-label[for="commission_per_store_order"])',
+		selector:
+			'.form-group:has(.settings-form-label[for="commission_per_store_order"])',
 		placement: 'right',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">
@@ -124,7 +126,8 @@ export const getTourSteps = (appLocalizer: any) => [
 		),
 	},
 	{
-		selector: '.form-group:has(.settings-form-label[for="disbursement_order_status"])',
+		selector:
+			'.form-group:has(.settings-form-label[for="disbursement_order_status"])',
 		placement: 'right',
 		content: ({ navigateTo, finishTour }: any) => (
 			<div className="tour-box">

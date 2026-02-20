@@ -9,7 +9,16 @@ import {
 	Cell,
 } from 'recharts';
 import axios from 'axios';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, useModules } from 'zyra';
+import {
+	Analytics,
+	Card,
+	Column,
+	Container,
+	getApiLink,
+	InfoItem,
+	ComponentStatusView,
+	useModules,
+} from 'zyra';
 import { formatCurrency } from '@/services/commonFunction';
 
 type Stat = {
@@ -32,7 +41,7 @@ type MarketplaceReportProps = {
 	COLORS?: string[];
 };
 
-const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
+const MarketplaceReport: React.FC<MarketplaceReportProps> = ({}) => {
 	const [commissionDetails, setCommissionDeatils] = useState<any[]>([]);
 	const [earningSummary, setEarningSummary] = useState<any[]>([]);
 	const [pieData, setPieData] = useState<any>([]);
@@ -147,7 +156,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						count: Number(data.commission_refunded),
 						formatted: formatCurrency(data.commission_refunded),
 						icon: 'marketplace-refund',
-						module: 'marketplace-refund'
+						module: 'marketplace-refund',
 					},
 				].filter(
 					(data) =>
@@ -183,7 +192,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'gateway_fee',
 						title: 'Gateway Fee',
 						price: formatCurrency(data.gateway_fee),
-						condition: false
+						condition: false,
 					},
 					{
 						id: 'shipping_amount',
@@ -212,7 +221,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 						id: 'commission_refunded',
 						title: 'Commission Refunded',
 						price: formatCurrency(data.commission_refunded),
-						module: 'marketplace-refund'
+						module: 'marketplace-refund',
 					},
 					{
 						id: 'grand_total',
@@ -238,9 +247,11 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 				setCommissionDeatils(overviewData);
 				setEarningSummary(earningSummary);
 				setPieData(pieChartData);
-			}).finally(() => {
+			})
+			.finally(() => {
 				setIsLoading(false);
-			}).catch(() => {
+			})
+			.catch(() => {
 				// Handle error gracefully
 			});
 
@@ -252,7 +263,8 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 		})
 			.then((response) => {
 				setTopStores(response.data);
-			}).finally(() => {
+			})
+			.finally(() => {
 				setIsLoading(false);
 			})
 			.catch(() => {
@@ -277,9 +289,11 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 					.slice(0, 3);
 
 				setTopCoupons(topSellingCoupons);
-			}).finally(() => {
+			})
+			.finally(() => {
 				setIsLoading(false);
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.error('Error fetching top coupons:', error);
 			});
 
@@ -288,23 +302,26 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 			url: `${appLocalizer.apiUrl}/wc-analytics/customers`,
 			headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			params: {
-				per_page: 3,            // only top 5
+				per_page: 3, // only top 5
 				orderby: 'total_spend', // server-side sort
 				order: 'desc',
 			},
 		})
 			.then((response) => {
 				setTopCustomers(response.data);
-			}).finally(() => {
+			})
+			.finally(() => {
 				setIsLoading(false);
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.error('Error fetching top customers:', error);
 			});
-
 	}, []);
 
 	useEffect(() => {
-		if (!modules) return;
+		if (!modules) {
+			return;
+		}
 		fetchCommissionDetails();
 	}, [modules]);
 
@@ -336,7 +353,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 								key={product.id}
 								title={product.title}
 								amount={product.price}
-								isLoading ={isLoading}
+								isLoading={isLoading}
 							/>
 						))}
 					</Card>
@@ -431,10 +448,7 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 											<div className="des">
 												{__('Used', 'multivendorx')}{' '}
 												{coupon.usage_count || 0}{' '}
-												{__(
-													'times',
-													'multivendorx'
-												)}
+												{__('times', 'multivendorx')}
 											</div>
 											{coupon.description && (
 												<div className="des">
@@ -463,8 +477,8 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 														'percent'
 														? `${coupon.amount}%`
 														: formatCurrency(
-															coupon.amount
-														)
+																coupon.amount
+															)
 													: '-'}
 											</span>
 										</div>
@@ -472,7 +486,12 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 								</div>
 							))
 						) : (
-							<ComponentStatusView title={__('No top coupons found.', 'multivendorx')}/>
+							<ComponentStatusView
+								title={__(
+									'No top coupons found.',
+									'multivendorx'
+								)}
+							/>
 						)}
 					</Card>
 				</Column>
@@ -480,83 +499,67 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 				<Column grid={4}>
 					<Card title={__('Top Customers', 'multivendorx')}>
 						{topCustomers.length > 0 ? (
-							topCustomers.map(
-								(customer: any, index: number) => (
-									<div
-										className="info-item"
-										key={`customer-${customer.user_id}`}
-									>
-										<div className="details-wrapper">
-											<div className="avatar">
+							topCustomers.map((customer: any, index: number) => (
+								<div
+									className="info-item"
+									key={`customer-${customer.user_id}`}
+								>
+									<div className="details-wrapper">
+										<div className="avatar">
+											<a
+												href={`${appLocalizer.site_url}/wp-admin/user-edit.php?user_id=${customer.user_id}&wp_http_referer=%2Fwp-admin%2Fusers.php`}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												<span
+													className={`admin-color${index + 1}`}
+												>
+													{(
+														(
+															customer.name?.trim() ||
+															customer.username
+														)?.charAt(0) || ''
+													).toUpperCase()}
+												</span>
+											</a>
+										</div>
+
+										<div className="details">
+											<div className="name">
 												<a
 													href={`${appLocalizer.site_url}/wp-admin/user-edit.php?user_id=${customer.user_id}&wp_http_referer=%2Fwp-admin%2Fusers.php`}
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													<span
-														className={`admin-color${index + 1}`}
-													>
-														{(
-															(
-																customer.name?.trim() ||
-																customer.username
-															)?.charAt(
-																0
-															) || ''
-														).toUpperCase()}
-													</span>
+													{customer.name?.trim() ||
+														customer.username}
 												</a>
 											</div>
-
-											<div className="details">
-												<div className="name">
-													<a
-														href={`${appLocalizer.site_url}/wp-admin/user-edit.php?user_id=${customer.user_id}&wp_http_referer=%2Fwp-admin%2Fusers.php`}
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														{customer.name?.trim() ||
-															customer.username}
-													</a>
-												</div>
-												<div className="des">
-													{__(
-														'Orders',
-														'multivendorx'
-													)}
-													:
-													{customer.orders_count ||
-														0}
-												</div>
-												<div className="des">
-													{customer.email ||
-														__(
-															'',
-															'multivendorx'
-														)}
-												</div>
+											<div className="des">
+												{__('Orders', 'multivendorx')}:
+												{customer.orders_count || 0}
 											</div>
-										</div>
-
-										<div className="right-details">
-											<div className="price">
-												<span>
-													{formatCurrency(
-														customer.total_spend ||
-														0
-													)}
-												</span>
+											<div className="des">
+												{customer.email ||
+													__('', 'multivendorx')}
 											</div>
 										</div>
 									</div>
-								)
-							)
+
+									<div className="right-details">
+										<div className="price">
+											<span>
+												{formatCurrency(
+													customer.total_spend || 0
+												)}
+											</span>
+										</div>
+									</div>
+								</div>
+							))
 						) : (
 							<p>
-								{__(
-									'No top customers found.',
-									'multivendorx'
-								)}
+								{__('No top customers found.', 'multivendorx')}
 							</p>
 						)}
 					</Card>
@@ -573,25 +576,47 @@ const MarketplaceReport: React.FC<MarketplaceReportProps> = ({ }) => {
 										isLoading={isLoading}
 										titleLink={`${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`}
 										avatar={{
-											text: (store.store_name?.trim().charAt(0) || '').toUpperCase(),
+											text: (
+												store.store_name
+													?.trim()
+													.charAt(0) || ''
+											).toUpperCase(),
 											link: `${appLocalizer.site_url}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.store_id}/&subtab=store-overview`,
 										}}
 										descriptions={[
 											{
-												label: __('Commission', 'multivendorx'),
-												value: formatCurrency(store.commission_total || 0),
+												label: __(
+													'Commission',
+													'multivendorx'
+												),
+												value: formatCurrency(
+													store.commission_total || 0
+												),
 											},
 											{
-												label: __('Refunded', 'multivendorx'),
-												value: formatCurrency(store.commission_refunded || 0),
+												label: __(
+													'Refunded',
+													'multivendorx'
+												),
+												value: formatCurrency(
+													store.commission_refunded ||
+														0
+												),
 											},
 										]}
-										amount={formatCurrency(store.total_order_amount || 0)}
+										amount={formatCurrency(
+											store.total_order_amount || 0
+										)}
 									/>
 								</>
 							))
 						) : (
-							<ComponentStatusView title={__('No top stores found.', 'multivendorx')} />
+							<ComponentStatusView
+								title={__(
+									'No top stores found.',
+									'multivendorx'
+								)}
+							/>
 						)}
 					</Card>
 				</Column>

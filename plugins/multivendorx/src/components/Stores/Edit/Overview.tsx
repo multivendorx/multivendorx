@@ -2,7 +2,16 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, useModules, Skeleton } from 'zyra';
+import {
+	Analytics,
+	Card,
+	Column,
+	Container,
+	getApiLink,
+	InfoItem,
+	useModules,
+	Skeleton,
+} from 'zyra';
 import { formatCurrency } from '../../../services/commonFunction';
 import LatestReview from './LatestReview';
 import LatestRefundRequest from './LatestRefundRequest';
@@ -101,7 +110,9 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 		},
 		{
 			icon: 'dollar yellow',
-			number: formatCurrency(storeData.transactions?.locking_balance ?? 0),
+			number: formatCurrency(
+				storeData.transactions?.locking_balance ?? 0
+			),
 			text: 'Upcoming balance',
 		},
 		{
@@ -116,7 +127,7 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 			<Container>
 				<Column grid={8}>
 					<Analytics
-						variant='small'
+						variant="small"
 						data={overviewData.map((item) => ({
 							icon: item.icon,
 							number: item.number,
@@ -139,7 +150,9 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									title={__('Bank Transfer', 'multivendorx')}
 									descriptions={[
 										{
-											value: new Date(txn.date).toLocaleDateString('en-US', {
+											value: new Date(
+												txn.date
+											).toLocaleDateString('en-US', {
 												month: 'short',
 												day: '2-digit',
 												year: 'numeric',
@@ -169,15 +182,15 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 						{recentProducts.length > 0 ? (
 							recentProducts.map((product, idx) => {
 								const productImage =
-									product.images &&
-										product.images.length > 0
+									product.images && product.images.length > 0
 										? product.images[0].src
 										: null;
 								const editUrl = `${appLocalizer.site_url.replace(
 									/\/$/,
 									''
-								)}/wp-admin/post.php?post=${product.id
-									}&action=edit`;
+								)}/wp-admin/post.php?post=${
+									product.id
+								}&action=edit`;
 
 								return (
 									<InfoItem
@@ -190,11 +203,16 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 										}}
 										descriptions={[
 											{
-												label: __('sku', 'multivendorx'),
+												label: __(
+													'sku',
+													'multivendorx'
+												),
 												value: product.sku,
 											},
 										]}
-										amount={formatCurrency(product.price ?? 0)}
+										amount={formatCurrency(
+											product.price ?? 0
+										)}
 									/>
 								);
 							})
@@ -245,8 +263,8 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 							desc={__(
 								'Manage your weekly schedule and special hours',
 								'multivendorx'
-							)}>
-
+							)}
+						>
 							<div className="store-time-wrapper">
 								<div className="card-wrapper">
 									<div className="time-wrapper">
@@ -365,20 +383,20 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 					>
 						<InfoItem
 							title={
-								storeData.primary_owner_info?.data?.display_name ?? (
-									<Skeleton width={150} />
-								)
+								storeData.primary_owner_info?.data
+									?.display_name ?? <Skeleton width={150} />
 							}
 							avatar={{
-								iconClass: 'item-icon adminfont-person secondary',
+								iconClass:
+									'item-icon adminfont-person secondary',
 							}}
 							descriptions={[
 								{
 									label: __('Email', 'multivendorx'),
-									value:
-										storeData.primary_owner_info?.data?.user_email ?? (
-											<Skeleton width={150} />
-										),
+									value: storeData.primary_owner_info?.data
+										?.user_email ?? (
+										<Skeleton width={150} />
+									),
 								},
 							]}
 							badges={[
@@ -392,7 +410,12 @@ const Overview: React.FC<OverviewProps> = ({ id, storeData }) => {
 									onClick: () => {
 										navigate(
 											`?page=multivendorx#&tab=stores&edit/${id}/&subtab=staff`,
-											{ state: { highlightTarget: 'primary-owner' } }
+											{
+												state: {
+													highlightTarget:
+														'primary-owner',
+												},
+											}
 										);
 										setTimeout(() => {
 											navigate(

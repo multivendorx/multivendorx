@@ -53,7 +53,7 @@ export default {
 				'<a href="https://openrouter.ai/settings/keys" target="_blank">Generate an OpenRouter API key</a>',
 				'multivendorx'
 			),
-		},		
+		},
 		// --- AI Provider Choice ---
 		{
 			key: 'section',
@@ -115,7 +115,7 @@ export default {
 				set: true,
 				value: 'openrouter_api',
 			},
-			 
+
 			options: [
 				{
 					key: 'openai/gpt-4o-mini',
@@ -204,7 +204,7 @@ export default {
 				set: true,
 				value: 'openrouter_api',
 			},
-			 
+
 			options: [
 				{
 					key: 'google/gemini-2.5-flash-image-preview',

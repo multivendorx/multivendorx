@@ -14,7 +14,7 @@ import {
 	Tabs,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 
 import axios from 'axios';
@@ -32,7 +32,6 @@ const discountOptions = [
 	// { label: 'Fixed cart discount', value: 'fixed_cart' },
 	{ label: 'Fixed product discount', value: 'fixed_product' },
 ];
-
 
 const formatDateForInput = (dateString?: string | null) => {
 	if (!dateString) {
@@ -58,11 +57,14 @@ const AllCoupon: React.FC = () => {
 		[key: string]: string;
 	}>({});
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [selectedCoupon, setSelectedCoupon] = useState<{ id: number; } | null>(null);
-
+	const [selectedCoupon, setSelectedCoupon] = useState<{ id: number } | null>(
+		null
+	);
 
 	const handleConfirmDelete = () => {
-		if (!selectedCoupon) return;
+		if (!selectedCoupon) {
+			return;
+		}
 
 		axios
 			.delete(
@@ -150,15 +152,11 @@ const AllCoupon: React.FC = () => {
 
 	const [activeTab, setActiveTab] = useState('general');
 
-
 	const handleEditCoupon = (couponId: number) => {
 		axios
-			.get(
-				`${appLocalizer.apiUrl}/wc/v3/coupons/${couponId}`,
-				{
-					headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				}
-			)
+			.get(`${appLocalizer.apiUrl}/wc/v3/coupons/${couponId}`, {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+			})
 			.then((res) => {
 				const coupon = res.data;
 
@@ -175,7 +173,9 @@ const AllCoupon: React.FC = () => {
 					minimum_amount: coupon.minimum_amount || '',
 					maximum_amount: coupon.maximum_amount || '',
 					individual_use: coupon.individual_use ? 'yes' : 'no',
-					exclude_sale_items: coupon.exclude_sale_items ? 'yes' : 'no',
+					exclude_sale_items: coupon.exclude_sale_items
+						? 'yes'
+						: 'no',
 					product_ids: coupon.product_ids || [],
 					exclude_product_ids: coupon.excluded_product_ids || [],
 					product_categories: coupon.product_categories || [],
@@ -231,15 +231,13 @@ const AllCoupon: React.FC = () => {
 
 		const request = formData.id
 			? axios.put(
-				`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
-				payload,
-				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-			)
-			: axios.post(
-				`${appLocalizer.apiUrl}/wc/v3/coupons`,
-				payload,
-				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
-			);
+					`${appLocalizer.apiUrl}/wc/v3/coupons/${formData.id}`,
+					payload,
+					{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
+				)
+			: axios.post(`${appLocalizer.apiUrl}/wc/v3/coupons`, payload, {
+					headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				});
 
 		request
 			.then(() => {
@@ -280,52 +278,89 @@ const AllCoupon: React.FC = () => {
 			content: (
 				<>
 					<FormGroupWrapper>
-						<FormGroup label={__('Discount type', 'multivendorx')} htmlFor="discount_type">
+						<FormGroup
+							label={__('Discount type', 'multivendorx')}
+							htmlFor="discount_type"
+						>
 							<SelectInputUI
 								name="discount_type"
 								value={formData.discount_type}
 								options={discountOptions}
 								onChange={(value) =>
-									setFormData({ ...formData, discount_type: value || '' })
+									setFormData({
+										...formData,
+										discount_type: value || '',
+									})
 								}
 							/>
 							{validationErrors.discount_type && (
-								<div className="invalid-massage">{validationErrors.discount_type}</div>
+								<div className="invalid-massage">
+									{validationErrors.discount_type}
+								</div>
 							)}
 						</FormGroup>
 
-						<FormGroup label={__('Coupon amount', 'multivendorx')} htmlFor="coupon_amount">
+						<FormGroup
+							label={__('Coupon amount', 'multivendorx')}
+							htmlFor="coupon_amount"
+						>
 							<BasicInputUI
 								type="number"
 								name="coupon_amount"
 								value={formData.coupon_amount}
 								onChange={(value) =>
-									setFormData({ ...formData, coupon_amount: value })
+									setFormData({
+										...formData,
+										coupon_amount: value,
+									})
 								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Allow free shipping', 'multivendorx')} htmlFor="free_shipping">
+						<FormGroup
+							label={__('Allow free shipping', 'multivendorx')}
+							htmlFor="free_shipping"
+						>
 							<ToggleSettingUI
 								options={[
-									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
-									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
+									{
+										key: 'yes',
+										value: 'yes',
+										label: __('Yes', 'multivendorx'),
+									},
+									{
+										key: 'no',
+										value: 'no',
+										label: __('No', 'multivendorx'),
+									},
 								]}
 								value={formData.free_shipping}
-								onChange={(val: any) => setFormData({ ...formData, free_shipping: val })}
+								onChange={(val: any) =>
+									setFormData({
+										...formData,
+										free_shipping: val,
+									})
+								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Coupon expiry date', 'multivendorx')} htmlFor="expiry_date">
+						<FormGroup
+							label={__('Coupon expiry date', 'multivendorx')}
+							htmlFor="expiry_date"
+						>
 							<BasicInputUI
 								type="date"
 								name="expiry_date"
 								value={formData.expiry_date}
-								onChange={(value) => setFormData({ ...formData, expiry_date: value })}
+								onChange={(value) =>
+									setFormData({
+										...formData,
+										expiry_date: value,
+									})
+								}
 							/>
 						</FormGroup>
 					</FormGroupWrapper>
-
 				</>
 			),
 		},
@@ -335,35 +370,53 @@ const AllCoupon: React.FC = () => {
 			content: (
 				<>
 					<FormGroupWrapper>
-						<FormGroup label={__('Usage limit per coupon', 'multivendorx')} htmlFor="usage_limit">
+						<FormGroup
+							label={__('Usage limit per coupon', 'multivendorx')}
+							htmlFor="usage_limit"
+						>
 							<BasicInputUI
 								type="number"
 								name="usage_limit"
 								value={formData.usage_limit}
 								onChange={(value) =>
-									setFormData({ ...formData, usage_limit: value })
+									setFormData({
+										...formData,
+										usage_limit: value,
+									})
 								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Limit usage to X items', 'multivendorx')} htmlFor="limit_usage_to_x_items">
+						<FormGroup
+							label={__('Limit usage to X items', 'multivendorx')}
+							htmlFor="limit_usage_to_x_items"
+						>
 							<BasicInputUI
 								type="number"
 								name="limit_usage_to_x_items"
 								value={formData.limit_usage_to_x_items}
 								onChange={(value) =>
-									setFormData({ ...formData, limit_usage_to_x_items: value })
+									setFormData({
+										...formData,
+										limit_usage_to_x_items: value,
+									})
 								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Usage limit per user', 'multivendorx')} htmlFor="usage_limit_per_user">
+						<FormGroup
+							label={__('Usage limit per user', 'multivendorx')}
+							htmlFor="usage_limit_per_user"
+						>
 							<BasicInputUI
 								type="number"
 								name="usage_limit_per_user"
 								value={formData.usage_limit_per_user}
 								onChange={(value) =>
-									setFormData({ ...formData, usage_limit_per_user: value })
+									setFormData({
+										...formData,
+										usage_limit_per_user: value,
+									})
 								}
 							/>
 						</FormGroup>
@@ -377,61 +430,107 @@ const AllCoupon: React.FC = () => {
 			content: (
 				<>
 					<FormGroupWrapper>
-						<FormGroup label={__('Minimum spend', 'multivendorx')} htmlFor="minimum_amount">
+						<FormGroup
+							label={__('Minimum spend', 'multivendorx')}
+							htmlFor="minimum_amount"
+						>
 							<BasicInputUI
 								type="number"
 								name="minimum_amount"
 								value={formData.minimum_amount}
 								onChange={(value) =>
-									setFormData({ ...formData, minimum_amount: value })
+									setFormData({
+										...formData,
+										minimum_amount: value,
+									})
 								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Maximum spend', 'multivendorx')} htmlFor="maximum_amount">
+						<FormGroup
+							label={__('Maximum spend', 'multivendorx')}
+							htmlFor="maximum_amount"
+						>
 							<BasicInputUI
 								type="number"
 								name="maximum_amount"
 								value={formData.maximum_amount}
 								onChange={(value) =>
-									setFormData({ ...formData, maximum_amount: value })
+									setFormData({
+										...formData,
+										maximum_amount: value,
+									})
 								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Individual use only', 'multivendorx')} htmlFor="individual_use">
+						<FormGroup
+							label={__('Individual use only', 'multivendorx')}
+							htmlFor="individual_use"
+						>
 							<ToggleSettingUI
 								options={[
-									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
-									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
+									{
+										key: 'yes',
+										value: 'yes',
+										label: __('Yes', 'multivendorx'),
+									},
+									{
+										key: 'no',
+										value: 'no',
+										label: __('No', 'multivendorx'),
+									},
 								]}
 								value={formData.individual_use}
 								onChange={(val: any) =>
-									setFormData({ ...formData, individual_use: val })
+									setFormData({
+										...formData,
+										individual_use: val,
+									})
 								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Exclude sale items', 'multivendorx')} htmlFor="exclude_sale_items">
+						<FormGroup
+							label={__('Exclude sale items', 'multivendorx')}
+							htmlFor="exclude_sale_items"
+						>
 							<ToggleSettingUI
 								options={[
-									{ key: 'yes', value: 'yes', label: __('Yes', 'multivendorx') },
-									{ key: 'no', value: 'no', label: __('No', 'multivendorx') },
+									{
+										key: 'yes',
+										value: 'yes',
+										label: __('Yes', 'multivendorx'),
+									},
+									{
+										key: 'no',
+										value: 'no',
+										label: __('No', 'multivendorx'),
+									},
 								]}
 								value={formData.exclude_sale_items}
 								onChange={(val: any) =>
-									setFormData({ ...formData, exclude_sale_items: val })
+									setFormData({
+										...formData,
+										exclude_sale_items: val,
+									})
 								}
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Allowed emails', 'multivendorx')} htmlFor="customer_email">
+						<FormGroup
+							label={__('Allowed emails', 'multivendorx')}
+							htmlFor="customer_email"
+						>
 							<BasicInputUI
 								type="text"
 								name="customer_email"
 								value={formData.customer_email}
 								onChange={(value) =>
-									setFormData({ ...formData, customer_email: value })
+									setFormData({
+										...formData,
+										customer_email: value,
+									})
 								}
 							/>
 						</FormGroup>
@@ -512,14 +611,11 @@ const AllCoupon: React.FC = () => {
 		}
 	};
 
-
 	useEffect(() => {
 		fetchCouponStatusCounts();
 	}, []);
 
-	const bulkActions = [
-		{ label: 'Delete', value: 'delete' },
-	];
+	const bulkActions = [{ label: 'Delete', value: 'delete' }];
 
 	const headers = {
 		code: {
@@ -530,7 +626,7 @@ const AllCoupon: React.FC = () => {
 		},
 		amount: {
 			label: __('Amount', 'multivendorx'),
-			type: 'currency'
+			type: 'currency',
 		},
 		description: {
 			label: __('Description', 'multivendorx'),
@@ -540,11 +636,11 @@ const AllCoupon: React.FC = () => {
 		},
 		date_expires: {
 			label: __('Expiry Date', 'multivendorx'),
-			type: 'date'
+			type: 'date',
 		},
 		status: {
 			label: __('Status', 'multivendorx'),
-			type: 'status'
+			type: 'status',
 		},
 		action: {
 			type: 'action',
@@ -579,7 +675,10 @@ const AllCoupon: React.FC = () => {
 					status: query.categoryFilter || '',
 					search: query.searchValue || '',
 					after: query.filter?.created_at?.startDate
-						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						? toWcIsoDate(
+								query.filter.created_at.startDate,
+								'start'
+							)
 						: undefined,
 
 					before: query.filter?.created_at?.endDate
@@ -624,14 +723,17 @@ const AllCoupon: React.FC = () => {
 			key: 'created_at',
 			label: 'Created Date',
 			type: 'date',
-		}
+		},
 	];
 
 	return (
 		<>
 			<NavigatorHeader
 				headerTitle={__('Coupons', 'multivendorx')}
-				headerDescription={__('Manage your store information and preferences', 'multivendorx')}
+				headerDescription={__(
+					'Manage your store information and preferences',
+					'multivendorx'
+				)}
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),
@@ -678,7 +780,10 @@ const AllCoupon: React.FC = () => {
 				>
 					<>
 						<FormGroupWrapper>
-							<FormGroup label={__('Coupon code', 'multivendorx')} htmlFor="title">
+							<FormGroup
+								label={__('Coupon code', 'multivendorx')}
+								htmlFor="title"
+							>
 								<BasicInputUI
 									type="text"
 									name="title"
@@ -698,7 +803,13 @@ const AllCoupon: React.FC = () => {
 								)}
 							</FormGroup>
 
-							<FormGroup label={__('Description (optional)', 'multivendorx')} htmlFor="title">
+							<FormGroup
+								label={__(
+									'Description (optional)',
+									'multivendorx'
+								)}
+								htmlFor="title"
+							>
 								<TextAreaUI
 									name="content"
 									rowNumber={6}
@@ -713,9 +824,9 @@ const AllCoupon: React.FC = () => {
 							</FormGroup>
 						</FormGroupWrapper>
 						<Tabs
-							tabs={tabs.map(tab => ({
+							tabs={tabs.map((tab) => ({
 								label: __(tab.label, 'multivendorx'),
-								content: tab.content
+								content: tab.content,
 							}))}
 						/>
 					</>
@@ -734,9 +845,9 @@ const AllCoupon: React.FC = () => {
 					confirmMessage={
 						selectedCoupon
 							? __(
-								`Are you sure you want to delete coupon "${selectedCoupon.code}"?`,
-								'multivendorx'
-							)
+									`Are you sure you want to delete coupon "${selectedCoupon.code}"?`,
+									'multivendorx'
+								)
 							: ''
 					}
 					confirmYesText={__('Delete', 'multivendorx')}
@@ -759,7 +870,7 @@ const AllCoupon: React.FC = () => {
 				header={{
 					icon: 'warning',
 					title: __('Are you sure?', 'multivendorx'),
-					showCloseButton: true
+					showCloseButton: true,
 				}}
 				footer={
 					<AdminButtonUI
@@ -783,7 +894,10 @@ const AllCoupon: React.FC = () => {
 				}
 			>
 				<p>
-					{__('Are you sure you want to delete this coupon?', 'multivendorx')}
+					{__(
+						'Are you sure you want to delete this coupon?',
+						'multivendorx'
+					)}
 				</p>
 			</PopupUI>
 			<TableCard
@@ -798,7 +912,7 @@ const AllCoupon: React.FC = () => {
 				filters={filters}
 				bulkActions={bulkActions}
 				onBulkActionApply={(action: string, selectedIds: []) => {
-					handleBulkAction(action, selectedIds)
+					handleBulkAction(action, selectedIds);
 				}}
 				format={appLocalizer.date_format}
 				currency={{
@@ -806,7 +920,7 @@ const AllCoupon: React.FC = () => {
 					priceDecimals: appLocalizer.price_decimals,
 					decimalSeparator: appLocalizer.decimal_separator,
 					thousandSeparator: appLocalizer.thousand_separator,
-					currencyPosition: appLocalizer.currency_position
+					currencyPosition: appLocalizer.currency_position,
 				}}
 			/>
 		</>

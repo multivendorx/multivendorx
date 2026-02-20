@@ -39,7 +39,9 @@ const Counter: React.FC<CounterProps> = ({ value, duration = 1200 }) => {
 		rafRef.current = requestAnimationFrame(animate);
 
 		return () => {
-			if (rafRef.current) cancelAnimationFrame(rafRef.current);
+			if (rafRef.current) {
+				cancelAnimationFrame(rafRef.current);
+			}
 		};
 	}, [value, duration]);
 

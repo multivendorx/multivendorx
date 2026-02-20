@@ -14,7 +14,7 @@ import {
 	NavigatorHeader,
 	TableRow,
 	QueryProps,
-	CategoryCount
+	CategoryCount,
 } from 'zyra';
 import { formatLocalDate, truncateText } from '@/services/commonFunction';
 
@@ -46,7 +46,9 @@ const CustomerQuestions: React.FC = () => {
 
 	// Save answer
 	const handleSaveAnswer = () => {
-		if (!selectedQna) return;
+		if (!selectedQna) {
+			return;
+		}
 		setSaving(true);
 		axios
 			.put(
@@ -89,7 +91,7 @@ const CustomerQuestions: React.FC = () => {
 				});
 				setQna(item.question_text);
 				setAnswer(item.answer_text || '');
-			})
+			});
 	};
 
 	const headers = [
@@ -107,7 +109,7 @@ const CustomerQuestions: React.FC = () => {
 					label: __('Answer', 'multivendorx'),
 					icon: 'eye',
 					onClick: (id: number) => fetchQnaById(id),
-				}
+				},
 			],
 		},
 	];
@@ -178,15 +180,21 @@ const CustomerQuestions: React.FC = () => {
 						data: {
 							name: `Q : ${truncateText(product.question_text, 50)}`,
 							description: `By: ${product.author_name}`,
-							subDescription: `A: ${truncateText(product.answer_text, 50)}`
+							subDescription: `A: ${truncateText(product.answer_text, 50)}`,
 						},
 					},
-					{ display: formatWcShortDate(product.question_date), value: product.question_date },
+					{
+						display: formatWcShortDate(product.question_date),
+						value: product.question_date,
+					},
 					{
 						display: product.total_votes,
 						value: product.total_votes || 0,
 					},
-					{ display: product.question_visibility, value: product.question_visibility },
+					{
+						display: product.question_visibility,
+						value: product.question_visibility,
+					},
 				]);
 
 				setRows(mappedRows);
@@ -200,12 +208,17 @@ const CustomerQuestions: React.FC = () => {
 					{
 						value: 'has_answer',
 						label: 'Answered',
-						count: Number(response.headers['x-wp-status-answered']) || 0,
+						count:
+							Number(response.headers['x-wp-status-answered']) ||
+							0,
 					},
 					{
 						value: 'no_answer',
 						label: 'Unanswered',
-						count: Number(response.headers['x-wp-status-unanswered']) || 0,
+						count:
+							Number(
+								response.headers['x-wp-status-unanswered']
+							) || 0,
 					},
 				]);
 
@@ -222,7 +235,10 @@ const CustomerQuestions: React.FC = () => {
 		<>
 			<NavigatorHeader
 				headerTitle={__('Customer questions', 'multivendorx')}
-				headerDescription={__('Track and respond to customer product questions.', 'multivendorx')}
+				headerDescription={__(
+					'Track and respond to customer product questions.',
+					'multivendorx'
+				)}
 			/>
 
 			<TableCard
@@ -272,7 +288,10 @@ const CustomerQuestions: React.FC = () => {
 					}
 				>
 					<FormGroupWrapper>
-						<FormGroup label={__('Question', 'multivendorx')} htmlFor="question">
+						<FormGroup
+							label={__('Question', 'multivendorx')}
+							htmlFor="question"
+						>
 							<BasicInputUI
 								name="question"
 								value={qna}
@@ -280,7 +299,10 @@ const CustomerQuestions: React.FC = () => {
 							/>
 						</FormGroup>
 
-						<FormGroup label={__('Answer', 'multivendorx')} htmlFor="ans">
+						<FormGroup
+							label={__('Answer', 'multivendorx')}
+							htmlFor="ans"
+						>
 							<TextAreaUI
 								name="answer"
 								value={answer}
@@ -289,7 +311,6 @@ const CustomerQuestions: React.FC = () => {
 						</FormGroup>
 					</FormGroupWrapper>
 				</PopupUI>
-
 			)}
 		</>
 	);

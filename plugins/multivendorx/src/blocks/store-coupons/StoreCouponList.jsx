@@ -3,7 +3,7 @@ import axios from 'axios';
 import { __ } from '@wordpress/i18n';
 
 const StoreCouponList = ({
-	isEditor=false,
+	isEditor = false,
 	perPage = 10,
 	orderby = 'date',
 	order = 'DESC',
@@ -33,7 +33,7 @@ const StoreCouponList = ({
 							orderby,
 							// order,
 							meta_key: 'multivendorx_store_id',
-							value: StoreInfo?.storeDetails.storeId
+							value: StoreInfo?.storeDetails.storeId,
 						},
 					}
 				);
@@ -84,11 +84,10 @@ const StoreCouponList = ({
 					</div>
 				</>
 			) : (
-				<p>{ __( 'No coupons', 'multivendorx' ) }</p>
+				<p>{__('No coupons', 'multivendorx')}</p>
 			)}
 		</div>
-
-			);
-		};
+	);
+};
 
 export default StoreCouponList;
