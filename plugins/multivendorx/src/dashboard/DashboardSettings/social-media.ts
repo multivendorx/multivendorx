@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
 	id: 'social-media',
+	priority: 10,
 	headerTitle: __('Social Media', 'multivendorx'),
 	headerDescription: __(
 		'Add your store’s social media links to help buyers connect with you across platforms.',

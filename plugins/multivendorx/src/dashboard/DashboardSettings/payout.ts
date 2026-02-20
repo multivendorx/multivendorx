@@ -14,13 +14,13 @@ interface PaymentField {
 }
 
 interface PaymentProvider {
-	key: string;
+	id: string;
 	label: string;
 	fields?: PaymentField[];
 }
 
 interface StorePaymentConfig {
-	[key: string]: PaymentProvider;
+	[id: string]: PaymentProvider;
 }
 
 const storePayment: StorePaymentConfig =
@@ -33,50 +33,52 @@ const filteredStorePayment = Object.fromEntries(
 );
 
 const paymentOptions = Object.values(filteredStorePayment).map((p) => ({
-	key: p.key,
-	value: p.key,
+	id: p.id,
+	value: p.id,
 	label: p.label,
 }));
 
 console.log('Payment Options:', paymentOptions);
 
-const selectedProvider = storePayment[paymentOptions[2]?.key];
-console.log('Selected Provider:', selectedProvider);
-console.log('Selected Provider Fields:', selectedProvider?.fields);
-
-// Function to render fields based on their type
-const renderPaymentFields = () => {
-	if (!selectedProvider?.fields || !Array.isArray(selectedProvider.fields)) {
-		return [];
-	}
-	console.log('Rendering fields for provider:', selectedProvider.fields);
-	return selectedProvider.fields.map((field) => ({
-		// Pass through all original field properties
-		...field,
-		// Add dependent prop to show/hide based on payment method selection
-		dependent: {
-			key: 'payment_method',
-			value: selectedProvider.key,
-		},
-	}));
+// Generate all payment fields for all providers with conditions
+const generateAllPaymentFields = () => {
+	const allFields: PaymentField[] = [];
+	
+	Object.values(filteredStorePayment).forEach((provider) => {
+		if (provider.fields && Array.isArray(provider.fields)) {
+			const providerFields = provider.fields.map((field) => ({
+				...field,
+				key: `${provider.id}_${field.key}`, // Make key unique by prefixing with provider ID
+				dependent: {
+					key: 'payment_method',
+					value: provider.id, // Only show when this payment method is selected
+				},
+			}));
+			allFields.push(...providerFields);
+		}
+	});
+	
+	console.log('All generated fields:', allFields);
+	return allFields;
 };
 
 export default {
 	id: 'payout',
+	priority: 7,
 	headerTitle: __('Payout', 'multivendorx'),
 	headerDescription: __(
 		'Enter your payment information and select the method you’d like to use for receiving store payouts.',
 		'multivendorx'
 	),
 	headerIcon: 'wallet-open',
-
+	submitUrl: `store/${appLocalizer.store_id}`,
 	modal: [
 		{
 			key: 'payment_method',
 			type: 'setting-toggle',
 			label: __('Payment Method', 'multivendorx'),
-			options: paymentOptions,
+			options: paymentOptions, // Use paymentOptions directly, not with nested fields
 		},
-		...renderPaymentFields(),
+		...generateAllPaymentFields(), // Spread all fields at root level with conditions
 	],
 };
