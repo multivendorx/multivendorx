@@ -1,94 +1,114 @@
 import { __ } from '@wordpress/i18n';
 
+const nestedFields = [
+  {
+    key: 'open_hour',
+    type: 'number',
+    label: __('Open Hour', 'multivendorx'),
+    placeholder: 'HH',
+    size: '5rem',
+    min: 1,
+    max: 12,
+    preText: __('Open', 'multivendorx'),
+    postText: ':',
+    className: 'time-field hour-field'
+  },
+  {
+    key: 'open_minute',
+    type: 'number',
+    label: __('Open Minute', 'multivendorx'),
+    placeholder: 'MM',
+    size: '5rem',
+    min: 0,
+    max: 59,
+    postText: ':',
+    className: 'time-field minute-field'
+  },
+  {
+    key: 'open_ampm',
+    type: 'select',
+    label: __('Open AM/PM', 'multivendorx'),
+    options: [
+      { value: 'AM', label: 'AM' },
+      { value: 'PM', label: 'PM' }
+    ],
+    size: '5rem',
+    postText: '--',
+    className: 'time-field ampm-field'
+  },
+  {
+    key: 'close_hour',
+    type: 'number',
+    label: __('Close Hour', 'multivendorx'),
+    placeholder: 'HH',
+    size: '5rem',
+    min: 1,
+    max: 12,
+    preText: __('Close', 'multivendorx'),
+    postText: ':',
+    className: 'time-field hour-field'
+  },
+  {
+    key: 'close_minute',
+    type: 'number',
+    label: __('Close Minute', 'multivendorx'),
+    placeholder: 'MM',
+    size: '5rem',
+    min: 0,
+    max: 59,
+    postText: ':',
+    className: 'time-field minute-field'
+  },
+  {
+    key: 'close_ampm',
+    type: 'select',
+    label: __('Close AM/PM', 'multivendorx'),
+    options: [
+      { value: 'AM', label: 'AM' },
+      { value: 'PM', label: 'PM' }
+    ],
+    size: '5rem',
+    className: 'time-field ampm-field'
+  }
+];
+
 export default {
-	id: 'business-hours',
-	priority: 5,
-	headerTitle: __('Business Hours', 'multivendorx'),
-	headerDescription: __(
-		'Manage your store’s shipping method, pricing rules, and location-based rates.',
-		'multivendorx'
-	),
-	headerIcon: 'shipping',
-	submitUrl: `store/${appLocalizer.store_id}`,
-	modal: [
-		// Add to Cart Button Text
-		{
-			type: 'input',
-			name: 'addToCartText',
-			label: __('"Add to Cart" Button Text', 'multivendorx'),
-			inputType: 'text',
-			value: '',
-		},
-
-		// Notification Message
-		{
-			type: 'textarea',
-			name: 'notificationMessage',
-			label: __('Notification Message', 'multivendorx'),
-			value: '',
-		},
-
-		// Quick Presets Toggle
-		{
-			type: 'toggle',
-			name: 'quickPresets',
-			label: __('Quick presets', 'multivendorx'),
-			options: [
-				{
-					key: '1d',
-					value: '1d',
-					label: __('1d', 'multivendorx'),
-					desc: __('Same', 'multivendorx'),
-				},
-				{
-					key: '3d',
-					value: '3d',
-					label: __('3d', 'multivendorx'),
-					desc: __('Short', 'multivendorx'),
-				},
-				{
-					key: '7d',
-					value: '7d',
-					label: __('7d', 'multivendorx'),
-					desc: __('1 week', 'multivendorx'),
-				},
-				{
-					key: '14d',
-					value: '14d',
-					label: __('14d', 'multivendorx'),
-					desc: __('2 week', 'multivendorx'),
-				},
-				{
-					key: '30d',
-					value: '30d',
-					label: __('30d', 'multivendorx'),
-					desc: __('1 month', 'multivendorx'),
-				},
-			],
-		},
-
-		// Notify Via Toggle
-		{
-			type: 'toggle',
-			name: 'notifyVia',
-			label: __('Notify via', 'multivendorx'),
-			options: [
-				{
-					key: 'store_banner',
-					value: 'store_banner',
-					label: __('Store banner', 'multivendorx'),
-				},
-				{
-					key: 'email',
-					value: 'email',
-					label: __('Email', 'multivendorx'),
-				},
-				{
-					key: 'sms',
-					value: 'sms',
-					label: __('SMS', 'multivendorx'),
-				},
-			],
-		},
-	],
+  id: 'business-hours',
+  priority: 5,
+  headerTitle: __('Business Hours', 'multivendorx'),
+  headerDescription: __(
+    'Manage your store’s shipping method, pricing rules, and location-based rates.',
+    'multivendorx'
+  ),
+  headerIcon: 'shipping',
+  submitUrl: `store/${appLocalizer.store_id}`,
+  modal: [
+    {
+      type: 'select',
+      name: 'store_timezone',
+      label: __('Store Timezone', 'multivendorx'),
+      options: [
+        { value: '', label: 'Eastern Time (ET)' },
+        { value: 'instock', label: 'Central Time (CT)' },
+        { value: 'outofstock', label: 'Mountain Time (MT)' },
+        { value: 'onbackorder', label: 'Pacific Time (PT)' },
+        { value: 'onbackorder', label: 'London (GMT)' },], // Add your timezone options here
+    },
+    {
+      type: 'nested',
+      name: 'shop_timings',
+      label: __('Shop Open & Close Timings', 'multivendorx'),
+      id: 'role_rules',
+      nestedFields: nestedFields, // Reference to your nestedFields object
+      addButtonLabel: __('Add Hours', 'multivendorx'),
+      deleteButtonLabel: __('Remove', 'multivendorx'),
+      single: false,
+    },
+    {
+      type: 'textarea',
+      name: 'closed_message',
+      label: __('Message When Shop is Closed', 'multivendorx'),
+      placeholder: '', // Add placeholder text if needed
+    }
+  ],
 };

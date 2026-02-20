@@ -68,7 +68,7 @@ interface NestedComponentProps {
 
 export const NestedComponentUI: React.FC< NestedComponentProps > = ( {
     id,
-    fields,
+    fields = [],
     value = [],
     onChange,
     addButtonLabel = 'Add',

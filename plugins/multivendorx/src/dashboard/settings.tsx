@@ -225,9 +225,7 @@ const settings: React.FC<SettingsProps> = () => {
 		if (!currentTab) {
 			return null;
 		}
-		if (currentTab === 'shipping') {
-			return <ShippingDelivery />;
-		}
+		
 		const settingModal = getSettingById(settingsArray as any, currentTab);
 
 		// Ensure settings context is initialized
@@ -241,6 +239,10 @@ const settings: React.FC<SettingsProps> = () => {
 				appLocalizer.settings_all_meta = setting;
 			}
 		}, [setting, settingName, currentTab]);
+
+		if (currentTab === 'shipping') {
+			return <ShippingDelivery />;
+		}
 
 		return (
 			<>
