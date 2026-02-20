@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, NavigatorHeader, SelectInputUI, TableCard, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
+import { TableRow, AdminButtonUI, BasicInputUI, Card, Column, Container, FormGroup, FormGroupWrapper, NavigatorHeader, SelectInputUI, TableCard, TextAreaUI, getApiLink, useOutsideClick } from 'zyra';
 import axios from 'axios';
 import { formatCurrency } from '@/services/commonFunction';
 import { __ } from '@wordpress/i18n';
-import { TableRow } from '@/services/type';
 
 const AddOrder = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
@@ -882,10 +881,10 @@ const AddOrder = () => {
 									<BasicInputUI
 										name="first_name"
 										value={newCustomer.first_name}
-										onChange={(e) =>
+										onChange={(value) =>
 											setNewCustomer({
 												...newCustomer,
-												first_name: e.target.value,
+												first_name: value,
 											})
 										}
 									/>
@@ -895,10 +894,10 @@ const AddOrder = () => {
 									<BasicInputUI
 										name="last_name"
 										value={newCustomer.last_name}
-										onChange={(e) =>
+										onChange={(value) =>
 											setNewCustomer({
 												...newCustomer,
-												last_name: e.target.value,
+												last_name: value,
 											})
 										}
 									/>
@@ -908,10 +907,10 @@ const AddOrder = () => {
 									<BasicInputUI
 										name="email"
 										value={newCustomer.email}
-										onChange={(e) =>
+										onChange={(value) =>
 											setNewCustomer({
 												...newCustomer,
-												email: e.target.value,
+												email: value,
 											})
 										}
 									/>
@@ -921,10 +920,10 @@ const AddOrder = () => {
 									<BasicInputUI
 										name="phone"
 										value={newCustomer.phone}
-										onChange={(e) =>
+										onChange={(value) =>
 											setNewCustomer({
 												...newCustomer,
-												phone: e.target.value,
+												phone: value,
 											})
 										}
 									/>
@@ -984,10 +983,10 @@ const AddOrder = () => {
 											name="address_1"
 											value={shippingAddress.address_1}
 
-											onChange={(e) =>
+											onChange={(value) =>
 												setShippingAddress((prev) => ({
 													...prev,
-													address_1: e.target.value,
+													address_1:value,
 												}))
 											}
 										/>
@@ -996,10 +995,10 @@ const AddOrder = () => {
 										<BasicInputUI
 											name="city"
 											value={shippingAddress.city || ''}
-											onChange={(e) =>
+											onChange={(value) =>
 												setShippingAddress((prev) => ({
 													...prev,
-													city: e.target.value,
+													city: value,
 												}))
 											}
 										/>
@@ -1009,10 +1008,10 @@ const AddOrder = () => {
 											name="postcode"
 											value={shippingAddress.postcode || ''}
 
-											onChange={(e) =>
+											onChange={(value) =>
 												setShippingAddress((prev) => ({
 													...prev,
-													postcode: e.target.value,
+													postcode: value,
 												}))
 											}
 										/>
@@ -1093,12 +1092,12 @@ const AddOrder = () => {
 											name="address_1"
 											value={billingAddress.address_1}
 
-											onChange={(e) =>
+											onChange={(value) =>
 												setBillingAddress(
 													(prev) => ({
 														...prev,
 														address_1:
-															e.target.value,
+															value,
 													})
 												)
 											}
@@ -1111,12 +1110,11 @@ const AddOrder = () => {
 											value={
 												billingAddress.city || ''
 											}
-											onChange={(e) =>
+											onChange={(value) =>
 												setBillingAddress(
 													(prev) => ({
 														...prev,
-														city: e.target
-															.value,
+														city:value,
 													})
 												)
 											}
@@ -1130,12 +1128,12 @@ const AddOrder = () => {
 												billingAddress.postcode ||
 												''
 											}
-											onChange={(e) =>
+											onChange={(value) =>
 												setBillingAddress(
 													(prev) => ({
 														...prev,
 														postcode:
-															e.target.value,
+															value,
 													})
 												)
 											}
