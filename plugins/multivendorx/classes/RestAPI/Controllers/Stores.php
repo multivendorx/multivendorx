@@ -264,13 +264,13 @@ class Stores extends \WP_REST_Controller {
                 $args['offset'] = $offset;
             }
 
-            $search = sanitize_text_field( $request->get_param( 'searchValue' ) );
+            $search = sanitize_text_field( $request->get_param( 'search_value' ) );
             if ( ! empty( $search ) ) {
                 $args['searchField'] = $search;
             } else {
                 $dates = Utill::normalize_date_range(
-                    $request->get_param( 'startDate' ),
-                    $request->get_param( 'endDate' )
+                    $request->get_param( 'start_date' ),
+                    $request->get_param( 'end_date' )
                 );
 
                 if ( ! empty( $dates['start_date'] ) ) {
@@ -282,12 +282,12 @@ class Stores extends \WP_REST_Controller {
                 }
             }
 
-            $status = $request->get_param( 'filterStatus' );
+            $status = $request->get_param( 'filter_status' );
             if ( ! empty( $status ) ) {
                 $args['status'] = $status;
             }
 
-            $order_by = $request->get_param( 'orderBy' );
+            $order_by = $request->get_param( 'order_dy' );
             if ( ! empty( $order_by ) ) {
                 $args['orderBy'] = sanitize_text_field( $order_by );
                 $args['order']   = sanitize_text_field( $request->get_param( 'order' ) );

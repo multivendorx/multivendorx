@@ -20,7 +20,7 @@ import {
 	ExportCSV
 } from 'zyra';
 
-import { formatCurrency, formatLocalDate } from '../../services/commonFunction';
+import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';
 import ViewCommission from '../Commissions/ViewCommission';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
 
@@ -187,107 +187,53 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 	// fee calculation
 	const fee = amount * (percentage / 100) + fixed;
 
-	const headers = [
-		{ key: 'id', label: __('ID', 'multivendorx') },
-		{ key: 'status', label: __('Status', 'multivendorx') },
-		{ key: 'TransactionType', label: __('Transaction Type', 'multivendorx') },
-		{ key: 'date', label: __('Date', 'multivendorx') },
-		{ key: 'credit', label: __('Credit', 'multivendorx') },
-		{ key: 'debit', label: __('Debit', 'multivendorx') },
-		{ key: 'balance', label: __('Balance', 'multivendorx'), isSortable: true, },
-	];
+	const headers = {
+		id: { label: __('ID', 'multivendorx') },
+		status: { label: __('Status', 'multivendorx'), type: 'status' },
+		transaction_type: {
+			label: __('Transaction Type', 'multivendorx'),
+			render: (row) => (
+				row.transaction_type?.toLowerCase() === 'commission' && row.commission_id ? (
+					<span
+						className="link-item"
+						onClick={() => {
+							setSelectedCommissionId(row.commission_id);
+							setViewCommission(true);
+						}}
+					>
+						{`Commission #${row.commission_id}`}
+					</span>
+				) : (
+					<span>
+						{row.narration
+							?.replace(/-/g, ' ')
+							.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-'}
+					</span>
+				)
+			),
+		},
+		created_at: { label: __('Date', 'multivendorx'), type: 'date' },
+		credit: { label: __('Credit', 'multivendorx'), type: 'currency' },
+		debit: { label: __('Debit', 'multivendorx'), type: 'currency' },
+		balance: { label: __('Balance', 'multivendorx'), isSortable: true, type: 'currency' },
+	};
 
 	const doRefreshTableData = (query: QueryProps) => {
+		console.log(query);
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'transaction'), {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: {
-					page: query.paged,
-					per_page: query.per_page,
-					store_id: storeId,
-					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					searchValue: query.searchValue,
-					orderby: query.orderby,
-					order: query.order,
-					transactionStatus: query?.filter?.transactionStatus,
-					transactionType: query?.filter?.transactionType,
-					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: '',
-					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: '',
-				},
+				params: buildQueryParams(query)
 			})
 			.then((response) => {
-				const products = Array.isArray(response.data)
-					? response.data
-					: [];
+				const transactions = response.data || [];
 
-				const ids: number[] = products.map((p: any) => Number(p.id));
+				const ids: number[] = transactions.map((t: any) => Number(t.id));
 				setRowIds(ids);
-
-				const mappedRows: any[][] = products.map((product: any) => [
-					{
-						display: `#${product.id}`,
-						value: product.id,
-					},
-					{
-						display: product.status,
-						value: product.status,
-					},
-					{
-						display: (
-							product.transaction_type?.toLowerCase() === 'commission' && product.commission_id ? (
-								<span
-									className="link-item"
-									onClick={() => {
-										setSelectedCommissionId(product.commission_id);
-										setViewCommission(true);
-									}}
-								>
-									{`Commission #${product.commission_id}`}
-								</span>
-							) : (
-								<span>
-									{product.narration
-										?.replace(/-/g, ' ')
-										.replace(/\b\w/g, (c: string) => c.toUpperCase()) || '-'}
-								</span>
-							)
-						),
-						value: product.transaction_type,
-					},
-					{
-						display: product.date
-							? product.date
-							: '-',
-						value: product.date,
-					},
-					{
-						display: product.credit
-							? formatCurrency(product.credit)
-							: '-',
-						value: product.credit,
-					},
-					{
-						display: product.debit
-							? formatCurrency(product.debit)
-							: '-',
-						value: product.debit,
-					},
-					{
-						display: product.balance
-							? formatCurrency(product.balance)
-							: '-',
-						value: product.balance,
-					},
-				]);
-
-				setRows(mappedRows);
+				setRows(transactions);
 				setCategoryCounts([
 					{
 						value: 'all',
@@ -358,54 +304,82 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 		},
 	];
 
-	const transactionColumns = (txn: any) => ({
-		[__('ID', 'multivendorx')]: txn.id ?? '',
-		[__('Status', 'multivendorx')]: txn.status ?? '',
-		[__('Transaction Type', 'multivendorx')]: txn.transaction_type ?? '',
-		[__('Date', 'multivendorx')]: txn.date ?? '',
-		[__('Credit', 'multivendorx')]: txn.credit ?? '',
-		[__('Debit', 'multivendorx')]: txn.debit ?? '',
-		[__('Balance', 'multivendorx')]: txn.balance ?? '',
-	});
+	const downloadTransactionCSV = (selectedIds: number[]) => {
+		if (!selectedIds) return;
+
+		axios
+			.get(getApiLink(appLocalizer, 'transaction'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: { ids: selectedIds },
+			})
+			.then(response => {
+				const rows = response.data || [];
+				downloadCSV(
+					headers,
+					rows,
+					`selected-commissions-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch(error => {
+				console.error('CSV download failed:', error);
+			});
+	};
+
+	const downloadTransactionCSVByQuery = (query: QueryProps) => {
+		// Call the API
+		axios
+			.get(getApiLink(appLocalizer, 'transaction'), {
+				headers: { 'X-WP-Nonce': appLocalizer.nonce },
+				params: buildQueryParams(query, false),
+			})
+			.then((response) => {
+				const rows = response.data || [];
+
+				downloadCSV(
+					headers,
+					rows,
+					`transaction-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch((error) => {
+				console.error('CSV download failed:', error);
+			});
+	};
+	const buildQueryParams = (
+		query: QueryProps,
+		includePagination: boolean = true
+	) => {
+		const params: Record<string, any> = {
+			store_id: storeId,
+			status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+			search_value: query.searchValue,
+			order_by: query.orderby,
+			order: query.order,
+			transaction_status: query?.filter?.transactionStatus,
+			transaction_type: query?.filter?.transactionType,
+			start_date: query.filter?.created_at?.startDate
+				? formatLocalDate(query.filter.created_at.startDate)
+				: '',
+			end_date: query.filter?.created_at?.endDate
+				? formatLocalDate(query.filter.created_at.endDate)
+				: '',
+		};
+
+		if (includePagination) {
+			params.page = query.paged || 1;
+			params.row = query.per_page || 10;
+		}
+
+		return params;
+	};
 
 	const buttonActions = [
 		{
 			label: __('Download CSV', 'multivendorx'),
 			icon: 'download',
-
-			onClickWithQuery: (query: QueryProps) => ExportCSV({
-				url: getApiLink(appLocalizer, 'transaction'),
-				headers: { 'X-WP-Nonce': appLocalizer.nonce },
-				filename:
-					query.filter?.created_at?.startDate &&
-						query.filter?.created_at?.endDate
-						? `transactions-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
-						: `transactions-${formatLocalDate(new Date())}.csv`,
-
-				paramsBuilder: ({
-					per_page: 1000,
-					store_id: storeId,
-					searchValue: query.searchValue,
-					status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					orderby: query.orderby,
-					order: query.order,
-					transactionStatus: query?.filter?.transactionStatus,
-					transactionType: query?.filter?.transactionType,
-
-					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: '',
-
-					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: '',
-				}),
-
-				columns: transactionColumns,
-			}),
+			onClickWithQuery: downloadTransactionCSVByQuery
 		},
 	];
-
 	return (
 		<>
 			<Container>
@@ -520,7 +494,7 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 													)}
 												</>
 											),
-											time: formatCurrency(wallet.locking_balance), 
+											time: formatCurrency(wallet.locking_balance),
 										}
 									]}
 								/>
@@ -712,15 +686,15 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 							ids={rowIds}
 							categoryCounts={categoryCounts}
 							bulkActions={[]}
-							onSelectCsvDownloadApply={(selectedIds: number[]) =>
-								ExportCSV({
-									url: getApiLink(appLocalizer, 'transaction'),
-									headers: { 'X-WP-Nonce': appLocalizer.nonce },
-									filename: `selected-wallet-transactions-${formatLocalDate(new Date())}.csv`,
-									paramsBuilder: { ids: selectedIds },
-									columns: transactionColumns,
-								})
-							}
+							onSelectCsvDownloadApply={downloadTransactionCSV}
+							format={appLocalizer.date_format}
+							currency={{
+								currencySymbol: appLocalizer.currency_symbol,
+								priceDecimals: appLocalizer.price_decimals,
+								decimalSeparator: appLocalizer.decimal_separator,
+								thousandSeparator: appLocalizer.thousand_separator,
+								currencyPosition: appLocalizer.currency_position
+							}}
 						/>
 					</div>
 				</Column>
