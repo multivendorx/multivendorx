@@ -17,7 +17,6 @@ import {
 	PopupUI,
 	TextAreaUI,
 	ItemList,
-	ExportCSV
 } from 'zyra';
 
 import { downloadCSV, formatCurrency, formatLocalDate } from '../../services/commonFunction';

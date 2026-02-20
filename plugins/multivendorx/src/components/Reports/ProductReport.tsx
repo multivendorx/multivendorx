@@ -10,7 +10,7 @@ import {
 	Tooltip,
 } from 'recharts';
 import { __ } from '@wordpress/i18n';
-import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, TableCard, TableCell, ExportCSV } from 'zyra';
+import { Analytics, Card, Column, Container, getApiLink, InfoItem, ComponentStatusView, TableCard } from 'zyra';
 import axios from 'axios';
 import { downloadCSV, formatCurrency, formatLocalDate, toWcIsoDate } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
