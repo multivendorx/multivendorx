@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 
 export default {
 	id: 'privacy',
+	priority: 8,
 	headerTitle: __('Privacy', 'multivendorx'),
 	headerDescription: __(
 		'Define your store’s policies so customers clearly understand your shipping, refund, and return terms.',

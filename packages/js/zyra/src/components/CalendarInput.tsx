@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DatePicker, { Calendar, DateObject, DatePickerRef } from 'react-multi-date-picker'; 
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
+import { FieldComponent } from './types';
 
 export interface CalendarRange {
   startDate: Date;
@@ -110,7 +111,7 @@ const Presets : React.FC<PresetsProps> = ({ setValue, pickerRef, format }) => {
   );
 };
 
-const CalendarInput: React.FC<CalendarInputProps> = ({
+const CalendarInputUI: React.FC<CalendarInputProps> = ({
   wrapperClass = "calender-wrapper",
   inputClass,
   format = "MMMM DD YYYY",
@@ -194,5 +195,9 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
     </div>
   );
 };
+
+const CalendarInput: FieldComponent= {
+  render: CalendarInputUI,
+}
 
 export default CalendarInput;
