@@ -1,5 +1,5 @@
 // External Dependencies
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 // Internal Dependencies
 import { PopupUI } from './Popup';
@@ -47,12 +47,12 @@ interface PopoverItem {
 
 interface HeaderPopover {
     toggleIcon: string;
-    items?: PopoverItem[]; 
+    items?: PopoverItem[];
 }
 
 interface HeaderPopoverWithTab {
     toggleIcon: string;
-    tabs?: PopoverTab[];   
+    tabs?: PopoverTab[];
 }
 
 type AdminHeaderProps = {
@@ -90,6 +90,25 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     utilityListWithTab = [],
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const [notices, setNotices] = React.useState<string[]>([]);
+    useEffect( () => {
+        const captureNotices = () => {
+            const noticeNodes = document.querySelectorAll(
+                '#screen-meta + .wrap .notice, #wpbody-content .notice'
+            );
+
+            if ( noticeNodes.length > 0 ) {
+                const htmlArray: string[] = [];
+                noticeNodes.forEach( ( node ) => {
+                    htmlArray.push( node.outerHTML );
+                    node.remove(); // remove from DOM so we control rendering
+                } );
+                setNotices( htmlArray );
+            }
+        };
+         captureNotices();
+    }, [] );
+
     return (
         <>
             <div className="admin-header" ref={wrapperRef}>
@@ -140,6 +159,14 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
 
                 </div>
             </div>
+            {notices.length > 0 &&
+                        notices.map((html, i) => (
+                            <div
+                                key={i}
+                                className="wp-admin-notice"
+                                dangerouslySetInnerHTML={{ __html: html }}
+                            />
+                        ))}
         </>
     );
 };

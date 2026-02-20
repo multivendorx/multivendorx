@@ -53,7 +53,7 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
         return false;
     };
 
-    const handleChange = ( optionValue: string, option: Option ) => {
+    const handleChange = ( selectedOptionValue: string, option: Option ) => {
         // Check if option is blocked (pro)
         if (block(option)) {
             return;
@@ -62,14 +62,14 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
         if ( multiSelect ) {
             const current = Array.isArray( value ) ? value : [];
             let newValues: string[];
-            if ( current.includes( optionValue ) ) {
-                newValues = current.filter( ( compareValue ) => compareValue !== optionValue );
+            if ( current.includes( selectedOptionValue ) ) {
+                newValues = current.filter( ( compareValue ) => compareValue !== selectedOptionValue );
             } else {
-                newValues = [ ...current, optionValue ];
+                newValues = [ ...current, selectedOptionValue ];
             }
             onChange( newValues );
         } else {
-            onChange( optionValue );
+            onChange( selectedOptionValue );
         }
     };
 
