@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { size } from 'lodash';
 import { CountryCodes } from 'zyra';
 
 export default {
