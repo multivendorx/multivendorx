@@ -6,41 +6,49 @@ export function truncateText(text: string, maxLength: number) {
 }
 
 export function formatCurrency(amount: number | string): string {
-	if (!amount && amount !== 0) {
+	if (amount === null || amount === undefined || amount === '') {
 		return '-';
 	}
-
-	const {
-		currency_symbol = '',
-		price_format = '%1$s%2$s',
-		decimal_sep = '.',
-		thousand_sep = ',',
-		decimals = 2,
-	} = appLocalizer || {};
 
 	const num = parseFloat(String(amount));
 	if (isNaN(num)) {
 		return '-';
 	}
 
+	const {
+		currency_symbol = '',
+		price_decimals = 2,
+		decimal_separator = '.',
+		thousand_separator = ',',
+		currency_position = 'left',
+	} = appLocalizer || {};
+
 	const isNegative = num < 0;
 	const absNum = Math.abs(num);
 
-	const formattedNumber = absNum
-		.toFixed(decimals)
-		.replace('.', decimal_sep)
-		.replace(/\B(?=(\d{3})+(?!\d))/g, thousand_sep);
+	// Format number with decimals and separators
+	const parts = absNum.toFixed(price_decimals).split('.');
+	const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousand_separator);
+	const decimalPart = parts[1] ? decimal_separator + parts[1] : '';
+	const formattedNumber = intPart + decimalPart;
 
-	//Apply symbol & number
-	let formatted = price_format
-		.replace('%1$s', currency_symbol)
-		.replace('%2$s', formattedNumber)
-		.replace(/&nbsp;/g, ' ')
-		.trim();
+	// Apply currency symbol based on four possible positions using if/else
+	let formatted: string;
+	if (currency_position === 'left') {
+		formatted = `${currency_symbol}${formattedNumber}`;
+	} else if (currency_position === 'right') {
+		formatted = `${formattedNumber}${currency_symbol}`;
+	} else if (currency_position === 'left_space') {
+		formatted = `${currency_symbol} ${formattedNumber}`;
+	} else if (currency_position === 'right_space') {
+		formatted = `${formattedNumber} ${currency_symbol}`;
+	} else {
+		formatted = `${currency_symbol}${formattedNumber}`;
+	}
 
-	//For negative numbers, show as "-$271" instead of "$-271"
+	// Add negative sign for negative numbers
 	if (isNegative) {
-		formatted = `-${formatted.replace('-', '')}`;
+		formatted = `-${formatted}`;
 	}
 
 	return formatted;

@@ -76,7 +76,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				{ headers: { 'X-WP-Nonce': appLocalizer.nonce } }
 			)
 			.then(() => {
-				fetchData({})
+				doRefreshTableData({})
 				onUpdated?.();
 			})
 			.catch(console.error);
@@ -104,36 +104,51 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectCouponId(null);
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(console.error)
 			.finally(() => setIsSubmitting(false));
 	};
 
-	const headers = [
-		{ key: 'code', label: __('Code', 'multivendorx') },
-		{ key: 'discount_type', label: __('Discount Type', 'multivendorx') },
-		{ key: 'date', label: __('Date created', 'multivendorx'), isSortable: true, },
-		{
-			key: 'action',
+	const headers = {
+		code: {
+			label: __('Code', 'multivendorx'),
+		},
+		store_name: {
+			label: __('Store', 'multivendorx'),
+		},
+		discount_type: {
+			label: __('Discount Type', 'multivendorx'),
+		},
+		amount: {
+			label: __('Amount', 'multivendorx'),
+			type:'currency'
+		},
+		date_created: {
+			label: __('Date created', 'multivendorx'),
+			isSortable: true,
+			type:'date'
+		},
+		action: {
 			type: 'action',
 			label: 'Action',
 			actions: [
 				{
 					label: __('Approve', 'multivendorx'),
 					icon: 'check',
-					onClick: (id: number) => handleSingleAction('approve_coupon', id)
+					onClick: (row) => handleSingleAction('approve_coupon', id),
 				},
 				{
 					label: __('Reject', 'multivendorx'),
 					icon: 'close',
-					onClick: (id: number) => handleSingleAction('reject_coupon', id),
+					onClick: (row) => handleSingleAction('reject_coupon', id),
 					className: 'danger',
 				},
 			],
 		},
-	];
+	};
+
 
 	const filters = [
 		{
@@ -149,7 +164,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(`${appLocalizer.apiUrl}/wc/v3/coupons`, {
@@ -175,37 +190,14 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 				},
 			})
 			.then((response) => {
-				const products = Array.isArray(response.data)
+				const coupons = Array.isArray(response.data)
 					? response.data
 					: [];
 
-				const ids = products.map((p: any) => p.id);
+				const ids = coupons.map((p: any) => p.id);
 				setRowIds(ids);
 
-				const mappedRows: any[][] = products.map((coupon: any) => [
-					{
-						type: 'card',
-						value: coupon.id,
-						display: coupon.code,
-						data: {
-							name: coupon.code,
-							description: `By: ${coupon.store_name}`,
-							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${coupon.id}&action=edit`,
-						},
-					},
-					{
-						display: `${coupon.amount} ${DISCOUNT_TYPE_LABELS[coupon.discount_type]}`,
-						value: coupon.amount,
-					},
-					{
-						display: coupon.date_created
-							? coupon.date_created
-							: '-',
-						value: coupon.date_created,
-					}
-				]);
-
-				setRows(mappedRows);
+				setRows(coupons);
 				setTotalRows(
 					Number(response.headers['x-wp-total']) || 0
 				);
@@ -227,11 +219,18 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 					rows={rows}
 					totalRows={totalRows}
 					isLoading={isLoading}
-					onQueryUpdate={fetchData}
+					onQueryUpdate={doRefreshTableData}
 					ids={rowIds}
 					search={{}}
 					filters={filters}
 					format={appLocalizer.date_format}
+					currency={{
+						currencySymbol: appLocalizer.currency_symbol,
+						priceDecimals: appLocalizer.price_decimals,
+						decimalSeparator: appLocalizer.decimal_separator,
+						thousandSeparator: appLocalizer.thousand_separator,
+						currencyPosition: appLocalizer.currency_position
+					}}
 				/>
 				{/* Reject Coupon Popup */}
 				{rejectPopupOpen && (
@@ -276,7 +275,7 @@ const PendingCoupons: React.FC<{ onUpdated?: () => void }> = ({
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(value:string) => setRejectReason(value)}
+								onChange={(value: string) => setRejectReason(value)}
 								placeholder="Enter reason for rejecting this coupon..."
 								rows={4}
 							/>

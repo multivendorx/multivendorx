@@ -49,12 +49,7 @@ class Rest extends \WP_REST_Controller {
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array( $this, 'get_items' ),
                     'permission_callback' => array( $this, 'get_items_permissions_check' ),
-                ),
-                array(
-                    'methods'             => \WP_REST_Server::CREATABLE,
-                    'callback'            => array( $this, 'create_item' ),
-                    'permission_callback' => array( $this, 'create_item_permissions_check' ),
-                ),
+                )
             )
         );
 
@@ -62,19 +57,6 @@ class Rest extends \WP_REST_Controller {
             MultiVendorX()->rest_namespace,
             '/' . $this->rest_base . '/(?P<id>[\d]+)',
             array(
-                array(
-                    'methods'             => \WP_REST_Server::READABLE,
-                    'callback'            => array( $this, 'get_item' ),
-                    'permission_callback' => array( $this, 'get_items_permissions_check' ),
-                    'args'                => array(
-                        'id' => array( 'required' => true ),
-                    ),
-                ),
-                array(
-                    'methods'             => \WP_REST_Server::EDITABLE,
-                    'callback'            => array( $this, 'update_item' ),
-                    'permission_callback' => array( $this, 'update_item_permissions_check' ),
-                ),
                 array(
                     'methods'             => \WP_REST_Server::DELETABLE,
                     'callback'            => array( $this, 'delete_item' ),
@@ -94,15 +76,6 @@ class Rest extends \WP_REST_Controller {
      */
     public function get_items_permissions_check( $request ) {
         return current_user_can( 'read' ) || current_user_can( 'edit_stores' );
-    }
-
-    /**
-     * Check whether a given request has access to create items.
-     *
-     * @param object $request Full data about the request.
-     */
-    public function create_item_permissions_check( $request ) {
-        return current_user_can( 'create_stores' );
     }
 
     /**
@@ -144,7 +117,7 @@ class Rest extends \WP_REST_Controller {
                 $request->get_param( 'start_date' ),
                 $request->get_param( 'end_date' )
             );
-            $order_by = $request->get_param( 'orderBy' ) ? $request->get_param( 'orderBy' ) : 'created_at';
+            $order_by = $request->get_param( 'order_by' ) ? $request->get_param( 'order_by' ) : 'created_at';
             $order    = strtoupper( $request->get_param( 'order' ) ) === 'ASC' ? 'ASC' : 'DESC';
 
             // Prepare args.
@@ -181,7 +154,7 @@ class Rest extends \WP_REST_Controller {
                     $product_image = $product ? wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) : '';
 
                     return array(
-                        'ID'            => (int) $r['ID'],
+                        'id'            => (int) $r['ID'],
                         'store_id'      => (int) $r['store_id'],
                         'store_name'    => $store_name,
                         'product_id'    => (int) $r['product_id'],
@@ -210,76 +183,6 @@ class Rest extends \WP_REST_Controller {
         }
     }
 
-    /**
-     * Create a single item.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function create_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-    }
-
-    /**
-     * Retrieve a single item.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function get_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-        try {
-            return rest_ensure_response( $data );
-        } catch ( \Exception $e ) {
-            MultiVendorX()->util->log( $e );
-
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
-        }
-    }
-
-    /**
-     * Update a single item.
-     *
-     * @param object $request Full details about the request.
-     */
-    public function update_item( $request ) {
-        $nonce = $request->get_header( 'X-WP-Nonce' );
-        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-            $error = new \WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'multivendorx' ), array( 'status' => 403 ) );
-
-            // Log the error.
-            if ( is_wp_error( $error ) ) {
-                MultiVendorX()->util->log( $error );
-            }
-
-            return $error;
-        }
-        try {
-            return rest_ensure_response( array( 'success' => true ) );
-        } catch ( \Exception $e ) {
-            MultiVendorX()->util->log( $e );
-
-            return new \WP_Error( 'server_error', __( 'Unexpected server error', 'multivendorx' ), array( 'status' => 500 ) );
-        }
-    }
 
     /**
      * Delete a single item.

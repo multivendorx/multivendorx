@@ -19,7 +19,7 @@ const StoreTable: React.FC = () => {
 
 	const navigate = useNavigate();
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
@@ -27,80 +27,28 @@ const StoreTable: React.FC = () => {
 				params: {
 					page: query.paged || 1,
 					row: query.per_page || 10,
-					filterStatus: query.categoryFilter === 'all' ? '' : query.categoryFilter,
-					searchValue: query.searchValue || '',
-					startDate: query.filter?.created_at?.startDate
+					filter_status: query.categoryFilter === 'all' ? '' : query.categoryFilter,
+					search_value: query.searchValue || '',
+					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
-					orderBy: query.orderby,
+					order_by: query.orderby,
 					order: query.order,
 				},
 			})
 			.then((response) => {
 				const items = response.data || [];
-				const slugMap: Record<number, string> = {};
-
-				items.forEach((store: any) => {
-					if (store?.id && store?.store_slug) {
-						slugMap[store.id] = store.store_slug;
-					}
-				});
-
-				setStoreSlugMap(slugMap);
 
 				const ids = items
 					.filter((item: any) => item?.id != null)
 					.map((item: any) => item.id);
 
 				setRowIds(ids);
-				const mappedRows: any[][] = items.map((store: any) => [
-					{
-						display: store.store_name,
-						value: store.id,
-						type: 'card',
-						data: {
-							name: store.store_name,
-							image: store.image,
-							description: `Since ${formatDate(store.applied_on)}`,
-							link: `?page=multivendorx#&tab=stores&edit/${store.id}`,
-							icon: 'adminfont-store-inventory'
-						},
-					},
-					{
-						display: store.email,
-						value: store.email,
-						type: 'card',
-						data: {
-							name: store.email,
-							icon: 'adminfont-mail',
-						}
-					},
-					{
-						display: formatCurrency(store.commission?.commission_total),
-						value: store.commission?.commission_total ?? 0,
-					},
-					{
-						display: store.primary_owner?.data?.display_name || '—',
-						value: store.primary_owner?.ID || null,
-						type: 'card',
-						data: {
-							name: store.primary_owner?.data?.display_name,
-							image: store.primary_owner?.data?.primary_owner_image,
-							icon: 'adminfont-person',
-							description: store.primary_owner?.data?.user_email
-						}
-					},
-					{
-						display: store.status,
-						value: store.status,
-					},
-				]);
 
-
-				setRows(mappedRows);
+				setRows(items);
 
 				setCategoryCounts([
 					{
@@ -140,48 +88,54 @@ const StoreTable: React.FC = () => {
 			});
 	};
 
-	const headers = [
-		{ key: 'store_name', label: 'Store', isSortable: true, },
-		{ key: 'contact', label: 'Contact' },
-		{ key: 'lifetime_earning', label: 'Lifetime Earning' },
-		{ key: 'primary_owner', label: 'Primary Owner' },
-		{ key: 'status', label: 'Status' },
-		{
+	const headers = {
+		store_name: {
+			label: __('Store', 'multivendorx'),
+		},
+		email: {
+			label: __('Contact', 'multivendorx'),
+		},
+		lifetime_earning: {
+			label: __('Lifetime Earning', 'multivendorx'),
+			render: (row) => (
+				formatCurrency(row.commission?.commission_total)
+			),
+		},
+		primary_owner: {
+			label: __('Primary Owner', 'multivendorx'),
+			render: (row) => (
+				row.primary_owner?.data?.display_name
+			),
+		},
+		status: {
+			label: __('Status', 'multivendorx'),
+			type: 'status',
+		},
+		action: {
 			key: 'action',
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Settings', 'multivendorx'),
 					icon: 'setting',
-					onClick: (id: number) => {
-						navigate(
-							`?page=multivendorx#&tab=stores&edit/${id}`
-						);
+					onClick: (row) => {
+						navigate(`?page=multivendorx#&tab=stores&edit/${row.id}`);
 					},
 				},
 				{
-					label: __(
-						'Storefront',
-						'multivendorx'
-					),
+					label: __('Storefront', 'multivendorx'),
 					icon: 'storefront',
-					onClick: (id: number) => {
-						const slug = storeSlugMap[id];
-				
-						if (!slug) {
-							return;
-						}
-				
+					onClick: (row) => {
 						window.open(
-							`${appLocalizer.store_page_url}${slug}`,
+							`${appLocalizer.store_page_url}${row.slug}`,
 							'_blank'
 						);
 					},
 				},
 			],
 		},
-	];
+	};
 	const filters = [
 		{
 			key: 'created_at',
@@ -197,7 +151,7 @@ const StoreTable: React.FC = () => {
 					rows={rows}
 					totalRows={totalRows}
 					isLoading={isLoading}
-					onQueryUpdate={fetchData}
+					onQueryUpdate={doRefreshTableData}
 					ids={rowIds}
 					categoryCounts={categoryCounts}
 					search={{}}

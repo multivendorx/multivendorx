@@ -18,7 +18,7 @@ import { QueryProps, TableRow } from '@/services/type';
 
 
 const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
-	const [rows, setRows] = useState<TableRow[][]>([]);
+	const [rows, setRows] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [totalRows, setTotalRows] = useState<number>(0);
 	const [rowIds, setRowIds] = useState<number[]>([]);
@@ -51,7 +51,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 			data: { status: statusValue },
 		})
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(console.error);
@@ -77,7 +77,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 				setRejectPopupOpen(false);
 				setRejectReason('');
 				setRejectStoreId(null);
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(console.error)
@@ -92,39 +92,37 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 		},
 	];
 
-	const headers = [
-		{
-			key: 'store',
+	const headers = {
+		store_name: {
 			label: __('Store', 'multivendorx'),
 		},
-		{
-			key: 'email',
+		email: {
 			label: __('Email', 'multivendorx'),
 		},
-		{
-			key: 'applied_on',
+		applied_on: {
 			label: __('Applied On', 'multivendorx'),
 			sortable: true,
+			type: 'date'
 		},
-		{
-			key: 'action',
+		action: {
 			label: __('Action', 'multivendorx'),
 			type: 'action',
 			actions: [
 				{
 					label: __('Approve', 'multivendorx'),
-					icon: 'adminfont-check',
-					onClick: (id: number) => handleSingleAction('active', id),
+					icon: 'check',
+					onClick: (row: any) => handleSingleAction('active', row.id),
 				},
 				{
 					label: __('Reject', 'multivendorx'),
-					icon: 'adminfont-close',
-					onClick: (id: number) => handleSingleAction('declined', id),
+					icon: 'close',
+					onClick: (row: any) => handleSingleAction('declined', row.id),
 				},
-			],
+			]
 		},
-	];
-	const fetchData = (query: QueryProps) => {
+	};
+
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -134,49 +132,25 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 					page: query.paged || 1,
 					row: query.per_page || 10,
 					status: 'pending',
-					startDate: query.filter?.created_at?.startDate
+					start_date: query.filter?.created_at?.startDate
 						? formatLocalDate(query.filter.created_at.startDate)
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? formatLocalDate(query.filter.created_at.endDate)
 						: '',
 				},
 			})
 			.then((response) => {
 				const items = response.data || [];
-
+				console.log('api', items)
 				// Extract IDs for selection
 				const ids = items
 					.filter((item: any) => item?.id != null)
 					.map((item: any) => item.id);
 				setRowIds(ids);
 
-				// Map rows according to TableCard headers
-				const mappedRows: any[][] = items.map((store: any) => [
-					{
-						type: 'card',
-						value: store.id,
-						display: store.store_name || '-',
-						data: {
-							name: store.store_name,
-							link: store.id
-								? `${window.location.origin}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${store.id}/&subtab=application-details`
-								: '#',
-						},
-					},
-					{
-						value: store.email,
-						display: store.email || '-',
-					},
-					{
-						value: store.applied_on,
-						display: store.applied_on ? store.applied_on : '-',
-					}
-				]);
-
-
-				setRows(mappedRows);
-				setTotalRows(Number(response.headers['x-wp-status-pending']) || 0);
+				setRows(items);
+				// setTotalRows(Number(response.headers['x-wp-status-pending']) || 0);
 				setIsLoading(false);
 			})
 			.catch(() => {
@@ -195,7 +169,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						search={{}}
 						filters={filters}
@@ -244,7 +218,7 @@ const PendingStores: React.FC<{ onUpdated?: () => void }> = ({ onUpdated }) => {
 							<TextAreaUI
 								name="reject_reason"
 								value={rejectReason}
-								onChange={(value:string) => setRejectReason(value)}
+								onChange={(value: string) => setRejectReason(value)}
 								placeholder={__(
 									'Enter reason for rejecting this store...',
 									'multivendorx'
