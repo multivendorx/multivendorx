@@ -309,7 +309,7 @@ const AllProduct: React.FC = () => {
 
 		status: {
 			label: __('Status', 'multivendorx'),
-			type:'status'
+			type: 'status'
 		},
 
 		action: {
@@ -371,10 +371,11 @@ const AllProduct: React.FC = () => {
 					stock_status: query.filter?.stockStatus,
 					after: query.filter?.created_at?.startDate
 						? toWcIsoDate(query.filter.created_at.startDate, 'start')
-						: '',
+						: undefined,
+
 					before: query.filter?.created_at?.endDate
 						? toWcIsoDate(query.filter.created_at.endDate, 'end')
-						: '',
+						: undefined,
 					meta_key: 'multivendorx_store_id',
 					value: appLocalizer.store_id,
 				},
@@ -489,6 +490,13 @@ const AllProduct: React.FC = () => {
 							handleBulkAction(action, selectedIds)
 						}}
 						format={appLocalizer.date_format}
+						currency={{
+							currencySymbol: appLocalizer.currency_symbol,
+							priceDecimals: appLocalizer.price_decimals,
+							decimalSeparator: appLocalizer.decimal_separator,
+							thousandSeparator: appLocalizer.thousand_separator,
+							currencyPosition: appLocalizer.currency_position
+						}}
 					/>
 				</>
 			)}

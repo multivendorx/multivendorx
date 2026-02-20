@@ -17,7 +17,7 @@ import {
 import axios from 'axios';
 import Popup from '../components/Popup/Popup';
 import { categoryCounts, QueryProps, TableRow } from '@/services/type';
-import { formatLocalDate } from '@/services/commonFunction';
+import { formatLocalDate, toWcIsoDate } from '@/services/commonFunction';
 
 const COUPON_STATUS_MAP: Record<string, string> = {
 	all: __('All', 'multivendorx'),
@@ -528,7 +528,7 @@ const AllCoupon: React.FC = () => {
 		},
 		amount: {
 			label: __('Amount', 'multivendorx'),
-			type:'currency'
+			type: 'currency'
 		},
 		description: {
 			label: __('Description', 'multivendorx'),
@@ -577,11 +577,12 @@ const AllCoupon: React.FC = () => {
 					status: query.categoryFilter || '',
 					search: query.searchValue || '',
 					after: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: '',
+						? toWcIsoDate(query.filter.created_at.startDate, 'start')
+						: undefined,
+
 					before: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: '',
+						? toWcIsoDate(query.filter.created_at.endDate, 'end')
+						: undefined,
 					discount_type: query.filter?.couponType,
 					meta_key: 'multivendorx_store_id',
 					value: appLocalizer.store_id,
