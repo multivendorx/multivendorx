@@ -1,8 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import template1 from '../../../assets/images/template/store/template1.jpg';
-import template2 from '../../../assets/images/template/store/template2.jpg';
-import template3 from '../../../assets/images/template/store/template3.jpg';
 import DashboardTemplate from '../../../assets/template/Dashboard';
+
+import BannerTemplate1 from '../../../assets/template/bannerTemplate/bannerTemplate1';
+import BannerTemplate2 from '../../../assets/template/bannerTemplate/bannerTemplate2';
+import BannerTemplate3 from '../../../assets/template/bannerTemplate/bannerTemplate3';
 
 export default {
 	id: 'appearance',
@@ -18,7 +19,7 @@ export default {
 	modal: [
 		{
 			key: 'store_dashboard_site_logo',
-			type: 'file',
+			type: 'attachment',
 			label: __('Branding logo', 'multivendorx'),
 			size: 'small',
 			settingDescription: __(
@@ -39,27 +40,26 @@ export default {
 			key: 'store_banner_template',
 			type: 'color-setting',
 			label: 'Shop banner section',
-			settingDescription:
-				'Choose how the store’s shop page appears, including banner, logo, and description.',
-			images: [
+			settingDescription: 'Choose how the store’s shop page appears, including banner, logo, and description.',
+			templates: [
 				{
-					key: 'template1',
-					label: 'Neo Frame',
-					img: template1,
-					value: 'template1',
+					key: 'banner1',
+					label: __('Banner 1', 'multivendorx'),
+					preview: BannerTemplate1,
+					component: BannerTemplate1,
 				},
 				{
-					key: 'template2',
-					label: 'Elegant Wave',
-					img: template2,
-					value: 'template2',
+					key: 'banner2',
+					label: __('Banner 2', 'multivendorx'),
+					preview: BannerTemplate2,
+					component: BannerTemplate2,
 				},
 				{
-					key: 'template3',
-					label: 'Classic Vibe',
-					img: template3,
-					value: 'template3',
-				},
+					key: 'banner3',
+					label: __('Banner 3', 'multivendorx'),
+					preview: BannerTemplate3,
+					component: BannerTemplate3,
+				}
 			],
 		},
 		{

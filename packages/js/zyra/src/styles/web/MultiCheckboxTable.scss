@@ -242,13 +242,14 @@
         margin: 0.625rem 0;
         cursor: pointer;
 
-        h1 {
+        .header-title {
             background: $background-color;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.063rem;
+            font-size: 1rem;
             padding: 0.75rem;
+            font-weight: 600;
         }
         i{
             font-size: 1.313rem;

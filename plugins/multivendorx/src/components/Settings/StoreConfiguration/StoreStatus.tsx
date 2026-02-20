@@ -17,7 +17,6 @@ type SettingItem = Record<string, any>;
 const StoreStatus: React.FC = () => {
 	const location = new URLSearchParams(useLocation().hash.substring(1));
 	const initialTab = location.get('tabId') || 'pending';
-
 	const settingsArray: SettingItem[] = getAvailableSettings(
 		getTemplateData('storeStatus'),
 		[]

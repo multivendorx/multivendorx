@@ -71,9 +71,9 @@
                     display: block;
                 }
 
-                .heading {
+                .title {
                     font-size: 0.95rem;
-                    color: #000;
+                    color: $text-color
                 }
 
                 .message {
@@ -105,6 +105,8 @@
             width: 50%;
             color: #000000db;
             margin-bottom: 0.5rem;
+            display: flex;
+
 
             i {
                 font-size: 1.125rem;
@@ -129,6 +131,7 @@
         flex-wrap: wrap;
         gap: 0.5rem;
         justify-content: space-between;
+        border-radius: $border-radius-small;
 
         .item {
             padding-top: 0.5rem;
@@ -143,7 +146,7 @@
                 border-radius: 0.313rem;
             }
 
-            .heading {
+            .title {
                 font-size: 1rem;
                 padding-bottom: 0.313rem;
                 font-weight: 600;
@@ -183,6 +186,37 @@
         img {
             height: 1.75rem;
             width: auto;
+        }
+
+        .value {
+            font-size: 1.813rem;
+            font-weight: 600;
+            line-height: 2rem;
+            margin: .5rem 0;
+        }
+    }
+
+    &.search-results {}
+
+    &.price-list {
+        .item {
+            .details {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.5rem 0;
+                border-bottom: $border-light-small;
+
+                .title {
+                    font-size: 1.063rem;
+                    color: $sub-text-color;
+                    font-weight: 400;
+                }
+
+                .value {
+                    font-size: .95rem;
+                    font-weight: 600;
+                }
+            }
         }
     }
 

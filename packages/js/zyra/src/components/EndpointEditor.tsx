@@ -187,7 +187,7 @@ const EndpointManagerUI: React.FC<EndpointEditorProps> = ({
                     >
                         <div className="name-wrapper">
                             {!isDashboard && <i className="adminfont-drag" />}
-                            <i className={endpoint.icon} />
+                            <i className={`adminfont-${endpoint.icon}`} />
                             <div className="name">
                                 {endpoint.name}
                                 {!isDashboard && <code>{endpoint.slug}</code>}
@@ -290,19 +290,17 @@ const EndpointManagerUI: React.FC<EndpointEditorProps> = ({
                 handleSelector=".drag-handle"
                 onDragEnd={onDragEnd}
             >
-                <div>
-                    {endpoints.map(([key, endpoint], index) => (
-                        <div key={key} className="endpoint drag-row">
-                            {key === 'dashboard' ? (
-                                renderRow([key, endpoint], index)
-                            ) : (
-                                <div className="drag-handle menu-wrapper">
-                                    {renderRow([key, endpoint], index)}
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                {endpoints.map(([key, endpoint], index) => (
+                    <div key={key} className="endpoint drag-row">
+                        {key === 'dashboard' ? (
+                            renderRow([key, endpoint], index)
+                        ) : (
+                            <div className="drag-handle menu-wrapper">
+                                {renderRow([key, endpoint], index)}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </DragListView>
         </div>
     );

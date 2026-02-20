@@ -1,6 +1,7 @@
 @use '../../global.scss' as *;
 
 .endpoints-wrapper {
+    width: 100%;
     .endpoint {
         .menu-item {
             margin-bottom: 0.5rem;

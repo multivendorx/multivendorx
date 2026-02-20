@@ -408,8 +408,7 @@ export const Announcements: React.FC = () => {
 				buttons={[
 					{
 						label: __('Add New', 'multivendorx'),
-						className: "admin-btn btn-purple-bg",
-						iconClass: 'adminfont-plus',
+						icon: 'plus',
 						onClick: () => {
 							setValidationErrors({});
 							fetchStoreOptions();
@@ -423,6 +422,7 @@ export const Announcements: React.FC = () => {
 				open={addAnnouncements}
 				onClose={handleCloseForm}
 				width={31.25}
+				height={40}
 				header={{
 					icon: 'announcement',
 					title: editId

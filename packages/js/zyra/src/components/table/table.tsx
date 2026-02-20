@@ -195,7 +195,6 @@ const Table: React.FC<TableProps> = ({
                                 <th
                                     key={key || i}
                                     scope="col"
-                                    role="columnheader"
                                     className={thClass}
                                     aria-sort={
                                         isSortable && isSorted

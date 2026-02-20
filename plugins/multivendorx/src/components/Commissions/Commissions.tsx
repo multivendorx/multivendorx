@@ -87,18 +87,17 @@ const Commission: React.FC = () => {
 			label: __('Commission Summary', 'multivendorx'),
 			render: (row) => (
 				<ItemList
-					className="feature-list"
+					className="price-list"
 					items={Object.entries(row)
 						.filter(([key]) =>
 							['store_earning', 'shipping_amount', 'tax_amount', 'gateway_fee', 'marketplace_commission'].includes(key)
 						)
 						.map(([key, val]) => ({
-							icon: 'adminfont-commissions',
 							title: key
 								.split('_')
 								.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
 								.join(' '),
-							desc: val,
+							value: val,
 						}))
 					}
 				/>

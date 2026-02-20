@@ -8,7 +8,7 @@ type NotificationItem = {
   icon?: string;
   title: string;
   message: string;
-  time: string;
+  value: string;
 };
 
 const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = ({ type }) => {
@@ -80,7 +80,7 @@ const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = 
         title: item.title,
         desc: item.message,
         icon: item.icon,
-        time: item.time,
+        value: item.value,
         onApprove: (item) => {
           markRead(item.id);
         },
