@@ -19,7 +19,7 @@ export default {
 	modal: [
 		{
 			key: 'store_dashboard_site_logo',
-			type: 'file',
+			type: 'attachment',
 			label: __('Branding logo', 'multivendorx'),
 			size: 'small',
 			settingDescription: __(

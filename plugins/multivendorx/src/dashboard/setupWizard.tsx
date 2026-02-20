@@ -62,13 +62,13 @@ const SetupWizard: React.FC = () => {
                 },
                 {
                     key: 'store_dashboard_site_logo',
-                    type: 'file',
+                    type: 'attachment',
                     label: __('Store logo', 'multivendorx'),
                     size: 'small',
                 },
                 {
                     key: 'store_dashboard_site_logo',
-                    type: 'file',
+                    type: 'attachment',
                     label: __('Banner image (optional)', 'multivendorx'),
                     size: 'small',
                 },
