@@ -29,6 +29,7 @@ interface ToggleSettingProps {
     custom?: boolean;
     canAccess?: boolean;
     appLocalizer?: any;
+    onBlocked?: (type: 'pro', payload?: string) => void;
 }
 
 export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
@@ -40,28 +41,35 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
     iconEnable = false,
     custom,
     multiSelect = false,
-    canAccess,
-    appLocalizer
+    appLocalizer,
+    onBlocked
 } ) => {
-    const handleChange = ( optionValue: string, isPro: boolean ) => {
-        if ( 
-            isPro && 
-            ! canAccess
-        ) {
+    const block = (option: Option) => {
+        // Check pro setting
+        if (option.proSetting && !appLocalizer.khali_dabba) {
+            onBlocked?.('pro');
+            return true;
+        }
+        return false;
+    };
+
+    const handleChange = ( selectedOptionValue: string, option: Option ) => {
+        // Check if option is blocked (pro)
+        if (block(option)) {
             return;
         }
 
         if ( multiSelect ) {
             const current = Array.isArray( value ) ? value : [];
             let newValues: string[];
-            if ( current.includes( optionValue ) ) {
-                newValues = current.filter( ( compareValue ) => compareValue !== optionValue );
+            if ( current.includes( selectedOptionValue ) ) {
+                newValues = current.filter( ( compareValue ) => compareValue !== selectedOptionValue );
             } else {
-                newValues = [ ...current, optionValue ];
+                newValues = [ ...current, selectedOptionValue ];
             }
             onChange( newValues );
         } else {
-            onChange( optionValue );
+            onChange( selectedOptionValue );
         }
     };
 
@@ -75,6 +83,7 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
                             ? Array.isArray( value ) &&
                               value.includes( option.value )
                             : value === option.value;
+                        const isProOption = !!option.proSetting;
 
                         return (
                             <div
@@ -85,7 +94,7 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
                                 onClick={ () =>
                                     handleChange(
                                         option.value,
-                                        !! option.proSetting
+                                        option
                                     )
                                 }
                             >
@@ -123,7 +132,7 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
                                         <div className="toggle-custom-wrapper" dangerouslySetInnerHTML={{ __html: option.customHtml }} />
                                     )}
                                 </label>
-                                {option.proSetting && !appLocalizer.khali_dabba && (
+                                {isProOption && !appLocalizer.khali_dabba && (
                                     <span className="admin-pro-tag">
                                         <i className="adminfont-pro-tag"></i>Pro
                                     </span>
@@ -138,7 +147,7 @@ export const ToggleSettingUI: React.FC< ToggleSettingProps > = ( {
 };
 
 const ToggleSetting: FieldComponent = {
-    render: ({ field, value, onChange, canAccess, appLocalizer }) => (
+    render: ({ field, value, onChange, canAccess, appLocalizer, onBlocked }) => (
         <ToggleSettingUI
             wrapperClass={field.wrapperClass}
             key={field.key}
@@ -147,6 +156,7 @@ const ToggleSetting: FieldComponent = {
             multiSelect={field.multiSelect} // If true, allows selecting multiple options (checkboxes), else single select (radio)
             canAccess={canAccess}
             appLocalizer={appLocalizer}
+            onBlocked={onBlocked}
             options={
                 Array.isArray(field.options)
                     ? field.options.map((opt) => ({
