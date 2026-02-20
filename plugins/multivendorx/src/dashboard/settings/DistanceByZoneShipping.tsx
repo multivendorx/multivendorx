@@ -2,15 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-	Table,
-	TableCell,
 	getApiLink,
 	BasicInputUI,
 	AdminButtonUI,
 	ToggleSettingUI,
 	PopupUI,
 } from 'zyra';
-import type { ColumnDef, PaginationState } from '@tanstack/react-table';
 import { __ } from '@wordpress/i18n';
 
 type Zone = {
@@ -22,7 +19,7 @@ type Zone = {
 };
 
 interface DistanceByZoneShippingProps {
-	id: string | number; // or whatever type you expect
+	id: string | number;
 }
 
 const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
@@ -31,12 +28,6 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 	let store_id = appLocalizer.store_id ? appLocalizer.store_id : id;
 
 	const [data, setData] = useState<Zone[]>([]);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 10,
-	});
-	const [totalRows, setTotalRows] = useState<number>(0);
-	const [pageCount, setPageCount] = useState<number>(0);
 	const [error, setError] = useState<string>();
 	const [addShipping, setAddShipping] = useState<boolean>(false);
 	const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
@@ -70,8 +61,6 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			const zonesArray = Object.values(zonesObject);
 
 			setData(zonesArray);
-			setTotalRows(zonesArray.length);
-			setPageCount(Math.ceil(zonesArray.length / pagination.pageSize));
 		} catch (err) {
 			console.error('Error loading zones:', err);
 			setError(__('Failed to load shipping zones', 'multivendorx'));
@@ -302,81 +291,56 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 		}
 	};
 
-	const columns: ColumnDef<Zone>[] = [
-		{
-			header: __('Zone Name', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell>{row.original.zone_name || '—'}</TableCell>
-			),
-		},
-		{
-			header: __('Region(s)', 'multivendorx'),
-			cell: ({ row }) => (
-				<TableCell>
-					{row.original.formatted_zone_location || '—'}
-				</TableCell>
-			),
-		},
-		{
-			header: __('Shipping Method(s)', 'multivendorx'),
-			cell: ({ row }) => {
-				const methodsObj = row.original.shipping_methods || {};
-				const methodsArray = Object.values(methodsObj);
+	const renderShippingMethods = (zone: Zone) => {
+		const methodsObj = zone.shipping_methods || {};
+		const methodsArray = Object.values(methodsObj);
 
-				if (methodsArray.length === 0) {
-					return (
-						<TableCell>
-							<div>No shipping methods</div>
-							<button
-								className="admin-btn btn-purple"
-								onClick={() => handleAdd(row.original)}
-							>
-								<i className="adminfont-plus"></i>{' '}
-								{__('Add Shipping Method', 'multivendorx')}
-							</button>
-						</TableCell>
-					);
-				}
+		if (methodsArray.length === 0) {
+			return (
+				<div>
+					<div>No shipping methods</div>
+					<button
+						className="admin-btn btn-purple"
+						onClick={() => handleAdd(zone)}
+					>
+						<i className="adminfont-plus"></i>{' '}
+						{__('Add Shipping Method', 'multivendorx')}
+					</button>
+				</div>
+			);
+		}
 
-				return (
-					<TableCell>
-						<div className="shipping-method-wrapper">
-							{methodsArray.map((method: any) => (
-								<div
-									key={method.instance_id}
-									className="shipping-method"
-								>
-									<div className="admin-badge yellow">
-										{method.title}
-									</div>
-									<i
-										onClick={() => handleEdit(method)} className="admin-badge blue adminfont-edit"
-									></i>
-									<i
-										onClick={() =>
-											handleDelete(
-												method,
-												row.original
-											)
-										}
-										className="admin-badge red adminfont-delete"
-									></i>
-								</div>
-							))}
-
-							<button
-								className="admin-btn btn-purple"
-								onClick={() => handleAdd(row.original)}
-							>
-								<i className="adminfont-plus"></i>{' '}
-								{__('Add New Method', 'multivendorx')}
-							</button>
+		return (
+			<div className="shipping-method-wrapper">
+				{methodsArray.map((method: any) => (
+					<div
+						key={method.instance_id}
+						className="shipping-method"
+					>
+						<div className="admin-badge yellow">
+							{method.title}
 						</div>
-					</TableCell>
-				);
-			},
-		},
-	];
+						<i
+							onClick={() => handleEdit(method)}
+							className="admin-badge blue adminfont-edit"
+						></i>
+						<i
+							onClick={() => handleDelete(method, zone)}
+							className="admin-badge red adminfont-delete"
+						></i>
+					</div>
+				))}
+
+				<button
+					className="admin-btn btn-purple"
+					onClick={() => handleAdd(zone)}
+				>
+					<i className="adminfont-plus"></i>{' '}
+					{__('Add New Method', 'multivendorx')}
+				</button>
+			</div>
+		);
+	};
 
 	return (
 		<>
@@ -387,12 +351,44 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 			</div>
 
 			<div className="admin-table-wrapper">
-				<Table
-					data={data}
-					columns={columns as ColumnDef<Record<string, any>, any>[]}
-					rowSelection={{}}
-					onRowSelectionChange={() => { }}
-				/>
+					<table className="admin-table">
+						<thead className="admin-table-header">
+							<tr className="header-row">
+								<th className="header-col">
+									{__('Zone Name', 'multivendorx')}
+								</th>
+								<th className="header-col">
+									{__('Region(s)', 'multivendorx')}
+								</th>
+								<th className="header-col">
+									{__('Shipping Method(s)', 'multivendorx')}
+								</th>
+							</tr>
+						</thead>
+						<tbody className="admin-table-body">
+							{data.length === 0 ? (
+								<tr>
+									<td colSpan={3} className="no-data">
+										<p>{__('No shipping zones found', 'multivendorx')}</p>
+									</td>
+								</tr>
+							) : (
+								data.map((zone) => (
+									<tr key={zone.id} className="admin-row">
+										<td className="admin-column">
+											{zone.zone_name || '—'}
+										</td>
+										<td className="admin-column">
+											{zone.formatted_zone_location || '—'}
+										</td>
+										<td className="admin-column">
+											{renderShippingMethods(zone)}
+										</td>
+									</tr>
+								))
+							)}
+						</tbody>
+					</table>
 			</div>
 
 			{addShipping && selectedZone && (
@@ -437,6 +433,7 @@ const DistanceByZoneShipping: React.FC<DistanceByZoneShippingProps> = ({
 								<ToggleSettingUI
 									value={formData.shippingMethod}
 									onChange={(val: string) => {
+										console.log('Previous value:', formData.shippingMethod);
 										if (!isEditing) {
 											handleChange('shippingMethod', val);
 										}
