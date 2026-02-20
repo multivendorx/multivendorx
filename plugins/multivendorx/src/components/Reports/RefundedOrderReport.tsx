@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import { ExportCSV, getApiLink, TableCard } from 'zyra';
+import {  getApiLink, TableCard } from 'zyra';
 import axios from 'axios';
-import { formatCurrency, formatLocalDate,  } from '../../services/commonFunction';
+import { downloadCSV, formatLocalDate, } from '../../services/commonFunction';
 import { QueryProps, TableRow } from '@/services/type';
 
 const RefundedOrderReport: React.FC = () => {
@@ -12,7 +12,7 @@ const RefundedOrderReport: React.FC = () => {
 	const [rowIds, setRowIds] = useState<number[]>([]);
 	const [store, setStore] = useState([]);
 
-	// Fetch store list and total refunds on mount
+
 	useEffect(() => {
 		axios
 			.get(getApiLink(appLocalizer, 'store'), {
@@ -35,38 +35,34 @@ const RefundedOrderReport: React.FC = () => {
 			});
 	}, []);
 
-	const headers = [
-		{
-			key: 'order_id',
+	const headers = {
+		order_id: {
 			label: __('Order', 'multivendorx'),
 			isSortable: true,
 		},
-		{
-			key: 'customer',
+		customer_name: {
 			label: __('Customer', 'multivendorx'),
 		},
-		{
-			key: 'store',
+		store_name: {
 			label: __('Store', 'multivendorx'),
 		},
-		{
-			key: 'amount',
+		amount: {
 			label: __('Refund Amount', 'multivendorx'),
+			type: 'currency',
 		},
-		{
-			key: 'customer_reason',
+		customer_reason: {
 			label: __('Refund Reason', 'multivendorx'),
 		},
-		{
-			key: 'status',
+		status: {
 			label: __('Status', 'multivendorx'),
+			type: 'status',
 		},
-		{
-			key: 'date',
+		date: {
 			label: __('Date', 'multivendorx'),
+			type: 'date',
 			isSortable: true,
 		},
-	];
+	};
 
 	const filters = [
 		{
@@ -82,54 +78,37 @@ const RefundedOrderReport: React.FC = () => {
 		},
 	];
 
-	const refundColumns = (refund: any) => ({
-		[__('Order', 'multivendorx')]: refund.order_id ?? '',
-		[__('Customer', 'multivendorx')]: refund.customer_name?.trim() ?? '',
-		[__('Store', 'multivendorx')]: refund.store_name?.trim() ?? '',
-		[__('Refund Amount', 'multivendorx')]: refund.amount ?? '',
-		[__('Refund Reason', 'multivendorx')]: refund.customer_reason ?? '',
-		[__('Status', 'multivendorx')]: refund.status ?? '',
-		[__('Date', 'multivendorx')]: refund.date ?? '',
-	});	
+	const downloadCSVByQuery = (query: QueryProps) => {
+		axios
+			.get(getApiLink(appLocalizer, 'refund'), {
+				headers: {
+					'X-WP-Nonce': appLocalizer.nonce,
+				},
+				params: buildRefundQueryParams(query)
+			})
+			.then((response) => {
+				const rows = response.data || [];
+
+				downloadCSV(
+					headers,
+					rows,
+					`refund-report-${formatLocalDate(new Date())}.csv`
+				);
+			})
+			.catch((error) => {
+				console.error('CSV download failed:', error);
+			});
+	};
 
 	const buttonActions = [
 		{
-		  label: __('Download CSV', 'multivendorx'),
-		  icon: 'download',
-	  
-		  onClickWithQuery: (query: QueryProps) => ExportCSV({
-			url: getApiLink(appLocalizer, 'refund'),
-			headers: { 'X-WP-Nonce': appLocalizer.nonce },
-			filename:
-				query.filter?.created_at?.startDate &&
-				query.filter?.created_at?.endDate
-				  ? `refunds-${formatLocalDate(query.filter.created_at.startDate)}-${formatLocalDate(query.filter.created_at.endDate)}.csv`
-				  : `refunds-${formatLocalDate(new Date())}.csv`,
-	  
-			paramsBuilder: ({
-			  page: 1,
-			  per_page: 100,
-			  searchAction: query.searchAction || 'order_id',
-			  searchValue: query.searchValue,
-			  orderby: query.orderby || 'date',
-			  order: query.order || 'desc',
-			  store_id: query.filter?.store_id,
-	  
-			  startDate: query.filter?.created_at?.startDate
-				? formatLocalDate(query.filter.created_at.startDate)
-				: undefined,
-	  
-			  endDate: query.filter?.created_at?.endDate
-				? formatLocalDate(query.filter.created_at.endDate)
-				: undefined,
-			}),
-	  
-			columns: refundColumns,
-		  }),
+			label: __('Download CSV', 'multivendorx'),
+			icon: 'download',
+			onClickWithQuery: downloadCSVByQuery
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 
 		axios
@@ -137,21 +116,7 @@ const RefundedOrderReport: React.FC = () => {
 				headers: {
 					'X-WP-Nonce': appLocalizer.nonce,
 				},
-				params: {
-					page: query.page,
-					per_page: query.per_page,
-					searchAction:query.searchAction || 'order_id',
-					searchValue: query.searchValue,
-					orderby: query.orderby || 'date',
-					order: query.order || 'desc',
-					store_id: query.filter?.store_id,
-					startDate: query.filter?.created_at?.startDate
-						? formatLocalDate(query.filter.created_at.startDate)
-						: undefined,
-					endDate: query.filter?.created_at?.endDate
-						? formatLocalDate(query.filter.created_at.endDate)
-						: undefined,
-				},
+				params: buildRefundQueryParams(query)
 			})
 			.then((response) => {
 				const orders = Array.isArray(response.data)
@@ -159,56 +124,8 @@ const RefundedOrderReport: React.FC = () => {
 					: [];
 
 				setRowIds(orders.map((o: any) => o.id));
-				const mappedRows: TableRow[][] = orders.map((order: any) => [
-					{
-						display: `#${order.order_id}`,
-						value: order.order_id,
-						type: 'card',
-						data: {
-							link: `${appLocalizer.site_url}/wp-admin/post.php?post=${order.order_id}&action=edit`,
-							name: `#${order.order_id}`
-						},
-					},
-					{
-						display: order.customer_name?.trim(),
-						value: order.id,
-						type: 'card',
-						data: {
-							link: order.customer_edit_link,
-							name: order.customer_name?.trim()
-						},
-					},
-					{
-						display: order.store_name?.trim() || '-',
-						value: order.store_id,
-						type: 'card',
-						data: {
-							link: order.store_id
-								? `${window.location.origin}/wp-admin/admin.php?page=multivendorx#&tab=stores&edit/${order.store_id}/&subtab=store-overview`
-								: '#',
-							name: order.store_name?.trim() || '-',
-						},
-					},					
-					{
-						display: formatCurrency(order.amount),
-						value: order.amount,
-					},
-					{
-						display: order.customer_reason || '-',
-						value: order.customer_reason || '',
-					},
-					{
-						display: order.status,
-						value: order.status,
-						type: 'status',
-					},
-					{
-						display: order.date,
-						value: order.date,
-					},
-				]);
 
-				setRows(mappedRows);
+				setRows(orders);
 				setTotalRows(Number(response.headers['x-wp-total']) || 0);
 				setIsLoading(false);
 			})
@@ -220,6 +137,31 @@ const RefundedOrderReport: React.FC = () => {
 			});
 	};
 
+	const buildRefundQueryParams = (
+		query: QueryProps,
+		includePagination: boolean = true
+	) => {
+		const params: Record<string, any> = {
+			search_action: query.searchAction || 'order_id',
+			search_value: query.searchValue,
+			order_by: query.orderby || 'date',
+			order: query.order || 'desc',
+			store_id: query.filter?.store_id,
+			start_date: query.filter?.created_at?.startDate
+				? formatLocalDate(query.filter.created_at.startDate)
+				: undefined,
+			end_date: query.filter?.created_at?.endDate
+				? formatLocalDate(query.filter.created_at.endDate)
+				: undefined,
+		};
+
+		if (includePagination) {
+			params.page = query.page || 1;
+			params.per_page = query.per_page || 10;
+		}
+
+		return params;
+	};
 	return (
 		<>
 			<TableCard
@@ -227,7 +169,7 @@ const RefundedOrderReport: React.FC = () => {
 				rows={rows}
 				totalRows={totalRows}
 				isLoading={isLoading}
-				onQueryUpdate={fetchData}
+				onQueryUpdate={doRefreshTableData}
 				search={{
 					placeholder: 'Search Products...',
 					options: [
@@ -239,6 +181,13 @@ const RefundedOrderReport: React.FC = () => {
 				buttonActions={buttonActions}
 				rowIds={rowIds}
 				format={appLocalizer.date_format}
+				currency={{
+					currencySymbol: appLocalizer.currency_symbol,
+					priceDecimals: appLocalizer.price_decimals,
+					decimalSeparator: appLocalizer.decimal_separator,
+					thousandSeparator: appLocalizer.thousand_separator,
+					currencyPosition: appLocalizer.currency_position
+				}}
 			/>
 		</>
 	);

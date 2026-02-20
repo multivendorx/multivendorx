@@ -100,15 +100,15 @@ class Rest extends \WP_REST_Controller {
 
         try {
             // Parameters.
-            $limit         = max( 1, (int) $request->get_param( 'row' ) );
+            $limit         = max( 100, (int) $request->get_param( 'row' ) );
             $page          = max( 1, (int) $request->get_param( 'page' ) );
             $store_id      = $request->get_param( 'store_id' );
-            $search_action = strtolower( $request->get_param( 'searchAction' ) );
-            $search_value  = strtolower( trim( $request->get_param( 'searchValue' ) ) );
-            $order_by      = $request->get_param( 'orderBy' );
+            $search_action = strtolower( $request->get_param( 'search_action' ) );
+            $search_value  = strtolower( trim( $request->get_param( 'search_value' ) ) );
+            $order_by      = $request->get_param( 'order_by' );
             $order         = strtolower( $request->get_param( 'order' ) ) === 'asc' ? 'ASC' : 'DESC';
-            $start_date    = $request->get_param( 'startDate' );
-            $end_date      = $request->get_param( 'endDate' );
+            $start_date    = $request->get_param( 'start_date' );
+            $end_date      = $request->get_param( 'end_date' );
 
             // Pagination offset (Woo requires this).
             $offset = ( $page - 1 ) * $limit;

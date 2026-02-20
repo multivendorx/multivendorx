@@ -105,19 +105,19 @@ class Transactions extends \WP_REST_Controller {
 
         try {
             // Pagination & basic params
-            $limit              = max( 1, (int) $request->get_param( 'row' ) ?: 10 );
-            $page               = max( 1, (int) $request->get_param( 'page' ) ?: 1 );
-            $offset             = ( $page - 1 ) * $limit;
+            $limit = max( 1, (int) $request->get_param( 'row' ) ?: 10 ); 
+            $page = max( 1, (int) $request->get_param( 'page' ) ?: 1 ); 
+            $offset = ( $page - 1 ) * $limit;
             $store_id           = (int) $request->get_param( 'store_id' );
             $status             = $request->get_param( 'status' );
-            $transaction_type   = $request->get_param( 'transactionType' );
-            $transaction_status = $request->get_param( 'transactionStatus' );
-            $order_by           = sanitize_text_field( $request->get_param( 'orderBy' ) ) ?: 'created_at';
+            $transaction_type   = $request->get_param( 'transaction_type' );
+            $transaction_status = $request->get_param( 'transaction_status' );
+            $order_by           = sanitize_text_field( $request->get_param( 'order_by' ) ) ?: 'created_at';
             $order              = strtoupper( sanitize_text_field( $request->get_param( 'order' ) ) ) ?: 'DESC';
-            $search_id          = $request->get_param( 'searchValue' );
+            $search_id          = $request->get_param( 'search_value' );
             $dates              = Utill::normalize_date_range(
-                $request->get_param( 'startDate' ),
-                $request->get_param( 'endDate' )
+                $request->get_param( 'start_date' ),
+                $request->get_param( 'end_date' )
             );
             $ids                = $request->get_param( 'ids' );
             $sec_fetch_site     = $request->get_header( 'sec_fetch_site' );
@@ -158,7 +158,6 @@ class Transactions extends \WP_REST_Controller {
             }
 
             $transactions = Transaction::get_transaction_information( $args );
-
             $formatted = array_map(
                 function ( $row ) {
                     $store = new Store( $row['store_id'] );
@@ -173,7 +172,7 @@ class Transactions extends \WP_REST_Controller {
                         'account_number'   => $store ? $store->get_meta( Utill::STORE_SETTINGS_KEYS['account_number'] ) : '',
                         'credit'           => 'Cr' === $row['entry_type'] ? $row['amount'] : 0,
                         'debit'            => 'Dr' === $row['entry_type'] ? $row['amount'] : 0,
-                        'date'             => Utill::multivendorx_rest_prepare_date_response( $row['created_at'] ),
+                        'created_at'       => Utill::multivendorx_rest_prepare_date_response( $row['created_at'] ),
                         'order_details'    => $row['order_id'],
                         'transaction_type' => $row['transaction_type'],
                         'narration'        => $row['narration'],

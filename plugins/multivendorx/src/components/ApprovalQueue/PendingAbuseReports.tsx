@@ -21,13 +21,13 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 
 	const handleConfirmDelete = () => {
 		if (!deleteId) return;
-	
+
 		axios
 			.delete(getApiLink(appLocalizer, `report-abuse/${deleteId}`), {
 				headers: { 'X-WP-Nonce': appLocalizer.nonce },
 			})
 			.then(() => {
-				fetchData({});
+				doRefreshTableData({});
 				onUpdated?.();
 			})
 			.catch(() => {
@@ -65,27 +65,37 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 			});
 	}, []);
 
-	const headers = [
-		{ key: 'product', label: __('Product', 'multivendorx') },
-		{ key: 'email', label: __('Reported By', 'multivendorx') },
-		{ key: 'reason', label: __('Reason', 'multivendorx') },
-		{ key: 'created_at', label: __('Date created', 'multivendorx'), isSortable: true, },
-		{
-			key: 'action',
+	const headers = {
+		product: {
+			label: __('Product', 'multivendorx'),
+		},
+		email: {
+			label: __('Reported By', 'multivendorx'),
+		},
+		reason: {
+			label: __('Reason', 'multivendorx'),
+		},
+		created_at: {
+			label: __('Date created', 'multivendorx'),
+			isSortable: true,
+			type: 'date'
+		},
+		action: {
 			type: 'action',
-			label: 'Action',
+			label: __('Action', 'multivendorx'),
 			actions: [
 				{
 					label: __('Delete', 'multivendorx'),
 					icon: 'delete',
-					onClick: (id: number) => {
-						setDeleteId(id);
+					onClick: (row: any) => {
+						setDeleteId(row.id);
 						setConfirmOpen(true);
 					},
 				},
-			],			
+			]
 		},
-	];
+	};
+
 
 	const filters = [
 		{
@@ -101,7 +111,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 		},
 	];
 
-	const fetchData = (query: QueryProps) => {
+	const doRefreshTableData = (query: QueryProps) => {
 		setIsLoading(true);
 		axios
 			.get(getApiLink(appLocalizer, 'report-abuse'), {
@@ -111,13 +121,13 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				params: {
 					page: query.paged,
 					per_page: query.per_page,
-					orderby: query.orderby,
+					order_by: query.orderby,
 					order: query.order,
 					store_id: query?.filter?.store_id,
-					startDate: query.filter?.created_at?.startDate
+					start_date: query.filter?.created_at?.startDate
 						? query.filter.created_at.startDate
 						: '',
-					endDate: query.filter?.created_at?.endDate
+					end_date: query.filter?.created_at?.endDate
 						? query.filter.created_at.endDate
 						: '',
 				},
@@ -130,36 +140,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 				const ids = products.map((p: any) => p.id);
 				setRowIds(ids);
 
-				const mappedRows: any[][] = products.map((product: any) => [
-					{
-						type: 'product',
-						value: product.product_id,
-						display: product.name,
-						data: {
-							id: product.product_id,
-							name: product.product_name,
-							sku: product.product_sku,
-							image: product.product_image || '',
-							link: `${window.location.origin}/wp-admin/post.php?post=${product.product_id}&action=edit`,
-						},
-					},
-					{
-						display: product.email,
-						value: product.email,
-					},
-					{
-						display: product.reason,
-						value: product.reason,
-					},
-					{
-						display: product.created_at
-							? product.created_at
-							: '-',
-						value: product.created_at,
-					}
-				]);
-
-				setRows(mappedRows);
+				setRows(products);
 				setTotalRows(
 					Number(response.headers['x-wp-total']) || 0
 				);
@@ -182,7 +163,7 @@ const PendingReportAbuse: React.FC<Props> = ({ onUpdated }) => {
 						rows={rows}
 						totalRows={totalRows}
 						isLoading={isLoading}
-						onQueryUpdate={fetchData}
+						onQueryUpdate={doRefreshTableData}
 						ids={rowIds}
 						filters={filters}
 						format={appLocalizer.date_format}

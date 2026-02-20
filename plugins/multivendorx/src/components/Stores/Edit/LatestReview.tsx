@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { __ } from '@wordpress/i18n';
-import {  TableCard, getApiLink } from 'zyra';
+import { TableCard, getApiLink } from 'zyra';
 import { QueryProps, TableHeader, TableRow } from '@/services/type';
 
 interface LatestReviewProps {
@@ -13,8 +13,8 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 	const [rows, setRows] = useState<TableRow[][]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const fetchData = (query: QueryProps) => {
-		if(!store_id) return;
+	const doRefreshTableData = (query: QueryProps) => {
+		if (!store_id) return;
 		setIsLoading(true);
 
 		axios
@@ -24,36 +24,13 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 					page: query.paged || 1,
 					row: 3,
 					store_id: store_id,
-					orderBy: 'date_created',
+					order_by: 'date_created',
 					order: 'desc',
 				},
 			})
 			.then((response) => {
 				const items = response.data || [];
-
-				const mappedRows: any[][] = items.map((item: any) => [
-					{
-						type: 'card',
-						display: item.store_name,
-						value: item.store_name,
-						data: {
-							name: item.customer_name,
-							link: `${window.location.origin}/wp-admin/user-edit.php?user_id=${item.customer_id}`
-						}
-					},
-					{
-						type: 'card',
-						display: item.overall_rating,
-						value: item.overall_rating,
-						data: {
-							name: item.overall_rating,
-							description:item.review_content
-						}
-					},
-					{ display: item.date_created, value: item.date_created }
-				]);
-
-				setRows(mappedRows);
+				setRows(items);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -64,27 +41,27 @@ const LatestReview: React.FC<LatestReviewProps> = ({ store_id }) => {
 	};
 
 
-	const headers: TableHeader[] = [
-		{
-			key: 'customer',
-			label: 'Customer',
+	const headers = {
+		customer_name: {
+			label: __('Customer', 'multivendorx'),
 		},
-		{
-			key: 'details',
-			label: 'Details',
+		overall_rating: {
+			label: __('Rating', 'multivendorx'),
 		},
-		{
-			key: 'date',
-			label: 'Date',
-		}
-	];
+		review_content: {
+			label: __('Content', 'multivendorx'),
+		},
+		date_created: {
+			label: __('Date', 'multivendorx'),
+		},
+	};
 
 	return (
 		<TableCard
 			headers={headers}
 			rows={rows}
 			isLoading={isLoading}
-			onQueryUpdate={fetchData}
+			onQueryUpdate={doRefreshTableData}
 		/>
 	);
 };
