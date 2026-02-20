@@ -174,55 +174,64 @@ const Withdrawls: React.FC = () => {
 							<Column row>
 								<ItemList
 									className="mini-card"
-									title={__('Upcoming Balance', 'multivendorx')}
-									value={formatCurrency(data.locking_balance)}
-									description={
-										<>
-											{__('This amount is being processed and will be released ', 'multivendorx')}
-											{data?.payment_schedules ? (
+									background
+									items={[
+										{
+											title: __('Upcoming Balance', 'multivendorx'),
+											desc: (
 												<>
-													{data.payment_schedules} {__(' by the admin.', 'multivendorx')}
+													{__('This amount is being processed and will be released ', 'multivendorx')}
+													{data?.payment_schedules ? (
+														<>
+															{data.payment_schedules}{' '}
+															{__(' by the admin.', 'multivendorx')}
+														</>
+													) : (
+														<>
+															{__('automatically every hour.', 'multivendorx')}
+														</>
+													)}
 												</>
-											) : (
-												<>
-													{__('automatically every hour.', 'multivendorx')}
-												</>
-											)}
-										</>
-									}
+											),
+											time: formatCurrency(data.locking_balance),
+										},
+									]}
 								/>
 								{data?.withdrawal_setting?.length > 0 && (
 									<ItemList
 										className="mini-card"
 										background
-										title={__('Free Withdrawals', 'multivendorx')}
-										value={
-											<>
-												{Math.max(
-													0,
-													(data?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-													(data?.free_withdrawal ?? 0)
-												)}{' '}
-												<span>{__('Left', 'multivendorx')}</span>
-											</>
-										}
-										description={
-											<>
-												{__('Then', 'multivendorx')}{' '}
-												{Number(
-													data?.withdrawal_setting?.[0]
-														?.withdrawal_percentage
-												) || 0}
-												% +{' '}
-												{formatCurrency(
-													Number(
-														data?.withdrawal_setting?.[0]
-															?.withdrawal_fixed
-													) || 0
-												)}{' '}
-												{__('fee', 'multivendorx')}
-											</>
-										}
+										border
+										items={[
+											{
+												title: __('Free Withdrawals', 'multivendorx'),
+												desc: (
+													<>
+														{__('Then', 'multivendorx')}{' '}
+														{Number(
+															data?.withdrawal_setting?.[0]?.withdrawal_percentage
+														) || 0}
+														% +{' '}
+														{formatCurrency(
+															Number(
+																data?.withdrawal_setting?.[0]?.withdrawal_fixed
+															) || 0
+														)}{' '}
+														{__('fee', 'multivendorx')}
+													</>
+												),
+												value: (
+													<>
+														{Math.max(
+															0,
+															(data?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
+															(data?.free_withdrawal ?? 0)
+														)}{' '}
+														<span>{__('Left', 'multivendorx')}</span>
+													</>
+												),
+											},
+										]}
 									/>
 								)}
 							</Column>

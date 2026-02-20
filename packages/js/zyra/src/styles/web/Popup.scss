@@ -82,6 +82,12 @@
         .popup-footer {
             padding: 0.813rem;
             border-top: $border-light-small;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            box-sizing: border-box;
+            background: $background-white;
+            border-radius: 0 0 0.313rem 0.313rem;
         }
 
         &[data-position="menu-dropdown"] {
@@ -153,7 +159,7 @@
                     padding: 0.25rem;
                     color: #999;
                     font-size: 1.25rem;
-                    border-radius: 0.25rem;
+                    border-radius: $border-radius-small;
                     transition: all 0.2s ease;
 
                     &:hover {

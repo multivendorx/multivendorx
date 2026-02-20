@@ -80,7 +80,7 @@ const NotificationTabContent: React.FC<{ type: 'notification' | 'activity' }> = 
         title: item.title,
         desc: item.message,
         icon: item.icon,
-        time: item.time,
+        value: item.time,
         onApprove: (item) => {
           markRead(item.id);
         },

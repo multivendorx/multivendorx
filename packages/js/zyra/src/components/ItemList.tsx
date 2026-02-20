@@ -12,13 +12,13 @@ interface Item {
     onApprove?: (item: Item) => void;
     onReject?: (item: Item) => void;
     desc?: string;
-    time?: string;
+    value?: string;
     className?: string;
 }
 
 export interface ItemListProps {
     items: Item[];
-    className?: string ;
+    className?: string;
     background?: boolean;
     border?: boolean;
 }
@@ -43,7 +43,9 @@ const ItemList: React.FC<ItemListProps> = ({ items, background, border, classNam
                                 className="item"
                             >
                                 {item.icon && <i className={`item-icon ${item.icon}`}></i>}
-                                {item.title}
+                                <div className="details">
+                                   <div className="title"> {item.title}</div>
+                                </div>
                             </a>
                         ) : (
                             <div
@@ -53,13 +55,13 @@ const ItemList: React.FC<ItemListProps> = ({ items, background, border, classNam
                                 }}
                             >
                                 {item.icon && <i className={`item-icon ${item.icon}`}></i>}
-                                {item.img && <img src={item.img} alt="" /> }
+                                {item.img && <img src={item.img} alt="" />}
 
                                 <div className="details">
-                                    <div className="heading">{item.title}</div>
+                                    <div className="title">{item.title}</div>
+                                    {item.value && <div className="value">{item.value} </div>}
                                     {item.desc && <div className="desc">{item.desc}</div>}
                                 </div>
-                                {item.time && <div className="popover-item-time">{item.time}</div>}
 
                                 {className === 'notification' && (
                                     <>

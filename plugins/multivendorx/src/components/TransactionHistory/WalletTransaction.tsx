@@ -502,16 +502,19 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 								<ItemList
 									className="mini-card"
 									background
-									border
 									items={[
 										{
 											title: __('Upcoming Balance', 'multivendorx'),
 											desc: (
 												<>
-													{__('This amount is being processed and will be released ', 'multivendorx')}
+													{__(
+														'This amount is being processed and will be released ',
+														'multivendorx'
+													)}
 													{wallet?.payment_schedules ? (
 														<>
-															{wallet.payment_schedules} {__(' by the admin.', 'multivendorx')}
+															{wallet.payment_schedules}{' '}
+															{__(' by the admin.', 'multivendorx')}
 														</>
 													) : (
 														<>
@@ -520,46 +523,45 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 													)}
 												</>
 											),
-											time: formatCurrency(wallet.locking_balance), 
-										}
+											value: formatCurrency(wallet.locking_balance),
+										},
+
+										...(wallet?.withdrawal_setting?.length > 0
+											? [
+												{
+													title: __('Free Withdrawals', 'multivendorx'),
+													desc: (
+														<>
+															{__('Then', 'multivendorx')}{' '}
+															{Number(
+																wallet?.withdrawal_setting?.[0]
+																	?.withdrawal_percentage
+															) || 0}
+															% +{' '}
+															{formatCurrency(
+																Number(
+																	wallet?.withdrawal_setting?.[0]
+																		?.withdrawal_fixed
+																) || 0
+															)}{' '}
+															{__('fee', 'multivendorx')}
+														</>
+													),
+													value: (
+														<>
+															{Math.max(
+																0,
+																(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
+																(wallet?.free_withdrawal ?? 0)
+															)}{' '}
+															<span>{__('Left', 'multivendorx')}</span>
+														</>
+													),
+												},
+											]
+											: []),
 									]}
 								/>
-
-								{wallet?.withdrawal_setting?.length > 0 && (
-									<ItemList
-										variant="mini-card"
-										background
-										title={__('Free Withdrawals', 'multivendorx')}
-										value={
-											<>
-												{Math.max(
-													0,
-													(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-													(wallet?.free_withdrawal ?? 0)
-												)}{' '}
-												<span>{__('Left', 'multivendorx')}</span>
-											</>
-										}
-										description={
-											<>
-												{__('Then', 'multivendorx')}{' '}
-												{Number(
-													wallet?.withdrawal_setting?.[0]
-														?.withdrawal_percentage
-												) || 0}
-												% +{' '}
-												{formatCurrency(
-													Number(
-														wallet?.withdrawal_setting?.[0]
-															?.withdrawal_fixed
-													) || 0
-												)}{' '}
-												{__('fee', 'multivendorx')}
-											</>
-										}
-									/>
-
-								)}
 							</Column>
 							<AdminButtonUI
 								buttons={

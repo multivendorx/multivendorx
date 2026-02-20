@@ -71,9 +71,9 @@
                     display: block;
                 }
 
-                .heading {
+                .title {
                     font-size: 0.95rem;
-                    color: #000;
+                    color: $text-color
                 }
 
                 .message {
@@ -129,6 +129,7 @@
         flex-wrap: wrap;
         gap: 0.5rem;
         justify-content: space-between;
+        border-radius: $border-radius-small;
 
         .item {
             padding-top: 0.5rem;
@@ -143,7 +144,7 @@
                 border-radius: 0.313rem;
             }
 
-            .heading {
+            .title {
                 font-size: 1rem;
                 padding-bottom: 0.313rem;
                 font-weight: 600;
@@ -183,6 +184,13 @@
         img {
             height: 1.75rem;
             width: auto;
+        }
+
+        .value {
+            font-size: 1.813rem;
+            font-weight: 600;
+            line-height: 2rem;
+            margin: .5rem 0;
         }
     }
 
