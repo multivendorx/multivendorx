@@ -109,8 +109,7 @@ const Commission: React.FC = () => {
 								)
 								.join(' '),
 							value: val,
-						}))
-					}
+						}))}
 				/>
 			),
 			csvDisplay: false,

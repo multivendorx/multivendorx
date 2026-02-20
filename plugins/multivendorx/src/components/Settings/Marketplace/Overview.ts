@@ -23,7 +23,7 @@ export default {
 	},
 	headerIcon: 'view-files',
 	submitUrl: 'settings',
-	modal: [	
+	modal: [
 		{
 			key: 'store_registration_page',
 			type: 'select',
@@ -124,12 +124,15 @@ export default {
 				'multivendorx'
 			),
 			apilink: 'status',
-			method: 'GET'
+			method: 'GET',
 		},
 		{
 			key: 'section',
 			type: 'section',
-			title: __('Customer-facing order presentation & invoicing', 'multivendorx'),
+			title: __(
+				'Customer-facing order presentation & invoicing',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'display_customer_order',
@@ -148,7 +151,10 @@ export default {
 				{
 					key: 'mainorder',
 					label: __('Main Order (Combined)', 'multivendorx'),
-					desc: __('Sends a single order and invoice for the entire purchase', 'multivendorx'),
+					desc: __(
+						'Sends a single order and invoice for the entire purchase',
+						'multivendorx'
+					),
 					icon: 'adminfont-cart',
 					value: 'mainorder',
 					customHtml: `<div class="toggle-notice">
@@ -156,12 +162,15 @@ export default {
 					<p><strong>Email/Invoice:</strong> One email, one receipt with your marketplace tax details.</p>
 					<p><strong>My Account:</strong> Shows one combined order.</p>
 					<p><strong>Use this if:</strong> You want a simplified, all-in-one order view for customers.</p>
-				</div>`
+				</div>`,
 				},
 				{
 					key: 'suborders',
 					label: __('Sub-Orders (Per Store)', 'multivendorx'),
-					desc: __('Sends separate orders and invoices for each store', 'multivendorx'),
+					desc: __(
+						'Sends separate orders and invoices for each store',
+						'multivendorx'
+					),
 					icon: 'adminfont-store',
 					value: 'suborders',
 					customHtml: `<div class="toggle-notice">
@@ -169,12 +178,18 @@ export default {
 					<p><strong>Email/Invoice:</strong> Separate emails and receipts with each store’s tax details.</p>
 					<p><strong>My Account:</strong> Shows multiple orders (one per store).</p>
 					<p><strong>Use this if:</strong> You want customers to see individual store orders and receipts.</p>
-				</div>`
+				</div>`,
 				},
 				{
 					key: 'main_sub',
-					label: __('Main + Sub Orders (Combined + Separate)', 'multivendorx'),
-					desc: __('Sends both a combined order and separate store orders with invoices', 'multivendorx'),
+					label: __(
+						'Main + Sub Orders (Combined + Separate)',
+						'multivendorx'
+					),
+					desc: __(
+						'Sends both a combined order and separate store orders with invoices',
+						'multivendorx'
+					),
 					icon: 'adminfont-repeat',
 					value: 'main_sub',
 					customHtml: `<div class="toggle-notice">
@@ -182,15 +197,17 @@ export default {
 					<p><strong>Email/Invoice:</strong> One email for the full order + separate emails per store; multiple receipts with marketplace and store tax details.</p>
 					<p><strong>My Account:</strong> Shows combined + individual orders.</p>
 					<p><strong>Use this if:</strong> You want full transparency for both marketplace and individual store orders.</p>
-				</div>`
+				</div>`,
 				},
-
 			],
 		},
 		{
 			key: 'section',
 			type: 'section',
-			title: __('Enable content styling tools for stores', 'multivendorx'),
+			title: __(
+				'Enable content styling tools for stores',
+				'multivendorx'
+			),
 		},
 		{
 			key: 'tinymce_api_section',
@@ -211,7 +228,11 @@ export default {
 			type: 'shortcode-table',
 			label: __('Available shortcodes', 'multivendorx'),
 			desc: __('', 'multivendorx'),
-			optionLabel: ['Shortcodes and block library', 'Description', 'Arguments'],
+			optionLabel: [
+				'Shortcodes and block library',
+				'Description',
+				'Arguments',
+			],
 			icon: 'adminfont-general-tab',
 			options: [
 				{
@@ -244,8 +265,10 @@ export default {
 						{
 							attribute: 'orderby',
 							description: 'Decide how the store list is sorted.',
-							accepted: 'name, category, registered (Default: registered)',
-							default: '[marketplace_stores orderby="registered"]',
+							accepted:
+								'name, category, registered (Default: registered)',
+							default:
+								'[marketplace_stores orderby="registered"]',
 						},
 						{
 							attribute: 'order',
@@ -280,14 +303,16 @@ export default {
 
 						{
 							attribute: 'perpage',
-							description: 'Set how many products/listings appear per page.',
+							description:
+								'Set how many products/listings appear per page.',
 							accepted: 'Any number (Default = 12)',
 							default: '[marketplace_products perPage="12"]',
 						},
 
 						{
 							attribute: 'columns',
-							description: 'Decide how many products/listings appear in one row.',
+							description:
+								'Decide how many products/listings appear in one row.',
 							accepted: 'Any number (Default = 4)',
 							default: '[marketplace_products columns="4"]',
 						},
@@ -313,7 +338,8 @@ export default {
 							description:
 								'Show products/listings from specific categories. Use category slugs separated by commas.',
 							accepted: 'Comma-separated category slugs',
-							default: '[marketplace_products category="clothing,shoes"]',
+							default:
+								'[marketplace_products category="clothing,shoes"]',
 						},
 
 						{
@@ -356,7 +382,8 @@ export default {
 							description:
 								'Display coupons from a specific store using the store slug.',
 							accepted: 'Store slug',
-							default: '[marketplace-coupons store_slug="john-store"]',
+							default:
+								'[marketplace-coupons store_slug="john-store"]',
 						},
 						{
 							attribute: 'perPage',
@@ -367,21 +394,19 @@ export default {
 						},
 						{
 							attribute: 'orderby',
-							description:
-								'Choose how coupons are sorted.',
+							description: 'Choose how coupons are sorted.',
 							accepted:
 								'date, id, title, code, modified (Default = date)',
 							default: '[marketplace-coupons orderby="date"]',
 						},
 						{
 							attribute: 'order',
-							description:
-								'Set the sorting direction.',
+							description: 'Set the sorting direction.',
 							accepted: 'ASC, DESC (Default = DESC)',
 							default: '[marketplace-coupons order="DESC"]',
 						},
 					],
-				}
+				},
 			],
 		},
 	],

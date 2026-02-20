@@ -40,7 +40,8 @@ export default {
 			key: 'store_banner_template',
 			type: 'color-setting',
 			label: 'Shop banner section',
-			settingDescription: 'Choose how the store’s shop page appears, including banner, logo, and description.',
+			settingDescription:
+				'Choose how the store’s shop page appears, including banner, logo, and description.',
 			templates: [
 				{
 					key: 'banner1',
@@ -59,7 +60,7 @@ export default {
 					label: __('Banner 3', 'multivendorx'),
 					preview: BannerTemplate3,
 					component: BannerTemplate3,
-				}
+				},
 			],
 		},
 		{

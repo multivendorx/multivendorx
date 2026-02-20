@@ -539,8 +539,13 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 													)}
 													{wallet?.payment_schedules ? (
 														<>
-															{wallet.payment_schedules}{' '}
-															{__(' by the admin.', 'multivendorx')}
+															{
+																wallet.payment_schedules
+															}{' '}
+															{__(
+																' by the admin.',
+																'multivendorx'
+															)}
 														</>
 													) : (
 														<>
@@ -552,42 +557,65 @@ const WalletTransaction: React.FC<WalletTransactionProps> = ({ storeId }) => {
 													)}
 												</>
 											),
-											value: formatCurrency(wallet.locking_balance),
+											value: formatCurrency(
+												wallet.locking_balance
+											),
 										},
 
-										...(wallet?.withdrawal_setting?.length > 0
+										...(wallet?.withdrawal_setting?.length >
+										0
 											? [
-												{
-													title: __('Free Withdrawals', 'multivendorx'),
-													desc: (
-														<>
-															{__('Then', 'multivendorx')}{' '}
-															{Number(
-																wallet?.withdrawal_setting?.[0]
-																	?.withdrawal_percentage
-															) || 0}
-															% +{' '}
-															{formatCurrency(
-																Number(
-																	wallet?.withdrawal_setting?.[0]
-																		?.withdrawal_fixed
-																) || 0
-															)}{' '}
-															{__('fee', 'multivendorx')}
-														</>
-													),
-													value: (
-														<>
-															{Math.max(
-																0,
-																(wallet?.withdrawal_setting?.[0]?.free_withdrawals ?? 0) -
-																(wallet?.free_withdrawal ?? 0)
-															)}{' '}
-															<span>{__('Left', 'multivendorx')}</span>
-														</>
-													),
-												},
-											]
+													{
+														title: __(
+															'Free Withdrawals',
+															'multivendorx'
+														),
+														desc: (
+															<>
+																{__(
+																	'Then',
+																	'multivendorx'
+																)}{' '}
+																{Number(
+																	wallet
+																		?.withdrawal_setting?.[0]
+																		?.withdrawal_percentage
+																) || 0}
+																% +{' '}
+																{formatCurrency(
+																	Number(
+																		wallet
+																			?.withdrawal_setting?.[0]
+																			?.withdrawal_fixed
+																	) || 0
+																)}{' '}
+																{__(
+																	'fee',
+																	'multivendorx'
+																)}
+															</>
+														),
+														value: (
+															<>
+																{Math.max(
+																	0,
+																	(wallet
+																		?.withdrawal_setting?.[0]
+																		?.free_withdrawals ??
+																		0) -
+																		(wallet?.free_withdrawal ??
+																			0)
+																)}{' '}
+																<span>
+																	{__(
+																		'Left',
+																		'multivendorx'
+																	)}
+																</span>
+															</>
+														),
+													},
+												]
 											: []),
 									]}
 								/>
